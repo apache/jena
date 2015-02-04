@@ -18,10 +18,7 @@ z * Licensed to the Apache Software Foundation (ASF) under one
 
 package com.hp.hpl.jena.sparql.algebra.optimize ;
 
-import java.util.Collection ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Set ;
+import java.util.* ;
 
 import org.apache.jena.atlas.lib.CollectionUtils ;
 import org.apache.jena.atlas.lib.DS ;
@@ -187,11 +184,11 @@ public class TransformFilterPlacement extends TransformCopy {
 //            placement = noChangePlacement ;
 //        }
 //        else if ( input instanceof OpSlice ) {
-//            // Not sure what he best choice is here.
+//            // Not sure what the best choice is here.
 //            placement = noChangePlacement ;
 //        }
 //        else if ( input instanceof OpTopN ) {
-//            // Not sure what he best choice is here.
+//            // Not sure what the best choice is here.
 //            placement = noChangePlacement ;
 //        }
 
@@ -524,16 +521,15 @@ public class TransformFilterPlacement extends TransformCopy {
         Op right = input.getRight() ;
         Placement pRight = transform(exprs, right) ;
         
-        // If it's placed in neitehr arm it should be passed back out for placement.
+        // If it's placed in neither arm it should be passed back out for placement.
         //
         // If it's done in both arms, then expression can be left pushed in
         // and not passed back out for placement.
         
         // If it is done in one arm and not the other, then it can be left pushed
         // in but needs to be redone for the other arm as if it were no placed at all.
-        
+
         // A filter applied twice is safe.
-        // Placement = null => nothing done => unplaced. 
         
         ExprList exprs2 = null ;
         
@@ -560,7 +556,6 @@ public class TransformFilterPlacement extends TransformCopy {
             exprs2.add(expr) ;
         }
         
-        
         Op newLeft = (pLeft == null ) ? left : pLeft.op ;
         Op newRight = (pRight == null ) ? right : pRight.op ;
         if ( exprs2 == null )
@@ -580,8 +575,8 @@ public class TransformFilterPlacement extends TransformCopy {
     }
     
     /* Complete processing for an Op1. 
-     * Having split expressions into pushed an dunpsuehd at thispoint,
-     * try to push "psuehd" down further into the subOp.
+     * Having split expressions into pushed and unpushed at this point,
+     * try to push "pushed" down further into the subOp.
      */  
     private Placement processSubOp1(ExprList pushed, ExprList unpushed, Op1 input) {
         Op opSub = input.getSubOp() ;
@@ -596,38 +591,56 @@ public class TransformFilterPlacement extends TransformCopy {
             Op op2 = input.copy(op1) ;
             return result(op2, unpushed) ;
         }
-        // Did make changes below.  Add filter for these (which includes the "pushed" at this level,
-        // now in the p.op or left in p.unplaced.
+        // We did make changes below.  Add filter for these (which includes the 
+        // "pushed" at this level, now in the p.op or left in p.unplaced.
         Op op_a = OpFilter.filter(subPlacement.unplaced, subPlacement.op) ;
         op_a =  input.copy(op_a) ;
-       return result(op_a, unpushed) ;
+        return result(op_a, unpushed) ;
     }
-
+    
     private Placement processExtendAssign(ExprList exprs, OpExtendAssign input) {
-        // We assume that each (extend) and (assign) is in simple form - always one 
-        // assignment.  We cope with the general form (multiple assignments)
-        // but do not attempt reordering of assignments.
+        // We assume that each (extend) and (assign) is usually in simple form -
+        // always one assignment. We cope with the general form (multiple
+        // assignments) but do not attempt reordering of assignments.
+
+        // There are three cases:
+        // 1 - expressions that can be pushed into the subop.
+        // 2 - expressions that are covered when the extend/assign has applied. [wrapping]
+        // 3 - expressions that are not covered even at the outermost level. [unplaced]
+        
         List<Var> vars1 = input.getVarExprList().getVars() ;
-        ExprList pushed = new ExprList() ;
-        ExprList unpushed = new ExprList() ;
         Op subOp = input.getSubOp() ;
-        Set<Var> subVars = OpVars.fixedVars(subOp) ;
         
-        for ( Expr expr : exprs ) {
-            Set<Var> exprVars = expr.getVarsMentioned() ;
-            if ( disjoint(vars1, exprVars) && subVars.containsAll(exprVars) ) 
-                pushed.add(expr);
-            else
-                unpushed.add(expr) ;
+        // Case 1 : Do as much inner placement as possible.
+        ExprList remaining = exprs ;
+        Placement p = transform(exprs, input.getSubOp()) ;
+        if ( p != null ) {
+            subOp = p.op ;
+            remaining = p.unplaced ;
         }
-                
-        if ( pushed.isEmpty() )
-            return resultNoChange(input) ;
         
-        // (filter ... (extend ... ))
-        //   ===>
-        // (extend ... (filter ... ))
-        return processSubOp1(pushed, unpushed, input) ;
+        // Case 2 : wrapping
+        // Case 3 : unplaced
+        
+        // Variables in subop and introduced by (extend)/(assign)
+        Set<Var> subVars = OpVars.fixedVars(subOp) ;
+        subVars.addAll(input.getVarExprList().getVars()) ;
+        
+        ExprList wrapping = new ExprList() ; 
+        ExprList unplaced = new ExprList() ;
+            
+        for ( Expr expr : remaining ) {
+            Set<Var> exprVars = expr.getVarsMentioned() ;
+            if ( subVars.containsAll(exprVars) )
+                wrapping.add(expr) ;
+            else
+                unplaced.add(expr) ;
+        }
+        
+        Op result = input.copy(subOp) ;
+        if ( ! wrapping.isEmpty() )
+            result = OpFilter.filter(wrapping, result) ;
+        return result(result, unplaced) ; 
     }
 
     private Placement placeProject(ExprList exprs, OpProject input) {
@@ -647,25 +660,30 @@ public class TransformFilterPlacement extends TransformCopy {
         // (filter (project ...)) ===> (project (filter ...)) 
         return processSubOp1(pushed, unpushed, input) ;
     }
+
+    // For a modifier without expressions (distinct, reduced), we could
+    // push that inside the modifier if that were all there was.  But the 
+    // expressions may be processed elsewhere in the overall algebra.
+    // Putting them inside the modifier would lock them here as they don't
+    // get returned in the Placement as "unplaced."  
     
-    // For a  modifer without expressions (distinct, reduced), we push filters at least inside
-    // the modifier itself because does not affect scope.  It may enable parallel execution.
+    // This is the cause of JENA-874.
+   
     private Placement placeDistinctReduced(ExprList exprs, OpDistinctReduced input) {
         Op subOp = input.getSubOp() ;
         Placement p = transform(exprs, subOp) ;
-        
-//        if ( p == null )
-//            // If push in IFF it makes a difference further in.
-//            return resultNoChange(input) ;
-        
-        // Always push in.
-        // This is safe even if the filter contains vars not defined by the subOp
-        // OpDistinctReduced has the same scope inside and outside.
-        Op op = ( p == null )
-                ? OpFilter.filter(exprs, subOp)
-                : OpFilter.filter(p.unplaced, p.op) ;
+
+        if ( p == null )
+            // No effect - we do not manage to make a change.
+            return resultNoChange(input) ;
+
+        // Rebuild.
+        // We managed to place at least some expressions.
+        Op op = p.op ;
+        // Put back distinct/reduced
         op = input.copy(op) ;
-        return result(op, emptyList) ;
+        // Return with unplaced filters. 
+        return result(op, p.unplaced) ;
     }
     
     private Placement placeTable(ExprList exprs, OpTable input) {
@@ -716,13 +734,11 @@ public class TransformFilterPlacement extends TransformCopy {
         if ( exprs == null || exprs.isEmpty() )
             return op ;
 
-        for ( Expr expr : exprs )
-        {
-            if ( op == null )
-            {
-                op = OpTable.unit();
+        for ( Expr expr : exprs ) {
+            if ( op == null ) {
+                op = OpTable.unit() ;
             }
-            op = OpFilter.filter( expr, op );
+            op = OpFilter.filter(expr, op) ;
         }
         return op ;
     }

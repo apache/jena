@@ -51,10 +51,14 @@
     <ver.log4j>1.2.17</ver.log4j>
     <ver.junit>4.11</ver.junit>
     <ver.xerces>2.11.0</ver.xerces>
+
     <ver.jsonldjava>0.5.1</ver.jsonldjava>
+    <!-- Used by jena-osgi and must be in-step with jsonldjava -->
+    <ver.jackson>2.3.3</ver.jackson>
 
     <!-- These are connected because solr4j depends on httpclient as well -->
     <ver.httpclient>4.2.6</ver.httpclient>
+    <ver.httpcore>4.2.5</ver.httpcore>
     <ver.lucene>4.6.1</ver.lucene>
     <ver.solr>4.6.1</ver.solr>
     <ver.spatial4j>0.4</ver.spatial4j>
@@ -180,7 +184,7 @@
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
           </exclusion>
-          <!-- Exclude so we use out chocie of versions -->
+          <!-- Exclude so we use our choice of versions -->
           <exclusion>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient-cache</artifactId>
@@ -340,8 +344,7 @@
                   <version>1.7.0</version>
                 </requireJavaVersion>
                 <requirePluginVersions>
-                  <message>Best practice is to always define plugin
-                    versions!</message>
+                  <message>Best practice is to always define plugin versions!</message>
                   <banLatest>true</banLatest>
                   <banRelease>true</banRelease>
                 </requirePluginVersions>
@@ -450,7 +453,7 @@
 	       <exclude>**/*.classpath</exclude>
 
 	       <!-- Exclude anything created during the build (plugin generated files) ->-->
-	       <exclude>**/target/.plxarc</exclude>
+         <exclude>**/target/**/*</exclude>
 
             </excludes>
         </configuration>
@@ -473,8 +476,9 @@
           </configuration>
         </plugin>
 
-        <!-- Avoid the warning from m2e: "maven-remote-resources-plugin (goal 
-          "process") is ignored by m2e." -->
+        <!-- Avoid the warning from m2e: 
+	     "maven-remote-resources-plugin (goal "process") is ignored by m2e." 
+	-->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
@@ -483,8 +487,10 @@
             <lifecycleMappingMetadata>
               <pluginExecutions>
                 <pluginExecution>
-                  <!-- Warning: "maven-remote-resources-plugin (goal "process") is 
-                    ignored by m2e." -->
+                  <!-- 
+		    Warning: 
+		    "maven-remote-resources-plugin (goal "process") is ignored by m2e." 
+		  -->
                   <pluginExecutionFilter>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
@@ -498,8 +504,7 @@
                   </action>
                 </pluginExecution>
                 <pluginExecution>
-                  <!-- Warning: "maven-enforcer-plugin (goal "enforce") is ignored 
-                    by m2e." -->
+                  <!-- Warning: "maven-enforcer-plugin (goal "enforce") is ignored by m2e." -->
                   <pluginExecutionFilter>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-remote-resources-plugin</artifactId>
@@ -571,7 +576,6 @@
               <link>http://jena.apache.org/documentation/javadoc/fuseki/</link>
               <link>http://jena.apache.org/documentation/javadoc/security/</link>
               <link>http://jena.apache.org/documentation/javadoc/jdbc/</link>
-              <link>http://jena.apache.org/documentation/javadoc/sdb/</link>
             </links>
           </configuration>
         </plugin>
@@ -635,8 +639,7 @@
           <configuration>
             <rules>
               <requirePluginVersions>
-                <message>Best practice is to always define plugin
-                  versions!</message>
+                <message>Best practice is to always define plugin versions!</message>
                 <banLatest>true</banLatest>
                 <banRelease>true</banRelease>
               </requirePluginVersions>
@@ -648,6 +651,13 @@
             </rules>
             <fail>true</fail>
           </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.5.3</version>
+          <extensions>true</extensions>
         </plugin>
 
       </plugins>
