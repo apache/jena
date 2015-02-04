@@ -103,8 +103,8 @@ public class RdfTypesTest {
         T actual = (T) Class.forName(writable.getClass().getName()).newInstance();
         actual.readFields(input);
 
-        LOG.info("Original = " + writable.toString());
-        LOG.info("Round Tripped = " + actual.toString());
+        LOG.debug("Original = " + writable.toString());
+        LOG.debug("Round Tripped = " + actual.toString());
 
         // Check equivalent
         Assert.assertEquals(0, expected.compareTo(actual));
