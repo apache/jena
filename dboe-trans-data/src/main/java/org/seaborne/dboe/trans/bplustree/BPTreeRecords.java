@@ -91,7 +91,7 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    public Record internalSearch(Record rec) {
+    Record internalSearch(Record rec) {
         int i = rBuff.find(rec) ;
         if ( i < 0 )
             return null ;
@@ -111,7 +111,7 @@ public final class BPTreeRecords extends BPTreePage
     public void free()      { bprRecordsMgr.free(this) ; }
 
     @Override
-    public Record internalInsert(Record record) {
+    Record internalInsert(Record record) {
         promote() ;
         int i = rBuff.find(record) ;
         Record r2 = null ;
@@ -131,7 +131,7 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    public Record internalDelete(Record record) {
+    Record internalDelete(Record record) {
         promote() ;
         int i = rBuff.find(record) ;
         if ( i < 0 )
@@ -143,7 +143,7 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    final public Record getSplitKey() {
+    public Record getSplitKey() {
         int splitIdx = rBuff.size() / 2 - 1 ;
         Record r = rBuff.get(splitIdx) ;
         return r ;
@@ -153,7 +153,7 @@ public final class BPTreeRecords extends BPTreePage
      * Split is the high end of the low page.
      */
     @Override 
-    final public BPTreePage split() {
+    public BPTreePage split() {
         BPTreeRecords other = create(rBuffPage.getLink()) ;
         rBuffPage.setLink(other.getId()) ;
 
@@ -203,7 +203,7 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    public BPTreePage merge(BPTreePage right, Record splitKey) {
+    BPTreePage merge(BPTreePage right, Record splitKey) {
         // Split key ignored - it's for the B+Tree case of pushing down a key
         // Records blocks have all the key/values in them anyway.
         return merge(this, cast(right)) ;

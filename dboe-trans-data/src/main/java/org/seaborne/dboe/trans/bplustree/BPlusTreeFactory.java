@@ -150,7 +150,7 @@ public class BPlusTreeFactory {
 
         //n.ptrs.set(0, page.getId()) ; // This is the same as the size is one.
 
-        n.isLeaf = true ;
+        n.setIsLeaf(true) ;
         n.setCount(0) ;     // Count is count of records.
         int rootId = n.getId()  ;
         nodeManager.write(n) ;

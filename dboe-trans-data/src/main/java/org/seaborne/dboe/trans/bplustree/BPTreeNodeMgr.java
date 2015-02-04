@@ -44,8 +44,8 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
     /** Allocate space for a fresh node. */
     public BPTreeNode createNode(int parent) {
         BPTreeNode n = create(BPTREE_BRANCH) ;
-        n.isLeaf = false ;
-        n.parent = parent ;
+        n.setIsLeaf(false) ;
+        n.setParent(parent) ;
         return n ;
     }
 
@@ -60,7 +60,7 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
     @Override
     public BPTreeNode getRead(int id, int parent) {
         BPTreeNode n = super.getRead$(id) ;
-        n.parent = parent ;
+        n.setParent(parent);
         return n ;
     }
 
@@ -68,7 +68,7 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
     @Override
     public BPTreeNode getWrite(int id, int parent) {
         BPTreeNode n = super.getWrite$(id) ;
-        n.parent = parent ;
+        n.setParent(parent);
         return n ;
     }
 
@@ -105,7 +105,7 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
 //            BlockType bType = (node.isLeaf ? BPTREE_LEAF : BPTREE_BRANCH ) ;
 
             Block block = node.getBackingBlock() ;
-            BlockType bType = (node.isLeaf ? BPTREE_LEAF : BPTREE_BRANCH ) ;
+            BlockType bType = (node.isLeaf() ? BPTREE_LEAF : BPTREE_BRANCH ) ;
 
             int c = encodeCount(bType, node.getCount()) ;
             block.getByteBuffer().putInt(0, c) ;
@@ -167,9 +167,9 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
         // [Issue:FREC] Should be: key space only.
         // int recBuffLen = params.MaxRec * params.getKeyLength() ;
 
-        n.parent = parent ;
+        n.setParent(parent) ;
         n.setCount(count) ;
-        n.isLeaf = leaf ;
+        n.setIsLeaf(leaf) ;
 
         int header = BPlusTreeParams.BlockHeaderSize ;
         int rStart = header ;
@@ -212,5 +212,4 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
         // Tweak for the root-specials. The node is not consistent yet.
         // Has one dangling pointer.
     }
-    
 }

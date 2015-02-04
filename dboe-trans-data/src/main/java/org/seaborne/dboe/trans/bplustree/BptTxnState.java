@@ -20,6 +20,7 @@ package org.seaborne.dboe.trans.bplustree;
 
 /** Transactional state of a {@link BPlusTree} */
 final class BptTxnState {
+    final int initialroot ;
     int root = -1 ;
     
     // Point at which we start adding blocks in a write transaction.
@@ -29,6 +30,7 @@ final class BptTxnState {
     private final long boundaryBlocksRecord ;
     
     BptTxnState(int initRoot, long boundaryNode, long boundaryRecords) {
+        this.initialroot = initRoot ;
         this.root = initRoot ;
         this.boundaryBlocksNode = boundaryNode ;
         this.boundaryBlocksRecord = boundaryRecords ;

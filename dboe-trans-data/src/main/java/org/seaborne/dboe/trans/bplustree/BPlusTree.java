@@ -418,14 +418,12 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     /*package*/ void nonTransactional() {
         // Fake it!
         // TODO More formally do this.
-        //   No txn tests / always "writable"
-        //   No block cloning
-        //   
+        // See NOTES
         Journal journal = Journal.create(Location.mem()) ;
         Transactional holder = new TransactionalBase(journal, this) ;
         holder.begin(ReadWrite.WRITE);
+        //new BptTxnState(BPlusTreeParams.RootId, 0, 0) ;
     }
-    
     
     @Override
     public ComponentId getComponentId() {
