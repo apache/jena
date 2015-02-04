@@ -27,15 +27,19 @@ import com.hp.hpl.jena.query.ReadWrite ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.base.record.RecordMapper ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
 import org.seaborne.dboe.base.recordbuffer.RecordRangeIterator ;
 import org.seaborne.dboe.index.RangeIndex ;
+import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
+import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.TransactionalComponentLifecycle ;
 import org.seaborne.dboe.transaction.txn.TxnId ;
+import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -411,6 +415,16 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     // Transaction.
     
+    /*package*/ void nonTransactional() {
+        // Fake it!
+        // TODO More formally do this.
+        //   No txn tests / always "writable"
+        //   No block cloning
+        //   
+        Journal journal = Journal.create(Location.mem()) ;
+        Transactional holder = new TransactionalBase(journal, this) ;
+        holder.begin(ReadWrite.WRITE);
+    }
     
     
     @Override

@@ -149,11 +149,11 @@ public final class BPTreeNode extends BPTreePage
     }
 
     private BPTreePage getRead(int idx) {
-        return _get(id, READ) ;
+        return _get(idx, READ) ;
     }
     
     private BPTreePage getWrite(int idx) {
-        return _get(id, READ) ;
+        return _get(idx, WRITE) ;
     }
 
     /** Get the page at slot idx - switch between B+Tree and records files */
@@ -181,30 +181,7 @@ public final class BPTreeNode extends BPTreePage
         log.error("Unknown state: " + state) ;
         return null ;
     }
-        
-        
-//        if ( state == READ )
-//            return _getMgrRead(subId) ;
-//        if ( state == WRITE )
-//            return _getMgrWrite(subId) ;
-//        log.error("Unknown state: " + state) ;
-//        return null ;
-//    }
-//
-//    private BPTreePage _getMgrRead(int subId) {
-//        if ( isLeaf )
-//            return bpTree.getRecordsMgr().getRead(subId) ;
-//        else
-//            return bpTree.getNodeManager().getRead(subId, this.id) ;
-//    }
-//
-//    private BPTreePage _getMgrWrite(int subId) {
-//        if ( isLeaf )
-//            return bpTree.getRecordsMgr().getWrite(subId) ;
-//        else
-//            return bpTree.getNodeManager().getWrite(subId, this.id) ;
-//    }
-    
+
     // ---------- Public calls.
     // None of these are called recursively.
 
@@ -327,7 +304,7 @@ public final class BPTreeNode extends BPTreePage
 
     @Override
     protected Record minRecord() {
-        BPTreePage page = getRead(count) ;
+        BPTreePage page = getRead(0) ;
         Record r = page.minRecord() ;
         page.release() ;
         return r ;
