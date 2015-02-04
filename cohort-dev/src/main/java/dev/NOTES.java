@@ -35,6 +35,9 @@ public class NOTES {
     //   BPTreeRecords.isModifiable -- look into bptree object
     //   BPTreeNode.isModifiable
     
+    // Easy route : make modifiable if 
+    // **** There is an in-memory parent chain.
+    
     
     // == Mantis
     // dboe-test ?  See BufferTestLib

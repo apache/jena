@@ -49,7 +49,6 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
         return n ;
     }
 
-    // Maybe we should not inherit but wrap.
     @Override
     public BPTreeNode getWrite(int id)
     { throw new UnsupportedOperationException("call getWrite(int, int)") ; }
@@ -58,15 +57,17 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
     { throw new UnsupportedOperationException("call getRead(int, int)") ; }
     
     /** Fetch a block - fill in the parent id, which is not in the on-disk bytes */
+    @Override
     public BPTreeNode getRead(int id, int parent) {
-        BPTreeNode n = super.getRead(id) ;
+        BPTreeNode n = super.getRead$(id) ;
         n.parent = parent ;
         return n ;
     }
 
     /** Fetch a block - fill in the parent id, which is not in the on-disk bytes */
+    @Override
     public BPTreeNode getWrite(int id, int parent) {
-        BPTreeNode n = super.getWrite(id) ;
+        BPTreeNode n = super.getWrite$(id) ;
         n.parent = parent ;
         return n ;
     }

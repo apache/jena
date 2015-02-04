@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory ;
  * </ul>
  */
 
-public class BPlusTree  extends TransactionalComponentLifecycle<BptTxnState> implements RangeIndex
+public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> implements RangeIndex
 {
     /*
      * Insertion:
@@ -231,7 +231,6 @@ public class BPlusTree  extends TransactionalComponentLifecycle<BptTxnState> imp
 
     /** Add a record into the B+Tree */
     public Record addAndReturnOld(Record record) {
-        
         startUpdateBlkMgr() ;
         BPTreeNode root = getRootWrite() ;
         Record r = BPTreeNode.insert(root, record) ;

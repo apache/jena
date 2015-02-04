@@ -47,92 +47,128 @@ public class PageBlockMgr<T extends Page>
 //    public int allocateId()           { return blockMgr.allocateId() ; }
     
     /** Allocate a new thing */
-    public T create(BlockType bType)
-    {
+    public T create(BlockType bType) {
         Block block = blockMgr.allocate(-1) ;
         block.setModified(true) ;
         T page = pageFactory.createFromBlock(block, bType) ;
         return page ;
     }
     
-    public T getWrite(int id)
-    { 
-        Block block = blockMgr.getWrite(id) ;
-        block.setModified(true) ;
-        T page = pageFactory.fromBlock(block) ;
-        return page ;
+    /**
+     * Fetch a block for reading.
+     * 
+     * @param id
+     *            Block to fetch
+     */
+    public T getRead(int id) {
+        return getRead$(id) ;
+    }
+
+    /**
+     * Fetch a block for reading.
+     * 
+     * @param id
+     *            Block to fetch
+     * @param referencingId
+     *            Id of block referring to this one. 
+     *            For example, a parent in a tree.
+     *            May be -1 for "none" or "meaningless".
+     */
+    public T getRead(int id, int referencingId) {
+        return getRead$(id) ;
     }
     
-    public T getRead(int id)
-    { 
+    /**
+     * Fetch a block for writing.
+     * @param id Block to fetch
+     */
+    public T getWrite(int id) {
+        return getWrite$(id) ;
+    }
+    
+    /**
+     * Fetch a block for writing.
+     * 
+     * @param id
+     *            Block to fetch
+     * @param referencingId
+     *            Id of block referring to this one. 
+     *            For example, a parent in a tree.
+     *            May be -1 for "none" or "meaningless".
+     */
+    public T getWrite(int id, int referencingId) {
+        return getWrite$(id) ;
+    }
+
+    // ---- The read and write worker operations.
+    
+    final protected T getRead$(int id) { 
         Block block = blockMgr.getRead(id) ;
         if ( block.isModified() ) {
-            System.err.println("getRead - isModified");
+            System.err.println("getRead - isModified") ;
             // Debug.
             blockMgr.getRead(id) ;
         }
         T page = pageFactory.fromBlock(block) ;
         return page ;
     }
+    
+    final protected T getWrite$(int id) {
+        Block block = blockMgr.getWrite(id) ;
+        block.setModified(true) ;
+        T page = pageFactory.fromBlock(block) ;
+        return page ;
+    }
 
-    public void put(T page)
-    {
+    // ---- 
+    
+    public void put(T page) {
         write(page) ;
         release(page) ;
     }
-    
-    public void write(T page)
-    {
-        // Catch updates to non-transactioned datasetgraph.  Check in BlockMgrJournal instead.
-//        if ( ! page.getBackingBlock().isModified() )
-//            warn("Page for block "+page.getBackingBlock().getId()+" not modified") ;
-        
+
+    public void write(T page) {
         Block blk = pageFactory.toBlock(page) ;
         blockMgr.write(blk) ;
     }
 
-    public void release(Page page)
-    { 
+    public void release(Page page) {
         Block block = page.getBackingBlock() ;
         blockMgr.release(block) ;
     }
-    
-    private void warn(String string)
-    {
+
+    private void warn(String string) {
         Log.warn(this, string) ;
     }
-    
-    public void free(Page page)
-    {
+
+    public void free(Page page) {
         Block block = page.getBackingBlock() ;
         blockMgr.free(block) ;
     }
-    
-    public void promote(Page page)
-    { 
+
+    public void promote(Page page) {
         // Replace, reset Block in page.
         Block block = page.getBackingBlock() ;
         Block block2 = blockMgr.promote(block) ;
-        if ( block2 != block )
-        {        
+        if ( block2 != block ) {
             block2.setModified(true) ;
             // Change - reset Block in page.
             page.reset(block2) ;
         }
     }
-    
-    public boolean valid(int id)        { return blockMgr.valid(id) ; }
-    
-    public void dump()
-    { 
-        for ( int idx = 0 ; valid(idx) ; idx++ )
-        {
-            T page = getRead(idx) ;
+
+    public boolean valid(int id) {
+        return blockMgr.valid(id) ;
+    }
+
+    public void dump() {
+        for ( int idx = 0 ; valid(idx) ; idx++ ) {
+            T page = getRead(idx, -1) ;
             System.out.println(page) ;
             release(page) ;
         }
     }
-    
+
     /** Signal the start of a batch */
     public void startBatch()       { blockMgr.beginBatch() ; }
     
