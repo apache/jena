@@ -19,7 +19,6 @@ package org.seaborne.dboe.base.page;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.seaborne.dboe.base.block.Block ;
-import org.seaborne.dboe.base.block.BlockConverter ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockType ;
 
@@ -56,9 +55,7 @@ public class PageBlockMgr<T extends Page>
     
     /**
      * Fetch a block for reading.
-     * 
-     * @param id
-     *            Block to fetch
+     * @param id Block to fetch
      */
     public T getRead(int id) {
         return getRead$(id) ;
@@ -67,8 +64,7 @@ public class PageBlockMgr<T extends Page>
     /**
      * Fetch a block for reading.
      * 
-     * @param id
-     *            Block to fetch
+     * @param id    Block to fetch
      * @param referencingId
      *            Id of block referring to this one. 
      *            For example, a parent in a tree.
@@ -89,8 +85,7 @@ public class PageBlockMgr<T extends Page>
     /**
      * Fetch a block for writing.
      * 
-     * @param id
-     *            Block to fetch
+     * @param id  Block to fetch
      * @param referencingId
      *            Id of block referring to this one. 
      *            For example, a parent in a tree.
@@ -128,8 +123,6 @@ public class PageBlockMgr<T extends Page>
     }
 
     public void write(T page) {
-        if ( page.getBackingBlock().isReadOnly() )
-            System.err.println("write - readOnly block") ;
         Block blk = pageFactory.toBlock(page) ;
         blockMgr.write(blk) ;
     }
