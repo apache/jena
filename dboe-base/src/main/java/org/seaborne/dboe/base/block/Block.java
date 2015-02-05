@@ -86,11 +86,9 @@ public final class Block
     public void setReadOnly(boolean readonly) {
         if ( readonly && modified )
             throw new BlockException("Attempt to mark a modified block as read-only") ;
-        // Expensive, development version.
-        // [[Dev-RO]]
-        //byteBuffer = ByteBufferLib.duplicate(byteBuffer).asReadOnlyBuffer() ;
-        // Just some checking.
-        byteBuffer = byteBuffer.asReadOnlyBuffer() ;
+        // Hard to force a read-only byte buffer because higher levels
+        // may slice this and have their own byte buffers or even 
+        // intBuffers etc.
         this.readOnly = readonly ;
     }
 
@@ -137,11 +135,11 @@ public final class Block
      * capacity of the supplied ByteBuffer must be equal to or greater than this
      * block's capacity.
      */
-    public Block replicate(ByteBuffer dstBuffer) {
+    private Block replicate(ByteBuffer dstBuffer) {
         replicateByteBuffer(getByteBuffer(), dstBuffer) ;
         Block b = new Block(getId(), dstBuffer) ;
-        b.modified = modified ;
-        b.readOnly = readOnly ;
+        b.setModified(modified) ;
+        b.setReadOnly(readOnly) ;
         // b.blockRef = null ;
         return b ;
     }
