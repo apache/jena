@@ -16,9 +16,6 @@
     <link href="css/codemirror.min.css" rel="stylesheet">
     <link href="css/yasqe.min.css" rel="stylesheet">
     <link href="css/yasr.min.css" rel="stylesheet">
-    
-
-    
 
     <!--[if lt IE 9]>
       <script src="js/lib/html5shiv.js"></script>
@@ -116,9 +113,9 @@
                         <div class="col-md-12 well">
                             <div class="query-chrome" style="margin-top:0px; display:inline-block;vertical-align: top;width:40%;">
                                   <div class="form-group">
-	                                <label for="sparqlEndpoint">SPARQL endpoint</label>
-	                                <input type="text" class="form-control" id="sparqlEndpoint" />
-	                              </div>
+                                    <label for="sparqlEndpoint">SPARQL endpoint</label>
+                                    <input type="text" class="form-control" id="sparqlEndpoint" />
+                                  </div>
                             </div>
                              <div class="query-chrome" style="margin-top:0px; display:inline-block; vertical-align: top;width:28%">
                                   <div class="form-group">
@@ -135,9 +132,11 @@
                                   <div class="form-group">
                                     <label for="graphContentType">Content Type (Graph)</label>
                                     <select id="graphContentType" class="form-control">
-									  <option value="text/turtle">Turtle</option>
-									  <option value="application/rdf+xml">XML</option>
-									</select>
+                                      <option value="text/turtle">Turtle</option>
+                                      <option value="application/ld+json">JSON-LD</option>
+                                      <option value="application/n-triples">N-Triples</option>
+                                      <option value="application/rdf+xml">XML</option>
+                                    </select>
                                   </div>
                             </div>
                         </div>
