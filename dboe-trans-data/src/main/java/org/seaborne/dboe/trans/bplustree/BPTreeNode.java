@@ -174,33 +174,18 @@ public final class BPTreeNode extends BPTreePage
         BPTreeNodeMgr.formatBPTreeNode(this, bpTree, block, isLeaf, parent, count) ;
     }
     
-    enum FetchMode { READ , WRITE }
-    
-    private BPTreePage getRead(int idx) {
-        return _get(idx, FetchMode.READ) ;
-    }
-    
-    // "getWrite" means get during a write operation. 
-    private BPTreePage getWrite(int idx) {
-        return _get(idx, FetchMode.WRITE) ;
-    }
-
     /** Get the page at slot idx - switch between B+Tree and records files */
-    private BPTreePage _get(int idx, FetchMode mode) {
+    private BPTreePage get(int idx) {
         if ( logging() ) {
             String leafOrNode = isLeaf ? "L" : "N" ;
-            log.debug(format("get(%d[%s],%s)", idx, leafOrNode, mode)) ; 
+            log.debug(format("get(%d[%s])", idx, leafOrNode)) ; 
         }
-
         int subId = ptrs.get(idx) ;
-
         PageBlockMgr<? extends BPTreePage> pbm = getPageBlockMgr() ;
-        switch (mode) {
-            case READ:   return pbm.getRead(subId, this.id) ;
-            case WRITE:  return pbm.getWrite(subId, this.id) ;
-        }
-        log.error("Access mode is null") ;
-        return null ;
+        // Always get a "read" block - it must be promoted to a "write" block
+        // to update it.  Getting a write block is unhelpful as many blocks
+        // during a write operation are only read.
+        return pbm.getRead(subId, this.id) ;
     }
 
     private PageBlockMgr<? extends BPTreePage> getPageBlockMgr() {
@@ -267,7 +252,7 @@ public final class BPTreeNode extends BPTreePage
 
         if ( root.isLeaf && root.count == 0 ) {
             // Special case. Just a records block. Allow that to go too small.
-            BPTreePage page = root.getWrite(0) ;
+            BPTreePage page = root.get(0) ;
             if ( CheckingNode && !(page instanceof BPTreeRecords) )
                 root.error("Zero size leaf root but not pointing to a records block") ;
             // [[TXN]] ** clone
@@ -308,7 +293,7 @@ public final class BPTreeNode extends BPTreePage
         // Used by BPlusTree.iterator
         // Walk down the B+tree part of the structure ...
         while (!node.isLeaf) {
-            BPTreePage page = (fromRec == null) ? node.getRead(0) : node.findHere(fromRec) ;
+            BPTreePage page = (fromRec == null) ? node.get(0) : node.findHere(fromRec) ;
             // Not a leaf so we can cast safely.
             BPTreeNode n = (BPTreeNode)page ;
             // Release if not root.
@@ -335,7 +320,7 @@ public final class BPTreeNode extends BPTreePage
 
     @Override
     protected Record maxRecord() {
-        BPTreePage page = getRead(count) ;
+        BPTreePage page = get(count) ;
         Record r = page.maxRecord() ;
         page.release() ;
         return r ;
@@ -343,7 +328,7 @@ public final class BPTreeNode extends BPTreePage
 
     @Override
     protected Record minRecord() {
-        BPTreePage page = getRead(0) ;
+        BPTreePage page = get(0) ;
         Record r = page.minRecord() ;
         page.release() ;
         return r ;
@@ -435,7 +420,7 @@ public final class BPTreeNode extends BPTreePage
         // A key is the highest element of the records up to this point
         // so we search down at slot idx (between something smaller and
         // something larger.
-        BPTreePage page = getRead(idx) ;
+        BPTreePage page = get(idx) ;
         return page ;
     }
     
@@ -460,7 +445,7 @@ public final class BPTreeNode extends BPTreePage
 
         idx = convert(idx) ;
 
-        BPTreePage page = getWrite(idx) ;
+        BPTreePage page = get(idx) ;
 
         if ( logging() )
             log.debug(format("internalInsert: next: %s", page)) ;
@@ -475,7 +460,7 @@ public final class BPTreeNode extends BPTreePage
                 page.release() ;
                 // Yes. Get the new (upper) page
                 idx = idx + 1 ;
-                page = getWrite(idx) ;
+                page = get(idx) ;
             }
             internalCheckNode() ;
         }
@@ -718,13 +703,12 @@ public final class BPTreeNode extends BPTreePage
         // If x is >= 0, may need to adjust this
         int y = convert(x) ;
         // [[Dev-RO]]
-        BPTreePage page = getWrite(y) ;
+        BPTreePage page = get(y) ;
 
         boolean thisWriteNeeded = false ;
         if ( page.isMinSize() ) // Can't be root - we decended in the get().
         {
             // [[TXN]] ** clone
-            promote() ;
             page = rebalance(page, y) ;
             thisWriteNeeded = true ;
             // May have moved/removed at x. Find again. YUK.
@@ -774,7 +758,7 @@ public final class BPTreeNode extends BPTreePage
             return ;
         }
 
-        BPTreePage sub = getWrite(0) ;
+        BPTreePage sub = get(0) ;
         BPTreeNode n = cast(sub) ;
         // Can pull up into the root.
         // Leave root node in same block (rather than swap to new root).
@@ -822,7 +806,7 @@ public final class BPTreeNode extends BPTreePage
         BPTreePage left = null ;
         if ( idx > 0 )
             // release on left
-            left = getWrite(idx - 1) ;
+            left = get(idx - 1) ;
 
         // *** SHIFTING : need to change the marker record in the parent.
         // *** getHighRecord of lower block.
@@ -833,6 +817,7 @@ public final class BPTreeNode extends BPTreePage
 
             // Move elements around.
             // Has not done "this.put()" yet.
+            left.promote() ;
             shiftRight(left, node, idx - 1) ;
 
             if ( logging() )
@@ -848,12 +833,12 @@ public final class BPTreeNode extends BPTreePage
 
         BPTreePage right = null ;
         if ( idx < count )
-            right = getWrite(idx + 1) ;
+            right = get(idx + 1) ;
 
         if ( right != null && !right.isMinSize() ) {
             if ( logging() )
                 log.debug("rebalance/shiftLeft") ;
-
+            right.promote(); 
             shiftLeft(node, right, idx) ;
 
             if ( logging() )
@@ -874,6 +859,7 @@ public final class BPTreeNode extends BPTreePage
             error("No siblings") ;
 
         if ( left != null ) {
+            left.promote();
             if ( logging() )
                 log.debug(format("rebalance/merge/left: left=%d n=%d [%d]", left.getId(), node.getId(), idx - 1)) ;
             if ( CheckingNode && left.getId() == node.getId() )
@@ -886,6 +872,7 @@ public final class BPTreeNode extends BPTreePage
         } else {
             // left == null
             // rigth != null
+            right.promote();
             if ( logging() )
                 log.debug(format("rebalance/merge/right: n=%d right=%d [%d]", node.getId(), right.getId(), idx)) ;
             if ( CheckingNode && right.getId() == node.getId() )
@@ -1146,7 +1133,7 @@ public final class BPTreeNode extends BPTreePage
 
         // The root can be zero size and point to a single data block.
         int id = this.getPtrBuffer().getLow() ;
-        BPTreePage page = getRead(id) ;
+        BPTreePage page = get(id) ;
         boolean b = page.hasAnyKeys() ;
         page.release() ;
         return b ;
@@ -1219,7 +1206,7 @@ public final class BPTreeNode extends BPTreePage
         out.incIndent() ;
         for ( int i = 0 ; i < count + 1 ; i++ ) {
             out.println() ;
-            BPTreePage page = getRead(i) ;
+            BPTreePage page = get(i) ;
             page.output(out) ;
             page.release() ;
 
@@ -1318,7 +1305,7 @@ public final class BPTreeNode extends BPTreePage
             if ( ptrs.get(i) < 0 )
                 error("Node: %d: Invalid child pointer @%d :: %s", id, i, this) ;
 
-            // This does BlockIO so distrubs tracking.
+            // This does Block IO so disturbs tracking.
             if ( CheckingTree && isLeaf ) {
                 int ptr = ptrs.get(i) ;
                 BPTreeRecords records = bpTree.getRecordsMgr().getRead(ptr) ;
@@ -1358,7 +1345,7 @@ public final class BPTreeNode extends BPTreePage
         for ( int i = 0 ; i < limit ; i++ ) {
             Record min1 = min ;
             Record max1 = max ;
-            BPTreePage n = getRead(i) ;
+            BPTreePage n = get(i) ;
 
             if ( i != count ) {
                 Record keySubTree = n.getHighRecord() ; // high key in immediate
