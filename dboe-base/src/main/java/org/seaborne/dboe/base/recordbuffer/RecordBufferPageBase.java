@@ -15,10 +15,9 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.base.recordbuffer;
+package org.seaborne.dboe.base.recordbuffer ;
 
-
-import java.nio.ByteBuffer;
+import java.nio.ByteBuffer ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.seaborne.dboe.base.block.Block ;
@@ -27,84 +26,80 @@ import org.seaborne.dboe.base.page.PageBase ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.sys.SystemIndex ;
 
-/** The on-disk form of a block of a single RecordBuffer
+/**
+ * The on-disk form of a block of a single RecordBuffer
  * (i.e. this is not part of a BTree/BPlusTree branch node).
  * This must be compatible with B+Tree records nodes and hashbuckets.
  */
 
-public abstract class RecordBufferPageBase extends PageBase //implements Page
+public abstract class RecordBufferPageBase extends PageBase // implements Page
 {
     // Field offsets
-    final public static int COUNT           = 0 ;
+    final public static int     COUNT        = 0 ;
     // Length due to this class - subclasses may use more overhead.
-    final private static int FIELD_LENGTH   = SystemIndex.SizeOfInt ;     
-    
-    protected final int headerLength ;
+    final private static int    FIELD_LENGTH = SystemIndex.SizeOfInt ;
+
+    protected final int         headerLength ;
 
     // Interface: "Page" - id, byteBuffer, count
-    protected RecordBuffer recBuff ;
+    protected RecordBuffer      recBuff ;
     private final RecordFactory factory ;
-    
-    //private int offset ;                // Bytes of overhead.
-    
-    public static int calcRecordSize(RecordFactory factory, int blkSize, int headerOffset)
-    { 
+
+    // private int offset ; // Bytes of overhead.
+
+    public static int calcRecordSize(RecordFactory factory, int blkSize, int headerOffset) {
         // Length = X*recordLength + HEADER
-        int x = blkSize-totalOffset(headerOffset) ; 
+        int x = blkSize - totalOffset(headerOffset) ;
         return x / factory.recordLength() ;
     }
-    
-    public static int calcBlockSize(RecordFactory factory, int maxRec, int headerOffset)
-    { 
-        return totalOffset(headerOffset) + factory.recordLength()*maxRec ;
-    }
-    
-    private static int totalOffset(int headerOffset)
-    {
-        return FIELD_LENGTH+headerOffset ;
+
+    public static int calcBlockSize(RecordFactory factory, int maxRec, int headerOffset) {
+        return totalOffset(headerOffset) + factory.recordLength() * maxRec ;
     }
 
-    protected RecordBufferPageBase(Block block, int offset, 
-                                   RecordFactory factory, int count)
-    {   // This code knows the alignment of the records in the ByteBuffer.
+    private static int totalOffset(int headerOffset) {
+        return FIELD_LENGTH + headerOffset ;
+    }
+
+    protected RecordBufferPageBase(Block block, int offset, RecordFactory factory, int count) {
+        // This code knows the alignment of the records in the ByteBuffer.
         super(block) ;
-        this.headerLength = FIELD_LENGTH+offset ;        // NB +4 for the count field
+        this.headerLength = FIELD_LENGTH + offset ; // NB +4 for the count field
         this.factory = factory ;
         reset(block, count) ;
     }
-    
-    protected void reset(Block block, int count)
-    {
+
+    protected void reset(Block block, int count) {
         ByteBuffer bb = block.getByteBuffer() ;
         bb.clear() ;
         bb.position(headerLength) ;
-        bb = bb.slice();
+        bb = bb.slice() ;
         this.recBuff = new RecordBuffer(bb, factory, count) ;
     }
 
-    public final RecordBuffer getRecordBuffer()
-    {
+    public final RecordBuffer getRecordBuffer() {
         return recBuff ;
     }
-    
-    public final int getCount()
-    {
+
+    public final int getCount() {
         return recBuff.size() ;
     }
 
-    public final int getMaxSize()
-    {
+    public final int getMaxSize() {
         return recBuff.maxSize() ;
     }
 
-    public void setCount(int count)
-    { recBuff.setSize(count) ; }
+    public void setCount(int count) {
+        recBuff.setSize(count) ;
+    }
 
     @Override
-    public String toString()
-    { return String.format("RecordBufferPageBase[id=%d]: %s", getBackingBlock().getId(), recBuff) ; }
+    public String toString() {
+        return String.format("RecordBufferPageBase[id=%d]: %s", getBackingBlock().getId(), recBuff) ;
+    }
 
     @Override
-    public void output(IndentedWriter out)
-    { out.print(toString()) ; }
+    public void output(IndentedWriter out) {
+        out.print(toString()) ;
+    }
 }
