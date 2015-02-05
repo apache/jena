@@ -37,6 +37,48 @@
     <relativePath>../jena-parent</relativePath>
   </parent>
 
+
+  <!--
+       Most of the job is done by maven-bundle-plugin (see below).
+       It inspects the embedded/shadowed class files from jena-* to
+       generate the correct Import/Export-Package statements.
+
+
+       SCOPES:
+
+       <scope>provided</scope> are explicitly picked up 
+       by maven-bundle-plugin below to be shadowed within the bundle.  These
+       are the non-OSGi bundles we want to package, e.g. Jena 
+       and any dependencies that are not easily available as
+       bundles..
+
+       Those without <scope> (e.g. compile) below are already
+       OSGi bundles and will become runtime dependencies of
+       the jena-osgi bundle when used through Maven. Their
+       transitive dependencies (e.g. jsonld-java depends on 
+       jackson-core) are not explicitly listed here.
+
+       Note that many OSGi users don't use Maven
+       and would have to find those dependencies
+       themselves. See ../jena-osgi-test/ for
+       example.
+
+
+       To avoid duplicates of non-bundle and bundle dependencies,
+       e.g. httpcore vs. httpcore-osgi, there are several
+       <excludes> below - as not everyone 
+       follows the <scope>provided</scope> pattern.
+
+       Use mvn dependency:tree to inspect what dependencies are
+       exposed in the end, and unzip -t target/*.jar to inspect
+       what becomes bundled in the bundle.
+
+       Explore META-INF/MANFEST.MF in the jar to see what
+       Import and Export the maven-bundle-plugin has figured out,
+       usually the details figured out through code 
+       introspections are correct - if verbose.
+
+       -->
   <dependencies>
     <dependency>
       <groupId>org.apache.jena</groupId>
