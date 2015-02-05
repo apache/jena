@@ -201,7 +201,7 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
 
         ByteBuffer bbi = byteBuffer.slice() ;
         // bbi.limit(ptrBuffLen) ;
-        n.ptrs = new PtrBuffer(bbi, numPtrs) ;
+        n.setPtrBuffer(new PtrBuffer(bbi, numPtrs)) ;
 
         // Reset
         byteBuffer.rewind() ;

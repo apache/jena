@@ -25,7 +25,6 @@ import static org.seaborne.dboe.base.record.Record.keyNE ;
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingNode ;
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingTree ;
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.DumpTree ;
-
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.seaborne.dboe.base.block.Block ;
@@ -67,10 +66,13 @@ public final class BPTreeNode extends BPTreePage
     // "Leaf" of the BPTree is the lowest level of ptr/key splits, not the data blocks.
     // We need to know this to know which block manager the block pointers refer to.
     private boolean isLeaf ;        
+
     private RecordBuffer records ;
-    
     /*package*/ void setRecordBuffer(RecordBuffer r) { records = r ; }
+    
+    // Accessed by BPlusTreeFactory
     /*package*/ PtrBuffer ptrs ;
+    /*package*/ void setPtrBuffer(PtrBuffer pb) { ptrs = pb ; }
 
     /* B+Tree
      * 
@@ -139,7 +141,7 @@ public final class BPTreeNode extends BPTreePage
         return n ;
     }
 
-    /* package */ BPTreeNode(BPlusTree bpTree, Block block) {
+    /*package*/ BPTreeNode(BPlusTree bpTree, Block block) {
         this.bpTree = bpTree ;
         this.params = bpTree.getParams() ;
         this.block = block ;
@@ -178,6 +180,7 @@ public final class BPTreeNode extends BPTreePage
         return _get(idx, FetchMode.READ) ;
     }
     
+    // "getWrite" means get during a write operation. 
     private BPTreePage getWrite(int idx) {
         return _get(idx, FetchMode.WRITE) ;
     }

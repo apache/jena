@@ -145,8 +145,8 @@ public class BPlusTreeFactory {
         BPTreeNode n = nodeManager.createNode(BPlusTreeParams.RootParent) ;
         // n.ptrs is currently invalid.  count was 0 so thinks it has a pointer.
         // Force to right layout.
-        n.ptrs.setSize(0) ;         // No pointers
-        n.ptrs.add(recordsPage.getId()) ;  // Add the page below
+        n.ptrs.setSize(0) ;                 // No pointers
+        n.ptrs.add(recordsPage.getId()) ;   // Add the page below
 
         //n.ptrs.set(0, page.getId()) ; // This is the same as the size is one.
 

@@ -102,7 +102,7 @@ public final class BPTreeRecords extends BPTreePage
     public void write()     { bprRecordsMgr.write(this) ; } 
     
     @Override final
-    public void promote()   { bprRecordsMgr.promote(this) ; } 
+    public void promote()   { bprRecordsMgr.promote(this) ; }
     
     @Override final
     public void release()   { bprRecordsMgr.release(this) ; }
@@ -112,6 +112,7 @@ public final class BPTreeRecords extends BPTreePage
 
     @Override
     Record internalInsert(Record record) {
+        // [[TXN]]
         promote() ;
         int i = rBuff.find(record) ;
         Record r2 = null ;
