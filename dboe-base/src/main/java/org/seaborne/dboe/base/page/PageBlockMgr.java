@@ -115,7 +115,7 @@ public class PageBlockMgr<T extends Page>
     
     final protected T getWrite$(int id) {
         Block block = blockMgr.getWrite(id) ;
-        block.setModified(true) ;
+        block.setReadOnly(false) ;
         T page = pageFactory.fromBlock(block) ;
         return page ;
     }
@@ -128,6 +128,8 @@ public class PageBlockMgr<T extends Page>
     }
 
     public void write(T page) {
+        if ( page.getBackingBlock().isReadOnly() )
+            System.err.println("write - readOnly block") ;
         Block blk = pageFactory.toBlock(page) ;
         blockMgr.write(blk) ;
     }
@@ -150,8 +152,8 @@ public class PageBlockMgr<T extends Page>
         // Replace, reset Block in page.
         Block block = page.getBackingBlock() ;
         Block block2 = blockMgr.promote(block) ;
+        block2.setReadOnly(false) ;
         if ( block2 != block ) {
-            block2.setModified(true) ;
             // Change - reset Block in page.
             page.reset(block2) ;
         }
