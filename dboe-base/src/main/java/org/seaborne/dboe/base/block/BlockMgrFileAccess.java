@@ -18,6 +18,7 @@
 package org.seaborne.dboe.base.block ;
 
 import static java.lang.String.format ;
+
 import org.seaborne.dboe.base.file.BlockAccess ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -80,6 +81,8 @@ final public class BlockMgrFileAccess extends BlockMgrBase {
 
     @Override
     public void write(Block block) {
+        if ( block.isReadOnly() )
+            throw new BlockException("Attempt to write a read-only block" ) ;
         syncNeeded = true ;
         file.write(block) ;
     }
