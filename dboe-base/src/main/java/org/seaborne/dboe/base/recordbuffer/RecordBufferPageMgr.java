@@ -22,9 +22,9 @@ import static org.seaborne.dboe.base.recordbuffer.RecordBufferPage.* ;
 import java.nio.ByteBuffer;
 
 import org.seaborne.dboe.base.block.Block ;
-import org.seaborne.dboe.base.block.BlockConverter ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockType ;
+import org.seaborne.dboe.base.page.BlockConverter ;
 import org.seaborne.dboe.base.page.PageBlockMgr ;
 import org.seaborne.dboe.base.record.RecordException ;
 import org.seaborne.dboe.base.record.RecordFactory ;

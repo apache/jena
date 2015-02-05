@@ -18,8 +18,8 @@
 package org.seaborne.dboe.trans.bplustree;
 
 import org.seaborne.dboe.base.block.Block ;
-import org.seaborne.dboe.base.block.BlockConverter ;
 import org.seaborne.dboe.base.block.BlockType ;
+import org.seaborne.dboe.base.page.BlockConverter ;
 import org.seaborne.dboe.base.page.PageBlockMgr ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;

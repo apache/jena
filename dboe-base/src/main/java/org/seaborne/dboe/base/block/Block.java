@@ -20,13 +20,7 @@ package org.seaborne.dboe.base.block;
 import java.io.ByteArrayOutputStream ;
 import java.io.PrintStream ;
 import java.nio.ByteBuffer ;
-
 import org.apache.jena.atlas.lib.ByteBufferLib ;
-
-// import tx.base.BlockRef ;
-
-import org.seaborne.dboe.base.page.Page ;
-
 
 public final class Block
 {
@@ -42,7 +36,8 @@ public final class Block
     //private BlockRef blockRef ;
     
 
-    // Information carrying -- not enforced. 
+    // These are information carrying flags -- not enforced
+    // although .write checks the readOnly flags.
     private boolean readOnly = false ;
     private boolean modified = false ;
     
@@ -60,15 +55,10 @@ public final class Block
         this.id = id ;
         this.byteBuffer = byteBuffer ;
         // this.blockRef = null ;
-
+        // Default - writeable, unmodified block.
         this.readOnly = false ;
         this.modified = false ;
         this.underlyingByteBuffer = null ;
-    }
-
-    public <T extends Page> T convert(BlockConverter<T> converter) {
-        // converter.checkType(type) ;
-        return converter.fromBlock(this) ;
     }
 
     public final Long getId() {

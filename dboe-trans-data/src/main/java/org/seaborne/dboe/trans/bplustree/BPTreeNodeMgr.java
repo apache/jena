@@ -24,11 +24,11 @@ import static org.seaborne.dboe.base.block.BlockType.RECORD_BLOCK ;
 import java.nio.ByteBuffer ;
 
 import org.seaborne.dboe.base.block.Block ;
-import org.seaborne.dboe.base.block.BlockConverter ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockType ;
 import org.seaborne.dboe.base.buffer.PtrBuffer ;
 import org.seaborne.dboe.base.buffer.RecordBuffer ;
+import org.seaborne.dboe.base.page.BlockConverter ;
 import org.seaborne.dboe.base.page.PageBlockMgr ;
 
 /** BPlusTreePageMgr = BPlusTreeNode manager */

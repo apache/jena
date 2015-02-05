@@ -15,10 +15,12 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.base.block;
+package org.seaborne.dboe.base.page;
 
-import org.seaborne.dboe.base.page.Page ;
+import org.seaborne.dboe.base.block.Block ;
+import org.seaborne.dboe.base.block.BlockType ;
 
+/** Convert between Blocks and typed Pages */ 
 public interface BlockConverter<T extends Page>
 {
     /** Create a T, given an existing Block */
