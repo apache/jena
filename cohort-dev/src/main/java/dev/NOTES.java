@@ -46,10 +46,15 @@ public class NOTES {
     // on BptTxnState
     // or separate handler object.
 
+    // Page.promote - resets the BTReeNode completely which is unnecessary if
+    // the contract is "same block, different cache"
+    // getWrite ??
+    // SIMPLIFY (later)
     
     // Easy route : make modifiable if 
     // **** There is an in-memory parent chain.
     
+    // Block writing (BlockMgrFileAccess) -- check Block.modified flag.
     
     // == Mantis
     // dboe-test ?  See BufferTestLib

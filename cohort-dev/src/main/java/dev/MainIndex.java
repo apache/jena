@@ -65,7 +65,7 @@ public class MainIndex {
         
         //List<Integer> data1 = Arrays.asList( 1 , 3 , 5 , 7 , 9 , 8 , 6 , 4 , 2) ;
         
-        List<Integer> data1 = Arrays.asList( 2 , 3, 4 ) ; // , 7 , 8 , 9 ) ;
+        List<Integer> data1 = Arrays.asList( 2, 3, 4 ) ; // , 7 , 8 , 9 ) ;
         
         List<Integer> data2a = Arrays.asList( 2 , 4, 3) ; // , 7 , 8 , 9 ) ;
         List<Integer> data2b= Arrays.asList( 1 ) ; // , 7 , 8 , 9 ) ;
@@ -77,11 +77,10 @@ public class MainIndex {
 //        Runnable r = () -> data2.forEach((x) -> idx.add(r(x)) ) ;
         
         bpt.startBatch();
+        dump(bpt) ;
+        System.out.println() ;
         
-        BPlusTreeParams.Logging = false ;
-        bpt.dump();
-        
-        verbose(true, ()->dataRecords1.forEach(bpt::add)) ;
+        verbose(true, ()->add(bpt,dataRecords1)) ;
         
         holder.commit() ;
         holder.end() ;
@@ -91,18 +90,19 @@ public class MainIndex {
         
         if ( false ) {
             // Two part.
-            dataRecords2a.forEach((x) -> { System.err.println("Add "+x) ; bpt.add(x) ;} ) ;
+            add(bpt, dataRecords2a) ;
             System.out.println("After first records") ;
-            bpt.dump();
+            dump(bpt);
             BPlusTreeParams.Logging = true ;
-            dataRecords2b.forEach(bpt::add) ;
+            add(bpt, dataRecords2b) ;
             System.out.println("After second records") ;    
         }
 
         bpt.finishBatch();
         
-        
-        bpt.dump();
+        System.out.println() ;
+
+        dump(bpt);
         
 //        
 //        TransactionCoordinator txnCoord1 = new TransactionCoordinator(Journal.create(Location.mem())) ;
@@ -131,6 +131,21 @@ public class MainIndex {
 //        bpt.complete() ;
     }
     
+    static void dump(BPlusTree bpt) {
+        boolean b = BPlusTreeParams.Logging ;
+        BPlusTreeParams.Logging = false ;
+        bpt.dump() ;
+        BPlusTreeParams.Logging = b ; 
+    }
+    
+    static void add(BPlusTree bpt, List<Record> records) {
+        records.forEach((x) -> { 
+            bpt.add(x) ;
+//            dump(bpt) ;
+//            System.out.println() ;
+        } ) ;
+    }
+    
     static void verbose(boolean yesOrNo, Runnable r) {
         boolean b = BPlusTreeParams.Logging ;
         try {
@@ -139,8 +154,6 @@ public class MainIndex {
         } finally { 
             BPlusTreeParams.Logging = b ;
         }
-        
-            
     }
     
     static void printTxnCoordState(TransactionCoordinator txnCoord) {
