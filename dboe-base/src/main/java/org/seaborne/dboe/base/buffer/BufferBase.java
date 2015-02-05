@@ -31,7 +31,7 @@ import org.seaborne.dboe.base.record.RecordException ;
 /** ByteBuffer specialization - Common operations for RecordBuffer and PtrBuffer */  
 abstract class BufferBase
 {
-    public static boolean CheckBuffer = false ;
+    public static final boolean CheckBuffer = false ;
     
     protected ByteBuffer bb ;
     protected int slotLen ;
@@ -49,7 +49,7 @@ abstract class BufferBase
             int size = bb.limit() ;
             int slots = size/slotLen  ;
             if ( size%slotLen != 0 )
-                throw new RecordException(format("Misalinged buffer: size=%d, keyLen=%d",size, slotLen)) ; 
+                throw new RecordException(format("Misaligned buffer: size=%d, keyLen=%d",size, slotLen)) ; 
             if ( slots < num )
                 throw new RecordException(format("Wrong size: slots=%d, len=%d", slots, num)) ;
         }
@@ -61,8 +61,6 @@ abstract class BufferBase
             clear(numSlot, maxSlot-numSlot) ;
     }
     
-    //private BufferBase() {}
-
     // Why so many final methods?  This code is performace critical and "final" methods
     // can be inlined by the JIT - or just not have object dispatch done each time
     // because the destination is fixed.

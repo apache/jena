@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.base.buffer;
+package org.seaborne.dboe.base.buffer ;
 
 import static java.lang.String.format ;
 
@@ -27,65 +27,50 @@ import org.seaborne.dboe.sys.SystemIndex ;
 
 /** An IntBuffer with extra operations */
 
-final 
-public class PtrBuffer extends BufferBase
-{
-    // Is Int big enough?
-    // 2^^31 4Kb blocks => 2e9 * 4e3 => 8e12 
+final public class PtrBuffer extends BufferBase {
     private IntBuffer iBuff ;
-    
-    private PtrBuffer(int maxRec)
-    {
-        this(ByteBuffer.allocate(SystemIndex.SizeOfPointer*maxRec), 0) ;
+
+    private PtrBuffer(int maxRec) {
+        this(ByteBuffer.allocate(SystemIndex.SizeOfPointer * maxRec), 0) ;
     }
-    
-    public PtrBuffer(ByteBuffer bb, int num)
-    { 
+
+    public PtrBuffer(ByteBuffer bb, int num) {
         super(bb, SystemIndex.SizeOfPointer, num) ;
         iBuff = bb.asIntBuffer() ;
 
-        if ( CheckBuffer )
-        {
+        if ( CheckBuffer ) {
             // It is a IntBuffer with associated ByteBuffer
             if ( iBuff.position() != 0 || bb.order() != SystemIndex.NetworkOrder )
                 throw new RecordException("Duff pointer buffer") ;
         }
     }
-    
-    
-    public int get(int idx)
-    {
+
+    public int get(int idx) {
         checkBounds(idx, numSlot) ;
         return _get(idx) ;
     }
 
-    public int getHigh()
-    {
+    public int getHigh() {
         if ( numSlot == 0 )
             throw new IllegalArgumentException("Empty PtrBuffer") ;
-        return _get(numSlot-1) ;
+        return _get(numSlot - 1) ;
     }
 
-    public int getLow()
-    {
+    public int getLow() {
         if ( numSlot == 0 )
             throw new IllegalArgumentException("Empty PtrBuffer") ;
         return _get(0) ;
     }
-    
-    public void add(int val)
-    { add(numSlot, val) ; }
-    
-    
-    public void add(int idx, int val)
-    {  
-        if ( idx != numSlot )
-        {
+
+    public void add(int val) {
+        add(numSlot, val) ;
+    }
+
+    public void add(int idx, int val) {
+        if ( idx != numSlot ) {
             checkBounds(idx, numSlot) ;
-            shiftUp(idx) ; 
-        }
-        else
-        {
+            shiftUp(idx) ;
+        } else {
             if ( numSlot >= maxSlot )
                 throw new BufferException(format("Out of bounds: idx=%d, ptrs=%d", idx, maxSlot)) ;
             numSlot++ ;
@@ -93,28 +78,26 @@ public class PtrBuffer extends BufferBase
         // Add right at the top.
         _set(idx, val) ;
     }
-    
-    public void set(int idx, int val)
-    { checkBounds(idx, numSlot) ; _set(idx, val) ; }
-    
-    private final int _get(int idx)
-    {
+
+    public void set(int idx, int val) {
+        checkBounds(idx, numSlot) ;
+        _set(idx, val) ;
+    }
+
+    private final int _get(int idx) {
         return iBuff.get(idx) ;
     }
 
-    private final void _set(int idx, int val) 
-    { 
+    private final void _set(int idx, int val) {
         iBuff.put(idx, val) ;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder str = new StringBuilder() ;
         str.append(format("Len=%d Max=%d ", numSlot, maxSlot)) ;
-        
-        for ( int i = 0 ; i < numSlot ; i++ )
-        {
+
+        for ( int i = 0 ; i < numSlot ; i++ ) {
             if ( i != 0 )
                 str.append(" ") ;
             int x = _get(i) ;
@@ -123,18 +106,18 @@ public class PtrBuffer extends BufferBase
         return str.toString() ;
     }
 
-    private static void checkBounds(int idx, int len)
-    {
+    private static void checkBounds(int idx, int len) {
         if ( idx < 0 || idx >= len )
             throw new BufferException(format("Out of bounds: idx=%d, ptrs=%d", idx, len)) ;
     }
-    
-    /** A duplicate which does not share anything with the original - for testing */
-    public PtrBuffer duplicate()
-    {
+
+    /**
+     * A duplicate which does not share anything with the original - for testing
+     */
+    public PtrBuffer duplicate() {
         PtrBuffer n = new PtrBuffer(maxSlot) ;
-        copy(0, n, 0, maxSlot) ;    // numSlot
-        n.numSlot = numSlot ;       // Reset
+        copy(0, n, 0, maxSlot) ; // numSlot
+        n.numSlot = numSlot ; // Reset
         return n ;
     }
 }
