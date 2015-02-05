@@ -35,8 +35,10 @@ public interface Page extends Printable
     /** Return the block associated with this page */ 
     public Block getBackingBlock() ;
     
-    /** The underlying block for this page has changed (e.g. it's been promoted and 
-     * the promotion may have caused something to chnage */ 
+    /**
+     * The underlying block for this page has changed (e.g. it's been
+     * promoted and the promotion may have caused the block to change.
+     */
     public abstract void reset(Block block) ;
 
 }
