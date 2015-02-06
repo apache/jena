@@ -220,10 +220,15 @@ then
   fi
 fi
 
+if [ ! -z "$FUSEKI_HOME" ]
+then
+    FUSEKI_ADDITIONAL_ARGS=(--home "$FUSEKI_HOME")
+fi
+
 # Run command
 
-RUN_ARGS=(${JAVA_OPTIONS[@]} -jar "$FUSEKI_START" $FUSEKI_ARGS)
-RUN_CMD=("$JAVA" ${RUN_ARGS[@]})
+RUN_ARGS=(${JAVA_OPTIONS[@]} -jar "$FUSEKI_START" "${FUSEKI_ADDITIONAL_ARGS[@]}" $FUSEKI_ARGS)
+RUN_CMD=("$JAVA" "${RUN_ARGS[@]}")
 
 
 #######################################
@@ -260,6 +265,10 @@ start() {
   # Make sure the data and log directories exist
   mkdir -p "$FUSEKI_DATA_DIR"
   mkdir -p "$FUSEKI_LOGS"
+  if [ ! -z "$FUSEKI_USER" ]
+  then
+    chown "$FUSEKI_USER" "$FUSEKI_DATA_DIR" "$FUSEKI_LOGS"
+  fi
 
   echo -n "Starting Fuseki: "
   if type start-stop-daemon > /dev/null 2>&1
@@ -294,7 +303,7 @@ start() {
       chown "$FUSEKI_USER" "$FUSEKI_PID"
       su - "$FUSEKI_USER" -c "
         echo 'Redirecting Fuseki stderr/stdout to $FUSEKI_LOGS_STDERROUT'
-        exec ${RUN_CMD[*]} &
+        exec ${RUN_CMD[*]} &> '$FUSEKI_LOGS_STDERROUT' &
         disown \$!
         echo \$! > '$FUSEKI_PID'"
     else

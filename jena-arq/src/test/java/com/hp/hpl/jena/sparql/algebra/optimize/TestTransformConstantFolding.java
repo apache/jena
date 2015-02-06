@@ -88,6 +88,15 @@ public class TestTransformConstantFolding {
     }
     
     @Test
+    public void constant_fold_extend_08() {
+        // Zero argument functions should not be treated as constants
+        testNoTransform("(extend (?x (rand)))", transform);
+        testNoTransform("(extend (?x (now)))", transform);
+        testNoTransform("(extend (?x (uuid)))", transform);
+        testNoTransform("(extend (?x (struuid)))", transform);
+    }
+    
+    @Test
     public void constant_fold_filter_01() {
         test("(filter (exprlist (+ 1 2)) (table unit))", "(filter (exprlist 3) (table unit))", transform);
     }
@@ -141,6 +150,15 @@ public class TestTransformConstantFolding {
     @Test
     public void constant_fold_filter_11() {
         test("(filter (exprlist (* ?y (+ (* ?x 4) (* ?z 6 )))) (table unit))", null, transform);
+    }
+    
+    @Test
+    public void constant_fold_filter_12() {
+        // Zero argument functions should not be treated as constants
+        testNoTransform("(filter (exprlist (rand)) (table unit))", transform);
+        testNoTransform("(filter (exprlist (now)) (table unit))", transform);
+        testNoTransform("(filter (exprlist (uuid)) (table unit))", transform);
+        testNoTransform("(filter (exprlist (struuid)) (table unit))", transform);
     }
     
     @Test
