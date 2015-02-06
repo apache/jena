@@ -33,9 +33,11 @@ final public class BPTreeRecordsMgr extends PageBlockMgr<BPTreeRecords>
     // Assume package access.
 
     private final RecordBufferPageMgr rBuffPageMgr ;
+    private final BPlusTree bpTree ;
     
-    BPTreeRecordsMgr(RecordFactory recordFactory, RecordBufferPageMgr rBuffPageMgr) {
+    BPTreeRecordsMgr(BPlusTree bpTree, RecordFactory recordFactory, RecordBufferPageMgr rBuffPageMgr) {
         super(null , rBuffPageMgr.getBlockMgr()) ;
+        this.bpTree = bpTree ;
         super.setConverter(new Block2BPTreeRecords(this, recordFactory)) ;
         // bpt is uninitialized at this point.
         // so record rBuffPageMgr
@@ -79,6 +81,7 @@ final public class BPTreeRecordsMgr extends PageBlockMgr<BPTreeRecords>
     }
     
     public RecordBufferPageMgr getRecordBufferPageMgr() { return rBuffPageMgr ; }
+    public BPlusTree getBPTree()                        { return bpTree ; }
 
     @Override
     public void startRead() {

@@ -54,7 +54,7 @@ public class BPlusTreeFactory {
         BPlusTree bpt = new BPlusTree(params) ; 
         BPTreeNodeMgr nodeManager = new BPTreeNodeMgr(bpt, blkMgrNodes) ;
         RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(params.getRecordFactory(), blkMgrRecords) ;
-        BPTreeRecordsMgr recordsMgr = new BPTreeRecordsMgr(params.getRecordFactory(), recordPageMgr) ;
+        BPTreeRecordsMgr recordsMgr = new BPTreeRecordsMgr(bpt, params.getRecordFactory(), recordPageMgr) ;
         int rootId = createIfAbsent(nodeManager, recordsMgr) ;
         bpt.init(rootId, nodeManager, recordsMgr) ;
         return bpt ;
