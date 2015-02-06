@@ -30,15 +30,14 @@ import org.seaborne.dboe.sys.SystemIndex ;
 public final class RecordBufferPage extends RecordBufferPageBase
 {
     // Why not straight to BPlusTreeRecords?
-    // 1 - this may be useful in its own right as a seqeunce of records on-disk.
+    // 1 - this may be useful in its own right as a sequence of records on-disk.
     // 2 - BPlusTreeRecords inherits from BPlusTreePage
-    //
-    // Could combine with HashBuck and just have an unused link area in a HashBucket
     
     
     // To Constants
     // Offsets
-//    final public static int COUNT      = 0 ;
+    //    final public static int COUNT      = 0 ;
+    // Adds this field over RecordBufferPageBase
     final public static int LINK            = 4 ;
     final private static int FIELD_LENGTH   = SystemIndex.SizeOfInt ; // Length of the space needed here (not count)
 
@@ -55,7 +54,7 @@ public final class RecordBufferPage extends RecordBufferPageBase
     @Override
     protected void _reset(Block block)
     { 
-        super.reset(block, this.getCount()) ;
+        super.rebuild(block, this.getCount()) ;
         this.link = block.getByteBuffer().getInt(LINK) ;
     }
 
@@ -79,7 +78,6 @@ public final class RecordBufferPage extends RecordBufferPageBase
         int linkId = block.getByteBuffer().getInt(LINK) ;
         return new RecordBufferPage(block, factory, count, linkId) ;
     } 
-        
     
     private RecordBufferPage(Block block, RecordFactory factory, int count, int linkId)  
     {

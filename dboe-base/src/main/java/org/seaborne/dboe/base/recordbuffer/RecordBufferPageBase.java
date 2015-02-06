@@ -66,10 +66,10 @@ public abstract class RecordBufferPageBase extends PageBase // implements Page
         super(block) ;
         this.headerLength = FIELD_LENGTH + offset ; // NB +4 for the count field
         this.factory = factory ;
-        reset(block, count) ;
+        rebuild(block, count) ;
     }
 
-    protected void reset(Block block, int count) {
+    protected void rebuild(Block block, int count) {
         ByteBuffer bb = block.getByteBuffer() ;
         bb.clear() ;
         bb.position(headerLength) ;
