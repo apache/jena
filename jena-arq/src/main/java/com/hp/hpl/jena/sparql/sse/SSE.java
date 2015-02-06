@@ -41,6 +41,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
@@ -144,6 +145,15 @@ public class SSE
         return BuilderExpr.buildExpr(item) ;
     }
 
+    /** Parse a string to obtain a list of SPARQL expressions  */
+    public static ExprList parseExprList(String s) { return parseExprList(s, null) ; }
+    
+    /** Parse a string to obtain a list of SPARQL expressions  */
+    public static ExprList parseExprList(String s, PrefixMapping pmap) { 
+        Item item = parse(s, pmap) ;
+        return BuilderExpr.buildExprOrExprList(item) ;
+    }
+
     /** Parse a string, and obtain a graph */
     public static Graph parseGraph(String string) { return parseGraph(string, null) ; }
     
@@ -203,7 +213,6 @@ public class SSE
         Item item = readFile(filename, pmap) ;
         BuilderGraph.buildDataset(dsg, item) ;
     }
-    
 
     /** Read in a file, parse, and obtain a SPARQL algebra op */
     public static Op readOp(String filename) { return Algebra.read(filename) ; }
