@@ -113,7 +113,7 @@ public final class BPTreeRecords extends BPTreePage
     @Override
     Record internalInsert(Record record) {
         // [[TXN]]
-        promote() ;
+        BPTreeNode.promote(this) ;
         int i = rBuff.find(record) ;
         Record r2 = null ;
         if ( i < 0 ) {
@@ -133,7 +133,7 @@ public final class BPTreeRecords extends BPTreePage
 
     @Override
     Record internalDelete(Record record) {
-        promote() ;
+        BPTreeNode.promote(this) ;
         int i = rBuff.find(record) ;
         if ( i < 0 )
             return null ;
