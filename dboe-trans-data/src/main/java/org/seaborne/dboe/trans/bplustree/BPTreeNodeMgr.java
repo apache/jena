@@ -145,7 +145,7 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
         // throw new BTreeException("ByteBuffer in wrong order") ;
 
         // Fix up the id later.
-        BPTreeNode n = new BPTreeNode(bpTree, block) ;
+        BPTreeNode n = new BPTreeNode(bpTree, block.getId().intValue()) ;
         // The count is zero at the root only.
         // When the root is zero, it's a leaf.
         formatBPTreeNode(n, bpTree, block, asLeaf, -2, count) ;
@@ -186,6 +186,9 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
         } else
             numPtrs = n.getCount() + 1 ;
 
+        // Block dependent
+        
+        n.block = block ;
         ByteBuffer byteBuffer = block.getByteBuffer() ;
 
         // -- Records area

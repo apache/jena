@@ -54,8 +54,7 @@ public final class BPTreeNode extends BPTreePage
     /*package*/ final BPlusTree bpTree ; 
     // Convenience - this is used a lot.
     /*package*/ final BPlusTreeParams params ;
-    
-    private Block block ;
+    /*package*/ Block block ;
     /** Page id.
      *  Pages are addressed by ints (a page ref does in on-disk blocks)
      *  although blocks are addressed in longs.
@@ -144,11 +143,11 @@ public final class BPTreeNode extends BPTreePage
         return n ;
     }
 
-    /*package*/ BPTreeNode(BPlusTree bpTree, Block block) {
+    /*package*/ BPTreeNode(BPlusTree bpTree, int id) {
         this.bpTree = bpTree ;
         this.params = bpTree.getParams() ;
-        this.block = block ;
-        this.id = block.getId().intValue() ;
+        this.id = id ;
+        // Other set by BPTreeNodeMgr.formatBPTreeNode 
     }
     
     // ---- [[TXN]] ** work for transactions.
@@ -394,13 +393,17 @@ public final class BPTreeNode extends BPTreePage
             String nodeOrRecords = (page instanceof BPTreeNode) ? "N": "R" ; 
             FmtLog.debug(log, "Promote %d[%s]", page.getId(), nodeOrRecords) ;
         }
-        page.promote(); 
+        // Check if needed.
+        page.promote();
     }
 
     @Override
     final void promote() {
+        // This calls reset is needed.
+        //   Records and pointer need resetting if the block changed.
         bpTree.getNodeManager().promote(this) ;
     }
+    
     @Override
     final void release()        { bpTree.getNodeManager().release(this) ; } 
 
@@ -743,7 +746,6 @@ public final class BPTreeNode extends BPTreePage
         Record r2 = page.internalDelete(rec) ;
         if ( x >= 0 ) {
             promote(this) ;
-            // YUK
             records.set(x, keyRecord(page.maxRecord())) ;
             this.write() ;
         }

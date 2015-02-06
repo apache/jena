@@ -323,7 +323,7 @@ public class TestBPTreeRecords extends Assert {
 
     private static BPTreeRecords make() {
         RecordBufferPage page = recordBufferPageMgr.create() ;
-        BPTreeRecordsMgr mgr = new BPTreeRecordsMgr(recordFactory, recordBufferPageMgr) ;
+        BPTreeRecordsMgr mgr = new BPTreeRecordsMgr(null, recordFactory, recordBufferPageMgr) ;
         return new BPTreeRecords(mgr, page) ;
     }
 

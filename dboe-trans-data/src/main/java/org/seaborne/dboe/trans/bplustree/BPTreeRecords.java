@@ -37,7 +37,7 @@ public final class BPTreeRecords extends BPTreePage
     private static Logger log = LoggerFactory.getLogger(BPTreeRecords.class) ;
     private final RecordBufferPage  rBuffPage ;
     private final BPTreeRecordsMgr  bprRecordsMgr ;
-    private RecordBuffer            rBuff ;         // Used heavily.
+    private RecordBuffer            rBuff ;         // Used heavily. Derived from rBuffPage
     
     BPTreeRecords(BPTreeRecordsMgr mgr, RecordBufferPage rbp) {
         super() ;
@@ -102,7 +102,13 @@ public final class BPTreeRecords extends BPTreePage
     public void write()     { bprRecordsMgr.write(this) ; } 
     
     @Override final
-    public void promote()   { bprRecordsMgr.promote(this) ; }
+    public void promote()   {
+        // reset:
+        //   rBuffPage
+        //   rBuff
+        // This calls reset is needed. 
+        bprRecordsMgr.promote(this) ;
+    }
     
     @Override final
     public void release()   { bprRecordsMgr.release(this) ; }
