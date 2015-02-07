@@ -18,10 +18,14 @@ z * Licensed to the Apache Software Foundation (ASF) under one
 
 package com.hp.hpl.jena.sparql.algebra.optimize ;
 
-import java.util.* ;
+import java.util.Collection ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Set ;
 
 import org.apache.jena.atlas.lib.CollectionUtils ;
 import org.apache.jena.atlas.lib.DS ;
+import org.apache.jena.atlas.lib.Lib ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -45,12 +49,28 @@ import com.hp.hpl.jena.sparql.util.VarUtils ;
  */
 
 public class TransformFilterPlacement extends TransformCopy {
-    static class Placement {
-        final Op op ;
-        final ExprList unplaced ; 
-        Placement(Op op, ExprList remaining) { this.op = op ; this.unplaced = remaining ; }
+    public static class Placement {
+        final public Op op ;
+        final public ExprList unplaced ; 
+        public Placement(Op op, ExprList remaining) { 
+            this.op = op ; 
+            this.unplaced = remaining ; 
+        }
         @Override
-        public String toString() { return ""+op+" : "+unplaced ; } 
+        public String toString() { return ""+op+" : "+unplaced ; }
+        
+        @Override
+        public int hashCode() {
+            return 31*Lib.hashCodeObject(op,1) + Lib.hashCodeObject(unplaced) ;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if ( this == obj ) return true ;
+            if ( obj == null ) return false ;
+            if ( getClass() != obj.getClass() ) return false ;
+            Placement other = (Placement)obj ;
+            return Lib.equal(op, other.op) && Lib.equal(unplaced, other.unplaced) ;
+        }
     }
     
     // Empty, immutable ExprList
@@ -98,6 +118,16 @@ public class TransformFilterPlacement extends TransformCopy {
     public TransformFilterPlacement(boolean includeBGPs)
     { this.includeBGPs = includeBGPs ; }
 
+    /** Operation exposes the filter placement mechanism 
+     *  so that investigation of filter placement issues
+     *  can be done from outside this class.
+     *  <i>Do not use in application code : subject to removal or change at any time.</i>
+     */
+    public static Placement filterPlacement$(ExprList exprs, Op op) {
+        TransformFilterPlacement t = new TransformFilterPlacement() ;
+        return t.transform(exprs, op) ;
+    }
+    
     @Override
     public Op transform(OpFilter opFilter, Op x) {
         ExprList exprs = opFilter.getExprs() ;
@@ -180,7 +210,6 @@ public class TransformFilterPlacement extends TransformCopy {
             placement = placeAssign(exprs, (OpAssign)input) ;
         // Modifiers
 //        else if ( input instanceof OpGroup ) {
-//            // TODO
 //            placement = noChangePlacement ;
 //        }
 //        else if ( input instanceof OpSlice ) {
@@ -203,16 +232,29 @@ public class TransformFilterPlacement extends TransformCopy {
     }
     
     private Placement placeFilter(ExprList exprs, OpFilter input) {
-        if ( exprs.size() == 0 )
-            // Unpack the filter,
-            return transform(input.getExprs(), input.getSubOp()) ;
-        
-        // Thrown the filter expressions into the general list to be placed.
-        // Add to keep the application order (original filter then additional exprs)
-        // Not important, but nice.
-        ExprList exprs2 = ExprList.copy(input.getExprs()) ;
-        exprs2.addAll(exprs);
-        return transform(exprs2, input.getSubOp()) ;
+        // If input.getSubOp is itself a filter, it has already been
+        // processed because the Transform is applied bottom-up.
+
+        // We must not let the filter's expressions go back as "unplaced"
+        // as they are scoped to the input and if "unplaced" are available
+        // out of that scope.
+
+        Op op = input.getSubOp() ;
+        ExprList exprsInner = input.getExprs() ;
+        ExprList exprsOuter = exprs ;
+
+        // Outer
+        Placement p = transform(exprsOuter, input.getSubOp()) ;
+        if ( p != null ) {
+            op = p.op ;
+            exprsOuter = p.unplaced ;
+        }
+        // Put inner round the modified Op.
+        // If op is also a filter, a single filter is created with
+        // exprsInner now after placed filters.
+        // ("after" means later in the exprList of the filter).
+        Op f = OpFilter.filter(exprsInner, op) ;
+        return new Placement(f, exprsOuter) ;
     }
 
     private Placement placeOrWrapBGP(ExprList exprs, OpBGP x) {
@@ -507,7 +549,7 @@ public class TransformFilterPlacement extends TransformCopy {
             if ( pRight != null && ! pRight.unplaced.isEmpty() )
                 return noChangePlacement ;
 
-            // Musrt be guarded by the above.
+            // Must be guarded by the above.
             left = transformOpAlways(exprs, left) ;
             right = transformOpAlways(exprs, right) ;
             
@@ -572,30 +614,6 @@ public class TransformFilterPlacement extends TransformCopy {
     
     private Placement placeAssign(ExprList exprs, OpAssign input) {
         return processExtendAssign(exprs, input) ;
-    }
-    
-    /* Complete processing for an Op1. 
-     * Having split expressions into pushed and unpushed at this point,
-     * try to push "pushed" down further into the subOp.
-     */  
-    private Placement processSubOp1(ExprList pushed, ExprList unpushed, Op1 input) {
-        Op opSub = input.getSubOp() ;
-        Placement subPlacement = transform(pushed, opSub) ;
-        if ( subPlacement == null ) {
-            // (Same as if a placement of the exprlist and op passed in is given).
-            // Didn't make any changes below, so add a filter for the 'pushed' and
-            // return a placement for the unpushed. 
-            Op op1 = input.getSubOp() ;
-            if ( pushed != null &&! pushed.isEmpty() )
-                op1 = OpFilter.filter(pushed, op1) ;
-            Op op2 = input.copy(op1) ;
-            return result(op2, unpushed) ;
-        }
-        // We did make changes below.  Add filter for these (which includes the 
-        // "pushed" at this level, now in the p.op or left in p.unplaced.
-        Op op_a = OpFilter.filter(subPlacement.unplaced, subPlacement.op) ;
-        op_a =  input.copy(op_a) ;
-        return result(op_a, unpushed) ;
     }
     
     private Placement processExtendAssign(ExprList exprs, OpExtendAssign input) {
@@ -669,6 +687,30 @@ public class TransformFilterPlacement extends TransformCopy {
     
     // This is the cause of JENA-874.
    
+    /* Complete processing for an Op1. 
+     * Having split expressions into pushed and unpushed at this point,
+     * try to push "pushed" down further into the subOp.
+     */  
+    private Placement processSubOp1(ExprList pushed, ExprList unpushed, Op1 input) {
+        Op opSub = input.getSubOp() ;
+        Placement subPlacement = transform(pushed, opSub) ;
+        if ( subPlacement == null ) {
+            // (Same as if a placement of the exprlist and op passed in is given).
+            // Didn't make any changes below, so add a filter for the 'pushed' and
+            // return a placement for the unpushed. 
+            Op op1 = input.getSubOp() ;
+            if ( pushed != null &&! pushed.isEmpty() )
+                op1 = OpFilter.filter(pushed, op1) ;
+            Op op2 = input.copy(op1) ;
+            return result(op2, unpushed) ;
+        }
+        // We did make changes below.  Add filter for these (which includes the 
+        // "pushed" at this level, now in the p.op or left in p.unplaced.
+        Op op_a = OpFilter.filter(subPlacement.unplaced, subPlacement.op) ;
+        op_a =  input.copy(op_a) ;
+        return result(op_a, unpushed) ;
+    }
+
     private Placement placeDistinctReduced(ExprList exprs, OpDistinctReduced input) {
         Op subOp = input.getSubOp() ;
         Placement p = transform(exprs, subOp) ;

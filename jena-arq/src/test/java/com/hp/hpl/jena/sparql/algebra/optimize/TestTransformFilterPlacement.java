@@ -377,7 +377,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
 
     @Test public void place_extend_04() {
         test("(filter (= ?x 123) (extend ((?x1 123)) (filter (< ?x 456) (bgp (?s ?p ?x) (?s ?p ?z))) ))",
-             "(extend (?x1 123) (sequence (filter ((< ?x 456) (= ?x 123)) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))) )") ;
+             "(extend (?x1 123) (sequence (filter ((= ?x 123) (< ?x 456)) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))) )") ;
     }
 
     @Test public void place_extend_05() {
@@ -466,7 +466,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
     @Test public void place_assign_04() {
         // Caution - OpFilter equality is sensitive to the order of expressions 
         test("(filter (= ?x 123) (assign ((?x1 123)) (filter (< ?x 456) (bgp (?s ?p ?x) (?s ?p ?z))) ))",
-             "(assign (?x1 123) (sequence (filter ((< ?x 456) (= ?x 123)) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))) )") ;
+             "(assign (?x1 123) (sequence (filter ((= ?x 123) (< ?x 456)) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))) )") ;
     }
     
     @Test public void place_assign_05() {
@@ -549,8 +549,62 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
         test("(filter (= ?x 123) (filter (= ?y 456) (bgp (?s ?p ?x) (?s ?p ?y) (?s ?p ?z) )))" , 
              "(sequence (filter (= ?y 456) (sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?y)))) (bgp (?s ?p ?z)))") ;
     }
-
-    // XXX Table tests.
+    
+    // JENA-881 
+    @Test public void place_filter_03() { 
+        String x1 = StrUtils.strjoinNL
+            ("(filter true"
+            ,"  (union"
+            ,"    (table empty)"
+            ,"    (filter (= ?z 3)"
+            ,"      (table unit))))"
+            ) ;
+        String x2 = StrUtils.strjoinNL
+            ("(union"
+            ,"  (filter true"
+            ,"    (table empty))"
+            ,"  (filter (exprlist true (= ?z 3))"
+            ,"    (table unit)))"
+            ) ;
+        test(x1, x2) ;
+    }
+    // JENA-881 
+    @Test public void place_filter_04() { 
+        String x1 = StrUtils.strjoinNL
+            ("(filter true"
+            ,"  (union"
+            ,"    (filter false"
+            ,"      (table unit))"
+            ,"    (filter (!= ?z 3)"
+            ,"      (table unit))))"
+            ) ;
+        String x2 = StrUtils.strjoinNL
+            ("(union"
+            ,"  (filter (exprlist true false)"
+            ,"    (table unit))"
+            ,"  (filter (exprlist true (!= ?z 3))"
+            ,"    (table unit)))"
+                ) ;
+        test(x1, x2) ;
+    }
+    // JENA-881
+    @Test public void place_filter_05() { 
+        String x1 = StrUtils.strjoinNL
+            ("(filter (= ?z 3)"
+            ,"  (sequence"
+            ,"    (filter (= ?y 3)"
+            ,"      (table unit))"
+            ,"    (bgp (triple ?s ?p ?z))))"
+            ) ; 
+        String x2 = StrUtils.strjoinNL
+            ("(sequence"
+            ,"  (filter (= ?y 3)"
+            ,"    (table unit))"
+            ,"  (filter (= ?z 3)"
+            ,"    (bgp (triple ?s ?p ?z))))"
+            ) ;
+        test(x1, x2) ;
+    }
     
     @Test public void place_union_01() {
         test("(filter (= ?x 123) (union (bgp (?s ?p ?x) (?s ?p ?y)) (bgp (?s ?p ?z)  (?s1 ?p1 ?x)) ))",
@@ -571,7 +625,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
              ,"  (sequence"
              ,"    (filter 1 (table unit))"
              , "   (bgp (triple ?s ?p ?o)))"
-             ,"  (filter (exprlist 0 1) (table unit))"
+             ,"  (filter (exprlist 1 0) (table unit))"
              ,")"
              );
         test(in, out) ;
@@ -588,7 +642,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
         String out = StrUtils.strjoinNL
             ("(union"
             ,"  (filter 1 (bgp (triple ?s ?p ?o)))"
-            ,"  (filter (exprlist 0 1) (table unit))"
+            ,"  (filter (exprlist 1 0) (table unit))"
             ,")"
             );
         testNoBGP(in, out) ;
@@ -612,7 +666,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
              ,"      (sequence"
              ,"         (filter 1 (table unit))"
              ,"         (bgp (?s ?p ?o)))"
-             ,"      (filter (exprlist 0 1)"
+             ,"      (filter (exprlist 1 0)"
              ,"        (table unit))"
              ,     ")"
              ,"))");
@@ -635,7 +689,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
             ,"  (project (?s ?p ?o)"
             ,"    (union"
             ,"      (filter 1 (bgp (?s ?p ?o)))"
-            ,"      (filter (exprlist 0 1) (table unit))"
+            ,"      (filter (exprlist 1 0) (table unit))"
             ,     ")"
             ,"))");
         testNoBGP(in, out) ;
@@ -656,7 +710,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
            ,"    (filter (= 1 1)"
            ,"      (table unit))"
            ,"    (bgp (triple ?s ?p ?o)))"
-           ,"  (filter (exprlist (!= 0 0) (= 1 1))"
+           ,"  (filter (exprlist (= 1 1) (!= 0 0))"
            ,"   (table unit)))"
               ) ;
         test ( in, out ) ;
@@ -674,7 +728,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
             ("(union"
             ,"   (filter (= 1 1)"
             ,"     (bgp (triple ?s ?p ?o)))"
-            ,"   (filter (exprlist (!= 0 0) (= 1 1))"
+            ,"   (filter (exprlist (= 1 1) (!= 0 0))"
             ,"     (table unit)))"
             ) ;
         testNoBGP ( in, out ) ;
