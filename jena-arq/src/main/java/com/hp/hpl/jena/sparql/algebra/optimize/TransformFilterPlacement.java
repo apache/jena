@@ -210,7 +210,6 @@ public class TransformFilterPlacement extends TransformCopy {
             placement = placeAssign(exprs, (OpAssign)input) ;
         // Modifiers
 //        else if ( input instanceof OpGroup ) {
-//            // TODO
 //            placement = noChangePlacement ;
 //        }
 //        else if ( input instanceof OpSlice ) {
@@ -233,16 +232,29 @@ public class TransformFilterPlacement extends TransformCopy {
     }
     
     private Placement placeFilter(ExprList exprs, OpFilter input) {
-        if ( exprs.size() == 0 )
-            // Unpack the filter,
-            return transform(input.getExprs(), input.getSubOp()) ;
-        
-        // Thrown the filter expressions into the general list to be placed.
-        // Add to keep the application order (original filter then additional exprs)
-        // Not important, but nice.
-        ExprList exprs2 = ExprList.copy(input.getExprs()) ;
-        exprs2.addAll(exprs);
-        return transform(exprs2, input.getSubOp()) ;
+        // If input.getSubOp is itself a filter, it has already been
+        // processed because the Transform is applied bottom-up.
+
+        // We must not let the filter's expressions go back as "unplaced"
+        // as they are scoped to the input and if "unplaced" are available
+        // out of that scope.
+
+        Op op = input.getSubOp() ;
+        ExprList exprsInner = input.getExprs() ;
+        ExprList exprsOuter = exprs ;
+
+        // Outer
+        Placement p = transform(exprsOuter, input.getSubOp()) ;
+        if ( p != null ) {
+            op = p.op ;
+            exprsOuter = p.unplaced ;
+        }
+        // Put inner round the modified Op.
+        // If op is also a filter, a single filter is created with
+        // exprsInner now after placed filters.
+        // ("after" means later in the exprList of the filter).
+        Op f = OpFilter.filter(exprsInner, op) ;
+        return new Placement(f, exprsOuter) ;
     }
 
     private Placement placeOrWrapBGP(ExprList exprs, OpBGP x) {
