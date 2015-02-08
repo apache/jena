@@ -28,7 +28,6 @@ import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.DumpTree ;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.logging.FmtLog ;
 import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.buffer.PtrBuffer ;
 import org.seaborne.dboe.base.buffer.RecordBuffer ;
@@ -51,19 +50,15 @@ public final class BPTreeNode extends BPTreePage
     // --> TxnHandler, two implementation, txn and no=txn
     
     private static Logger log = LoggerFactory.getLogger(BPTreeNode.class) ;
-    /*package*/ final BPlusTree bpTree ; 
-    @Override
-    BPlusTree getBPTree() { return bpTree ; }
-    
-    // Convenience - this is used a lot.
-    /*package*/ final BPlusTreeParams params ;
+    @Override protected Logger getLogger() { return log ; }
+   
     /*package*/ Block block ;
     /** Page id.
      *  Pages are addressed by ints (a page ref does in on-disk blocks)
      *  although blocks are addressed in longs.
      *  1k pages => 2Tbyte file limit.
      */
-    /*package*/int id ;            
+    /*package*/int id ;             // Or block.getId()            
     
     private int parent ;
     private int count ;             // Number of records.  Number of pointers is +1
@@ -147,8 +142,7 @@ public final class BPTreeNode extends BPTreePage
     }
 
     /*package*/ BPTreeNode(BPlusTree bpTree) {
-        this.bpTree = bpTree ;
-        this.params = bpTree.getParams() ;
+        super(bpTree) ;
         // Other set by BPTreeNodeMgr.formatBPTreeNode 
     }
     
@@ -159,7 +153,7 @@ public final class BPTreeNode extends BPTreePage
     static BPTreeNode ensureModifiableRoot(BPTreeNode root, Object state) 
     { 
         BPTreeNode root2 = ensureModifiable(root) ;
-        if ( root != root2 && root.id != root2.id ) {
+        if ( root != root2 && root.getId() != root2.getId() ) {
             System.err.println("Cloned root") ;
             if ( state == null )
                 System.err.println("... no state") ;
@@ -182,14 +176,14 @@ public final class BPTreeNode extends BPTreePage
     private BPTreePage get(int idx) {
         if ( logging() ) {
             String leafOrNode = isLeaf ? "L" : "N" ;
-            FmtLog.debug(log, "get(%d[%s])", idx, leafOrNode) ; 
+            log(log, "get(%d[%s])", idx, leafOrNode) ; 
         }
         int subId = ptrs.get(idx) ;
         PageBlockMgr<? extends BPTreePage> pbm = getPageBlockMgr() ;
         // Always get a "read" block - it must be promoted to a "write" block
         // to update it.  Getting a write block is unhelpful as many blocks
         // during a write operation are only read.
-        return pbm.getRead(subId, this.id) ;
+        return pbm.getRead(subId, this.getId()) ;
     }
 
     private PageBlockMgr<? extends BPTreePage> getPageBlockMgr() {
@@ -205,7 +199,7 @@ public final class BPTreeNode extends BPTreePage
     /** Find a record, using the active comparator */
     public static Record search(BPTreeNode root, Record rec) {
         root.internalCheckNodeDeep() ;
-        if ( root.id != 0 )
+        if ( root.getId() != 0 )
             throw new BPTreeException("Search not starting from the root: " + root) ;
         Record r = root.internalSearch(rec) ;
         return r ;
@@ -214,7 +208,7 @@ public final class BPTreeNode extends BPTreePage
     /** Insert a record - return existing value if any, else null */
     public static Record insert(BPTreeNode root, Record record) {
         if ( logging() ) {
-            FmtLog.debug(log, "** insert(%s) / root=%d", record, root.getId()) ;
+            log(log, "** insert(%s) / root=%d", record, root.getId()) ;
             if ( DumpTree )
                 root.dump() ;
         }
@@ -237,7 +231,7 @@ public final class BPTreeNode extends BPTreePage
         root.internalCheckNodeDeep() ;
 
         if ( logging() ) {
-            FmtLog.debug(log, "** insert(%s) / finish", record) ;
+            log(log, "** insert(%s) / finish", record) ;
             if ( DumpTree )
                 root.dump() ;
         }
@@ -247,7 +241,7 @@ public final class BPTreeNode extends BPTreePage
     /** Delete a record - return the old value if there was one, else null */
     public static Record delete(BPTreeNode root, Record rec) {
         if ( logging() ) {
-            FmtLog.debug(log, "** delete(%s) / start", rec) ;
+            log(log, "** delete(%s) / start", rec) ;
             if ( DumpTree )
                 root.dump() ;
         }
@@ -282,7 +276,7 @@ public final class BPTreeNode extends BPTreePage
         }
 
         if ( logging() ) {
-            FmtLog.debug(log, "** delete(%s) / finish", rec) ;
+            log(log, "** delete(%s) / finish", rec) ;
             if ( DumpTree )
                 root.dump() ;
         }
@@ -386,24 +380,12 @@ public final class BPTreeNode extends BPTreePage
     @Override
     final void write()          { bpTree.getNodeManager().write(this) ; } 
     
-    // Also called from BPtreeRecords
-    // Only 
-    
-    static void promote(BPTreePage page) {
-        if ( logging() ) {
-            String nodeOrRecords = (page instanceof BPTreeNode) ? "N": "R" ; 
-            FmtLog.debug(log, "Promote %d[%s]", page.getId(), nodeOrRecords) ;
-        }
-        // Check if needed.
-        page.promote();
-    }
-
     @Override
     final void promote() {
-        //if ( bpTree.getNodeManager().isWritable(this.id) )
-        //    return ;
+        if ( bpTree.getNodeManager().isWritable(this.getId()) )
+            return ;
         // This calls reset is needed.
-        //   Records and pointer need resetting if the block changed.
+        //   The id, records buffer and pointer buffers need resetting if the block changed.
         bpTree.getNodeManager().promote(this) ;
     }
     
@@ -456,21 +438,21 @@ public final class BPTreeNode extends BPTreePage
     @Override
     final Record internalInsert(Record record) {
         if ( logging() )
-            FmtLog.debug(log, "internalInsert: %s [%s]", record, this) ;
+            log(log, "internalInsert: %s [%s]", record, this) ;
 
         internalCheckNode() ;
 
         int idx = findSlot(record) ;
 
         if ( logging() )
-            FmtLog.debug(log, "internalInsert: idx=%d (=>%d)", idx, convert(idx)) ;
+            log(log, "internalInsert: idx=%d (=>%d)", idx, convert(idx)) ;
 
         idx = convert(idx) ;
 
         BPTreePage page = get(idx) ;
 
         if ( logging() )
-            FmtLog.debug(log, "internalInsert: next: %s", page) ;
+            log(log, "internalInsert: next: %s", page) ;
 
         if ( page.isFull() ) {
             // Need to split the page before descending.
@@ -509,11 +491,10 @@ public final class BPTreeNode extends BPTreePage
      * WRITE(this)
      */
     private void split(int idx, BPTreePage y) {
-        boolean logging = logging() ;
         // logging = true ;
-        if ( logging ) {
-            FmtLog.debug(log, "split >> y=%s  this=%s idx=%d", y.getRefStr(), this.getRefStr(), idx) ;
-            FmtLog.debug(log, "split --   %s", y) ;
+        if ( logging() ) {
+            log(log, "split >> y=%s  this=%s idx=%d", y.getRefStr(), this.getRefStr(), idx) ;
+            log(log, "split --   %s", y) ;
         }
 
         internalCheckNode() ;
@@ -534,13 +515,13 @@ public final class BPTreeNode extends BPTreePage
         Record splitKey = y.getSplitKey() ;
         splitKey = keyRecord(splitKey) ;
 
-        if ( logging )
-            FmtLog.debug(log, "Split key: %s", splitKey) ;
+        if ( logging() )
+            log(log, "Split key: %s", splitKey) ;
 
         BPTreePage z = y.split() ;
-        if ( logging ) {
-            FmtLog.debug(log, "Split: %s", y) ;
-            FmtLog.debug(log, "Split: %s", z) ;
+        if ( logging() ) {
+            log(log, "Split: %s", y) ;
+            log(log, "Split: %s", z) ;
         }
 
         // Key only.
@@ -558,10 +539,10 @@ public final class BPTreeNode extends BPTreePage
         ptrs.add(idx + 1, z.getId()) ;
         count++ ;
 
-        if ( logging ) {
-            FmtLog.debug(log, "split <<   %s", this) ;
-            FmtLog.debug(log, "split <<   %s", y) ;
-            FmtLog.debug(log, "split <<   %s", z) ;
+        if ( logging() ) {
+            log(log, "split <<   %s", this) ;
+            log(log, "split <<   %s", y) ;
+            log(log, "split <<   %s", z) ;
         }
 
         y.write() ;
@@ -635,8 +616,8 @@ public final class BPTreeNode extends BPTreePage
         BPlusTree bpTree = root.bpTree ;
 
         if ( CheckingNode )
-            if ( root.id != 0 )
-                root.error("Not root: %d (root is id zero)", root.id) ;
+            if ( root.getId() != 0 )
+                root.error("Not root: %d (root is id zero)", root.getId()) ;
         root.internalCheckNode() ;
         promote(root) ;
 
@@ -645,13 +626,13 @@ public final class BPTreeNode extends BPTreePage
         Record rec = root.records.get(splitIdx) ;
 
         if ( logging() ) {
-            FmtLog.debug(log, "** Split root %d (%s)", splitIdx, rec) ;
-            FmtLog.debug(log, "splitRoot >>   %s", root) ;
+            log(log, "** Split root %d (%s)", splitIdx, rec) ;
+            log(log, "splitRoot >>   %s", root) ;
         }
 
         // New blocks.
-        BPTreeNode left = create(bpTree, root.id, root.isLeaf) ;
-        BPTreeNode right = create(bpTree, root.id, root.isLeaf) ;
+        BPTreeNode left = create(bpTree, root.getId(), root.isLeaf) ;
+        BPTreeNode right = create(bpTree, root.getId(), root.isLeaf) ;
 
         // int maxRecords = maxRecords() ;
 
@@ -666,8 +647,8 @@ public final class BPTreeNode extends BPTreePage
         right.count = root.maxRecords() - (splitIdx + 1) ;
 
         if ( logging() ) {
-            FmtLog.debug(log, "splitRoot -- left:   %s", left) ;
-            FmtLog.debug(log, "splitRoot -- right:  %s", right) ;
+            log(log, "splitRoot -- left:   %s", left) ;
+            log(log, "splitRoot -- right:  %s", right) ;
         }
 
         // So left.count+right.count = bTree.NumRec-1
@@ -682,13 +663,13 @@ public final class BPTreeNode extends BPTreePage
 
         root.records.add(0, rec) ;
         root.ptrs.setSize(2) ;
-        root.ptrs.set(0, left.id) ; // slot 0
-        root.ptrs.set(1, right.id) ; // slot 1
+        root.ptrs.set(0, left.getId()) ; // slot 0
+        root.ptrs.set(1, right.getId()) ; // slot 1
 
         if ( logging() ) {
-            FmtLog.debug(log, "splitRoot <<   %s", root) ;
-            FmtLog.debug(log, "splitRoot <<   %s", left) ;
-            FmtLog.debug(log, "splitRoot <<   %s", right) ;
+            log(log, "splitRoot <<   %s", root) ;
+            log(log, "splitRoot <<   %s", left) ;
+            log(log, "splitRoot <<   %s", right) ;
         }
 
         left.write() ;
@@ -718,7 +699,7 @@ public final class BPTreeNode extends BPTreePage
     final Record internalDelete(Record rec) {
         internalCheckNode() ;
         if ( logging() )
-            FmtLog.debug(log, "internalDelete(%s) : %s", rec, this) ;
+            log(log, "internalDelete(%s) : %s", rec, this) ;
 
         int x = findSlot(rec) ;
 
@@ -767,14 +748,14 @@ public final class BPTreeNode extends BPTreePage
 
     private void reduceRoot() {
         if ( logging() )
-            FmtLog.debug(log, "reduceRoot >> %s", this) ;
+            log(log, "reduceRoot >> %s", this) ;
 
         if ( CheckingNode && (!isRoot() || count != 0) )
             error("Not an empty root") ;
 
         if ( isLeaf ) {
             if ( logging() )
-                FmtLog.debug(log, "reduceRoot << leaf root") ;
+                log(log, "reduceRoot << leaf root") ;
             // Now empty leaf root.
             return ;
         }
@@ -794,7 +775,7 @@ public final class BPTreeNode extends BPTreePage
         internalCheckNodeDeep() ;
 
         if ( logging() )
-            FmtLog.debug(log, "reduceRoot << %s", this) ;
+            log(log, "reduceRoot << %s", this) ;
     }
 
     /*
@@ -816,9 +797,9 @@ public final class BPTreeNode extends BPTreePage
      */
     private BPTreePage rebalance(final BPTreePage node, int idx) {
         if ( logging() ) {
-            FmtLog.debug(log, "rebalance(id=%d, idx=%d)", node.getId(), idx) ;
-            FmtLog.debug(log, ">> this: %s", this) ;
-            FmtLog.debug(log, ">> node: %s", node) ;
+            log(log, "rebalance(id=%d, idx=%d)", node.getId(), idx) ;
+            log(log, ">> this: %s", this) ;
+            log(log, ">> node: %s", node) ;
         }
         internalCheckNode() ;
         promote(this) ;
@@ -834,7 +815,7 @@ public final class BPTreeNode extends BPTreePage
 
         if ( left != null && !left.isMinSize() ) {
             if ( logging() )
-                FmtLog.debug(log, "rebalance/shiftRight") ;
+                log(log, "rebalance/shiftRight") ;
 
             // Move elements around.
             // Has not done "this.put()" yet.
@@ -842,7 +823,7 @@ public final class BPTreeNode extends BPTreePage
             shiftRight(left, node, idx - 1) ;
 
             if ( logging() )
-                FmtLog.debug(log, "<< rebalance: %s", this) ;
+                log(log, "<< rebalance: %s", this) ;
             if ( CheckingNode ) {
                 left.checkNode() ;
                 node.checkNode() ;
@@ -858,12 +839,12 @@ public final class BPTreeNode extends BPTreePage
 
         if ( right != null && !right.isMinSize() ) {
             if ( logging() )
-                FmtLog.debug(log, "rebalance/shiftLeft") ;
+                log(log, "rebalance/shiftLeft") ;
             promote(right); 
             shiftLeft(node, right, idx) ;
 
             if ( logging() )
-                FmtLog.debug(log, "<< rebalance: %s", this) ;
+                log(log, "<< rebalance: %s", this) ;
             if ( CheckingNode ) {
                 right.checkNode() ;
                 node.checkNode() ;
@@ -882,7 +863,7 @@ public final class BPTreeNode extends BPTreePage
         if ( left != null ) {
             promote(left) ;
             if ( logging() )
-                FmtLog.debug(log, "rebalance/merge/left: left=%d n=%d [%d]", left.getId(), node.getId(), idx - 1) ;
+                log(log, "rebalance/merge/left: left=%d n=%d [%d]", left.getId(), node.getId(), idx - 1) ;
             if ( CheckingNode && left.getId() == node.getId() )
                 error("Left and n the same: %s", left) ;
             BPTreePage page = merge(left, node, idx - 1) ;
@@ -895,7 +876,7 @@ public final class BPTreeNode extends BPTreePage
             // rigth != null
             promote(right) ;
             if ( logging() )
-                FmtLog.debug(log, "rebalance/merge/right: n=%d right=%d [%d]", node.getId(), right.getId(), idx) ;
+                log(log, "rebalance/merge/right: n=%d right=%d [%d]", node.getId(), right.getId(), idx) ;
             if ( CheckingNode && right.getId() == node.getId() )
                 error("N and right the same: %s", right) ;
             BPTreePage page = merge(node, right, idx) ;
@@ -906,9 +887,9 @@ public final class BPTreeNode extends BPTreePage
     /** Merge left with right ; fills left, frees right */
     private BPTreePage merge(BPTreePage left, BPTreePage right, int dividingSlot) {
         if ( logging() ) {
-            FmtLog.debug(log, ">> merge(@%d): %s", dividingSlot, this) ;
-            FmtLog.debug(log, ">> left:  %s", left) ;
-            FmtLog.debug(log, ">> right: %s", right) ;
+            log(log, ">> merge(@%d): %s", dividingSlot, this) ;
+            log(log, ">> left:  %s", left) ;
+            log(log, ">> right: %s", right) ;
         }
 
         // /==\ + key + /==\ ==> /====\
@@ -916,7 +897,7 @@ public final class BPTreeNode extends BPTreePage
         BPTreePage page = left.merge(right, splitKey) ;
         // Must release right (not done in merge)
         if ( logging() )
-            FmtLog.debug(log, "-- merge: %s", page) ;
+            log(log, "-- merge: %s", page) ;
 
         left.write() ;
         right.free() ;
@@ -944,8 +925,8 @@ public final class BPTreeNode extends BPTreePage
         this.write() ;
         internalCheckNodeDeep() ;
         if ( logging() ) {
-            FmtLog.debug(log, "<< merge: %s", this) ;
-            FmtLog.debug(log, "<< left:  %s", left) ;
+            log(log, "<< merge: %s", this) ;
+            log(log, "<< left:  %s", left) ;
         }
         return left ;
     }
@@ -977,9 +958,9 @@ public final class BPTreeNode extends BPTreePage
 
     private void shiftRight(BPTreePage left, BPTreePage right, int i) {
         if ( logging() ) {
-            FmtLog.debug(log, ">> shiftRight: this:  %s", this) ;
-            FmtLog.debug(log, ">> shiftRight: left:  %s", left) ;
-            FmtLog.debug(log, ">> shiftRight: right: %s", right) ;
+            log(log, ">> shiftRight: this:  %s", this) ;
+            log(log, ">> shiftRight: left:  %s", left) ;
+            log(log, ">> shiftRight: right: %s", right) ;
         }
         Record r1 = records.get(i) ;
         Record r2 = left.shiftRight(right, r1) ;
@@ -990,17 +971,17 @@ public final class BPTreeNode extends BPTreePage
         right.write() ;
         // Do later -- this.put();
         if ( logging() ) {
-            FmtLog.debug(log, "<< shiftRight: this:  %s", this) ;
-            FmtLog.debug(log, "<< shiftRight: left:  %s", left) ;
-            FmtLog.debug(log, "<< shiftRight: right: %s", right) ;
+            log(log, "<< shiftRight: this:  %s", this) ;
+            log(log, "<< shiftRight: left:  %s", left) ;
+            log(log, "<< shiftRight: right: %s", right) ;
         }
     }
 
     private void shiftLeft(BPTreePage left, BPTreePage right, int i) {
         if ( logging() ) {
-            FmtLog.debug(log, ">> shiftLeft: this:  %s", this) ;
-            FmtLog.debug(log, ">> shiftLeft: left:  %s", left) ;
-            FmtLog.debug(log, ">> shiftLeft: right: %s", right) ;
+            log(log, ">> shiftLeft: this:  %s", this) ;
+            log(log, ">> shiftLeft: left:  %s", left) ;
+            log(log, ">> shiftLeft: right: %s", right) ;
         }
         Record r1 = records.get(i) ;
         Record r2 = left.shiftLeft(right, r1) ;
@@ -1011,9 +992,9 @@ public final class BPTreeNode extends BPTreePage
         right.write() ;
         // Do this later - this.put();
         if ( logging() ) {
-            FmtLog.debug(log, "<< shiftLeft: this:  %s", this) ;
-            FmtLog.debug(log, "<< shiftLeft: left:  %s", left) ;
-            FmtLog.debug(log, "<< shiftLeft: right: %s", right) ;
+            log(log, "<< shiftLeft: this:  %s", this) ;
+            log(log, "<< shiftLeft: left:  %s", left) ;
+            log(log, "<< shiftLeft: right: %s", right) ;
         }
     }
 
@@ -1066,8 +1047,8 @@ public final class BPTreeNode extends BPTreePage
     private void shuffleDown(int x) {
         // x is the index in the parent and may be on eover the end.
         if ( logging() ) {
-            FmtLog.debug(log, "ShuffleDown: i=%d count=%d MaxRec=%d", x, count, maxRecords()) ;
-            FmtLog.debug(log, "ShuffleDown >> %s", this) ;
+            log(log, "ShuffleDown: i=%d count=%d MaxRec=%d", x, count, maxRecords()) ;
+            log(log, "ShuffleDown >> %s", this) ;
         }
 
         if ( CheckingNode && x >= count )
@@ -1081,8 +1062,8 @@ public final class BPTreeNode extends BPTreePage
 
             count-- ;
             if ( logging() ) {
-                FmtLog.debug(log, "shuffleDown << Clear top") ;
-                FmtLog.debug(log, "shuffleDown << %s", this) ;
+                log(log, "shuffleDown << Clear top") ;
+                log(log, "shuffleDown << %s", this) ;
             }
             internalCheckNode() ;
             return ;
@@ -1094,7 +1075,7 @@ public final class BPTreeNode extends BPTreePage
         ptrs.shiftDown(x + 1) ;
         count-- ;
         if ( logging() )
-            FmtLog.debug(log, "shuffleDown << %s", this) ;
+            log(log, "shuffleDown << %s", this) ;
         internalCheckNode() ;
     }
 
@@ -1118,7 +1099,7 @@ public final class BPTreeNode extends BPTreePage
     final boolean isRoot() {
         // No BPT remembered root node currently
         // if ( bpTree.root == this ) return true ;
-        return this.id == BPlusTreeParams.RootId ;
+        return this.getId() == BPlusTreeParams.RootId ;
     }
 
     private Record keyRecord(Record record) {
@@ -1141,7 +1122,7 @@ public final class BPTreeNode extends BPTreePage
     
     @Override
     final boolean isModifiable() {
-        return id >= bpTree.getNodeManager().getBlockMgr().allocLimit() ;
+        return getId() >= bpTree.getNodeManager().getBlockMgr().allocLimit() ;
     }
 
     /** Return true if there are no keys here or below this node */
@@ -1186,7 +1167,7 @@ public final class BPTreeNode extends BPTreePage
         if ( isLeaf )
             labelStr = labelStr + "/leaf" ;
 
-        b.append(String.format("%d [%s] (size %d) -- ", id, labelStr, count)) ;
+        b.append(String.format("%d [%s] (size %d) -- ", getId(), labelStr, count)) ;
         for ( int i = 0 ; i < maxRecords() ; i++ ) {
             b.append(childStr(i)) ;
             b.append(" (") ;
@@ -1278,6 +1259,7 @@ public final class BPTreeNode extends BPTreePage
     // Checks of a single node - no looking at children
     // min - inclusive; max - inclusive (allows for duplicates)
     final private void checkNode(Record min, Record max) {
+        int id = getId() ;
         if ( count != records.size() )
             error("Inconsistent: id=%d, count=%d, records.size()=%d : %s", id, count, records.size(), this) ;
 
@@ -1330,16 +1312,16 @@ public final class BPTreeNode extends BPTreePage
             if ( CheckingTree && isLeaf ) {
                 int ptr = ptrs.get(i) ;
                 BPTreeRecords records = bpTree.getRecordsMgr().getRead(ptr) ;
-                int id = records.getId() ;
-                if ( id != ptrs.get(i) )
-                    error("Records: Block @%d has a different id: %d :: %s", id, i, this) ;
+                int rid = records.getId() ;
+                if ( rid != ptrs.get(i) )
+                    error("Records: Block @%d has a different id: %d :: %s", rid, i, this) ;
                 int link = records.getLink() ;
                 // Don't check if +1 does not exist.
                 if ( i != count ) {
                     BPTreeRecords page = bpTree.getRecordsMgr().getRead(ptrs.get(i)) ;
-                    int id2 = page.getLink() ;
-                    if ( link != id2 )
-                        error("Records: Link not to next block @%d/@%d has a different id: %d :: %s", id, id2, i, records) ;
+                    int rid2 = page.getLink() ;
+                    if ( link != rid2 )
+                        error("Records: Link not to next block @%d/@%d has a different id: %d :: %s", rid, rid2, i, records) ;
                     bpTree.getRecordsMgr().release(page) ;
                 }
                 records.release() ;
@@ -1359,7 +1341,7 @@ public final class BPTreeNode extends BPTreePage
 
     private void checkNodeDeep(Record min, Record max) {
         checkNode(min, max) ;
-
+        int id = getId() ;
         // Check pointers.
         int limit = (count == 0) ? 0 : count + 1 ;
 
@@ -1442,7 +1424,7 @@ public final class BPTreeNode extends BPTreePage
     }
 
     private static boolean logging() {
-        return BPlusTreeParams.logging(log) ;
+        return logging(log) ;
     }
 
     private void warning(String msg, Object... args) {

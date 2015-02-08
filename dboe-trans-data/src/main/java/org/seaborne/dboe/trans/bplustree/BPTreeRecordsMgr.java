@@ -83,6 +83,11 @@ final public class BPTreeRecordsMgr extends PageBlockMgr<BPTreeRecords>
     public RecordBufferPageMgr getRecordBufferPageMgr() { return rBuffPageMgr ; }
     public BPlusTree getBPTree()                        { return bpTree ; }
 
+    boolean isWritable(int id) {
+        System.err.println("BPTreeRecordsMgr.isWritable") ;
+        return false ;
+    }
+
     @Override
     public void startRead() {
         rBuffPageMgr.startRead() ;

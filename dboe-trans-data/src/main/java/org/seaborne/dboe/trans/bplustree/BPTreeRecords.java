@@ -36,19 +36,18 @@ import org.slf4j.LoggerFactory ;
 public final class BPTreeRecords extends BPTreePage
 {
     private static Logger log = LoggerFactory.getLogger(BPTreeRecords.class) ;
+    @Override protected Logger getLogger() { return log ; }
+
     private final RecordBufferPage  rBuffPage ;
     private final BPTreeRecordsMgr  bprRecordsMgr ;
     private RecordBuffer            rBuff ;         // Used heavily. Derived from rBuffPage
     
     BPTreeRecords(BPTreeRecordsMgr mgr, RecordBufferPage rbp) {
-        super() ;
+        super(mgr.getBPTree()) ;
         this.bprRecordsMgr = mgr ;
         rBuffPage = rbp ;
         rBuff = rBuffPage.getRecordBuffer() ;
     }
-    
-    @Override
-    BPlusTree getBPTree() { return bprRecordsMgr.getBPTree() ; }
     
     RecordBufferPage getRecordBufferPage()
     { return rBuffPage ; }
@@ -107,10 +106,10 @@ public final class BPTreeRecords extends BPTreePage
     
     @Override final
     public void promote()   {
+        if ( bprRecordsMgr.isWritable(getId()) )
+            return ;
         // .reset()is called if needed.
         // If the block changes, then rBuffPage and rBuff need fixups.
-        //if ( bprRecordsMgr.isWritable(getId()) )
-        //    return ;
         bprRecordsMgr.promote(this) ;
     }
     
@@ -123,7 +122,7 @@ public final class BPTreeRecords extends BPTreePage
     @Override
     Record internalInsert(Record record) {
         // [[TXN]]
-        BPTreeNode.promote(this) ;
+        promote(this) ;
         int i = rBuff.find(record) ;
         Record r2 = null ;
         if ( i < 0 ) {

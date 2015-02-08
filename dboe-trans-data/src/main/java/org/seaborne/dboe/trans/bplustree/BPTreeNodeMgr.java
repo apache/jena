@@ -72,6 +72,11 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
         return n ;
     }
 
+    boolean isWritable(int id) {
+        System.err.println("BPTreeNodeMgr.isWritable") ;
+        return false ;
+    }
+
     private static class Block2BPTreeNode implements BlockConverter<BPTreeNode>
     {
         private final BPlusTree bpTree ;

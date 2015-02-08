@@ -17,21 +17,46 @@
 
 package org.seaborne.dboe.trans.bplustree;
 
+import org.apache.jena.atlas.logging.FmtLog ;
 import org.seaborne.dboe.base.page.Page ;
 import org.seaborne.dboe.base.record.Record ;
+import org.slf4j.Logger ;
 
 /** Abstraction of a B+Tree node - either an branch (BTreeNode) or leaf (BTreeLeaf - records)*/
 abstract public class BPTreePage implements Page
 {
-    // Does not use PageBase because BPTreeRecords does not need it.
+    protected BPTreePage(BPlusTree bpTree) {
+        this.bpTree = bpTree ;
+        // bpTree can be null in testing.
+        this.params = ( bpTree == null ) ? null : bpTree.getParams() ;
+    }
+    
+    protected final BPlusTree bpTree ; 
+    protected final BPlusTreeParams params ;
 
-    protected BPTreePage() { }
+    protected final static boolean logging(Logger log) {
+        return BPlusTreeParams.logging(log) ;
+    }
     
-    abstract BPlusTree getBPTree() ;
+    protected final static void log(Logger log, String fmt, Object... args) {
+        if ( logging(log) ) {
+            FmtLog.debug(log, fmt, args);
+        }
+    }
     
-//    /** Return the page number */
-//    abstract int getId() ;
-    
+    // Also called from BPtreeRecords
+    protected static void promote(BPTreePage page) {
+        Logger pageLog = page.getLogger() ; 
+        if ( logging(pageLog) ) {
+            String nodeOrRecords = (page instanceof BPTreeNode) ? "N": "R" ; 
+            log(pageLog, "Promote %d[%s]", page.getId(), nodeOrRecords) ;
+        }
+        // Check if needed.
+        page.promote();
+    }
+
+    abstract Logger getLogger() ;
+
     /** Split in two, return the new (upper) page.  
      *  Split key is highest key of the old (lower) page.
      *  Does NOT put pages back to any underlying block manager
