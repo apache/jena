@@ -21,24 +21,23 @@ package dev;
 public class NOTES {
     // Mantis / cohort / legion
     
-    // BlockMgrBuilderStd -> dboe-base
+    //** Refind indexes on promotion!
+    // Or assume same place (different ids).
+    //** Or does slip on the way down work out?
+    
     // Rename/interface for *BuilderStd.
-    // log4j.properties in all src/test/resources
     // dboe-base-test ? 
     
     // BlockAccessBase/BlockAccessMapped needs to track highest block better.
     // Delete BlockMgrSync - used by BlockMgrCahe
     
-    // Free chain management for MVCC block mgrs.  BlockMgrFreeChain.
+    // Free chain management for MVCC block mgrs.  BlockMgrFreeChain is enough?
     
     // BPTreePage.isModifiable(int id, BptTxnState)
     //   BPTreeRecords.isModifiable -- look into bptree object
     //   BPTreeNode.isModifiable
     
-    // BPlusTree.nonTrasnactional
-    //   No txn tests / always "writable"
-    //   No block cloning
-    //   All blocks writable.
+    // BPlusTree update Mode.
     // Indirects for 
     //   getState
     //   checkWriteTxn
@@ -46,20 +45,9 @@ public class NOTES {
     // on BptTxnState
     // or separate handler object.
 
-    // Page.promote - resets the BTReeNode completely which is unnecessary if
-    // the contract is "same block, different cache"
-    // getWrite ??
-    // SIMPLIFY (later)
-    
-    // Easy route : make modifiable if 
-    // **** There is an in-memory parent chain.
-    
-    // Block writing (BlockMgrFileAccess) -- check Block.modified flag.
-    
     // == Mantis
     // dboe-test ?  See BufferTestLib
     // log4j.properties.
-    // rename org.seaborne.jena.*
     // Tests in quack.
     
     // == Base 
@@ -68,11 +56,6 @@ public class NOTES {
     // == Transactions
     
     // TransactionCoordinator.start() -- helper ?
-    
-    // Tests 
-    //   Promotion.
-    //   Writer epoch tests
-    //   Single writer
     
     // Delayed write back by leaving stuff in the journal.
     //   Avoids needing to sync the BPTs (leave to natural file caching)
@@ -96,18 +79,5 @@ public class NOTES {
     //   Registry
     //   Base bytes and index. (6 bytes + 2 bytes (=64k))?
     // TransactionalComponentLifecycle.super(ComponentId)
-    
-    // == Index
-
-    // BPlusTree.start/finishBatch - take a R/W flag?  Make transactional?
-    // Transactional++ 
-    
-    // Upgrade BPTree to TransactionMVCC
-    
-    // Block : development code added to enforece read-only use. Marked [[Dev-RO]]
-    //   Remove readonly flag?  A block in a txn may be read in one place and write in another.
-    //   Not actually checked so useless.
-    //   
-
 }
 

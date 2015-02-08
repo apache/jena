@@ -38,6 +38,7 @@ import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
+
 import static dev.RecordLib.* ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -49,6 +50,7 @@ public class MainIndex {
     
     static Journal journal = Journal.create(Location.mem()) ;
     
+    @SuppressWarnings("null")
     public static void main(String[] args) {
         BPlusTreeParams.Logging = false ;
         BlockMgrFactory.AddTracker = false ;
@@ -67,28 +69,23 @@ public class MainIndex {
         
         List<Integer> data1 = Arrays.asList( 2, 3, 4 ) ; // , 7 , 8 , 9 ) ;
         
-        List<Integer> data2a = Arrays.asList( 2 , 4, 3) ; // , 7 , 8 , 9 ) ;
-        List<Integer> data2b= Arrays.asList( 1 ) ; // , 7 , 8 , 9 ) ;
+        List<Integer> data2a = Arrays.asList( 2 , 4, 3 , 7 , 8 ) ;
+        List<Integer> data2b = Arrays.asList( 9 ) ; // , 7 , 8 , 9 ) ;
         
-        List<Record> dataRecords1 =  data1.stream().map(x->r(x)).collect(Collectors.toList()) ;
-        List<Record> dataRecords2a =  null ; // data2a.stream().map(x->r(x)).collect(Collectors.toList()) ;
-        List<Record> dataRecords2b =  null ; // data2b.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        List<Record> dataRecords1 =  null ; data1.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        List<Record> dataRecords2a =  data2a.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        List<Record> dataRecords2b =  data2b.stream().map(x->r(x)).collect(Collectors.toList()) ;
         
 //        Runnable r = () -> data2.forEach((x) -> idx.add(r(x)) ) ;
         
         bpt.startBatch();
-        dump(bpt) ;
-        System.out.println() ;
         
-        verbose(true, ()->add(bpt,dataRecords1)) ;
-        
-        holder.commit() ;
-        holder.end() ;
-        
-        holder.begin(ReadWrite.READ);
-
-        
-        if ( false ) {
+        if ( dataRecords1 != null ) {
+            verbose(true, ()->add(bpt,dataRecords1)) ;
+            dump(bpt) ;
+            System.out.println() ;
+        }
+        if ( dataRecords2a != null && dataRecords2b != null ) {
             // Two part.
             add(bpt, dataRecords2a) ;
             System.out.println("After first records") ;
@@ -97,6 +94,12 @@ public class MainIndex {
             add(bpt, dataRecords2b) ;
             System.out.println("After second records") ;    
         }
+        
+        holder.commit() ;
+        holder.end() ;
+        
+        holder.begin(ReadWrite.READ);
+        
 
         bpt.finishBatch();
         
