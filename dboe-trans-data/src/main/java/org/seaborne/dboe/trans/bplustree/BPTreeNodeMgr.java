@@ -51,10 +51,10 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
 
     @Override
     public BPTreeNode getWrite(int id)
-    { throw new UnsupportedOperationException("call getWrite(int, int)") ; }
+    { throw new UnsupportedOperationException("call getWrite(int)") ; }
     @Override
     public BPTreeNode getRead(int id)
-    { throw new UnsupportedOperationException("call getRead(int, int)") ; }
+    { throw new UnsupportedOperationException("call getRead(int)") ; }
     
     /** Fetch a block - fill in the parent id, which is not in the on-disk bytes */
     @Override
