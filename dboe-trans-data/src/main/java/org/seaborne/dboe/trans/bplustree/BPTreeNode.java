@@ -52,6 +52,9 @@ public final class BPTreeNode extends BPTreePage
     
     private static Logger log = LoggerFactory.getLogger(BPTreeNode.class) ;
     /*package*/ final BPlusTree bpTree ; 
+    @Override
+    BPlusTree getBPTree() { return bpTree ; }
+    
     // Convenience - this is used a lot.
     /*package*/ final BPlusTreeParams params ;
     /*package*/ Block block ;
@@ -60,7 +63,7 @@ public final class BPTreeNode extends BPTreePage
      *  although blocks are addressed in longs.
      *  1k pages => 2Tbyte file limit.
      */
-    private final int id ;            
+    /*package*/int id ;            
     
     private int parent ;
     private int count ;             // Number of records.  Number of pointers is +1
@@ -143,10 +146,9 @@ public final class BPTreeNode extends BPTreePage
         return n ;
     }
 
-    /*package*/ BPTreeNode(BPlusTree bpTree, int id) {
+    /*package*/ BPTreeNode(BPlusTree bpTree) {
         this.bpTree = bpTree ;
         this.params = bpTree.getParams() ;
-        this.id = id ;
         // Other set by BPTreeNodeMgr.formatBPTreeNode 
     }
     
@@ -384,9 +386,8 @@ public final class BPTreeNode extends BPTreePage
     @Override
     final void write()          { bpTree.getNodeManager().write(this) ; } 
     
-    /** Intercept promote and manage 
-     * Also called from BPtreeRecords
-     */
+    // Also called from BPtreeRecords
+    // Only 
     
     static void promote(BPTreePage page) {
         if ( logging() ) {
@@ -399,6 +400,8 @@ public final class BPTreeNode extends BPTreePage
 
     @Override
     final void promote() {
+        //if ( bpTree.getNodeManager().isWritable(this.id) )
+        //    return ;
         // This calls reset is needed.
         //   Records and pointer need resetting if the block changed.
         bpTree.getNodeManager().promote(this) ;

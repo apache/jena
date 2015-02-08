@@ -124,6 +124,30 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
      * sibling nodes instead of immediately splitting (like delete, only on insert).
      */ 
     
+    /** Tree mode - changing the mode on an existing tree is not supported.
+     * The normal mode of operation is {@link Mode#TRANSACTIONAL}  
+     */
+    public enum Mode { 
+        /** 
+         * B+Tree changes are applied in place. MRSW applies. 
+         */
+        MUTABLE,
+        /** 
+         * All changes create new replicated blocks (testing) 
+         */
+        IMMUTABLE,
+        /**
+         * As above except the root alone is mutated, hence it is a
+         * fixed, known id. (testing)
+         */
+        MUTABLE_ROOT,
+        /**
+         * Transactional lifecycle, including blocks below the water
+         * marks are immutable.
+         */
+        TRANSACTIONAL
+    }
+    
     private static Logger log = LoggerFactory.getLogger(BPlusTree.class) ;
     
     // Root id across transactions

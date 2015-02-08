@@ -145,7 +145,7 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
         // throw new BTreeException("ByteBuffer in wrong order") ;
 
         // Fix up the id later.
-        BPTreeNode n = new BPTreeNode(bpTree, block.getId().intValue()) ;
+        BPTreeNode n = new BPTreeNode(bpTree) ;
         // The count is zero at the root only.
         // When the root is zero, it's a leaf.
         formatBPTreeNode(n, bpTree, block, asLeaf, -2, count) ;
@@ -167,6 +167,7 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
         // [Issue:FREC] Should be: key space only.
         // int recBuffLen = params.MaxRec * params.getKeyLength() ;
 
+        n.id = block.getId().intValue() ;
         n.setParent(parent) ;
         n.setCount(count) ;
         n.setIsLeaf(leaf) ;

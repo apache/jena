@@ -27,6 +27,8 @@ abstract public class BPTreePage implements Page
 
     protected BPTreePage() { }
     
+    abstract BPlusTree getBPTree() ;
+    
 //    /** Return the page number */
 //    abstract int getId() ;
     

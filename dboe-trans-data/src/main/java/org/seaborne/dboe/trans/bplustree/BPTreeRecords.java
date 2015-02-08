@@ -20,6 +20,7 @@ package org.seaborne.dboe.trans.bplustree;
 import static java.lang.String.format ;
 import static org.apache.jena.atlas.lib.Alg.decodeIndex ;
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingNode ;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.seaborne.dboe.base.StorageException ;
 import org.seaborne.dboe.base.block.Block ;
@@ -46,10 +47,13 @@ public final class BPTreeRecords extends BPTreePage
         rBuff = rBuffPage.getRecordBuffer() ;
     }
     
+    @Override
+    BPlusTree getBPTree() { return bprRecordsMgr.getBPTree() ; }
+    
     RecordBufferPage getRecordBufferPage()
     { return rBuffPage ; }
     
-    /*TEMP*/ public RecordBuffer getRecordBuffer()
+    RecordBuffer getRecordBuffer()
     { return rBuff ; }
 
     @Override
@@ -103,10 +107,10 @@ public final class BPTreeRecords extends BPTreePage
     
     @Override final
     public void promote()   {
-        // reset:
-        //   rBuffPage
-        //   rBuff
-        // This calls reset is needed. 
+        // .reset()is called if needed.
+        // If the block changes, then rBuffPage and rBuff need fixups.
+        //if ( bprRecordsMgr.isWritable(getId()) )
+        //    return ;
         bprRecordsMgr.promote(this) ;
     }
     
