@@ -36,7 +36,7 @@ public class AccessPath {
         
         @Override 
         public String toString() {
-            return "("+node.getId()+", "+idx+")->"+page.getId() ;
+            return "("+node.getId()+"["+BPTreePage.mark(node)+"], "+idx+")->"+page.getId() ;
         }
     }
     
