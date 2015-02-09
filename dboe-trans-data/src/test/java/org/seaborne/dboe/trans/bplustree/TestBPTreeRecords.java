@@ -145,7 +145,7 @@ public class TestBPTreeRecords extends Assert {
         assertEquals(N - 3, bpr.getCount()) ;
         check(bpr) ;
 
-        bpr.internalDelete(bpr.getHighRecord()) ;
+        delete(bpr, bpr.getHighRecord()) ;
         assertEquals(N - 4, bpr.getCount()) ;
         check(bpr) ;
 
@@ -158,7 +158,7 @@ public class TestBPTreeRecords extends Assert {
         fill(bpr) ;
 
         // No match.
-        assertNull(bpr.internalSearch(RecordLib.intToRecord(0x20))) ;
+        assertNull(search(bpr, RecordLib.intToRecord(0x20))) ;
 
         Record r = RecordLib.intToRecord(0x32) ;
         Record r2 = search(bpr, r) ;
@@ -292,17 +292,17 @@ public class TestBPTreeRecords extends Assert {
     }
 
     private static Record search(BPTreeRecords bpr, Record r) {
-        return bpr.internalSearch(r) ;
+        return bpr.internalSearch(null, r) ;
     }
 
     private static void insert(BPTreeRecords bpr, int... values) {
         for ( int value : values ) {
-            bpr.internalInsert(RecordLib.intToRecord(value)) ;
+            bpr.internalInsert(null, RecordLib.intToRecord(value)) ;
         }
     }
 
     private static void insert(BPTreeRecords bpr, Record r) {
-        bpr.internalInsert(r) ;
+        bpr.internalInsert(null, r) ;
     }
 
     private static void delete(BPTreeRecords bpr, int... values) {
@@ -312,7 +312,7 @@ public class TestBPTreeRecords extends Assert {
     }
 
     private static void delete(BPTreeRecords bpr, Record r) {
-        bpr.internalDelete(r) ;
+        bpr.internalDelete(null, r) ;
     }
 
     private static void contains(BPTreeRecords bpr, int... values) {
