@@ -22,7 +22,7 @@ import org.seaborne.dboe.base.page.Page ;
 import org.seaborne.dboe.base.record.Record ;
 import org.slf4j.Logger ;
 
-/** Abstraction of a B+Tree node - either an branch (BTreeNode) or leaf (BTreeLeaf - records)*/
+/** Abstraction of a B+Tree node - either an branch (BTreeNode) or records block (BTreeRecords) */
 abstract public class BPTreePage implements Page
 {
     protected BPTreePage(BPlusTree bpTree) {
@@ -44,7 +44,6 @@ abstract public class BPTreePage implements Page
         }
     }
     
-    // Also called from BPtreeRecords
     protected static void promote(BPTreePage page) {
         Logger pageLog = page.getLogger() ; 
         if ( logging(pageLog) ) {
