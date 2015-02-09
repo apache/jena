@@ -17,14 +17,13 @@
 
 package org.seaborne.dboe.base.page;
 
-import org.apache.jena.atlas.logging.Log ;
 import org.seaborne.dboe.DBOpEnvException ;
 import org.seaborne.dboe.base.block.Block ;
 
 /** A page with a byte buffer */
 public abstract class PageBase implements Page
 {
-    private final int id ;
+    private int id ;
     private Block block ;
 
     protected PageBase(Block block)
@@ -41,8 +40,9 @@ public abstract class PageBase implements Page
     @Override
     final public void reset(Block block2)
     { 
-        if ( block2.getId() != id )
-            Log.fatal(this, "Block id changed: "+id+" => "+block2.getId()) ;
+//        if ( block2.getId() != id )
+//            Log.warn(this, "Block id changed: "+id+" => "+block2.getId()) ;
+        id = block2.getId().intValue() ;
         _reset(block2) ; 
         this.block = block2 ;
     } 
