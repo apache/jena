@@ -1133,7 +1133,7 @@ public final class BPTreeNode extends BPTreePage
     final boolean isRoot() {
         // No BPT remembered root node currently
         // if ( bpTree.root == this ) return true ;
-        return this.getId() == BPlusTreeParams.RootId ;
+        return this.parent == BPlusTreeParams.RootParent ;
     }
 
     private Record keyRecord(Record record) {

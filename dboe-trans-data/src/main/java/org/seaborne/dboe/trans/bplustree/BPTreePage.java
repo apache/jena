@@ -93,14 +93,28 @@ abstract public class BPTreePage implements Page
                 // Duplicate down path.
                 List<AccessStep> steps = path.getPath() ;
                 int newPtr = page.getId() ;
-                
+                BPTreeNode newRoot = null ; 
+                if ( logging(pageLog) )
+                    log(pageLog, "Path: %s", path) ;
                 for ( int i = steps.size() - 1 ; i >= 0 ; i--  ) {
                     AccessStep s = steps.get(i) ;
                     // duplicate
                     BPTreeNode n = s.node ;
-                    changed = n.promote() ;
+                    if ( logging(pageLog) )
+                        log(pageLog, "    >> %s", n) ;
+                    
+                    changed = n.promote() ; // TODO Reuses java datastructure.  Copy better? 
+                    
+                    if ( logging(pageLog) )
+                        log(pageLog, "    << %s", n) ;
+
                     if ( ! changed )
                         continue ;
+                    if ( n.isRoot() ) {
+                        if ( newRoot != null)
+                            throw new InternalErrorException("New root already found") ;
+                        newRoot = n ;
+                    }
                     // Reset from the duplicated below.
                     // newPtr == s.page.getId() ??
                     if ( newPtr != s.page.getId() ) {
@@ -109,9 +123,11 @@ abstract public class BPTreePage implements Page
                     n.ptrs.set(s.idx, newPtr) ;
                     newPtr = n.getId() ;
                 }
-            }
-            System.err.println("promotedRoot") ;
-            //page.bpTree.promotedRoot() ;
+                if ( newRoot != null )
+                    if ( logging(pageLog) )
+                        log(pageLog, "  new root %s", newRoot) ;
+                    page.bpTree.newRoot(newRoot) ;
+                }
         }        
         
     }
@@ -121,7 +137,7 @@ abstract public class BPTreePage implements Page
         BPTreePage newPage = step.page ;
     }
     
-    private static String mark(BPTreePage page) {
+    static String mark(BPTreePage page) {
         String mark = "Data" ;
         if ( page instanceof BPTreeNode) {
             BPTreeNode n = ((BPTreeNode)page) ;

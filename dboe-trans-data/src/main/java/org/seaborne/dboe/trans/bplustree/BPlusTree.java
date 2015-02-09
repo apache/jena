@@ -151,9 +151,8 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     private static Logger log = LoggerFactory.getLogger(BPlusTree.class) ;
     
     // Root id across transactions
-    // Changes as the tree evolves in write transactions.s 
+//    // Changes as the tree evolves in write transactions. 
     private int rootIdx = BPlusTreeParams.RootId ;
-    ///*package*/ BPTreeNode root ;
     private BPTreeNodeMgr nodeManager ; 
     private BPTreeRecordsMgr recordsMgr; 
     private final BPlusTreeParams bpTreeParams ;
@@ -179,7 +178,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         super.checkTxn() ;
         int rootId = super.getState().root ;
         // No caching here.
-        return nodeManager.getRead(rootIdx, BPlusTreeParams.RootParent) ;
+        return nodeManager.getRead(rootId, BPlusTreeParams.RootParent) ;
     }
 
     private BPTreeNode getRootWrite() {
@@ -200,6 +199,10 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     private void setRoot(BPTreeNode node) {
         throw new InternalErrorException("BPlusTree.setRoot") ;
         // root = node ;
+    }
+
+    public void newRoot(BPTreeNode newRoot) {
+        getState().root = newRoot.getId() ;
     }
 
     /** Get the parameters describing this B+Tree */
@@ -476,13 +479,17 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     }
 
     @Override
-    protected void _commit(TxnId txnId, BptTxnState state) {}
+    protected void _commit(TxnId txnId, BptTxnState state) {
+        rootIdx = state.root ;
+    }
 
     @Override
     protected void _commitEnd(TxnId txnId, BptTxnState state) {}
 
     @Override
-    protected void _abort(TxnId txnId, BptTxnState state) {}
+    protected void _abort(TxnId txnId, BptTxnState state) {
+        rootIdx = state.initialroot ;
+    }
 
     @Override
     protected void _complete(TxnId txnId, BptTxnState state) {}
