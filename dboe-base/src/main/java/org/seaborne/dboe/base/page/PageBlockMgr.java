@@ -68,7 +68,7 @@ public class PageBlockMgr<T extends Page>
      * @param referencingId
      *            Id of block referring to this one. 
      *            For example, a parent in a tree.
-     *            May be -1 for "none" or "meaningless".
+     *            May be negative for "none" or "meaningless".
      */
     public T getRead(int id, int referencingId) {
         return getRead$(id) ;
