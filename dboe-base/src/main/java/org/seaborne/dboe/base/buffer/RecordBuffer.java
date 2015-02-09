@@ -228,8 +228,8 @@ final public class RecordBuffer extends BufferBase {
      */
     public RecordBuffer duplicate() {
         RecordBuffer n = new RecordBuffer(factory, maxSlot) ;
-        copy(0, n, 0, maxSlot) ; // numSlot
-        n.numSlot = numSlot ; // reset the allocated length
+        copy(0, n, 0, maxSlot) ;    // numSlot
+        n.numSlot = numSlot ;       // reset the allocated length
         return n ;
     }
 }
