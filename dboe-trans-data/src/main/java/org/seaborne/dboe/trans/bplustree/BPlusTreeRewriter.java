@@ -317,8 +317,8 @@ public class BPlusTreeRewriter
         protected Record rebalance(int id1, Record r1, int id2, Record r2)
         {
             BPTreeNodeMgr mgr = bpt.getNodeManager() ; 
-            BPTreeNode node1 = mgr.getWrite(id1, BPlusTreeParams.NoParent) ;
-            BPTreeNode node2 = mgr.getWrite(id2, BPlusTreeParams.NoParent) ;
+            BPTreeNode node1 = mgr.getWrite(id1) ;
+            BPTreeNode node2 = mgr.getWrite(id2) ;
             
             // rebalence
             // ** Need rebalance of data leaf layer. 
