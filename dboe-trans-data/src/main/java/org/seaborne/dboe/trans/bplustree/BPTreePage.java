@@ -119,6 +119,7 @@ abstract public class BPTreePage implements Page
                     // newPtr == s.page.getId() ??
                     if ( newPtr != s.page.getId() ) {
                         System.err.println("  Promotion: newPtr != s.page.getId(): "+newPtr+" != "+s.page.getId()) ;
+                        throw new InternalErrorException() ;
                     }
                     n.ptrs.set(s.idx, newPtr) ;
                     newPtr = n.getId() ;
