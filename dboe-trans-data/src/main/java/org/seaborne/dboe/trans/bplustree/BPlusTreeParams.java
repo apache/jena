@@ -66,6 +66,8 @@ public class BPlusTreeParams
     public static final int RootId          = 0 ;
     public static final int RootParent      = -2 ;
     public static final int NoParent        = -99 ;
+    // Used when getting a block and we don't need/want/know the parent.
+    public static final int UnsetParent     = -98 ;
 
     // Per instance settings
     
