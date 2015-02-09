@@ -21,9 +21,11 @@ package dev;
 public class NOTES {
     // Mantis / cohort / legion
     
-    //** Refind indexes on promotion!
-    // Or assume same place (different ids).
-    //** Or does slip on the way down work out?
+    // PageBlockMgr.promote -- always copied.
+    // promotedRoot
+    
+    // write on every records insert - cache and delay..
+    // BPlusTree.releaseRootWrite
     
     // Rename/interface for *BuilderStd.
     // dboe-base-test ? 

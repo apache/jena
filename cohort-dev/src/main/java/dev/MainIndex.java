@@ -72,19 +72,28 @@ public class MainIndex {
         List<Integer> data2a = Arrays.asList( 2 , 4, 3 , 7 , 8 ) ;
         List<Integer> data2b = Arrays.asList( 9 ) ; // , 7 , 8 , 9 ) ;
         
-        List<Record> dataRecords1 =  null ; data1.stream().map(x->r(x)).collect(Collectors.toList()) ;
-        List<Record> dataRecords2a =  data2a.stream().map(x->r(x)).collect(Collectors.toList()) ;
-        List<Record> dataRecords2b =  data2b.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        List<Record> dataRecords1 =  data1.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        List<Record> dataRecords2a = null ;  data2a.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        List<Record> dataRecords2b = null ;  data2b.stream().map(x->r(x)).collect(Collectors.toList()) ;
         
 //        Runnable r = () -> data2.forEach((x) -> idx.add(r(x)) ) ;
         
         bpt.startBatch();
         
         if ( dataRecords1 != null ) {
-            verbose(true, ()->add(bpt,dataRecords1)) ;
+            verbose(true, ()-> {
+                //add(bpt,dataRecords1) ;
+                dataRecords1.forEach(r -> {
+                    dump(bpt) ;
+                    bpt.add(r) ;
+                }) ;
+                  
+            } ) ;
             dump(bpt) ;
             System.out.println() ;
         }
+        
+        
         if ( dataRecords2a != null && dataRecords2b != null ) {
             // Two part.
             add(bpt, dataRecords2a) ;
@@ -137,7 +146,9 @@ public class MainIndex {
     static void dump(BPlusTree bpt) {
         boolean b = BPlusTreeParams.Logging ;
         BPlusTreeParams.Logging = false ;
+        System.out.println() ;
         bpt.dump() ;
+        System.out.println() ;
         BPlusTreeParams.Logging = b ; 
     }
     
