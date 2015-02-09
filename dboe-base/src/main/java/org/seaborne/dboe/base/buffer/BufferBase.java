@@ -36,7 +36,7 @@ abstract class BufferBase
     protected ByteBuffer bb ;
     protected int slotLen ;
     protected int numSlot ;                 // Number of records in use
-    protected int maxSlot ;                 // Maximum number of records
+    protected final int maxSlot ;           // Maximum number of records
 
     protected BufferBase(ByteBuffer bb, int slotLen, int num)
     {
