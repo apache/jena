@@ -386,6 +386,12 @@ public final class BPTreeNode extends BPTreePage
             return ;
         // This calls reset is needed.
         //   The id, records buffer and pointer buffers need resetting if the block changed.
+        
+        // **** Need the parent chain.
+        // **** Need to reset (Node idx, index in pointers, oldvalue, newvalue)
+        // **** What about split?
+        // **** Delete/rebalance
+        
         bpTree.getNodeManager().promote(this) ;
     }
     
@@ -481,11 +487,12 @@ public final class BPTreeNode extends BPTreePage
         return decodeIndex(idx) ;
     }
 
-    // **** Old documentation
     /*
-     * Split a non-root node y, held at slot idx.
+     * Split a non-root node y, held at slot idx in its parent,
+     * which is 'this'and is large enough for a new entry without
+     * another split because we split full blocks on the way down.  
      * Do this by splitting the node in two (call to BPTree.split)
-     * and insertting the new key/pointer pair.
+     * and inserting the new key/pointer pair.
      * WRITE(y)
      * WRITE(z)
      * WRITE(this)
@@ -709,8 +716,8 @@ public final class BPTreeNode extends BPTreePage
         BPTreePage page = get(y) ;
 
         boolean thisWriteNeeded = false ;
-        if ( page.isMinSize() ) // Can't be root - we decended in the get().
-        {
+        if ( page.isMinSize() ) { 
+            // Can't be the root - we decended in the get().
             // [[TXN]] ** clone
             page = rebalance(page, y) ;
             thisWriteNeeded = true ;
@@ -724,11 +731,13 @@ public final class BPTreeNode extends BPTreePage
         }
 
         // Go to bottom
-        // Need to return the new key.
+        // Need to return the deleted key/value.
         // [[TXN]] ** clone
-        // [[TXN]] ** internalDelete in BPTreeRecords
         Record r2 = page.internalDelete(rec) ;
         if ( x >= 0 ) {
+            // The deleted key was in the tree as well as the records.
+            // Change to the new key for the subtree. 
+            // [[TXN]] ** clone
             promote(this) ;
             records.set(x, keyRecord(page.maxRecord())) ;
             this.write() ;
