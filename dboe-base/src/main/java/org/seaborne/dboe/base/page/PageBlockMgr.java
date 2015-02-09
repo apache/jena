@@ -149,7 +149,6 @@ public class PageBlockMgr<T extends Page>
         block2.setReadOnly(false) ;
         if ( block2 == block )
             return false ;
-        
         // Change - reset Block in page.
         page.reset(block2) ;
         return true ;

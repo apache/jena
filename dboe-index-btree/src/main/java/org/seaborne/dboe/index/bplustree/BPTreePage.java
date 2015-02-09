@@ -98,8 +98,8 @@ abstract public class BPTreePage implements Page
     /** Write, or at least ensure wil be written */
     abstract void write() ; 
     
-    /** Turn a read page into a write page */
-    abstract void promote() ;
+    /** Turn a read page into a write page. Return true on a change of backing block. */
+    abstract boolean promote() ;
 
     /** Mark as no longer needed */
     abstract void release() ;

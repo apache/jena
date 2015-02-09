@@ -114,16 +114,16 @@ public final class BPTreeRecords extends BPTreePage
 //    public BPTreeRecords findFirstPage() { return this ; }
 
     @Override final
-    public void write()     { bprRecordsMgr.write(this) ; } 
+    public void write()         { bprRecordsMgr.write(this) ; } 
     
     @Override final
-    public void promote()   { bprRecordsMgr.promote(this) ; } 
+    public boolean promote()    { return bprRecordsMgr.promote(this) ; } 
     
     @Override final
-    public void release()   { bprRecordsMgr.release(this) ; }
+    public void release()       { bprRecordsMgr.release(this) ; }
     
     @Override final
-    public void free()      { bprRecordsMgr.free(this) ; }
+    public void free()          { bprRecordsMgr.free(this) ; }
 
     @Override
     public Record internalInsert(Record record)

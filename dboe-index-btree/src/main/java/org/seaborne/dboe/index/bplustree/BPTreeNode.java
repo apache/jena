@@ -351,7 +351,7 @@ public final class BPTreeNode extends BPTreePage
     final void write()          { bpTree.getNodeManager().write(this) ; } 
     
     @Override
-    final void promote()        { bpTree.getNodeManager().promote(this) ; }
+    final boolean promote()     { return bpTree.getNodeManager().promote(this) ; }
 
     @Override
     final void release()        { bpTree.getNodeManager().release(this) ; } 
