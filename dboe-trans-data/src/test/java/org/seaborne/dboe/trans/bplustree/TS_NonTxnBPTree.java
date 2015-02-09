@@ -20,12 +20,12 @@ package org.seaborne.dboe.trans.bplustree;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
-/** Non- transaction tests (i.e. tests of the B+Tree algorithms) */
+/** Non-transaction tests (i.e. tests of the B+Tree algorithms) */
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestBPlusTree.class,
     TestBPTreeRecords.class,
-    TestBPlusTreeRewriter.class,
+    TestBPlusTree.class,
+    TestBPlusTreeRewriter.class
 } )
 
 public class TS_NonTxnBPTree

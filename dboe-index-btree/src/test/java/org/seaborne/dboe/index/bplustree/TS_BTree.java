@@ -22,9 +22,9 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestBPlusTree.class,
     TestBPTreeRecords.class,
-    TestBPlusTreeRewriter.class,
+    TestBPlusTree.class,
+    TestBPlusTreeRewriter.class
 } )
 
 public class TS_BTree
