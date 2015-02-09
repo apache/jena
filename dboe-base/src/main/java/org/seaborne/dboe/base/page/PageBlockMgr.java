@@ -145,11 +145,14 @@ public class PageBlockMgr<T extends Page>
     public boolean promote(Page page) {
         // Replace, reset Block in page.
         Block block = page.getBackingBlock() ;
+        block.getByteBuffer().rewind() ;
         //Block block2 = blockMgr.promote(block) ;
-        // TODO Always new
+        // --- TODO Always new
         Block block2 =  blockMgr.allocate(-1) ;
         block2.getByteBuffer().put(block.getByteBuffer()) ;
+        block2.getByteBuffer().rewind() ;
         block2.setReadOnly(false) ;
+        // --- TODO Always new
         if ( block2 == block )
             return false ;
         // Change - reset Block in page.
