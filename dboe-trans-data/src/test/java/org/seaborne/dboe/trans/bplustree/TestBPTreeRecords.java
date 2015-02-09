@@ -328,8 +328,10 @@ public class TestBPTreeRecords extends Assert {
     }
 
     private static void fill(BPTreeRecords bpr) {
-        RecordBuffer rb = bpr.getRecordBuffer() ;
-        for ( int i = 0 ; rb.size() < rb.maxSize() ; i++ )
+        int N = bpr.getRecordBuffer().maxSize() ;
+        for ( int i = 0 ; i < N ; i++ ) {
+            RecordBuffer rb = bpr.getRecordBuffer() ;
             insert(bpr, (i + 0x30)) ;
+        }
     }
 }

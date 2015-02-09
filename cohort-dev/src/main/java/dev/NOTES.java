@@ -22,7 +22,11 @@ public class NOTES {
     // Mantis / cohort / legion
     
     // PageBlockMgr.promote -- always copied.
-    // promotedRoot
+    // RecordBufferPage._reset -- wrong?? format?
+    
+    // **** TestBPlusTree.tree_iter_2_01
+    
+    // ** RecordBuffer.size not geting set.
     
     // write on every records insert - cache and delay..
     // BPlusTree.releaseRootWrite
