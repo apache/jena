@@ -50,12 +50,15 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
     }
 
     @Override
-    public BPTreeNode getWrite(int id)
-    { throw new UnsupportedOperationException("call getWrite(int)") ; }
+    public BPTreeNode getWrite(int id) {
+        return super.getWrite(id, BPlusTreeParams.UnsetParent) ;
+    }
+
     @Override
-    public BPTreeNode getRead(int id)
-    { throw new UnsupportedOperationException("call getRead(int)") ; }
-    
+    public BPTreeNode getRead(int id) {
+        return super.getRead(id, BPlusTreeParams.UnsetParent) ;
+    }
+
     /** Fetch a block - fill in the parent id, which is not in the on-disk bytes */
     @Override
     public BPTreeNode getRead(int id, int parent) {
@@ -73,6 +76,7 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
     }
 
     boolean isWritable(int id) {
+        
         System.err.println("BPTreeNodeMgr.isWritable") ;
         return false ;
     }
