@@ -132,7 +132,6 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-Activator>org.apache.jena.osgi.test.JenaOSGITestActivator</Bundle-Activator>
 						<!-- <Import-Package>com.hp.hpl.jena</Import-Package> -->
 						<!-- <Embed-Dependency>artifactId=jena-core;inline=true</Embed-Dependency> -->
 					</instructions>
