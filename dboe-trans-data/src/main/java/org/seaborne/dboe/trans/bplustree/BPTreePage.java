@@ -17,9 +17,14 @@
 
 package org.seaborne.dboe.trans.bplustree;
 
+import java.util.List ;
+import java.util.Optional ;
+
+import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.FmtLog ;
 import org.seaborne.dboe.base.page.Page ;
 import org.seaborne.dboe.base.record.Record ;
+import org.seaborne.dboe.trans.bplustree.AccessPath.AccessStep ;
 import org.slf4j.Logger ;
 
 /** Abstraction of a B+Tree node - either an branch (BTreeNode) or records block (BTreeRecords) */
@@ -44,16 +49,89 @@ abstract public class BPTreePage implements Page
         }
     }
     
-    protected static void promote(BPTreePage page) {
-        Logger pageLog = page.getLogger() ; 
+    protected static void promote(AccessPath path, BPTreePage page) {
+        Logger pageLog = page.getLogger() ;
+        // ---- Logging
         if ( logging(pageLog) ) {
-            String nodeOrRecords = (page instanceof BPTreeNode) ? "N": "R" ; 
-            log(pageLog, "Promote %d[%s]", page.getId(), nodeOrRecords) ;
+            log(pageLog, "Promote %d[%s]", page.getId(), mark(page)) ;
+            if ( path != null ) {
+                // Fix to root.
+                path.getPath().forEach(e -> {
+                    log(pageLog, "  Path: %s:%s[%s]", mark(e.node), e.node.getId(), e.idx) ;
+                    //n.duplicate() ;
+                } ) ;
+            }
+            //log(pageLog, "  Path -- %s", path) ;
+            
         }
-        // Check if needed.
-        page.promote();
+        // ---- Checking if the access path is consistent.
+        if ( BPlusTreeParams.CheckingNode && path != null ) {
+            if ( path.getPath().size() > 2) {
+                try {
+                    
+                    // Check every one except the last is not a leaf node.
+                    List<AccessStep> y = path.getPath().subList(0, path.getPath().size()-2) ;
+                    Optional<?> z = y.stream().filter(e -> e.node.isLeaf() ).findFirst() ;
+                    if ( z.isPresent() )
+                        throw new InternalErrorException("promote: Leaf "+z.get()+" found in path not at the tail: "+path) ;
+                    z = y.stream().filter(e -> e.node.ptrs.get(e.idx) != e.page.getId()).findFirst() ;
+                    if ( z.isPresent() )
+                        throw new InternalErrorException("promote: path error: "+path) ;
+                } catch (Throwable th) { 
+                    System.err.println(path) ;
+                    throw th ;
+                }
+            }
+        }
+        
+        // ---- Clone the access path nodes.
+        // Path is the route to this page - it does not include this page. 
+        // Work from the bottom to the top, the reverse order of AccessPath
+        boolean changed = page.promote();
+        if ( changed ) {
+            if ( path != null ) {
+                // Duplicate down path.
+                List<AccessStep> steps = path.getPath() ;
+                int newPtr = page.getId() ;
+                
+                for ( int i = steps.size() - 1 ; i >= 0 ; i--  ) {
+                    AccessStep s = steps.get(i) ;
+                    // duplicate
+                    BPTreeNode n = s.node ;
+                    changed = n.promote() ;
+                    if ( ! changed )
+                        continue ;
+                    // Reset from the duplicated below.
+                    // newPtr == s.page.getId() ??
+                    if ( newPtr != s.page.getId() ) {
+                        System.err.println("  Promotion: newPtr != s.page.getId(): "+newPtr+" != "+s.page.getId()) ;
+                    }
+                    n.ptrs.set(s.idx, newPtr) ;
+                    newPtr = n.getId() ;
+                }
+            }
+            System.err.println("promotedRoot") ;
+            //page.bpTree.promotedRoot() ;
+        }        
+        
     }
 
+    private static void duplicate(AccessStep step) {
+        // Clone the newPage, clobne uup tree.
+        BPTreePage newPage = step.page ;
+    }
+    
+    private static String mark(BPTreePage page) {
+        String mark = "Data" ;
+        if ( page instanceof BPTreeNode) {
+            BPTreeNode n = ((BPTreeNode)page) ;
+            mark = ((BPTreeNode)page).isLeaf() ? "Leaf" : "Node" ;
+            if ( n.isRoot() )
+                mark = mark+"/Root" ;
+        }
+        return mark ; 
+    }
+    
     abstract Logger getLogger() ;
 
     /** Split in two, return the new (upper) page.  
@@ -79,9 +157,6 @@ abstract public class BPTreePage implements Page
     abstract BPTreePage merge(BPTreePage right, Record splitKey) ;
     //* Return the new page (may be left or right)
     
-    /** Test whether this page is modifiable */
-    abstract boolean isModifiable() ;
-
     /** Test whether this page is full (has no space for a new element) - used in "insert" */
     abstract boolean isFull() ;
     
@@ -98,13 +173,13 @@ abstract public class BPTreePage implements Page
     abstract boolean hasAnyKeys() ;
 
     /** Find a record; return null if not found */
-    abstract Record internalSearch(Record rec) ;
+    abstract Record internalSearch(AccessPath path, Record rec) ;
     
     /** Insert a record - return existing value if any, else null - put back modifed blocks */
-    abstract Record internalInsert(Record record) ;
+    abstract Record internalInsert(AccessPath path, Record record) ;
     
     /** Delete a record - return the old value if there was one, else null - put back modifed blocks */
-    abstract Record internalDelete(Record record) ;
+    abstract Record internalDelete(AccessPath path, Record record) ;
 
     /** Least in page */
     abstract Record getLowRecord() ;
@@ -121,8 +196,8 @@ abstract public class BPTreePage implements Page
     /** Write, or at least ensure wil be written */
     abstract void write() ; 
     
-    /** Turn a read page into a write page */
-    abstract void promote() ;
+    /** Turn a read page into a write page. Return true if any changes were made. */
+    abstract boolean promote() ;
 
     /** Mark as no longer needed */
     abstract void release() ;

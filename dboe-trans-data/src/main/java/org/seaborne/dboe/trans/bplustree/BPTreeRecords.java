@@ -76,12 +76,6 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    final boolean isModifiable() {
-        // Assumes MR+SW
-        return getId() >= bprRecordsMgr.getBlockMgr().allocLimit() ;
-    }
-
-    @Override
     public boolean hasAnyKeys() {
         return rBuff.size() > 0 ;
     }
@@ -94,7 +88,7 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    Record internalSearch(Record rec) {
+    Record internalSearch(AccessPath path, Record rec) {
         int i = rBuff.find(rec) ;
         if ( i < 0 )
             return null ;
@@ -105,12 +99,12 @@ public final class BPTreeRecords extends BPTreePage
     public void write()     { bprRecordsMgr.write(this) ; } 
     
     @Override final
-    public void promote()   {
+    public boolean promote()   {
         if ( bprRecordsMgr.isWritable(getId()) )
-            return ;
+            return false ;
         // .reset()is called if needed.
         // If the block changes, then rBuffPage and rBuff need fixups.
-        bprRecordsMgr.promote(this) ;
+        return bprRecordsMgr.promote(this) ;
     }
     
     @Override final
@@ -120,9 +114,9 @@ public final class BPTreeRecords extends BPTreePage
     public void free()      { bprRecordsMgr.free(this) ; }
 
     @Override
-    Record internalInsert(Record record) {
+    Record internalInsert(AccessPath path, Record record) {
         // [[TXN]]
-        promote(this) ;
+        promote(path, this) ;
         int i = rBuff.find(record) ;
         Record r2 = null ;
         if ( i < 0 ) {
@@ -141,8 +135,8 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    Record internalDelete(Record record) {
-        BPTreeNode.promote(this) ;
+    Record internalDelete(AccessPath path, Record record) {
+        promote(path, this) ;
         int i = rBuff.find(record) ;
         if ( i < 0 )
             return null ;

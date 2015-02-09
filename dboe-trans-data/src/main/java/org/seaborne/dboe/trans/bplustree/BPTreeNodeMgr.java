@@ -76,9 +76,9 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
     }
 
     boolean isWritable(int id) {
-        
         System.err.println("BPTreeNodeMgr.isWritable") ;
         return false ;
+//      return bpTree.state.modifiableNodeBlock(id) ;
     }
 
     private static class Block2BPTreeNode implements BlockConverter<BPTreeNode>
@@ -157,7 +157,7 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
         BPTreeNode n = new BPTreeNode(bpTree) ;
         // The count is zero at the root only.
         // When the root is zero, it's a leaf.
-        formatBPTreeNode(n, bpTree, block, asLeaf, -2, count) ;
+        formatBPTreeNode(n, bpTree, block, asLeaf, BPlusTreeParams.NoParent, count) ;
         return n ;
     }
 
