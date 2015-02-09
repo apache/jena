@@ -76,7 +76,7 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
     }
 
     boolean isWritable(int id) {
-        System.err.println("BPTreeNodeMgr.isWritable") ;
+        //System.err.println("BPTreeNodeMgr.isWritable") ;
         return false ;
 //      return bpTree.state.modifiableNodeBlock(id) ;
     }

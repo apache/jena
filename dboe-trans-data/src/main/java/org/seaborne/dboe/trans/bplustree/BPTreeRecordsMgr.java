@@ -84,7 +84,7 @@ final public class BPTreeRecordsMgr extends PageBlockMgr<BPTreeRecords>
     public BPlusTree getBPTree()                        { return bpTree ; }
 
     boolean isWritable(int id) {
-        System.err.println("BPTreeRecordsMgr.isWritable") ;
+        //System.err.println("BPTreeRecordsMgr.isWritable") ;
         return false ;
     }
 
