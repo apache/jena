@@ -141,15 +141,18 @@ public class PageBlockMgr<T extends Page>
         blockMgr.free(block) ;
     }
 
-    public void promote(Page page) {
+    /** Promote a page - return 'true' if the block changed (.reset()) will have been called */ 
+    public boolean promote(Page page) {
         // Replace, reset Block in page.
         Block block = page.getBackingBlock() ;
         Block block2 = blockMgr.promote(block) ;
         block2.setReadOnly(false) ;
-        if ( block2 != block ) {
-            // Change - reset Block in page.
-            page.reset(block2) ;
-        }
+        if ( block2 == block )
+            return false ;
+        
+        // Change - reset Block in page.
+        page.reset(block2) ;
+        return true ;
     }
 
     public boolean valid(int id) {
