@@ -39,8 +39,8 @@ limitations under the License.
     <pax.logging.version>1.8.1</pax.logging.version>
   </properties>
 
-  <dependencies>
 
+  <dependencies>
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-osgi</artifactId>
@@ -62,7 +62,19 @@ limitations under the License.
       <scope>test</scope>
     </dependency>
 
-    <!-- needed to get a org.slf4j bundle for PAX -->
+    <!-- needed to get a org.slf4j bundle for PAX 
+    NOTE: As we also inherit slf4j-log4j from jena-parent, we will get this
+    warning at startup:
+
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/home/stain/.m2/repository/org/ops4j/pax/logging/pax-logging-api/1.8.1/pax-logging-api-1.8.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/home/stain/.m2/repository/org/slf4j/slf4j-log4j12/1.7.6/slf4j-log4j12-1.7.6.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.ops4j.pax.logging.slf4j.Slf4jLoggerFactory]
+
+    As long as the actual binding is the org.ops4j binding, this can be ignored.
+
+    -->
     <dependency>
       <groupId>org.ops4j.pax.logging</groupId>
       <artifactId>pax-logging-log4j2</artifactId>
@@ -74,6 +86,7 @@ limitations under the License.
       <groupId>org.ops4j.pax.logging</groupId>
       <artifactId>pax-logging-api</artifactId>
       <version>${pax.logging.version}</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -130,7 +143,7 @@ limitations under the License.
           <systemPropertyVariables>
             <!-- So the test can find the current version of jena-osgi -->
             <jena-osgi.version>${project.version}</jena-osgi.version>
-            <!-- not so noisy logging -->
+            <!-- not so noisy OSGi logging -->
             <org.ops4j.pax.logging.DefaultServiceLog.level>WARN</org.ops4j.pax.logging.DefaultServiceLog.level>
           </systemPropertyVariables>
         </configuration>
