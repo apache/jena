@@ -54,7 +54,11 @@ public final class BPTreeRecords extends BPTreePage
     
     RecordBuffer getRecordBuffer()
     { return rBuff ; }
-
+    
+    public final Record get(int idx) {
+        return rBuff.get(idx) ; 
+    }
+    
     @Override
     public final Block getBackingBlock() {
         return rBuffPage.getBackingBlock() ;
@@ -104,7 +108,11 @@ public final class BPTreeRecords extends BPTreePage
             return false ;
         // .reset()is called if needed.
         // If the block changes, then rBuffPage and rBuff need fixups.
-        return bprRecordsMgr.promote(this) ;
+        // TODO Non-duplicating write.
+        getBackingBlock().setReadOnly(false) ;
+        return true ;
+        
+//        return bprRecordsMgr.promote(this) ;
     }
     
     @Override final

@@ -38,8 +38,8 @@ import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
-
 import static dev.RecordLib.* ;
+import static org.seaborne.dboe.test.RecordLib.r ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 
@@ -50,8 +50,26 @@ public class MainIndex {
     
     static Journal journal = Journal.create(Location.mem()) ;
     
+    
+//    @Test
+//    @Override
+//    public void tree_iter_2_01() {
+//        int[] keys = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
+//        BPlusTree bpt = (BPlusTree)makeRangeIndex(2) ;
+//        add(bpt, keys) ;
+//        
+//        bpt.dump();
+//        
+//        List<Integer> x = RecordLib.toIntList(bpt.iterator(r(4), r(6))) ;
+//        List<Integer> expected = toIntList(4, 5) ;
+//        assertEquals(expected, x) ;
+//    }
+
+   
+    
+    
     @SuppressWarnings("null")
-    public static void main(String[] args) {
+    public static void main1(String[] args) {
         BPlusTreeParams.Logging = false ;
         BlockMgrFactory.AddTracker = false ;
         SystemIndex.setNullOut(true) ;
@@ -65,16 +83,19 @@ public class MainIndex {
         
         RangeIndex idx = bpt ;
         
+        for ( int i = 0 ; i < 10 ; i ++ )
+            bpt.getRecordsMgr().getBlockMgr().allocate(-1) ;
+        
         //List<Integer> data1 = Arrays.asList( 1 , 3 , 5 , 7 , 9 , 8 , 6 , 4 , 2) ;
         
-        List<Integer> data1 = Arrays.asList( 2, 3 , 4 ) ; // , 7 , 8 , 9 ) ;
+        List<Integer> data1 = null ; // Arrays.asList( 2, 3 , 4 ) ; // , 7 , 8 , 9 ) ;
         
-        List<Integer> data2a = Arrays.asList( 2 , 4, 3 , 7 , 8 ) ;
-        List<Integer> data2b = Arrays.asList( 9 ) ; // , 7 , 8 , 9 ) ;
+        List<Integer> data2a = Arrays.asList( 2 , 3 ) ;
+        List<Integer> data2b = Arrays.asList( 4 ) ; // , 7 , 8 , 9 ) ;
         
-        List<Record> dataRecords1 =  data1.stream().map(x->r(x)).collect(Collectors.toList()) ;
-        List<Record> dataRecords2a = null ;  data2a.stream().map(x->r(x)).collect(Collectors.toList()) ;
-        List<Record> dataRecords2b = null ;  data2b.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        List<Record> dataRecords1 =  data1 == null  ? null : data1.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        List<Record> dataRecords2a = data2a == null ? null : data2a.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        List<Record> dataRecords2b = data2b == null ? null : data2b.stream().map(x->r(x)).collect(Collectors.toList()) ;
         
 //        Runnable r = () -> data2.forEach((x) -> idx.add(r(x)) ) ;
         

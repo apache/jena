@@ -349,29 +349,29 @@ public final class BPTreeNode extends BPTreePage
     // count is the number of pointers.
     
     @Override
-    final int getMaxSize()           { return bpTree.getParams().getOrder() ; }
+    public final int getMaxSize()          { return bpTree.getParams().getOrder() ; }
     
     @Override
-    final int getCount()            { return count ; }
+    public final int getCount()            { return count ; }
  
     @Override
-    final void setCount(int count)  { this.count = count ; }
+    public final void setCount(int count)  { this.count = count ; }
     
     @Override
 //    public ByteBuffer getBackingByteBuffer()       { return byteBuffer ; }
     public Block getBackingBlock()       { return block ; }
     
     /** Do not use without great care */
-    RecordBuffer getRecordBuffer()  { return records ; }
+    public final RecordBuffer getRecordBuffer()  { return records ; }
     /** Do not use without great care */
-    PtrBuffer getPtrBuffer()        { return ptrs ; }
+    public final PtrBuffer getPtrBuffer()        { return ptrs ; }
     
     final void setParent(int parentId)    { this.parent = parentId ; } 
-    final int getParent()                 { return parent ; }
+    public final int getParent()                 { return parent ; }
 
     
-    final void setIsLeaf(boolean isLeaf)  { this.isLeaf = isLeaf ; }
-    final boolean isLeaf()                { return this.isLeaf ; }
+    public final void setIsLeaf(boolean isLeaf)  { this.isLeaf = isLeaf ; }
+    public final boolean isLeaf()                { return this.isLeaf ; }
     
     @Override
     public final int getId()        { return id ; }

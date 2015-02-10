@@ -21,36 +21,16 @@ package dev;
 public class NOTES {
     // Mantis / cohort / legion
     
-    // PageBlockMgr.promote -- always copied.
+    // *** Link is broken in records blocks.
+    // *** BPTReeRecords is non-dupkciating at the moment.
+    
     // RecordBufferPage._reset -- wrong?? format?
-    
-    // **** TestBPlusTree.tree_iter_2_01
-    
-    // ** RecordBuffer.size not geting set.
-    
-    // write on every records insert - cache and delay..
-    // BPlusTree.releaseRootWrite
-    
-    // Rename/interface for *BuilderStd.
-    // dboe-base-test ? 
     
     // BlockAccessBase/BlockAccessMapped needs to track highest block better.
     // Delete BlockMgrSync - used by BlockMgrCahe
     
     // Free chain management for MVCC block mgrs.  BlockMgrFreeChain is enough?
     
-    // BPTreePage.isModifiable(int id, BptTxnState)
-    //   BPTreeRecords.isModifiable -- look into bptree object
-    //   BPTreeNode.isModifiable
-    
-    // BPlusTree update Mode.
-    // Indirects for 
-    //   getState
-    //   checkWriteTxn
-    //   checkTxn
-    // on BptTxnState
-    // or separate handler object.
-
     // == Mantis
     // dboe-test ?  See BufferTestLib
     // log4j.properties.
