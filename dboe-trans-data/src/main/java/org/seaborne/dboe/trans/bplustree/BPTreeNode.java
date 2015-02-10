@@ -199,7 +199,7 @@ public final class BPTreeNode extends BPTreePage
     /** Find a record, using the active comparator */
     public static Record search(BPTreeNode root, Record rec) {
         root.internalCheckNodeDeep() ;
-        if ( root.getId() != 0 )
+        if ( ! root.isRoot() )
             throw new BPTreeException("Search not starting from the root: " + root) ;
         AccessPath path = new AccessPath(root) ;
         Record r = root.internalSearch(path, rec) ;
@@ -644,7 +644,7 @@ public final class BPTreeNode extends BPTreePage
         BPlusTree bpTree = root.bpTree ;
 
         if ( CheckingNode )
-            if ( root.getId() != 0 )
+            if ( ! root.isRoot() )
                 root.error("Not root: %d (root is id zero)", root.getId()) ;
         root.internalCheckNode() ;
         promoteRoot(root) ;
