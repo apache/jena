@@ -62,6 +62,7 @@ limitations under the License.
       <scope>test</scope>
     </dependency>
 
+    <!-- needed to get a org.slf4j bundle for PAX -->
     <dependency>
       <groupId>org.ops4j.pax.logging</groupId>
       <artifactId>pax-logging-log4j2</artifactId>
@@ -123,17 +124,24 @@ limitations under the License.
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <instructions>
-            <!-- <Import-Package>com.hp.hpl.jena</Import-Package> -->
-            <!-- <Embed-Dependency>artifactId=jena-core;inline=true</Embed-Dependency> -->
-          </instructions>
+          <systemPropertyVariables>
+            <!-- So the test can find the current version of jena-osgi -->
+            <jena-osgi.version>${project.version}</jena-osgi.version>
+            <!-- not so noisy logging -->
+            <org.ops4j.pax.logging.DefaultServiceLog.level>WARN</org.ops4j.pax.logging.DefaultServiceLog.level>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <!-- generate target/pax-exam-links -->
         <groupId>org.ops4j.pax.exam</groupId>
         <artifactId>exam-maven-plugin</artifactId>
         <version>${pax.exam.version}</version>
