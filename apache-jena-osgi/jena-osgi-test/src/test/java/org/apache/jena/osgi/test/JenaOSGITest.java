@@ -80,25 +80,15 @@ public class JenaOSGITest {
 	@Configuration
 	public Option[] config() {
 		return options(
-//				bootDelegationPackages("sun.*", 
-//						"com.sun.*",
-//						"java.*",
-//						"javax.*",
-//						"javax.net.ssl"),
-						// In PAX we have to list transitive dependencies
-						// manually. See ../jena-osgi/pom.xml 
-						// for dependencies that are NOT in <scope>provided</scope>
-						// (luckily the version numbers are picked up!)
-				//  Error starting bundle slf4j.log4j12. Fragment bundles can not be started.
-				//linkBundle("slf4j.log4j12"),
-				//linkBundle("slf4j.api"),
-				// Not sure if this is a Felix problem or what..
-				// Instead we'll use:
+        // bundle with org.slf4j implementation
 				linkBundle("org.ops4j.pax.logging.pax-logging-log4j2"),
 				linkBundle("org.ops4j.pax.logging.pax-logging-api"),
 
-				
-				mavenBundle("org.apache.jena", "jena-osgi"),
+        // jena-osgi
+				mavenBundle("org.apache.jena", "jena-osgi", 
+          System.getProperty("jena-osgi.version", "LATEST")),
+
+        // dependencies of jena-osgi
 				linkBundle("org.apache.httpcomponents.httpclient"),
 				linkBundle("org.apache.httpcomponents.httpcore"),
 				linkBundle("com.github.jsonld-java"),
