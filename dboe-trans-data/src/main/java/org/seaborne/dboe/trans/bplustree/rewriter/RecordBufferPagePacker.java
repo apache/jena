@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.trans.bplustree;
+package org.seaborne.dboe.trans.bplustree.rewriter;
 
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;

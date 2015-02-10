@@ -429,8 +429,13 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         // Caution - nesting via startReadBlkMgr
         startReadBlkMgr() ;
         BPTreeNode root = getRootRead() ;
+        boolean b = BPlusTreeParams.Logging ;
+        BPlusTreeParams.Logging = false ;
         try { root.dump() ; }
-        finally { releaseRootRead(root) ; }
+        finally { 
+            releaseRootRead(root) ;
+            BPlusTreeParams.Logging = b ;
+            }
         finishReadBlkMgr() ;
     }
 
@@ -442,7 +447,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     // Transaction.
     
-    /*package*/ void nonTransactional() {
+    public void nonTransactional() {
         // Fake it!
         // TODO More formally do this.
         // See NOTES

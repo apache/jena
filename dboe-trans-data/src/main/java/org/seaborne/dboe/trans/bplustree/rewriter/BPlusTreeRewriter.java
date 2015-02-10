@@ -15,11 +15,11 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.trans.bplustree;
+package org.seaborne.dboe.trans.bplustree.rewriter;
 
-import static org.seaborne.dboe.trans.bplustree.BPlusTreeRewriterUtils.divider ;
-import static org.seaborne.dboe.trans.bplustree.BPlusTreeRewriterUtils.printIndexBlocks ;
-import static org.seaborne.dboe.trans.bplustree.BPlusTreeRewriterUtils.summarizeDataBlocks ;
+import static org.seaborne.dboe.trans.bplustree.rewriter.BPlusTreeRewriterUtils.divider ;
+import static org.seaborne.dboe.trans.bplustree.rewriter.BPlusTreeRewriterUtils.printIndexBlocks ;
+import static org.seaborne.dboe.trans.bplustree.rewriter.BPlusTreeRewriterUtils.summarizeDataBlocks ;
 
 import java.util.Iterator ;
 
@@ -34,6 +34,7 @@ import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
+import org.seaborne.dboe.trans.bplustree.* ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

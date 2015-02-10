@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.trans.bplustree;
+package org.seaborne.dboe.trans.bplustree.rewriter;
 
 import java.util.Iterator ;
 import java.util.List ;
@@ -25,6 +25,9 @@ import org.apache.jena.atlas.lib.Pair ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
+import org.seaborne.dboe.trans.bplustree.BPTreeNode ;
+import org.seaborne.dboe.trans.bplustree.BPTreeNodeMgr ;
+import org.seaborne.dboe.trans.bplustree.BPlusTreeParams ;
 
 class BPlusTreeRewriterUtils
 {

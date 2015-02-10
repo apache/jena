@@ -15,12 +15,12 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.trans.bplustree;
+package org.seaborne.dboe.trans.bplustree.rewriter;
 
 import org.apache.jena.atlas.lib.RandomLib ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.seaborne.dboe.base.record.RecordFactory ;
-import org.seaborne.dboe.trans.bplustree.BPlusTreeRewriter ;
+import org.seaborne.dboe.trans.bplustree.rewriter.BPlusTreeRewriter ;
 import org.seaborne.dboe.sys.SystemIndex ;
 
 import com.hp.hpl.jena.sparql.util.Utils ;

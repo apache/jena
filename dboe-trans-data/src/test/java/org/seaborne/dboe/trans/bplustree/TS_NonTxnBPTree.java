@@ -19,6 +19,7 @@ package org.seaborne.dboe.trans.bplustree;
 
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
+import org.seaborne.dboe.trans.bplustree.rewriter.TestBPlusTreeRewriter ;
 
 /** Non-transaction tests (i.e. tests of the B+Tree algorithms) */
 @RunWith(Suite.class)

@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.trans.bplustree;
+package org.seaborne.dboe.trans.bplustree.rewriter;
 
 import java.util.ArrayList ;
 import java.util.Iterator ;
@@ -33,6 +33,12 @@ import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.sys.Names ;
+import org.seaborne.dboe.trans.bplustree.BPTreeException ;
+import org.seaborne.dboe.trans.bplustree.BPlusTree ;
+import org.seaborne.dboe.trans.bplustree.BPlusTreeParams ;
+import org.seaborne.dboe.trans.bplustree.SetupBPTreeIndex ;
+import org.seaborne.dboe.trans.bplustree.rewriter.BPlusTreeRewriter ;
+import org.seaborne.dboe.trans.bplustree.rewriter.BPlusTreeRewriterUtils ;
 
 public class TestBPlusTreeRewriter extends Assert
 {

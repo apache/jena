@@ -74,14 +74,6 @@ public class TestBPTreeRecords extends Assert {
         BPlusTreeParams.CheckingTree = oldCheckingBTree ;
     }
 
-    @Test
-    public void bpt_records_1() {
-        BPTreeRecords bpr = make() ;
-        fill(bpr) ;
-        check(bpr) ;
-        bpr.release() ;
-    }
-
     @Before
     public void before() {
         blkMgrRecords.beginUpdate() ;
@@ -90,6 +82,14 @@ public class TestBPTreeRecords extends Assert {
     @After
     public void after() {
         blkMgrRecords.endUpdate() ;
+    }
+
+    @Test
+    public void bpt_records_1() {
+        BPTreeRecords bpr = make() ;
+        fill(bpr) ;
+        check(bpr) ;
+        bpr.release() ;
     }
 
     @Test
@@ -273,7 +273,7 @@ public class TestBPTreeRecords extends Assert {
         bpr2.release() ;
     }
 
-    private static void check(BPTreeRecords bpr) {
+    protected static void check(BPTreeRecords bpr) {
         assertTrue(bpr.getCount() >= 0) ;
         assertTrue(bpr.getCount() <= bpr.getMaxSize()) ;
 
@@ -321,13 +321,13 @@ public class TestBPTreeRecords extends Assert {
             assertTrue(Record.compareByKeyValue(RecordLib.intToRecord(values[i]), bpr.getRecordBuffer().get(i)) == 0) ;
     }
 
-    private static BPTreeRecords make() {
+    protected static BPTreeRecords make() {
         RecordBufferPage page = recordBufferPageMgr.create() ;
         BPTreeRecordsMgr mgr = new BPTreeRecordsMgr(null, recordFactory, recordBufferPageMgr) ;
         return new BPTreeRecords(mgr, page) ;
     }
 
-    private static void fill(BPTreeRecords bpr) {
+    protected static void fill(BPTreeRecords bpr) {
         int N = bpr.getRecordBuffer().maxSize() ;
         for ( int i = 0 ; i < N ; i++ ) {
             RecordBuffer rb = bpr.getRecordBuffer() ;
