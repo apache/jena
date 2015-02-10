@@ -17,7 +17,7 @@ limitations under the License.
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.jena</groupId>
@@ -123,29 +123,29 @@ limitations under the License.
   <build>
     <plugins>
       <plugin>
-	<groupId>org.apache.felix</groupId>
-	<artifactId>maven-bundle-plugin</artifactId>
-	<extensions>true</extensions>
-	<configuration>
-	  <instructions>
-	    <!-- <Import-Package>com.hp.hpl.jena</Import-Package> -->
-	    <!-- <Embed-Dependency>artifactId=jena-core;inline=true</Embed-Dependency> -->
-	  </instructions>
-	</configuration>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <!-- <Import-Package>com.hp.hpl.jena</Import-Package> -->
+            <!-- <Embed-Dependency>artifactId=jena-core;inline=true</Embed-Dependency> -->
+          </instructions>
+        </configuration>
       </plugin>
       <plugin>
-	<groupId>org.ops4j.pax.exam</groupId>
-	<artifactId>exam-maven-plugin</artifactId>
-	<version>${pax.exam.version}</version>
-	<executions>
-	  <execution>
-	    <id>generate-link-files</id>
-	    <goals>
-	      <goal>generate-link-files</goal>
-	    </goals>
-	    <phase>generate-test-resources</phase>
-	  </execution>
-	</executions>
+        <groupId>org.ops4j.pax.exam</groupId>
+        <artifactId>exam-maven-plugin</artifactId>
+        <version>${pax.exam.version}</version>
+        <executions>
+          <execution>
+            <id>generate-link-files</id>
+            <goals>
+              <goal>generate-link-files</goal>
+            </goals>
+            <phase>generate-test-resources</phase>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
