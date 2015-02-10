@@ -53,7 +53,7 @@ abstract public class BPTreePage implements Page
         Logger pageLog = page.getLogger() ;
         // ---- Logging
         if ( logging(pageLog) ) {
-            log(pageLog, "Promote %d[%s]", page.getId(), mark(page)) ;
+            log(pageLog, "Promote :: Path=%s  Page=%d[%s]: %s", path, page.getId(), mark(page), page) ;
             if ( path != null ) {
                 // Fix to root.
                 path.getPath().forEach(e -> {
@@ -84,22 +84,34 @@ abstract public class BPTreePage implements Page
             }
         }
         
+        // ---- DEBUG
+        if (path != null && ! path.getPath().isEmpty() ) {
+            List<AccessStep> steps = path.getPath() ;
+            AccessStep last = steps.get(steps.size()-1) ;
+        }
+        // ---- DEBUG
+        
         // ---- Clone the access path nodes.
         // Path is the route to this page - it does not include this page. 
         // Work from the bottom to the top, the reverse order of AccessPath
         boolean changed = page.promote();
         if ( changed ) {
             if ( path != null ) {
-                // Duplicate down path.
                 List<AccessStep> steps = path.getPath() ;
+                
                 int newPtr = page.getId() ;
+                BPTreePage newPage = null ;
+                
                 BPTreeNode newRoot = null ; 
+                
+                
                 if ( logging(pageLog) )
                     log(pageLog, "Path: %s", path) ;
+                // Duplicate from bottom to top.
                 for ( int i = steps.size() - 1 ; i >= 0 ; i--  ) {
                     AccessStep s = steps.get(i) ;
                     // duplicate
-                    BPTreeNode n = s.node ;
+                    BPTreeNode n = s.node ; //** NOTE THAT WE NEED TO FIX UP page AS WELL if Page don't mutate.
                     if ( logging(pageLog) )
                         log(pageLog, "    >> %s", n) ;
                     
@@ -117,18 +129,21 @@ abstract public class BPTreePage implements Page
                     }
                     // Reset from the duplicated below.
                     // newPtr == s.page.getId() ??
-                    if ( newPtr != s.page.getId() ) {
-                        System.err.println("  Promotion: newPtr != s.page.getId(): "+newPtr+" != "+s.page.getId()) ;
-                        throw new InternalErrorException() ;
-                    }
+//                    if ( page != s.node && newPtr != s.page.getId() ) {
+//                        System.out.flush() ;
+//                        System.err.println("  Promotion: newPtr != s.page.getId(): "+newPtr+" != "+s.page.getId()) ;
+//                        throw new InternalErrorException() ;
+//                    }
                     n.ptrs.set(s.idx, newPtr) ;
                     newPtr = n.getId() ;
+                    
                 }
-                if ( newRoot != null )
+                if ( newRoot != null ) {
                     if ( logging(pageLog) )
                         log(pageLog, "  new root %s", newRoot) ;
                     page.bpTree.newRoot(newRoot) ;
                 }
+            }
         }        
         
     }
@@ -139,14 +154,16 @@ abstract public class BPTreePage implements Page
     }
     
     static String mark(BPTreePage page) {
-        String mark = "Data" ;
         if ( page instanceof BPTreeNode) {
             BPTreeNode n = ((BPTreeNode)page) ;
-            mark = ((BPTreeNode)page).isLeaf() ? "Leaf" : "Node" ;
+            String mark = ((BPTreeNode)page).isLeaf() ? "Leaf" : "Node" ;
             if ( n.isRoot() )
                 mark = mark+"/Root" ;
+            return mark ;
         }
-        return mark ; 
+        else {
+            return "Data" ;
+        }
     }
     
     abstract Logger getLogger() ;
