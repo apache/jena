@@ -18,18 +18,28 @@
 
 package dev;
 
+import static dev.RecordLib.r ;
+import static dev.RecordLib.recordFactory ;
+
+import java.util.Iterator ;
 import java.util.stream.IntStream ;
 
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.seaborne.dboe.base.buffer.RecordBuffer ;
-import static dev.RecordLib.* ;
+import org.seaborne.dboe.base.record.Record ;
 
 public class MainRecordsIterator {
+    static { LogCtl.setLog4j(); }
+    
     public static void main(String...argv) {
         
-        RecordBuffer rb = new RecordBuffer(recordFactory, 5) ;
-        IntStream.range(0, 10).forEach(x->{
+        RecordBuffer rb = new RecordBuffer(recordFactory, 10) ;
+        IntStream.range(1, 5).forEach(x->{
             rb.add(r(x)) ;
         }) ;
+        
+        Iterator<Record> iter = rb.iterator(r(2), r(99)) ;
+        iter.forEachRemaining(System.out::println) ;
         
     }
 

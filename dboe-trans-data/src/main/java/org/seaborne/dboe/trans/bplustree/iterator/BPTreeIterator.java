@@ -23,8 +23,6 @@ import java.util.Iterator ;
 
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.trans.bplustree.BPTreeNode ;
-import org.seaborne.dboe.trans.bplustree.BPTreePage ;
-import org.seaborne.dboe.trans.bplustree.BPTreeRecords ;
 
 /** Iterator that does not depend on Records "link" pointers */
 public class BPTreeIterator implements Iterator<Record>

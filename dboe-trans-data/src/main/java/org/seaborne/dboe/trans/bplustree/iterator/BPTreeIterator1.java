@@ -20,9 +20,6 @@ package org.seaborne.dboe.trans.bplustree.iterator;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
-import com.github.jsonldjava.core.RDFDataset.Node ;
-
-import org.apache.jena.atlas.iterator.IteratorSlotted ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.trans.bplustree.BPTreeNode ;
@@ -60,9 +57,12 @@ public class BPTreeIterator1 /*extends IteratorSlotted<Record>*/ implements Iter
             return true ;
         }
         current = null ;
-        // Less than or equals.
-        if ( idx <= idxMax )
-            ;
+        // "or equals" ??
+        if ( idx >= idxMax ) {
+            finished = true ;
+            return false ;
+        }
+            
         //get(idx) ;
         idx++ ;
         
