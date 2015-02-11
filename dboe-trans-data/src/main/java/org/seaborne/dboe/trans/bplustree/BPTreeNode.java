@@ -179,9 +179,9 @@ public final class BPTreeNode extends BPTreePage
     
     /** Get the page at slot idx - switch between B+Tree and records files */
     /*package*/ BPTreePage get(int idx) {
-        if ( logging() ) {
+        if ( false && logging() ) {
             String leafOrNode = isLeaf ? "L" : "N" ;
-            log(log, "get(%d[%s])", idx, leafOrNode) ; 
+            log(log, "%d[%s].get(%d)", id, leafOrNode, idx) ; 
         }
         int subId = ptrs.get(idx) ;
         PageBlockMgr<? extends BPTreePage> pbm = getPageBlockMgr() ;
@@ -302,16 +302,23 @@ public final class BPTreeNode extends BPTreePage
         if ( logging() )
             log(log, "iterator(id=%d[%s], %s, %s)", id, mark(this), minRec, maxRec) ;
         if ( minRec != null && maxRec != null && Record.keyGE(minRec, maxRec) )
-            throw new IllegalArgumentException("minRec >= maxRec: "+minRec+" >= "+maxRec ) ;
+            return null ;//throw new IllegalArgumentException("minRec >= maxRec: "+minRec+" >= "+maxRec ) ;
         
         int x1 = 0 ;
         if ( minRec != null ) {
             x1 = findSlot(minRec) ;
+            // If there is an exact match, we still need to go down that place to get the max.
+            // If there is no match, it returns -(i+1) and we need to go down the tree at i.
+            // Same effect - start at x1
+            // TODO Optimization - get max record on min side once and for all if exact match.
             x1 = convert(x1) ;
         }
         
-        int x2 = this.getCount()-1 ; 
+        int x2 = this.getCount() ;    // Highest place to look. Inclusive.   
         if ( maxRec != null ) {
+            // If there is an exact match, we need to go down that place to get the record upto max.
+            // If there is no match, it returns -(i+1) and we need to go down the tree at i to get from last key to max (exclusive).
+            // Same effect - start at x2 inclusive.
             x2 = findSlot(maxRec) ;
             x2 = convert(x2) ;
         }
@@ -325,8 +332,10 @@ public final class BPTreeNode extends BPTreePage
             x.add(get(i)) ;
         
         if ( logging() ) {
-            log(log, "iterator: ") ;
-            x.forEach(z -> log(log, "    page: %s", z)) ;
+            StringBuilder sb = new StringBuilder() ;
+            sb.append("iterator:") ; 
+            x.forEach(z -> sb.append(" "+z.getId())) ;
+            log(log, sb.toString()) ;
         }
         
         return x.iterator() ;

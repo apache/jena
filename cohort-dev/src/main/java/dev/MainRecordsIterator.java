@@ -65,25 +65,28 @@ public class MainRecordsIterator {
         Transactional holder = new TransactionalBase(journal, bpt) ;
         holder.begin(ReadWrite.WRITE);
         
-        List<Integer> data = Arrays.asList(2, 3) ; //, 4) ;// , 7, 8, 9 ) ;
+        List<Integer> data = Arrays.asList(2, 3, 4, 1, 7, 8, 9 ) ;
         List<Record> dataRecords =  data.stream().map(x->r(x)).collect(Collectors.toList()) ;
         add(bpt, dataRecords) ;
         // Missing 2.
         bpt.dump() ;
         System.out.println() ;
         
-        //BPlusTreeParams.Logging = true ;
-        dwim(bpt, r(3), r(9));
-        dwim(bpt, r(1), r(9)) ;
-        dwim(bpt, r(1), null) ;
-        dwim(bpt, null, r(3)) ;
-        dwim(bpt, null, null) ;
+        // Max test.
+        
+        BPlusTreeParams.Logging = true ;
+        // Not moving on after first node entry done.
+//        dwim(bpt, r(3), r(9));
+        dwim(bpt, r(0), r(9)) ;
+//        dwim(bpt, r(0), null) ;
+//        dwim(bpt, null, r(3)) ;
+//        dwim(bpt, null, null) ;
     }
     
     static void dwim(BPlusTree bpt, Record r0, Record r1) {
         System.out.printf("Iterator -- %s %s\n", r0, r1) ;
         Iterator<Record> iter = bpt.iterator(r0, r1) ;
-        iter.forEachRemaining(r -> System.out.printf("  %s\n", r)) ;
+        iter.forEachRemaining(r -> System.out.printf("    %s\n", r)) ;
         System.out.println() ;
 
     }

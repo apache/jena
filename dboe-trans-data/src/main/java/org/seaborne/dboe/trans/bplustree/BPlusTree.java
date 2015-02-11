@@ -304,7 +304,6 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         releaseRootRead(root) ;
         finishReadBlkMgr() ;
         return BPTreeRangeIterator.create(root, fromRec, toRec) ;
-        
         //return iterator(fromRec, toRec, RecordFactory.mapperRecord) ;
     }
     
@@ -514,9 +513,9 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     
     
     static class BPTreeRangeIterator implements Iterator<Record> {
-        public static  BPTreeRangeIterator create(BPTreeNode node, Record minRec, Record maxRec) {
+        public static Iterator<Record> create(BPTreeNode node, Record minRec, Record maxRec) {
             if ( minRec != null && maxRec != null && Record.keyGE(minRec, maxRec) )
-                throw new IllegalArgumentException("minRec >= maxRec: "+minRec+" >= "+maxRec ) ;
+                return Iter.nullIter();
             return new BPTreeRangeIterator(node, minRec, maxRec) ;
         }
         
@@ -540,18 +539,6 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
             this.maxRecord = maxRec ;
             BPTreeRecords r = loadStack(node) ;
             current = r.getRecordBuffer().iterator(minRecord, maxRecord) ;
-            // ------
-//            this.pathIdx = route.size()-1 ;
-//            AccessStep step = route.get(pathIdx) ;
-//            this.nodeIdx1 = step.idx ; 
-//                
-//            BPTreePage p =  step.page ;
-//            if ( ! ( p instanceof BPTreeRecords ) ) {
-//                throw new InternalErrorException("Last path step not to a records block") ;
-//            }
-//            BPTreeRecords records = (BPTreeRecords)p ; 
-//            this.currentTreeNode = step.node ;
-//            this.current = records.getRecordBuffer().iterator(minRecord, maxRecord) ;
         }
 
         @Override
@@ -560,44 +547,45 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
                 return false ;
             if ( slot != null )
                 return true ;
-            
-            
-            //System.out.println("hasNext: no slot") ;
-            
             if ( current != null && current.hasNext() ) {
                 slot = current.next() ;
                 return true ;
             }
-            
             do {
                 current = moveOnCurrent() ;
                 if ( current == null ) {
                     end() ;
                     return false ;
                 }
-            } while(!current.hasNext()) ; 
-            end() ;
-            return false ;
+            } while(!current.hasNext()) ;
+            slot = current.next() ;
+            return true ;
+            
         }
         
         private Iterator<Record> moveOnCurrent() {
             Iterator<BPTreePage> iter = null ;
             while(!stack.isEmpty()) { 
-                //System.out.println("hasNext: pop") ;
+                System.out.println("hasNext: pop") ;
                 iter = stack.pop() ;
                 if ( iter.hasNext() )
                     break ;
-                //System.out.println("hasNext: popped empty") ;
+                System.out.println("hasNext: popped empty") ;
             } 
+            
             if ( iter == null || ! iter.hasNext() )
                 return null ;
             BPTreePage p = iter.next() ;
-            //System.out.println("hasNext: next page: "+p) ;
             BPTreeRecords r = null ;
-            if (p instanceof BPTreeNode)
+            if (p instanceof BPTreeNode) {
                 r = loadStack((BPTreeNode)p) ;
-            else
+                System.out.println("Node: "+p.getId()) ;
+                System.out.println("    r="+r.getId()) ;
+            }
+            else {
+                System.out.println("Records: "+p.getId()) ;
                 r = (BPTreeRecords)p ;
+            }
             return r.getRecordBuffer().iterator(minRecord, maxRecord) ;
         }
         
@@ -614,10 +602,12 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
                 BPTreeNode.log(log, "loadStack: path = "+path) ;
             for ( AccessStep step : steps ) {
                 if ( BPTreeNode.logging(log) )
-                    BPTreeNode.log(log, "loadStack: step = "+step) ;
+                    BPTreeNode.log(log, "           step = "+step) ;
                 BPTreeNode n = step.node ; 
                 Iterator<BPTreePage> it = n.iterator(minRecord, maxRecord) ;
-                // The access path is all the first elements.
+                if ( it == null || ! it.hasNext() )
+                    continue ;
+                // The first 
                 it.next() ;
                 stack.push(it) ;
             }
