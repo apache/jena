@@ -69,7 +69,7 @@ public class MainIndex {
     
     
     @SuppressWarnings("null")
-    public static void main1(String[] args) {
+    public static void main(String[] args) {
         BPlusTreeParams.Logging = false ;
         BlockMgrFactory.AddTracker = false ;
         SystemIndex.setNullOut(true) ;

@@ -32,6 +32,10 @@ public class NOTES {
     
     // Free chain management for MVCC block mgrs.  BlockMgrFreeChain is enough?
     
+    // Page release - meaningful?
+    // Mapper
+    // BPTreeNode.min and max -> paths
+    
     // == Mantis
     // dboe-test ?  See BufferTestLib
     // log4j.properties.
