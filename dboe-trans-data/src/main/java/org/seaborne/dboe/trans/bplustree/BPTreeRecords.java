@@ -249,12 +249,12 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    final public Record minRecord() {
+    final public Record internalMinRecord(AccessPath path) {
         return getLowRecord() ;
     }
 
     @Override
-    final public Record maxRecord() {
+    final public Record internalMaxRecord(AccessPath path) {
         return getHighRecord() ;
     }
 

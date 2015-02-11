@@ -222,12 +222,21 @@ abstract public class BPTreePage implements Page
     abstract Record getHighRecord() ;
 
     /** Least in subtree */
-    abstract Record minRecord() ;
+    abstract Record internalMinRecord(AccessPath path) ;
 
     /** Greatest in subtree */
-    abstract Record maxRecord() ;
+    abstract Record internalMaxRecord(AccessPath path) ;
+
+    // For checking ...
     
-    /** Write, or at least ensure wil be written */
+    /** Least in subtree */
+    Record minRecord()      { return internalMinRecord(null) ; } 
+
+    /** Greatest in subtree */
+    Record maxRecord()      { return internalMaxRecord(null) ; }
+
+    
+    /** Write, or at least ensure will be written */
     abstract void write() ; 
     
     /** Turn a read page into a write page. Return true if any changes were made. */

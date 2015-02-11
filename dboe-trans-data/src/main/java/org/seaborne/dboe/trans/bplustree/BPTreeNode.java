@@ -25,6 +25,11 @@ import static org.seaborne.dboe.base.record.Record.keyNE ;
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingNode ;
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingTree ;
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.DumpTree ;
+
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
+
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
@@ -173,7 +178,7 @@ public final class BPTreeNode extends BPTreePage
     }
     
     /** Get the page at slot idx - switch between B+Tree and records files */
-    private BPTreePage get(int idx) {
+    /*package*/ BPTreePage get(int idx) {
         if ( logging() ) {
             String leafOrNode = isLeaf ? "L" : "N" ;
             log(log, "get(%d[%s])", idx, leafOrNode) ; 
@@ -287,6 +292,47 @@ public final class BPTreeNode extends BPTreePage
         return v ;
     }
 
+    /** Iterator over the pages below that have records between minRec (inclusive) and maxRec(exclusive).
+     *  There may be other records as as well.
+     * @param minRec
+     * @param maxRec
+     * @return Iterator&lt;BPTreePage>
+     */
+    public Iterator<BPTreePage> iterator(Record minRec, Record maxRec) {
+        if ( logging() )
+            log(log, "iterator(id=%d[%s], %s, %s)", id, mark(this), minRec, maxRec) ;
+        if ( minRec != null && maxRec != null && Record.keyGE(minRec, maxRec) )
+            throw new IllegalArgumentException("minRec >= maxRec: "+minRec+" >= "+maxRec ) ;
+        
+        int x1 = 0 ;
+        if ( minRec != null ) {
+            x1 = findSlot(minRec) ;
+            x1 = convert(x1) ;
+        }
+        
+        int x2 = this.getCount()-1 ; 
+        if ( maxRec != null ) {
+            x2 = findSlot(maxRec) ;
+            x2 = convert(x2) ;
+        }
+        // Pages from poniter slots x1 to x2 (inc because while we exclude maxRec, 
+        // keys are only a max of the subtree they mark out.
+        
+        // Just grab them now.
+        
+        List<BPTreePage> x = new ArrayList<>(x2-x1+1) ;
+        for ( int i = x1 ; i <= x2 ; i++ )
+            x.add(get(i)) ;
+        
+        if ( logging() ) {
+            log(log, "iterator: ") ;
+            x.forEach(z -> log(log, "    page: %s", z)) ;
+        }
+        
+        return x.iterator() ;
+    }
+    
+    // TODO OUT OF DATE WITH MVCC
     /**
      * Returns the id of the records buffer page for this record. Records Buffer
      * Page NOT read; record may not exist
@@ -320,18 +366,33 @@ public final class BPTreeNode extends BPTreePage
         return id ;
     }
 
+    // TODO internalMaxRecord??
+    // TODO internalMinRecord??
+    
+    final static Record minRecord(BPTreeNode root) {
+        AccessPath path = new AccessPath(root) ; 
+        return root.internalMinRecord(path) ;
+    }
+
+    final static Record maxRecord(BPTreeNode root) {
+        AccessPath path = new AccessPath(root) ; 
+        return root.internalMaxRecord(path) ;
+    }
+    
     @Override
-    protected Record maxRecord() {
+    protected Record internalMaxRecord(AccessPath path) {
         BPTreePage page = get(count) ;
-        Record r = page.maxRecord() ;
+        trackPath(path, this, count, page) ;
+        Record r = page.internalMaxRecord(path) ;
         page.release() ;
         return r ;
     }
 
     @Override
-    protected Record minRecord() {
+    protected Record internalMinRecord(AccessPath path) {
         BPTreePage page = get(0) ;
-        Record r = page.minRecord() ;
+        trackPath(path, this, 0, page) ;
+        Record r = page.internalMinRecord(path) ;
         page.release() ;
         return r ;
     }
@@ -492,6 +553,7 @@ public final class BPTreeNode extends BPTreePage
                 // Yes. Get the new (upper) page
                 idx = idx + 1 ;
                 page = get(idx) ;
+                path.reset(this, idx, page);
             }
             internalCheckNode() ;
         }
@@ -1400,7 +1462,7 @@ public final class BPTreeNode extends BPTreePage
                     error("Node: %d: Child key %s is greater than this key %s", id, keySubTree, keyHere) ;
 
                 Record keyMax = n.maxRecord() ; // max key in subTree
-                Record keyMin = n.minRecord() ;
+                Record keyMin = n.internalMinRecord(null) ;
 
                 if ( keyNE(keyHere, keyMax) )
                     error("Node: %d: Key %s is not the max [%s] of the sub-tree idx=%d", id, keyHere, keyMax, i) ;
