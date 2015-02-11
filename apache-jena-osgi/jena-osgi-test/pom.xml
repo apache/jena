@@ -211,7 +211,6 @@ limitations under the License.
             <phase>integration-test</phase>
           </execution>
         </executions>
-	-->
       </plugin>
     </plugins>
   </build>
