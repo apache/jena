@@ -21,10 +21,10 @@ limitations under the License.
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>apache-jena-osgi</artifactId>
-    <version>2.13.0-SNAPSHOT</version>
-    <relativePath>..</relativePath>
-  </parent>
+    <artifactId>jena-parent</artifactId>
+    <version>12-SNAPSHOT</version>
+    <relativePath>../../jena-parent</relativePath>
+  </parent> 
 
   <artifactId>jena-osgi-test</artifactId>
   <version>2.13.0-SNAPSHOT</version>
@@ -39,6 +39,16 @@ limitations under the License.
     <pax.logging.version>1.8.1</pax.logging.version>
   </properties>
 
+  <repositories>
+    <repository>
+      <id>apache.snapshots</id>
+      <name>Apache Snapshot Repository</name>
+      <url>http://repository.apache.org/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
 
   <dependencies>
     <dependency>
@@ -201,6 +211,7 @@ limitations under the License.
             <phase>integration-test</phase>
           </execution>
         </executions>
+	-->
       </plugin>
     </plugins>
   </build>
