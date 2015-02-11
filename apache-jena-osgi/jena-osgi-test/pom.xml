@@ -135,6 +135,7 @@ limitations under the License.
 
   <build>
     <plugins>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -150,6 +151,7 @@ limitations under the License.
           </systemPropertyVariables>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -185,33 +187,8 @@ limitations under the License.
         </executions>
         <configuration>
         </configuration>
+      </plugin>
 
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <classpathDependencyExcludes>
-            <classpathDependencyExclude>org.slf4j:slf4j-log4j12</classpathDependencyExclude>
-          </classpathDependencyExcludes>
-          <systemPropertyVariables>
-            <!-- So the test can find the current version of jena-osgi -->
-            <jena-osgi.version>${project.version}</jena-osgi.version>
-            <!-- not so noisy OSGi logging -->
-            <org.ops4j.pax.logging.DefaultServiceLog.level>WARN</org.ops4j.pax.logging.DefaultServiceLog.level>
-          </systemPropertyVariables>
-        </configuration>
-        <executions>
-          <execution>
-            <id>default-test</id>
-            <goals>
-              <goal>test</goal>
-            </goals>
-            <!-- delay until integration-test phase -->
-            <phase>integration-test</phase>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
