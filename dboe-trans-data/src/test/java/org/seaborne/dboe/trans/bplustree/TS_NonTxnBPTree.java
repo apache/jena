@@ -19,14 +19,14 @@ package org.seaborne.dboe.trans.bplustree;
 
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-import org.seaborne.dboe.trans.bplustree.rewriter.TestBPlusTreeRewriter ;
+import org.seaborne.dboe.trans.bplustree.rewriter.TestBPlusTreeRewriterNonTxn ;
 
 /** Non-transaction tests (i.e. tests of the B+Tree algorithms) */
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestBPTreeRecords.class,
-    TestBPlusTree.class,
-    TestBPlusTreeRewriter.class
+    TestBPTreeRecordsNonTxn.class,
+    TestBPlusTreeNonTxn.class,
+    TestBPlusTreeRewriterNonTxn.class
 } )
 
 public class TS_NonTxnBPTree

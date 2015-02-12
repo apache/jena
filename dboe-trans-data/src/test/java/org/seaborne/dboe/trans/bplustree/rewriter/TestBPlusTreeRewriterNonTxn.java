@@ -40,7 +40,7 @@ import org.seaborne.dboe.trans.bplustree.SetupBPTreeIndex ;
 import org.seaborne.dboe.trans.bplustree.rewriter.BPlusTreeRewriter ;
 import org.seaborne.dboe.trans.bplustree.rewriter.BPlusTreeRewriterUtils ;
 
-public class TestBPlusTreeRewriter extends Assert
+public class TestBPlusTreeRewriterNonTxn extends Assert
 {
     // See also CmdTestBlusTreeRewriter for randomized testing. 
     
@@ -76,7 +76,7 @@ public class TestBPlusTreeRewriter extends Assert
         BPlusTreeRewriter.debug = debug ;
 
         // ---- Test data
-        List<Record> originaldata = TestBPlusTreeRewriter.createData(N, recordFactory) ;
+        List<Record> originaldata = TestBPlusTreeRewriterNonTxn.createData(N, recordFactory) ;
 
         FileSet destination = FileSet.mem() ;
         // ---- Rewrite

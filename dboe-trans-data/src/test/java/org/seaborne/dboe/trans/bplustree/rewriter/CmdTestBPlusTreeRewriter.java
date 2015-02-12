@@ -113,7 +113,7 @@ public class CmdTestBPlusTreeRewriter
             int order = orders[idx] ;
             int size = sizes[idx] ;
             try { 
-                TestBPlusTreeRewriter.runOneTest(order, size, recordFactory, debug) ;
+                TestBPlusTreeRewriterNonTxn.runOneTest(order, size, recordFactory, debug) ;
                 successes ++ ;
             } catch (RuntimeException ex)
             {

@@ -28,7 +28,7 @@ import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.test.RecordLib ;
 
-public class TestBPTreeRecords extends Assert {
+public class TestBPTreeRecordsNonTxn extends Assert {
     static private boolean             oldNullOut ;
     static private boolean             oldCheckingNode ;
     static private boolean             oldCheckingBTree ;

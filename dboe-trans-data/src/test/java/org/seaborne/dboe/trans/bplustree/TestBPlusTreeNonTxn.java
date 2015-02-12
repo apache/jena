@@ -24,7 +24,7 @@ import org.seaborne.dboe.index.test.AbstractTestRangeIndex ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.test.RecordLib ;
 
-public class TestBPlusTree extends AbstractTestRangeIndex {
+public class TestBPlusTreeNonTxn extends AbstractTestRangeIndex {
     static boolean originalNullOut ;
 
     @BeforeClass
@@ -39,7 +39,7 @@ public class TestBPlusTree extends AbstractTestRangeIndex {
     static public void afterClass() {
         SystemIndex.setNullOut(originalNullOut) ;
     }
-
+    
     @Override
     protected RangeIndex makeRangeIndex(int order, int minRecords) {
         BPlusTree bpt = BPlusTreeFactory.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
