@@ -17,11 +17,10 @@
 
 package org.seaborne.dboe.index.bplustree;
 
+import static org.seaborne.dboe.test.RecordLib.r ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.seaborne.dboe.index.RangeIndex ;
-import org.seaborne.dboe.index.bplustree.BPlusTree ;
-import org.seaborne.dboe.index.bplustree.BPlusTreeParams ;
 import org.seaborne.dboe.index.test.AbstractTestRangeIndex ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.test.RecordLib ;
@@ -40,6 +39,14 @@ public class TestBPlusTree extends AbstractTestRangeIndex
     @AfterClass static public void afterClass()
     {
         SystemIndex.setNullOut(originalNullOut) ;    
+    }
+    
+    public static void main(String ... args) {
+        int[] keys = {1, 2, 3, 4, 5} ;
+
+        BPlusTree bpt = BPlusTreeFactory.makeMem(5, 5, RecordLib.TestRecordLength, 0) ;
+        bpt.add(r(99)) ;
+        bpt.dump() ;
     }
     
     @Override

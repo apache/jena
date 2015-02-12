@@ -327,9 +327,11 @@ public class TestBPTreeRecords extends Assert {
         return new BPTreeRecords(mgr, page) ;
     }
 
-    private static void fill(BPTreeRecords bpr) {
-        RecordBuffer rb = bpr.getRecordBuffer() ;
-        for ( int i = 0 ; rb.size() < rb.maxSize() ; i++ )
+    protected static void fill(BPTreeRecords bpr) {
+        int N = bpr.getRecordBuffer().maxSize() ;
+        for ( int i = 0 ; i < N ; i++ ) {
+            RecordBuffer rb = bpr.getRecordBuffer() ;
             insert(bpr, (i + 0x30)) ;
+        }
     }
 }
