@@ -34,7 +34,6 @@ import org.seaborne.dboe.base.record.RecordMapper ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
 import org.seaborne.dboe.base.recordbuffer.RecordRangeIterator ;
 import org.seaborne.dboe.index.RangeIndex ;
-import org.seaborne.dboe.trans.bplustree.AccessPath.AccessStep ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
@@ -309,6 +308,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     
     @Override
     public <X> Iterator<X> iterator(Record minRec, Record maxRec, RecordMapper<X> mapper) {
+        // TODO Old code.
         startReadBlkMgr() ;
         BPTreeNode root = getRootRead() ;
         Iterator<X> iter = iterator(root, minRec, maxRec, mapper) ;
@@ -435,12 +435,12 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         // Caution - nesting via startReadBlkMgr
         startReadBlkMgr() ;
         BPTreeNode root = getRootRead() ;
-        boolean b = BPlusTreeParams.Logging ;
-        BPlusTreeParams.Logging = false ;
+        boolean b = BPT.Logging ;
+        BPT.Logging = false ;
         try { root.dump() ; }
         finally { 
             releaseRootRead(root) ;
-            BPlusTreeParams.Logging = b ;
+            BPT.Logging = b ;
             }
         finishReadBlkMgr() ;
     }
@@ -509,133 +509,5 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     protected void _shutdown() {}
     
     // ---- Iterator, no links
-    
-    
-    
-    static class BPTreeRangeIterator implements Iterator<Record> {
-        public static Iterator<Record> create(BPTreeNode node, Record minRec, Record maxRec) {
-            if ( minRec != null && maxRec != null && Record.keyGE(minRec, maxRec) )
-                return Iter.nullIter();
-            return new BPTreeRangeIterator(node, minRec, maxRec) ;
-        }
-        
-        // Convert path to a stack of iterators
-        private Deque<Iterator<BPTreePage>> stack = new ArrayDeque<>();
-        
-        //final private List<AccessStep> route ;
-        final private Record minRecord ;
-        final private Record maxRecord ;
-//        private int pathIdx ;
-//        private int nodeIdx1 ;
-//        private int nodeIdx2 ;
-//        private BPTreeNode currentTreeNode ;
-        
-        private Iterator<Record> current ;
-        private Record slot = null ;
-        private boolean finished = false ;
-        
-        BPTreeRangeIterator(BPTreeNode node, Record minRec, Record maxRec ) {
-            this.minRecord = minRec ;
-            this.maxRecord = maxRec ;
-            BPTreeRecords r = loadStack(node) ;
-            current = r.getRecordBuffer().iterator(minRecord, maxRecord) ;
-        }
 
-        @Override
-        public boolean hasNext() {
-            if ( finished ) 
-                return false ;
-            if ( slot != null )
-                return true ;
-            if ( current != null && current.hasNext() ) {
-                slot = current.next() ;
-                return true ;
-            }
-            do {
-                current = moveOnCurrent() ;
-                if ( current == null ) {
-                    end() ;
-                    return false ;
-                }
-            } while(!current.hasNext()) ;
-            slot = current.next() ;
-            return true ;
-            
-        }
-        
-        private Iterator<Record> moveOnCurrent() {
-            Iterator<BPTreePage> iter = null ;
-            while(!stack.isEmpty()) { 
-                System.out.println("hasNext: pop") ;
-                iter = stack.pop() ;
-                if ( iter.hasNext() )
-                    break ;
-                System.out.println("hasNext: popped empty") ;
-            } 
-            
-            if ( iter == null || ! iter.hasNext() )
-                return null ;
-            BPTreePage p = iter.next() ;
-            BPTreeRecords r = null ;
-            if (p instanceof BPTreeNode) {
-                r = loadStack((BPTreeNode)p) ;
-                System.out.println("Node: "+p.getId()) ;
-                System.out.println("    r="+r.getId()) ;
-            }
-            else {
-                System.out.println("Records: "+p.getId()) ;
-                r = (BPTreeRecords)p ;
-            }
-            return r.getRecordBuffer().iterator(minRecord, maxRecord) ;
-        }
-        
-        private BPTreeRecords loadStack(BPTreeNode node) {
-            //System.out.println("loadStack: node: "+node) ;
-            AccessPath path = new AccessPath(null) ;
-            if ( minRecord == null )
-                node.internalMinRecord(path) ;
-            else
-                node.internalSearch(path, minRecord) ;
-            
-            List<AccessStep> steps = path.getPath() ;
-            if ( BPTreeNode.logging(log) )
-                BPTreeNode.log(log, "loadStack: path = "+path) ;
-            for ( AccessStep step : steps ) {
-                if ( BPTreeNode.logging(log) )
-                    BPTreeNode.log(log, "           step = "+step) ;
-                BPTreeNode n = step.node ; 
-                Iterator<BPTreePage> it = n.iterator(minRecord, maxRecord) ;
-                if ( it == null || ! it.hasNext() )
-                    continue ;
-                // The first 
-                it.next() ;
-                stack.push(it) ;
-            }
-            
-            if ( BPTreeNode.logging(log) )
-                BPTreeNode.log(log, "stack = %d", stack.size()) ;
-            
-            BPTreePage p = steps.get(steps.size()-1).page ;
-            if ( ! ( p instanceof BPTreeRecords ) )
-                throw new InternalErrorException("Last path step not to a records block") ;
-            return (BPTreeRecords)p ;
-        }
-
-        private void end() {
-            //System.out.println("hasNext: end") ;
-            finished = true ;
-            current = null ;
-        }
-        
-        @Override
-        public Record next() {
-            if ( ! hasNext() )
-                throw new NoSuchElementException() ;
-            Record r = slot ;
-            if ( r == null )
-                throw new InternalErrorException("Null slot after hashnext is true") ;
-            slot = null ;
-            return r ;
-        }
-    }
 }

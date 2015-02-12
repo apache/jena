@@ -24,7 +24,6 @@ import org.seaborne.dboe.base.file.MetaFile ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.sys.Names ;
 import org.seaborne.dboe.sys.SystemIndex ;
-import org.slf4j.Logger ;
 
 /** Configuration for a B+Tree */ 
 final
@@ -50,11 +49,9 @@ public class BPlusTreeParams
     }
     
     public static boolean DumpTree = false ;                 // Dump the tree during top level logging 
-    public static boolean Logging = false ;                  // Turn on/off logging the hard way
-    
     public static void infoAll() { 
         DumpTree = true ;
-        Logging = true ;
+        BPT.Logging = true ;
     }
 
     /* The gap is extra space in a node - some books have node size as 2*N 
@@ -107,10 +104,6 @@ public class BPlusTreeParams
      * The parent is not stored on-disk because a block is always created by fetching from it's parent. 
      */
     static int BlockHeaderSize = 4 ;
-    
-    static final boolean logging(Logger log) {
-        return Logging && log.isDebugEnabled() ;
-    }
     
     @Override
     public String toString() {

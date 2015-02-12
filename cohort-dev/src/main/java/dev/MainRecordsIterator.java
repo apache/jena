@@ -33,9 +33,9 @@ import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.sys.SystemIndex ;
+import org.seaborne.dboe.trans.bplustree.BPT ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
-import org.seaborne.dboe.trans.bplustree.BPlusTreeParams ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
@@ -54,7 +54,7 @@ public class MainRecordsIterator {
 //        iter.forEachRemaining(System.out::println) ;
         
         
-        BPlusTreeParams.Logging = false ;
+        BPT.Logging = false ;
         BlockMgrFactory.AddTracker = false ;
         SystemIndex.setNullOut(true) ;
         BPlusTree bpt = BPlusTreeFactory.makeMem(2, 1, recordFactory.keyLength(), recordFactory.valueLength()) ;
@@ -74,7 +74,7 @@ public class MainRecordsIterator {
         
         // Max test.
         
-        BPlusTreeParams.Logging = true ;
+        BPT.Logging = true ;
         // Not moving on after first node entry done.
 //        dwim(bpt, r(3), r(9));
         dwim(bpt, r(0), r(9)) ;

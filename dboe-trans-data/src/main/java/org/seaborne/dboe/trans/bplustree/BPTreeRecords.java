@@ -20,7 +20,6 @@ package org.seaborne.dboe.trans.bplustree;
 import static java.lang.String.format ;
 import static org.apache.jena.atlas.lib.Alg.decodeIndex ;
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingNode ;
-
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.seaborne.dboe.base.StorageException ;
 import org.seaborne.dboe.base.block.Block ;
@@ -124,7 +123,7 @@ public final class BPTreeRecords extends BPTreePage
     @Override
     Record internalInsert(AccessPath path, Record record) {
         // [[TXN]]
-        promote(path, this) ;
+        BPT.promotePage(path, this) ;
         int i = rBuff.find(record) ;
         Record r2 = null ;
         if ( i < 0 ) {
@@ -144,7 +143,7 @@ public final class BPTreeRecords extends BPTreePage
 
     @Override
     Record internalDelete(AccessPath path, Record record) {
-        promote(path, this) ;
+        BPT.promotePage(path, this) ;
         int i = rBuff.find(record) ;
         if ( i < 0 )
             return null ;
@@ -292,6 +291,11 @@ public final class BPTreeRecords extends BPTreePage
     public String toString()
     { return String.format("BPTreeRecords[id=%d, link=%d]: %s", getId(), getLink(), rBuff.toString()); }
     
+    @Override
+    protected String typeMark() {
+        return "Data" ;
+    }
+
     @Override
     public final void checkNode()
     {

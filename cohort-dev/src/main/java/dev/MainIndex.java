@@ -29,10 +29,10 @@ import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.sys.SystemIndex ;
+import org.seaborne.dboe.trans.bplustree.BPT ;
 /* ***************** TRANSACTION BPLUSTREE *********************** */
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
-import org.seaborne.dboe.trans.bplustree.BPlusTreeParams ;
 import org.seaborne.dboe.transaction.Transactional ;
 /* ***************** TRANSACTION BPLUSTREE *********************** */
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
@@ -70,7 +70,7 @@ public class MainIndex {
     
     @SuppressWarnings("null")
     public static void main(String[] args) {
-        BPlusTreeParams.Logging = false ;
+        BPT.Logging = false ;
         BlockMgrFactory.AddTracker = false ;
         SystemIndex.setNullOut(true) ;
         
@@ -120,7 +120,7 @@ public class MainIndex {
             add(bpt, dataRecords2a) ;
             System.out.println("After first records") ;
             dump(bpt);
-            BPlusTreeParams.Logging = true ;
+            BPT.Logging = true ;
             add(bpt, dataRecords2b) ;
             System.out.println("After second records") ;    
         }
@@ -165,12 +165,12 @@ public class MainIndex {
     }
     
     static void dump(BPlusTree bpt) {
-        boolean b = BPlusTreeParams.Logging ;
-        BPlusTreeParams.Logging = false ;
+        boolean b = BPT.Logging ;
+        BPT.Logging = false ;
         System.out.println() ;
         bpt.dump() ;
         System.out.println() ;
-        BPlusTreeParams.Logging = b ; 
+        BPT.Logging = b ; 
     }
     
     static void add(BPlusTree bpt, List<Record> records) {
@@ -182,12 +182,12 @@ public class MainIndex {
     }
     
     static void verbose(boolean yesOrNo, Runnable r) {
-        boolean b = BPlusTreeParams.Logging ;
+        boolean b = BPT.Logging ;
         try {
-            BPlusTreeParams.Logging = yesOrNo ;
+            BPT.Logging = yesOrNo ;
             r.run(); 
         } finally { 
-            BPlusTreeParams.Logging = b ;
+            BPT.Logging = b ;
         }
     }
     

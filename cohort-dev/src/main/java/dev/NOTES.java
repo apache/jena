@@ -25,6 +25,8 @@ public class NOTES {
     // *** BPTreeRecords is non-dupkciating at the moment.
     // *** An iterator BPTreeNodes that yields BPTreeRecords => RecordBuffers
     
+    // BPTLog.
+    
     // RecordBufferPage._reset -- wrong?? format?
     
     // BlockAccessBase/BlockAccessMapped needs to track highest block better.
