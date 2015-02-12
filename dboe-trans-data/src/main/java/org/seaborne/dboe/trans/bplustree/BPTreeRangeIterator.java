@@ -37,7 +37,6 @@ class BPTreeRangeIterator implements Iterator<Record> {
     
     // Convert path to a stack of iterators
     private final Deque<Iterator<BPTreePage>> stack = new ArrayDeque<>();
-    private final Deque<BPTreePage> trackStack = new ArrayDeque<>();
     final private Record minRecord ;
     final private Record maxRecord ;
     private Iterator<Record> current ;
@@ -53,59 +52,51 @@ class BPTreeRangeIterator implements Iterator<Record> {
 
     @Override
     public boolean hasNext() {
-        if ( BPT.logging(log) )
-            BPT.log(log, "hasNext") ;
         if ( finished ) 
             return false ;
         if ( slot != null )
             return true ;
-        if ( current != null && current.hasNext() ) {
-            slot = current.next() ;
-            return true ;
-        }
-        if ( BPT.logging(log) )
-            BPT.log(log, "** End of current") ;
-        do {
+//        if ( current != null && current.hasNext() ) {
+//            slot = current.next() ;
+//            return true ;
+//        }
+        
+        while(current != null && !current.hasNext()) {
             current = moveOnCurrent() ;
-            if ( current == null ) {
-                end() ;
-                return false ;
-            }
-        } while(!current.hasNext()) ;
+        } 
+        if ( current == null ) {
+            end() ;
+            return false ;
+        }
         slot = current.next() ;
         return true ;
         
     }
     
+    // Move across the head of the stack until empty - then move next level. 
     private Iterator<Record> moveOnCurrent() {
         Iterator<BPTreePage> iter = null ;
         while(!stack.isEmpty()) { 
-            iter = stack.pop() ;
-            BPTreePage stackPage = trackStack.pop(); 
-            if ( BPT.logging(log) )
-                BPT.log(log, "hasNext: pop : "+stackPage.label()) ;
+            iter = stack.peek() ;
             if ( iter.hasNext() )
-                break ;
-            if ( BPT.logging(log) )
-                BPT.log(log, "hasNext: popped empty") ;
+              break ;
+            stack.pop() ;
         } 
         
         if ( iter == null || ! iter.hasNext() )
             return null ;
         BPTreePage p = iter.next() ;
-        // Do this iterator.
-        
         BPTreeRecords r = null ;
         if (p instanceof BPTreeNode) {
             r = loadStack((BPTreeNode)p) ;
-            if ( BPT.logging(log) ) {
-                BPT.log(log, "Node: %s", p.label()) ;
-                BPT.log(log, "    r="+r.label()) ;
-            }
+//            if ( logging(log) ) {
+//                log(log, "moveOnCurrent: Node: %s", p.label()) ;
+//                log(log, "moveOnCurrent:     r="+r.label()) ;
+//            }
         }
         else {
-            if ( BPT.logging(log) )
-                BPT.log(log, "Records: "+p.label()) ;
+//            if ( logging(log) )
+//                log(log, "moveOnCurrent: Records: "+p.label()) ;
             r = (BPTreeRecords)p ;
         }
         return r.getRecordBuffer().iterator(minRecord, maxRecord) ;
@@ -117,34 +108,27 @@ class BPTreeRangeIterator implements Iterator<Record> {
             node.internalMinRecord(path) ;
         else
             node.internalSearch(path, minRecord) ;
-        if ( BPT.logging(log) )
-            BPT.log(log, "loadStack: node: %s", node.label()) ;
+//        if ( logging(log) )
+//            log(log, "loadStack: node: %s", node.label()) ;
         
         List<AccessStep> steps = path.getPath() ;
-        if ( BPT.logging(log) )
-            BPT.log(log, "loadStack: path = "+path) ;
+//        if ( logging(log) )
+//            log(log, "loadStack: path = "+path) ;
         for ( AccessStep step : steps ) {
-            if ( BPT.logging(log) )
-                BPT.log(log, "           step = "+step) ;
+//            if ( logging(log) )
+//                log(log, "           step = "+step) ;
             BPTreeNode n = step.node ; 
             Iterator<BPTreePage> it = n.iterator(minRecord, maxRecord) ;
             if ( it == null || ! it.hasNext() )
                 continue ;
-//            // Drop the first  
-//            it.next() ;
+            // Drop the first  
+            // TODO Why??
+            BPTreePage p = it.next() ;
+//            if ( logging(log) )
+//                log(log, "           drop: %s", p.label()) ;
             stack.push(it) ;
-            
-            if ( BPT.logging(log) )
-                BPT.log(log, "loadStack: push : "+n.label()) ;
-            trackStack.push(n) ;
-        }
-        
-        if ( BPT.logging(log) ) {
-            BPT.log(log, "loadStack: stack = %d", stack.size()) ;
-            StringBuilder sb = new StringBuilder() ;
-            sb.append("loadStack: ") ;
-            trackStack.forEach(z -> sb.append(" "+z.label())) ;
-            BPT.log(log, sb.toString()) ;
+//            if ( logging(log) )
+//                log(log, "loadStack: push : "+n.label()) ;
         }
         
         BPTreePage p = steps.get(steps.size()-1).page ;
@@ -154,8 +138,6 @@ class BPTreeRangeIterator implements Iterator<Record> {
     }
 
     private void end() {
-        if ( BPT.logging(log) )
-            BPT.log(log, "end") ;
         finished = true ;
         current = null ;
     }
@@ -166,8 +148,10 @@ class BPTreeRangeIterator implements Iterator<Record> {
             throw new NoSuchElementException() ;
         Record r = slot ;
         if ( r == null )
-            throw new InternalErrorException("Null slot after hashnext is true") ;
+            throw new InternalErrorException("Null slot after hasNext is true") ;
         slot = null ;
+//        if ( logging(log) )
+//            log(log, "Yield %s", r) ; 
         return r ;
     }
 }
