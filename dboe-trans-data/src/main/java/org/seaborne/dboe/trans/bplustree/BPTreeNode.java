@@ -35,8 +35,6 @@ import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.iterator.IteratorWrapper ;
-import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.buffer.PtrBuffer ;
 import org.seaborne.dboe.base.buffer.RecordBuffer ;
@@ -302,9 +300,10 @@ public final class BPTreeNode extends BPTreePage
      * @param maxRec
      * @return Iterator&lt;BPTreePage>
      */
-    public Iterator<BPTreePage> iterator(Record minRec, Record maxRec) {
-        if ( logging(log) )
-            log(log, "iterator(this=%s, %s, %s)", label(), minRec, maxRec) ;
+    Iterator<BPTreePage> iterator(Record minRec, Record maxRec) {
+        // TODO Removed commented out logging.
+//        if ( logging(log) )
+//            log(log, "iterator(this=%s, %s, %s)", label(), minRec, maxRec) ;
         if ( minRec != null && maxRec != null && Record.keyGE(minRec, maxRec) )
             return null ;//throw new IllegalArgumentException("minRec >= maxRec: "+minRec+" >= "+maxRec ) ;
         
@@ -335,27 +334,26 @@ public final class BPTreeNode extends BPTreePage
         for ( int i = x1 ; i <= x2 ; i++ )
             x.add(get(i)) ;
         
-        if ( logging(log) ) {
-            StringBuilder sb = new StringBuilder() ;
-            sb.append("Node iterator ") ;
-            sb.append(label()) ;
-            sb.append(" :") ;
-            x.forEach(z -> sb.append(" "+z.getId())) ;
-            log(log, sb.toString()) ;
-        }
-        
-        //return x.iterator() ;
-        
-        return new IteratorWrapper<BPTreePage>(x.iterator()) {
-            @Override
-            public BPTreePage next()
-            { 
-                BPTreePage p = iterator.next() ;
-                if ( logging(log) )
-                    log(log, "Node iterator %s : next->%s", label(), p.label()) ;
-                return p ;
-            }
-        } ;
+//        if ( logging(log) ) {
+//            StringBuilder sb = new StringBuilder() ;
+//            sb.append("Node iterator ") ;
+//            sb.append(label()) ;
+//            sb.append(" :") ;
+//            x.forEach(z -> sb.append(" "+z.getId())) ;
+//            log(log, sb.toString()) ;
+//        }
+        return x.iterator() ;
+//        // Add logging wrapper.
+//        return new IteratorWrapper<BPTreePage>(x.iterator()) {
+//            @Override
+//            public BPTreePage next()
+//            { 
+//                BPTreePage p = iterator.next() ;
+//                if ( logging(log) )
+//                    log(log, "Node iterator %s : next->%s", label(), p.label()) ;
+//                return p ;
+//            }
+//        } ;
     }
     
     // TODO OUT OF DATE WITH MVCC
@@ -816,25 +814,29 @@ public final class BPTreeNode extends BPTreePage
         // If x is >= 0, may need to adjust this
         int y = convert(x) ;
         BPTreePage page = get(y) ;
+        //??  Not yet - wait until after rebalance.
         trackPath(path, this, y, page) ;
 
         if ( page.isMinSize() ) { 
             // Can't be the root - we decended in the get().
             // [[TXN]] ** clone
-            // TODO ** FIX PATH
-            page = rebalance(path, page, y) ;
-            // May have moved/removed at x. Find again and fix the path. YUK.
-            x = findSlot(rec) ;
-            y = convert(x) ;
-            if ( page.getId() != ptrs.get(y) )
-                throw new InternalErrorException() ;
-            //page = get(y) ;
-            resetTrackPath(path, this, y, page) ;
+            // rebalance promotes pages.
+            BPTreePage page1 = rebalance(path, page, y) ;
+            // Rebalance changed us (either MVCC-promotion or by rearrange even without promotion).  
+            int x1 = findSlot(rec) ;
+            int y1 = convert(x1) ;
+            BPTreePage page2 = get(y1) ;
+            if ( page1.getId() != page2.getId() ) {
+                System.err.println("Unexpected") ;
+            }
+            
+            //resetTrackPath(path, this, y1, page1) ;
             if ( CheckingNode ) {
                 internalCheckNode() ;
-                page.checkNode() ;
+                page1.checkNode() ;
             }
             this.write() ;
+            page = page1 ;
         }
 
         // Go to bottom
@@ -895,7 +897,7 @@ public final class BPTreeNode extends BPTreePage
     }
 
     /*
-     * Rebalance node n at slot idx in parent (this)
+     * Rebalance "node" at slot idx in parent (this)
      * The node will then be greater than the minimum size
      * and one-pass delete is then possible.
      * 
@@ -910,6 +912,8 @@ public final class BPTreeNode extends BPTreePage
      * else
      * merge with left or right sibling
      * Suboperations do all the write-back of nodes.
+     * 
+     * return the page which might be coalesced from left or right..
      */
     private BPTreePage rebalance(AccessPath path, BPTreePage node, int idx) {
         if ( logging(log) ) {

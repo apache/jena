@@ -70,12 +70,21 @@ public class BPT {
 
                     // Check every one except the last is not a leaf node.
                     List<AccessStep> y = path.getPath().subList(0, path.getPath().size()-2) ;
-                    Optional<?> z = y.stream().filter(e -> e.node.isLeaf() ).findFirst() ;
+                    Optional<AccessStep> z = y.stream().filter(e -> e.node.isLeaf() ).findFirst() ;
                     if ( z.isPresent() )
                         throw new InternalErrorException("promote: Leaf "+z.get()+" found in path not at the tail: "+path) ;
                     z = y.stream().filter(e -> e.node.ptrs.get(e.idx) != e.page.getId()).findFirst() ;
-                    if ( z.isPresent() )
-                        throw new InternalErrorException("promote: path error: "+path) ;
+                    if ( z.isPresent() ) {
+                        AccessStep e = z.get() ;
+                        System.err.println("promote: path error: "+z) ;
+                        System.err.println("  "+path) ;
+                        System.err.println("  "+e.node.ptrs.get(e.idx)) ;
+                        System.err.println("  "+e.page.getId()) ;
+                        System.err.println("  "+e.node) ;
+                        System.err.println("  "+e.idx) ;
+                        System.err.println("  "+e.page) ;
+                        throw new InternalErrorException("promote: path error: "+z+" in "+path) ;
+                    }
                 } catch (Throwable th) { 
                     System.err.println(path) ;
                     throw th ;

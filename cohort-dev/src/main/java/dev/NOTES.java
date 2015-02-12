@@ -22,10 +22,12 @@ public class NOTES {
     // Mantis / cohort / legion
     
     // *** Link is broken in records blocks.
-    // *** BPTreeRecords is non-dupkciating at the moment.
-    // *** An iterator BPTreeNodes that yields BPTreeRecords => RecordBuffers
+    // *** BPTreeRecords is non-duplicting at the moment.
+
+    // Old B+Trees broken.
+    // TestBPlusTree.main
     
-    // BPTLog.
+    // Clear up being/end bracketing.
     
     // RecordBufferPage._reset -- wrong?? format?
     
