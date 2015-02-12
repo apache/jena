@@ -17,14 +17,8 @@
 
 package org.seaborne.dboe.trans.bplustree;
 
-import java.util.List ;
-import java.util.Optional ;
-
-import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.logging.FmtLog ;
 import org.seaborne.dboe.base.page.Page ;
 import org.seaborne.dboe.base.record.Record ;
-import org.seaborne.dboe.trans.bplustree.AccessPath.AccessStep ;
 import org.slf4j.Logger ;
 
 /** Abstraction of a B+Tree node - either an branch (BTreeNode) or records block (BTreeRecords) */
@@ -39,134 +33,14 @@ abstract public class BPTreePage implements Page
     protected final BPlusTree bpTree ; 
     protected final BPlusTreeParams params ;
 
-    protected final static boolean logging(Logger log) {
-        return BPlusTreeParams.logging(log) ;
+    /** Short form for logging */
+    protected String label() {
+        return String.format("%d[%s]", getId(), typeMark()) ;
     }
     
-    protected final static void log(Logger log, String fmt, Object... args) {
-        if ( logging(log) ) {
-            FmtLog.debug(log, fmt, args);
-        }
-    }
+    protected abstract String typeMark() ;
     
-    protected static void promote(AccessPath path, BPTreePage page) {
-        Logger pageLog = page.getLogger() ;
-        // ---- Logging
-        if ( logging(pageLog) ) {
-            log(pageLog, "Promote :: Path=%s  Page=%d[%s]: %s", path, page.getId(), mark(page), page) ;
-            if ( path != null ) {
-                // Fix to root.
-                path.getPath().forEach(e -> {
-                    log(pageLog, "  Path: %s:%s[%s]", mark(e.node), e.node.getId(), e.idx) ;
-                    //n.duplicate() ;
-                } ) ;
-            }
-            //log(pageLog, "  Path -- %s", path) ;
-            
-        }
-        // ---- Checking if the access path is consistent.
-        if ( BPlusTreeParams.CheckingNode && path != null ) {
-            if ( path.getPath().size() > 2) {
-                try {
-                    
-                    // Check every one except the last is not a leaf node.
-                    List<AccessStep> y = path.getPath().subList(0, path.getPath().size()-2) ;
-                    Optional<?> z = y.stream().filter(e -> e.node.isLeaf() ).findFirst() ;
-                    if ( z.isPresent() )
-                        throw new InternalErrorException("promote: Leaf "+z.get()+" found in path not at the tail: "+path) ;
-                    z = y.stream().filter(e -> e.node.ptrs.get(e.idx) != e.page.getId()).findFirst() ;
-                    if ( z.isPresent() )
-                        throw new InternalErrorException("promote: path error: "+path) ;
-                } catch (Throwable th) { 
-                    System.err.println(path) ;
-                    throw th ;
-                }
-            }
-        }
-        
-        // ---- DEBUG
-        if (path != null && ! path.getPath().isEmpty() ) {
-            List<AccessStep> steps = path.getPath() ;
-            AccessStep last = steps.get(steps.size()-1) ;
-        }
-        // ---- DEBUG
-        
-        // ---- Clone the access path nodes.
-        // Path is the route to this page - it does not include this page. 
-        // Work from the bottom to the top, the reverse order of AccessPath
-        boolean changed = page.promote();
-        if ( changed ) {
-            if ( path != null ) {
-                List<AccessStep> steps = path.getPath() ;
-                
-                int newPtr = page.getId() ;
-                BPTreePage newPage = null ;
-                
-                BPTreeNode newRoot = null ; 
-                
-                
-                if ( logging(pageLog) )
-                    log(pageLog, "Path: %s", path) ;
-                // Duplicate from bottom to top.
-                for ( int i = steps.size() - 1 ; i >= 0 ; i--  ) {
-                    AccessStep s = steps.get(i) ;
-                    // duplicate
-                    BPTreeNode n = s.node ; //** NOTE THAT WE NEED TO FIX UP page AS WELL if Page don't mutate.
-                    if ( logging(pageLog) )
-                        log(pageLog, "    >> %s", n) ;
-                    
-                    changed = n.promote() ; // TODO Reuses java datastructure.  Copy better? 
-                    
-                    if ( logging(pageLog) )
-                        log(pageLog, "    << %s", n) ;
-
-                    if ( ! changed )
-                        continue ;
-                    if ( n.isRoot() ) {
-                        if ( newRoot != null)
-                            throw new InternalErrorException("New root already found") ;
-                        newRoot = n ;
-                    }
-                    // Reset from the duplicated below.
-                    // newPtr == s.page.getId() ??
-//                    if ( page != s.node && newPtr != s.page.getId() ) {
-//                        System.out.flush() ;
-//                        System.err.println("  Promotion: newPtr != s.page.getId(): "+newPtr+" != "+s.page.getId()) ;
-//                        throw new InternalErrorException() ;
-//                    }
-                    n.ptrs.set(s.idx, newPtr) ;
-                    newPtr = n.getId() ;
-                    
-                }
-                if ( newRoot != null ) {
-                    if ( logging(pageLog) )
-                        log(pageLog, "  new root %s", newRoot) ;
-                    page.bpTree.newRoot(newRoot) ;
-                }
-            }
-        }        
-        
-    }
-
-    private static void duplicate(AccessStep step) {
-        // Clone the newPage, clobne uup tree.
-        BPTreePage newPage = step.page ;
-    }
-    
-    static String mark(BPTreePage page) {
-        if ( page instanceof BPTreeNode) {
-            BPTreeNode n = ((BPTreeNode)page) ;
-            String mark = ((BPTreeNode)page).isLeaf() ? "Leaf" : "Node" ;
-            if ( n.isRoot() )
-                mark = mark+"/Root" ;
-            return mark ;
-        }
-        else {
-            return "Data" ;
-        }
-    }
-    
-    abstract Logger getLogger() ;
+    protected abstract Logger getLogger() ;
 
     /** Split in two, return the new (upper) page.  
      *  Split key is highest key of the old (lower) page.
