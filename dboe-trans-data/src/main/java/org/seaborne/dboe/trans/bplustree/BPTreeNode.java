@@ -25,6 +25,7 @@ import static org.seaborne.dboe.trans.bplustree.BPT.convert ;
 import static org.seaborne.dboe.trans.bplustree.BPT.log ;
 import static org.seaborne.dboe.trans.bplustree.BPT.logging ;
 import static org.seaborne.dboe.trans.bplustree.BPT.promotePage ;
+import static org.seaborne.dboe.trans.bplustree.BPT.promote1 ;
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingNode ;
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingTree ;
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.DumpTree ;
@@ -156,6 +157,7 @@ public final class BPTreeNode extends BPTreePage
     // ---- [[TXN]] ** work for transactions.
     void checkTxn() {}
     void checkWriteTxn() {}
+    // TODO -- This is promote1??
     static <X extends BPTreePage> X ensureModifiable(X page) { return page ; } 
     static BPTreeNode ensureModifiableRoot(BPTreeNode root, Object state) 
     { 
@@ -262,6 +264,8 @@ public final class BPTreeNode extends BPTreePage
         if ( root.isLeaf && root.count == 0 ) {
             // Special case. Just a records block. Allow that to go too small.
             BPTreePage page = root.get(0) ;
+            path.add(root, 0, page) ;
+            promotePage(path, page);
             if ( CheckingNode && !(page instanceof BPTreeRecords) )
                 root.error("Zero size leaf root but not pointing to a records block") ;
             // [[TXN]] ** clone
@@ -817,11 +821,11 @@ public final class BPTreeNode extends BPTreePage
         //??  Not yet - wait until after rebalance.
         trackPath(path, this, y, page) ;
 
-        if ( page.isMinSize() ) { 
+        if ( page.isMinSize() ) { // At least min+1 so a delete can happen.
             // Can't be the root - we decended in the get().
             // [[TXN]] ** clone
             // rebalance promotes pages.
-            BPTreePage page1 = rebalance(path, page, y) ;
+            BPTreePage page1 = rebalance(path, page, y) ; // OLD PAGE?
             // Rebalance changed us (either MVCC-promotion or by rearrange even without promotion).  
             int x1 = findSlot(rec) ;
             int y1 = convert(x1) ;
@@ -924,12 +928,12 @@ public final class BPTreeNode extends BPTreePage
             log(log, ">> node: %s", node) ;
         }
         internalCheckNode() ;
-        promotePage(path, this) ;
+        //promotePage(path, this) ;
         promotePage(path, node) ;
 
+        // Try left first
         BPTreePage left = null ;
         if ( idx > 0 )
-            // release on left
             left = get(idx - 1) ;
 
         // *** SHIFTING : need to change the marker record in the parent.
@@ -938,10 +942,9 @@ public final class BPTreeNode extends BPTreePage
         if ( left != null && !left.isMinSize() ) {
             if ( logging(log) )
                 log(log, "rebalance/shiftRight") ;
-
             // Move elements around.
-            // Has not done "this.put()" yet.
-            promotePage(path, left) ;
+            promote1(left, this, idx-1) ;
+            
             shiftRight(left, node, idx - 1) ;
 
             if ( logging(log) )
@@ -962,7 +965,9 @@ public final class BPTreeNode extends BPTreePage
         if ( right != null && !right.isMinSize() ) {
             if ( logging(log) )
                 log(log, "rebalance/shiftLeft") ;
-            promotePage(path, right); 
+            
+            promote1(right, this, idx+1) ;
+            
             shiftLeft(node, right, idx) ;
 
             if ( logging(log) )
@@ -983,7 +988,10 @@ public final class BPTreeNode extends BPTreePage
             error("No siblings") ;
 
         if ( left != null ) {
-            promotePage(path, left) ;
+            //TODO was promotePage(path, left) ;
+            if ( left.promote() )
+                this.ptrs.set(idx-1, left.getId()) ;
+            
             if ( logging(log) )
                 log(log, "rebalance/merge/left: left=%d n=%d [%d]", left.getId(), node.getId(), idx - 1) ;
             if ( CheckingNode && left.getId() == node.getId() )
@@ -996,7 +1004,11 @@ public final class BPTreeNode extends BPTreePage
         } else {
             // left == null
             // rigth != null
-            promotePage(path, right) ;
+            //TODO was promotePage(path, right) ;
+            
+            if ( right.promote() )
+                this.ptrs.set(idx+1, right.getId()) ;
+            
             if ( logging(log) )
                 log(log, "rebalance/merge/right: n=%d right=%d [%d]", node.getId(), right.getId(), idx) ;
             if ( CheckingNode && right.getId() == node.getId() )
@@ -1251,8 +1263,7 @@ public final class BPTreeNode extends BPTreePage
             return false ;
 
         // The root can be zero size and point to a single data block.
-        int id = this.getPtrBuffer().getLow() ;
-        BPTreePage page = get(id) ;
+        BPTreePage page = get(0) ;
         boolean b = page.hasAnyKeys() ;
         page.release() ;
         return b ;
@@ -1312,7 +1323,10 @@ public final class BPTreeNode extends BPTreePage
     }
 
     public void dump() {
-        dump(IndentedWriter.stdout) ;
+        boolean b = BPT.Logging ;
+        BPT.Logging = false ;
+        try { dump(IndentedWriter.stdout) ; }
+        finally { BPT.Logging = b ; }
     }
 
     public void dump(IndentedWriter out) {
@@ -1559,19 +1573,7 @@ public final class BPTreeNode extends BPTreePage
         System.out.println() ;
         System.out.println(msg) ;
         System.out.flush() ;
-        try {
-            dumpBlocks() ;
-        }
-        catch (Exception ex) {}
         throw new BPTreeException(msg) ;
     }
 
-    private void dumpBlocks() {
-        System.out.println("---Nodes") ;
-        bpTree.getNodeManager().dump() ;
-        System.out.println("---Records") ;
-        bpTree.getRecordsMgr().dump() ;
-        System.out.println("---") ;
-        System.out.flush() ;
-    }
 }

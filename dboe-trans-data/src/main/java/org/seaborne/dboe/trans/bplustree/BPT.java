@@ -48,20 +48,25 @@ public class BPT {
         return decodeIndex(idx) ;
     }
 
+    /** Promote a singe page. Assumes the path to this page has been handled in some way elsewhere */  
+    /*package*/ static boolean promote1(BPTreePage page, BPTreeNode node, int idx) {
+        boolean changed = page.promote() ;
+        node.ptrs.set(idx, page.getId()) ;
+        return changed ;
+    }
+    
     /** Promote a B+Tree page */ 
     /*package*/ static void promotePage(AccessPath path, BPTreePage page) {
         Logger pageLog = page.getLogger() ;
         // ---- Logging
         if ( logging(pageLog) ) {
             log(pageLog, "Promote :: Path=%s  Page=%s", path, page) ;
-            if ( path != null ) {
-                // Fix to root.
-                path.getPath().forEach(e -> {
-                    log(pageLog, "  Path: %s->%s[%s]", e.node.label(), e.node.getId(), e.idx) ;
-                    //n.duplicate() ;
-                } ) ;
-            }
-            //log(pageLog, "  Path -- %s", path) ;
+//            if ( path != null ) {
+//                // Fix to root.
+//                path.getPath().forEach(e -> {
+//                    log(pageLog, "  Path: %s->%s[%s]", e.node.label(), e.node.getId(), e.idx) ;
+//                } ) ;
+//            }
         }
         // ---- Checking if the access path is consistent.
         if ( BPlusTreeParams.CheckingNode && path != null ) {
@@ -91,13 +96,15 @@ public class BPT {
                 }
             }
         }
-
+        
         // ---- Clone the access path nodes.
         // Path is the route to this page - it does not include this page. 
         // Work from the bottom to the top, the reverse order of AccessPath
         boolean changed = page.promote();
         if ( changed ) {
             if ( path != null ) {
+                // Sequence of promote1 calls? + root.
+                
                 List<AccessStep> steps = path.getPath() ;
 
                 int newPtr = page.getId() ;
@@ -122,11 +129,6 @@ public class BPT {
 
                     if ( ! changed )
                         continue ;
-                    if ( n.isRoot() ) {
-                        if ( newRoot != null)
-                            throw new InternalErrorException("New root already found") ;
-                        newRoot = n ;
-                    }
                     // Reset from the duplicated below.
                     // newPtr == s.page.getId() ??
 //                    if ( page != s.node && newPtr != s.page.getId() ) {
@@ -134,6 +136,12 @@ public class BPT {
 //                        System.err.println("  Promotion: newPtr != s.page.getId(): "+newPtr+" != "+s.page.getId()) ;
 //                        throw new InternalErrorException() ;
                     n.ptrs.set(s.idx, newPtr) ;
+                    
+                    if ( n.isRoot() ) {
+                        if ( newRoot != null)
+                            throw new InternalErrorException("New root already found") ;
+                        newRoot = n ;
+                    }
                     newPtr = n.getId() ;
 
                 }

@@ -105,13 +105,13 @@ public final class BPTreeRecords extends BPTreePage
     public boolean promote()   {
         if ( bprRecordsMgr.isWritable(getId()) )
             return false ;
-        // .reset()is called if needed.
-        // If the block changes, then rBuffPage and rBuff need fixups.
-        // TODO Non-duplicating write.
-        getBackingBlock().setReadOnly(false) ;
-        return true ;
+//        // .reset()is called if needed.
+//        // If the block changes, then rBuffPage and rBuff need fixups.
+//        // TODO Non-duplicating write.
+//        getBackingBlock().setReadOnly(false) ;
+//        return true ;
         
-//        return bprRecordsMgr.promote(this) ;
+        return bprRecordsMgr.promoteDuplicate(this) ;
     }
     
     @Override final
