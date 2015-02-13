@@ -648,23 +648,25 @@ public class XSDDatatype extends BaseDatatype {
             ;
         }
 
-    /**
-     * Datatype template that adapts any response back from Xerces type parsing
-     * to an appropriate java representation. This is primarily used in creating
-     * user defined types - the built in types have a fixed mapping.
-     * <p>
-     * This class is probably now redundant in that XSDDatatype can support
-     * run time conversion of union results. Left in for now during restructuring and
-     * in case any existing user code expects this type - very unlikely.
-     * </p>
-     */
+	/**
+	 * Generic XML Schema datatype (outside the xsd: namespace)
+	 * <p>
+	 * Datatype template that adapts any response back from Xerces type parsing
+	 * to an appropriate java representation. This is primarily used in creating
+	 * user defined types - the built in types have a fixed mapping.
+	 */
     public static class XSDGenericType extends XSDDatatype {
 
-        /**
-         * Hidden constructor used when loading in external user defined XSD types
-         * @param xstype the XSSimpleType definition to be wrapped
-         * @param namespace the namespace for the type (used because the grammar loading doesn't seem to keep that)
-         */
+		/**
+		 * Hidden constructor used when loading in external user defined XSD
+		 * types
+		 * 
+		 * @param xstype
+		 *            the XSSimpleType definition to be wrapped
+		 * @param namespace
+		 *            the namespace for the type (used because the grammar
+		 *            loading doesn't seem to keep that)
+		 */
         XSDGenericType(XSSimpleType xstype, String namespace) {
             super(xstype, namespace);
         }
