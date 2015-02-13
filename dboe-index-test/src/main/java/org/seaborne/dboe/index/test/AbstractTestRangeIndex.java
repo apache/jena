@@ -406,7 +406,7 @@ public abstract class AbstractTestRangeIndex extends Assert {
 
     @Test public void tree_clear_01()   { testClear(5) ; }
 
-    @Test public void tree_clear_02()   { testClear(25) ; }
+    @Test public void tree_clear_02()   { testClear(15) ; }
 
     @Test public void tree_clear_03()   { testClear(998) ; }
 
@@ -418,7 +418,7 @@ public abstract class AbstractTestRangeIndex extends Assert {
     
     @Test public void tree_clear_07()   { testClear(5500) ; }
 
-    void testClear(int N) {
+    protected void testClear(int N) {
         int[] keys = new int[N] ; // Slice is 1000.
         for ( int i = 0 ; i < keys.length ; i++ )
             keys[i] = i ;

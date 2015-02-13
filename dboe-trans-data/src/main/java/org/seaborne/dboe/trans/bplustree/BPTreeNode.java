@@ -491,7 +491,7 @@ public final class BPTreeNode extends BPTreePage
         // **** What about split?
         // **** Delete/rebalance
         
-        return bpTree.getNodeManager().promote(this) ;
+        return bpTree.getNodeManager().promoteDuplicate(this) ;
     }
     
     final static void promoteRoot(BPTreeNode root) {
@@ -829,6 +829,8 @@ public final class BPTreeNode extends BPTreePage
             if ( page1.getId() != page2.getId() ) {
                 System.err.println("Unexpected") ;
             }
+            
+            page1 = page2 ;
             
             //resetTrackPath(path, this, y1, page1) ;
             if ( CheckingNode ) {

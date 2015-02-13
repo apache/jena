@@ -15,9 +15,8 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.index.bplustree;
+package org.seaborne.dboe.index.bplustree ;
 
-import static org.seaborne.dboe.test.RecordLib.r ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.seaborne.dboe.index.RangeIndex ;
@@ -25,41 +24,32 @@ import org.seaborne.dboe.index.test.AbstractTestRangeIndex ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.test.RecordLib ;
 
-public class TestBPlusTree extends AbstractTestRangeIndex
-{
-    static boolean originalNullOut ; 
-    @BeforeClass static public void beforeClass()
-    {
-        BPlusTreeParams.CheckingNode = true ;
-        //BPlusTreeParams.CheckingTree = true ;   // Breaks with block tracking.
-        originalNullOut = SystemIndex.getNullOut() ;
-        SystemIndex.setNullOut(true) ;    
-    }
-    
-    @AfterClass static public void afterClass()
-    {
-        SystemIndex.setNullOut(originalNullOut) ;    
-    }
-    
-    public static void main(String ... args) {
-        int[] keys = {1, 2, 3, 4, 5} ;
+public class TestBPlusTree extends AbstractTestRangeIndex {
+    static boolean originalNullOut ;
 
-        BPlusTree bpt = BPlusTreeFactory.makeMem(5, 5, RecordLib.TestRecordLength, 0) ;
-        bpt.add(r(99)) ;
-        bpt.dump() ;
+    @BeforeClass
+    static public void beforeClass() {
+        BPlusTreeParams.CheckingNode = true ;
+        // BPlusTreeParams.CheckingTree = true ; // Breaks with block tracking.
+        originalNullOut = SystemIndex.getNullOut() ;
+        SystemIndex.setNullOut(true) ;
     }
-    
+
+    @AfterClass
+    static public void afterClass() {
+        SystemIndex.setNullOut(originalNullOut) ;
+    }
+
     @Override
-    protected RangeIndex makeRangeIndex(int order, int minRecords)
-    {
+    protected RangeIndex makeRangeIndex(int order, int minRecords) {
         BPlusTree bpt = BPlusTreeFactory.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
-        if ( false )
-        {
-            // Breaks with CheckingTree = true ; because they deep reads the tree.
+        if ( false ) {
+            // Breaks with CheckingTree = true ; because they deep reads the
+            // tree.
             BPlusTreeParams.CheckingNode = true ;
             BPlusTreeParams.CheckingTree = false ;
             bpt = BPlusTreeFactory.addTracking(bpt) ;
         }
-        return bpt ; 
+        return bpt ;
     }
 }

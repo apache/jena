@@ -17,6 +17,7 @@
 
 package org.seaborne.dboe.base.page;
 
+import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.Log ;
 import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.block.BlockMgr ;
@@ -141,18 +142,33 @@ public class PageBlockMgr<T extends Page>
         blockMgr.free(block) ;
     }
 
-    /** Promote a page - return 'true' if the block changed (.reset()) will have been called */ 
-    public boolean promote(Page page) {
-        // Replace, reset Block in page.
+    
+    /** Promote a page to be writable in-place (block id does not change, hnce page does not change id). */
+    public void promoteInPlace(Page page) {
         Block block = page.getBackingBlock() ;
         block.getByteBuffer().rewind() ;
-        //Block block2 = blockMgr.promote(block) ;
+        Block block2 = blockMgr.promote(block) ; 
+        block2.setReadOnly(false) ;
+        if ( block2.getId() != block.getId() )
+            throw new InternalErrorException("Block id changed") ;
+        if ( block2 == block )
+            return ;
+        // Change - reset Block in page.
+        // The details should not have changed.
+        // page.reset(block2) ;
+    }
+    
+    /** Promote a page - return 'true' if the block changed (.reset()) will have been called */ 
+    public boolean promoteDuplicate(Page page) {
+        Block block = page.getBackingBlock() ;
+        block.getByteBuffer().rewind() ;
+        
         // --- TODO Always new
         Block block2 =  blockMgr.allocate(-1) ;
         block2.getByteBuffer().put(block.getByteBuffer()) ;
         block2.getByteBuffer().rewind() ;
         block2.setReadOnly(false) ;
-        // --- TODO Always new
+
         if ( block2 == block )
             return false ;
         // Change - reset Block in page.
