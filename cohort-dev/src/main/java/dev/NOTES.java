@@ -21,11 +21,15 @@ package dev;
 public class NOTES {
     // Mantis / cohort / legion
     
-    // *** Link is broken in records blocks.
-    // *** BPTreeRecords is non-duplicting at the moment.
-
-    // Old B+Trees broken.
-    // TestBPlusTree.main
+    // promotion - trim path once duplicated so once per operation.
+    //    Or switch to limit effects now.
+    //    or page.setModified.
+    
+    // BPTreeNode.promoteRoot
+    // check root handling.  Do in BPlusTree?
+    
+    // Remove CheckingTree - broken.
+    // Tracking - unwritten blocks. 
     
     // Clear up being/end bracketing.
     

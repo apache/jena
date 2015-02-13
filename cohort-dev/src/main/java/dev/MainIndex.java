@@ -17,10 +17,16 @@
 
 package dev;
 
+import static org.seaborne.dboe.test.RecordLib.intToRecord ;
+import static org.seaborne.dboe.test.RecordLib.r ;
+
 import java.io.PrintStream ;
 import java.util.Arrays ;
 import java.util.List ;
 import java.util.stream.Collectors ;
+import java.util.stream.IntStream ;
+
+import com.hp.hpl.jena.query.ReadWrite ;
 
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
@@ -29,19 +35,17 @@ import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.sys.SystemIndex ;
+import org.seaborne.dboe.test.RecordLib ;
 import org.seaborne.dboe.trans.bplustree.BPT ;
 /* ***************** TRANSACTION BPLUSTREE *********************** */
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
+import org.seaborne.dboe.trans.bplustree.BPlusTreeParams ;
 import org.seaborne.dboe.transaction.Transactional ;
 /* ***************** TRANSACTION BPLUSTREE *********************** */
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
-import static dev.RecordLib.* ;
-import static org.seaborne.dboe.test.RecordLib.r ;
-
-import com.hp.hpl.jena.query.ReadWrite ;
 
 public class MainIndex {
     static { LogCtl.setLog4j() ; }
@@ -50,26 +54,98 @@ public class MainIndex {
     
     static Journal journal = Journal.create(Location.mem()) ;
     
+    protected static BPlusTree makeRangeIndex(int order, int minRecords) {
+        BPlusTree bpt = BPlusTreeFactory.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
+        if ( true ) {
+            // Breaks with CheckingTree = true ; 
+            // because they are deep reads into the tree.
+            BPlusTreeParams.CheckingNode = true ;
+            BPlusTreeParams.CheckingTree = true ;
+            //bpt = BPlusTreeFactory.addTracking(bpt) ;
+        }
+        bpt.nonTransactional() ;
+        return bpt ;
+    }
     
-//    @Test
-//    @Override
-//    public void tree_iter_2_01() {
-//        int[] keys = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
-//        BPlusTree bpt = (BPlusTree)makeRangeIndex(2) ;
-//        add(bpt, keys) ;
+    public static void main(String[] args) {
+        int N = 10 ;
+        SystemIndex.setNullOut(true);
+        int[] keys = new int[N] ; // Slice is 1000.
+        for ( int i = 0 ; i < keys.length ; i++ )
+            keys[i] = i+0xAA990000 ;
+        BPlusTree bpt = makeRangeIndex(2, 2) ;
+        List<Record> x = intToRecord(keys, RecordLib.TestRecordLength) ;
+        for ( Record r : x )
+        {
+            //System.out.println("  Add: "+r) ;
+            bpt.add(r) ;
+        }
+        
+//        bpt.dump();
+//        elements(bpt) ;
+//
+//        System.out.println() ;
 //        
+//        delete1(bpt, x.get(0)) ;
+//        
+//        System.out.println() ;
+//        //elements(bpt) ;
 //        bpt.dump();
 //        
-//        List<Integer> x = RecordLib.toIntList(bpt.iterator(r(4), r(6))) ;
-//        List<Integer> expected = toIntList(4, 5) ;
-//        assertEquals(expected, x) ;
-//    }
-
-   
+//        
+//        System.out.println() ;
+//        BPT.Logging = true ;
+//        delete1(bpt, x.get(1)) ;
+//        //elements(bpt) ;
+//        bpt.dump();
+//        System.exit(0) ;
+//        
+//        
+//        
+//        
+//        
+//        delete1(bpt, x.get(2)) ;
+//        elements(bpt) ;
+//        bpt.dump();
+//        System.out.println() ;
+//        BPT.Logging = true ;
+//        delete1(bpt, x.get(3)) ;
+        
+        
+//        rIndex.dump();
+//        rIndex.isEmpty() ;
+//        System.exit(0) ;
+//        
+//        //BPT.Logging = true ;
+//        delete1(rIndex, x.get(0)) ;
+//        rIndex.dump();
+//        delete1(rIndex, x.get(1)) ;
+//        rIndex.dump();
+//        System.exit(0) ;
+        
+        IntStream.range(0, N).forEach(i -> delete1(bpt, x.get(i))) ;
+        elements(bpt) ;
+        
+        
+        bpt.dump();
+        elements(bpt) ;
+    }    
     
+    static void elements(BPlusTree bpt) {
+        System.out.print("Elements: ") ;
+        bpt.iterator().forEachRemaining(_1 -> { System.out.print(" "); System.out.print(_1); }  ) ;
+        System.out.println() ;
+    }
+    
+    static void delete1(BPlusTree rIndex, Record r) {
+        System.out.println("delete "+r) ;
+        rIndex.delete(r) ;
+//        rIndex.dump() ;
+//        System.out.println() ;
+    }
     
     @SuppressWarnings("null")
-    public static void main(String[] args) {
+    public static void main1(String[] args) {
         BPT.Logging = false ;
         BlockMgrFactory.AddTracker = false ;
         SystemIndex.setNullOut(true) ;
