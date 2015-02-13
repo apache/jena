@@ -244,8 +244,8 @@ public final class BPTreeNode extends BPTreePage
         Record v = root.internalDelete(rec) ;
 
         // Fix root in case it became empty in deletion process.
-        // "empty" means points to a single subnode.
-        if ( root.count == 0 ) {
+        // "empty" means points to a single subnode which is not a records block.
+        if ( !root.isLeaf && root.count == 0 ) {
             root.reduceRoot() ;
             root.internalCheckNodeDeep() ;
         }
