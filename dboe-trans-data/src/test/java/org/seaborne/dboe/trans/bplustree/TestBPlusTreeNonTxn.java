@@ -17,9 +17,15 @@
 
 package org.seaborne.dboe.trans.bplustree ;
 
+import static org.seaborne.dboe.index.test.IndexTestLib.add ;
+import static org.seaborne.dboe.test.RecordLib.intToRecord ;
+
+import java.util.List ;
+
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
-import org.seaborne.dboe.index.RangeIndex ;
+import org.junit.Test ;
+import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.index.test.AbstractTestRangeIndex ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.test.RecordLib ;
@@ -30,7 +36,7 @@ public class TestBPlusTreeNonTxn extends AbstractTestRangeIndex {
     @BeforeClass
     static public void beforeClass() {
         BPlusTreeParams.CheckingNode = true ;
-        // BPlusTreeParams.CheckingTree = true ; // Breaks with block tracking.
+         BPlusTreeParams.CheckingTree = false ; // Breaks with block tracking.
         originalNullOut = SystemIndex.getNullOut() ;
         SystemIndex.setNullOut(true) ;
     }
@@ -40,8 +46,30 @@ public class TestBPlusTreeNonTxn extends AbstractTestRangeIndex {
         SystemIndex.setNullOut(originalNullOut) ;
     }
     
+    @Test public void tree_clear_02a()
+    { 
+        testClearX(19) ;
+    }
+
+    protected void testClearX(int N) {
+        int[] keys = new int[N] ; // Slice is 1000.
+        for ( int i = 0 ; i < keys.length ; i++ )
+            keys[i] = i ;
+        BPlusTree rIndex = makeRangeIndex(2, 2) ;
+        add(rIndex, keys) ;
+        rIndex.dump() ;
+        if ( N > 0 )
+            assertFalse(rIndex.isEmpty()) ;
+        List<Record> x = intToRecord(keys, RecordLib.TestRecordLength) ;
+        for ( int i = 0 ; i < keys.length ; i++ ) {
+            System.out.println(i+": "+x.get(i)) ;
+            rIndex.delete(x.get(i)) ;
+        }
+        assertTrue(rIndex.isEmpty()) ;
+    }
+    
     @Override
-    protected RangeIndex makeRangeIndex(int order, int minRecords) {
+    protected BPlusTree makeRangeIndex(int order, int minRecords) {
         BPlusTree bpt = BPlusTreeFactory.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
         if ( false ) {
             // Breaks with CheckingTree = true ; 

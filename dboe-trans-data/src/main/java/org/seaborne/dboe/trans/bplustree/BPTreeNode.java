@@ -21,11 +21,7 @@ import static java.lang.String.format ;
 import static org.seaborne.dboe.base.record.Record.keyGT ;
 import static org.seaborne.dboe.base.record.Record.keyLT ;
 import static org.seaborne.dboe.base.record.Record.keyNE ;
-import static org.seaborne.dboe.trans.bplustree.BPT.convert ;
-import static org.seaborne.dboe.trans.bplustree.BPT.log ;
-import static org.seaborne.dboe.trans.bplustree.BPT.logging ;
-import static org.seaborne.dboe.trans.bplustree.BPT.promotePage ;
-import static org.seaborne.dboe.trans.bplustree.BPT.promote1 ;
+import static org.seaborne.dboe.trans.bplustree.BPT.* ;
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingNode ;
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingTree ;
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.DumpTree ;
@@ -158,9 +154,12 @@ public final class BPTreeNode extends BPTreePage
     void checkTxn() {}
     void checkWriteTxn() {}
     // TODO -- This is promote1??
-    static <X extends BPTreePage> X ensureModifiable(X page) { return page ; } 
-    static BPTreeNode ensureModifiableRoot(BPTreeNode root, Object state) 
-    { 
+    static <X extends BPTreePage> X ensureModifiable(X page) {
+        page.promote() ;
+        return page ;
+    }
+
+    static BPTreeNode ensureModifiableRoot(BPTreeNode root, Object state) {
         BPTreeNode root2 = ensureModifiable(root) ;
         if ( root != root2 && root.getId() != root2.getId() ) {
             System.err.println("Cloned root") ;
@@ -275,18 +274,19 @@ public final class BPTreeNode extends BPTreePage
             page = ensureModifiable(page) ;
             Record r = page.internalDelete(path, rec) ;
             page.release() ;
+            root.write() ;
             return r ;
         }
 
         // Entry: checkNodeDeep() ;
         Record v = root.internalDelete(path, rec) ;
-
         // Fix root in case it became empty in deletion process.
-        if ( !root.isLeaf && root.count == 0 ) {
+        // TODO isLeaf not the right test?
+        if ( !root.isLeaf && root.count == 0 ) { 
             // [[TXN]] ** clone
-            //
             root = ensureModifiableRoot(root, null) ;
             root.reduceRoot() ;
+            root.bpTree.newRoot(root) ;
             root.internalCheckNodeDeep() ;
         }
 
@@ -622,7 +622,7 @@ public final class BPTreeNode extends BPTreePage
         internalCheckNodeDeep() ;
 
         promotePage(path, this) ;
-        promotePage(path, y) ;
+        promotePage(path, y) ; //?? promote1(y, this, idx) ;
 
         Record splitKey = y.getSplitKey() ;
         splitKey = keyRecord(splitKey) ;
@@ -830,6 +830,7 @@ public final class BPTreeNode extends BPTreePage
             int x1 = findSlot(rec) ;
             int y1 = convert(x1) ;
             BPTreePage page2 = get(y1) ;
+            promote1(page2, this, y1) ;
             if ( page1.getId() != page2.getId() ) {
                 System.err.println("Unexpected") ;
             }
@@ -843,6 +844,7 @@ public final class BPTreeNode extends BPTreePage
             }
             this.write() ;
             page = page1 ;
+            page.write() ;
         }
 
         // Go to bottom
@@ -864,7 +866,6 @@ public final class BPTreeNode extends BPTreePage
 
     /*
      * Reduce the root when it has only one pointer and no records.
-     * Keep the root as id 0 so this is just a copy-up of the one child node.
      * WRITE(root)
      * RELEASE(old child)
      * This is the only point the height of the tree decreases.

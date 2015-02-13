@@ -100,7 +100,12 @@ public class BPT {
         // ---- Clone the access path nodes.
         // Path is the route to this page - it does not include this page. 
         // Work from the bottom to the top, the reverse order of AccessPath
+        if ( logging(pageLog) )
+            log(pageLog, "   page>> %s", page.label()) ;
         boolean changed = page.promote();
+        if ( logging(pageLog) )
+            log(pageLog, "   page<< %s", page.label()) ;
+        
         if ( changed ) {
             if ( path != null ) {
                 // Sequence of promote1 calls? + root.
@@ -124,11 +129,11 @@ public class BPT {
 
                     changed = n.promote() ; // TODO Reuses java datastructure.  Copy better? 
 
-                    if ( logging(pageLog) )
-                        log(pageLog, "    << %s", n) ;
-
-                    if ( ! changed )
+                    if ( ! changed ) {
+                        if ( logging(pageLog) )
+                            log(pageLog, "    .. no change", n) ;
                         continue ;
+                    }
                     // Reset from the duplicated below.
                     // newPtr == s.page.getId() ??
 //                    if ( page != s.node && newPtr != s.page.getId() ) {
@@ -136,6 +141,9 @@ public class BPT {
 //                        System.err.println("  Promotion: newPtr != s.page.getId(): "+newPtr+" != "+s.page.getId()) ;
 //                        throw new InternalErrorException() ;
                     n.ptrs.set(s.idx, newPtr) ;
+                    if ( logging(pageLog) )
+                        log(pageLog, "    << %s", n) ;
+
                     
                     if ( n.isRoot() ) {
                         if ( newRoot != null)
@@ -143,6 +151,7 @@ public class BPT {
                         newRoot = n ;
                     }
                     newPtr = n.getId() ;
+                    n.write() ;
 
                 }
                 if ( newRoot != null ) {
@@ -150,8 +159,10 @@ public class BPT {
                         log(pageLog, "  new root %s", newRoot) ;
                     page.bpTree.newRoot(newRoot) ;
                 }
-            }
-        }        
+            } // changed.
+            page.write() ;  // Necessary?
+        }
+
     }
 }
 
