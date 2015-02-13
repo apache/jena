@@ -228,7 +228,7 @@ public class XSDDatatype extends BaseDatatype {
 // local variables
 
     /** the Xerces internal type declaration */
-    protected XSSimpleType typeDeclaration;
+    XSSimpleType typeDeclaration;
 
     /** the corresponding java primitive class, if any */
     protected Class<?> javaClass = null;
@@ -270,7 +270,7 @@ public class XSDDatatype extends BaseDatatype {
      * @param xstype the XSSimpleType definition to be wrapped
      * @param namespace the namespace for the type (used because the grammar loading doesn't seem to keep that)
      */
-    public XSDDatatype(XSSimpleType xstype, String namespace) {
+    XSDDatatype(XSSimpleType xstype, String namespace) {
         super("");
         typeDeclaration = xstype;
         this.uri = namespace + "#" + typeDeclaration.getName();
@@ -411,7 +411,7 @@ public class XSDDatatype extends BaseDatatype {
      * @param validatedInfo a fully populated Xerces data validation context
      * @return the appropriate java wrapper type
      */
-    public Object convertValidatedDataValue(ValidatedInfo validatedInfo) throws DatatypeFormatException {
+    Object convertValidatedDataValue(ValidatedInfo validatedInfo) throws DatatypeFormatException {
         switch (validatedInfo.actualValueType) {
             case XSConstants.BASE64BINARY_DT:
                 byte[] decoded = Base64.decode(validatedInfo.normalizedValue);
