@@ -824,26 +824,22 @@ public final class BPTreeNode extends BPTreePage
         if ( page.isMinSize() ) { // At least min+1 so a delete can happen.
             // Can't be the root - we decended in the get().
             // [[TXN]] ** clone
-            // rebalance promotes pages.
-            BPTreePage page1 = rebalance(path, page, y) ; // OLD PAGE?
-            // Rebalance changed us (either MVCC-promotion or by rearrange even without promotion).  
+            // Rebalance promotes pages.
+            // Page return may not now have the record. due to shuffling.
+            /*BPTreePage page1 = */rebalance(path, page, y) ;
+            // Rebalance may have moved the record due to shuffling.  
             int x1 = findSlot(rec) ;
             int y1 = convert(x1) ;
             BPTreePage page2 = get(y1) ;
             promote1(page2, this, y1) ;
-            if ( page1.getId() != page2.getId() ) {
-                System.err.println("Unexpected") ;
-            }
-            
-            page1 = page2 ;
-            
-            //resetTrackPath(path, this, y1, page1) ;
+            resetTrackPath(path, this, y1, page2) ;
             if ( CheckingNode ) {
                 internalCheckNode() ;
-                page1.checkNode() ;
+                page2.checkNode() ;
             }
+            page = page2 ;
+
             this.write() ;
-            page = page1 ;
             page.write() ;
         }
 
