@@ -29,6 +29,7 @@ import java.util.stream.IntStream ;
 import com.hp.hpl.jena.query.ReadWrite ;
 
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.junit.Assert ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.Record ;
@@ -49,6 +50,13 @@ import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 public class MainIndex {
     static { LogCtl.setLog4j() ; }
+
+    public static void main(String[] args) {
+        Assert.assertTrue(true) ;
+        tree_del_2_03() ;
+    }    
+    
+
     
     static RecordFactory recordFactory = new RecordFactory(4, 0) ;
     
@@ -67,8 +75,8 @@ public class MainIndex {
         return bpt ;
     }
     
-    public static void main(String[] args) {
-        int N = 10 ;
+    public static void testClear() {
+        int N = 30 ;
         SystemIndex.setNullOut(true);
         int[] keys = new int[N] ; // Slice is 1000.
         for ( int i = 0 ; i < keys.length ; i++ )
@@ -80,56 +88,26 @@ public class MainIndex {
             //System.out.println("  Add: "+r) ;
             bpt.add(r) ;
         }
-        
-//        bpt.dump();
-//        elements(bpt) ;
-//
-//        System.out.println() ;
-//        
+        IntStream.range(0, N).forEach(idx-> bpt.delete(x.get(idx))) ;
+
+//        BPT.Logging = true ;
 //        delete1(bpt, x.get(0)) ;
-//        
-//        System.out.println() ;
-//        //elements(bpt) ;
-//        bpt.dump();
-//        
-//        
-//        System.out.println() ;
-//        BPT.Logging = true ;
-//        delete1(bpt, x.get(1)) ;
-//        //elements(bpt) ;
-//        bpt.dump();
-//        System.exit(0) ;
-//        
-//        
-//        
-//        
-//        
-//        delete1(bpt, x.get(2)) ;
-//        elements(bpt) ;
-//        bpt.dump();
-//        System.out.println() ;
-//        BPT.Logging = true ;
-//        delete1(bpt, x.get(3)) ;
         
-        
-//        rIndex.dump();
-//        rIndex.isEmpty() ;
-//        System.exit(0) ;
-//        
-//        //BPT.Logging = true ;
-//        delete1(rIndex, x.get(0)) ;
-//        rIndex.dump();
-//        delete1(rIndex, x.get(1)) ;
-//        rIndex.dump();
-//        System.exit(0) ;
-        
-        IntStream.range(0, N).forEach(i -> delete1(bpt, x.get(i))) ;
-        elements(bpt) ;
-        
-        
+        System.out.println() ;
+        //elements(bpt) ;
         bpt.dump();
-        elements(bpt) ;
-    }    
+
+    }
+    
+    public static void tree_del_2_03() {
+        int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
+        int[] keys2 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
+        BPlusTree bpt = makeRangeIndex(2,2) ;
+        TestLib.testInsert(bpt, keys1) ;
+        bpt.dump();
+        TestLib.testDelete(bpt, keys2) ;
+    }
+
     
     static void elements(BPlusTree bpt) {
         System.out.print("Elements: ") ;
@@ -144,7 +122,6 @@ public class MainIndex {
 //        System.out.println() ;
     }
     
-    @SuppressWarnings("null")
     public static void main1(String[] args) {
         BPT.Logging = false ;
         BlockMgrFactory.AddTracker = false ;
@@ -164,19 +141,15 @@ public class MainIndex {
         
         //List<Integer> data1 = Arrays.asList( 1 , 3 , 5 , 7 , 9 , 8 , 6 , 4 , 2) ;
         
-        List<Integer> data1 = null ; // Arrays.asList( 2, 3 , 4 ) ; // , 7 , 8 , 9 ) ;
+        List<Integer> data1 = Arrays.asList( 2, 3 , 4 ) ; // , 7 , 8 , 9 ) ;
+        List<Integer> data2 = Arrays.asList( 7 , 8 , 9 ) ;
         
-        List<Integer> data2a = Arrays.asList( 2 , 3 ) ;
-        List<Integer> data2b = Arrays.asList( 4 ) ; // , 7 , 8 , 9 ) ;
-        
-        List<Record> dataRecords1 =  data1 == null  ? null : data1.stream().map(x->r(x)).collect(Collectors.toList()) ;
-        List<Record> dataRecords2a = data2a == null ? null : data2a.stream().map(x->r(x)).collect(Collectors.toList()) ;
-        List<Record> dataRecords2b = data2b == null ? null : data2b.stream().map(x->r(x)).collect(Collectors.toList()) ;
-        
-//        Runnable r = () -> data2.forEach((x) -> idx.add(r(x)) ) ;
+        List<Record> dataRecords1 = data1 == null ? null : data1.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        List<Record> dataRecords2 = data2 == null ? null : data2.stream().map(x->r(x)).collect(Collectors.toList()) ;
         
         bpt.startBatch();
         
+        // Add data1 without logging 
         if ( dataRecords1 != null ) {
             verbose(true, ()-> {
                 //add(bpt,dataRecords1) ;
@@ -191,53 +164,19 @@ public class MainIndex {
         }
         
         
-        if ( dataRecords2a != null && dataRecords2b != null ) {
-            // Two part.
-            add(bpt, dataRecords2a) ;
-            System.out.println("After first records") ;
-            dump(bpt);
+        // Add data2 with logging 
+        if ( dataRecords2 != null ) {
             BPT.Logging = true ;
-            add(bpt, dataRecords2b) ;
-            System.out.println("After second records") ;    
+            add(bpt, dataRecords2) ;
         }
+        bpt.finishBatch();
         
         holder.commit() ;
         holder.end() ;
         
         holder.begin(ReadWrite.READ);
-        
-
-        bpt.finishBatch();
-        
-        System.out.println() ;
-
         dump(bpt);
-        
-//        
-//        TransactionCoordinator txnCoord1 = new TransactionCoordinator(Journal.create(Location.mem())) ;
-//        Transactional tIdx = new TransactionalBase("Counter", txnCoord1) ;
-//        txnCoord1.add(idx) ;
-//        
-//        Txn.executeWrite(tIdx, r) ;
-//        
-//        Txn.executeRead(tIdx, bpt::dump) ;
-
-        
-//        bpt.begin(ReadWrite.WRITE) ; 
-//        for( int k : data2 ) {
-//            idx.add( r(k) ) ;
-//        }
-//        bpt.commit() ;
-
-//        bpt.begin(ReadWrite.READ) ; 
-//        Iterator<Record> iter = idx.iterator(r(2), r(7)) ;
-//        iter.next() ;
-//        iter.next() ;
-//        bpt.complete() ;
-//        
-//        bpt.begin(ReadWrite.READ) ;
-//        bpt.dump();
-//        bpt.complete() ;
+        holder.end() ;
     }
     
     static void dump(BPlusTree bpt) {
@@ -277,97 +216,6 @@ public class MainIndex {
         ps.printf("  Active:   %4d\n", txnCoord.countActive()) ;
         ps.printf("  Finished: %4d\n", txnCoord.countFinished()) ;
     }
-    
-//    static Record record(int key) {
-//        return intToRecord(key) ;
-//    }
-//
-//    // Size of a record when testing (one integer)
-//    public final static int TestRecordLength = 4 ;
-//    
-//    public static Record intToRecord(int v) { return intToRecord(v, recordFactory) ; }
-//    public static Record intToRecord(int v, int recLen) { return intToRecord(v, new RecordFactory(recLen, 0)) ; }
-//    
-//    public static Record intToRecord(int v, RecordFactory factory)
-//    {
-//        byte[] vb = Bytes.packInt(v) ;
-//
-//        int recLen = factory.recordLength() ;
-//        byte[] bb = new byte[recLen] ;
-//        int x = 0 ; // Start point in bb.
-//        if ( recLen > 4 )
-//            x = recLen-4 ;
-//        
-//        int len = Math.min(4, recLen) ;
-//        int z = 4-len ; // Start point in vb
-//    
-//        // Furthest right bytes.
-//        for ( int i = len-1 ; i >= 0 ; i-- ) 
-//           bb[x+i] = vb[z+i] ; 
-//        
-//        return factory.create(bb) ;
-//    }
-//
-//    public static List<Record> intToRecord(int[] v) { return intToRecord(v, recordFactory) ; }
-//
-//    public static List<Record> intToRecord(int[] v, int recLen)
-//    { return intToRecord(v, new RecordFactory(recLen, 0)) ; }
-//    
-//    static List<Record> intToRecord(int[] v, RecordFactory factory)
-//    {
-//        List<Record> x = new ArrayList<>() ;
-//        for ( int i : v )
-//            x.add(intToRecord(i, factory)) ;
-//        return x ;
-//    }
-//
-//    public static int recordToInt(Record key)
-//    {
-//        return Bytes.getInt(key.getKey()) ;
-//    }
-//
-//    public static List<Integer> toIntList(Iterator<Record> iter)
-//    {
-//        return Iter.toList(Iter.map(iter, new Transform<Record, Integer>(){
-//            @Override
-//            public Integer convert(Record item)
-//            {
-//                return recordToInt(item) ;
-//            }}
-//        )) ;
-//    }
-//    
-//    public static Record r(int v)
-//    {
-//        return intToRecord(v, recordFactory) ; 
-//    }
-//
-//    public static int r(Record rec)
-//    {
-//        return recordToInt(rec) ; 
-//    }
-//
-//    public static List<Integer> toIntList(int... vals)
-//    {
-//        List<Integer> x = new ArrayList<>() ;
-//        for ( int i : vals )
-//            x.add(i) ;
-//        return x ;
-//    }
-//
-//    public static List<Integer> r(Iterator<Record> iter)
-//    {
-//        return toIntList(iter) ;
-//    }
-//
-//    public static void setLog4j() {
-//        if ( System.getProperty("log4j.configuration") == null ) {
-//            String fn = "log4j.properties" ;
-//            File f = new File(fn) ;
-//            if ( f.exists() )
-//                System.setProperty("log4j.configuration", "file:" + fn) ;
-//        }
-//    }
 }
 
 
