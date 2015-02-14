@@ -24,7 +24,6 @@ import java.util.List ;
 
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
-import org.junit.Test ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.index.test.AbstractTestRangeIndex ;
 import org.seaborne.dboe.sys.SystemIndex ;
@@ -46,11 +45,6 @@ public class TestBPlusTreeNonTxn extends AbstractTestRangeIndex {
         SystemIndex.setNullOut(originalNullOut) ;
     }
     
-    @Test public void tree_clear_02a()
-    { 
-        testClearX(19) ;
-    }
-
     protected void testClearX(int N) {
         int[] keys = new int[N] ; // Slice is 1000.
         for ( int i = 0 ; i < keys.length ; i++ )
