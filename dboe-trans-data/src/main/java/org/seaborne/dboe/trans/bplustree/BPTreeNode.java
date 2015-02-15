@@ -810,7 +810,7 @@ public final class BPTreeNode extends BPTreePage
     @Override
     final Record internalDelete(AccessPath path, Record rec) {
         if ( logging(log) )
-            log(log, "internalDelete(%s) : %s", rec, this) ;
+            log(log, ">> internalDelete(%s) : %s", rec, this) ;
         internalCheckNode() ;
 
         int x = findSlot(rec) ;
@@ -825,20 +825,19 @@ public final class BPTreeNode extends BPTreePage
             // Can't be the root - we decended in the get().
             // [[TXN]] ** clone
             // Rebalance promotes pages.
-            // Page return may not now have the record. due to shuffling.
-            /*BPTreePage page1 = */rebalance(path, page, y) ;
+
+            rebalance(path, page, y) ;  // Ignore return - need to refind.
+            
             // Rebalance may have moved the record due to shuffling.  
-            int x1 = findSlot(rec) ;
-            int y1 = convert(x1) ;
-            BPTreePage page2 = get(y1) ;
-            promote1(page2, this, y1) ;
-            resetTrackPath(path, this, y1, page2) ;
+            x = findSlot(rec) ;
+            y = convert(x) ;
+            page = get(y) ;
+            promote1(page, this, y) ;
+            resetTrackPath(path, this, y, page) ;
             if ( CheckingNode ) {
                 internalCheckNode() ;
-                page2.checkNode() ;
+                page.checkNode() ;
             }
-            page = page2 ;
-
             this.write() ;
             page.write() ;
         }
@@ -848,13 +847,19 @@ public final class BPTreeNode extends BPTreePage
         // [[TXN]] ** clone
         Record r2 = page.internalDelete(path, rec) ;
         if ( x >= 0 ) {
+            // And hence r2 != null.
             // The deleted key was in the tree as well as the records.
             // Change to the new key for the subtree. 
             // [[TXN]] ** clone
-            promotePage(path, this) ;
-            records.set(x, keyRecord(page.maxRecord())) ;
+            // Change made lower down hence replicated.  Path is wrong at this point
+            //promotePage(path, this) ; // << TODO (Un)necessary? 
+            Record mx = page.maxRecord() ;
+            records.set(x, keyRecord(mx)) ;
             this.write() ;
         }
+        if ( logging(log) )
+            log(log, "<< internalDelete(%s) : %s", rec, this) ;
+        
 
         page.release() ;
         return r2 ;
