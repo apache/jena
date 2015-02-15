@@ -138,7 +138,10 @@ public class TestLib {
     public static int delete(Index index, int[] vals) {
         int count = 0 ;
         for ( int v : vals ) {
-            if ( v == 6 ) {
+            boolean dbg = (v == 5) ;
+            //boolean dbg = false ;
+            //System.out.println("DELETE : "+v) ;
+            if ( dbg ) {
                 System.out.println("DELETE : "+v) ;
                 ((BPlusTree)index).dump() ;
                 index.check();
@@ -148,6 +151,9 @@ public class TestLib {
             boolean b = index.delete(r(v)) ;
             if ( b )
                 count++ ;
+            
+            BPT.Logging = false ;
+                
         }
         return count ;
     }

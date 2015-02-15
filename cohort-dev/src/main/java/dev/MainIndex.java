@@ -17,6 +17,7 @@
 
 package dev;
 
+import static java.util.stream.IntStream.range ;
 import static org.seaborne.dboe.test.RecordLib.intToRecord ;
 import static org.seaborne.dboe.test.RecordLib.r ;
 
@@ -24,12 +25,10 @@ import java.io.PrintStream ;
 import java.util.Arrays ;
 import java.util.List ;
 import java.util.stream.Collectors ;
-import java.util.stream.IntStream ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.junit.Assert ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.Record ;
@@ -52,8 +51,8 @@ public class MainIndex {
     static { LogCtl.setLog4j() ; }
 
     public static void main(String[] args) {
-        Assert.assertTrue(true) ;
-        tree_del_2_03() ;
+        SystemIndex.setNullOut(true);
+        tree_del_2() ;
     }    
     
 
@@ -82,13 +81,15 @@ public class MainIndex {
         for ( int i = 0 ; i < keys.length ; i++ )
             keys[i] = i+0xAA990000 ;
         BPlusTree bpt = makeRangeIndex(2, 2) ;
+        // Move the reords boxes to different numbers.
+       
         List<Record> x = intToRecord(keys, RecordLib.TestRecordLength) ;
         for ( Record r : x )
         {
             //System.out.println("  Add: "+r) ;
             bpt.add(r) ;
         }
-        IntStream.range(0, N).forEach(idx-> bpt.delete(x.get(idx))) ;
+        range(0, N).forEach(idx-> bpt.delete(x.get(idx))) ;
 
 //        BPT.Logging = true ;
 //        delete1(bpt, x.get(0)) ;
@@ -99,10 +100,17 @@ public class MainIndex {
 
     }
     
-    public static void tree_del_2_03() {
+    public static void tree_del_2() {
+        // tree_del_2_04
         int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        int[] keys2 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
+        int[] keys2 = {0, 9, 2, 7, 4, 5, 6, 3, 8, 1} ;
+       
+        //tree_del_2_03
+//        int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
+//        int[] keys2 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
         BPlusTree bpt = makeRangeIndex(2,2) ;
+        range(1, 50).forEach(i->bpt.getRecordsMgr().create()) ;
+
         TestLib.testInsert(bpt, keys1) ;
         bpt.dump();
         TestLib.testDelete(bpt, keys2) ;

@@ -24,13 +24,21 @@ public class NOTES {
     // promotion - trim path once duplicated so once per operation.
     //    Or switch to limit effects now.
     //    or page.setModified.
+
+    // Switch to HWM per operation at least. 
     
+    // Rework block trakcing.
+    //  Only worry about write blocks (iterator are read and confusing?)
+    //  Start batch - stact tracking - finish batch - check all written.
+    //  Free block management.
+    //  page release tracking / non-iterators.
+    //  page release tracking / write blocks / either write or release. 
+
     // BPTreeNode.promoteRoot
     // check root handling.  Do in BPlusTree?
     
     // Remove CheckingTree - broken.
-    // Tracking - unwritten blocks. 
-    
+
     // Clear up being/end bracketing.
     
     // RecordBufferPage._reset -- wrong?? format?
@@ -40,14 +48,12 @@ public class NOTES {
     
     // Free chain management for MVCC block mgrs.  BlockMgrFreeChain is enough?
     
-    // Page release - meaningful?
-    // Mapper
-    // BPTreeNode.min and max -> paths
-    
-    // == Mantis
-    // dboe-test ?  See BufferTestLib
-    // log4j.properties.
-    // Tests in quack.
+    // Modes
+    //   MVCC - all old is immutable 
+    //   Segments - "super transactions" all contigous writers are one update area. Need journaled blocks. Maybe bad idea.
+    //   MR|SW mode
+    //   Autocommit - HWM per operation.
+    //   Always duplicate (testing)
     
     // == Base 
     // Move LocationLock next to StoreConnection.
