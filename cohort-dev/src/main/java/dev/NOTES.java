@@ -27,16 +27,15 @@ public class NOTES {
 
     // Switch to HWM per operation at least. 
     
-    // Rework block trakcing.
-    //  Only worry about write blocks (iterator are read and confusing?)
-    //  Start batch - stact tracking - finish batch - check all written.
-    //  Free block management.
-    //  page release tracking / non-iterators.
-    //  page release tracking / write blocks / either write or release. 
+    // Rework block tracking.
+    //    Only worry about write blocks (iterator are read and confusing?)
+    //    Start batch - stack tracking - finish batch - check all written.
+    //    Free block management.
+    //    page release tracking / non-iterators.
+    //    page release tracking / write blocks / either write or release. 
 
     // BPTreeNode.promoteRoot
-    // check root handling.  Do in BPlusTree?
-    
+
     // Remove CheckingTree - broken.
 
     // Clear up being/end bracketing.
@@ -50,7 +49,7 @@ public class NOTES {
     
     // Modes
     //   MVCC - all old is immutable 
-    //   Segments - "super transactions" all contigous writers are one update area. Need journaled blocks. Maybe bad idea.
+    //   Segments - "super transactions" all contiguous writers are one update area. Need journaled blocks. Maybe bad idea.
     //   MR|SW mode
     //   Autocommit - HWM per operation.
     //   Always duplicate (testing)
