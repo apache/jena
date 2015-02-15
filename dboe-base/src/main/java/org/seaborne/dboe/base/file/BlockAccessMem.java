@@ -134,7 +134,7 @@ public class BlockAccessMem implements BlockAccess
         if ( !Checking )
             return ;
         if ( id < 0 || id >= blocks.size() )
-            throw new FileException("BlockAccessMem: Bounds exception: " + id + " in [0, "+blocks.size()+")") ;
+            throw new FileException("BlockAccessMem: "+label+": Bounds exception: " + id + " in [0, "+blocks.size()+")") ;
     }
 
     private void check(ByteBuffer bb) {
