@@ -82,7 +82,7 @@ final public class BlockMgrFileAccess extends BlockMgrBase {
     @Override
     public void write(Block block) {
         if ( block.isReadOnly() )
-            throw new BlockException("Attempt to write a read-only block" ) ;
+            throw new BlockException("Attempt to write a read-only block ("+block.getId()+")" ) ;
         syncNeeded = true ;
         file.write(block) ;
     }
