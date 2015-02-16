@@ -127,25 +127,36 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     /** Tree mode - changing the mode on an existing tree is not supported.
      * The normal mode of operation is {@link Mode#TRANSACTIONAL}  
      */
-    public enum Mode { 
+    public enum Mode {
         /** 
-         * B+Tree changes are applied in place. MRSW applies. 
+         * B+Tree changes are applied in place. MRSW applies.
          */
         MUTABLE,
-        /** 
-         * All changes create new replicated blocks (testing) 
+        /**
+         * All operations create new replicated blocks; a replicated block
+         * within the operation is not replicated.
          */
         IMMUTABLE,
         /**
-         * As above except the root alone is mutated, hence it is a
-         * fixed, known id. (testing)
+         * All changes create new replicated blocks; replicated blocks
+         * are re-replicated.  (testing)
+         */
+        IMMUTABLE_ALL,
+        /**
+         * As above except the root alone is mutated, hence it is a fixed, known
+         * id. (testing)
          */
         MUTABLE_ROOT,
         /**
-         * Transactional lifecycle, including blocks below the water
-         * marks are immutable.
+         * Transactional lifecycle, where blocks below the water marks are
+         * immutable.
          */
-        TRANSACTIONAL
+        TRANSACTIONAL,
+        /**
+         * Transactional lifecycle, with automatic transactions for update
+         * operations outside an explicit transaction.
+         */
+        TRANSACTIONAL_AUTOCOMMIT
     }
     
     private static Logger log = LoggerFactory.getLogger(BPlusTree.class) ;

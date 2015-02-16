@@ -17,6 +17,7 @@
 
 package org.seaborne.dboe.trans.bplustree;
 
+import static java.lang.String.format ;
 import static org.apache.jena.atlas.lib.Alg.decodeIndex ;
 
 import java.util.List ;
@@ -28,17 +29,31 @@ import org.seaborne.dboe.trans.bplustree.AccessPath.AccessStep ;
 import org.slf4j.Logger ;
 
 /** B+Tree assist functions */
-public class BPT {
+public final class BPT {
     public static boolean Logging = false ;                  // Turn on/off logging
 
-    protected final static boolean logging(Logger log) {
+    static boolean logging(Logger log) {
         return Logging && log.isDebugEnabled() ;
     }
 
-    protected final static void log(Logger log, String fmt, Object... args) {
+    static void log(Logger log, String fmt, Object... args) {
         if ( logging(log) ) {
             FmtLog.debug(log, fmt, args);
         }
+    }
+
+    static void warning(String msg, Object... args) {
+        msg = format(msg, args) ;
+        System.out.println("Warning: " + msg) ;
+        System.out.flush() ;
+    }
+
+    static void error(String msg, Object... args) {
+        msg = format(msg, args) ;
+        System.out.println() ;
+        System.out.println(msg) ;
+        System.out.flush() ;
+        throw new BPTreeException(msg) ;
     }
 
     /** Convert a find index return to the insert location in the array */ 
@@ -48,15 +63,24 @@ public class BPT {
         return decodeIndex(idx) ;
     }
 
-    /** Promote a singe page. Assumes the path to this page has been handled in some way elsewhere */  
-    /*package*/ static boolean promote1(BPTreePage page, BPTreeNode node, int idx) {
+    /** Promote a single page. Assumes the path to this page has been handled in some way elsewhere */  
+    static boolean promote1(BPTreePage page, BPTreeNode node, int idx) {
         boolean changed = page.promote() ;
         node.ptrs.set(idx, page.getId()) ;
         return changed ;
     }
+
+    /** Promote a B+Tree root */ 
+    static boolean promoteRoot(BPTreeNode root) {
+        if ( ! root.isRoot() ) 
+            throw new InternalErrorException("Not a root") ;
+        boolean changed = root.promote() ;
+        root.bpTree.newRoot(root) ;
+        return changed ;
+    }
     
     /** Promote a B+Tree page */ 
-    /*package*/ static void promotePage(AccessPath path, BPTreePage page) {
+    static void promotePage(AccessPath path, BPTreePage page) {
         Logger pageLog = page.getLogger() ;
         // ---- Logging
         if ( logging(pageLog) ) {
@@ -71,30 +95,16 @@ public class BPT {
         // ---- Checking if the access path is consistent.
         if ( BPlusTreeParams.CheckingNode && path != null ) {
             if ( path.getPath().size() > 2) {
-                try {
-
-                    // Check every one except the last is not a leaf node.
-                    List<AccessStep> y = path.getPath().subList(0, path.getPath().size()-2) ;
-                    Optional<AccessStep> z = y.stream().filter(e -> e.node.isLeaf() ).findFirst() ;
-                    if ( z.isPresent() )
-                        throw new InternalErrorException("promote: Leaf "+z.get()+" found in path not at the tail: "+path) ;
-                    z = y.stream().filter(e -> e.node.ptrs.get(e.idx) != e.page.getId()).findFirst() ;
-                    if ( z.isPresent() ) {
-                        AccessStep e = z.get() ;
-                        System.err.println("promote: path error: "+z) ;
-                        System.err.println("  "+path) ;
-                        System.err.println("  "+e.node.ptrs.get(e.idx)) ;
-                        System.err.println("  "+e.page.getId()) ;
-                        System.err.println("  "+e.node) ;
-                        System.err.println("  "+e.idx) ;
-                        System.err.println("  "+e.page) ;
-                        throw new InternalErrorException("promote: path error: "+z+" in "+path) ;
-                    }
-                } catch (Throwable th) { 
-                    System.err.println(path) ;
-                    throw th ;
-                }
+                // Check every one except the last is not a leaf node.
+                List<AccessStep> y = path.getPath().subList(0, path.getPath().size()-2) ;
+                Optional<AccessStep> z = y.stream().filter(e -> e.node.isLeaf() ).findFirst() ;
+                if ( z.isPresent() )
+                    error("promote: Leaf %s found in path but not at the tail: %s") ;
             }
+            // Check the page/index linkages.
+            Optional<AccessStep> z2 = path.getPath().stream().filter(e -> e.node.ptrs.get(e.idx) != e.page.getId()).findFirst() ;
+            if ( z2.isPresent() )
+                error("promote: path error: %s in %s", z2.get(), path) ;
         }
         
         // ---- Clone the access path nodes.
@@ -123,11 +133,11 @@ public class BPT {
                 for ( int i = steps.size() - 1 ; i >= 0 ; i--  ) {
                     AccessStep s = steps.get(i) ;
                     // duplicate
-                    BPTreeNode n = s.node ; //** NOTE THAT WE NEED TO FIX UP page AS WELL if Pages don't mutate.
+                    BPTreeNode n = s.node ;
                     if ( logging(pageLog) )
                         log(pageLog, "    >> %s", n) ;
 
-                    changed = n.promote() ; // TODO Reuses java datastructure.  Copy better? 
+                    changed = n.promote() ;
 
                     if ( ! changed ) {
                         if ( logging(pageLog) )
@@ -162,7 +172,6 @@ public class BPT {
             } // changed.
             page.write() ;  // Necessary?
         }
-
     }
 }
 
