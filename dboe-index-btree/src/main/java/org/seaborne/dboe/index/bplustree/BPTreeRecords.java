@@ -117,7 +117,7 @@ public final class BPTreeRecords extends BPTreePage
     public void write()         { bprRecordsMgr.write(this) ; } 
     
     @Override final
-    public void promote()       { bprRecordsMgr.promoteInPlace(this) ; } 
+    void promote()              { bprRecordsMgr.promoteInPlace(this) ; } 
     
     @Override final
     public void release()       { bprRecordsMgr.release(this) ; }
