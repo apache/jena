@@ -1386,7 +1386,7 @@ public final class BPTreeNode extends BPTreePage
                     BPT.error("Records: Block @%d has a different id: %d :: %s", rid, i, this) ;
                 int link = records.getLink() ;
                 // Don't check if +1 does not exist.
-                if ( i != count ) {
+                if ( link != -1 && i != count ) {
                     BPTreeRecords page = bpTree.getRecordsMgr().getRead(ptrs.get(i)) ;
                     int rid2 = page.getLink() ;
                     if ( link != rid2 )

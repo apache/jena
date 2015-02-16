@@ -21,12 +21,6 @@ package dev;
 public class NOTES {
     // Mantis / cohort / legion
     
-    // promotion - trim path once duplicated so once per operation.
-    //    Or switch to limit effects now.
-    //    or page.setModified.
-
-    // Switch to HWM per operation at least. 
-    
     // Rework block tracking.
     //    Only worry about write blocks (iterator are read and confusing?)
     //    Start batch - stack tracking - finish batch - check all written.
@@ -34,25 +28,13 @@ public class NOTES {
     //    page release tracking / non-iterators.
     //    page release tracking / write blocks / either write or release. 
 
-    // BPTreeNode.promoteRoot
-
     // Remove CheckingTree - broken.
 
     // Clear up being/end bracketing.
     
-    // RecordBufferPage._reset -- wrong?? format?
-    
     // BlockAccessBase/BlockAccessMapped needs to track highest block better.
     // Delete BlockMgrSync - used by BlockMgrCahe
-    
     // Free chain management for MVCC block mgrs.  BlockMgrFreeChain is enough?
-    
-    // Modes
-    //   MVCC - all old is immutable 
-    //   Segments - "super transactions" all contiguous writers are one update area. Need journaled blocks. Maybe bad idea.
-    //   MR|SW mode
-    //   Autocommit - HWM per operation.
-    //   Always duplicate (testing)
     
     // == Base 
     // Move LocationLock next to StoreConnection.

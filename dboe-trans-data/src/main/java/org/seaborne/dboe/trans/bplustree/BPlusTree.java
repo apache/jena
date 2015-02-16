@@ -20,9 +20,7 @@ package org.seaborne.dboe.trans.bplustree;
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingTree ;
 
 import java.nio.ByteBuffer ;
-import java.util.* ;
-
-import com.hp.hpl.jena.query.ReadWrite ;
+import java.util.Iterator ;
 
 import org.apache.commons.lang3.NotImplementedException ;
 import org.apache.jena.atlas.io.IndentedWriter ;
@@ -32,8 +30,6 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.base.record.RecordMapper ;
-import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
-import org.seaborne.dboe.base.recordbuffer.RecordRangeIterator ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
@@ -43,6 +39,8 @@ import org.seaborne.dboe.transaction.txn.TxnId ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+
+import com.hp.hpl.jena.query.ReadWrite ;
 
 /** B-Tree converted to B+Tree
  * 
@@ -302,13 +300,12 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         //return iterator(fromRec, toRec, RecordFactory.mapperRecord) ;
     }
     
-    // Link based iterator.
     @Override
     public <X> Iterator<X> iterator(Record minRec, Record maxRec, RecordMapper<X> mapper) {
         throw new NotImplementedException("Mapping iterator") ;
     }
     
-//        // TODO Old code.
+//        // TODO Old code.  Link based iterator.
 //        startReadBlkMgr() ;
 //        BPTreeNode root = getRootRead() ;
 //        Iterator<X> iter = iterator(root, minRec, maxRec, mapper) ;
