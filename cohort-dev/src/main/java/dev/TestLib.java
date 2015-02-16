@@ -163,7 +163,7 @@ public class TestLib {
         List<Record> x = intToRecord(vals, RecordLib.TestRecordLength) ;
         for ( Record r : x ) {
             // System.out.println("  Add: "+r) ;
-            index.add(r) ;
+            index.insert(r) ;
         }
     }
 

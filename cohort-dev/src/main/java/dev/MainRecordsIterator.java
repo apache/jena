@@ -96,7 +96,7 @@ public class MainRecordsIterator {
     
     static void add(BPlusTree bpt, List<Record> records) {
         records.forEach((x) -> { 
-            bpt.add(x) ;
+            bpt.insert(x) ;
 //            dump(bpt) ;
 //            System.out.println() ;
         } ) ;

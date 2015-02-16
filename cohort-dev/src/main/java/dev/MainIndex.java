@@ -85,7 +85,7 @@ public class MainIndex {
         for ( Record r : x )
         {
             //System.out.println("  Add: "+r) ;
-            bpt.add(r) ;
+            bpt.insert(r) ;
         }
         range(0, N).forEach(idx-> bpt.delete(x.get(idx))) ;
 
@@ -154,7 +154,7 @@ public class MainIndex {
         
         // Add data1 without logging 
         if ( dataRecords1 != null && !dataRecords1.isEmpty() ) {
-            dataRecords1.forEach(bpt::add) ;
+            dataRecords1.forEach(bpt::insert) ;
         }
         
         System.out.printf("BPT root = %d\n", bpt.getRootId()) ;
@@ -224,7 +224,7 @@ public class MainIndex {
     
     static void add(BPlusTree bpt, List<Record> records) {
         records.forEach((x) -> { 
-            bpt.add(x) ;
+            bpt.insert(x) ;
 //            dump(bpt) ;
 //            System.out.println() ;
         } ) ;
@@ -234,7 +234,7 @@ public class MainIndex {
         List<Integer> data = Arrays.asList(values) ;
         List<Record> dataRecords = data.stream().map(x->r(x)).collect(Collectors.toList()) ;
         dataRecords.forEach((x) -> { 
-            bpt.add(x) ;
+            bpt.insert(x) ;
         } ) ;
     }
 
