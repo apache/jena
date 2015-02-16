@@ -50,12 +50,10 @@ import org.seaborne.dboe.transaction.txn.journal.Journal ;
 public class MainIndex {
     static { LogCtl.setLog4j() ; }
 
-    public static void main(String[] args) {
+    public static void main(String... args) {
         SystemIndex.setNullOut(true);
-        tree_del_2() ;
+        main1() ;
     }    
-    
-
     
     static RecordFactory recordFactory = new RecordFactory(4, 0) ;
     
@@ -115,7 +113,6 @@ public class MainIndex {
         bpt.dump();
         TestLib.testDelete(bpt, keys2) ;
     }
-
     
     static void elements(BPlusTree bpt) {
         System.out.print("Elements: ") ;
@@ -130,7 +127,7 @@ public class MainIndex {
 //        System.out.println() ;
     }
     
-    public static void main1(String[] args) {
+    public static void main1(String... args) {
         BPT.Logging = false ;
         BlockMgrFactory.AddTracker = false ;
         SystemIndex.setNullOut(true) ;
@@ -147,44 +144,73 @@ public class MainIndex {
         for ( int i = 0 ; i < 10 ; i ++ )
             bpt.getRecordsMgr().getBlockMgr().allocate(-1) ;
         
-        //List<Integer> data1 = Arrays.asList( 1 , 3 , 5 , 7 , 9 , 8 , 6 , 4 , 2) ;
+        List<Integer> data1 = Arrays.asList( 1 , 3 , 5 ) ;//  7 , 9 , 8 , 6 , 4 , 2 ) ;
+        List<Integer> data2 = Arrays.asList( ) ;
         
-        List<Integer> data1 = Arrays.asList( 2, 3 , 4 ) ; // , 7 , 8 , 9 ) ;
-        List<Integer> data2 = Arrays.asList( 7 , 8 , 9 ) ;
-        
-        List<Record> dataRecords1 = data1 == null ? null : data1.stream().map(x->r(x)).collect(Collectors.toList()) ;
-        List<Record> dataRecords2 = data2 == null ? null : data2.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        List<Record> dataRecords1 = data1.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        List<Record> dataRecords2 = data2.stream().map(x->r(x)).collect(Collectors.toList()) ;
         
         bpt.startBatch();
         
         // Add data1 without logging 
-        if ( dataRecords1 != null ) {
-            verbose(true, ()-> {
-                //add(bpt,dataRecords1) ;
-                dataRecords1.forEach(r -> {
-                    dump(bpt) ;
-                    bpt.add(r) ;
-                }) ;
-                  
-            } ) ;
-            dump(bpt) ;
-            System.out.println() ;
+        if ( dataRecords1 != null && !dataRecords1.isEmpty() ) {
+            dataRecords1.forEach(bpt::add) ;
         }
         
+        System.out.printf("BPT root = %d\n", bpt.getRootId()) ;
         
         // Add data2 with logging 
-        if ( dataRecords2 != null ) {
+        if ( dataRecords2 != null && !dataRecords2.isEmpty() ) {
+            dump(bpt) ;
+            System.out.println() ;
             BPT.Logging = true ;
             add(bpt, dataRecords2) ;
+            BPT.Logging = false ;
+            dump(bpt) ;
+            System.out.println() ;
         }
         bpt.finishBatch();
         
         holder.commit() ;
         holder.end() ;
         
-        holder.begin(ReadWrite.READ);
+        holder.begin(ReadWrite.READ) ;
         dump(bpt);
+        elements(bpt) ;
         holder.end() ;
+        
+        int rootIdx1 = bpt.getRootId() ;
+        
+        System.out.println("** New transaction") ;
+        holder.begin(ReadWrite.WRITE);
+        add(bpt, 0xFFAA, 0xFFBB, 0xFFCC) ;
+        dump(bpt) ;
+        holder.commit() ;
+        holder.end() ;
+        
+        int rootIdx2 = bpt.getRootId() ;
+        System.out.println("Root = "+bpt.getRootId()) ;
+        
+        holder.begin(ReadWrite.READ) ;
+        dump(bpt);
+        elements(bpt);
+        holder.end() ;
+        
+        bpt.$testForce$(rootIdx1) ;
+        holder.begin(ReadWrite.READ) ;
+        //dump(bpt);
+        System.out.println("Root = "+bpt.getRootId()) ;
+        elements(bpt);
+        holder.end() ;
+        
+        bpt.$testForce$(rootIdx2) ;
+        holder.begin(ReadWrite.READ) ;
+        //dump(bpt);
+        System.out.println("Root = "+bpt.getRootId()) ;
+        elements(bpt);
+        holder.end() ;
+        
+
     }
     
     static void dump(BPlusTree bpt) {
@@ -204,6 +230,14 @@ public class MainIndex {
         } ) ;
     }
     
+    static void add(BPlusTree bpt, Integer ... values) {
+        List<Integer> data = Arrays.asList(values) ;
+        List<Record> dataRecords = data.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        dataRecords.forEach((x) -> { 
+            bpt.add(x) ;
+        } ) ;
+    }
+
     static void verbose(boolean yesOrNo, Runnable r) {
         boolean b = BPT.Logging ;
         try {
