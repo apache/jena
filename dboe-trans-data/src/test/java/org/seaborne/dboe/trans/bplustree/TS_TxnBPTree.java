@@ -30,5 +30,5 @@ import org.seaborne.dboe.trans.bplustree.rewriter.TestBPlusTreeRewriterNonTxn ;
     TestBPlusTreeRewriterNonTxn.class
 } )
 
-public class TS_NonTxnBPTree
+public class TS_TxnBPTree
 { }

@@ -125,20 +125,25 @@ public final class BPTreeRecords extends BPTreePage
 
     @Override
     Record internalInsert(AccessPath path, Record record) {
-        // [[TXN]]
-        BPT.promotePage(path, this) ;
+        // Delay promotion until we know  change will happen.
         int i = rBuff.find(record) ;
         Record r2 = null ;
         if ( i < 0 ) {
             i = decodeIndex(i) ;
             if ( rBuff.size() >= rBuff.maxSize() )
                 throw new StorageException("RecordBlock.put overflow") ;
+            BPT.promotePage(path, this) ;
             rBuff.add(i, record) ;
         } else {
             r2 = rBuff.get(i) ;
-            if ( Record.compareByKeyValue(record, r2) != 0 )
+            if ( Record.compareByKeyValue(record, r2) != 0 ) {
                 // Replace : return old
+                BPT.promotePage(path, this) ;
                 rBuff.set(i, record) ;
+            }
+            else
+                // No promotion, no write
+                return r2 ;
         }
         write() ;
         return r2 ;
@@ -146,10 +151,10 @@ public final class BPTreeRecords extends BPTreePage
 
     @Override
     Record internalDelete(AccessPath path, Record record) {
-        BPT.promotePage(path, this) ;
         int i = rBuff.find(record) ;
-        if ( i < 0 )
+        if ( i < 0 ) 
             return null ;
+        BPT.promotePage(path, this) ;
         Record r2 = rBuff.get(i) ;
         rBuff.remove(i) ;
         write() ;

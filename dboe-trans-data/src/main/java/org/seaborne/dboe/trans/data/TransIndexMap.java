@@ -60,7 +60,7 @@ public class TransIndexMap extends TransactionalMRSW implements Index
     }
 
     @Override
-    public boolean add(Record record)
+    public boolean insert(Record record)
     {
         Record r = find(record) ;
         if ( r != null && r.equals(record) )

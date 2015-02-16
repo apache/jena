@@ -188,7 +188,7 @@ public class TestBPlusTreeRewriterNonTxn extends Assert
         {
             Record record = recordFactory.create() ;
             Bytes.setInt(i+1, record.getKey()) ;
-            bpt.add(record) ;
+            bpt.insert(record) ;
         }
 
         return Iter.toList(bpt.iterator()) ;

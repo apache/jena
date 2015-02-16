@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 
-/** B-Tree converted to B+Tree
+/** 
  * 
  * B-Tree taken from:
  * <pre>
@@ -51,7 +51,8 @@ import com.hp.hpl.jena.query.ReadWrite ;
  * by Thomas H. Cormen, Charles E. Leiserson, 
  *    Ronald L. Rivest and Clifford Stein 
  * </pre> 
- * Includes implementation of removal.
+ * Includes implementation of removal
+ * then the B-Tree code converted to a B+Tree, then made MVCC/transactional.
  * <p>
  * Notes:
  * <ul>
@@ -250,12 +251,12 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     }
 
     @Override
-    public boolean add(Record record) {
-        return addAndReturnOld(record) == null ;
+    public boolean insert(Record record) {
+        return insertAndReturnOld(record) == null ;
     }
 
     /** Add a record into the B+Tree */
-    public Record addAndReturnOld(Record record) {
+    public Record insertAndReturnOld(Record record) {
         startUpdateBlkMgr() ;
         BPTreeNode root = getRootWrite() ;
         Record r = BPTreeNode.insert(root, record) ;

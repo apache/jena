@@ -32,9 +32,9 @@ import org.slf4j.Logger ;
 public final class BPT {
     public static boolean Logging = false ;                  // Turn on/off logging
     
-    public static boolean forcePromoteModes = true ;
-    public static boolean promoteDuplicateRecords = true ;
-    public static boolean promoteDuplicateNodes = true ;
+    public static boolean forcePromoteModes         = false ;
+    public static boolean promoteDuplicateRecords   = false ;
+    public static boolean promoteDuplicateNodes     = false ;
 
     static boolean logging(Logger log) {
         return Logging && log.isDebugEnabled() ;

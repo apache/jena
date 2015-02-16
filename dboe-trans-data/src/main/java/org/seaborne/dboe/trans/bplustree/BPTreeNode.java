@@ -248,10 +248,10 @@ public final class BPTreeNode extends BPTreePage
             if ( CheckingNode && !(page instanceof BPTreeRecords) )
                 BPT.error("Zero size leaf root but not pointing to a records block") ;
             trackPath(path, root, 0, page) ;
-            promotePage(path, page);
             Record r = page.internalDelete(path, rec) ;
             page.release() ;
-            root.write() ;
+            if ( r != null )
+                root.write() ;
             return r ;
         }
 
