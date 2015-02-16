@@ -156,7 +156,7 @@ public class IndexTestLib {
         assertEquals(size1 - count, size2) ;
     }
 
-    public static int delete(Index index, int[] vals) {
+    public static int delete(Index index, int... vals) {
         int count = 0 ;
         for ( int v : vals ) {
             boolean b = index.delete(r(v)) ;
@@ -166,16 +166,16 @@ public class IndexTestLib {
         return count ;
     }
 
-    public static void add(Index index, int[] vals) {
+    public static void add(Index index, int... vals) {
         // System.out.println("Add: "+Arrays.toString(vals)) ;
         List<Record> x = intToRecord(vals, RecordLib.TestRecordLength) ;
         for ( Record r : x ) {
             // System.out.println("  Add: "+r) ;
-            index.add(r) ;
+            index.insert(r) ;
         }
     }
 
-    public static void testIndexContents(Index index, int[] records) {
+    public static void testIndexContents(Index index, int... records) {
         List<Integer> x = toIntList(index.iterator()) ;
 
         // Make a unique list of expected records. Remove duplicates

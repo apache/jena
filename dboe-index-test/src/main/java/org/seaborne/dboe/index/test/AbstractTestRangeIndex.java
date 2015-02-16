@@ -373,9 +373,9 @@ public abstract class AbstractTestRangeIndex extends Assert {
         int[] keys = {1, 2, 3, 4, 5} ;
         RangeIndex rIndex = makeRangeIndex(2) ;
         add(rIndex, keys) ;
-        boolean b = rIndex.add(intToRecord(3)) ;
+        boolean b = rIndex.insert(intToRecord(3)) ;
         assertFalse(b) ;
-        b = rIndex.add(intToRecord(9)) ;
+        b = rIndex.insert(intToRecord(9)) ;
         assertTrue(b) ;
     }
 
@@ -386,7 +386,7 @@ public abstract class AbstractTestRangeIndex extends Assert {
         add(rIndex, keys) ;
         boolean b = rIndex.delete(intToRecord(9)) ;
         assertFalse(b) ;
-        b = rIndex.add(intToRecord(1)) ;
+        b = rIndex.insert(intToRecord(1)) ;
         assertFalse(b) ;
     }
 
