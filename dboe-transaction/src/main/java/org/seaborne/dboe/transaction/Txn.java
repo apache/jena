@@ -48,7 +48,12 @@ public class Txn {
      */
     public static <T extends Transactional> void executeWrite(T txn, Runnable r) {
         txn.begin(ReadWrite.WRITE) ;
-        r.run(); 
+        try { r.run(); }
+        catch (Throwable th) {
+            txn.abort();
+            txn.end();
+            throw th ; 
+        }
         txn.commit() ;
         txn.end() ;
     }
