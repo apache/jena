@@ -26,6 +26,7 @@ import org.seaborne.dboe.trans.bplustree.rewriter.TestBPlusTreeRewriterNonTxn ;
 @Suite.SuiteClasses( {
     TestBPTreeRecordsNonTxn.class,
     TestBPlusTreeNonTxn.class,
+    TestBPTreeModes.class,
     TestBPlusTreeRewriterNonTxn.class
 } )
 

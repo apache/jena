@@ -40,8 +40,6 @@ public class TestBPTreeRecordsNonTxn extends Assert {
     static private BlockMgr            blkMgrRecords ;
     static private RecordBufferPageMgr recordBufferPageMgr ;
 
-    // static private BPlusTree bPlusTree ;
-
     @BeforeClass
     public static void beforeClass() {
         oldNullOut = SystemIndex.getNullOut() ;
@@ -61,6 +59,8 @@ public class TestBPTreeRecordsNonTxn extends Assert {
         recordBufferPageMgr = new RecordBufferPageMgr(recordFactory, blkMgrRecords) ;
 
         BlockMgr blkMgrNodes = BlockMgrFactory.createMem("BPTreeNs", blockSize) ;
+        BPT.forcePromoteModes = true ;
+        BPT.promoteDuplicateRecords = true ;
 
         // B+Tree order does not matter.
         // bPlusTree = BPlusTreeFactory.create(new BPlusTreeParams(3,
@@ -72,6 +72,7 @@ public class TestBPTreeRecordsNonTxn extends Assert {
         SystemIndex.setNullOut(oldNullOut) ;
         BPlusTreeParams.CheckingTree = oldCheckingNode ;
         BPlusTreeParams.CheckingTree = oldCheckingBTree ;
+        BPT.forcePromoteModes = false ;
     }
 
     @Before

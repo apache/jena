@@ -42,16 +42,6 @@ import org.slf4j.LoggerFactory ;
 
 public final class BPTreeNode extends BPTreePage
 {
-    // promote (and records)
-    // [[TXN]] ** work for transactions.
-    // Add some checking 
-    //   checkPageModifiable
-    //  BPTreePage.makeModifiable |-> BPTreePage
-
-    // Pass in BptTxnState?
-    //   which has the checkTxn, checkWriteTxn, 
-    // --> TxnHandler, two implementation, txn and no=txn
-    
     private static Logger log = LoggerFactory.getLogger(BPTreeNode.class) ;
     @Override protected Logger getLogger() { return log ; }
    
@@ -268,7 +258,6 @@ public final class BPTreeNode extends BPTreePage
         // Entry: checkNodeDeep() ;
         Record v = root.internalDelete(path, rec) ;
         // Fix the root in case it became empty in deletion process.
-        // TODO isLeaf not the right test?
         if ( !root.isLeaf && root.count == 0 ) {
             reduceRoot(root) ;
             root.bpTree.newRoot(root) ;
@@ -290,9 +279,6 @@ public final class BPTreeNode extends BPTreePage
      * @return Iterator&lt;BPTreePage>
      */
     Iterator<BPTreePage> iterator(Record minRec, Record maxRec) {
-        // TODO Removed commented out logging.
-//        if ( logging(log) )
-//            log(log, "iterator(this=%s, %s, %s)", label(), minRec, maxRec) ;
         if ( minRec != null && maxRec != null && Record.keyGE(minRec, maxRec) )
             return null ;//throw new IllegalArgumentException("minRec >= maxRec: "+minRec+" >= "+maxRec ) ;
         
@@ -318,70 +304,49 @@ public final class BPTreeNode extends BPTreePage
         // keys are only a max of the subtree they mark out.
         
         // XXX Just grab them now - later, keep indexes and fetch on next(). 
+        // XXX Epoch tracking 
         
         List<BPTreePage> x = new ArrayList<>(x2-x1+1) ;
         for ( int i = x1 ; i <= x2 ; i++ )
             x.add(get(i)) ;
         
-//        if ( logging(log) ) {
-//            StringBuilder sb = new StringBuilder() ;
-//            sb.append("Node iterator ") ;
-//            sb.append(label()) ;
-//            sb.append(" :") ;
-//            x.forEach(z -> sb.append(" "+z.getId())) ;
-//            log(log, sb.toString()) ;
-//        }
         return x.iterator() ;
-//        // Add logging wrapper.
-//        return new IteratorWrapper<BPTreePage>(x.iterator()) {
-//            @Override
-//            public BPTreePage next()
-//            { 
-//                BPTreePage p = iterator.next() ;
-//                if ( logging(log) )
-//                    log(log, "Node iterator %s : next->%s", label(), p.label()) ;
-//                return p ;
-//            }
-//        } ;
     }
     
-    // TODO OUT OF DATE WITH MVCC
-    /**
-     * Returns the id of the records buffer page for this record. Records Buffer
-     * Page NOT read; record may not exist
-     */
-    static int recordsPageId(BPTreeNode node, Record fromRec) {
-        // Used by BPlusTree.iterator
-        // Walk down the B+tree part of the structure ...
-        while (!node.isLeaf) {
-            BPTreePage page = (fromRec == null) ? node.get(0) : node.findHere(null, fromRec) ;
-            // Not a leaf so we can cast safely.
-            BPTreeNode n = (BPTreeNode)page ;
-            // Release if not root.
-            if ( !node.isRoot() )
-                node.release() ;
-            node = n ;
-        }
-        // ... then find the id of the next step down, 
-        // but do not touch the records buffer page.
-        int id ;
-        if ( fromRec == null ) {
-            // Just get the lowest starting place.
-            id = node.getPtrBuffer().getLow() ;
-        } else {
-            // Get the right id based on starting record.
-            int idx = node.findSlot(fromRec) ;
-            idx = convert(idx) ;
-            id = node.getPtrBuffer().get(idx) ;
-        }
-        if ( !node.isRoot() )
-            node.release() ;
-        return id ;
-    }
+//    // OUT OF DATE WITH MVCC
+//    /**
+//     * Returns the id of the records buffer page for this record. Records Buffer
+//     * Page NOT read; record may not exist
+//     */
+//    static int recordsPageId(BPTreeNode node, Record fromRec) {
+//        // Used by BPlusTree.iterator
+//        // Walk down the B+tree part of the structure ...
+//        while (!node.isLeaf) {
+//            BPTreePage page = (fromRec == null) ? node.get(0) : node.findHere(null, fromRec) ;
+//            // Not a leaf so we can cast safely.
+//            BPTreeNode n = (BPTreeNode)page ;
+//            // Release if not root.
+//            if ( !node.isRoot() )
+//                node.release() ;
+//            node = n ;
+//        }
+//        // ... then find the id of the next step down, 
+//        // but do not touch the records buffer page.
+//        int id ;
+//        if ( fromRec == null ) {
+//            // Just get the lowest starting place.
+//            id = node.getPtrBuffer().getLow() ;
+//        } else {
+//            // Get the right id based on starting record.
+//            int idx = node.findSlot(fromRec) ;
+//            idx = convert(idx) ;
+//            id = node.getPtrBuffer().get(idx) ;
+//        }
+//        if ( !node.isRoot() )
+//            node.release() ;
+//        return id ;
+//    }
 
-    // TODO internalMaxRecord??
-    // TODO internalMinRecord??
-    
     final static Record minRecord(BPTreeNode root) {
         AccessPath path = new AccessPath(root) ; 
         return root.internalMinRecord(path) ;
@@ -440,7 +405,7 @@ public final class BPTreeNode extends BPTreePage
     /** Do not use without great care */
     public final PtrBuffer getPtrBuffer()        { return ptrs ; }
     
-    final void setParent(int parentId)    { this.parent = parentId ; } 
+    final void setParent(int parentId)           { this.parent = parentId ; } 
     public final int getParent()                 { return parent ; }
 
     
@@ -474,13 +439,12 @@ public final class BPTreeNode extends BPTreePage
             return false ;
         // This calls reset is needed.
         //   The id, records buffer and pointer buffers need resetting if the block changed.
-        
-        // **** Need the parent chain.
-        // **** Need to reset (Node idx, index in pointers, oldvalue, newvalue)
-        // **** What about split?
-        // **** Delete/rebalance
-        
-        return bpTree.getNodeManager().promoteDuplicate(this) ;
+        boolean promoteInPlace = bpTree.state().modifiableNodeBlock(getId()) ;
+        if ( promoteInPlace ) {
+            bpTree.getNodeManager().promoteInPlace(this) ;
+            return false ;
+        } else
+            return bpTree.getNodeManager().promoteDuplicate(this) ;
     }
     
     @Override
@@ -488,7 +452,6 @@ public final class BPTreeNode extends BPTreePage
 
     @Override
     final void free()           { bpTree.getNodeManager().free(this) ; } 
-    
     
     // ============ SEARCH
     
@@ -962,10 +925,7 @@ public final class BPTreeNode extends BPTreePage
             BPT.error("No siblings") ;
 
         if ( left != null ) {
-            //TODO was promotePage(path, left) ;
-            if ( left.promote() )
-                this.ptrs.set(idx-1, left.getId()) ;
-            
+            promote1(left, this, idx-1 ) ;
             if ( logging(log) )
                 log(log, "rebalance/merge/left: left=%d n=%d [%d]", left.getId(), node.getId(), idx - 1) ;
             if ( CheckingNode && left.getId() == node.getId() )
@@ -978,11 +938,7 @@ public final class BPTreeNode extends BPTreePage
         } else {
             // left == null
             // rigth != null
-            //TODO was promotePage(path, right) ;
-            
-            if ( right.promote() )
-                this.ptrs.set(idx+1, right.getId()) ;
-            
+            promote1(right, this, idx+1 ) ;
             if ( logging(log) )
                 log(log, "rebalance/merge/right: n=%d right=%d [%d]", node.getId(), right.getId(), idx) ;
             if ( CheckingNode && right.getId() == node.getId() )

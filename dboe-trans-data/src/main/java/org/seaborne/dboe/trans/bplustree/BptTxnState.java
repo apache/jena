@@ -36,7 +36,16 @@ final class BptTxnState {
         this.boundaryBlocksRecord = boundaryRecords ;
     }
     
-    public boolean modifiableNodeBlock(int id)       { return boundaryBlocksNode <= id ; }
-    public boolean modifiableRecordsBlock(int id)    { return boundaryBlocksRecord <= id ; }
+    public boolean modifiableNodeBlock(int id) {
+        if ( BPT.forcePromoteModes )
+            return BPT.promoteDuplicateNodes ;
+        return id >= boundaryBlocksNode ;
+    }
+
+    public boolean modifiableRecordsBlock(int id) {
+        if ( BPT.forcePromoteModes )
+            return BPT.promoteDuplicateRecords ;
+        return id >= boundaryBlocksRecord ;
+    }
 }
 

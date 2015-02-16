@@ -98,20 +98,23 @@ public final class BPTreeRecords extends BPTreePage
         return rBuff.get(i) ;
     }
 
-    @Override final
-    public void write()     { bprRecordsMgr.write(this) ; } 
+    @Override
+    final public void write()     { bprRecordsMgr.write(this) ; } 
     
-    @Override final
-    public boolean promote()   {
+    @Override  
+    final boolean promote() {
         if ( bprRecordsMgr.isWritable(getId()) )
             return false ;
-//        // .reset()is called if needed.
-//        // If the block changes, then rBuffPage and rBuff need fixups.
-//        // TODO Non-duplicating write.
-//        getBackingBlock().setReadOnly(false) ;
-//        return true ;
+        // reset() will be called if necessary.
+        boolean promoteInPlace = (bpTree == null) 
+            ? true
+            : bpTree.state().modifiableRecordsBlock(getId()) ;
         
-        return bprRecordsMgr.promoteDuplicate(this) ;
+        if ( promoteInPlace ) {
+            bprRecordsMgr.promoteInPlace(this) ;
+            return false ;
+        } else
+            return bprRecordsMgr.promoteDuplicate(this) ;
     }
     
     @Override final

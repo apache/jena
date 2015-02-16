@@ -24,6 +24,7 @@ import java.util.* ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 
+import org.apache.commons.lang3.NotImplementedException ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
@@ -124,41 +125,6 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
      * sibling nodes instead of immediately splitting (like delete, only on insert).
      */ 
     
-    /** Tree mode - changing the mode on an existing tree is not supported.
-     * The normal mode of operation is {@link Mode#TRANSACTIONAL}  
-     */
-    public enum Mode {
-        /** 
-         * B+Tree changes are applied in place. MRSW applies.
-         */
-        MUTABLE,
-        /**
-         * All operations create new replicated blocks; a replicated block
-         * within the operation is not replicated.
-         */
-        IMMUTABLE,
-        /**
-         * All changes create new replicated blocks; replicated blocks
-         * are re-replicated.  (testing)
-         */
-        IMMUTABLE_ALL,
-        /**
-         * As above except the root alone is mutated, hence it is a fixed, known
-         * id. (testing)
-         */
-        MUTABLE_ROOT,
-        /**
-         * Transactional lifecycle, where blocks below the water marks are
-         * immutable.
-         */
-        TRANSACTIONAL,
-        /**
-         * Transactional lifecycle, with automatic transactions for update
-         * operations outside an explicit transaction.
-         */
-        TRANSACTIONAL_AUTOCOMMIT
-    }
-    
     private static Logger log = LoggerFactory.getLogger(BPlusTree.class) ;
     
     // Root id across transactions
@@ -167,6 +133,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     private BPTreeNodeMgr nodeManager ; 
     private BPTreeRecordsMgr recordsMgr; 
     private final BPlusTreeParams bpTreeParams ;
+    private Mode mode = Mode.TRANSACTIONAL ;
     
     // Construction is a two stage process
     //    1/ Create the object, uninitialized
@@ -216,6 +183,24 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         getState().root = newRoot.getId() ;
     }
 
+    // Very, very dangerous operation. 
+    public void $testForce$(int rootIdx) {
+        this.rootIdx = rootIdx ;
+    }
+
+    public int getRootId() {
+        if ( super.isActiveTxn() )
+            return super.getState().root ;
+        else
+            return rootIdx ;
+    }
+
+    BptTxnState state() {
+        if ( super.isActiveTxn() )
+            return super.getState() ;
+        return null ;
+    }  
+    
     /** Get the parameters describing this B+Tree */
     public BPlusTreeParams getParams()          { return bpTreeParams ; } 
 
@@ -317,33 +302,37 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         //return iterator(fromRec, toRec, RecordFactory.mapperRecord) ;
     }
     
+    // Link based iterator.
     @Override
     public <X> Iterator<X> iterator(Record minRec, Record maxRec, RecordMapper<X> mapper) {
-        // TODO Old code.
-        startReadBlkMgr() ;
-        BPTreeNode root = getRootRead() ;
-        Iterator<X> iter = iterator(root, minRec, maxRec, mapper) ;
-        releaseRootRead(root) ;
-        finishReadBlkMgr() ;
-        // Note that this end the read-part (find the start), not the iteration.
-        // Iterator read blocks still get handled.
-        return iter ;
-    }
-
-    /** Iterate over a range of fromRec (inclusive) to toRec (exclusive) */ 
-    private static <X> Iterator<X> iterator(BPTreeNode node, Record fromRec, Record toRec, RecordMapper<X> mapper) {
-        // Look for starting RecordsBufferPage id.
-        int id = BPTreeNode.recordsPageId(node, fromRec) ;
-        if ( id < 0 )
-            return Iter.nullIter() ;
-        RecordBufferPageMgr pageMgr = node.bpTree.getRecordsMgr().getRecordBufferPageMgr() ;
-        // No pages are active at this point.
-        return RecordRangeIterator.iterator(id, fromRec, toRec, pageMgr, mapper) ;
+        throw new NotImplementedException("Mapping iterator") ;
     }
     
-    private static <X> Iterator<X> iterator(BPTreeNode node, RecordMapper<X> mapper) { 
-        return iterator(node, null, null, mapper) ; 
-    }
+//        // TODO Old code.
+//        startReadBlkMgr() ;
+//        BPTreeNode root = getRootRead() ;
+//        Iterator<X> iter = iterator(root, minRec, maxRec, mapper) ;
+//        releaseRootRead(root) ;
+//        finishReadBlkMgr() ;
+//        // Note that this end the read-part (find the start), not the iteration.
+//        // Iterator read blocks still get handled.
+//        return iter ;
+//    }
+//
+//    /** Iterate over a range of fromRec (inclusive) to toRec (exclusive) */ 
+//    private static <X> Iterator<X> iterator(BPTreeNode node, Record fromRec, Record toRec, RecordMapper<X> mapper) {
+//        // Look for starting RecordsBufferPage id.
+//        int id = BPTreeNode.recordsPageId(node, fromRec) ;
+//        if ( id < 0 )
+//            return Iter.nullIter() ;
+//        RecordBufferPageMgr pageMgr = node.bpTree.getRecordsMgr().getRecordBufferPageMgr() ;
+//        // No pages are active at this point.
+//        return RecordRangeIterator.iterator(id, fromRec, toRec, pageMgr, mapper) ;
+//    }
+//    
+//    private static <X> Iterator<X> iterator(BPTreeNode node, RecordMapper<X> mapper) { 
+//        return iterator(node, null, null, mapper) ; 
+//    }
     
     // Internal calls.
     private void startReadBlkMgr() {

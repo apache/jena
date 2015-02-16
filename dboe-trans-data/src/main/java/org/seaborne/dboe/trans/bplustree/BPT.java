@@ -31,6 +31,10 @@ import org.slf4j.Logger ;
 /** B+Tree assist functions */
 public final class BPT {
     public static boolean Logging = false ;                  // Turn on/off logging
+    
+    public static boolean forcePromoteModes = true ;
+    public static boolean promoteDuplicateRecords = true ;
+    public static boolean promoteDuplicateNodes = true ;
 
     static boolean logging(Logger log) {
         return Logging && log.isDebugEnabled() ;
@@ -113,65 +117,72 @@ public final class BPT {
         if ( logging(pageLog) )
             log(pageLog, "   page>> %s", page.label()) ;
         boolean changed = page.promote();
-        if ( logging(pageLog) )
-            log(pageLog, "   page<< %s", page.label()) ;
-        
-        if ( changed ) {
-            if ( path != null ) {
-                // Sequence of promote1 calls? + root.
-                
-                List<AccessStep> steps = path.getPath() ;
+        if ( logging(pageLog) ) {
+            if ( changed )
+                log(pageLog, "   page<< %s", page.label()) ;
+            else
+                log(pageLog, "    .. no change") ;
+        }
+            
+        if ( changed )
+            page.write() ;  // Being careful.
 
-                int newPtr = page.getId() ;
-                BPTreePage newPage = null ;
+        // Even if the page did not change, make sure the chain is dealt with.
+        // e.g. promote in place policies. 
+        //if ( changed ) {
+        if ( path != null ) {
+            // Sequence of promote1 calls? + root.
 
-                BPTreeNode newRoot = null ; 
+            List<AccessStep> steps = path.getPath() ;
 
+            int newPtr = page.getId() ;
+            BPTreePage newPage = null ;
+            boolean previousChanged = changed ; 
+            BPTreeNode newRoot = null ; 
+
+            if ( logging(pageLog) )
+                log(pageLog, "Path: %s", path) ;
+            // Duplicate from bottom to top.
+            for ( int i = steps.size() - 1 ; i >= 0 ; i--  ) {
+                AccessStep s = steps.get(i) ;
+                // duplicate
+                BPTreeNode n = s.node ;
                 if ( logging(pageLog) )
-                    log(pageLog, "Path: %s", path) ;
-                // Duplicate from bottom to top.
-                for ( int i = steps.size() - 1 ; i >= 0 ; i--  ) {
-                    AccessStep s = steps.get(i) ;
-                    // duplicate
-                    BPTreeNode n = s.node ;
-                    if ( logging(pageLog) )
-                        log(pageLog, "    >> %s", n) ;
+                    log(pageLog, "    >> %s", n) ;
 
-                    changed = n.promote() ;
-
+                changed = n.promote() ;
+                
+                if ( previousChanged ) {
+                    // Even if n did not change, if it's sub changed, need to update s.idx. 
+                    n.ptrs.set(s.idx, newPtr) ;
+                } else {
                     if ( ! changed ) {
                         if ( logging(pageLog) )
-                            log(pageLog, "    .. no change", n) ;
+                            log(pageLog, "    .. no change") ;
                         continue ;
                     }
-                    // Reset from the duplicated below.
-                    // newPtr == s.page.getId() ??
-//                    if ( page != s.node && newPtr != s.page.getId() ) {
-//                        System.out.flush() ;
-//                        System.err.println("  Promotion: newPtr != s.page.getId(): "+newPtr+" != "+s.page.getId()) ;
-//                        throw new InternalErrorException() ;
-                    n.ptrs.set(s.idx, newPtr) ;
-                    if ( logging(pageLog) )
-                        log(pageLog, "    << %s", n) ;
-
-                    
-                    if ( n.isRoot() ) {
-                        if ( newRoot != null)
-                            throw new InternalErrorException("New root already found") ;
-                        newRoot = n ;
-                    }
-                    newPtr = n.getId() ;
-                    n.write() ;
-
                 }
-                if ( newRoot != null ) {
-                    if ( logging(pageLog) )
-                        log(pageLog, "  new root %s", newRoot) ;
-                    page.bpTree.newRoot(newRoot) ;
+                
+                previousChanged = changed ;
+
+                if ( logging(pageLog) )
+                    log(pageLog, "    << %s", n) ;
+
+                if ( n.isRoot() ) {
+                    if ( newRoot != null)
+                        throw new InternalErrorException("New root already found") ;
+                    newRoot = n ;
                 }
-            } // changed.
-            page.write() ;  // Necessary?
-        }
+                newPtr = n.getId() ;
+                n.write() ;
+
+            }
+            if ( newRoot != null ) {
+                if ( logging(pageLog) )
+                    log(pageLog, "  new root %s", newRoot) ;
+                page.bpTree.newRoot(newRoot) ;
+            }
+        } // if ( path != null )
     }
 }
 

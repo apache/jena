@@ -29,13 +29,16 @@ import org.seaborne.dboe.index.test.AbstractTestRangeIndex ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.test.RecordLib ;
 
+/** Run the tests in default settings for a tree */ 
 public class TestBPlusTreeNonTxn extends AbstractTestRangeIndex {
+    // Only "abstract" to remember to run TestBPTreeModes instead.
+    // See TestBPTreeModes for parameterised tests for the duplication modes.
     static boolean originalNullOut ;
 
     @BeforeClass
     static public void beforeClass() {
         BPlusTreeParams.CheckingNode = true ;
-         BPlusTreeParams.CheckingTree = false ; // Breaks with block tracking.
+        BPlusTreeParams.CheckingTree = false ; // Breaks with block tracking.
         originalNullOut = SystemIndex.getNullOut() ;
         SystemIndex.setNullOut(true) ;
     }
