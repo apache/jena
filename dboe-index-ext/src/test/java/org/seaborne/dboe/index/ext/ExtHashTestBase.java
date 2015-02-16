@@ -120,7 +120,7 @@ public class ExtHashTestBase
         for ( int i : recs )
         {
             Record r = intToRecord(i) ;
-            extHash.add(r) ;
+            extHash.insert(r) ;
             
             if ( false ) extHash.dump() ;
         }

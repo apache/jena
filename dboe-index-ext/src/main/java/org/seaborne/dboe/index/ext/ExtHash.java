@@ -292,7 +292,7 @@ public final class ExtHash implements Index
 
     
     @Override
-    public boolean add(Record record)
+    public boolean insert(Record record)
     {
         if ( logging() ) log(">> add(%s)", record) ;
         int h = trieKey(record) ;

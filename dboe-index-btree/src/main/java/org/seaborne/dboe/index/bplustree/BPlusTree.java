@@ -213,12 +213,12 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
     }
 
     @Override
-    public boolean add(Record record) {
-        return addAndReturnOld(record) == null ;
+    public boolean insert(Record record) {
+        return insertAndReturnOld(record) == null ;
     }
 
     /** Add a record into the B+Tree */
-    public Record addAndReturnOld(Record record) {
+    public Record insertAndReturnOld(Record record) {
         startUpdateBlkMgr() ;
         BPTreeNode root = getRootWrite() ;
         Record r = BPTreeNode.insert(root, record) ;

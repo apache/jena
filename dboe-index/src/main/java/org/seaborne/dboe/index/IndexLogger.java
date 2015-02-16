@@ -33,10 +33,10 @@ public final class IndexLogger extends IndexWrapper
     }
 
     @Override
-    public boolean add(Record record)
+    public boolean insert(Record record)
     { 
         log.info("Add: "+record) ;
-        return super.add(record) ; 
+        return super.insert(record) ; 
     }
 
     @Override

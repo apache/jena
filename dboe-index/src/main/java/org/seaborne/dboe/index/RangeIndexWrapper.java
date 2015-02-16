@@ -47,8 +47,8 @@ public class RangeIndexWrapper implements RangeIndex
     { return rIndex.maxKey() ; }
     
     @Override
-    public boolean add(Record record)
-    { return rIndex.add(record) ; }
+    public boolean insert(Record record)
+    { return rIndex.insert(record) ; }
     
     @Override
     public boolean delete(Record record)

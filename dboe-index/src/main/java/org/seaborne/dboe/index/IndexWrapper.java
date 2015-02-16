@@ -40,8 +40,8 @@ public class IndexWrapper implements Index {
     }
 
     @Override
-    public boolean add(Record record) {
-        return index.add(record) ;
+    public boolean insert(Record record) {
+        return index.insert(record) ;
     }
 
     @Override

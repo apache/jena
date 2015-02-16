@@ -32,10 +32,10 @@ public interface Index extends Iterable<Record>, Sync, Closeable
     /** Return whether the index contains the record or not. */
     public boolean contains(Record record) ;
     
-    /** Add a record - return true if an insertion was actually needed */
-    public boolean add(Record record) ;
+    /** Insert a record - return true if an insertion was actually needed */
+    public boolean insert(Record record) ;
     
-    /** Delete a record.  Return true if a record was actually removed */
+    /** Delete a record - Return true if a record was actually removed */
     public boolean delete(Record record) ;
     
     /** Iterate over the whole index */ 
