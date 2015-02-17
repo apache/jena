@@ -41,18 +41,21 @@ public class ComponentIdRegistry {
     
     public ComponentIdRegistry() { }
     
-    public void registerLocal(String label, int index) {
-        register(localCId, label, index) ;
+    public ComponentId registerLocal(String label, int index) {
+        return register(localCId, label, index) ;
     }
     
-    public void register(ComponentId base, String label, int index) {
+    public ComponentId register(ComponentId base, String label, int index) {
+        
         byte[] bytes = base.bytes() ;
+        bytes = Arrays.copyOf(bytes, bytes.length) ;
         int x = Bytes.getInt(bytes, bytes.length - SystemLz.SizeOfInt) ;
         x = x ^ index ;
         Bytes.setInt(x, bytes, bytes.length-SystemLz.SizeOfInt) ;
         ComponentId cid = new ComponentId(label+"-"+index, bytes) ;
         Holder h = new Holder(bytes) ;
         registry.put(h, cid) ;
+        return cid ;
     }
     
     public ComponentId lookup(byte[] bytes) {
@@ -92,5 +95,9 @@ public class ComponentIdRegistry {
             return true ;
         }
         
+        @Override
+        public String toString() {
+            return Bytes.asHex(bytes) ;
+        }
     }
 }

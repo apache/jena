@@ -20,6 +20,7 @@ package org.seaborne.dboe.transaction.txn.journal;
 import java.nio.ByteBuffer ;
 
 import org.apache.jena.atlas.lib.ByteBufferLib ;
+import org.apache.jena.atlas.lib.Bytes ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.ComponentIds ;
 
@@ -63,17 +64,24 @@ public class JournalEntry
     @Override
     public String toString()
     {
-        return "JournalEntry: "+type+" "+componentId.label() ;
+        return "JournalEntry: "+type+" "+componentId ;
     }
     
     static public String format(JournalEntry entry)
     {
         StringBuilder sbuff = new StringBuilder() ;
         
-        sbuff.append("Entry: \n") ;
+        sbuff.append("Entry: ") ;
         sbuff.append("  "+entry.type) ;
-        if ( entry.componentId != null )
-            sbuff.append("  "+entry.componentId) ;
+        if ( entry.componentId != null ) {
+            String label = entry.componentId.label() ;
+            if ( label != null )
+                sbuff.append(label) ;
+            sbuff.append(" [..") ;
+            int z = Bytes.getInt(entry.componentId.bytes(), entry.componentId.bytes().length-4) ;
+            sbuff.append(Integer.toHexString(z)) ;
+            sbuff.append("]") ;
+        }
         if ( entry.data != null )
             sbuff.append("  "+ByteBufferLib.details(entry.data)) ;
         return sbuff.toString() ;

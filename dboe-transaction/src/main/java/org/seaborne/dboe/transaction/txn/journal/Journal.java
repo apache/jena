@@ -141,7 +141,8 @@ class Journal implements Sync, Closeable
     synchronized public long write(JournalEntryType type, ComponentId componentId, ByteBuffer buffer) {
         // Check buffer set right.
         if ( LOGGING ) {
-            log("write@%d >> %s %s", position, componentId == null ? "<null>" : componentId.label(),
+            log("write@%-3d >> %s %s %s", position, type.name(),  
+                componentId == null ? "<null>" : componentId.label(),
                 buffer == null ? "<null>" : ByteBufferLib.details(buffer)) ;
         }
 
@@ -149,10 +150,10 @@ class Journal implements Sync, Closeable
         int len = -1 ;
         int bufferLimit = -1 ;
         int bufferPosition = -1 ;
-
         if ( buffer != null ) {
             bufferLimit = buffer.limit() ;
             bufferPosition = buffer.position() ;
+            buffer.rewind() ;
             len = buffer.remaining() ;
         }
 
@@ -170,15 +171,14 @@ class Journal implements Sync, Closeable
         adler.update(header.array()) ;
 
         if ( len > 0 ) {
-            buffer.position(bufferPosition) ;
-            buffer.limit(bufferLimit) ;
             adler.update(buffer) ;
-            // Reset buffer
-            buffer.position(bufferPosition) ;
-            buffer.limit(bufferLimit) ;
+            buffer.rewind() ;
         }
 
-        header.putInt(posnCRC, (int)adler.getValue()) ;
+        int crc = (int)adler.getValue() ;
+        header.putInt(posnCRC, crc) ;
+        if ( LOGGING )
+            log("write@    -- crc = %s", Integer.toHexString(crc) ) ;
         channel.write(header) ;
         if ( len > 0 ) {
             channel.write(buffer) ;
@@ -187,7 +187,13 @@ class Journal implements Sync, Closeable
         }
         position += HeaderLen + len ;
         if ( LOGGING )
-            log("write@%d << %s", position, componentId.label()) ;
+            log("write@%-3d << %s", position, componentId.label()) ;
+        
+        if ( len > 0 ) {
+            buffer.position(bufferPosition) ;
+            buffer.limit(bufferLimit) ;
+        }
+        
         return posn ;
     }
 
@@ -211,6 +217,10 @@ class Journal implements Sync, Closeable
     // read one entry at the channel position.
     // Move position to end of read.
     private JournalEntry _read() {
+        if ( LOGGING ) {
+            log("read@%-3d >>", channel.position()) ;   
+        }
+        
         header.clear() ;
         int lenRead = channel.read(header) ;
         if ( lenRead == -1 ) {
@@ -245,11 +255,15 @@ class Journal implements Sync, Closeable
             bb.rewind() ;
         }
 
-        if ( checksum != (int)adler.getValue() )
-            throw new TransactionException("Checksum error reading from the Journal.") ;
+        int crc = (int)adler.getValue() ;
+        if ( checksum != crc )
+            throw new TransactionException("Checksum error reading from the Journal. "+Integer.toHexString(checksum)+" / "+Integer.toHexString(crc)) ;
 
         JournalEntryType type = JournalEntryType.type(entryType) ;
-        return new JournalEntry(type, component, bb) ;
+        JournalEntry entry = new JournalEntry(type, component, bb) ;
+        if ( LOGGING )
+            log("read@%-3d >> %s", channel.position(), entry) ;   
+        return entry ;
     }
 
     /**

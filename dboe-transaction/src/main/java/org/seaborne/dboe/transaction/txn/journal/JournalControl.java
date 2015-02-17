@@ -52,7 +52,7 @@ public class JournalControl
         for (  ; iter.hasNext() ; )
         {
             JournalEntry e = iter.next() ;
-            System.out.println("Posn: "+journal.position()+" : ("+(journal.size()-journal.position())+")") ;
+            //System.out.println("Posn: "+journal.position()+" : ("+(journal.size()-journal.position())+")") ;
             System.out.println(JournalEntry.format(e)) ;
         }
     }
