@@ -206,8 +206,6 @@ public class MainIndex {
         System.out.println("Root = "+bpt.getRootId()) ;
         elements(bpt);
         holder.end() ;
-        
-
     }
     
     static void dump(BPlusTree bpt) {

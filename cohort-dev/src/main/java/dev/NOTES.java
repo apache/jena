@@ -20,13 +20,17 @@ package dev;
 
 public class NOTES {
     // Mantis / cohort / legion
+    // ARQ -> atlas.
     
     // Rework block tracking.
     //    Only worry about write blocks (iterator are read and confusing?)
     //    Start batch - stack tracking - finish batch - check all written.
-    //    Free block management.
     //    page release tracking / non-iterators.
     //    page release tracking / write blocks / either write or release. 
+    
+    // Free block management - just in the active area.
+    // Automatic? Because clone-clear happens.
+    // Just reset the free block chain per transaction.
 
     // Remove CheckingTree - broken.
 
