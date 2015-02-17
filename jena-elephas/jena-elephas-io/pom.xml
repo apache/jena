@@ -64,4 +64,27 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  
+    <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <version>true</version>
+          <show>public</show>
+          <quiet>true</quiet>
+          <encoding>UTF-8</encoding>
+          <windowtitle>Apache Jena Elephas - IO API</windowtitle>
+          <doctitle>Apache Jena Elephas - IO API ${project.version}</doctitle>
+          <bottom>Licenced under the Apache License, Version 2.0</bottom>
+          <links>
+            <link>http://jena.apache.org/documentation/javadoc/jena/</link>
+            <link>http://jena.apache.org/documentation/javadoc/arq/</link>
+            <link>http://jena.apahce.org/documentation/javadoc/elephas/common/</link>
+          </links>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
