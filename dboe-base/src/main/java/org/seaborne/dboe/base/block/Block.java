@@ -24,7 +24,7 @@ import org.apache.jena.atlas.lib.ByteBufferLib ;
 
 public final class Block
 {
-    // XXX Note development code added to enforece read-only use. Marked [RO]
+    // XXX Note development code added to enforce read-only use. Marked [RO]
     
     // While the general mechanisms support long block id,
     // some uses make restrictions.
