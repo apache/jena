@@ -27,11 +27,9 @@ import java.util.List ;
 import java.util.stream.Collectors ;
 
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
-import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.test.RecordLib ;
 import org.seaborne.dboe.trans.bplustree.BPT ;
@@ -39,20 +37,18 @@ import org.seaborne.dboe.trans.bplustree.BPT ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeParams ;
-import org.seaborne.dboe.transaction.Transactional ;
 /* ***************** TRANSACTION BPLUSTREE *********************** */
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
-import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
-
-public class MainIndex {
+public class MainIndexTest {
+    // Extract and debug tests
+    
     static { LogCtl.setLog4j() ; }
 
     public static void main(String... args) {
         SystemIndex.setNullOut(true);
-        main1() ;
+        testClear() ;
     }    
     
     static RecordFactory recordFactory = new RecordFactory(4, 0) ;
@@ -127,87 +123,7 @@ public class MainIndex {
 //        System.out.println() ;
     }
     
-    public static void main1(String... args) {
-        BPT.Logging = false ;
-        BlockMgrFactory.AddTracker = false ;
-        SystemIndex.setNullOut(true) ;
-        
-        BPlusTree bpt = BPlusTreeFactory.makeMem(2, 1, recordFactory.keyLength(), recordFactory.valueLength()) ;
 
-        // Later - integrate
-        Journal journal = Journal.create(Location.mem()) ;
-        Transactional holder = new TransactionalBase(journal, bpt) ;
-        holder.begin(ReadWrite.WRITE);
-        
-        RangeIndex idx = bpt ;
-        
-        for ( int i = 0 ; i < 10 ; i ++ )
-            bpt.getRecordsMgr().getBlockMgr().allocate(-1) ;
-        
-        List<Integer> data1 = Arrays.asList( 1 , 3 , 5 ) ;//  7 , 9 , 8 , 6 , 4 , 2 ) ;
-        List<Integer> data2 = Arrays.asList( 7 , 9 , 8 ) ;
-        
-        List<Record> dataRecords1 = data1.stream().map(x->r(x)).collect(Collectors.toList()) ;
-        List<Record> dataRecords2 = data2.stream().map(x->r(x)).collect(Collectors.toList()) ;
-        
-        // Add data1 without logging 
-        if ( dataRecords1 != null && !dataRecords1.isEmpty() ) {
-            dataRecords1.forEach(bpt::insert) ;
-        }
-        
-        System.out.printf("BPT root = %d\n", bpt.getRootId()) ;
-        
-        // Add data2 with logging 
-        if ( dataRecords2 != null && !dataRecords2.isEmpty() ) {
-            dump(bpt) ;
-            System.out.println() ;
-            BPT.Logging = true ;
-            add(bpt, dataRecords2) ;
-            BPT.Logging = false ;
-            dump(bpt) ;
-            System.out.println() ;
-        }
-        
-        holder.commit() ;
-        holder.end() ;
-        
-        holder.begin(ReadWrite.READ) ;
-        dump(bpt);
-        elements(bpt) ;
-        holder.end() ;
-        
-        int rootIdx1 = bpt.getRootId() ;
-        
-        System.out.println("** New transaction") ;
-        holder.begin(ReadWrite.WRITE);
-        add(bpt, 0xFFAA, 0xFFBB, 0xFFCC) ;
-        dump(bpt) ;
-        holder.commit() ;
-        holder.end() ;
-        
-        int rootIdx2 = bpt.getRootId() ;
-        System.out.println("Root = "+bpt.getRootId()) ;
-        
-        holder.begin(ReadWrite.READ) ;
-        dump(bpt);
-        elements(bpt);
-        holder.end() ;
-        
-        bpt.$testForce$(rootIdx1) ;
-        holder.begin(ReadWrite.READ) ;
-        //dump(bpt);
-        System.out.println("Root = "+bpt.getRootId()) ;
-        elements(bpt);
-        holder.end() ;
-        
-        bpt.$testForce$(rootIdx2) ;
-        holder.begin(ReadWrite.READ) ;
-        //dump(bpt);
-        System.out.println("Root = "+bpt.getRootId()) ;
-        elements(bpt);
-        holder.end() ;
-    }
-    
     static void dump(BPlusTree bpt) {
         boolean b = BPT.Logging ;
         BPT.Logging = false ;
