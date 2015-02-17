@@ -18,8 +18,10 @@
 package org.seaborne.dboe.transaction.txn;
 
 import java.util.Arrays ;
+import java.util.UUID ;
 
 import org.apache.jena.atlas.lib.Bytes ;
+import org.seaborne.dboe.sys.SystemLz ;
 
 /** 
  * An class to represent a component identifier.
@@ -68,5 +70,35 @@ public class ComponentId {
             return false ;
         return true ;
     }
+
+    /** Given a base componentId, create a derived (different) one.
+     * This is deterministically done based on  baseComponentId and index.
+     * The label is just for display purposes; the index is appended.
+     */ 
+    public static ComponentId alloc(ComponentId baseComponentId, String label, int index) {
+        //private static ComponentId alloc(byte[] bytes, ComponentId baseComponentId, String label, int index) {
+        if (label == null )
+            label = baseComponentId.label() ;
+        if (label == null )
+            label = "Base" ;
+        return create(baseComponentId.bytes(), label, index) ;
+    }
+    
+    private static ComponentId create(byte[] bytes, String label, int index) {
+        int x = Bytes.getInt(bytes, bytes.length-SystemLz.SizeOfInt) ;
+        x = x ^ index ;
+        Bytes.setInt(x, bytes, bytes.length - SystemLz.SizeOfInt) ;
+        ComponentId cid = new ComponentId(label+"-"+index, bytes) ;
+        return cid ;
+    }
+    
+    static int counter = 0 ;
+    /** Return a fresh ComponentId (not preserved across JVM runs) */ 
+    public static ComponentId allocLocal() {
+        counter++ ;
+        UUID uuid = UUID.randomUUID() ;
+        return create(L.uuidAsBytes(uuid), "Local", counter) ;
+    }
+
 }
 
