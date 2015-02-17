@@ -110,6 +110,12 @@ public class BlockAccessMem implements BlockAccess
     }
 
     @Override
+    public void resetAllocBoundary(long boundary) {
+        // Clear the list from boundary onwards.
+        blocks.subList((int)boundary, blocks.size()).clear() ;
+    }
+    
+    @Override
     public boolean valid(long id) {
         return id >= 0 && id < blocks.size() ;
     }
@@ -155,5 +161,4 @@ public class BlockAccessMem implements BlockAccess
     public String toString() {
         return "Mem:" + label ;
     }
-
 }

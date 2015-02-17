@@ -70,23 +70,27 @@ public final class FileBase implements Sync, Closeable
 
     public final FileChannel channel() { return channel ; }
     
-    public long size()
-    {
+    public long size() {
         try {
             return channel.size() ;
         } catch (IOException ex)
         { IO.exception(ex) ; return -1L ; }
     }
 
-    public boolean isClosed()
-    {
-        return channel == null ;
+    public void truncate(long posn) {
+        if ( DebugThis )
+            log.debug("truncate: ["+id+"]: "+filename) ;
+        try { channel.truncate(posn) ; }
+        catch (IOException ex) { IO.exception(ex) ; }
     }
 
+
+    public boolean isClosed() {
+        return channel == null ;
+    }
     
     @Override
-    public void close()
-    {
+    public void close() {
         if ( DebugThis )
             log.debug("close: ["+id+"]: "+filename) ;
         ChannelManager.release(channel) ;
@@ -99,8 +103,7 @@ public final class FileBase implements Sync, Closeable
     }
 
     @Override
-    public void sync()
-    {
+    public void sync() {
         if ( DebugThis ) 
             log.debug("sync: ["+id+"]: "+filename) ;
         try {

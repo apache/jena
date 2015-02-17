@@ -50,6 +50,13 @@ public interface BlockAccess extends Sync, Closeable
      * Allocation units need not be in +1 increments.
       */  
     public long allocBoundary() ;
+
+    /** Reset the allocation space (i.e. truncate).
+     * The boundary should be a number obtained from a previous
+     * call of allocLimit. It can not be greater than the current
+     * allocation boundary.
+     */
+    public void resetAllocBoundary(long boundary) ;
     
     public boolean valid(long id) ;
 

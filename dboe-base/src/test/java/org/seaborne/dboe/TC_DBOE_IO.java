@@ -33,8 +33,6 @@ import org.seaborne.dboe.sys.SystemLz ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-
-    // TDB
     TS_Block.class
     , TS_File.class
     , TS_Record.class
@@ -42,7 +40,7 @@ import org.seaborne.dboe.sys.SystemLz ;
     , TS_ObjectFile.class
 } )
 
-public class TC_TDB_IO {
+public class TC_DBOE_IO {
     static {
         if ( false )
             SystemLz.setFileMode(FileMode.direct) ;

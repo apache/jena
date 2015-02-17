@@ -91,7 +91,12 @@ public class BlockMgrWrapper implements BlockMgr {
     public long allocLimit() {
         return blockMgr.allocLimit() ;
     }
-
+    
+    @Override
+    public void resetAlloc(long boundary) {
+        blockMgr.resetAlloc(boundary) ;
+    }
+    
     @Override
     public void sync() {
         blockMgr.sync() ;

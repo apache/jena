@@ -259,7 +259,12 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
     public long allocLimit() {
         return blockMgr.allocLimit() ;
     }
-
+    
+    @Override
+    public void resetAlloc(long boundary) {
+        blockMgr.resetAlloc(boundary) ;
+    }
+    
     @Override
     public boolean valid(int id) {
         return blockMgr.valid(id) ;

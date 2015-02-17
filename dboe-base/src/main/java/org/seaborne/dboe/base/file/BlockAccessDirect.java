@@ -104,6 +104,11 @@ public class BlockAccessDirect extends BlockAccessBase
     }
 
     @Override
+    protected void _resetAllocBoundary(long boundary) {
+        file.truncate(filePosition(boundary)) ;
+    }
+
+    @Override
     public void sync()
     {
         force() ;

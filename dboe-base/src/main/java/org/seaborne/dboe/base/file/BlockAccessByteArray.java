@@ -19,6 +19,7 @@ package org.seaborne.dboe.base.file ;
 
 import java.nio.ByteBuffer ;
 
+import org.apache.jena.atlas.lib.ByteBufferLib ;
 import org.seaborne.dboe.base.block.Block ;
 import static org.seaborne.dboe.sys.SystemIndex.SizeOfInt ;
 
@@ -57,6 +58,15 @@ public class BlockAccessByteArray implements BlockAccess {
     }
 
     @Override
+    public void resetAllocBoundary(long boundary) {
+        ByteBufferLib.fill(bytes, (int)boundary, (int)length, (byte)0);
+        length = boundary ;
+        alloc = boundary ;
+        bytes.limit((int)alloc) ;
+        
+    }
+    
+    @Override
     public Block read(long id) {
         // Variable length blocks.
         if ( id < 0 || id >= length || id >= bytes.capacity() )
@@ -87,6 +97,7 @@ public class BlockAccessByteArray implements BlockAccess {
                 ByteBuffer bytes2 = ByteBuffer.allocate(cap2) ;
                 bytes2.position(0) ;
                 bytes2.put(bytes) ;
+                bytes = bytes2 ;
             }
             length += len + SizeOfInt ;
         }

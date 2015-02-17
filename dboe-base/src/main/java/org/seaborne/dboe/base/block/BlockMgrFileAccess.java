@@ -139,6 +139,10 @@ final public class BlockMgrFileAccess extends BlockMgrBase {
         return file.allocBoundary() ;
     }
     
+    @Override
+    public void resetAlloc(long boundary) {
+        file.resetAllocBoundary(boundary);
+    }
 
     @Override
     public String toString() {

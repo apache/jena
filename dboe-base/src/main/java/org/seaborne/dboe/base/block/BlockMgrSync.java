@@ -105,6 +105,12 @@ public class BlockMgrSync implements BlockMgr {
         return blockMgr.allocLimit() ;
     }
 
+    
+    @Override
+    synchronized public void resetAlloc(long boundary) {
+        blockMgr.resetAlloc(boundary) ;
+    }
+    
     @Override
     synchronized public void beginBatch() {
         blockMgr.beginBatch() ;

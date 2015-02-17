@@ -29,96 +29,102 @@ import org.seaborne.dboe.sys.SystemIndex ;
 import org.slf4j.Logger ;
 
 /** Support for a disk file backed FileAccess */
-public abstract class BlockAccessBase implements BlockAccess 
-{
-    protected final int blockSize ;
-    protected final FileBase file ; 
-    
-    protected final String label ;
-    // Does this need to be tread safe?
-    // Only changes in a write transaction 
-    protected long numFileBlocks = -1 ;             // Don't overload use of this!
-    protected final AtomicLong seq ;                // Id (future)
+public abstract class BlockAccessBase implements BlockAccess {
+    protected final int        blockSize ;
+    protected final FileBase   file ;
 
-    public BlockAccessBase(String filename, int blockSize)
-    {
+    protected final String     label ;
+    // Does this need to be tread safe?
+    // Only changes in a write transaction
+    protected long             numFileBlocks = -1 ; // Don't overload use of
+                                                    // this!
+    protected final AtomicLong seq ;               // Id (future)
+
+    public BlockAccessBase(String filename, int blockSize) {
         file = FileBase.create(filename) ;
         this.blockSize = blockSize ;
         this.label = FileOps.basename(filename) ;
-        long filesize = file.size() ;               // This is not related to used file length in mapped mode.
+        long filesize = file.size() ; // This is not related to used file length
+                                      // in mapped mode.
         long longBlockSize = blockSize ;
-            
-        numFileBlocks = filesize/longBlockSize ;    // This is not related to used file length in mapped mode.
+
+        numFileBlocks = filesize / longBlockSize ; // This is not related to
+                                                   // used file length in mapped
+                                                   // mode.
         seq = new AtomicLong(numFileBlocks) ;
 
         if ( numFileBlocks > Integer.MAX_VALUE )
             getLog().warn(format("File size (%d) exceeds tested block number limits (%d)", filesize, blockSize)) ;
 
-        if ( filesize%longBlockSize != 0 )
+        if ( filesize % longBlockSize != 0 )
             throw new BlockException(format("File size (%d) not a multiple of blocksize (%d)", filesize, blockSize)) ;
     }
 
-    protected abstract Logger getLog()  ;
+    protected abstract Logger getLog() ;
+
     @Override
-    final public boolean isEmpty() { return numFileBlocks <= 0 ; }
-    
-    final protected void writeNotification(Block block) { }
-    
-    final protected void overwriteNotification(Block block)
-    {
+    final public boolean isEmpty() {
+        return numFileBlocks <= 0 ;
+    }
+
+    final protected void writeNotification(Block block) {}
+
+    final protected void overwriteNotification(Block block) {
         // Write at end => extend
-        if ( block.getId() >= numFileBlocks )
-        {
-            numFileBlocks = block.getId()+1 ;
+        if ( block.getId() >= numFileBlocks ) {
+            numFileBlocks = block.getId() + 1 ;
             seq.set(numFileBlocks) ;
         }
     }
 
-    final protected int allocateId()
-    {
+    final protected int allocateId() {
         checkIfClosed() ;
         int id = (int)seq.getAndIncrement() ;
-        numFileBlocks ++ ;  // TODO Fix this when proper freeblock management is introduced.
+        numFileBlocks++ ; // TODO Fix this when proper freeblock management is
+                          // introduced.
         return id ;
     }
-    
+
     @Override
-    final public long allocBoundary() { 
+    final public long allocBoundary() {
         checkIfClosed() ;
         return seq.get() ;
+        // Underlying area is untouched.
     }
-    
+
     @Override
-    final synchronized
-    public boolean valid(long id)
-    {
+    final public void resetAllocBoundary(long boundary) {
+        checkIfClosed() ;
+        seq.set(boundary) ;
+        _resetAllocBoundary(boundary) ;
+    }
+
+    protected abstract void _resetAllocBoundary(long boundary) ;
+
+    @Override
+    final synchronized public boolean valid(long id) {
         if ( id >= numFileBlocks )
             return false ;
         if ( id < 0 )
             return false ;
-        return true ; 
+        return true ;
     }
 
-    final
-    protected void check(long id)
-    {
+    final protected void check(long id) {
         if ( id > Integer.MAX_VALUE )
-            throw new BlockException(format("BlockAccessBase: Id (%d) too large", id )) ;
-        
+            throw new BlockException(format("BlockAccessBase: Id (%d) too large", id)) ;
+
         // Access to numFileBlocks not synchronized - it's only a check
-        if ( id < 0 || id >= numFileBlocks )
-        {
+        if ( id < 0 || id >= numFileBlocks ) {
             // Do it properly!
-            synchronized(this)
-            {
+            synchronized (this) {
                 if ( id < 0 || id >= numFileBlocks )
                     throw new BlockException(format("BlockAccessBase: Bounds exception: %s: (%d,%d)", file.filename, id, numFileBlocks)) ;
             }
         }
     }
-    
-    final protected void check(Block block)
-    {
+
+    final protected void check(Block block) {
         check(block.getId()) ;
         ByteBuffer bb = block.getByteBuffer() ;
         if ( bb.capacity() != blockSize )
@@ -127,32 +133,30 @@ public abstract class BlockAccessBase implements BlockAccess
             throw new BlockException("BlockMgrFile: Wrong byte order") ;
     }
 
-    protected void force()
-    {
+    protected void force() {
         file.sync() ;
     }
-    
-    //@Override
-    final public boolean isClosed() { return file.channel() == null ; }  
-    
-    protected final void checkIfClosed() 
-    { 
-        if ( isClosed() ) 
+
+    // @Override
+    final public boolean isClosed() {
+        return file.channel() == null ;
+    }
+
+    protected final void checkIfClosed() {
+        if ( isClosed() )
             getLog().error("File has been closed") ;
     }
-    
-    protected abstract void _close() ; 
+
+    protected abstract void _close() ;
 
     @Override
-    final public void close()
-    {
+    final public void close() {
         _close() ;
         file.close() ;
     }
-    
+
     @Override
-    public String getLabel()
-    {
+    public String getLabel() {
         return label ;
     }
 }

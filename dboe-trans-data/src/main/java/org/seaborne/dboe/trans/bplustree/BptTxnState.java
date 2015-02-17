@@ -26,8 +26,8 @@ final class BptTxnState {
     // Point at which we start adding blocks in a write transaction.
     // The unmodifiable area is [0,boundary) and is different for each block manager. 
     
-    private final long boundaryBlocksNode ;
-    private final long boundaryBlocksRecord ;
+    final long boundaryBlocksNode ;
+    final long boundaryBlocksRecord ;
     
     BptTxnState(int initRoot, long boundaryNode, long boundaryRecords) {
         this.initialroot = initRoot ;
@@ -36,13 +36,13 @@ final class BptTxnState {
         this.boundaryBlocksRecord = boundaryRecords ;
     }
     
-    public boolean modifiableNodeBlock(int id) {
+    boolean modifiableNodeBlock(int id) {
         if ( BPT.forcePromoteModes )
             return ! BPT.promoteDuplicateNodes ;
         return id >= boundaryBlocksNode ;
     }
 
-    public boolean modifiableRecordsBlock(int id) {
+    boolean modifiableRecordsBlock(int id) {
         if ( BPT.forcePromoteModes )
             return ! BPT.promoteDuplicateRecords ;
         return id >= boundaryBlocksRecord ;

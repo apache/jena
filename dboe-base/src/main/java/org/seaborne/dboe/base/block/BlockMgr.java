@@ -37,6 +37,9 @@ public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
      * Allocation units need not be +1 increments */ 
     public long allocLimit() ; 
 
+    /** Reset the allocation limit, shoudl be a number previously obtained from allocLimit */
+    public void resetAlloc(long boundary) ;
+
     /** Fetch a block, use for read only */
     public Block getRead(long id);
     

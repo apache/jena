@@ -71,6 +71,12 @@ public class BlockMgrLogger implements BlockMgr // extends BlockMgrWrapper
     }
 
     @Override
+    public void resetAlloc(long boundary) {
+        info("resetAlloc("+boundary+")") ;
+        blockMgr.resetAlloc(boundary) ;
+    }
+    
+    @Override
     public Block getRead(long id) {
         info("getRead(" + id + ")") ;
         return blockMgr.getRead(id) ;

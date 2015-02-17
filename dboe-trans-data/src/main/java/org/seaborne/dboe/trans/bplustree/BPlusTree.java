@@ -31,6 +31,7 @@ import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.base.record.RecordMapper ;
 import org.seaborne.dboe.index.RangeIndex ;
+import org.seaborne.dboe.sys.SystemLz ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
@@ -489,8 +490,9 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     @Override
     protected ByteBuffer _commitPrepare(TxnId txnId, BptTxnState state) {
-        // TODO root Idx.
-        return null ;
+        ByteBuffer bb = ByteBuffer.allocate(SystemLz.SizeOfInt) ;
+        bb.putInt(state.root) ;
+        return bb ;
     }
 
     @Override
@@ -504,6 +506,9 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     @Override
     protected void _abort(TxnId txnId, BptTxnState state) {
         rootIdx = state.initialroot ;
+        // Truncate.
+        nodeManager.resetAlloc(state.boundaryBlocksNode) ;
+        recordsMgr.resetAlloc(state.boundaryBlocksRecord) ;
     }
 
     @Override
