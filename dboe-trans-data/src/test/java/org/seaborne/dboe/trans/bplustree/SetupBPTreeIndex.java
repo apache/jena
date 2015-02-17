@@ -23,39 +23,35 @@ import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.RangeIndex ;
-import org.seaborne.dboe.trans.bplustree.BPlusTree ;
-import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
-import org.seaborne.dboe.trans.bplustree.BPlusTreeParams ;
 import org.seaborne.dboe.sys.Names ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.sys.SystemLz ;
+import org.seaborne.dboe.transaction.txn.ComponentId ;
 
 public class SetupBPTreeIndex {
 
-    public static RangeIndex makeRangeIndex(Location location, String indexName, 
+    public static RangeIndex makeRangeIndex(ComponentId cid, Location location, String indexName, 
                                             int blkSize,
-                                             int dftKeyLength, int dftValueLength,
-                                             int readCacheSize,int writeCacheSize)
-    {
-         FileSet fs = new FileSet(location, indexName) ;
-         RangeIndex rIndex =  makeBPlusTree(fs, blkSize, readCacheSize, writeCacheSize, dftKeyLength, dftValueLength) ;
-         return rIndex ;
-    }
-
-    public static RangeIndex makeBPlusTree(FileSet fs, int blkSize,
-                                           int readCacheSize, int writeCacheSize,
-                                           int dftKeyLength, int dftValueLength)
-    {
-        RecordFactory recordFactory = makeRecordFactory(dftKeyLength, dftValueLength) ;
-        int order = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
-        RangeIndex rIndex = createBPTree(fs, order, blkSize, readCacheSize, writeCacheSize, recordFactory) ;
+                                            int dftKeyLength, int dftValueLength,
+                                            int readCacheSize,int writeCacheSize) {
+        FileSet fs = new FileSet(location, indexName) ;
+        RangeIndex rIndex = makeBPlusTree(cid, fs, blkSize, readCacheSize, writeCacheSize, dftKeyLength, dftValueLength) ;
         return rIndex ;
     }
 
-    public static RecordFactory makeRecordFactory(int keyLen, int valueLen)
-        {
-            return new RecordFactory(keyLen, valueLen) ;
-        }
+    public static RangeIndex makeBPlusTree(ComponentId cid, FileSet fs, int blkSize, 
+                                           int readCacheSize, int writeCacheSize,
+                                           int dftKeyLength, int dftValueLength) {
+        RecordFactory recordFactory = makeRecordFactory(dftKeyLength, dftValueLength) ;
+        int order = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
+        RangeIndex rIndex = createBPTree(cid, fs, order, blkSize, readCacheSize, writeCacheSize, recordFactory) ;
+        return rIndex ;
+    }
+
+    public static RecordFactory makeRecordFactory(int keyLen, int valueLen) {
+        return new RecordFactory(keyLen, valueLen) ;
+    }
+
     //    
     //    /** Make a NodeTable without cache and inline wrappers */ 
     //    public static NodeTable makeNodeTableBase(Location location, String indexNode2Id, String indexId2Node)
@@ -102,7 +98,7 @@ public class SetupBPTreeIndex {
     //
 
     /** Create a B+Tree using defaults */
-    public static RangeIndex createBPTree(FileSet fileset,
+    public static RangeIndex createBPTree(ComponentId cid, FileSet fileset,
                                           RecordFactory factory)
     {
         int readCacheSize = SystemLz.BlockReadCacheSize ;
@@ -115,31 +111,31 @@ public class SetupBPTreeIndex {
             blockSize = SystemIndex.BlockSizeTest ;
         }
         
-        return createBPTreeByBlockSize(fileset, blockSize, readCacheSize, writeCacheSize, factory) ; 
+        return createBPTreeByBlockSize(cid, fileset, blockSize, readCacheSize, writeCacheSize, factory) ; 
     }
 
     /** Create a B+Tree by BlockSize */
-    public static RangeIndex createBPTreeByBlockSize(FileSet fileset,
+    public static RangeIndex createBPTreeByBlockSize(ComponentId cid, FileSet fileset,
                                                      int blockSize,
                                                      int readCacheSize, int writeCacheSize,
                                                      RecordFactory factory)
     {
-        return createBPTree(fileset, -1, blockSize, readCacheSize, writeCacheSize, factory) ; 
+        return createBPTree(cid, fileset, -1, blockSize, readCacheSize, writeCacheSize, factory) ; 
     }
 
     /** Create a B+Tree by Order */
-    public static RangeIndex createBPTreeByOrder(FileSet fileset,
+    public static RangeIndex createBPTreeByOrder(ComponentId cid, FileSet fileset,
                                                  int order,
                                                  int readCacheSize, int writeCacheSize,
                                                  RecordFactory factory)
     {
-        return createBPTree(fileset, order, -1, readCacheSize, writeCacheSize, factory) ; 
+        return createBPTree(cid, fileset, order, -1, readCacheSize, writeCacheSize, factory) ; 
     }
 
     /** Knowing all the parameters, create a B+Tree */
-    public static BPlusTree createBPTree(FileSet fileset, int order, int blockSize,
-                                          int readCacheSize, int writeCacheSize,
-                                          RecordFactory factory)
+    public static BPlusTree createBPTree(ComponentId cid, FileSet fileset, int order, int blockSize,
+                                         int readCacheSize, int writeCacheSize,
+                                         RecordFactory factory)
     {
         // ---- Checking
         if (blockSize < 0 && order < 0) throw new IllegalArgumentException("Neither blocksize nor order specified") ;
@@ -161,7 +157,7 @@ public class SetupBPTreeIndex {
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
         BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExtTree, blockSize, readCacheSize, writeCacheSize) ;
         BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExtRecords, blockSize, readCacheSize, writeCacheSize) ;
-        return BPlusTreeFactory.create(params, blkMgrNodes, blkMgrRecords) ;
+        return BPlusTreeFactory.create(cid, params, blkMgrNodes, blkMgrRecords) ;
     }
 
 }

@@ -25,28 +25,34 @@ import org.seaborne.dboe.index.IndexParams ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.index.RangeIndexBuilder ;
 import org.seaborne.dboe.sys.Names ;
+import org.seaborne.dboe.transaction.txn.ComponentId ;
 
 /** RangeIndexBuilder for B+Trees */
 public class RangeIndexBuilderBPTree implements RangeIndexBuilder
 {
-    private BlockMgrBuilder bMgrNodes ;
-    private BlockMgrBuilder bMgrRecords ;
+    private final BlockMgrBuilder bMgrNodes ;
+    private final BlockMgrBuilder bMgrRecords ;
+    private final ComponentId baseComponentId ;
+    private int   componentCount = 0 ;
 
-    public RangeIndexBuilderBPTree(BlockMgrBuilder blockMgrBuilderNodes, BlockMgrBuilder blockMgrBuilderRecords) {
+    public RangeIndexBuilderBPTree(ComponentId base, BlockMgrBuilder blockMgrBuilderNodes, BlockMgrBuilder blockMgrBuilderRecords) {
+        this.baseComponentId = base ;
         this.bMgrNodes = blockMgrBuilderNodes ;
         this.bMgrRecords = blockMgrBuilderRecords ;
     }
 
     @Override
     public RangeIndex buildRangeIndex(FileSet fileSet, RecordFactory recordFactory, IndexParams indexParams) {
+        ComponentId cid = ComponentId.alloc(baseComponentId, fileSet.getBasename(), componentCount) ; 
+        
         int blkSize = indexParams.getBlockSize() ;
         int order = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
-        RangeIndex rIndex = createBPTree(fileSet, order, bMgrNodes, bMgrRecords, recordFactory, indexParams) ;
+        RangeIndex rIndex = createBPTree(cid, fileSet, order, bMgrNodes, bMgrRecords, recordFactory, indexParams) ;
         return rIndex ;
     }
     
     /** Knowing all the parameters, create a B+Tree */
-    private RangeIndex createBPTree(FileSet fileset, int order, 
+    private RangeIndex createBPTree(ComponentId cid, FileSet fileset, int order, 
                                     BlockMgrBuilder blockMgrBuilderNodes,
                                     BlockMgrBuilder blockMgrBuilderRecords,
                                     RecordFactory factory, IndexParams indexParams)
@@ -70,6 +76,6 @@ public class RangeIndexBuilderBPTree implements RangeIndexBuilder
         
         BlockMgr blkMgrNodes = blockMgrBuilderNodes.buildBlockMgr(fileset, Names.bptExtTree, indexParams) ;
         BlockMgr blkMgrRecords = blockMgrBuilderRecords.buildBlockMgr(fileset, Names.bptExtRecords, indexParams) ;
-        return BPlusTreeFactory.create(params, blkMgrNodes, blkMgrRecords) ;
+        return BPlusTreeFactory.create(cid, params, blkMgrNodes, blkMgrRecords) ;
     }
 }

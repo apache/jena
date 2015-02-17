@@ -24,6 +24,7 @@ import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.block.BlockMgrTracker ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
+import org.seaborne.dboe.transaction.txn.ComponentId ;
 
 /** Make BPlusTrees - this code works in close association with the BPlusTree constructor */
 public class BPlusTreeFactory {
@@ -33,8 +34,22 @@ public class BPlusTreeFactory {
      * Initialize the persistent storage to the empty B+Tree if it does not exist.
      * This is the normal way to create a B+Tree.
      */
-    public static BPlusTree create(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves) {
-        BPlusTree bpt = attach(params, blkMgrNodes, blkMgrLeaves) ;
+    public static BPlusTree create(ComponentId id, BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves) {
+        if ( id == null )
+            id = ComponentId.allocLocal() ;
+        BPlusTree bpt = attach(id, params, blkMgrNodes, blkMgrLeaves) ;
+        return bpt ;
+    }
+
+    /** Create the in-memory structures to correspond to
+     * the supplied block managers for the persistent storage.
+     * Initialize the persistent storage to the empty B+Tree if it does not exist.
+     * This is the normal way to create a B+Tree.
+     */
+    public static BPlusTree createNonTxn(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves) {
+        ComponentId id = ComponentId.allocLocal() ;
+        BPlusTree bpt = attach(id, params, blkMgrNodes, blkMgrLeaves) ;
+        bpt.nonTransactional() ;
         return bpt ;
     }
 
@@ -43,7 +58,7 @@ public class BPlusTreeFactory {
      * managers for the persistent storage. Does not inityalize the B+Tree - it
      * assumes the block managers correspond to an existing B+Tree.
      */
-    private static BPlusTree attach(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords) {
+    private static BPlusTree attach(ComponentId id, BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords) {
         // Creating and initializing the BPlusTree object is a two stage process.
 
         // * Create the Java object so it can be in other structures
@@ -51,7 +66,7 @@ public class BPlusTreeFactory {
         //     Create datastructures being careful not to use the object
         //   Ensure formatted
         // * Initialize.
-        BPlusTree bpt = new BPlusTree(params) ; 
+        BPlusTree bpt = new BPlusTree(id, params) ; 
         BPTreeNodeMgr nodeManager = new BPTreeNodeMgr(bpt, blkMgrNodes) ;
         RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(params.getRecordFactory(), blkMgrRecords) ;
         BPTreeRecordsMgr recordsMgr = new BPTreeRecordsMgr(bpt, params.getRecordFactory(), recordPageMgr) ;
@@ -88,7 +103,8 @@ public class BPlusTreeFactory {
     
         BlockMgr mgr1 = BlockMgrFactory.createMem(name + "(nodes)", params.getCalcBlockSize()) ;
         BlockMgr mgr2 = BlockMgrFactory.createMem(name + "(records)", blkSize) ;
-        BPlusTree bpTree = BPlusTreeFactory.create(params, mgr1, mgr2) ;
+        ComponentId cid = ComponentId.allocLocal() ;
+        BPlusTree bpTree = BPlusTreeFactory.create(cid, params, mgr1, mgr2) ;
         return bpTree ;
     }
 
@@ -98,8 +114,7 @@ public class BPlusTreeFactory {
         BlockMgr mgr2 = bpTree.getRecordsMgr().getBlockMgr() ;
         mgr1 = BlockMgrTracker.track(mgr1) ;
         mgr2 = BlockMgrTracker.track(mgr2) ;
-    
-        return BPlusTreeFactory.attach(bpTree.getParams(), mgr1, mgr2) ;
+        return BPlusTreeFactory.attach(bpTree.getComponentId(), bpTree.getParams(), mgr1, mgr2) ;
     }
     
     /** Create if does not exist */ 

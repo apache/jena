@@ -23,6 +23,7 @@ import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.dboe.index.IndexBuilder ;
 import org.seaborne.dboe.index.IndexParams ;
+import org.seaborne.dboe.transaction.txn.ComponentId ;
 
 /** IndexBuilder for BPlusTrees */ 
 public class IndexBuilderBPTree implements IndexBuilder
@@ -31,10 +32,10 @@ public class IndexBuilderBPTree implements IndexBuilder
     protected BlockMgrBuilder bMgrRecords ;
     protected RangeIndexBuilderBPTree other ;
 
-    public IndexBuilderBPTree(BlockMgrBuilder bMgrNodes, BlockMgrBuilder bMgrRecords) {
+    public IndexBuilderBPTree(ComponentId base, BlockMgrBuilder bMgrNodes, BlockMgrBuilder bMgrRecords) {
         this.bMgrNodes = bMgrNodes ;
         this.bMgrRecords = bMgrRecords ;
-        this.other = new RangeIndexBuilderBPTree(bMgrNodes, bMgrRecords) ;
+        this.other = new RangeIndexBuilderBPTree(base, bMgrNodes, bMgrRecords) ;
     }
 
     @Override

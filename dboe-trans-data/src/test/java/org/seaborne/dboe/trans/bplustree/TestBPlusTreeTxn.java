@@ -31,7 +31,7 @@ import org.seaborne.dboe.transaction.txn.TransactionalComponent ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 /** Test of B+Tree and transactions */ 
-public class TestBPTreeTxn extends Assert {
+public class TestBPlusTreeTxn extends Assert {
     
 //    static {
 //        BPT.forcePromoteModes = true ;
@@ -52,6 +52,7 @@ public class TestBPTreeTxn extends Assert {
     // Commit
     @Test public void bptree_txn_01() {
         BPlusTree bpt = createBPTree() ;
+        assertNotNull(bpt.getComponentId()) ;
         int outerRootIdx1 = bpt.getRootId() ;
         Transactional thing = transactional(bpt) ;
         Txn.executeWrite(thing, () -> { 
@@ -154,15 +155,19 @@ public class TestBPTreeTxn extends Assert {
     @Test public void bptree_txn_07() {
         BPlusTree bpt1 = createBPTree() ;
         BPlusTree bpt2 = createBPTree() ;
+        assertNotEquals(bpt1.getComponentId(), bpt2.getComponentId()) ;
+        
         Transactional thing = transactional(bpt1, bpt2) ;
         Txn.executeWrite(thing, () -> { 
             IndexTestLib.add(bpt1, 1, 2, 3) ;
-            IndexTestLib.add(bpt2, 1, 2, 3) ;
+            IndexTestLib.add(bpt2, 4, 5) ;
         } );
         Txn.executeRead(thing, ()->{
-            assertEquals(3, bpt1.size()) ;
-            assertEquals(3, bpt2.size()) ;
+            IndexTestLib.testIndexContents(bpt2, 4, 5);
+            IndexTestLib.testIndexContents(bpt1, 1, 2, 3);
         } );
     }
+    
+    
     
 }

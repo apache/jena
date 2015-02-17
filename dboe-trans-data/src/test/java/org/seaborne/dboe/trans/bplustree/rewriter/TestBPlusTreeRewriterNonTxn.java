@@ -87,8 +87,6 @@ public class TestBPlusTreeRewriterNonTxn extends Assert
         
         BPlusTree bpt2 = BPlusTreeRewriter.packIntoBPlusTree(originaldata.iterator(), bptParams, 
                                                              recordFactory, blkMgr1, blkMgr2) ;
-        bpt2.nonTransactional(); 
-
         if ( debug )
         {
             BPlusTreeRewriterUtils.divider() ;
@@ -173,7 +171,7 @@ public class TestBPlusTreeRewriterNonTxn extends Assert
     static List<Record> createData2(int ORDER, int N, RecordFactory recordFactory)
     {
         // Use a B+Tree - so original data can be unsorted.
-        BPlusTree bpt = SetupBPTreeIndex.createBPTree(FileSet.mem(), ORDER, -1, -1, -1, recordFactory) ;
+        BPlusTree bpt = SetupBPTreeIndex.createBPTree(null, FileSet.mem(), ORDER, -1, -1, -1, recordFactory) ;
 
         //BPlusTreeParams.checkAll() ;
         // 200 -> runt leaf problem.
