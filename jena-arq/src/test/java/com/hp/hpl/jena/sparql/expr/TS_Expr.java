@@ -40,6 +40,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestXSDFuncOp.class
     , TestExprLib.class
     , TestExprTransform.class
+    , TestCustomAggregates.class
 })
 
 public class TS_Expr

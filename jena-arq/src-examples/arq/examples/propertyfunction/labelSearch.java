@@ -193,22 +193,20 @@ public class labelSearch implements PropertyFunction
         String qs = prologue+"SELECT * { ?x ext:labelSearch 'EF' }" ;
         Query query = QueryFactory.create(qs) ;
         Model model = make() ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
-        try {
+        try (QueryExecution qExec = QueryExecutionFactory.create(query, model)) {
             ResultSet rs = qExec.execSelect() ;
             ResultSetFormatter.out(rs) ;
-        } finally { qExec.close() ; }
+        }
         
         // Or register it.
         PropertyFunctionRegistry.get().put("http://example/f#search", labelSearch.class) ;
         prologue = "PREFIX ext: <http://example/f#>\n" ;
         qs = prologue+"SELECT * { ?x ext:search 'EF' }" ;
         query = QueryFactory.create(qs) ;
-        qExec = QueryExecutionFactory.create(query, model) ;
-        try {
+        try ( QueryExecution qExec = QueryExecutionFactory.create(query, model) ) {
             ResultSet rs = qExec.execSelect() ;
             ResultSetFormatter.out(rs) ;
-        } finally { qExec.close() ; }
+        }
     }
     
     private static Model make()

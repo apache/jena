@@ -24,24 +24,25 @@ package jena;
 // Imports
 ///////////////
 
-import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
+import static jena.cmdline.CmdLineUtils.setLog4jConfiguration ;
 
-import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.io.OutputStream ;
+import java.util.* ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jena.cmdline.ArgDecl ;
+import jena.cmdline.ArgHandler ;
+import jena.cmdline.CommandLine ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.RDFWriterFImpl;
-import com.hp.hpl.jena.shared.NoWriterForLangException;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.FileUtils;
-import com.hp.hpl.jena.vocabulary.*;
-
-import jena.cmdline.*;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.rdf.model.impl.IO_Ctl ;
+import com.hp.hpl.jena.rdf.model.impl.RDFWriterFImpl ;
+import com.hp.hpl.jena.shared.NoWriterForLangException ;
+import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.util.FileUtils ;
+import com.hp.hpl.jena.vocabulary.OWL ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
 
 /**
@@ -445,35 +446,7 @@ public class rdfcat
      * Enable the new RIOT parser subsystem if it is available
      */
     private void enableRIOTParser() {
-        try {
-            Class<?> sysRIOT = Class.forName( "org.openjena.riot.SysRIOT" );
-            Method initMethod = sysRIOT.getMethod( "init" );
-            initMethod.invoke( null );
-        }
-        catch (ClassNotFoundException e) {
-            // log if we're in debug mode, but otherwise ignore
-//            log.debug( "Did not initialise RIOT parser: " +  e.getMessage(), e );
-        }
-        catch (SecurityException e) {
-            // log if we're in debug mode, but otherwise ignore
-            log.debug( "Did not initialise RIOT parser: " +  e.getMessage(), e );
-        }
-        catch (NoSuchMethodException e) {
-            // log if we're in debug mode, but otherwise ignore
-            log.debug( "Did not initialise RIOT parser: " +  e.getMessage(), e );
-        }
-        catch (IllegalArgumentException e) {
-            // log if we're in debug mode, but otherwise ignore
-            log.debug( "Did not initialise RIOT parser: " +  e.getMessage(), e );
-        }
-        catch (IllegalAccessException e) {
-            // log if we're in debug mode, but otherwise ignore
-            log.debug( "Did not initialise RIOT parser: " +  e.getMessage(), e );
-        }
-        catch (InvocationTargetException e) {
-            // log if we're in debug mode, but otherwise ignore
-            log.debug( "Did not initialise RIOT parser: " +  e.getMessage(), e );
-        }
+        IO_Ctl.init(); 
     }
 
     //==============================================================================

@@ -24,20 +24,16 @@
 
 package com.hp.hpl.jena.rdfxml.xmlinput.impl;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashMap ;
+import java.util.Map ;
 
-import org.apache.xerces.util.XMLChar;
-import org.xml.sax.SAXParseException;
-import org.apache.jena.iri.IRI;
+import org.apache.jena.iri.IRI ;
+import org.apache.xerces.util.XMLChar ;
+import org.xml.sax.SAXParseException ;
 
 import com.hp.hpl.jena.rdfxml.xmlinput.ARPErrorNumbers ;
-import com.hp.hpl.jena.rdfxml.xmlinput.lang.LanguageTagCodes ;
 
-/**
- */
-public class ParserSupport
-	implements ARPErrorNumbers,  LanguageTagCodes, Names {
+public class ParserSupport implements ARPErrorNumbers, Names {
     
 //    protected void checkBadURI(Taint taintMe,RDFURIReference uri) throws SAXParseException {
 //        arp.checkBadURI(taintMe,uri);

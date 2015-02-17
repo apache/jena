@@ -443,11 +443,18 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         return Iter.operate(stream, action) ;
     }
 
-    public static <T> Iterator<T> append(Iterable<T> iter1, Iterable<T> iter2) {
+    /** Join two iteratables
+     * If there, potentially, going to be many iterators, it is better to 
+     * create an {@link IteratorConcat} explicitly and add each iterator.
+     */
+    public static <T> Iterator<T> append(Iterable<? extends T> iter1, Iterable<? extends T> iter2) {
         return IteratorCons.create(iterator(iter1), iterator(iter2)) ;
     }
 
-    // Could try for <? extends T> on each arg.
+    /** Join two iterator
+     * If there, potentially, going to be many iterators, it is better to 
+     * create an {@link IteratorConcat} explicitly and add each iterator.
+     */
     public static <T> Iterator<T> append(Iterator<? extends T> iter1, Iterator<? extends T> iter2) {
         return IteratorCons.create(iter1, iter2) ;
     }
@@ -611,7 +618,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
 
     /**
      * Print an iterator to stdout, return a copy of the iterator. Printing
-     * occurs now. See {@linkplain #debug} for an operation to print as the
+     * occurs now. See {@link #debug} for an operation to print as the
      * iterator is used. 
      */
     public static <T> Iterator<T> log(Iterator<T> stream) {
@@ -630,7 +637,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
     
     /**
      * Print an iterator to stdout, return a copy of the iterator. Printing
-     * occurs when the iterator is used.  See {@linkplain #log} for
+     * occurs when the iterator is used.  See {@link #log} for
      * an operation to print now. 
      */
     public static <T> Iterator<T> debug(Iterator<T> stream) {
@@ -886,6 +893,10 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         apply(iterator, action) ;
     }
 
+    /** Join on an iterator.
+     * If there are going to be many iterators, uit is better to create an {@link IteratorConcat}
+     * and <tt>.add</tt> each iterator.  The overheads are much lower. 
+     */
     public Iter<T> append(Iterator<T> iter) {
         return new Iter<>(IteratorCons.create(iterator, iter)) ;
     }
@@ -925,14 +936,6 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
     }
 
     // ---- Iterator
-
-    // ----
-    // Could merge in concatenated iterators - if used a lot there is reducable
-    // cost.
-    // Just putting in a slot is free (?) because objects of one or two slots
-    // have
-    // the same memory allocation.
-    // And .. be an iterator framework for extension
 
     @Override
     public boolean hasNext() {

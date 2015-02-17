@@ -18,7 +18,10 @@
 
 package com.hp.hpl.jena.graph;
 
+import com.hp.hpl.jena.graph.impl.GraphBase ;
 import com.hp.hpl.jena.mem.GraphMem ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.NullIterator ;
 
 /**
     A factory class for creating Graphs.
@@ -49,4 +52,16 @@ public class Factory
             };
         return g;
         }
+
+    private static Graph emptyGraph = new GraphBase() {
+
+        @Override
+        protected ExtendedIterator<Triple> graphBaseFind(Triple triplePattern) {
+            return NullIterator.instance() ;
+        }
+    } ;
+ 
+    /** Immutable graph with no triples */ 
+    public static Graph empty() { return emptyGraph ; }
+
     }

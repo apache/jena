@@ -30,11 +30,13 @@ import junit.framework.TestSuite ;
 import org.apache.xerces.impl.dv.util.HexBin ;
 import org.junit.Assert ;
 
+import com.hp.hpl.jena.JenaRuntime ;
 import com.hp.hpl.jena.datatypes.BaseDatatype ;
 import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.datatypes.xsd.* ;
+import com.hp.hpl.jena.datatypes.xsd.impl.RDFLangString ;
 import com.hp.hpl.jena.datatypes.xsd.impl.XMLLiteralType ;
 import com.hp.hpl.jena.enhanced.EnhNode ;
 import com.hp.hpl.jena.graph.* ;
@@ -42,11 +44,13 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.impl.JenaParameters ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.XSD ;
    
 /**
  * Unit test for the typed literal machinery - including RDFDatatype,
  * TypeMapper and LiteralLabel.
+ * See also TestLiteralLabelSameValueAs
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -120,7 +124,7 @@ public class TestTypedLiterals extends TestCase {
         
         // Check we can create a literal of an unregistered java type without anything blowing up
         Object foo = new java.sql.Date(123456l);
-        LiteralLabel ll = LiteralLabelFactory.create(foo);
+        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(foo);
         assertEquals(ll.getLexicalForm(), foo.toString());
     }
     
@@ -227,6 +231,25 @@ public class TestTypedLiterals extends TestCase {
 		ll = m.createTypedLiteral("<good></good>",XMLLiteralType.theXMLLiteralType);
 		assertTrue("Well-formed XMLLiteral.",((EnhNode)ll).asNode().getLiteralIsXML());
     
+    }
+
+    public void testRDFLangString_1() {
+        // Registration
+        RDFDatatype dt = TypeMapper.getInstance().getTypeByName(RDF.langString.getURI()) ;
+        assertEquals(RDF.dtLangString, dt) ;
+        assertTrue(RDF.dtLangString == dt) ;
+    }
+    
+    public void testRDFLangString_2() {
+        // "abc"^^rdf:langString (no language tag)
+        Literal ll1 = m.createTypedLiteral("abc", RDFLangString.rdfLangString) ;
+        assertEquals("", ll1.getLanguage()) ;
+        Literal ll2 = m.createLiteral("xyz", "en") ;
+        
+        if ( JenaRuntime.isRDF11 )
+            assertTrue(ll1.getDatatype() == ll2.getDatatype()) ; 
+        else
+            assertTrue(ll1.getDatatype() != ll2.getDatatype()) ;
     }
 
     /**
@@ -511,8 +534,8 @@ public class TestTypedLiterals extends TestCase {
         RDFDatatype dt = XSDDatatype.XSDdecimal;
         Node ns = NodeFactory.createURI("x") ;
         Node np = NodeFactory.createURI("p") ;
-        Node nx1 = NodeFactory.createLiteral("0.50", null, dt) ;
-        Node nx2 = NodeFactory.createLiteral("0.500", null, dt) ;
+        Node nx1 = NodeFactory.createLiteral("0.50", dt) ;
+        Node nx2 = NodeFactory.createLiteral("0.500", dt) ;
         Graph graph = Factory.createDefaultGraph() ;
         graph.add(new Triple(ns, np, nx1)) ;
         assertTrue( graph.find(Node.ANY, Node.ANY, nx2).hasNext() );  
@@ -963,8 +986,8 @@ public class TestTypedLiterals extends TestCase {
     
     /** Test that XSD anyURI is not sameValueAs XSD string (Xerces returns a string as the value for both) */ 
     public void testXSDanyURI() {
-        Node node1 = NodeFactory.createLiteral("http://example/", null, XSDDatatype.XSDanyURI) ;
-        Node node2 = NodeFactory.createLiteral("http://example/", null, XSDDatatype.XSDstring) ;
+        Node node1 = NodeFactory.createLiteral("http://example/", XSDDatatype.XSDanyURI) ;
+        Node node2 = NodeFactory.createLiteral("http://example/", XSDDatatype.XSDstring) ;
         assertFalse(node1.sameValueAs(node2)) ;
     }
     
@@ -1102,18 +1125,21 @@ public class TestTypedLiterals extends TestCase {
         JenaParameters.enableEagerLiteralValidation = originalFlag;
         assertTrue("Early datatype format exception", foundException);
         
-        originalFlag = JenaParameters.enablePlainLiteralSameAsString;
-        Literal l1 = m.createLiteral("test string");
-        Literal l2 = m.createTypedLiteral("test string", XSDDatatype.XSDstring);
-        JenaParameters.enablePlainLiteralSameAsString = true;
-        boolean ok1 = l1.sameValueAs(l2); 
-        JenaParameters.enablePlainLiteralSameAsString = false;
-        boolean ok2 = ! l1.sameValueAs(l2); 
-        JenaParameters.enablePlainLiteralSameAsString = originalFlag;
-        assertTrue( ok1 );
-        assertTrue( ok2 );
+        if ( ! JenaRuntime.isRDF11 ) {
+            // RDF 1.1 -  Simple Literals are identical terms to xsd:string hence same value always.
+            originalFlag = JenaParameters.enablePlainLiteralSameAsString;
+            Literal l1 = m.createLiteral("test string");
+            Literal l2 = m.createTypedLiteral("test string", XSDDatatype.XSDstring);
+            JenaParameters.enablePlainLiteralSameAsString = true;
+            boolean ok1 = l1.sameValueAs(l2); 
+            JenaParameters.enablePlainLiteralSameAsString = false;
+            boolean ok2 = ! l1.sameValueAs(l2); 
+            JenaParameters.enablePlainLiteralSameAsString = originalFlag;
+            assertTrue( ok1 );
+            assertTrue( ok2 );
+        }
     }
-    
+
     /**
      * Test that equality function takes lexical distinction into account. 
      */
@@ -1156,12 +1182,12 @@ public class TestTypedLiterals extends TestCase {
      * Check parse/unparse loop.
      */
     public void doTestRoundTrip(String lex, RDFDatatype dt, boolean testeq) {
-        LiteralLabel ll = LiteralLabelFactory.createLiteralLabel( lex, "", dt );
+        LiteralLabel ll = LiteralLabelFactory.create( lex, dt );
         String lex2 = dt.unparse(ll.getValue());
         if (testeq) {
             assertEquals(lex, lex2);
         }
-        LiteralLabel ll2 = LiteralLabelFactory.createLiteralLabel( lex2, "", dt );
+        LiteralLabel ll2 = LiteralLabelFactory.create( lex2, dt );
         assertTrue( ll2.isWellFormed() );
     }
     

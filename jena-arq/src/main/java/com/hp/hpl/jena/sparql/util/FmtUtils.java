@@ -275,11 +275,15 @@ public class FmtUtils
         stringEsc(result, s, true) ;
         result.append("\"") ;
 
-        // Format the language tag
-        if ( lang != null && lang.length()>0)
-        {
+        if ( NodeUtils.isSimpleString(literal) ) {
+            // No op.
+            return ;
+        }
+        
+        if ( NodeUtils.isLangString(literal) ) {
             result.append("@") ;
             result.append(lang) ;
+            return ;
         }
 
         if ( datatype != null )
@@ -348,47 +352,34 @@ public class FmtUtils
 
     public static void stringForNode(StringBuilder result, Node n, SerializationContext context)
     {
-        if ( n == null )  {
-            result.append( "<<null>>");
-            return;
+        if ( n == null ) {
+            result.append("<<null>>") ;
+            return ;
         }
 
         // mappable?
-        if ( context != null && context.getBNodeMap() != null )
-        {
-            String str = context.getBNodeMap().asString(n)  ;
-            if ( str != null )
-            {
-                result.append( str);
-                return;
+        if ( context != null && context.getBNodeMap() != null ) {
+            String str = context.getBNodeMap().asString(n) ;
+            if ( str != null ) {
+                result.append(str) ;
+                return ;
             }
         }
 
-        if ( n.isBlank() )
-        {
-            result.append( "_:" ).append( n.getBlankNodeLabel() );
-        }
-        else if ( n.isLiteral() )
-        {
-            stringForLiteral( result, (Node_Literal) n, context );
-        }
-        else if ( n.isURI() )
-        {
-            String uri = n.getURI();
-            stringForURI( result, uri, context );
-        }
-        else if ( n.isVariable() )
-        {
-            result.append( "?" ).append( n.getName() );
-        }
-        else if ( n.equals( Node.ANY ) )
-        {
-            result.append( "ANY" );
-        }
-        else
-        {
-            Log.warn( FmtUtils.class, "Failed to turn a node into a string: " + n );
-            result.append( n.toString() );
+        if ( n.isBlank() ) {
+            result.append("_:").append(n.getBlankNodeLabel()) ;
+        } else if ( n.isLiteral() ) {
+            stringForLiteral(result, (Node_Literal)n, context) ;
+        } else if ( n.isURI() ) {
+            String uri = n.getURI() ;
+            stringForURI(result, uri, context) ;
+        } else if ( n.isVariable() ) {
+            result.append("?").append(n.getName()) ;
+        } else if ( n.equals(Node.ANY) ) {
+            result.append("ANY") ;
+        } else {
+            Log.warn(FmtUtils.class, "Failed to turn a node into a string: " + n) ;
+            result.append(n.toString()) ;
         }
     }
 

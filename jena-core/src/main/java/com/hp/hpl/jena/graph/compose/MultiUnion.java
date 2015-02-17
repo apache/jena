@@ -142,7 +142,7 @@ public class MultiUnion extends Polyadic
      * @param t The matcher to match against
      * @return An iterator of all triples matching t in the union of the graphs.
      */
-    @Override public ExtendedIterator<Triple> graphBaseFind( final TripleMatch t ) 
+    @Override public ExtendedIterator<Triple> graphBaseFind( final Triple t ) 
         { // optimise the case where there's only one component graph.
         ExtendedIterator<Triple> found = optimiseOne() ? singleGraphFind( t ) : multiGraphFind( t ); 
         return SimpleEventManager.notifyingRemove( MultiUnion.this, found );
@@ -152,14 +152,14 @@ public class MultiUnion extends Polyadic
          Answer the result of <code>find( t )</code> on the single graph in
          this union.
     */
-    private ExtendedIterator<Triple> singleGraphFind( final TripleMatch t )
+    private ExtendedIterator<Triple> singleGraphFind( final Triple t )
         { return (m_subGraphs.get( 0 )).find(  t  ); }
 
 
     /**
      * Answer the concatenation of all the iterators from a-subGraph.find( t ).
      */
-    private ExtendedIterator<Triple> multiGraphFind(final TripleMatch t)
+    private ExtendedIterator<Triple> multiGraphFind(final Triple t)
     {
         Set<Triple> seen = CollectionFactory.createHashedSet() ;
         ExtendedIterator<Triple> result = NullIterator.instance() ;

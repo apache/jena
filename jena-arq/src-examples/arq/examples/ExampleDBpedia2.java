@@ -36,13 +36,9 @@ public class ExampleDBpedia2
             "    }" +
             "}" ;
         Query query = QueryFactory.create(queryString) ;
-        QueryExecution qexec = QueryExecutionFactory.create(query, ModelFactory.createDefaultModel()) ;
-        try {
+        try (QueryExecution qexec = QueryExecutionFactory.create(query, ModelFactory.createDefaultModel())) {
             ResultSet rs = qexec.execSelect() ;
             ResultSetFormatter.out(System.out, rs, query) ;
-        } finally {
-            qexec.close() ;
         }
     }
-
 }

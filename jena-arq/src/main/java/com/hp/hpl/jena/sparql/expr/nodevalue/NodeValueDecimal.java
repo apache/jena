@@ -54,7 +54,7 @@ public class NodeValueDecimal extends NodeValue
     protected Node makeNode()
     { 
         int s = decimal.scale() ;
-        return NodeFactory.createLiteral(Utils.stringForm(decimal), null, XSDDatatype.XSDdecimal) ;
+        return NodeFactory.createLiteral(Utils.stringForm(decimal), XSDDatatype.XSDdecimal) ;
     }
     
     @Override

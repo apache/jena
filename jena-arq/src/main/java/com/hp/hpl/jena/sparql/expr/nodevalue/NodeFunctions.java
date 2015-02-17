@@ -21,20 +21,20 @@ package com.hp.hpl.jena.sparql.expr.nodevalue ;
 import java.util.Iterator ;
 import java.util.UUID ;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.Violation ;
+
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.ExprTypeException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
 /**
@@ -52,19 +52,36 @@ public class NodeFunctions {
         Node n = nv.asNode() ;
         if ( !n.isLiteral() )
             throw new ExprEvalException(label + ": Not a literal: " + nv) ;
-        RDFDatatype dt = n.getLiteralDatatype() ;
         String lang = n.getLiteralLanguage() ;
+        
+        if ( NodeUtils.isLangString(n) )
+            // Language tag.  Legal.  
+            return n ;
+        
+        // No language tag : either no datatype or a datatype of xsd:string 
+        // Includes the case of rdf:langString and no language ==> Illegal as a compatible string.
 
-        if ( dt != null && !dt.equals(XSDDatatype.XSDstring) )
-            throw new ExprEvalException(label + ": Not a string literal: " + nv) ;
-        return n ;
+        if ( nv.isString() )
+                return n ;
+        throw new ExprEvalException(label + ": Not a string literal: " + nv) ;
     }
 
     /**
      * Check for string operations with primary first arg and second second arg
-     * (e.g. CONTAINS)
+     * (e.g. CONTAINS).  The arguments are not used in the same way and the check
+     * operation is not symmetric. 
+     * <li> "abc"@en is compatible with "abc"
+     * <li> "abc" is NOT compatible with "abc"@en
      */
     public static void checkTwoArgumentStringLiterals(String label, NodeValue arg1, NodeValue arg2) {
+        
+        /* Quote the spec:
+         * Compatibility of two arguments is defined as:
+         *    The arguments are simple literals or literals typed as xsd:string
+         *    The arguments are plain literals with identical language tags
+         *    The first argument is a plain literal with language tag and the second argument is a simple literal or literal typed as xsd:string
+         */
+        
         Node n1 = checkAndGetStringLiteral(label, arg1) ;
         Node n2 = checkAndGetStringLiteral(label, arg2) ;
         String lang1 = n1.getLiteralLanguage() ;
@@ -74,22 +91,44 @@ public class NodeFunctions {
         if ( lang2 == null )
             lang2 = "" ;
 
-        if ( n1.getLiteralDatatype() != null ) {
-            // n1 is an xsd string by checkAndGetString
-            if ( XSDDatatype.XSDstring.equals(n2.getLiteralDatatypeURI()) )
-                return ;
-            if ( n2.getLiteralLanguage().equals("") )
+        // Case 1
+        if ( lang1.equals("") ) { 
+            if ( lang2.equals("") )
                 return ;
             throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
         }
 
-        // Incompatible?
-        // arg1 simple or xsd:string, arg2 has a lang.
-        if ( lang1.equals("") && !lang2.equals("") )
-            throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
-        // arg1 with lang, arg2 has a different lang.
-        if ( !lang1.equals("") && (!lang2.equals("") && !lang1.equals(lang2)) )
-            throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
+        // Case 2
+        if ( lang1.equalsIgnoreCase(lang2) )
+            return ;
+        
+        // Case 3
+        if ( lang2.equals("") )
+            return ;
+
+        throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
+        
+        // ----------
+                
+//                if ( lang1.equals("") && !lang2.equals("") )
+//            throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
+//        
+//        
+//        
+//        if ( n1.getLiteralDatatype() != null ) {
+//            // n1 is an xsd string by checkAndGetString
+//            if ( XSDDatatype.XSDstring.equals(n2.getLiteralDatatypeURI()) )
+//                return ;
+//            if ( n2.getLiteralLanguage().equals("") )
+//                return ;
+//            throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
+//        }
+//
+//        // Incompatible?
+//        // arg1 simple or xsd:string, arg2 has a lang.
+//        // arg1 with lang, arg2 has a different lang.
+//        if ( !lang1.equals("") && (!lang2.equals("") && !lang1.equals(lang2)) )
+//            throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
     }
 
     // -------- sameTerm
@@ -181,7 +220,7 @@ public class NodeFunctions {
         if ( plainLiteral ) {
             boolean simpleLiteral = (node.getLiteralLanguage() == null || node.getLiteralLanguage().equals("")) ;
             if ( !simpleLiteral )
-                return NodeConst.dtRDFlangString ;
+                return NodeConst.rdfLangString ;
             return XSD.xstring.asNode() ;
         }
         return NodeFactory.createURI(s) ;
@@ -419,7 +458,7 @@ public class NodeFunctions {
         Node dt = v2.asNode() ;
         // Check?
 
-        Node n = NodeFactory.createLiteral(lex, null, NodeFactory.getType(dt.getURI())) ;
+        Node n = NodeFactory.createLiteral(lex, NodeFactory.getType(dt.getURI())) ;
         return NodeValue.makeNode(n) ;
     }
 
@@ -433,7 +472,7 @@ public class NodeFunctions {
         String lang = v2.asString() ;
         // Check?
 
-        Node n = NodeFactory.createLiteral(lex, lang, null) ;
+        Node n = NodeFactory.createLiteral(lex, lang) ;
         return NodeValue.makeNode(n) ;
     }
 

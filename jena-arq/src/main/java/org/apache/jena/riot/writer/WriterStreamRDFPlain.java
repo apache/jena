@@ -42,7 +42,7 @@ public class WriterStreamRDFPlain implements StreamRDF {
     protected final NodeFormatter nodeFmt ;
 
     /**
-     * Output tuples, using UTF8 output See {@linkplain StreamRDFLib#writer} for
+     * Output tuples, using UTF8 output See {@link StreamRDFLib#writer} for
      * ways to create a AWriter object.
      */
     public WriterStreamRDFPlain(AWriter w) {
@@ -51,7 +51,7 @@ public class WriterStreamRDFPlain implements StreamRDF {
 
     /**
      * Output tuples, choosing ASCII or UTF8 See
-     * {@linkplain StreamRDFLib#writer} for ways to create a AWriter object.
+     * {@link StreamRDFLib#writer} for ways to create a AWriter object.
      */
     public WriterStreamRDFPlain(AWriter w, CharSpace charSpace) {
         out = w ;

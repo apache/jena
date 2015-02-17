@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sdb.layout2;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.util.Named;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.sdb.SDBException;
 
 public enum ValueType implements Named
@@ -125,6 +126,10 @@ public enum ValueType implements Named
         if ( n.isBlank() ) return BNODE ;
         if ( n.isLiteral() )
         {
+            if ( NodeUtils.isSimpleString(n) )
+                return STRING ;
+            if ( NodeUtils.isLangString(n) )
+                return STRING ;
             if ( n.getLiteralDatatypeURI() == null )
                 // String - plain literal
                 return STRING ;

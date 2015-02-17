@@ -90,8 +90,8 @@ public interface LiteralLabel
     public boolean equals(Object other) ;
 
     /** 
-     	Answer true iff this literal represents the same (abstract) value as
-        the other one.
+     	Answer true if this literal represents the same (abstract) value as
+        the other one.  Two literals that are .equals are sameValueAs. 
      */
     public boolean sameValueAs(LiteralLabel other) ;
 

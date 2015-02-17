@@ -154,12 +154,11 @@ public class TestExample extends TestCase
         
         IRI iri = f.create(uri);
         if (iri.hasViolation(false)) {
-            if (good) fail("Unexpected violation found: "+
-            ((iri.violations(false).next())).codeName()
-            
-            );
+            if (good) 
+                fail("Unexpected violation found: "+((iri.violations(false).next())).codeName());
         } else {
-            if (!good) fail("Expected a violation, none found.");
+            if (!good)
+                fail("Expected a violation, none found.");
         }
             
         

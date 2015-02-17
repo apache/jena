@@ -61,7 +61,7 @@ public class NodeValueInteger extends NodeValue
 
     @Override
     protected Node makeNode()
-    { return NodeFactory.createLiteral(integer.toString(), null, XSDDatatype.XSDinteger) ; }
+    { return NodeFactory.createLiteral(integer.toString(), XSDDatatype.XSDinteger) ; }
     
     @Override
     public String asString() { return toString() ; }

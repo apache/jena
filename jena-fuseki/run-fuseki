@@ -39,6 +39,8 @@ then
 elif [ -e "$FUSEKI_HOME/target/classes" ]
 then
     CP="$FUSEKI_HOME/target/classes:$CP"
+else
+    echo "No Fuseki1 classes" 2>&1
 fi
 
 # Prepend any development directories here
@@ -56,7 +58,7 @@ FUSEKI_LOG=${FUSEKI_LOG:-}
 JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
 #JVM_ARGS="$JVM_ARGS -XX:MaxDirectMemorySize=1G"
 
-# echo $CP
+#echo $CP
 
 exec java -cp "$CP" $JVM_ARGS $FUSEKI_LOG org.apache.jena.fuseki.FusekiCmd \
     --home="$FUSEKI_HOME" "$@"

@@ -17,22 +17,18 @@
  */
 package org.apache.jena.arq.querybuilder.clauses;
 
-import static org.junit.Assert.assertNotNull;
+import org.apache.jena.arq.querybuilder.AbstractQueryBuilder ;
+import org.apache.jena.arq.querybuilder.SelectBuilder ;
+import org.junit.After ;
+import org.xenei.junit.contract.Contract ;
+import org.xenei.junit.contract.ContractTest ;
+import org.xenei.junit.contract.IProducer ;
 
-import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
-import org.apache.jena.arq.querybuilder.SelectBuilder;
-import org.apache.jena.arq.querybuilder.clauses.WhereClause;
-import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
-import org.junit.After;
-import org.xenei.junit.contract.Contract;
-import org.xenei.junit.contract.ContractTest;
-import org.xenei.junit.contract.IProducer;
-
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException;
+import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException ;
 
 @Contract(WhereClause.class)
 public class WhereClauseTest<T extends WhereClause<?>> extends
@@ -57,55 +53,21 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	}
 
 	@ContractTest
-	public void testGetWhereHandler() {
-		WhereClause<?> whereClause = getProducer().newInstance();
-		WhereHandler handler = whereClause.getWhereHandler();
-		assertNotNull(handler);
-	}
-
-	@ContractTest
-	public void testAddWhereTriple() {
-		WhereClause<?> whereClause = getProducer().newInstance();
-		AbstractQueryBuilder<?> builder = whereClause.addWhere(new Triple(
-				NodeFactory.createURI("one"), NodeFactory.createURI("two"),
-				NodeFactory.createURI("three")));
-
-		String[] s = byLine(builder);
-		assertContainsRegex("<one>\\s+<two>\\s+<three>\\s*\\.", s);
-	}
-
-	@ContractTest
-	public void testAddWhereObjects() {
-		WhereClause<?> whereClause = getProducer().newInstance();
-		AbstractQueryBuilder<?> builder = whereClause.addWhere(
-				NodeFactory.createURI("one"), NodeFactory.createURI("two"),
-				NodeFactory.createURI("three"));
-
-		String[] s = byLine(builder);
-		assertContainsRegex("<one>\\s+<two>\\s+<three>\\s*\\.", s);
-	}
-
-	@ContractTest
 	public void testAddWhereStrings() {
 		WhereClause<?> whereClause = getProducer().newInstance();
-		AbstractQueryBuilder<?> builder = whereClause.addWhere("<one>",
-				"<two>", "three");
+		AbstractQueryBuilder<?> builder = whereClause.addWhere("<one>", "<two>", "three");
 		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + quote("three") + "\\^\\^"
-				+ node("http://www.w3.org/2001/XMLSchema#string") + OPT_SPACE
+				+ node("two") + SPACE + quote("three") + presentStringType() + OPT_SPACE
 				+ DOT + CLOSE_CURLY, builder.buildString());
 	}
 
 	@ContractTest
 	public void testAddOptionalString() {
 		WhereClause<?> whereClause = getProducer().newInstance();
-		AbstractQueryBuilder<?> builder = whereClause.addOptional("<one>",
-				"<two>", "three");
-
+		AbstractQueryBuilder<?> builder = whereClause.addOptional("<one>", "<two>", "three");
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
 				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ quote("three") + "\\^\\^"
-				+ node("http://www.w3.org/2001/XMLSchema#string") + OPT_SPACE
+				+ quote("three") + presentStringType() + OPT_SPACE
 				+ DOT + CLOSE_CURLY + CLOSE_CURLY, builder.buildString());
 
 	}
@@ -114,7 +76,8 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	public void testAddOptionalObjects() {
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addOptional(
-				NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+				NodeFactory.createURI("one"), 
+				NodeFactory.createURI("two"),
 				NodeFactory.createURI("three"));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
 				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
@@ -173,8 +136,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		assertContainsRegex(PREFIX + "pfx:" + SPACE + node("uri") + ".+"
 				+ UNION + OPEN_CURLY + SELECT + var("x") + SPACE + WHERE
 				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ quote("three") + "\\^\\^"
-				+ node("http://www.w3.org/2001/XMLSchema#string") + OPT_SPACE
+				+ quote("three") + presentStringType() + OPT_SPACE
 				+ DOT + CLOSE_CURLY + CLOSE_CURLY, builder.buildString());
 
 	}
@@ -219,7 +181,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 				+ var("v") + CLOSE_PAREN + CLOSE_CURLY, builder.buildString());
 
 		builder.setVar(Var.alloc("v"),
-				NodeFactory.createLiteral(LiteralLabelFactory.create(10)));
+				NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10)));
 
 		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE
 				+ OPEN_PAREN + var("one") + OPT_SPACE + LT + OPT_SPACE
@@ -281,5 +243,4 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 				+ node("one") + ".+" + node("two") + ".+" + node("three")
 				+ ".+" + CLOSE_CURLY, builder.buildString());
 	}
-
 }

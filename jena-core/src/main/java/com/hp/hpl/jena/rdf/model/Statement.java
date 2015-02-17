@@ -127,7 +127,7 @@ public interface Statement extends FrontsTriple
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
      * 
-     * @return The object of the statement interpreted as a value of the
+     * @return The object of the statement interpreted as a value of
      * the specified type.
      */    
     public boolean getBoolean() ;
@@ -136,7 +136,7 @@ public interface Statement extends FrontsTriple
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
      * 
-     * @return The object of the statement interpreted as a value of the
+     * @return The object of the statement interpreted as a value of
      * the specified type.
      */    
     public byte getByte() ;
@@ -145,7 +145,7 @@ public interface Statement extends FrontsTriple
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
      * 
-     * @return The object of the statement interpreted as a value of the
+     * @return The object of the statement interpreted as a value of
      * the specified type.
      */    
     public short getShort() ;
@@ -154,7 +154,7 @@ public interface Statement extends FrontsTriple
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
      * 
-     * @return The object of the statement interpreted as a value of the
+     * @return The object of the statement interpreted as a value of
      * the specified type.
      */    
     public int getInt() ;
@@ -163,7 +163,7 @@ public interface Statement extends FrontsTriple
      *
      * <p>An exception will be thrown iof the object is not a Literal.</p>
      * 
-     * @return The object of the statement interpreted as a value of the
+     * @return The object of the statement interpreted as a value of
      * the specified type.
      */    
     public long getLong() ;
@@ -172,7 +172,7 @@ public interface Statement extends FrontsTriple
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
      * 
-     * @return The object of the statement interpreted as a value of the
+     * @return The object of the statement interpreted as a value of
      * the specified type.
      */    
     public char getChar() ;
@@ -181,7 +181,7 @@ public interface Statement extends FrontsTriple
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
      * 
-     * @return The object of the statement interpreted as a value of the
+     * @return The object of the statement interpreted as a value of
      * the specified type.
      */    
     public float getFloat() ;
@@ -190,7 +190,7 @@ public interface Statement extends FrontsTriple
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
      * 
-     * @return The object of the statement interpreted as a value of the
+     * @return The object of the statement interpreted as a value of
      * the specified type.
      */    
     public double getDouble() ;
@@ -199,7 +199,7 @@ public interface Statement extends FrontsTriple
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
      * 
-     * @return The object of the statement interpreted as a value of the
+     * @return The object of the statement interpreted as a value of
      * the specified type.
      */ 
     public String getString() ;
@@ -216,7 +216,7 @@ public interface Statement extends FrontsTriple
      *
      * <p>An exception will be thrown if the object is not a Resource.</p>
      * 
-     * @return The object of the statement interpreted as a value of the
+     * @return The object of the statement interpreted as a value of
      * the specified type.
      */    
     public Bag getBag() ;
@@ -225,7 +225,7 @@ public interface Statement extends FrontsTriple
      *
      * <p>An exception will be thrown if the object is not a Resource.</p>
      * 
-     * @return The object of the statement interpreted as a value of the
+     * @return The object of the statement interpreted as a value of
      * the specified type.
      */    
     public Alt getAlt() ;
@@ -234,7 +234,7 @@ public interface Statement extends FrontsTriple
      *
      * <p>An exception will be thrown if the object is not a Resource.</p>
      * 
-     * @return The object of the statement interpreted as a value of the
+     * @return The object of the statement interpreted as a value of
      * the specified type.
      */    
     public Seq getSeq() ;

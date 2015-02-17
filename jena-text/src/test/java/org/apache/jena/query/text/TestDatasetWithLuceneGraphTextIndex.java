@@ -18,11 +18,12 @@
 
 package org.apache.jena.query.text;
 
-import org.junit.BeforeClass ;
+import org.junit.Before ;
 
 public class TestDatasetWithLuceneGraphTextIndex extends AbstractTestDatasetWithLuceneGraphTextIndex {
 	
-	@BeforeClass public static void beforeClass() {
+	@Before
+	public void before() {
 		init();
 	}
 	

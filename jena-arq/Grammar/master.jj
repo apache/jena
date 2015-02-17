@@ -1000,7 +1000,18 @@ Expr FunctionCall() : { String fname ; ExprList a ; }
 {
   fname = iri()
   a = ArgList()
-  { return new E_Function(fname, a) ; }
+
+  {
+     if ( AggregateRegistry.isRegistered(fname) ) {
+         // aggregates
+         if ( ! allowAggregatesInExpressions )
+            throwParseException("Aggregate expression not legal at this point : "+fname, -1, -1) ;
+         Aggregator agg = AggregatorFactory.createCustom(fname, a) ;
+         Expr exprAgg = getQuery().allocAggregate(agg) ;
+         return exprAgg ;
+     }
+     return new E_Function(fname, a) ; 
+  }
 }
 
 ExprList ArgList() : { Expr expr ; boolean distinct = false ;
@@ -1944,11 +1955,11 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
     { agg = AggregatorFactory.createGroupConcat(distinct, expr, sep, ordered) ; }
 
 #ifdef ARQ
-    /* Temporary syntax*/
+    /* Explciit syntax (aggregate even if not registered) */
     | t = <AGG>
           { String iri ; }
           iri = iri() a = ExpressionList()
-      { agg = AggregatorFactory.create(iri, a) ; }
+      { agg = AggregatorFactory.createCustom(iri, a) ; }
 #endif
 
    )
@@ -1974,6 +1985,14 @@ Expr iriOrFunction() : { String iri ; ExprList a = null ;
   (a = ArgList())?
   { if ( a == null ) 
        return asExpr(createNode(iri)) ;
+    if ( AggregateRegistry.isRegistered(iri) ) {
+         // aggregates
+         if ( ! allowAggregatesInExpressions )
+            throwParseException("Aggregate expression not legal at this point : "+iri, -1, -1) ;
+         Aggregator agg = AggregatorFactory.createCustom(iri, a) ;
+         Expr exprAgg = getQuery().allocAggregate(agg) ;
+         return exprAgg ;
+      }
     return new E_Function(iri, a) ;
   }
 }

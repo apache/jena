@@ -39,6 +39,8 @@ public class SecuredItemInvoker implements InvocationHandler
 	// package-private for ItemHolder use.
 	/* package-private */final SecuredItem securedItem;
 
+	final Class<?> securedClass;
+	
 	// populate the static fields.
 	static
 	{
@@ -71,6 +73,7 @@ public class SecuredItemInvoker implements InvocationHandler
 			final SecuredItem securedItem )
 	{
 		this.securedItem = securedItem;
+		this.securedClass = securedClass;
 	}
 
 	@Override
@@ -112,7 +115,7 @@ public class SecuredItemInvoker implements InvocationHandler
 					SecuredItemImpl.incrementUse();
 					try
 					{
-						return method.invoke(securedItem, args);
+						return m.invoke(securedItem, args);
 					}
 					finally
 					{

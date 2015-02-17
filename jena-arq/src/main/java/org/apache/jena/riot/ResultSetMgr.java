@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 
 /** 
  * Reading and writing of Result Sets.
- * {@linkplain ResultSetFormatter} provides output to text.
+ * {@link ResultSetFormatter} provides output to text.
  * @see ResultSetFactory
  * @see ResultSetFormatter 
  */
@@ -42,10 +42,10 @@ public class ResultSetMgr {
     }
     
     /**
-     * Read from an {@code InputStream} and produce a {@linkplain ResultSet};
+     * Read from an {@code InputStream} and produce a {@link ResultSet};
      * the stream is expect to use syntax {@code lang}.  Note that returned
      * result set may stream and so the input stream be read while the ResultSet is used.
-     * See {@linkplain ResultSetFactory#copyResults(ResultSet)}
+     * See {@link ResultSetFactory#copyResults(ResultSet)}
      * for a ResultSet that is detached from the {@code InputStream}.
      * 
      * @param in
@@ -61,19 +61,19 @@ public class ResultSetMgr {
         return read(uri, null) ;
     }
     
-    /** Read a result set from the URI, in the speficied syntax */ 
+    /** Read a result set from the URI, in the specified syntax */ 
     public static ResultSet read(String uri, Lang lang) {
         return parse(uri, lang, null) ;
     }
 
 //    /**
-//     * Read from an {@code Reader} and produce a {@linkplain ResultSet};
+//     * Read from an {@code Reader} and produce a {@link ResultSet};
 //     * the stream is expect to use syntax {@code lang}.  
 //     * Using InputStreams is better to ensure the character set
 //     * of the input matches that of the syntax.  
 //     * Note that returned
 //     * result set may stream and so the input stream be read while the ResultSet is used.
-//     * See {@linkplain ResultSetFactory#copyResults(ResultSet)}
+//     * See {@link ResultSetFactory#copyResults(ResultSet)}
 //     * for a ResultSet that is detached from the {@code InputStream}.
 //     * 
 //     * @param in
@@ -91,11 +91,11 @@ public class ResultSetMgr {
 //    
 //    
 //    /**
-//     * Read from an {@code StringReader} and produce a {@linkplain ResultSet};
+//     * Read from an {@code StringReader} and produce a {@link ResultSet};
 //     * the stream is expect to use syntax {@code lang}.  
 //     * Note that returned
 //     * result set may stream and so the input stream be read while the ResultSet is used.
-//     * See {@linkplain ResultSetFactory#copyResults(ResultSet)}
+//     * See {@link ResultSetFactory#copyResults(ResultSet)}
 //     * for a ResultSet that is detached from the {@code InputStream}.
 //     * 
 //     * @param in
@@ -151,7 +151,7 @@ public class ResultSetMgr {
     
     // -------------------------------
 
-    /** Write a SPARQL result set to the output stream in the speciifcied language/syntax.
+    /** Write a SPARQL result set to the output stream in the specified language/syntax.
      * @param out
      * @param resultSet
      * @param lang
@@ -161,6 +161,18 @@ public class ResultSetMgr {
         if ( f == null )
             throw new RiotException("No resultSet writer for "+lang) ;
         f.create(lang).write(out, resultSet, null) ;
+    }
+    
+    /** Write a SPARQL boolean result to the output stream in the specified language/syntax.
+     * @param out
+     * @param result
+     * @param lang
+     */
+    public static void write(OutputStream out, boolean result, Lang lang) {
+        ResultSetWriterFactory f = ResultSetWriterRegistry.lookup(lang) ;
+        if ( f == null )
+            throw new RiotException("No resultSet writer for "+lang) ;
+        f.create(lang).write(out, result, null) ;
     }
     
 //    /** Write a SPARQL result set to the {@link java.io.Writer} in the speciifcied language/syntax.

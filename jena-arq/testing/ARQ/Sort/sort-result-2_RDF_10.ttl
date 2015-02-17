@@ -1,0 +1,169 @@
+@prefix :        <http://example/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+[]    rdf:type      rs:ResultSet ;
+      rs:resultVariable  "v" ;
+      rs:resultVariable  "x" ;
+      rs:solution   [ rs:binding    [ rs:value      "abc"@en ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      :y2 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      9
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "xyz"^^xsd:string ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      :x6 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      20
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      :x3 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:binding    [ rs:value      "xyz"@FR ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:index      16
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "xyz"^^xsd:integer ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      :x7 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      19
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      :z3 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:binding    [ rs:value      "1"^^xsd:decimal ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:index      5
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "xyz"@en ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      :x2 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      15
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "xyz"^^:unknown ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      :x8 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      18
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      :x4 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:binding    [ rs:value      "xyz"@fr ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:index      17
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      :y7 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:binding    [ rs:value      :abc ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:index      2
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      :x9 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:binding    [ rs:value      [ 
+                                                    ] ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:index      1
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "abc"@EN ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      :y3 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      8
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "abc" ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      :y1 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      7
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "abc"^^xsd:string ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      :y4 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      12
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      :z2 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:binding    [ rs:value      01 ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:index      4
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "xyz"@EN ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      :x5 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      14
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      1 ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      :z1 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      6
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      :xyz ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      :x10 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      3
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "abc"^^:unknown ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      :y6 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      10
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "xyz" ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      :x1 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      13
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "abc"^^xsd:integer ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      :y5 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      11
+                    ] .

@@ -52,7 +52,7 @@ public abstract class Dyadic extends CompositionBase
 	 * a deletion occurs.
 	 */
 	@Override
-    protected final ExtendedIterator<Triple> graphBaseFind( TripleMatch m )
+    protected final ExtendedIterator<Triple> graphBaseFind( Triple m )
     {
 		return SimpleEventManager.notifyingRemove( this, this._graphBaseFind( m ) );
     }
@@ -61,7 +61,7 @@ public abstract class Dyadic extends CompositionBase
 	 * The method that the overridden graphBaseFind( TripleMatch m ) calls to actually
 	 * do the work of finding.
 	 */
-	protected abstract ExtendedIterator<Triple> _graphBaseFind( TripleMatch m );
+	protected abstract ExtendedIterator<Triple> _graphBaseFind( Triple m );
 	
     @Override
     public void close()

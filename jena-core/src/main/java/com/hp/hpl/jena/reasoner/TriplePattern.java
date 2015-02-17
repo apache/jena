@@ -69,7 +69,9 @@ public class TriplePattern implements ClauseEntry {
      * Node that any filter part of the triple match will not be
      * represented within the pattern and will need to be checked
      * for separately.
+     * @deprecated Use {@link #TriplePattern(Triple)}
      */
+    @Deprecated
     public TriplePattern(TripleMatch match) {
         this.subject   = normalize(match.getMatchSubject());
         this.predicate = normalize(match.getMatchPredicate());
@@ -77,7 +79,7 @@ public class TriplePattern implements ClauseEntry {
     }
     
     /**
-     * Constructor - builds a dgenerate pattern from a simple triple.
+     * Constructor - builds a degenerate pattern from a simple triple.
      * This would be much easier if we merged Triples and TriplePatterns!
      */
     public TriplePattern(Triple match) {
@@ -111,12 +113,12 @@ public class TriplePattern implements ClauseEntry {
     }
 
     /**
-     * Return the triple pattern as a triple match
+     * Return the triple pattern as a triple match (concrete terms + Node.ANY) 
      */
-    public TripleMatch asTripleMatch() {
+    public Triple asTripleMatch() {
         return Triple.createMatch(toMatch(subject), 
-                                        toMatch(predicate), 
-                                        toMatch(object));
+                                  toMatch(predicate), 
+                                  toMatch(object));
     }
 
     /**
@@ -289,8 +291,8 @@ public class TriplePattern implements ClauseEntry {
      * Convert any null wildcards to Node_RuleVariable wildcards.
      */
     private static Node normalize(Node node) {
-        if (node == null || node == Node.ANY) return Node_RuleVariable.WILD;
-//        if (node == null) return Node.ANY;
+        if (node == null || node == Node.ANY) 
+            return Node_RuleVariable.WILD;
         return node;
     }
             

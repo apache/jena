@@ -39,10 +39,14 @@ public interface ObjectFile extends Sync, Closeable
     /** A label to identify this ObjectFile */ 
     public String getLabel() ;
     
-    /** Allocate space for a write - pass this buffer to completeWrite */ 
+    /** Allocate space for a write - pass this buffer to completeWrite .
+     * The data to be written can be smaller than that requested but
+     * the data must be in position 0 -> limit.   
+     */
     public Block allocWrite(int bytesSpace) ;
     
-    /** Announce that a write is complete (buffer must come from allocWrite) */
+    /** Announce that a write is complete (buffer must come from allocWrite)
+     */  
     public void completeWrite(Block buffer) ;
 
     /** Decide not to perform the write */

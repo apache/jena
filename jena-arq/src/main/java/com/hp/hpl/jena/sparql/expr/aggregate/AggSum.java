@@ -22,41 +22,32 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
-import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
 public class AggSum  extends AggregatorBase
 {
     // ---- SUM(expr)
     private static final NodeValue noValuesToSum = NodeValue.nvZERO ; 
-    private Expr expr ;
 
-    public AggSum(Expr expr) { this.expr = expr ; } 
+    public AggSum(Expr expr) { super("SUM", false, expr) ; } 
     @Override
-    public Aggregator copy(Expr expr) { return new AggSum(expr) ; }
-
-    @Override
-    public String toString() { return "sum("+ExprUtils.fmtSPARQL(expr)+")" ; }
-    @Override
-    public String toPrefixString() { return "(sum "+WriterExpr.asString(expr)+")" ; }
+    public Aggregator copy(ExprList exprs) { return new AggSum(exprs.get(0)) ; }
 
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccSum(expr) ;
+        return new AccSum(getExpr()) ;
     }
 
     @Override
-    public Expr getExpr() { return expr ; }
+    public Node getValueEmpty() { return NodeValue.toNode(noValuesToSum) ; } 
 
     @Override
-    public Node getValueEmpty()     { return null ; } //return NodeValue.toNode(noValuesToSum) ; } 
-
-    @Override
-    public int hashCode()   { return HC_AggSum ^ expr.hashCode() ; }
+    public int hashCode()   { return HC_AggSum ^ getExpr().hashCode() ; }
+    
     @Override
     public boolean equals(Object other)
     {

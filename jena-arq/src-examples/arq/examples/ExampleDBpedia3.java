@@ -44,21 +44,16 @@ public class ExampleDBpedia3
             "}" ;
         
         Query query = QueryFactory.create(queryString) ;
-        QueryExecution qexec = QueryExecutionFactory.create(query, ModelFactory.createDefaultModel()) ;
-
-        Map<String, Map<String,List<String>>> serviceParams = new HashMap<String, Map<String,List<String>>>() ;
-        Map<String,List<String>> params = new HashMap<String,List<String>>() ;
-        List<String> values = new ArrayList<String>() ;
-        values.add("2000") ;
-        params.put("timeout", values) ;
-        serviceParams.put(serviceURI, params) ;
-        qexec.getContext().set(ARQ.serviceParams, serviceParams) ;
-        
-        try {
+        try(QueryExecution qexec = QueryExecutionFactory.create(query, ModelFactory.createDefaultModel())) {
+            Map<String, Map<String,List<String>>> serviceParams = new HashMap<String, Map<String,List<String>>>() ;
+            Map<String,List<String>> params = new HashMap<String,List<String>>() ;
+            List<String> values = new ArrayList<String>() ;
+            values.add("2000") ;
+            params.put("timeout", values) ;
+            serviceParams.put(serviceURI, params) ;
+            qexec.getContext().set(ARQ.serviceParams, serviceParams) ;
             ResultSet rs = qexec.execSelect() ;
             ResultSetFormatter.out(System.out, rs, query) ;
-        } finally {
-            qexec.close() ;
         }
     }
 

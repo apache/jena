@@ -19,19 +19,17 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
-import com.hp.hpl.jena.sparql.util.ExprUtils ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 
 public class AggGroupConcatDistinct extends AggregatorBase
 {
-    private final Expr expr ;
     private final String separator ;
     private final String effectiveSeparator ;
 
@@ -44,61 +42,42 @@ public class AggGroupConcatDistinct extends AggregatorBase
 
     private AggGroupConcatDistinct(Expr expr, String effectiveSeparator, String separatorSeen)
     {
-        this.expr = expr ; 
+        super("GROUP_CONCAT", true, expr) ;
         this.separator = separatorSeen ;
         this.effectiveSeparator = effectiveSeparator ; 
     }
     
     @Override
-    public Aggregator copy(Expr expr) { return new AggGroupConcatDistinct(expr, effectiveSeparator, separator) ; }
+    public Aggregator copy(ExprList exprs) { return new AggGroupConcatDistinct(exprs.get(0), effectiveSeparator, separator) ; }
 
     @Override
-    public String toString()
-    {
-        String x = "GROUP_CONCAT(DISTINCT "+ExprUtils.fmtSPARQL(expr) ;
-        if ( separator != null )
-        {
-            String y = StrUtils.escapeString(separator) ;
-            x = x+"; SEPARATOR='"+y+"'" ;
-        }
-        x = x+")" ;
-        return x ; 
-    }    
+    public String toPrefixString() {
+        return AggGroupConcat.prefixGroupConcatString(super.isDistinct,  separator, getExprList()) ;
+    }
     
     @Override
-    public String toPrefixString()
-    {
-        String x = "(group_concat distinct " ;
-        
-        if ( separator != null )
-        {
-            String y = StrUtils.escapeString(separator) ;
-            x = x+"(separator '"+y+"') " ;
-        }
-        x = x+WriterExpr.asString(expr)+")" ;
-        return x ; 
+    public String asSparqlExpr(SerializationContext sCxt) {
+        return AggGroupConcat.asSparqlExpr(isDistinct, separator, exprList, sCxt) ;
     }
 
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccGroupConcatDistinct(expr, effectiveSeparator) ;
+        return new AccGroupConcatDistinct(getExpr(), effectiveSeparator) ;
     }
 
-    @Override
-    public Expr getExpr() { return expr ; }
-    
     public String getSeparator() { return separator ; }
 
     @Override
     public Node getValueEmpty()     { return null ; } 
 
     @Override
-    public int hashCode()   { return HC_AggCountVar ^ expr.hashCode() ; }
+    public int hashCode()   { return HC_AggCountVar ^ getExpr().hashCode() ; }
     
     @Override
     public boolean equals(Object other)
     {
+        if ( this == other ) return true ;
         if ( ! ( other instanceof AggGroupConcatDistinct ) )
             return false ;
         AggGroupConcatDistinct agg = (AggGroupConcatDistinct)other ;

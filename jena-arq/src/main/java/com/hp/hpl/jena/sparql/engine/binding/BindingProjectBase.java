@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 
 /** Common framework for projection; 
  * the projection policy is provided by
- * abstract method {@linkplain #accept(Var)} 
+ * abstract method {@link #accept(Var)} 
  */
 public abstract class BindingProjectBase extends BindingBase {
     private List<Var>     actualVars = null ;

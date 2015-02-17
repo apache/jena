@@ -29,9 +29,14 @@ public interface ResultSetWriter {
     public void write(OutputStream out, ResultSet resultSet, Context context) ;
     
     /**
-     * Using {@linkplain #write(OutputStream, ResultSet, Context)} is preferred. 
+     * Using {@link #write(OutputStream, ResultSet, Context)} is preferred. 
      * Write the ResultSet to the Writer
      */
     public void write(Writer out, ResultSet resultSet, Context context) ;
+    
+    /**
+     * Write a boolean result to the output stream
+     */
+    public void write(OutputStream out, boolean result, Context context);
 }
 

@@ -120,14 +120,15 @@ public class TestRDFJSON extends BaseTest
     @Test public void rdfjson_literals()
     {
         // Literals, various
-        test ("(base <http://example/> (graph ",
-             "(<s> <p> 'abc')",
-             "(<s> <p> 'abc'@en)",
-             "(<s> <p> 'abc'^^xsd:string)",
-             "(<s> <p> '1'^^xsd:integer)",
-             "(<s> <p> '1e+100'^^xsd:double)",
-             "(<s> <p> '1.05'^^xsd:decimal)",
-            "))") ;
+        test ("(base <http://example/>"
+             ," (graph "
+             ,"   (<s> <p> 'abc')"
+             ,"   (<s> <p> 'abc'@en)"
+             ,"   (<s> <p> 'abc'^^xsd:string)"
+             ,"   (<s> <p> '1'^^xsd:integer)"
+             ,"   (<s> <p> '1e+100'^^xsd:double)"
+             ,"   (<s> <p> '1.05'^^xsd:decimal)"
+             ,"))") ;
     }    
     
     @Test public void rdfjson_escapes()

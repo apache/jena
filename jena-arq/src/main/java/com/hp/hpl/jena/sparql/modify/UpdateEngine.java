@@ -37,7 +37,7 @@ public interface UpdateEngine
     public void finishRequest();
     
     /**
-     * Returns an {@linkplain UpdateSink} that accepts Update operations
+     * Returns an {@link UpdateSink} that accepts Update operations
      */
     public UpdateSink getUpdateSink();
 }

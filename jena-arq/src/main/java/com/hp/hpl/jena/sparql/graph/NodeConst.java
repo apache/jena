@@ -18,20 +18,22 @@
 
 package com.hp.hpl.jena.sparql.graph;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.vocabulary.OWL ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
+/** Some node constants */
 public class NodeConst
 {
-    public static final Node nodeTrue       = NodeFactory.createLiteral("true", null,  XSDDatatype.XSDboolean) ; 
-    public static final Node nodeFalse      = NodeFactory.createLiteral("false", null,  XSDDatatype.XSDboolean) ; 
-    public static final Node nodeZero       = NodeFactory.createLiteral("0", null,  XSDDatatype.XSDinteger) ;
-    public static final Node nodeOne        = NodeFactory.createLiteral("1", null,  XSDDatatype.XSDinteger) ;
-    public static final Node nodeTwo        = NodeFactory.createLiteral("2", null,  XSDDatatype.XSDinteger) ;
-    public static final Node nodeMinusOne   = NodeFactory.createLiteral("-1", null,  XSDDatatype.XSDinteger) ;
+    public static final Node nodeTrue       = NodeFactory.createLiteral("true", XSDDatatype.XSDboolean) ; 
+    public static final Node nodeFalse      = NodeFactory.createLiteral("false",XSDDatatype.XSDboolean) ; 
+    public static final Node nodeZero       = NodeFactory.createLiteral("0",    XSDDatatype.XSDinteger) ;
+    public static final Node nodeOne        = NodeFactory.createLiteral("1",    XSDDatatype.XSDinteger) ;
+    public static final Node nodeTwo        = NodeFactory.createLiteral("2",    XSDDatatype.XSDinteger) ;
+    public static final Node nodeMinusOne   = NodeFactory.createLiteral("-1",   XSDDatatype.XSDinteger) ;
     public static final Node emptyString    = NodeFactory.createLiteral("") ;
     
     public static final Node nodeRDFType    = RDF.Nodes.type ;
@@ -40,7 +42,7 @@ public class NodeConst
     public static final Node nodeNil        = RDF.Nodes.nil ;
     public static final Node nodeANY        = Node.ANY ;
     
-    public static final Node nodeOwlSameAs  = OWL.sameAs.asNode() ;
-    public static final Node dtRDFlangString = NodeFactory.createURI(RDF.getURI()+"langString") ;
-
+    public static final Node nodeOwlSameAs          = OWL.sameAs.asNode() ;
+    public static final Node rdfLangString          = RDF.Nodes.langString ;
+    public static final RDFDatatype dtLangString    = RDF.dtLangString ;
 }

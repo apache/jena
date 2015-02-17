@@ -2,6 +2,10 @@ ChangeLog for ARQ
 =================
 (the list covers new features and refinements.  See ASF JIRA for details of bugs fixed) 
 
+==== Jena 2.12.2
+
++ JENA-813 : Improve performance of DatasetGraphCollection for large numbes of named graphs.
+
 ==== Jena 2.12.1
 
 + JENA-768 : Add "--out" to the "riot" command to choose a 

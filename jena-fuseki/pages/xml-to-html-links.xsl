@@ -112,19 +112,56 @@ URIs as hrefs in results : Bob DuCharme & Andy Seaborne
     <xsl:value-of select="text()"/>
   </xsl:template>
 
+  <xsl:template name="replace-string">
+    <xsl:param name="text"/>
+    <xsl:param name="replace"/>
+    <xsl:param name="with"/>
+    <xsl:choose>
+      <xsl:when test="contains($text,$replace)">
+	<xsl:value-of select="substring-before($text,$replace)"/>
+	<xsl:value-of select="$with"/>
+	<xsl:call-template name="replace-string">
+	  <xsl:with-param name="text"
+			  select="substring-after($text,$replace)"/>
+	  <xsl:with-param name="replace" select="$replace"/>
+	  <xsl:with-param name="with" select="$with"/>
+	</xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select="$text"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+
   <xsl:template match="res:uri">
+    <!-- MUST be XSLT 1.0 :-( -->
+
     <!-- Roughly: SELECT ($uri AS ?subject) ?predicate ?object { $uri ?predicate ?object } -->
     <!-- XSLT 2.0
     <xsl:variable name="x"><xsl:value-of select="fn:encode-for-uri(.)"/></xsl:variable>
     -->
+
     <xsl:variable name="x"><xsl:value-of select="."/></xsl:variable>
-    <!--
-    <xsl:variable name="query">SELECT%20%28%3C<xsl:value-of select="."/>%3E%20AS%20%3Fsubject%29%20%3Fpredicate%20%3Fobject%20%7B%3C<xsl:value-of select="."/>%3E%20%3Fpredicate%20%3Fobject%20%7D</xsl:variable>
+    <xsl:variable name="q">SELECT%20%28%3C<xsl:value-of select="$x"/>%3E%20AS%20%3Fsubject%29%20%3Fpredicate%20%3Fobject%20%7B%3C<xsl:value-of select="$x"/>%3E%20%3Fpredicate%20%3Fobject%20%7D</xsl:variable>
+
+    <!-- Escape any # -->
+    <xsl:variable name="q2">
+      <xsl:call-template name="replace-string">
+	<xsl:with-param name="text" select="$q"/>
+	<xsl:with-param name="replace" select="'#'" />
+	<xsl:with-param name="with" select="'%23'"/>
+      </xsl:call-template>
+    </xsl:variable>
+
+    <!-- XSLT 2.0
+       <xsl:value-of select="fn:replace('$q','#','%25')"/>
     -->
-     <xsl:variable name="query">SELECT%20%28%3C<xsl:value-of select="$x"/>%3E%20AS%20%3Fsubject%29%20%3Fpredicate%20%3Fobject%20%7B%3C<xsl:value-of select="$x"/>%3E%20%3Fpredicate%20%3Fobject%20%7D</xsl:variable>
+
     <xsl:text>&lt;</xsl:text>
-    <a href="?query={$query}&amp;output=xml&amp;stylesheet=%2Fxml-to-html-links.xsl">
-    <xsl:value-of select="."/>
+    <a href="?query={$q2}&amp;output=xml&amp;stylesheet=%2Fxml-to-html-links.xsl">
+      <xsl:text></xsl:text>
+      <xsl:value-of select="."/>
     </a>
     <xsl:text>&gt;</xsl:text>
   </xsl:template>

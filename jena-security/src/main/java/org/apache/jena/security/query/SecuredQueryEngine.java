@@ -93,49 +93,49 @@ public class SecuredQueryEngine extends QueryEngineMain
 			this.securityEvaluator = new SecurityEvaluator() {
 
 				@Override
-				public boolean evaluate( final Action action,
+				public boolean evaluate( final Object principal, final Action action,
 						final SecNode graphIRI )
 				{
 					return true;
 				}
 
 				@Override
-				public boolean evaluate( final Action action,
+				public boolean evaluate( final Object principal, final Action action,
 						final SecNode graphIRI, final SecTriple triple )
 				{
 					return true;
 				}
 
 				@Override
-				public boolean evaluate( final Set<Action> action,
+				public boolean evaluate( final Object principal, final Set<Action> action,
 						final SecNode graphIRI )
 				{
 					return true;
 				}
 
 				@Override
-				public boolean evaluate( final Set<Action> action,
+				public boolean evaluate( final Object principal, final Set<Action> action,
 						final SecNode graphIRI, final SecTriple triple )
 				{
 					return true;
 				}
 
 				@Override
-				public boolean evaluateAny( final Set<Action> action,
+				public boolean evaluateAny( final Object principal, final Set<Action> action,
 						final SecNode graphIRI )
 				{
 					return true;
 				}
 
 				@Override
-				public boolean evaluateAny( final Set<Action> action,
+				public boolean evaluateAny( final Object principal, final Set<Action> action,
 						final SecNode graphIRI, final SecTriple triple )
 				{
 					return true;
 				}
 
 				@Override
-				public boolean evaluateUpdate( final SecNode graphIRI,
+				public boolean evaluateUpdate( final Object principal, final SecNode graphIRI,
 						final SecTriple from, final SecTriple to )
 				{
 					return true;

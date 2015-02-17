@@ -46,13 +46,13 @@ public class ResultSetWriterRegistry {
 
     private static Map<Lang, ResultSetWriterFactory> registry = new HashMap<>() ;
     
-    /** Lookup a {@linkplain Lang} to get the registered {@linkplain ResultSetReaderFactory} (or null) */
+    /** Lookup a {@link Lang} to get the registered {@link ResultSetReaderFactory} (or null) */
     public static ResultSetWriterFactory lookup(Lang lang) {
         Objects.requireNonNull(lang) ;
         return registry.get(lang) ;
     }
 
-    /** Register a {@linkplain ResultSetReaderFactory} for a {@linkplain Lang} */
+    /** Register a {@link ResultSetReaderFactory} for a {@link Lang} */
     public static void register(Lang lang, ResultSetWriterFactory factory) {
         Objects.requireNonNull(lang) ;
         Objects.requireNonNull(factory) ;
@@ -88,7 +88,11 @@ public class ResultSetWriterRegistry {
             XMLOutput xOut = new XMLOutput(null) ;
             xOut.format(out, resultSet) ;
         }
-        @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; } 
+        @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; }
+        @Override public void write(OutputStream out, boolean result, Context context) {
+            XMLOutput xOut = new XMLOutput(null);
+            xOut.format(out, result);
+        }
     } ;
 
     private static ResultSetWriter writerJSON = new ResultSetWriter() {
@@ -96,7 +100,11 @@ public class ResultSetWriterRegistry {
             JSONOutput jOut = new JSONOutput() ;
             jOut.format(out, resultSet) ; 
         }
-        @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; } 
+        @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; }
+        @Override public void write(OutputStream out, boolean result, Context context) {
+            JSONOutput jOut = new JSONOutput() ;
+            jOut.format(out, result) ; 
+        }
     } ;
     
     private static ResultSetWriter writerCSV = new ResultSetWriter() {
@@ -104,7 +112,11 @@ public class ResultSetWriterRegistry {
             CSVOutput fmt = new CSVOutput() ;
             fmt.format(out, resultSet) ;
         }
-        @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; } 
+        @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; }
+        @Override public void write(OutputStream out, boolean result, Context context) {
+            CSVOutput fmt = new CSVOutput() ;
+            fmt.format(out, result) ;
+        }
     } ;
 
     private static ResultSetWriter writerTSV = new ResultSetWriter() {
@@ -112,12 +124,17 @@ public class ResultSetWriterRegistry {
             TSVOutput fmt = new TSVOutput() ;
             fmt.format(out, resultSet) ;
         }
-        @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; } 
+        @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; }
+        @Override public void write(OutputStream out, boolean result, Context context) {
+            TSVOutput fmt = new TSVOutput() ;
+            fmt.format(out, result) ;
+        }
     } ;
 
     private static ResultSetWriter writerNo = new ResultSetWriter() {
         @Override public void write(OutputStream out, ResultSet resultSet, Context context) {}
         @Override public void write(Writer out, ResultSet resultSet, Context context)       {}
+        @Override public void write(OutputStream out, boolean result, Context context) {}
     } ;
 
     private static ResultSetWriter writerText = new ResultSetWriter() {
@@ -126,7 +143,12 @@ public class ResultSetWriterRegistry {
             TextOutput tFmt = new TextOutput(new SerializationContext((Prologue)null)) ;
             tFmt.format(out, resultSet) ; 
         }
-        @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; } 
+        @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; }
+        @Override public void write(OutputStream out, boolean result, Context context) {
+            // Prefix mapp
+            TextOutput tFmt = new TextOutput(new SerializationContext((Prologue)null)) ;
+            tFmt.format(out, result) ; 
+        }
     } ;
     
     private static class ResultSetWriterFactoryStd implements ResultSetWriterFactory {
@@ -153,8 +175,10 @@ public class ResultSetWriterRegistry {
                 @Override
                 public void write(Writer out, ResultSet resultSet, Context context) {
                     throw new NotImplemented("Writing binary data to a java.io.Writer is not possible") ;
-
                 }
+                @Override
+                public void write(OutputStream out, boolean result, Context context)
+                { throw new NotImplemented("No Thrift RDF encoding defined for boolean results"); }
             } ;
         }
     }

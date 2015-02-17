@@ -60,6 +60,9 @@ public class Location {
 
     /** Return a location for a directory on disk */
     static public Location create(String directoryName) {
+        if ( directoryName == null )
+            // Fresh, anonymous, memory area 
+            return mem() ; 
         Location loc = new Location(directoryName) ;
         return loc ;
     }
@@ -80,7 +83,7 @@ public class Location {
         location.lock = new LocationLock(location);
     }
 
-    /** @deprecated Use{@linkplain  Location#create(String)} */
+    /** @deprecated Use{@link  Location#create(String)} */
     @Deprecated
     public Location(String rootname) {
         super() ;

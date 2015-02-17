@@ -18,9 +18,11 @@
 
 package org.apache.jena.iri;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Iterator;
+import java.net.MalformedURLException ;
+import java.net.URI ;
+import java.net.URISyntaxException ;
+import java.net.URL ;
+import java.util.Iterator ;
 
 import org.apache.jena.iri.impl.AbsIRIFactoryImpl ;
 import org.apache.jena.iri.impl.Main ;
@@ -405,6 +407,14 @@ abstract public class IRI  extends AbsIRIFactoryImpl implements IRIFactoryI, IRI
      */
     abstract public URL toURL() throws MalformedURLException;
     
+    /**
+     * Converts the IRI to an ASCII string, and then to a java.net.URI.
+     * 
+     * @return a URL corresponding to this IRI.
+     * @throws URISyntaxException If IDNA conversion failed.
+     */
+    abstract public URI toURI() throws URISyntaxException ;
+
     /**
      * Resolves an IRI against this one.
      * This method is an alias for

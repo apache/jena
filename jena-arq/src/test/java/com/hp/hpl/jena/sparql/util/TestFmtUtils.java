@@ -102,7 +102,7 @@ public class TestFmtUtils
     @Test
     public void stringLiteral() throws Exception {
         Node_Literal nl = (Node_Literal)NodeFactory.createUncachedLiteral("abc", "no", new XSDDatatype("string")) ;
-        assertEquals("\"abc\"@no^^<http://www.w3.org/2001/XMLSchema#string>", FmtUtils.stringForLiteral(nl, getContext())) ;
+        assertEquals("\"abc\"@no", FmtUtils.stringForLiteral(nl, getContext())) ;
     }
 
     @Test
@@ -136,8 +136,17 @@ public class TestFmtUtils
     }
 
     @Test
-    public void anonNode() {
+    public void anonNode1() {
+        FmtUtils.resetBNodeLabels(); 
         assertEquals("_:b0", FmtUtils.stringForNode(NodeFactory.createAnon())) ;
+    }
+
+    @Test
+    public void anonNode2() {
+        FmtUtils.resetBNodeLabels(); 
+        assertEquals("_:b0", FmtUtils.stringForNode(NodeFactory.createAnon())) ;
+        assertEquals("_:b1", FmtUtils.stringForNode(NodeFactory.createAnon())) ;
+        assertEquals("_:b2", FmtUtils.stringForNode(NodeFactory.createAnon())) ;
     }
 
     @Test

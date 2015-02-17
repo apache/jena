@@ -83,7 +83,7 @@ public abstract class SpatialOperationWithCircleBase extends SpatialOperationPFB
 			log.warn("Latitude is not a literal " + list);
 			return null;
 		}
-		if (!SpatialValueUtil.isDecimal(x.getLiteral())) {
+		if (!SpatialValueUtil.isDecimal(x)) {
 			log.warn("Latitude is not a decimal " + list);
 			return null;
 		}
@@ -96,7 +96,7 @@ public abstract class SpatialOperationWithCircleBase extends SpatialOperationPFB
 			log.warn("Longitude is not a literal " + list);
 			return null;
 		}
-		if (!SpatialValueUtil.isDecimal(x.getLiteral())) {
+		if (!SpatialValueUtil.isDecimal(x)) {
 			log.warn("Longitude is not a decimal " + list);
 			return null;
 		}
@@ -110,7 +110,7 @@ public abstract class SpatialOperationWithCircleBase extends SpatialOperationPFB
 			log.warn("Radius is not a literal " + list);
 			return null;
 		}
-		if (!SpatialValueUtil.isDecimal(x.getLiteral())) {
+		if (!SpatialValueUtil.isDecimal(x)) {
 			log.warn("Radius is not a decimal " + list);
 			return null;
 		}

@@ -57,7 +57,7 @@ public class LocatorFile implements Locator
      * The working directory should be a UNIX style file name,
      * (relative or absolute), not a URI.
      * <p>
-     * For MS Window, if asked to {@linkplain #open} a file name with a drive letter,
+     * For MS Window, if asked to {@link #open} a file name with a drive letter,
      * the code assumes it is not relative to the working directory
      * of this {@code LocatorFile}.  
      */

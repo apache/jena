@@ -323,6 +323,7 @@ public class BuilderExpr
         dispatch.put(Tags.tagAvg, buildAvg) ;
         dispatch.put(Tags.tagSample, buildSample) ;
         dispatch.put(Tags.tagGroupConcat, buildGroupConcat) ;
+        dispatch.put(Tags.tagAgg,  buildCustomAggregate) ;
     }
 
     // See exprbuilder.rb
@@ -1385,6 +1386,27 @@ public class BuilderExpr
         }
     };
     
+    final protected Build buildCustomAggregate = new Build() {
+        @Override
+        public Expr make(final ItemList list)
+        {
+            ItemList x = list.cdr();    // drop "agg"
+            if ( x.size() == 0 )
+                BuilderLib.broken(list, "Missing IRI for aggregate") ;
+            
+            Item z = x.car() ;
+            if ( ! z.isNodeURI() )
+                BuilderLib.broken(list, "Not an IRI for aggregate: "+z) ;
+            x = x.cdr() ;
+            boolean distinct = startsWithDistinct(x) ;
+            if ( distinct )
+                x = x.cdr();
+            ExprList e = buildExprListUntagged(x, 0) ;
+            Aggregator agg = AggregatorFactory.createCustom(z.getNode().getURI(), e) ;
+            return new ExprAggregator(null, agg) ; 
+        }
+    } ;
+    
     final protected Build buildAggNull = new Build()
     {
         @Override
@@ -1394,7 +1416,4 @@ public class BuilderExpr
             return new ExprAggregator(null, AggregatorFactory.createAggNull()) ;
         }
     };
-    
-
-
 }

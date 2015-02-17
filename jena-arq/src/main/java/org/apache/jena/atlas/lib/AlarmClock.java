@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit ;
 /**
  * An AlarmClock is an object that will make a callback (with a value) at a
  * preset time. Simple abstraction of add/reset/cancel of a Runnable. Currently,
- * backed by {@linkplain ScheduledThreadPoolExecutor}
+ * backed by {@link ScheduledThreadPoolExecutor}
  */
 public class AlarmClock {
     private ScheduledThreadPoolExecutor timer = new ScheduledThreadPoolExecutor(1) ;

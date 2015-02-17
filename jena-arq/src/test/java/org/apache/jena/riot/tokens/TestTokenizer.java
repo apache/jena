@@ -627,43 +627,56 @@ public class TestTokenizer extends BaseTest {
         tokenizeAndTestLiteralDT("'''123'''^^<xyz>", TokenType.LONG_STRING1, "123", TokenType.IRI, "xyz", null) ;
     }
 
+//    @Test(expected = RiotParseException.class)
+//    public void tokenLiteralDT_bad_1() {
+//        Tokenizer tokenizer = tokenizer("'123'^^ <x> ") ;
+//        assertTrue(tokenizer.hasNext()) ;
+//        Token token = tokenizer.next() ;
+//        assertNotNull(token) ;
+//    }
+
+//    @Test(expected = RiotParseException.class)
+//    public void tokenLiteralDT_bad_2() {
+//        Tokenizer tokenizer = tokenizer("'123' ^^<x> ") ;
+//        assertTrue(tokenizer.hasNext()) ;
+//        Token token = tokenizer.next() ;
+//        assertNotNull(token) ; // 123
+//        assertEquals(TokenType.STRING1, token.getType()) ;
+//        assertEquals("123", token.getImage()) ;
+//
+//        assertTrue(tokenizer.hasNext()) ;
+//        Token token2 = tokenizer.next() ;
+//        assertNotNull(token2) ; // ^^
+//    }
+
+    public void tokenLiteralDT_4() {
+        tokenizeAndTestLiteralDT("'123'  ^^<xyz>", TokenType.STRING1, "123", TokenType.IRI, "xyz", null) ;
+    }
+    
+    public void tokenLiteralDT_5() {
+        tokenizeAndTestLiteralDT("'123'^^  <xyz>", TokenType.STRING1, "123", TokenType.IRI, "xyz", null) ;
+    }
+
+    public void tokenLiteralDT_6() {
+        tokenizeAndTestLiteralDT("'123'  ^^  <xyz>", TokenType.STRING1, "123", TokenType.IRI, "xyz", null) ;
+    }
+
     @Test(expected = RiotParseException.class)
     public void tokenLiteralDT_bad_1() {
-        Tokenizer tokenizer = tokenizer("'123'^^ <x> ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-    }
-
-    @Test(expected = RiotParseException.class)
-    public void tokenLiteralDT_bad_2() {
-        Tokenizer tokenizer = tokenizer("'123' ^^<x> ") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ; // 123
-        assertEquals(TokenType.STRING1, token.getType()) ;
-        assertEquals("123", token.getImage()) ;
-
-        assertTrue(tokenizer.hasNext()) ;
-        Token token2 = tokenizer.next() ;
-        assertNotNull(token2) ; // ^^
-    }
-
-    @Test(expected = RiotParseException.class)
-    public void tokenLiteralDT_bad_3() {
+        // Can't split ^^
         Tokenizer tokenizer = tokenizer("'123'^ ^<x> ") ;
         assertTrue(tokenizer.hasNext()) ;
         Token token = tokenizer.next() ;
         assertNotNull(token) ;
     }
 
-    @Test(expected = RiotParseException.class)
-    public void tokenLiteralDT_bad_4() {
-        Tokenizer tokenizer = tokenizer("'123'^^ x:y") ;
-        assertTrue(tokenizer.hasNext()) ;
-        Token token = tokenizer.next() ;
-        assertNotNull(token) ;
-    }
+//    @Test(expected = RiotParseException.class)
+//    public void tokenLiteralDT_bad_4() {
+//        Tokenizer tokenizer = tokenizer("'123'^^ x:y") ;
+//        assertTrue(tokenizer.hasNext()) ;
+//        Token token = tokenizer.next() ;
+//        assertNotNull(token) ;
+//    }
 
     @Test
     public void tokenLiteralLang_0() {
@@ -677,8 +690,8 @@ public class TestTokenizer extends BaseTest {
 
     @Test
     public void tokenLiteralLang_2() {
-        Tokenizer tokenizer = tokenizeAndTestFirst("'' @lang ", TokenType.STRING1, "") ;
-        testNextToken(tokenizer, TokenType.DIRECTIVE, "lang") ;
+        Tokenizer tokenizer = tokenizeAndTestFirst("'' @lang ", TokenType.LITERAL_LANG, "", "lang") ;
+        //testNextToken(tokenizer, TokenType.LITERAL_LANG, "lang") ;
     }
 
     @Test(expected = RiotParseException.class)
@@ -706,9 +719,19 @@ public class TestTokenizer extends BaseTest {
         tokenizeAndTestExact("'X'@a-b9z-c99 ", TokenType.LITERAL_LANG, "X", "a-b9z-c99") ;
     }
 
-    @Test(expected = RiotParseException.class)
+    @Test
     public void tokenLiteralLang_8() {
+        tokenizeAndTestExact("'X'  @a", TokenType.LITERAL_LANG, "X", "a") ;
+    }
+
+    @Test(expected = RiotParseException.class)
+    public void tokenLiteralLang_bad_1() {
         tokenFirst("''@9-b") ;
+    }
+
+    @Test(expected = RiotParseException.class)
+    public void tokenLiteralLang_bad_2() {
+        tokenFirst("''@  tag") ;
     }
 
     @Test
@@ -720,6 +743,12 @@ public class TestTokenizer extends BaseTest {
     public void directive_2() {
         tokenizeAndTestExact("@base", TokenType.DIRECTIVE, "base") ;
     }
+
+    @Test
+    public void directive_3() {
+        tokenizeAndTestExact("@whatever", TokenType.DIRECTIVE, "whatever") ;
+    }
+
 
     @Test
     public void tokenComment_01() {

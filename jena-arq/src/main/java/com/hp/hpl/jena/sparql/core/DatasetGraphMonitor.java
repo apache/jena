@@ -31,7 +31,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /** Connect a DatasetGraph to a DatasetChanges monitor.
  *  Any add or delete to the DatasetGraph is notified to the
- *  monitoring object with a {@linkplain QuadAction} to indicate
+ *  monitoring object with a {@link QuadAction} to indicate
  *  the change made.   
  */
 

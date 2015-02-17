@@ -28,6 +28,7 @@ import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
 import com.hp.hpl.jena.sdb.store.TableDesc;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoaderBase implements TupleLoaderBasics {
 	
@@ -433,7 +434,7 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
             {
                 lang = node.getLiteralLanguage();
                 datatype = node.getLiteralDatatypeURI();
-                if (datatype == null)
+                if ( NodeUtils.isSimpleString(node) || NodeUtils.isLangString(node) )
                     datatype = "";
             }
 

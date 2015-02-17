@@ -25,10 +25,9 @@ import com.hp.hpl.jena.assembler.assemblers.ModelAssembler;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.sparql.util.MappingRegistry;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -42,52 +41,97 @@ import java.lang.reflect.Modifier;
  * <>; ja:loadClass	"org.apache.jena.security.SecuredAssembler" .
  * 
  * sec:Model rdfs:subClassOf ja:NamedModel .
+ * 
+ * sec:evaluator rdfs:domain sec:Model ;
+ *               rdfs:range sec:Evaluator .
  * </pre></code>
  * 
  * The model definition should include something like.
  * 
  * <code><pre>
- * [] a ja:Model ;
- *    sec:baseModel jena_model ;
- *    ja:modelName "modelName";
- *    sec:evaluatorFactory "javaclass";
+ * my:secModel a sec:Model ;
+ *    sec:baseModel my:baseModel ;
+ *    ja:modelName "http://example.com/securedModel" ;
+ *    sec:evaluatorFactory "org.apache.jena.security.MockSecurityEvaluator" ;
  *    .
  * </pre></code>
  * 
  * Terms used in above example:
+ * 
  * <dl>
- * <dt>
- * jena_model</dt><dd>Another model defined in the assembler file.
- * </dd><dt>
- * "modelName"</dt><dd>The name of the model as identified in the security manager
- * </dd><dt>
- * "javaclass"</dt><dd>The name of a java class that implements a Evaluator Factory.  The Factory must have 
- * static method <code>getInstance()</code> that returns a SecurityEvaluator.
- * </dd>
+ * <dt>my:secModel</dt>
+ * <dd>The secured model as referenced in the assembler file.</dd>
+ * 
+ * <dt>sec:Model</dt>
+ * <dd>Identifes my:secModel as a secured model</dd>
+ * 
+ * <dt>sec:baseModel</dt>
+ * <dd>Identifies my:baseModel as the base model we are applying security to</dd>
+ * 
+ * <dt>my:baseModel</dt>
+ * <dd>a ja:Model (or subclass) defined elsewhere in the assembler file</dd>
+ *  
+ * <dt>ja:modelName</dt>
+ * <dd>The name of the graph as it will be addressed in the security environment 
+ * (see ja:NamedModel examples from Jena)</dd>
+ * 
+ * <dt>sec:evaluatorFactory</dt>
+ * <dd>Identifies "org.apache.jena.security.MockSecurityEvaluator" as the java class 
+ * that implements an Evaluator Factory.  The Factory must have 
+ * static method <code>getInstance()</code> that returns a SecurityEvaluator.</dd>
  * </dl>
+ * 
+ * or if using an evaluator assembler
+ * 
+ * <code><pre>
+ * my:secModel a sec:Model ;
+ *    sec:baseModel my:baseModel ;
+ *    ja:modelName "http://example.com/securedModel" ;
+ *    sec:evaluatorImpl ex:myEvaluator;
+ *    .
+ *    
+ * ex:myEvaluator a sec:Evaluator ;
+ *    ex:arg1 "argument 1 for my evaluator constructor" ;
+ *    ex:arg2 "argument 2 for my evaluator constructor" ;
+ *    .
+ *    
+ * </pre></code>
+ * 
+ * Terms used in above example:
+ * 
+ * <dl>
+ * <dt>my:secModel</dt>
+ * <dd>The secured model as referenced in the assembler file.</dd>
+ * 
+ * <dt>sec:Model</dt>
+ * <dd>Identifes my:secModel as a secured model</dd>
+ * 
+ * <dt>sec:baseModel</dt>
+ * <dd>Identifies my:baseModel as the base model we are applying security to</dd>
+ * 
+ * <dt>my:baseModel</dt>
+ * <dd>a ja:Model (or subclass) defined elsewhere in the assembler file</dd>
+ *  
+ * <dt>ja:modelName</dt>
+ * <dd>The name of the graph as it will be addressed in the security environment 
+ * (see ja:NamedModel examples from Jena)</dd>
+ * 
+ * <dt>sec:evaluatorImpl</dt>
+ * <dd>Identifies ex:myEvaluator as a SecurityEvaluator defined elsewhere in the assembler file.
+ * It must subclass as a sec:Evaluator.</dd>
+ * </dd>
+ * 
+ * <dt>ex:arg1 and ex:arg2</dt>
+ * <dd>Arguments as defined by the user defined security evaluator assembler.</dd>
+ * </dl>
+
  * </p>
  * 
  */
-public class SecuredAssembler extends ModelAssembler {
+public class SecuredAssembler extends ModelAssembler implements AssemblerConstants {
 	private static boolean initialized;
 	
-	public static final String URI = "http://apache.org/jena/security/Assembler#";
-	/**
-	 * Property named URI+"evaluatorFactory"
-	 */
-	public static final Property EVALUATOR_FACTORY =  
-			ResourceFactory.createProperty( URI + "evaluatorFactory" );
-	/**
-	 * Property named URI+"Model"
-	 */
-	public static final Property SECURED_MODEL = ResourceFactory.createProperty( URI + "Model" ); 
-	/**
-	 * Property named URI+"baseModel"
-	 */	
-    public static final Property BASE_MODEL = ResourceFactory.createProperty( URI + "baseModel" ); 
-	
     // message formats
-    private static final String NO_X_PROVIDED = "No %s provided for %s";
     private static final String ERROR_FINDING_FACTORY = "Error finding factory class %s:  %s";
     
 	static { init() ; }
@@ -115,6 +159,7 @@ public class SecuredAssembler extends ModelAssembler {
     	if ( group == null )
             group = Assembler.general ;
         group.implementWith( SECURED_MODEL, new SecuredAssembler()) ;  
+        group.implementWith( EVALUATOR_ASSEMBLER, new SecurityEvaluatorAssembler());
     }
 	
 	@Override
@@ -125,7 +170,7 @@ public class SecuredAssembler extends ModelAssembler {
 		{
 			throw new AssemblerException( root, String.format( NO_X_PROVIDED, BASE_MODEL, root ));
 		}
-		Model baseModel = a.openModel(rootModel, mode); 
+		Model baseModel = a.openModel(rootModel, Mode.ANY); 
 	
 		Literal modelName = getUniqueLiteral( root, JA.modelName );
 		if (modelName == null)
@@ -134,11 +179,38 @@ public class SecuredAssembler extends ModelAssembler {
 		}
 		
 		Literal factoryName = getUniqueLiteral( root, EVALUATOR_FACTORY );
-		if (factoryName == null)
+		Resource evaluatorImpl = getUniqueResource( root, EVALUATOR_IMPL );
+		if (factoryName == null && evaluatorImpl == null)
 		{
-			throw new AssemblerException( root, String.format( NO_X_PROVIDED, EVALUATOR_FACTORY, root ));
+			throw new AssemblerException( root, 
+					String.format( "Either a %s or a %s must be provided for %s" , 
+							EVALUATOR_FACTORY, EVALUATOR_IMPL, root ));
+		}
+		if (factoryName != null && evaluatorImpl != null)
+		{
+			throw new AssemblerException( root, 
+					String.format( "May not specify both a %s and a %s for %s" , 
+							EVALUATOR_FACTORY, EVALUATOR_IMPL, root ));
 		}
 		SecurityEvaluator securityEvaluator = null;
+		if (factoryName != null)
+		{
+			securityEvaluator = executeEvaluatorFactory( root, factoryName );
+		}
+		if (evaluatorImpl != null)
+		{
+			securityEvaluator = getEvaluatorImpl( a, evaluatorImpl );
+		}
+		return Factory.getInstance(securityEvaluator, modelName.asLiteral().getString(), baseModel);
+			
+	}
+
+	@Override
+	protected Model openEmptyModel(Assembler a, Resource root, Mode mode) {
+		return open(a, root, mode);
+	}
+
+	private SecurityEvaluator executeEvaluatorFactory(Resource root, Literal factoryName ) {
 		try
 		{
 			Class<?> factoryClass = Class.forName( factoryName.getString() );
@@ -151,7 +223,7 @@ public class SecuredAssembler extends ModelAssembler {
 			{
 				throw new AssemblerException( root, String.format( "%s (found at %s for %s) getInstance() must be a static method", factoryName, EVALUATOR_FACTORY, root ));			
 			}
-			securityEvaluator = (SecurityEvaluator) method.invoke( null );
+			return (SecurityEvaluator) method.invoke( null );
 		}
 		catch (SecurityException e)
 		{
@@ -177,15 +249,16 @@ public class SecuredAssembler extends ModelAssembler {
 		{
 			throw new AssemblerException( root, String.format( ERROR_FINDING_FACTORY, factoryName, e.getMessage() ), e);			
 		}
-
-		return Factory.getInstance(securityEvaluator, modelName.asLiteral().getString(), baseModel);
-			
 	}
-
-	@Override
-	protected Model openEmptyModel(Assembler a, Resource root, Mode mode) {
-		return open(a, root, mode);
+	
+	private SecurityEvaluator getEvaluatorImpl(Assembler a, Resource evaluatorImpl ) {
+		Object obj = a.open(a, evaluatorImpl, Mode.ANY);
+		if (obj instanceof SecurityEvaluator)
+		{
+			return (SecurityEvaluator) obj;
+		}
+		throw new AssemblerException( evaluatorImpl, String.format( 
+				"%s does not specify a SecurityEvaluator instance",  evaluatorImpl));
 	}
-
 
 }

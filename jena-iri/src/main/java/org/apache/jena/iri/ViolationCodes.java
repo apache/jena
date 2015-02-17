@@ -5177,8 +5177,8 @@ This class is not part of the API.
             new ViolationCodeInfo(
                 COMPATIBILITY_CHARACTER,
                 "COMPATIBILITY_CHARACTER",
-                "TODO",
-                "<p>TODO</p>",
+                "Bad character",
+                "<p>Bad character</p>",
                 0,
                 new InSpec[]{
                   

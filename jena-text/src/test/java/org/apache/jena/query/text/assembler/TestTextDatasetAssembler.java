@@ -68,11 +68,11 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
 				model.createResource(TESTBASE + "spec1")
 				     .addProperty(RDF.type, TextVocab.textDataset)
 				     .addProperty(TextVocab.pDataset, SIMPLE_DATASET_SPEC)
-				     .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC);
+				     .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC3);
 		noDatasetPropertySpec =
 				model.createResource(TESTBASE + "noDatasetPropertySpec")
 				     .addProperty(RDF.type, TextVocab.textDataset)
-				     .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC);
+				     .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC4);
 		noIndexPropertySpec =
 				model.createResource(TESTBASE + "noIndexPropertySpec")
 				     .addProperty(RDF.type, TextVocab.textDataset)

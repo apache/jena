@@ -530,18 +530,6 @@ public class XSDFuncOp
     private static NodeValue calcReturn(String result, Node arg) {
         Node n2 = NodeFactory.createLiteral(result, arg.getLiteralLanguage(), arg.getLiteralDatatype()) ; 
         return NodeValue.makeNode(n2) ;
-        
-//        if ( arg.getLiteralDatatype() != null )
-//        {
-//            if ( arg.getLiteralDatatype() != XSDDatatype.XSDstring )
-//                throw new ARQInternalErrorException("Excepted only xsd:string: "+arg) ; 
-//            // Must be xsd:string
-//            return NodeValue.makeNode(result, XSDDatatype.XSDstring ) ;
-//        }
-//        String lang = arg.getLiteralLanguage() ;
-//        if ( lang == null ) lang = "" ;
-//        if ( lang.equals("") ) return NodeValue.makeString(result) ;
-//        return NodeValue.makeNode(result, lang, (String)null) ;
     }
     
     public static NodeValue strBefore(NodeValue string, NodeValue match) {
@@ -981,9 +969,6 @@ public class XSDFuncOp
 
     private static int compareDuration(Duration duration1, Duration duration2) {
         // Returns codes are -1/0/1 but also 2 for "Indeterminate"
-        // Not fully sure when Indeterminate is returned with regards to a
-        // duration
-
         int x = duration1.compare(duration2) ;
         return convertComparison(x) ;
     }
@@ -1305,15 +1290,15 @@ public class XSDFuncOp
         if ( "".equals(dts.timezone) )
             return null ;
         if ( "Z".equals(dts.timezone) ) {
-            Node n = NodeFactory.createLiteral("PT0S", null, NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
+            Node n = NodeFactory.createLiteral("PT0S", NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
             return NodeValue.makeNode(n) ;
         }
         if ( "+00:00".equals(dts.timezone) ) {
-            Node n = NodeFactory.createLiteral("PT0S", null, NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
+            Node n = NodeFactory.createLiteral("PT0S", NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
             return NodeValue.makeNode(n) ;
         }
         if ( "-00:00".equals(dts.timezone) ) {
-            Node n = NodeFactory.createLiteral("-PT0S", null, NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
+            Node n = NodeFactory.createLiteral("-PT0S", NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
             return NodeValue.makeNode(n) ;
         }
 

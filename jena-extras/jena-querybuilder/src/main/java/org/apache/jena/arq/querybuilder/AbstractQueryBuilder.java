@@ -101,7 +101,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 			}
 
 		}
-		return NodeFactory.createLiteral(LiteralLabelFactory.create(o));
+		return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(o));
 	}
 
 	/**

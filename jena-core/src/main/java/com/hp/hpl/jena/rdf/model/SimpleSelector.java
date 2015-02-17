@@ -207,7 +207,7 @@ public class SimpleSelector extends Object implements Selector {
     }
     
     private Literal literal( String s, String lang )
-        { return new LiteralImpl( NodeFactory.createLiteral( s, lang, false ), (ModelCom) null ); }
+        { return new LiteralImpl( NodeFactory.createLiteral( s, lang ), (ModelCom) null ); }
     
     /** Create a selector.  A model <b>may</b> restrict statements that are tested using
      * the <CODE>selects</CODE> method to those whose subject matches the

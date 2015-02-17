@@ -61,7 +61,7 @@ public class Now extends BaseBuiltin {
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
         BindingEnvironment env = context.getEnv();
-        Node now = NodeFactory.createLiteral( LiteralLabelFactory.create(new XSDDateTime(Calendar.getInstance())) );
+        Node now = NodeFactory.createLiteral( LiteralLabelFactory.createTypedLiteral(new XSDDateTime(Calendar.getInstance())) );
         return env.bind(args[0], now);
     }
 }

@@ -28,7 +28,7 @@ package com.hp.hpl.jena.sparql.core;
  * <p>
  * A {@code QuadAction} can be an {@code ADD} or {@code DELETE}, indicating a change
  * to the {@code DatasetGraph} actually occured (this assumes checking is done - 
- * {@linkplain DatasetChanges} generators may not check - see implementation for details).
+ * {@link DatasetChanges} generators may not check - see implementation for details).
  * Otherwise a {@code NO_ADD}, {@code NO_DELETE} {@code QuadAction} is used.
  */ 
 

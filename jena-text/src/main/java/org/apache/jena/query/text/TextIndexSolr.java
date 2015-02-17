@@ -18,7 +18,11 @@
 
 package org.apache.jena.query.text;
 
-import java.util.* ;
+import java.io.IOException ;
+import java.util.ArrayList ;
+import java.util.HashMap ;
+import java.util.List ;
+import java.util.Map ;
 import java.util.Map.Entry ;
 
 import org.apache.solr.client.solrj.SolrQuery ;
@@ -39,10 +43,10 @@ import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 public class TextIndexSolr implements TextIndex
 {
-    private static Logger log = LoggerFactory.getLogger(TextIndexSolr.class) ;
+    private static final Logger log = LoggerFactory.getLogger(TextIndexSolr.class) ;
     private final SolrServer solrServer ;
-    private EntityDefinition docDef ;
-    private static int MAX_N    = 10000 ;
+    private final EntityDefinition docDef ;
+    private static final int MAX_N    = 10000 ;
 
     public TextIndexSolr(SolrServer server, EntityDefinition def)
     {
@@ -51,21 +55,32 @@ public class TextIndexSolr implements TextIndex
     }
     
     @Override
-    public void startIndexing()
-    {}
-
+    public void prepareCommit() { }
+    
     @Override
-    public void finishIndexing()
-    {
-        try { solrServer.commit() ; }
-        catch (Exception ex) { exception(ex) ; }
+    public void commit() {
+        try {
+            solrServer.commit();
+        }
+        catch (SolrServerException e) {
+            throw new TextIndexException(e);
+        }
+        catch (IOException e) {
+            throw new TextIndexException(e);
+        }
     }
-
+    
     @Override
-    public void abortIndexing()
-    {
-        try { solrServer.rollback() ; }
-        catch (Exception ex) { exception(ex) ; }
+    public void rollback() {
+        try {
+            solrServer.rollback();
+        }
+        catch (SolrServerException e) {
+            throw new TextIndexException(e);
+        }
+        catch (IOException e) {
+            throw new TextIndexException(e);
+        }
     }
     
     @Override

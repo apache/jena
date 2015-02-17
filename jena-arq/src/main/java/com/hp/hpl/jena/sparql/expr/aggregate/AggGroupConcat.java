@@ -18,22 +18,24 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
 public class AggGroupConcat extends AggregatorBase
 {
     static final String SeparatorDefault = " " ;
-    private final Expr expr ;
     private final String separator ;
     private final String effectiveSeparator ;
 
@@ -46,61 +48,85 @@ public class AggGroupConcat extends AggregatorBase
     
     private AggGroupConcat(Expr expr, String effectiveSeparator, String separatorSeen)
     {
-        this.expr = expr ; 
+        super("GROUP_CONCAT", false, expr) ;
         this.separator = separatorSeen ;
         this.effectiveSeparator = effectiveSeparator ; 
     }
     
     @Override
-    public Aggregator copy(Expr expr) { return new AggGroupConcat(expr, effectiveSeparator, separator) ; }
+    public Aggregator copy(ExprList expr) { return new AggGroupConcat(expr.get(0), effectiveSeparator, separator) ; }
 
     @Override
-    public String toString()
-    {
-        String x = "GROUP_CONCAT("+ExprUtils.fmtSPARQL(expr) ;
-        if ( separator != null )
-        {
-            String y = StrUtils.escapeString(separator) ;
-            x = x+"; SEPARATOR='"+y+"'" ;
-        }
-        x = x+")" ;
-        return x ; 
-    }    
+    public String toPrefixString() {
+        return prefixGroupConcatString(super.isDistinct,  separator, getExprList()) ;
+    }
     
     @Override
-    public String toPrefixString()
-    {
-        String x = "(group_concat " ;
+    public String asSparqlExpr(SerializationContext sCxt) {
+        return asSparqlExpr(isDistinct, separator, exprList, sCxt) ;
+    }
+    
+    protected static String asSparqlExpr(boolean isDistinct, String separator, ExprList exprs, SerializationContext sCxt) {
+        IndentedLineBuffer x = new IndentedLineBuffer() ;
+        x.append("GROUP_CONCAT") ;
+        if ( isDistinct )
+            x.append(" DISTINCT") ;
+        x.append(" (") ;
+        ExprUtils.fmtSPARQL(x, exprs, sCxt) ;
+        if ( separator != null ) {
+            x.append(" ; separator=") ;
+            String y = StrUtils.escapeString(separator) ;
+            x.append("'") ;
+            x.append(y) ;
+            x.append("'") ;
+        }
+            
+        x.append(")") ;
         
+        return x.asString() ;
+    }
+    
+    protected static String prefixGroupConcatString(boolean isDistinct, String separator, ExprList exprs) { 
+        IndentedLineBuffer x = new IndentedLineBuffer() ;
+        x.append("(") ;
+        x.append("group_concat") ;
+        if ( isDistinct )
+            x.append(" distinct") ;
         if ( separator != null )
         {
             String y = StrUtils.escapeString(separator) ;
-            x = x+"(separator '"+y+"') " ;
+            x.append("(separator '") ;
+            x.append(y) ;
+            x.append("')") ;
         }
-        x = x+WriterExpr.asString(expr)+")" ;
-        return x ; 
+        x.incIndent(); 
+        for ( Expr e : exprs ) {
+            x.append(" ");
+            WriterExpr.output(x, e, null) ;
+        }
+        x.decIndent();
+        x.append(")") ;
+        return x.asString() ;
     }
-
+    
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccGroupConcat(expr, effectiveSeparator) ;
+        return new AccGroupConcat(getExpr(), effectiveSeparator) ;
     }
 
-    @Override
-    public Expr getExpr() { return expr ; }
-    
     public String getSeparator() { return separator ; }
 
     @Override
     public Node getValueEmpty() { return NodeConst.emptyString ; } 
     
     @Override
-    public int hashCode()   { return HC_AggCountVar ^ expr.hashCode() ; }
+    public int hashCode()   { return HC_AggCountVar ^ exprList.hashCode() ; }
     
     @Override
     public boolean equals(Object other)
     {
+        if ( this == other ) return true ;
         if ( ! ( other instanceof AggGroupConcat ) )
             return false ;
         AggGroupConcat agg = (AggGroupConcat)other ;

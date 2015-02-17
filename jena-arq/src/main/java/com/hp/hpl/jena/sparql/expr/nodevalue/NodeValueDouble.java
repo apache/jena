@@ -50,7 +50,7 @@ public class NodeValueDouble extends NodeValue
 
     @Override
     protected Node makeNode()
-    { return NodeFactory.createLiteral(Utils.stringForm(value), null, XSDDatatype.XSDdouble) ; }
+    { return NodeFactory.createLiteral(Utils.stringForm(value), XSDDatatype.XSDdouble) ; }
     
     @Override
     public String asString() { return toString() ; }

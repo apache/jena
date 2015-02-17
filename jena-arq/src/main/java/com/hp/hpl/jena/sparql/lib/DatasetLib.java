@@ -39,7 +39,7 @@ public class DatasetLib
     
     /**
      * Return true if the datasets are isomorphic - same names for graphs, graphs isomorphic.
-     * @deprecated Use {@linkplain IsoMatcher#isomorphic(DatasetGraph, DatasetGraph)}
+     * @deprecated Use {@link IsoMatcher#isomorphic(DatasetGraph, DatasetGraph)}
      */
     @Deprecated
     public static boolean isomorphic(Dataset dataset1, Dataset dataset2)
@@ -49,7 +49,7 @@ public class DatasetLib
     
     /**
      * Return true if the datasets are isomorphic - same names for graphs, graphs isomorphic. 
-     * @deprecated Use {@linkplain IsoMatcher#isomorphic(DatasetGraph, DatasetGraph)}
+     * @deprecated Use {@link IsoMatcher#isomorphic(DatasetGraph, DatasetGraph)}
      */
     @Deprecated
     public static boolean isomorphic(DatasetGraph dataset1, DatasetGraph dataset2)
@@ -59,7 +59,7 @@ public class DatasetLib
     
     // A DatasetGraph that creates memory graphs on mention 
     /** 
-     * @deprecated Use {@linkplain DatasetGraphFactory#createMem()}
+     * @deprecated Use {@link DatasetGraphFactory#createMem()}
      */
     @Deprecated
     public static DatasetGraph createDatasetGraphMem()

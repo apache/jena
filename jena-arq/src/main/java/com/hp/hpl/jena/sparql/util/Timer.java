@@ -16,22 +16,19 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.util;
+package com.hp.hpl.jena.sparql.util ;
 
 import com.hp.hpl.jena.sparql.ARQException ;
 
+public class Timer {
 
-public class Timer
-{
+    protected long    timeFinish = -1 ;
+    protected boolean inTimer    = false ;
+    protected long    timeStart  = 0 ;
 
-    protected long timeFinish = -1 ;
-    protected boolean inTimer = false ;
-    protected long timeStart  = 0 ;
+    public Timer() {}
 
-    public Timer() { }
-
-    public void startTimer()
-    { 
+    public void startTimer() {
         if ( inTimer )
             throw new ARQException("Already in timer") ;
 
@@ -41,43 +38,34 @@ public class Timer
     }
 
     /** Return time in millisecods */
-    public long endTimer()
-    { 
-        if ( ! inTimer )
+    public long endTimer() {
+        if ( !inTimer )
             throw new ARQException("Not in timer") ;
         timeFinish = System.currentTimeMillis() ;
         inTimer = false ;
         return getTimeInterval() ;
     }
 
-    public long readTimer() 
-    {
-        if ( ! inTimer )
+    public long readTimer() {
+        if ( !inTimer )
             throw new ARQException("Not in timer") ;
-        return System.currentTimeMillis()-timeStart  ;
+        return System.currentTimeMillis() - timeStart ;
     }
 
-    public long getTimeInterval()
-    {
+    public long getTimeInterval() {
         if ( inTimer )
             throw new ARQException("Still timing") ;
         if ( timeFinish == -1 )
             throw new ARQException("No valid interval") ;
 
-        return  timeFinish-timeStart ;
+        return timeFinish - timeStart ;
     }
 
-    static public String timeStr(long timeInterval)
-    {
-//        DecimalFormat f = new DecimalFormat("#0.###") ;
-//        String s = f.format(timeInterval/1000.0) ;
-//        return s ;
-        //Java5
-        return String.format("%.3f", timeInterval/1000.0) ;
+    static public String timeStr(long timeInterval) {
+        return String.format("%.3f", timeInterval / 1000.0) ;
     }
 
-    protected String timeStr(long timePoint, long startTimePoint)
-    {
-        return timeStr(timePoint-startTimePoint) ;
+    protected String timeStr(long timePoint, long startTimePoint) {
+        return timeStr(timePoint - startTimePoint) ;
     }
 }

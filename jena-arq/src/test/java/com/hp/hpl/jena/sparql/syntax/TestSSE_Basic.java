@@ -35,10 +35,10 @@ public class TestSSE_Basic extends TestCase
 {
     // Tests not requiring URI resolution or prefix name handling.
     
-    static Node int1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("1", null, XSDDatatype.XSDinteger) ;
-    static Node int2 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("2", null, XSDDatatype.XSDinteger) ;
-    static Node int3 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("3", null, XSDDatatype.XSDinteger) ;
-    static Node strLangEN = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en", null) ;
+    static Node int1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("1", XSDDatatype.XSDinteger) ;
+    static Node int2 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("2", XSDDatatype.XSDinteger) ;
+    static Node int3 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("3", XSDDatatype.XSDinteger) ;
+    static Node strLangEN = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en") ;
 
     static Node typeLit1 = NodeFactoryExtra.createLiteralNode("123", null, "http://example/type") ;
     

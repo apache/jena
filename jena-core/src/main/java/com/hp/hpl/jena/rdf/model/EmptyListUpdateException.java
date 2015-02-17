@@ -35,7 +35,7 @@ import com.hp.hpl.jena.shared.JenaException;
  * from <code>rdf:nil</code> to a new bNode, and in Jena the URI of a node is
  * invariant.  To avoid this operation, when extending an empty list use operations
  * that return the updated list (such as {@link RDFList#cons}, or {@link RDFList#with},
- * or check first to see if the list {@linkplain RDFList#isEmpty is empty}, and replace
+ * or check first to see if the list {@link RDFList#isEmpty is empty}, and replace
  * it with a non-null list.
  * </p>
  */

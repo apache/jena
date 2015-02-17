@@ -236,13 +236,16 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpAssign opAssign )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpAssign"); }
 		addOp(OpAssign.assign(rewriteOp1(opAssign), opAssign.getVarExprList()));
 	}
 
 	@Override
 	public void visit( final OpBGP opBGP )
 	{
-		if (!securityEvaluator.evaluate(Action.Read, graphIRI))
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpBGP"); }
+		Object principal = securityEvaluator.getPrincipal();
+		if (!securityEvaluator.evaluate(principal, Action.Read, graphIRI))
 		{
 			if (silentFail)
 			{
@@ -255,7 +258,7 @@ public class OpRewriter implements OpVisitor
 		}
 
 		// if the user can read any triple just add the opBGP
-		if (securityEvaluator.evaluate(Action.Read, graphIRI, SecTriple.ANY))
+		if (securityEvaluator.evaluate(principal, Action.Read, graphIRI, SecTriple.ANY))
 		{
 			addOp(opBGP);
 		}
@@ -285,6 +288,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpConditional opCondition )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpConditional"); }
 		final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
 		addOp(new OpConditional(rewriteOp2(opCondition, rewriter),
 				rewriter.getResult()));
@@ -296,6 +300,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpDatasetNames dsNames )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpDatasetName"); }
 		addOp(dsNames);
 	}
 
@@ -305,6 +310,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpDiff opDiff )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpDiff"); }
 		final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
 		addOp(OpDiff.create(rewriteOp2(opDiff, rewriter), rewriter.getResult()));
 	}
@@ -315,6 +321,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpDisjunction opDisjunction )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpDisjunction"); }
 		addOp(rewriteOpN(opDisjunction, OpDisjunction.create()));
 	}
 
@@ -324,6 +331,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpDistinct opDistinct )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpDistinct"); }
 		addOp(new OpDistinct(rewriteOp1(opDistinct)));
 	}
 
@@ -333,6 +341,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpExt opExt )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpExt"); }
 		addOp(opExt);
 	}
 
@@ -342,6 +351,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpExtend opExtend )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpExtend"); }
 		addOp(OpExtend.extend(rewriteOp1(opExtend), opExtend.getVarExprList()));
 	}
 
@@ -351,6 +361,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpFilter opFilter )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpFilter"); }
 		addOp(OpFilter.filter(opFilter.getExprs(), rewriteOp1(opFilter)));
 	}
 
@@ -360,6 +371,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpGraph opGraph )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpGraph"); }
 		final OpRewriter rewriter = new OpRewriter(securityEvaluator,
 				SecuredItemImpl.convert(opGraph.getNode()));
 		opGraph.getSubOp().visit(rewriter);
@@ -372,6 +384,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpGroup opGroup )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpGroup"); }
 		addOp(new OpGroup(rewriteOp1(opGroup), opGroup.getGroupVars(),
 				opGroup.getAggregators()));
 	}
@@ -382,6 +395,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpJoin opJoin )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpJoin"); }
 		final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
 		addOp(OpJoin.create(rewriteOp2(opJoin, rewriter), rewriter.getResult()));
 	}
@@ -392,6 +406,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpLabel opLabel )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpLabel"); }
 		addOp(opLabel);
 	}
 
@@ -401,6 +416,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpLeftJoin opLeftJoin )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpLeftJoin"); }
 		final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
 		addOp(OpLeftJoin.create(rewriteOp2(opLeftJoin, rewriter),
 				rewriter.getResult(), opLeftJoin.getExprs()));
@@ -412,6 +428,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpList opList )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpList"); }
 		addOp(new OpList(rewriteOp1(opList)));
 	}
 
@@ -421,6 +438,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpMinus opMinus )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpMinus"); }
 		final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
 		addOp(OpMinus.create(rewriteOp2(opMinus, rewriter),
 				rewriter.getResult()));
@@ -432,6 +450,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpNull opNull )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpNull"); }
 		addOp(opNull);
 	}
 
@@ -441,6 +460,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpOrder opOrder )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpOrder"); }
 		addOp(new OpOrder(rewriteOp1(opOrder), opOrder.getConditions()));
 	}
 
@@ -450,6 +470,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpPath opPath )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpPath"); }
 		addOp(opPath);
 	}
 
@@ -459,6 +480,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpProcedure opProc )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpProc"); }
 		if (opProc.getProcId() != null)
 		{
 			addOp(new OpProcedure(opProc.getProcId(), opProc.getArgs(),
@@ -477,6 +499,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpProject opProject )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpProject"); }
 		addOp(new OpProject(rewriteOp1(opProject), opProject.getVars()));
 	}
 
@@ -486,6 +509,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpPropFunc opPropFunc )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpPropFunc"); }
 		addOp(new OpPropFunc(opPropFunc.getProperty(),
 				opPropFunc.getSubjectArgs(), opPropFunc.getObjectArgs(),
 				rewriteOp1(opPropFunc)));
@@ -497,6 +521,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpQuad opQuad )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpQuad"); }
 		addOp(opQuad);
 	}
 
@@ -506,6 +531,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpQuadPattern quadPattern )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpQuadPattern"); }
 		addOp(quadPattern);
 	}
 
@@ -515,6 +541,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpReduced opReduced )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpReduced"); }
 		addOp(OpReduced.create(rewriteOp1(opReduced)));
 	}
 
@@ -524,6 +551,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpSequence opSequence )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpSequence"); }
 		addOp(rewriteOpN(opSequence, OpSequence.create()));
 	}
 
@@ -533,6 +561,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpService opService )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting opService"); }
 		addOp(opService);
 	}
 
@@ -544,6 +573,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpSlice opSlice )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpSlice"); }
 		addOp(opSlice);
 	}
 
@@ -553,6 +583,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpTable opTable )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpTable"); }
 		addOp(opTable);
 	}
 
@@ -562,6 +593,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpTopN opTop )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpTop"); }
 		addOp(new OpTopN(rewriteOp1(opTop), opTop.getLimit(),
 				opTop.getConditions()));
 	}
@@ -572,6 +604,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpTriple opTriple )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpTriple"); }
 		visit(opTriple.asBGP());
 	}
 
@@ -581,6 +614,7 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpUnion opUnion )
 	{
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpUnion"); }
 		final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
 		addOp(OpUnion.create(rewriteOp2(opUnion, rewriter),
 				rewriter.getResult()));
@@ -588,6 +622,7 @@ public class OpRewriter implements OpVisitor
 
 	@Override
 	public void visit(OpQuadBlock quadBlock) {
+		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpQuadBlock"); }
 		addOp(quadBlock);
 	}
 }
