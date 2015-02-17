@@ -26,8 +26,6 @@ import java.util.Arrays ;
 import java.util.List ;
 import java.util.stream.Collectors ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
-
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.file.Location ;
@@ -46,6 +44,8 @@ import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
+
+import com.hp.hpl.jena.query.ReadWrite ;
 
 public class MainIndex {
     static { LogCtl.setLog4j() ; }
@@ -145,12 +145,10 @@ public class MainIndex {
             bpt.getRecordsMgr().getBlockMgr().allocate(-1) ;
         
         List<Integer> data1 = Arrays.asList( 1 , 3 , 5 ) ;//  7 , 9 , 8 , 6 , 4 , 2 ) ;
-        List<Integer> data2 = Arrays.asList( ) ;
+        List<Integer> data2 = Arrays.asList( 7 , 9 , 8 ) ;
         
         List<Record> dataRecords1 = data1.stream().map(x->r(x)).collect(Collectors.toList()) ;
         List<Record> dataRecords2 = data2.stream().map(x->r(x)).collect(Collectors.toList()) ;
-        
-        bpt.startBatch();
         
         // Add data1 without logging 
         if ( dataRecords1 != null && !dataRecords1.isEmpty() ) {
@@ -169,7 +167,6 @@ public class MainIndex {
             dump(bpt) ;
             System.out.println() ;
         }
-        bpt.finishBatch();
         
         holder.commit() ;
         holder.end() ;
