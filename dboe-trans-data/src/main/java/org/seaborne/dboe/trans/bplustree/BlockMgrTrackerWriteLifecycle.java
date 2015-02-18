@@ -156,8 +156,6 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
                 error(Promote, id + " is not an active block") ;
 
             if ( activeReadBlocks.contains(id) )
-                // Remove one read count
-                // Really, do this if obtained via "getRead" and not "getWrite"
                 activeReadBlocks.remove(id) ;
 
             // Double promotion results in only one entry.
@@ -173,7 +171,7 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
             Long id = block.getId() ;
             add(Release, id) ;
 
-            // Iterator blocks are released.
+            // Iterator blocks are not released.
 //            if ( !activeReadBlocks.contains(id) && !activeWriteBlocks.contains(id) )
 //                error(Release, id + " is not an active block") ;
 
@@ -346,7 +344,7 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
             if ( inRead > 0 )
                 error(EndUpdate, "endUpdate when in read") ;
 
-            //checkEmpty("Outstanding read blocks at end of update operations", activeReadBlocks) ;
+            checkEmpty("Outstanding read blocks at end of update operations", activeReadBlocks) ;
 
             checkEmpty("Outstanding write blocks at end of update operations", activeWriteBlocks) ;
 
