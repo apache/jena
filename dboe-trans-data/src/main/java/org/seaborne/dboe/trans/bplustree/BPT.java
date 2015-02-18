@@ -25,7 +25,6 @@ import java.util.Optional ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.FmtLog ;
-import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.trans.bplustree.AccessPath.AccessStep ;
 import org.slf4j.Logger ;
 
