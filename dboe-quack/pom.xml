@@ -77,8 +77,11 @@
         <configuration>
           <includes>
 	    <include>**/engine/TC_*.java</include>
-	    <!--<include>**/TS_*.java</include>-->
           </includes>
+	  <excludes>
+	    <!-- We need to use TC_ to initialize first --> 
+	    <exclude>**/TS_*.java</exclude>
+	  </excludes>
         </configuration>
       </plugin>
 
