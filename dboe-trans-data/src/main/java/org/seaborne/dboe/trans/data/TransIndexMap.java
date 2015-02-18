@@ -28,6 +28,7 @@ import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.dboe.transaction.txn.TransactionalMRSW ;
 
+/** MRSW in-memory "transaction" */  
 public class TransIndexMap extends TransactionalMRSW implements Index
 {
     private final Map<ByteArray, ByteArray> index = new HashMap<>() ;

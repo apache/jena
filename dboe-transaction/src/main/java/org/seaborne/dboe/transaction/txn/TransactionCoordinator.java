@@ -19,19 +19,19 @@ package org.seaborne.dboe.transaction.txn;
 
 import static com.hp.hpl.jena.query.ReadWrite.READ ;
 import static com.hp.hpl.jena.query.ReadWrite.WRITE ;
+import static org.seaborne.dboe.transaction.txn.journal.JournalEntryType.UNDO ;
 
-import java.util.ArrayList ;
-import java.util.List ;
-import java.util.Map ;
-import java.util.Objects ;
+import java.nio.ByteBuffer ;
+import java.util.* ;
 import java.util.concurrent.ConcurrentHashMap ;
 import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicLong ;
 
+import com.hp.hpl.jena.query.ReadWrite ;
+
+import org.apache.jena.atlas.logging.Log ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.dboe.transaction.txn.journal.JournalEntry ;
-
-import com.hp.hpl.jena.query.ReadWrite ;
 
 /**
  * One TransactionCoordinator per group of TransactionalComponents.
@@ -102,9 +102,49 @@ public class TransactionCoordinator {
     }
 
     public void recovery() {
-        journal.entries() ;
+        
+        components.forEachComponent(c -> c.startRecovery()) ;
+        
+        Iterator<JournalEntry> iter = journal.entries() ;
+        // Group to commit
+        
+        List<JournalEntry> entries = new ArrayList<>() ;
+        
+        iter.forEachRemaining( entry -> {
+            switch(entry.getType()) {
+                case ABORT :
+                    entries.clear() ;
+                    break ;
+                case COMMIT :
+                    recover(entries) ;
+                    break ;
+                case REDO : case UNDO :
+                    entries.add(entry) ;
+                    break ;
+            }
+        }) ;
+
+        components.forEachComponent(c -> c.finishRecovery()) ;
     }
     
+    private void recover(List<JournalEntry> entries) {
+        entries.forEach(e -> {
+            if ( e.getType() == UNDO ) {
+                Log.warn(TransactionCoordinator.this, "UNDO entry : not handled") ;  
+                return ;
+            }
+            ComponentId cid = e.getComponentId() ;
+            ByteBuffer bb = e.getByteBuffer() ;
+            // find component.
+            TransactionalComponent c = components.findComponent(cid) ;
+            if ( c == null ) {
+                Log.warn(TransactionCoordinator.this, "No component for "+cid) ;
+                return ;
+            }
+            c.recover(bb); 
+        }) ;
+    }
+
     /** 
      * Remove a {@link TransactionalComponent}.
      * @see #add 

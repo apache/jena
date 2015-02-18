@@ -20,8 +20,6 @@ package org.seaborne.dboe.transaction.txn.journal;
 import java.util.Iterator ;
 
 import org.seaborne.dboe.base.file.BufferChannelFile ;
-import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.dboe.transaction.txn.Transaction ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -30,12 +28,16 @@ public class JournalControl
 {
     private static Logger log = LoggerFactory.getLogger(JournalControl.class) ;
 
-    // Interface
-    public static void recovery(Location location)
-    {}
-    
-    public static void replay(Transaction transaction)
-    {}
+    // In TransactionCoordinator
+//    // Interface
+//    public static void recovery(TransactionCoordinator txnCoord)
+//    {
+//        txnCoord.getJournal() ;
+//        
+//    }
+//    
+//    public static void replay(Transaction transaction)
+//    {}
     
     /** Dump a journal - debug support function - opens the journal specially - inconsistent views possible */
     public static void print(String filename) {

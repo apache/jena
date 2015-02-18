@@ -22,13 +22,14 @@ public class ComponentIds {
     
     // Linux : "uuid -v 4"
     
-    /* For single instance components.*/
-    // zeros for uniqueness
+    /* For single instance components and base ids for incremental registration */
     public static final ComponentId idTxnMRSW       = make("MRSW",     "93a58341-ed53-4f0c-bac1-d9969ea38cf3") ;
+    // TODO tie to registration (this predates)
     public static final ComponentId idTxnCounter    = make("Counter",  "6b901671-e6db-45c5-9217-7506d21a0000") ;
     public static final ComponentId idMonitor       = make("Monitor",  "c4d8a1e6-052b-413a-8d80-c5a6b442e608") ;
     public static final ComponentId idNull          = make("Monitor",  "e6e31271-b6dc-452c-b624-d4e099464365") ;
     public static final ComponentId idSystem        = make("System",   "95e0f729-ad29-48b2-bd70-e3738663c578") ;
+    public static final ComponentId idBlobBase      = make("Blob",     "43436b91-87ce-4d6b-827c-c3b9ea6536ba") ;
     
     public static ComponentId make(String label, String uuidStr) {
         byte[] bytes = L.uuidAsBytes(uuidStr) ;
@@ -36,7 +37,6 @@ public class ComponentIds {
     }
     
     /* For later
-    43436b91-87ce-4d6b-827c-c3b9ea6536ba
     82a6833a-1475-495a-83ca-10370c7c40cd
     1d32231b-aa11-47ed-8893-6b36673fe04c
     27c4845e-c05a-410d-8c74-278a23b03bbd

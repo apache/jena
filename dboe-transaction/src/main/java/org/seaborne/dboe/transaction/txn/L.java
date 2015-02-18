@@ -21,12 +21,14 @@ import java.io.IOException ;
 import java.io.OutputStream ;
 import java.io.OutputStreamWriter ;
 import java.io.Writer ;
+import java.nio.ByteBuffer ;
 import java.util.UUID ;
 import java.util.concurrent.locks.Lock ;
 import java.util.function.Supplier ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.shared.uuid.JenaUUID ;
 
@@ -108,5 +110,20 @@ public class L {
     }
 
     // ==> IO.writeWholeFileAsUTF8
+    
+    /** String to ByteBuffer */
+    public static ByteBuffer stringToByteBuffer(String str) {
+        byte[] b = StrUtils.asUTF8bytes(str) ;
+        return ByteBuffer.wrap(b) ;
+    }
+    
+    /** ByteBuffer to String */
+    public static String byteBufferToString(ByteBuffer bb) {
+        byte[] b = new byte[bb.remaining()] ;
+        bb.get(b) ;
+        return StrUtils.fromUTF8bytes(b) ;
+    }
+
+
 }
 

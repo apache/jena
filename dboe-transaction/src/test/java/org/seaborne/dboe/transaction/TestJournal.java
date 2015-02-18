@@ -39,7 +39,8 @@ import org.seaborne.dboe.transaction.txn.journal.JournalEntryType ;
 
 /** Journal tests spearate from the transaction coordinator */  
 public class TestJournal {
-
+    // For testing recovery, we need something to recover!
+    // See tests in TestRecovery in dboe-trans-data 
     
     @Test public void journal_01() {
         Journal jrnl = Journal.create(Location.mem()) ;
