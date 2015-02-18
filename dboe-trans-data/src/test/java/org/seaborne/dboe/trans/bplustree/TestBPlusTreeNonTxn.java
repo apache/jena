@@ -39,6 +39,7 @@ public class TestBPlusTreeNonTxn extends AbstractTestRangeIndex {
     static public void beforeClass() {
         BPlusTreeParams.CheckingNode = true ;
         BPlusTreeParams.CheckingTree = false ; // Breaks with block tracking.
+        
         originalNullOut = SystemIndex.getNullOut() ;
         SystemIndex.setNullOut(true) ;
     }
@@ -68,14 +69,15 @@ public class TestBPlusTreeNonTxn extends AbstractTestRangeIndex {
     @Override
     protected BPlusTree makeRangeIndex(int order, int minRecords) {
         BPlusTree bpt = BPlusTreeFactory.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
-        if ( false ) {
+        if ( true ) {
             // Breaks with CheckingTree = true ; 
             // because they are deep reads into the tree.
             BPlusTreeParams.CheckingNode = true ;
-            BPlusTreeParams.CheckingTree = false ;
+            BPlusTreeParams.CheckingTree = false ;  // Very slow - especially test_clear_07
             bpt = BPlusTreeFactory.addTracking(bpt) ;
         }
         bpt.nonTransactional() ;
+        bpt.startBatch();
         return bpt ;
     }
 }

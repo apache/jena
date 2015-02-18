@@ -20,9 +20,11 @@ package org.seaborne.dboe.trans.bplustree;
 import static java.lang.String.format ;
 import static org.apache.jena.atlas.lib.Alg.decodeIndex ;
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingNode ;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.seaborne.dboe.base.StorageException ;
 import org.seaborne.dboe.base.block.Block ;
+import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.buffer.RecordBuffer ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
@@ -61,6 +63,11 @@ public final class BPTreeRecords extends BPTreePage
     @Override
     public final Block getBackingBlock() {
         return rBuffPage.getBackingBlock() ;
+    }
+    
+    @Override
+    public BlockMgr getBlockMgr() {
+        return bpTree.getRecordsMgr().getBlockMgr() ;
     }
 
     @Override
@@ -112,9 +119,19 @@ public final class BPTreeRecords extends BPTreePage
         
         if ( promoteInPlace ) {
             bprRecordsMgr.promoteInPlace(this) ;
+            // TODO Is this needed?
+            // Is this replicated in BPTreeNode?
+            if ( getBackingBlock().isReadOnly() )
+                bprRecordsMgr.getBlockMgr().promote(getBackingBlock()) ;
             return false ;
-        } else
-            return bprRecordsMgr.promoteDuplicate(this) ;
+        } else {
+            Block oldBlock = getBackingBlock() ;
+            boolean b = bprRecordsMgr.promoteDuplicate(this) ;
+            if ( b )
+                bprRecordsMgr.getBlockMgr().release(oldBlock); 
+            return b ;
+        }
+            
     }
     
     @Override final

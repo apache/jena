@@ -393,6 +393,10 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
             }
             if ( i == 0 )
                 break ;
+            
+            // XXX Start tracking, finish tracking.
+            System.out.println("START CLEAR") ; 
+            
             for ( int j = 0 ; j < i ; j++ ) {
                 delete(records[j]) ;
                 records[j] = null ;

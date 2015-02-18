@@ -32,6 +32,7 @@ import java.util.List ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.seaborne.dboe.base.block.Block ;
+import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.buffer.PtrBuffer ;
 import org.seaborne.dboe.base.buffer.RecordBuffer ;
 import org.seaborne.dboe.base.page.PageBlockMgr ;
@@ -397,8 +398,10 @@ public final class BPTreeNode extends BPTreePage
     public final void setCount(int count)  { this.count = count ; }
     
     @Override
-//    public ByteBuffer getBackingByteBuffer()       { return byteBuffer ; }
-    public Block getBackingBlock()       { return block ; }
+  public Block getBackingBlock()           { return block ; }
+    
+    @Override
+    public BlockMgr getBlockMgr()               { return bpTree.getNodeManager().getBlockMgr() ; }
     
     /** Do not use without great care */
     public final RecordBuffer getRecordBuffer()  { return records ; }
@@ -443,8 +446,14 @@ public final class BPTreeNode extends BPTreePage
         if ( promoteInPlace ) {
             bpTree.getNodeManager().promoteInPlace(this) ;
             return false ;
-        } else
-            return bpTree.getNodeManager().promoteDuplicate(this) ;
+        } else {
+            Block oldBlock = block ;
+            boolean b = bpTree.getNodeManager().promoteDuplicate(this) ;
+            if ( b ) {
+                bpTree.getNodeManager().getBlockMgr().release(oldBlock);
+            }
+            return b ;
+        }
     }
     
     @Override
@@ -600,7 +609,7 @@ public final class BPTreeNode extends BPTreePage
         z.release() ;
         // y.release() ; y release management done by caller.
         this.write() ;
-        if ( CheckingTree ) {
+        if ( CheckingNode ) {
             if ( Record.keyNE(splitKey, y.maxRecord()) )
                 BPT.error("Split key %d but max subtree %s", splitKey, y.maxRecord()) ;
             internalCheckNodeDeep() ;
@@ -939,6 +948,7 @@ public final class BPTreeNode extends BPTreePage
             // left == null
             // rigth != null
             promote1(right, this, idx+1 ) ;
+            // TODO ** HERE is it tracked correctly? Turmn tracking on, test_clear_02 and enable read checking in   Lifecycle track.free.
             if ( logging(log) )
                 log(log, "rebalance/merge/right: n=%d right=%d [%d]", node.getId(), right.getId(), idx) ;
             if ( CheckingNode && right.getId() == node.getId() )

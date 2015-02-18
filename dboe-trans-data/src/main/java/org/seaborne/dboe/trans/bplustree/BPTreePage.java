@@ -17,6 +17,7 @@
 
 package org.seaborne.dboe.trans.bplustree;
 
+import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.page.Page ;
 import org.seaborne.dboe.base.record.Record ;
 import org.slf4j.Logger ;
@@ -41,6 +42,8 @@ abstract public class BPTreePage implements Page
     protected abstract String typeMark() ;
     
     protected abstract Logger getLogger() ;
+    
+    abstract BlockMgr getBlockMgr() ;
 
     /** Split in two, return the new (upper) page.  
      *  Split key is highest key of the old (lower) page.
@@ -108,7 +111,6 @@ abstract public class BPTreePage implements Page
 
     /** Greatest in subtree */
     Record maxRecord()      { return internalMaxRecord(null) ; }
-
     
     /** Write, or at least ensure will be written */
     abstract void write() ; 

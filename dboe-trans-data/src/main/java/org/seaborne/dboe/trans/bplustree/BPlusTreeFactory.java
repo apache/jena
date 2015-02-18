@@ -18,10 +18,10 @@
 package org.seaborne.dboe.trans.bplustree;
 
 import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingNode ;
+
 import org.seaborne.dboe.DBOpEnvException ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
-import org.seaborne.dboe.base.block.BlockMgrTracker ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
@@ -72,6 +72,13 @@ public class BPlusTreeFactory {
         BPTreeRecordsMgr recordsMgr = new BPTreeRecordsMgr(bpt, params.getRecordFactory(), recordPageMgr) ;
         int rootId = createIfAbsent(nodeManager, recordsMgr) ;
         bpt.init(rootId, nodeManager, recordsMgr) ;
+        if ( CheckingNode ) {
+            nodeManager.startRead();
+            BPTreeNode root = nodeManager.getRead(rootId, BPlusTreeParams.RootParent) ;
+            root.checkNodeDeep() ;
+            nodeManager.release(root) ;
+            nodeManager.finishRead();
+        }
         return bpt ;
     }
 
@@ -112,8 +119,8 @@ public class BPlusTreeFactory {
     public static BPlusTree addTracking(BPlusTree bpTree) {
         BlockMgr mgr1 = bpTree.getNodeManager().getBlockMgr() ;
         BlockMgr mgr2 = bpTree.getRecordsMgr().getBlockMgr() ;
-        mgr1 = BlockMgrTracker.track(mgr1) ;
-        mgr2 = BlockMgrTracker.track(mgr2) ;
+        mgr1 = BlockMgrTrackerWriteLifecycle.track(mgr1) ;
+        mgr2 = BlockMgrTrackerWriteLifecycle.track(mgr2) ;
         return BPlusTreeFactory.attach(bpTree.getComponentId(), bpTree.getParams(), mgr1, mgr2) ;
     }
     
@@ -129,12 +136,6 @@ public class BPlusTreeFactory {
         int rootIdx = createEmptyBPT(nodeManager, recordsMgr) ;
         if ( rootIdx != 0 )
             throw new InternalError() ;
-
-        if ( CheckingNode ) {
-            BPTreeNode root = nodeManager.getRead(rootIdx, BPlusTreeParams.RootParent) ;
-            root.checkNodeDeep() ;
-            nodeManager.release(root) ;
-        }
 
         // Sync created blocks to disk - any caches are now clean.
         nodeManager.getBlockMgr().sync() ;
