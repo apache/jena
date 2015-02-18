@@ -56,6 +56,15 @@ public class BPlusTreeFactory {
         BPTreeRecordsMgr recordsMgr = new BPTreeRecordsMgr(params.getRecordFactory(), recordPageMgr) ;
         int rootId = createIfAbsent(nodeManager, recordsMgr) ;
         bpt.init(rootId, nodeManager, recordsMgr) ;
+        if ( CheckingNode ) {
+            //bpt.startBatch();
+            nodeManager.startRead();
+            BPTreeNode root = nodeManager.getRead(rootId, BPlusTreeParams.RootParent) ;
+            root.checkNodeDeep(); 
+            nodeManager.release(root) ;
+            nodeManager.finishRead();
+            //bpt.finishBatch();
+        }
         return bpt ;
     }
 
@@ -113,12 +122,6 @@ public class BPlusTreeFactory {
         int rootIdx = createEmptyBPT(nodeManager, recordsMgr) ;
         if ( rootIdx != 0 )
             throw new InternalError() ;
-
-        if ( CheckingNode ) {
-            BPTreeNode root = nodeManager.getRead(rootIdx, BPlusTreeParams.RootParent) ;
-            root.checkNodeDeep() ;
-            nodeManager.release(root) ;
-        }
 
         // Sync created blocks to disk - any caches are now clean.
         nodeManager.getBlockMgr().sync() ;
