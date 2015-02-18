@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.transdata;
+package org.seaborne.dboe.trans.data;
 
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
@@ -25,6 +25,8 @@ import org.junit.runners.Suite.SuiteClasses ;
 @SuiteClasses( {
     TestTransObjectFile.class
     , TestTransIndexMem.class
+    , TestTransBlob.class
+    , TestTransBlobPersistent.class
 })
 
 public class TS_TransData { }

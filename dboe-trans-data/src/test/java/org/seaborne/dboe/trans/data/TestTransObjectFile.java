@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.transdata;
+package org.seaborne.dboe.trans.data;
 
 import java.nio.ByteBuffer ;
 

@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.transdata;
+package org.seaborne.dboe.trans.data;
 
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.Index ;
