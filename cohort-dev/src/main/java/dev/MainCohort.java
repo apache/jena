@@ -49,6 +49,10 @@ import com.hp.hpl.jena.query.ReadWrite ;
 
 public class MainCohort {
     static { LogCtl.setLog4j() ; }
+    
+    static RecordFactory recordFactory = new RecordFactory(4, 0) ;
+    
+    static Journal journal = Journal.create(Location.mem()) ;
 
     public static void main(String... args) {
         BPT.Logging = false ;
@@ -90,10 +94,6 @@ public class MainCohort {
         
         //JournalControl.replay(); ;
     }    
-    
-    static RecordFactory recordFactory = new RecordFactory(4, 0) ;
-    
-    static Journal journal = Journal.create(Location.mem()) ;
     
     static void elements(BPlusTree bpt) {
         System.out.print("Elements: ") ;
