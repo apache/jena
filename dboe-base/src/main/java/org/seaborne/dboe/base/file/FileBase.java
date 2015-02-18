@@ -30,6 +30,7 @@ public final class FileBase implements Sync, Closeable
 {
     static private Logger log = LoggerFactory.getLogger(FileBase.class) ; 
     // A mixin, which java does not support very well.
+    // Better done as a library e.g. size(FileChannel) => ...
     public final String filename ;
     private FileChannel channel ;
     public static boolean DEBUG = false ;
@@ -37,12 +38,12 @@ public final class FileBase implements Sync, Closeable
     private static long counter = 0 ;
     private final long id ;
 
-    /** Create an FileBase withotu managed resources  Use with case. */
-    static FileBase createUnmanged(String filename, FileChannel channel) { return new FileBase(filename, channel) ; }
+    /** Create an FileBase without managed resources.  Use with care. */
+    static FileBase xcreateUnmanged(String filename, FileChannel channel) { return new FileBase(filename, channel) ; }
     
     /** Create a Filebase with managed resources */
-    static FileBase create(String filename) { return new FileBase(filename) ; }
-    static FileBase create(String filename, String mode) { return new FileBase(filename, mode) ; }
+    static FileBase xcreate(String filename) { return new FileBase(filename) ; }
+    static FileBase xcreate(String filename, String mode) { return new FileBase(filename, mode) ; }
     
     private /*public*/ FileBase(String filename)
     {

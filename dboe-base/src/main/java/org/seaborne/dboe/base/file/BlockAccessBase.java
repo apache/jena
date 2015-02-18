@@ -20,32 +20,37 @@ package org.seaborne.dboe.base.file;
 import static java.lang.String.format ;
 
 import java.nio.ByteBuffer ;
+import java.nio.channels.FileChannel ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.block.BlockException ;
+import org.seaborne.dboe.sys.FileLib ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.slf4j.Logger ;
 
 /** Support for a disk file backed FileAccess */
 public abstract class BlockAccessBase implements BlockAccess {
-    protected final int        blockSize ;
-    protected final FileBase   file ;
+    protected final int          blockSize ;
+    protected FileChannel        file ;
+    protected final String       filename ;
 
     protected final String     label ;
     // Does this need to be tread safe?
     // Only changes in a write transaction
-    protected long             numFileBlocks = -1 ; // Don't overload use of
-                                                    // this!
-    protected final AtomicLong seq ;               // Id (future)
+    
+    // Don't overload use of this!
+    protected final AtomicLong seq ;
+    protected long             numFileBlocks = -1 ; 
 
     public BlockAccessBase(String filename, int blockSize) {
-        file = FileBase.create(filename) ;
+        this.filename = filename ;
+        this.file = FileLib.openManaged(filename) ;
         this.blockSize = blockSize ;
         this.label = FileOps.basename(filename) ;
-        long filesize = file.size() ; // This is not related to used file length
-                                      // in mapped mode.
+        // This is not related to used file length in mapped mode.
+        long filesize = FileLib.size(file) ;
         long longBlockSize = blockSize ;
 
         numFileBlocks = filesize / longBlockSize ; // This is not related to
@@ -119,7 +124,7 @@ public abstract class BlockAccessBase implements BlockAccess {
             // Do it properly!
             synchronized (this) {
                 if ( id < 0 || id >= numFileBlocks )
-                    throw new BlockException(format("BlockAccessBase: Bounds exception: %s: (%d,%d)", file.filename, id, numFileBlocks)) ;
+                    throw new BlockException(format("BlockAccessBase: Bounds exception: %s: (%d,%d)", filename, id, numFileBlocks)) ;
             }
         }
     }
@@ -134,12 +139,12 @@ public abstract class BlockAccessBase implements BlockAccess {
     }
 
     protected void force() {
-        file.sync() ;
+        FileLib.sync(file) ;
     }
 
     // @Override
     final public boolean isClosed() {
-        return file.channel() == null ;
+        return file == null ;
     }
 
     protected final void checkIfClosed() {
@@ -152,7 +157,7 @@ public abstract class BlockAccessBase implements BlockAccess {
     @Override
     final public void close() {
         _close() ;
-        file.close() ;
+        file = null ;
     }
 
     @Override

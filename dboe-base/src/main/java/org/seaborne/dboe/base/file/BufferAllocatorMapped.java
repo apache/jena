@@ -21,11 +21,13 @@ import java.io.File ;
 import java.io.IOException ;
 import java.nio.ByteBuffer ;
 import java.nio.MappedByteBuffer ;
+import java.nio.channels.FileChannel ;
 import java.nio.channels.FileChannel.MapMode ;
 import java.util.ArrayList ;
 import java.util.List ;
 import java.util.UUID ;
 
+import org.seaborne.dboe.sys.FileLib ;
 import org.seaborne.dboe.sys.SystemIndex ;
 
 /**
@@ -43,7 +45,7 @@ final public class BufferAllocatorMapped implements BufferAllocator
     private final int blocksPerSegment;
     
     private final File tmpFile;
-    private FileBase file;
+    private FileChannel file;
     private int seq = 0;
     
     public BufferAllocatorMapped(int blockSize)
@@ -83,7 +85,7 @@ final public class BufferAllocatorMapped implements BufferAllocator
         
         // Create the file lazily
         if (null == file)
-            file = FileBase.create(tmpFile.getPath());
+            file = FileLib.openManaged(tmpFile.getPath());
         
         // Get and increment the id
         int id = seq++;
@@ -97,7 +99,7 @@ final public class BufferAllocatorMapped implements BufferAllocator
             try
             {
                 long offset = fileLocation(seg);
-                segBuffer = file.channel().map(MapMode.READ_WRITE, offset, segmentSize) ;
+                segBuffer = file.map(MapMode.READ_WRITE, offset, segmentSize) ;
                 segments.add(segBuffer);
             }
             catch (IOException e)
@@ -135,7 +137,7 @@ final public class BufferAllocatorMapped implements BufferAllocator
         // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4724038
         clear();
         segments.clear();
-        file.close();
+        FileLib.close(file);
         file = null;
         
         // May not delete on Windows :/

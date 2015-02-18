@@ -15,53 +15,52 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.base.file;
+package org.seaborne.dboe.base.file ;
 
 import java.io.IOException ;
 import java.nio.ByteBuffer ;
 import java.nio.channels.FileChannel ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.seaborne.dboe.sys.FileLib ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /** Single, unsegmented file with ByteBuffer */
-public class PlainFilePersistent extends PlainFile
-{
+public class PlainFilePersistent extends PlainFile {
     private static Logger log = LoggerFactory.getLogger(PlainFilePersistent.class) ;
-    
-    private FileBase file ;
 
-    // Plain file over mmapped ByteBuffer 
-    PlainFilePersistent(Location loc, String filename)
-    {
+    private FileChannel   file ;
+
+    // Plain file over mmapped ByteBuffer
+    PlainFilePersistent(Location loc, String filename) {
         this(loc.getPath(filename, "dat")) ;
     }
-    
-    PlainFilePersistent(String filename)
-    {
-        file = FileBase.create(filename) ;
-        //long filesize = file.out.length() ;
-        //if ( channel.size() == 0 ) {}
+
+    PlainFilePersistent(String filename) {
+        file = FileLib.openManaged(filename) ;
+        // long filesize = file.out.length() ;
+        // if ( channel.size() == 0 ) {}
         byteBuffer = allocateBuffer(filesize) ;
-    }
-    
-    @Override
-    public void sync()
-    { 
-        file.sync() ; 
-    }
-    
-    @Override
-    public void close()
-    {
-        file.close() ;
     }
 
     @Override
-    protected ByteBuffer allocateBuffer(long size)
-    {
-        try { return file.channel().map(FileChannel.MapMode.READ_WRITE, 0, size) ; }
-        catch (IOException ex)  { IO.exception(ex) ; return null ; }
+    public void sync() {
+        FileLib.sync(file) ;
+    }
+
+    @Override
+    public void close() {
+        FileLib.close(file) ;
+    }
+
+    @Override
+    protected ByteBuffer allocateBuffer(long size) {
+        try {
+            return file.map(FileChannel.MapMode.READ_WRITE, 0, size) ;
+        } catch (IOException ex) {
+            IO.exception(ex) ;
+            return null ;
+        }
     }
 }

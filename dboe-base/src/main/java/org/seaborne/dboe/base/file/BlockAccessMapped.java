@@ -204,7 +204,7 @@ public class BlockAccessMapped extends BlockAccessBase
         MappedByteBuffer segBuffer = segments[seg] ;
         if ( segBuffer == null ) {
             try {
-                segBuffer = file.channel().map(MapMode.READ_WRITE, offset, SegmentSize) ;
+                segBuffer = file.map(MapMode.READ_WRITE, offset, SegmentSize) ;
                 if ( getLog().isDebugEnabled() )
                     getLog().debug(format("Segment: %d", seg)) ;
                 segments[seg] = segBuffer ;

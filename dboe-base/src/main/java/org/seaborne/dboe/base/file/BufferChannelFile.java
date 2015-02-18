@@ -15,159 +15,157 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.base.file;
+package org.seaborne.dboe.base.file ;
 
-import java.io.FileNotFoundException ;
 import java.io.IOException ;
-import java.io.RandomAccessFile ;
 import java.nio.ByteBuffer ;
 import java.nio.channels.FileChannel ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.FileOps ;
+import org.seaborne.dboe.sys.FileLib ;
 
+public class BufferChannelFile implements BufferChannel {
+    private String      filename ;
+    private FileChannel file ;
 
-public class BufferChannelFile implements BufferChannel
-{
-    private FileBase file ;
-    
     /** Create a BufferChannelFile */
-    public static BufferChannelFile create(String filename)
-    { 
-        FileBase base = FileBase.create(filename) ;
-        return new BufferChannelFile(base) ;
-    } 
+    public static BufferChannelFile create(String filename) {
+        return create(filename, "rw") ;
+    }
+
+    /** Create a BufferChannelFile */
+    public static BufferChannelFile create(String filename, String mode) {
+        FileChannel base = ChannelManager.acquire(filename, mode) ;
+        return new BufferChannelFile(filename, base) ;
+    }
 
     /** Create a BufferChannelFile with unmangaged file resources - use with care */
-    public static BufferChannelFile createUnmanaged(String filename, String mode)
-    { 
-        try
-        {
-            @SuppressWarnings("resource")
-            RandomAccessFile out = new RandomAccessFile(filename, mode) ;
-            FileChannel channel = out.getChannel() ;
-            FileBase base = FileBase.createUnmanged(filename, channel) ;
-            return new BufferChannelFile(base) ;
-        } catch (FileNotFoundException e)
-        {
+    public static BufferChannelFile createUnmanaged(String filename, String mode) {
+        FileChannel channel = FileLib.openUnmanaged(filename, mode) ;
+        return new BufferChannelFile(filename, channel) ;
+    }
+
+    private BufferChannelFile(String filename, FileChannel channel) {
+        this.filename = filename ;
+        this.file = channel ;
+    }
+
+    @Override
+    public BufferChannel duplicate() {
+        return new BufferChannelFile(filename, file) ;
+    }
+
+    @Override
+    public long position() {
+        try {
+            return file.position() ;
+        }
+        catch (IOException e) {
             IO.exception(e) ;
-            return null ;
+            return -1 ;
         }
-    } 
-
-    private BufferChannelFile(FileBase filebase)
-    {
-        file = filebase ;
-    }
-    
-    private BufferChannelFile(String filename)
-    {
-        file = FileBase.create(filename) ;
     }
 
     @Override
-    public BufferChannel duplicate()
-    {
-        return new BufferChannelFile(file.filename) ;
+    public void position(long pos) {
+        try {
+            file.position(pos) ;
+        }
+        catch (IOException e) {
+            IO.exception(e) ;
+        }
     }
 
     @Override
-    public long position()
-    {
-        try { return file.channel().position() ; } 
-        catch (IOException e) { IO.exception(e) ; return -1 ; }
-    }
-
-    @Override
-    public void position(long pos)
-    {
-        try { file.channel().position(pos) ; } 
-        catch (IOException e) { IO.exception(e) ; }
-    }
-
-    @Override
-    public void truncate(long length)
-    {
-        try { 
+    public void truncate(long length) {
+        try {
             // http://bugs.sun.com/view_bug.do?bug_id=6191269
-            if ( length < file.channel().position() )
-                file.channel().position(length) ;
-            file.channel().truncate(length) ;
+            if ( length < file.position() )
+                file.position(length) ;
+            file.truncate(length) ;
         }
-        catch (IOException e) { IO.exception(e) ; }
+        catch (IOException e) {
+            IO.exception(e) ;
+        }
     }
 
     @Override
-    public int read(ByteBuffer buffer)
-    {
-        try { return file.channel().read(buffer) ; } 
-        catch (IOException e) { IO.exception(e) ; return -1 ; }
-    }
-    
-    
-    @Override
-    public int read(ByteBuffer buffer, long loc)
-    {
-        try { return file.channel().read(buffer, loc) ; } 
-        catch (IOException e) { IO.exception(e) ; return -1 ; }
+    public int read(ByteBuffer buffer) {
+        try {
+            return file.read(buffer) ;
+        }
+        catch (IOException e) {
+            IO.exception(e) ;
+            return -1 ;
+        }
     }
 
     @Override
-    public int write(ByteBuffer buffer)
-    {
-        try { return file.channel().write(buffer) ; } 
-        catch (IOException e) { IO.exception(e) ; return -1 ; }
+    public int read(ByteBuffer buffer, long loc) {
+        try {
+            return file.read(buffer, loc) ;
+        }
+        catch (IOException e) {
+            IO.exception(e) ;
+            return -1 ;
+        }
     }
 
     @Override
-    public int write(ByteBuffer buffer, long loc)
-    {
-        try { return file.channel().write(buffer, loc) ; } 
-        catch (IOException e) { IO.exception(e) ; return -1 ; }
+    public int write(ByteBuffer buffer) {
+        try {
+            return file.write(buffer) ;
+        }
+        catch (IOException e) {
+            IO.exception(e) ;
+            return -1 ;
+        }
     }
 
     @Override
-    public long size()
-    {
-        try { return file.channel().size() ; }
-        catch (IOException e) { IO.exception(e) ; return -1 ; }
+    public int write(ByteBuffer buffer, long loc) {
+        try {
+            return file.write(buffer, loc) ;
+        }
+        catch (IOException e) {
+            IO.exception(e) ;
+            return -1 ;
+        }
     }
 
     @Override
-    public boolean isEmpty()
-    {
-        try { return file.channel().size() == 0 ; }
-        catch (IOException e) { IO.exception(e) ; return false ; }
+    public long size() {
+        return FileLib.size(file) ; 
     }
 
     @Override
-    public void sync()
-    { 
-        file.sync() ;
+    public boolean isEmpty() {
+        return size() == 0 ;
     }
 
     @Override
-    public void close()
-    {
-        file.close() ;
+    public void sync() {
+        FileLib.sync(file) ;
     }
 
     @Override
-    public String getLabel()
-    {
-        return FileOps.basename(file.getFilename()) ;
+    public void close() {
+        FileLib.close(file) ;
     }
 
     @Override
-    public String toString()
-    {
-        return file.getFilename() ;
+    public String getLabel() {
+        return filename ;
     }
 
     @Override
-    public String getFilename()
-    {
-        return file.getFilename() ;
+    public String toString() {
+        return filename ;
     }
-    
+
+    @Override
+    public String getFilename() {
+        return filename ;
+    }
+
 }
