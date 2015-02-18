@@ -20,7 +20,7 @@ package dev;
 
 public class NOTES {
     // Mantis / cohort / legion
-    // ARQ -> atlas.
+    // ARQ :: extract Atlas.
     
     // Rework block tracking.
     //    Only worry about write blocks (iterator are read and confusing?)
