@@ -43,11 +43,11 @@ public class TestBPlusTree extends AbstractTestRangeIndex {
     @Override
     protected RangeIndex makeRangeIndex(int order, int minRecords) {
         BPlusTree bpt = BPlusTreeFactory.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
-        if ( false ) {
-            // Breaks with CheckingTree = true ; because they deep reads the
-            // tree.
+        if ( true ) {
+            // Can't have CheckingTree = true and tracking because deep checks
+            // cause block reads which aren't released (maybe shared) 
             BPlusTreeParams.CheckingNode = true ;
-            BPlusTreeParams.CheckingTree = false ;
+            BPlusTreeParams.CheckingTree = false ;  // And very slow esp test_clear_07
             bpt = BPlusTreeFactory.addTracking(bpt) ;
         }
         return bpt ;
