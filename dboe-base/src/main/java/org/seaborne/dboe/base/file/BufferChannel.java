@@ -37,9 +37,12 @@ import org.apache.jena.atlas.lib.Sync ;
  */
 public interface BufferChannel extends Sync, Closeable
 {
+    // Like FileChannel except
+    //   Allows implementation by non-files e.g. a memory backed storage.
+    //   Runtime exceptions.
     // This is a simple, low level "file = array of bytes" interface"
     // This interface does not support slicing - so it's not suitable for memory mapped I/O
-    // Allows implementation by a memory backed storage.
+    // 
     // TODO Consider use of allocateDirect 
     
     /** Return another channel to the same storage but with independent position.
