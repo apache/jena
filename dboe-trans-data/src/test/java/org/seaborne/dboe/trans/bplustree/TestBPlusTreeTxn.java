@@ -30,14 +30,8 @@ import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.TransactionalComponent ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
-/** Test of B+Tree and transactions */ 
+/** Tests of B+Tree and transactions */ 
 public class TestBPlusTreeTxn extends Assert {
-    
-//    static {
-//        BPT.forcePromoteModes = true ;
-//        BPT.promoteDuplicateNodes = true ;
-//        BPT.promoteDuplicateRecords = true ;
-//    }
     
     static BPlusTree createBPTree() { 
         return BPlusTreeFactory.makeMem(2, 2, RecordLib.TestRecordLength, 0) ;

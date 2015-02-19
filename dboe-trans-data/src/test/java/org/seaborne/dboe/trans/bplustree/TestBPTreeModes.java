@@ -28,6 +28,9 @@ import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
 
+/** Run the B+Tree algorithm tests but for each combination of explicit 
+ * write-in-place / always copy modes.  
+ */
 @RunWith(Parameterized.class)
 public class TestBPTreeModes extends TestBPlusTreeNonTxn
 {

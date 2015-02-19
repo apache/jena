@@ -22,23 +22,34 @@ import static org.seaborne.dboe.test.RecordLib.intToRecord ;
 
 import java.util.List ;
 
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
+import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.index.test.AbstractTestRangeIndex ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.test.RecordLib ;
 
-/** Run the tests in default settings for a tree */ 
+/** Run the tests in default settings for a tree in "non-transactional" mode */ 
 public class TestBPlusTreeNonTxn extends AbstractTestRangeIndex {
-    // Only "abstract" to remember to run TestBPTreeModes instead.
     // See TestBPTreeModes for parameterised tests for the duplication modes.
-    static boolean originalNullOut ;
+    
+    // Add tracker or not (usually not)
+    // The tracker checking can impose more constraints than are needed
+    // giving false negatives.  Iterator aren't tracked (they may not be comsumed) 
+    static boolean addTracker = false  ;
+    // Panic.
+    static boolean addLogger  = false  ;
 
+    static boolean originalNullOut ;
     @BeforeClass
     static public void beforeClass() {
-        BPlusTreeParams.CheckingNode = true ;
-        BPlusTreeParams.CheckingTree = false ; // Breaks with block tracking.
+        BPT.CheckingNode = true ;
+        // This is more a debugging aid for working on one failure.
+        // Very slow in testing - especially test_clear_07 where the tree is quite large.
+        // Hence leave as "false"
+        BPT.CheckingTree = false ;
         
         originalNullOut = SystemIndex.getNullOut() ;
         SystemIndex.setNullOut(true) ;
@@ -69,13 +80,14 @@ public class TestBPlusTreeNonTxn extends AbstractTestRangeIndex {
     @Override
     protected BPlusTree makeRangeIndex(int order, int minRecords) {
         BPlusTree bpt = BPlusTreeFactory.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
-        if ( true ) {
-            // Breaks with CheckingTree = true ; 
-            // because they are deep reads into the tree.
-            BPlusTreeParams.CheckingNode = true ;
-            BPlusTreeParams.CheckingTree = false ;  // Very slow - especially test_clear_07
-            bpt = BPlusTreeFactory.addTracking(bpt) ;
+        if ( addLogger ) {
+            // Put it in but disable it so that it can be enabled
+            // in the middle of a complex operation.
+            LogCtl.disable(BlockMgr.class) ;
+            bpt = BPlusTreeFactory.addLogging(bpt) ;
         }
+        if ( addTracker )
+            bpt = BPlusTreeFactory.addTracking(bpt) ;
         bpt.nonTransactional() ;
         bpt.startBatch();
         return bpt ;

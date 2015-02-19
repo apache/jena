@@ -30,8 +30,6 @@ import org.seaborne.dboe.test.RecordLib ;
 
 public class TestBPTreeRecordsNonTxn extends Assert {
     static private boolean             oldNullOut ;
-    static private boolean             oldCheckingNode ;
-    static private boolean             oldCheckingBTree ;
 
     static private int                 blockSize ;
     static private RecordFactory       recordFactory ;
@@ -45,12 +43,6 @@ public class TestBPTreeRecordsNonTxn extends Assert {
         oldNullOut = SystemIndex.getNullOut() ;
         SystemIndex.setNullOut(true) ;
 
-        oldCheckingNode = BPlusTreeParams.CheckingNode ;
-        BPlusTreeParams.CheckingNode = true ;
-
-        oldCheckingBTree = BPlusTreeParams.CheckingTree ;
-        BPlusTreeParams.CheckingTree = true ;
-
         blockSize = 4 * 8 ; // Which is 6 int records
         recordFactory = new RecordFactory(4, 0) ;
 
@@ -59,19 +51,15 @@ public class TestBPTreeRecordsNonTxn extends Assert {
         recordBufferPageMgr = new RecordBufferPageMgr(recordFactory, blkMgrRecords) ;
 
         BlockMgr blkMgrNodes = BlockMgrFactory.createMem("BPTreeNs", blockSize) ;
+        
+        // Copy on write.
         BPT.forcePromoteModes = true ;
         BPT.promoteDuplicateRecords = true ;
-
-        // B+Tree order does not matter.
-        // bPlusTree = BPlusTreeFactory.create(new BPlusTreeParams(3,
-        // recordFactory), blkMgrNodes, blkMgrRecords) ;
     }
 
     @AfterClass
     public static void afterClass() {
         SystemIndex.setNullOut(oldNullOut) ;
-        BPlusTreeParams.CheckingTree = oldCheckingNode ;
-        BPlusTreeParams.CheckingTree = oldCheckingBTree ;
         BPT.forcePromoteModes = false ;
     }
 
