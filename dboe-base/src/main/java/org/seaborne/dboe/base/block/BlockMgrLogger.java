@@ -43,6 +43,8 @@ public class BlockMgrLogger implements BlockMgr // extends BlockMgrWrapper
             log = LoggerFactory.getLogger(BlockMgr.class) ;
         this.log = log ;
         this.logAllOperations = logAllOperations ;
+        if ( label == null )
+            label = blockMgr.getLabel() ; 
         this.label = label ;
     }
 
