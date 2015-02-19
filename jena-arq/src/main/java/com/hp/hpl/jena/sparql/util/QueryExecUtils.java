@@ -41,6 +41,7 @@ import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.resultset.PlainFormat ;
+import com.hp.hpl.jena.sparql.resultset.RDFOutput ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetApply ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
@@ -132,7 +133,7 @@ public class QueryExecUtils {
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_XML) || outputFormat.equals(ResultsFormat.FMT_RDF_N3)
              || outputFormat.equals(ResultsFormat.FMT_RDF_TTL) ) {
-            Model m = ResultSetFormatter.toModel(results) ;
+            Model m = RDFOutput.encodeAsModel(results) ;
             m.setNsPrefixes(prologue.getPrefixMapping()) ;
             RDFWriter rdfw = m.getWriter("TURTLE") ;
             m.setNsPrefix("rs", ResultSetGraphVocab.getURI()) ;
@@ -266,7 +267,7 @@ public class QueryExecUtils {
         }
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_N3) || outputFormat.equals(ResultsFormat.FMT_RDF_TTL) ) {
-            ResultSetFormatter.outputAsRDF(System.out, "TURTLE", b) ;
+            RDFOutput.outputAsRDF(System.out, "TURTLE", b) ;
             System.out.flush() ;
             return ;
         }
