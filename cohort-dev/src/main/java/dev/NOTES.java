@@ -23,6 +23,7 @@ public class NOTES {
     // ARQ :: extract Atlas.
     
     // (Nodes, Records) iterators to release blocks
+    // BlockMgrTrackerWriteLifecycle clears at start of update operation.  
     
     // Rework block tracking.
     //    Only worry about write blocks (iterator are read and confusing?)
