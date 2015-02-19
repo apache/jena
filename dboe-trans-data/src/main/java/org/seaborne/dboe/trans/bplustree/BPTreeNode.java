@@ -768,7 +768,7 @@ public final class BPTreeNode extends BPTreePage
             // Ensure that a node is at least min+1 so a delete can happen.
             // Can't be the root - we decended in the get().
             rebalance(path, page, y) ;  // Ignore return - need to refind.
-            
+            page.release(); 
             // Rebalance may have moved the record due to shuffling.  
             x = findSlot(rec) ;
             y = convert(x) ;
@@ -827,6 +827,7 @@ public final class BPTreeNode extends BPTreePage
         promoteRoot(root) ;
         
         BPTreePage sub = root.get(0) ;
+        promote1(sub, root, 0) ;
         BPTreeNode n = cast(sub) ;
         // Can pull up into the root.
         // Leave root node in same block (rather than swap to new root).
