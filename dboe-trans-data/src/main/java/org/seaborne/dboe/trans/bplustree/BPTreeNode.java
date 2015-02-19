@@ -21,9 +21,6 @@ import static org.seaborne.dboe.base.record.Record.keyGT ;
 import static org.seaborne.dboe.base.record.Record.keyLT ;
 import static org.seaborne.dboe.base.record.Record.keyNE ;
 import static org.seaborne.dboe.trans.bplustree.BPT.* ;
-import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingNode ;
-import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingTree ;
-import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.DumpTree ;
 
 import java.util.ArrayList ;
 import java.util.Iterator ;
@@ -235,7 +232,7 @@ public final class BPTreeNode extends BPTreePage
     public static Record delete(BPTreeNode root, Record rec) {
         if ( logging(log) ) {
             log(log, "** delete(%s) / start", rec) ;
-            if ( DumpTree )
+            if ( BPT.DumpTree )
                 root.dump() ;
         }
         if ( !root.isRoot() )
@@ -246,13 +243,15 @@ public final class BPTreeNode extends BPTreePage
         if ( root.isLeaf && root.count == 0 ) {
             // Special case. Just a records block. Allow that to go too small.
             BPTreePage page = root.get(0) ;
-            if ( CheckingNode && !(page instanceof BPTreeRecords) )
+            if ( BPT.CheckingNode && !(page instanceof BPTreeRecords) )
                 BPT.error("Zero size leaf root but not pointing to a records block") ;
             trackPath(path, root, 0, page) ;
             Record r = page.internalDelete(path, rec) ;
             page.release() ;
             if ( r != null )
                 root.write() ;
+            if ( BPT.DumpTree )
+                root.dump() ;
             return r ;
         }
 
@@ -267,7 +266,7 @@ public final class BPTreeNode extends BPTreePage
 
         if ( logging(log) ) {
             log(log, "** delete(%s) / finish", rec) ;
-            if ( DumpTree )
+            if ( BPT.DumpTree )
                 root.dump() ;
         }
         return v ;
@@ -474,7 +473,7 @@ public final class BPTreeNode extends BPTreePage
     
     @Override
     final Record internalSearch(AccessPath path, Record rec) {
-        if ( CheckingNode )
+        if ( BPT.CheckingNode )
             internalCheckNode() ;
         BPTreePage page = findHere(path, rec) ;
         Record r = page.internalSearch(path, rec) ;
@@ -560,7 +559,7 @@ public final class BPTreeNode extends BPTreePage
         }
 
         internalCheckNode() ;
-        if ( CheckingNode ) {
+        if ( BPT.CheckingNode ) {
             if ( !y.isFull() )
                 BPT.error("Node is not full") ;
             if ( this.ptrs.get(idx) != y.getId() ) {
@@ -609,7 +608,7 @@ public final class BPTreeNode extends BPTreePage
         z.release() ;
         // y.release() ; y release management done by caller.
         this.write() ;
-        if ( CheckingNode ) {
+        if ( BPT.CheckingNode ) {
             if ( Record.keyNE(splitKey, y.maxRecord()) )
                 BPT.error("Split key %d but max subtree %s", splitKey, y.maxRecord()) ;
             internalCheckNodeDeep() ;
@@ -674,7 +673,7 @@ public final class BPTreeNode extends BPTreePage
     private static void splitRoot(BPTreeNode root) {
         BPlusTree bpTree = root.bpTree ;
 
-        if ( CheckingNode )
+        if ( BPT.CheckingNode )
             if ( ! root.isRoot() )
                 BPT.error("Not root: %d (root is id zero)", root.getId()) ;
         root.internalCheckNode() ;
@@ -737,9 +736,9 @@ public final class BPTreeNode extends BPTreePage
         right.release() ;
         root.write() ;
 
-        if ( CheckingTree )
+        if ( BPT.CheckingTree )
             root.checkNodeDeep() ;
-        else if ( CheckingNode ) {
+        else if ( BPT.CheckingNode ) {
             root.internalCheckNode() ;
             left.internalCheckNode() ;
             right.internalCheckNode() ;
@@ -776,7 +775,7 @@ public final class BPTreeNode extends BPTreePage
             page = get(y) ;
             promote1(page, this, y) ;
             resetTrackPath(path, this, y, page) ;
-            if ( CheckingNode ) {
+            if ( BPT.CheckingNode ) {
                 internalCheckNode() ;
                 page.checkNode() ;
             }
@@ -815,7 +814,7 @@ public final class BPTreeNode extends BPTreePage
         if ( logging(log) )
             log(log, "reduceRoot >> %s", root) ;
 
-        if ( CheckingNode && (!root.isRoot() || root.count != 0) )
+        if ( BPT.CheckingNode && (!root.isRoot() || root.count != 0) )
             BPT.error("Not an empty root") ;
 
         if ( root.isLeaf ) {
@@ -839,7 +838,7 @@ public final class BPTreeNode extends BPTreePage
         root.write() ;
         // Free up.
         n.free() ;
-        if ( CheckingNode )
+        if ( BPT.CheckingNode )
             root.internalCheckNodeDeep() ;
 
         if ( logging(log) )
@@ -895,7 +894,7 @@ public final class BPTreeNode extends BPTreePage
 
             if ( logging(log) )
                 log(log, "<< rebalance: %s", this) ;
-            if ( CheckingNode ) {
+            if ( BPT.CheckingNode ) {
                 left.checkNode() ;
                 node.checkNode() ;
                 this.internalCheckNode() ;
@@ -918,7 +917,7 @@ public final class BPTreeNode extends BPTreePage
 
             if ( logging(log) )
                 log(log, "<< rebalance: %s", this) ;
-            if ( CheckingNode ) {
+            if ( BPT.CheckingNode ) {
                 right.checkNode() ;
                 node.checkNode() ;
                 this.internalCheckNode() ;
@@ -930,14 +929,14 @@ public final class BPTreeNode extends BPTreePage
         }
 
         // Couldn't shift. Collapse two pages.
-        if ( CheckingNode && left == null && right == null )
+        if ( BPT.CheckingNode && left == null && right == null )
             BPT.error("No siblings") ;
 
         if ( left != null ) {
             promote1(left, this, idx-1 ) ;
             if ( logging(log) )
                 log(log, "rebalance/merge/left: left=%d n=%d [%d]", left.getId(), node.getId(), idx - 1) ;
-            if ( CheckingNode && left.getId() == node.getId() )
+            if ( BPT.CheckingNode && left.getId() == node.getId() )
                 BPT.error("Left and n the same: %s", left) ;
             BPTreePage page = merge(left, node, idx - 1) ;
             if ( right != null )
@@ -951,7 +950,7 @@ public final class BPTreeNode extends BPTreePage
             // TODO ** HERE is it tracked correctly? Turmn tracking on, test_clear_02 and enable read checking in   Lifecycle track.free.
             if ( logging(log) )
                 log(log, "rebalance/merge/right: n=%d right=%d [%d]", node.getId(), right.getId(), idx) ;
-            if ( CheckingNode && right.getId() == node.getId() )
+            if ( BPT.CheckingNode && right.getId() == node.getId() )
                 BPT.error("N and right the same: %s", right) ;
             BPTreePage page = merge(node, right, idx) ;
             return page ;
@@ -979,7 +978,7 @@ public final class BPTreeNode extends BPTreePage
         if ( page == right )
             BPT.error("Returned page is not the left") ;
 
-        if ( CheckingNode ) {
+        if ( BPT.CheckingNode ) {
             if ( isLeaf ) {
                 // If two data blocks, then the split key is not included
                 // (it's already there, with its value).
@@ -1075,7 +1074,7 @@ public final class BPTreeNode extends BPTreePage
     @Override
     Record shiftRight(BPTreePage other, Record splitKey) {
         BPTreeNode node = cast(other) ;
-        if ( CheckingNode ) {
+        if ( BPT.CheckingNode ) {
             if ( count == 0 )
                 BPT.error("Node is empty - can't shift a slot out") ;
             if ( node.isFull() )
@@ -1099,7 +1098,7 @@ public final class BPTreeNode extends BPTreePage
     @Override
     Record shiftLeft(BPTreePage other, Record splitKey) {
         BPTreeNode node = cast(other) ;
-        if ( CheckingNode ) {
+        if ( BPT.CheckingNode ) {
             if ( count == 0 )
                 BPT.error("Node is empty - can't shift a slot out") ;
             if ( isFull() )
@@ -1125,7 +1124,7 @@ public final class BPTreeNode extends BPTreePage
             log(log, "ShuffleDown >> %s", this) ;
         }
 
-        if ( CheckingNode && x >= count )
+        if ( BPT.CheckingNode && x >= count )
             BPT.error("shuffleDown out of bounds") ;
 
         // Just the top to clear
@@ -1187,7 +1186,7 @@ public final class BPTreeNode extends BPTreePage
 
     @Override
     final boolean isFull() {
-        if ( CheckingNode && count > maxRecords() )
+        if ( BPT.CheckingNode && count > maxRecords() )
             BPT.error("isFull: Moby block: %s", this) ;
 
         // Count is number of records.
@@ -1212,7 +1211,7 @@ public final class BPTreeNode extends BPTreePage
     @Override
     final boolean isMinSize() {
         int min = params.getMinRec() ;
-        if ( CheckingNode && count < min )
+        if ( BPT.CheckingNode && count < min )
             BPT.error("isMinSize: Dwarf block: %s", this) ;
 
         return count <= min ;
@@ -1307,12 +1306,12 @@ public final class BPTreeNode extends BPTreePage
 
     // Check node does not assume a valid tree - may be in mid-operation.
     private final void internalCheckNode() {
-        if ( CheckingNode )
+        if ( BPT.CheckingNode )
             checkNode(null, null) ;
     }
 
     private final void internalCheckNodeDeep() {
-        if ( !CheckingTree )
+        if ( !BPT.CheckingTree )
             return ;
         checkNodeDeep() ;
     }
@@ -1388,7 +1387,7 @@ public final class BPTreeNode extends BPTreePage
                 BPT.error("Node: %d: Invalid child pointer @%d :: %s", id, i, this) ;
 
             // This does Block IO so disturbs tracking.
-            if ( CheckingTree && isLeaf ) {
+            if ( BPT.CheckingTree && isLeaf ) {
                 int ptr = ptrs.get(i) ;
                 BPTreeRecords records = bpTree.getRecordsMgr().getRead(ptr) ;
                 int rid = records.getId() ;

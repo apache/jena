@@ -17,8 +17,6 @@
 
 package org.seaborne.dboe.trans.bplustree;
 
-import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingTree ;
-
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
@@ -264,7 +262,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         startUpdateBlkMgr() ;
         BPTreeNode root = getRootWrite() ;
         Record r = BPTreeNode.insert(root, record) ;
-        if ( CheckingTree )
+        if ( BPT.CheckingTree )
             root.checkNodeDeep() ;
         releaseRootWrite(root) ;
         finishUpdateBlkMgr() ;
@@ -280,7 +278,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         startUpdateBlkMgr() ;
         BPTreeNode root = getRootWrite() ;
         Record r = BPTreeNode.delete(root, record) ;
-        if ( CheckingTree )
+        if ( BPT.CheckingTree )
             root.checkNodeDeep() ;
         releaseRootWrite(root) ;
         finishUpdateBlkMgr() ;
@@ -393,10 +391,6 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
             }
             if ( i == 0 )
                 break ;
-            
-            // XXX Start tracking, finish tracking.
-            System.out.println("START CLEAR") ; 
-            
             for ( int j = 0 ; j < i ; j++ ) {
                 delete(records[j]) ;
                 records[j] = null ;

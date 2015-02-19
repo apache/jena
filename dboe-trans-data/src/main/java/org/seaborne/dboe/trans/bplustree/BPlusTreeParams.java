@@ -23,36 +23,17 @@ import org.seaborne.dboe.DBOpEnvException ;
 import org.seaborne.dboe.base.file.MetaFile ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.sys.Names ;
-import org.seaborne.dboe.sys.SystemIndex ;
 
 /** Configuration for a B+Tree */ 
-final
-public class BPlusTreeParams
+final public class BPlusTreeParams
 {
-    // Global settings
-    public static boolean CheckingTree = SystemIndex.Checking ;         // Check on exit of B+Tree modifiying operations
-    public static boolean CheckingNode = false ;                        // Check within BPTreeNode
-    public static boolean CheckingConcurrency = SystemIndex.Checking ;  // Check on exit of B+Tree modifiying operations
-
     // Metadata
     //public static final String NS = BPlusTreeParams.class.getName() ;
-    public static final String NS = Names.keyNSBPlusTree ;
+    public static final String NS                  = Names.keyNSBPlusTree ;
     public static final String ParamOrder          = NS+".order" ;
     public static final String ParamKeyLength      = NS+".keyLength" ;
     public static final String ParamValueLength    = NS+".valueLength" ;
     public static final String ParamBlockSize      = NS+".blockSize" ;
-
-    public static void checkAll()
-    { 
-        CheckingTree = true ;
-        CheckingNode = true ;
-    }
-    
-    public static boolean DumpTree = false ;                 // Dump the tree during top level logging 
-    public static void infoAll() { 
-        DumpTree = true ;
-        BPT.Logging = true ;
-    }
 
     /* The gap is extra space in a node - some books have node size as 2*N 
      * (often for the classic insertion algorithm where it's easier to implement

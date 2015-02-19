@@ -15,12 +15,12 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.trans.bplustree;
+package org.seaborne.dboe.trans.bplustree ;
 
 import static java.lang.String.format ;
 import static org.apache.jena.atlas.lib.Alg.decodeIndex ;
-import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingNode ;
-
+import static org.seaborne.dboe.trans.bplustree.BPT.CheckingNode ;
+import static org.seaborne.dboe.trans.bplustree.BPT.promotePage ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.seaborne.dboe.base.StorageException ;
 import org.seaborne.dboe.base.block.Block ;
@@ -31,40 +31,47 @@ import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-/** B+Tree wrapper over a block of records in a RecordBufferPage.
+/**
+ * B+Tree wrapper over a block of records in a RecordBufferPage.
  * This class adds no persistent state to a RecordBufferPage.
  */
-public final class BPTreeRecords extends BPTreePage
-{
+public final class BPTreeRecords extends BPTreePage {
     private static Logger log = LoggerFactory.getLogger(BPTreeRecords.class) ;
-    @Override protected Logger getLogger() { return log ; }
 
-    private final RecordBufferPage  rBuffPage ;
-    private final BPTreeRecordsMgr  bprRecordsMgr ;
-    private RecordBuffer            rBuff ;         // Used heavily. Derived from rBuffPage
-    
+    @Override
+    protected Logger getLogger() {
+        return log ;
+    }
+
+    private final RecordBufferPage rBuffPage ;
+    private final BPTreeRecordsMgr bprRecordsMgr ;
+    private RecordBuffer           rBuff ;        // Used heavily. Derived from
+                                                   // rBuffPage
+
     BPTreeRecords(BPTreeRecordsMgr mgr, RecordBufferPage rbp) {
         super(mgr.getBPTree()) ;
         this.bprRecordsMgr = mgr ;
         rBuffPage = rbp ;
         rBuff = rBuffPage.getRecordBuffer() ;
     }
-    
-    RecordBufferPage getRecordBufferPage()
-    { return rBuffPage ; }
-    
-    RecordBuffer getRecordBuffer()
-    { return rBuff ; }
-    
-    public final Record get(int idx) {
-        return rBuff.get(idx) ; 
+
+    RecordBufferPage getRecordBufferPage() {
+        return rBuffPage ;
     }
-    
+
+    RecordBuffer getRecordBuffer() {
+        return rBuff ;
+    }
+
+    public final Record get(int idx) {
+        return rBuff.get(idx) ;
+    }
+
     @Override
     public final Block getBackingBlock() {
         return rBuffPage.getBackingBlock() ;
     }
-    
+
     @Override
     public BlockMgr getBlockMgr() {
         return bpTree.getRecordsMgr().getBlockMgr() ;
@@ -106,17 +113,17 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    final public void write()     { bprRecordsMgr.write(this) ; } 
-    
-    @Override  
+    final public void write() {
+        bprRecordsMgr.write(this) ;
+    }
+
+    @Override
     final boolean promote() {
         if ( bprRecordsMgr.isWritable(getId()) )
             return false ;
         // reset() will be called if necessary.
-        boolean promoteInPlace = (bpTree == null) 
-            ? true
-            : bpTree.state().modifiableRecordsBlock(getId()) ;
-        
+        boolean promoteInPlace = (bpTree == null) ? true : bpTree.state().modifiableRecordsBlock(getId()) ;
+
         if ( promoteInPlace ) {
             bprRecordsMgr.promoteInPlace(this) ;
             // TODO Is this needed?
@@ -128,37 +135,40 @@ public final class BPTreeRecords extends BPTreePage
             Block oldBlock = getBackingBlock() ;
             boolean b = bprRecordsMgr.promoteDuplicate(this) ;
             if ( b )
-                bprRecordsMgr.getBlockMgr().release(oldBlock); 
+                bprRecordsMgr.getBlockMgr().release(oldBlock) ;
             return b ;
         }
-            
+
     }
-    
-    @Override final
-    public void release()   { bprRecordsMgr.release(this) ; }
-    
-    @Override final
-    public void free()      { bprRecordsMgr.free(this) ; }
+
+    @Override
+    final public void release() {
+        bprRecordsMgr.release(this) ;
+    }
+
+    @Override
+    final public void free() {
+        bprRecordsMgr.free(this) ;
+    }
 
     @Override
     Record internalInsert(AccessPath path, Record record) {
-        // Delay promotion until we know  change will happen.
+        // Delay promotion until we know change will happen.
         int i = rBuff.find(record) ;
         Record r2 = null ;
         if ( i < 0 ) {
             i = decodeIndex(i) ;
             if ( rBuff.size() >= rBuff.maxSize() )
                 throw new StorageException("RecordBlock.put overflow") ;
-            BPT.promotePage(path, this) ;
+            promotePage(path, this) ;
             rBuff.add(i, record) ;
         } else {
             r2 = rBuff.get(i) ;
             if ( Record.compareByKeyValue(record, r2) != 0 ) {
                 // Replace : return old
-                BPT.promotePage(path, this) ;
+                promotePage(path, this) ;
                 rBuff.set(i, record) ;
-            }
-            else
+            } else
                 // No promotion, no write
                 return r2 ;
         }
@@ -169,9 +179,9 @@ public final class BPTreeRecords extends BPTreePage
     @Override
     Record internalDelete(AccessPath path, Record record) {
         int i = rBuff.find(record) ;
-        if ( i < 0 ) 
+        if ( i < 0 )
             return null ;
-        BPT.promotePage(path, this) ;
+        promotePage(path, this) ;
         Record r2 = rBuff.get(i) ;
         rBuff.remove(i) ;
         write() ;
@@ -185,10 +195,12 @@ public final class BPTreeRecords extends BPTreePage
         return r ;
     }
 
-    /** Split: place old high half in 'other'. Return the new (upper) BPTreeRecords(BPTreePage).
+    /**
+     * Split: place old high half in 'other'. Return the new (upper)
+     * BPTreeRecords(BPTreePage).
      * Split is the high end of the low page.
      */
-    @Override 
+    @Override
     public BPTreePage split() {
         BPTreeRecords other = create(rBuffPage.getLink()) ;
         rBuffPage.setLink(other.getId()) ;
@@ -304,54 +316,62 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    public final int getMaxSize()             { return rBuff.maxSize() ; }
-    
+    public final int getMaxSize() {
+        return rBuff.maxSize() ;
+    }
+
     @Override
-    public final int getCount()             { return rBuff.size() ; }
- 
+    public final int getCount() {
+        return rBuff.size() ;
+    }
+
     @Override
-    public final void setCount(int count)   { rBuff.setSize(count) ; }
-    
+    public final void setCount(int count) {
+        rBuff.setSize(count) ;
+    }
+
     @Override
-    public String toString()
-    { return String.format("BPTreeRecords[id=%d, link=%d]: %s", getId(), getLink(), rBuff.toString()); }
-    
+    public String toString() {
+        return String.format("BPTreeRecords[id=%d, link=%d]: %s", getId(), getLink(), rBuff.toString()) ;
+    }
+
     @Override
     protected String typeMark() {
         return "Data" ;
     }
 
     @Override
-    public final void checkNode()
-    {
-        if ( ! CheckingNode ) return ;
+    public final void checkNode() {
+        if ( !CheckingNode )
+            return ;
         if ( rBuff.size() < 0 || rBuff.size() > rBuff.maxSize() )
             error("Misized: %s", this) ;
 
-        for ( int i = 1 ; i < getCount() ; i++ )
-        {
-            Record r1 = rBuff.get(i-1) ;
+        for ( int i = 1 ; i < getCount() ; i++ ) {
+            Record r1 = rBuff.get(i - 1) ;
             Record r2 = rBuff.get(i) ;
             if ( Record.keyGT(r1, r2) )
                 error("Not sorted: %s", this) ;
         }
     }
-    
-    @Override
-    public final void checkNodeDeep()
-    { checkNode() ; }
 
     @Override
-    public int getId()                  { return rBuffPage.getId() ; } 
-    
+    public final void checkNodeDeep() {
+        checkNode() ;
+    }
+
+    @Override
+    public int getId() {
+        return rBuffPage.getId() ;
+    }
+
     @Override
     public String getRefStr() {
         return String.format("BPTRecord[id=%d]", getBackingBlock().getId()) ;
     }
 
     @Override
-    public void output(IndentedWriter out)
-    {
+    public void output(IndentedWriter out) {
         out.print(toString()) ;
     }
 }

@@ -25,6 +25,7 @@ import java.util.Optional ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.FmtLog ;
+import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.trans.bplustree.AccessPath.AccessStep ;
 import org.slf4j.Logger ;
 
@@ -35,6 +36,30 @@ public final class BPT {
     public static boolean forcePromoteModes         = false ;
     public static boolean promoteDuplicateRecords   = false ;
     public static boolean promoteDuplicateNodes     = false ;
+
+    // Global settings
+    // Check on exit of B+Tree modifiying operations
+    public static boolean CheckingTree = SystemIndex.Checking ;         
+    // Check within BPTreeNode
+    public static boolean CheckingNode = false ;                      
+    // Check on exit of B+Tree modifiying operations
+    // Not done?
+    public static boolean CheckingConcurrency = SystemIndex.Checking ;
+
+    /** Enable detailed internal consistency checking */
+    public static void checking(boolean onOrOff) {
+        // CheckingTree = true ;
+        CheckingNode = onOrOff ;
+    }
+
+    /** Dump before and after top level update operations **/
+    public static boolean DumpTree = false ;
+
+    /** Output a lot of detailed information. */
+    public static void infoAll(boolean onOrOff) { 
+        DumpTree = true ;
+        Logging = true ;
+    }
 
     static boolean logging(Logger log) {
         return Logging && log.isDebugEnabled() ;
@@ -66,12 +91,12 @@ public final class BPT {
             return idx ;
         return decodeIndex(idx) ;
     }
+    
+    // ---- Promotion of pages.
 
     /** Promote a single page. Assumes the path to this page has been handled in some way elsewhere */  
     static boolean promote1(BPTreePage page, BPTreeNode node, int idx) {
-        
-        System.out.println("promote1: "+page.getBackingBlock().getId()) ;
-        System.out.println("promote1: "+page.getBlockMgr().getLabel()) ;
+        //System.out.println("promote1: "+page.getBlockMgr().getLabel()+" "+page.getBackingBlock().getId()) ;
         boolean changed = page.promote() ;
         node.ptrs.set(idx, page.getId()) ;
         return changed ;
@@ -100,7 +125,7 @@ public final class BPT {
 //            }
         }
         // ---- Checking if the access path is consistent.
-        if ( BPlusTreeParams.CheckingNode && path != null ) {
+        if ( BPT.CheckingNode && path != null ) {
             if ( path.getPath().size() > 2) {
                 // Check every one except the last is not a leaf node.
                 List<AccessStep> y = path.getPath().subList(0, path.getPath().size()-2) ;
@@ -185,7 +210,7 @@ public final class BPT {
                     log(pageLog, "  new root %s", newRoot) ;
                 page.bpTree.newRoot(newRoot) ;
             }
-        } // if ( path != null )
+        } // end of "if ( path != null )"
     }
 }
 

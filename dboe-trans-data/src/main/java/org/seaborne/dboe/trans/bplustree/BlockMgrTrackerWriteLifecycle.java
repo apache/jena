@@ -39,8 +39,10 @@ import static org.seaborne.dboe.trans.bplustree.BlockMgrTrackerWriteLifecycle.Ac
  */
 
 public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
-    private static Logger loggerDefault = LoggerFactory.getLogger(BlockMgrTrackerWriteLifecycle.class) ;
-    public static boolean verbose       = false ;
+    public static Logger logger             = LoggerFactory.getLogger("BlockTrack") ;
+    public static boolean verbose           = false ;
+    
+    public static boolean collectHistory    = true ;
 
     static enum Action {
         Alloc, Promote, GetRead, GetWrite, Write, Release, Free, 
@@ -66,7 +68,15 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
         activeWriteBlocks.clear() ;
         actions.clear() ;
     }
+    
+    public void clearHistory() {
+        actions.clear() ;
+    }
 
+    public void clearAll() {
+        clearInternalRW() ;
+    }
+    
     private int          inRead     = 0 ;
     private boolean      inUpdate   = false ;
     private boolean      inBatch    = false ;
@@ -86,7 +96,7 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
     }
 
     private BlockMgrTrackerWriteLifecycle(String label, BlockMgr blockMgr) {
-        this(loggerDefault, label, blockMgr) ;
+        this(logger, label, blockMgr) ;
     }
 
     //
@@ -102,7 +112,8 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
     }
 
     private void add(Action action, Long id) {
-        actions.add(new Pair<>(action, id)) ;
+        if ( collectHistory )
+            actions.add(new Pair<>(action, id)) ;
     }
 
     @Override
@@ -217,7 +228,10 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
             
             if ( !activeWriteBlocks.contains(id) )
                 error(Free, id + " is not a write block") ;
+            
             activeWriteBlocks.remove(id) ;
+            if ( activeWriteBlocks.count(id) != 0 )
+                warn(Free, id + " has "+activeWriteBlocks.count(id)+" outstanding write registrations") ;
         }
         blockMgr.free(block) ;
     }
@@ -372,7 +386,8 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
             error(string) ;
             for ( Long id : blocks )
                 warn("    Block: " + id) ;
-            history() ;
+            if ( collectHistory ) 
+                history() ;
             throw new DBOpEnvException() ;
             // debugPoint() ;
         }
@@ -419,7 +434,6 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
                 log.info(String.format("%s:     %-12s  %d", label, p.getLeft(), p.getRight())) ;
             else
                 log.info(String.format("%s:     %-12s", label, p.getLeft())) ;
-
         }
     }
 

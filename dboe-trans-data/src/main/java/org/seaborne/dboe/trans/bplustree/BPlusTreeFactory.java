@@ -17,11 +17,10 @@
 
 package org.seaborne.dboe.trans.bplustree;
 
-import static org.seaborne.dboe.trans.bplustree.BPlusTreeParams.CheckingNode ;
-
 import org.seaborne.dboe.DBOpEnvException ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
+import org.seaborne.dboe.base.block.BlockMgrLogger ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
@@ -72,7 +71,7 @@ public class BPlusTreeFactory {
         BPTreeRecordsMgr recordsMgr = new BPTreeRecordsMgr(bpt, params.getRecordFactory(), recordPageMgr) ;
         int rootId = createIfAbsent(nodeManager, recordsMgr) ;
         bpt.init(rootId, nodeManager, recordsMgr) ;
-        if ( CheckingNode ) {
+        if ( BPT.CheckingNode ) {
             nodeManager.startRead();
             BPTreeNode root = nodeManager.getRead(rootId, BPlusTreeParams.RootParent) ;
             root.checkNodeDeep() ;
@@ -121,6 +120,15 @@ public class BPlusTreeFactory {
         BlockMgr mgr2 = bpTree.getRecordsMgr().getBlockMgr() ;
         mgr1 = BlockMgrTrackerWriteLifecycle.track(mgr1) ;
         mgr2 = BlockMgrTrackerWriteLifecycle.track(mgr2) ;
+        return BPlusTreeFactory.attach(bpTree.getComponentId(), bpTree.getParams(), mgr1, mgr2) ;
+    }
+    
+    /** Debugging */
+    public static BPlusTree addLogging(BPlusTree bpTree) {
+        BlockMgr mgr1 = bpTree.getNodeManager().getBlockMgr() ;
+        BlockMgr mgr2 = bpTree.getRecordsMgr().getBlockMgr() ;
+        mgr1 = new BlockMgrLogger(mgr1, false) ; 
+        mgr2 = new BlockMgrLogger(mgr2, false) ; 
         return BPlusTreeFactory.attach(bpTree.getComponentId(), bpTree.getParams(), mgr1, mgr2) ;
     }
     
