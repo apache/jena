@@ -40,7 +40,6 @@ import static org.seaborne.dboe.trans.bplustree.BlockMgrTrackerWriteLifecycle.Ac
 
 public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
     public static Logger logger             = LoggerFactory.getLogger("BlockTrack") ;
-    public static boolean verbose           = false ;
     
     public static boolean collectHistory    = true ;
 
@@ -63,7 +62,7 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
 
     protected final BlockMgr                 blockMgr ;
 
-    private void clearInternalRW() {
+    private void clearBlockTracking() {
         activeReadBlocks.clear() ;
         activeWriteBlocks.clear() ;
         actions.clear() ;
@@ -74,7 +73,7 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
     }
 
     public void clearAll() {
-        clearInternalRW() ;
+        clearBlockTracking() ;
     }
     
     private int          inRead     = 0 ;
@@ -329,7 +328,7 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
             if ( inRead == 0 ) {
                 // Check at end of multiple reads or a write
                 checkEmpty("Outstanding read blocks at end of read operations", activeReadBlocks) ;
-                clearInternalRW() ;
+                clearBlockTracking() ;
             }
 
             inUpdate = false ;
@@ -346,6 +345,7 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
             if ( inUpdate )
                 error(BeginUpdate, "beginUpdate when already in update") ;
             inUpdate = true ;
+            clearBlockTracking();
         }
         blockMgr.beginUpdate() ;
     }
@@ -364,7 +364,7 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
 
             inUpdate = false ;
             inRead = 0 ;
-            clearInternalRW() ;
+            clearBlockTracking() ;
         }
         blockMgr.endUpdate() ;
     }
@@ -416,10 +416,8 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
     }
 
     private void error(Action action, String string) {
-        if ( verbose ) {
-            error(action + ": " + string) ;
-            history() ;
-        }
+        error(action + ": " + string) ;
+        history() ;
         throw new BlockException(msg(action + ": " + string)) ;
         // debugPoint() ;
     }
