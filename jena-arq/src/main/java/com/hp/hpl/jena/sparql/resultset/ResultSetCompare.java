@@ -203,8 +203,8 @@ public class ResultSetCompare
      * Only does RDF term comparison.
      */ 
     public static boolean isomorphic(ResultSet rs1, ResultSet rs2) {
-        Model m1 = ResultSetFormatter.toModel(rs1) ;
-        Model m2 = ResultSetFormatter.toModel(rs2) ;
+        Model m1 = RDFOutput.encodeAsModel(rs1) ;
+        Model m2 = RDFOutput.encodeAsModel(rs2) ;
         return m1.isIsomorphicWith(m2) ;
     }
     
