@@ -22,28 +22,35 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.QuadAction ;
 
 public class TextDocProducerTriples implements TextDocProducer {
+	
+	@SuppressWarnings( "unused" )
     private static Logger          log     = LoggerFactory.getLogger(TextDocProducerTriples.class) ;
     private final EntityDefinition defn ;
     private final TextIndex        indexer ;
-    private boolean                started = false ;
+    
+    // Also have to have a ThreadLocal here to keep track of whether or not we are in a transaction,
+    // therefore whether or not we have to do autocommit
+    private final ThreadLocal<Boolean> inTransaction = new ThreadLocal<Boolean>() ;
 
-    public TextDocProducerTriples(EntityDefinition defn, TextIndex indexer) {
+    // ignore the dataset graph
+    public TextDocProducerTriples(DatasetGraph dsg, EntityDefinition defn, TextIndex indexer) {
         this.defn = defn ;
         this.indexer = indexer ;
+        inTransaction.set(false) ;
     }
 
     @Override
     public void start() {
-        indexer.startIndexing() ;
-        started = true ;
+        inTransaction.set(true) ;
     }
 
     @Override
     public void finish() {
-        indexer.finishIndexing() ;
+        inTransaction.set(false) ;
     }
 
     @Override
@@ -54,8 +61,14 @@ public class TextDocProducerTriples implements TextDocProducer {
             return ;
 
         Entity entity = TextQueryFuncs.entityFromQuad(defn, g, s, p, o) ;
-        if ( entity != null )
-            // Null means does not match defn
+        // Null means does not match defn
+        if ( entity != null ) {
             indexer.addEntity(entity) ;
+            
+            // Auto commit the entity if we aren't in a transaction
+            if (!inTransaction.get()) {
+                indexer.commit() ;
+            }
+        }
     }
 }

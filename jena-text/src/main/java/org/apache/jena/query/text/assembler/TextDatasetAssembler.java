@@ -20,15 +20,23 @@ package org.apache.jena.query.text.assembler;
 
 import static org.apache.jena.query.text.assembler.TextVocab.pDataset ;
 import static org.apache.jena.query.text.assembler.TextVocab.pIndex ;
+import static org.apache.jena.query.text.assembler.TextVocab.pDocProducer ;
+import static org.apache.jena.query.text.assembler.TextVocab.pCloseIndexOnClose ;
 import static org.apache.jena.query.text.assembler.TextVocab.textDataset ;
+
+import java.lang.reflect.Constructor;
+
 import org.apache.jena.query.text.TextDatasetFactory ;
+import org.apache.jena.query.text.TextDocProducer;
 import org.apache.jena.query.text.TextIndex ;
 
 import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.Mode ;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
+import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 
@@ -46,18 +54,55 @@ public class TextDatasetAssembler extends AssemblerBase implements Assembler
 
     */
     
+    /**
+    	open creates a text dataset. The underlying dataset is
+    	specfied by the value of the root's dataset property, the
+    	text index by the value of the index property, any document
+    	producer by the value of the docProducer property if present,
+    	the closeIndexOnClose defaults to true unless the
+    	closeIndexOnClose property specifies otherwise. 
+     */
     @Override
     public Dataset open(Assembler a, Resource root, Mode mode)
     {
         Resource dataset = GraphUtils.getResourceValue(root, pDataset) ;
         Resource index   = GraphUtils.getResourceValue(root, pIndex) ;
+        String producer = GraphUtils.getStringValue(root, pDocProducer ) ;
+        String close = GraphUtils.getStringValue(root, pCloseIndexOnClose ) ;
+
+        boolean closeIndexOnClose = (close == null ? true : close.equals("true"));
         
         Dataset ds = (Dataset)a.open(dataset) ;
         TextIndex textIndex = (TextIndex)a.open(index) ;
-        
-        Dataset dst = TextDatasetFactory.create(ds, textIndex) ;
-        return dst ;
-        
+        TextDocProducer docProducer = null;
+        if (producer != null) {
+            docProducer = getDocProducer(root, producer, ds.asDatasetGraph(), textIndex);
+        }
+        Dataset dst = TextDatasetFactory.create(ds, textIndex, docProducer, closeIndexOnClose) ;
+        return dst ;        
+    }
+    
+    @SuppressWarnings("unchecked")
+    private TextDocProducer getDocProducer(Resource root, String className, DatasetGraph dsg, TextIndex textIndex) {
+        Class<TextDocProducer> pc;
+        try {
+            pc = (Class<TextDocProducer>) Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            throw new AssemblerException(root, "failed to load class '" + className + "'", e);
+        }
+        Constructor<TextDocProducer> constructor;
+        try {
+            constructor = pc.getDeclaredConstructor(DatasetGraph.class, TextIndex.class);
+        } catch (NoSuchMethodException e) {
+            throw new AssemblerException(root, "DocProducer class has no constructor" + className +"(DatasetGraph,TextIndex)", e);
+        } catch (SecurityException e) {
+            throw new AssemblerException(root, "Security exception accessing " + className + "(DatasetGraph,TextIndex)", e);
+        }
+        try {
+            return constructor.newInstance(dsg, textIndex);
+        } catch (Exception e) {
+            throw new AssemblerException(root, "Can't create instance of " + className, e);
+        }
     }
 }
 

@@ -35,7 +35,6 @@ import org.junit.runners.Suite.SuiteClasses ;
     // Embedded solr not supported 
     //, TestDatasetWithEmbeddedSolrTextIndex.class
     
-    , TestSearchBeforeWriteOnDatasetWithLuceneTextIndex.class
     , TestEntityMapAssembler.class
     , TestTextDatasetAssembler.class
     , TestTextIndexLuceneAssembler.class
@@ -45,6 +44,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestDatasetWithStandardAnalyzer.class
     , TestDatasetWithKeywordAnalyzer.class
     , TestDatasetWithLowerCaseKeywordAnalyzer.class
+    , TestLuceneWithMultipleThreads.class
 })
 
 public class TS_Text

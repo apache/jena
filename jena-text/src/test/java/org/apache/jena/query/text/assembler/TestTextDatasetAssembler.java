@@ -21,8 +21,11 @@ package org.apache.jena.query.text.assembler;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.apache.jena.query.text.DummyDocProducer;
 import org.apache.jena.query.text.TextIndexLucene;
 import org.apache.jena.query.text.TextQuery;
+import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.hp.hpl.jena.assembler.Assembler;
@@ -32,7 +35,7 @@ import com.hp.hpl.jena.tdb.assembler.AssemblerTDB;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
- * Test the text dataset assembler.
+ * Unit tests for {@link TextDatasetAssembler}
  */
 public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
 	
@@ -41,9 +44,12 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
 	private static final Resource spec1;
 	private static final Resource noDatasetPropertySpec;
 	private static final Resource noIndexPropertySpec;
+	private static final Resource docProducer;
+	
+	private Dataset dataset;
 	
 	@Test public void testSimpleDatasetAssembler() {
-		Dataset dataset = (Dataset) Assembler.general.open(spec1);
+		dataset = (Dataset) Assembler.general.open(spec1);
 		assertTrue(dataset.getContext().get(TextQuery.textIndex) instanceof TextIndexLucene);
 	}
 	
@@ -60,24 +66,38 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
 		    fail("should have thrown an exception");
 		} catch (Exception e) {}
 	}
-	
-	static {
+
+    @Test public void testSpecifyDocProducer() {
+        dataset = (Dataset) Assembler.general.open(docProducer);
+        assertTrue(dataset.getContext().get(TextQuery.docProducer) instanceof DummyDocProducer);
+    }
+    
+    @After public void closeDatasetAfterText() {
+    	if (dataset != null) dataset.close();
+    }
+
+    static {
 		TextAssembler.init();
 		AssemblerTDB.init();
 		spec1 =
 				model.createResource(TESTBASE + "spec1")
 				     .addProperty(RDF.type, TextVocab.textDataset)
 				     .addProperty(TextVocab.pDataset, SIMPLE_DATASET_SPEC)
-				     .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC);
+				     .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC3);
 		noDatasetPropertySpec =
 				model.createResource(TESTBASE + "noDatasetPropertySpec")
 				     .addProperty(RDF.type, TextVocab.textDataset)
-				     .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC);
+				     .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC4);
 		noIndexPropertySpec =
 				model.createResource(TESTBASE + "noIndexPropertySpec")
 				     .addProperty(RDF.type, TextVocab.textDataset)
 				     .addProperty(TextVocab.pDataset, SIMPLE_DATASET_SPEC);
-		
+		docProducer =
+		    model.createResource(TESTBASE + "docProducerSpec")
+				   .addProperty(RDF.type, TextVocab.textDataset)
+				   .addProperty(TextVocab.pDataset, SIMPLE_DATASET_SPEC)
+				   .addProperty(TextVocab.pDocProducer, DummyDocProducer.class.getCanonicalName())
+				   .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC);
 	}
 
 }

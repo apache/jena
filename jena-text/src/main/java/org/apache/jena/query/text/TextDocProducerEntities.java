@@ -35,27 +35,30 @@ public class TextDocProducerEntities extends DatasetChangesBatched implements Te
     private static Logger          log     = LoggerFactory.getLogger(TextDocProducer.class) ;
     private final EntityDefinition defn ;
     private final TextIndex        indexer ;
-    private boolean                started = false ;
+    
+    // Also have to have a ThreadLocal here to keep track of whether or not we are in a transaction,
+    // therefore whether or not we have to do autocommit
+    private final ThreadLocal<Boolean> inTransaction = new ThreadLocal<Boolean>() ;
 
     public TextDocProducerEntities(EntityDefinition defn, TextIndex indexer) {
         this.defn = defn ;
         this.indexer = indexer ;
+        inTransaction.set(false) ;
     }
 
     @Override
     protected void startBatched() {
-        indexer.startIndexing() ;
-        started = true ;
+        inTransaction.set(true) ;
     }
 
     @Override
     protected void finishBatched() {
-        indexer.finishIndexing() ;
+        inTransaction.set(false) ;
     }
 
     @Override
     protected void dispatch(QuadAction quadAction, List<Quad> batch) {
-        if ( !started )
+        if ( !inTransaction.get() )
             throw new IllegalStateException("Not started") ;
         if ( !QuadAction.ADD.equals(quadAction) )
             return ;

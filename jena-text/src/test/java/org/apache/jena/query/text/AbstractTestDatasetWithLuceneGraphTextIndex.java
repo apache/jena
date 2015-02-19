@@ -20,6 +20,8 @@ package org.apache.jena.query.text;
 
 import org.apache.lucene.store.Directory ;
 import org.apache.lucene.store.RAMDirectory ;
+import org.junit.After ;
+import org.junit.Before ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
@@ -31,13 +33,19 @@ import com.hp.hpl.jena.vocabulary.RDFS ;
  */
 public class AbstractTestDatasetWithLuceneGraphTextIndex extends AbstractTestDatasetWithGraphTextIndex {
 
-	public static void init() {
-	        Dataset ds1 = TDBFactory.createDataset() ;
-                Directory dir = new RAMDirectory() ;
-                EntityDefinition eDef = new EntityDefinition("iri", "text", "graph", RDFS.label.asNode()) ;
-                eDef.set("comment", RDFS.comment.asNode()) ; // some tests require indexing rdfs:comment
-                TextIndex tidx = new TextIndexLucene(dir, eDef) ;
-                dataset = TextDatasetFactory.create(ds1, tidx) ;
+    @Before
+	public void init() {
+        Dataset ds1 = TDBFactory.createDataset() ;
+        Directory dir = new RAMDirectory() ;
+        EntityDefinition eDef = new EntityDefinition("iri", "text", "graph", RDFS.label.asNode()) ;
+        eDef.set("comment", RDFS.comment.asNode()) ; // some tests require indexing rdfs:comment
+        TextIndex tidx = new TextIndexLucene(dir, eDef) ;
+        dataset = TextDatasetFactory.create(ds1, tidx) ;
 	}
+    
+    @After
+    public void teardown() {
+        dataset.close();
+    }
 
 }

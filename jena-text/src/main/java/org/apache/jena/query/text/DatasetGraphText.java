@@ -28,8 +28,12 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.sparql.JenaTransactionException ;
-import com.hp.hpl.jena.sparql.core.* ;
+import com.hp.hpl.jena.sparql.core.DatasetChanges;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphMonitor ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphWithLock ;
+import com.hp.hpl.jena.sparql.core.GraphView ;
+import com.hp.hpl.jena.sparql.core.Transactional ;
 
 public class DatasetGraphText extends DatasetGraphMonitor implements Transactional
 {
@@ -37,8 +41,20 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
     private final TextIndex     textIndex ;
     private final Transactional dsgtxn ;
     private final Graph         dftGraph ;
-
+    private final boolean       closeIndexOnClose;
+    
+    
+    // If we are going to implement Transactional, then we are going to have to do as DatasetGraphWithLock and
+    // TDB's DatasetGraphTransaction do and track transaction state in a ThreadLocal
+    private final ThreadLocal<ReadWrite> readWriteMode = new ThreadLocal<ReadWrite>();
+    
+    
     public DatasetGraphText(DatasetGraph dsg, TextIndex index, TextDocProducer producer)
+    { 
+        this(dsg, index, producer, false);
+    }
+    
+    public DatasetGraphText(DatasetGraph dsg, TextIndex index, TextDocProducer producer, boolean closeIndexOnClose)
     {
         super(dsg, producer) ;
         this.textIndex = index ;
@@ -47,9 +63,10 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
         else
             dsgtxn = new DatasetGraphWithLock(dsg) ;
         dftGraph = GraphView.createDefaultGraph(this) ;
+        this.closeIndexOnClose = closeIndexOnClose;
     }
 
-    // ---- Intecept these and force the use of views.
+    // ---- Intercept these and force the use of views.
     @Override
     public Graph getDefaultGraph() {
         return dftGraph ;
@@ -92,64 +109,103 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
         return results.iterator() ;
     }
 
-    // Imperfect.
-    private boolean needFinish = false ;
-
     @Override
     public void begin(ReadWrite readWrite) {
+        readWriteMode.set(readWrite);
         dsgtxn.begin(readWrite) ;
-        // textIndex.begin(readWrite) ;
-        if ( readWrite == ReadWrite.WRITE ) {
-            // WRONG design
-            super.getMonitor().start() ;
-            // Right design.
-            // textIndex.startIndexing() ;
-            needFinish = true ;
-        }
+        super.getMonitor().start() ;
     }
-
-    @Override
-    public void commit() {
-        try {
-            if ( needFinish ) {
-                super.getMonitor().finish() ;
-                // textIndex.finishIndexing() ;
-            }
-            needFinish = false ;
-            // textIndex.commit() ;
-            dsgtxn.commit() ;
-        }
-        catch (Throwable ex) {
-            log.warn("Exception in commit: " + ex.getMessage(), ex) ;
-            dsgtxn.abort() ;
-        }
-    }
-
+    
+    /**
+     * Rollback all changes, discarding any exceptions that occur.
+     */
     @Override
     public void abort() {
+        // Roll back all both objects, discarding any exceptions that occur
+        try { dsgtxn.abort(); } catch (Throwable t) { log.warn("Exception in abort: " + t.getMessage(), t); }
+        try { textIndex.rollback(); } catch (Throwable t) { log.warn("Exception in abort: " + t.getMessage(), t); }
+        
+        readWriteMode.set(null) ;
+        super.getMonitor().finish() ;
+    }
+    
+    /**
+     * Perform a 2-phase commit by first calling prepareCommit() on the TextIndex
+     * followed by committing the Transaction object, and then calling commit()
+     * on the TextIndex().
+     * <p> 
+     * If either of the objects fail on either the preparation or actual commit,
+     * it terminates and calls {@link #abort()} on both of them.
+     * <p>
+     * <b>NOTE:</b> it may happen that the TextIndex fails to commit, after the
+     * Transactional has already successfully committed.  A rollback instruction will
+     * still be issued, but depending on the implementation, it may not have any effect.
+     */
+    @Override
+    public void commit() {   	
+    	getMonitor().finish() ;
+
+    	// Phase 1
+        if (readWriteMode.get() == ReadWrite.WRITE) {
+            try {
+                textIndex.prepareCommit();
+            }
+            catch (Throwable t) {
+                log.error("Exception in prepareCommit: " + t.getMessage(), t) ;
+                abort();
+                throw new TextIndexException(t);
+            }
+        }
+        
+        // Phase 2
         try {
-            if ( needFinish )
-                textIndex.abortIndexing() ;
-            dsgtxn.abort() ;
+            dsgtxn.commit();
+            if (readWriteMode.get() == ReadWrite.WRITE) {
+                textIndex.commit();
+            }
         }
-        catch (JenaTransactionException ex) { throw ex ; }
-        catch (RuntimeException ex) { 
-            log.warn("Exception in abort: " + ex.getMessage(), ex) ;
-            throw ex ;
+        catch (Throwable t) {
+            log.error("Exception in commit: " + t.getMessage(), t) ;
+            abort();
+            throw new TextIndexException(t);
         }
+        readWriteMode.set(null);
     }
 
     @Override
     public boolean isInTransaction() {
-        return dsgtxn.isInTransaction() ;
+        return readWriteMode.get() != null;
     }
 
     @Override
     public void end() {
+        // If we are still in a write transaction at this point, then commit was never called, so rollback the TextIndex
+        if (readWriteMode.get() == ReadWrite.WRITE) {
+            try {
+                textIndex.rollback();
+            }
+            catch (Throwable t) {
+                log.warn("Exception in end: " + t.getMessage(), t) ;
+            }
+        }
+        
         try {
-            // textIndex.end() ;
             dsgtxn.end() ;
         }
-        catch (Throwable ex) { log.warn("Exception in end: " + ex.getMessage(), ex) ; }
+        catch (Throwable t) {
+            log.warn("Exception in end: " + t.getMessage(), t) ;
+        }
+        
+        readWriteMode.set(null) ;
+        super.getMonitor().finish() ;
     }
+    
+    @Override
+    public void close() {
+        super.close();
+        if (closeIndexOnClose) {
+            textIndex.close();
+        }
+    }
+    
 }

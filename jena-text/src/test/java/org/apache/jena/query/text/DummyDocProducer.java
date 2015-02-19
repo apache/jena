@@ -18,13 +18,31 @@
 
 package org.apache.jena.query.text;
 
-import org.junit.Before ;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.QuadAction;
 
-public class TestDatasetWithLuceneGraphTextIndex extends AbstractTestDatasetWithLuceneGraphTextIndex {
-	
-	@Before
-	public void before() {
-		init();
-	}
-	
+/**
+ * Test fixture document producer
+ */
+public class DummyDocProducer implements TextDocProducer {
+
+    public DummyDocProducer(DatasetGraph dsg, TextIndex textIndex) {}
+
+    int count;
+
+    @Override
+    public void start() {
+        count = 0;
+    }
+
+    @Override
+    public void change(QuadAction qaction, Node g, Node s, Node p, Node o) {
+        count++;
+    }
+
+    @Override
+    public void finish() {}
+
+    public int getNumQuads() { return count ;}
 }

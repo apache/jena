@@ -84,20 +84,4 @@ public class AbstractTestDatasetWithLuceneTextIndex extends AbstractTestDatasetW
 				    "         ) ."
 				    );
 	}
-	
-	public static void init() {
-		Reader reader = new StringReader(SPEC);
-		Model specModel = ModelFactory.createDefaultModel();
-		specModel.read(reader, "", "TURTLE");
-		TextAssembler.init();			
-		deleteOldFiles();
-		indexDir.mkdirs();
-		Resource root = specModel.getResource(SPEC_ROOT_URI);
-		dataset = (Dataset) Assembler.general.open(root);
-	}
-	
-	
-	public static void deleteOldFiles() {
-		if (indexDir.exists()) TextSearchUtil.emptyAndDeleteDirectory(indexDir);
-	}
 }

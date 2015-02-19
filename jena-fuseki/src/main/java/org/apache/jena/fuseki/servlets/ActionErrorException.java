@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.servlets;
 
-class ActionErrorException extends RuntimeException
+public class ActionErrorException extends RuntimeException
 {
     final Throwable exception ;
     final String message ;
