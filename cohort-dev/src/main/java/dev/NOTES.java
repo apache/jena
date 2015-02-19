@@ -22,6 +22,8 @@ public class NOTES {
     // Mantis / cohort / legion
     // ARQ :: extract Atlas.
     
+    // (Nodes, Records) iterators to release blocks
+    
     // Rework block tracking.
     //    Only worry about write blocks (iterator are read and confusing?)
     //    Start batch - stack tracking - finish batch - check all written.

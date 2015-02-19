@@ -23,21 +23,22 @@ import static org.seaborne.dboe.test.RecordLib.r ;
 
 import java.io.PrintStream ;
 import java.util.Arrays ;
+import java.util.Iterator ;
 import java.util.List ;
 import java.util.stream.Collectors ;
 
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.seaborne.dboe.base.block.BlockMgr ;
+import org.seaborne.dboe.base.block.BlockMgrLogger ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.test.RecordLib ;
 import org.seaborne.dboe.trans.bplustree.BPT ;
-/* ***************** TRANSACTION BPLUSTREE *********************** */
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
-import org.seaborne.dboe.trans.bplustree.BPlusTreeParams ;
-/* ***************** TRANSACTION BPLUSTREE *********************** */
+import org.seaborne.dboe.trans.bplustree.BlockMgrTrackerWriteLifecycle ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
@@ -47,8 +48,11 @@ public class MainIndexTest {
     static { LogCtl.setLog4j() ; }
 
     public static void main(String... args) {
-        SystemIndex.setNullOut(true);
-        testClear() ;
+        
+        BPT.CheckingNode = true ;
+        BPT.CheckingTree = false ;
+        SystemIndex.setNullOut(true) ;
+        testClear(15) ;
     }    
     
     static RecordFactory recordFactory = new RecordFactory(4, 0) ;
@@ -58,18 +62,76 @@ public class MainIndexTest {
     protected static BPlusTree makeRangeIndex(int order, int minRecords) {
         BPlusTree bpt = BPlusTreeFactory.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
         if ( true ) {
-            // Breaks with CheckingTree = true ; 
-            // because they are deep reads into the tree.
-            BPlusTreeParams.CheckingNode = true ;
-            BPlusTreeParams.CheckingTree = true ;
-            //bpt = BPlusTreeFactory.addTracking(bpt) ;
+            BlockMgr mgr1 = bpt.getNodeManager().getBlockMgr() ;
+            BlockMgr mgr2 = bpt.getRecordsMgr().getBlockMgr() ;
+            //mgr1 = new BlockMgrLogger(mgr1, false) ; 
+            mgr2 = new BlockMgrLogger(mgr2, false) ; 
+            bpt =  BPlusTreeFactory.create(null, bpt.getParams(), mgr1, mgr2) ;
+        }
+        if ( true ) {
+            BPT.CheckingNode = true ;
+            //BPT.CheckingTree = true ;
+            BlockMgr mgr1 = bpt.getNodeManager().getBlockMgr() ;
+            BlockMgr mgr2 = bpt.getRecordsMgr().getBlockMgr() ;
+            //mgr1 = BlockMgrTrackerWriteLifecycle.track(mgr1) ;
+            mgr2 = BlockMgrTrackerWriteLifecycle.track(mgr2) ;
+            bpt =  BPlusTreeFactory.create(null, bpt.getParams(), mgr1, mgr2) ;
         }
         bpt.nonTransactional() ;
+        bpt.startBatch();
         return bpt ;
     }
     
-    public static void testClear() {
-        int N = 30 ;
+    public static void testClear(int N) {
+        LogCtl.disable(BlockMgrTrackerWriteLifecycle.logger.getName()) ;
+        LogCtl.disable(BlockMgr.class) ;
+        int[] keys = new int[N] ; // Slice is 1000.
+        for ( int i = 0 ; i < keys.length ; i++ )
+            keys[i] = i ;
+        BPlusTree rIndex = makeRangeIndex(3, 3) ;
+        TestLib.add(rIndex, keys) ;
+        
+        // XXX Start tracking, finish tracking.
+        //rIndex.clear() ;
+//        @Override 
+//        public void clear() {
+        int SLICE = 1000 ;
+        Record[] records = new Record[SLICE] ;
+        while(true) {
+            Iterator<Record> iter = rIndex.iterator() ;
+            int i = 0 ; 
+            for ( i = 0 ; i < SLICE ; i++ ) {
+                if ( ! iter.hasNext() )
+                    break ;
+                Record r = iter.next() ;
+                records[i] = r ;
+            }
+            if ( i == 0 )
+                break ;
+            
+            System.out.println("START CLEAR") ; 
+            resetAnyTracking(rIndex) ;
+            LogCtl.enable(BlockMgrTrackerWriteLifecycle.logger.getName()) ;
+            LogCtl.enable(BlockMgr.class) ;
+            for ( int j = 0 ; j < i ; j++ ) {
+                rIndex.delete(records[j]) ;
+                records[j] = null ;
+            }
+        }
+        // ---- clear
+    }
+    
+    private static void resetAnyTracking(BPlusTree bpt) {
+        resetAnyTracking(bpt.getRecordsMgr().getBlockMgr()) ;
+        resetAnyTracking(bpt.getNodeManager().getBlockMgr()) ;
+    }
+    
+    private static void resetAnyTracking(BlockMgr blkMgr) {
+        if ( blkMgr instanceof BlockMgrTrackerWriteLifecycle )
+            ((BlockMgrTrackerWriteLifecycle)blkMgr).clearAll();
+    }
+    
+    public static void testClearMod(int N) {
         SystemIndex.setNullOut(true);
         int[] keys = new int[N] ; // Slice is 1000.
         for ( int i = 0 ; i < keys.length ; i++ )
@@ -91,7 +153,6 @@ public class MainIndexTest {
         System.out.println() ;
         //elements(bpt) ;
         bpt.dump();
-
     }
     
     public static void tree_del_2() {
