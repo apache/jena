@@ -22,14 +22,11 @@ public class NOTES {
     // Mantis / cohort / legion
     // ARQ :: extract Atlas.
     
-    // (Nodes, Records) iterators to release blocks
-    // BlockMgrTrackerWriteLifecycle clears at start of update operation.  
-    
-    // Rework block tracking.
-    //    Only worry about write blocks (iterator are read and confusing?)
-    //    Start batch - stack tracking - finish batch - check all written.
-    //    page release tracking / non-iterators.
-    //    page release tracking / write blocks / either write or release. 
+    // Large scale random tests.
+    // BPTreeRangeIterator
+    //   - use indexes, delay reading blocks.
+    //   - .release pages.
+    //   - Need page.getIterator?
     
     // Free block management - just in the active area.
     // Automatic? Because clone-clear happens.

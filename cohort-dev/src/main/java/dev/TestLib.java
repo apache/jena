@@ -115,6 +115,19 @@ public class TestLib {
         testDelete(index, deleteKeys) ;
     }
 
+//    public static void testDelete(Index index, int[] vals) {
+//        long size1 = index.size() ;
+//
+//        int count = 0 ;
+//        count = delete(index, vals) ;
+//
+//        List<Record> x = intToRecord(vals, RecordLib.TestRecordLength) ;
+//        for ( Record r : x )
+//            Assert.assertFalse(index.contains(r)) ;
+//        long size2 = index.size() ;
+//        assertEquals(size1 - count, size2) ;
+//    }
+    
     public static void testDelete(Index index, int[] vals) {
         long size1 = index.size() ;
 
@@ -122,11 +135,6 @@ public class TestLib {
         count = delete(index, vals) ;
 
         List<Record> x = intToRecord(vals, RecordLib.TestRecordLength) ;
-        for ( Record r : x ) {
-            boolean b = index.delete(r) ;
-            if ( b )
-                count++ ;
-        }
 
         for ( Record r : x )
             Assert.assertFalse(index.contains(r)) ;
@@ -137,23 +145,29 @@ public class TestLib {
 
     public static int delete(Index index, int[] vals) {
         int count = 0 ;
+        Record dbg = intToRecord(785) ;
+        System.out.println(dbg);
+        int seekPoint = 0 ;
         for ( int v : vals ) {
-            boolean dbg = (v == 5) ;
-            //boolean dbg = false ;
-            //System.out.println("DELETE : "+v) ;
-            if ( dbg ) {
-                System.out.println("DELETE : "+v) ;
-                ((BPlusTree)index).dump() ;
-                index.check();
-                BPT.Logging = true ;
-                System.out.println("DELETE : "+v) ;
+            Record r = r(v) ;
+            if ( dbg != null && Record.keyEQ(r, dbg) ) {
+                seekPoint++ ;
+                if ( seekPoint == 2 ) { 
+                    System.out.println();
+                    ((BPlusTree)index).dump() ;
+                    BPT.Logging = true ;
+                }
             }
-            boolean b = index.delete(r(v)) ;
+            boolean b = index.delete(r) ;
+            if ( dbg != null && Record.keyEQ(r, dbg) ) {
+                if ( seekPoint == 2 ) { 
+                    BPT.Logging = false ;
+                    System.out.println();
+                    ((BPlusTree)index).dump() ;
+                }
+            }
             if ( b )
                 count++ ;
-            
-            BPT.Logging = false ;
-                
         }
         return count ;
     }

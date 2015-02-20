@@ -22,6 +22,7 @@ import static org.seaborne.dboe.test.RecordLib.intToRecord ;
 import static org.seaborne.dboe.test.RecordLib.r ;
 
 import java.io.PrintStream ;
+import java.util.ArrayList ;
 import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
@@ -30,17 +31,14 @@ import java.util.stream.Collectors ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrLogger ;
-import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.Record ;
-import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.test.RecordLib ;
 import org.seaborne.dboe.trans.bplustree.BPT ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
-import org.seaborne.dboe.trans.bplustree.BlockMgrTrackerWriteLifecycle ;
+import org.seaborne.dboe.trans.bplustree.BlockTracker ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
-import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 public class MainIndexTest {
     // Extract and debug tests
@@ -48,42 +46,83 @@ public class MainIndexTest {
     static { LogCtl.setLog4j() ; }
 
     public static void main(String... args) {
+        if ( false ) {
+            BPT.forcePromoteModes = true ;
+            BPT.promoteDuplicateNodes = true ;
+            BPT.promoteDuplicateRecords  = true ;
+            BPlusTree bpt = makeRangeIndex(2) ;
+            Record r = intToRecord(5) ;
+            boolean z1 = bpt.insert(r) ;
+            boolean z2 = bpt.insert(r) ;
+            bpt.dump();
+            boolean x1 = bpt.delete(r) ;
+            boolean x2 = bpt.delete(r) ;
+            System.out.println(z1); 
+            System.out.println(z2); 
+            System.out.println(x1); 
+            System.out.println(x2); 
+            System.exit(0) ;
+        }
         
         BPT.CheckingNode = true ;
         BPT.CheckingTree = false ;
         SystemIndex.setNullOut(true) ;
-        testClear(15) ;
+        BPT.forcePromoteModes = true ;
+        BPT.promoteDuplicateNodes = false ;
+        BPT.promoteDuplicateRecords  = true ;
+        tree_keys();
     }    
-    
-    static RecordFactory recordFactory = new RecordFactory(4, 0) ;
-    
-    static Journal journal = Journal.create(Location.mem()) ;
-    
-    protected static BPlusTree makeRangeIndex(int order, int minRecords) {
-        BPlusTree bpt = BPlusTreeFactory.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
-        if ( true ) {
-            BlockMgr mgr1 = bpt.getNodeManager().getBlockMgr() ;
-            BlockMgr mgr2 = bpt.getRecordsMgr().getBlockMgr() ;
-            //mgr1 = new BlockMgrLogger(mgr1, false) ; 
-            mgr2 = new BlockMgrLogger(mgr2, false) ; 
-            bpt =  BPlusTreeFactory.create(null, bpt.getParams(), mgr1, mgr2) ;
+    public static void tree_keys() {
+//        int[] keys1 = {643, 704, 557, 448, 461, 216, 610, 810, 620, 289, 283, 900, 443, 810, 739, 756, 256, 968, 450, 715} ;
+//        int[] keys2 = {968, 756, 448, 643, 620, 443, 557, 216, 289, 810, 450, 283, 900, 715, 704, 810, 739, 610, 461, 256};
+//        int[] keys1 = {643, 704, 557, 448, 461, 216, 610, 620, 289, 283, 900, 443, 810, 739, 756, 256, 968, 450, 715} ;
+//        int[] keys2 = {968, 756, 448, 643, 620, 443, 557, 216, 289, 450, 283, 900, 715, 704, 810, 739, 610, 461, 256};
+
+//        int[] keys1 = {343, 107, 810, 344, 618, 225, 421, 194, 195, 407, 525, 785, 769, 26, 785, 228, 804, 37, 626, 970} ;
+//        int[] keys2 = {194, 343, 785, 769, 970, 421, 618, 225, 107, 785, 525, 344, 228, 626, 810, 37, 804, 26, 407, 195}; 
+
+        int[] keys1 = {343, 107, 810, 344, 618, 225, 421, 194, 195, 407, 525, 785, 769, 26, 785, 228, 804, 37, 626, 970} ;
+        int[] keys2 = {194, 343, 785, 769, 970, 421, 618, 225, 107, 785, 525, 344, 228, 626, 810, 37, 804, 26, 407, 195}; 
+        
+        printordered(keys1) ;
+        printordered(keys2) ;
+        
+        LogCtl.disable(BlockTracker.logger.getName()) ;
+        LogCtl.disable(BlockMgr.class) ;
+
+        BPlusTree bpt = makeRangeIndex(2) ;
+        TestLib.testInsertDelete(bpt, keys1, keys2);
+        System.out.println("Finished");
+        System.exit(0) ;
+
+        if ( false ) {
+            bpt.getRecordsMgr().startUpdate();
+            range(1, 50).forEach(i->bpt.getRecordsMgr().create()) ;
+            bpt.getRecordsMgr().finishUpdate();
         }
-        if ( true ) {
-            BPT.CheckingNode = true ;
-            //BPT.CheckingTree = true ;
-            BlockMgr mgr1 = bpt.getNodeManager().getBlockMgr() ;
-            BlockMgr mgr2 = bpt.getRecordsMgr().getBlockMgr() ;
-            //mgr1 = BlockMgrTrackerWriteLifecycle.track(mgr1) ;
-            mgr2 = BlockMgrTrackerWriteLifecycle.track(mgr2) ;
-            bpt =  BPlusTreeFactory.create(null, bpt.getParams(), mgr1, mgr2) ;
-        }
-        bpt.nonTransactional() ;
-        bpt.startBatch();
-        return bpt ;
+        TestLib.testInsert(bpt, keys1) ;
+//        System.out.println("START") ; 
+//        resetAnyTracking(bpt) ;
+//        LogCtl.enable(BlockTracker.logger.getName()) ;
+//        LogCtl.enable(BlockMgr.class) ;
+        TestLib.delete(bpt, keys2) ;
+        bpt.dump();
+        
+        //TestLib.testDelete(bpt, keys2) ;
     }
     
+    private static void printordered(int[] vals) {
+
+        List<Integer> x = new ArrayList<>() ;
+        for ( int i : vals )
+            x.add(i) ;
+        x.stream().sorted().forEach(i -> System.out.printf("  %d", i));
+        System.out.println() ;
+    }
+    
+    
     public static void testClear(int N) {
-        LogCtl.disable(BlockMgrTrackerWriteLifecycle.logger.getName()) ;
+        LogCtl.disable(BlockTracker.logger.getName()) ;
         LogCtl.disable(BlockMgr.class) ;
         int[] keys = new int[N] ; // Slice is 1000.
         for ( int i = 0 ; i < keys.length ; i++ )
@@ -111,7 +150,7 @@ public class MainIndexTest {
             
             System.out.println("START CLEAR") ; 
             resetAnyTracking(rIndex) ;
-            LogCtl.enable(BlockMgrTrackerWriteLifecycle.logger.getName()) ;
+            LogCtl.enable(BlockTracker.logger.getName()) ;
             LogCtl.enable(BlockMgr.class) ;
             for ( int j = 0 ; j < i ; j++ ) {
                 rIndex.delete(records[j]) ;
@@ -119,16 +158,6 @@ public class MainIndexTest {
             }
         }
         // ---- clear
-    }
-    
-    private static void resetAnyTracking(BPlusTree bpt) {
-        resetAnyTracking(bpt.getRecordsMgr().getBlockMgr()) ;
-        resetAnyTracking(bpt.getNodeManager().getBlockMgr()) ;
-    }
-    
-    private static void resetAnyTracking(BlockMgr blkMgr) {
-        if ( blkMgr instanceof BlockMgrTrackerWriteLifecycle )
-            ((BlockMgrTrackerWriteLifecycle)blkMgr).clearAll();
     }
     
     public static void testClearMod(int N) {
@@ -155,22 +184,45 @@ public class MainIndexTest {
         bpt.dump();
     }
     
-    public static void tree_del_2() {
-        // tree_del_2_04
-        int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        int[] keys2 = {0, 9, 2, 7, 4, 5, 6, 3, 8, 1} ;
-       
-        //tree_del_2_03
-//        int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-//        int[] keys2 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
-        BPlusTree bpt = makeRangeIndex(2,2) ;
-        range(1, 50).forEach(i->bpt.getRecordsMgr().create()) ;
-
-        TestLib.testInsert(bpt, keys1) ;
-        bpt.dump();
-        TestLib.testDelete(bpt, keys2) ;
+    protected static BPlusTree makeRangeIndex(int order) {
+        return makeRangeIndex(order, order) ;
     }
-    
+    protected static BPlusTree makeRangeIndex(int order, int minRecords) {
+        BPlusTree bpt = BPlusTreeFactory.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
+        if ( true ) {
+            BlockMgr mgrNodes = bpt.getNodeManager().getBlockMgr() ;
+            //mgrNodes = new BlockMgrLogger(mgrNodes, false) ;
+
+            BlockMgr mgrRecords = bpt.getRecordsMgr().getBlockMgr() ;
+            mgrRecords = new BlockMgrLogger(mgrRecords, false) ;
+            // But disable for now.
+            LogCtl.disable(BlockMgr.class);
+            
+            bpt =  BPlusTreeFactory.create(null, bpt.getParams(), mgrNodes, mgrRecords) ;
+        }
+        if ( true ) {
+            BPT.CheckingNode = true ;
+            //BPT.CheckingTree = true ;
+            BlockMgr mgrNodes = bpt.getNodeManager().getBlockMgr() ;
+            //mgrNodes = BlockMgrTrackerWriteLifecycle.track(mgr1) ;
+            
+            BlockMgr mgrRecords = bpt.getRecordsMgr().getBlockMgr() ;
+            mgrRecords = BlockTracker.track(mgrRecords) ;
+            
+            bpt =  BPlusTreeFactory.create(null, bpt.getParams(), mgrNodes, mgrRecords) ;
+        }
+        bpt.nonTransactional() ;
+        bpt.startBatch();
+        return bpt ;
+    }
+    private static void resetAnyTracking(BPlusTree bpt) {
+        resetAnyTracking(bpt.getRecordsMgr().getBlockMgr()) ;
+        resetAnyTracking(bpt.getNodeManager().getBlockMgr()) ;
+    }
+    private static void resetAnyTracking(BlockMgr blkMgr) {
+        if ( blkMgr instanceof BlockTracker )
+            ((BlockTracker)blkMgr).clearAll();
+    }
     static void elements(BPlusTree bpt) {
         System.out.print("Elements: ") ;
         bpt.iterator().forEachRemaining(_1 -> { System.out.print(" "); System.out.print(_1); }  ) ;
