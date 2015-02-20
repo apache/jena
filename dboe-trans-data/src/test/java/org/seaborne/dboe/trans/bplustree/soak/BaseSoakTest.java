@@ -69,12 +69,6 @@ public abstract class BaseSoakTest extends CmdGeneral {
 
     @Override
     protected void exec() {
-        before() ;
-        execSub() ;
-        after() ;
-    }
-
-    protected void execSub() {
         int successes   = 0 ;
         int failures    = 0 ;
 
@@ -98,19 +92,39 @@ public abstract class BaseSoakTest extends CmdGeneral {
         }
         
         boolean debug = false ;
+        // Number of dots.
         int numOnLine = 50 ;
-        int testsPerTick = 500 ;
-        if ( NumTest < 200 )
-            testsPerTick = testsPerTick / 10 ;
-        System.out.printf("TEST : %,d tests : Max Order=%d  Max Items=%,d [tests per tick=%d]\n", NumTest, MaxOrder, MaxSize, testsPerTick) ;
+        int testsPerTick ;
+        if ( NumTest < 20 )
+            testsPerTick = 5 ;
+        else if ( NumTest < 200 )
+            testsPerTick = 50 ;
+        else 
+            testsPerTick = 500 ;
+        
+        
+        // ---- Format for line counter.
+        int numLines = (int)Math.ceil( ((double)NumTest) / (testsPerTick * numOnLine) ) ;
+        // Start of last line.
+        int z = (numLines-1)*(testsPerTick * numOnLine) ;
+        int digits = 1 ;
+        if ( z > 0 )
+            digits = 1+(int)Math.floor(Math.log10(z));
+        String format = "[%"+digits+"d] " ;
 
+        System.out.printf("TEST : %,d tests : Max Order=%d  Max Items=%,d [tests per tick=%d]\n", NumTest, MaxOrder, MaxSize, testsPerTick) ;
+        
+        before() ;
+        
         int testCount = 1 ;
         
         for ( testCount = 1 ; testCount <= orders.length ; testCount++ ) {
             if ( testCount % testsPerTick == 0 )
                 System.out.print(".") ;
             if ( testCount % (testsPerTick * numOnLine) == 0 )
-                System.out.println() ;
+                System.out.println("") ;
+            if ( testCount % (testsPerTick * numOnLine) == 1 )
+                System.out.printf(format, testCount-1) ;
 
             int idx = testCount - 1 ;
             int order = orders[idx] ;
@@ -128,9 +142,11 @@ public abstract class BaseSoakTest extends CmdGeneral {
             }
         }
         
-        if ( testCount % (testsPerTick*numOnLine) != 0 )
+        // Did the last loop print a new line?
+        if ( (testCount-1) % (testsPerTick*numOnLine) != 0 )
             System.out.println();
             
+        after() ;
         System.err.flush() ;
         System.out.flush() ;
         System.out.printf("DONE : %,d tests : Success=%,d, Failures=%,d\n", NumTest, successes, failures);

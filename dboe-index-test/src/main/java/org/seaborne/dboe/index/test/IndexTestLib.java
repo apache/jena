@@ -93,6 +93,9 @@ public class IndexTestLib {
     /* One random test : print the keys if there was a problem */
 
     public static void randTest(Index index, int maxValue, int numKeys) {
+        randTest(index, maxValue, numKeys, true) ; 
+    }
+    public static void randTest(Index index, int maxValue, int numKeys, boolean includeIteratorCheck) {
         if ( numKeys >= 5000 )
             System.err.printf("Warning: too many keys\n") ;
 
@@ -106,7 +109,7 @@ public class IndexTestLib {
                 // Checking tests.
                 testIndexContents(index, keys2) ;
                 // Test iteration - quite expensive.
-                if ( index instanceof RangeIndex )
+                if ( includeIteratorCheck && index instanceof RangeIndex )
                     testIteration((RangeIndex)index, keys1, 10) ;
             }
             testDelete(index, keys2) ;

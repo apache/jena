@@ -23,10 +23,12 @@ import org.seaborne.dboe.sys.SystemLz ;
 import org.seaborne.dboe.trans.bplustree.BPT ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
+import org.seaborne.dboe.trans.bplustree.BlockTracker ;
 
 public class CmdTestBPlusTree extends BaseSoakTest
 {
     static public void main(String... argv) {
+        //argv = new String[] {"5", "20", "1000"} ;
         new CmdTestBPlusTree(argv).mainRun() ;
     }
 
@@ -37,16 +39,19 @@ public class CmdTestBPlusTree extends BaseSoakTest
     @Override
     protected void before() {
         SystemIndex.setNullOut(true) ;
+        BlockTracker.collectHistory = false ;
         // Forced mode
         if ( true ) {
+            BPT.CheckingNode = false ;
             BPT.forcePromoteModes = true ;
-            BPT.promoteDuplicateNodes = false ;
-            BPT.promoteDuplicateRecords = false ;
+            BPT.promoteDuplicateNodes = true ;
+            BPT.promoteDuplicateRecords = true ;
         }
         if ( false ) {
             // Transactions.
         }
         
+        System.out.printf("    BPT.CheckingNode            = %s\n", BPT.CheckingNode) ;
         System.out.printf("    BPT.forcePromoteModes       = %s\n", BPT.forcePromoteModes) ;
         System.out.printf("    BPT.promoteDuplicateRecords = %s\n", BPT.promoteDuplicateRecords) ;
         System.out.printf("    BPT.promoteDuplicateRecords = %s\n", BPT.promoteDuplicateRecords) ;
@@ -65,8 +70,11 @@ public class CmdTestBPlusTree extends BaseSoakTest
         //System.err.println("runOneTest("+order+","+size+")") ;
         // Tracking??
         BPlusTree bpt = BPlusTreeFactory.makeMem(order, SystemLz.SizeOfInt, 0) ;
+        bpt = BPlusTreeFactory.addTracking(bpt) ;
         bpt.nonTransactional();
+        bpt.startBatch();
         // Random values but exact size.
-        IndexTestLib.randTest(bpt, 10*size, size);
+        // No iterator tests - quite slow and well tested by the test suite.
+        IndexTestLib.randTest(bpt, 10*size, size, false);
     }
 }

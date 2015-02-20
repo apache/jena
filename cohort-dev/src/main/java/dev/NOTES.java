@@ -22,7 +22,7 @@ public class NOTES {
     // Mantis / cohort / legion
     // ARQ :: extract Atlas.
     
-    
+    // Soak tests - include tracking? Memory growth?
     
     // Large scale random tests.
     //   rename CmdTestBPlusTreeRewriter (not 

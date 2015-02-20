@@ -105,12 +105,6 @@ public class BlockTracker implements BlockMgr {
         this(logger, label, blockMgr) ;
     }
 
-    //
-    // public BlockMgrTracker(Class<?> cls, String label, BlockMgr blockMgr)
-    // {
-    // this(LoggerFactory.getLogger(cls), label, blockMgr) ;
-    // }
-
     private BlockTracker(Logger logger, String label, BlockMgr blockMgr) {
         this.blockMgr = blockMgr ;
         this.log = logger ;
