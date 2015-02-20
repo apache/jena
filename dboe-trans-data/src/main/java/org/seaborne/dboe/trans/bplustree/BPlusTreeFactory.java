@@ -118,8 +118,8 @@ public class BPlusTreeFactory {
     public static BPlusTree addTracking(BPlusTree bpTree) {
         BlockMgr mgr1 = bpTree.getNodeManager().getBlockMgr() ;
         BlockMgr mgr2 = bpTree.getRecordsMgr().getBlockMgr() ;
-        mgr1 = BlockMgrTrackerWriteLifecycle.track(mgr1) ;
-        mgr2 = BlockMgrTrackerWriteLifecycle.track(mgr2) ;
+        mgr1 = BlockTracker.track(mgr1) ;
+        mgr2 = BlockTracker.track(mgr2) ;
         return BPlusTreeFactory.attach(bpTree.getComponentId(), bpTree.getParams(), mgr1, mgr2) ;
     }
     
