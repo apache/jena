@@ -37,7 +37,8 @@ public class TestBPlusTreeNonTxn extends AbstractTestRangeIndex {
     
     // Add tracker or not (usually not)
     // The tracker checking can impose more constraints than are needed
-    // giving false negatives.  Iterator aren't tracked (they may not be comsumed) 
+    // giving false negatives.  Iterator aren't tracked (they may not
+    // be consumed; don't release pages properly)
     static boolean addTracker = true  ;
     // Panic.
     static boolean addLogger  = false  ;
