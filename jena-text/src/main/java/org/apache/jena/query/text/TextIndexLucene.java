@@ -212,7 +212,7 @@ public class TextIndexLucene implements TextIndex {
 //                finishIndexing() ;
         }
         catch (IOException e) {
-            exception(e) ;
+            throw new TextIndexException(e) ;
         }
     }
     
@@ -353,5 +353,4 @@ public class TextIndexLucene implements TextIndex {
              throw new TextIndexException( e );
          }
      }
-    
 }

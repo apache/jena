@@ -123,14 +123,14 @@ public class ParserProfileChecker extends ParserProfileBase // implements
 
     @Override
     public Node createTypedLiteral(String lexical, RDFDatatype datatype, long line, long col) {
-        Node n = NodeFactory.createLiteral(lexical, null, datatype) ;
+        Node n = NodeFactory.createLiteral(lexical, datatype) ;
         CheckerLiterals.checkLiteral(lexical, datatype, errorHandler, line, col) ;
         return n ;
     }
 
     @Override
     public Node createLangLiteral(String lexical, String langTag, long line, long col) {
-        Node n = NodeFactory.createLiteral(lexical, langTag, null) ;
+        Node n = NodeFactory.createLiteral(lexical, langTag) ;
         CheckerLiterals.checkLiteral(lexical, langTag, errorHandler, line, col) ;
         return n ;
     }

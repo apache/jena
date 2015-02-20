@@ -63,10 +63,8 @@ public class ExQuerySelect2
         // Create a single execution of this query, apply to a model
         // which is wrapped up as a Dataset
         
-        QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
-        // Or QueryExecutionFactory.create(queryString, model) ;
-
-        try {
+        // Or QueryExecutionFactory.create(queryString, model) ;        
+        try(QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
             // A ResultSet is an iterator - any query solutions returned by .next()
             // are not accessible again.
             // Create a ResultSetRewindable that can be reset to the beginning.
@@ -76,11 +74,6 @@ public class ExQuerySelect2
             ResultSetFormatter.out(rewindable) ;
             rewindable.reset() ;
             ResultSetFormatter.out(rewindable) ;
-        }
-        finally
-        {
-            // QueryExecution objects should be closed to free any system resources 
-            qexec.close() ;
         }
     }
     

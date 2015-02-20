@@ -108,7 +108,7 @@ public class StoreParamsBuilder {
         return new StoreParamsBuilder(params) ;
     }
 
-    /** Using a base set of {@linkplain StoreParams}, and update with dynamic parameters.
+    /** Using a base set of {@link StoreParams}, and update with dynamic parameters.
      * 
      * @param baseParams
      * @param additionalParams

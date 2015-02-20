@@ -23,9 +23,9 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 import java.lang.reflect.Proxy;
 
-import org.apache.commons.collections.map.LRUMap;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.collections4.map.LRUMap;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator.Action;
@@ -334,7 +334,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 		Boolean retval = cacheGet(key);
 		if (retval == null)
 		{
-			retval = securityEvaluator.evaluate(Action.Create, modelNode);
+			retval = securityEvaluator.evaluate(securityEvaluator.getPrincipal(),Action.Create, modelNode);
 			cachePut(key, retval);
 		}
 		return retval;
@@ -352,7 +352,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 		Boolean retval = cacheGet(key);
 		if (retval == null)
 		{
-			retval = securityEvaluator.evaluate(Action.Create, modelNode, t);
+			retval = securityEvaluator.evaluate(securityEvaluator.getPrincipal(),Action.Create, modelNode, t);
 			cachePut(key, retval);
 		}
 		return retval;
@@ -375,7 +375,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 		Boolean retval = cacheGet(key);
 		if (retval == null)
 		{
-			retval = securityEvaluator.evaluate(Action.Delete, modelNode);
+			retval = securityEvaluator.evaluate(securityEvaluator.getPrincipal(),Action.Delete, modelNode);
 			cachePut(key, retval);
 		}
 		return retval;
@@ -393,7 +393,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 		Boolean retval = cacheGet(key);
 		if (retval == null)
 		{
-			retval = securityEvaluator.evaluate(Action.Delete, modelNode, t);
+			retval = securityEvaluator.evaluate(securityEvaluator.getPrincipal(),Action.Delete, modelNode, t);
 			cachePut(key, retval);
 		}
 		return retval;
@@ -416,7 +416,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 		Boolean retval = cacheGet(key);
 		if (retval == null)
 		{
-			retval = securityEvaluator.evaluate(Action.Read, modelNode);
+			retval = securityEvaluator.evaluate(securityEvaluator.getPrincipal(),Action.Read, modelNode);
 			cachePut(key, retval);
 		}
 		return retval;
@@ -434,7 +434,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 		Boolean retval = cacheGet(key);
 		if (retval == null)
 		{
-			retval = securityEvaluator.evaluate(Action.Read, modelNode, t);
+			retval = securityEvaluator.evaluate(securityEvaluator.getPrincipal(),Action.Read, modelNode, t);
 			cachePut(key, retval);
 		}
 		return retval;
@@ -457,7 +457,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 		Boolean retval = cacheGet(key);
 		if (retval == null)
 		{
-			retval = securityEvaluator.evaluate(Action.Update, modelNode);
+			retval = securityEvaluator.evaluate(securityEvaluator.getPrincipal(),Action.Update, modelNode);
 			cachePut(key, retval);
 		}
 		return retval;
@@ -477,7 +477,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 		Boolean retval = cacheGet(key);
 		if (retval == null)
 		{
-			retval = securityEvaluator.evaluateUpdate(modelNode, from, to);
+			retval = securityEvaluator.evaluateUpdate(securityEvaluator.getPrincipal(),modelNode, from, to);
 			cachePut(key, retval);
 		}
 		return retval;

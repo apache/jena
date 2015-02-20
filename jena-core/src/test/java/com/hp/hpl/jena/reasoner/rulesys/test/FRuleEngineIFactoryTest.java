@@ -23,15 +23,7 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.graph.BulkUpdateHandler;
-import com.hp.hpl.jena.graph.Capabilities;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphEventManager;
-import com.hp.hpl.jena.graph.GraphStatisticsHandler;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.TransactionHandler;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
+import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.reasoner.Derivation;
 import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.reasoner.ValidityReport;
@@ -164,8 +156,12 @@ public class FRuleEngineIFactoryTest extends TestCase {
         @Override
         public void delete(Triple t) throws DeleteDeniedException {}
 
+        @SuppressWarnings("deprecation")
         @Override
         public ExtendedIterator<Triple> find(TripleMatch m) { return null; }
+
+        @Override
+        public ExtendedIterator<Triple> find(Triple m) { return null; }
 
         @Override
         public ExtendedIterator<Triple> find(Node s, Node p, Node o) { return null; }

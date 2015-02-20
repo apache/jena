@@ -56,7 +56,7 @@ import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 
-/** Encode and decode {@linkplain StoreParams} */ 
+/** Encode and decode {@link StoreParams} */ 
 public class StoreParamsCodec {
     
     /** Write to a file */ 

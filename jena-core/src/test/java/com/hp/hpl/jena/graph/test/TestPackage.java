@@ -35,6 +35,7 @@ public class TestPackage extends TestSuite {
         super("graph");
         addTest( TestFindLiterals.suite() );
         addTest( TestLiteralLabels.suite() );
+        addTest( TestLiteralLabelSameValueAs.suite() );
         addTest( TestNode.suite() );
         addTest( TestTriple.suite() );
         addTest( TestTripleField.suite() );

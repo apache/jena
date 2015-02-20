@@ -17,20 +17,18 @@
  */
 package com.hp.hpl.jena.graph.impl;
 
-import com.hp.hpl.jena.graph.Capabilities;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
-import com.hp.hpl.jena.graph.impl.GraphBase;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.Filter;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
+import java.util.Collection ;
+import java.util.HashSet ;
+import java.util.Locale ;
+import java.util.Set ;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import com.hp.hpl.jena.graph.Capabilities ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.Filter ;
+import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 /**
  * A simple graph implementation that wraps a collection of triples.
@@ -108,9 +106,7 @@ public class CollectionGraph extends GraphBase
         {
             String lang = node.getLiteralLanguage() ;
             if ( lang != null && ! lang.equals("") )
-                node = NodeFactory.createLiteral(node.getLiteralLexicalForm(),
-                                          lang.toLowerCase(Locale.ROOT),
-                                          node.getLiteralDatatype()) ;
+                node = NodeFactory.createLiteral(node.getLiteralLexicalForm(), lang.toLowerCase(Locale.ROOT)) ;
         }
         return node ; 
     }
@@ -154,7 +150,7 @@ public class CollectionGraph extends GraphBase
 	}
 
 	@Override
-	protected ExtendedIterator<Triple> graphBaseFind( final TripleMatch m )
+	protected ExtendedIterator<Triple> graphBaseFind( final Triple m )
 	{
 		ExtendedIterator<Triple> iter =null;
 		if (iteratorDeleteAllowed)
@@ -167,8 +163,7 @@ public class CollectionGraph extends GraphBase
 		{
 			iter = WrappedIterator.createNoRemove( triples.iterator() );
 		}
-		return iter 
-	            .filterKeep ( new TripleMatchFilterEquality( m.asTriple() ) );
+		return iter.filterKeep ( new TripleMatchFilterEquality( m ) );
 	}
 
 	@Override

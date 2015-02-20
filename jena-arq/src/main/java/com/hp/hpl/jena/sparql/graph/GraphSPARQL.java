@@ -104,7 +104,7 @@ public class GraphSPARQL extends GraphBase implements Graph
     public DatasetGraph getDataset() { return dataset ; } 
 
     @Override
-    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
+    protected ExtendedIterator<Triple> graphBaseFind(Triple m)
     {
         Node s = m.getMatchSubject() ;
         Var sVar = null ;

@@ -27,7 +27,6 @@ import com.hp.hpl.jena.graph.Capabilities;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.graph.impl.GraphBase ;
 import com.hp.hpl.jena.graph.impl.SimpleEventManager ;
 import com.hp.hpl.jena.util.iterator.ClosableIterator ;
@@ -75,12 +74,12 @@ public class GraphMemPlain extends GraphBase
     }
     
     @Override
-    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
+    protected ExtendedIterator<Triple> graphBaseFind(Triple m)
     {
         Iterator<Triple> iter = triples.iterator() ;
         return 
             SimpleEventManager.notifyingRemove( this, iter ) 
-            .filterKeep ( new TripleMatchFilterEquality( m.asTriple() ) );
+            .filterKeep ( new TripleMatchFilterEquality( m ) );
     }
     
     static boolean tripleContained(Triple patternTriple, Triple dataTriple)
@@ -110,9 +109,7 @@ public class GraphMemPlain extends GraphBase
         {
             String lang = node.getLiteralLanguage() ;
             if ( lang != null && ! lang.equals("") )
-                node = NodeFactory.createLiteral(node.getLiteralLexicalForm(),
-                                          lang.toLowerCase(Locale.ROOT),
-                                          node.getLiteralDatatype()) ;
+                node = NodeFactory.createLiteral(node.getLiteralLexicalForm(), lang.toLowerCase(Locale.ROOT)) ;
         }
         return node ; 
     }

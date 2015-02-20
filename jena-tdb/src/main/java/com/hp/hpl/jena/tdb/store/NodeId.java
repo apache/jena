@@ -25,11 +25,13 @@ import org.apache.jena.atlas.lib.BitsLong ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.logging.Log ;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
@@ -161,16 +163,51 @@ public class NodeId
             return null ;
         }
         
-        if ( ! node.isLiteral() ) return null ;
-        if ( node.getLiteralDatatype() == null ) return null ;
+        if ( ! enableInlineLiterals )
+            return null ;
+
+        if ( ! node.isLiteral() )  
+            return null ;
         
-        if ( ! enableInlineLiterals ) return null ;
+        if ( NodeUtils.isSimpleString(node) || NodeUtils.isLangString(node) )
+            return null ;
         
         try { return inline$(node) ; }
         catch (Throwable th) {
             Log.warn(NodeId.class, "Failed to process "+node) ;
             return null ; 
         }
+    }
+    
+    /** Datatypes that are candidates for inlining */ 
+    private static RDFDatatype[] datatypes = { 
+        XSDDatatype.XSDdecimal,
+        XSDDatatype.XSDinteger,
+        
+        XSDDatatype.XSDlong,
+        XSDDatatype.XSDint,
+        XSDDatatype.XSDshort,
+        XSDDatatype.XSDbyte,
+        
+        XSDDatatype.XSDunsignedLong,
+        XSDDatatype.XSDunsignedInt,
+        XSDDatatype.XSDunsignedShort,
+        XSDDatatype.XSDunsignedByte,
+        
+        XSDDatatype.XSDdateTime,
+        XSDDatatype.XSDdate,
+        XSDDatatype.XSDboolean
+    } ;
+
+    /** Return true if this node has a datatype that look sliek it is inlineable.
+     * The node may still be out of range (e.g. very large integer).
+     * Only inline(Node)->NodeId can determine that. 
+     */
+    public static boolean hasInlineDatatype(Node node) {
+        RDFDatatype dtn = node.getLiteralDatatype() ;
+        for ( RDFDatatype dt : datatypes )
+            if ( dt.equals(dtn) ) return true ;
+        return false ;
     }
      
     private static NodeId inline$(Node node)
@@ -297,23 +334,23 @@ public class NodeId
                 
             case INTEGER : {
                 long val = IntegerNode.unpack(v) ;
-                Node n = NodeFactory.createLiteral(Long.toString(val), null, XSDDatatype.XSDinteger) ;
+                Node n = NodeFactory.createLiteral(Long.toString(val), XSDDatatype.XSDinteger) ;
                 return n ;
             }
             case DECIMAL : {
                 BigDecimal d = DecimalNode.unpackAsBigDecimal(v) ;
                 String x = d.toPlainString() ;
-                return NodeFactory.createLiteral(x, null, XSDDatatype.XSDdecimal) ;
+                return NodeFactory.createLiteral(x, XSDDatatype.XSDdecimal) ;
             }
             case DATETIME : {
                 long val = BitsLong.clear(v, 56, 64) ;
                 String lex = DateTimeNode.unpackDateTime(val) ;
-                return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
+                return NodeFactory.createLiteral(lex, XSDDatatype.XSDdateTime) ;
             }
             case DATE : {
                 long val = BitsLong.clear(v, 56, 64) ;
                 String lex = DateTimeNode.unpackDate(val) ;
-                return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdate) ;
+                return NodeFactory.createLiteral(lex, XSDDatatype.XSDdate) ;
             }
             case BOOLEAN : {
                 long val = BitsLong.clear(v, 56, 64) ;

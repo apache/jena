@@ -87,13 +87,13 @@ public class MockSecurityEvaluator implements SecurityEvaluator
 	}
 
 	@Override
-	public boolean evaluate( final Action action, final SecNode uri )
+	public boolean evaluate( final Object principal, final Action action, final SecNode uri )
 	{
 		return evaluate(action);
 	}
 
 	@Override
-	public boolean evaluate( final Action action, final SecNode graphIRI,
+	public boolean evaluate( final Object principal, final Action action, final SecNode graphIRI,
 			final SecTriple triple )
 	{
 		if (forceTripleChecks)
@@ -141,13 +141,13 @@ public class MockSecurityEvaluator implements SecurityEvaluator
 	}
 
 	@Override
-	public boolean evaluate( final Set<Action> action, final SecNode uri )
+	public boolean evaluate( final Object principal, final Set<Action> action, final SecNode uri )
 	{
 		return evaluate(action);
 	}
 
 	@Override
-	public boolean evaluate( final Set<Action> action, final SecNode graphIRI,
+	public boolean evaluate( final Object principal, final Set<Action> action, final SecNode graphIRI,
 			final SecTriple triple )
 	{
 		for (final Action a : action)
@@ -161,7 +161,7 @@ public class MockSecurityEvaluator implements SecurityEvaluator
 	}
 
 	@Override
-	public boolean evaluateAny( final Set<Action> action, final SecNode graphIRI )
+	public boolean evaluateAny( final Object principal, final Set<Action> action, final SecNode graphIRI )
 	{
 		for (final Action a : action)
 		{
@@ -174,14 +174,14 @@ public class MockSecurityEvaluator implements SecurityEvaluator
 	}
 
 	@Override
-	public boolean evaluateAny( final Set<Action> action,
+	public boolean evaluateAny( final Object principal, final Set<Action> action,
 			final SecNode graphIRI, final SecTriple triple )
 	{
-		return evaluateAny(action, graphIRI);
+		return evaluateAny( principal, action, graphIRI);
 	}
 
 	@Override
-	public boolean evaluateUpdate( final SecNode graphIRI,
+	public boolean evaluateUpdate( final Object principal, final SecNode graphIRI,
 			final SecTriple from, final SecTriple to )
 	{
 		return evaluate(Action.Update);

@@ -43,9 +43,8 @@ public class TestGraphUtils extends GraphTestBase
         final Bool foundAll = new Bool( false );
         Graph mock = new GraphBase() 
             {
-            @Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch m )
+            @Override public ExtendedIterator<Triple> graphBaseFind( Triple t )
                 { 
-                Triple t = m.asTriple();
                 assertEquals( Node.ANY, t.getSubject() ); 
                 assertEquals( Node.ANY, t.getPredicate() );
                 assertEquals( Node.ANY, t.getObject() );

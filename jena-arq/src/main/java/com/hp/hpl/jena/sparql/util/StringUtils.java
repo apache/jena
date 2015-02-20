@@ -18,15 +18,14 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.text.DateFormat ;
 import java.text.DecimalFormat ;
 import java.text.NumberFormat ;
-import java.text.SimpleDateFormat ;
 import java.util.Arrays ;
 import java.util.Date ;
 import java.util.List ;
 import java.util.regex.Pattern ;
 
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.jena.atlas.iterator.Iter ;
 
 /** @see org.apache.jena.atlas.lib.StrUtils */
@@ -38,7 +37,7 @@ public class StringUtils
         return integerFormat.format(v) ;
     }
     
-    static DateFormat dateTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss") ;
+    static FastDateFormat dateTimeFormat = FastDateFormat.getInstance( "yyyy/MM/dd HH:mm:ss") ;
     public static String str(Date date)
     {
         return dateTimeFormat.format(date) ;

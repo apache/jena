@@ -31,9 +31,9 @@ import org.apache.jena.security.impl.SecuredItemImpl;
 
 public class RDFListSecFilter<T extends RDFList> extends Filter<T>
 {
-
-	private SecuredItem securedItem;
-	private Set<Action> perms;
+	private final SecuredItem securedItem;
+	private final Set<Action> perms;
+	private final Object principal;
 
 	public RDFListSecFilter( final SecuredItem securedItem, final Action perm )
 	{
@@ -45,13 +45,14 @@ public class RDFListSecFilter<T extends RDFList> extends Filter<T>
 	{
 		this.securedItem = securedItem;
 		this.perms = perms;
+		this.principal = securedItem.getSecurityEvaluator().getPrincipal();
 	}
 
 	@Override
 	public boolean accept( final RDFList o )
 	{
 		final Statement s = o.getRequiredProperty(RDF.first);
-		return securedItem.getSecurityEvaluator().evaluate(perms,
+		return securedItem.getSecurityEvaluator().evaluate(principal, perms,
 				securedItem.getModelNode(),
 				SecuredItemImpl.convert(s.asTriple()));
 	}

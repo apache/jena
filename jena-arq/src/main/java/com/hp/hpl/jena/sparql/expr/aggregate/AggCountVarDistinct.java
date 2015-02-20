@@ -21,24 +21,17 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
-import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
 
 public class AggCountVarDistinct extends AggregatorBase
 {
     // ---- COUNT(DISTINCT ?var)
-    private Expr expr ;
-
-    public AggCountVarDistinct(Expr expr) { this.expr = expr ; } 
+    public AggCountVarDistinct(Expr expr) { super("COUNT", true, expr) ; }
     @Override
-    public Aggregator copy(Expr expr) { return new AggCountVarDistinct(expr) ; }
-
-    @Override
-    public String toString()        { return "count(distinct "+expr+")" ; }
-    @Override
-    public String toPrefixString()  { return "(count distinct "+WriterExpr.asString(expr)+")" ; }
+    public Aggregator copy(ExprList exprs) { return new AggCountVarDistinct(exprs.get(0)) ; }
 
     @Override
     public Accumulator createAccumulator()
@@ -47,17 +40,15 @@ public class AggCountVarDistinct extends AggregatorBase
     }
 
     @Override
-    public Expr getExpr() { return expr ; }
-
-    @Override
     public Node getValueEmpty()     { return NodeConst.nodeZero ; } 
 
     @Override
-    public int hashCode()   { return HC_AggCountVar ^ expr.hashCode() ; }
+    public int hashCode()   { return HC_AggCountVar ^ exprList.hashCode() ; }
     
     @Override
     public boolean equals(Object other)
     {
+        if ( this == other ) return true ;
         if ( ! ( other instanceof AggCountVarDistinct ) )
             return false ;
         AggCountVarDistinct agg = (AggCountVarDistinct)other ;
@@ -69,7 +60,7 @@ public class AggCountVarDistinct extends AggregatorBase
     {
         private long count = 0 ;
 
-        public AccCountVarDistinct() { super(expr) ; } 
+        public AccCountVarDistinct() { super(getExpr()) ; } 
         // The group key part of binding will be the same for all elements of the group.
         @Override
         public void accumulateDistinct(NodeValue nv, Binding binding, FunctionEnv functionEnv)

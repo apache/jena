@@ -27,7 +27,10 @@ import org.apache.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 
-/** Turtle language */
+/** Turtle.
+ *
+ * @see <a href="http://www.w3.org/TR/turtle/">http://www.w3.org/TR/turtle/</a>
+ **/
 public class LangTurtle extends LangTurtleBase {
     public LangTurtle(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
         super(tokens, profile, dest) ;

@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-security</artifactId>
-  <version>2.12.2-SNAPSHOT</version>
+  <version>2.13.0-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -62,10 +62,45 @@
 	<build>
 		<plugins>
 			<plugin>
+	        	<groupId>org.codehaus.mojo</groupId>
+	        	<artifactId>build-helper-maven-plugin</artifactId>
+	        	<version>1.9.1</version>
+	        	<executions>
+	          		<execution>
+	            		<id>add-example-source</id>
+	            		<phase>generate-sources</phase>
+	            		<goals>
+	              			<goal>add-source</goal>
+	            		</goals>
+	            		<configuration>
+	              			<sources>
+	                			<source>src/example/java</source>
+	              			</sources>
+	            		</configuration>
+	          		</execution>
+	          		<execution>
+	            		<id>add-example-resource</id>
+	            		<phase>generate-sources</phase>
+	            		<goals>
+	              			<goal>add-resource</goal>
+	            		</goals>
+	            		<configuration>
+	              			<resources>
+	                			<resource>
+	                				<directory>src/example/resources</directory>
+	                				<targetPath>${project.build.outputDirectory}</targetPath>
+	                			</resource>
+	              			</resources>
+	            		</configuration>
+	          		</execution>
+	        	</executions>
+	      	</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<!--  <version>2.9</version> -->
 				<configuration>
+					<excludePackageNames>org.apache.jena.security.example:org.apache.jena.security.example.*</excludePackageNames>
 					<tags>
 						<tag>
 							<name>sec.graph</name>
@@ -81,6 +116,7 @@
 						</tag>
 					</tags>
 					<overview>${basedir}/src/main/overview.html</overview>
+					 
 				</configuration>
 				<executions>
 					<execution>
@@ -94,12 +130,38 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+              		<excludes>
+                		<exclude>org/apache/jena/security/example/**</exclude>
+              		</excludes>
+            	</configuration>
 				<executions>
 					<execution>
+						<id>create-test-jar</id>
 						<goals>
 							<goal>test-jar</goal>
 						</goals>
 					</execution>
+					<execution>
+						<id>create-example-jar</id>
+		            	<phase>package</phase>
+		            	<goals>
+		              		<goal>jar</goal>
+		            	</goals>
+		            	<configuration>
+		            		<classedDirectory>target</classedDirectory>
+		              		<classifier>example</classifier>
+		              		<includes>
+		                		<include>../src/example/**</include>
+		                		<include>../src/example</include>
+		                		<include>META-INF/**</include>
+		                		<include>org/apache/jena/security/example/**</include>
+		              		</includes>
+		              		<excludes>
+		              			<exclude>META-INF/DEPENDENCIES</exclude>
+		              		</excludes>
+		            	</configuration>
+		          	</execution>
 				</executions>
 			</plugin>
 		</plugins>
@@ -111,14 +173,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<version>3.2.1</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jena</groupId>
@@ -132,6 +188,16 @@
 			<version>${project.version}</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+			<version>1.2.2</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>

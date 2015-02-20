@@ -30,23 +30,19 @@ public class ExampleDBpedia1
 {
     static public void main(String...argv)
     {
-        try {
-            String queryStr = "select distinct ?Concept where {[] a ?Concept} LIMIT 10";
-            Query query = QueryFactory.create(queryStr);
+        String queryStr = "select distinct ?Concept where {[] a ?Concept} LIMIT 10";
+        Query query = QueryFactory.create(queryStr);
 
-            // Remote execution.
-            QueryExecution qexec = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", query);
+        // Remote execution.
+        try ( QueryExecution qexec = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", query) ) {
             // Set the DBpedia specific timeout.
             ((QueryEngineHTTP)qexec).addParam("timeout", "10000") ;
 
             // Execute.
             ResultSet rs = qexec.execSelect();
             ResultSetFormatter.out(System.out, rs, query);
-            qexec.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 }

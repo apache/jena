@@ -23,12 +23,12 @@ import java.util.Map ;
 
 import org.apache.jena.riot.web.LangTag ;
 
-
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class CanonicalizeLiteral implements NodeTransform    
@@ -40,42 +40,41 @@ public class CanonicalizeLiteral implements NodeTransform
     private CanonicalizeLiteral() {}
     
     @Override
-    public Node convert(Node node)
-    {
+    public Node convert(Node node) {
         if ( ! node.isLiteral() )
             return node ;
             
         RDFDatatype dt = node.getLiteralDatatype() ;
         Node n2 ;
-        if ( dt == null )
-        {
+        if ( NodeUtils.isLangString(node) ) {
+            // RDF 1.0, no datatype ; RDF 1.1 : datatype is rdf:langString 
             if ( node.getLiteralLanguage().equals("") )
                 //n2 = NormalizeValue.dtSimpleLiteral.handle(node, node.getLiteralLexicalForm(), null) ;
                 return node ;
             else
-                n2 = canonicalLangtag(node, node.getLiteralLexicalForm(), node.getLiteralLanguage()) ; 
-        }
-        else
-        {
-            // Valid?  Yes - assumes checking has been done.
-            // May integrate later
+                n2 = canonicalLangtag(node.getLiteralLexicalForm(), node.getLiteralLanguage()) ; 
+        } else if ( dt == null ) {
+            // RDF 1.0 / no lang.
+            n2 = NormalizeValue.dtSimpleLiteral.handle(node, node.getLiteralLexicalForm(), null) ;
+        } else {
+            // Dataype, not rdf:langString (RDF 1.1). 
             DatatypeHandler handler = dispatch.get(dt) ;
             if ( handler == null )
                 return node ;
-    
             n2 = handler.handle(node, node.getLiteralLexicalForm(), dt) ;
         }
+        
         if ( n2 == null )
             return node ;
         return n2 ;
     }
     
-    private static Node canonicalLangtag(Node node, String lexicalForm, String langTag)
+    private static Node canonicalLangtag(String lexicalForm, String langTag)
     {
         String langTag2 = LangTag.canonical(langTag) ;
         if ( langTag2.equals(langTag) )
             return null ;
-        return NodeFactory.createLiteral(lexicalForm, langTag2, null) ;
+        return NodeFactory.createLiteral(lexicalForm, langTag2) ;
     }
     
     private static final RDFDatatype dtPlainLiteral = NodeFactory.getType(RDF.getURI()+"PlainLiteral") ;

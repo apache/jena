@@ -18,14 +18,11 @@
 
 package org.apache.jena.iri.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-import java.net.IDN;
+import java.io.UnsupportedEncodingException ;
+import java.net.* ;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.NoSuchElementException ;
 
 import org.apache.jena.iri.* ;
 /*
@@ -270,6 +267,15 @@ abstract public class AbsIRIImpl extends  IRI implements
         return new URL(toASCIIString());
     }
 
+    @Override
+    public URI toURI() throws URISyntaxException {
+        try {
+            String x = createASCIIString() ;
+            return new URI(x) ;
+        } catch (MalformedIDNException ex) 
+        { throw new URISyntaxException(toDisplayString(), ex.getMessage()) ; }
+    }
+
     // TODO ToAsciiMask
     static long ToAsciiMask = 
         ~0l;
@@ -280,14 +286,14 @@ abstract public class AbsIRIImpl extends  IRI implements
             | (1l << DOUBLE_DASH_IN_REG_NAME);
 */
     @Override
-    public String toASCIIString() throws MalformedURLException {
+    public String toASCIIString() throws MalformedIDNException {
         if (hasExceptionMask(ToAsciiMask)) {
             return createASCIIString();
         }
         return toString();
     }
 
-    private String createASCIIString() throws MalformedURLException {
+    private String createASCIIString() throws MalformedIDNException {
         StringBuffer asciiString = new StringBuffer();
 
         if (has(SCHEME)) {
@@ -320,24 +326,23 @@ abstract public class AbsIRIImpl extends  IRI implements
         return asciiString.toString();
     }
 
-    private void regNameToAscii(StringBuffer asciiString, String host)
-            throws MalformedURLException {
+    private void regNameToAscii(StringBuffer asciiString, String host) throws MalformedIDNException  {
         if ((errors(HOST) & ToAsciiMask) == 0) {
             asciiString.append(host);
             return;
         }
-       
         asciiString.append(domainToAscii(host));
-
     }
 
-    static CharSequence domainToAscii(String host) throws MalformedIDNException {
-        
+    private static CharSequence domainToAscii(String host) throws MalformedIDNException {
         try {
             return IDNP.toASCII(host, IDN.USE_STD3_ASCII_RULES|IDN.ALLOW_UNASSIGNED);
-        } catch (Exception e) {
-            throw new MalformedIDNException(e);
-        } 
+            // IDNP (patched IDN) throws IlleaglArgimentException
+            
+        } catch (IllegalArgumentException ex) {
+            // IDNP (patched IDN) throws IlleaglArgumentException
+            throw new MalformedIDNException(ex) ; 
+        }
         /*
         int u[] = new int[host.length()];
         for (int i = 0; i < host.length(); i++)

@@ -18,24 +18,19 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
+import org.apache.jena.atlas.lib.Lib ;
+
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
-import com.hp.hpl.jena.sparql.util.ExprUtils ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 
 public class AggMinDistinct extends AggMinBase
 {
     // ---- MIN(DISTINCT expr)
-    public AggMinDistinct(Expr expr) { super(expr) ; }
+    public AggMinDistinct(Expr expr) { super(expr, false) ; } 
     @Override
-    public Aggregator copy(Expr expr) { return new AggMinDistinct(expr) ; }
-
+    public Aggregator copy(ExprList exprs) { return new AggMinDistinct(exprs.get(0)) ; }
     @Override
-    public String toString() { return "min(distinct "+ExprUtils.fmtSPARQL(getExpr())+")" ; }
-    @Override
-    public String toPrefixString() { return "(min distinct "+WriterExpr.asString(getExpr())+")" ; }
-
-    @Override
-    public int hashCode()   { return HC_AggMinDistinct ^ expr.hashCode() ; }
+    public int hashCode()   { return HC_AggMinDistinct ^ getExpr().hashCode() ; }
     
    @Override
     public boolean equals(Object other)
@@ -44,6 +39,6 @@ public class AggMinDistinct extends AggMinBase
         if ( ! ( other instanceof AggMinDistinct ) )
             return false ;
         AggMinDistinct agg = (AggMinDistinct)other ;
-        return expr.equals(agg.expr) ;
+        return Lib.equal(exprList, agg.exprList) ;
     } 
 }

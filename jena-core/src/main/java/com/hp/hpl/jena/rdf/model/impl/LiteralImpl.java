@@ -18,10 +18,10 @@
 
 package com.hp.hpl.jena.rdf.model.impl;
 
+import com.hp.hpl.jena.JenaRuntime ;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
-
 import com.hp.hpl.jena.datatypes.DatatypeFormatException;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
@@ -118,9 +118,13 @@ public class LiteralImpl extends EnhNode implements Literal {
     
     /**
      * Return true if this is a "plain" (i.e. old style, not typed) literal.
+     * For RDF 1.1, the most compatible choice is "xsd:string" or "rdf:langString". 
      */
-    public boolean isPlainLiteral() {
-        return asNode().getLiteralDatatype() == null;
+    private boolean isPlainLiteral() {
+        if ( JenaRuntime.isRDF11 )
+            return Util.isLangString(this) || Util.isSimpleString(this) ;  
+        else
+            return asNode().getLiteralDatatype() == null;
     }
     
     /**

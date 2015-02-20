@@ -82,7 +82,7 @@ public class AbstractQueryBuilderTest {
 		assertEquals(NodeFactory.createURI("one"), n);
 
 		n = builder.makeNode(builder);
-		LiteralLabel ll = LiteralLabelFactory.create(builder);
+		LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(builder);
 		assertEquals(NodeFactory.createLiteral(ll), n);
 
 	}

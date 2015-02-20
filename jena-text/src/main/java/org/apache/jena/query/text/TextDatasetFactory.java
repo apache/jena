@@ -92,7 +92,17 @@ public class TextDatasetFactory
         Context c = dsgt.getContext() ;
         c.set(TextQuery.textIndex, textIndex) ;
         c.set(TextQuery.docProducer, docProducer ) ;
-        
+        return dsgt ;
+    }
+    
+    /** Create a text-indexed DatasetGraph, optionally allowing the text index to be closed if the DatasetGraph is */
+    public static DatasetGraph create(DatasetGraph dsg, TextIndex textIndex, boolean closeIndexOnDSGClose)
+    {
+        TextDocProducer producer = new TextDocProducerTriples(dsg, textIndex.getDocDef(), textIndex) ;
+        DatasetGraph dsgt = new DatasetGraphText(dsg, textIndex, producer, closeIndexOnDSGClose) ;
+        // Also set on dsg
+        Context c = dsgt.getContext() ;
+        c.set(TextQuery.textIndex, textIndex) ;       
         return dsgt ;
     }
 

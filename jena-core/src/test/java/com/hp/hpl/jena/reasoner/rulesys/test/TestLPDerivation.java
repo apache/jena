@@ -94,7 +94,7 @@ public class TestLPDerivation extends TestCase {
      * @param matches the set of triple matches which should occur in the derivation
      * @param rulenumber the index of the rule in the rule list which should occur in the derivation
      */
-    private void doTest(String ruleSrc, Node[] tabled, Triple[] triples, TripleMatch query, Triple[] matches, int rulenumber) {
+    private void doTest(String ruleSrc, Node[] tabled, Triple[] triples, Triple query, Triple[] matches, int rulenumber) {
         List<Rule> rules = Rule.parseRules(ruleSrc);
         Graph data = Factory.createGraphMem();
         for ( Triple triple : triples )

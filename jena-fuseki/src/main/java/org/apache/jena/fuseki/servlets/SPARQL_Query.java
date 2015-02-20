@@ -78,28 +78,30 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     protected final void perform(HttpAction action)
     {
         // GET
-        if ( action.request.getMethod().equals(HttpNames.METHOD_GET) )
-        {
+        if ( action.request.getMethod().equals(HttpNames.METHOD_GET) ) {
             executeWithParameter(action) ;
             return ;
         }
 
         ContentType ct = FusekiLib.getContentType(action) ;
+        if ( ct == null ) {
+            // Validation check it's POST with ?query=
+            executeWithParameter(action) ;
+            return ;
+        }
+        
         String incoming = ct.getContentType() ;
-
         // POST application/sparql-query
-        if (WebContent.contentTypeSPARQLQuery.equals(incoming))
-        {
+        if (WebContent.contentTypeSPARQLQuery.equals(incoming)) {
             executeBody(action) ;
             return ;
         }
         // POST application/x-www-form-url
-        if (WebContent.contentTypeHTMLForm.equals(incoming))
-        {
+        if (WebContent.contentTypeHTMLForm.equals(incoming)) {
             executeWithParameter(action) ;
             return ;
         }
-
+        
         error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: "+incoming) ;
     }
 

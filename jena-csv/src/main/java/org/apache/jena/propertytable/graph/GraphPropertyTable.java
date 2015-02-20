@@ -18,24 +18,22 @@
 
 package org.apache.jena.propertytable.graph;
 
-import java.util.ArrayList;
-import java.util.Locale;
+import java.util.ArrayList ;
+import java.util.Locale ;
 
-import org.apache.jena.propertytable.Column;
-import org.apache.jena.propertytable.PropertyTable;
-import org.apache.jena.propertytable.Row;
+import org.apache.jena.propertytable.Column ;
+import org.apache.jena.propertytable.PropertyTable ;
+import org.apache.jena.propertytable.Row ;
 
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
-import com.hp.hpl.jena.graph.impl.GraphBase;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.Filter;
-import com.hp.hpl.jena.util.iterator.NullIterator;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.impl.GraphBase ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.Filter ;
+import com.hp.hpl.jena.util.iterator.NullIterator ;
+import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 /**
  * GraphPropertyTable implements the Graph interface (read-only) over a PropertyTable.
@@ -57,7 +55,7 @@ public class GraphPropertyTable extends GraphBase {
 	}
 
 	@Override
-	protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m) {
+	protected ExtendedIterator<Triple> graphBaseFind(Triple triple) {
 		//System.out.println(m);
 
 		if (this.pt == null) {
@@ -66,9 +64,9 @@ public class GraphPropertyTable extends GraphBase {
 
 		ExtendedIterator<Triple> iter = null;
 
-		Node s = m.getMatchSubject();
-		Node p = m.getMatchPredicate();
-		Node o = m.getMatchObject();
+		Node s = triple.getMatchSubject();
+		Node p = triple.getMatchPredicate();
+		Node o = triple.getMatchObject();
 
 		if (isConcrete(p) && isConcrete(o)) {
 			//System.out.println("1");
@@ -89,7 +87,7 @@ public class GraphPropertyTable extends GraphBase {
 			iter = pt.getTripleIterator();
 		}
 
-		return iter.filterKeep(new TripleMatchFilterEquality(m.asTriple()));
+		return iter.filterKeep(new TripleMatchFilterEquality(triple));
 
 	}
 	

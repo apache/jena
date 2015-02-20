@@ -43,6 +43,7 @@ import com.hp.hpl.jena.tdb.sys.TestOps ;
     , TestDynamicDatasetTDB.class
     , TestStoreConnectionsDirect.class
     , TestStoreConnectionsMapped.class
+    , TestLocationLockStoreConnection.class
 } )
 public class TS_Store
 { 

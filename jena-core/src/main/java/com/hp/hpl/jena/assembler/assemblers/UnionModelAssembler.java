@@ -18,21 +18,19 @@
 
 package com.hp.hpl.jena.assembler.assemblers;
 
-import com.hp.hpl.jena.assembler.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.compose.*;
-import com.hp.hpl.jena.graph.impl.GraphBase;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.JA ;
+import com.hp.hpl.jena.assembler.Mode ;
+import com.hp.hpl.jena.graph.Factory ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.compose.MultiUnion ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.StmtIterator ;
 
 public class UnionModelAssembler extends ModelAssembler implements Assembler
     {
-    private static final Graph immutable = new GraphBase() 
-        {
-        @Override
-        protected ExtendedIterator<Triple> graphBaseFind( TripleMatch m )
-            { return NullIterator.instance(); }
-        };
     
     @Override
     protected Model openEmptyModel( Assembler a, Resource root, Mode mode )
@@ -47,7 +45,7 @@ public class UnionModelAssembler extends ModelAssembler implements Assembler
     private Graph getRootModel( Assembler a, Resource root, Mode mode )
         {
         Resource r = getUniqueResource( root, JA.rootModel );
-        return r == null ? immutable : a.openModel( r, mode ).getGraph();
+        return r == null ? Factory.empty() : a.openModel( r, mode ).getGraph();
         }
 
     private void addSubModels( Assembler a, Resource root, MultiUnion union, Mode mode )

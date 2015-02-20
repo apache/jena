@@ -22,6 +22,8 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
+import com.hp.hpl.jena.JenaRuntime ;
+
 public abstract class AbstractRegexpBasedTest {
 	protected static final String SPACE = "\\s+";
 	protected static final String OPT_SPACE = "\\s*";
@@ -56,6 +58,15 @@ public abstract class AbstractRegexpBasedTest {
 		return "\\?" + s;
 	}
 
+	/** Match the type of a xsd:string typed term.
+	 * RDF 1.0 : use ^^xsd:string form.
+	 * RDF 1.1 : use untyped form.
+	 */
+	protected final String presentStringType() {
+	    return 
+	        JenaRuntime.isRDF11 ? "" : "\\^\\^\\<http://www.w3.org/2001/XMLSchema#string\\>" ;
+	}
+
 	protected final void assertNotContainsRegex(String expected, String lst) {
 
 		Pattern patt = Pattern.compile(expected, Pattern.DOTALL);
@@ -86,8 +97,7 @@ public abstract class AbstractRegexpBasedTest {
 	}
 
 	protected final void assertContainsRegex(String expected, String[] lst) {
-
-		Pattern patt = Pattern.compile(expected, Pattern.DOTALL);
+		Pattern patt = Pattern.compile(expected, Pattern.DOTALL|Pattern.CASE_INSENSITIVE);
 		for (String s : lst) {
 			if (patt.matcher(s).find()) {
 				return;

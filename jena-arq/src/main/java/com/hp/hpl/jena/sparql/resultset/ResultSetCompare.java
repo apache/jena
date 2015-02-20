@@ -36,8 +36,8 @@ import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.sparql.util.NodeUtils.EqualityTest ;
 
 /** Comparison of ResultSets.
- *  Note that reading ResultSets is destructive so consiuder using {@linkplain ResultSetRewindable}
- *  from {@linkplain ResultSetFactory#makeRewindable} 
+ *  Note that reading ResultSets is destructive so consiuder using {@link ResultSetRewindable}
+ *  from {@link ResultSetFactory#makeRewindable} 
  */
 
 public class ResultSetCompare
@@ -206,8 +206,8 @@ public class ResultSetCompare
      * Only does RDF term comparison.
      */ 
     public static boolean isomorphic(ResultSet rs1, ResultSet rs2) {
-        Model m1 = ResultSetFormatter.toModel(rs1) ;
-        Model m2 = ResultSetFormatter.toModel(rs2) ;
+        Model m1 = RDFOutput.encodeAsModel(rs1) ;
+        Model m2 = RDFOutput.encodeAsModel(rs2) ;
         return m1.isIsomorphicWith(m2) ;
     }
     

@@ -87,10 +87,18 @@ public class GraphWrapper implements Graph
         graph.delete(t) ;
     }
 
+    /** @deprecated Use {@link #find(Triple)} */
+    @Deprecated
     @Override
-    public ExtendedIterator<Triple> find(TripleMatch m)
+    public ExtendedIterator<Triple> find(TripleMatch triple)
     {
-        return graph.find(m) ;
+        return graph.find(triple) ;
+    }
+
+    @Override
+    public ExtendedIterator<Triple> find(Triple triple)
+    {
+        return graph.find(triple) ;
     }
 
     @Override

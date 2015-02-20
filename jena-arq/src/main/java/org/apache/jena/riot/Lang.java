@@ -51,7 +51,7 @@ public class Lang
     /** <a href="http://www.w3.org/TR/turtle/">Turtle</a>*/
     public static Lang TURTLE ;
     
-    /** Alternative constant for {@linkplain #TURTLE} */
+    /** Alternative constant for {@link #TURTLE} */
     public static Lang TTL ;
     
     /** N3 (treat as Turtle) */
@@ -60,7 +60,7 @@ public class Lang
     /** <a href="http://www.w3.org/TR/n-triples/">N-Triples</a>*/
     public static Lang NTRIPLES ;
     
-    /** Alternative constant for {@linkplain #NTRIPLES} */
+    /** Alternative constant for {@link #NTRIPLES} */
     public static Lang NT ;
 
     /** <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
@@ -75,7 +75,7 @@ public class Lang
     /** <a href="http://www.w3.org/TR/n-quads">N-Quads</a> */
     public static Lang NQUADS ;
     
-    /** Alternative constant {@linkplain #NQUADS} */
+    /** Alternative constant {@link #NQUADS} */
     public static Lang NQ ;
 
     //** The RDF syntax "RDF Thrift" : see http://jena.apache.org/documentation/io */ 

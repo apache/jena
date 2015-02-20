@@ -962,8 +962,8 @@ public class RDFDataMgr
 //    ///---- NEW
 
     /** 
-     * @see RDFLanguages#shortnameToLang  to go from Jena short name to {@linkplain Lang}
-     * @see RDFLanguages#contentTypeToLang to go from content type to {@linkplain Lang}
+     * @see RDFLanguages#shortnameToLang  to go from Jena short name to {@link Lang}
+     * @see RDFLanguages#contentTypeToLang to go from content type to {@link Lang}
      */
 
     public static ReaderRIOT createReader(Lang lang) {

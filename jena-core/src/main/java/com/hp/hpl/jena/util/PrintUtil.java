@@ -18,14 +18,21 @@
 
 package com.hp.hpl.jena.util;
 
-import java.util.*;
-import java.io.*;
-import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.reasoner.TriplePattern;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import java.io.PrintWriter ;
+import java.util.Iterator ;
+import java.util.Map ;
+
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.rdf.model.impl.Util ;
+import com.hp.hpl.jena.reasoner.TriplePattern ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.vocabulary.OWL ;
+import com.hp.hpl.jena.vocabulary.RDF ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary ;
 
 /**
  * A collection of small utilites for pretty printing nodes, triples
@@ -98,7 +105,8 @@ public class PrintUtil {
             return node.toString( prefixMapping );
         } else if (node instanceof Node_Literal) {
             String lf = node.getLiteralLexicalForm();
-            return "'" + lf + "'" + (node.getLiteralDatatype() == null ? "" : "^^" + node.getLiteralDatatypeURI());
+            // RDF 1.1 : Print xsd:string without ^^xsd:string 
+            return "'" + lf + "'" + (Util.isSimpleString(node) ? "" : "^^" + node.getLiteralDatatypeURI());
         } else if (node instanceof Node_ANY) {
             return "*";
         }

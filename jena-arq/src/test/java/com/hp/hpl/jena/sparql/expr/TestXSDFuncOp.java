@@ -23,9 +23,11 @@ import org.junit.Assert ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.* ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestXSDFuncOp extends BaseTest
 {
@@ -434,7 +436,6 @@ public class TestXSDFuncOp extends BaseTest
         { /* expected */}
     }
     
-
     @Test public void testSameUnknown_1()
     {
         NodeValue nv1 = NodeValue.makeNode(NodeFactory.createURI("test:abc")) ; 
@@ -606,6 +607,67 @@ public class TestXSDFuncOp extends BaseTest
         assertEquals("Does not compare "+nv1+" & "+nv2, NodeValue.CMP_LESS, NodeValue.compareAlways(nv1, nv2) ) ;
     }
 
+    @Test public void testCompareDuration_01() {
+        testCompare("'P365D'^^xsd:duration", "'P300D'^^xsd:duration", Expr.CMP_GREATER) ;
+    }
+    
+    // JENA-814
+    @Test(expected=ExprNotComparableException.class) 
+    public void testCompareDuration_02() {
+        testCompare("'P365D'^^xsd:duration", "'P1Y'^^xsd:duration", Expr.CMP_INDETERMINATE) ;
+    }
+    
+    // JENA-814
+    @Test(expected=ExprNotComparableException.class) 
+    public void testCompareDuration_03() {
+        testCompare("'P365D'^^xsd:dayTimeDuration", "'P1Y'^^xsd:yearMonthDuration", Expr.CMP_INDETERMINATE) ;
+    }
+
+    // JENA-814
+    @Test(expected=ExprNotComparableException.class) 
+    public void testCompareDuration_04() {
+        testCompare("'P1M'^^xsd:duration", "'P28D'^^xsd:duration", Expr.CMP_INDETERMINATE) ;
+    }
+
+    // JENA-814
+    @Test(expected=ExprNotComparableException.class) 
+    public void testCompareDuration_05() {
+        testCompare("'P1M'^^xsd:yearMonthDuration", "'P28D'^^xsd:dayTimeDuration", Expr.CMP_INDETERMINATE) ;
+    }
+
+    @Test public void testCompareDuration_06() {
+        testCompare("'P13M'^^xsd:yearMonthDuration", "'P1Y'^^xsd:yearMonthDuration", Expr.CMP_GREATER) ;
+    }
+    
+    // -------
+    
+    private static void testCompare(String s1, String s2, int correct) {
+        NodeValue nv1 = parse(s1) ; 
+        NodeValue nv2 = parse(s2) ; 
+        int x = NodeValue.compare(nv1, nv2) ;
+        assertEquals("("+s1+", "+s2+") -> "+name(x)+" ["+name(correct)+"]", correct, x) ;
+        int y = x ;
+        if ( x == Expr.CMP_LESS || x == Expr.CMP_GREATER ) 
+            y = -x ;
+        assertEquals("Not symmetric: ("+s1+", "+s2+")", NodeValue.compare(nv2, nv1), y) ;
+    }
+    
+    private static String name(int cmp) {
+        switch(cmp) {
+            case Expr.CMP_EQUAL :       return "EQ" ;
+            case Expr.CMP_GREATER :     return "GT" ;
+            case Expr.CMP_LESS :        return "LT" ;
+            case Expr.CMP_UNEQUAL :     return "NE" ;
+            case Expr.CMP_INDETERMINATE : return "INDET" ;
+            default:return "Unknown" ;
+                
+        }
+    }
+    
+    private static NodeValue parse(String str) {
+        Node n = SSE.parseNode(str) ;
+        return NodeValue.makeNode(n) ; 
+    }
     // abs is a test of Function.unaryOp machinary 
     @Test public void testAbs1()
     {

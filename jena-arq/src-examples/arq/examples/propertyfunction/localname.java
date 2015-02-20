@@ -111,8 +111,7 @@ public class localname extends PFuncSimple
                 // Not a variable, not a literal=> can't match
                 return QueryIterNullIterator.create(execCxt) ;
         
-            if( ! NodeUtils.isStringLiteral(nodeLocalname) )
-                // If a typed literal, must be XSD string.
+            if( ! NodeUtils.isSimpleString(nodeLocalname) )
                 return QueryIterNullIterator.create(execCxt) ;
         }
         

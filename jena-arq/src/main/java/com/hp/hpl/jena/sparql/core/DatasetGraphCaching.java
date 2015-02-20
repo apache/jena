@@ -55,31 +55,27 @@ abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
     
     protected DatasetGraphCaching() { this(100) ; }
     
-    protected DatasetGraphCaching(int cacheSize)
-    {
+    protected DatasetGraphCaching(int cacheSize) {
         if ( cacheSize <= 0 )
-            throw new IllegalArgumentException("Cache size is less that 1: "+cacheSize) ;
+            throw new IllegalArgumentException("Cache size is less that 1: " + cacheSize) ;
         namedGraphs = CacheFactory.createCache(cacheSize) ;
     }
-    
+
     @Override
-    public boolean containsGraph(Node graphNode)
-    {
+    public boolean containsGraph(Node graphNode) {
         if ( namedGraphs.containsKey(graphNode) )
             // Empty graph may or may not count.
             // If they don't, need to override this method.
             return true ;
         return _containsGraph(graphNode) ;
     }
-    
+
     @Override
-    public final Graph getDefaultGraph()
-    {
-        if ( ! caching )
+    public final Graph getDefaultGraph() {
+        if ( !caching )
             return _createDefaultGraph() ;
-        
-        synchronized(this)
-        {
+
+        synchronized (this) {
             if ( defaultGraph == null )
                 defaultGraph = _createDefaultGraph() ;
         }
@@ -87,53 +83,46 @@ abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
     }
 
     @Override
-    public final Graph getGraph(Node graphNode)
-    {
-        if ( ! caching )
+    public final Graph getGraph(Node graphNode) {
+        if ( !caching )
             return _createNamedGraph(graphNode) ;
 
-        synchronized(this)
-        {   // MRSW - need to create and update the cache atomically.
+        synchronized (this) { 
+            // MRSW - need to create and update the cache atomically.
             Graph graph = namedGraphs.get(graphNode) ;
-            if ( graph == null )
-            {
+            if ( graph == null ) {
                 graph = _createNamedGraph(graphNode) ;
                 namedGraphs.put(graphNode, graph) ;
             }
             return graph ;
         }
     }
-    
+
     @Override
-    public void addGraph(Node graphName, Graph graph)
-    {
+    public void addGraph(Node graphName, Graph graph) {
         removeGraph(graphName) ;
         GraphUtil.addInto(getGraph(graphName), graph) ;
     }
-    
+
     @Override
-    public final void removeGraph(Node graphName)
-    { 
+    public final void removeGraph(Node graphName) {
         deleteAny(graphName, Node.ANY, Node.ANY, Node.ANY) ;
-        synchronized(this)
-        {
+        synchronized (this) {
             namedGraphs.remove(graphName) ;
         }
     }
-    
+
     @Override
     public void clear() {
-        synchronized(this) { 
+        synchronized (this) {
             super.clear() ;
             namedGraphs.clear() ;
         }
     }
 
     @Override
-    public void close()
-    {
-        synchronized(this)
-        {
+    public void close() {
+        synchronized (this) {
             if ( closed )
                 return ;
             closed = true ;
@@ -147,48 +136,38 @@ abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
     
     // Helper implementations of operations.
     // Not necessarily efficient.
-    protected static class Helper 
-    {
-        public static void addToDftGraph(DatasetGraphCaching dsg, Node s, Node p, Node o)
-        {
-            dsg.getDefaultGraph().add(new Triple(s,p,o)) ;
+    protected static class Helper {
+        public static void addToDftGraph(DatasetGraphCaching dsg, Node s, Node p, Node o) {
+            dsg.getDefaultGraph().add(new Triple(s, p, o)) ;
         }
 
-        public static void addToNamedGraph(DatasetGraphCaching dsg, Node g, Node s, Node p, Node o)
-        {
-            dsg.getGraph(g).add(new Triple(s,p,o)) ;
+        public static void addToNamedGraph(DatasetGraphCaching dsg, Node g, Node s, Node p, Node o) {
+            dsg.getGraph(g).add(new Triple(s, p, o)) ;
         }
 
-
-        public static void deleteFromDftGraph(DatasetGraphCaching dsg, Node s, Node p, Node o)
-        {
-            dsg.getDefaultGraph().delete(new Triple(s,p,o)) ;
+        public static void deleteFromDftGraph(DatasetGraphCaching dsg, Node s, Node p, Node o) {
+            dsg.getDefaultGraph().delete(new Triple(s, p, o)) ;
         }
 
-        public static void deleteFromNamedGraph(DatasetGraphCaching dsg, Node g, Node s, Node p, Node o)
-        {
-            dsg.getGraph(g).delete(new Triple(s,p,o)) ;
+        public static void deleteFromNamedGraph(DatasetGraphCaching dsg, Node g, Node s, Node p, Node o) {
+            dsg.getGraph(g).delete(new Triple(s, p, o)) ;
         }
 
-        public static Iterator<Quad> findInAnyNamedGraphs(DatasetGraphCaching dsg, Node s, Node p, Node o)
-        {
+        public static Iterator<Quad> findInAnyNamedGraphs(DatasetGraphCaching dsg, Node s, Node p, Node o) {
             Iterator<Node> iter = dsg.listGraphNodes() ;
             Iterator<Quad> quads = null ;
-            for ( ; iter.hasNext() ; )
-            {
+            for ( ; iter.hasNext() ; ) {
                 Node gn = iter.next() ;
                 quads = Iter.append(quads, findInSpecificNamedGraph(dsg, gn, s, p, o)) ;
             }
             return quads ;
         }
 
-        public static Iterator<Quad> findInDftGraph(DatasetGraphCaching dsg, Node s, Node p, Node o)
-        {
+        public static Iterator<Quad> findInDftGraph(DatasetGraphCaching dsg, Node s, Node p, Node o) {
             return triples2quadsDftGraph(dsg.getDefaultGraph().find(s, p, o)) ;
         }
 
-        public static Iterator<Quad> findInSpecificNamedGraph(DatasetGraphCaching dsg, Node g, Node s, Node p, Node o)
-        {
+        public static Iterator<Quad> findInSpecificNamedGraph(DatasetGraphCaching dsg, Node g, Node s, Node p, Node o) {
             return triples2quadsDftGraph(dsg.getGraph(g).find(s, p, o)) ;
         }
     }

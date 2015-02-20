@@ -823,7 +823,7 @@ public class TestBugs extends TestCase {
             checkArgs(length, context);
             BindingEnvironment env = context.getEnv();
             Triple t = new Triple( NodeFactory.createAnon(), NodeFactory.createURI("http://jena.hpl.hp.com/example#"), NodeFactory.createAnon());
-            Node l = NodeFactory.createLiteral( LiteralLabelFactory.create(t) );
+            Node l = NodeFactory.createLiteral( LiteralLabelFactory.createTypedLiteral(t) );
             return env.bind(args[0], l);
         }
     }

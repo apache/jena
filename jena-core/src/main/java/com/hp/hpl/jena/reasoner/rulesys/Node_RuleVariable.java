@@ -42,7 +42,7 @@ public class Node_RuleVariable extends Node_Variable {
     /** A flag to indicate that the value is reference (pointer to a var) */
     protected boolean isRef = true;
     
-    /** A static wildcard - like Node.ANY but tests equl to other Node_RuleVariables */
+    /** A static wildcard - like Node.ANY but tests equal to other Node_RuleVariables */
     public static final Node_RuleVariable WILD = new Node_RuleVariable("*", -1);
          
     /**

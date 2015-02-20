@@ -29,7 +29,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.hp.hpl.jena.tdb.StoreConnection;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.sys.ProcessUtils;
 
@@ -98,28 +97,6 @@ public class TestLocationLock {
         Assert.assertFalse(lock.canObtain());
     }
 
-    @Test
-    public void location_lock_dir_03() {
-        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
-        LocationLock lock = dir.getLock();
-        Assert.assertTrue(lock.canLock());
-        Assert.assertFalse(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
-        Assert.assertTrue(lock.canObtain());
-
-        // Creating a StoreConnection on the location will obtain the lock
-        StoreConnection.make(dir);
-        Assert.assertTrue(lock.isLocked());
-        Assert.assertTrue(lock.isOwned());
-        Assert.assertTrue(lock.canObtain());
-
-        // Releasing the connection releases the lock
-        StoreConnection.release(dir);
-        Assert.assertFalse(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
-        Assert.assertTrue(lock.canObtain());
-    }
-
     @Test(expected = TDBException.class)
     public void location_lock_dir_error_01() throws IOException {
         Assume.assumeTrue(negativePidsTreatedAsAlive);
@@ -167,29 +144,5 @@ public class TestLocationLock {
         // Attempting to release a lock we don't own should error
         Assert.assertFalse(lock.canObtain());
         lock.release();
-    }
-
-    @Test(expected = TDBException.class)
-    public void location_lock_dir_error_03() throws IOException {
-        Assume.assumeTrue(negativePidsTreatedAsAlive);
-        
-        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
-        LocationLock lock = dir.getLock();
-        Assert.assertTrue(lock.canLock());
-        Assert.assertFalse(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
-        Assert.assertTrue(lock.canObtain());
-
-        // Write a fake PID to the lock file
-        try(BufferedWriter writer = 
-            new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
-            // Fake PID that would never be valid
-            writer.write(Integer.toString(-1234)); 
-        }
-        Assert.assertTrue(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
-
-        // Attempting to create a connection on this location should error
-        StoreConnection.make(dir);
     }
 }

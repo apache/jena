@@ -65,7 +65,6 @@ public class GraphSDB extends GraphBase implements Graph
     public GraphSDB(Store store, String uri)
     { 
         this(store, NodeFactory.createURI(uri)) ;
-        
     }
     
     public GraphSDB(Store store)
@@ -121,7 +120,7 @@ public class GraphSDB extends GraphBase implements Graph
         { log.warn("Failed to get prefixes: "+ex.getMessage()) ; return null ; }
     }
 
-    private Quad quad(TripleMatch m)
+    private Quad quad(Triple m)
     {
         Node s = m.getMatchSubject() ;
         Var sVar = null ;
@@ -151,7 +150,7 @@ public class GraphSDB extends GraphBase implements Graph
     }
 
     @Override
-    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
+    protected ExtendedIterator<Triple> graphBaseFind(Triple m)
     {
         // Fake a query.
         SDBRequest cxt = new SDBRequest(getStore(), new Query()) ;
@@ -263,7 +262,7 @@ public class GraphSDB extends GraphBase implements Graph
     @Override
     public GraphEventManager getEventManager()
     {
-    	if (gem == null) gem = new EventManagerSDB( this );
+    	if (gem == null) gem = new EventManagerSDB( );
         return gem;
     }
     

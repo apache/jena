@@ -1,0 +1,98 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+##
+## Define all the prefixes 
+##
+
+@prefix fuseki:  <http://jena.apache.org/fuseki#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix sec:    <http://apache.org/jena/security/Assembler#> .
+@prefix my:     <http://example.org/#> .
+
+##
+## Load the SecuredAssembler class from the security library and define 
+## the sec:Model as a subclass of ja:NamedModel.
+##
+[] ja:loadClass    "org.apache.jena.security.SecuredAssembler" .
+sec:Model       rdfs:subClassOf  ja:NamedModel .
+
+##
+## Define the base model that contains the unsecured data.
+##
+my:baseModel rdf:type ja:MemoryModel;
+    ja:content [ja:externalContent <file:./example.ttl>] 
+    .   
+
+##
+## Define the secured model.  This is where permissions is applied to the 
+## my:baseModel to create a model that has permission restrictions.  Note 
+## that it is using the security evaluator implementation (sec:evaluatorImpl) 
+## called my:secEvaluator which we will define next.
+##
+my:securedModel rdf:type sec:Model ;
+    sec:baseModel my:baseModel ;
+    ja:modelName "https://example.org/securedModel" ;
+    sec:evaluatorImpl my:secEvaluator .
+  
+##
+## Define the security evaluator.  This is where we use the example 
+## ShiroExampleEvaluator.  For your production environment you will replace 
+## "org.apache.jena.security.example.ShiroExampleEvaluator"  with your 
+## SecurityEvaluator implementation.  Note that  ShiroExampleEvaluator constructor 
+## takes a Model argument.  We pass in the unsecured baseModel so that the evaluator 
+## can read it unencumbered.  Your implementation of SecurityEvaluator may have different 
+## parameters to meet your specific needs.
+##  
+my:secEvaluator rdf:type sec:Evaluator ;
+    sec:args [  
+        rdf:_1 my:baseModel ;
+    ] ;
+    sec:evaluatorClass "org.apache.jena.security.example.ShiroExampleEvaluator" .
+
+##
+## Define the dataset that we will use for in the server.
+##
+my:securedDataset rdf:type ja:RDFDataset ;
+   ja:defaultGraph my:securedModel .
+
+##
+## Define the fuseki:Server.
+##
+my:fuskei rdf:type fuseki:Server ;
+   fuseki:services (
+     my:service1
+   ) .
+
+##
+## Define the service for the fuseki:Service.  Note that the fuseki:dataset served by 
+## this server is the secured dataset defined above.    
+##
+my:service1 rdf:type fuseki:Service ;
+    rdfs:label                        "My Secured Data Service" ;
+    fuseki:name                       "myAppFuseki" ;       # http://host:port/myAppFuseki
+    fuseki:serviceQuery               "query" ;    # SPARQL query service
+    fuseki:serviceQuery               "sparql" ;   # SPARQL query service
+    fuseki:serviceUpdate              "update" ;   # SPARQL query service
+    fuseki:serviceUpload              "upload" ;   # Non-SPARQL upload service
+    fuseki:serviceReadWriteGraphStore "data" ;     # SPARQL Graph store protocol (read and write)
+    # A separate ead-only graph store endpoint:
+    fuseki:serviceReadGraphStore      "get" ;      # SPARQL Graph store protocol (read only)
+    fuseki:dataset                   my:securedDataset ;
+    .
+    

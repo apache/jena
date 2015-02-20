@@ -277,7 +277,7 @@ public class TestDistinctDataNet extends TestCase
         binding.add(vars[5], NodeFactory.createURI(randomURI()));
         binding.add(vars[6], NodeFactory.createURI(randomURI()));
         binding.add(vars[7], NodeFactory.createLiteral(randomString(5)));
-        binding.add(vars[8], NodeFactory.createLiteral("" + random.nextInt(), null, XSDDatatype.XSDinteger));
+        binding.add(vars[8], NodeFactory.createLiteral("" + random.nextInt(), XSDDatatype.XSDinteger));
         binding.add(vars[9], NodeFactory.createAnon());
         return binding;
     }

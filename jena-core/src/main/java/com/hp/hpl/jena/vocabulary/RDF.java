@@ -18,8 +18,13 @@
 
 package com.hp.hpl.jena.vocabulary;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.impl.RDFLangString ;
+import com.hp.hpl.jena.datatypes.xsd.impl.XMLLiteralType ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.ResourceFactory ;
 
 /**
     The standard RDF vocabulary.
@@ -59,6 +64,14 @@ public class RDF{
     public static final Property object = property( "object" );
     public static final Property type = property( "type" );
     public static final Property value = property( "value" );
+    
+    // RDF 1.1 - the datatypes of language strings
+    public static final Resource langString = ResourceFactory.createResource(RDFLangString.rdfLangString.getURI()) ;
+    // rdf:XMLLiteral
+    public static final Resource xmlLiteral = ResourceFactory.createResource(XMLLiteralType.theXMLLiteralType.getURI()) ;
+    
+    public static final RDFDatatype dtLangString = RDFLangString.rdfLangString ;
+    public static final RDFDatatype dtXMLLiteral = XMLLiteralType.theXMLLiteralType ;
 
     /**
         The same items of vocabulary, but at the Node level, parked inside a
@@ -80,6 +93,7 @@ public class RDF{
         public static final Node object = RDF.object.asNode();
         public static final Node type = RDF.type.asNode();
         public static final Node value = RDF.value.asNode();
+        public static final Node langString = RDF.langString.asNode();
         }
 
 }

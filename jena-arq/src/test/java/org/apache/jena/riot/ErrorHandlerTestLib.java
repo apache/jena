@@ -23,27 +23,28 @@ import java.util.List ;
 
 import org.apache.jena.riot.system.ErrorHandler ;
 
+/** Error handled to convert anything to an exception */ 
 public class ErrorHandlerTestLib
 {
-    public static class ExFatal extends RuntimeException {}
+    public static class ExFatal extends RuntimeException { ExFatal(String msg) { super(msg) ; } }
 
-    public static class ExError extends RuntimeException {}
+    public static class ExError extends RuntimeException { ExError(String msg) { super(msg) ; } }
 
-    public static class ExWarning extends RuntimeException {}
+    public static class ExWarning extends RuntimeException { ExWarning(String msg) { super(msg) ; } }
 
     public static class ErrorHandlerEx implements ErrorHandler
     {
         @Override
         public void warning(String message, long line, long col)
-        { throw new ExWarning() ; }
+        { throw new ExWarning(message) ; }
     
         @Override
         public void error(String message, long line, long col)
-        { throw new ExError() ; }
+        { throw new ExError(message) ; }
     
         @Override
         public void fatal(String message, long line, long col)
-        { throw new ExFatal() ; }
+        { throw new ExFatal(message) ; }
     }
 
     // Error handler that records messages
@@ -61,7 +62,7 @@ public class ErrorHandlerTestLib
     
         @Override
         public void fatal(String message, long line, long col)
-        { msgs.add(message) ; throw new ExFatal() ; }
+        { msgs.add(message) ; throw new ExFatal(message) ; }
     }
 
 }

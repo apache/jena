@@ -548,7 +548,7 @@ public class JSONInputIterator extends QueryIteratorBase {
 				if (datatype != null) {
 					return NodeFactory.createLiteral(value, TypeMapper.getInstance().getSafeTypeByName(datatype));
 				} else if (lang != null) {
-					return NodeFactory.createLiteral(value, lang, false);
+					return NodeFactory.createLiteral(value, lang);
 				} else {
 					return NodeFactory.createLiteral(value);
 				}

@@ -40,8 +40,8 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Write RDF in a streaming fashion.
- *  {@linkplain RDFDataMgr} operations do not provide this guaranttee.
- *  See {@linkplain  RDFWriterRegistry} for general purpose writers.
+ *  {@link RDFDataMgr} operations do not provide this guaranttee.
+ *  See {@link  RDFWriterRegistry} for general purpose writers.
  *  
  * @see RDFDataMgr 
  * @see RDFWriterRegistry 
@@ -159,7 +159,7 @@ public class StreamRDFWriter {
     /** Get a StreamRDF destination that will output in syntax <tt>RDFFormat</tt>
      *  and is guaranteed to do so in a scaling, streaming fashion.    
      * @param output OutputStream
-     * @param format  The syntax (as an {@linkplain RDFFormat}) 
+     * @param format  The syntax (as an {@link RDFFormat}) 
      * @return       StreamRDF
      * @see StreamOps#graphToStream
      * @see StreamOps#datasetToStream

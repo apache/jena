@@ -231,7 +231,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		Map<Var, Node> values = new HashMap<Var, Node>();
 
 		values.put(Var.alloc("v"),
-				NodeFactory.createLiteral(LiteralLabelFactory.create(10)));
+				NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10)));
 		handler.setVars(values);
 		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE
 				+ OPEN_PAREN + var("one") + OPT_SPACE + LT + OPT_SPACE

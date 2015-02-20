@@ -142,10 +142,9 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
      * still be issued, but depending on the implementation, it may not have any effect.
      */
     @Override
-    public void commit() {   	
-    	getMonitor().finish() ;
-
-    	// Phase 1
+    public void commit() {
+        // Phase 
+    	super.getMonitor().finish() ;
         if (readWriteMode.get() == ReadWrite.WRITE) {
             try {
                 textIndex.prepareCommit();

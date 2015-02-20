@@ -171,7 +171,6 @@ public class LogCtl {
      "log4j.appender.jena.plain.target=System.out",
      "log4j.appender.jena.plain.layout=org.apache.log4j.PatternLayout",
      "log4j.appender.jena.plain.layout.ConversionPattern=%m%n"
-    
      ,
      "## Plain output with level, to stderr",
      "log4j.appender.jena.plainlevel=org.apache.log4j.ConsoleAppender",

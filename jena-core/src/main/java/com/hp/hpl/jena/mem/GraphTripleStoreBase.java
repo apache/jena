@@ -23,7 +23,6 @@ import java.util.Iterator;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.TripleStore;
 import com.hp.hpl.jena.util.iterator.*;
 
@@ -156,9 +155,8 @@ public abstract class GraphTripleStoreBase implements TripleStore
          dramatically - specifically on the not-galen.owl ontology.
      */
      @Override
-    public ExtendedIterator<Triple> find( TripleMatch tm )
+    public ExtendedIterator<Triple> find( Triple t )
          {
-         Triple t = tm.asTriple();
          Node pm = t.getPredicate();
          Node om = t.getObject();
          Node sm = t.getSubject();
