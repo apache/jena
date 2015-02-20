@@ -34,7 +34,7 @@ import org.junit.runners.Parameterized.Parameters ;
 @RunWith(Parameterized.class)
 public class TestBPTreeModes extends TestBPlusTreeNonTxn
 {
-    @Parameters(name="N={0}, R= {1}")
+    @Parameters(name="Node dup={0}, Record dup={1}")
     public static Collection<Object[]> data()
     {
         return Arrays.asList(new Object[][]{
