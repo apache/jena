@@ -98,6 +98,8 @@ public class IndexTestLib {
 
         int[] keys1 = rand(numKeys, 0, maxValue) ;
         int[] keys2 = permute(keys1, 4 * numKeys) ;
+        //System.err.printf("int[] keys1 = {%s} ;\n", strings(keys1)) ;
+        //System.err.printf("int[] keys2 = {%s}; \n", strings(keys2)) ;
         try {
             testInsert(index, keys1) ;
             if ( true ) {

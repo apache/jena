@@ -22,7 +22,11 @@ public class NOTES {
     // Mantis / cohort / legion
     // ARQ :: extract Atlas.
     
+    
+    
     // Large scale random tests.
+    //   rename CmdTestBPlusTreeRewriter (not 
+    
     // BPTreeRangeIterator
     //   - use indexes, delay reading blocks.
     //   - .release pages.

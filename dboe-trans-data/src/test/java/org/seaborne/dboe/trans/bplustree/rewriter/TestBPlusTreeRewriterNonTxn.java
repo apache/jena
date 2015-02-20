@@ -37,12 +37,12 @@ import org.seaborne.dboe.trans.bplustree.BPTreeException ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeParams ;
 import org.seaborne.dboe.trans.bplustree.SetupBPTreeIndex ;
-import org.seaborne.dboe.trans.bplustree.rewriter.BPlusTreeRewriter ;
+//import org.seaborne.dboe.trans.bplustree.rewriter.BPlusTreeRewriter ;
 import org.seaborne.dboe.trans.bplustree.rewriter.BPlusTreeRewriterUtils ;
 
 public class TestBPlusTreeRewriterNonTxn extends Assert
 {
-    // See also CmdTestBlusTreeRewriter for randomized testing. 
+    // See also CmdTestBlusTreeRewriter for randomized soak testing. 
     
     static int KeySize     = 4 ;
     static int ValueSize   = 8 ;
@@ -70,7 +70,7 @@ public class TestBPlusTreeRewriterNonTxn extends Assert
     static void runTest(int order, int N)
     { runOneTest(order, N , recordFactory, false) ; }
     
-    static void runOneTest(int order, int N, RecordFactory recordFactory, boolean debug)
+    public static void runOneTest(int order, int N, RecordFactory recordFactory, boolean debug)
     {
         BPlusTreeParams bptParams = new BPlusTreeParams(order, recordFactory) ;
         BPlusTreeRewriter.debug = debug ;
@@ -172,9 +172,6 @@ public class TestBPlusTreeRewriterNonTxn extends Assert
     {
         // Use a B+Tree - so original data can be unsorted.
         BPlusTree bpt = SetupBPTreeIndex.createBPTree(null, FileSet.mem(), ORDER, -1, -1, -1, recordFactory) ;
-
-        //BPlusTreeParams.checkAll() ;
-        // 200 -> runt leaf problem.
 
         // Problem is that a node in a stripe is less than half full 
         // -> illegal BPT.

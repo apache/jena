@@ -31,7 +31,6 @@ import org.seaborne.dboe.trans.bplustree.BPlusTreeParams ;
 
 class BPlusTreeRewriterUtils
 {
-
     static String divider = "----------------------------------------" ;
     static String nextDivider = null ;
 
