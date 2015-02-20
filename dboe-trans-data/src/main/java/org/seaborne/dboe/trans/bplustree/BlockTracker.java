@@ -30,16 +30,23 @@ import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrTracker ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-import static org.seaborne.dboe.trans.bplustree.BlockMgrTrackerWriteLifecycle.Action.* ;
+
+import static org.seaborne.dboe.trans.bplustree.BlockTracker.Action.* ;
 
 /** Track the lifecycles of allocate-write, getRead-promote-write and getWrite-write.
  *  Does not track read only or iterators blocks.
- *  In MVCC, theer are many read blocks that are forgotten.
- *  Prootion does not release them (should it?). 
  */
 
-public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
-    public static Logger logger             = LoggerFactory.getLogger("BlockTrack") ;
+// In MVCC, there are many read blocks that are forgotten.
+// Promotion does not release them (should it?).
+
+// In the B+Tree iteraor, pages are get()'ed but pages
+// don't expose a "get for iterator" and always use getRead.
+// But iterators don't release and don't always finish. 
+    
+ 
+public class BlockTracker implements BlockMgr {
+    public static Logger logger             = LoggerFactory.getLogger(BlockTracker.class) ;
     
     public static boolean collectHistory    = true ;
 
@@ -87,14 +94,14 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
     }
 
     private static BlockMgr track(String label, BlockMgr blkMgr) {
-        return new BlockMgrTrackerWriteLifecycle(label, blkMgr) ;
+        return new BlockTracker(label, blkMgr) ;
     }
 
-    private BlockMgrTrackerWriteLifecycle(BlockMgr blockMgr) {
+    private BlockTracker(BlockMgr blockMgr) {
         this(LoggerFactory.getLogger(BlockMgrTracker.class), blockMgr.getLabel(), blockMgr) ;
     }
 
-    private BlockMgrTrackerWriteLifecycle(String label, BlockMgr blockMgr) {
+    private BlockTracker(String label, BlockMgr blockMgr) {
         this(logger, label, blockMgr) ;
     }
 
@@ -104,7 +111,7 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
     // this(LoggerFactory.getLogger(cls), label, blockMgr) ;
     // }
 
-    private BlockMgrTrackerWriteLifecycle(Logger logger, String label, BlockMgr blockMgr) {
+    private BlockTracker(Logger logger, String label, BlockMgr blockMgr) {
         this.blockMgr = blockMgr ;
         this.log = logger ;
         this.label = blockMgr.getLabel() ;
@@ -166,7 +173,7 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
                 error(Promote, id + " is not an active block") ;
 
             if ( activeReadBlocks.contains(id) )
-                activeReadBlocks.remove(id) ;
+                activeReadBlocks.removeAll(id) ;
 
             // Double promotion results in only one entry.
             if ( !activeWriteBlocks.contains(id) )
@@ -196,6 +203,8 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
 
     @Override
     public void write(Block block) {
+        if ( logger.isInfoEnabled() && block.getId() == 2 ) 
+            debugPoint(); 
         writeTracker(block) ;
         blockMgr.write(block) ;
     }
@@ -291,6 +300,10 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
 
     @Override
     public Block getReadIterator(long id) {
+        // Untracked.  Iterators delay reads across operations and
+        // also don't necessarily complete and clean up.
+        // But not used - pages don't have a "read for iterator"
+        // operation.
         return blockMgr.getReadIterator(id) ;
     }
 
@@ -377,6 +390,7 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
     }
 
     private void checkRead(Action action) {
+        // Iterators read blocks in a delayed fashion. 
 //        if ( !inUpdate && inRead == 0 )
 //            error(action, "Called outside update and read") ;
     }
@@ -422,8 +436,10 @@ public class BlockMgrTrackerWriteLifecycle implements BlockMgr {
         // debugPoint() ;
     }
 
-    // Do nothing - but use a a breakpoint point.
-    private void debugPoint() {}
+    // Do nothing - but use as a breakpoint point.
+    private void debugPoint() {
+        return ;
+    }
 
     private void history() {
         info("History") ;
