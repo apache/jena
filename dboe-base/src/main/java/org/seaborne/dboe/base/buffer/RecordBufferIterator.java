@@ -94,5 +94,4 @@ public class RecordBufferIterator implements Iterator<Record>
     @Override
     public void remove()
     { throw new UnsupportedOperationException("RecordBufferIterator.remove") ; }
-    
 }
