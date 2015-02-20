@@ -768,7 +768,7 @@ public final class BPTreeNode extends BPTreePage
             // Ensure that a node is at least min+1 so a delete can happen.
             // Can't be the root - we decended in the get().
             rebalance(path, page, y) ;  // Ignore return - need to refind.
-            page.release(); 
+            page.release(); // TODO But rebalance may have freed this?
             // Rebalance may have moved the record due to shuffling.  
             x = findSlot(rec) ;
             y = convert(x) ;
@@ -780,6 +780,9 @@ public final class BPTreeNode extends BPTreePage
                 page.checkNode() ;
             }
             this.write() ;
+            // Needed in case the record being deleted is not in the
+            // tree, which mean there is no work done and
+            // this page is not written.
             page.write() ;
         }
 
@@ -943,6 +946,7 @@ public final class BPTreeNode extends BPTreePage
             if ( right != null )
                 // HACK : We didn't use it.
                 right.release() ;
+            //left release?
             return page ;
         } else {
             // left == null
@@ -974,6 +978,7 @@ public final class BPTreeNode extends BPTreePage
             log(log, "-- merge: %s", page) ;
 
         left.write() ;
+        left.release() ;
         right.free() ;
 
         if ( page == right )
