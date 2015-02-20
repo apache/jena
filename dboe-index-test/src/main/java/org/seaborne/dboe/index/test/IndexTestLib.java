@@ -110,7 +110,7 @@ public class IndexTestLib {
             testDelete(index, keys2) ;
             index.close() ;
         }
-        catch (RuntimeException ex) {
+        catch (AssertionError | RuntimeException ex) {
             System.err.printf("Index : %s\n", index.getClass().getName()) ;
             System.err.printf("int[] keys1 = {%s} ;\n", strings(keys1)) ;
             System.err.printf("int[] keys2 = {%s}; \n", strings(keys2)) ;
@@ -143,12 +143,6 @@ public class IndexTestLib {
         count = delete(index, vals) ;
 
         List<Record> x = intToRecord(vals, RecordLib.TestRecordLength) ;
-        for ( Record r : x ) {
-            boolean b = index.delete(r) ;
-            if ( b )
-                count++ ;
-        }
-
         for ( Record r : x )
             Assert.assertFalse(index.contains(r)) ;
         long size2 = index.size() ;

@@ -95,7 +95,7 @@ public class TestLib {
             testDelete(index, keys2) ;
             index.close() ;
         }
-        catch (RuntimeException ex) {
+        catch (AssertionError | RuntimeException ex) {
             System.err.printf("Index : %s\n", index.getClass().getName()) ;
             System.err.printf("int[] keys1 = {%s} ;\n", strings(keys1)) ;
             System.err.printf("int[] keys2 = {%s}; \n", strings(keys2)) ;
