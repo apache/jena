@@ -28,6 +28,9 @@ public class NOTES {
     //   - .release pages.
     //   - Need page.getIterator?
     
+    // Ideal: ("v3")
+    //   Per operation mgt struct - collects pages touched etc.
+    
     // Free block management - just in the active area.
     // Automatic? Because clone-clear happens.
     // Just reset the free block chain per transaction.
