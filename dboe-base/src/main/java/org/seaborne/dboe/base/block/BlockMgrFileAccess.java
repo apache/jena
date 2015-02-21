@@ -19,6 +19,9 @@ package org.seaborne.dboe.base.block ;
 
 import static java.lang.String.format ;
 
+import com.hp.hpl.jena.sparql.util.Utils ;
+
+import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.seaborne.dboe.base.file.BlockAccess ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -69,18 +72,25 @@ final public class BlockMgrFileAccess extends BlockMgrBase {
     }
 
     private Block getBlock(long id, boolean readOnly) {
+        checkNotClosed() ;
         Block block = file.read(id) ;
         block.setReadOnly(readOnly) ;
         return block ;
     }
 
+    private void checkNotClosed() {
+        if ( closed )
+            throw new InternalErrorException(Utils.className(this)+" : already closed") ;
+    }
+
     @Override
     public void release(Block block) {
-        // check(block) ;
+        checkNotClosed() ;
     }
 
     @Override
     public void write(Block block) {
+        checkNotClosed() ;
         if ( block.isReadOnly() )
             throw new BlockException("Attempt to write a read-only block ("+block.getId()+")" ) ;
         syncNeeded = true ;
@@ -89,23 +99,27 @@ final public class BlockMgrFileAccess extends BlockMgrBase {
 
     @Override
     public void overwrite(Block block) {
+        checkNotClosed() ;
         syncNeeded = true ;
         file.overwrite(block) ;
     }
 
     @Override
     public void free(Block block) {
+        checkNotClosed() ;
         // syncNeeded = true ;
         // We do nothing about free blocks currently.
     }
 
     @Override
     public boolean valid(int id) {
+        checkNotClosed() ;
         return file.valid(id) ;
     }
 
     @Override
     public void sync() {
+        checkNotClosed() ;
         if ( syncNeeded )
             file.sync() ;
         else
@@ -115,6 +129,7 @@ final public class BlockMgrFileAccess extends BlockMgrBase {
 
     @Override
     public void syncForce() {
+        checkNotClosed() ;
         file.sync() ;
     }
 
@@ -131,16 +146,19 @@ final public class BlockMgrFileAccess extends BlockMgrBase {
 
     @Override
     public boolean isEmpty() {
+        checkNotClosed() ;
         return file.isEmpty() ;
     }
     
     @Override
     public long allocLimit() {
+        checkNotClosed() ;
         return file.allocBoundary() ;
     }
     
     @Override
     public void resetAlloc(long boundary) {
+        checkNotClosed() ;
         file.resetAllocBoundary(boundary);
     }
 

@@ -23,6 +23,7 @@ import java.nio.ByteBuffer ;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.apache.jena.atlas.RuntimeIOException ;
 import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.sys.SystemIndex ;
 
@@ -56,6 +57,7 @@ public class BlockAccessMem implements BlockAccess
 
     @Override
     public Block allocate(int blkSize) {
+        checkNotClosed() ;
         if ( blkSize > 0 && blkSize != this.blockSize )
             throw new FileException("Fixed blocksize only: request= " + blkSize + " / fixed size=" + this.blockSize) ;
 
@@ -68,6 +70,7 @@ public class BlockAccessMem implements BlockAccess
 
     @Override
     public Block read(long id) {
+        checkNotClosed() ;
         check(id) ;
         Block blk = blocks.get((int)id) ;
         if ( safeModeThisMgr ) {
@@ -80,12 +83,14 @@ public class BlockAccessMem implements BlockAccess
 
     @Override
     public void write(Block block) {
+        checkNotClosed() ;
         check(block) ;
         _write(block) ;
     }
 
     @Override
     public void overwrite(Block block) {
+        checkNotClosed() ;
         write(block) ;
     }
     
@@ -101,33 +106,47 @@ public class BlockAccessMem implements BlockAccess
 
     @Override
     public boolean isEmpty() {
+        checkNotClosed() ;
         return blocks.isEmpty() ;
     }
 
     @Override
     public long allocBoundary() {
+        checkNotClosed() ;
         return blocks.size() ;
     }
 
     @Override
     public void resetAllocBoundary(long boundary) {
+        checkNotClosed() ;
         // Clear the list from boundary onwards.
         blocks.subList((int)boundary, blocks.size()).clear() ;
     }
     
     @Override
     public boolean valid(long id) {
+        checkNotClosed() ;
         return id >= 0 && id < blocks.size() ;
+    }
+
+    private void checkNotClosed() {
+        if ( fileClosed )
+            throw new RuntimeIOException("Already closed") ;
     }
 
     @Override
     public void close() {
+        if ( fileClosed )
+            return ;
         fileClosed = true ;
-        // blocks = null ;
+        blocks = null ;
     }
 
     @Override
-    public void sync() {}
+    public void sync() {
+        checkNotClosed() ;
+    }
+
 
     private void check(Block block) {
         check(block.getId()) ;
