@@ -376,8 +376,8 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
     }
 
     private void checkUpdate(Action action) {
-        if ( ! inBatch )
-            warn(action, "update called outside a batch") ;
+//        if ( ! inBatch )
+//            warn(action, "update called outside a batch") ;
         if ( ! inUpdate )
             error(action, "called outside update") ;
     }
