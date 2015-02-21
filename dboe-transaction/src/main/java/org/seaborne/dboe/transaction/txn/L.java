@@ -22,6 +22,7 @@ import java.io.OutputStream ;
 import java.io.OutputStreamWriter ;
 import java.io.Writer ;
 import java.nio.ByteBuffer ;
+import java.nio.charset.StandardCharsets ;
 import java.util.UUID ;
 import java.util.concurrent.locks.Lock ;
 import java.util.function.Supplier ;
@@ -103,7 +104,7 @@ public class L {
      * @throws  IOException
      */
     public static void writeStringAsUTF8(OutputStream out, String content) throws IOException {
-        Writer w = new OutputStreamWriter(out, IO.encodingUTF8) ;
+        Writer w = new OutputStreamWriter(out, StandardCharsets.UTF_8) ;
         w.write(content);
         w.flush();
         // Not close.
