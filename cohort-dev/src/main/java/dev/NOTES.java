@@ -23,6 +23,14 @@ public class NOTES {
     // ARQ :: extract Atlas.
     
     // Soak tests - include tracking? Memory growth?
+    // Better non-transactional mode.
+    
+    // Free chain - don't go back in time.
+    // BlockMgr semi-partiicpate in transactions?
+    // Fast clear (new tree).  Fast clear for dft graph.
+    
+    // Tests of txn after txn
+    // No promote -> no access path.
     
     // Large scale random tests.
     //   rename CmdTestBPlusTreeRewriter (not 
