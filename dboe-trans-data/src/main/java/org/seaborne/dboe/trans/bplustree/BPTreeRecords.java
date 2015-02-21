@@ -21,11 +21,13 @@ import static java.lang.String.format ;
 import static org.apache.jena.atlas.lib.Alg.decodeIndex ;
 import static org.seaborne.dboe.trans.bplustree.BPT.CheckingNode ;
 import static org.seaborne.dboe.trans.bplustree.BPT.promotePage ;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.seaborne.dboe.base.StorageException ;
 import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.buffer.RecordBuffer ;
+import org.seaborne.dboe.base.page.Page ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
 import org.slf4j.Logger ;
@@ -202,8 +204,11 @@ public final class BPTreeRecords extends BPTreePage {
      */
     @Override
     public BPTreePage split() {
-        BPTreeRecords other = create(rBuffPage.getLink()) ;
-        rBuffPage.setLink(other.getId()) ;
+        // MVCC - link can not be maintained. 
+        //BPTreeRecords other = create(rBuffPage.getLink()) ;
+        //rBuffPage.setLink(other.getId()) ;
+        BPTreeRecords other = create(Page.NO_ID) ;
+        rBuffPage.setLink(Page.NO_ID) ;
 
         int splitIdx = rBuff.size() / 2 - 1 ;
         Record r = rBuff.get(splitIdx) ; // Only need key for checking later.
