@@ -300,7 +300,7 @@ public final class BPTreeNode extends BPTreePage
             x2 = findSlot(maxRec) ;
             x2 = convert(x2) ;
         }
-        // Pages from poniter slots x1 to x2 (inc because while we exclude maxRec, 
+        // Pages from pointer slots x1 to x2 (inc because while we exclude maxRec, 
         // keys are only a max of the subtree they mark out.
         
         // XXX Just grab them now - later, keep indexes and fetch on next(). 
@@ -1401,7 +1401,7 @@ public final class BPTreeNode extends BPTreePage
                 if ( rid != ptrs.get(i) )
                     BPT.error("Records: Block @%d has a different id: %d :: %s", rid, i, this) ;
                 int link = records.getLink() ;
-                // Don't check if +1 does not exist.
+                // Don't check if -1 which does not exist.
                 if ( link != -1 && i != count ) {
                     BPTreeRecords page = bpTree.getRecordsMgr().getRead(ptrs.get(i)) ;
                     int rid2 = page.getLink() ;

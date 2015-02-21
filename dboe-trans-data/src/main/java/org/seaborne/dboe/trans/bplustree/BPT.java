@@ -133,7 +133,7 @@ public final class BPT {
                 if ( z.isPresent() )
                     error("promote: Leaf %s found in path but not at the tail: %s") ;
             }
-            // Check the page/index linkages.
+            // Check the page/index pointers
             Optional<AccessStep> z2 = path.getPath().stream().filter(e -> e.node.ptrs.get(e.idx) != e.page.getId()).findFirst() ;
             if ( z2.isPresent() )
                 error("promote: path error: %s in %s", z2.get(), path) ;

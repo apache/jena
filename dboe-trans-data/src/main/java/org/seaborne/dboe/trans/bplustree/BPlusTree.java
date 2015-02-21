@@ -514,7 +514,4 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     @Override
     protected void _shutdown() {}
-    
-    // ---- Iterator, no links
-
 }

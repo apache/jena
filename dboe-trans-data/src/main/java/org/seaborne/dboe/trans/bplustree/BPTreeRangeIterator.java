@@ -26,6 +26,7 @@ import org.seaborne.dboe.trans.bplustree.AccessPath.AccessStep ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+/** Iterator over records that does not assume records block linkage */ 
 class BPTreeRangeIterator implements Iterator<Record> {
     static Logger log = LoggerFactory.getLogger(BPTreeRangeIterator.class) ;
     

@@ -25,20 +25,24 @@ public class NOTES {
     // Soak tests - include tracking? Memory growth?
     // Better non-transactional mode.
     
-    // Free chain - don't go back in time.
+    // Free chain - just in the active area.
     // BlockMgr semi-partiicpate in transactions?
+    //   Enforce write barrier.
     // Fast clear (new tree).  Fast clear for dft graph.
+    
+    // Non-transactional:
+    // * Mark tree
+    // * BPTreeRecors.split can use links.
+    // * No need for access paths.
     
     // Tests of txn after txn
     // No promote -> no access path.
-    
-    // Large scale random tests.
-    //   rename CmdTestBPlusTreeRewriter (not 
     
     // BPTreeRangeIterator
     //   - use indexes, delay reading blocks.
     //   - .release pages.
     //   - Need page.getIterator?
+    //   - check for concurrency violation
     
     // Ideal: ("v3")
     //   Per operation mgt struct - collects pages touched etc.
@@ -79,10 +83,5 @@ public class NOTES {
     //    Two counters, writer leading and trailing edge.
     //    R transactions note their start generation.
     //    Can promote IFF that is still the generation at the point of promotion.
-    
-    // ComponentId
-    //   Registry
-    //   Base bytes and index. (6 bytes + 2 bytes (=64k))?
-    // TransactionalComponentLifecycle.super(ComponentId)
 }
 
