@@ -88,10 +88,11 @@ public class TransactionCoordinator {
     }
     
     /** Add a {@link TransactionalComponent}.
-     * Safe to call at any time but good pratice is to add all the
+     * Safe to call at any time but it is good practice is to add all the
      * compoents before any transactions start.
-     * Internally, the coordinator ensures the add wil safely happen but it
-     * does not add the compoent to existing transactions. 
+     * Internally, the coordinator ensures the add will safely happen but it
+     * does not add the component to existing transactions.
+     * This must be setup before recovery is attempted. 
      */
     public TransactionCoordinator add(TransactionalComponent elt) {
         checkNotShutdown() ;

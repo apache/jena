@@ -23,6 +23,8 @@ import java.util.Map ;
 import java.util.function.BiConsumer ;
 import java.util.function.Consumer ;
 
+import org.apache.jena.atlas.logging.Log ;
+
 final
 public class ComponentGroup {
     private Map<ComponentId, TransactionalComponent> group = new HashMap<>() ;
@@ -36,6 +38,8 @@ public class ComponentGroup {
     }
     
     /*package*/ void add(TransactionalComponent component) {
+        if ( group.containsKey(component))
+            Log.warn(this,  "Add component already in the group: "+component) ; 
         group.put(component.getComponentId(), component) ;
     }
     

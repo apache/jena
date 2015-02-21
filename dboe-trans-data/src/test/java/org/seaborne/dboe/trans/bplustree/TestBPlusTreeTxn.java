@@ -25,8 +25,8 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.index.test.IndexTestLib ;
 import org.seaborne.dboe.test.RecordLib ;
 import org.seaborne.dboe.transaction.Transactional ;
+import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.Txn ;
-import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.TransactionalComponent ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
@@ -39,7 +39,7 @@ public class TestBPlusTreeTxn extends Assert {
     
     static Transactional transactional(TransactionalComponent ... components) {
         Journal journal = Journal.create(Location.mem()) ;
-        Transactional holder = new TransactionalBase(journal, components) ;
+        Transactional holder = TransactionalFactory.create(journal, components) ;
         return holder ;
     }
     

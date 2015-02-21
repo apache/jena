@@ -31,8 +31,8 @@ import org.seaborne.dboe.base.record.RecordMapper ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.sys.SystemLz ;
 import org.seaborne.dboe.transaction.Transactional ;
+import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
-import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.TransactionalComponentLifecycle ;
 import org.seaborne.dboe.transaction.txn.TxnId ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
@@ -458,7 +458,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         // TODO More formally do this.
         // See NOTES
         Journal journal = Journal.create(Location.mem()) ;
-        Transactional holder = new TransactionalBase(journal, this) ;
+        Transactional holder = TransactionalFactory.create(journal, this) ;
         holder.begin(ReadWrite.WRITE);
         //new BptTxnState(BPlusTreeParams.RootId, 0, 0) ;
     }

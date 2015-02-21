@@ -25,8 +25,8 @@ import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.file.BufferChannelFile ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.Transactional ;
+import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
-import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 public class TestTransBlobPersistent extends Assert {
@@ -53,7 +53,7 @@ public class TestTransBlobPersistent extends Assert {
         BufferChannel chan = BufferChannelFile.create(DATA) ;
         ComponentId cid = ComponentId.allocLocal() ;
         TransBlob transBlob = new TransBlob(cid, chan) ;
-        Transactional transactional = new TransactionalBase(journal, transBlob) ;   
+        Transactional transactional = TransactionalFactory.create(journal, transBlob) ;   
         String str = "Hello" ; 
 
         TestTransBlob.write(transactional, transBlob, str) ;
@@ -73,7 +73,7 @@ public class TestTransBlobPersistent extends Assert {
             BufferChannel chan = BufferChannelFile.create(DATA) ;
             ComponentId cid = ComponentId.allocLocal() ;
             TransBlob transBlob = new TransBlob(cid, chan) ;
-            Transactional transactional = new TransactionalBase(journal, transBlob) ;   
+            Transactional transactional = TransactionalFactory.create(journal, transBlob) ;   
             TestTransBlob.write(transactional, transBlob, str) ;
             chan.close();
             journal.close(); 
@@ -84,7 +84,7 @@ public class TestTransBlobPersistent extends Assert {
             BufferChannel chan = BufferChannelFile.create(DATA) ;
             ComponentId cid = ComponentId.allocLocal() ;
             TransBlob transBlob = new TransBlob(cid, chan) ;
-            Transactional transactional = new TransactionalBase(journal, transBlob) ;   
+            Transactional transactional = TransactionalFactory.create(journal, transBlob) ;   
             String s = TestTransBlob.read(transactional, transBlob) ;
             assertEquals(str, s); 
         }

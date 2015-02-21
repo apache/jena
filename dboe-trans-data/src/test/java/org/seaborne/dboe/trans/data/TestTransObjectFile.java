@@ -30,8 +30,8 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.objectfile.ObjectFile ;
 import org.seaborne.dboe.trans.data.TransObjectFile ;
 import org.seaborne.dboe.transaction.Transactional ;
+import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.Txn ;
-import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 public class TestTransObjectFile extends Assert {
@@ -44,7 +44,7 @@ public class TestTransObjectFile extends Assert {
         journal = Journal.create(Location.mem()) ;
         baseObjectFile = FileFactory.createObjectFileMem("ObjectFile") ;
         transObjectFile = new TransObjectFile(baseObjectFile, 9) ;
-        transactional = new TransactionalBase(journal, transObjectFile) ;    
+        transactional = TransactionalFactory.create(journal, transObjectFile) ;    
     }
 
     @After public void after() { }

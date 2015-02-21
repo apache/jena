@@ -149,6 +149,9 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
 
     @Override
     protected void _shutdown() {}
+    
+    @Override
+    public String toString()    { return componentId.label() ; } 
 
 }
 

@@ -26,7 +26,6 @@ import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.file.BufferChannelFile ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.trans.data.TransBlob ;
-import org.seaborne.dboe.transaction.ComponentIdRegistry ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.L ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
@@ -63,8 +62,8 @@ public class TestRecovery extends Assert {
     @Test public void recoverBlobFile_1() throws Exception {
         String str = "Hello Journal" ; 
         ComponentId cid = ComponentId.allocLocal() ;
-        ComponentIdRegistry registry = new ComponentIdRegistry() ;
-        registry.register(cid, "Blob", 1) ;
+//        ComponentIdRegistry registry = new ComponentIdRegistry() ;
+//        registry.register(cid, "Blob", 1) ;
         
         // Write out a journal.
         {

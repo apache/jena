@@ -30,6 +30,7 @@ import com.hp.hpl.jena.query.ReadWrite ;
 
 public class TransactionalBase implements Transactional {
     private final String label ; 
+    protected boolean hasStarted = false ;
     protected boolean isShutdown = false ; 
     protected final TransactionCoordinator txnMgr ;
     
@@ -52,9 +53,14 @@ public class TransactionalBase implements Transactional {
         this(null, txnMgr) ;
     }
 
+    public TransactionCoordinator getTxnMgr() {
+        return txnMgr ;
+    }
+
     @Override
     public final void begin(ReadWrite readWrite) {
         Objects.nonNull(readWrite) ;
+        checkRunning() ;
         checkNotActive() ;
         Transaction transaction = txnMgr.begin(readWrite) ;
         theTxn.set(transaction) ;
@@ -62,28 +68,17 @@ public class TransactionalBase implements Transactional {
 
     @Override
     public final void commit() {
+        checkRunning() ;
         // These steps are per-thread so no synchronization needed.
         checkActive() ;
         Transaction txn = theTxn.get() ;
         txn.commit() ;
         _end() ;
-
-        // More checking?
-//        Transaction txn = theTxn.get() ;
-//        if ( txn != null ) {
-//            // isCommited or isAborted.
-//        }
-//        
-//        if ( txn == null )
-//            throw new TransactionException(label("Not in a transaction")) ;
-//        
-//        checkActive() ;
-//        txn.commit() ;
-//        _end() ;
     }
 
     @Override
     public final void abort() {
+        checkRunning() ;
         checkActive() ;
         Transaction txn = theTxn.get() ;
         try {
@@ -96,6 +91,7 @@ public class TransactionalBase implements Transactional {
 
     @Override
     public final void end() {
+        checkRunning() ;
         // Don't check if active or if any thread locals exist
         // because this may have already been called.
         // txn.get() ; -- may be null -- test repeat calls.
@@ -108,11 +104,24 @@ public class TransactionalBase implements Transactional {
         return theTxn.get() != null ;
     }
 
+    public void start() {
+        hasStarted = true ;
+        txnMgr.recovery() ; 
+    }
+
+    private void checkRunning() {
+//        if ( ! hasStarted )
+//            throw new TransactionException("Not started") ;
+        if ( isShutdown )
+            throw new TransactionException("Shutdown") ;
+    }
+    
     /**
      * Shutdown component, aborting any in-progress transactions. This operation
      * is not guaranteed to be called.
      */
     public void shutdown() {
+        txnMgr.shutdown() ;
         isShutdown = true ;
     }
 
