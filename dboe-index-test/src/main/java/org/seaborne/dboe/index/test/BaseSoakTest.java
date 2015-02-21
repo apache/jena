@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.trans.bplustree.soak;
+package org.seaborne.dboe.index.test;
 
 import java.util.List ;
 
@@ -91,7 +91,6 @@ public abstract class BaseSoakTest extends CmdGeneral {
             }
         }
         
-        boolean debug = false ;
         // Number of dots.
         int numOnLine = 50 ;
         int testsPerTick ;
@@ -131,7 +130,7 @@ public abstract class BaseSoakTest extends CmdGeneral {
             int size = sizes[idx] ;
             try {
                 //System.out.printf("TEST : %,d : Order=%-2d : Size=%d\n", testCount, order, size) ;
-                runOneTest(order, size, debug) ;
+                runOneTest(testCount, order, size) ;
                 successes++ ;
             }
             catch (AssertionError | RuntimeException ex) {
@@ -152,10 +151,9 @@ public abstract class BaseSoakTest extends CmdGeneral {
         System.out.printf("DONE : %,d tests : Success=%,d, Failures=%,d\n", NumTest, successes, failures);
     }
 
-    protected abstract void runOneTest(int order, int size, int KeySize, int ValueSize, boolean debug) ;
+    protected abstract void runOneTest(int testCount, int order, int size, boolean debug) ;
 
-
-    protected abstract void runOneTest(int order, int size, boolean debug) ;
+    protected abstract void runOneTest(int testCount, int order, int size) ;
 
     @Override
     protected String getCommandName() { return Utils.className(this) ; } 

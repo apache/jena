@@ -45,7 +45,13 @@ do
     CP="$MANTIS/$x/target/test-classes:$CP"
 done    
 
+ARGS="" 
+#ARGS="-Xmx1G" 
+ARGS="$ARGS -Dbpt:checking=true"
+ARGS="$ARGS -Dbpt:duplication=true"
+
+
 CP="target/classes:target/test-classes:$CP"
 #echo $CP
 #java -cp "$CP" org.seaborne.dboe.trans.bplustree.rewriter.CmdTestBPlusTreeRewriter "$@"
-java -cp "$CP" org.seaborne.dboe.trans.bplustree.soak.CmdTestBPlusTree "$@"
+java $ARGS -cp "$CP" org.seaborne.dboe.trans.bplustree.soak.CmdTestBPlusTree "$@"

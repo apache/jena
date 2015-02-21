@@ -18,6 +18,7 @@
 package org.seaborne.dboe.trans.bplustree.soak;
 
 import org.seaborne.dboe.base.record.RecordFactory ;
+import org.seaborne.dboe.index.test.BaseSoakTest ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.trans.bplustree.BPT ;
 import org.seaborne.dboe.trans.bplustree.rewriter.TestBPlusTreeRewriterNonTxn ;
@@ -53,14 +54,14 @@ public class CmdTestBPlusTreeRewriter extends BaseSoakTest
     protected void after() { }
 
     @Override
-    protected void runOneTest(int order, int size, int KeySize, int ValueSize, boolean debug) {
-        runOneTest(order, size, debug) ;
+    protected void runOneTest(int testCount, int order, int size, boolean debug) {
+        runOneTest(testCount, order, size) ;
     }
 
     @Override
-    protected void runOneTest(int order, int size, boolean debug) {
+    protected void runOneTest(int testCount, int order, int size) {
         RecordFactory recordFactory = new RecordFactory(KeySize, ValueSize) ;
-        TestBPlusTreeRewriterNonTxn.runOneTest(order, size, recordFactory, debug) ;
+        TestBPlusTreeRewriterNonTxn.runOneTest(order, size, recordFactory, false) ;
     }
 
 }

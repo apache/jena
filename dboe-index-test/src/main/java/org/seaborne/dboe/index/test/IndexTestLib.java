@@ -20,7 +20,7 @@ package org.seaborne.dboe.index.test ;
 import static java.lang.String.format ;
 import static org.apache.jena.atlas.lib.ListUtils.asList ;
 import static org.apache.jena.atlas.lib.ListUtils.unique ;
-import static org.apache.jena.atlas.lib.RandomLib.random ;
+import org.apache.jena.atlas.lib.RandomLib ;
 import static org.apache.jena.atlas.test.Gen.permute ;
 import static org.apache.jena.atlas.test.Gen.rand ;
 import static org.apache.jena.atlas.test.Gen.strings ;
@@ -31,10 +31,7 @@ import static org.seaborne.dboe.test.RecordLib.intToRecord ;
 import static org.seaborne.dboe.test.RecordLib.r ;
 import static org.seaborne.dboe.test.RecordLib.toIntList ;
 
-import java.util.ArrayList ;
-import java.util.List ;
-import java.util.SortedSet ;
-import java.util.TreeSet ;
+import java.util.* ;
 
 import org.junit.Assert ;
 import org.seaborne.dboe.base.record.Record ;
@@ -59,6 +56,8 @@ public class IndexTestLib {
         IndexTestLib.add(index, keys) ;
         return index ;
     }
+    
+    private static Random random = RandomLib.qrandom ;
 
     public static void testIteration(RangeIndex index, int[] keys, int numIterations) {
         // Shared across test-lets
@@ -86,7 +85,8 @@ public class IndexTestLib {
             List<Integer> expected = new ArrayList<>(keys.length) ;
             for ( Integer ii : x.subSet(lo, hi) )
                 expected.add(ii) ;
-            assertEquals(format("(%d,%d)", lo, hi), expected, slice) ;
+            if ( ! expected.equals(slice) )
+                assertEquals(format("(%d,%d)", lo, hi), expected, slice) ;
         }
     }
 
@@ -113,7 +113,6 @@ public class IndexTestLib {
                     testIteration((RangeIndex)index, keys1, 10) ;
             }
             testDelete(index, keys2) ;
-            index.close() ;
         }
         catch (AssertionError | RuntimeException ex) {
             System.err.printf("Index : %s\n", index.getClass().getName()) ;
@@ -197,7 +196,7 @@ public class IndexTestLib {
         for ( int k : y ) {
             Record rec = intToRecord(k) ;
             Record r2 = index.find(rec) ;
-            assertNotNull("Finding " + rec, r2) ;
+            assertNotNull(r2) ;
         }
     }
 }

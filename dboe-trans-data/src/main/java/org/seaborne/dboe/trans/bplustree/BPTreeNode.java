@@ -429,6 +429,7 @@ public final class BPTreeNode extends BPTreePage
         if ( path != null )
             path.add(node, idx, page) ;
     }
+    
     final private static void resetTrackPath(AccessPath path, BPTreeNode node, int idx, BPTreePage page) {
         if ( path != null ) {
             path.reset(node, idx, page) ;

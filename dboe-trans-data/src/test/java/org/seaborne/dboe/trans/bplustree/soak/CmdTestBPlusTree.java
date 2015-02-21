@@ -17,6 +17,7 @@
 
 package org.seaborne.dboe.trans.bplustree.soak;
 
+import org.seaborne.dboe.index.test.BaseSoakTest ;
 import org.seaborne.dboe.index.test.IndexTestLib ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.sys.SystemLz ;
@@ -28,7 +29,10 @@ import org.seaborne.dboe.trans.bplustree.BlockTracker ;
 public class CmdTestBPlusTree extends BaseSoakTest
 {
     static public void main(String... argv) {
-        //argv = new String[] {"5", "20", "1000"} ;
+//        argv = new String[] {"4", "100", "250000"} ;
+//        System.setProperty("bpt:checking", "false") ;
+//        System.setProperty("bpt:duplication", "true") ;
+//        
         new CmdTestBPlusTree(argv).mainRun() ;
     }
 
@@ -42,10 +46,11 @@ public class CmdTestBPlusTree extends BaseSoakTest
         BlockTracker.collectHistory = false ;
         // Forced mode
         if ( true ) {
-            BPT.CheckingNode = false ;
+            BPT.CheckingNode = trueOrFalse("bpt:checking", false) ;
+            boolean duplication = trueOrFalse("bpt:duplication", false) ;
             BPT.forcePromoteModes = true ;
-            BPT.promoteDuplicateNodes = true ;
-            BPT.promoteDuplicateRecords = true ;
+            BPT.promoteDuplicateNodes = duplication ;
+            BPT.promoteDuplicateRecords = duplication ;
         }
         if ( false ) {
             // Transactions.
@@ -53,28 +58,42 @@ public class CmdTestBPlusTree extends BaseSoakTest
         
         System.out.printf("    BPT.CheckingNode            = %s\n", BPT.CheckingNode) ;
         System.out.printf("    BPT.forcePromoteModes       = %s\n", BPT.forcePromoteModes) ;
-        System.out.printf("    BPT.promoteDuplicateRecords = %s\n", BPT.promoteDuplicateRecords) ;
+        System.out.printf("    BPT.promoteDuplicateNodes   = %s\n", BPT.promoteDuplicateRecords) ;
         System.out.printf("    BPT.promoteDuplicateRecords = %s\n", BPT.promoteDuplicateRecords) ;
     }
     
+    private boolean trueOrFalse(String property, boolean dftValue) {
+        String s = System.getProperty(property) ;
+        if ( s == null )
+            return dftValue ;
+        if ( s.equalsIgnoreCase("true") || s.equalsIgnoreCase("T") || s.equalsIgnoreCase("1") )
+            return true ;
+        if ( s.equalsIgnoreCase("false") || s.equalsIgnoreCase("F") || s.equalsIgnoreCase("0") )
+            return false ;
+        System.err.println("Not recognized: "+property+"="+s);
+        return dftValue ;
+    }
+
     @Override
     protected void after() {}
     
     @Override
-    protected void runOneTest(int order, int size, int KeySize, int ValueSize, boolean debug) {
-        runOneTest(order, size, debug) ;
+    protected void runOneTest(int testCount, int order, int size, boolean debug) {
+        runOneTest(testCount, order, size) ;
     }
 
     @Override
-    protected void runOneTest(int order, int size, boolean debug) {
+    protected void runOneTest(int testCount, int order, int size) {
         //System.err.println("runOneTest("+order+","+size+")") ;
         // Tracking??
         BPlusTree bpt = BPlusTreeFactory.makeMem(order, SystemLz.SizeOfInt, 0) ;
-        bpt = BPlusTreeFactory.addTracking(bpt) ;
+        //bpt = BPlusTreeFactory.addTracking(bpt) ;
         bpt.nonTransactional();
         bpt.startBatch();
         // Random values but exact size.
         // No iterator tests - quite slow and well tested by the test suite.
-        IndexTestLib.randTest(bpt, 10*size, size, false);
+        IndexTestLib.randTest(bpt, 10*size, size, true);
+        // B+Tree close now release (nulls pointers to) memory used in BlockAccessMem.
+        bpt.close();
     }
 }
