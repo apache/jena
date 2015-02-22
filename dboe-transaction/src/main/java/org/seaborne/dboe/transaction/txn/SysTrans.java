@@ -19,11 +19,9 @@ package org.seaborne.dboe.transaction.txn;
 
 import java.nio.ByteBuffer ;
 
-
-
 /** Single component aspect of a transaction */  
 final 
-class SysTrans { // implements X_SystemTransaction {
+class SysTrans {
     private final TransactionalComponent elt ;
     private final Transaction transaction ;
     private final TxnId txnId ;
