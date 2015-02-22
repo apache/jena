@@ -17,6 +17,11 @@
 
 package org.seaborne.dboe.trans.bplustree.soak;
 
+import com.hp.hpl.jena.query.ReadWrite ;
+
+import org.apache.jena.atlas.lib.Lib ;
+import org.seaborne.dboe.base.file.BlockAccessMem ;
+import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.index.test.BaseSoakTest ;
 import org.seaborne.dboe.index.test.IndexTestLib ;
 import org.seaborne.dboe.sys.SystemIndex ;
@@ -25,14 +30,16 @@ import org.seaborne.dboe.trans.bplustree.BPT ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
 import org.seaborne.dboe.trans.bplustree.BlockTracker ;
+import org.seaborne.dboe.transaction.Transactional ;
+import org.seaborne.dboe.transaction.TransactionalFactory ;
+import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 public class CmdTestBPlusTree extends BaseSoakTest
 {
     static public void main(String... argv) {
-//        argv = new String[] {"4", "100", "250000"} ;
+        //argv = new String[] {"50", "150", "1000000"} ;
 //        System.setProperty("bpt:checking", "false") ;
 //        System.setProperty("bpt:duplication", "true") ;
-//        
         new CmdTestBPlusTree(argv).mainRun() ;
     }
 
@@ -46,6 +53,7 @@ public class CmdTestBPlusTree extends BaseSoakTest
         BlockTracker.collectHistory = false ;
         // Forced mode
         if ( true ) {
+            BlockAccessMem.SafeMode = true ;
             BPT.CheckingNode = trueOrFalse("bpt:checking", false) ;
             boolean duplication = trueOrFalse("bpt:duplication", false) ;
             BPT.forcePromoteModes = true ;
@@ -84,16 +92,23 @@ public class CmdTestBPlusTree extends BaseSoakTest
 
     @Override
     protected void runOneTest(int testCount, int order, int size) {
-        //System.err.println("runOneTest("+order+","+size+")") ;
-        // Tracking??
+//        //System.err.println("runOneTest("+order+","+size+")") ;
+//        BPlusTree bpt = BPlusTreeFactory.makeMem(order, SystemLz.SizeOfInt, 0) ;
+////        bpt = BPlusTreeFactory.addTracking(bpt) ;
+//        bpt.nonTransactional() ;
+//        bpt.startBatch();
+//        IndexTestLib.randTest(bpt, 5*size, size, true);
+//        // B+Tree close now release (nulls pointers to) memory used in BlockAccessMem.
+        
         BPlusTree bpt = BPlusTreeFactory.makeMem(order, SystemLz.SizeOfInt, 0) ;
-        //bpt = BPlusTreeFactory.addTracking(bpt) ;
-        bpt.nonTransactional();
-        bpt.startBatch();
-        // Random values but exact size.
-        // No iterator tests - quite slow and well tested by the test suite.
-        IndexTestLib.randTest(bpt, 10*size, size, true);
-        // B+Tree close now release (nulls pointers to) memory used in BlockAccessMem.
-        bpt.close();
+        Journal journal = Journal.create(Location.mem()) ;
+        Transactional holder = TransactionalFactory.create(journal, bpt) ;
+        // Better bpt.nonTransactional() ; needed
+        holder.begin(ReadWrite.WRITE);
+        IndexTestLib.randTest(bpt, 5*size, size, true);
+        holder.commit() ;
+        holder.end() ;
+        if ( testCount%10 == 0 )
+            Lib.sleep(1) ;
     }
 }
