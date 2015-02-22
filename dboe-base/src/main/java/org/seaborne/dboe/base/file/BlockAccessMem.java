@@ -37,6 +37,9 @@ import org.seaborne.dboe.sys.SystemIndex ;
 
 public class BlockAccessMem implements BlockAccess
 {
+    // "SafeMode" - duplicate the block data much like a disk.
+    // Mildly expensive for large block sizes. 
+    
     public static boolean SafeMode = true ;
     static final boolean Checking = true ;
     boolean fileClosed = false ;
@@ -73,11 +76,8 @@ public class BlockAccessMem implements BlockAccess
         checkNotClosed() ;
         check(id) ;
         Block blk = blocks.get((int)id) ;
-        if ( safeModeThisMgr ) {
-            // [[Dev-RO]]
-            blk = blk.replicate() ;
-            blk.setModified(false) ; 
-        }
+        blk = replicateBlock(blk) ;
+        blk.setModified(false) ; 
         return blk ;
     }
 
@@ -95,15 +95,20 @@ public class BlockAccessMem implements BlockAccess
     }
     
     private void _write(Block block) {
-        if ( safeModeThisMgr ) {
-            block = block.replicate() ;
-            // [[Dev-RO]]
-            block.setModified(false) ;
-        }
+        block = replicateBlock(block) ;
+        block.setModified(false) ;
         // Memory isn't scaling to multi gigabytes.
         blocks.set(block.getId().intValue(), block) ;
     }
 
+    private Block replicateBlock(Block blk) {
+        if ( safeModeThisMgr )
+            // Deep replicate.
+            return  blk.replicate() ;
+        // Just the block wrapper.
+        return new Block(blk.getId(), blk.getByteBuffer()) ;
+    }
+    
     @Override
     public boolean isEmpty() {
         checkNotClosed() ;
