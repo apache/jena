@@ -125,6 +125,18 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
         if ( state != null )
             state.remove() ;
         componentState.remove();
+        
+//        java version "1.8.0_31"
+//        Java(TM) SE Runtime Environment (build 1.8.0_31-b13)
+//        Java HotSpot(TM) 64-Bit Server VM (build 25.31-b07, mixed mode)
+//        
+//        openjdk version "1.8.0_40-internal"
+//        OpenJDK Runtime Environment (build 1.8.0_40-internal-b09)
+//        OpenJDK 64-Bit Server VM (build 25.40-b13, mixed mode)
+        
+        // This one is very important else the memory usage grows.  Not clear why.
+        // A Transaction has an internal AtomicReference.  Replacing the AtomicReference
+        // with a plain member variable slows the growth down greatly.
         threadTxn.remove() ;
     }
 
@@ -159,6 +171,9 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     final
     public void shutdown() {
         _shutdown() ;
+        state = null ;
+        threadTxn = null ;
+        componentState = null ;
     }
     
     protected abstract X           _begin(ReadWrite readWrite, TxnId txnId) ;
