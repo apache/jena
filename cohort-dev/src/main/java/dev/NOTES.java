@@ -24,6 +24,10 @@ public class NOTES {
     
     // Soak tests - include tracking? Memory growth?
     // Better non-transactional mode.
+    //   Leaving unaborted/commited transaction causes permanent memory allocation.  
+    //   See TransactionalComponentLifecycle.internalComplete.
+    // Better bpt.nonTransactional() ; needed - then chnage CmdTestBPlusTree back.
+
     
     // Free chain - just in the active area.
     // BlockMgr semi-partiicpate in transactions?
