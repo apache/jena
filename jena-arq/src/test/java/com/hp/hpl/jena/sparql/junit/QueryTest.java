@@ -40,6 +40,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import com.hp.hpl.jena.sparql.resultset.RDFOutput ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
@@ -317,7 +318,7 @@ public class QueryTest extends EarlTestCase
         // Fudge - can't cope with ordered results properly.  The output writer for ResultSets does nto add rs:index.
         
         results.reset() ;
-        Model actualModel = ResultSetFormatter.toModel(results) ;
+        Model actualModel = RDFOutput.encodeAsModel(results) ;
         // Tidy the models.
         // Very regretable.
         

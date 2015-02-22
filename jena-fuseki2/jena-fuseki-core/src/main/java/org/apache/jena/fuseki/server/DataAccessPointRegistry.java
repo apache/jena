@@ -18,8 +18,8 @@
 
 package org.apache.jena.fuseki.server;
 
+import org.apache.jena.atlas.lib.Registry ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.migrate.Registry ;
 
 public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
 {

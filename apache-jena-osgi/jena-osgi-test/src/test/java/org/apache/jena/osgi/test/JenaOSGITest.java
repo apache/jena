@@ -20,6 +20,10 @@ package org.apache.jena.osgi.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.ops4j.pax.exam.CoreOptions.junitBundles;
+import static org.ops4j.pax.exam.CoreOptions.linkBundle;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.options;
 
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -27,11 +31,21 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import javax.inject.Inject;
+
 import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.ops4j.pax.exam.Configuration;
+import org.ops4j.pax.exam.CoreOptions;
+import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
+import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.osgi.framework.BundleContext;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
@@ -54,13 +68,42 @@ import com.hp.hpl.jena.tdb.TDBFactory;
 
 /**
  * Brief tests of the Jena modules covered by jena-osgi
- * <p>
- * Do NOT add tests to this class without also adding a
- * \@Test-annotated method to the interface JenaOSGITest
- * -- otherwise it won't be picked up when testing inside OSGi
- *  
+ * 
  */
-public class JenaOSGITestImpl implements JenaOSGITest {
+@RunWith(PaxExam.class)
+@ExamReactorStrategy(PerClass.class)
+public class JenaOSGITest {
+
+	@Inject
+	private BundleContext bc;
+
+	@Configuration
+	public Option[] config() {
+		return options(
+        // bundle with org.slf4j implementation
+				linkBundle("org.ops4j.pax.logging.pax-logging-log4j2"),
+				linkBundle("org.ops4j.pax.logging.pax-logging-api"),
+
+        // jena-osgi
+				mavenBundle("org.apache.jena", "jena-osgi", 
+          System.getProperty("jena-osgi.version", "LATEST")),
+
+        // dependencies of jena-osgi
+				linkBundle("org.apache.httpcomponents.httpclient"),
+				linkBundle("org.apache.httpcomponents.httpcore"),
+				linkBundle("com.github.jsonld-java"),
+				linkBundle("org.apache.commons.csv"),
+				linkBundle("org.apache.thrift"),
+				linkBundle("jcl.over.slf4j"),
+				
+				linkBundle("com.fasterxml.jackson.core.jackson-core"),
+				linkBundle("com.fasterxml.jackson.core.jackson-databind"),
+				linkBundle("com.fasterxml.jackson.core.jackson-annotations"),
+				linkBundle("org.apache.commons.lang3"),
+				
+				junitBundles()
+				);
+	}
 
 	private static final String EXAMPLE_COM_GRAPH = "http://example.com/graph";
 	private Resource alice;
@@ -68,7 +111,6 @@ public class JenaOSGITestImpl implements JenaOSGITest {
 	private Resource bob;
 
 	@Test
-	@Override
 	public void testJenaCore() throws Exception {
 		Model model = makeModel();
 
@@ -108,7 +150,6 @@ public class JenaOSGITestImpl implements JenaOSGITest {
 	}
 
 	@Test
-	@Override
 	public void testJenaArq() throws Exception {
 		Dataset dataset = DatasetFactory.createMem();
 		dataset.addNamedModel(EXAMPLE_COM_GRAPH, makeModel());
@@ -135,8 +176,8 @@ public class JenaOSGITestImpl implements JenaOSGITest {
 				+ "SELECT ?bob WHERE { "
 				+ "  GRAPH <http://example.com/graph> { "
 				+ "      ?alice foaf:knows ?bob . " + "  }" + "}");
-		try (QueryExecution qexec = QueryExecutionFactory.create(query,
-				dataset)) {
+		try (QueryExecution qexec = QueryExecutionFactory
+				.create(query, dataset)) {
 			ResultSet results = qexec.execSelect();
 			assertTrue(results.hasNext());
 			QuerySolution r = results.next();
@@ -145,7 +186,6 @@ public class JenaOSGITestImpl implements JenaOSGITest {
 	}
 
 	@Test
-	@Override
 	public void testJenaIRI() throws Exception {
 		IRIFactory iriFactory = IRIFactory.jenaImplementation();
 		IRI iri = iriFactory.create("http://example.com/");
@@ -153,16 +193,15 @@ public class JenaOSGITestImpl implements JenaOSGITest {
 	}
 
 	@Test
-	@Override
 	public void testJenaTdb() throws Exception {
 		Path tdbDir = Files.createTempDirectory("jena-tdb-test");
 		Dataset dataset = TDBFactory.createDataset(tdbDir.toString());
-		
-		dataset.begin(ReadWrite.WRITE) ;
+
+		dataset.begin(ReadWrite.WRITE);
 		dataset.addNamedModel(EXAMPLE_COM_GRAPH, makeModel());
 		dataset.commit();
 		dataset.end();
-		
+
 		dataset.begin(ReadWrite.READ);
 		runQuery(dataset);
 		dataset.end();

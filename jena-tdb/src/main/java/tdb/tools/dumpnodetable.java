@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package tdb.tools;
+package tdb.tools ;
 
 import java.io.OutputStream ;
 import java.util.Arrays ;
@@ -43,71 +43,58 @@ import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-public class dumpnodetable extends CmdGeneral
-{
+public class dumpnodetable extends CmdGeneral {
     ModLocation modLocation = new ModLocation() ;
-    
-    static public void main(String... argv)
-    { 
+
+    static public void main(String... argv) {
         LogCtl.setLog4j() ;
         new dumpnodetable(argv).mainRun() ;
     }
 
     @Override
-    protected void exec()
-    {
+    protected void exec() {
         List<String> tripleIndexes = Arrays.asList(Names.tripleIndexes) ;
         List<String> quadIndexes = Arrays.asList(Names.quadIndexes) ;
         Location loc = modLocation.getLocation() ;
-        
-        StoreConnection sConn = StoreConnection.make(loc) ; 
+
+        StoreConnection sConn = StoreConnection.make(loc) ;
         DatasetGraphTDB dsg = sConn.getBaseDataset() ;
         NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
         dump(System.out, nodeTable) ;
     }
-    
-    protected dumpnodetable(String[] argv)
-    {
+
+    protected dumpnodetable(String[] argv) {
         super(argv) ;
         super.addModule(modLocation) ;
     }
 
-    public static void dumpNodes(OutputStream w, String location)
-    {
-        dump(w, location, Names.indexNode2Id, SystemTDB.Node2NodeIdCacheSize, Names.indexId2Node, SystemTDB.NodeId2NodeCacheSize, SystemTDB.NodeMissCacheSize) ;
+    public static void dumpNodes(OutputStream w, String location) {
+        dump(w, location, Names.indexNode2Id, SystemTDB.Node2NodeIdCacheSize, Names.indexId2Node, SystemTDB.NodeId2NodeCacheSize,
+             SystemTDB.NodeMissCacheSize) ;
     }
 
-    public static void dumpPrefixes(OutputStream w, String location)
-    {
+    public static void dumpPrefixes(OutputStream w, String location) {
         dump(w, location, Names.prefixNode2Id, 100, Names.prefixId2Node, 100, 10) ;
     }
 
-    
-    public static void dump(OutputStream w, String location, 
-                            String indexNode2Id, int node2NodeIdCacheSize, 
-                            String indexId2Node, int nodeId2NodeCacheSize, //
+    public static void dump(OutputStream w, String location, String indexNode2Id, int node2NodeIdCacheSize, String indexId2Node,
+                            int nodeId2NodeCacheSize, //
 
-                            int sizeNodeMissCacheSize)
-    {
-        NodeTable nodeTable = Build.makeNodeTable(Location.create(location), 
-                                                    indexNode2Id, node2NodeIdCacheSize,
-                                                    indexId2Node, nodeId2NodeCacheSize,
-                                                    sizeNodeMissCacheSize) ;
+                            int sizeNodeMissCacheSize) {
+        NodeTable nodeTable = Build.makeNodeTable(Location.create(location), indexNode2Id, node2NodeIdCacheSize, indexId2Node,
+                                                  nodeId2NodeCacheSize, sizeNodeMissCacheSize) ;
     }
-    
-    
-    public static void dump(OutputStream w, NodeTable nodeTable)
-    {
+
+    public static void dump(OutputStream w, NodeTable nodeTable) {
         // Better to hack the indexes?
         Iterator<Pair<NodeId, Node>> iter = nodeTable.all() ;
         long count = 0 ;
-        try(IndentedWriter iw = new IndentedWriter(w)) {
-            for ( ; iter.hasNext() ; )
-            {
+        try (IndentedWriter iw = new IndentedWriter(w)) {
+            for ( ; iter.hasNext() ; ) {
                 Pair<NodeId, Node> pair = iter.next() ;
                 iw.print(pair.car().toString()) ;
                 iw.print(" : ") ;
-                //iw.print(pair.cdr()) ;
+                // iw.print(pair.cdr()) ;
                 Node n = pair.cdr() ;
                 String $ = stringForNode(n) ;
                 iw.print($) ;
@@ -115,74 +102,67 @@ public class dumpnodetable extends CmdGeneral
                 count++ ;
             }
             iw.println() ;
-            iw.printf("Total: "+count) ;
+            iw.printf("Total: " + count) ;
             iw.println() ;
             iw.flush() ;
         }
     }
-    
-    private static String stringForNode(Node n)
-    {
+
+    private static String stringForNode(Node n) {
         if ( n == null )
             return "<<null>>" ;
-        
+
         if ( n.isBlank() )
-            return "_:"+n.getBlankNodeLabel() ;
-        
+            return "_:" + n.getBlankNodeLabel() ;
+
         if ( n.isLiteral() )
             return stringForLiteral((Node_Literal)n) ;
 
-        if ( n.isURI() )
-        {
+        if ( n.isURI() ) {
             String uri = n.getURI() ;
             return stringForURI(uri) ;
         }
-        
+
         if ( n.isVariable() )
-            return "?"+n.getName() ;
-        
+            return "?" + n.getName() ;
+
         if ( n.equals(Node.ANY) )
             return "ANY" ;
 
-        Log.warn(FmtUtils.class, "Failed to turn a node into a string: "+n) ;
+        Log.warn(FmtUtils.class, "Failed to turn a node into a string: " + n) ;
         return n.toString() ;
     }
-    
-    public static String stringForURI(String uri)
-    {
-        return "<"+uri+">" ;
+
+    public static String stringForURI(String uri) {
+        return "<" + uri + ">" ;
     }
-    
-    public static String stringForLiteral(Node_Literal literal)
-    {
+
+    public static String stringForLiteral(Node_Literal literal) {
         String datatype = literal.getLiteralDatatypeURI() ;
         String lang = literal.getLiteralLanguage() ;
         String s = literal.getLiteralLexicalForm() ;
-        
+
         StringBuilder sbuff = new StringBuilder() ;
         sbuff.append("\"") ;
         FmtUtils.stringEsc(sbuff, s, true) ;
         sbuff.append("\"") ;
-        
-        // Format the language tag 
-        if ( lang != null && lang.length()>0)
-        {
+
+        // Format the language tag
+        if ( lang != null && lang.length() > 0 ) {
             sbuff.append("@") ;
             sbuff.append(lang) ;
         }
 
-        if ( datatype != null )
-        {
+        if ( datatype != null ) {
             sbuff.append("^^") ;
             sbuff.append(stringForURI(datatype)) ;
         }
-        
+
         return sbuff.toString() ;
     }
 
     @Override
-    protected void processModulesAndArgs()
-    {
+    protected void processModulesAndArgs() {
         if ( modVersion.getVersionFlag() )
             modVersion.printVersionAndExit() ;
         if ( modLocation.getLocation() == null )
@@ -190,15 +170,13 @@ public class dumpnodetable extends CmdGeneral
     }
 
     @Override
-    protected String getSummary()
-    {
-        return getCommandName()+" --loc=DIR IndexName" ;
+    protected String getSummary() {
+        return getCommandName() + " --loc=DIR IndexName" ;
     }
 
     @Override
-    protected String getCommandName()
-    {
+    protected String getCommandName() {
         return Utils.className(this) ;
     }
-    
+
 }

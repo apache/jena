@@ -16,46 +16,45 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.iterator;
+package org.apache.jena.atlas.iterator ;
 
 import java.util.ArrayDeque ;
 import java.util.Deque ;
 import java.util.Iterator ;
 
-public class PushbackIterator<T> implements Iterator<T>
-{
-    private Deque<T> items = new ArrayDeque<>() ;
+/** An iterator where you can push items backinto the iterator, to be yielded (LIFO) next time.
+ *  @see PeekIterator
+ */
+public class PushbackIterator<T> implements Iterator<T> {
+    private Deque<T>    items = new ArrayDeque<>() ;
     private Iterator<T> iter ;
 
-    public PushbackIterator(Iterator <T> iter)
-    {
-        if ( iter == null ) throw new IllegalArgumentException("Wrapped iterator can't be null") ; 
+    public PushbackIterator(Iterator<T> iter) {
+        if ( iter == null )
+            throw new IllegalArgumentException("Wrapped iterator can't be null") ;
         this.iter = iter ;
     }
-    
-    public void pushback(T item)
-    {
+
+    public void pushback(T item) {
         items.push(item) ;
     }
-    
+
     @Override
-    public boolean hasNext()
-    {
-        if ( !items.isEmpty() ) return true ;
+    public boolean hasNext() {
+        if ( !items.isEmpty() )
+            return true ;
         return iter.hasNext() ;
     }
 
     @Override
-    public T next()
-    {
-        if ( !items.isEmpty() ) 
+    public T next() {
+        if ( !items.isEmpty() )
             return items.pop() ;
         return iter.next() ;
     }
 
     @Override
-    public void remove()
-    {
+    public void remove() {
         // Need to track if last next() was from the stack or not.
         throw new UnsupportedOperationException() ;
     }

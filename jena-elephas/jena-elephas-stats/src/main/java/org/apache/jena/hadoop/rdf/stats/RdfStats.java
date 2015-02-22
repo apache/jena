@@ -49,7 +49,7 @@ import org.apache.jena.hadoop.rdf.stats.jobs.JobFactory;
  * Entry point for the Hadoop job, handles launching all the relevant Hadoop
  * jobs
  */
-@Command(name = "bin/hadoop jar PATH_TO_JAR com.yarcdata.urika.hadoop.rdf.stats.RdfStats", description = "A command which computes statistics on RDF data using Hadoop")
+@Command(name = "hadoop jar PATH_TO_JAR org.apache.jena.hadoop.rdf.stats.RdfStats", description = "A command which computes statistics on RDF data using Hadoop")
 public class RdfStats implements Tool {
 
     static final String ANSI_RED = "\u001B[31m";
@@ -84,7 +84,7 @@ public class RdfStats implements Tool {
     /**
      * Gets/Sets whether type counts will be calculated
      */
-    @Option(name = { "-t", "--type-counts" }, description = "Requests that rdf:type usage counts be calculated")
+    @Option(name = { "-t", "--type-count" }, description = "Requests that rdf:type usage counts be calculated")
     public boolean typeCount = false;
 
     /**
@@ -105,7 +105,7 @@ public class RdfStats implements Tool {
     /**
      * Gets/Sets the input data type used
      */
-    @Option(name = { "--input-type" }, allowedValues = { DATA_TYPE_MIXED, DATA_TYPE_QUADS, DATA_TYPE_TRIPLES }, description = "Specifies whether the input data is a mixture of quads and triples, just quads or just triples.  Using the most specific data type will yield the most accurrate statistics")
+    @Option(name = { "--input-type" }, allowedValues = { DATA_TYPE_MIXED, DATA_TYPE_QUADS, DATA_TYPE_TRIPLES }, description = "Specifies whether the input data is a mixture of quads and triples, just quads or just triples.  Using the most specific data type will yield the most accurate statistics")
     public String inputType = DATA_TYPE_MIXED;
 
     /**
@@ -165,12 +165,16 @@ public class RdfStats implements Tool {
     @Override
     public int run(String[] args) throws Exception {
         try {
+            if (args.length == 0) {
+                showUsage();
+            }
+            
             // Parse custom arguments
             RdfStats cmd = SingleCommand.singleCommand(RdfStats.class).parse(args);
 
             // Copy Hadoop configuration across
             cmd.setConf(this.getConf());
-
+            
             // Show help if requested and exit with success
             if (cmd.helpOption.showHelpIfRequested()) {
                 return 0;

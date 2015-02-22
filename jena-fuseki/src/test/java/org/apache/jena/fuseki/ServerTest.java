@@ -44,7 +44,7 @@ public class ServerTest
 {
     // Abstraction that runs a SPARQL server for tests.
     
-    public static final int port             = 3535 ;
+    public static final int port             = 3635 ;   // Different to the Fuseki2 test port.
     public static final String urlRoot       = "http://localhost:"+port+"/" ;
     public static final String datasetPath   = "/dataset" ;
     public static final String serviceUpdate = "http://localhost:"+port+datasetPath+"/update" ; 

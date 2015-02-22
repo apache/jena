@@ -14,62 +14,77 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+##
+## Define all the prefixes 
+##
+
 @prefix fuseki:  <http://jena.apache.org/fuseki#> .
-@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix sec:    <http://apache.org/jena/security/Assembler#> .
 @prefix my:     <http://example.org/#> .
 
-#[] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
+##
+## Load the SecuredAssembler class from the security library and define 
+## the sec:Model as a subclass of ja:NamedModel.
+##
 [] ja:loadClass    "org.apache.jena.security.SecuredAssembler" .
-
-tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
-tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 sec:Model       rdfs:subClassOf  ja:NamedModel .
 
-my:dataset rdf:type tdb:DatasetTDB;
-    tdb:location "/tmp/myApp" ;
-    tdb:unionDefaultGraph true ;
-    .
+##
+## Define the base model that contains the unsecured data.
+##
+my:baseModel rdf:type ja:MemoryModel;
+    ja:content [ja:externalContent <file:./example.ttl>] 
+    .   
 
-my:baseModel rdf:type tdb:GraphTDB ;
-    tdb:dataset my:dataset .   
-
+##
+## Define the secured model.  This is where permissions is applied to the 
+## my:baseModel to create a model that has permission restrictions.  Note 
+## that it is using the security evaluator implementation (sec:evaluatorImpl) 
+## called my:secEvaluator which we will define next.
+##
 my:securedModel rdf:type sec:Model ;
     sec:baseModel my:baseModel ;
     ja:modelName "https://example.org/securedModel" ;
     sec:evaluatorImpl my:secEvaluator .
   
+##
+## Define the security evaluator.  This is where we use the example 
+## ShiroExampleEvaluator.  For your production environment you will replace 
+## "org.apache.jena.security.example.ShiroExampleEvaluator"  with your 
+## SecurityEvaluator implementation.  Note that  ShiroExampleEvaluator constructor 
+## takes a Model argument.  We pass in the unsecured baseModel so that the evaluator 
+## can read it unencumbered.  Your implementation of SecurityEvaluator may have different 
+## parameters to meet your specific needs.
+##  
 my:secEvaluator rdf:type sec:Evaluator ;
     sec:args [  
         rdf:_1 my:baseModel ;
     ] ;
     sec:evaluatorClass "org.apache.jena.security.example.ShiroExampleEvaluator" .
 
+##
+## Define the dataset that we will use for in the server.
+##
 my:securedDataset rdf:type ja:RDFDataset ;
    ja:defaultGraph my:securedModel .
 
-my:fuseki rdf:type fuseki:Server ;
-   # Server-wide context parameters can be given here.
-   # For example, to set query timeouts: on a server-wide basis:
-   # Format 1: "1000" -- 1 second timeout
-   # Format 2: "10000,60000" -- 10s timeout to first result, then 60s timeout to for rest of query.
-   # See java doc for ARQ.queryTimeout
-   # ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
-
-   # Load custom code (rarely needed)
-   # ja:loadClass "your.code.Class" ;
-
-   # Services available.  Only explicitly listed services are configured.
-   #  If there is a service description not linked from this list, it is ignored.
+##
+## Define the fuseki:Server.
+##
+my:fuskei rdf:type fuseki:Server ;
    fuseki:services (
      my:service1
    ) .
 
-    
+##
+## Define the service for the fuseki:Service.  Note that the fuseki:dataset served by 
+## this server is the secured dataset defined above.    
+##
 my:service1 rdf:type fuseki:Service ;
+    rdfs:label                        "My Secured Data Service" ;
     fuseki:name                       "myAppFuseki" ;       # http://host:port/myAppFuseki
     fuseki:serviceQuery               "query" ;    # SPARQL query service
     fuseki:serviceQuery               "sparql" ;   # SPARQL query service
@@ -80,3 +95,4 @@ my:service1 rdf:type fuseki:Service ;
     fuseki:serviceReadGraphStore      "get" ;      # SPARQL Graph store protocol (read only)
     fuseki:dataset                   my:securedDataset ;
     .
+    

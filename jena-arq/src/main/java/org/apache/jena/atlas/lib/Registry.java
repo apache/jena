@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.migrate;
+package org.apache.jena.atlas.lib;
 
 import java.util.Collection ;
 import java.util.Map ;

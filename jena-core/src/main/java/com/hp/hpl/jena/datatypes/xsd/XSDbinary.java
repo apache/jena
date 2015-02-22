@@ -46,8 +46,6 @@ public abstract class XSDbinary extends XSDDatatype {
     
     /**
      * Compares two instances of values of the given datatype.
-     * This ignores lang tags and just uses the java.lang.Number 
-     * equality.
      */
     @Override
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
@@ -59,10 +57,8 @@ public abstract class XSDbinary extends XSDDatatype {
     @Override
     public int getHashCode( LiteralLabel lit )
     {
-        // Can't use super.getHashCode as that does "value.hashCode"
-        // Java arrays are not equal by value and their hash code of the sameValue array are different. 
         if ( lit.isWellFormed() )
-            return getHashCode( (byte []) lit.getValue() );
+            return Arrays.hashCode((byte []) lit.getValue()) ;
         else
             return lit.getLexicalForm().hashCode() ;
     }

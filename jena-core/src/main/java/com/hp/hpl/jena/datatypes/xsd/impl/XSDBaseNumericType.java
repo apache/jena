@@ -176,8 +176,6 @@ public class XSDBaseNumericType extends XSDDatatype {
     
     /**
      * Compares two instances of values of the given datatype.
-     * This ignores lang tags and just uses the java.lang.Number 
-     * equality.
      */
     @Override
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {

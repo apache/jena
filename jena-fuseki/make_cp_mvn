@@ -27,6 +27,7 @@ if ( ! -e "$POM" )
 }
 $M2=$ENV{'M2_REPO'} ;
 print "#!/bin/bash\n" ;
+print "# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0"
 print "\n" ;
 print 'XCP="' ;
 

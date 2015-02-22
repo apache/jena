@@ -110,18 +110,18 @@ public class TestResultSet extends BaseTest
     @Test public void test_RS_3()
     {
         ResultSetRewindable rs1 = new ResultSetMem() ;
-        Model model = ResultSetFormatter.toModel(rs1) ;
+        Model model = RDFOutput.encodeAsModel(rs1) ;
         rs1.reset() ;
-        ResultSet rs2 = ResultSetFactory.fromRDF(model) ;
+        ResultSet rs2 = RDFInput.fromRDF(model) ;
         assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
     
     @Test public void test_RS_4()
     {
         ResultSetRewindable rs1 = makeRewindable("x", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local")) ;
-        Model model = ResultSetFormatter.toModel(rs1) ;
+        Model model = RDFOutput.encodeAsModel(rs1) ;
         rs1.reset() ;
-        ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(ResultSetFactory.fromRDF(model)) ;
+        ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(RDFInput.fromRDF(model)) ;
         boolean b = ResultSetCompare.equalsByTerm(rs1, rs2) ;
         if ( ! b )
         {

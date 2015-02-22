@@ -86,7 +86,7 @@
         <include>fuseki</include>
         <include>fuseki-server</include>
         <include>fuseki-server.bat</include>
-        <!--<include>s-*</include>-->
+	<include>bin/*</include>
       </includes>
     </fileSet>
 
