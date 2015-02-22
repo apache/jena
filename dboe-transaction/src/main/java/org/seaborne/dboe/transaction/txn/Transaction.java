@@ -43,10 +43,19 @@ import com.hp.hpl.jena.query.ReadWrite ;
  */
 final
 public class Transaction {
-    private final TransactionCoordinator txnMgr ;
+    // Using an AtomicReference<TxnState> requires that 
+    // TransactionalComponentLifecycle.internalComplete
+    // frees the thread local for the threadTxn.  
+    // If a plain member variable is used slow growth is still seen.
+    // Nulling txnMgr and clearing components stops that slow growth.
+
+    private TransactionCoordinator txnMgr ;
     private final TxnId txnId ;
     private final List<SysTrans> components ;
+    
+    // Using an AtomicReference makes this observable from the outside. 
     private final AtomicReference<TxnState> state = new AtomicReference<TxnState>() ;
+    //private TxnState state ;
     private final long dataEpoch ;
     private ReadWrite mode ;
     
@@ -70,10 +79,12 @@ public class Transaction {
 
     private void setState(TxnState newState) {
         state.set(newState) ;
+        //state = newState ;
     }
 
     public TxnState getState() {
         return state.get() ;
+        //return state ; 
     }
 
     /**
@@ -145,12 +156,14 @@ public class Transaction {
 
     public void end() {
         txnMgr.notifyEndStart(this) ;
-        if ( isWriteTxn() && state.get() == ACTIVE ) {
+        if ( isWriteTxn() && getState() == ACTIVE ) {
             throw new TransactionException("Write transaction with no commit or abort") ; 
             //abort() ;
         }
         endInternal() ;
         txnMgr.notifyEndFinish(this) ;
+        txnMgr = null ;
+        //components.clear() ;
     }
     
     private void endInternal() {  
@@ -160,25 +173,27 @@ public class Transaction {
         txnMgr.notifyCompleteStart(this);
         components.forEach((c) -> c.complete()) ;
         txnMgr.completed(this) ;
-        if ( state.get() == COMMITTED )
-            state.set(END_COMMITTED);
+        if ( getState() == COMMITTED )
+            setState(END_COMMITTED);
         else
-            state.set(END_ABORTED);
+            setState(END_ABORTED);
         txnMgr.notifyCompleteFinish(this);
+        
+        
     }
     
     public boolean hasStarted()   { 
-        TxnState x = state.get() ;
+        TxnState x = getState() ;
         return x == INACTIVE ;
     }
     
     public boolean hasFinished() { 
-        TxnState x = state.get() ;
+        TxnState x = getState() ;
         return x == COMMITTED || x == ABORTED || x == END_COMMITTED || x == END_ABORTED ;
     }
 
     public boolean hasFinalised() { 
-        TxnState x = state.get() ;
+        TxnState x = getState() ;
         return x == END_COMMITTED || x == END_ABORTED ;
     }
 
@@ -194,26 +209,26 @@ public class Transaction {
     }
 
     private void checkState(TxnState expected) {
-        TxnState s = state.get();
+        TxnState s = getState();
         if ( s != expected )
             throw new TransactionException("Transaction is in state "+s+": expected state "+expected) ;
     }
 
     private void checkState(TxnState expected1, TxnState expected2) {
-        TxnState s = state.get();
+        TxnState s = getState();
         if ( s != expected1 && s != expected2 )
             throw new TransactionException("Transaction is in state "+s+": expected state "+expected1+" or "+expected2) ;
     }
 
     // Avoid varargs ... undue worry?
     private void checkState(TxnState expected1, TxnState expected2, TxnState expected3) {
-        TxnState s = state.get();
+        TxnState s = getState();
         if ( s != expected1 && s != expected2 && s != expected3 )
             throw new TransactionException("Transaction is in state "+s+": expected state "+expected1+", "+expected2+" or "+expected3) ;
     }
     
     public boolean isActiveTxn() {
-        return state.get() != INACTIVE ;
+        return getState() != INACTIVE ;
     }
     
     public boolean isWriteTxn() {
