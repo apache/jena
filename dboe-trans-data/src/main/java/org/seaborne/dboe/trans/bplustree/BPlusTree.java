@@ -24,18 +24,14 @@ import org.apache.commons.lang3.NotImplementedException ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.base.record.RecordMapper ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.sys.SystemLz ;
-import org.seaborne.dboe.transaction.Transactional ;
-import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.TransactionalComponentLifecycle ;
 import org.seaborne.dboe.transaction.txn.TxnId ;
-import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -132,6 +128,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     private BPTreeRecordsMgr recordsMgr; 
     private final BPlusTreeParams bpTreeParams ;
     private Mode mode = Mode.TRANSACTIONAL ;
+    private BptTxnState nonTxnState = null ; 
 
     private final ComponentId componentId ;
     
@@ -154,19 +151,27 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     }
 
     private BPTreeNode getRootRead() {
-        super.checkTxn() ;
-        int rootId = super.getState().root ;
-        // No caching here.
-        return nodeManager.getRead(rootId, BPlusTreeParams.RootParent) ;
+        if ( isTransactional() ) {
+            super.checkTxn() ;
+            int rootId = super.getState().root ;
+            return nodeManager.getRead(rootId, BPlusTreeParams.RootParent) ;
+        }
+        return nodeManager.getRead(rootIdx, BPlusTreeParams.RootParent) ;
     }
 
     private BPTreeNode getRootWrite() {
-        super.checkWriteTxn() ;
-        int rootId = super.getState().root ;
-        // No caching here.
-        return nodeManager.getRead(rootId, BPlusTreeParams.RootParent) ;
+        if ( isTransactional() ) {
+            super.checkWriteTxn() ;
+            int rootId = super.getState().root ;
+            return nodeManager.getRead(rootId, BPlusTreeParams.RootParent) ;
+        }
+        return nodeManager.getRead(rootIdx, BPlusTreeParams.RootParent) ;
     }
 
+    private boolean isTransactional() {
+        return mode == Mode.TRANSACTIONAL || mode == Mode.TRANSACTIONAL_AUTOCOMMIT ;
+    }
+    
     private void releaseRootRead(BPTreeNode rootNode) {
         rootNode.release() ;
     }
@@ -177,17 +182,19 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     private void setRoot(BPTreeNode node) {
         throw new InternalErrorException("BPlusTree.setRoot") ;
-        // root = node ;
     }
 
     public void newRoot(BPTreeNode newRoot) {
-        getState().root = newRoot.getId() ;
+        if ( isTransactional() )
+            getState().root = newRoot.getId() ;
+        else
+            rootIdx = newRoot.getId() ; 
     }
 
-    // Very, very dangerous operation. 
-    public void $testForce$(int rootIdx) {
-        this.rootIdx = rootIdx ;
-    }
+//    // Very, very dangerous operation. 
+//    public void $testForce$(int rootIdx) {
+//        this.rootIdx = rootIdx ;
+//    }
 
     public int getRootId() {
         if ( super.isActiveTxn() )
@@ -197,9 +204,12 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     }
 
     BptTxnState state() {
-        if ( super.isActiveTxn() )
-            return super.getState() ;
-        return null ;
+        if ( mode == Mode.TRANSACTIONAL ) {
+            if ( super.isActiveTxn() )
+                return super.getState() ;
+            return null ;
+        }
+        return nonTxnState ;
     }  
     
     /** Get the parameters describing this B+Tree */
@@ -451,16 +461,39 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         finally { releaseRootRead(root) ; }
     }
 
-    // Transaction.
-    
     public void nonTransactional() {
-        // Fake it!
-        // TODO More formally do this.
-        // See NOTES
-        Journal journal = Journal.create(Location.mem()) ;
-        Transactional holder = TransactionalFactory.create(journal, this) ;
-        holder.begin(ReadWrite.WRITE);
-        //new BptTxnState(BPlusTreeParams.RootId, 0, 0) ;
+        setMode(Mode.MUTABLE) ;
+    }
+    
+    private void setMode(Mode newMode) { 
+        
+        mode = newMode ;
+        
+        switch(mode) {
+            case IMMUTABLE : 
+                nonTxnState = new BptTxnState(BPlusTreeParams.RootId, 
+                                              nodeManager.allocLimit(),
+                                              recordsMgr.allocLimit()) ;
+                break ;
+            case IMMUTABLE_ALL:
+            nonTxnState = new BptTxnState(BPlusTreeParams.RootId, 
+                                          Long.MAX_VALUE,
+                                          Long.MAX_VALUE) ;
+                break ;
+            case MUTABLE :
+                nonTxnState = new BptTxnState(BPlusTreeParams.RootId, 0, 0) ;
+                break ;
+            case MUTABLE_ROOT :
+                // Imperfect.
+                nonTxnState = new BptTxnState(BPlusTreeParams.RootId, 1, 1) ;
+                break ;
+            case TRANSACTIONAL :
+                nonTxnState= null ;
+                break ;
+            case TRANSACTIONAL_AUTOCOMMIT :
+                // TODO TRANSACTIONAL_AUTOCOMMIT
+                break ;
+        }
     }
     
     @Override
