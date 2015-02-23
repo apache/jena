@@ -30,7 +30,7 @@
 		<!-- Internal Project Dependencies -->
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-hadoop-rdf-common</artifactId>
+      <artifactId>jena-elephas-common</artifactId>
       <version>${project.version}</version>
     </dependency>
 
