@@ -26,8 +26,22 @@ public class NOTES {
     // Better non-transactional mode.
     //   Leaving unaborted/commited transaction causes permanent memory allocation.  
     //   See TransactionalComponentLifecycle.internalComplete.
-    // Better bpt.nonTransactional() ; needed - then chnage CmdTestBPlusTree back.
+    // More on bpt.nonTransactional() ; needed - then change CmdTestBPlusTree back.
+    
+    // Transaction node testing.
+    // A few operations per tree.
+    /*
+              BPlusTree bpt = BPlusTreeFactory.makeMem(order, SystemLz.SizeOfInt, 0) ;
+              Journal journal = Journal.create(Location.mem()) ;
+              Transactional holder = TransactionalFactory.create(journal, bpt) ;
+              holder.begin(ReadWrite.WRITE);
+              IndexTestLib.randTest(bpt, 5*size, size, true);
+              holder.commit() ;
+              holder.end() ;
+     */
 
+    // B+Tree commit , versioned root, recovery. 
+    
     
     // Free chain - just in the active area.
     // BlockMgr semi-partiicpate in transactions?
@@ -35,8 +49,7 @@ public class NOTES {
     // Fast clear (new tree).  Fast clear for dft graph.
     
     // Non-transactional:
-    // * Mark tree
-    // * BPTreeRecors.split can use links.
+    // * BPTreeRecords.split can use links in case it was never transactional.
     // * No need for access paths.
     
     // Tests of txn after txn

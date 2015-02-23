@@ -128,7 +128,7 @@ public abstract class BaseSoakTest extends CmdGeneral {
         after() ;
         System.err.flush() ;
         System.out.flush() ;
-        System.out.printf("DONE : %,d tests : Success=%,d, Failures=%,d\n", NumTest, successes, failures);
+        System.out.printf("DONE : %,d tests : Success=%,d ; Failures=%,d\n", NumTest, successes, failures);
     }
 
     protected abstract void runOneTest(int testCount, int order, int size, boolean debug) ;

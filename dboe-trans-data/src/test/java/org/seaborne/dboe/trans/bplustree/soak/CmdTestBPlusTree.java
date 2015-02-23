@@ -17,11 +17,7 @@
 
 package org.seaborne.dboe.trans.bplustree.soak;
 
-import com.hp.hpl.jena.query.ReadWrite ;
-
-import org.apache.jena.atlas.lib.Lib ;
 import org.seaborne.dboe.base.file.BlockAccessMem ;
-import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.index.test.BaseSoakTest ;
 import org.seaborne.dboe.index.test.IndexTestLib ;
 import org.seaborne.dboe.sys.SystemIndex ;
@@ -30,9 +26,6 @@ import org.seaborne.dboe.trans.bplustree.BPT ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
 import org.seaborne.dboe.trans.bplustree.BlockTracker ;
-import org.seaborne.dboe.transaction.Transactional ;
-import org.seaborne.dboe.transaction.TransactionalFactory ;
-import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 public class CmdTestBPlusTree extends BaseSoakTest
 {
@@ -93,22 +86,20 @@ public class CmdTestBPlusTree extends BaseSoakTest
     @Override
     protected void runOneTest(int testCount, int order, int size) {
 //        //System.err.println("runOneTest("+order+","+size+")") ;
-//        BPlusTree bpt = BPlusTreeFactory.makeMem(order, SystemLz.SizeOfInt, 0) ;
-////        bpt = BPlusTreeFactory.addTracking(bpt) ;
-//        bpt.nonTransactional() ;
-//        bpt.startBatch();
-//        IndexTestLib.randTest(bpt, 5*size, size, true);
-//        // B+Tree close now release (nulls pointers to) memory used in BlockAccessMem.
-        
         BPlusTree bpt = BPlusTreeFactory.makeMem(order, SystemLz.SizeOfInt, 0) ;
-        Journal journal = Journal.create(Location.mem()) ;
-        Transactional holder = TransactionalFactory.create(journal, bpt) ;
-        // Better bpt.nonTransactional() ; needed
-        holder.begin(ReadWrite.WRITE);
+        bpt = BPlusTreeFactory.addTracking(bpt) ;
+        bpt.nonTransactional() ;
+        bpt.startBatch();
         IndexTestLib.randTest(bpt, 5*size, size, true);
-        holder.commit() ;
-        holder.end() ;
-        if ( testCount%10 == 0 )
-            Lib.sleep(1) ;
+        bpt.close() ;
+        
+        // Transaction.
+//        BPlusTree bpt = BPlusTreeFactory.makeMem(order, SystemLz.SizeOfInt, 0) ;
+//        Journal journal = Journal.create(Location.mem()) ;
+//        Transactional holder = TransactionalFactory.create(journal, bpt) ;
+//        holder.begin(ReadWrite.WRITE);
+//        IndexTestLib.randTest(bpt, 5*size, size, true);
+//        holder.commit() ;
+//        holder.end() ;
     }
 }
