@@ -72,25 +72,6 @@ public abstract class BaseSoakTest extends CmdGeneral {
         int successes   = 0 ;
         int failures    = 0 ;
 
-        int[] orders = null ;
-        int[] sizes =  null ; 
-        
-        if ( false ) {
-            // Specific test case.
-            orders = new int[]{2} ;
-            sizes =  new int[]{20} ;
-            NumTest = sizes.length ;
-        } else {
-            orders = new int[NumTest] ;
-            sizes =  new int[NumTest] ;
-            for ( int i = 0 ; i < orders.length ; i++ ) {
-                int order = ( MinOrder == MaxOrder ) ? MinOrder : MinOrder + RandomLib.random.nextInt(MaxOrder-MinOrder) ;
-                int size =  ( MinSize  == MaxSize  ) ? MinSize :  MinSize  + RandomLib.random.nextInt(MaxSize-MinSize) ;
-                orders[i] = order ;
-                sizes[i] = size ;
-            }
-        }
-        
         // Number of dots.
         int numOnLine = 50 ;
         int testsPerTick ;
@@ -117,7 +98,7 @@ public abstract class BaseSoakTest extends CmdGeneral {
         
         int testCount = 1 ;
         
-        for ( testCount = 1 ; testCount <= orders.length ; testCount++ ) {
+        for ( testCount = 1 ; testCount <= NumTest ; testCount++ ) {
             if ( testCount % testsPerTick == 0 )
                 System.out.print(".") ;
             if ( testCount % (testsPerTick * numOnLine) == 0 )
@@ -126,9 +107,8 @@ public abstract class BaseSoakTest extends CmdGeneral {
                 System.out.printf(format, testCount-1) ;
 
             int idx = testCount - 1 ;
-            int order = orders[idx] ;
-            int size = sizes[idx] ;
-            try {
+            int order = ( MinOrder == MaxOrder ) ? MinOrder : MinOrder + RandomLib.random.nextInt(MaxOrder-MinOrder) ;
+            int size =  ( MinSize  == MaxSize  ) ? MinSize :  MinSize  + RandomLib.random.nextInt(MaxSize-MinSize) ;            try {
                 //System.out.printf("TEST : %,d : Order=%-2d : Size=%d\n", testCount, order, size) ;
                 runOneTest(testCount, order, size) ;
                 successes++ ;

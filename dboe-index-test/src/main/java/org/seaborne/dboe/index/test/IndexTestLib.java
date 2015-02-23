@@ -20,8 +20,6 @@ package org.seaborne.dboe.index.test ;
 import static java.lang.String.format ;
 import static org.apache.jena.atlas.lib.ListUtils.asList ;
 import static org.apache.jena.atlas.lib.ListUtils.unique ;
-import org.apache.jena.atlas.lib.RandomLib ;
-import static org.apache.jena.atlas.test.Gen.permute ;
 import static org.apache.jena.atlas.test.Gen.rand ;
 import static org.apache.jena.atlas.test.Gen.strings ;
 import static org.junit.Assert.assertEquals ;
@@ -33,6 +31,7 @@ import static org.seaborne.dboe.test.RecordLib.toIntList ;
 
 import java.util.* ;
 
+import org.apache.jena.atlas.lib.RandomLib ;
 import org.junit.Assert ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.index.Index ;
@@ -73,8 +72,8 @@ public class IndexTestLib {
                 lo = hi ;
                 hi = t ;
             }
-            // Does not consider nulls - assumed to be part of functional
-            // testing.
+            // Does not consider nulls for min, max)
+            // That is assumed to be part of functional testing.
             // Tweak lo and hi
             if ( lo != 0 && random.nextFloat() < 0.5 )
                 lo-- ; // Negatives confuse the int/record code.
@@ -100,7 +99,8 @@ public class IndexTestLib {
             System.err.printf("Warning: too many keys\n") ;
 
         int[] keys1 = rand(numKeys, 0, maxValue) ;
-        int[] keys2 = permute(keys1, 4 * numKeys) ;
+        int[] keys2 = permute2(keys1) ;
+        //int[] keys2 = permute(keys1, 4 * numKeys) ;
         //System.err.printf("int[] keys1 = {%s} ;\n", strings(keys1)) ;
         //System.err.printf("int[] keys2 = {%s}; \n", strings(keys2)) ;
         try {
@@ -120,6 +120,27 @@ public class IndexTestLib {
             System.err.printf("int[] keys2 = {%s}; \n", strings(keys2)) ;
             throw ex ;
         }
+    }
+    
+    /** Pull items out of the list in a random order */ 
+    private static int[] permute2(int[] x) {
+        int[] x2 = new int[x.length] ;
+        List<Integer> list = new ArrayList<>() ;
+        
+        for ( int i : x )
+            list.add(i) ;
+        for ( int i = 0 ; i<x.length ; i++ ) {
+            int idx = random.nextInt(list.size()) ;
+            x2[i] = list.remove(idx) ;
+        }
+        return x2 ; 
+    }
+    
+    private static Random randInit()
+    {
+        // Cheap random numbers, well seeded.
+        int seed = random.nextInt() ;
+        return new Random(seed) ;   
     }
 
     // ---- Test utils

@@ -17,7 +17,12 @@
 
 package dev;
 
+import java.util.ArrayList ;
+import java.util.List ;
+
+import org.apache.jena.atlas.lib.RandomLib ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.atlas.test.Gen ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.file.BufferChannelMem ;
@@ -44,7 +49,36 @@ public class MainCohort {
     
     static Journal journal = Journal.create(Location.mem()) ;
 
+    /** Pull items out of the list in a random order */ 
+    public static int[] permute2(int[] x) {
+        int[] x2 = new int[x.length] ;
+        List<Integer> list = new ArrayList<>() ;
+        
+        for ( int i : x )
+            list.add(i) ;
+        for ( int i = 0 ; i<x.length ; i++ ) {
+            int idx = RandomLib.random.nextInt(list.size()) ;
+            x2[i] = list.remove(idx) ;
+        }
+        return x2 ; 
+    }
+
+    
     public static void main(String... args) {
+        
+        for ( int i = 0 ; i < 5 ; i++ ) {
+            int[] x1 = Gen.rand(10, 1, 100) ;
+            int[] x2 = permute2(x1) ;
+            int[] x3 = Gen.shuffle(x1, 4*x1.length) ;
+            System.out.println(Gen.strings(x1)) ;
+            System.out.println(Gen.strings(x2)) ;
+            System.out.println(Gen.strings(x3)) ;
+            System.out.println() ;
+        }
+        System.exit(0) ;
+        
+        
+        
         BPT.Logging = false ;
         BlockMgrFactory.AddTracker = false ;
         SystemIndex.setNullOut(true) ;
