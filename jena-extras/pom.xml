@@ -121,7 +121,7 @@ This is the parent module for the Jena Extra modules.
     <dependency>
         <groupId>org.apache.jena</groupId>
         <artifactId>apache-jena-libs</artifactId>
-        <version>${jena-version}</version>
+        <version>2.13.0-SNAPSHOT</version>
         <type>pom</type>
     </dependency>
     <dependency>
