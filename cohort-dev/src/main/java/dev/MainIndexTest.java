@@ -31,6 +31,7 @@ import java.util.stream.Collectors ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrLogger ;
+import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.test.RecordLib ;
@@ -67,9 +68,18 @@ public class MainIndexTest {
         BPT.CheckingNode = true ;
         BPT.CheckingTree = false ;
         SystemIndex.setNullOut(true) ;
-        BPT.forcePromoteModes = true ;
-        BPT.promoteDuplicateNodes = false ;
+        
+        BPT.forcePromoteModes = false ;
+        BPT.promoteDuplicateNodes = true ;
         BPT.promoteDuplicateRecords  = true ;
+        
+        System.out.println("Build") ; 
+        BPlusTree bpt = makeRangeIndex(2) ;
+        System.out.println("Logging") ; 
+        bpt = BPlusTreeFactory.addLogging(bpt) ;
+        System.out.println("Tracking") ; 
+        bpt = BPlusTreeFactory.addTracking(bpt) ;
+        System.out.println("Done") ;
         tree_keys();
     }    
     public static void tree_keys() {
@@ -189,27 +199,29 @@ public class MainIndexTest {
     }
     protected static BPlusTree makeRangeIndex(int order, int minRecords) {
         BPlusTree bpt = BPlusTreeFactory.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
-        if ( true ) {
+        if ( false ) {
+            BufferChannel rootState = null ; // bpt.getRootManager().getChannel() ;
+            
             BlockMgr mgrNodes = bpt.getNodeManager().getBlockMgr() ;
-            //mgrNodes = new BlockMgrLogger(mgrNodes, false) ;
+            //mgrNodes = new BlockMgrLogger(bpt.getNodeManager().getBlockMgr(), false) ;
 
             BlockMgr mgrRecords = bpt.getRecordsMgr().getBlockMgr() ;
             mgrRecords = new BlockMgrLogger(mgrRecords, false) ;
             // But disable for now.
             LogCtl.disable(BlockMgr.class);
             
-            bpt =  BPlusTreeFactory.create(null, bpt.getParams(), mgrNodes, mgrRecords) ;
+            bpt =  BPlusTreeFactory.create(null, bpt.getParams(), rootState, mgrNodes, mgrRecords) ;
         }
-        if ( true ) {
+        if ( false ) {
             BPT.CheckingNode = true ;
+            BufferChannel rootState = null ; // bpt.getRootManager().getChannel() ;
             //BPT.CheckingTree = true ;
             BlockMgr mgrNodes = bpt.getNodeManager().getBlockMgr() ;
             //mgrNodes = BlockMgrTrackerWriteLifecycle.track(mgr1) ;
-            
             BlockMgr mgrRecords = bpt.getRecordsMgr().getBlockMgr() ;
             mgrRecords = BlockTracker.track(mgrRecords) ;
             
-            bpt =  BPlusTreeFactory.create(null, bpt.getParams(), mgrNodes, mgrRecords) ;
+            bpt =  BPlusTreeFactory.rebuild(bpt, rootState, mgrNodes, mgrRecords) ;
         }
         bpt.nonTransactional() ;
         bpt.startBatch();

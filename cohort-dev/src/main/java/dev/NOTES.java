@@ -28,6 +28,9 @@ public class NOTES {
     //   See TransactionalComponentLifecycle.internalComplete.
     // More on bpt.nonTransactional() ; needed - then change CmdTestBPlusTree back.
     
+    // Sort out BPlusTreeFactory.
+    //  Remove testing support SetupBPTreeIndex
+    
     // Transaction node testing.
     // A few operations per tree.
     /*
