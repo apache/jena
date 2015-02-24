@@ -200,6 +200,16 @@ public class TextIndexLucene implements TextIndex {
             String property = map.keySet().iterator().next();
             String value = (String)map.get(property);
 
+            //replacing single and double quotes when unbalanced
+            int countOfSingleQuotes = value.length() - value.replace( "'", "" ).length();
+            if( countOfSingleQuotes % 2 != 0 )
+                value = value.replace( "'", "?" );
+
+            int countOfDoubleQuotes = value.length() - value.replace( "\"", "" ).length();
+            if( countOfDoubleQuotes % 2 != 0 )
+                value = value.replace( "\"", "?" );
+            //
+
             QueryParser qp = new QueryParser(VER, property, analyzer);
             Query qPropValue = qp.parse("\"" + BORDER_DELIMITER + " " + value + " " + BORDER_DELIMITER + "\"");
 
