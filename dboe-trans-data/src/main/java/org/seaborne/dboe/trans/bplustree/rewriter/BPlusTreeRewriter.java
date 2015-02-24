@@ -30,6 +30,7 @@ import org.apache.jena.atlas.lib.Pair ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.buffer.PtrBuffer ;
 import org.seaborne.dboe.base.buffer.RecordBuffer ;
+import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
@@ -61,6 +62,7 @@ public class BPlusTreeRewriter
     public static BPlusTree packIntoBPlusTree(Iterator<Record> iterRecords, 
                                               BPlusTreeParams bptParams, 
                                               RecordFactory recordFactory, 
+                                              BufferChannel rootState, 
                                               BlockMgr blkMgrNodes,
                                               BlockMgr blkMgrRecords)
     {
@@ -71,10 +73,10 @@ public class BPlusTreeRewriter
         
         if ( ! iterRecords.hasNext() )
             // No records. Just return a B+Tree.
-            return BPlusTreeFactory.createNonTxn(bptParams, blkMgrNodes, blkMgrRecords) ;
+            return BPlusTreeFactory.createNonTxn(bptParams, rootState, blkMgrNodes, blkMgrRecords) ;
     
         // Dummy B+tree needed to carry parameters around.
-        BPlusTree bpt2 = BPlusTreeFactory.createNonTxn(bptParams, blkMgrNodes, blkMgrRecords) ;
+        BPlusTree bpt2 = BPlusTreeFactory.createNonTxn(bptParams, rootState, blkMgrNodes, blkMgrRecords) ;
     
         // Allocate and format a root index block.
         // We will use this slot later and write in the correct root.
@@ -123,7 +125,7 @@ public class BPlusTreeRewriter
         blkMgrNodes.sync() ;
         blkMgrRecords.sync() ;
         // Force root reset.
-        bpt2 = BPlusTreeFactory.createNonTxn(bptParams, blkMgrNodes, blkMgrRecords) ;
+        bpt2 = BPlusTreeFactory.createNonTxn(bptParams, rootState, blkMgrNodes, blkMgrRecords) ;
         return bpt2 ;
     }
 

@@ -21,7 +21,6 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.junit.AfterClass ;
 import org.junit.Assert ;
@@ -29,6 +28,8 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
+import org.seaborne.dboe.base.file.BufferChannel ;
+import org.seaborne.dboe.base.file.FileFactory ;
 import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
@@ -36,9 +37,7 @@ import org.seaborne.dboe.sys.Names ;
 import org.seaborne.dboe.trans.bplustree.BPTreeException ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeParams ;
-import org.seaborne.dboe.trans.bplustree.SetupBPTreeIndex ;
 //import org.seaborne.dboe.trans.bplustree.rewriter.BPlusTreeRewriter ;
-import org.seaborne.dboe.trans.bplustree.rewriter.BPlusTreeRewriterUtils ;
 
 public class TestBPlusTreeRewriterNonTxn extends Assert
 {
@@ -80,13 +79,14 @@ public class TestBPlusTreeRewriterNonTxn extends Assert
 
         FileSet destination = FileSet.mem() ;
         // ---- Rewrite
+        BufferChannel rootState = FileFactory.createBufferChannel(destination, Names.bptExtRoot) ;
         // Write leaves to ...
         BlockMgr blkMgr1 = BlockMgrFactory.create(destination, Names.bptExtTree, bptParams.getCalcBlockSize(), 10, 10) ;
         // Write nodes to ...
         BlockMgr blkMgr2 = BlockMgrFactory.create(destination, Names.bptExtTree, bptParams.getCalcBlockSize(), 10, 10) ;
         
-        BPlusTree bpt2 = BPlusTreeRewriter.packIntoBPlusTree(originaldata.iterator(), bptParams, 
-                                                             recordFactory, blkMgr1, blkMgr2) ;
+        BPlusTree bpt2 = BPlusTreeRewriter.packIntoBPlusTree(originaldata.iterator(), bptParams, recordFactory,
+                                                             rootState, blkMgr1, blkMgr2) ;
         if ( debug )
         {
             BPlusTreeRewriterUtils.divider() ;
@@ -168,28 +168,6 @@ public class TestBPlusTreeRewriterNonTxn extends Assert
         return originaldata ;
     }
     
-    static List<Record> createData2(int ORDER, int N, RecordFactory recordFactory)
-    {
-        // Use a B+Tree - so original data can be unsorted.
-        BPlusTree bpt = SetupBPTreeIndex.createBPTree(null, FileSet.mem(), ORDER, -1, -1, -1, recordFactory) ;
-
-        // Problem is that a node in a stripe is less than half full 
-        // -> illegal BPT.
-        // -> specially rebalance if 2 or more blocks.
-        // -> spot one bloc (= root)
-        //    PeekIterator.
-
-        for ( int i = 0; i < N ; i++ )
-        {
-            Record record = recordFactory.create() ;
-            Bytes.setInt(i+1, record.getKey()) ;
-            bpt.insert(record) ;
-        }
-
-        return Iter.toList(bpt.iterator()) ;
-    }
-
-
     private static void error(String string, Object ...args)
     {
         String msg = String.format(string, args) ;

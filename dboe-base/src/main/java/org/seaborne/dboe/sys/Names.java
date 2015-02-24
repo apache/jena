@@ -30,6 +30,7 @@ public class Names
     public static final String[] prefixIndexes          = { primaryIndexPrefix } ;
     
     /** B+Trees - nodes file and records file */
+    public static final String bptExtRoot               = "bin" ;
     public static final String bptExtTree               = "idn" ;
     public static final String bptExtRecords            = "dat" ;
 

@@ -21,35 +21,131 @@ import org.seaborne.dboe.DBOpEnvException ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.block.BlockMgrLogger ;
+import org.seaborne.dboe.base.file.* ;
+import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
+import org.seaborne.dboe.index.RangeIndex ;
+import org.seaborne.dboe.sys.Names ;
+import org.seaborne.dboe.sys.SystemIndex ;
+import org.seaborne.dboe.sys.SystemLz ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 
 /** Make BPlusTrees - this code works in close association with the BPlusTree constructor */
 public class BPlusTreeFactory {
 
-    /** Create the in-memory structures to correspond to
+    /** Create the java structures to correspond to
      * the supplied block managers for the persistent storage.
      * Initialize the persistent storage to the empty B+Tree if it does not exist.
-     * This is the normal way to create a B+Tree.
+     * This is primitive operation that underpins creation of a sB+Tree.
      */
-    public static BPlusTree create(ComponentId id, BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves) {
+    public static BPlusTree create(ComponentId id, BPlusTreeParams params, BufferChannel chan, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves) {
         if ( id == null )
             id = ComponentId.allocLocal() ;
-        BPlusTree bpt = attach(id, params, blkMgrNodes, blkMgrLeaves) ;
+        BPlusTree bpt = attach(id, params, false, chan, blkMgrNodes, blkMgrLeaves) ;
         return bpt ;
     }
 
-    /** Create the in-memory structures to correspond to
+    /** Create the java structures to correspond to
      * the supplied block managers for the persistent storage.
      * Initialize the persistent storage to the empty B+Tree if it does not exist.
-     * This is the normal way to create a B+Tree.
      */
-    public static BPlusTree createNonTxn(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves) {
-        ComponentId id = ComponentId.allocLocal() ;
-        BPlusTree bpt = attach(id, params, blkMgrNodes, blkMgrLeaves) ;
+    public static BPlusTree createNonTxn(BPlusTreeParams params, BufferChannel chan, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves) {
+        // Allocate a random ComponentId
+        BPlusTree bpt = create(null, params, chan, blkMgrNodes, blkMgrLeaves) ;
         bpt.nonTransactional() ;
         return bpt ;
+    }
+
+    /** Reset an existign B+Tree with difrerent storage units.
+     * For each, null means "use same as original" 
+     */
+    public static BPlusTree rebuild(BPlusTree bpt, BufferChannel chan, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves) {
+        if ( chan == null )
+            chan = bpt.getRootManager().getChannel() ;
+        if ( blkMgrNodes == null )
+            blkMgrNodes = bpt.getNodeManager().getBlockMgr() ;
+        if ( blkMgrLeaves == null )
+            blkMgrLeaves = bpt.getNodeManager().getBlockMgr() ;
+        BPlusTree bpt2 = attach(bpt.getComponentId(), bpt.getParams(), true, chan, blkMgrNodes, blkMgrLeaves) ;
+        return bpt2 ;
+    }
+
+    public static RangeIndex makeBPlusTree(ComponentId cid, FileSet fs, int blkSize, 
+                                           int readCacheSize, int writeCacheSize,
+                                           int dftKeyLength, int dftValueLength) {
+        RecordFactory recordFactory = makeRecordFactory(dftKeyLength, dftValueLength) ;
+        int order = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
+        RangeIndex rIndex = createBPTree(cid, fs, order, blkSize, readCacheSize, writeCacheSize, recordFactory) ;
+        return rIndex ;
+    }
+
+    public static RecordFactory makeRecordFactory(int keyLen, int valueLen) {
+        return new RecordFactory(keyLen, valueLen) ;
+    }
+
+    /** Create a B+Tree using defaults */
+    public static RangeIndex createBPTree(ComponentId cid, FileSet fileset,
+                                          RecordFactory factory)
+    {
+        int readCacheSize = SystemLz.BlockReadCacheSize ;
+        int writeCacheSize = SystemLz.BlockWriteCacheSize ;
+        int blockSize = SystemIndex.BlockSize ;
+        if ( fileset.isMem() )
+        {
+            readCacheSize = 0 ;
+            writeCacheSize = 0 ;
+            blockSize = SystemIndex.BlockSizeTest ;
+        }
+        
+        return createBPTreeByBlockSize(cid, fileset, blockSize, readCacheSize, writeCacheSize, factory) ; 
+    }
+
+    /** Create a B+Tree by BlockSize */
+    public static RangeIndex createBPTreeByBlockSize(ComponentId cid, FileSet fileset,
+                                                     int blockSize,
+                                                     int readCacheSize, int writeCacheSize,
+                                                     RecordFactory factory)
+    {
+        return createBPTree(cid, fileset, -1, blockSize, readCacheSize, writeCacheSize, factory) ; 
+    }
+
+    /** Create a B+Tree by Order */
+    public static RangeIndex createBPTreeByOrder(ComponentId cid, FileSet fileset,
+                                                 int order,
+                                                 int readCacheSize, int writeCacheSize,
+                                                 RecordFactory factory)
+    {
+        return createBPTree(cid, fileset, order, -1, readCacheSize, writeCacheSize, factory) ; 
+    }
+
+    /** Knowing all the parameters, create a B+Tree */
+    public static BPlusTree createBPTree(ComponentId cid, FileSet fileset, int order, int blockSize,
+                                         int readCacheSize, int writeCacheSize,
+                                         RecordFactory factory)
+    {
+        // ---- Checking
+        if (blockSize < 0 && order < 0) throw new IllegalArgumentException("Neither blocksize nor order specified") ;
+        if (blockSize >= 0 && order < 0) order = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
+        if (blockSize >= 0 && order >= 0)
+        {
+            int order2 = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
+            if (order != order2) throw new IllegalArgumentException("Wrong order (" + order + "), calculated = "
+                                                                    + order2) ;
+        }
+    
+        // Iffy - does not allow for slop.
+        if (blockSize < 0 && order >= 0)
+        {
+            // Only in-memory.
+            blockSize = BPlusTreeParams.calcBlockSize(order, factory) ;
+        }
+    
+        BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
+        BufferChannel rootState = FileFactory.createBufferChannel(fileset, Names.bptExtRoot) ;
+        BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExtTree, blockSize, readCacheSize, writeCacheSize) ;
+        BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExtRecords, blockSize, readCacheSize, writeCacheSize) ;
+        return BPlusTreeFactory.create(cid, params, rootState, blkMgrNodes, blkMgrRecords) ;
     }
 
     /**
@@ -57,7 +153,9 @@ public class BPlusTreeFactory {
      * managers for the persistent storage. Does not inityalize the B+Tree - it
      * assumes the block managers correspond to an existing B+Tree.
      */
-    private static BPlusTree attach(ComponentId id, BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords) {
+    private static BPlusTree attach(ComponentId id, BPlusTreeParams params,
+                                    boolean isReset,
+                                    BufferChannel rootData, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords) {
         // Creating and initializing the BPlusTree object is a two stage process.
 
         // * Create the Java object so it can be in other structures
@@ -66,14 +164,20 @@ public class BPlusTreeFactory {
         //   Ensure formatted
         // * Initialize.
         BPlusTree bpt = new BPlusTree(id, params) ; 
+        
+        BPTRootMgr rootMgr = new BPTRootMgr(rootData) ;
+        
         BPTreeNodeMgr nodeManager = new BPTreeNodeMgr(bpt, blkMgrNodes) ;
+        
         RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(params.getRecordFactory(), blkMgrRecords) ;
         BPTreeRecordsMgr recordsMgr = new BPTreeRecordsMgr(bpt, params.getRecordFactory(), recordPageMgr) ;
-        int rootId = createIfAbsent(nodeManager, recordsMgr) ;
-        bpt.init(rootId, nodeManager, recordsMgr) ;
+        
+        createIfAbsent(isReset, rootMgr, nodeManager, recordsMgr) ;
+        
+        bpt.init(rootMgr, nodeManager, recordsMgr) ;
         if ( BPT.CheckingNode ) {
             nodeManager.startRead();
-            BPTreeNode root = nodeManager.getRead(rootId, BPlusTreeParams.RootParent) ;
+            BPTreeNode root = nodeManager.getRead(bpt.getRootId(), BPlusTreeParams.RootParent) ;
             root.checkNodeDeep() ;
             nodeManager.release(root) ;
             nodeManager.finishRead();
@@ -107,37 +211,55 @@ public class BPlusTreeFactory {
         } else
             blkSize = params.getCalcBlockSize() ;
     
+        // By FileSet
+        BufferChannel chan = BufferChannelMem.create(name+"(root)") ; 
         BlockMgr mgr1 = BlockMgrFactory.createMem(name + "(nodes)", params.getCalcBlockSize()) ;
         BlockMgr mgr2 = BlockMgrFactory.createMem(name + "(records)", blkSize) ;
         ComponentId cid = ComponentId.allocLocal() ;
-        BPlusTree bpTree = BPlusTreeFactory.create(cid, params, mgr1, mgr2) ;
+        BPlusTree bpTree = BPlusTreeFactory.create(cid, params, chan, mgr1, mgr2) ;
         return bpTree ;
     }
 
     /** Debugging */
     public static BPlusTree addTracking(BPlusTree bpTree) {
+        BufferChannel mgrRoot = null ;
         BlockMgr mgr1 = bpTree.getNodeManager().getBlockMgr() ;
         BlockMgr mgr2 = bpTree.getRecordsMgr().getBlockMgr() ;
         mgr1 = BlockTracker.track(mgr1) ;
         mgr2 = BlockTracker.track(mgr2) ;
-        return BPlusTreeFactory.attach(bpTree.getComponentId(), bpTree.getParams(), mgr1, mgr2) ;
+        return BPlusTreeFactory.rebuild(bpTree, mgrRoot, mgr1, mgr2) ;
     }
     
     /** Debugging */
     public static BPlusTree addLogging(BPlusTree bpTree) {
+        BufferChannel mgrRoot = null ;
         BlockMgr mgr1 = bpTree.getNodeManager().getBlockMgr() ;
         BlockMgr mgr2 = bpTree.getRecordsMgr().getBlockMgr() ;
         mgr1 = new BlockMgrLogger(mgr1, false) ; 
         mgr2 = new BlockMgrLogger(mgr2, false) ; 
-        return BPlusTreeFactory.attach(bpTree.getComponentId(), bpTree.getParams(), mgr1, mgr2) ;
+        return BPlusTreeFactory.rebuild(bpTree, mgrRoot, mgr1, mgr2) ;
     }
     
     /** Create if does not exist */ 
-    private static int createIfAbsent(BPTreeNodeMgr nodeManager, BPTreeRecordsMgr recordsMgr) {
-        // This fixes the root to being block 0
-        if ( nodeManager.getBlockMgr().valid(BPlusTreeParams.RootId) )
-            return BPlusTreeParams.RootId ;
+    private static int createIfAbsent(boolean isReset,
+                                      BPTRootMgr rootMgr, BPTreeNodeMgr nodeManager, BPTreeRecordsMgr recordsMgr) {
         
+        int rootId = rootMgr.getRoot() ; 
+        
+        if ( nodeManager.getBlockMgr().isEmpty() != recordsMgr.getBlockMgr().isEmpty() )
+            throw new BPTreeException(
+                "Node block manager empty = "+
+                nodeManager.getBlockMgr().isEmpty()+" // "+
+                "Records block manager empty = "+ 
+                recordsMgr.getBlockMgr().isEmpty()) ;
+        
+        if ( ! nodeManager.getBlockMgr().isEmpty() ) {
+            return rootId ;
+        } else {
+            if ( isReset )
+                throw new BPTreeException("Reset on uninitialized B+Tree") ;
+        }
+
         // Create/format
 
         // Fresh BPlusTree root node.
@@ -146,6 +268,7 @@ public class BPlusTreeFactory {
             throw new InternalError() ;
 
         // Sync created blocks to disk - any caches are now clean.
+        rootMgr.getChannel().sync();
         nodeManager.getBlockMgr().sync() ;
         recordsMgr.getBlockMgr().sync() ;
         return rootIdx ;
@@ -153,7 +276,6 @@ public class BPlusTreeFactory {
 
     /** Allocate root node space. The root is a Node with a Records block.*/ 
     private static int createEmptyBPT(BPTreeNodeMgr nodeManager, BPTreeRecordsMgr recordsMgr) { 
-
         // Create an empty records block.
         BPTreeRecords recordsPage = recordsMgr.create() ;
         if ( recordsPage.getId() != BPlusTreeParams.RootId )

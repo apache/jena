@@ -124,6 +124,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     // Root id across transactions
 //    // Changes as the tree evolves in write transactions. 
     private int rootIdx = BPlusTreeParams.RootId ;
+    private BPTRootMgr rootManager ;
     private BPTreeNodeMgr nodeManager ; 
     private BPTreeRecordsMgr recordsMgr; 
     private final BPlusTreeParams bpTreeParams ;
@@ -144,8 +145,9 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         this.recordsMgr = null ;
     }
 
-    /*package*/ void init(int rootId, BPTreeNodeMgr  nodeManager, BPTreeRecordsMgr recordsMgr) {
-        this.rootIdx = rootId ;
+    /*package*/ void init(BPTRootMgr rootManager, BPTreeNodeMgr  nodeManager, BPTreeRecordsMgr recordsMgr) {
+        this.rootIdx = rootManager.getRoot() ;
+        this.rootManager = rootManager ;
         this.nodeManager = nodeManager ;
         this.recordsMgr = recordsMgr ;
     }
@@ -214,6 +216,9 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     
     /** Get the parameters describing this B+Tree */
     public BPlusTreeParams getParams()          { return bpTreeParams ; } 
+
+    /** Get the parameters describing this B+Tree */
+    public BPTRootMgr getRootManager()          { return rootManager ; } 
 
     /** Only use for careful manipulation of structures */
     public BPTreeNodeMgr getNodeManager()       { return nodeManager ; }
@@ -496,6 +501,10 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         }
     }
     
+    private void writeRoot() {
+        
+    }
+    
     @Override
     public ComponentId getComponentId() {
         return componentId ;
@@ -506,7 +515,8 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     @Override
     public void recover(ByteBuffer ref) {
-        // TODO root Idx.
+        rootIdx = ref.getInt() ;
+        writeRoot() ;
     }
 
     @Override
@@ -521,6 +531,8 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     @Override
     protected ByteBuffer _commitPrepare(TxnId txnId, BptTxnState state) {
+        nodeManager.getBlockMgr().sync();
+        recordsMgr.getBlockMgr().sync();
         ByteBuffer bb = ByteBuffer.allocate(SystemLz.SizeOfInt) ;
         bb.putInt(state.root) ;
         return bb ;
@@ -532,7 +544,9 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     }
 
     @Override
-    protected void _commitEnd(TxnId txnId, BptTxnState state) {}
+    protected void _commitEnd(TxnId txnId, BptTxnState state) {
+        writeRoot() ;
+    }
 
     @Override
     protected void _abort(TxnId txnId, BptTxnState state) {

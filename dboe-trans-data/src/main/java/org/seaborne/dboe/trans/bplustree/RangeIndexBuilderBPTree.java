@@ -19,6 +19,8 @@ package org.seaborne.dboe.trans.bplustree;
 
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrBuilder ;
+import org.seaborne.dboe.base.file.BufferChannel ;
+import org.seaborne.dboe.base.file.FileFactory ;
 import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.IndexParams ;
@@ -73,9 +75,9 @@ public class RangeIndexBuilderBPTree implements RangeIndexBuilder
         }
 
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
-        
+        BufferChannel rootState = FileFactory.createBufferChannel(fileset, Names.bptExtRoot) ;
         BlockMgr blkMgrNodes = blockMgrBuilderNodes.buildBlockMgr(fileset, Names.bptExtTree, indexParams) ;
         BlockMgr blkMgrRecords = blockMgrBuilderRecords.buildBlockMgr(fileset, Names.bptExtRecords, indexParams) ;
-        return BPlusTreeFactory.create(cid, params, blkMgrNodes, blkMgrRecords) ;
+        return BPlusTreeFactory.create(cid, params, rootState, blkMgrNodes, blkMgrRecords) ;
     }
 }
