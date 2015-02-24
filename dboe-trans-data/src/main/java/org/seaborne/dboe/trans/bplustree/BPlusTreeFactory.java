@@ -21,7 +21,10 @@ import org.seaborne.dboe.DBOpEnvException ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.block.BlockMgrLogger ;
-import org.seaborne.dboe.base.file.* ;
+import org.seaborne.dboe.base.file.BufferChannel ;
+import org.seaborne.dboe.base.file.BufferChannelMem ;
+import org.seaborne.dboe.base.file.FileFactory ;
+import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
@@ -85,8 +88,7 @@ public class BPlusTreeFactory {
     }
 
     /** Create a B+Tree using defaults */
-    public static RangeIndex createBPTree(ComponentId cid, FileSet fileset,
-                                          RecordFactory factory)
+    public static BPlusTree createBPTree(ComponentId cid, FileSet fileset, RecordFactory factory)
     {
         int readCacheSize = SystemLz.BlockReadCacheSize ;
         int writeCacheSize = SystemLz.BlockWriteCacheSize ;
@@ -102,19 +104,19 @@ public class BPlusTreeFactory {
     }
 
     /** Create a B+Tree by BlockSize */
-    public static RangeIndex createBPTreeByBlockSize(ComponentId cid, FileSet fileset,
-                                                     int blockSize,
-                                                     int readCacheSize, int writeCacheSize,
-                                                     RecordFactory factory)
+    public static BPlusTree createBPTreeByBlockSize(ComponentId cid, FileSet fileset,
+                                                    int blockSize,
+                                                    int readCacheSize, int writeCacheSize,
+                                                    RecordFactory factory)
     {
         return createBPTree(cid, fileset, -1, blockSize, readCacheSize, writeCacheSize, factory) ; 
     }
 
     /** Create a B+Tree by Order */
-    public static RangeIndex createBPTreeByOrder(ComponentId cid, FileSet fileset,
-                                                 int order,
-                                                 int readCacheSize, int writeCacheSize,
-                                                 RecordFactory factory)
+    public static BPlusTree createBPTreeByOrder(ComponentId cid, FileSet fileset,
+                                                int order,
+                                                int readCacheSize, int writeCacheSize,
+                                                RecordFactory factory)
     {
         return createBPTree(cid, fileset, order, -1, readCacheSize, writeCacheSize, factory) ; 
     }

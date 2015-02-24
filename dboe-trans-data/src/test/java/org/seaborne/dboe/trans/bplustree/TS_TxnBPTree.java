@@ -21,13 +21,19 @@ import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.seaborne.dboe.trans.bplustree.rewriter.TestBPlusTreeRewriterNonTxn ;
 
-/** Non-transaction tests (i.e. tests of the B+Tree algorithms) */
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
+    
+    // Non-transactional tests -- that is, algorithms and machinary. 
     TestBPTreeRecordsNonTxn.class,
+    TestBPlusTreeIndexNonTxn.class,
     TestBPlusTreeNonTxn.class,
-    TestBPlusTreeTxn.class,
     TestBPTreeModes.class,
+    
+    // Transactional tests
+    TestBPlusTreeTxn.class,
+    
+    // Rewriter
     TestBPlusTreeRewriterNonTxn.class
 } )
 

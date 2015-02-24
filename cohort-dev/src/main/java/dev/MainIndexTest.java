@@ -31,15 +31,25 @@ import java.util.stream.Collectors ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrLogger ;
+import org.seaborne.dboe.base.block.FileMode ;
 import org.seaborne.dboe.base.file.BufferChannel ;
+import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.record.Record ;
+import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.sys.SystemIndex ;
+import org.seaborne.dboe.sys.SystemLz ;
 import org.seaborne.dboe.test.RecordLib ;
 import org.seaborne.dboe.trans.bplustree.BPT ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
 import org.seaborne.dboe.trans.bplustree.BlockTracker ;
+import org.seaborne.dboe.transaction.Transactional ;
+import org.seaborne.dboe.transaction.TransactionalFactory ;
+import org.seaborne.dboe.transaction.Txn ;
+import org.seaborne.dboe.transaction.txn.ComponentId ;
+import org.seaborne.dboe.transaction.txn.ComponentIds ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
+import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 public class MainIndexTest {
     // Extract and debug tests
@@ -65,22 +75,34 @@ public class MainIndexTest {
             System.exit(0) ;
         }
         
-        BPT.CheckingNode = true ;
-        BPT.CheckingTree = false ;
-        SystemIndex.setNullOut(true) ;
+        // Persistent componentids.
+        SystemLz.setFileMode(FileMode.direct);
+        ComponentId cid = ComponentIds.idDev ;
+        FileSet fs = FileSet.mem();
+        fs = new FileSet("BPT", "tree") ;
+        BPlusTree bpt = BPlusTreeFactory.createBPTree(cid, fs, RecordLib.recordFactory) ;
+        Journal journal = Journal.create(fs.getLocation()) ;
+        Transactional holder = TransactionalFactory.create(journal, bpt) ;
+        int x1 = Txn.executeReadReturn(holder, ()-> {
+            Record maxRecord = bpt.maxKey() ;
+            if ( maxRecord == null ) return 0 ;
+            return r(maxRecord) ;
+        } ) ;
+        System.out.println("x="+x1) ;
+        Txn.executeWrite(holder, () ->{
+            Record r = r(x1+1) ;
+            bpt.insert(r) ;
+        }) ; 
+        int x2 = Txn.executeReadReturn(holder, ()-> {
+            Record maxRecord = bpt.maxKey() ;
+            if ( maxRecord == null ) return 0 ;
+            return r(maxRecord) ;
+        } ) ;
+        System.out.println("x="+x2) ;
         
-        BPT.forcePromoteModes = false ;
-        BPT.promoteDuplicateNodes = true ;
-        BPT.promoteDuplicateRecords  = true ;
+        System.out.println("DONE") ;
+        System.exit(0); 
         
-        System.out.println("Build") ; 
-        BPlusTree bpt = makeRangeIndex(2) ;
-        System.out.println("Logging") ; 
-        bpt = BPlusTreeFactory.addLogging(bpt) ;
-        System.out.println("Tracking") ; 
-        bpt = BPlusTreeFactory.addTracking(bpt) ;
-        System.out.println("Done") ;
-        tree_keys();
     }    
     public static void tree_keys() {
 //        int[] keys1 = {643, 704, 557, 448, 461, 216, 610, 810, 620, 289, 283, 900, 443, 810, 739, 756, 256, 968, 450, 715} ;

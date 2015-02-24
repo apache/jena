@@ -204,15 +204,9 @@ public final class BPTreeRecords extends BPTreePage {
      */
     @Override
     public BPTreePage split() {
-        // MVCC - link can not be maintained. 
-        //BPTreeRecords other = create(rBuffPage.getLink()) ;
-        //rBuffPage.setLink(other.getId()) ;
-        BPTreeRecords other = create(Page.NO_ID) ;
-        rBuffPage.setLink(Page.NO_ID) ;
-
+        BPTreeRecords other = insertNewPage() ;
         int splitIdx = rBuff.size() / 2 - 1 ;
         Record r = rBuff.get(splitIdx) ; // Only need key for checking later.
-
         int moveLen = rBuff.size() - (splitIdx + 1) ; // Number to move.
         // Copy high end to new.
         rBuff.copy(splitIdx + 1, other.getRecordBufferPage().getRecordBuffer(), 0, moveLen) ;
@@ -226,6 +220,18 @@ public final class BPTreeRecords extends BPTreePage {
                 error("BPTreeRecords.split: Not returning expected record") ;
             }
         }
+        return other ;
+    }
+    
+    private BPTreeRecords insertNewPage() {
+        // MVCC - link can not be maintained. 
+        if ( false /* ! bpTree.isTransaction() */ ) {
+            BPTreeRecords other = create(rBuffPage.getLink()) ;
+            rBuffPage.setLink(other.getId()) ;
+            return other ;
+        } 
+        BPTreeRecords other = create(Page.NO_ID) ;
+        rBuffPage.setLink(Page.NO_ID) ;
         return other ;
     }
 

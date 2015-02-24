@@ -22,14 +22,10 @@ public class NOTES {
     // Mantis / cohort / legion
     // ARQ :: extract Atlas.
     
-    // Soak tests - include tracking? Memory growth?
-    // Better non-transactional mode.
-    //   Leaving unaborted/commited transaction causes permanent memory allocation.  
-    //   See TransactionalComponentLifecycle.internalComplete.
-    // More on bpt.nonTransactional() ; needed - then change CmdTestBPlusTree back.
-    
     // Sort out BPlusTreeFactory.
-    //  Remove testing support SetupBPTreeIndex
+    
+    // Transactional tests on BPTrees
+    //   AbstractTestTxnRangeIndex
     
     // Transaction node testing.
     // A few operations per tree.
@@ -45,9 +41,8 @@ public class NOTES {
 
     // B+Tree commit , versioned root, recovery. 
     
-    
     // Free chain - just in the active area.
-    // BlockMgr semi-partiicpate in transactions?
+    // BlockMgr semi-participate in transactions?
     //   Enforce write barrier.
     // Fast clear (new tree).  Fast clear for dft graph.
     

@@ -30,6 +30,7 @@ public class ComponentIds {
     public static final ComponentId idNull          = make("Monitor",  "e6e31271-b6dc-452c-b624-d4e099464365") ;
     public static final ComponentId idSystem        = make("System",   "95e0f729-ad29-48b2-bd70-e3738663c578") ;
     public static final ComponentId idBlobBase      = make("Blob",     "43436b91-87ce-4d6b-827c-c3b9ea6536ba") ;
+    public static final ComponentId idDev           = make("Blob",     "82a6833a-1475-495a-83ca-10370c7c40cd") ;
     
     public static ComponentId make(String label, String uuidStr) {
         byte[] bytes = L.uuidAsBytes(uuidStr) ;

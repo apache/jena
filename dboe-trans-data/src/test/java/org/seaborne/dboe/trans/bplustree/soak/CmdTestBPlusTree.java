@@ -89,7 +89,7 @@ public class CmdTestBPlusTree extends BaseSoakTest
         BPlusTree bpt = BPlusTreeFactory.makeMem(order, SystemLz.SizeOfInt, 0) ;
         bpt = BPlusTreeFactory.addTracking(bpt) ;
         bpt.nonTransactional() ;
-        bpt.startBatch();
+        bpt.startBatch();   // For tracking.
         IndexTestLib.randTest(bpt, 5*size, size, true);
         bpt.close() ;
         
