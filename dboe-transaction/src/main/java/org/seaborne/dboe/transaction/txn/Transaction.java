@@ -178,8 +178,6 @@ public class Transaction {
         else
             setState(END_ABORTED);
         txnMgr.notifyCompleteFinish(this);
-        
-        
     }
     
     public boolean hasStarted()   { 

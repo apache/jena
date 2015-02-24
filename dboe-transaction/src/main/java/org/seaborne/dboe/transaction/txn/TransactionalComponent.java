@@ -95,6 +95,7 @@ public interface TransactionalComponent
     public void startRecovery() ;
     
     /** Notification that {@code ref} was really committed.
+     *  
      * @param ref Same bytes as were written during prepare originally.
      */
     public void recover(ByteBuffer ref) ;
@@ -108,10 +109,14 @@ public interface TransactionalComponent
     
     /** Prepare for a commit.
      *  Returns some bytes that will be written to the journal.
+     *  The journal remains valid until {@link #commitEnd} is called.
      */
     public ByteBuffer commitPrepare(Transaction transaction) ;
 
-    /** Commit a transaction (make durable) */  
+    /** Commit a transaction (make durable).
+     * Other components not have been commited yet and recovery may occur still.
+     * Permanet state should not be finalised until {@link #commitEnd}.
+     */
     public void commit(Transaction transaction) ;
     
     /** Signal all commits on all components are done (the component can clearup now) */  
