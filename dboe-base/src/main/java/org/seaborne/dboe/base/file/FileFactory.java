@@ -15,35 +15,47 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.base.file;
+package org.seaborne.dboe.base.file ;
 
 import org.seaborne.dboe.base.objectfile.ObjectFile ;
 import org.seaborne.dboe.base.objectfile.ObjectFileStorage ;
 import org.seaborne.dboe.base.objectfile.StringFile ;
 
-public class FileFactory
-{
-    public static StringFile createStringFileDisk(String filename)
-    { return new StringFile(createObjectFileDisk(filename)) ; }
+public class FileFactory {
+    // TODO More use of fileset.
+    // Prune use elsewhere e.g BlockMgrFactory.
+    public static StringFile createStringFileDisk(String filename) {
+        return new StringFile(createObjectFileDisk(filename)) ;
+    }
 
-    public static StringFile createStringFileMem(String filename)
-    { return new StringFile(createObjectFileMem(filename)) ; }
-    
-    public static ObjectFile createObjectFileDisk(String filename)
-    {
-        BufferChannel file = BufferChannelFile.create(filename) ; 
+    public static StringFile createStringFileMem(String filename) {
+        return new StringFile(createObjectFileMem(filename)) ;
+    }
+
+    public static ObjectFile createObjectFileDisk(String filename) {
+        BufferChannel file = BufferChannelFile.create(filename) ;
         return new ObjectFileStorage(file) ;
     }
 
-    public static ObjectFile createObjectFileMem(String filename)
-    { 
-        BufferChannel file = BufferChannelMem.create(filename) ; 
+    public static ObjectFile createObjectFileMem(String filename) {
+        BufferChannel file = BufferChannelMem.create(filename) ;
         return new ObjectFileStorage(file) ;
     }
-    
-    public static PlainFile createPlainFileDisk(String filename)
-    { return new PlainFilePersistent(filename) ; }
-    
-    public static PlainFile createPlainFileMem()
-    { return new PlainFileMem() ; }
+
+    public static PlainFile createPlainFileDisk(String filename) {
+        return new PlainFilePersistent(filename) ;
+    }
+
+    public static PlainFile createPlainFileMem() {
+        return new PlainFileMem() ;
+    }
+
+    public static BufferChannel createBufferChannel(FileSet fileset, String ext) {
+        String x = fileset.filename(ext) ;
+        if ( fileset.isMem() )
+            return BufferChannelMem.create(x) ;
+        else
+            return BufferChannelFile.create(x) ;
+    }
+
 }
