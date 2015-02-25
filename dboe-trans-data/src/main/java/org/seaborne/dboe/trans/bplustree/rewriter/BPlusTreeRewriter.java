@@ -22,12 +22,12 @@ import static org.seaborne.dboe.trans.bplustree.rewriter.BPlusTreeRewriterUtils.
 import static org.seaborne.dboe.trans.bplustree.rewriter.BPlusTreeRewriterUtils.summarizeDataBlocks ;
 
 import java.util.Iterator ;
+import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorWithBuffer ;
 import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.Pair ;
-import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.buffer.PtrBuffer ;
 import org.seaborne.dboe.base.buffer.RecordBuffer ;
@@ -77,12 +77,11 @@ public class BPlusTreeRewriter {
 
         
         // Initial B+tree needed to carry parameters around - not legal at this point.
-        BPlusTree bpt2 = createInitialBPTree(bptParams, bptState, blkMgrNodes, blkMgrRecords) ;
+        BPlusTree bpt2 = BPT.createRootOnlyBPTree(bptParams, bptState, blkMgrNodes, blkMgrRecords) ;
         // Get the root node.
         // We will use this slot later and write in the correct root.
         // The root has to be block zero currently.
         BPTreeNode root = bpt2.getNodeManager().getWrite(BPlusTreeParams.RootId, BPlusTreeParams.RootParent) ;
-        
         // ******** Pack data blocks.
         Iterator<Pair<Integer, Record>> iter = writePackedDataBlocks(iterRecords, bpt2) ;
         
@@ -111,55 +110,14 @@ public class BPlusTreeRewriter {
             log.error("**** Building index layers didn't result in a single block") ;
             return null ;
         }
-        System.out.println("++++ fix root") ;
-        System.out.println("++++ packIntoBPlusTree/fix root : before") ;
-        bpt2.dump() ; // ***
         fixupRoot(root, pair, bpt2) ;
-        System.out.println("++++ packIntoBPlusTree/fix root : after") ;
-        bpt2.dump() ; // ***
-
         // ****** Finish the tree.
+        //bpt2.getStateManager().
         blkMgrNodes.sync() ;
         blkMgrRecords.sync() ;
-        // Force root reset.
-        bpt2 = BPlusTreeFactory.createNonTxn(bptParams, bptState, blkMgrNodes, blkMgrRecords) ;
         return bpt2 ;
     }
 
-    /**
-     * The initial tree is a single root node with no records block below it. It
-     * is an illegal tree. We make it by creating a real tree, deleting and
-     * freeing the records block from the root, then resetting the records block
-     * manager. This is to avoid having specialized creating code in
-     * BPlusTreeFactory solely for the rewriter.
-     */
-    private static BPlusTree createInitialBPTree(BPlusTreeParams bptParams, 
-                                                 BufferChannel bptState, 
-                                                 BlockMgr blkMgrNodes, 
-                                                 BlockMgr blkMgrRecords) {
-        BPlusTree bpt2 = BPlusTreeFactory.createNonTxn(bptParams, bptState, blkMgrNodes, blkMgrRecords) ;
-        BPTreeNode root = bpt2.getNodeManager().getWrite(BPlusTreeParams.RootId, BPlusTreeParams.RootParent) ;
-        int rootId = root.getId() ;
-        if ( rootId != 0 ) {
-            log.error("**** Not the root: " + rootId) ;
-            throw new BPTreeException() ;
-        }
-
-        // Undo the records block.
-        int recordsId = root.getPtrBuffer().get(0) ;
-        if ( recordsId != 0 ) {
-            log.error("**** Not the initial records block: " + recordsId) ;
-            throw new BPTreeException() ;
-        }
-        root.getPtrBuffer().remove(0); 
-        Block blk = blkMgrRecords.getRead(0) ;
-        blkMgrRecords.free(blk) ;
-        blkMgrRecords.resetAlloc(0);
-        // Now a broken tree of one root block and no records.
-        return bpt2 ;
-    }
-                                              
-    
     // **** data block phase
 
     /** Pack record blocks into linked RecordBufferPages */
@@ -268,6 +226,9 @@ public class BPlusTreeRewriter {
         if ( debug ) {
             divider() ;
             System.out.println("---- Index level") ;
+            List<Pair<Integer, Record>> x = Iter.toList(iter) ;
+            System.out.println(x) ;
+            iter = x.iterator() ;
         }
 
         Iterator<Pair<Integer, Record>> iter2 = new BPTreeNodeBuilder(iter, bpt.getNodeManager(), leafLayer, bpt.getRecordFactory()) ;
@@ -385,11 +346,12 @@ public class BPlusTreeRewriter {
             System.out.printf("** Process root: %s\n", pair) ;
         }
 
+        // Node or records?
         // BPTreeNode => BPTree copy.
         BPTreeNode node = bpt2.getNodeManager().getRead(pair.car(), BPlusTreeParams.RootParent) ;
         copyBPTreeNode(node, root, bpt2) ;
-
         bpt2.getNodeManager().release(node) ;
+        bpt2.getNodeManager().write(root);
     }
 
     private static void copyBPTreeNode(BPTreeNode nodeSrc, BPTreeNode nodeDst, BPlusTree bpt2) {

@@ -25,6 +25,8 @@ import java.util.Optional ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.FmtLog ;
+import org.seaborne.dboe.base.block.BlockMgr ;
+import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.trans.bplustree.AccessPath.AccessStep ;
 import org.slf4j.Logger ;
@@ -211,6 +213,47 @@ public final class BPT {
                 page.bpTree.newRoot(newRoot) ;
             }
         } // end of "if ( path != null )"
+    }
+    
+    /**
+     * The initial tree is a single root node with no records block below it. It
+     * is an illegal tree. We make it by creating a real tree, deleting and
+     * freeing the records block from the root, then resetting the records block
+     * manager. This is to avoid having specialized creating code in
+     * BPlusTreeFactory solely for the rewriter.
+     */
+    public static BPlusTree createRootOnlyBPTree(BPlusTreeParams bptParams, 
+                                                 BufferChannel bptState, 
+                                                 BlockMgr blkMgrNodes, 
+                                                 BlockMgr blkMgrRecords) {
+        BPlusTree bpt = BPlusTreeFactory.createNonTxn(bptParams, bptState, blkMgrNodes, blkMgrRecords) ;
+        
+        BPTreeRecordsMgr recordsMgr = bpt.getRecordsMgr() ;
+        
+        BPTreeRecords recordsPage = recordsMgr.getWrite(0) ;
+//        recordsPage.getRecordBuffer().clear();
+//        recordsMgr.write(recordsPage) ;
+        recordsMgr.free(recordsPage);
+//        recordsMgr.release(recordsPage);
+        recordsMgr.resetAlloc(0);
+        
+        BPTreeNodeMgr nodeMgr = bpt.getNodeManager() ;
+        
+        // Alter the root node.
+        BPTreeNode root = nodeMgr.getWrite(BPlusTreeParams.RootId, BPlusTreeParams.RootParent) ;
+        int rootId = root.getId() ;
+        if ( rootId != 0 )
+            throw new BPTreeException("**** Not the root: " + rootId) ;
+
+        // Undo the records block.
+        root.getPtrBuffer().clear() ;
+        root.getRecordBuffer().clear() ;
+        //root.setCount(-1);
+        nodeMgr.write(root);
+        nodeMgr.release(root);
+
+        // Now a broken tree of one root block and no records.
+        return bpt ;
     }
 }
 
