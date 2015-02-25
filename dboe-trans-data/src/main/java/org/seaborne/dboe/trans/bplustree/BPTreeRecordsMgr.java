@@ -107,4 +107,9 @@ final public class BPTreeRecordsMgr extends PageBlockMgr<BPTreeRecords>
     public void finishUpdate() {
         rBuffPageMgr.finishUpdate() ;
     }
+    
+    @Override
+    public void close() {
+        rBuffPageMgr.close() ;
+    }
 }

@@ -31,7 +31,6 @@ import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.sys.Names ;
 import org.seaborne.dboe.sys.SystemIndex ;
-import org.seaborne.dboe.sys.SystemLz ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 
 /** Make BPlusTrees - this code works in close association with the BPlusTree constructor */
@@ -65,7 +64,7 @@ public class BPlusTreeFactory {
      */
     public static BPlusTree rebuild(BPlusTree bpt, BufferChannel chan, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves) {
         if ( chan == null )
-            chan = bpt.getRootManager().getChannel() ;
+            chan = bpt.getStateManager().getChannel() ;
         if ( blkMgrNodes == null )
             blkMgrNodes = bpt.getNodeManager().getBlockMgr() ;
         if ( blkMgrLeaves == null )
@@ -90,8 +89,8 @@ public class BPlusTreeFactory {
     /** Create a B+Tree using defaults */
     public static BPlusTree createBPTree(ComponentId cid, FileSet fileset, RecordFactory factory)
     {
-        int readCacheSize = SystemLz.BlockReadCacheSize ;
-        int writeCacheSize = SystemLz.BlockWriteCacheSize ;
+        int readCacheSize = SystemIndex.BlockReadCacheSize ;
+        int writeCacheSize = SystemIndex.BlockWriteCacheSize ;
         int blockSize = SystemIndex.BlockSize ;
         if ( fileset.isMem() )
         {
@@ -167,16 +166,18 @@ public class BPlusTreeFactory {
         // * Initialize.
         BPlusTree bpt = new BPlusTree(id, params) ; 
         
-        BPTRootMgr rootMgr = new BPTRootMgr(rootData) ;
+        BPTStateMgr stateMgr = new BPTStateMgr(rootData) ;
+        blkMgrNodes.resetAlloc(stateMgr.getNodeBlocksLimit());
+        blkMgrRecords.resetAlloc(stateMgr.getRecordsBlocksLimit());
         
         BPTreeNodeMgr nodeManager = new BPTreeNodeMgr(bpt, blkMgrNodes) ;
         
         RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(params.getRecordFactory(), blkMgrRecords) ;
         BPTreeRecordsMgr recordsMgr = new BPTreeRecordsMgr(bpt, params.getRecordFactory(), recordPageMgr) ;
         
-        createIfAbsent(isReset, rootMgr, nodeManager, recordsMgr) ;
+        createIfAbsent(isReset, stateMgr, nodeManager, recordsMgr) ;
         
-        bpt.init(rootMgr, nodeManager, recordsMgr) ;
+        bpt.init(stateMgr, nodeManager, recordsMgr) ;
         if ( BPT.CheckingNode ) {
             nodeManager.startRead();
             BPTreeNode root = nodeManager.getRead(bpt.getRootId(), BPlusTreeParams.RootParent) ;
@@ -244,9 +245,9 @@ public class BPlusTreeFactory {
     
     /** Create if does not exist */ 
     private static int createIfAbsent(boolean isReset,
-                                      BPTRootMgr rootMgr, BPTreeNodeMgr nodeManager, BPTreeRecordsMgr recordsMgr) {
+                                      BPTStateMgr stateMgr, BPTreeNodeMgr nodeManager, BPTreeRecordsMgr recordsMgr) {
         
-        int rootId = rootMgr.getRoot() ; 
+        int rootId = stateMgr.getRoot() ; 
         
         if ( nodeManager.getBlockMgr().isEmpty() != recordsMgr.getBlockMgr().isEmpty() )
             throw new BPTreeException(
@@ -257,10 +258,11 @@ public class BPlusTreeFactory {
         
         if ( ! nodeManager.getBlockMgr().isEmpty() ) {
             return rootId ;
-        } else {
-            if ( isReset )
-                throw new BPTreeException("Reset on uninitialized B+Tree") ;
-        }
+        } 
+//        else {
+//            if ( isReset )
+//                throw new BPTreeException("Reset on uninitialized B+Tree") ;
+//        }
 
         // Create/format
 
@@ -270,7 +272,7 @@ public class BPlusTreeFactory {
             throw new InternalError() ;
 
         // Sync created blocks to disk - any caches are now clean.
-        rootMgr.getChannel().sync();
+        stateMgr.sync();
         nodeManager.getBlockMgr().sync() ;
         recordsMgr.getBlockMgr().sync() ;
         return rootIdx ;
@@ -279,35 +281,47 @@ public class BPlusTreeFactory {
     /** Allocate root node space. The root is a Node with a Records block.*/ 
     private static int createEmptyBPT(BPTreeNodeMgr nodeManager, BPTreeRecordsMgr recordsMgr) { 
         // Create an empty records block.
-        BPTreeRecords recordsPage = recordsMgr.create() ;
-        if ( recordsPage.getId() != BPlusTreeParams.RootId )
-            throw new DBOpEnvException("Root blocks must be at position zero (got "+recordsPage.getId()+")") ;
-        // Empty data block.
-        recordsMgr.write(recordsPage) ;
-        recordsMgr.release(recordsPage) ;
+        
+        nodeManager.startBatch(); 
+        recordsMgr.startBatch(); 
+        nodeManager.startUpdate();
+        recordsMgr.startUpdate();
+        try {
+            BPTreeRecords recordsPage = recordsMgr.create() ;
+            if ( recordsPage.getId() != BPlusTreeParams.RootId )
+                throw new DBOpEnvException("Root blocks must be at position zero (got "+recordsPage.getId()+")") ;
+            // Empty data block.
+            recordsMgr.write(recordsPage) ;
+            recordsMgr.release(recordsPage) ;
 
-        // Not this - we haven't full initialized and the BPTreeRecords has null BPTreeRecordsMgr
-        //recordsPage.write();
-        //recordsPage.release() ;
+            // Not this - we haven't full initialized and the BPTreeRecords has null BPTreeRecordsMgr
+            //recordsPage.write();
+            //recordsPage.release() ;
 
-        BPTreeNode n = nodeManager.createNode(BPlusTreeParams.RootParent) ;
-        // n.ptrs is currently invalid.  count was 0 so thinks it has a pointer.
-        // Force to right layout.
-        n.ptrs.setSize(0) ;                 // No pointers
-        n.ptrs.add(recordsPage.getId()) ;   // Add the page below
+            BPTreeNode n = nodeManager.createNode(BPlusTreeParams.RootParent) ;
+            // n.ptrs is currently invalid.  count was 0 so thinks it has a pointer.
+            // Force to right layout.
+            n.ptrs.setSize(0) ;                 // No pointers
+            n.ptrs.add(recordsPage.getId()) ;   // Add the page below
 
-        //n.ptrs.set(0, page.getId()) ; // This is the same as the size is one.
+            //n.ptrs.set(0, page.getId()) ; // This is the same as the size is one.
 
-        n.setIsLeaf(true) ;
-        n.setCount(0) ;     // Count is count of records.
-        int rootId = n.getId()  ;
-        nodeManager.write(n) ;
-        nodeManager.release(n) ;
-        // Again, not this.
-        //n.write();
-        //n.release() ;
-        // Must be inside already : finishUpdate() ;
-        return rootId ;
+            n.setIsLeaf(true) ;
+            n.setCount(0) ;     // Count is count of records.
+            int rootId = n.getId()  ;
+            nodeManager.write(n) ;
+            nodeManager.release(n) ;
+            // Again, not this.
+            //n.write();
+            //n.release() ;
+            // Must be inside already : finishUpdate() ;
+            return rootId ;
+        } finally {
+            recordsMgr.finishUpdate();
+            nodeManager.finishUpdate();
+            recordsMgr.finishBatch(); 
+            nodeManager.finishBatch(); 
+        }
     }
 }
 

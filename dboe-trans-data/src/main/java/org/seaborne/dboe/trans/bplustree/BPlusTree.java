@@ -28,7 +28,6 @@ import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.base.record.RecordMapper ;
 import org.seaborne.dboe.index.RangeIndex ;
-import org.seaborne.dboe.sys.SystemLz ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.TransactionalComponentLifecycle ;
 import org.seaborne.dboe.transaction.txn.TxnId ;
@@ -124,7 +123,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     // Root id across transactions
 //    // Changes as the tree evolves in write transactions. 
     private int rootIdx = BPlusTreeParams.RootId ;
-    private BPTRootMgr rootManager ;
+    private BPTStateMgr stateManager ;
     private BPTreeNodeMgr nodeManager ; 
     private BPTreeRecordsMgr recordsMgr; 
     private final BPlusTreeParams bpTreeParams ;
@@ -145,9 +144,9 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         this.recordsMgr = null ;
     }
 
-    /*package*/ void init(BPTRootMgr rootManager, BPTreeNodeMgr  nodeManager, BPTreeRecordsMgr recordsMgr) {
-        this.rootIdx = rootManager.getRoot() ;
-        this.rootManager = rootManager ;
+    /*package*/ void init(BPTStateMgr stateManager, BPTreeNodeMgr  nodeManager, BPTreeRecordsMgr recordsMgr) {
+        this.rootIdx = stateManager.getRoot() ;
+        this.stateManager = stateManager ;
         this.nodeManager = nodeManager ;
         this.recordsMgr = recordsMgr ;
     }
@@ -217,8 +216,8 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     /** Get the parameters describing this B+Tree */
     public BPlusTreeParams getParams()          { return bpTreeParams ; } 
 
-    /** Get the parameters describing this B+Tree */
-    public BPTRootMgr getRootManager()          { return rootManager ; } 
+    /** Only use for careful manipulation of structures */
+    public BPTStateMgr getStateManager()          { return stateManager ; } 
 
     /** Only use for careful manipulation of structures */
     public BPTreeNodeMgr getNodeManager()       { return nodeManager ; }
@@ -423,10 +422,9 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     @Override
     public void close() {
-        if ( nodeManager.getBlockMgr() != null )
-            nodeManager.getBlockMgr().close() ;
-        if ( recordsMgr.getBlockMgr() != null )
-            recordsMgr.getBlockMgr().close() ;
+        nodeManager.close() ;
+        recordsMgr.close() ;
+        stateManager.close() ;
     }
     
 //    public void closeIterator(Iterator<Record> iter)
@@ -481,9 +479,9 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
                                               recordsMgr.allocLimit()) ;
                 break ;
             case IMMUTABLE_ALL:
-            nonTxnState = new BptTxnState(BPlusTreeParams.RootId, 
-                                          Long.MAX_VALUE,
-                                          Long.MAX_VALUE) ;
+                nonTxnState = new BptTxnState(BPlusTreeParams.RootId, 
+                                              Long.MAX_VALUE,
+                                              Long.MAX_VALUE) ;
                 break ;
             case MUTABLE :
                 nonTxnState = new BptTxnState(BPlusTreeParams.RootId, 0, 0) ;
@@ -497,12 +495,8 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
                 break ;
             case TRANSACTIONAL_AUTOCOMMIT :
                 // TODO TRANSACTIONAL_AUTOCOMMIT
-                break ;
+                throw new NotImplementedException("TRANSACTIONAL_AUTOCOMMIT not implemented");
         }
-    }
-    
-    private void writeRoot() {
-        
     }
     
     @Override
@@ -515,12 +509,16 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     @Override
     public void recover(ByteBuffer ref) {
-        rootIdx = ref.getInt() ;
-        writeRoot() ;
+        stateManager.setState(ref) ;
+        rootIdx = stateManager.getRoot() ;
+        nodeManager.resetAlloc(stateManager.getNodeBlocksLimit()) ;
+        recordsMgr.resetAlloc(stateManager.getRecordsBlocksLimit()) ;
     }
 
     @Override
-    public void finishRecovery() {}
+    public void finishRecovery() {
+        stateManager.sync();
+    }
 
     @Override
     protected BptTxnState _begin(ReadWrite readWrite, TxnId txnId) {
@@ -529,31 +527,41 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
                                recordsMgr.allocLimit()) ;
     }
 
+    /* The persistent transactional state of a B+Tree is new root and the
+     * allocation limits of both block managers.
+     */
+    
     @Override
     protected ByteBuffer _commitPrepare(TxnId txnId, BptTxnState state) {
         nodeManager.getBlockMgr().sync();
         recordsMgr.getBlockMgr().sync();
-        ByteBuffer bb = ByteBuffer.allocate(SystemLz.SizeOfInt) ;
-        bb.putInt(state.root) ;
-        return bb ;
+        
+        long nodeLimit = nodeManager.allocLimit() ;
+        long recordsLimit = recordsMgr.allocLimit() ;
+        // But don't write it yet.
+        stateManager.setState(state.root, nodeLimit, recordsLimit); 
+        return stateManager.getState() ;
     }
 
     @Override
     protected void _commit(TxnId txnId, BptTxnState state) {
-        rootIdx = state.root ;
+        //stateManager.setState(state.root, nodeManager.allocLimit(), recordsMgr.allocLimit()); 
     }
 
     @Override
     protected void _commitEnd(TxnId txnId, BptTxnState state) {
-        writeRoot() ;
+        rootIdx = state.root ;
+        stateManager.sync();
     }
 
     @Override
     protected void _abort(TxnId txnId, BptTxnState state) {
         rootIdx = state.initialroot ;
-        // Truncate.
+        // Truncate - logically in block manager space.
         nodeManager.resetAlloc(state.boundaryBlocksNode) ;
         recordsMgr.resetAlloc(state.boundaryBlocksRecord) ;
+        stateManager.setState(state.initialroot, state.boundaryBlocksNode, state.boundaryBlocksRecord); 
+        stateManager.sync();
     }
 
     @Override
