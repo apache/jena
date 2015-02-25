@@ -23,35 +23,18 @@ public class NOTES {
     // ARQ :: extract Atlas.
     
     // Always "recovery" / add "no recovery" : TransactionCoordinator.recover
-    // .bpt
     // CRC .bpt
-    // FileLib.sync - true or false for force
-    // DBOE Base equivalence of BPT for flags like logging.
-    
+
     // Combine BptTxnState and BPTRootMgr.
-    // RangeIndexBuilderBPTree and BPlusTreeFactory
-    // Sort out BPlusTreeFactory.
+    // RangeIndexBuilderBPTree and BPlusTreeFactory. Sort out BPlusTreeFactory.
+    
+    // Bulkloader/rewriter and then txn trees.
     
     // Transactional tests on BPTrees
     //   AbstractTestTxnRangeIndex
     
-    // Transaction node testing.
-    // A few operations per tree.
-    /*
-              BPlusTree bpt = BPlusTreeFactory.makeMem(order, SystemLz.SizeOfInt, 0) ;
-              Journal journal = Journal.create(Location.mem()) ;
-              Transactional holder = TransactionalFactory.create(journal, bpt) ;
-              holder.begin(ReadWrite.WRITE);
-              IndexTestLib.randTest(bpt, 5*size, size, true);
-              holder.commit() ;
-              holder.end() ;
-     */
-
     // B+Tree commit , versioned root, recovery. 
     
-    // Free chain - just in the active area.
-    // BlockMgr semi-participate in transactions?
-    //   Enforce write barrier.
     // Fast clear (new tree).  Fast clear for dft graph.
     
     // Non-transactional:

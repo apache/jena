@@ -19,10 +19,6 @@ package dev;
 
 import static org.seaborne.dboe.test.RecordLib.r ;
 
-import java.util.ArrayList ;
-import java.util.List ;
-
-import org.apache.jena.atlas.lib.RandomLib ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.block.FileMode ;
@@ -56,28 +52,23 @@ public class MainCohort {
     
     static Journal journal = Journal.create(Location.mem()) ;
 
-    /** Pull items out of the list in a random order */ 
-    public static int[] permute2(int[] x) {
-        int[] x2 = new int[x.length] ;
-        List<Integer> list = new ArrayList<>() ;
-        
-        for ( int i : x )
-            list.add(i) ;
-        for ( int i = 0 ; i<x.length ; i++ ) {
-            int idx = RandomLib.random.nextInt(list.size()) ;
-            x2[i] = list.remove(idx) ;
-        }
-        return x2 ; 
-    }
-    
     public static void main(String... args) {
-        SystemIndex.setFileMode(FileMode.direct); // IGNORED
+        // direct + tracking: initial: exception //  continuing: exception
+        //                    but ok if run mapped first. 
+        // mapped + tracking: initial: warn ; continuing: warn
+        
+        // direct, no track: initial: "getRead - isModified - tree[0]"
+        //   The block is in the cache as a read block.
+        
+        SystemIndex.setFileMode(FileMode.direct);
+        //SystemIndex.setFileMode(FileMode.mapped) ;
         ComponentId cid = ComponentIds.idDev ;
+        
         FileSet fs = FileSet.mem();
-        //fs = new FileSet("BPT", "tree") ;
+        fs = new FileSet("BPT", "tree") ;
         
         BPlusTree bpt1 = BPlusTreeFactory.createBPTree(cid, fs, RecordLib.recordFactory) ;
-        BPlusTree bpt = BPlusTreeFactory.addTracking(bpt1) ;
+        BPlusTree bpt = false ? BPlusTreeFactory.addTracking(bpt1) : bpt1 ;
         Journal journal = Journal.create(fs.getLocation()) ;
         Transactional holder = TransactionalFactory.create(journal, bpt) ;
         
