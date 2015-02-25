@@ -23,7 +23,6 @@ import java.nio.ByteBuffer ;
 import java.nio.channels.FileChannel ;
 import java.util.concurrent.atomic.AtomicLong ;
 
-import org.apache.jena.atlas.lib.FileOps ;
 import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.block.BlockException ;
 import org.seaborne.dboe.sys.FileLib ;
@@ -48,7 +47,7 @@ public abstract class BlockAccessBase implements BlockAccess {
         this.filename = filename ;
         this.file = FileLib.openManaged(filename) ;
         this.blockSize = blockSize ;
-        this.label = FileOps.basename(filename) ;
+        this.label = label(filename) ;
         // This is not related to used file length in mapped mode.
         long filesize = FileLib.size(file) ;
         long longBlockSize = blockSize ;
@@ -65,6 +64,15 @@ public abstract class BlockAccessBase implements BlockAccess {
             throw new BlockException(format("File size (%d) not a multiple of blocksize (%d)", filesize, blockSize)) ;
     }
 
+    /** Find path compoent, with extension */
+    private static String label(String filename) {
+        int j = filename.lastIndexOf('/') ;
+        if ( j < 0 )
+            j = filename.lastIndexOf('\\') ;
+        String fn = (j >= 0) ? filename.substring(j + 1) : filename ;
+        return fn ;
+    }
+    
     protected abstract Logger getLog() ;
 
     @Override

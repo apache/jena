@@ -107,7 +107,7 @@ public class PageBlockMgr<T extends Page> implements Closeable
     final protected T getRead$(int id) { 
         Block block = blockMgr.getRead(id) ;
         if ( block.isModified() ) {
-            System.err.println("getRead - isModified") ;
+            System.err.println("getRead - isModified - "+blockMgr.getLabel()+"["+id+"]") ;
             // Debug.
             blockMgr.getRead(id) ;
         }

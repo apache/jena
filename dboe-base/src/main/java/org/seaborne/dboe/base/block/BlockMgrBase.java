@@ -19,7 +19,6 @@ package org.seaborne.dboe.base.block;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.lib.FileOps ;
 import org.slf4j.Logger ;
 
 public abstract class BlockMgrBase implements BlockMgr
@@ -31,7 +30,7 @@ public abstract class BlockMgrBase implements BlockMgr
     // Fixed size, fixed block type.
     protected BlockMgrBase(String label, int blockSize)
     {
-        this.label = FileOps.basename(label) ;
+        this.label = label ;
         this.blockSize = blockSize ;
     }
 
