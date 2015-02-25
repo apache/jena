@@ -41,6 +41,8 @@ public abstract class AbstractTestTextAssembler {
 	protected static final Resource SIMPLE_INDEX_SPEC2;
 	protected static final Resource SIMPLE_INDEX_SPEC3;
 	protected static final Resource SIMPLE_INDEX_SPEC4;
+	protected static final Resource SIMPLE_INDEX_SPEC5;
+	protected static final Resource SIMPLE_INDEX_SPEC_QUERY_ANALYZER;
 	protected static final Resource SIMPLE_ENTITY_MAP_SPEC;
 	protected static final Resource SIMPLE_INDEX_SPEC_LITERAL_DIR;
 	protected static final Resource SIMPLE_INDEX_SPEC_MEM_DIR;
@@ -76,16 +78,31 @@ public abstract class AbstractTestTextAssembler {
                      .addProperty(TextVocab.pDirectory, model.createResource("file:target/test/testasm/simpleIndexSpec2"))
                      .addProperty(TextVocab.pEntityMap, SIMPLE_ENTITY_MAP_SPEC);
 		
-		SIMPLE_INDEX_SPEC4 =
+		SIMPLE_INDEX_SPEC3 =
                 model.createResource(TESTBASE + "simpleIndexSpec3")
                      .addProperty(RDF.type, TextVocab.textIndexLucene)
                      .addProperty(TextVocab.pDirectory, model.createResource("file:target/test/testasm/simpleIndexSpec3"))
                      .addProperty(TextVocab.pEntityMap, SIMPLE_ENTITY_MAP_SPEC);
 		
-		SIMPLE_INDEX_SPEC3 =
+		SIMPLE_INDEX_SPEC4 =
                 model.createResource(TESTBASE + "simpleIndexSpec4")
                      .addProperty(RDF.type, TextVocab.textIndexLucene)
                      .addProperty(TextVocab.pDirectory, model.createResource("file:target/test/testasm/simpleIndexSpec4"))
+                     .addProperty(TextVocab.pEntityMap, SIMPLE_ENTITY_MAP_SPEC);
+		
+		SIMPLE_INDEX_SPEC5 =
+		        model.createResource(TESTBASE + "simpleIndexSpec5")
+		        .addProperty(RDF.type, TextVocab.textIndexLucene)
+		        .addProperty(TextVocab.pDirectory, model.createResource("file:target/test/testasm/simpleIndexSpec5"))
+		        .addProperty(TextVocab.pEntityMap, SIMPLE_ENTITY_MAP_SPEC);
+		
+		SIMPLE_INDEX_SPEC_QUERY_ANALYZER =
+                model.createResource(TESTBASE + "simpleIndexSpecQueryAnalyzer")
+                     .addProperty(RDF.type, TextVocab.textIndexLucene)
+                     .addProperty(TextVocab.pDirectory, model.createResource("file:target/test/testasm/simpleIndexSpecQueryAnalyzer"))
+                     .addProperty(TextVocab.pQueryAnalyzer,
+                         model.createResource().addProperty(RDF.type, TextVocab.keywordAnalyzer)
+                     )
                      .addProperty(TextVocab.pEntityMap, SIMPLE_ENTITY_MAP_SPEC);
 
 		SIMPLE_INDEX_SPEC_LITERAL_DIR =
@@ -108,6 +125,8 @@ public abstract class AbstractTestTextAssembler {
 	    indexDir = new File("target/test/testasm/simpleIndexSpec2"); if (indexDir.exists()) TextSearchUtil.emptyAndDeleteDirectory(indexDir);
 	    indexDir = new File("target/test/testasm/simpleIndexSpec3"); if (indexDir.exists()) TextSearchUtil.emptyAndDeleteDirectory(indexDir);
 	    indexDir = new File("target/test/testasm/simpleIndexSpec4"); if (indexDir.exists()) TextSearchUtil.emptyAndDeleteDirectory(indexDir);
+	    indexDir = new File("target/test/testasm/simpleIndexSpec5"); if (indexDir.exists()) TextSearchUtil.emptyAndDeleteDirectory(indexDir);
+	    indexDir = new File("target/test/testasm/simpleIndexSpecQueryAnalyzer"); if (indexDir.exists()) TextSearchUtil.emptyAndDeleteDirectory(indexDir);
 	    indexDir = new File("target/test/testasm/simpleIndexLiteralDir"); if (indexDir.exists()) TextSearchUtil.emptyAndDeleteDirectory(indexDir);
 	}
 	
