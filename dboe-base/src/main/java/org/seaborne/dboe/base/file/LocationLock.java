@@ -18,15 +18,15 @@
 package org.seaborne.dboe.base.file;
 
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.BufferedWriter ;
+import java.io.File ;
+import java.io.FileWriter ;
+import java.io.IOException ;
 
-import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.io.IO ;
 import org.seaborne.dboe.DBOpEnvException ;
 import org.seaborne.dboe.sys.ProcessUtils ;
-import org.seaborne.dboe.sys.SystemIndex ;
+import org.seaborne.dboe.sys.SystemBase ;
 
 /**
  * Represents a lock on a TDB location
@@ -163,7 +163,7 @@ public class LocationLock {
             if (pid == NO_OWNER) {
                 // In the case where we cannot obtain our PID then we cannot
                 // obtain a lock
-                SystemIndex.errlog.warn("Location " + location.getDirectoryPath() + " cannot be locked as unable to obtain PID of current process, if another JVM accessed this location while this process is accessing it then data corruption may occur");
+                SystemBase.errlog.warn("Location " + location.getDirectoryPath() + " cannot be locked as unable to obtain PID of current process, if another JVM accessed this location while this process is accessing it then data corruption may occur");
                 return;
             }
 

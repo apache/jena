@@ -31,6 +31,7 @@ import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.file.FileException ;
 import org.seaborne.dboe.sys.SystemIndex ;
+import org.seaborne.dboe.sys.SystemBase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -343,7 +344,7 @@ public class ObjectFileStorage implements ObjectFile
         if ( len > filesize-(loc+SizeOfInt) )
         {
             String msg = "ObjectFileStorage.read["+file.getLabel()+"]("+loc+")[filesize="+filesize+"][file.size()="+file.size()+"]: Impossibly large object : "+len+" bytes > filesize-(loc+SizeOfInt)="+(filesize-(loc+SizeOfInt)) ;
-            SystemIndex.errlog.error(msg) ;
+            SystemBase.errlog.error(msg) ;
             throw new FileException(msg) ;
         }
         

@@ -29,7 +29,7 @@ import org.seaborne.dboe.base.file.TS_File ;
 import org.seaborne.dboe.base.objectfile.TS_ObjectFile ;
 import org.seaborne.dboe.base.record.TS_Record ;
 import org.seaborne.dboe.base.recordfile.TS_RecordFile ;
-import org.seaborne.dboe.sys.SystemLz ;
+import org.seaborne.dboe.sys.SystemIndex ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
@@ -43,7 +43,7 @@ import org.seaborne.dboe.sys.SystemLz ;
 public class TC_DBOE_IO {
     static {
         if ( false )
-            SystemLz.setFileMode(FileMode.direct) ;
+            SystemIndex.setFileMode(FileMode.direct) ;
     }
     
     @BeforeClass static public void beforeClass()   

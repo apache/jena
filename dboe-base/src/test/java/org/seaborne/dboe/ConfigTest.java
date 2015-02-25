@@ -18,7 +18,7 @@
 package org.seaborne.dboe;
 
 import org.apache.jena.atlas.lib.FileOps ;
-import org.seaborne.dboe.sys.SystemLz ;
+import org.seaborne.dboe.sys.SystemBase ;
 
 public class ConfigTest
 {
@@ -26,7 +26,7 @@ public class ConfigTest
     // Place under target
     private static final String testingDir = "target/tdb-testing" ;
     private static final String testingDirDB = "target/tdb-testing/DB" ;
-    static boolean nonDeleteableMMapFiles = SystemLz.isWindows ;
+    static boolean nonDeleteableMMapFiles = SystemBase.isWindows ;
     
     static boolean initialized = false ; 
     

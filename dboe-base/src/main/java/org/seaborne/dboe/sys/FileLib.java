@@ -76,7 +76,7 @@ public class FileLib
 
     public static void sync(FileChannel channel) {
         try {
-            channel.force(false) ;
+            channel.force(true) ;
         } catch (IOException ex)
         { throw new FileException("FileBase.sync", ex) ; }
     }

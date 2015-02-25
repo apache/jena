@@ -21,27 +21,9 @@ import java.nio.ByteOrder ;
 
 import org.seaborne.dboe.DBOpEnvException ;
 import org.seaborne.dboe.base.block.FileMode ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 public class SystemIndex
 {
-    // NB Same logger as the TDB class because this class is the system info but kept out of TDB javadoc.
-    // It's visibility is TDB, not really public. 
-    private static final Logger log = LoggerFactory.getLogger("Base") ;
-    
-    /** TDB System log - use for general messages (a few) and warnings.
-     *  Generally, do not log events unless you want every user to see them every time.
-     *  TDB is an embedded database - libraries and embedded systems should be seen and not heard.
-     *  @see #errlog 
-     */
-    // This was added quite late in TDB so need to check it's used appropriately - check for Log.*
-    public static final Logger syslog = LoggerFactory.getLogger("System") ;
-    /** Send warnings and error */
-    public static final Logger errlog = LoggerFactory.getLogger("System") ;
-    
-    // ---- Constants that can't be changed without invalidating on-disk data.  
-    
     /** Size, in bytes, of a Java long */
     public static final int SizeOfLong              = Long.SIZE/Byte.SIZE ;
     
@@ -51,7 +33,7 @@ public class SystemIndex
     /** Size, in bytes, of a pointer between blocks */
     public static final int SizeOfPointer           = SizeOfInt ;
     
-    public static final boolean is64bitSystem = SystemLz.is64bitSystem ;
+    public static final boolean is64bitSystem = SystemBase.is64bitSystem ;
 
     // To make the class initialize
     static public void init() {}
@@ -68,7 +50,7 @@ public class SystemIndex
 //    /** Size, in bytes, of a memory block */
 //    public static final int BlockSizeMem            = 32*8 ; //intValue("BlockSizeMem", 32*8 ) ;
 
-    /** order of an in-memory BTree or B+Tree */
+    /** Order of an in-memory BTree or B+Tree */
     public static final int OrderMem                = 5 ; // intValue("OrderMem", 5) ;
     
     /** Size, in bytes, of a segment (used for memory mapped files) */
@@ -140,7 +122,7 @@ public class SystemIndex
     {
         if ( fileMode != null )
         {
-            log.warn("System file mode already determined - setting it has no effect") ;
+            SystemBase.log.warn("System file mode already determined - setting it has no effect") ;
             return ;
         }
         fileMode = newFileMode ;
@@ -162,12 +144,12 @@ public class SystemIndex
         
         if ( x.equalsIgnoreCase("direct") )
         {
-            syslog.info("File mode: direct (forced)") ;
+            SystemBase.syslog.info("File mode: direct (forced)") ;
             return FileMode.direct ;
         }
         if ( x.equalsIgnoreCase("mapped") )
         {
-            syslog.info("File mode: mapped (forced)") ;
+            SystemBase.syslog.info("File mode: mapped (forced)") ;
             return FileMode.mapped ;
         }
         
@@ -175,10 +157,10 @@ public class SystemIndex
         {
             if ( is64bitSystem )
             {
-                syslog.debug("File mode: Mapped") ;
+                SystemBase.syslog.debug("File mode: Mapped") ;
                 return FileMode.mapped ;
             }
-            syslog.debug("File mode: Direct") ;
+            SystemBase.syslog.debug("File mode: Direct") ;
             return FileMode.direct ;
         }
         throw new DBOpEnvException("Unrecognized file mode (not one of 'default', 'direct' or 'mapped': "+x) ;
