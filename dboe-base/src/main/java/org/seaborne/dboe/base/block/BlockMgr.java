@@ -33,11 +33,11 @@ public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
     /** Answer whether there are any blocks in the collection being managed */
     public boolean isEmpty() ; 
     
-    /** The allocted allocated blocks are in the range [0,allocLimit).
+    /** The fixed allocated blocks are in the range [0,allocLimit).
      * Allocation units need not be +1 increments */ 
     public long allocLimit() ; 
 
-    /** Reset the allocation limit, shoudl be a number previously obtained from allocLimit */
+    /** Reset the allocation limit, should be a number previously obtained from allocLimit */
     public void resetAlloc(long boundary) ;
 
     /** Fetch a block, use for read only */
