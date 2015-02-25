@@ -23,12 +23,8 @@ import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.RangeIndex ;
-import org.seaborne.dboe.index.bplustree.BPlusTree ;
-import org.seaborne.dboe.index.bplustree.BPlusTreeFactory ;
-import org.seaborne.dboe.index.bplustree.BPlusTreeParams ;
 import org.seaborne.dboe.sys.Names ;
 import org.seaborne.dboe.sys.SystemIndex ;
-import org.seaborne.dboe.sys.SystemLz ;
 
 public class SetupBPTreeIndex {
 
@@ -105,8 +101,8 @@ public class SetupBPTreeIndex {
     public static RangeIndex createBPTree(FileSet fileset,
                                           RecordFactory factory)
     {
-        int readCacheSize = SystemLz.BlockReadCacheSize ;
-        int writeCacheSize = SystemLz.BlockWriteCacheSize ;
+        int readCacheSize = SystemIndex.BlockReadCacheSize ;
+        int writeCacheSize = SystemIndex.BlockWriteCacheSize ;
         int blockSize = SystemIndex.BlockSize ;
         if ( fileset.isMem() )
         {
