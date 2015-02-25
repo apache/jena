@@ -223,6 +223,7 @@
             <Import-Package>!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.xml.*,!org.apache.xerces.*,*</Import-Package>
           </instructions>
         </configuration>
+        <extensions>true</extensions>
       </plugin>
     </plugins>
   </build>
