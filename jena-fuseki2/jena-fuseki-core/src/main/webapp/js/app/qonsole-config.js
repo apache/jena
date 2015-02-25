@@ -10,16 +10,17 @@ define( [], function() {
     },
     queries: [
       { "name": "Selection of triples",
-        "query": "SELECT ?subject ?predicate ?object\nwhere {\n" +
+        "query": "SELECT ?subject ?predicate ?object\nWHERE {\n" +
                  "  ?subject ?predicate ?object\n}\n" +
                  "LIMIT 25"
       },
       { "name": "Selection of classes",
-        "query": "SELECT distinct ?class ?label ?description\nwhere {\n" +
+        "query": "SELECT DISTINCT ?class ?label ?description\nWHERE {\n" +
                  "  ?class a owl:Class.\n" +
                  "  OPTIONAL { ?class rdfs:label ?label}\n" +
                  "  OPTIONAL { ?class rdfs:comment ?description}\n}\n" +
-                 "LIMIT 25"
+                 "LIMIT 25",
+        "prefixes": ["owl", "rdfs"]
       }
     ]
   };
