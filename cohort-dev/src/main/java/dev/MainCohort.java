@@ -19,6 +19,7 @@ package dev;
 
 import static org.seaborne.dboe.test.RecordLib.r ;
 
+import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.block.FileMode ;
@@ -58,14 +59,19 @@ public class MainCohort {
         // mapped + tracking: initial: warn ; continuing: warn
         
         // direct, no track: initial: "getRead - isModified - tree[0]"
+        //   But not memory -> caching? Yses, if cachign enabled.
         //   The block is in the cache as a read block.
+        //      --> PageBlockMgr.getRead$
         
         SystemIndex.setFileMode(FileMode.direct);
         //SystemIndex.setFileMode(FileMode.mapped) ;
         ComponentId cid = ComponentIds.idDev ;
         
         FileSet fs = FileSet.mem();
-        fs = new FileSet("BPT", "tree") ;
+        if ( false ) {
+            FileOps.clearAll("BPT");
+            fs = new FileSet("BPT", "tree") ;
+        }
         
         BPlusTree bpt1 = BPlusTreeFactory.createBPTree(cid, fs, RecordLib.recordFactory) ;
         BPlusTree bpt = false ? BPlusTreeFactory.addTracking(bpt1) : bpt1 ;

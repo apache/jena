@@ -108,8 +108,10 @@ public class PageBlockMgr<T extends Page> implements Closeable
         Block block = blockMgr.getRead(id) ;
         if ( block.isModified() ) {
             System.err.println("getRead - isModified - "+blockMgr.getLabel()+"["+id+"]") ;
+//            block = new Block(block.getId(), block.getByteBuffer());
+//            block.setModified(false); 
             // Debug.
-            blockMgr.getRead(id) ;
+            //blockMgr.getRead(id) ;
         }
         T page = pageFactory.fromBlock(block) ;
         return page ;
