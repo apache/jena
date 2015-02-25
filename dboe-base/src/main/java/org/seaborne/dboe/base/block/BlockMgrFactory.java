@@ -67,7 +67,7 @@ public class BlockMgrFactory {
         BlockMgr blockMgr = new BlockMgrFileAccess(file, blockSize) ;
         blockMgr = new BlockMgrFreeChain(blockMgr) ;
         // Small cache - testing.
-        // blockMgr = new BlockMgrCache(indexName, 3, 3, blockMgr) ;
+        blockMgr = BlockMgrCache.create(3, 3, blockMgr) ;
         return track(blockMgr) ;
     }
 
