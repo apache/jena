@@ -244,17 +244,15 @@ public class BPlusTreeFactory {
     }
     
     /** Create if does not exist */ 
-    private static int createIfAbsent(boolean isReset,
-                                      BPTStateMgr stateMgr, BPTreeNodeMgr nodeManager, BPTreeRecordsMgr recordsMgr) {
+    private static int createIfAbsent(boolean isReset, BPTStateMgr stateMgr, BPTreeNodeMgr nodeManager, BPTreeRecordsMgr recordsMgr) {
         
         int rootId = stateMgr.getRoot() ; 
         
         if ( nodeManager.getBlockMgr().isEmpty() != recordsMgr.getBlockMgr().isEmpty() )
             throw new BPTreeException(
-                "Node block manager empty = "+
-                nodeManager.getBlockMgr().isEmpty()+" // "+
-                "Records block manager empty = "+ 
-                recordsMgr.getBlockMgr().isEmpty()) ;
+                "Node block manager empty = "+nodeManager.getBlockMgr().isEmpty()+
+                " // "+
+                "Records block manager empty = "+recordsMgr.getBlockMgr().isEmpty()) ;
         
         if ( ! nodeManager.getBlockMgr().isEmpty() ) {
             return rootId ;
@@ -267,7 +265,7 @@ public class BPlusTreeFactory {
         // Create/format
 
         // Fresh BPlusTree root node.
-        int rootIdx = createEmptyBPT(nodeManager, recordsMgr) ;
+        int rootIdx = createEmptyBPT(stateMgr, nodeManager, recordsMgr) ;
         if ( rootIdx != 0 )
             throw new InternalError() ;
 
@@ -278,14 +276,17 @@ public class BPlusTreeFactory {
         return rootIdx ;
     }
 
-    /** Allocate root node space. The root is a Node with a Records block.*/ 
-    private static int createEmptyBPT(BPTreeNodeMgr nodeManager, BPTreeRecordsMgr recordsMgr) { 
+    /** Allocate root node space. The root is a Node with a Records block.
+     * @param stateMgr */ 
+    private static int createEmptyBPT(BPTStateMgr stateMgr, BPTreeNodeMgr nodeManager, BPTreeRecordsMgr recordsMgr) { 
         // Create an empty records block.
         
         nodeManager.startBatch(); 
         recordsMgr.startBatch(); 
         nodeManager.startUpdate();
         recordsMgr.startUpdate();
+        // Empty tree.
+        stateMgr.setState(0, 0, 0); 
         try {
             BPTreeRecords recordsPage = recordsMgr.create() ;
             if ( recordsPage.getId() != BPlusTreeParams.RootId )
@@ -311,10 +312,9 @@ public class BPlusTreeFactory {
             int rootId = n.getId()  ;
             nodeManager.write(n) ;
             nodeManager.release(n) ;
-            // Again, not this.
-            //n.write();
-            //n.release() ;
-            // Must be inside already : finishUpdate() ;
+            // This makes the next blocks alocated 1 and 1 - just like a transaction.
+            // Blocks 0/0 are always an empty tree unless the bulk loader built the tree.
+            stateMgr.setState(0, 1, 1) ;
             return rootId ;
         } finally {
             recordsMgr.finishUpdate();
@@ -322,6 +322,7 @@ public class BPlusTreeFactory {
             recordsMgr.finishBatch(); 
             nodeManager.finishBatch(); 
         }
+        // stateMgr.setState(0, 1, 1);
     }
 }
 
