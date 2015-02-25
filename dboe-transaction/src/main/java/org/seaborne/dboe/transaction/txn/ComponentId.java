@@ -21,7 +21,7 @@ import java.util.Arrays ;
 import java.util.UUID ;
 
 import org.apache.jena.atlas.lib.Bytes ;
-import org.seaborne.dboe.sys.SystemLz ;
+import org.seaborne.dboe.sys.SystemBase ;
 
 /** 
  * An class to represent a component identifier.
@@ -85,9 +85,9 @@ public class ComponentId {
     }
     
     private static ComponentId create(byte[] bytes, String label, int index) {
-        int x = Bytes.getInt(bytes, bytes.length-SystemLz.SizeOfInt) ;
+        int x = Bytes.getInt(bytes, bytes.length-SystemBase.SizeOfInt) ;
         x = x ^ index ;
-        Bytes.setInt(x, bytes, bytes.length - SystemLz.SizeOfInt) ;
+        Bytes.setInt(x, bytes, bytes.length - SystemBase.SizeOfInt) ;
         ComponentId cid = new ComponentId(label+"-"+index, bytes) ;
         return cid ;
     }

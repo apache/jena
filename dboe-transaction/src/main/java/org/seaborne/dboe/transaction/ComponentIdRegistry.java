@@ -23,7 +23,7 @@ import java.util.UUID ;
 import java.util.concurrent.ConcurrentHashMap ;
 
 import org.apache.jena.atlas.lib.Bytes ;
-import org.seaborne.dboe.sys.SystemLz ;
+import org.seaborne.dboe.sys.SystemBase ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.L ;
 //package org.apache.jena.fuseki.migrate;
@@ -48,9 +48,9 @@ public class ComponentIdRegistry {
     public ComponentId register(ComponentId base, String label, int index) {
         byte[] bytes = base.bytes() ;
         bytes = Arrays.copyOf(bytes, bytes.length) ;
-        int x = Bytes.getInt(bytes, bytes.length - SystemLz.SizeOfInt) ;
+        int x = Bytes.getInt(bytes, bytes.length - SystemBase.SizeOfInt) ;
         x = x ^ index ;
-        Bytes.setInt(x, bytes, bytes.length-SystemLz.SizeOfInt) ;
+        Bytes.setInt(x, bytes, bytes.length-SystemBase.SizeOfInt) ;
         ComponentId cid = new ComponentId(label+"-"+index, bytes) ;
         Holder h = new Holder(bytes) ;
         registry.put(h, cid) ;

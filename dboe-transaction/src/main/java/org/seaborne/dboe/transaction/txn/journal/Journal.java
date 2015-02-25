@@ -17,7 +17,7 @@
 
 package org.seaborne.dboe.transaction.txn.journal;
 
-import static org.seaborne.dboe.sys.SystemLz.SizeOfInt ;
+import static org.seaborne.dboe.sys.SystemBase.SizeOfInt ;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
@@ -317,6 +317,11 @@ class Journal implements Sync, Closeable
     public boolean isEmpty()  { return channel.size() == 0 ; }
 
     public void truncate(long size) { channel.truncate(size) ; }
+    
+    public void reset() { 
+        truncate(0) ;
+        sync() ;
+    }
     
 //    public void append()    { position(size()) ; }
     

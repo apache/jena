@@ -21,7 +21,7 @@ import org.seaborne.dboe.base.file.BlockAccessMem ;
 import org.seaborne.dboe.index.test.BaseSoakTest ;
 import org.seaborne.dboe.index.test.IndexTestLib ;
 import org.seaborne.dboe.sys.SystemIndex ;
-import org.seaborne.dboe.sys.SystemLz ;
+import org.seaborne.dboe.sys.SystemBase ;
 import org.seaborne.dboe.trans.bplustree.BPT ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
@@ -86,7 +86,7 @@ public class CmdTestBPlusTree extends BaseSoakTest
     @Override
     protected void runOneTest(int testCount, int order, int size) {
 //        //System.err.println("runOneTest("+order+","+size+")") ;
-        BPlusTree bpt = BPlusTreeFactory.makeMem(order, SystemLz.SizeOfInt, 0) ;
+        BPlusTree bpt = BPlusTreeFactory.makeMem(order, SystemBase.SizeOfInt, 0) ;
         bpt = BPlusTreeFactory.addTracking(bpt) ;
         bpt.nonTransactional() ;
         bpt.startBatch();   // For tracking.

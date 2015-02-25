@@ -30,6 +30,8 @@ import java.util.concurrent.atomic.AtomicLong ;
 import com.hp.hpl.jena.query.ReadWrite ;
 
 import org.apache.jena.atlas.logging.Log ;
+import org.slf4j.Logger ;
+import org.seaborne.dboe.sys.SystemBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.dboe.transaction.txn.journal.JournalEntry ;
 
@@ -48,6 +50,7 @@ import org.seaborne.dboe.transaction.txn.journal.JournalEntry ;
  **/
 final
 public class TransactionCoordinator {
+    private static Logger log = SystemBase.syslog ;
     
     private final Journal journal ;
     private final ComponentGroup components = new ComponentGroup() ;
@@ -104,9 +107,13 @@ public class TransactionCoordinator {
 
     public void recovery() {
         
+        Iterator<JournalEntry> iter = journal.entries() ;
+        if ( ! iter.hasNext() )
+            return ;
+        
+        log.info("Journal recovery start") ;
         components.forEachComponent(c -> c.startRecovery()) ;
         
-        Iterator<JournalEntry> iter = journal.entries() ;
         // Group to commit
         
         List<JournalEntry> entries = new ArrayList<>() ;
@@ -118,6 +125,7 @@ public class TransactionCoordinator {
                     break ;
                 case COMMIT :
                     recover(entries) ;
+                    entries.clear() ;
                     break ;
                 case REDO : case UNDO :
                     entries.add(entry) ;
@@ -126,6 +134,9 @@ public class TransactionCoordinator {
         }) ;
 
         components.forEachComponent(c -> c.finishRecovery()) ;
+        journal.reset() ;
+        log.info("Journal recovery end") ;
+
     }
     
     private void recover(List<JournalEntry> entries) {
@@ -179,12 +190,6 @@ public class TransactionCoordinator {
     
     public Journal getJournal()     { return journal ; }
     
-    // Coordinator state.
-    private final AtomicLong countBegin         = new AtomicLong(0) ;
-    private final AtomicLong countBeginRead     = new AtomicLong(0) ;
-    private final AtomicLong countBeginWrite    = new AtomicLong(0) ;
-    private final AtomicLong countFinished      = new AtomicLong(0) ;
-    
     // Active transactions
     private final static Object dummy           = new Object() ;
     private Map<Transaction, Object> activeTransactions = new ConcurrentHashMap<>() ;
@@ -202,13 +207,6 @@ public class TransactionCoordinator {
     
     private final AtomicLong writerEpoch = new AtomicLong(0) ;      // The leading edge of the epochs
     private final AtomicLong readerEpoch = new AtomicLong(0) ;      // The trailing edge of epochs
-    
-    // Access counters
-    public long countBegin()        { return countBegin.get() ; }
-    public long countBeginRead()    { return countBeginRead.get() ; }
-    public long countBeginWrite()   { return countBeginWrite.get() ; }
-    public long countFinished()     { return countFinished.get() ; }
-    public long countActive()       { return activeTransactions.size() ; }
     
     public void shutdown() {
         components.forEach((id, c) -> c.shutdown()) ;
@@ -322,6 +320,7 @@ public class TransactionCoordinator {
         // checks are done.
         // finishActiveTransaction is idempotent.
         finishActiveTransaction(transaction);
+        journal.reset() ;
     }
 
     /*package*/ void executeCommit(Transaction transaction, List<PrepareState> prepareState, Runnable commit, Runnable finish) {
@@ -419,5 +418,25 @@ public class TransactionCoordinator {
     /*package*/ void notifyCompleteStart(Transaction transaction) { }
 
     /*package*/ void notifyCompleteFinish(Transaction transaction) { }
+
+    // Coordinator state.
+    private final AtomicLong countBegin         = new AtomicLong(0) ;
+
+    private final AtomicLong countBeginRead     = new AtomicLong(0) ;
+
+    private final AtomicLong countBeginWrite    = new AtomicLong(0) ;
+
+    private final AtomicLong countFinished      = new AtomicLong(0) ;
+
+    // Access counters
+    public long countBegin()        { return countBegin.get() ; }
+
+    public long countBeginRead()    { return countBeginRead.get() ; }
+
+    public long countBeginWrite()   { return countBeginWrite.get() ; }
+
+    public long countFinished()     { return countFinished.get() ; }
+
+    public long countActive()       { return activeTransactions.size() ; }
 }
 
