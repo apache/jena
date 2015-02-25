@@ -219,8 +219,6 @@ public class BlockAccessMapped extends BlockAccessBase
     }
 
     private synchronized void flushDirtySegments() {
-        // This does not force dirty segments to disk.
-        super.force() ;
 
         // A linked list (with uniqueness) of dirty segments may be better.
         for ( int i = 0 ; i < segments.length ; i++ ) {
@@ -231,6 +229,8 @@ public class BlockAccessMapped extends BlockAccessBase
                 segmentDirtyCount-- ;
             }
         }
+        // This on its own does not force dirty segments to disk.
+        super.force() ;
     }
 
     @Override
@@ -253,7 +253,6 @@ public class BlockAccessMapped extends BlockAccessBase
     @Override
     protected void force() {
         flushDirtySegments() ;
-        super.force() ;
     }
 
     @Override
