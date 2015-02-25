@@ -41,8 +41,10 @@ public abstract class AbstractTestRangeIndex extends Assert {
 
     protected abstract RangeIndex makeRangeIndex(int order, int minRecords) ;
 
-    // -- Root-only
-
+    @Test public void __basic() {
+         makeRangeIndex(4,0) ;
+    }
+    
     @Test
     public void tree_ins_0_0() {
         // Empty tree

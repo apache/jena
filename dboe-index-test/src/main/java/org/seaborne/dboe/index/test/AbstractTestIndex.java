@@ -42,6 +42,10 @@ public abstract class AbstractTestIndex extends Assert
     // ---- Overridable maker
     protected abstract Index makeIndex(int kLen, int vLen) ;
     
+    @Test public void __basic() {
+        makeIndex(4,0) ;
+    }
+    
     @Test public void index_ins_0()
     {
         // Empty tree
