@@ -24,6 +24,8 @@ public class NOTES {
     
     // Always "recovery" / add "no recovery" : TransactionCoordinator.recover
     // CRC .bpt
+    
+    // Auto safe set of state.
 
     // Combine BptTxnState and BPTRootMgr.
     // RangeIndexBuilderBPTree and BPlusTreeFactory. Sort out BPlusTreeFactory.
