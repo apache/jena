@@ -17,6 +17,7 @@
 
 package org.seaborne.dboe.base.page;
 
+import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.Log ;
 import org.seaborne.dboe.base.block.Block ;
@@ -25,7 +26,7 @@ import org.seaborne.dboe.base.block.BlockType ;
 
 /** Engine that wraps from blocks to typed pages. */
 
-public class PageBlockMgr<T extends Page>
+public class PageBlockMgr<T extends Page> implements Closeable
 {
     protected final BlockMgr blockMgr ;
     protected BlockConverter<T> pageFactory ;
@@ -210,4 +211,7 @@ public class PageBlockMgr<T extends Page>
     
     /** Signal the completeion of an update operation */
     public void finishRead()        { blockMgr.endRead() ; }
+
+    @Override
+    public void close()             { blockMgr.close(); }
 }
