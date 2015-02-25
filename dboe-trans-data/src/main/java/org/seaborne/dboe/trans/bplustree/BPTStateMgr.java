@@ -42,9 +42,10 @@ public class BPTStateMgr implements Sync {
     private static final int SizePersistentState = SizeOfInt + SizeOfLong + SizeOfLong + SizeOfInt ;   
     
     // These values are the values for a newly created tree.
-    private int currentLatestRoot = 0 ;
-    private long nodeBlocksLimit = 0 ; 
-    private long recordsBlocksLimit = 0 ;
+    private int currentLatestRoot     = 0 ;
+    private long nodeBlocksLimit      = 0 ; 
+    private long recordsBlocksLimit   = 0 ;
+    
     private final BufferChannel storage ;
     private final ByteBuffer bb = allocBuffer() ;
     private boolean dirty = false ;
