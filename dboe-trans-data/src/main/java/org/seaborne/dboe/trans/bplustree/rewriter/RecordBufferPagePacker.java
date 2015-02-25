@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.trans.bplustree.rewriter;
+package org.seaborne.dboe.trans.bplustree.rewriter ;
 
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
@@ -25,34 +25,31 @@ import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
 
-/** Iterate over a stream of records, packing them into RecordBufferPage -- the leaf of a B+Tree 
- *  This class does not write the blocks back to the block manager.
- *  This cleass does allocate block ids and blocks.
- *  @see RecordBufferPageLinker
+/**
+ * Iterate over a stream of records, packing them into RecordBufferPage -- the
+ * leaf of a B+Tree This class does not write the blocks back to the block
+ * manager. This cleass does allocate block ids and blocks.
+ * 
+ * @see RecordBufferPageLinker
  */
 
-class RecordBufferPagePacker implements Iterator<RecordBufferPage>
-{
-    Iterator<Record> records = null ;
-    RecordBufferPage recordBufferPage = null ;
-    RecordBufferPageMgr rbMgr = null ;
-    
-    RecordBufferPagePacker(Iterator<Record> records, RecordBufferPageMgr rbMgr)
-    {
+class RecordBufferPagePacker implements Iterator<RecordBufferPage> {
+    Iterator<Record>    records          = null ;
+    RecordBufferPage    recordBufferPage = null ;
+    RecordBufferPageMgr rbMgr            = null ;
+
+    RecordBufferPagePacker(Iterator<Record> records, RecordBufferPageMgr rbMgr) {
         this.records = records ;
         this.rbMgr = rbMgr ;
     }
-    
+
     @Override
-    public boolean hasNext()
-    {
-        if ( recordBufferPage == null )
-        {
+    public boolean hasNext() {
+        if ( recordBufferPage == null ) {
             if ( records == null )
                 return false ;
-            
-            if ( !records.hasNext() )
-            {
+
+            if ( !records.hasNext() ) {
                 records = null ;
                 return false ;
             }
@@ -60,34 +57,34 @@ class RecordBufferPagePacker implements Iterator<RecordBufferPage>
             // No pending RecordBufferPage
             // ==> There will be a RecordBufferPage to yield.
 
-//            int id = rbMgr.allocateId() ;
-//            //System.out.println("Allocate : "+id) ;
+            // int id = rbMgr.allocateId() ;
+            // //System.out.println("Allocate : "+id) ;
             recordBufferPage = rbMgr.create() ;
-            
+
             RecordBuffer rb = recordBufferPage.getRecordBuffer() ;
-            while ( !rb.isFull() && records.hasNext() )
-            {
-                Record r = records.next();
+            while (!rb.isFull() && records.hasNext()) {
+                Record r = records.next() ;
                 rb.add(r) ;
             }
-            if ( ! records.hasNext() )
+            if ( !records.hasNext() )
                 records = null ;
             return true ;
         }
         return true ;
-        
+
     }
-    
+
     @Override
-    public RecordBufferPage next()
-    {
-        if ( ! hasNext() ) throw new NoSuchElementException() ;
+    public RecordBufferPage next() {
+        if ( !hasNext() )
+            throw new NoSuchElementException() ;
         RecordBufferPage rbp = recordBufferPage ;
         recordBufferPage = null ;
         return rbp ;
     }
-    
+
     @Override
-    public void remove()
-    { throw new UnsupportedOperationException() ; }
+    public void remove() {
+        throw new UnsupportedOperationException() ;
+    }
 }

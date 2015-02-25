@@ -15,51 +15,47 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.trans.bplustree.rewriter;
+package org.seaborne.dboe.trans.bplustree.rewriter ;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.Iterator ;
+import java.util.NoSuchElementException ;
 
 import org.apache.jena.atlas.iterator.PeekIterator ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
 
-/** From a stream of RecordBufferPage,  manage the link fields.
- * That is, be a one slot delay so that the "link" field can point to the next page.
- * Be careful about the last block.   
+/**
+ * From a stream of RecordBufferPage, manage the link fields. That is, be a one
+ * slot delay so that the "link" field can point to the next page. Be careful
+ * about the last block.
  *
  */
-class RecordBufferPageLinker implements Iterator<RecordBufferPage>
-{
+class RecordBufferPageLinker implements Iterator<RecordBufferPage> {
     PeekIterator<RecordBufferPage> peekIter ;
-    
-    RecordBufferPage slot = null ;
-    
-    RecordBufferPageLinker(Iterator<RecordBufferPage> iter)
-    {
-        if ( ! iter.hasNext() )
-        {
+
+    RecordBufferPage               slot = null ;
+
+    RecordBufferPageLinker(Iterator<RecordBufferPage> iter) {
+        if ( !iter.hasNext() ) {
             peekIter = null ;
             return ;
         }
-        
+
         peekIter = new PeekIterator<>(iter) ;
     }
-    
+
     @Override
-    public boolean hasNext()
-    {
+    public boolean hasNext() {
         if ( slot != null )
             return true ;
-        
+
         if ( peekIter == null )
             return false ;
 
-        if ( ! peekIter.hasNext() )
-        {
+        if ( !peekIter.hasNext() ) {
             peekIter = null ;
             return false ;
         }
-        
+
         slot = peekIter.next() ;
         RecordBufferPage nextSlot = peekIter.peek() ;
         // If null, no slot ahead so no linkage field to set.
@@ -68,17 +64,18 @@ class RecordBufferPageLinker implements Iterator<RecordBufferPage>
             slot.setLink(nextSlot.getId()) ;
         return true ;
     }
-    
+
     @Override
-    public RecordBufferPage next()
-    {
-        if ( ! hasNext() ) throw new NoSuchElementException() ;
+    public RecordBufferPage next() {
+        if ( !hasNext() )
+            throw new NoSuchElementException() ;
         RecordBufferPage rbp = slot ;
         slot = null ;
         return rbp ;
     }
-    
+
     @Override
-    public void remove()
-    { throw new UnsupportedOperationException() ; }
+    public void remove() {
+        throw new UnsupportedOperationException() ;
+    }
 }

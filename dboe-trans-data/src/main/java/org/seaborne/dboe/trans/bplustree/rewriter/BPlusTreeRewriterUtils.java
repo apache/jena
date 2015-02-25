@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.trans.bplustree.rewriter;
+package org.seaborne.dboe.trans.bplustree.rewriter ;
 
 import java.util.Iterator ;
 import java.util.List ;
@@ -29,52 +29,48 @@ import org.seaborne.dboe.trans.bplustree.BPTreeNode ;
 import org.seaborne.dboe.trans.bplustree.BPTreeNodeMgr ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeParams ;
 
-class BPlusTreeRewriterUtils
-{
-    static String divider = "----------------------------------------" ;
+class BPlusTreeRewriterUtils {
+    static String divider     = "----------------------------------------" ;
     static String nextDivider = null ;
 
-    static Iterator<Pair<Integer, Record>> summarizeDataBlocks(Iterator<Pair<Integer, Record>> iter, RecordBufferPageMgr recordPageMgr)
-    {
+    static Iterator<Pair<Integer, Record>> summarizeDataBlocks(Iterator<Pair<Integer, Record>> iter, RecordBufferPageMgr recordPageMgr) {
         divider() ;
         List<Pair<Integer, Record>> x = Iter.toList(iter) ;
-        for (Pair<Integer, Record> pair : x )
-        {
+        System.out.println("summarizeDataBlocks: " + x) ;
+        for ( Pair<Integer, Record> pair : x ) {
             RecordBufferPage rbp = recordPageMgr.getRead(pair.car()) ;
-            System.out.printf("%s -- RecordBufferPage[id=%d,link=%d] (%d) -> [%s]\n", pair, rbp.getId(), rbp.getLink(), rbp.getCount(), rbp.getRecordBuffer().getHigh() ) ;
+            System.out.printf("%s -- RecordBufferPage[id=%d,link=%d] (%d) -> [%s]\n", pair, rbp.getId(), rbp.getLink(), rbp.getCount(),
+                              rbp.getRecordBuffer().getHigh()) ;
             recordPageMgr.release(rbp) ;
         }
         return x.iterator() ;
     }
 
-    static Iterator<Pair<Integer, Record>> summarizeIndexBlocks(Iterator<Pair<Integer, Record>> iter2, BPTreeNodeMgr bptNodeMgr)
-    {
+    static Iterator<Pair<Integer, Record>> summarizeIndexBlocks(Iterator<Pair<Integer, Record>> iter2, BPTreeNodeMgr bptNodeMgr) {
         divider() ;
         List<Pair<Integer, Record>> x = Iter.toList(iter2) ;
-        for (Pair<Integer, Record> pair : x )
-        {
+        for ( Pair<Integer, Record> pair : x ) {
             BPTreeNode bpNode = bptNodeMgr.getRead(pair.car(), BPlusTreeParams.RootParent) ;
-            
+
             String hr = "null" ;
-            if ( ! bpNode.getRecordBuffer().isEmpty() ) 
+            if ( !bpNode.getRecordBuffer().isEmpty() )
                 hr = bpNode.getRecordBuffer().getHigh().toString() ;
-            
+
             System.out.printf("%s -- BPTreeNode: %d (%d) -> [%s]\n", pair, bpNode.getId(), bpNode.getCount(), hr) ;
             bptNodeMgr.release(bpNode) ;
         }
         return x.iterator() ;
     }
 
-    private static Iterator<Pair<Integer, Record>> printDataBlocks(Iterator<Pair<Integer, Record>> iter, RecordBufferPageMgr recordPageMgr)
-    {
+    private static Iterator<Pair<Integer, Record>> printDataBlocks(Iterator<Pair<Integer, Record>> iter, RecordBufferPageMgr recordPageMgr) {
         divider() ;
         List<Pair<Integer, Record>> x = Iter.toList(iter) ;
         System.out.printf(">>Packed data blocks\n") ;
-        for (Pair<Integer, Record> pair : x )
-        {
-            System.out.printf("  %s\n",pair) ;
+        for ( Pair<Integer, Record> pair : x ) {
+            System.out.printf("  %s\n", pair) ;
             RecordBufferPage rbp = recordPageMgr.getRead(pair.car()) ;
-            //System.out.printf("RecordBufferPage[id=%d,link=%d] %d\n", rbp.getId(), rbp.getLink(), rbp.getCount() ) ;
+            // System.out.printf("RecordBufferPage[id=%d,link=%d] %d\n",
+            // rbp.getId(), rbp.getLink(), rbp.getCount() ) ;
             System.out.println(rbp) ;
             recordPageMgr.release(rbp) ;
         }
@@ -83,14 +79,12 @@ class BPlusTreeRewriterUtils
         return x.iterator() ;
     }
 
-    static Iterator<Pair<Integer, Record>> printIndexBlocks(Iterator<Pair<Integer, Record>> iter2, BPTreeNodeMgr bptNodeMgr)
-    {
+    static Iterator<Pair<Integer, Record>> printIndexBlocks(Iterator<Pair<Integer, Record>> iter2, BPTreeNodeMgr bptNodeMgr) {
         divider() ;
         List<Pair<Integer, Record>> x = Iter.toList(iter2) ;
         System.out.printf(">>Packed index blocks\n") ;
-        for (Pair<Integer, Record> pair : x )
-        {
-            System.out.printf("  %s\n",pair) ;
+        for ( Pair<Integer, Record> pair : x ) {
+            System.out.printf("  %s\n", pair) ;
             BPTreeNode bpNode = bptNodeMgr.getRead(pair.car(), BPlusTreeParams.RootParent) ;
             bpNode.setIsLeaf(true) ;
             System.out.printf("BPTreeNode: %d\n", bpNode.getId()) ;
@@ -101,8 +95,7 @@ class BPlusTreeRewriterUtils
         return x.iterator() ;
     }
 
-    static void divider()
-    {
+    static void divider() {
         if ( nextDivider != null )
             System.out.println(nextDivider) ;
         nextDivider = divider ;
