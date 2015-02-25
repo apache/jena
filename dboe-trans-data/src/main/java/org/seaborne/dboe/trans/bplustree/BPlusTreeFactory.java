@@ -143,10 +143,10 @@ public class BPlusTreeFactory {
         }
     
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
-        BufferChannel rootState = FileFactory.createBufferChannel(fileset, Names.bptExtRoot) ;
+        BufferChannel bptState = FileFactory.createBufferChannel(fileset, Names.bptExtRoot) ;
         BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExtTree, blockSize, readCacheSize, writeCacheSize) ;
         BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExtRecords, blockSize, readCacheSize, writeCacheSize) ;
-        return BPlusTreeFactory.create(cid, params, rootState, blkMgrNodes, blkMgrRecords) ;
+        return BPlusTreeFactory.create(cid, params, bptState, blkMgrNodes, blkMgrRecords) ;
     }
 
     /**
