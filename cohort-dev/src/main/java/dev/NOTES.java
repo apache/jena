@@ -22,6 +22,14 @@ public class NOTES {
     // Mantis / cohort / legion
     // ARQ :: extract Atlas.
     
+    // Always "recovery" / add "no recovery" : TransactionCoordinator.recover
+    // .bpt
+    // CRC .bpt
+    // FileLib.sync - true or false for force
+    // DBOE Base equivalence of BPT for flags like logging.
+    
+    // Combine BptTxnState and BPTRootMgr.
+    // RangeIndexBuilderBPTree and BPlusTreeFactory
     // Sort out BPlusTreeFactory.
     
     // Transactional tests on BPTrees

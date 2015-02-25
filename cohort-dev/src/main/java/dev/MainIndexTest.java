@@ -35,9 +35,7 @@ import org.seaborne.dboe.base.block.FileMode ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.record.Record ;
-import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.sys.SystemIndex ;
-import org.seaborne.dboe.sys.SystemLz ;
 import org.seaborne.dboe.test.RecordLib ;
 import org.seaborne.dboe.trans.bplustree.BPT ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
@@ -76,7 +74,7 @@ public class MainIndexTest {
         }
         
         // Persistent componentids.
-        SystemLz.setFileMode(FileMode.direct);
+        SystemIndex.setFileMode(FileMode.direct);
         ComponentId cid = ComponentIds.idDev ;
         FileSet fs = FileSet.mem();
         fs = new FileSet("BPT", "tree") ;

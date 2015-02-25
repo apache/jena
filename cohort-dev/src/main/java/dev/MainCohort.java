@@ -17,26 +17,33 @@
 
 package dev;
 
+import static org.seaborne.dboe.test.RecordLib.r ;
+
 import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.RandomLib ;
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.atlas.test.Gen ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
+import org.seaborne.dboe.base.block.FileMode ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.file.BufferChannelMem ;
+import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.sys.SystemIndex ;
+import org.seaborne.dboe.test.RecordLib ;
 import org.seaborne.dboe.trans.bplustree.BPT ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
+import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
 import org.seaborne.dboe.trans.data.TransBlob ;
 import org.seaborne.dboe.transaction.ComponentIdRegistry ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
+import org.seaborne.dboe.transaction.txn.ComponentIds ;
 import org.seaborne.dboe.transaction.txn.L ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.dboe.transaction.txn.journal.JournalEntry ;
@@ -62,23 +69,45 @@ public class MainCohort {
         }
         return x2 ; 
     }
-
     
     public static void main(String... args) {
+        SystemIndex.setFileMode(FileMode.direct); // IGNORED
+        ComponentId cid = ComponentIds.idDev ;
+        FileSet fs = FileSet.mem();
+        //fs = new FileSet("BPT", "tree") ;
         
-        for ( int i = 0 ; i < 5 ; i++ ) {
-            int[] x1 = Gen.rand(10, 1, 100) ;
-            int[] x2 = permute2(x1) ;
-            int[] x3 = Gen.shuffle(x1, 4*x1.length) ;
-            System.out.println(Gen.strings(x1)) ;
-            System.out.println(Gen.strings(x2)) ;
-            System.out.println(Gen.strings(x3)) ;
-            System.out.println() ;
-        }
-        System.exit(0) ;
+        BPlusTree bpt1 = BPlusTreeFactory.createBPTree(cid, fs, RecordLib.recordFactory) ;
+        BPlusTree bpt = BPlusTreeFactory.addTracking(bpt1) ;
+        Journal journal = Journal.create(fs.getLocation()) ;
+        Transactional holder = TransactionalFactory.create(journal, bpt) ;
         
+        //dump(holder, bpt) ;
         
+        int x1 = Txn.executeReadReturn(holder, ()-> {
+            Record maxRecord = bpt.maxKey() ;
+            if ( maxRecord == null ) return 0 ;
+            return r(maxRecord) ;
+        } ) ;
+
+        System.out.println("x="+x1) ;
+        Txn.executeWrite(holder, () ->{
+            Record r = r(x1+1) ;
+            bpt.insert(r) ;
+        }) ;
         
+        int x2 = Txn.executeReadReturn(holder, ()-> {
+            Record maxRecord = bpt.maxKey() ;
+            if ( maxRecord == null ) return 0 ;
+            return r(maxRecord) ;
+        } ) ;
+        
+        System.out.println("x="+x2) ;
+        elements(holder, bpt) ;
+        System.out.println("DONE") ;
+        System.exit(0); 
+    }
+    
+    public static void main1(String... args) {
         BPT.Logging = false ;
         BlockMgrFactory.AddTracker = false ;
         SystemIndex.setNullOut(true) ;
@@ -135,26 +164,22 @@ public class MainCohort {
     }    
     
     static void elements(BPlusTree bpt) {
-        System.out.print("Elements: ") ;
-        bpt.iterator().forEachRemaining(_1 -> { System.out.print(" "); System.out.print(_1); }  ) ;
-        System.out.println() ;
+        StringBuilder sb = new StringBuilder() ;
+        bpt.iterator().forEachRemaining(record -> { sb.append(" "); sb.append(record.toString()); }  ) ;
+        System.out.flush() ;
+        System.out.print("Elements:") ;
+        System.out.println(sb.toString()) ;
+        System.out.flush() ;
     }
     
     static void elements(Transactional t, BPlusTree bpt) {
-        System.out.print("Elements: ") ;
-        Txn.executeRead(t, () ->
-            bpt.iterator().forEachRemaining(_1 -> { System.out.print(" "); System.out.print(_1); }  ) 
-            );
-        System.out.println() ;
+        Txn.executeRead(t, () -> elements(bpt)) ;
     }
 
     static void dump(Transactional t, BPlusTree bpt) {
-        boolean b = BPT.Logging ;
-        BPT.Logging = false ;
         System.out.println() ;
         Txn.executeRead(t, bpt::dump) ;
         System.out.println() ;
-        BPT.Logging = b ; 
     }
     
     static void dump(BPlusTree bpt) {

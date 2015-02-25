@@ -67,7 +67,7 @@ public class TestBPlusTreeRewriterNonTxn extends Assert
     @Test public void bpt_rewrite_99()  { runTest(5, 1000) ; }
     
     static void runTest(int order, int N)
-    { runOneTest(order, N , recordFactory, false) ; }
+    { runOneTest(order, N , recordFactory, true) ; }
     
     public static void runOneTest(int order, int N, RecordFactory recordFactory, boolean debug)
     {
@@ -76,12 +76,15 @@ public class TestBPlusTreeRewriterNonTxn extends Assert
 
         // ---- Test data
         List<Record> originaldata = TestBPlusTreeRewriterNonTxn.createData(N, recordFactory) ;
+        if ( debug )
+            System.out.println("Test data: "+originaldata) ;
 
         FileSet destination = FileSet.mem() ;
         // ---- Rewrite
         BufferChannel rootState = FileFactory.createBufferChannel(destination, Names.bptExtRoot) ;
         // Write leaves to ...
         BlockMgr blkMgr1 = BlockMgrFactory.create(destination, Names.bptExtTree, bptParams.getCalcBlockSize(), 10, 10) ;
+        System.out.println("Alloc limit: "+ blkMgr1.allocLimit()) ;
         // Write nodes to ...
         BlockMgr blkMgr2 = BlockMgrFactory.create(destination, Names.bptExtTree, bptParams.getCalcBlockSize(), 10, 10) ;
         
