@@ -45,7 +45,8 @@ final public class BlockMgrFreeChain extends BlockMgrWrapper {
 
     @Override
     public void free(Block block) {
-        freeBlocks.add(block) ;
+        if ( block.getId() >= blockMgr.allocLimit() )
+            freeBlocks.add(block) ;
     }
 
     @Override
