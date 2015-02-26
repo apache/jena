@@ -31,15 +31,13 @@ import org.slf4j.LoggerFactory ;
 /** Manage the persistent state of the tree
  * 
  * This consists of last commited root, and the limits on the blocks for both
- * nodes and records, and a checksum. 
+ * nodes and records. 
  * 
- * (rootId/int, nodeAllocLimit/long, recordsAllocLimit/long, crc) 
- * 
- *   
- * */
+ * (rootId/int, nodeAllocLimit/long, recordsAllocLimit/long) 
+ */
 public class BPTStateMgr implements Sync {
     private static Logger log = LoggerFactory.getLogger(BPTStateMgr.class) ;
-    private static final int SizePersistentState = SizeOfInt + SizeOfLong + SizeOfLong + SizeOfInt ;   
+    private static final int SizePersistentState = SizeOfInt + SizeOfLong + SizeOfLong ;   
     
     // These values are the values for a newly created tree.
     private int currentLatestRoot     = 0 ;
