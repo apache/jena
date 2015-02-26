@@ -17,6 +17,9 @@
 
 package org.seaborne.dboe.sys;
 
+import java.util.concurrent.Executor ;
+import java.util.concurrent.Executors ;
+
 import org.apache.jena.atlas.logging.Log ;
 import org.seaborne.dboe.DBOpEnvException ;
 import org.slf4j.Logger ;
@@ -65,6 +68,10 @@ public class SystemBase
     		return false ;
     	return s.startsWith("Windows ") ;
 	}
+    
+    /** A general thread pool */
+    public static Executor executor = Executors.newCachedThreadPool() ;
+
 
     private static boolean determineIf64Bit() {
         String s = System.getProperty("sun.arch.data.model") ;

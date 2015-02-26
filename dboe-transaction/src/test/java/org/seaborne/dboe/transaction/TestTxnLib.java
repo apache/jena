@@ -24,7 +24,6 @@ import static org.junit.Assert.fail ;
 import com.hp.hpl.jena.query.ReadWrite ;
 
 import org.junit.Test ;
-import org.seaborne.dboe.transaction.Txn.ThreadTxn ;
 
 public class TestTxnLib extends AbstractTestTxn {
 
@@ -146,7 +145,7 @@ public class TestTxnLib extends AbstractTestTxn {
     
     @Test public void libTxnThread_1() {
         ThreadTxn t = Txn.threadTxnRead(unit, ()->{}) ;
-        t.exec();
+        t.run();
     }
     
     @Test public void libTxnThread_2() {
@@ -156,7 +155,7 @@ public class TestTxnLib extends AbstractTestTxn {
     @Test(expected=AssertionError.class)
     public void libTxnThread_3() {
         ThreadTxn t = Txn.threadTxnWrite(unit, ()-> fail("")) ;
-        t.exec() ;
+        t.run() ;
     }
 
     @Test public void libTxnThread_10() {
@@ -164,7 +163,7 @@ public class TestTxnLib extends AbstractTestTxn {
         ThreadTxn t = Txn.threadTxnWrite(unit, ()->{ counter1.inc() ;}) ;
         long x2 = counter1.get() ;
         assertEquals("x2", x1, x2) ;
-        t.exec() ;
+        t.run() ;
         long x3 = counter1.get() ;
         assertEquals("x3", x1+1, x3) ;
     }
@@ -176,7 +175,7 @@ public class TestTxnLib extends AbstractTestTxn {
             // Read the "before" state
             ThreadTxn t = Txn.threadTxnRead(unit, ()->{ long z1 = counter1.get() ; assertEquals("Thread read", x1, z1) ; }) ;
             counter1.inc();
-            t.exec(); 
+            t.run(); 
         }) ;
         long x2 = counter1.get() ;
         assertEquals("after", x1+2, x2) ;
@@ -189,7 +188,7 @@ public class TestTxnLib extends AbstractTestTxn {
             assertEquals("Thread", x1, z1) ;
         }) ;
         Txn.executeWrite(unit, ()->counter1.inc()) ;
-        t.exec() ;
+        t.run() ;
         long x2 = counter1.get() ;
         assertEquals("after", x1+1, x2) ;
     }
