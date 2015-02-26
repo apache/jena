@@ -39,6 +39,7 @@ import org.seaborne.dboe.base.file.PlainFileMem ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.Index ;
+import org.seaborne.dboe.sys.SystemBase ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -116,7 +117,7 @@ public final class ExtHash implements Index
         this.dictionaryFile = dictionaryBackingFile ;
         // Start bigger?
         int dictionarySize = 1 ;
-        dictionary = dictionaryFile.ensure(SystemIndex.SizeOfInt).asIntBuffer() ;
+        dictionary = dictionaryFile.ensure(SystemBase.SizeOfInt).asIntBuffer() ;
         this.recordFactory = recordFactory ; 
         
         hashBucketMgr = new HashBucketMgr(recordFactory, blockMgrHashBuckets) ;
@@ -226,7 +227,7 @@ public final class ExtHash implements Index
             log("resize: %d ==> %d", oldSize, newSize) ;
         }
         
-        IntBuffer newDictionary = dictionaryFile.ensure(newSize*SystemIndex.SizeOfInt).asIntBuffer() ;
+        IntBuffer newDictionary = dictionaryFile.ensure(newSize*SystemBase.SizeOfInt).asIntBuffer() ;
         if ( dictionary != null )
         {
             // Fill new dictionary

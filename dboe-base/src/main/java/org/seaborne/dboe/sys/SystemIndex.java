@@ -51,9 +51,7 @@ public class SystemIndex
     public static final int SegmentSize             = 8*1024*1024 ; // intValue("SegmentSize", 8*1024*1024) ;
     
     // ---- Cache sizes (within the JVM)
-    
-    public static final int ObjectFileWriteCacheSize = 8*1024 ;
-    
+
     /** Size of Node to NodeId cache.
      *  Used to map from Node to NodeId spaces.
      *  Used for loading and for query preparation.
