@@ -18,18 +18,14 @@
 
 import org.apache.maven.it.Verifier;
 
-File testDir = new File("target/it/schemagen-integration-2");
+File testDir = new File("target/it/schemagen-integration-4");
 if (!testDir.exists()) {
     testDir = new File( "jena-maven-tools/" + testDir.getPath() );
 }
 Verifier verifier = new Verifier( testDir.getAbsolutePath() );
 
-String test1 = verifier.getBasedir() + "/target/alt-source-dir/org/example/test/Test1.java";
-// output directory specified, so check the output is there
+String test1 = verifier.getBasedir() + "/target/custom/org/example/test/Test1.java";
 verifier.assertFileMatches( test1, "(?s).*package org.example.test.*public static final Resource Cls.*" );
 
-// NOT present as <source> was overriden for this particular file
-// and <outputDirectory> was not set
 String test2 = verifier.getBasedir() + "/target/classes/org/example/test/Test1.class";
-verifier.assertFileNotPresent(test2);
-
+verifier.assertFilePresent(test2);
