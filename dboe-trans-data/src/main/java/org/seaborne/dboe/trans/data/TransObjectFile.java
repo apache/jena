@@ -77,7 +77,9 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
         super() ;
         this.objFile = objFile ;
         
-        // Atomic 
+        // These may be updated by recovery. Start by setting to the
+        // "clean start" settings.
+        
         length   = new AtomicLong(objFile.length()) ;
         position = new AtomicLong(objFile.position()) ;
         
@@ -128,14 +130,14 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
         // TransactionCoordinator.begin$ where there is a lock.
         long xLength = length.get() ;
         long xPosition = position.get() ;
-        return new TxnObjectFile(length.get(), position.get()) ;
+        return new TxnObjectFile(xLength, xPosition) ;
     }
 
     @Override
     protected ByteBuffer _commitPrepare(TxnId txnId, TxnObjectFile state) {
         ByteBuffer x = ByteBuffer.allocate(2*Long.BYTES) ;
-        x.putLong(state.length) ;
-        x.putLong(state.position) ;
+        x.putLong(objFile.length()) ;
+        x.putLong(objFile.position()) ;
         return x ;
     }
 
@@ -161,7 +163,6 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
             // One will imply the other.
             objFile.truncate(state.length) ;
             //objFile.reposition(state.position) ;
-
             // sync to make sure the file looses the unwanted part.
             // Neater, no abandoned sections (outside crashes).
             objFile.sync() ;
@@ -174,9 +175,7 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
     @Override
     protected void _shutdown() {}
     
-    private void checkBoundsReader(long requestedPoint, TxnObjectFile state) {
-        
-    }
+    private void checkBoundsReader(long requestedPoint, TxnObjectFile state) { }
     
     // The Object file part, with transaction testing.
     @Override
@@ -251,12 +250,8 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
     public long length() {
         super.checkTxn();
         if ( isReadTxn() )
-            // XXX
-            return -1 ;
+            return getState().length ;
             // Reader. Check bounds.
-            
-
-        
         return objFile.length() ;
     }
 
@@ -271,6 +266,5 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
         super.checkTxn();
         return objFile.isEmpty() ;
     }    
-
 }
 
