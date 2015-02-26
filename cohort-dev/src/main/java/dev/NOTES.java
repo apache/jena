@@ -22,7 +22,6 @@ public class NOTES {
     // Mantis / cohort / legion
     // ARQ :: extract Atlas.
     
-    // Always "recovery" / add "no recovery" : TransactionCoordinator.recover
     // CRC .bpt
     
     // Auto safe set of state.
@@ -36,42 +35,26 @@ public class NOTES {
     // Combine BptTxnState and BPTRootMgr.
     // RangeIndexBuilderBPTree and BPlusTreeFactory. Sort out BPlusTreeFactory.
     
-    // Bulkloader/rewriter and then txn trees.
-    
     // Transactional tests on BPTrees
     //   AbstractTestTxnRangeIndex
     
-    // B+Tree commit , versioned root, recovery. 
-    
     // Fast clear (new tree).  Fast clear for dft graph.
-    
-    // Non-transactional:
-    // * BPTreeRecords.split can use links in case it was never transactional.
-    // * No need for access paths.
     
     // Tests of txn after txn
     // No promote -> no access path.
     
     // BPTreeRangeIterator
     //   - use indexes, delay reading blocks.
-    //   - .release pages.
-    //   - Need page.getIterator?
     //   - check for concurrency violation
     
     // Ideal: ("v3")
     //   Per operation mgt struct - collects pages touched etc.
     
-    // Free block management - just in the active area.
-    // Automatic? Because clone-clear happens.
     // Just reset the free block chain per transaction.
 
     // Remove CheckingTree - broken.
 
-    // Clear up being/end bracketing.
-    
-    // BlockAccessBase/BlockAccessMapped needs to track highest block better.
-    // Delete BlockMgrSync - used by BlockMgrCahe
-    // Free chain management for MVCC block mgrs.  BlockMgrFreeChain is enough?
+    // Delete BlockMgrSync - used by BlockMgrCache
     
     // == Base 
     // Move LocationLock next to StoreConnection.
@@ -90,8 +73,6 @@ public class NOTES {
     // Recovery: recover(Redo/undo, data);
     // Prepare: journal.writeREDO, journal.writeUNDO
     // Journal for components: only  writeREDO, writeUNDO
-    
-    // ObjectFile system transactions
     
     // Promotable transactions:
     //    Two counters, writer leading and trailing edge.
