@@ -120,6 +120,14 @@ public class BPlusTreeFactory {
         return createBPTree(cid, fileset, order, -1, readCacheSize, writeCacheSize, factory) ; 
     }
 
+    /** Create a B+Tree by Order */
+    public static BPlusTree createBPTreeByOrder(ComponentId cid, FileSet fileset,
+                                                int order,
+                                                RecordFactory factory)
+    {
+        return createBPTree(cid, fileset, order, -1, SystemIndex.BlockReadCacheSize, SystemIndex.BlockWriteCacheSize, factory) ; 
+    }
+
     /** Knowing all the parameters, create a B+Tree */
     public static BPlusTree createBPTree(ComponentId cid, FileSet fileset, int order, int blockSize,
                                          int readCacheSize, int writeCacheSize,
@@ -136,8 +144,7 @@ public class BPlusTreeFactory {
         }
     
         // Iffy - does not allow for slop.
-        if (blockSize < 0 && order >= 0)
-        {
+        if (blockSize < 0 && order >= 0) {
             // Only in-memory.
             blockSize = BPlusTreeParams.calcBlockSize(order, factory) ;
         }
