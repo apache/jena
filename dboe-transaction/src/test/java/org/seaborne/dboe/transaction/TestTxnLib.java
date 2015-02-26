@@ -20,6 +20,7 @@ package org.seaborne.dboe.transaction;
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertNotEquals ;
 import org.junit.Test ;
+import org.seaborne.dboe.transaction.Txn.ThreadTxn ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 
@@ -137,6 +138,10 @@ public class TestTxnLib extends AbstractTestTxn {
             return counter2.get() ;
         }) ;
         assertEquals("After W and R",x1 , x2) ;
+    }
+    
+    @Test public void libTxnThread_1() {
+        ThreadTxn t = Txn.threadTxnRead(unit, ()->{}) ;
     }
 }
 
