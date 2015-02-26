@@ -20,6 +20,7 @@ package org.apache.jena.query.text.assembler ;
 
 import static org.apache.jena.query.text.assembler.TextVocab.pDirectory ;
 import static org.apache.jena.query.text.assembler.TextVocab.pEntityMap ;
+import static org.apache.jena.query.text.assembler.TextVocab.pQueryAnalyzer ;
 
 import java.io.File ;
 import java.io.IOException ;
@@ -30,6 +31,7 @@ import org.apache.jena.query.text.TextDatasetFactory ;
 import org.apache.jena.query.text.TextIndex ;
 import org.apache.jena.query.text.TextIndexException ;
 import org.apache.jena.riot.system.IRILib ;
+import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.store.Directory ;
 import org.apache.lucene.store.FSDirectory ;
 import org.apache.lucene.store.RAMDirectory ;
@@ -39,6 +41,7 @@ import com.hp.hpl.jena.assembler.Mode ;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.Statement ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 
 public class TextIndexLuceneAssembler extends AssemblerBase {
@@ -75,11 +78,22 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 File dir = new File(path);
                 directory = FSDirectory.open(dir) ;
             }
+            
+            Analyzer queryAnalyzer = null;
+            Statement queryAnalyzerStatement = root.getProperty(pQueryAnalyzer);
+            if (null != queryAnalyzerStatement) {
+                RDFNode qaNode = queryAnalyzerStatement.getObject();
+                if (! qaNode.isResource()) {
+                    throw new TextIndexException("Text query analyzer property is not a resource : " + qaNode);
+                }
+                Resource analyzerResource = (Resource) qaNode;
+                queryAnalyzer = (Analyzer) a.open(analyzerResource);
+            }
 
             Resource r = GraphUtils.getResourceValue(root, pEntityMap) ;
             EntityDefinition docDef = (EntityDefinition)a.open(r) ;
 
-            return TextDatasetFactory.createLuceneIndex(directory, docDef) ;
+            return TextDatasetFactory.createLuceneIndex(directory, docDef, queryAnalyzer) ;
         } catch (IOException e) {
             IO.exception(e) ;
             return null ;

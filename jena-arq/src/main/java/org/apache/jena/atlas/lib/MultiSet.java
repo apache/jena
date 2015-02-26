@@ -50,7 +50,7 @@ public class MultiSet<T> implements Iterable<T>
     /** Does it contain the object? */
     public boolean contains(T obj)  { return map.containsKey(obj) ; }
     
-    /** Yiled one object per element (i.e without counts) */
+    /** Yield one object per element (i.e without counts) */
     public Iterator<T> elements()   { return map.keySet().iterator() ; }
 
     /** Add an object */

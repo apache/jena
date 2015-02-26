@@ -100,7 +100,7 @@ public class textindexdump extends CmdARQ {
     private static void dump(TextIndexLucene textIndex) {
         try {
             Directory directory = textIndex.getDirectory() ;
-            Analyzer analyzer = textIndex.getAnalyzer() ;
+            Analyzer analyzer = textIndex.getQueryAnalyzer() ;
             IndexReader indexReader = DirectoryReader.open(directory) ;
             IndexSearcher indexSearcher = new IndexSearcher(indexReader);
             QueryParser queryParser = new QueryParser(TextIndexLucene.VER, textIndex.getDocDef().getPrimaryField(), analyzer);

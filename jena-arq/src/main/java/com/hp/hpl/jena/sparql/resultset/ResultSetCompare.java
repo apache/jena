@@ -99,9 +99,6 @@ public class ResultSetCompare
         
         //return equivalent(convert(rs1), convert(rs2), new BNodeIso(NodeUtils.sameValue)) ;
         
-        // Add the isomprohism test
-        // Imperfect - need by-value and isomorphism - but this covers test suite needs. 
-
         ResultSetRewindable rs1a = ResultSetFactory.makeRewindable(rs1) ;
         ResultSetRewindable rs2a = ResultSetFactory.makeRewindable(rs2) ;
         
@@ -109,7 +106,7 @@ public class ResultSetCompare
             return true ;
         rs1a.reset() ;    
         rs2a.reset() ;
-        return isomorphic(rs1, rs2) ;
+        return isomorphic(rs1a, rs2a) ;
     }
     
     public static boolean equalsByTest(Collection<Binding> b1, Collection<Binding> b2, EqualityTest match)

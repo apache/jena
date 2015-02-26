@@ -22,7 +22,6 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.QuadAction ;
 
 public class TextDocProducerTriples implements TextDocProducer {
@@ -36,9 +35,8 @@ public class TextDocProducerTriples implements TextDocProducer {
     // therefore whether or not we have to do autocommit
     private final ThreadLocal<Boolean> inTransaction = new ThreadLocal<Boolean>() ;
 
-    // ignore the dataset graph
-    public TextDocProducerTriples(DatasetGraph dsg, EntityDefinition defn, TextIndex indexer) {
-        this.defn = defn ;
+    public TextDocProducerTriples(TextIndex indexer) {
+        this.defn = indexer.getDocDef() ;
         this.indexer = indexer ;
         inTransaction.set(false) ;
     }

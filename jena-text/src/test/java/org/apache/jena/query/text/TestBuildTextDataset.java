@@ -21,6 +21,7 @@ package org.apache.jena.query.text ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.store.Directory ;
 import org.apache.lucene.store.RAMDirectory ;
 import org.junit.BeforeClass ;
@@ -117,7 +118,7 @@ public class TestBuildTextDataset extends BaseTest
         Directory dir = new RAMDirectory() ;
 
         // Join together into a dataset
-        Dataset ds = TextDatasetFactory.createLucene(ds1, dir, entDef) ;
+        Dataset ds = TextDatasetFactory.createLucene(ds1, dir, entDef, (Analyzer) null) ;
 
         return ds ;
     }

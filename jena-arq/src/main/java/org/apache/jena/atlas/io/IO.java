@@ -20,33 +20,21 @@ package org.apache.jena.atlas.io;
 
 import java.io.* ;
 import java.nio.charset.Charset ;
+import java.nio.charset.StandardCharsets ;
 import java.util.zip.GZIPInputStream ;
 import java.util.zip.GZIPOutputStream ;
 
 import org.apache.jena.atlas.RuntimeIOException ;
-import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.system.IRILib ;
-
-import com.hp.hpl.jena.util.FileUtils ;
 
 public class IO
 {
     public static final int EOF = -1 ;
     public static final int UNSET = -2 ;
        
-    /** Java name for UTF-8 encoding */
-    public static final String encodingUTF8     = "utf-8" ;
-    public static final String encodingAscii    = "ascii" ;
-    
-    private static Charset utf8 = null ;
-    private static Charset     ascii         = null ;
-    static {
-        try {
-            utf8 = Charset.forName(encodingUTF8) ;
-            ascii = Charset.forName(encodingAscii) ;
-        } catch (Throwable ex) { Log.fatal(FileUtils.class, "Failed to get charset", ex) ; }
-    }
+    private static Charset utf8  = StandardCharsets.UTF_8 ;
+    private static Charset ascii = StandardCharsets.US_ASCII ;
     
     /** Open an input stream to a file. 
      * If the filename is null or "-", return System.in

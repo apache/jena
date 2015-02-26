@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package tdb.tools;
+package tdb.tools ;
 
 import java.util.Iterator ;
 
@@ -30,64 +30,54 @@ import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-/** copy one index to another, possibly chnagign the order */ 
-public class tdbgenindex
-{
-    public static void main(String...argv)
-    {
+/** copy one index to another, possibly changing the order */
+public class tdbgenindex {
+    public static void main(String... argv) {
         // Usage: srcLocation indexName dstLocation indexName
-        if ( argv.length != 4 )
-        {
-            System.err.println("Usage: "+Utils.classShortName(tdbgenindex.class)+" srcLocation srcIndex dstLocation dstIndex") ;
+        if ( argv.length != 4 ) {
+            System.err.println("Usage: " + Utils.classShortName(tdbgenindex.class) + " srcLocation srcIndex dstLocation dstIndex") ;
             System.exit(1) ;
         }
-        
+
         Location srcLoc = Location.create(argv[0]) ;
         String srcIndexName = argv[1] ;
-        
+
         Location dstLoc = Location.create(argv[2]) ;
         String dstIndexName = argv[3] ;
-        
+
         int readCacheSize = 0 ;
         int writeCacheSize = -1 ;
-        
-        if ( srcIndexName.length() != dstIndexName.length() )
-        {
-            System.err.println("srcIndexName.length() != dstIndexName.length() "+srcIndexName+" :: "+dstIndexName ) ;
+
+        if ( srcIndexName.length() != dstIndexName.length() ) {
+            System.err.println("srcIndexName.length() != dstIndexName.length() " + srcIndexName + " :: " + dstIndexName) ;
             System.exit(1) ;
         }
-            
+
         String primary ;
         int dftKeyLength ;
         int dftValueLength ;
-        
-        if ( srcIndexName.length() == 3 )
-        {
+
+        if ( srcIndexName.length() == 3 ) {
             primary = Names.primaryIndexTriples ;
             dftKeyLength = SystemTDB.LenIndexTripleRecord ;
             dftValueLength = 0 ;
-        }
-        else if ( srcIndexName.length() == 4 )
-        {
+        } else if ( srcIndexName.length() == 4 ) {
             primary = Names.primaryIndexQuads ;
             dftKeyLength = SystemTDB.LenIndexQuadRecord ;
             dftValueLength = 0 ;
-        }
-        else
-        {
+        } else {
             System.err.println("indexlength != 3 or 4") ;
             System.exit(1) ;
             primary = null ;
             dftKeyLength = 0 ;
             dftValueLength = 0 ;
         }
-        
+
         TupleIndex srcIdx = SetupTDB.makeTupleIndex(srcLoc, primary, srcIndexName, srcIndexName, dftKeyLength) ;
         TupleIndex dstIdx = SetupTDB.makeTupleIndex(dstLoc, primary, dstIndexName, dstIndexName, dftKeyLength) ;
-        
+
         Iterator<Tuple<NodeId>> iter = srcIdx.all() ;
-        for ( ; iter.hasNext() ; )
-        {
+        for ( ; iter.hasNext() ; ) {
             Tuple<NodeId> tuple = iter.next() ;
             dstIdx.add(tuple) ;
         }
@@ -95,4 +85,3 @@ public class tdbgenindex
         dstIdx.close() ;
     }
 }
-

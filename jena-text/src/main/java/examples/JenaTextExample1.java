@@ -24,6 +24,7 @@ import org.apache.jena.query.text.EntityDefinition ;
 import org.apache.jena.query.text.TextDatasetFactory ;
 import org.apache.jena.query.text.TextQuery ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.store.Directory ;
 import org.apache.lucene.store.RAMDirectory ;
 import org.slf4j.Logger ;
@@ -65,7 +66,7 @@ public class JenaTextExample1
         Directory dir =  new RAMDirectory();
         
         // Join together into a dataset
-        Dataset ds = TextDatasetFactory.createLucene(ds1, dir, entDef) ;
+        Dataset ds = TextDatasetFactory.createLucene(ds1, dir, entDef, (Analyzer) null) ;
         
         return ds ;
     }

@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.core.QuadAction;
  */
 public class DummyDocProducer implements TextDocProducer {
 
-    public DummyDocProducer(DatasetGraph dsg, TextIndex textIndex) {}
+    public DummyDocProducer(TextIndex textIndex) {}
 
     int count;
 

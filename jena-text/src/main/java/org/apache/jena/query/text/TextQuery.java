@@ -37,6 +37,7 @@ public class TextQuery
     public static String IRI = "http://jena.apache.org/#text" ;
     public static final Symbol textIndex = Symbol.create(NS+"index") ;
     public static final Symbol docProducer = Symbol.create(NS+"docProducer") ;
+    public static final Symbol textDocProducer = Symbol.create(NS+"textDocProducer") ;
     public static final String PATH         = "org.apache.jena.query.text";
     
     static private String metadataLocation  = "org/apache/jena/query/text/properties.xml" ;

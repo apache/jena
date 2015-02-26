@@ -31,14 +31,15 @@ public class TextVocab
     public static final Resource textDataset        = Vocab.resource(NS, "TextDataset") ;
     public static final Property pDataset           = Vocab.property(NS, "dataset") ;
     public static final Property pIndex             = Vocab.property(NS, "index") ;
-    public static final Property pDocProducer       = Vocab.property(NS, "docProducer");
+    public static final Property pTextDocProducer   = Vocab.property(NS, "textDocProducer") ;
     public static final Property pCloseIndexOnClose = Vocab.property(NS, "closeIndexOnClose");
-
+   
     public static final Resource textIndex          = Vocab.resource(NS, "TextIndex") ;
     public static final Resource textIndexSolr      = Vocab.resource(NS, "TextIndexSolr") ;
     public static final Resource textIndexLucene    = Vocab.resource(NS, "TextIndexLucene") ;
     public static final Property pServer            = Vocab.property(NS, "server") ;            // Solr
     public static final Property pDirectory         = Vocab.property(NS, "directory") ;         // Lucene
+    public static final Property pQueryAnalyzer     = Vocab.property(NS, "queryAnalyzer") ;
     public static final Property pEntityMap         = Vocab.property(NS, "entityMap") ;
     
     // Entity definition

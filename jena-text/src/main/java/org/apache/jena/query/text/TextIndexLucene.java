@@ -76,6 +76,7 @@ public class TextIndexLucene implements TextIndex {
     private final EntityDefinition docDef ;
     private final Directory        directory ;
     private final Analyzer         analyzer ;
+    private final Analyzer         queryAnalyzer ;
     
     // The IndexWriter can't be final because we may have to recreate it if rollback() is called.
     // However, it needs to be volatile in case the next write transaction is on a different thread,
@@ -88,8 +89,9 @@ public class TextIndexLucene implements TextIndex {
      * 
      * @param directory The Lucene Directory for the index
      * @param def The EntityDefinition that defines how entities are stored in the index
+     * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
      */
-    public TextIndexLucene(Directory directory, EntityDefinition def) {
+    public TextIndexLucene(Directory directory, EntityDefinition def, Analyzer queryAnalyzer) {
         this.directory = directory ;
         this.docDef = def ;
 
@@ -108,6 +110,7 @@ public class TextIndexLucene implements TextIndex {
         }
         
         this.analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(VER), analyzerPerField) ;
+        this.queryAnalyzer = (null != queryAnalyzer) ? queryAnalyzer : analyzer ;
 
         openIndexWriter();
     }
@@ -132,6 +135,10 @@ public class TextIndexLucene implements TextIndex {
 
     public Analyzer getAnalyzer() {
         return analyzer ;
+    }
+    
+    public Analyzer getQueryAnalyzer() {
+        return queryAnalyzer ;
     }
     
     public IndexWriter getIndexWriter() {
@@ -260,7 +267,7 @@ public class TextIndexLucene implements TextIndex {
     private List<Map<String, Node>> get$(IndexReader indexReader, String uri) throws ParseException, IOException {
         String escaped = QueryParserBase.escape(uri) ;
         String qs = docDef.getEntityField() + ":" + escaped ;
-        Query query = parseQuery(qs, docDef.getPrimaryField(), analyzer) ;
+        Query query = parseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
         ScoreDoc[] sDocs = indexSearcher.search(query, 1).scoreDocs ;
         List<Map<String, Node>> records = new ArrayList<Map<String, Node>>() ;
@@ -307,7 +314,7 @@ public class TextIndexLucene implements TextIndex {
 
     private List<Node> query$(IndexReader indexReader, String qs, int limit) throws ParseException, IOException {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
-        Query query = parseQuery(qs, docDef.getPrimaryField(), analyzer) ;
+        Query query = parseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
         if ( limit <= 0 )
             limit = MAX_N ;
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
