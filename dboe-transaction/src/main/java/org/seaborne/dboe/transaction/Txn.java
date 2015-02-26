@@ -146,8 +146,8 @@ public class Txn {
         return threadAction ;
     }
     
-    /** Create a thread-backed delayed WRITE-commit action. */
-    public static ThreadTxn threadTxnWriteCommit(Transactional trans, Runnable action) {
+    /** Create a thread-backed delayed WRITE  action. */
+    public static ThreadTxn threadTxnWrite(Transactional trans, Runnable action) {
         ThreadTxn threadAction = new ThreadTxn(action) ;
         Semaphore semaStartup = new Semaphore(0, true) ; 
         new Thread( ()-> {
@@ -166,7 +166,7 @@ public class Txn {
         return threadAction ;
     }
     
-    /** Create a thread-backed delayed WRITE-abort action. */
+    /** Create a thread-backed delayed WRITE-abort action (testing). */
     public static ThreadTxn threadTxnWriteAbort(Transactional trans, Runnable action) {
         ThreadTxn threadAction = new ThreadTxn(action) ;
         Semaphore semaStartup = new Semaphore(0, true) ; 

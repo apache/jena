@@ -19,10 +19,12 @@ package org.seaborne.dboe.transaction;
 
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertNotEquals ;
-import org.junit.Test ;
-import org.seaborne.dboe.transaction.Txn.ThreadTxn ;
+import static org.junit.Assert.fail ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
+
+import org.junit.Test ;
+import org.seaborne.dboe.transaction.Txn.ThreadTxn ;
 
 public class TestTxnLib extends AbstractTestTxn {
 
@@ -140,8 +142,58 @@ public class TestTxnLib extends AbstractTestTxn {
         assertEquals("After W and R",x1 , x2) ;
     }
     
+    // Tests for thread transactions.
+    
     @Test public void libTxnThread_1() {
         ThreadTxn t = Txn.threadTxnRead(unit, ()->{}) ;
+        t.exec();
     }
+    
+    @Test public void libTxnThread_2() {
+        ThreadTxn t = Txn.threadTxnWrite(unit, ()-> fail("")) ;
+    }
+
+    @Test(expected=AssertionError.class)
+    public void libTxnThread_3() {
+        ThreadTxn t = Txn.threadTxnWrite(unit, ()-> fail("")) ;
+        t.exec() ;
+    }
+
+    @Test public void libTxnThread_10() {
+        long x1 = counter1.get() ;  
+        ThreadTxn t = Txn.threadTxnWrite(unit, ()->{ counter1.inc() ;}) ;
+        long x2 = counter1.get() ;
+        assertEquals("x2", x1, x2) ;
+        t.exec() ;
+        long x3 = counter1.get() ;
+        assertEquals("x3", x1+1, x3) ;
+    }
+    
+    @Test public void libTxnThread_11() {
+        long x1 = counter1.get() ;  
+        Txn.executeWrite(unit, ()->{
+            counter1.inc();
+            // Read the "before" state
+            ThreadTxn t = Txn.threadTxnRead(unit, ()->{ long z1 = counter1.get() ; assertEquals("Thread read", x1, z1) ; }) ;
+            counter1.inc();
+            t.exec(); 
+        }) ;
+        long x2 = counter1.get() ;
+        assertEquals("after", x1+2, x2) ;
+    }
+
+    @Test public void libTxnThread_12() {
+        long x1 = counter1.get() ;  
+        ThreadTxn t = Txn.threadTxnRead(unit, () -> {
+            long z1 = counter1.get() ;
+            assertEquals("Thread", x1, z1) ;
+        }) ;
+        Txn.executeWrite(unit, ()->counter1.inc()) ;
+        t.exec() ;
+        long x2 = counter1.get() ;
+        assertEquals("after", x1+1, x2) ;
+    }
+
 }
 
+ 

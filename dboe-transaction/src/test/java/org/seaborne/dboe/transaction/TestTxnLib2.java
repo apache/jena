@@ -26,7 +26,7 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 public class TestTxnLib2 extends Assert {
-    // With setup/teardown
+    // With setup/teardown / not from AbstractTestTxn
     private final long InitValue = 7 ;  
     TransactionalInteger integer ; 
     
