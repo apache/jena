@@ -117,16 +117,6 @@ public class BlockMgrWrapper implements BlockMgr {
     }
 
     @Override
-    public void beginBatch() {
-        blockMgr.beginBatch() ;
-    }
-
-    @Override
-    public void endBatch() {
-        blockMgr.endBatch() ;
-    }
-
-    @Override
     public void beginRead() {
         blockMgr.beginRead() ;
     }

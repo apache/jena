@@ -39,7 +39,7 @@ public class TestBPlusTreeNonTxn extends AbstractTestRangeIndex {
     // The tracker checking can impose more constraints than are needed
     // giving false negatives.  Iterator aren't tracked (they may not
     // be consumed; don't release pages properly)
-    static boolean addTracker = true  ;
+    static boolean addTracker = false  ;
     // Panic.
     static boolean addLogger  = false  ;
 
@@ -90,7 +90,6 @@ public class TestBPlusTreeNonTxn extends AbstractTestRangeIndex {
         if ( addTracker )
             bpt = BPlusTreeFactory.addTracking(bpt) ;
         bpt.nonTransactional() ;
-        bpt.startBatch();
         return bpt ;
     }
 }

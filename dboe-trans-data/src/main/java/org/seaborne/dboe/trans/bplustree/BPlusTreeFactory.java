@@ -281,8 +281,6 @@ public class BPlusTreeFactory {
     private static int createEmptyBPT(BPTStateMgr stateMgr, BPTreeNodeMgr nodeManager, BPTreeRecordsMgr recordsMgr) { 
         // Create an empty records block.
         
-        nodeManager.startBatch(); 
-        recordsMgr.startBatch(); 
         nodeManager.startUpdate();
         recordsMgr.startUpdate();
         // Empty tree.
@@ -319,8 +317,6 @@ public class BPlusTreeFactory {
         } finally {
             recordsMgr.finishUpdate();
             nodeManager.finishUpdate();
-            recordsMgr.finishBatch(); 
-            nodeManager.finishBatch(); 
         }
         // stateMgr.setState(0, 1, 1);
     }

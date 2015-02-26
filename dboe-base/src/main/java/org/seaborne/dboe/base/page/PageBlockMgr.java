@@ -195,12 +195,6 @@ public class PageBlockMgr<T extends Page> implements Closeable
         }
     }
 
-    /** Signal the start of a batch */
-    public void startBatch()       { blockMgr.beginBatch() ; }
-    
-    /** Signal the completion of a batch */
-    public void finishBatch()      { blockMgr.endBatch() ; }
-
     /** Signal the start of an update operation */
     public void startUpdate()       { blockMgr.beginUpdate() ; }
     

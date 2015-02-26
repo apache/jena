@@ -27,6 +27,12 @@ public class NOTES {
     
     // Auto safe set of state.
 
+    // Const
+    //   SystemBase 
+    //   SystemFile
+    //   SystemBPTree 1
+    //   SystemBPTree 2
+    
     // Combine BptTxnState and BPTRootMgr.
     // RangeIndexBuilderBPTree and BPlusTreeFactory. Sort out BPlusTreeFactory.
     

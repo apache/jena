@@ -106,16 +106,6 @@ public class BlockMgrSync implements BlockMgr {
     }
     
     @Override
-    synchronized public void beginBatch() {
-        blockMgr.beginBatch() ;
-    }
-
-    @Override
-    synchronized public void endBatch() {
-        blockMgr.endBatch() ;
-    }
-
-    @Override
     synchronized public void beginRead() {
         blockMgr.beginRead() ;
     }

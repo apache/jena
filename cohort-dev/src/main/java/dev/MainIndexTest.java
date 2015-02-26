@@ -20,6 +20,7 @@ package dev;
 import static java.util.stream.IntStream.range ;
 import static org.seaborne.dboe.test.RecordLib.intToRecord ;
 import static org.seaborne.dboe.test.RecordLib.r ;
+import static org.seaborne.dboe.test.RecordLib.toIntList ;
 
 import java.io.PrintStream ;
 import java.util.ArrayList ;
@@ -29,11 +30,10 @@ import java.util.List ;
 import java.util.stream.Collectors ;
 
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.junit.Test ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrLogger ;
-import org.seaborne.dboe.base.block.FileMode ;
 import org.seaborne.dboe.base.file.BufferChannel ;
-import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.test.RecordLib ;
@@ -41,13 +41,7 @@ import org.seaborne.dboe.trans.bplustree.BPT ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
 import org.seaborne.dboe.trans.bplustree.BlockTracker ;
-import org.seaborne.dboe.transaction.Transactional ;
-import org.seaborne.dboe.transaction.TransactionalFactory ;
-import org.seaborne.dboe.transaction.Txn ;
-import org.seaborne.dboe.transaction.txn.ComponentId ;
-import org.seaborne.dboe.transaction.txn.ComponentIds ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
-import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 public class MainIndexTest {
     // Extract and debug tests
@@ -55,71 +49,35 @@ public class MainIndexTest {
     static { LogCtl.setLog4j() ; }
 
     public static void main(String... args) {
-        if ( false ) {
-            BPT.forcePromoteModes = true ;
-            BPT.promoteDuplicateNodes = true ;
-            BPT.promoteDuplicateRecords  = true ;
-            BPlusTree bpt = makeRangeIndex(2) ;
-            Record r = intToRecord(5) ;
-            boolean z1 = bpt.insert(r) ;
-            boolean z2 = bpt.insert(r) ;
-            bpt.dump();
-            boolean x1 = bpt.delete(r) ;
-            boolean x2 = bpt.delete(r) ;
-            System.out.println(z1); 
-            System.out.println(z2); 
-            System.out.println(x1); 
-            System.out.println(x2); 
-            System.exit(0) ;
-        }
+        SystemIndex.setNullOut(true) ;
+        new MainIndexTest().tree_iter_2_02();
+    }
+    
+    @Test
+    public void tree_iter_2_02() {
+        int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
+        BPlusTree rIndex = makeRangeIndex(2) ;
+        TestLib.add(rIndex, keys) ;
+//        rIndex.dump();
+//        rIndex.check();
+        List<Integer> x = toIntList(rIndex.iterator(r(4), r(7))) ;
+        List<Integer> expected = toIntList(4, 5, 6) ;
         
-        // Persistent componentids.
-        SystemIndex.setFileMode(FileMode.direct);
-        ComponentId cid = ComponentIds.idDev ;
-        FileSet fs = FileSet.mem();
-        fs = new FileSet("BPT", "tree") ;
-        BPlusTree bpt = BPlusTreeFactory.createBPTree(cid, fs, RecordLib.recordFactory) ;
-        Journal journal = Journal.create(fs.getLocation()) ;
-        Transactional holder = TransactionalFactory.create(journal, bpt) ;
-        int x1 = Txn.executeReadReturn(holder, ()-> {
-            Record maxRecord = bpt.maxKey() ;
-            if ( maxRecord == null ) return 0 ;
-            return r(maxRecord) ;
-        } ) ;
-        System.out.println("x="+x1) ;
-        Txn.executeWrite(holder, () ->{
-            Record r = r(x1+1) ;
-            bpt.insert(r) ;
-        }) ; 
-        int x2 = Txn.executeReadReturn(holder, ()-> {
-            Record maxRecord = bpt.maxKey() ;
-            if ( maxRecord == null ) return 0 ;
-            return r(maxRecord) ;
-        } ) ;
-        System.out.println("x="+x2) ;
+        System.out.println("Actual   = "+x) ;
+        System.out.println("Expected = "+expected) ;
         
-        System.out.println("DONE") ;
-        System.exit(0); 
+        //assertEquals(expected, x) ;
         
-    }    
+    }
+
+    
     public static void tree_keys() {
-//        int[] keys1 = {643, 704, 557, 448, 461, 216, 610, 810, 620, 289, 283, 900, 443, 810, 739, 756, 256, 968, 450, 715} ;
-//        int[] keys2 = {968, 756, 448, 643, 620, 443, 557, 216, 289, 810, 450, 283, 900, 715, 704, 810, 739, 610, 461, 256};
-//        int[] keys1 = {643, 704, 557, 448, 461, 216, 610, 620, 289, 283, 900, 443, 810, 739, 756, 256, 968, 450, 715} ;
-//        int[] keys2 = {968, 756, 448, 643, 620, 443, 557, 216, 289, 450, 283, 900, 715, 704, 810, 739, 610, 461, 256};
-
-//        int[] keys1 = {343, 107, 810, 344, 618, 225, 421, 194, 195, 407, 525, 785, 769, 26, 785, 228, 804, 37, 626, 970} ;
-//        int[] keys2 = {194, 343, 785, 769, 970, 421, 618, 225, 107, 785, 525, 344, 228, 626, 810, 37, 804, 26, 407, 195}; 
-
-        int[] keys1 = {343, 107, 810, 344, 618, 225, 421, 194, 195, 407, 525, 785, 769, 26, 785, 228, 804, 37, 626, 970} ;
-        int[] keys2 = {194, 343, 785, 769, 970, 421, 618, 225, 107, 785, 525, 344, 228, 626, 810, 37, 804, 26, 407, 195}; 
-        
-        printordered(keys1) ;
-        printordered(keys2) ;
-        
         LogCtl.disable(BlockTracker.logger.getName()) ;
         LogCtl.disable(BlockMgr.class) ;
 
+        int[] keys1 = {} ;
+        int[] keys2 = {} ;
+        
         BPlusTree bpt = makeRangeIndex(2) ;
         TestLib.testInsertDelete(bpt, keys1, keys2);
         System.out.println("Finished");
@@ -244,7 +202,6 @@ public class MainIndexTest {
             bpt =  BPlusTreeFactory.rebuild(bpt, rootState, mgrNodes, mgrRecords) ;
         }
         bpt.nonTransactional() ;
-        bpt.startBatch();
         return bpt ;
     }
     private static void resetAnyTracking(BPlusTree bpt) {

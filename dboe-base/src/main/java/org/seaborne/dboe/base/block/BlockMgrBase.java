@@ -44,9 +44,6 @@ public abstract class BlockMgrBase implements BlockMgr
     
     @Override final public String getLabel() { return label ; } 
 
-    @Override public void beginBatch()   {}
-    @Override public void endBatch()     {}
-    
     @Override public void endUpdate()       {}
     @Override public void beginUpdate()     {}
     @Override public void beginRead()       {}

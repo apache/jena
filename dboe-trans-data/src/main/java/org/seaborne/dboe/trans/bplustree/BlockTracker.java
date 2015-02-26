@@ -93,8 +93,7 @@ public class BlockTracker implements BlockMgr {
     }
     
     private int          inRead     = 0 ;
-    private boolean      inUpdate   = false ;
-    private boolean      inBatch    = false ;
+    private int          inUpdate   = 0 ;
     private final Logger log ;
     private final String label ;
 
@@ -288,26 +287,11 @@ public class BlockTracker implements BlockMgr {
     }
 
     @Override
-    public void beginBatch() {
-        if ( inBatch )
-            error("Already in a batch") ;
-        inBatch = true ;
-    }
-
-    @Override
-    public void endBatch() {
-        if ( ! inBatch )
-            error("Not in a batch") ;
-        inBatch = false ;
-    }
-
-    @Override
     synchronized public void beginRead() {
         synchronized (this) {
-            if ( inUpdate )
+            if ( inUpdate != 0 )
                 error(BeginRead, "beginRead when already in update") ;
             inRead++ ;
-            inUpdate = false ;
         }
         blockMgr.beginRead() ;
     }
@@ -317,7 +301,7 @@ public class BlockTracker implements BlockMgr {
         synchronized (this) {
             if ( inRead == 0 )
                 error(EndRead, "endRead but not in read") ;
-            if ( inUpdate )
+            if ( inUpdate != 0 )
                 error(EndRead, "endRead when in update") ;
 
             checkEmpty("Outstanding write blocks at end of read operations!", activeWriteBlocks) ;
@@ -327,8 +311,6 @@ public class BlockTracker implements BlockMgr {
                 checkEmpty("Outstanding read blocks at end of read operations", activeReadBlocks) ;
                 clearBlockTracking() ;
             }
-
-            inUpdate = false ;
             inRead-- ;
         }
         blockMgr.endRead() ;
@@ -339,9 +321,9 @@ public class BlockTracker implements BlockMgr {
         synchronized (this) {
             if ( inRead > 0 )
                 error(BeginUpdate, "beginUpdate when already in read") ;
-            if ( inUpdate )
+            if ( inUpdate > 0 )
                 error(BeginUpdate, "beginUpdate when already in update") ;
-            inUpdate = true ;
+            inUpdate++ ;
             clearBlockTracking();
         }
         blockMgr.beginUpdate() ;
@@ -350,7 +332,7 @@ public class BlockTracker implements BlockMgr {
     @Override
     public void endUpdate() {
         synchronized (this) {
-            if ( !inUpdate )
+            if ( inUpdate == 0 )
                 error(EndUpdate, "endUpdate but not in update") ;
             if ( inRead > 0 )
                 error(EndUpdate, "endUpdate when in read") ;
@@ -359,24 +341,20 @@ public class BlockTracker implements BlockMgr {
 
             checkEmpty("Outstanding write blocks at end of update operations", activeWriteBlocks) ;
 
-            inUpdate = false ;
-            inRead = 0 ;
+            inUpdate-- ;
             clearBlockTracking() ;
         }
         blockMgr.endUpdate() ;
     }
 
     private void checkUpdate(Action action) {
-        if ( ! inBatch )
-            warn(action, "update called outside a batch") ;
-        if ( ! inUpdate )
+        if ( inUpdate == 0 )
             error(action, "called outside update") ;
     }
 
     private void checkRead(Action action) {
-        // Iterators read blocks in a delayed fashion. 
-//        if ( !inUpdate && inRead == 0 )
-//            error(action, "Called outside update and read") ;
+        if ( inUpdate == 0 && inRead == 0 )
+            error(action, "Called outside update and read") ;
     }
 
     private void checkEmpty(String string, MultiSet<Long> blocks) {

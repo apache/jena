@@ -267,20 +267,6 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
     }
 
     @Override
-    public void beginBatch() {
-        if ( inBatch )
-            error("Already in a batch") ;
-        inBatch = true ;
-    }
-
-    @Override
-    public void endBatch() {
-        if ( ! inBatch )
-            error("Not in a batch") ;
-        inBatch = false ;
-    }
-
-    @Override
     synchronized public void beginRead() {
         synchronized (this) {
             if ( inUpdate )

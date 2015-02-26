@@ -58,23 +58,20 @@ public class MainCohort {
         //                    but ok if run mapped first. 
         // mapped + tracking: initial: warn ; continuing: warn
         
-        // direct, no track: initial: "getRead - isModified - tree[0]"
-        //   But not memory -> caching? Yses, if cachign enabled.
-        //   The block is in the cache as a read block.
-        //      --> PageBlockMgr.getRead$
-        
         SystemIndex.setFileMode(FileMode.direct);
         //SystemIndex.setFileMode(FileMode.mapped) ;
         ComponentId cid = ComponentIds.idDev ;
         
         FileSet fs = FileSet.mem();
-        if ( false ) {
+        
+        if ( true && ! fs.isMem()) {
+            System.out.println("RESET") ;
             FileOps.clearAll("BPT");
             fs = new FileSet("BPT", "tree") ;
         }
         
         BPlusTree bpt1 = BPlusTreeFactory.createBPTree(cid, fs, RecordLib.recordFactory) ;
-        BPlusTree bpt = false ? BPlusTreeFactory.addTracking(bpt1) : bpt1 ;
+        BPlusTree bpt = true ? BPlusTreeFactory.addTracking(bpt1) : bpt1 ;
         Journal journal = Journal.create(fs.getLocation()) ;
         Transactional holder = TransactionalFactory.create(journal, bpt) ;
         

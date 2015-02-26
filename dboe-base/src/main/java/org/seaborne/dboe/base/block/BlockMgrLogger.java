@@ -149,18 +149,6 @@ public class BlockMgrLogger implements BlockMgr // extends BlockMgrWrapper
     }
 
     @Override
-    public void beginBatch() {
-        info(">> start batch") ;
-        blockMgr.beginBatch() ;
-    }
-
-    @Override
-    public void endBatch() {
-        blockMgr.endBatch() ;
-        info("<< end batch") ;
-    }
-
-    @Override
     public void beginRead() {
         info("> start read") ;
         blockMgr.beginRead() ;

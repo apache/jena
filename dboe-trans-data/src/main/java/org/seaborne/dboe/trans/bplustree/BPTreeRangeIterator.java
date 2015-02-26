@@ -48,7 +48,7 @@ class BPTreeRangeIterator implements Iterator<Record> {
         this.minRecord = minRec ;
         this.maxRecord = maxRec ;
         BPTreeRecords r = loadStack(node) ;
-        current = r.getRecordBuffer().iterator(minRecord, maxRecord) ;
+        current = getRecordsIterator(r, minRecord, maxRecord) ;
     }
 
     @Override
@@ -57,11 +57,6 @@ class BPTreeRangeIterator implements Iterator<Record> {
             return false ;
         if ( slot != null )
             return true ;
-//        if ( current != null && current.hasNext() ) {
-//            slot = current.next() ;
-//            return true ;
-//        }
-        
         while(current != null && !current.hasNext()) {
             current = moveOnCurrent() ;
         } 
@@ -90,59 +85,60 @@ class BPTreeRangeIterator implements Iterator<Record> {
         BPTreeRecords r = null ;
         if (p instanceof BPTreeNode) {
             r = loadStack((BPTreeNode)p) ;
-//            if ( logging(log) ) {
-//                log(log, "moveOnCurrent: Node: %s", p.label()) ;
-//                log(log, "moveOnCurrent:     r="+r.label()) ;
-//            }
         }
         else {
-//            if ( logging(log) )
-//                log(log, "moveOnCurrent: Records: "+p.label()) ;
             r = (BPTreeRecords)p ;
         }
-        return r.getRecordBuffer().iterator(minRecord, maxRecord) ;
+        return getRecordsIterator(r, minRecord, maxRecord) ;
+    }
+    
+    // ---- Places we touch blocks. 
+    
+    private static Iterator<Record> getRecordsIterator(BPTreeRecords records, Record minRecord, Record maxRecord) {
+        records.bpTree.startReadBlkMgr();
+        Iterator<Record> iter = records.getRecordBuffer().iterator(minRecord, maxRecord) ;
+        records.bpTree.finishReadBlkMgr();
+        return iter ;
     }
     
     private BPTreeRecords loadStack(BPTreeNode node) {
         AccessPath path = new AccessPath(null) ;
+        node.bpTree.startReadBlkMgr();
+        
         if ( minRecord == null )
             node.internalMinRecord(path) ;
         else
             node.internalSearch(path, minRecord) ;
-//        if ( logging(log) )
-//            log(log, "loadStack: node: %s", node.label()) ;
-        
         List<AccessStep> steps = path.getPath() ;
-//        if ( logging(log) )
-//            log(log, "loadStack: path = "+path) ;
         for ( AccessStep step : steps ) {
-//            if ( logging(log) )
-//                log(log, "           step = "+step) ;
             BPTreeNode n = step.node ; 
             Iterator<BPTreePage> it = n.iterator(minRecord, maxRecord) ;
             if ( it == null || ! it.hasNext() )
                 continue ;
-            // Drop the first  
-            // TODO Why??
             BPTreePage p = it.next() ;
-//            if ( logging(log) )
-//                log(log, "           drop: %s", p.label()) ;
             stack.push(it) ;
-//            if ( logging(log) )
-//                log(log, "loadStack: push : "+n.label()) ;
         }
-        
         BPTreePage p = steps.get(steps.size()-1).page ;
         if ( ! ( p instanceof BPTreeRecords ) )
             throw new InternalErrorException("Last path step not to a records block") ;
+        node.bpTree.finishReadBlkMgr();
         return (BPTreeRecords)p ;
     }
+
+    // ---- 
 
     private void end() {
         finished = true ;
         current = null ;
     }
     
+    // ---- 
+    
+    public void close() {
+        if ( ! finished )
+            end() ;
+    }
+
     @Override
     public Record next() {
         if ( ! hasNext() )
@@ -151,8 +147,6 @@ class BPTreeRangeIterator implements Iterator<Record> {
         if ( r == null )
             throw new InternalErrorException("Null slot after hasNext is true") ;
         slot = null ;
-//        if ( logging(log) )
-//            log(log, "Yield %s", r) ; 
         return r ;
     }
 }

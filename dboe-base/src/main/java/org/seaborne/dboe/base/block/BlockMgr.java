@@ -80,14 +80,8 @@ public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
     /** Sync the block manager : system operation to ensure sync() is passed down */
     public void syncForce() ;
 
-    // begin/end of individual actions.
+    // begin/end markers.
 
-    /** Beginning of a batch of changes */
-    public void beginBatch() ;
-
-    /** Finsh of a batch of changes */ 
-    public void endBatch() ;
-    
     /** Start of update */
     public void beginUpdate() ;
     

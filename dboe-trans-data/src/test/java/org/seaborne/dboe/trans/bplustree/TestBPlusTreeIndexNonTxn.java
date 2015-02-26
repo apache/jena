@@ -60,7 +60,6 @@ public class TestBPlusTreeIndexNonTxn extends AbstractTestIndex {
         if ( addTracker )
             bpt = BPlusTreeFactory.addTracking(bpt) ;
         bpt.nonTransactional() ;
-        bpt.startBatch();
         return bpt ;
     }
 }

@@ -349,12 +349,12 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 //    }
     
     // Internal calls.
-    private void startReadBlkMgr() {
+    void startReadBlkMgr() {
         nodeManager.startRead() ;
         recordsMgr.startRead() ;
     }
 
-    private void finishReadBlkMgr() {
+    void finishReadBlkMgr() {
         nodeManager.finishRead() ;
         recordsMgr.finishRead() ;
     }
@@ -367,17 +367,6 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     private void finishUpdateBlkMgr() {
         nodeManager.finishUpdate() ;
         recordsMgr.finishUpdate() ;
-    }
-
-    // Or Txn interface?
-    public void startBatch() {
-        nodeManager.startBatch() ;
-        recordsMgr.startBatch() ;
-    }
-
-    public void finishBatch() {
-        nodeManager.finishBatch() ;
-        recordsMgr.finishBatch() ;
     }
 
     @Override

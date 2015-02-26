@@ -306,17 +306,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
         recordsMgr.finishUpdate() ;
     }
 
-    // Or Txn interface?
-    public void startBatch() {
-        nodeManager.startBatch() ;
-        recordsMgr.startBatch() ;
-    }
-
-    public void finishBatch() {
-        nodeManager.finishBatch() ;
-        recordsMgr.finishBatch() ;
-    }
-
     @Override
     public boolean isEmpty() {
         startReadBlkMgr() ;
