@@ -31,6 +31,7 @@ import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.ReadWrite;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.core.QuadAction ;
 import com.hp.hpl.jena.tdb.assembler.AssemblerTDB ;
@@ -55,23 +56,23 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
 	
 	@Test
 	public void testSimpleDatasetAssembler() {
-		Dataset dataset = (Dataset) Assembler.general.open(spec1);
+		dataset = (Dataset) Assembler.general.open(spec1);
 		assertTrue(dataset.getContext().get(TextQuery.textIndex) instanceof TextIndexLucene);
 	}
 	
 	@Test(expected = AssemblerException.class)
 	public void testErrorOnNoDataset() {
-	    Assembler.general.open(noDatasetPropertySpec);
+	    dataset = (Dataset) Assembler.general.open(noDatasetPropertySpec);
 	}
 	
 	@Test(expected = AssemblerException.class)
 	public void testErrorOnNoIndex() {
-	    Assembler.general.open(noIndexPropertySpec);
+		dataset = (Dataset)Assembler.general.open(noIndexPropertySpec);
 	}
 	
 	@Test
 	public void testCustomTextDocProducer() {
-	    Dataset dataset = (Dataset)Assembler.general.open(customTextDocProducerSpec) ;
+	    dataset = (Dataset)Assembler.general.open(customTextDocProducerSpec) ;
 	    DatasetGraphText dsgText = (DatasetGraphText)dataset.asDatasetGraph() ;
         assertTrue(dsgText.getMonitor() instanceof CustomTextDocProducer) ;
 	}
@@ -85,7 +86,11 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
     }
     
     @After public void closeDatasetAfterText() {
-    	if (dataset != null) dataset.close();
+    	if (dataset != null) {
+    		dataset.begin(ReadWrite.READ); 
+    		dataset.end();
+			dataset.close();
+    	}
     }
 
     static {

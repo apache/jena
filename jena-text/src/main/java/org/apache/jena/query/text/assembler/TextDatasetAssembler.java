@@ -98,9 +98,8 @@ public class TextDatasetAssembler extends AssemblerBase implements Assembler
 //        return dst ;        
 //    }
 
-	@Override
-	public Dataset open(Assembler a, Resource root, Mode mode)
-	{
+	public Dataset open(Assembler a, Resource root, Mode mode) {	
+	
 		Resource dataset = GraphUtils.getResourceValue(root, pDataset) ;
 		Resource index   = GraphUtils.getResourceValue(root, pIndex) ;
 
@@ -108,27 +107,42 @@ public class TextDatasetAssembler extends AssemblerBase implements Assembler
         
         Dataset ds = (Dataset)a.open(dataset) ;
         TextIndex textIndex = (TextIndex)a.open(index) ;
+        
         // Null will use the default producer
         TextDocProducer textDocProducer = null ;
+        
         if (null != textDocProducerNode) {
             Class<?> c = Loader.loadClass(textDocProducerNode.getURI(), TextDocProducer.class) ;
-            try
-            {
-                Constructor<?> ctor = c.getConstructor(TextIndex.class) ;
-                textDocProducer = (TextDocProducer)ctor.newInstance(textIndex) ;
-            }
-            catch (Exception ex)
-            {
-                String className = textDocProducerNode.getURI().substring(ARQConstants.javaClassURIScheme.length()) ;
-                Log.warn(Loader.class, "Exception during instantiation '"+className+"': "+ex.getMessage()) ;
-                return null ;
+            
+            String className = textDocProducerNode.getURI().substring(ARQConstants.javaClassURIScheme.length()) ;
+            Constructor<?> dyadic = getConstructor(c, DatasetGraph.class, TextIndex.class);
+            Constructor<?> monadic = getConstructor(c, TextIndex.class);
+            
+            try {
+            	if (dyadic != null) {
+            		textDocProducer = (TextDocProducer) dyadic.newInstance(ds.asDatasetGraph(), textIndex) ;
+            	} else if (monadic != null) {
+            		textDocProducer = (TextDocProducer) monadic.newInstance(textIndex) ;
+            	} else {
+            		Log.warn(Loader.class, "Exception during instantiation '"+className+"' no TextIndex or DatasetGraph,Index constructor" );
+            	}
+            } catch (Exception ex) {
+            	Log.warn(Loader.class, "Exception during instantiation '"+className+"': "+ex.getMessage()) ;
+            	return null ;            	
             }
         }
         
         Dataset dst = TextDatasetFactory.create(ds, textIndex, true, textDocProducer) ;
         return dst ;
     }
-        
+	
+	private Constructor<?> getConstructor(Class<?> c, Class<?> ...types) {
+		try {
+			return c.getConstructor(types);
+		} catch (NoSuchMethodException e) {			
+			return null;	
+		}
+	}
 	
 	@SuppressWarnings("unchecked")
 	private TextDocProducer getDocProducer(Resource root, String className, DatasetGraph dsg, TextIndex textIndex) {
