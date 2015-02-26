@@ -17,8 +17,6 @@
 
 package org.seaborne.dboe.base.block;
 
-import java.util.Iterator ;
-
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 
@@ -43,9 +41,6 @@ public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
     /** Fetch a block, use for read only */
     public Block getRead(long id);
     
-    /** Fetch a block, use for read only in an iterator */
-    public Block getReadIterator(long id);
-
     /** Fetch a block, use for write and read - only inside "update" */
     public Block getWrite(long id);
 
@@ -87,7 +82,7 @@ public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
 
     // begin/end of individual actions.
 
-    /** Beginning of a batch of changes */ 
+    /** Beginning of a batch of changes */
     public void beginBatch() ;
 
     /** Finsh of a batch of changes */ 
@@ -104,12 +99,6 @@ public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
 
     /** Completion of read */
     public void endRead() ;
-
-    /** Start of iterator */
-    public void beginIterator(Iterator<?> iterator) ;
-
-    /** Completion of iterator */
-    public void endIterator(Iterator<?> iterator) ;
 
     /* Label for helping trace which BlockMgr is which */
     public String getLabel() ;

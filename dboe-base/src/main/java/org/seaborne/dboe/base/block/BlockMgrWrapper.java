@@ -17,7 +17,6 @@
 
 package org.seaborne.dboe.base.block ;
 
-import java.util.Iterator ;
 
 public class BlockMgrWrapper implements BlockMgr {
     protected BlockMgr blockMgr ;
@@ -45,11 +44,6 @@ public class BlockMgrWrapper implements BlockMgr {
     @Override
     public Block getRead(long id) {
         return blockMgr.getRead(id) ;
-    }
-
-    @Override
-    public Block getReadIterator(long id) {
-        return blockMgr.getReadIterator(id) ;
     }
 
     @Override
@@ -130,16 +124,6 @@ public class BlockMgrWrapper implements BlockMgr {
     @Override
     public void endBatch() {
         blockMgr.endBatch() ;
-    }
-
-    @Override
-    public void beginIterator(Iterator<? > iter) {
-        blockMgr.beginIterator(iter) ;
-    }
-
-    @Override
-    public void endIterator(Iterator<? > iter) {
-        blockMgr.endIterator(iter) ;
     }
 
     @Override

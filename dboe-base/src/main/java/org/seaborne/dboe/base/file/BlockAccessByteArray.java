@@ -21,7 +21,7 @@ import java.nio.ByteBuffer ;
 
 import org.apache.jena.atlas.lib.ByteBufferLib ;
 import org.seaborne.dboe.base.block.Block ;
-import static org.seaborne.dboe.sys.SystemIndex.SizeOfInt ;
+import static org.seaborne.dboe.sys.SystemBase.SizeOfInt ;
 
 /**
  * FileAccess interface backed by a byte array.

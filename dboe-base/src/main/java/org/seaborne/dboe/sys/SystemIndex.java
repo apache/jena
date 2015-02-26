@@ -24,16 +24,10 @@ import org.seaborne.dboe.base.block.FileMode ;
 
 public class SystemIndex
 {
-    /** Size, in bytes, of a Java long */
-    public static final int SizeOfLong              = Long.SIZE/Byte.SIZE ;
-    
-    /** Size, in bytes, of a Java int */
-    public static final int SizeOfInt               = Integer.SIZE/Byte.SIZE ;
-    
     /** Size, in bytes, of a pointer between blocks */
-    public static final int SizeOfPointer           = SizeOfInt ;
+    public static final int SizeOfPointer           = SystemBase.SizeOfInt ;
     
-    public static final boolean is64bitSystem = SystemBase.is64bitSystem ;
+    public static final boolean is64bitSystem       = SystemBase.is64bitSystem ;
 
     // To make the class initialize
     static public void init() {}

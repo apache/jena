@@ -17,8 +17,6 @@
 
 package org.seaborne.dboe.base.block;
 
-import java.util.Iterator ;
-
 import org.slf4j.Logger ;
 
 public abstract class BlockMgrBase implements BlockMgr
@@ -49,8 +47,6 @@ public abstract class BlockMgrBase implements BlockMgr
     @Override public void beginBatch()   {}
     @Override public void endBatch()     {}
     
-    @Override public void beginIterator(Iterator<?> iter)   {}
-    @Override public void endIterator(Iterator<?> iter)     {}
     @Override public void endUpdate()       {}
     @Override public void beginUpdate()     {}
     @Override public void beginRead()       {}

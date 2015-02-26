@@ -17,10 +17,19 @@
 
 package org.seaborne.dboe.base.block ;
 
-import static org.seaborne.dboe.base.block.BlockMgrTracker.Action.* ;
+import static org.seaborne.dboe.base.block.BlockMgrTracker.Action.Alloc ;
+import static org.seaborne.dboe.base.block.BlockMgrTracker.Action.BeginRead ;
+import static org.seaborne.dboe.base.block.BlockMgrTracker.Action.BeginUpdate ;
+import static org.seaborne.dboe.base.block.BlockMgrTracker.Action.EndRead ;
+import static org.seaborne.dboe.base.block.BlockMgrTracker.Action.EndUpdate ;
+import static org.seaborne.dboe.base.block.BlockMgrTracker.Action.Free ;
+import static org.seaborne.dboe.base.block.BlockMgrTracker.Action.GetRead ;
+import static org.seaborne.dboe.base.block.BlockMgrTracker.Action.GetWrite ;
+import static org.seaborne.dboe.base.block.BlockMgrTracker.Action.Promote ;
+import static org.seaborne.dboe.base.block.BlockMgrTracker.Action.Release ;
+import static org.seaborne.dboe.base.block.BlockMgrTracker.Action.Write ;
 
 import java.util.ArrayList ;
-import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.MultiSet ;
@@ -35,7 +44,6 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
 
     static enum Action {
         Alloc, Promote, GetRead, GetWrite, Write, Release, Free, 
-        BeginIter, EndIter, IterRead, 
         BeginRead, EndRead, 
         BeginUpdate, EndUpdate
     }
@@ -46,10 +54,8 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
     // No - the page is dirty.
     protected final MultiSet<Long>           activeReadBlocks  = new MultiSet<>() ;
     protected final MultiSet<Long>           activeWriteBlocks = new MultiSet<>() ;
-    protected final MultiSet<Long>           activeIterBlocks  = new MultiSet<>() ;
     // Track the operations
     protected final List<Pair<Action, Long>> actions           = new ArrayList<>() ;
-    protected final List<Iterator<? >>       activeIterators   = new ArrayList<>() ;
     // ---- State for tracking
 
     protected final BlockMgr                 blockMgr ;
@@ -62,8 +68,6 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
 
     private void clearInternalIter() {
         clearInternalRW() ;
-        activeIterators.clear() ;
-        activeIterBlocks.clear() ;
     }
 
     private int          inRead     = 0 ;
@@ -134,17 +138,6 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
     }
 
     @Override
-    public Block getReadIterator(long id) {
-        synchronized (this) {
-            checkReadOrIter(IterRead) ;
-            Long x = id ;
-            add(IterRead, x) ;
-            activeIterBlocks.add(x) ;
-        }
-        return blockMgr.getReadIterator(id) ;
-    }
-
-    @Override
     public Block getWrite(long id) {
         synchronized (this) {
             checkUpdate(GetWrite) ;
@@ -180,11 +173,11 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
     @Override
     public void release(Block block) {
         synchronized (this) {
-            checkReadOrIter(Release) ;
+            checkRead(Release) ;
             Long id = block.getId() ;
             add(Release, id) ;
 
-            if ( !activeReadBlocks.contains(id) && !activeIterBlocks.contains(id) && !activeWriteBlocks.contains(id) )
+            if ( !activeReadBlocks.contains(id) && !activeWriteBlocks.contains(id) )
                 error(Release, id + " is not an active block") ;
 
             // May have been promoted.
@@ -192,8 +185,6 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
                 activeWriteBlocks.remove(id) ;
             else
                 activeReadBlocks.remove(block.getId()) ;
-
-            activeIterBlocks.remove(block.getId()) ;
         }
         blockMgr.release(block) ;
     }
@@ -290,28 +281,6 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
     }
 
     @Override
-    public void beginIterator(Iterator<? > iter) {
-        synchronized (this) {
-            if ( activeIterators.contains(iter) )
-                error(BeginIter, "Iterator already active: " + iter) ;
-            activeIterators.add(iter) ;
-        }
-        blockMgr.beginIterator(iter) ;
-    }
-
-    @Override
-    public void endIterator(Iterator<? > iter) {
-        synchronized (this) {
-            if ( !activeIterators.contains(iter) )
-                error(EndIter, "Iterator not active: " + iter) ;
-            activeIterators.remove(iter) ;
-            if ( activeIterators.size() == 0 )
-                checkEmpty("Outstanding iterator read blocks", activeIterBlocks) ;
-        }
-        blockMgr.endIterator(iter) ;
-    }
-
-    @Override
     synchronized public void beginRead() {
         synchronized (this) {
             if ( inUpdate )
@@ -385,11 +354,6 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
     private void checkRead(Action action) {
         if ( !inUpdate && inRead == 0 )
             error(action, "Called outside update and read") ;
-    }
-
-    private void checkReadOrIter(Action action) {
-        if ( !inUpdate && inRead == 0 && activeIterators.size() == 0 )
-            error(action, "Called outside update, read or an iterator") ;
     }
 
     private void checkEmpty(String string, MultiSet<Long> blocks) {

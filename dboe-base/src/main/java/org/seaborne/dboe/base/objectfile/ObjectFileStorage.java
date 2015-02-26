@@ -17,8 +17,8 @@
 
 package org.seaborne.dboe.base.objectfile;
 
+import static org.seaborne.dboe.sys.SystemBase.SizeOfInt ;
 import static org.seaborne.dboe.sys.SystemIndex.ObjectFileWriteCacheSize ;
-import static org.seaborne.dboe.sys.SystemIndex.SizeOfInt ;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
@@ -30,7 +30,6 @@ import org.apache.jena.atlas.logging.Log ;
 import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.file.FileException ;
-import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.sys.SystemBase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -431,7 +430,7 @@ public class ObjectFileStorage implements ObjectFile
                 return null ;
             
             int x = buffer.getInt(posn) ;
-            posn += SystemIndex.SizeOfInt ;
+            posn += SystemBase.SizeOfInt ;
             ByteBuffer bb = ByteBuffer.allocate(x) ;
             int p = buffer.position() ;
             buffer.position(posn) ;

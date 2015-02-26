@@ -17,8 +17,6 @@
 
 package org.seaborne.dboe.base.block ;
 
-import java.util.Iterator ;
-
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -82,12 +80,6 @@ public class BlockMgrLogger implements BlockMgr // extends BlockMgrWrapper
     public Block getRead(long id) {
         info("getRead(" + id + ")") ;
         return blockMgr.getRead(id) ;
-    }
-
-    @Override
-    public Block getReadIterator(long id) {
-        info("getReadIterator(" + id + ")") ;
-        return blockMgr.getReadIterator(id) ;
     }
 
     @Override
@@ -166,18 +158,6 @@ public class BlockMgrLogger implements BlockMgr // extends BlockMgrWrapper
     public void endBatch() {
         blockMgr.endBatch() ;
         info("<< end batch") ;
-    }
-
-    @Override
-    public void beginIterator(Iterator<? > iter) {
-        info("> start iterator") ;
-        blockMgr.beginIterator(iter) ;
-    }
-
-    @Override
-    public void endIterator(Iterator<? > iter) {
-        info("< end iterator") ;
-        blockMgr.endIterator(iter) ;
     }
 
     @Override

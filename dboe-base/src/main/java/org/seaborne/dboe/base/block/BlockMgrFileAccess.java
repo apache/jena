@@ -57,11 +57,6 @@ final public class BlockMgrFileAccess extends BlockMgrBase {
     }
 
     @Override
-    public Block getReadIterator(long id) {
-        return getBlock(id, true) ;
-    }
-
-    @Override
     public Block getRead(long id) {
         return getBlock(id, true) ;
     }

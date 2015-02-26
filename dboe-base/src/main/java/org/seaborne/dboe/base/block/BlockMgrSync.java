@@ -17,7 +17,6 @@
 
 package org.seaborne.dboe.base.block ;
 
-import java.util.Iterator ;
 
 /**
  * Add synchronized to a BlockMgr. This is the same as BlockMgrWrapper but with
@@ -43,11 +42,6 @@ public class BlockMgrSync implements BlockMgr {
     @Override
     synchronized public Block getRead(long id) {
         return blockMgr.getRead(id) ;
-    }
-
-    @Override
-    synchronized public Block getReadIterator(long id) {
-        return blockMgr.getReadIterator(id) ;
     }
 
     @Override
@@ -119,16 +113,6 @@ public class BlockMgrSync implements BlockMgr {
     @Override
     synchronized public void endBatch() {
         blockMgr.endBatch() ;
-    }
-
-    @Override
-    synchronized public void beginIterator(Iterator<? > iter) {
-        blockMgr.beginIterator(iter) ;
-    }
-
-    @Override
-    synchronized public void endIterator(Iterator<? > iter) {
-        blockMgr.endIterator(iter) ;
     }
 
     @Override

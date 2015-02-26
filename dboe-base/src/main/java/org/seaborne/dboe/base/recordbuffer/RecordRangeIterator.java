@@ -72,8 +72,8 @@ class RecordRangeIterator<X> implements Iterator<X>, Closeable
             return ;
         }
 
-        pageMgr.getBlockMgr().beginIterator(this) ;
-        currentPage = pageMgr.getReadIterator(id) ;
+        pageMgr.startRead();
+        currentPage = pageMgr.getRead(id) ;
         
         if ( currentPage.getCount() == 0 ) {
             // Empty page.
@@ -106,7 +106,7 @@ class RecordRangeIterator<X> implements Iterator<X>, Closeable
             if ( currentPage != null )
                 pageMgr.release(currentPage) ;
 
-            RecordBufferPage nextPage = pageMgr.getReadIterator(link) ;
+            RecordBufferPage nextPage = pageMgr.getRead(link) ;
             // Check currentPage -> nextPage is strictly increasing keys.
             if ( false ) {
                 Record r1 = currentPage.getRecordBuffer().getHigh() ;
@@ -137,12 +137,13 @@ class RecordRangeIterator<X> implements Iterator<X>, Closeable
 
     @Override
     public void close() {
-        if ( currentPage != null )
-            pageMgr.release(currentPage) ;
+        if ( currentPage == null )
+            return ;
+        pageMgr.release(currentPage) ;
+        pageMgr.finishRead();
         currentPage = null ;
         currentIdx = -99 ;
         slot = null ;
-        pageMgr.getBlockMgr().endIterator(this) ;
     }
 
     @Override

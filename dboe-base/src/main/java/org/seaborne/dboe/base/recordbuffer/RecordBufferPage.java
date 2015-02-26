@@ -20,7 +20,7 @@ package org.seaborne.dboe.base.recordbuffer;
 import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.page.Page ;
 import org.seaborne.dboe.base.record.RecordFactory ;
-import org.seaborne.dboe.sys.SystemIndex ;
+import org.seaborne.dboe.sys.SystemBase ;
 
 /**
  * B+Tree records nodes and hash buckets.
@@ -39,7 +39,7 @@ public final class RecordBufferPage extends RecordBufferPageBase
     //    final public static int COUNT      = 0 ;
     // Adds this field over RecordBufferPageBase
     final public static int LINK            = 4 ;
-    final private static int FIELD_LENGTH   = SystemIndex.SizeOfInt ; // Length of the space needed here (not count)
+    final private static int FIELD_LENGTH   = SystemBase.SizeOfInt ; // Length of the space needed here (not count)
 
     private int link = Page.NO_ID ;
     

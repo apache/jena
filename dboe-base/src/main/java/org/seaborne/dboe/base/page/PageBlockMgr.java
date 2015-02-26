@@ -31,8 +31,7 @@ public class PageBlockMgr<T extends Page> implements Closeable
     protected final BlockMgr blockMgr ;
     protected BlockConverter<T> pageFactory ;
 
-    protected PageBlockMgr(BlockConverter<T> pageFactory, BlockMgr blockMgr)
-    { 
+    protected PageBlockMgr(BlockConverter<T> pageFactory, BlockMgr blockMgr) { 
         this.pageFactory = pageFactory ;
         this.blockMgr = blockMgr ;
     }
@@ -40,7 +39,7 @@ public class PageBlockMgr<T extends Page> implements Closeable
     // Sometimes, the subclass must pass null to the constructor then call this. 
     protected void setConverter(BlockConverter<T> pageFactory) { this.pageFactory = pageFactory ; }
     
-    public BlockMgr getBlockMgr() { return blockMgr ; } 
+    public BlockMgr getBlockMgr()   { return blockMgr ; } 
     
     public long allocLimit()        { return blockMgr.allocLimit() ; }
 
@@ -48,10 +47,6 @@ public class PageBlockMgr<T extends Page> implements Closeable
         blockMgr.resetAlloc(boundary) ;
     }
 
-    
-//    /** Allocate an uninitialized slot.  Fill with a .put later */ 
-//    public int allocateId()           { return blockMgr.allocateId() ; }
-    
     /** Allocate a new thing */
     public T create(BlockType bType) {
         Block block = blockMgr.allocate(-1) ;
@@ -106,13 +101,17 @@ public class PageBlockMgr<T extends Page> implements Closeable
     
     final protected T getRead$(int id) { 
         Block block = blockMgr.getRead(id) ;
-        if ( block.isModified() ) {
-            System.err.println("getRead - isModified - "+blockMgr.getLabel()+"["+id+"]") ;
-//            block = new Block(block.getId(), block.getByteBuffer());
-//            block.setModified(false); 
-            // Debug.
-            //blockMgr.getRead(id) ;
-        }
+        // Blocks from the BlockMgrCache may be write-dirty so this test
+        // is wrong in that situation.  It is better to use the block as-is
+        // otherwise we'd have two blocks of a given id with different flags
+        // that confuse the block caching.  
+//        if ( block.isModified() ) {
+//            System.err.println("getRead - isModified - "+blockMgr.getLabel()+"["+id+"]") ;
+////            block = new Block(block.getId(), block.getByteBuffer());
+////            block.setModified(false); 
+//            // Debug.
+//            //blockMgr.getRead(id) ;
+//        }
         T page = pageFactory.fromBlock(block) ;
         return page ;
     }
