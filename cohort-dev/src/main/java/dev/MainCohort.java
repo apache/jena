@@ -18,13 +18,9 @@
 package dev;
 
 import static org.seaborne.dboe.test.RecordLib.r ;
-
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.block.FileMode ;
-import org.seaborne.dboe.base.file.BufferChannel ;
-import org.seaborne.dboe.base.file.BufferChannelMem ;
 import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.Record ;
@@ -34,17 +30,13 @@ import org.seaborne.dboe.test.RecordLib ;
 import org.seaborne.dboe.trans.bplustree.BPT ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
-import org.seaborne.dboe.trans.data.TransBlob ;
-import org.seaborne.dboe.transaction.ComponentIdRegistry ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.Txn ;
+import org.seaborne.dboe.transaction.Txn.ThreadTxn ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.ComponentIds ;
-import org.seaborne.dboe.transaction.txn.L ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
-import org.seaborne.dboe.transaction.txn.journal.JournalEntry ;
-import org.seaborne.dboe.transaction.txn.journal.JournalEntryType ;
 
 public class MainCohort {
     static { LogCtl.setLog4j() ; }
@@ -54,19 +46,46 @@ public class MainCohort {
     static Journal journal = Journal.create(Location.mem()) ;
 
     public static void main(String... args) {
+        FileSet fs = FileSet.mem();
+        BPlusTree bpt = BPlusTreeFactory.createBPTreeByOrder(null, fs, 3, RecordLib.recordFactory) ;
+        Transactional holder = TransactionalFactory.create(journal, bpt) ;
+        
+        ThreadTxn a1 = Txn.threadTxnRead(holder, ()->dump(bpt)) ;
+        ThreadTxn a2 = Txn.threadTxnWriteCommit(holder, ()-> {
+            Record r = r(56) ;
+            bpt.insert(r) ;
+            bpt.insert(r) ;
+        }) ;
+        a2.exec(); 
+        a1.exec(); 
+        //dump(holder, bpt) ;
+        
+        ThreadTxn a3 = Txn.threadTxnRead(holder, ()-> {throw new RuntimeException("Tricky");}) ;
+        
+        
+        try { a3.exec(); }
+        catch (RuntimeException ex) { System.out.println("Exception: "+ex.getMessage()) ; }
+        
+        
+        System.out.println("DONE?") ;
+    }
+    
+    public static void main1(String... args) {
         // direct + tracking: initial: exception //  continuing: exception
         //                    but ok if run mapped first. 
         // mapped + tracking: initial: warn ; continuing: warn
         
-        SystemIndex.setFileMode(FileMode.direct);
-        //SystemIndex.setFileMode(FileMode.mapped) ;
+        //SystemIndex.setFileMode(FileMode.direct);
+        SystemIndex.setFileMode(FileMode.mapped) ;
         ComponentId cid = ComponentIds.idDev ;
         
         FileSet fs = FileSet.mem();
         
-        if ( true && ! fs.isMem()) {
-            System.out.println("RESET") ;
-            FileOps.clearAll("BPT");
+        
+        if ( true ) {
+//            System.out.println("RESET") ;
+//            FileOps.clearAll("BPT");
+            FileOps.ensureDir("BPT") ;
             fs = new FileSet("BPT", "tree") ;
         }
         
@@ -100,62 +119,6 @@ public class MainCohort {
         System.out.println("DONE") ;
         System.exit(0); 
     }
-    
-    public static void main1(String... args) {
-        BPT.Logging = false ;
-        BlockMgrFactory.AddTracker = false ;
-        SystemIndex.setNullOut(true) ;
-        
-        ComponentIdRegistry reg = new ComponentIdRegistry() ;
-        ComponentId cidBase =  ComponentId.allocLocal() ;
-        ComponentId cid1 = reg.register(cidBase, "Bob", 1) ;
-        ComponentId cid2 = reg.register(cidBase, "Bob", 2) ;
-        ComponentId cid3 = reg.register(cidBase, "Bob", 3) ;
-        
-        BufferChannel chan1 = BufferChannelMem.create() ;
-        TransBlob bob1 =  new TransBlob(cid1, chan1) ;
-
-        BufferChannel chan2 = BufferChannelMem.create() ;
-        TransBlob bob2 =  new TransBlob(cid2, chan2) ;
-
-        BufferChannel chan3 = BufferChannelMem.create() ;
-        TransBlob bob3 =  new TransBlob(cid3, chan3) ;
-        
-        {
-            journal.write(JournalEntryType.REDO, cid1, L.stringToByteBuffer("One")) ;
-            journal.writeJournal(JournalEntry.COMMIT) ;
-        }
-
-        Transactional transactional = TransactionalFactory.create(journal, bob1, bob2, bob3) ;
-        
-        Txn.executeWrite(transactional, ()->{
-            bob2.setBlob(L.stringToByteBuffer("Two")) ;
-            bob3.setBlob(L.stringToByteBuffer("Three")) ;
-        }) ;
-        
-        Txn.executeRead(transactional, ()->{
-            String s1 = L.byteBufferToString(bob1.getBlob()) ;
-            System.out.println(s1) ;
-            String s2 = L.byteBufferToString(bob2.getBlob()) ;
-            System.out.println(s2) ;
-            String s3 = L.byteBufferToString(bob3.getBlob()) ;
-            System.out.println(s3) ;
-        }) ;
-        
-        Txn.executeWrite(transactional, ()->{
-            bob1.setBlob(L.stringToByteBuffer("ONE")) ;
-            bob3.setBlob(L.stringToByteBuffer("THREE")) ;
-        }) ;
-        
-        Txn.executeRead(transactional, ()->{
-            String s1 = L.byteBufferToString(bob1.getBlob()) ;
-            System.out.println(s1) ;
-            String s2 = L.byteBufferToString(bob2.getBlob()) ;
-            System.out.println(s2) ;
-            String s3 = L.byteBufferToString(bob3.getBlob()) ;
-            System.out.println(s3) ;
-        }) ;
-    }    
     
     static void elements(BPlusTree bpt) {
         StringBuilder sb = new StringBuilder() ;

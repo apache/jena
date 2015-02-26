@@ -25,12 +25,12 @@ public class NOTES {
     // CRC .bpt
     
     // Auto safe set of state.
-
-    // Const
-    //   SystemBase 
-    //   SystemFile
-    //   SystemBPTree 1
-    //   SystemBPTree 2
+    
+    // Systematic tests involving recovery: e.g. TransObjectFile.
+    // Single thead, overlapping transactions?  No - AbstractTestTxn support.
+    // TestTxnLib
+    
+    // Constants organisation: SystemBase, SystemFile, SystemBPTree simple, SystemBPTreeTxt
     
     // Combine BptTxnState and BPTRootMgr.
     // RangeIndexBuilderBPTree and BPlusTreeFactory. Sort out BPlusTreeFactory.
