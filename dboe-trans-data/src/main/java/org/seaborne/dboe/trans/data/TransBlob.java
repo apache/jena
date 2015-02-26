@@ -120,6 +120,9 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
     }
 
     @Override
+    public void cleanStart() { }
+    
+    @Override
     protected BlobState _begin(ReadWrite readWrite, TxnId txnId) {
         ByteBuffer blob = blobRef.get() ;
         // Save reference to ByteBuffer into the transaction state.

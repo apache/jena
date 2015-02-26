@@ -94,13 +94,17 @@ public interface TransactionalComponent
     // ---- Recovery phase
     public void startRecovery() ;
     
-    /** Notification that {@code ref} was really committed.
+    /** Notification that {@code ref} was really committed and is being recovered.
      *  
      * @param ref Same bytes as were written during prepare originally.
      */
     public void recover(ByteBuffer ref) ;
     
+    /** End of the receovery phase */
     public void finishRecovery() ;
+
+    /** Indicate that no recovery is being done (the journal thinks everything was completed last time) */
+    public void cleanStart() ;
 
     // ---- Normal operation
     

@@ -17,13 +17,16 @@
 
 package org.seaborne.dboe.transaction;
 
-import static org.junit.Assert.* ;
+import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertNotNull ;
+import static org.junit.Assert.assertNull ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.dboe.transaction.TransLifecycleMonitor ;
-import org.seaborne.dboe.transaction.txn.* ;
+import org.seaborne.dboe.transaction.txn.Transaction ;
+import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
+import org.seaborne.dboe.transaction.txn.TransactionException ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -63,10 +66,9 @@ public class TestTransactionLifecycle2 {
     
     @Test(expected=TransactionException.class)
     public void txn_direct_02() {
-        // This causes the TransactionException.
-        txnMgr.add(new TransLifecycleMonitor()) ;
         Transaction txn1 = txnMgr.begin(ReadWrite.WRITE) ;
         txn1.end(); 
+        checkClear() ;
     }
 
     @Test

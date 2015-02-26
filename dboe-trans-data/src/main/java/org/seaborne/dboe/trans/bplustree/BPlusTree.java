@@ -508,6 +508,9 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     public void finishRecovery() {
         stateManager.sync();
     }
+    
+    @Override
+    public void cleanStart() { }
 
     @Override
     protected BptTxnState _begin(ReadWrite readWrite, TxnId txnId) {

@@ -118,6 +118,9 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
         if ( recoveryAction )
             objFile.sync();
     }
+    
+    @Override
+    public void cleanStart() { }
 
     @Override
     protected TxnObjectFile _begin(ReadWrite readWrite, TxnId txnId) {

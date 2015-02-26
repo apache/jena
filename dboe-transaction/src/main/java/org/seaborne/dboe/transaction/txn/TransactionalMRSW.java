@@ -48,6 +48,9 @@ public class TransactionalMRSW extends TransactionalComponentLifecycle<Object> {
     @Override
     public void finishRecovery() { }
     
+    @Override 
+    public void cleanStart() {}
+    
     @Override
     protected Object _begin(ReadWrite readWrite, TxnId thisTxnId) {
         Lock lock = getLock() ;

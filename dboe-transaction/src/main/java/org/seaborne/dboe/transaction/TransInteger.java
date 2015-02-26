@@ -141,6 +141,7 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
         value.set(x) ;
         recoveryAction = true ;
     }
+    
 
     @Override
     public void finishRecovery() {
@@ -149,13 +150,11 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
         // Leave true as a record.
     }
 
+    @Override
+    public void cleanStart() {
+        recoveryAction = false ;
+    }
     
-//    static class SysTransInteger extends SysTrans {
-//        public SysTransInteger(long value, TransactionalComponent elt, TxnId txnId) {
-//            super(elt, txnId) ;
-//        }
-//    }
-
     /** Set the value, return the old value*/ 
     public void inc() {
         requireWriteTxn() ;

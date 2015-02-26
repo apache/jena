@@ -28,7 +28,7 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.TransInteger ;
 import org.seaborne.dboe.transaction.TransMonitor ;
 import org.seaborne.dboe.transaction.Transactional ;
-import org.seaborne.dboe.transaction.txn.TransactionComponentWrapper ;
+import org.seaborne.dboe.transaction.txn.TransactionalComponentWrapper ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.TransactionalComponent ;
@@ -44,7 +44,7 @@ public abstract class AbstractTestTxn {
     @Before public void setup() {
         Journal jrnl = Journal.create(Location.mem()) ;
         List<TransactionalComponent> cg = Arrays.asList
-            (counter1, new TransactionComponentWrapper(counter2), monitor) ;
+            (counter1, new TransactionalComponentWrapper(counter2), monitor) ;
         txnMgr = new TransactionCoordinator(jrnl, cg) ;
         unit = new TransactionalBase(txnMgr) ;
     }

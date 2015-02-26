@@ -81,6 +81,12 @@ public class TransLogger implements TransactionalComponent {
     }
 
     @Override
+    public void cleanStart() {
+        if ( everyEvent )
+            log.info("cleanStart") ;
+    }
+
+    @Override
     public void begin(Transaction transaction) {
         txnStep("begin", transaction) ;
     }

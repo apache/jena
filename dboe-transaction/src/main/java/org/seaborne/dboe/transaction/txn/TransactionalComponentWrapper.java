@@ -21,10 +21,10 @@ import java.nio.ByteBuffer ;
  *  information regarding copyright ownership.
  */ 
 
-public class TransactionComponentWrapper implements TransactionalComponent {
+public class TransactionalComponentWrapper implements TransactionalComponent {
     protected final TransactionalComponent other ;
 
-    public TransactionComponentWrapper(TransactionalComponent other) {
+    public TransactionalComponentWrapper(TransactionalComponent other) {
         this.other = other ;
     }
 
@@ -41,6 +41,11 @@ public class TransactionComponentWrapper implements TransactionalComponent {
     @Override
     public void finishRecovery() {
         other.finishRecovery() ;
+    }
+    
+    @Override
+    public void cleanStart() {
+        other.cleanStart() ;
     }
 
     @Override

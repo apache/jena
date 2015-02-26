@@ -99,7 +99,14 @@ public class TransMonitor implements TransactionalComponent {
     public void finishRecovery() {
         counterFinishRecovery.incrementAndGet() ;
     }
-
+    
+    public AtomicLong counterCleanStart = allocCounter("finishRecovery") ;
+    
+    @Override
+    public void cleanStart() {
+        counterCleanStart.incrementAndGet() ;
+    }
+    
     public AtomicLong counterBegin = allocCounter("begin") ;
 
     @Override

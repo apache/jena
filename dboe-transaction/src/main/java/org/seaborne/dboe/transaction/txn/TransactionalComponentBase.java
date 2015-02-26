@@ -26,7 +26,7 @@ import com.hp.hpl.jena.query.ReadWrite ;
  * management tasks hooked into the transaction component lifecycle but which
  * are not stateful across restarts.
  */
-public class TransactionComponentBase<X> extends TransactionalComponentLifecycle<X> {
+public class TransactionalComponentBase<X> extends TransactionalComponentLifecycle<X> {
     @Override
     public ComponentId getComponentId() {
         return ComponentIds.idNull ;
@@ -40,6 +40,9 @@ public class TransactionComponentBase<X> extends TransactionalComponentLifecycle
 
     @Override
     public void finishRecovery() {}
+    
+    @Override 
+    public void cleanStart() {}
 
     @Override
     protected X _begin(ReadWrite readWrite, TxnId txnId) {

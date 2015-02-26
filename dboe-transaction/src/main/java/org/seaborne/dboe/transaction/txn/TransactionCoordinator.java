@@ -108,8 +108,10 @@ public class TransactionCoordinator {
     public void recovery() {
         
         Iterator<JournalEntry> iter = journal.entries() ;
-        if ( ! iter.hasNext() )
+        if ( ! iter.hasNext() ) {
+            components.forEachComponent(c -> c.cleanStart()) ;
             return ;
+        }
         
         log.info("Journal recovery start") ;
         components.forEachComponent(c -> c.startRecovery()) ;

@@ -36,29 +36,14 @@ import com.hp.hpl.jena.query.ReadWrite ;
  */
 public abstract class TransactionalComponentLifecycle<X> implements TransactionalComponent {
     
-//    // ---- Recovery phase
-//    @Override
-//    public void startRecovery() {}
-//    
-//    /** Notification that {@code ref} was really committed.
-//     * @param ref Same bytes as were written during prepare originally.
-//     */
-//    @Override
-//    public void recover(ByteBuffer ref) {
-//        Log.warn(this,  "Called to recover a transaction (ignored)") ; 
-//    }
-//    @Override
-//    public void finishRecovery() { }
-//    
-//    @Override
-//    public void shutdown() {
-//    }
+    // Pass down recovery operations.
+//    @Override public void startRecovery() {}
+//    @Override public void recover(ByteBuffer ref)
+//    @Override public void finishRecovery()
+//    @Override public void noRecovery()
+//    @Override public void shutdown()
     
     // ---- Normal operation
-    
-    // XXX Move to TransactionCoordinator
-    // Add field in Transaction to be checked.
-    // See TransLifecycleMonitor.
     
     private static final boolean CHECKING = true ;
     private ThreadLocal<TxnState> state = CHECKING ? ThreadLocal.withInitial(() -> INACTIVE) : null ; 
