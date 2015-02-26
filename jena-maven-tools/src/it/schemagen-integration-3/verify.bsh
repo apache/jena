@@ -30,3 +30,9 @@ verifier.assertFileMatches( test1, "(?s).*package org.example.test.*public stati
 
 String test2 = verifier.getBasedir() + "/target/generated-sources/jena/org/example/test/Test2.java";
 verifier.assertFileMatches( test2, "(?s).*package org.example.test.*public static final OntClass Cls2.*" );
+
+String test3 = verifier.getBasedir() + "/target/classes/org/example/test/Test1.class";
+verifier.assertFilePresent(test3);
+
+String test4 = verifier.getBasedir() + "/target/classes/org/example/test/Test2.class";
+verifier.assertFilePresent(test4);
