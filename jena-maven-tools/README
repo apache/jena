@@ -15,7 +15,7 @@ Changes
 
 Version 0.8
   * Output folder is now by default target/generated-sources/jena
-    Use <output> to override.
+    Use <outputDirectory> to override.
   * Generated Java source files are also compiled by Maven
 
 Version 0.4
