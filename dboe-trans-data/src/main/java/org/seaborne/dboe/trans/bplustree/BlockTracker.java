@@ -17,8 +17,19 @@
 
 package org.seaborne.dboe.trans.bplustree ;
 
+import static org.seaborne.dboe.trans.bplustree.BlockTracker.Action.Alloc ;
+import static org.seaborne.dboe.trans.bplustree.BlockTracker.Action.BeginRead ;
+import static org.seaborne.dboe.trans.bplustree.BlockTracker.Action.BeginUpdate ;
+import static org.seaborne.dboe.trans.bplustree.BlockTracker.Action.EndRead ;
+import static org.seaborne.dboe.trans.bplustree.BlockTracker.Action.EndUpdate ;
+import static org.seaborne.dboe.trans.bplustree.BlockTracker.Action.Free ;
+import static org.seaborne.dboe.trans.bplustree.BlockTracker.Action.GetRead ;
+import static org.seaborne.dboe.trans.bplustree.BlockTracker.Action.GetWrite ;
+import static org.seaborne.dboe.trans.bplustree.BlockTracker.Action.Promote ;
+import static org.seaborne.dboe.trans.bplustree.BlockTracker.Action.Release ;
+import static org.seaborne.dboe.trans.bplustree.BlockTracker.Action.Write ;
+
 import java.util.ArrayList ;
-import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.MultiSet ;
@@ -30,8 +41,6 @@ import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrTracker ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import static org.seaborne.dboe.trans.bplustree.BlockTracker.Action.* ;
 
 /** Track the lifecycles of allocate-write, getRead-promote-write and getWrite-write.
  *  Does not track read only or iterators blocks.
@@ -290,25 +299,6 @@ public class BlockTracker implements BlockMgr {
         if ( ! inBatch )
             error("Not in a batch") ;
         inBatch = false ;
-    }
-
-    @Override
-    public Block getReadIterator(long id) {
-        // Untracked.  Iterators delay reads across operations and
-        // also don't necessarily complete and clean up.
-        // But not used - pages don't have a "read for iterator"
-        // operation.
-        return blockMgr.getReadIterator(id) ;
-    }
-
-    @Override
-    public void beginIterator(Iterator<? > iter) {
-        blockMgr.beginIterator(iter) ;
-    }
-
-    @Override
-    public void endIterator(Iterator<? > iter) {
-        blockMgr.endIterator(iter) ;
     }
 
     @Override
