@@ -18,6 +18,7 @@
 package dev;
 
 import static org.seaborne.dboe.test.RecordLib.r ;
+
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.seaborne.dboe.base.block.FileMode ;
@@ -30,10 +31,10 @@ import org.seaborne.dboe.test.RecordLib ;
 import org.seaborne.dboe.trans.bplustree.BPT ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
+import org.seaborne.dboe.transaction.ThreadTxn ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.Txn ;
-import org.seaborne.dboe.transaction.Txn.ThreadTxn ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.ComponentIds ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
@@ -51,19 +52,19 @@ public class MainCohort {
         Transactional holder = TransactionalFactory.create(journal, bpt) ;
         
         ThreadTxn a1 = Txn.threadTxnRead(holder, ()->dump(bpt)) ;
-        ThreadTxn a2 = Txn.threadTxnWriteCommit(holder, ()-> {
+        ThreadTxn a2 = Txn.threadTxnWrite(holder, ()-> {
             Record r = r(56) ;
             bpt.insert(r) ;
             bpt.insert(r) ;
         }) ;
-        a2.exec(); 
-        a1.exec(); 
+        a2.run(); 
+        a1.run(); 
         //dump(holder, bpt) ;
         
         ThreadTxn a3 = Txn.threadTxnRead(holder, ()-> {throw new RuntimeException("Tricky");}) ;
         
         
-        try { a3.exec(); }
+        try { a3.run(); }
         catch (RuntimeException ex) { System.out.println("Exception: "+ex.getMessage()) ; }
         
         

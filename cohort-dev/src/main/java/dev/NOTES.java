@@ -17,18 +17,11 @@
 
 package dev;
 
-
 public class NOTES {
-    // Mantis / cohort / legion
     // ARQ :: extract Atlas.
     
-    // CRC .bpt
-    
-    // Auto safe set of state.
-    
     // Systematic tests involving recovery: e.g. TransObjectFile.
-    // Single thead, overlapping transactions?  No - AbstractTestTxn support.
-    // TestTxnLib
+    // Pseudo fake a crash.
     
     // Constants organisation: SystemBase, SystemFile, SystemBPTree simple, SystemBPTreeTxt
     
@@ -56,8 +49,14 @@ public class NOTES {
 
     // Delete BlockMgrSync - used by BlockMgrCache
     
+    // TransObjectFile should do the on-disk state thing.
+    
     // == Base 
     // Move LocationLock next to StoreConnection.
+    
+    // == Quack 
+    // Quack is just the join(->rel op) library.
+    // Move TDB-isms to tdb2.
     
     // == Transactions
     
