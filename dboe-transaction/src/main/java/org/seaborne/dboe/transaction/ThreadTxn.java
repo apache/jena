@@ -31,8 +31,8 @@ import org.seaborne.dboe.sys.SystemBase ;
  * called. A thread is created and the transaction started during a call to the
  * creation operations {@link Txn#threadTxnRead} or {@link Txn#threadTxnWrite}.
  * The associated Runnable is called and the transaction completed when
- * {@link #run} is called. Being on a thread, the stat eof the word the
- * transaction sees is outside the creating thread which may itself be in a
+ * {@link #run} is called. Being on a thread, the state of the world the
+ * forked transaction sees is outside the creating thread which may itself be in a
  * transaction. Warning: creating a write transaction inside a write transaction
  * will cause deadlock.
  */ 

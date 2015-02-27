@@ -22,9 +22,9 @@ import static org.seaborne.dboe.sys.SystemBase.SizeOfLong ;
 
 import java.nio.ByteBuffer ;
 
+import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.logging.FmtLog ;
 import org.seaborne.dboe.base.file.BufferChannel ;
-import org.seaborne.dboe.transaction.txn.AbstractStateMgr ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -35,74 +35,106 @@ import org.slf4j.LoggerFactory ;
  * 
  * (rootId/int, nodeAllocLimit/long, recordsAllocLimit/long) 
  */
-public class BPTStateMgr extends AbstractStateMgr {
-    private static Logger log = LoggerFactory.getLogger(BPTStateMgr.class) ;
+public class BPTStateMgr1 implements Sync {
+    private static Logger log = LoggerFactory.getLogger(BPTStateMgr1.class) ;
     private static final int SizePersistentState = SizeOfInt + SizeOfLong + SizeOfLong ;   
-
-    // These values are the values for a null tree (no blocks).
-    private int currentRoot           = 0 ;
+    
+    // These values are the values for a null tree.
+    private int currentLatestRoot     = 0 ;
     private long nodeBlocksLimit      = 0 ; 
     private long recordsBlocksLimit   = 0 ;
-
+    
+    private final BufferChannel storage ;
+    private final ByteBuffer bb = allocBuffer() ;
+    private boolean dirty = false ;
     private boolean LOGGING = BPT.Logging ;
-
-    public BPTStateMgr(BufferChannel storage) {
-        super(storage) ;
+    
+    public BPTStateMgr1(BufferChannel storage) {
+        this.storage = storage ;
+        // TODO Separate out constructor and initialization.
+        if ( ! storage.isEmpty() )
+            readState() ;
+        else
+            writeState() ;
     }
-
-    @Override
-    protected int getPersistentStateSize() { return SizePersistentState ; }
-
+    
+    public BufferChannel getChannel() { return storage ; }
+    
+    private static ByteBuffer allocBuffer() {
+        return ByteBuffer.allocate(SizePersistentState) ;
+    }
+    
     void setState(int rootIdx, long nodeBlkLimit, long recordsBlkLimit) {
-        currentRoot = rootIdx ;
+        currentLatestRoot = rootIdx ;
         nodeBlocksLimit = nodeBlkLimit ;
         recordsBlocksLimit = recordsBlkLimit ;
-        log("Set") ;
-        setDirtyFlag() ;
+        if ( LOGGING )
+            FmtLog.info(log, "setState = %d %d %d", rootIdx, nodeBlkLimit, recordsBlkLimit) ;
+        dirty = true ;
         // But don't write it.
     }
+   
+    void setState(ByteBuffer bytes) {
+        deserialize(bytes) ;
+        // But don't write it.
+    }
+    
+    ByteBuffer getState() {
+        bb.rewind() ;
+        serialize(bb) ;
+        return bb ;
+    }
 
-    @Override
-    protected void deserialize(ByteBuffer bytes) {
+    void writeState() {
+        if ( LOGGING )
+            FmtLog.info(log, "writeState = %d %d %d", currentLatestRoot, nodeBlocksLimit, recordsBlocksLimit) ;
+        bb.rewind() ;
+        serialize(bb) ;
+        storage.write(bb, 0) ;
+        storage.sync() ;
+    }
+
+    void readState() {
+        bb.rewind() ;
+        storage.read(bb, 0) ;
+        bb.rewind() ;
+        deserialize(bb) ;
+        if ( LOGGING )
+            FmtLog.info(log, "readState = %d %d %d", currentLatestRoot, nodeBlocksLimit, recordsBlocksLimit) ;
+    }
+
+    void deserialize(ByteBuffer bytes) {
         int root = bytes.getInt() ;
         long nodeBlkLimit = bytes.getLong() ;
         long recordsBlkLimit = bytes.getLong() ;
         setState(root, nodeBlkLimit, recordsBlkLimit) ;
     }
-
-    @Override
-    protected ByteBuffer serialize(ByteBuffer bytes) {
-        bytes.putInt(currentRoot) ;
+    
+    void serialize(ByteBuffer bytes) {
+        bytes.putInt(currentLatestRoot) ;
         bytes.putLong(nodeBlocksLimit) ;
         bytes.putLong(recordsBlocksLimit) ;
         bytes.rewind() ;
-        return bytes ;
     }
 
-    @Override
-    protected void writeStateEvent() {
-        log("Write") ;
-    }
-
-    @Override
-    protected void readStateEvent() {
-        log("Rrite") ;
-    }
-
-    private void log(String operation) {
-        if ( LOGGING )
-            FmtLog.info(log, "%s state:  root=%d // node block limit = %d // records block limit %d", operation, currentRoot, nodeBlocksLimit, recordsBlocksLimit) ;
+    public int getRoot() {
+        return currentLatestRoot ;
     }
     
-    public int getRoot() {
-        return currentRoot ;
-    }
-
     public long getNodeBlocksLimit() {
         return nodeBlocksLimit ;
     }
-
+    
     public long getRecordsBlocksLimit() {
         return recordsBlocksLimit ;
     }
+
+    @Override
+    public void sync() {
+        if ( dirty )
+            writeState() ;
+        dirty = false ;
+    }
+
+    public void close() { storage.close(); }
 }

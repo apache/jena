@@ -121,7 +121,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     private static Logger log = LoggerFactory.getLogger(BPlusTree.class) ;
     
     // Root id across transactions
-//    // Changes as the tree evolves in write transactions. 
+    // Changes as the tree evolves in write transactions. 
     private int rootIdx = BPlusTreeParams.RootId ;
     private BPTStateMgr stateManager ;
     private BPTreeNodeMgr nodeManager ; 

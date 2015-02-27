@@ -64,7 +64,7 @@ public class BPlusTreeFactory {
      */
     public static BPlusTree rebuild(BPlusTree bpt, BufferChannel chan, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves) {
         if ( chan == null )
-            chan = bpt.getStateManager().getChannel() ;
+            chan = bpt.getStateManager().getBufferChannel() ;
         if ( blkMgrNodes == null )
             blkMgrNodes = bpt.getNodeManager().getBlockMgr() ;
         if ( blkMgrLeaves == null )
