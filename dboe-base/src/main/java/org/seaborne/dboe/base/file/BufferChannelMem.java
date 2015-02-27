@@ -27,7 +27,8 @@ import org.slf4j.LoggerFactory ;
 public class BufferChannelMem implements BufferChannel {
     private static Logger log       = LoggerFactory.getLogger(BufferChannelMem.class) ;
     // The "file pointer" is the position of this buffer. 
-    private ByteBuffer    bytes ;                                                      
+    // The "size" is the limit of this buffer.
+    private ByteBuffer    bytes ;
     private String        name ;
     private static int    INC_SIZE  = 1024 ;
 
