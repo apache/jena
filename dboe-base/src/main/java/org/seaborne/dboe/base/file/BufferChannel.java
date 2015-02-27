@@ -65,7 +65,7 @@ public interface BufferChannel extends Sync, Closeable
      */
     public int read(ByteBuffer buffer, long loc) ;
 
-    /** Write from ByteBuffer, starting at position loc.  
+    /** Write from ByteBuffer, starting at the current position.  
      * Return the number of bytes written
      */
     public int write(ByteBuffer buffer) ;
