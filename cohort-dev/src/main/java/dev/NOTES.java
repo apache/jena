@@ -25,7 +25,7 @@ public class NOTES {
     
     // Constants organisation: SystemBase, SystemFile, SystemBPTree simple, SystemBPTreeTxt
     
-    // Combine BptTxnState and BPTRootMgr.
+    // Combine BptTxnState and BPTStateMgr?S
     // RangeIndexBuilderBPTree and BPlusTreeFactory. Sort out BPlusTreeFactory.
     
     // Transactional tests on BPTrees
