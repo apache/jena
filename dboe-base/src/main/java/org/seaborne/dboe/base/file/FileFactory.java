@@ -58,8 +58,7 @@ public class FileFactory {
             return BufferChannelFile.create(x) ;
     }
 
-    public static BufferChannel createBufferChannelMem(String ext) {
-        return createBufferChannel(FileSet.mem(), ext) ;
+    public static BufferChannel createBufferChannelMem() {
+        return createBufferChannel(FileSet.mem(), null) ;
     }
-
 }
