@@ -1,0 +1,80 @@
+/**
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *  See the NOTICE file distributed with this work for additional
+ *  information regarding copyright ownership.
+ */
+
+package org.seaborne.dboe.transaction.txn;
+
+import java.nio.ByteBuffer ;
+import java.util.Arrays ;
+
+import org.seaborne.dboe.base.file.BufferChannel ;
+
+/** StateManagement for a number of long values, a common need
+ * (might as well store ints as long on disk
+ * for small numbers of integers)
+ * */
+public class StateMgrData extends StateMgrBase {
+    private final long[] data ;
+    
+    public StateMgrData(BufferChannel storage, long... initialData) {
+        super(storage, numBytes(initialData)) ;
+        data = copy(initialData) ;
+        init() ;
+    }
+
+    private static long[] copy(long[] data) { return Arrays.copyOf(data, data.length) ; }
+    
+    private static int numBytes(long[] data) { return data.length * Long.BYTES ; }
+    
+    public long[] get() {
+        return copy(data) ;
+    }
+
+    public void set(long... newData) {
+        if ( newData.length != data.length )
+            throw new IllegalArgumentException() ; 
+        System.arraycopy(newData, 0, data, 0, data.length);
+    }
+
+    public long get(int i) {
+        return data[i] ;
+    }
+
+    public void set(int i, long v) {
+        data[i] = v ;
+        super.setDirtyFlag() ;
+    }
+
+    @Override
+    protected ByteBuffer serialize(ByteBuffer bytes) {
+        for ( int i = 0 ; i < data.length ; i++ )
+            bytes.putLong(data[i]) ;
+        return bytes ;
+    }
+
+    @Override
+    protected void deserialize(ByteBuffer bytes) {
+        for ( int i = 0 ; i < data.length ; i++ )
+            data[i] = bytes.getLong() ;
+    }
+
+    @Override
+    protected void writeStateEvent() {}
+
+    @Override
+    protected void readStateEvent() {}
+}
+

@@ -31,42 +31,41 @@ import org.slf4j.LoggerFactory ;
  * May not be suitable for all transactional implementations.
  */
 
-public abstract class AbstractStateMgr implements Sync, Closeable {
+public abstract class StateMgrBase implements Sync, Closeable {
+    /* Compare to TransBlob which is a similar idea but where it is a
+     * component in the transaction component group. That can lead to
+     * the wrong control, or at least unclear, of the writing during
+     * the transaction commit cycle.  
+     */
     
-    private static Logger log = LoggerFactory.getLogger(AbstractStateMgr.class) ;
-    
+    private static Logger log = LoggerFactory.getLogger(StateMgrBase.class) ;
+
     private final BufferChannel storage ;
     // One ByteBuffer that is reused where possible.
     // This is short-term usage 
     // *  get disk state-> deserialize
     // *  serialize->set disk state
     // on a single thread (the transaction writer).
-    private ByteBuffer bb = null ;
+    private ByteBuffer bb ;
     // Is the internal state out of sync with the disk state? 
     private boolean dirty = false ;
     
-    protected AbstractStateMgr(BufferChannel storage) {
-        bb = allocBuffer() ;
+    protected StateMgrBase(BufferChannel storage, int sizeBytes) {
+        bb = ByteBuffer.allocate(sizeBytes) ;
         this.storage = storage ;
+    }
+
+    /** After the default initial state is known, call this, for example, at the end of the constructor. */
+    protected void init() {
         if ( ! storage.isEmpty() )
             readState() ;
         else
             writeState() ;
     }
     
-    private ByteBuffer allocBuffer() {
-        return ByteBuffer.allocate(getPersistentStateSize()) ;
-    }
-
-    /** The size of the persistent state. Typically this is fixed,
-     * but an implementation may choose to return a "maximum" here
-     * and manage the partial use itself. 
-     */
-    protected abstract int getPersistentStateSize() ;
-    
     /* Serialize the necessary state into a ByteBuffer.
      * The argument ByteBuffer can be used or a new one returned
-     * if it is the wrong size (too small).  The returned one will become the
+     * if it is the wrong size (e.g. too small).  The returned one will become the
      * recycled ByteBuffer. The returned ByteBuffer should have posn/limit
      * delimiting the necessary space to write. 
      */
@@ -143,8 +142,11 @@ public abstract class AbstractStateMgr implements Sync, Closeable {
      */
     public void writeState() {
         bb.rewind() ;
-        bb = serialize(bb) ;
-        storage.write(bb, 0) ;
+        ByteBuffer bb1 = serialize(bb) ;
+        if ( bb1 != null )
+            bb = bb1 ;
+        bb.rewind() ;
+        int len = storage.write(bb, 0) ;
         storage.sync() ;
         dirty = false ;
         writeStateEvent() ;
@@ -153,7 +155,7 @@ public abstract class AbstractStateMgr implements Sync, Closeable {
     /** The read process : get all bytes on disk, deserialize */ 
     public void readState() {
         bb.rewind() ;
-        storage.read(bb, 0) ;
+        int len = storage.read(bb, 0) ;
         bb.rewind() ;
         deserialize(bb) ;
         readStateEvent() ;

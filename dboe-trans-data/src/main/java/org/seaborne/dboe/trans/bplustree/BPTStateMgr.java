@@ -24,7 +24,7 @@ import java.nio.ByteBuffer ;
 
 import org.apache.jena.atlas.logging.FmtLog ;
 import org.seaborne.dboe.base.file.BufferChannel ;
-import org.seaborne.dboe.transaction.txn.AbstractStateMgr ;
+import org.seaborne.dboe.transaction.txn.StateMgrBase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory ;
  * 
  * (rootId/int, nodeAllocLimit/long, recordsAllocLimit/long) 
  */
-public class BPTStateMgr extends AbstractStateMgr {
+public class BPTStateMgr extends StateMgrBase {
     private static Logger log = LoggerFactory.getLogger(BPTStateMgr.class) ;
     private static final int SizePersistentState = SizeOfInt + SizeOfLong + SizeOfLong ;   
 
@@ -47,11 +47,9 @@ public class BPTStateMgr extends AbstractStateMgr {
     private boolean LOGGING = BPT.Logging ;
 
     public BPTStateMgr(BufferChannel storage) {
-        super(storage) ;
+        super(storage, SizePersistentState) ;
+        init() ;
     }
-
-    @Override
-    protected int getPersistentStateSize() { return SizePersistentState ; }
 
     void setState(int rootIdx, long nodeBlkLimit, long recordsBlkLimit) {
         currentRoot = rootIdx ;

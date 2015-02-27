@@ -28,6 +28,8 @@ import org.seaborne.dboe.base.file.BufferChannel ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+// FIRST VERSION - NOW UNUSED - TO BE DELETED
+
 /** Manage the persistent state of the tree
  * 
  * This consists of last commited root, and the limits on the blocks for both
@@ -49,7 +51,7 @@ public class BPTStateMgr1 implements Sync {
     private boolean dirty = false ;
     private boolean LOGGING = BPT.Logging ;
     
-    public BPTStateMgr1(BufferChannel storage) {
+    /*public*/private BPTStateMgr1(BufferChannel storage) {
         this.storage = storage ;
         // TODO Separate out constructor and initialization.
         if ( ! storage.isEmpty() )
