@@ -22,6 +22,7 @@ import com.hp.hpl.jena.graph.GraphEvents;
 import com.hp.hpl.jena.rdf.model.*;
 
 import java.net.* ;
+import java.nio.charset.StandardCharsets ;
 import java.io.* ;
 
 import org.slf4j.LoggerFactory;
@@ -55,7 +56,7 @@ public abstract class JenaReaderBase implements RDFReader
         	URLConnection conn = new URL(url).openConnection();
         	String encoding = conn.getContentEncoding();
         	if ( encoding == null )
-               read(model, new InputStreamReader(conn.getInputStream(), FileUtils.encodingUTF8), url);
+               read(model, new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8), url);
         	else
             {
                 LoggerFactory.getLogger(this.getClass()).warn("URL content is not UTF-8") ;
@@ -101,7 +102,7 @@ public abstract class JenaReaderBase implements RDFReader
         if ( r instanceof FileReader )
         {
             FileReader f = (FileReader)r ;
-            if ( f.getEncoding().equalsIgnoreCase(FileUtils.encodingUTF8) )
+            if ( f.getEncoding().equalsIgnoreCase(StandardCharsets.UTF_8.name()) )
                 LoggerFactory.getLogger(this.getClass()).warn("FileReader is not UTF-8") ;
         }
     }

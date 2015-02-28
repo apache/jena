@@ -105,31 +105,31 @@ public class ServerTest {
         FileOps.ensureDir(TS_Fuseki.FusekiTestHome);
         FileOps.ensureDir(TS_Fuseki.FusekiTestBase) ;
         FusekiEnv.FUSEKI_BASE = Paths.get(TS_Fuseki.FusekiTestBase).toAbsolutePath() ;
-        setupServer(null) ;
+        setupServer(ServerTest.port, null, ServerTest.datasetPath) ;
     }
     
-    protected static void setupServer(String authConfigFile) {
+    protected static void setupServer(int port, String authConfigFile, String datasetPath) {
         SystemState.location = Location.mem() ;
         SystemState.init$() ;
         
         ServerInitialConfig params = new ServerInitialConfig() ;
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         params.dsg = dsg ;
-        params.datasetPath = ServerTest.datasetPath ;
+        params.datasetPath = datasetPath ;
         params.allowUpdate = true ;
         FusekiServerListener.initialSetup = params ;
         
-        JettyServerConfig config = make(true, true) ;
+        JettyServerConfig config = make(port, true, true) ;
         config.authConfigFile = authConfigFile ;
         JettyFuseki.initializeServer(config);
         JettyFuseki.instance.start() ;
         server = JettyFuseki.instance ;
     }
 
-    public static JettyServerConfig make(boolean allowUpdate, boolean listenLocal) {
+    public static JettyServerConfig make(int port, boolean allowUpdate, boolean listenLocal) {
         JettyServerConfig config = new JettyServerConfig() ;
         // Avoid any persistent record.
-        config.port = ServerTest.port ;
+        config.port = port ;
         config.contextPath = "/" ;
         config.loopback = listenLocal ;
         config.jettyConfigFile = null ;

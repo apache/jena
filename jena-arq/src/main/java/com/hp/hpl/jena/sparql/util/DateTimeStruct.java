@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-/** XDS date/time 7-compoent model.
+/** XSD date/time 7-component model.
  * Includes parsing xsd:dateTime, xsd:date and xsd:g*
  */  
 

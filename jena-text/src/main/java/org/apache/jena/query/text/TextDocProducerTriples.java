@@ -34,8 +34,8 @@ public class TextDocProducerTriples implements TextDocProducer {
     private final ThreadLocal<Boolean> inTransaction = new ThreadLocal<Boolean>() ;
     
 
-    public TextDocProducerTriples(EntityDefinition defn, TextIndex indexer) {
-        this.defn = defn ;
+    public TextDocProducerTriples(TextIndex indexer) {
+        this.defn = indexer.getDocDef() ;
         this.indexer = indexer ;
         inTransaction.set(false) ;
     }

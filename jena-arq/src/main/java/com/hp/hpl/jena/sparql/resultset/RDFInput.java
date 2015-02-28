@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.resultset;
 
 import java.util.ArrayList ;
 
+import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Literal ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
@@ -187,5 +188,17 @@ public class RDFInput extends ResultSetMem
         }
         bindingIter.close() ;
         return rb ;
+    }
+
+    /**
+     * Turns an RDF model, with properties and classses from the result set
+     * vocabulary, into a SPARQL result set. The result set formed is a copy in
+     * memory.
+     * 
+     * @param model
+     * @return ResultSet
+     */
+    public static ResultSet fromRDF(Model model) {
+        return new RDFInput(model);
     }
 }

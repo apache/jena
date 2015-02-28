@@ -20,7 +20,6 @@ package com.hp.hpl.jena.query;
 
 import java.io.ByteArrayOutputStream ;
 import java.io.OutputStream ;
-import java.io.PrintWriter ;
 import java.io.UnsupportedEncodingException ;
 import java.util.ArrayList ;
 import java.util.Iterator ;
@@ -49,7 +48,6 @@ import com.hp.hpl.jena.sparql.resultset.TextOutput ;
 import com.hp.hpl.jena.sparql.resultset.XMLOutput ;
 import com.hp.hpl.jena.sparql.resultset.XMLOutputASK ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 /** ResultSetFormatter - Convenience ways to call the various output formatters.
  *  in various formats.
@@ -278,55 +276,6 @@ public class ResultSetFormatter {
     // ----------------------------------------------------------------
     // As RDF
     
-    /** Encode the result set as RDF.
-     * @param  resultSet
-     * @return Model       Model contains the results
-     */
-
-    static public Model toModel(ResultSet resultSet)
-    {
-        RDFOutput rOut = new RDFOutput() ;
-        return rOut.toModel(resultSet) ;
-    }
-
-    /**
-     * Encode a boolean result set as RDF. 
-     * @param booleanResult
-     * @return Model       Model contains the results
-     */
-    public static Model toModel(boolean booleanResult)
-    {
-        RDFOutput rOut = new RDFOutput() ;
-        return rOut.toModel(booleanResult) ;
-    }
-
-    
-    /** Encode the result set as RDF in the model provided.
-     *  
-     * @param  model     The place where to put the RDF.
-     * @param  resultSet
-     * @return Resource  The resource for the result set.
-     */ 
-
-    static public Resource asRDF(Model model, ResultSet resultSet)
-    {
-        RDFOutput rOut = new RDFOutput() ;
-        return rOut.asRDF(model, resultSet) ;
-    }
-    
-    /** Encode the boolean as RDF in the model provided.
-     *  
-     * @param  model     The place where to put the RDF.
-     * @param  booleanResult
-     * @return Resource  The resource for the result set.
-     */ 
-
-    static public Resource asRDF(Model model, boolean booleanResult)
-    {
-        RDFOutput rOut = new RDFOutput() ;
-        return rOut.asRDF(model, booleanResult) ;
-    }
-    
     /** Output a ResultSet in some format.
      * 
      * @param resultSet Result set
@@ -344,142 +293,95 @@ public class ResultSetFormatter {
      * @param rFmt      A format to encode the result set in
      */
     
-    static public void output(OutputStream outStream, ResultSet resultSet, ResultsFormat rFmt)
-    {
-        if ( rFmt.equals(ResultsFormat.FMT_RS_XML) )
-        {
+    static public void output(OutputStream outStream, ResultSet resultSet, ResultsFormat rFmt) {
+        if ( rFmt.equals(ResultsFormat.FMT_RS_XML) ) {
             outputAsXML(outStream, resultSet) ;
             return ;
         }
 
-        if ( rFmt.equals(ResultsFormat.FMT_RS_JSON) )
-        {
+        if ( rFmt.equals(ResultsFormat.FMT_RS_JSON) ) {
             outputAsJSON(outStream, resultSet) ;
             return ;
         }
 
-        if ( rFmt.equals(ResultsFormat.FMT_RS_CSV) )
-        {
-            outputAsCSV(outStream, resultSet);
+        if ( rFmt.equals(ResultsFormat.FMT_RS_CSV) ) {
+            outputAsCSV(outStream, resultSet) ;
             return ;
         }
 
-        if ( rFmt.equals(ResultsFormat.FMT_RS_TSV) )
-        {
-            outputAsTSV(outStream, resultSet);
+        if ( rFmt.equals(ResultsFormat.FMT_RS_TSV) ) {
+            outputAsTSV(outStream, resultSet) ;
             return ;
         }
 
-        if ( rFmt.equals(ResultsFormat.FMT_RS_BIO) )
-        {
-            outputAsBIO(outStream, resultSet);
+        if ( rFmt.equals(ResultsFormat.FMT_RS_BIO) ) {
+            outputAsBIO(outStream, resultSet) ;
             return ;
         }
 
-        if ( rFmt.equals(ResultsFormat.FMT_RS_JSON) )
-        {
-            outputAsJSON(outStream, resultSet) ;
+        if ( rFmt.equals(ResultsFormat.FMT_RDF_XML) ) {
+            RDFOutput.outputAsRDF(outStream, "RDF/XML-ABBREV", resultSet) ;
             return ;
         }
 
-        if ( rFmt.equals(ResultsFormat.FMT_RDF_XML) )
-        {
-            outputAsRDF(outStream, "RDF/XML-ABBREV", resultSet) ;
-            return ;
-        }
-        
-        if ( rFmt.equals(ResultsFormat.FMT_RDF_TTL) )
-        {
-            outputAsRDF(outStream, "TTL", resultSet) ;
+        if ( rFmt.equals(ResultsFormat.FMT_RDF_TTL) ) {
+            RDFOutput.outputAsRDF(outStream, "TTL", resultSet) ;
             return ;
         }
 
-        if ( rFmt.equals(ResultsFormat.FMT_RDF_NT) )
-        {
-            outputAsRDF(outStream, "N-TRIPLES", resultSet) ;
+        if ( rFmt.equals(ResultsFormat.FMT_RDF_NT) ) {
+            RDFOutput.outputAsRDF(outStream, "N-TRIPLES", resultSet) ;
             return ;
         }
-        throw new ARQException("Unknown ResultSet format: "+rFmt);
+        throw new ARQException("Unknown ResultSet format: " + rFmt) ;
     }
     
     /** Write out an RDF model that encodes the result set
      * 
      * @param format        Name of RDF format (names as Jena writers) 
      * @param resultSet     The result set to encode in RDF
+     * @deprecated Use {@link RDFOutput#outputAsRDF(String,ResultSet)} directly instead
      */
-    
-    static public void outputAsRDF(String format, ResultSet resultSet)
-    { outputAsRDF(System.out, format, resultSet) ; }
+    @Deprecated
+    static public void outputAsRDF(String format, ResultSet resultSet) {
+        RDFOutput.outputAsRDF(format, resultSet) ;
+    }
 
     /** Write out an RDF model that encodes the result set
      * 
      * @param outStream     Output
      * @param format        Name of RDF format (names as Jena writers) 
      * @param resultSet     The result set to encode in RDF
+     * @deprecated Use {@link RDFOutput#outputAsRDF(OutputStream,String,ResultSet)} instead
      */
-    
-    static public void outputAsRDF(OutputStream outStream, String format, ResultSet resultSet)
-    {
-        PrintWriter out = FileUtils.asPrintWriterUTF8(outStream) ;
-        outputAsRDF(out, format, resultSet) ;
-        out.flush() ;
+    @Deprecated
+    static public void outputAsRDF(OutputStream outStream, String format, ResultSet resultSet) {
+        RDFOutput.outputAsRDF(outStream, format, resultSet) ;
     }
 
-    /** Write out an RDF model that encodes the result set.
-     *  See also the same method taking an output stream.
-     *  
-     * @param out           Output : ideally, should be a UTF-8 print writer (not system default) 
-     * @param format        Name of RDF format (names as Jena writers) 
-     * @param resultSet     The result set to encode in RDF
-     */
-    
-    static private void outputAsRDF(PrintWriter out, String format, ResultSet resultSet)
-    {
-        Model m = toModel(resultSet) ;
-        m.write(out, format) ;
-        out.flush() ;
-    }
-    
     /** Write out an RDF model that encodes a boolean result
      * 
      * @param format        Name of RDF format (names as Jena writers) 
      * @param booleanResult The boolean result to encode in RDF
+     * @deprecated Use {@link RDFOutput#outputAsRDF(String,boolean)} directly instead
      */
-
-    static public void outputAsRDF(String format,  boolean booleanResult)
-    { outputAsRDF(System.out, format, booleanResult) ; }
-
+    @Deprecated
+    static public void outputAsRDF(String format,  boolean booleanResult) {
+        RDFOutput.outputAsRDF(format, booleanResult) ;
+    }
     
     /** Write out an RDF model that encodes a boolean result
      * 
      * @param outStream     Output
      * @param format        Name of RDF format (names as Jena writers) 
      * @param booleanResult The boolean result to encode in RDF
+     * @deprecated Use {@link RDFOutput#outputAsRDF(OutputStream,String,boolean)} instead
      */
-
-    static public void outputAsRDF(OutputStream outStream, String format,  boolean booleanResult)
-    {
-        PrintWriter out = FileUtils.asPrintWriterUTF8(outStream) ;
-        outputAsRDF(out, format, booleanResult) ;
-        out.flush() ;
+    @Deprecated
+    static public void outputAsRDF(OutputStream outStream, String format,  boolean booleanResult) {
+        RDFOutput.outputAsRDF(outStream, format, booleanResult) ;
     }
 
-    /** Write out an RDF model that encodes a boolean result.
-     *  See also the same method taking an output stream.
-     *  
-     * @param out           Output : ideally, should be a UTF-8 print writer (not system default) 
-     * @param format        Name of RDF format (names as Jena writers) 
-     * @param booleanResult The boolean result to encode in RDF
-     */
-    
-    static private void outputAsRDF(PrintWriter out, String format,  boolean booleanResult)
-    {
-        Model m = toModel(booleanResult) ;
-        m.write(out, format) ;
-        out.flush() ;
-    }
-
-    
     // ---- XML Output
 
     /** Output a result set in the XML format
@@ -846,6 +748,50 @@ public class ResultSetFormatter {
             bout.write(b) ;
         }
         bout.flush() ;
+    }
+    // ----------------------------------------------------------------
+    // As RDF
+    
+    /** Encode the result set as RDF.
+     * @param  resultSet
+     * @return Model       Model contains the results
+     * @deprecated Use {@link RDFOutput#encodeAsModel(ResultSet)} instead
+     */
+    @Deprecated
+    static public Model toModel(ResultSet resultSet) {
+        return RDFOutput.encodeAsModel(resultSet) ;
+    }
+    /**
+     * Encode a boolean result set as RDF. 
+     * @param booleanResult
+     * @return Model       Model contains the results
+     * @deprecated Use {@link RDFOutput#encodeAsModel(boolean)} instead
+     */
+    @Deprecated
+    public static Model toModel(boolean booleanResult) {
+        return RDFOutput.encodeAsModel(booleanResult) ;
+    }
+    /** Encode the result set as RDF in the model provided.
+     *  
+     * @param  model     The place where to put the RDF.
+     * @param  resultSet
+     * @return Resource  The resource for the result set.
+     * @deprecated Use {@link RDFOutput#encodeAsRDF(Model,ResultSet)} directly instead
+     */ 
+    @Deprecated
+    static public Resource asRDF(Model model, ResultSet resultSet) {
+        return RDFOutput.encodeAsRDF(model, resultSet) ;
+    }
+    /** Encode the boolean as RDF in the model provided.
+     *  
+     * @param  model     The place where to put the RDF.
+     * @param  booleanResult
+     * @return Resource  The resource for the result set.
+     * @deprecated Use {@link RDFOutput#encodeAsRDF(Model,boolean)} directly instead
+     */ 
+    @Deprecated
+    static public Resource asRDF(Model model, boolean booleanResult) {
+        return RDFOutput.encodeAsRDF(model, booleanResult) ;
     }
 
     

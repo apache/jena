@@ -23,23 +23,20 @@ import static org.apache.jena.atlas.lib.RandomLib.random ;
 import static org.apache.jena.atlas.test.Gen.permute ;
 import static org.apache.jena.atlas.test.Gen.rand ;
 import static org.apache.jena.atlas.test.Gen.strings ;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertFalse ;
+import static org.junit.Assert.assertNotNull ;
+import static org.junit.Assert.assertTrue ;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Iterator ;
+import java.util.List ;
 
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.test.ExecGenerator ;
 import org.apache.jena.atlas.test.RepeatExecution ;
 
-
-
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.ext.ExtHash;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 
 public class ExtHashTestBase
 {
@@ -77,7 +74,7 @@ public class ExtHashTestBase
 //      System.err.printf("Warning: too many keys\n") ;
 
         int[] r1 = rand(numKeys, 0, maxValue) ;
-        int[] r2 = permute(r1, 4*numKeys) ;
+        int[] r2 = permute(r1) ;
         runTest(r1, r2) ;
     }
         

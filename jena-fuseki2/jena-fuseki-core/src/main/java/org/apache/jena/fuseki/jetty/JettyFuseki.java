@@ -87,25 +87,9 @@ public class JettyFuseki {
         instance = new JettyFuseki(config) ;
     }
     
-    /** Build a Jetty server using the development files for the webapp
-     *  No command line configuration. 
-     */
-    public static Server create(int port) {
-        return create("/", port) ;
-    }
-
-    public static Server create(String contextPath, int port) {
-        Server server = new Server(port) ;
-        WebAppContext webapp = createWebApp(contextPath) ;
-        server.setHandler(webapp) ;
-        return server ;
-    }
-
     private JettyFuseki(JettyServerConfig config) {
         this.serverConfig = config ;
-        
         buildServerWebapp(serverConfig.contextPath, serverConfig.jettyConfigFile, config.enableCompression) ;
-        
         if ( mgtConnector == null )
             mgtConnector = serverConnector ;
     }
@@ -216,7 +200,6 @@ public class JettyFuseki {
         webapp.setErrorHandler(new FusekiErrorHandler()) ;
         return webapp ;
     }
-    
 
     public static String getenv(String name) {
         String x = System.getenv(name) ;
