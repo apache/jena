@@ -30,8 +30,8 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>14</version>
-    <relativePath /> <!-- MNG-4687 Avoid warning -->
+    <version>16</version>
+    <relativePath />
   </parent>
 
   <licenses>
