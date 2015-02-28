@@ -454,8 +454,9 @@
 	       <exclude>**/*.classpath</exclude>
 
 	       <!-- Exclude anything created during the build (plugin generated files) ->-->
-         <exclude>**/target/**/*</exclude>
-
+	       <exclude>**/target/**/*</exclude>
+	       <!-- MSHADE-124 -->
+	       <exclude>**/dependency-reduced-pom.xml</exclude>
             </excludes>
         </configuration>
       </plugin>
