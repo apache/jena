@@ -23,14 +23,15 @@ import java.nio.ByteBuffer ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.file.FileFactory ;
-import org.seaborne.dboe.transaction.txn.StateMgrData ;
+import org.seaborne.dboe.transaction.txn.StateMgrDataIdx ;
 
 public class TestStateMgrData {
+    
     @Test public void state_data_01() {
         BufferChannel x = FileFactory.createBufferChannelMem() ;
         long[] data = {2,3} ; 
-        StateMgrData sm = new StateMgrData(x, data) ;
-        assertEquals(data.length, sm.get().length) ;
+        StateMgrDataIdx sm = new StateMgrDataIdx(x, data) ;
+        assertEquals(data.length, sm.getData().length) ;
         assertEquals(2L, sm.get(0)) ;
         assertEquals(3L, sm.get(1)) ;
         // Test initial state written
@@ -43,7 +44,7 @@ public class TestStateMgrData {
     @Test public void state_data_02() {
         BufferChannel x = FileFactory.createBufferChannelMem() ;
         long[] data = {2,3} ; 
-        StateMgrData sm = new StateMgrData(x, data) ;
+        StateMgrDataIdx sm = new StateMgrDataIdx(x, data) ;
         sm.writeState(); 
         sm.set(1, 99L);
         sm.writeState();
@@ -65,7 +66,7 @@ public class TestStateMgrData {
             x.sync(); 
         }
         long[] data = {2,3} ; 
-        StateMgrData sm = new StateMgrData(x, data) ;
+        StateMgrDataIdx sm = new StateMgrDataIdx(x, data) ;
         assertEquals(-8888L, sm.get(0)) ;
         assertEquals(-1234L, sm.get(1)) ;
     }

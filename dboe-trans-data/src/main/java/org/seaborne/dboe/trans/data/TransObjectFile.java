@@ -21,12 +21,13 @@ import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 import java.util.concurrent.atomic.AtomicLong ;
 
+import com.hp.hpl.jena.query.ReadWrite ;
+
 import org.apache.jena.atlas.lib.Pair ;
 import org.seaborne.dboe.base.block.Block ;
+import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.objectfile.ObjectFile ;
 import org.seaborne.dboe.transaction.txn.* ;
-
-import com.hp.hpl.jena.query.ReadWrite ;
 
 /** Transactional {@link ObjectFile}.
  *  An object file is append-only and allows only one writer at a time.
@@ -46,6 +47,8 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
      * But even if a partial entry, we don't corrupt data. Assumes no references
      * to the abandoned area of the file.
      */
+    
+    private final ObjectFileState stateMgr ;
     
     // Space for 0xFFFF = (64k)  
     private static final String baseUuidStr = "95e0f729-ad29-48b2-bd70-e37386630000" ; 
@@ -71,10 +74,23 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
         }
     }
 
+    static class ObjectFileState extends StateMgrData {
+        ObjectFileState(BufferChannel bufferChannel, long length, long position) {
+            super(bufferChannel, length, position) ;
+        }
+        private static int idxLength = 0 ; 
+        private static int idxPosition = 1 ;
+        long length()               { return get(idxLength) ; }
+        long position()             { return get(idxPosition) ; }
+        void length(long len)       { set(idxLength, len) ; } 
+        void position(long posn)    { set(idxPosition, posn) ; }
+    }
+
     private final ObjectFile objFile ;
     
-    public TransObjectFile(ObjectFile objFile, int id) {
+    public TransObjectFile(ObjectFile objFile, BufferChannel bufferChannel, int id) {
         super() ;
+        stateMgr = new ObjectFileState(bufferChannel, 0L, 0L) ;
         this.objFile = objFile ;
         
         // These may be updated by recovery. Start by setting to the
@@ -105,20 +121,22 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
     public void startRecovery() {
         recoveryAction = false ;
     }
+    
+    // XXX StateMgr length , position.to give naming 
 
     @Override
     public void recover(ByteBuffer ref) {
-        long xLength = ref.getLong() ;
-        long xPosition = ref.getLong() ;
-        length.set(xLength) ;
-        position.set(xPosition) ;
+        stateMgr.setState(ref);
+        length.set(stateMgr.length()) ;
+        position.set(stateMgr.position()) ;
         recoveryAction = true ;
     }
 
     @Override
     public void finishRecovery() {
-        if ( recoveryAction )
-            objFile.sync();
+        // If we did a truncate.
+//        if ( recoveryAction )
+//            objFile.sync();
     }
     
     @Override
@@ -135,10 +153,9 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
 
     @Override
     protected ByteBuffer _commitPrepare(TxnId txnId, TxnObjectFile state) {
-        ByteBuffer x = ByteBuffer.allocate(2*Long.BYTES) ;
-        x.putLong(objFile.length()) ;
-        x.putLong(objFile.position()) ;
-        return x ;
+        stateMgr.length(objFile.length()) ;
+        stateMgr.position(objFile.position());  
+        return stateMgr.getState() ;
     }
 
     @Override
@@ -146,6 +163,7 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
         if ( isWriteTxn() ) {
             // Force to disk.
             objFile.sync();
+            stateMgr.writeState();
             // Move visible commit point forward.
             length.set(objFile.length()) ;
             position.set(objFile.position()) ;
@@ -154,7 +172,6 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
 
     @Override
     protected void _commitEnd(TxnId txnId, TxnObjectFile state) {
-        
     }
 
     @Override

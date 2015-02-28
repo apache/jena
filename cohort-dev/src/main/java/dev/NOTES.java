@@ -23,10 +23,15 @@ public class NOTES {
     // Systematic tests involving recovery: e.g. TransObjectFile.
     // Pseudo fake a crash.
     
+    // _commit => _commitRead, _commitWrite OR _commit only for writers (readers are beginRead-endRead)
+    
     // Constants organisation: SystemBase, SystemFile, SystemBPTree simple, SystemBPTreeTxt
     
-    // Combine BptTxnState and BPTStateMgr?S
+    // Combine BptTxnState and BPTStateMgr?
+    //   BPTStateMgr -> StateMgrData
     // RangeIndexBuilderBPTree and BPlusTreeFactory. Sort out BPlusTreeFactory.
+    
+    // protected get(...)
     
     // Transactional tests on BPTrees
     //   AbstractTestTxnRangeIndex

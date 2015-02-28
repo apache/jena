@@ -17,14 +17,9 @@
 
 package org.seaborne.dboe.trans.bplustree;
 
-import static org.seaborne.dboe.sys.SystemBase.SizeOfInt ;
-import static org.seaborne.dboe.sys.SystemBase.SizeOfLong ;
-
-import java.nio.ByteBuffer ;
-
 import org.apache.jena.atlas.logging.FmtLog ;
 import org.seaborne.dboe.base.file.BufferChannel ;
-import org.seaborne.dboe.transaction.txn.StateMgrBase ;
+import org.seaborne.dboe.transaction.txn.StateMgrData ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -33,50 +28,38 @@ import org.slf4j.LoggerFactory ;
  * This consists of last commited root, and the limits on the blocks for both
  * nodes and records. 
  * 
- * (rootId/int, nodeAllocLimit/long, recordsAllocLimit/long) 
+ * (rootId/int-as-long, nodeAllocLimit/long, recordsAllocLimit/long) 
  */
-public class BPTStateMgr extends StateMgrBase {
-    private static Logger log = LoggerFactory.getLogger(BPTStateMgr.class) ;
-    private static final int SizePersistentState = SizeOfInt + SizeOfLong + SizeOfLong ;   
-
-    // These values are the values for a null tree (no blocks).
-    private int currentRoot           = 0 ;
-    private long nodeBlocksLimit      = 0 ; 
-    private long recordsBlocksLimit   = 0 ;
+public class BPTStateMgr extends StateMgrData {
+    private static Logger log = LoggerFactory.getLogger(BPTStateMgr2.class) ;
+    
+    private static int idxRoot                  = 0 ;
+    private static int idxNodeBlocksLimit       = 1 ;
+    private static int idxRecordsBlocksLimit    = 2 ;
+    
+    private int currentRoot()                   { return (int)super.get(idxRoot) ; }
+    private long nodeBlocksLimit()              { return super.get(idxNodeBlocksLimit) ; }
+    private long recordsBlocksLimit()           { return super.get(idxRecordsBlocksLimit) ; }
+    
+    private void currentRoot(int x)             { super.set(idxRoot, x) ; }
+    private void nodeBlocksLimit(long x)        { super.set(idxNodeBlocksLimit, x) ; }
+    private void recordsBlocksLimit(long x)     { super.set(idxRecordsBlocksLimit, x) ; }
 
     private boolean LOGGING = BPT.Logging ;
 
     public BPTStateMgr(BufferChannel storage) {
-        super(storage, SizePersistentState) ;
-        init() ;
+        // These values are the values for a null tree (no blocks).
+        super(storage, 0L, 0L, 0L) ;
     }
 
-    void setState(int rootIdx, long nodeBlkLimit, long recordsBlkLimit) {
-        currentRoot = rootIdx ;
-        nodeBlocksLimit = nodeBlkLimit ;
-        recordsBlocksLimit = recordsBlkLimit ;
+    /*package*/ void setState(int rootIdx, long nodeBlkLimit, long recordsBlkLimit) {
+        currentRoot(rootIdx) ;
+        nodeBlocksLimit(nodeBlkLimit) ;
+        recordsBlocksLimit(recordsBlkLimit) ;
         log("Set") ;
         setDirtyFlag() ;
         // But don't write it.
     }
-
-    @Override
-    protected void deserialize(ByteBuffer bytes) {
-        int root = bytes.getInt() ;
-        long nodeBlkLimit = bytes.getLong() ;
-        long recordsBlkLimit = bytes.getLong() ;
-        setState(root, nodeBlkLimit, recordsBlkLimit) ;
-    }
-
-    @Override
-    protected ByteBuffer serialize(ByteBuffer bytes) {
-        bytes.putInt(currentRoot) ;
-        bytes.putLong(nodeBlocksLimit) ;
-        bytes.putLong(recordsBlocksLimit) ;
-        bytes.rewind() ;
-        return bytes ;
-    }
-
     @Override
     protected void writeStateEvent() {
         log("Write") ;
@@ -84,23 +67,23 @@ public class BPTStateMgr extends StateMgrBase {
 
     @Override
     protected void readStateEvent() {
-        log("Rrite") ;
+        log("Read") ;
     }
 
     private void log(String operation) {
         if ( LOGGING )
-            FmtLog.info(log, "%s state:  root=%d // node block limit = %d // records block limit %d", operation, currentRoot, nodeBlocksLimit, recordsBlocksLimit) ;
+            FmtLog.info(log, "%s state:  root=%d // node block limit = %d // records block limit %d", operation, currentRoot(), nodeBlocksLimit(), recordsBlocksLimit()) ;
     }
     
     public int getRoot() {
-        return currentRoot ;
+        return currentRoot() ;
     }
 
     public long getNodeBlocksLimit() {
-        return nodeBlocksLimit ;
+        return nodeBlocksLimit() ;
     }
 
     public long getRecordsBlocksLimit() {
-        return recordsBlocksLimit ;
+        return recordsBlocksLimit() ;
     }
 }

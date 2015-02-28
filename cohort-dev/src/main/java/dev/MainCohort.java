@@ -19,9 +19,14 @@ package dev;
 
 import static org.seaborne.dboe.test.RecordLib.r ;
 
+import java.nio.ByteBuffer ;
+
+import org.apache.jena.atlas.lib.ByteBufferLib ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.seaborne.dboe.base.block.FileMode ;
+import org.seaborne.dboe.base.file.BufferChannel ;
+import org.seaborne.dboe.base.file.FileFactory ;
 import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.Record ;
@@ -37,6 +42,7 @@ import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.ComponentIds ;
+import org.seaborne.dboe.transaction.txn.StateMgrDataIdx ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 public class MainCohort {
@@ -47,11 +53,23 @@ public class MainCohort {
     static Journal journal = Journal.create(Location.mem()) ;
 
     public static void main(String... args) {
+//        BufferChannel x = FileFactory.createBufferChannelMem() ;
+//        long[] data = {2,3} ; 
+//        
+//        StateMgrDataIdx sm = new StateMgrDataIdx(x, data) ;
+//        sm.set(1, 666L);
+//        ByteBuffer bb = sm.getState() ;
+//        ByteBufferLib.print(bb);
+//        
+//        
+//        System.exit(0) ;
+        
         FileSet fs = FileSet.mem();
         BPlusTree bpt = BPlusTreeFactory.createBPTreeByOrder(null, fs, 3, RecordLib.recordFactory) ;
         Transactional holder = TransactionalFactory.create(journal, bpt) ;
         
         ThreadTxn a1 = Txn.threadTxnRead(holder, ()->dump(bpt)) ;
+
         ThreadTxn a2 = Txn.threadTxnWrite(holder, ()-> {
             Record r = r(56) ;
             bpt.insert(r) ;

@@ -74,10 +74,9 @@ public class ObjectFileStorage implements ObjectFile
     private Block allocBlock = null ;
     private long allocLocation = -1 ;
     
-    // Old values for abort.
+    // Old values for aborting a allocate-write
     int oldBufferPosn = -1 ;
     int oldBufferLimit = -1 ;
-
 
     public ObjectFileStorage(BufferChannel file) {
         this(file, SystemFile.ObjectFileWriteBufferSize) ;
@@ -230,6 +229,8 @@ public class ObjectFileStorage implements ObjectFile
 
     @Override
     public void abortWrite(Block block) {
+        if ( ! inAllocWrite )
+            return ;
         allocBlock = null ;
         int oldstart = (int)(allocLocation - filesize) ;
         if ( oldstart != oldBufferPosn )

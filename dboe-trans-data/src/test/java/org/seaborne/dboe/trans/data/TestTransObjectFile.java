@@ -25,6 +25,7 @@ import org.junit.After ;
 import org.junit.Assert ;
 import org.junit.Before ;
 import org.junit.Test ;
+import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.file.FileFactory ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.objectfile.ObjectFile ;
@@ -43,7 +44,8 @@ public class TestTransObjectFile extends Assert {
     @Before public void before() {
         journal = Journal.create(Location.mem()) ;
         baseObjectFile = FileFactory.createObjectFileMem("ObjectFile") ;
-        transObjectFile = new TransObjectFile(baseObjectFile, 9) ;
+        BufferChannel chan = FileFactory.createBufferChannelMem() ;
+        transObjectFile = new TransObjectFile(baseObjectFile, chan, 9) ;
         transactional = TransactionalFactory.create(journal, transObjectFile) ;    
     }
 

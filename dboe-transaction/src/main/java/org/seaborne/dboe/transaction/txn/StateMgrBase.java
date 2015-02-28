@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory ;
 /** Helper class for the manage the persistent state of a transactional.
  * The persistent state is assumed to be a fixed size, or at least
  * of known maximum size.
- * May not be suitable for all transactional implementations.
+ * May not be suitable for all transactional component implementations.
  */
 
 public abstract class StateMgrBase implements Sync, Closeable {
@@ -55,7 +55,10 @@ public abstract class StateMgrBase implements Sync, Closeable {
         this.storage = storage ;
     }
 
-    /** After the default initial state is known, call this, for example, at the end of the constructor. */
+    /**
+     * After the default initial state is known, call this, for example, at the
+     * end of the constructor.  If no on-disk state is found, a clean copy is written.
+     */
     protected void init() {
         if ( ! storage.isEmpty() )
             readState() ;

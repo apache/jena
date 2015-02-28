@@ -122,7 +122,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     
     // Root id across transactions
     // Changes as the tree evolves in write transactions. 
-    private int rootIdx = BPlusTreeParams.RootId ;
+    private int rootIdx = -199 ;
     private BPTStateMgr stateManager ;
     private BPTreeNodeMgr nodeManager ; 
     private BPTreeRecordsMgr recordsMgr; 
@@ -537,13 +537,14 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     @Override
     protected void _commit(TxnId txnId, BptTxnState state) {
-        //stateManager.setState(state.root, nodeManager.allocLimit(), recordsMgr.allocLimit()); 
+        if ( isWriteTxn() ) {
+            rootIdx = state.root ;
+            stateManager.sync();
+        }
     }
 
     @Override
     protected void _commitEnd(TxnId txnId, BptTxnState state) {
-        rootIdx = state.root ;
-        stateManager.sync();
     }
 
     @Override
@@ -557,7 +558,9 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     }
 
     @Override
-    protected void _complete(TxnId txnId, BptTxnState state) {}
+    protected void _complete(TxnId txnId, BptTxnState state) {
+        
+    }
 
     @Override
     protected void _shutdown() {}
