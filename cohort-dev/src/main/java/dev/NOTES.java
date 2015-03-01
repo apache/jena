@@ -19,27 +19,28 @@ package dev;
 
 public class NOTES {
     // ARQ :: extract Atlas.
-    
+
     // Systematic tests involving recovery: e.g. TransObjectFile.
     // Pseudo fake a crash.
+
+    // Clean journal interface.
     
-    // _commit => _commitRead, _commitWrite OR _commit only for writers (readers are beginRead-endRead)
+    // ---------------------
+    // Split READ and WRITE internally to be two different lifecycles.
+    // See TransactionalComponentLifecycle
     
     // Constants organisation: SystemBase, SystemFile, SystemBPTree simple, SystemBPTreeTxt
     
     // Combine BptTxnState and BPTStateMgr?
-    //   BPTStateMgr -> StateMgrData
+    // StateMgr = mgr and state.  Split concepts.
     // RangeIndexBuilderBPTree and BPlusTreeFactory. Sort out BPlusTreeFactory.
     
-    // protected get(...)
-    
     // Transactional tests on BPTrees
-    //   AbstractTestTxnRangeIndex
+    //   AbstractTestTxnRangeIndex from TestBPlusTreeTxn
     
     // Fast clear (new tree).  Fast clear for dft graph.
     
     // Tests of txn after txn
-    // No promote -> no access path.
     
     // BPTreeRangeIterator
     //   - use indexes, delay reading blocks.
@@ -49,6 +50,8 @@ public class NOTES {
     //   Per operation mgt struct - collects pages touched etc.
     
     // Just reset the free block chain per transaction.
+    // Us
+    
 
     // Remove CheckingTree - broken.
 

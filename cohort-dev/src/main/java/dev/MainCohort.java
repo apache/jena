@@ -19,14 +19,11 @@ package dev;
 
 import static org.seaborne.dboe.test.RecordLib.r ;
 
-import java.nio.ByteBuffer ;
+import com.hp.hpl.jena.query.ReadWrite ;
 
-import org.apache.jena.atlas.lib.ByteBufferLib ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.seaborne.dboe.base.block.FileMode ;
-import org.seaborne.dboe.base.file.BufferChannel ;
-import org.seaborne.dboe.base.file.FileFactory ;
 import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.Record ;
@@ -42,7 +39,6 @@ import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.ComponentIds ;
-import org.seaborne.dboe.transaction.txn.StateMgrDataIdx ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 public class MainCohort {
@@ -67,6 +63,13 @@ public class MainCohort {
         FileSet fs = FileSet.mem();
         BPlusTree bpt = BPlusTreeFactory.createBPTreeByOrder(null, fs, 3, RecordLib.recordFactory) ;
         Transactional holder = TransactionalFactory.create(journal, bpt) ;
+        
+        holder.begin(ReadWrite.READ);
+        System.out.println("READ") ;
+        holder.commit() ;
+        holder.end() ;
+        
+        System.exit(0) ;
         
         ThreadTxn a1 = Txn.threadTxnRead(holder, ()->dump(bpt)) ;
 
