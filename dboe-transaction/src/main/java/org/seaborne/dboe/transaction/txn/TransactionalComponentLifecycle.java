@@ -161,6 +161,114 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
         componentState = null ;
     }
     
+    
+    // XXX Align to javadoc in TransactionalComponent.
+    
+    /* There are two lifecycles, one for write transaction, one
+     * for read transactions. This affects how transaction end so
+     * when/if promoted read->write transactions happen, a promoted
+     * transaction will follow the write lifecycle. 
+     * 
+     * In both lifecyles, the implementer can assume that calls
+     * happen at the right points and called only as needed.  Framework
+     * takes care of checking.  
+     * 
+     * Read lifecycle:
+     * A read transaction be be just begin(READ)-end() but may also
+     * have commit or abort before end. The _commitRead and _abortRead
+     * calls note if an explicit commit or abort occurs but may not be
+     * called. _endRead is always called exactly once.
+     *  
+     * _commitRead
+     * _abortRead
+     * _endRead
+     * _complete
+     * 
+     * Write lifecycle:
+     * A write transaction must have a commit() or abort() before end().
+     * The fraemwork will check this.
+     * 
+     * If the transaction commits:
+     * _commitPrepareWrite
+     * _commitWrite -- The transaction is 
+     * _commitEndWrite
+     * 
+     * If the transaction aborts:
+     * _abortWrite
+     * 
+     * After any lifecycle, a final call of
+     * _complete()
+     * 
+     * indicates ths transaction has fully finished.
+     * 
+     * Typically, an implementation does not need to take action in every call. 
+     */
+    
+//    /**
+//     * 
+//     * @param readWrite
+//     * @param txnId
+//     * @return
+//     */
+//    protected abstract X           _begin(ReadWrite readWrite, TxnId txnId) ;
+//    
+//    /**
+//     * 
+//     * @param txnId
+//     * @param state
+//     * @return
+//     */
+//    protected abstract ByteBuffer  _commitPrepareWrite(TxnId txnId, X  state) ;
+//    
+//    /**
+//     * 
+//     * @param txnId
+//     * @param state
+//     */
+//    protected abstract void        _commitWrite(TxnId txnId, X state) ;
+//    
+//    /**
+//     * 
+//     * @param txnId
+//     * @param state
+//     */
+//    protected abstract void        _commitEndWrite(TxnId txnId, X state) ;
+//    
+//    /**
+//     * 
+//     * @param txnId
+//     * @param state
+//     */
+//    protected abstract void        _abortWrite(TxnId txnId, X state) ;
+//    
+//    /**
+//     * 
+//     * @param txnId
+//     * @param state
+//     * @return
+//     */
+//    protected abstract ByteBuffer  _commitRead(TxnId txnId, X  state) ;
+//    
+//    /**
+//     * 
+//     * @param txnId
+//     * @param state
+//     * @return
+//     */
+//    protected abstract ByteBuffer  _abortRead(TxnId txnId, X  state) ;
+//
+//    /**
+//     * 
+//     * @param txnId
+//     * @param state
+//     */
+//    protected abstract void        _complete(TxnId txnId, X state) ;
+//    
+//    /**
+//     * 
+//     */
+//    protected abstract void        _shutdown() ;
+
     protected abstract X           _begin(ReadWrite readWrite, TxnId txnId) ;
     protected abstract ByteBuffer  _commitPrepare(TxnId txnId, X  state) ;
     protected abstract void        _commit(TxnId txnId, X state) ;
@@ -168,7 +276,7 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     protected abstract void        _abort(TxnId txnId, X state) ;
     protected abstract void        _complete(TxnId txnId, X state) ;
     protected abstract void        _shutdown() ;
-
+    
     protected ReadWrite getReadWriteMode() {
         Transaction txn = threadTxn.get();
         return txn.getMode() ;
@@ -224,8 +332,6 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
             throw new TransactionException("Not in a write transaction") ;
     }
 
-    // Make these all no-ops for "no checks"
-    
     private void checkAligned(Transaction transaction) {
         if ( ! CHECKING ) return ;
         Transaction txn = threadTxn.get();
