@@ -20,6 +20,17 @@ package org.seaborne.dboe.sys;
 /** Names of things in TDB */
 public class Names
 {
+    // TODO Split up this file.
+    
+    /* System files */
+    public static final String extJournal               = "jrnl" ;
+    /* Component Transactional State */    
+    public static final String extState                 = "cts" ;           
+    
+    public static final String journalFileBase          = "journal" ;
+    public static final String journalFile              = journalFileBase+"."+extJournal ;
+
+    /* RDF indexes */
     public static final String primaryIndexTriples      = "SPO" ; 
     public static final String[] tripleIndexes          = { primaryIndexTriples, "POS", "OSP" } ;
 
@@ -29,27 +40,22 @@ public class Names
     public static final String primaryIndexPrefix       = "GPU" ;
     public static final String[] prefixIndexes          = { primaryIndexPrefix } ;
     
-    /** B+Trees - nodes file and records file */
-    public static final String bptExtRoot               = "bpt" ;
+    /* B+Trees - nodes file and records file */
+    public static final String bptExtRoot               = "bpt" ; //extState?
     public static final String bptExtTree               = "idn" ;
     public static final String bptExtRecords            = "dat" ;
 
-    /** BTrees - single file per tree */
+    /* BTrees - single file per tree */
     public static final String btExt                    = "idx" ;
     
-    /** ExtHash - dictionary file*/
+    /* ExtHash - dictionary file*/
     public static final String extHashExt               = "exh" ;
     public static final String extHashBucketExt         = "dat" ;
 
     public static final String datasetConfig            = "config-tdb" ;        // name of the TDB configuration file.
 
-    
-    /** Node file */
+    /* Node files */
     public static final String extNodeData              = "dat" ;           // Extension of node files
-    public static final String extJournal               = "jrnl" ;          // Extension of node files.
-    public static final String journalFileBase          = "journal" ;
-    public static final String journalFile              = journalFileBase+"."+extJournal ;
-    
     public static final String indexId2Node             = "nodes" ;         // Node table
     public static final String indexNode2Id             = "node2id";        // Node hash to id table
     
