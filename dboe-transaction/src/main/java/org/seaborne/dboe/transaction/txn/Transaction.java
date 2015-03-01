@@ -45,8 +45,9 @@ final
 public class Transaction {
     // Using an AtomicReference<TxnState> requires that 
     // TransactionalComponentLifecycle.internalComplete
-    // frees the thread local for the threadTxn.  
-    // If a plain member variable is used slow growth is still seen.
+    // frees the thread local for the threadTxn, otherwise memory
+    // usage grows. If a plain member variable is used slow growth
+    // is still seen. 
     // Nulling txnMgr and clearing components stops that slow growth.
 
     private TransactionCoordinator txnMgr ;
@@ -79,12 +80,10 @@ public class Transaction {
 
     private void setState(TxnState newState) {
         state.set(newState) ;
-        //state = newState ;
     }
 
     public TxnState getState() {
         return state.get() ;
-        //return state ; 
     }
 
     /**
@@ -119,6 +118,7 @@ public class Transaction {
     }
     
     public void commit() { 
+        // Split into READ and WRITE forms.
         checkState(ACTIVE) ;
         setState(PREPARE) ;
         List<PrepareState> txnPrepared = prepare() ;
@@ -133,6 +133,7 @@ public class Transaction {
     }
     
     public void abort() {
+        // Split into READ and WRITE forms.
         checkState(ACTIVE, ABORTED) ;
         // Includes notification start/finish
         txnMgr.executeAbort(this, ()-> { components.forEach((c) -> c.abort()) ; }) ;
