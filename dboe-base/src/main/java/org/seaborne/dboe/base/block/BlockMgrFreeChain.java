@@ -27,7 +27,7 @@ import java.util.Deque ;
 final public class BlockMgrFreeChain extends BlockMgrWrapper {
     // Could keep Pair<Integer, ByteBuffer>
     // List<Block> freeBlocks = new ArrayList<Block>() ;
-    private final Deque<Block> freeBlocks = new ArrayDeque<>() ;
+    private final Deque<Block> freeBlocks = new ArrayDeque<>() ;    // Keep as heap?
 
     public BlockMgrFreeChain(BlockMgr blockMgr) {
         super(blockMgr) ;
@@ -49,6 +49,18 @@ final public class BlockMgrFreeChain extends BlockMgrWrapper {
             freeBlocks.add(block) ;
     }
 
+    @Override
+    public void resetAlloc(long boundary) {
+        super.resetAlloc(boundary);
+        // Just clear - assumes this is effectively a transaction boundary.
+        freeBlocks.clear(); 
+//        Iterator<Block> iter = freeBlocks.iterator() ;
+//        while(iter.hasNext()) {
+//            Block blk = iter.next() ;
+//            if ( blk.getId() < boundary )
+//                iter.remove();
+//        }
+    }
     @Override
     public boolean valid(int id) {
         for ( Block blk : freeBlocks ) {
