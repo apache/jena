@@ -29,11 +29,13 @@ import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.file.FileFactory ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.objectfile.ObjectFile ;
-import org.seaborne.dboe.trans.data.TransObjectFile ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.Txn ;
+import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
+import org.seaborne.dboe.transaction.txn.journal.JournalEntry ;
+import org.seaborne.dboe.transaction.txn.journal.JournalEntryType ;
 
 public class TestTransObjectFile extends Assert {
     private Journal journal ;
@@ -51,11 +53,16 @@ public class TestTransObjectFile extends Assert {
 
     @After public void after() { }
     
+    private static ByteBuffer str2bb(String x) {
+        byte[] d = StrUtils.asUTF8bytes(x) ;
+        ByteBuffer bb = ByteBuffer.wrap(d) ;
+        return bb ;
+    }
+    
     private static long writeOne(Transactional transactional, TransObjectFile transObjectFile, String data) {
         return 
             Txn.executeWriteReturn(transactional, ()->{
-                byte[] d = StrUtils.asUTF8bytes(data) ;
-                ByteBuffer bb = ByteBuffer.wrap(d) ;
+                ByteBuffer bb = str2bb(data) ;
                 return transObjectFile.write(bb) ;
         }) ;
     }
@@ -93,6 +100,32 @@ public class TestTransObjectFile extends Assert {
         // Assume journal not truncated.
     }
 
+    @Test public void transObjectFile_4() {
+        String str1 = "Test4" ; 
+        String str2 = "TheNext" ;
+        long x1 = writeOne(transactional, transObjectFile, str1) ;
+        ByteBuffer bb = str2bb(str2) ;
+        long x2 = baseObjectFile.write(bb) ;
+        baseObjectFile.sync();
+        long x3 = Txn.executeReadReturn(transactional, ()->transObjectFile.length()) ;
+        assertEquals(x2, x3);
+        assertNotEquals(x3, baseObjectFile.length());
 
+        // Fake recovery.
+        ByteBuffer bbj = ByteBuffer.allocate(2*Long.BYTES) ;
+        bbj.putLong(x3) ;
+        bbj.putLong(0) ;
+        bbj.rewind() ;
+        journal.write(JournalEntryType.REDO, transObjectFile.getComponentId(), bbj) ;
+        journal.writeJournal(JournalEntry.COMMIT) ;
+        // Recovery.
+        //transObjectFile.recover(bb);
+        TransactionalBase transBase = (TransactionalBase)TransactionalFactory.create(journal, transObjectFile) ;
+        transBase.getTxnMgr().recovery();
+        ByteBuffer bb1 = Txn.executeReadReturn(transBase, ()->transObjectFile.read(x3)) ;
+        String s1 = Bytes.fromByteBuffer(bb1) ;
+        assertEquals(str2, s1);
+        // Woot!
+    }
 }
 
