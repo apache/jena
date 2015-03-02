@@ -40,13 +40,13 @@ export FUSEKI_BASE="${FUSEKI_BASE:-$FUSEKI_HOME/run}"
 check_dir "FUSEKI_BASE" "$FUSEKI_BASE"
 
 CPF="$FUSEKI_HOME/fuseki.classpath"
-
 if [ ! -e "$CPF" ]; then
     echo "Need to create Fuseki classpath file"
+    echo "Ensure maven is upto date with the lest snapshots and then run"
+    echo -e "cd $FUSEKI_HOME ; \nmvn dependency:build-classpath -Dmdep.outputFile=fuseki.classpath"
     exit 1
 fi
-
-CP="$(. $CPF)"
+CP="$(cat $CPF)"
 
 # Add development directories.
 if [ -e "$FUSEKI_HOME/classes" ]
