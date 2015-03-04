@@ -45,7 +45,7 @@ public interface Index extends Iterable<Record>, Sync, Closeable
     /** Get the Record factory associated with this index */
     public RecordFactory getRecordFactory() ;
     
-    /** Close the index - can't not be used again through this object */
+    /** Close the index - can not be used again through this object */
     @Override
     public void close() ;
     
