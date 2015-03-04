@@ -19,6 +19,8 @@ package dev;
 
 import static org.seaborne.dboe.test.RecordLib.r ;
 
+import java.util.concurrent.Semaphore ;
+
 import com.hp.hpl.jena.query.ReadWrite ;
 
 import org.apache.jena.atlas.lib.FileOps ;
@@ -28,17 +30,19 @@ import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
+import org.seaborne.dboe.sys.SystemBase ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.test.RecordLib ;
 import org.seaborne.dboe.trans.bplustree.BPT ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
-import org.seaborne.dboe.transaction.ThreadTxn ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.ComponentIds ;
+import org.seaborne.dboe.transaction.txn.Transaction ;
+import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 public class MainCohort {
@@ -49,47 +53,36 @@ public class MainCohort {
     static Journal journal = Journal.create(Location.mem()) ;
 
     public static void main(String... args) {
-//        BufferChannel x = FileFactory.createBufferChannelMem() ;
-//        long[] data = {2,3} ; 
-//        
-//        StateMgrDataIdx sm = new StateMgrDataIdx(x, data) ;
-//        sm.set(1, 666L);
-//        ByteBuffer bb = sm.getState() ;
-//        ByteBufferLib.print(bb);
-//        
-//        
-//        System.exit(0) ;
+        //Non-threaded
         
-        FileSet fs = FileSet.mem();
-        BPlusTree bpt = BPlusTreeFactory.createBPTreeByOrder(null, fs, 3, RecordLib.recordFactory) ;
-        Transactional holder = TransactionalFactory.create(journal, bpt) ;
+        BPlusTree bpt = BPlusTreeFactory.createBPTree(null, FileSet.mem(), recordFactory) ;
+        TransactionCoordinator coord = new TransactionCoordinator(journal) ;
+        coord.add(bpt) ;
         
-        holder.begin(ReadWrite.READ);
-        System.out.println("READ") ;
-        holder.commit() ;
-        holder.end() ;
+        Transaction t1 = coord.begin(ReadWrite.WRITE) ;
+        Semaphore done = new Semaphore(0) ;
         
-        System.exit(0) ;
-        
-        ThreadTxn a1 = Txn.threadTxnRead(holder, ()->dump(bpt)) ;
-
-        ThreadTxn a2 = Txn.threadTxnWrite(holder, ()-> {
-            Record r = r(56) ;
+        SystemBase.executor.execute(()->{
+            Record r = r(6) ;
             bpt.insert(r) ;
-            bpt.insert(r) ;
+            t1.commit(); 
+            t1.end() ;
+            done.release(1);
         }) ;
-        a2.run(); 
-        a1.run(); 
-        //dump(holder, bpt) ;
+
+        done.acquireUninterruptibly(1);
         
-        ThreadTxn a3 = Txn.threadTxnRead(holder, ()-> {throw new RuntimeException("Tricky");}) ;
+//        Record r = r(6) ;
+//        bpt.insert(r) ;
+//        t1.commit(); 
+//        t1.end() ;
+        
+        Transaction t2 = coord.begin(ReadWrite.READ) ;
+        elements(bpt); 
+        t2.end() ;
         
         
-        try { a3.run(); }
-        catch (RuntimeException ex) { System.out.println("Exception: "+ex.getMessage()) ; }
         
-        
-        System.out.println("DONE?") ;
     }
     
     public static void main1(String... args) {

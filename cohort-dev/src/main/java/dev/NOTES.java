@@ -25,6 +25,14 @@ public class NOTES {
 
     // Clean journal interface.
     
+    // Insert/delet -> return null?
+
+    // Bulk operations:
+    // Index 
+    //   insertMany(Collection<Record> record)
+    //   deleteMany(Collection<Record> record)
+    // patch support?
+    
     // ---------------------
     // Split READ and WRITE internally to be two different lifecycles.
     // See TransactionalComponentLifecycle
