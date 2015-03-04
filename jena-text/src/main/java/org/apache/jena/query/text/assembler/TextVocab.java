@@ -32,7 +32,8 @@ public class TextVocab
     public static final Property pDataset           = Vocab.property(NS, "dataset") ;
     public static final Property pIndex             = Vocab.property(NS, "index") ;
     public static final Property pTextDocProducer   = Vocab.property(NS, "textDocProducer") ;
-    
+    public static final Property pCloseIndexOnClose = Vocab.property(NS, "closeIndexOnClose");
+   
     public static final Resource textIndex          = Vocab.resource(NS, "TextIndex") ;
     public static final Resource textIndexSolr      = Vocab.resource(NS, "TextIndexSolr") ;
     public static final Resource textIndexLucene    = Vocab.resource(NS, "TextIndexLucene") ;

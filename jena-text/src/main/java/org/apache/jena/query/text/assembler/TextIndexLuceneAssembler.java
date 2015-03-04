@@ -75,7 +75,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             } else {
                 Resource x = n.asResource() ;
                 String path = IRILib.IRIToFilename(x.getURI()) ;
-                File dir = new File(path) ;
+                File dir = new File(path);
                 directory = FSDirectory.open(dir) ;
             }
             

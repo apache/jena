@@ -33,23 +33,36 @@ public class TextDatasetFactory
 {
     static { TextQuery.init(); }
     
-    /** Use an assembler file to build a dataset with text search capabilities */ 
+    /**
+     * Use an assembler description to build a dataset with text search capabilities
+     * @param assemblerFile The URL of the assembler file
+    */
     public static Dataset create(String assemblerFile)
     {
         return (Dataset)AssemblerUtils.build(assemblerFile, TextVocab.textDataset) ;
     }
-
-    /** Create a text-indexed dataset */ 
+    
+    /**
+     * Create a text-indexed dataset
+     * @param base The base dataset that will be indexed
+     * @param textIndex The text index description
+    */
     public static Dataset create(Dataset base, TextIndex textIndex)
     {
         return create(base, textIndex, false);
     }
     
-    /** Create a text-indexed dataset, optionally allowing the text index to be closed if the Dataset is */
     public static Dataset create(Dataset base, TextIndex textIndex, boolean closeIndexOnDSGClose)
     {
         DatasetGraph dsg = base.asDatasetGraph() ;
-        dsg = create(dsg, textIndex, closeIndexOnDSGClose) ;
+        dsg = create(dsg, textIndex, null, closeIndexOnDSGClose) ;
+        return DatasetFactory.create(dsg) ;
+    }    
+    
+    public static Dataset create(Dataset base, TextIndex textIndex, TextDocProducer docProducer)
+    {
+        DatasetGraph dsg = base.asDatasetGraph() ;
+        dsg = create(dsg, textIndex, docProducer, false) ;
         return DatasetFactory.create(dsg) ;
     }
     
@@ -61,16 +74,40 @@ public class TextDatasetFactory
         return DatasetFactory.create(dsg) ;
     }
 
-
     /** Create a text-indexed DatasetGraph */ 
     public static DatasetGraph create(DatasetGraph dsg, TextIndex textIndex)
     {
-        return create(dsg, textIndex, false);
+        return create(dsg, textIndex, null, false);
+    }
+    
+    /**
+      * Create a text-indexed dataset with optional document producer
+      * @param dsg The dataset graph that will be indexed
+      * @param textIndex The text index description
+      * @param docProducer Optional document producer for the index, or null
+      * @param closeIndexOnDSGClose close index if dataset closed
+      * @return The {@link DatasetGraph} with initialised text index
+      * @see #defaultTextDocProducer(DatasetGraph, TextIndex)
+    */
+    
+    public static DatasetGraph create(DatasetGraph dsg, TextIndex textIndex, TextDocProducer docProducer, boolean closeIndexOnDSGClose)
+    {
+        // TextDocProducer producer = new TextDocProducerTriples(textIndex.getDocDef(), textIndex) ;
+        
+    	if (docProducer == null) docProducer = defaultTextDocProducer(dsg, textIndex);
+    	
+    	DatasetGraph dsgt = new DatasetGraphText(dsg, textIndex, docProducer, closeIndexOnDSGClose) ;
+        // Also set on dsg
+        Context c = dsgt.getContext() ;
+        c.set(TextQuery.textIndex, textIndex) ;
+        c.set(TextQuery.docProducer, docProducer ) ;
+        return dsgt ;
     }
     
     /** Create a text-indexed DatasetGraph, optionally allowing the text index to be closed if the DatasetGraph is */
     public static DatasetGraph create(DatasetGraph dsg, TextIndex textIndex, boolean closeIndexOnDSGClose)
     {
+        TextDocProducer producer = new TextDocProducerTriples(textIndex) ;
         return create(dsg, textIndex, closeIndexOnDSGClose, null);
     }
     
@@ -80,10 +117,15 @@ public class TextDatasetFactory
         DatasetGraph dsgt = new DatasetGraphText(dsg, textIndex, producer, closeIndexOnDSGClose) ;
         // Also set on dsg
         Context c = dsgt.getContext() ;
-        c.set(TextQuery.textIndex, textIndex) ;
-        
+        c.set(TextQuery.textIndex, textIndex) ;       
         return dsgt ;
     }
+
+	public static Dataset create(Dataset base, TextIndex textIndex, TextDocProducer docProducer, boolean closeIndexOnDSGClose) {
+		DatasetGraph dsg = base.asDatasetGraph() ;
+	    dsg = create(dsg, textIndex, docProducer, closeIndexOnDSGClose) ;
+	    return DatasetFactory.create(dsg) ;
+	}
     
     /**
      * Create a Lucene TextIndex
@@ -110,6 +152,20 @@ public class TextDatasetFactory
     {
         TextIndex index = createLuceneIndex(directory, def, queryAnalyzer) ;
         return create(base, index, true) ; 
+    }
+    
+    /** Create a text-indexed dataset, using Lucene */
+    public static Dataset createLucene(Dataset base, Directory directory, EntityDefinition entMap, TextDocProducer docProducer)
+    {
+         TextIndex index = createLuceneIndex(directory, entMap, (Analyzer) null) ;
+         return create(base, index, docProducer) ;
+     }
+    
+    /** Create a text-indexed dataset, using Lucene */ 
+    public static DatasetGraph createLucene(DatasetGraph base, Directory directory, EntityDefinition entMap)
+    {
+        TextIndex index = createLuceneIndex(directory, entMap, (Analyzer) null) ;
+        return create(base, index, null, true) ; 
     }
 
     /**
@@ -144,7 +200,14 @@ public class TextDatasetFactory
     public static DatasetGraph createSolrIndex(DatasetGraph base, SolrServer server, EntityDefinition entMap)
     {
         TextIndex index = createSolrIndex(server, entMap) ;
-        return create(base, index, true) ; 
+        return create(base, index, null, true) ; 
+    }
+    
+    /**
+     * @return The default text document producer for the given graph and text-index pair
+     */
+    public static TextDocProducer defaultTextDocProducer( DatasetGraph dsg, TextIndex textIndex ) {
+        return new TextDocProducerTriples(textIndex);
     }
 }
 

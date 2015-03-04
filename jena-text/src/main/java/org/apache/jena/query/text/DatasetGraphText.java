@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ReadWrite ;
+import com.hp.hpl.jena.sparql.core.DatasetChanges;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphMonitor ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWithLock ;
@@ -142,7 +143,8 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
      */
     @Override
     public void commit() {
-        // Phase 1
+        // Phase 
+    	super.getMonitor().finish() ;
         if (readWriteMode.get() == ReadWrite.WRITE) {
             try {
                 textIndex.prepareCommit();
@@ -167,7 +169,6 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
             throw new TextIndexException(t);
         }
         readWriteMode.set(null);
-        super.getMonitor().finish() ;
     }
 
     @Override

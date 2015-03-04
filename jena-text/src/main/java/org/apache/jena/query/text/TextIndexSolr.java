@@ -99,7 +99,14 @@ public class TextIndexSolr implements TextIndex
             solrServer.add(doc) ;
         } catch (Exception e) { exception(e) ; }
     }
-
+    
+    @Override
+    public void updateEntity(Entity entity)
+    {
+        //log.info("update entity: "+entity) ;
+        addEntity(entity);
+    }
+    
     private SolrInputDocument solrDoc(Entity entity)
     {
         SolrInputDocument doc = new SolrInputDocument() ;

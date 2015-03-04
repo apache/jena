@@ -36,7 +36,7 @@ public interface TextIndex extends Closeable //, Transactional
     
     // Update operations
     void addEntity(Entity entity) ;
-    
+    void updateEntity(Entity entity) ;    
     
     // read operations
     /** Get all entries for uri */
@@ -45,7 +45,7 @@ public interface TextIndex extends Closeable //, Transactional
     //** score
     // Need to have more complex results.
     
-    /** Access the index - limit if -1 for as many as possible */ 
+    /** Access the index - limit is -1 for as many as possible */ 
     List<Node> query(String qs, int limit) ;
     
     List<Node> query(String qs) ;

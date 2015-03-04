@@ -38,6 +38,7 @@ import org.apache.lucene.index.DirectoryReader ;
 import org.apache.lucene.index.IndexReader ;
 import org.apache.lucene.index.IndexWriter ;
 import org.apache.lucene.index.IndexWriterConfig ;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException ;
 import org.apache.lucene.queryparser.classic.QueryParser ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
@@ -201,7 +202,27 @@ public class TextIndexLucene implements TextIndex {
             throw new TextIndexException(e) ;
         }
     }
-
+    @Override
+    public void updateEntity(Entity entity) {
+       if ( log.isDebugEnabled() )
+            log.debug("Add entity: " + entity) ;
+        try {
+            boolean autoBatch = (indexWriter == null) ;
+            Document doc = doc(entity) ;
+// what to replace with here?           
+//            if ( autoBatch )
+//                startIndexing() ;
+            Term term = new Term(docDef.getEntityField(), entity.getId());
+            indexWriter.updateDocument(term, doc);
+// likewise, what to replace with here?
+//            if ( autoBatch )
+//                finishIndexing() ;
+        }
+        catch (IOException e) {
+            throw new TextIndexException(e) ;
+        }
+    }
+    
     private Document doc(Entity entity) {
         Document doc = new Document() ;
         Field entField = new Field(docDef.getEntityField(), entity.getId(), ftIRI) ;
@@ -316,9 +337,27 @@ public class TextIndexLucene implements TextIndex {
     public EntityDefinition getDocDef() {
         return docDef ;
     }
-
+    
+    private static void exception(Exception ex) {
+        throw new TextIndexException(ex) ;
+    }
+    
     private Node entryToNode(String v) {
         // TEMP
         return NodeFactoryExtra.createLiteralNode(v, null, null) ;
     }
+    
+    /**
+      * Delete documents matching the given Term
+      * @param term A term to match against the documents to be deleted
+      */
+    public void deleteDocuments( Term term ) {
+         try {
+             indexWriter.deleteDocuments( term );
+         }
+         catch (IOException e) {
+             log.error( e.getMessage(), e );
+             throw new TextIndexException( e );
+         }
+     }
 }

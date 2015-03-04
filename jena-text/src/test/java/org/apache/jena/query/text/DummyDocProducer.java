@@ -18,15 +18,31 @@
 
 package org.apache.jena.query.text;
 
-import com.hp.hpl.jena.sparql.core.DatasetChanges ;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.QuadAction;
 
 /**
- * Responsible for monitoring changes on a dataset and updating the TextIndex appropriately.
- * <p>
- * <strong>Note:</strong> If implementation is to be instantiated dynamically via an Assembler, it must
- * contain a constructor that accepts a single parameter of type {@link org.apache.jena.query.text.TextIndex}
+ * Test fixture document producer
  */
-public interface TextDocProducer extends DatasetChanges
-{
-}
+public class DummyDocProducer implements TextDocProducer {
 
+    public DummyDocProducer(TextIndex textIndex) {}
+
+    int count;
+
+    @Override
+    public void start() {
+        count = 0;
+    }
+
+    @Override
+    public void change(QuadAction qaction, Node g, Node s, Node p, Node o) {
+        count++;
+    }
+
+    @Override
+    public void finish() {}
+
+    public int getNumQuads() { return count ;}
+}
