@@ -68,7 +68,7 @@
         <module>jena-core</module>
         <module>jena-arq</module>
         <module>jena-tdb</module>
-        <!--<module>jena-fuseki</module>-->
+        <!--<module>jena-fuseki1</module>-->
 	<module>jena-fuseki2</module>
 
 	<!-- <module>jena-security</module> Lots of output and warnings -->
@@ -110,7 +110,7 @@
 
         <module>jena-sdb</module>
 
-        <module>jena-fuseki</module>
+        <module>jena-fuseki1</module>
         <module>jena-fuseki2</module>
 	<module>jena-security</module>
 
