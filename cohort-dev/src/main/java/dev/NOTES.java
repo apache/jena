@@ -48,8 +48,6 @@ public class NOTES {
     
     // Fast clear (new tree).  Fast clear for dft graph.
     
-    // Tests of txn after txn
-    
     // BPTreeRangeIterator
     //   - use indexes, delay reading blocks.
     //   - check for concurrency violation
