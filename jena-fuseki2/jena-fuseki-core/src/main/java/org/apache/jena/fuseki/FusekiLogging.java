@@ -43,7 +43,8 @@ public class FusekiLogging
     // 5/ Use Built in string
 
     /** Places for the log4j properties file at (3) */ 
-    private static final String[] resourcesForLog4jProperties = { 
+    private static final String[] resourcesForLog4jProperties = {
+        // Hmm - 
         "log4j.properties",
         "org/apache/jena/fuseki/log4j.properties"
     } ;
@@ -87,6 +88,12 @@ public class FusekiLogging
             // Instead, we include the same basic mechanism ...
             logLogging("Fuseki logging - classpath %s", resourceName) ;
             URL url = Loader.getResource(resourceName) ;
+            if ( url != null ) {
+                // Problem - test classes can be on the classpath (development mainly).
+                if ( url.toString().contains("-tests.jar") || url.toString().contains("test-classes") )
+                    url = null ;
+            }
+            
             if ( url != null ) {
                 PropertyConfigurator.configure(url) ;
                 logLogging("Fuseki logging - found via classpath %s", url) ;
