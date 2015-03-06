@@ -42,7 +42,7 @@ check_dir "FUSEKI_BASE" "$FUSEKI_BASE"
 CPF="$FUSEKI_HOME/fuseki.classpath"
 if [ ! -e "$CPF" ]; then
     echo "Need to create Fuseki classpath file"
-    echo "Ensure maven is upto date with the lest snapshots and then run"
+    echo "Ensure maven is upto date with the latest snapshots and then run"
     echo -e "cd $FUSEKI_HOME ; \nmvn dependency:build-classpath -Dmdep.outputFile=fuseki.classpath"
     exit 1
 fi
@@ -70,7 +70,7 @@ done
 
 FUSEKI_LOG="" #${FUSEKI_LOG:-}
 JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
-
+#echo "$CP"
 exec java -cp "$CP" $JVM_ARGS $FUSEKI_LOG org.apache.jena.fuseki.cmd.FusekiCmd "$@"
 
 # Run as war file.
