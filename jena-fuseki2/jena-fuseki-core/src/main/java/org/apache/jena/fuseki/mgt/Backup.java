@@ -31,7 +31,10 @@ import org.apache.jena.fuseki.server.FusekiServer ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 
+import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Transactional ;
+import com.hp.hpl.jena.sparql.core.TransactionalNull ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Perform a backup */ 
@@ -58,7 +61,26 @@ public class Backup
     // same dataset multiple times at the same time. 
     private static Set<DatasetGraph> activeBackups = new HashSet<>() ;
     
-    public static void backup(DatasetGraph dsg, String backupfile) {
+    /** Perform a backup.
+     *  A backup is a dump of the datset in comrpessed N-Quads, done inside a transaction.
+     */
+    public static void backup(Transactional transactional, DatasetGraph dsg, String backupfile) {
+        if ( transactional == null )
+            transactional = new TransactionalNull() ;
+        transactional.begin(ReadWrite.READ);
+        try {
+            Backup.backup(dsg, backupfile) ;
+        }
+        finally {
+            transactional.end() ;
+        }
+    }
+    
+    /** Perform a backup.
+     * 
+     * @see #backup(Transactional, DatasetGraph, String)
+     */
+    private static void backup(DatasetGraph dsg, String backupfile) {
         if ( !backupfile.endsWith(".nq") )
             backupfile = backupfile + ".nq" ;
 
@@ -84,7 +106,6 @@ public class Backup
                 out = new FileOutputStream(backupfile) ;
                 out = new BufferedOutputStream(out) ;
             }
-
             RDFDataMgr.write(out, dsg, Lang.NQUADS) ;
             out.close() ;
             out = null ;
