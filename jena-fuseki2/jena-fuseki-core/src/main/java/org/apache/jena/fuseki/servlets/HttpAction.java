@@ -138,8 +138,22 @@ public class HttpAction
         if ( dService == null || dService.getDataset() == null )
             // Null does not happens for service requests, (it does for admin requests - call setControlRequest) 
             throw new FusekiException("Null DataService in the request action") ;
-        
-        this.dsg = dService.getDataset() ;
+        setDataset(dService.getDataset()) ;
+    }
+    
+    /** Minimum initialization using just a dataset.
+     * <p>
+     * the HTTP Action will change its transactional state and
+     * {@link Transactional} instance according to its base dataset graph.
+     * </p>
+     * <p>There is no associated DataAccessPoint or DataService set by this operation.</p>
+     *  
+     * @param dsg DatasetGraph
+     */
+    private void setDataset(DatasetGraph dsg) {
+        this.dsg = dsg ;
+        if ( dsg == null )
+            return ;
         DatasetGraph basedsg = unwrap(dsg) ;
 
         if ( isTransactional(basedsg) && isTransactional(dsg) ) {
@@ -154,12 +168,29 @@ public class HttpAction
         }
     }
     
+    /** Return the dataset, if any (may be null) */
+    public DatasetGraph getDataset() {
+        return dsg ;
+    }
+
     public void setControlRequest(DataAccessPoint dataAccessPoint, String datasetUri) {
         this.dataAccessPoint = dataAccessPoint ;
         this.dataService = null ;
+        if ( dataAccessPoint != null )
+            this.dataService = dataAccessPoint.getDataService() ;
         this.datasetName = datasetUri ;
+        if ( dataService != null )
+            setDataset(dataAccessPoint.getDataService().getDataset()) ; 
     }
     
+    /**
+     * Return the "Transactional" for this HttpAction.
+     */
+    
+    public Transactional getTransactional() {
+        return transactional ;
+    }
+
     /**
      * Returns <code>true</code> iff the given {@link DatasetGraph} is an instance of {@link Transactional},
      * <code>false otherwise</code>.
