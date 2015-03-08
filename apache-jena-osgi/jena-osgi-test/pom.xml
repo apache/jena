@@ -21,12 +21,12 @@ limitations under the License.
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>12</version>
+    <version>13-SNAPSHOT</version>
     <relativePath>../../jena-parent</relativePath>
   </parent> 
 
   <artifactId>jena-osgi-test</artifactId>
-  <version>2.13.0</version>
+  <version>2.13.1-SNAPSHOT</version>
   <name>Apache Jena - OSGi integration tests</name>
   <description>Tests for jena-osgi as a bundle</description>
   <packaging>bundle</packaging>

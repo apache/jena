@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-elephas</artifactId>
-    <version>0.9.0</version>
+    <version>0.9.1-SNAPSHOT</version>
   </parent>
   <artifactId>jena-elephas-mapreduce</artifactId>
   <name>Apache Jena - Elephas - Map/Reduce</name>
