@@ -21,14 +21,14 @@
   <artifactId>jena-fuseki1</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - Fuseki1 (SPARQL 1.1 Server)</name>
-  <version>1.1.2-SNAPSHOT</version>
+  <version>1.1.2</version>
   <description>Fuseki is a SPARQL 1.1 Server which provides query, update and graph store protocol endpoints that can be used to expose triple store(s) over HTTP</description>
   <url>http://jena.apache.org/</url>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>12-SNAPSHOT</version>
+    <version>12</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
@@ -77,13 +77,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.13.0-SNAPSHOT</version>
+      <version>2.13.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.13.0-SNAPSHOT</version>
+      <version>2.13.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -91,13 +91,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.13.0-SNAPSHOT</version>
+      <version>2.13.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>1.1.2</version>
     </dependency>
 
     <!--
@@ -112,7 +112,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>1.1.2</version>
       <exclusions>
         <!-- 
 	  Get this via commons-fileupload and also via jena-text/sol4j
@@ -129,7 +129,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-spatial</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>1.1.2</version>
     </dependency>
 
     <dependency>

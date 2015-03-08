@@ -8,17 +8,16 @@
 	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
 	OF ANY KIND, either express or implied. See the License for the specific 
 	language governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jena-elephas</artifactId>
-  <version>0.9.0-SNAPSHOT</version>
+  <version>0.9.0</version>
   <packaging>pom</packaging>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>12-SNAPSHOT</version>
+    <version>12</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 
@@ -35,7 +34,7 @@
   <!-- Properties common across all profiles -->
   <properties>
     <plugin.compiler.version>2.6.0</plugin.compiler.version>
-    <arq.version>2.13.0-SNAPSHOT</arq.version>
+    <arq.version>2.13.0</arq.version>
     <junit.version>4.11</junit.version>
     <mrunit.version>1.0.0</mrunit.version>
     <airline.version>0.9.1</airline.version>

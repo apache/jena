@@ -21,13 +21,13 @@
 
   <name>Apache Jena - Fuseki Binary Distribution</name>
   <artifactId>apache-jena-fuseki</artifactId>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>2.0.0</version>
   <packaging>pom</packaging>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.0.0</version>
     <relativePath>..</relativePath>
   </parent> 
 
@@ -58,7 +58,7 @@
           <execution>
             <id>create-zip-assembly</id>
 	    <phase>package</phase>
-	    <!--<phase/>-->
+	    <!--<phase />-->
             <goals><goal>single</goal></goals>
             <configuration>
 	      <appendAssemblyId>false</appendAssemblyId>
