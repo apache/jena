@@ -31,7 +31,7 @@ import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgMonth ;
 import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgMonthDay ;
 import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgYear ;
 import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgYearMonth ;
-import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDinteger ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.* ;
 import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDstring ;
 import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDtime ;
 import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_BOOLEAN ;
@@ -1035,16 +1035,11 @@ public abstract class NodeValue extends ExprNode
     }
 
     // Jena code does not have these types (yet)
-    private static final String dtXSDdateTimeStamp      = XSD+"#dateTimeStamp" ; 
-    private static final String dtXSDdayTimeDuration    = XSD+"#dayTimeDuration" ; 
-    private static final String dtXSDyearMonthDuration  = XSD+"#yearMonthDuration" ; 
     private static final String dtXSDprecisionDecimal   = XSD+"#precisionDecimal" ; 
     
     // Returns null for unrecognized literal.
-    private static NodeValue _setByValue(Node node)
-    {
+    private static NodeValue _setByValue(Node node) {
         if ( NodeUtils.hasLang(node) )
-            // Check for RDF 1.1!
             return null ;
         LiteralLabel lit = node.getLiteral() ;
         String lex = lit.getLexicalForm() ;
@@ -1054,8 +1049,7 @@ public abstract class NodeValue extends ExprNode
         // Only XSD supported.
         // And (for testing) roman numerals.
         String datatypeURI = datatype.getURI() ;
-        if ( ! datatypeURI.startsWith(xsdNamespace) && ! SystemARQ.EnableRomanNumerals )
-        {
+        if ( !datatypeURI.startsWith(xsdNamespace) && !SystemARQ.EnableRomanNumerals ) {
             // Not XSD.
             return null ;
         }
@@ -1076,8 +1070,7 @@ public abstract class NodeValue extends ExprNode
 
             // Order here is promotion order integer-decimal-float-double
             
-            if ( ! datatype.equals(XSDdecimal) ) 
-            {
+            if ( ! datatype.equals(XSDdecimal) ) {
                 // XSD integer and derived types 
                 if ( XSDinteger.isValidLiteral(lit) )
                 {
@@ -1092,93 +1085,77 @@ public abstract class NodeValue extends ExprNode
                 }
             }
             
-            if ( datatype.equals(XSDdecimal) && XSDdecimal.isValidLiteral(lit) )
-            {
+            if ( datatype.equals(XSDdecimal) && XSDdecimal.isValidLiteral(lit) ) {
                 BigDecimal decimal = new BigDecimal(lit.getLexicalForm()) ;
                 return new NodeValueDecimal(decimal, node) ;
             }
-            
-            if ( datatype.equals(XSDfloat) && XSDfloat.isValidLiteral(lit) )
-            {
+
+            if ( datatype.equals(XSDfloat) && XSDfloat.isValidLiteral(lit) ) {
                 // NB If needed, call to floatValue, then assign to double.
                 // Gets 1.3f != 1.3d right
                 float f = ((Number)lit.getValue()).floatValue() ;
                 return new NodeValueFloat(f, node) ;
             }
 
-            if ( datatype.equals(XSDdouble) && XSDdouble.isValidLiteral(lit) )
-            {
+            if ( datatype.equals(XSDdouble) && XSDdouble.isValidLiteral(lit) ) {
                 double d = ((Number)lit.getValue()).doubleValue() ;
                 return new NodeValueDouble(d, node) ;
             }
 
-            // XXX Pending Jena update ... 
-            if ( ( datatype.equals(XSDdateTime) || dtXSDdateTimeStamp.equals(datatypeURI) ) &&
-                    XSDdateTime.isValid(lex) ) 
-            {
+            if ( (datatype.equals(XSDdateTime) || datatype.equals(XSDdateTimeStamp)) && XSDdateTime.isValid(lex) ) {
                 XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
-            
-            if ( datatype.equals(XSDdate) && XSDdate.isValidLiteral(lit) )
-            {
-                // Jena datatype support works on masked dataTimes. 
+
+            if ( datatype.equals(XSDdate) && XSDdate.isValidLiteral(lit) ) {
+                // Jena datatype support works on masked dataTimes.
                 XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
-            
-            if ( datatype.equals(XSDtime) && XSDtime.isValidLiteral(lit) )
-            {
-                // Jena datatype support works on masked dataTimes. 
+
+            if ( datatype.equals(XSDtime) && XSDtime.isValidLiteral(lit) ) {
+                // Jena datatype support works on masked dataTimes.
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
-            
-            if ( datatype.equals(XSDgYear) && XSDgYear.isValidLiteral(lit) )
-            {
+
+            if ( datatype.equals(XSDgYear) && XSDgYear.isValidLiteral(lit) ) {
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
-            if ( datatype.equals(XSDgYearMonth) && XSDgYearMonth.isValidLiteral(lit) )
-            {
+            if ( datatype.equals(XSDgYearMonth) && XSDgYearMonth.isValidLiteral(lit) ) {
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
-            if ( datatype.equals(XSDgMonth) && XSDgMonth.isValidLiteral(lit) )
-            {
+            if ( datatype.equals(XSDgMonth) && XSDgMonth.isValidLiteral(lit) ) {
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
-            
-            if ( datatype.equals(XSDgMonthDay) && XSDgMonthDay.isValidLiteral(lit) )
-            {
+
+            if ( datatype.equals(XSDgMonthDay) && XSDgMonthDay.isValidLiteral(lit) ) {
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
-            if ( datatype.equals(XSDgDay) && XSDgDay.isValidLiteral(lit) )
-            {
+            if ( datatype.equals(XSDgDay) && XSDgDay.isValidLiteral(lit) ) {
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
-            
-            // XXX Pending Jena update ... 
-            if ( ( datatype.equals(XSDduration) || 
-                   dtXSDdayTimeDuration.equals(datatypeURI) || 
-                   dtXSDyearMonthDuration.equals(datatypeURI) ) &&
-                   XSDduration.isValid(lex) ) // use lex
-            {
+
+            if ( datatype.equals(XSDduration) && XSDduration.isValid(lex) ) {
                 Duration duration = xmlDatatypeFactory.newDuration(lex) ;
-                
-                if ( dtXSDdayTimeDuration.equals(datatypeURI) && ! XSDFuncOp.isDayTime(duration) )
-                    return null ;
-                if ( dtXSDyearMonthDuration.equals(datatypeURI) && ! XSDFuncOp.isYearMonth(duration) )
-                    return null ;
-                
                 return new NodeValueDuration(duration, node) ;
             }
             
-            if ( datatype.equals(XSDboolean) && XSDboolean.isValidLiteral(lit) )
-            {
+            if ( datatype.equals(XSDyearMonthDuration) && XSDyearMonthDuration.isValid(lex) ) {
+                Duration duration = xmlDatatypeFactory.newDuration(lex) ;
+                return new NodeValueDuration(duration, node) ;
+            }
+            if ( datatype.equals(XSDdayTimeDuration) && XSDdayTimeDuration.isValid(lex) ) {
+                Duration duration = xmlDatatypeFactory.newDuration(lex) ;
+                return new NodeValueDuration(duration, node) ;
+            }
+            
+            if ( datatype.equals(XSDboolean) && XSDboolean.isValidLiteral(lit) ) {
                 boolean b = (Boolean) lit.getValue();
                 return new NodeValueBoolean(b, node) ;
             }
