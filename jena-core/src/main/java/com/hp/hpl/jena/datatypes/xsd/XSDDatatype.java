@@ -176,8 +176,17 @@ public class XSDDatatype extends BaseDatatype {
     /** Datatype representing xsd:dateTime */
     public static final XSDDatatype XSDdateTime = new XSDDateTimeType("dateTime");
 
+    /** Datatype representing xsd:dateTime */
+    public static final XSDDatatype XSDdateTimeStamp = new XSDDateTimeStampType("dateTimeStamp");
+
     /** Datatype representing xsd:duration */
     public static final XSDDatatype XSDduration = new XSDDurationType();
+
+    /** Datatype representing xsd:dayTimeDration */
+    public static final XSDDatatype XSDdayTimeDuration = new XSDDayTimeDurationType();
+
+    /** Datatype representing xsd:yearMonthDuration */
+    public static final XSDDatatype XSDyearMonthDuration = new XSDYearMonthDurationType();
 
     /** Datatype representing xsd:gDay */
     public static final XSDDatatype XSDgDay = new XSDDayType("gDay");
@@ -570,7 +579,10 @@ public class XSDDatatype extends BaseDatatype {
         tm.registerDatatype(XSDdate);
         tm.registerDatatype(XSDtime);
         tm.registerDatatype(XSDdateTime);
+        tm.registerDatatype(XSDdateTimeStamp);
         tm.registerDatatype(XSDduration);
+        tm.registerDatatype(XSDyearMonthDuration);
+        tm.registerDatatype(XSDdayTimeDuration) ;
         tm.registerDatatype(XSDgYearMonth);
         tm.registerDatatype(XSDgMonthDay);
         tm.registerDatatype(XSDgMonth);
