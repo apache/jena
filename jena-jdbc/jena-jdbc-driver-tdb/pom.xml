@@ -77,6 +77,9 @@
 				<version>2.14</version>
 				<configuration>
 					<argLine>-Xmx2G</argLine>
+					<systemProperties>
+						<java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
+					</systemProperties>
 				</configuration>
 			</plugin>
 
