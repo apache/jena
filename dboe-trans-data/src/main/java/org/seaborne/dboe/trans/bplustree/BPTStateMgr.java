@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory ;
  * (rootId/int-as-long, nodeAllocLimit/long, recordsAllocLimit/long) 
  */
 public class BPTStateMgr extends StateMgrData {
-    private static Logger log = LoggerFactory.getLogger(BPTStateMgr2.class) ;
+    private static Logger log = LoggerFactory.getLogger(BPTStateMgr.class) ;
     
     private static int idxRoot                  = 0 ;
     private static int idxNodeBlocksLimit       = 1 ;
