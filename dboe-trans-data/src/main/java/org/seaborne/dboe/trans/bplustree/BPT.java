@@ -116,16 +116,9 @@ public final class BPT {
     /** Promote a B+Tree page */ 
     static void promotePage(AccessPath path, BPTreePage page) {
         Logger pageLog = page.getLogger() ;
-        // ---- Logging
-        if ( logging(pageLog) ) {
+        boolean loggingCall = logging(pageLog) ; 
+        if ( loggingCall )
             log(pageLog, "Promote :: Path=%s  Page=%s", path, page) ;
-//            if ( path != null ) {
-//                // Fix to root.
-//                path.getPath().forEach(e -> {
-//                    log(pageLog, "  Path: %s->%s[%s]", e.node.label(), e.node.getId(), e.idx) ;
-//                } ) ;
-//            }
-        }
         // ---- Checking if the access path is consistent.
         if ( BPT.CheckingNode && path != null ) {
             if ( path.getPath().size() > 2) {
@@ -144,10 +137,10 @@ public final class BPT {
         // ---- Clone the access path nodes.
         // Path is the route to this page - it does not include this page. 
         // Work from the bottom to the top, the reverse order of AccessPath
-        if ( logging(pageLog) )
+        if ( loggingCall )
             log(pageLog, "   page>> %s", page.label()) ;
         boolean changed = page.promote();
-        if ( logging(pageLog) ) {
+        if ( loggingCall ) {
             if ( changed )
                 log(pageLog, "   page<< %s", page.label()) ;
             else
@@ -208,7 +201,7 @@ public final class BPT {
 
             }
             if ( newRoot != null ) {
-                if ( logging(pageLog) )
+                if ( loggingCall )
                     log(pageLog, "  new root %s", newRoot) ;
                 page.bpTree.newRoot(newRoot) ;
             }
