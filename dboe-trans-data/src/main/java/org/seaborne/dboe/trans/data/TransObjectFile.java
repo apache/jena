@@ -236,7 +236,7 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
         super.checkTxn();
         if ( isReadTxn() )
             // Reader. Check bounds.
-            checkBoundsReader(id, super.getState()) ;
+            checkBoundsReader(id, super.getDataState()) ;
         return objFile.read(id) ;
     }
 
@@ -267,7 +267,7 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
     public long length() {
         super.checkTxn();
         if ( isReadTxn() )
-            return getState().length ;
+            return getDataState().length ;
             // Reader. Check bounds.
         return objFile.length() ;
     }

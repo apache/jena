@@ -87,12 +87,12 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
 
     public void setBlob(ByteBuffer bb) {
         checkWriteTxn();
-        getState().setByteBuffer(bb);
+        getDataState().setByteBuffer(bb);
     }
     
     public ByteBuffer getBlob() {
         if ( isActiveTxn() )
-            return getState().getByteBuffer() ;
+            return getDataState().getByteBuffer() ;
         return blobRef.get() ;
     }
 

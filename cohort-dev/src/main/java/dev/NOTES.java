@@ -17,15 +17,48 @@
 
 package dev;
 
+
 public class NOTES {
     // ARQ :: extract Atlas.
 
+    // What about:
+    // Index<K,R> c.f. Map<K,V>
+    // Index<R>
+    
+    // Transaction:
+    // Switch vs suspend vs switch
+    // txn->coordinator->state
+    
+    // ThreadLocal.
+    //     TransactionalBase (transaction)
+    //         - used for operation indirection
+    //     TransactionalComponentLifecycle
+    //         - trackTxn : CHECKING 
+    //         - threadTxn : needed? Use transaction passed in?
+    //             Need for component to say "which transaction"
+    //         - componentState
+    // Each TransactionalComponentLifecycle has a state object. 
+    //     <X extends Foo> or Object
+    // Lifecycle.
+    
+    // New state.
+    // TransactionalComponent.detach() -> TransactionState = Pair<Transaction, Object>
+    //   Only suspend ACTIVE -> state does not need saving.
+    //   Leaves this thread out of a transaction.
+    //   Can't use to snapshot.
+    // TransactionalComponent.attach
+    //   Must not have a transaction.
+    
+    // TransactionalComponent.switchTo(Pair<>)) -> Pair<> == detach, attach 
+    // TransactionalComponentLifeCycle<X>.attach can cast and _attach(TxnId, X)
+
+    
     // Systematic tests involving recovery: e.g. TransObjectFile.
     // Pseudo fake a crash.
 
     // Clean journal interface.
     
-    // Insert/delet -> return null?
+    // Insert/delete -> return null?
 
     // Bulk operations:
     // Index 

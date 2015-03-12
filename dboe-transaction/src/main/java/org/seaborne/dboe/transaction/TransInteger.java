@@ -158,14 +158,14 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
     /** Set the value, return the old value*/ 
     public void inc() {
         requireWriteTxn() ;
-        IntegerState ts = getState() ;
+        IntegerState ts = getDataState() ;
         ts.txnValue++ ;
     }
     
     /** Set the value, return the old value*/ 
     public long set(long x) {
         requireWriteTxn() ;
-        IntegerState ts = getState() ;
+        IntegerState ts = getDataState() ;
         long v = ts.txnValue ;
         ts.txnValue = x ;
         return v ;
@@ -179,7 +179,7 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
      */
     public long get() {
         if ( super.isActiveTxn() )
-            return getState().txnValue ;
+            return getDataState().txnValue ;
         else
             return value.get() ;
     }

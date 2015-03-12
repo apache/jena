@@ -54,7 +54,8 @@ public class Transaction {
     private final TxnId txnId ;
     private final List<SysTrans> components ;
     
-    // Using an AtomicReference makes this observable from the outside. 
+    // Using an AtomicReference makes this observable from the outside.
+    // It also allow for multithreaded transactions (later). 
     private final AtomicReference<TxnState> state = new AtomicReference<TxnState>() ;
     //private TxnState state ;
     private final long dataEpoch ;

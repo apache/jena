@@ -110,6 +110,5 @@ public class TestThreadingTransactions {
         
         readTxn("[04/4]", transInt, InitValue+3) ;
     }
-
 }
 
