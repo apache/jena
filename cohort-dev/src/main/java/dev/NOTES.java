@@ -25,34 +25,6 @@ public class NOTES {
     // Index<K,R> c.f. Map<K,V>
     // Index<R>
     
-    // Transaction:
-    // Switch vs suspend vs switch
-    // txn->coordinator->state
-    
-    // ThreadLocal.
-    //     TransactionalBase (transaction)
-    //         - used for operation indirection
-    //     TransactionalComponentLifecycle
-    //         - trackTxn : CHECKING 
-    //         - threadTxn : needed? Use transaction passed in?
-    //             Need for component to say "which transaction"
-    //         - componentState
-    // Each TransactionalComponentLifecycle has a state object. 
-    //     <X extends Foo> or Object
-    // Lifecycle.
-    
-    // New state.
-    // TransactionalComponent.detach() -> TransactionState = Pair<Transaction, Object>
-    //   Only suspend ACTIVE -> state does not need saving.
-    //   Leaves this thread out of a transaction.
-    //   Can't use to snapshot.
-    // TransactionalComponent.attach
-    //   Must not have a transaction.
-    
-    // TransactionalComponent.switchTo(Pair<>)) -> Pair<> == detach, attach 
-    // TransactionalComponentLifeCycle<X>.attach can cast and _attach(TxnId, X)
-
-    
     // Systematic tests involving recovery: e.g. TransObjectFile.
     // Pseudo fake a crash.
 
@@ -61,10 +33,8 @@ public class NOTES {
     // Insert/delete -> return null?
 
     // Bulk operations:
-    // Index 
-    //   insertMany(Collection<Record> record)
-    //   deleteMany(Collection<Record> record)
-    // patch support?
+    // Index
+    //    Bulk patch.
     
     // ---------------------
     // Split READ and WRITE internally to be two different lifecycles.
@@ -107,14 +77,9 @@ public class NOTES {
     
     // == Transactions
     
-    // TransactionCoordinator.start() -- helper ?
-    
     // Delayed write back by leaving stuff in the journal.
     //   Avoids needing to sync the BPTs (leave to natural file caching)
     //   Avoids need to flush the new root to disk.
-    
-    // TransactionCoordinator.haltedMode
-    // TransactionCoordinator.activeMode
     
     // Recovery: recover(Redo/undo, data);
     // Prepare: journal.writeREDO, journal.writeUNDO

@@ -17,20 +17,15 @@
 
 package org.seaborne.dboe.transaction.txn;
 
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.ABORTED ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.ACTIVE ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.COMMIT ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.COMMITTED ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.INACTIVE ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.PREPARE ;
+import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.* ;
 
 import java.nio.ByteBuffer ;
 import java.util.Objects ;
 
+import com.hp.hpl.jena.query.ReadWrite ;
+
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.seaborne.dboe.transaction.txn.Transaction.TxnState ;
-
-import com.hp.hpl.jena.query.ReadWrite ;
 
 /** Base implementation of the component interface for {@link TransactionalComponent}.
  */
@@ -117,7 +112,7 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     private void internalComplete(Transaction transaction) {
         _complete(transaction.getTxnId(), getDataState());
         setTrackTxn(INACTIVE) ;
-        destroy() ;
+        releaseThreadState() ;
     }
 
     @Override
@@ -154,6 +149,33 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
         clearInternal() ;
     }
     
+    @Override 
+    final public SysTransState detach() {
+        TxnState txnState = getTxnState() ;
+        if ( txnState == null )
+            return null ;
+        checkState(ACTIVE) ;
+        setTrackTxn(DETACHED) ;
+        SysTransState transState = new SysTransState(this, getTransaction(), getDataState()) ;
+        //****** Thread locals 
+        releaseThreadState() ;
+        return transState ;
+    }
+    
+    @Override
+    public void attach(SysTransState state) {
+        @SuppressWarnings("unchecked")
+        X x = (X)state.getState() ;
+//        // reset to not thread not in 
+//        if ( CHECKING )
+//            trackTxn : ThreadLocal<TxnState>
+//        
+//      
+        setTransaction(state.getTransaction());
+        setDataState(x);
+        setTrackTxn(ACTIVE) ;
+    }
+    
     // -- Access object members.
 
     public static class ComponentState<X> {
@@ -179,7 +201,7 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
         
     }
 
-    protected void destroy() {
+    protected void releaseThreadState() {
         // Remove thread locals
         if ( trackTxn != null )
             trackTxn.remove() ;
@@ -352,10 +374,12 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
         if ( txnState == null )
             return false ; 
         switch(getTxnState()) {
-            case INACTIVE: case END_ABORTED: case END_COMMITTED: return false ;
-            case ACTIVE:   case PREPARE: case ABORTED: case COMMIT: case COMMITTED:  return true ;
+            case INACTIVE: case END_ABORTED: case END_COMMITTED: 
+                return false ;
+            case ACTIVE: case DETACHED: case PREPARE: case ABORTED: case COMMIT: case COMMITTED:  
+                return true ;
             //null: default: return false ;
-            // Get the comp[iler to check all states covered.
+            // Get the compiler to check all states covered.
         }
         // Should not happen.
         throw new InternalErrorException("Unclear transaction state") ;
@@ -373,17 +397,20 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
             throw new TransactionException("Not in a transaction") ;
     }
 
-    protected void requireWriteTxn() {
-        Transaction txn = getTransaction();
-        if ( txn == null )
-            System.err.println("Not a transaction");
-        
-        txn.requireWriteTxn() ;
-    }
+//    protected void requireWriteTxn() {
+//        Transaction txn = getTransaction();
+//        if ( txn == null )
+//            throw new TransactionException("Not a transaction");
+//        else 
+//            txn.requireWriteTxn() ;
+//    }
     
     protected void checkWriteTxn() {
-        if ( ! isActiveTxn() || isReadTxn() )
-            throw new TransactionException("Not in a write transaction") ;
+        Transaction txn = getTransaction();
+        if ( txn == null )
+            throw new TransactionException("Not a transaction");
+        else 
+            txn.requireWriteTxn() ;
     }
 
     // -- Access object members.

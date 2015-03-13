@@ -30,10 +30,10 @@ import java.util.concurrent.atomic.AtomicLong ;
 import com.hp.hpl.jena.query.ReadWrite ;
 
 import org.apache.jena.atlas.logging.Log ;
-import org.slf4j.Logger ;
 import org.seaborne.dboe.sys.SystemBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.dboe.transaction.txn.journal.JournalEntry ;
+import org.slf4j.Logger ;
 
 /**
  * One TransactionCoordinator per group of TransactionalComponents.
@@ -190,26 +190,30 @@ public class TransactionCoordinator {
         }
     }
     
-    public Journal getJournal()     { return journal ; }
+    public Journal getJournal() {
+        return journal ;
+    }
     
-    // Active transactions
-    private final static Object dummy           = new Object() ;
-    private Map<Transaction, Object> activeTransactions = new ConcurrentHashMap<>() ;
-    
-    // The epoch is the serialization point for a transaction.
-    // All readers on the same view of the data get the same serialization point.
-    // The serialization point (epoch for short) of the active writer
-    // is the next
-    // This becomes the new reader 
-    
-    // A read transaction can be promoted if writer does not start
-    // This TransactionCoordinator provides Serializable, Read-lock-free
-    // execution.  With not item locking, a read can only be promoted
-    // if no writer started since the reader started.
-    
-    private final AtomicLong writerEpoch = new AtomicLong(0) ;      // The leading edge of the epochs
-    private final AtomicLong readerEpoch = new AtomicLong(0) ;      // The trailing edge of epochs
-    
+    public TransactionCoordinatorState detach(Transaction txn) {
+        txn.detach();
+        TransactionCoordinatorState coordinatorState = new TransactionCoordinatorState() ;
+        coordinatorState.transaction = txn ;
+        components.forEach((id, c) -> {
+            SysTransState s = c.detach() ;
+            coordinatorState.componentStates.put(id, s) ;
+        } ) ;
+        // The txn still counts as "active" for tracking purposes below.
+        return coordinatorState ;
+    }
+
+    public void attach(TransactionCoordinatorState coordinatorState) {
+        Transaction txn = coordinatorState.transaction ;
+        txn.attach() ;
+        coordinatorState.componentStates.forEach((id, obj) -> {
+            components.findComponent(id).attach(obj);
+        });
+    }
+
     public void shutdown() {
         components.forEach((id, c) -> c.shutdown()) ;
         shutdownHooks.forEach((h)-> h.shutdown()) ;
@@ -265,6 +269,20 @@ public class TransactionCoordinator {
         transaction.begin();
         return transaction;
     }
+    
+    // The epoch is the serialization point for a transaction.
+    // All readers on the same view of the data get the same serialization point.
+    // The serialization point (epoch for short) of the active writer
+    // is the next
+    // This becomes the new reader 
+    
+    // A read transaction can be promoted if writer does not start
+    // This TransactionCoordinator provides Serializable, Read-lock-free
+    // execution.  With not item locking, a read can only be promoted
+    // if no writer started since the reader started.
+    
+    private final AtomicLong writerEpoch = new AtomicLong(0) ;      // The leading edge of the epochs
+    private final AtomicLong readerEpoch = new AtomicLong(0) ;      // The trailing edge of epochs
     
     private Transaction begin$(ReadWrite readWrite) {
         synchronized(lock) {
@@ -374,6 +392,11 @@ public class TransactionCoordinator {
         notifyAbortFinish(transaction) ;
     }
     
+    // Active transactions
+    // ConcurrentHashSet
+    private final static Object dummy                   = new Object() ;    
+    private Map<Transaction, Object> activeTransactions = new ConcurrentHashMap<>() ;
+
     private void startActiveTransaction(Transaction transaction) {
         activeTransactions.put(transaction, dummy) ;
     }

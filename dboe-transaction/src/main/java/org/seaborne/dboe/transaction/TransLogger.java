@@ -21,6 +21,7 @@ import java.nio.ByteBuffer ;
 
 import org.apache.jena.atlas.logging.FmtLog ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
+import org.seaborne.dboe.transaction.txn.SysTransState ;
 import org.seaborne.dboe.transaction.txn.Transaction ;
 import org.seaborne.dboe.transaction.txn.TransactionalComponent ;
 import org.slf4j.Logger ;
@@ -117,6 +118,17 @@ public class TransLogger implements TransactionalComponent {
     @Override
     public void complete(Transaction transaction) {
         txnStep("complete", transaction) ;
+    }
+
+    @Override
+    public SysTransState detach() {
+        log.info("detach") ;
+        return null ;
+    }
+
+    @Override
+    public void attach(SysTransState systemState) {
+        log.info("attach") ;
     }
 
     @Override

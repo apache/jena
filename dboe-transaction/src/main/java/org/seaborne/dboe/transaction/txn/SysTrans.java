@@ -34,22 +34,16 @@ class SysTrans {
         this.txnId = txnId ;
     }
 
-    //@Override
     public void begin() { }
 
-    //@Override
     public ByteBuffer commitPrepare() { return elt.commitPrepare(transaction) ; }
 
-    //@Override
     public void commit() { elt.commit(transaction); }
 
-    //@Override
     public void commitEnd() { elt.commitEnd(transaction); }
 
-    //@Override
     public void abort() { elt.abort(transaction); }
 
-    //@Override
     public void complete() { elt.complete(transaction); }
     
     public Transaction getTransaction()     { return transaction ; } 

@@ -25,10 +25,7 @@ import java.util.concurrent.atomic.AtomicLong ;
 import java.util.stream.Collectors ;
 
 import org.apache.jena.atlas.lib.Pair ;
-import org.seaborne.dboe.transaction.txn.ComponentId ;
-import org.seaborne.dboe.transaction.txn.ComponentIds ;
-import org.seaborne.dboe.transaction.txn.Transaction ;
-import org.seaborne.dboe.transaction.txn.TransactionalComponent ;
+import org.seaborne.dboe.transaction.txn.* ;
 
 /** This class is stateless in the transaction but it records counts of
  * every {@link TransactionalComponent} operations.
@@ -150,11 +147,25 @@ public class TransMonitor implements TransactionalComponent {
         counterComplete.incrementAndGet() ;
     }
 
+    public AtomicLong counterDetach = allocCounter("detach") ;
+    
+    @Override
+    public SysTransState detach() {
+        counterDetach.incrementAndGet() ;
+        return null ;
+    }
+
+    public AtomicLong counterAttach = allocCounter("attach") ;
+
+    @Override
+    public void attach(SysTransState systemState) {
+        counterAttach.incrementAndGet() ;
+    }
+    
     public AtomicLong counterShutdown = allocCounter("shutdown") ;
 
     @Override
     public void shutdown() {
         counterShutdown.incrementAndGet() ;
     }
-
 }

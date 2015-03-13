@@ -18,6 +18,7 @@
 package org.seaborne.dboe.transaction;
 
 import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.fail ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 
@@ -25,20 +26,16 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.dboe.transaction.TransInteger.IntegerState ;
-import org.seaborne.dboe.transaction.txn.Transaction ;
-import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
-import org.seaborne.dboe.transaction.txn.TransactionalBase ;
-import org.seaborne.dboe.transaction.txn.TransactionalComponentLifecycle.ComponentState ;
+import org.seaborne.dboe.transaction.txn.* ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 /** Tests of changing the therad state ... carefully */ 
 public class TestTxnSwitching {
-    TransInteger integer = new TransInteger(1) ;
+    TransInteger integer = new TransInteger(100) ;
     Journal jrnl = Journal.create(Location.mem()) ;
     
     //Transactional transactional = TransactionalFactory.create(jrnl, integer) ;
-    Transactional transactional ;
+    TransactionalBase transactional ;
     TransactionCoordinator txnMgr = new  TransactionCoordinator(jrnl) ;
     {
         txnMgr.add(integer) ;
@@ -53,42 +50,141 @@ public class TestTxnSwitching {
     }
     
     @Test public void txnSwitch_01() {
+        long z = integer.value() ;
         transactional.begin(ReadWrite.WRITE);
         integer.inc(); 
-        assertEquals(integer.value(), integer.get()-1) ;
         
-        ComponentState<IntegerState> s = integer.getComponentState() ;
+        assertEquals(integer.value()+1, integer.get()) ;
+        assertEquals(z+1, integer.get()) ;
+        
+        TransactionCoordinatorState txnState = transactional.detach() ;
+        
+        assertEquals(integer.value(), integer.get()) ;
+        assertEquals(z, integer.get()) ;
+        
+        transactional.attach(txnState);
+
+        assertEquals(integer.value()+1, integer.get()) ;
+        assertEquals(z+1, integer.get()) ;
+        
+        transactional.commit() ;
+        transactional.end() ;
+        assertEquals(z+1, integer.get()) ;
+        assertEquals(z+1, integer.value()) ;
+    }
+    
+    @Test public void txnSwitch_02() {
+        long z = integer.value() ;
+        Txn.executeWrite(transactional, ()->integer.inc());
+        assertEquals(z+1, integer.value()) ;
+        
+        
+        //Transaction txn = txnMgr.begin(ReadWrite.WRITE) ;
+        transactional.begin(ReadWrite.WRITE);
+        integer.inc(); 
+        assertEquals(z+2, integer.get()) ;
+        TransactionCoordinatorState txnState = transactional.detach() ;
+        // Can't transactional read.
+        try { integer.read() ; fail() ; } catch (TransactionException ex) {}
+        
+        long z1 = Txn.executeReadReturn(transactional, ()->integer.get()) ;
+        assertEquals(z+1, z1) ;
+        transactional.attach(txnState) ;
+        integer.inc();
+        assertEquals(z+3, integer.get()) ;
+        
+        ThreadTxn threadTxn = Txn.threadTxnRead(transactional, ()->assertEquals(z+1, integer.get())) ;
+        threadTxn.run() ;
+        
         transactional.commit() ;
         transactional.end() ;
     }
     
-    @Test public void txnSwitch_02() {
-        long x = integer.value() ;
+    // As 02 but with Transaction txn = txnMgr.begin(ReadWrite.WRITE) ;
+    // and txn calls and integer calls.  Not transactional calls but txnMgr calls.
+
+    @Test public void txnSwitch_03() {
+        long z = integer.value() ;
+        Txn.executeWrite(transactional, ()->integer.inc());
+        assertEquals(z+1, integer.value()) ;
         
         Transaction txn = txnMgr.begin(ReadWrite.WRITE) ;
         integer.inc(); 
-        assertEquals(integer.value(), integer.get()-1) ;
+        assertEquals(z+2, integer.get()) ;
+        TransactionCoordinatorState txnState = txnMgr.detach(txn) ;
         
+        Transaction txnRead = txnMgr.begin(ReadWrite.READ) ;
+        assertEquals(z+1, integer.get()) ;
+        txnRead.end() ;
         
-        // TransactionalBase has a thread local.
-        // Each TransactionalComponentLifecycle has a state object.
-        // The data state is a ptr so needs cloning?
-        //   No - restrict the ability to resume. 
-        // Only allow resume  
-        // Or only allow switch c.f. longjmp.
+        try { integer.read() ; fail() ; } catch (TransactionException ex) {}
         
-        // txn->
+        txnMgr.attach(txnState);
         
-        /*
-        ComponentState<IntegerState> s = integer.getComponentState() ;
-        // Suspend txn.
-        txnMgr.suspend(txn) ;
-        txn.suspend() ;
+        integer.inc();
+        assertEquals(z+3, integer.get()) ;
         
-        // Cast to a special.
-        transactional.suspend()
+        Txn.threadTxnRead(transactional, ()->assertEquals(z+1, integer.get())).run();
+        txn.commit(); 
+        txn.end() ;
+    }
+    
+    // Switch between read and write all on one thread. 
+    @Test public void txnSwitch_04() {
+        long z = integer.value() ;
         
-        */
+        transactional.begin(ReadWrite.READ);
+        TransactionCoordinatorState txnStateR1 = transactional.detach() ;
+        
+        ThreadTxn t1 = Txn.threadTxnRead(transactional, ()->assertEquals(z, integer.get() )) ;
+        ThreadTxn t2 = Txn.threadTxnRead(transactional, ()->assertEquals(z, integer.get() )) ;
+
+        transactional.begin(ReadWrite.WRITE);
+        integer.inc();
+        
+        TransactionCoordinatorState txnStateW1 = transactional.detach() ;
+        
+        // Currently, thread has no transaction.
+        long z1 = Txn.executeReadReturn(transactional, ()->integer.get() );
+        assertEquals(z, z1) ;
+        
+        // Back to writer.
+        transactional.attach(txnStateW1) ;
+        integer.inc();
+        TransactionCoordinatorState txnStateW2 = transactional.detach() ;
+        
+        try { integer.read() ; fail() ; } catch (TransactionException ex) {}
+        // To reader.
+        transactional.attach(txnStateR1) ;
+        assertEquals(z1, integer.read()) ;
+        t1.run() ;
+
+        // And the writer again.
+        TransactionCoordinatorState txnStateR2 = transactional.detach() ;
+        transactional.attach(txnStateW2) ;
+        integer.inc();
+        transactional.commit(); 
+        transactional.end() ;
+        
+        t2.run() ;
+        transactional.attach(txnStateR2) ;
+        assertEquals(z1, integer.read()) ;
+        transactional.end() ;
+    }
+    
+    // Some error cases.
+    @Test(expected=TransactionException.class)
+    public void txnSwitch_10() {
+        transactional.begin(ReadWrite.READ);
+        TransactionCoordinatorState txnState = transactional.detach() ;
+        transactional.attach(txnState); 
+        transactional.attach(txnState);
+    }
+    @Test(expected=TransactionException.class)
+    public void txnSwitch_11() {
+        transactional.begin(ReadWrite.READ);
+        TransactionCoordinatorState txnState1 = transactional.detach() ;
+        TransactionCoordinatorState txnState2 = transactional.detach() ;
     }
 
 }
