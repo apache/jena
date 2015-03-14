@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
 
 // See also TestTypedLiterals
 /** Tests for LiteralLabel.sameValueAs
- *  These tests shoudl work for RDF 1.0 and RDF 1.1 
+ *  These tests should work for RDF 1.0 and RDF 1.1 
  */
 public class TestLiteralLabelSameValueAs
 {

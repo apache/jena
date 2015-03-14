@@ -499,7 +499,7 @@ public class T_TransSystem
         
         try { 
             // This is an orderly shutdown so followed by the awaitTermination
-            // shoudl wait for all threads, making the CountDownLatch unnecessary.
+            // should wait for all threads, making the CountDownLatch unnecessary.
             // CountDownLatch added as a precaution while searching for JENA-163
             // which seems to see occasional uncleared out node journal files.
             execService.shutdown() ;

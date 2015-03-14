@@ -21,7 +21,7 @@ package com.hp.hpl.jena.tdb.setup;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 
 public class StoreParamsBuilder {
-    // Immuatable.
+    // Immutable.
     static class Item<X> {
         final X value  ;
         final boolean isSet ;

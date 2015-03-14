@@ -294,7 +294,7 @@ public class TestResolver extends TestCase
                 fail("("+u+","+base+") => "+res+" :: Expected exception: " +s) ;
         } catch (Exception ex2)
         {
-            // Shoudl test whether ex2 is a subclass of ex
+            // Should test whether ex2 is a subclass of ex
             assertEquals(ex, ex2.getClass()) ;
         }
     }
