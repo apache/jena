@@ -20,7 +20,9 @@ package org.apache.jena.atlas.test;
 
 import static org.apache.jena.atlas.lib.RandomLib.random ;
 
+import java.util.ArrayList ;
 import java.util.Arrays ;
+import java.util.List ;
 
 /** Support for testing.  May be  generally useful */
 public class Gen
@@ -56,8 +58,22 @@ public class Gen
         return k ;
     }
 
-    /** Sort-of jumble a sequence */
-    public static int[] permute(int[] x, int num) {
+    /** Pull items out of the list in a random order */ 
+    public static int[] permute(int[] x) {
+        int[] x2 = new int[x.length] ;
+        List<Integer> list = new ArrayList<>() ;
+        
+        for ( int i : x )
+            list.add(i) ;
+        for ( int i = 0 ; i<x.length ; i++ ) {
+            int idx = random.nextInt(list.size()) ;
+            x2[i] = list.remove(idx) ;
+        }
+        return x2 ; 
+    }
+    
+    /** Do a number of random pair-wise swaps */
+    public static int[] shuffle(int[] x, int num) {
         // Collections.shuffle.
         int[] x2 = new int[x.length] ;
         System.arraycopy(x, 0, x2, 0, x.length) ;

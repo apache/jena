@@ -458,6 +458,11 @@
             </excludes>
         </configuration>
       </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <extensions>true</extensions>
+        </plugin>
     </plugins>
 
     <!-- Plugin version list: http://maven.apache.org/plugins/index.html -->

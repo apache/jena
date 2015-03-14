@@ -40,8 +40,8 @@ public class TextDocProducerEntities extends DatasetChangesBatched implements Te
     // therefore whether or not we have to do autocommit
     private final ThreadLocal<Boolean> inTransaction = new ThreadLocal<Boolean>() ;
 
-    public TextDocProducerEntities(EntityDefinition defn, TextIndex indexer) {
-        this.defn = defn ;
+    public TextDocProducerEntities(TextIndex indexer) {
+        this.defn = indexer.getDocDef() ;
         this.indexer = indexer ;
         inTransaction.set(false) ;
     }

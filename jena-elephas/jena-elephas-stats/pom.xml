@@ -63,7 +63,7 @@
 		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>org.apache.jena</groupId>
-			<artifactId>jena-hadoop-rdf-mapreduce</artifactId>
+			<artifactId>jena-elephas-mapreduce</artifactId>
 			<version>${project.version}</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
