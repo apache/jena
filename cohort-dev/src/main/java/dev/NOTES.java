@@ -29,6 +29,8 @@ public class NOTES {
     // Pseudo fake a crash.
 
     // Clean journal interface.
+
+    // Transaction.TxnState - rename?
     
     // Insert/delete -> return null?
 
