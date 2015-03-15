@@ -142,6 +142,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
      */
     @Override
     public void commit() {
+    	super.getMonitor().finish() ;
         // Phase 1
         if (readWriteMode.get() == ReadWrite.WRITE) {
             try {
@@ -167,7 +168,6 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
             throw new TextIndexException(t);
         }
         readWriteMode.set(null);
-        super.getMonitor().finish() ;
     }
 
     @Override

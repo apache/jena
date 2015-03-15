@@ -53,6 +53,11 @@ public class TextIndexSolr implements TextIndex
         this.solrServer = server ;
         this.docDef = def ;
     }
+
+	@Override
+	public void updateEntity(Entity entity) {
+		throw new RuntimeException("TextIndexSolr.updateEntity not implemented.");
+	}
     
     @Override
     public void prepareCommit() { }

@@ -38,6 +38,7 @@ import org.apache.lucene.index.DirectoryReader ;
 import org.apache.lucene.index.IndexReader ;
 import org.apache.lucene.index.IndexWriter ;
 import org.apache.lucene.index.IndexWriterConfig ;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException ;
 import org.apache.lucene.queryparser.classic.QueryParser ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
@@ -186,6 +187,18 @@ public class TextIndexLucene implements TextIndex {
         }
         catch (IOException ex) {
             throw new TextIndexException(ex) ;
+        }
+    }
+    
+    @Override public void updateEntity(Entity entity) {
+        if ( log.isDebugEnabled() )
+            log.debug("Update entity: " + entity) ;
+        try {
+        	Document doc = doc(entity);
+        	Term term = new Term(docDef.getEntityField(), entity.getId());
+        	indexWriter.updateDocument(	term, doc);
+        } catch (IOException e) {
+            throw new TextIndexException(e) ;
         }
     }
 

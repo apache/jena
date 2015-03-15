@@ -32,6 +32,7 @@ import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler ;
 import com.hp.hpl.jena.sparql.util.Loader ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
@@ -65,22 +66,36 @@ public class TextDatasetAssembler extends AssemblerBase implements Assembler
         TextDocProducer textDocProducer = null ;
         if (null != textDocProducerNode) {
             Class<?> c = Loader.loadClass(textDocProducerNode.getURI(), TextDocProducer.class) ;
-            try
-            {
-                Constructor<?> ctor = c.getConstructor(TextIndex.class) ;
-                textDocProducer = (TextDocProducer)ctor.newInstance(textIndex) ;
-            }
-            catch (Exception ex)
-            {
-                String className = textDocProducerNode.getURI().substring(ARQConstants.javaClassURIScheme.length()) ;
-                Log.warn(Loader.class, "Exception during instantiation '"+className+"': "+ex.getMessage()) ;
-                return null ;
+            
+            String className = textDocProducerNode.getURI().substring(ARQConstants.javaClassURIScheme.length()) ;
+            Constructor<?> dyadic = getConstructor(c, DatasetGraph.class, TextIndex.class);
+            Constructor<?> monadic = getConstructor(c, TextIndex.class);
+            
+            try {
+            	if (dyadic != null) {
+            		textDocProducer = (TextDocProducer) dyadic.newInstance(ds.asDatasetGraph(), textIndex) ;
+            	} else if (monadic != null) {
+            		textDocProducer = (TextDocProducer) monadic.newInstance(textIndex) ;
+            	} else {
+            		Log.warn(Loader.class, "Exception during instantiation '"+className+"' no TextIndex or DatasetGraph,Index constructor" );
+            	}
+            } catch (Exception ex) {
+            	Log.warn(Loader.class, "Exception during instantiation '"+className+"': "+ex.getMessage()) ;
+            	return null ;            	
             }
         }
         
         Dataset dst = TextDatasetFactory.create(ds, textIndex, true, textDocProducer) ;
         return dst ;
-        
     }
+	
+	private Constructor<?> getConstructor(Class<?> c, Class<?> ...types) {
+		try {
+			return c.getConstructor(types);
+		} catch (NoSuchMethodException e) {			
+			return null;	
+		}
+	}
+	
 }
 

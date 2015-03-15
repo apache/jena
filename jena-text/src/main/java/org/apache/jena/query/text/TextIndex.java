@@ -36,6 +36,7 @@ public interface TextIndex extends Closeable //, Transactional
     
     // Update operations
     void addEntity(Entity entity) ;
+    void updateEntity(Entity entity) ;
     
     
     // read operations
