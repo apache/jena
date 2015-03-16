@@ -19,10 +19,11 @@ package org.seaborne.dboe.transaction.txn;
 
 import java.util.Objects ;
 
-import org.seaborne.dboe.transaction.Transactional ;
-import org.seaborne.dboe.transaction.txn.journal.Journal ;
-
 import com.hp.hpl.jena.query.ReadWrite ;
+
+import org.seaborne.dboe.transaction.Transactional ;
+import org.seaborne.dboe.transaction.txn.Transaction.TxnState ;
+import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 /**
  * Framework for implementing a Transactional.
@@ -57,6 +58,26 @@ public class TransactionalBase implements Transactional {
         return txnMgr ;
     }
 
+    public TransactionCoordinatorState detach() { 
+        checkRunning() ;
+        checkActive() ;
+        Transaction txn = theTxn.get() ;
+        TransactionCoordinatorState coordinatorState = txnMgr.detach(txn) ;
+        theTxn.remove() ;
+        return coordinatorState ;
+    }
+    
+    public void attach(TransactionCoordinatorState coordinatorState) {
+        Objects.nonNull(coordinatorState) ;
+        checkRunning() ;
+        checkNotActive() ;
+        TxnState txnState = coordinatorState.transaction.getState() ;
+        if ( txnState != TxnState.DETACHED )
+            throw new TransactionException("Not a detached transaction") ;
+        txnMgr.attach(coordinatorState) ;
+        theTxn.set(coordinatorState.transaction);
+    } 
+    
     @Override
     public final void begin(ReadWrite readWrite) {
         Objects.nonNull(readWrite) ;
@@ -96,7 +117,6 @@ public class TransactionalBase implements Transactional {
         // because this may have already been called.
         // txn.get() ; -- may be null -- test repeat calls.
         _end() ;
-        theTxn.remove() ; 
     }
 
     final 
@@ -158,6 +178,7 @@ public class TransactionalBase implements Transactional {
         if ( txn != null ) {
             txn.end() ;
             theTxn.set(null) ;
+            theTxn.remove() ;
         }
     }
 }

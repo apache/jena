@@ -17,14 +17,7 @@
 
 package org.seaborne.dboe.transaction.txn;
 
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.ABORTED ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.ACTIVE ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.COMMIT ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.COMMITTED ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.END_ABORTED ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.END_COMMITTED ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.INACTIVE ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.PREPARE ;
+import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.* ;
 
 import java.nio.ByteBuffer ;
 import java.util.ArrayList ;
@@ -54,13 +47,14 @@ public class Transaction {
     private final TxnId txnId ;
     private final List<SysTrans> components ;
     
-    // Using an AtomicReference makes this observable from the outside. 
+    // Using an AtomicReference makes this observable from the outside.
+    // It also allow for multithreaded transactions (later). 
     private final AtomicReference<TxnState> state = new AtomicReference<TxnState>() ;
     //private TxnState state ;
     private final long dataEpoch ;
     private ReadWrite mode ;
     
-    public enum TxnState { INACTIVE, ACTIVE, PREPARE, COMMIT, COMMITTED, ABORTED, END_COMMITTED, END_ABORTED }
+    public enum TxnState { INACTIVE, ACTIVE, DETACHED, PREPARE, COMMIT, COMMITTED, ABORTED, END_COMMITTED, END_ABORTED }
     
     public Transaction(TransactionCoordinator txnMgr, TxnId txnId, ReadWrite readWrite, long dataEpoch, List<SysTrans> components) {
         Objects.requireNonNull(txnMgr) ;
@@ -78,7 +72,7 @@ public class Transaction {
         components.add(x) ;
     }
 
-    private void setState(TxnState newState) {
+    /*package*/ void setState(TxnState newState) {
         state.set(newState) ;
     }
 
@@ -102,12 +96,6 @@ public class Transaction {
         setState(ACTIVE) ;
     }
     
-    public void requireWriteTxn() {
-        checkState(ACTIVE) ;
-        if ( mode != ReadWrite.WRITE )
-            throw new TransactionException("Not a write transaction") ;
-    }
-
     public void notifyUpdate() {
         checkState(ACTIVE) ;
         if ( mode == ReadWrite.READ ) {
@@ -154,6 +142,14 @@ public class Transaction {
         txnMgr.notifyPrepareFinish(this);
         return x ; 
     }
+    
+//    public TransactionCoordinatorState detach() {
+//        return txnMgr.detach(this) ;
+//    }
+//
+//    public void attach(TransactionCoordinatorState systemState) {
+//        txnMgr.attach(systemState) ;
+//    }
 
     public void end() {
         txnMgr.notifyEndStart(this) ;
@@ -181,6 +177,22 @@ public class Transaction {
         txnMgr.notifyCompleteFinish(this);
     }
     
+    /*package*/ void detach() {
+        checkState(ACTIVE) ;
+        setState(DETACHED) ;
+    }
+    
+    /*package*/ void attach() {
+        checkState(DETACHED) ;
+        setState(ACTIVE) ;
+    }
+    
+    public void requireWriteTxn() {
+        checkState(ACTIVE) ;
+        if ( mode != ReadWrite.WRITE )
+            throw new TransactionException("Not a write transaction") ;
+    }
+
     public boolean hasStarted()   { 
         TxnState x = getState() ;
         return x == INACTIVE ;
@@ -233,5 +245,6 @@ public class Transaction {
     public boolean isWriteTxn() {
         return mode == ReadWrite.WRITE ;
     }
+
 }
 

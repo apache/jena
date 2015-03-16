@@ -1,9 +1,3 @@
-package org.seaborne.dboe.transaction.txn ;
-
-import java.nio.ByteBuffer ;
-
-
-
 /**
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,6 +14,10 @@ import java.nio.ByteBuffer ;
  *  See the NOTICE file distributed with this work for additional
  *  information regarding copyright ownership.
  */ 
+
+package org.seaborne.dboe.transaction.txn ;
+
+import java.nio.ByteBuffer ;
 
 public class TransactionalComponentWrapper implements TransactionalComponent {
     protected final TransactionalComponent other ;
@@ -81,6 +79,16 @@ public class TransactionalComponentWrapper implements TransactionalComponent {
     @Override
     public void complete(Transaction transaction) {
         other.complete(transaction) ;
+    }
+
+    @Override
+    public SysTransState detach() {
+        return other.detach() ;
+    }
+
+    @Override
+    public void attach(SysTransState systemState) {
+        other.attach(systemState) ;
     }
 
     @Override

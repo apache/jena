@@ -36,13 +36,8 @@ import org.seaborne.dboe.test.RecordLib ;
 import org.seaborne.dboe.trans.bplustree.BPT ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
-import org.seaborne.dboe.transaction.Transactional ;
-import org.seaborne.dboe.transaction.TransactionalFactory ;
-import org.seaborne.dboe.transaction.Txn ;
-import org.seaborne.dboe.transaction.txn.ComponentId ;
-import org.seaborne.dboe.transaction.txn.ComponentIds ;
-import org.seaborne.dboe.transaction.txn.Transaction ;
-import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
+import org.seaborne.dboe.transaction.* ;
+import org.seaborne.dboe.transaction.txn.* ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 public class MainCohort {
@@ -53,6 +48,79 @@ public class MainCohort {
     static Journal journal = Journal.create(Location.mem()) ;
 
     public static void main(String... args) {
+        TransInteger integer1 = new TransInteger() ;
+        TransInteger integer2 = new TransInteger() ;
+        Transactional trans = TransactionalFactory.create(journal, integer1, integer2) ;
+        TransactionalBase transBase = (TransactionalBase)trans ; 
+        System.out.println("     i="+integer1.get()) ;
+        
+        trans.begin(ReadWrite.WRITE) ;
+        integer1.inc(); 
+        System.out.println("(W)  i="+integer1.get()) ;
+        
+        Txn.threadTxnRead(trans, ()->{
+            System.out.println("(RT) i="+integer1.get()) ;
+        }).run() ;
+
+        // Sort out.
+        TransactionCoordinatorState magic = ((TransactionalBase)trans).detach() ;
+
+        Txn.threadTxnRead(trans, ()->{
+            System.out.println("(RT) i="+integer1.get()) ;
+        }).run() ;
+        
+        
+        // Not in transaction.
+        System.out.println("(D)  i="+integer1.get()) ;
+        
+        try {
+            integer2.inc();
+            System.out.println("** integer2 inc") ;
+        } catch (TransactionException ex) {
+            System.out.println("integer2 : "+ ex.getMessage());
+        }
+
+        Txn.executeRead(trans, ()->{
+            System.out.println("(R)  i="+integer1.get()) ;
+        });
+        
+        Txn.threadTxnRead(trans, ()->{
+            System.out.println("(RT) i="+integer1.get()) ;
+        }).run() ;
+
+        
+//        // This will go wrong.
+//        Txn.executeWrite(trans, ()->{
+//            System.out.println("(W2) i="+integer1.get()) ;
+//        });
+
+        {
+            Transaction t2 = transBase.getTxnMgr().begin(ReadWrite.WRITE, false) ;
+            System.out.println("t2 = "+t2) ;
+        }
+
+        // restart
+        ((TransactionalBase)trans).attach(magic) ;
+        
+        try {
+            integer2.inc();
+            System.out.println("integer2 inc") ;
+        } catch (TransactionException ex) {
+            System.out.println("** integer2 : "+ ex.getMessage());
+        }
+        
+        System.out.println("(A)  i="+integer1.get()) ;
+        trans.commit() ;
+        trans.end() ;
+        
+        // Should fail.
+        ((TransactionalBase)trans).attach(magic) ;
+        
+        System.out.println("     i="+integer1.get()) ;
+        
+    }
+    
+    public static void main2(String... args) {
         //Non-threaded
         
         BPlusTree bpt = BPlusTreeFactory.createBPTree(null, FileSet.mem(), recordFactory) ;

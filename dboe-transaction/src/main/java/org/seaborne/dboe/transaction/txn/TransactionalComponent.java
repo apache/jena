@@ -136,6 +136,29 @@ public interface TransactionalComponent
     
     // ---- End of operations
     
+    /** Detach this component from the transaction of the current thread
+     * and return some internal state taht can be used in a future call of 
+     * {@link #attach(SysTransState)}
+     * <p>
+     * After this call, the component is not in a transaction but the
+     * existing transaction still exists. The thread may start a new
+     * transaction; that transaction is completely independent of the
+     * detached transaction.
+     * <p>
+     * Returns {@code null} if the current thread not in a transaction.
+     * The component may return null to idnciate it has no state. 
+     * The return system state should be used in a call to {@link #attach(SysTransState)}
+     * and the transaction ended in the usual way. 
+     *   
+     */
+    public SysTransState detach() ;
+    
+    /** Set the current thread to be in the transaction.  The {@code systemState}
+     * must be obtained from a call of {@link #detach()}.
+     * This method can only be called once per {@code systemState}.
+     */
+    public void attach(SysTransState systemState) ;
+    
     /** Shutdown component, aborting any in-progress transactions.
      * This operation is not guaranteed to be called.
      */

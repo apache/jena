@@ -197,37 +197,37 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
     // The Object file part, with transaction testing.
     @Override
     public Block allocWrite(int maxBytes) {
-        super.requireWriteTxn();
+        checkWriteTxn();
         return objFile.allocWrite(maxBytes) ;
     }
 
     @Override
     public void completeWrite(Block buffer) {
-        super.requireWriteTxn();
+        checkWriteTxn();
         objFile.completeWrite(buffer) ;
     }
 
     @Override
     public void abortWrite(Block buffer) {
-        super.requireWriteTxn();
+        checkWriteTxn();
         objFile.abortWrite(buffer) ;
     }
 
     @Override
     public long write(ByteBuffer buffer) {
-        super.requireWriteTxn();
+        checkWriteTxn();
         return objFile.write(buffer) ;
     }
 
     @Override
     public void reposition(long id) {
-        super.requireWriteTxn();
+        checkWriteTxn();
         objFile.reposition(id) ;
     }
 
     @Override
     public void truncate(long size) {
-        super.requireWriteTxn();
+        checkWriteTxn();
         objFile.truncate(size) ;
     }
 
@@ -236,7 +236,7 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
         super.checkTxn();
         if ( isReadTxn() )
             // Reader. Check bounds.
-            checkBoundsReader(id, super.getState()) ;
+            checkBoundsReader(id, super.getDataState()) ;
         return objFile.read(id) ;
     }
 
@@ -267,7 +267,7 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
     public long length() {
         super.checkTxn();
         if ( isReadTxn() )
-            return getState().length ;
+            return getDataState().length ;
             // Reader. Check bounds.
         return objFile.length() ;
     }

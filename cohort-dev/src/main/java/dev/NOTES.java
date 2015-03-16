@@ -17,21 +17,26 @@
 
 package dev;
 
+
 public class NOTES {
     // ARQ :: extract Atlas.
 
+    // What about:
+    // Index<K,R> c.f. Map<K,V>
+    // Index<R>
+    
     // Systematic tests involving recovery: e.g. TransObjectFile.
     // Pseudo fake a crash.
 
     // Clean journal interface.
+
+    // Transaction.TxnState - rename?
     
-    // Insert/delet -> return null?
+    // Insert/delete -> return null?
 
     // Bulk operations:
-    // Index 
-    //   insertMany(Collection<Record> record)
-    //   deleteMany(Collection<Record> record)
-    // patch support?
+    // Index
+    //    Bulk patch.
     
     // ---------------------
     // Split READ and WRITE internally to be two different lifecycles.
@@ -74,14 +79,9 @@ public class NOTES {
     
     // == Transactions
     
-    // TransactionCoordinator.start() -- helper ?
-    
     // Delayed write back by leaving stuff in the journal.
     //   Avoids needing to sync the BPTs (leave to natural file caching)
     //   Avoids need to flush the new root to disk.
-    
-    // TransactionCoordinator.haltedMode
-    // TransactionCoordinator.activeMode
     
     // Recovery: recover(Redo/undo, data);
     // Prepare: journal.writeREDO, journal.writeUNDO

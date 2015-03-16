@@ -154,7 +154,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     private BPTreeNode getRootRead() {
         if ( isTransactional() ) {
             super.checkTxn() ;
-            int rootId = super.getState().root ;
+            int rootId = super.getDataState().root ;
             return nodeManager.getRead(rootId, BPlusTreeParams.RootParent) ;
         }
         return nodeManager.getRead(rootIdx, BPlusTreeParams.RootParent) ;
@@ -163,7 +163,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     private BPTreeNode getRootWrite() {
         if ( isTransactional() ) {
             super.checkWriteTxn() ;
-            int rootId = super.getState().root ;
+            int rootId = super.getDataState().root ;
             return nodeManager.getRead(rootId, BPlusTreeParams.RootParent) ;
         }
         return nodeManager.getRead(rootIdx, BPlusTreeParams.RootParent) ;
@@ -187,7 +187,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     public void newRoot(BPTreeNode newRoot) {
         if ( isTransactional() )
-            getState().root = newRoot.getId() ;
+            getDataState().root = newRoot.getId() ;
         else
             rootIdx = newRoot.getId() ; 
     }
@@ -199,7 +199,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     public int getRootId() {
         if ( super.isActiveTxn() )
-            return super.getState().root ;
+            return super.getDataState().root ;
         else
             return rootIdx ;
     }
@@ -207,7 +207,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     BptTxnState state() {
         if ( mode == Mode.TRANSACTIONAL ) {
             if ( super.isActiveTxn() )
-                return super.getState() ;
+                return super.getDataState() ;
             return null ;
         }
         return nonTxnState ;

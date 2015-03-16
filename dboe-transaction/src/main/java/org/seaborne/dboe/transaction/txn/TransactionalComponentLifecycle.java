@@ -17,20 +17,15 @@
 
 package org.seaborne.dboe.transaction.txn;
 
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.ABORTED ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.ACTIVE ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.COMMIT ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.COMMITTED ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.INACTIVE ;
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.PREPARE ;
+import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.* ;
 
 import java.nio.ByteBuffer ;
 import java.util.Objects ;
 
+import com.hp.hpl.jena.query.ReadWrite ;
+
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.seaborne.dboe.transaction.txn.Transaction.TxnState ;
-
-import com.hp.hpl.jena.query.ReadWrite ;
 
 /** Base implementation of the component interface for {@link TransactionalComponent}.
  */
@@ -45,23 +40,34 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     
     // ---- Normal operation
     
-    private static final boolean CHECKING = true ;
-    private ThreadLocal<TxnState> state = CHECKING ? ThreadLocal.withInitial(() -> INACTIVE) : null ; 
+    private static final boolean CHECKING = false ;
+    private ThreadLocal<TxnState> trackTxn = CHECKING ? ThreadLocal.withInitial(() -> INACTIVE) : null ; 
+    
+    // Access to these two must be via the getter/setters below only.
+    // Allows stuff for thread switching.
     private ThreadLocal<Transaction> threadTxn = new ThreadLocal<>() ;
     private ThreadLocal<X> componentState = new ThreadLocal<>() ;
     
     protected TransactionalComponentLifecycle() { }
+    
+//    
+//    // Very dangerous!
+//    protected void setForThread(Transaction txn, X state) {
+//        threadTxn.set(txn);
+//        componentState.set(state);
+//    }
     
     /** Start a transaction */
     @Override
     final
     public void begin(Transaction transaction) {
         Objects.requireNonNull(transaction) ;
+        setTransaction(transaction); 
+        // XXX add transaction to checkState?
         checkState(INACTIVE, COMMITTED, ABORTED) ;
-        setState(ACTIVE);
-        threadTxn.set(transaction); 
+        setTrackTxn(ACTIVE);
         X x = _begin(transaction.getMode(), transaction.getTxnId()) ;
-        componentState.set(x);
+        setDataState(x);
     }
     
     /** Commit a transaction (make durable): prepare - commit - cleanup */  
@@ -70,8 +76,8 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     public ByteBuffer commitPrepare(Transaction transaction) {
         checkAligned(transaction) ;
         checkState(ACTIVE) ;
-        try { return _commitPrepare(transaction.getTxnId(), getState()) ; }
-        finally { setState(PREPARE) ; }
+        try { return _commitPrepare(transaction.getTxnId(), getDataState()) ; }
+        finally { setTrackTxn(PREPARE) ; }
     }
 
     @Override
@@ -79,8 +85,8 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     public void commit(Transaction transaction) {
         checkAligned(transaction) ;
         checkState(PREPARE) ;
-        _commit(transaction.getTxnId(), getState());
-        setState(COMMIT) ;
+        _commit(transaction.getTxnId(), getDataState());
+        setTrackTxn(COMMIT) ;
     }
     
     @Override
@@ -88,8 +94,8 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     public void commitEnd(Transaction transaction) {
         checkAligned(transaction) ;
         checkState(COMMIT) ;
-        _commitEnd(transaction.getTxnId(), getState());
-        setState(COMMITTED) ;
+        _commitEnd(transaction.getTxnId(), getDataState());
+        setTrackTxn(COMMITTED) ;
         internalComplete(transaction) ;
     }
 
@@ -98,31 +104,15 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     public void abort(Transaction transaction) {
         checkAligned(transaction) ;
         checkState(ACTIVE, PREPARE, COMMIT) ;
-        _abort(transaction.getTxnId(), getState()) ;
-        setState(ABORTED) ;
+        _abort(transaction.getTxnId(), getDataState()) ;
+        setTrackTxn(ABORTED) ;
         internalComplete(transaction) ;
     }
 
     private void internalComplete(Transaction transaction) {
-        _complete(transaction.getTxnId(), getState());
-        setState(INACTIVE) ;
-        // Remove thread locals
-        if ( state != null )
-            state.remove() ;
-        componentState.remove();
-        
-//        java version "1.8.0_31"
-//        Java(TM) SE Runtime Environment (build 1.8.0_31-b13)
-//        Java HotSpot(TM) 64-Bit Server VM (build 25.31-b07, mixed mode)
-//        
-//        openjdk version "1.8.0_40-internal"
-//        OpenJDK Runtime Environment (build 1.8.0_40-internal-b09)
-//        OpenJDK 64-Bit Server VM (build 25.40-b13, mixed mode)
-        
-        // This one is very important else the memory usage grows.  Not clear why.
-        // A Transaction has an internal AtomicReference.  Replacing the AtomicReference
-        // with a plain member variable slows the growth down greatly.
-        threadTxn.remove() ;
+        _complete(transaction.getTxnId(), getDataState());
+        setTrackTxn(INACTIVE) ;
+        releaseThreadState() ;
     }
 
     @Override
@@ -141,7 +131,7 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
                 checkState(COMMITTED, ABORTED) ; 
                 break ;
         }
-        _complete(transaction.getTxnId(), getState());
+        _complete(transaction.getTxnId(), getDataState());
         switch(m) {
             case READ:
                 internalComplete(transaction);
@@ -156,11 +146,108 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     final
     public void shutdown() {
         _shutdown() ;
-        state = null ;
+        clearInternal() ;
+    }
+    
+    @Override 
+    final public SysTransState detach() {
+        TxnState txnState = getTxnState() ;
+        if ( txnState == null )
+            return null ;
+        checkState(ACTIVE) ;
+        setTrackTxn(DETACHED) ;
+        SysTransState transState = new SysTransState(this, getTransaction(), getDataState()) ;
+        //****** Thread locals 
+        releaseThreadState() ;
+        return transState ;
+    }
+    
+    @Override
+    public void attach(SysTransState state) {
+        @SuppressWarnings("unchecked")
+        X x = (X)state.getState() ;
+//        // reset to not thread not in 
+//        if ( CHECKING )
+//            trackTxn : ThreadLocal<TxnState>
+//        
+//      
+        setTransaction(state.getTransaction());
+        setDataState(x);
+        setTrackTxn(ACTIVE) ;
+    }
+    
+    // -- Access object members.
+
+    public static class ComponentState<X> {
+        final TxnState state;
+        final Transaction txn ;
+        final X componentState ;
+        ComponentState(TxnState state, Transaction txn, X componentState) {
+            super() ;
+            this.state = state ;
+            this.txn = txn ;
+            this.componentState = componentState ;
+        }
+    }
+    
+    public ComponentState<X> getComponentState() {
+        return new ComponentState<>(getTrackTxn(), getTransaction(), getDataState()) ; 
+    }
+    
+    public void setComponentState(ComponentState<X> state) {
+        setTrackTxn(state.state);
+        setTransaction(state.txn);
+        setDataState(state.componentState);
+        
+    }
+
+    protected void releaseThreadState() {
+        // Remove thread locals
+        if ( trackTxn != null )
+            trackTxn.remove() ;
+        componentState.remove();
+        
+//        java version "1.8.0_31"
+//        Java(TM) SE Runtime Environment (build 1.8.0_31-b13)
+//        Java HotSpot(TM) 64-Bit Server VM (build 25.31-b07, mixed mode)
+//        
+//        openjdk version "1.8.0_40-internal"
+//        OpenJDK Runtime Environment (build 1.8.0_40-internal-b09)
+//        OpenJDK 64-Bit Server VM (build 25.40-b13, mixed mode)
+        
+        // This one is very important else the memory usage grows.  Not clear why.
+        // A Transaction has an internal AtomicReference.  Replacing the AtomicReference
+        // with a plain member variable slows the growth down greatly.
+        threadTxn.remove() ;
+    }
+    
+    protected void clearInternal() {
+        trackTxn = null ;
         threadTxn = null ;
         componentState = null ;
     }
     
+    //protected ComponentState<X> getState()
+    
+    protected X getDataState()                      { return componentState.get() ; }
+    protected void setDataState(X data)             { componentState.set(data) ; }
+
+    protected Transaction getTransaction()          { return threadTxn.get(); }
+    protected void setTransaction(Transaction txn)  { threadTxn.set(txn); }
+    
+    private void setTrackTxn(TxnState newState) {
+        if ( ! CHECKING ) return ;
+        trackTxn.set(newState);
+    }
+
+    // This is our record of the state - it is not necessarily the transactions
+    // view during changes.  This class tracks the expected incomign state and
+    // the transaction
+    private TxnState getTrackTxn() {
+        if ( ! CHECKING ) return null ;
+        return trackTxn.get();
+    }
+    // -- Access object members.
     
     // XXX Align to javadoc in TransactionalComponent.
     
@@ -278,30 +365,21 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     protected abstract void        _shutdown() ;
     
     protected ReadWrite getReadWriteMode() {
-        Transaction txn = threadTxn.get();
+        Transaction txn = getTransaction() ;
         return txn.getMode() ;
     }
-
-    protected X getState() {
-        return componentState.get() ;
-    }
     
-    protected TxnState getTxnState() {
-        Transaction txn = threadTxn.get();
-        if ( txn == null )
-            return null ;
-        return txn.getState() ;
-    }
-
     protected boolean isActiveTxn() {
         TxnState txnState = getTxnState() ;
         if ( txnState == null )
             return false ; 
         switch(getTxnState()) {
-            case INACTIVE: case END_ABORTED: case END_COMMITTED: return false ;
-            case ACTIVE:   case PREPARE: case ABORTED: case COMMIT: case COMMITTED:  return true ;
+            case INACTIVE: case END_ABORTED: case END_COMMITTED: 
+                return false ;
+            case ACTIVE: case DETACHED: case PREPARE: case ABORTED: case COMMIT: case COMMITTED:  
+                return true ;
             //null: default: return false ;
-            // Get the comp[iler to check all states covered.
+            // Get the compiler to check all states covered.
         }
         // Should not happen.
         throw new InternalErrorException("Unclear transaction state") ;
@@ -310,7 +388,7 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     protected boolean isReadTxn() { return ! isWriteTxn() ; }
     
     protected boolean isWriteTxn() {
-        Transaction txn = threadTxn.get();
+        Transaction txn = getTransaction();
         return txn.isWriteTxn() ;
     }
     
@@ -319,36 +397,48 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
             throw new TransactionException("Not in a transaction") ;
     }
 
-    protected void requireWriteTxn() {
-        Transaction txn = threadTxn.get();
-        if ( txn == null )
-            System.err.println("Not a transaction");
-        
-        txn.requireWriteTxn() ;
-    }
+//    protected void requireWriteTxn() {
+//        Transaction txn = getTransaction();
+//        if ( txn == null )
+//            throw new TransactionException("Not a transaction");
+//        else 
+//            txn.requireWriteTxn() ;
+//    }
     
     protected void checkWriteTxn() {
-        if ( ! isActiveTxn() || isReadTxn() )
-            throw new TransactionException("Not in a write transaction") ;
+        Transaction txn = getTransaction();
+        if ( txn == null )
+            throw new TransactionException("Not a transaction");
+        else 
+            txn.requireWriteTxn() ;
+    }
+
+    // -- Access object members.
+    
+    private TxnState getTxnState() { 
+        Transaction txn = getTransaction() ;
+        if ( txn == null )
+            return null ;
+        return txn.getState() ;
     }
 
     private void checkAligned(Transaction transaction) {
         if ( ! CHECKING ) return ;
-        Transaction txn = threadTxn.get();
+        Transaction txn = getTransaction();
         if ( txn != transaction )
             throw new TransactionException("Transaction is not the transaction of the thread") ; 
     }
     
     private void checkState(TxnState expected) {
         if ( ! CHECKING ) return ;
-        TxnState s = state.get();
+        TxnState s = getTrackTxn() ;
         if ( s != expected )
             throw new TransactionException("Transaction is in state "+s+": expected state "+expected) ;
     }
 
     private void checkState(TxnState expected1, TxnState expected2) {
         if ( ! CHECKING ) return ;
-        TxnState s = state.get();
+        TxnState s = getTrackTxn() ;
         if ( s != expected1 && s != expected2 )
             throw new TransactionException("Transaction is in state "+s+": expected state "+expected1+" or "+expected2) ;
     }
@@ -356,7 +446,7 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     // Avoid varargs ... undue worry?
     private void checkState(TxnState expected1, TxnState expected2, TxnState expected3) {
         if ( ! CHECKING ) return ;
-        TxnState s = state.get();
+        TxnState s = getTrackTxn() ;
         if ( s != expected1 && s != expected2 && s != expected3 )
             throw new TransactionException("Transaction is in state "+s+": expected state "+expected1+", "+expected2+" or "+expected3) ;
     }
@@ -366,11 +456,6 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
 //        if ( s == unexpected )
 //            throw new TransactionException("Transaction in unexpected state "+s) ;
 //    }
-
-    private void setState(TxnState newState) {
-        if ( ! CHECKING ) return ;
-        state.set(newState);
-    }
 
 }
 
