@@ -87,6 +87,9 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
         boolean b = isTransactionType(ReadWrite.READ) ;
         get().getLock().enterCriticalSection(b) ;
         inTransaction.set(true) ;
+        if (get() instanceof DatasetGraphMonitor) {
+            ((DatasetGraphMonitor)get()).getMonitor().start();
+        }
     }
 
     @Override
@@ -115,6 +118,9 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
     @Override
     protected void _end() {
         if ( isInTransaction() ) {
+            if (get() instanceof DatasetGraphMonitor) {
+                ((DatasetGraphMonitor)get()).getMonitor().finish();
+            }
             get().getLock().leaveCriticalSection() ;
             clearState() ;
         }
