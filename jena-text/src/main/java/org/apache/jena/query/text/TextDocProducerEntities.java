@@ -30,15 +30,20 @@ import com.hp.hpl.jena.sparql.core.QuadAction ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 // Currently unused 
-// This would index multiple quads at a time from batched stream of chnages (e.g. rdf-patch)
+// This would index multiple quads at a time from batched stream of changes (e.g. rdf-patch)
 public class TextDocProducerEntities extends DatasetChangesBatched implements TextDocProducer {
     private static Logger          log     = LoggerFactory.getLogger(TextDocProducer.class) ;
     private final EntityDefinition defn ;
     private final TextIndex        indexer ;
     
-    // Also have to have a ThreadLocal here to keep track of whether or not we are in a transaction,
+    // Have to have a ThreadLocal here to keep track of whether or not we are in a transaction,
     // therefore whether or not we have to do autocommit
-    private final ThreadLocal<Boolean> inTransaction = new ThreadLocal<Boolean>() ;
+    private final ThreadLocal<Boolean> inTransaction = new ThreadLocal<Boolean>() {
+        @Override
+        protected Boolean initialValue() {
+            return Boolean.FALSE ;
+        }
+    } ;
 
     public TextDocProducerEntities(TextIndex indexer) {
         this.defn = indexer.getDocDef() ;
