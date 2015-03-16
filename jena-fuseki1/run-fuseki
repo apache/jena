@@ -19,7 +19,7 @@
 ## Run Fuseki, include development code if it looks like it's available.
 ## Or --pages=
 
-export FUSEKI_HOME=${FUSEKI_HOME:-$HOME/Jena/jena-fuseki}
+export FUSEKI_HOME=${FUSEKI_HOME:-$HOME/Jena/jena-fuseki1}
 if [ ! -e $FUSEKI_HOME ]
 then
     echo "$FUSEKI_HOME does not exist" 1>&2
