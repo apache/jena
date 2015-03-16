@@ -32,7 +32,6 @@ public class TextDocProducerTriples implements TextDocProducer {
     // Also have to have a ThreadLocal here to keep track of whether or not we are in a transaction,
     // therefore whether or not we have to do autocommit
     private final ThreadLocal<Boolean> inTransaction = new ThreadLocal<Boolean>() ;
-    
 
     public TextDocProducerTriples(TextIndex indexer) {
         this.defn = indexer.getDocDef() ;

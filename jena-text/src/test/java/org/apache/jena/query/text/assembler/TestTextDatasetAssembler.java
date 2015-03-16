@@ -18,12 +18,8 @@
 
 package org.apache.jena.query.text.assembler;
 
-import org.apache.jena.query.text.DatasetGraphText ;
-import org.apache.jena.query.text.TextDocProducer ;
-import org.apache.jena.query.text.TextIndex ;
-import org.apache.jena.query.text.TextIndexLucene ;
-import org.apache.jena.query.text.TextQuery ;
-import org.junit.Ignore;
+import static org.junit.Assert.assertTrue ;
+import org.apache.jena.query.text.* ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.assembler.Assembler ;
@@ -31,12 +27,10 @@ import com.hp.hpl.jena.assembler.exceptions.AssemblerException ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.QuadAction ;
 import com.hp.hpl.jena.tdb.assembler.AssemblerTDB ;
 import com.hp.hpl.jena.vocabulary.RDF ;
-
-import static org.junit.Assert.* ;
 
 /**
  * Test the text dataset assembler.
