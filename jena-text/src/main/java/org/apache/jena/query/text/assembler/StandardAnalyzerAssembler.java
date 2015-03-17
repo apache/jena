@@ -50,53 +50,53 @@ public class StandardAnalyzerAssembler extends AssemblerBase {
            ]
          ]
         .
-    */
+     */
 
     @Override
     public Analyzer open(Assembler a, Resource root, Mode mode) {
-    	if (root.hasProperty(TextVocab.pStopWords)) {
-    		return analyzerWithStopWords(root);
-    	} else {
-    		return new StandardAnalyzer(TextIndexLucene.VER);
-    	}
+        if (root.hasProperty(TextVocab.pStopWords)) {
+            return analyzerWithStopWords(root);
+        } else {
+            return new StandardAnalyzer(TextIndexLucene.VER);
+        }
     }
-    
+
     private Analyzer analyzerWithStopWords(Resource root) {
-    	RDFNode node = root.getProperty(TextVocab.pStopWords).getObject();
-    	if (! node.isResource()) {
-    		throw new TextIndexException("text:stopWords property takes a list as a value : " + node);
-    	}
-    	CharArraySet stopWords = toCharArraySet((Resource) node);
-    	return new StandardAnalyzer(TextIndexLucene.VER, stopWords);
+        RDFNode node = root.getProperty(TextVocab.pStopWords).getObject();
+        if (! node.isResource()) {
+            throw new TextIndexException("text:stopWords property takes a list as a value : " + node);
+        }
+        CharArraySet stopWords = toCharArraySet((Resource) node);
+        return new StandardAnalyzer(TextIndexLucene.VER, stopWords);
     }
-    
+
     private CharArraySet toCharArraySet(Resource list) {
-    	return new CharArraySet(TextIndexLucene.VER, toList(list), false);
+        return new CharArraySet(TextIndexLucene.VER, toList(list), false);
     }
-    
+
     private List<String> toList(Resource list) {
-    	List<String> result = new ArrayList<>();
-    	Resource current = list;
-    	while (current != null && ! current.equals(RDF.nil)){
-    		Statement stmt = current.getProperty(RDF.first);
-    		if (stmt == null) {
-    			throw new TextIndexException("stop word list not well formed");
-    		}
-    		RDFNode node = stmt.getObject();
-    		if (! node.isLiteral()) {
-    			throw new TextIndexException("stop word is not a literal : " + node);
-    		}
-    		result.add(((Literal)node).getLexicalForm());
-    		stmt = current.getProperty(RDF.rest);
-    		if (stmt == null) {
-    			throw new TextIndexException("stop word list not terminated by rdf:nil");
-    		}
-    		node = stmt.getObject();
-    		if (! node.isResource()) {
-    			throw new TextIndexException("stop word list node is not a resource : " + node);
-    		}
-    		current = (Resource) node;
-    	}
-    	return result;
+        List<String> result = new ArrayList<>();
+        Resource current = list;
+        while (current != null && ! current.equals(RDF.nil)){
+            Statement stmt = current.getProperty(RDF.first);
+            if (stmt == null) {
+                throw new TextIndexException("stop word list not well formed");
+            }
+            RDFNode node = stmt.getObject();
+            if (! node.isLiteral()) {
+                throw new TextIndexException("stop word is not a literal : " + node);
+            }
+            result.add(((Literal)node).getLexicalForm());
+            stmt = current.getProperty(RDF.rest);
+            if (stmt == null) {
+                throw new TextIndexException("stop word list not terminated by rdf:nil");
+            }
+            node = stmt.getObject();
+            if (! node.isResource()) {
+                throw new TextIndexException("stop word list node is not a resource : " + node);
+            }
+            current = (Resource) node;
+        }
+        return result;
     }
 }

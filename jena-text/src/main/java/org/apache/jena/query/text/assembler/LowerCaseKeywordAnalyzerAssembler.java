@@ -39,10 +39,10 @@ public class LowerCaseKeywordAnalyzerAssembler extends AssemblerBase {
                a  lucene:LowerCaseKeywordAnalyzer ;           ]
          ]
         .
-    */
+     */
 
     @Override
     public Analyzer open(Assembler a, Resource root, Mode mode) {
-    	return new LowerCaseKeywordAnalyzer(TextIndexLucene.VER);
+        return new LowerCaseKeywordAnalyzer(TextIndexLucene.VER);
     }
 }

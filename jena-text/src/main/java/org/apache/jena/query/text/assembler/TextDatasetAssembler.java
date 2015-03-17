@@ -44,60 +44,60 @@ import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 public class TextDatasetAssembler extends AssemblerBase implements Assembler
 {
     private DatasetAssembler datasetAssembler = new DatasetAssembler() ;
-    
+
     public static Resource getType() { return textDataset ; }
-        
+
     /*
 <#text_dataset> rdf:type     text:Dataset ;
     text:dataset <#dataset> ;
     text:index   <#index> ;
     .
 
-    */
-    
+     */
+
     @Override
     public Dataset open(Assembler a, Resource root, Mode mode)
     {
         Resource dataset = GraphUtils.getResourceValue(root, pDataset) ;
         Resource index   = GraphUtils.getResourceValue(root, pIndex) ;
         Resource textDocProducerNode = GraphUtils.getResourceValue(root, pTextDocProducer) ;
-        
+
         Dataset ds = (Dataset)a.open(dataset) ;
         TextIndex textIndex = (TextIndex)a.open(index) ;
         // Null will use the default producer
         TextDocProducer textDocProducer = null ;
         if (null != textDocProducerNode) {
             Class<?> c = Loader.loadClass(textDocProducerNode.getURI(), TextDocProducer.class) ;
-            
+
             String className = textDocProducerNode.getURI().substring(ARQConstants.javaClassURIScheme.length()) ;
             Constructor<?> dyadic = getConstructor(c, DatasetGraph.class, TextIndex.class);
             Constructor<?> monadic = getConstructor(c, TextIndex.class);
-            
+
             try {
-            	if (dyadic != null) {
-            		textDocProducer = (TextDocProducer) dyadic.newInstance(ds.asDatasetGraph(), textIndex) ;
-            	} else if (monadic != null) {
-            		textDocProducer = (TextDocProducer) monadic.newInstance(textIndex) ;
-            	} else {
-            		Log.warn(Loader.class, "Exception during instantiation '"+className+"' no TextIndex or DatasetGraph,Index constructor" );
-            	}
+                if (dyadic != null) {
+                    textDocProducer = (TextDocProducer) dyadic.newInstance(ds.asDatasetGraph(), textIndex) ;
+                } else if (monadic != null) {
+                    textDocProducer = (TextDocProducer) monadic.newInstance(textIndex) ;
+                } else {
+                    Log.warn(Loader.class, "Exception during instantiation '"+className+"' no TextIndex or DatasetGraph,Index constructor" );
+                }
             } catch (Exception ex) {
-            	Log.warn(Loader.class, "Exception during instantiation '"+className+"': "+ex.getMessage()) ;
-            	return null ;            	
+                Log.warn(Loader.class, "Exception during instantiation '"+className+"': "+ex.getMessage()) ;
+                return null ;
             }
         }
-        
+
         Dataset dst = TextDatasetFactory.create(ds, textIndex, true, textDocProducer) ;
         return dst ;
     }
-	
-	private Constructor<?> getConstructor(Class<?> c, Class<?> ...types) {
-		try {
-			return c.getConstructor(types);
-		} catch (NoSuchMethodException e) {			
-			return null;	
-		}
-	}
-	
+
+    private Constructor<?> getConstructor(Class<?> c, Class<?> ...types) {
+        try {
+            return c.getConstructor(types);
+        } catch (NoSuchMethodException e) {
+            return null;
+        }
+    }
+
 }
 

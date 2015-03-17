@@ -54,14 +54,14 @@ public class TextIndexSolr implements TextIndex
         this.docDef = def ;
     }
 
-	@Override
-	public void updateEntity(Entity entity) {
-		throw new RuntimeException("TextIndexSolr.updateEntity not implemented.");
-	}
-    
+    @Override
+    public void updateEntity(Entity entity) {
+        throw new RuntimeException("TextIndexSolr.updateEntity not implemented.");
+    }
+
     @Override
     public void prepareCommit() { }
-    
+
     @Override
     public void commit() {
         try {
@@ -74,7 +74,7 @@ public class TextIndexSolr implements TextIndex
             throw new TextIndexException(e);
         }
     }
-    
+
     @Override
     public void rollback() {
         try {
@@ -87,7 +87,7 @@ public class TextIndexSolr implements TextIndex
             throw new TextIndexException(e);
         }
     }
-    
+
     @Override
     public void close()
     { 
@@ -109,22 +109,22 @@ public class TextIndexSolr implements TextIndex
     {
         SolrInputDocument doc = new SolrInputDocument() ;
         doc.addField(docDef.getEntityField(), entity.getId()) ;
-        
+
         String graphField = docDef.getGraphField() ;
         if ( graphField != null )
         {
             doc.addField(graphField, entity.getGraph()) ;
         }
-        
+
         // the addition needs to be done as a partial update
         // otherwise, if we have multiple fields, each successive
         // addition will replace the previous one and we are left
         // with only the last field indexed.
         // see http://stackoverflow.com/questions/12183798/solrj-api-for-partial-document-update
         // and https://svn.apache.org/repos/asf/lucene/dev/trunk/solr/solrj/src/test/org/apache/solr/client/solrj/SolrExampleTests.java
-    	HashMap<String,Object> map = new HashMap<>();
+        HashMap<String,Object> map = new HashMap<>();
         for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
-        	map.put("add", e.getValue());
+            map.put("add", e.getValue());
             doc.addField(e.getKey(), map) ;
         }
         return doc ;
@@ -136,7 +136,7 @@ public class TextIndexSolr implements TextIndex
         String escaped = ClientUtils.escapeQueryChars(uri) ;
         String qs = docDef.getEntityField()+":"+escaped ; 
         SolrDocumentList solrResults = solrQuery(qs,1) ;
-        
+
         List<Map<String, Node>> records = process(solrResults) ;
         if ( records.size() == 0 )
             return null ;
@@ -144,18 +144,18 @@ public class TextIndexSolr implements TextIndex
             log.warn("Multiple docs for one URI: "+uri) ;
         return records.get(0) ;
     }
-    
+
     private List<Map<String, Node>> process(SolrDocumentList solrResults)
     {
         List<Map<String, Node>> records = new ArrayList<>() ;
-        
+
         for ( SolrDocument sd : solrResults )
         {
             Map<String, Node> record = new HashMap<>() ;
             String uriStr = (String)sd.getFieldValue(docDef.getEntityField()) ;
             Node entity = NodeFactory.createURI(uriStr) ;
             record.put(docDef.getEntityField(), entity) ;
-            
+
             for ( String f : docDef.fields() )
             {
                 //log.info("Field: "+f) ;
@@ -176,16 +176,16 @@ public class TextIndexSolr implements TextIndex
                 Node n = entryToNode(v) ;
                 record.put(f, n) ;
             }
-            
+
             //log.info("Entity: "+uriStr) ;
             records.add(record) ;
         }
         return records ;
     }
-    
+
     @Override
     public List<Node> query(String qs) { return query(qs, 0) ; } 
-    
+
     @Override
     public List<Node> query(String qs, int limit)
     {
@@ -204,10 +204,10 @@ public class TextIndexSolr implements TextIndex
 
         if ( limit > 0 && results.size() > limit )
             results = results.subList(0, limit) ;
-        
+
         return results ; 
     }
-    
+
     private SolrDocumentList solrQuery(String qs, int limit)
     {
         SolrQuery sq = new SolrQuery(qs) ;
@@ -237,7 +237,7 @@ public class TextIndexSolr implements TextIndex
         // TEMP
         return NodeFactoryExtra.createLiteralNode(v, null, null) ;
     }
-    
+
     public SolrServer getServer() { return solrServer ; }
 
     private static Void exception(Exception ex)

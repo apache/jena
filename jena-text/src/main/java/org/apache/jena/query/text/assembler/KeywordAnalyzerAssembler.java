@@ -42,6 +42,6 @@ public class KeywordAnalyzerAssembler extends AssemblerBase {
 
     @Override
     public Analyzer open(Assembler a, Resource root, Mode mode) {
-    	return new KeywordAnalyzer();
+        return new KeywordAnalyzer();
     }
 }

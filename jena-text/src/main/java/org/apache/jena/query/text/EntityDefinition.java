@@ -129,11 +129,11 @@ public class EntityDefinition {
     }
     
     public void setAnalyzer(String field, Analyzer analyzer) {
-    	fieldToAnalyzer.put(field, analyzer);
+        fieldToAnalyzer.put(field, analyzer);
     }
     
     public Analyzer getAnalyzer(String field) {
-    	return fieldToAnalyzer.get(field);
+        return fieldToAnalyzer.get(field);
     }
 
     public String getPrimaryField() {
