@@ -61,8 +61,8 @@ public class StreamManager {
     }
 
     /**
-     * Return a default configuration StreamManager with a {@linkplain LocatorFile},
-     * {@linkplain LocatorHTTP}, {@linkplain LocatorFTP} and {@linkplain LocatorClassLoader}
+     * Return a default configuration StreamManager with a {@link LocatorFile},
+     * {@link LocatorHTTP}, {@link LocatorFTP} and {@link LocatorClassLoader}
      */
     public static StreamManager makeDefaultStreamManager() {
         StreamManager streamManager = new StreamManager() ;

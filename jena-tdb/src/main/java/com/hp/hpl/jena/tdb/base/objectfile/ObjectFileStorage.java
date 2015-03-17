@@ -222,7 +222,10 @@ public class ObjectFileStorage implements ObjectFile
             rawWrite(buffer) ;
             return ;
         }
-        
+        // Write area is 0 -> limit
+        if ( 0 != buffer.position() )
+            log.warn("ObjectFleStorage: position != 0") ;
+        buffer.position(0) ;
         int actualLength = buffer.limit()-buffer.position() ;
         // Insert object length
         int idx = (int)(allocLocation-filesize) ;

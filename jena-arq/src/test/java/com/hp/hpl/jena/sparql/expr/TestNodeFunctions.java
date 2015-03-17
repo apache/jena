@@ -21,23 +21,18 @@ package com.hp.hpl.jena.sparql.expr ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
+import com.hp.hpl.jena.JenaRuntime ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
 public class TestNodeFunctions extends BaseTest {
     private static final double accuracyExact = 0.0d ;
     private static final double accuracyClose = 0.000001d ;
-
-    // public static TestSuite suite()
-    // {
-    // TestSuite ts = new TestSuite(TestNodeFunctions.class) ;
-    // ts.setName(Utils.classShortName(TestNodeFunctions.class)) ;
-    // return ts ;
-    // }
 
     @Test public void testSameTerm1() {
         Node n1 = NodeFactory.createLiteral("xyz") ;
@@ -59,25 +54,28 @@ public class TestNodeFunctions extends BaseTest {
 
     @Test public void testSameTerm4() {
         Node n1 = NodeFactory.createLiteral("xyz") ;
-        Node n2 = NodeFactory.createLiteral("xyz", null, XSDDatatype.XSDstring) ;
-        assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
+        Node n2 = NodeFactory.createLiteral("xyz", XSDDatatype.XSDstring) ;
+        if ( JenaRuntime.isRDF11 )
+            assertTrue(NodeFunctions.sameTerm(n1, n2)) ;
+        else
+            assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
     }
 
     @Test public void testSameTerm5() {
-        Node n1 = NodeFactory.createLiteral("xyz", "en", null) ;
-        Node n2 = NodeFactory.createLiteral("xyz", null, null) ;
+        Node n1 = NodeFactory.createLiteral("xyz", "en") ;
+        Node n2 = NodeFactory.createLiteral("xyz") ;
         assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
     }
 
     @Test public void testSameTerm6() {
-        Node n1 = NodeFactory.createLiteral("xyz", "en", null) ;
-        Node n2 = NodeFactory.createLiteral("xyz", "EN", null) ;
+        Node n1 = NodeFactory.createLiteral("xyz", "en") ;
+        Node n2 = NodeFactory.createLiteral("xyz", "EN") ;
         assertTrue(NodeFunctions.sameTerm(n1, n2)) ;
     }
 
     @Test public void testRDFtermEquals1() {
         Node n1 = NodeFactory.createURI("xyz") ;
-        Node n2 = NodeFactory.createLiteral("xyz", null, null) ;
+        Node n2 = NodeFactory.createLiteral("xyz") ;
         assertFalse(NodeFunctions.rdfTermEquals(n1, n2)) ;
     }
 
@@ -85,13 +83,13 @@ public class TestNodeFunctions extends BaseTest {
     public void testRDFtermEquals3() {
         // Unextended - no language tag
         Node n1 = NodeFactory.createLiteral("xyz") ;
-        Node n2 = NodeFactory.createLiteral("xyz", "en", null) ;
+        Node n2 = NodeFactory.createLiteral("xyz", "en") ;
         NodeFunctions.rdfTermEquals(n1, n2) ;
     }
 
     @Test public void testRDFtermEquals2() {
-        Node n1 = NodeFactory.createLiteral("xyz", "en", null) ;
-        Node n2 = NodeFactory.createLiteral("xyz", "EN", null) ;
+        Node n1 = NodeFactory.createLiteral("xyz", "en") ;
+        Node n2 = NodeFactory.createLiteral("xyz", "EN") ;
         assertTrue(NodeFunctions.rdfTermEquals(n1, n2)) ;
     }
 
@@ -144,13 +142,13 @@ public class TestNodeFunctions extends BaseTest {
         NodeValue nv = NodeValue.makeNode("abc", "fr", (String)null) ;
         // SPARQL 1.0
         // try {
-        // NodeValue r = NodeFunctions.datatype(nv) ;
-        // fail("Expect a type exception but call succeeded") ;
+        //   NodeValue r = NodeFunctions.datatype(nv) ;
+        //   fail("Expect a type exception but call succeeded") ;
         // }
         // catch (ExprTypeException ex) {}
         // SPARQL 1.1 / RDF 1.1
         NodeValue r = NodeFunctions.datatype(nv) ;
-        NodeValue e = NodeValue.makeNode(NodeConst.dtRDFlangString) ;
+        NodeValue e = NodeValue.makeNode(NodeConst.rdfLangString) ;
         assertEquals(e, r) ;
     }
 
@@ -167,7 +165,7 @@ public class TestNodeFunctions extends BaseTest {
     }
 
     @Test public void testLang1() {
-        Node n = NodeFactory.createLiteral("abc", "en-gb", null) ;
+        Node n = NodeFactory.createLiteral("abc", "en-gb") ;
         assertEquals("en-gb", NodeFunctions.lang(n)) ;
     }
 
@@ -319,4 +317,31 @@ public class TestNodeFunctions extends BaseTest {
         NodeValue r = NodeFunctions.isLiteral(nv) ;
         assertEquals(NodeValue.FALSE, r) ;
     }
+    
+    @Test public void testCheckAndGetStringLiteral1() {
+        NodeValue nv = NodeValue.makeNode("abc", XSDDatatype.XSDstring) ;
+        Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
+        assertEquals( "abc", n.getLiteralLexicalForm());
+    }
+    
+    @Test public void testCheckAndGetStringLiteral2() {
+        NodeValue nv = NodeValue.makeNode("abc", XSDDatatype.XSDnormalizedString) ;
+        Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
+        assertEquals( "abc", n.getLiteralLexicalForm());
+    }
+
+    @Test public void testCheckAndGetStringLiteral3() {
+        NodeValue nv = NodeValue.makeString("abc") ;
+        Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
+        assertEquals( "abc", n.getLiteralLexicalForm());
+    }
+    
+    @Test(expected=ExprEvalException.class)
+    public void testCheckAndGetStringLiteral4() {
+        // The form "abc"^^rdf:langString (no lang tag) is not derived from xsd:string. 
+        NodeValue nv = NodeValue.makeNode("abc", RDF.dtLangString) ;
+        Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
+        assertEquals( "abc", n.getLiteralLexicalForm());
+    }
+
 }

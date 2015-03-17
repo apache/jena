@@ -24,10 +24,10 @@ import java.util.List ;
 import java.util.NoSuchElementException ;
 
 /** Remembers the last N yields.
- * See also IteratorWithBuffer, for an iterator that looks ahead to what it wil yield.
+ * See also {@link IteratorWithBuffer}, for an iterator that looks ahead to what it will yield.
  * @see IteratorWithBuffer
- * @see org.apache.jena.atlas.iterator.PeekIterator
- * @see org.apache.jena.atlas.iterator.PushbackIterator
+ * @see PeekIterator
+ * @see PushbackIterator
  */
 public class IteratorWithHistory<T> implements Iterator<T>
 {
@@ -36,32 +36,33 @@ public class IteratorWithHistory<T> implements Iterator<T>
     private int capacity ;
     private boolean hasEnded = false ;
     
-    public IteratorWithHistory(Iterator<T> iter, int N)
-    {
+    public IteratorWithHistory(Iterator<T> iter, int N) {
         this.iter = iter ;
         this.history = new ArrayList<>(N) ;
         this.capacity = N ;
     }
 
     @Override
-    public boolean hasNext()
-    {
+    public boolean hasNext() {
         boolean b = iter.hasNext() ;
-        if ( !b ) 
+        if ( !b )
             atEnd() ;
         return b ;
     }
 
     @Override
-    public T next()
-    {
+    public T next() {
         T item = null ;
-        try { item = iter.next() ; }
-        catch (NoSuchElementException ex) { atEnd() ; }
+        try {
+            item = iter.next() ;
+        }
+        catch (NoSuchElementException ex) {
+            atEnd() ;
+        }
         // Shuffle up, add at bottom.
         if ( history.size() >= capacity )
-            history.remove(history.size()-1) ;
-        history.add(0,item) ;
+            history.remove(history.size() - 1) ;
+        history.add(0, item) ;
         return item ;
     }
 
@@ -69,35 +70,35 @@ public class IteratorWithHistory<T> implements Iterator<T>
     public void remove()
     { throw new UnsupportedOperationException("remove") ; }
 
-    /** return the previous i'th element returned by next(). 0 means last call of next.
-     * History is retained after the end of iteration.   
+    /**
+     * return the previous i'th element returned by next(). 0 means last call of
+     * next. History is retained after the end of iteration.
      * 
-     * @return Element or null for no such element (that is for haven't yielded that many elements).
-     * @throws IndexOutOfBoundsException if index is negative.
+     * @return Element or null for no such element (that is for haven't yielded
+     *         that many elements).
+     * @throws IndexOutOfBoundsException
+     *             if index is negative.
      */
-    public T getPrevious(int idx)
-    {
+    public T getPrevious(int idx) {
         if ( idx >= capacity || idx < 0 )
-            throw new IndexOutOfBoundsException("Index: "+idx) ;
+            throw new IndexOutOfBoundsException("Index: " + idx) ;
         if ( idx >= history.size() )
             return null ;
         return history.get(idx) ;
     }
 
     /**
-     * Return the current size of the histiory. This can be used to tell the difference between
-     * an iterator returning null and an iterator that is just short.  
+     * Return the current size of the histiory. This can be used to tell the
+     * difference between an iterator returning null and an iterator that is
+     * just short.
      */
-    public int currentSize()
-    { 
+    public int currentSize() {
         return history.size() ;
     }
-    
+
     /** Called when the underlying iterator ends */
-    protected void atEnd()
-    {
-        if (! hasEnded )
-        {
+    protected void atEnd() {
+        if ( !hasEnded ) {
             hasEnded = true ;
             endReached() ;
         }

@@ -66,6 +66,7 @@ public class SpatialSearchUtil {
         try {
             Directory directory = FSDirectory.open(indexDir) ;
             IndexWriterConfig wConfig = new IndexWriterConfig(VER, analyzer) ;
+            @SuppressWarnings("resource")
             IndexWriter indexWriter = new IndexWriter(directory, wConfig) ;
             indexWriter.close() ; // force creation of the index files
         } catch (IOException ex) {

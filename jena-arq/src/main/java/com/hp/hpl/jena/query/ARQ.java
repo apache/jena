@@ -306,7 +306,7 @@ public class ARQ
      *  Context key controlling whether the main query engine moves filters to the "best" place using 
      *  the more limited and conservative strategy which does not place as many filters
      *  Must be explicitly set "true" to operate.
-     *  Filter placement, via {@linkplain #optFilterPlacement} must also be active (which it is by default).
+     *  Filter placement, via {@link #optFilterPlacement} must also be active (which it is by default).
      * @see #optFilterPlacement
      */ 
     public static final Symbol optFilterPlacementConservative = ARQConstants.allocSymbol("optFilterPlacementConservative") ;
@@ -445,7 +445,6 @@ public class ARQ
     {
         SystemARQ.StrictDateTimeFO      = true ;
         SystemARQ.ValueExtensions       = false ;
-        SystemARQ.SameValueAsString     = false ;
         SystemARQ.EnableRomanNumerals   = false ;
         
         context.set(optimization,                   false) ;
@@ -467,7 +466,6 @@ public class ARQ
     public static void setNormalMode() {
         SystemARQ.StrictDateTimeFO      = false ;
         SystemARQ.ValueExtensions       = true ;
-        SystemARQ.SameValueAsString     = true ;
         SystemARQ.EnableRomanNumerals   = false ;
         setNormalMode(ARQ.getContext()) ; 
     }
@@ -553,7 +551,6 @@ public class ARQ
     {
         SystemARQ.StrictDateTimeFO      = false ;
         SystemARQ.ValueExtensions       = true ;
-        SystemARQ.SameValueAsString     = true ;
         SystemARQ.EnableRomanNumerals   = false ; 
 
         Context context = new Context() ;

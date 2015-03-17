@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
  */
 public interface StreamRDF
 {
-    /** Start parsing */
+    /** Start processing */
     public void start() ;
     
     /** Triple emitted */
@@ -47,7 +47,7 @@ public interface StreamRDF
     /** prefix declaration seen */
     public void prefix(String prefix, String iri) ;
 
-    /** Finish parsing */
+    /** Finish processing */
     public void finish() ;
 
 }

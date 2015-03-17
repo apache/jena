@@ -53,8 +53,6 @@ public class SecuredModelDetailTest {
 	private Property pTo = ResourceFactory.createProperty("http://example.com/to");
 	private Property pFrom = ResourceFactory
 			.createProperty( "http://example.com/from");
-	private Property pSubj = ResourceFactory
-			.createProperty("http://example.com/subj");
 	
 	@Before
 	public void setup()
@@ -251,7 +249,7 @@ public class SecuredModelDetailTest {
 		}
 		
 		@Override
-		public boolean evaluate(Action action, SecNode graphIRI) {
+		public boolean evaluate(Object principal, Action action, SecNode graphIRI) {
 			// we allow any action on a graph.
 			return true;
 		}
@@ -261,8 +259,8 @@ public class SecuredModelDetailTest {
 			// a message is only available to sender or recipient
 			if (r.hasProperty( RDF.type, msgType ))
 			{
-				return r.hasProperty( pTo, principal.getName() ) ||
-						r.hasProperty( pFrom, principal.getName());
+				return r.hasProperty( pTo, ((Principal)principal).getName() ) ||
+						r.hasProperty( pFrom, ((Principal)principal).getName());
 			}
 			return true;	
 		}
@@ -295,34 +293,34 @@ public class SecuredModelDetailTest {
 		}
 		
 		@Override
-		public boolean evaluate(Action action, SecNode graphIRI, SecTriple triple) {
+		public boolean evaluate(Object principal, Action action, SecNode graphIRI, SecTriple triple) {
 			return evaluate( triple );
 		}
 
 		@Override
-		public boolean evaluate(Set<Action> actions, SecNode graphIRI) {
+		public boolean evaluate(Object principal, Set<Action> actions, SecNode graphIRI) {
 			return true;
 		}
 
 		@Override
-		public boolean evaluate(Set<Action> actions, SecNode graphIRI,
+		public boolean evaluate(Object principal, Set<Action> actions, SecNode graphIRI,
 				SecTriple triple) {
 			return evaluate( triple );
 		}
 
 		@Override
-		public boolean evaluateAny(Set<Action> actions, SecNode graphIRI) {
+		public boolean evaluateAny(Object principal, Set<Action> actions, SecNode graphIRI) {
 			return true;
 		}
 
 		@Override
-		public boolean evaluateAny(Set<Action> actions, SecNode graphIRI,
+		public boolean evaluateAny(Object principal, Set<Action> actions, SecNode graphIRI,
 				SecTriple triple) {
 			return evaluate( triple );
 		}
 
 		@Override
-		public boolean evaluateUpdate(SecNode graphIRI, SecTriple from, SecTriple to) {
+		public boolean evaluateUpdate(Object principal, SecNode graphIRI, SecTriple from, SecTriple to) {
 			return evaluate( from ) && evaluate( to );
 		}
 

@@ -120,9 +120,9 @@ public class FileRef
     {
         Tuple<String> x = FileOps.splitDirFile(filename) ;
         String key = x.get(1) ;
-        if ( ! name2id.containsKey(key) )
-        {
-            Log.warn(FileRef.class, "File name not registered: "+filename) ;
+        if ( ! name2id.containsKey(key) ) {
+            //Log.warn(FileRef.class, "File name not registered: "+filename) ;
+            Log.debug(FileRef.class, "File name not registered: "+filename) ;
             file(key) ;
         }
             

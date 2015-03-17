@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,18 @@
  * limitations under the License.
  */
 package org.apache.jena.security.query;
+
+import org.apache.jena.security.Factory;
+import org.apache.jena.security.MockSecurityEvaluator;
+import org.apache.jena.security.SecurityEvaluator;
+import org.apache.jena.security.SecurityEvaluator.SecNode.Type;
+import org.apache.jena.security.model.SecuredModel;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -27,46 +39,28 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-import org.junit.Assert;
-
-import org.apache.jena.security.Factory;
-import org.apache.jena.security.MockSecurityEvaluator;
-import org.apache.jena.security.SecurityEvaluator;
-import org.apache.jena.security.SecurityEvaluator.SecNode.Type;
-import org.apache.jena.security.model.SecuredModel;
-import org.apache.jena.security.query.SecuredQueryEngineFactory;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-public class QueryEngineTest
-{
+public class QueryEngineTest {
 
 	@BeforeClass
-	public static void setupFactory()
-	{
+	public static void setupFactory() {
 		SecuredQueryEngineFactory.register();
 	}
 
 	@AfterClass
-	public static void teardownFactory()
-	{
+	public static void teardownFactory() {
 		SecuredQueryEngineFactory.unregister();
 	}
 
 	Model baseModel;
 
-	public QueryEngineTest()
-	{
+	public QueryEngineTest() {
 
 	}
 
-	@Before
-	public void setUp()
+
+	public static Model populateModel(Model baseModel)
 	{
-		baseModel = ModelFactory.createDefaultModel();
+
 		Resource r = ResourceFactory
 				.createResource("http://example.com/resource/1");
 		final Resource o = ResourceFactory
@@ -105,29 +99,117 @@ public class QueryEngineTest
 		baseModel.add(r, ResourceFactory
 				.createProperty("http://example.com/property/_3"),
 				ResourceFactory.createTypedLiteral(9.42));
+		return baseModel;
+	}
+	
+	@Before
+	public void setUp()
+	{
+		baseModel = populateModel( ModelFactory.createDefaultModel());
 	}
 
 	@After
-	public void tearDown()
-	{
+	public void tearDown() {
 		baseModel.close();
 	}
 
 	@Test
-	public void testOpenQueryType()
-	{
+	public void testOpenQueryType() {
 		final SecurityEvaluator eval = new MockSecurityEvaluator(true, true,
 				true, true, true, true);
 		final SecuredModel model = Factory.getInstance(eval,
 				"http://example.com/securedModel", baseModel);
-		try
-		{
+		try {
 			final String query = "prefix fn: <http://www.w3.org/2005/xpath-functions#>  "
 					+ " SELECT ?foo ?bar WHERE "
 					+ " { ?foo a <http://example.com/class> ; "
 					+ "?bar [] ."
 					+ "  } ";
 			final QueryExecution qexec = QueryExecutionFactory.create(query,
+					model);
+			try {
+				final ResultSet results = qexec.execSelect();
+				int count = 0;
+				for (; results.hasNext();) {
+					count++;
+					final QuerySolution soln = results.nextSolution();
+				}
+				Assert.assertEquals(8, count);
+			} finally {
+				qexec.close();
+			}
+		} finally {
+			model.close();
+		}
+	}
+
+	@Test
+	public void testRestrictedQueryType() {
+		final SecurityEvaluator eval = new MockSecurityEvaluator(true, true,
+				true, true, true, true) {
+
+			@Override
+			public boolean evaluate(final Object principal,
+					final Action action, final SecNode graphIRI,
+					final SecTriple triple) {
+				if (triple.getSubject().equals(
+						new SecNode(Type.URI, "http://example.com/resource/1"))) {
+					return false;
+				}
+				return super.evaluate(principal, action, graphIRI, triple);
+			}
+		};
+		final SecuredModel model = Factory.getInstance(eval,
+				"http://example.com/securedModel", baseModel);
+		try {
+			final String query = "prefix fn: <http://www.w3.org/2005/xpath-functions#>  "
+					+ " SELECT ?foo ?bar WHERE "
+					+ " { ?foo a <http://example.com/class> ; "
+					+ "?bar [] ."
+					+ "  } ";
+			final QueryExecution qexec = QueryExecutionFactory.create(query,
+					model);
+			try {
+				final ResultSet results = qexec.execSelect();
+				int count = 0;
+				for (; results.hasNext();) {
+					count++;
+					results.nextSolution();
+				}
+				Assert.assertEquals(4, count);
+			} finally {
+				qexec.close();
+			}
+		} finally {
+			model.close();
+		}
+	}
+
+	@Test
+	public void testSelectAllType()
+	{
+		final SecurityEvaluator eval = new MockSecurityEvaluator(true, true,
+				true, true, true, true) {
+
+			@Override
+			public boolean evaluate(Object principal, final Action action,
+					final SecNode graphIRI, final SecTriple triple )
+			{
+				if (triple.getSubject().equals(
+						new SecNode(Type.URI, "http://example.com/resource/1")))
+				{
+					return false;
+				}
+				return super.evaluate(principal, action, graphIRI, triple);
+			}
+		};
+		final SecuredModel model = Factory.getInstance(eval,
+				"http://example.com/securedModel", baseModel);
+		try
+		{
+			 String query = "SELECT ?s ?p ?o WHERE "
+					+ " { ?s ?p ?o } ";
+			 QueryExecution qexec = QueryExecutionFactory.create(query,
 					model);
 			try
 			{
@@ -137,48 +219,19 @@ public class QueryEngineTest
 				{
 					count++;
 					final QuerySolution soln = results.nextSolution();
+					//System.out.println( soln );
 				}
+				// 2x 3 values + type triple
 				Assert.assertEquals(8, count);
 			}
 			finally
 			{
 				qexec.close();
 			}
-		}
-		finally
-		{
-			model.close();
-		}
-	}
-
-	@Test
-	public void testRestrictedQueryType()
-	{
-		final SecurityEvaluator eval = new MockSecurityEvaluator(true, true,
-				true, true, true, true) {
-
-			@Override
-			public boolean evaluate( final Action action,
-					final SecNode graphIRI, final SecTriple triple )
-			{
-				if (triple.getSubject().equals(
-						new SecNode(Type.URI, "http://example.com/resource/1")))
-				{
-					return false;
-				}
-				return super.evaluate(action, graphIRI, triple);
-			}
-		};
-		final SecuredModel model = Factory.getInstance(eval,
-				"http://example.com/securedModel", baseModel);
-		try
-		{
-			final String query = "prefix fn: <http://www.w3.org/2005/xpath-functions#>  "
-					+ " SELECT ?foo ?bar WHERE "
-					+ " { ?foo a <http://example.com/class> ; "
-					+ "?bar [] ."
-					+ "  } ";
-			final QueryExecution qexec = QueryExecutionFactory.create(query,
+			
+			query = "SELECT ?s ?p ?o WHERE "
+					+ " { GRAPH ?g {?s ?p ?o } }";
+			qexec = QueryExecutionFactory.create(query,
 					model);
 			try
 			{
@@ -187,9 +240,12 @@ public class QueryEngineTest
 				for (; results.hasNext();)
 				{
 					count++;
-					results.nextSolution();
+					final QuerySolution soln = results.nextSolution();
+					//System.out.println( soln );
 				}
-				Assert.assertEquals(4, count);
+				// 2x 3 values + type triple
+				// no named graphs so no results.
+				Assert.assertEquals(0, count);
 			}
 			finally
 			{
@@ -201,5 +257,4 @@ public class QueryEngineTest
 			model.close();
 		}
 	}
-
 }

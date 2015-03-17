@@ -499,7 +499,7 @@ public class T_TransSystem
         
         try { 
             // This is an orderly shutdown so followed by the awaitTermination
-            // shoudl wait for all threads, making the CountDownLatch unnecessary.
+            // should wait for all threads, making the CountDownLatch unnecessary.
             // CountDownLatch added as a precaution while searching for JENA-163
             // which seems to see occasional uncleared out node journal files.
             execService.shutdown() ;
@@ -566,7 +566,7 @@ public class T_TransSystem
         Node s = NodeFactory.createURI("S") ;
         Node p = NodeFactory.createURI("P"+value) ;
         // Integer - that gets inlined.
-        Node o = NodeFactory.createLiteral(Integer.toString(value), null, XSDDatatype.XSDinteger) ;
+        Node o = NodeFactory.createLiteral(Integer.toString(value), XSDDatatype.XSDinteger) ;
         return new Quad(g,s,p,o) ;
     }
 

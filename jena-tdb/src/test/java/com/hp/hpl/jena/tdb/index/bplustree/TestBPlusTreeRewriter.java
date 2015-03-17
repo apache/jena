@@ -34,8 +34,8 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.SetupIndex ;
 import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 
 public class TestBPlusTreeRewriter extends BaseTest
 {
@@ -169,7 +169,7 @@ public class TestBPlusTreeRewriter extends BaseTest
     static List<Record> createData2(int ORDER, int N, RecordFactory recordFactory)
     {
         // Use a B+Tree - so original data can be unsorted.
-        BPlusTree bpt = SetupTDB.createBPTree(FileSet.mem(), ORDER, -1, -1, -1, recordFactory) ;
+        BPlusTree bpt = SetupIndex.createBPTree(FileSet.mem(), ORDER, -1, -1, -1, recordFactory) ;
 
         //BPlusTreeParams.checkAll() ;
         // 200 -> runt leaf problem.

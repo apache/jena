@@ -18,18 +18,29 @@
 
 package com.hp.hpl.jena.assembler.test;
 
-import java.io.File;
+import java.io.ByteArrayInputStream ;
+import java.io.File ;
+import java.io.IOException ;
+import java.io.InputStream ;
 
-import com.hp.hpl.jena.assembler.*;
-import com.hp.hpl.jena.assembler.assemblers.FileModelAssembler;
-import com.hp.hpl.jena.graph.impl.FileGraph;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.FileUtils;
+import org.junit.Test ;
+import org.junit.rules.TemporaryFolder ;
+
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.BadObjectException ;
+import com.hp.hpl.jena.assembler.JA ;
+import com.hp.hpl.jena.assembler.Mode ;
+import com.hp.hpl.jena.assembler.assemblers.FileModelAssembler ;
+import com.hp.hpl.jena.graph.impl.FileGraph ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 public class TestFileModelAssembler extends AssemblerTestBase
     {
- 
+
     public TestFileModelAssembler( String name )
         { super( name );  }
 
@@ -233,5 +244,40 @@ public class TestFileModelAssembler extends AssemblerTestBase
             };
         Model m = a.openModel( root  );
         assertSame( model, m );
+        }
+
+    @Test
+    public void testDecodeDirectoryName() throws IOException
+        {
+            // TODO: JenaTestBase is mixing JUnit3 and JUnit4 classes.
+            // A @Rule doesn't get called correctly.
+        
+            //@Rule private final 
+            TemporaryFolder tempFolder = new TemporaryFolder();
+            tempFolder.create();
+            assertTrue(tempFolder.getRoot().isDirectory());
+            File folderWithSpace = tempFolder.newFolder("folder with space");
+            folderWithSpace.mkdir();
+            File modelFile = new File(folderWithSpace, "file with space.ttl");
+            modelFile.createNewFile();
+            String graphs = "";
+            graphs += "@prefix ja: <http://jena.hpl.hp.com/2005/11/Assembler#> . ";
+            graphs += "<http://example.org/file> a ja:FileModel ; ";
+            
+            // Sanitize for Windows
+            String dirName = tempFolder.getRoot().getAbsolutePath() ;
+            dirName = dirName.replace("\\", "/") ;
+            dirName = dirName.replace(" ", "%20") ;
+            graphs += "ja:directory <file:///" + dirName + "/folder%20with%20space/> ; ";
+            graphs += "ja:modelName \"" + modelFile.getName() + "\" . ";
+
+            InputStream is = new ByteArrayInputStream(graphs.getBytes());
+
+            Model model = ModelFactory.createDefaultModel();
+            model.read(is, "http://example.org/", "TURTLE");
+            Resource r = model.createResource("http://example.org/file");
+            Model assemblerModel = (Model) Assembler.general.open(r);
+            assertNotNull(assemblerModel);
+            tempFolder.delete();
         }
     }

@@ -72,9 +72,12 @@ public class ExprTransformer
         
         final Expr result()
         { 
-            if ( stack.size() != 1 )
-                Log.warn(this, "Stack is not aligned") ;
-            return stack.peek() ; 
+            if ( stack.size() != 1 ) {
+                Log.warn(this, "Stack is not aligned (size = "+stack.size()+")") ;
+                if ( stack.isEmpty() )
+                    return null ;
+            }
+            return stack.pop() ; 
         }
 
         ApplyExprTransformVisitor(ExprTransform transform)

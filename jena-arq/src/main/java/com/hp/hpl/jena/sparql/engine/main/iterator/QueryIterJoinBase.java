@@ -59,8 +59,7 @@ public class QueryIterJoinBase extends QueryIter
     }
 
     @Override
-    protected Binding moveToNextBinding()
-    {
+    protected Binding moveToNextBinding() {
         return result.nextBinding() ;
     }
 

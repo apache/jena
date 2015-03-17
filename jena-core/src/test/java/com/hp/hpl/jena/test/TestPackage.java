@@ -41,6 +41,7 @@ public class TestPackage extends TestCase {
         ts.setName("Jena") ;
         addTest(ts,  "System setup", TestSystemSetup.suite());
         addTest(ts,  "Enhanced", com.hp.hpl.jena.enhanced.test.TestPackage.suite());
+        addTest(ts,  "Datatypes", com.hp.hpl.jena.datatypes.TestPackage.suite()) ;
         addTest(ts,  "Graph", com.hp.hpl.jena.graph.test.TestPackage.suite());
         addTest(ts,  "Mem", com.hp.hpl.jena.mem.test.TestMemPackage.suite() );
         addTest(ts,  "Mem2", com.hp.hpl.jena.mem.test.TestGraphMemPackage.suite() );

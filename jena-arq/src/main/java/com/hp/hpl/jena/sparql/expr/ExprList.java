@@ -23,6 +23,7 @@ import java.util.* ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
 public class ExprList implements Iterable<Expr>
@@ -55,9 +56,9 @@ public class ExprList implements Iterable<Expr>
         return true ;
     }
     
-    public Expr get(int idx)    { return expressions.get(idx) ; }
-    public int size()           { return expressions.size() ; }
-    public boolean isEmpty()    { return expressions.isEmpty() ; }
+    public Expr get(int idx)                            { return expressions.get(idx) ; }
+    public int size()                                   { return expressions.size() ; }
+    public boolean isEmpty()                            { return expressions.isEmpty() ; }
     public ExprList subList(int fromIdx, int toIdx)     { return new ExprList(expressions.subList(fromIdx, toIdx)) ; }
     public ExprList tail(int fromIdx)                   { return subList(fromIdx, expressions.size()) ; }
     
@@ -71,11 +72,20 @@ public class ExprList implements Iterable<Expr>
         for (Expr expr : expressions)
             expr.varsMentioned(acc) ;
     }
+    
+    /**
+     * Rewrite, applying a node->node transformation
+     */
+    public ExprList applyNodeTransform(NodeTransform transform) {
+        ExprList x = new ExprList() ;
+        for ( Expr e : expressions)
+            x.add(e.applyNodeTransform(transform));
+        return x ; 
+    }
 
     public ExprList copySubstitute(Binding binding) {
         ExprList x = new ExprList() ;
-        for (Iterator<Expr> iter = expressions.iterator(); iter.hasNext();) {
-            Expr expr = iter.next() ;
+        for (Expr expr : expressions ) {
             expr = expr.copySubstitute(binding) ;
             x.add(expr) ;
         }

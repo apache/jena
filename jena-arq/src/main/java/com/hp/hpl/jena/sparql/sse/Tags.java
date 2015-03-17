@@ -60,7 +60,7 @@ public class Tags
     public static final String tagQuadPattern     = "quadpattern" ;
     public static final String tagQuadBlock       = "quadblock" ;
     public static final String tagFilter          = "filter" ;
-    // public static final String tagGraph = "graph" ;
+    // public static final String traph = "graph" ;
     public static final String tagLabel           = "label" ;
     public static final String tagService         = "service" ;
     public static final String tagProc            = "proc" ;
@@ -231,4 +231,5 @@ public class Tags
     public static final String tagSample          = "sample" ;
     public static final String tagGroupConcat     = "group_concat" ;
     public static final String tagSeparator       = "separator" ;
+    public static final String tagAgg             = "agg" ;             // Custom aggregate
 }

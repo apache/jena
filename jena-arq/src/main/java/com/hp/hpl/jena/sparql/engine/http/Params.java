@@ -18,13 +18,11 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
-import java.util.ArrayList ;
-import java.util.HashMap ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Map ;
+import java.nio.charset.StandardCharsets ;
+import java.util.* ;
 
-import com.hp.hpl.jena.sparql.util.Convert ;
+import org.apache.http.NameValuePair ;
+import org.apache.http.client.utils.URLEncodedUtils ;
 
 /** A collection of parameters for protocol use. */
 
@@ -131,23 +129,10 @@ public class Params
         }
         return names ; 
     }
-    
-    public String httpString()
-    {
-        StringBuilder sbuff = new StringBuilder() ;
-        boolean first = true ;
-        for (Pair p : pairs())
-        {
-            if ( !first )
-                sbuff.append('&') ;
-            sbuff.append(p.getName()) ;
-            sbuff.append('=') ;
-            String x = p.getValue() ;
-            x = Convert.encWWWForm(x) ;
-            sbuff.append(x) ;
-            first = false ;
-        }
-        return sbuff.toString() ;
+
+    /** Query string, without leading "?" */ 
+    public String httpString() {
+        return URLEncodedUtils.format(paramList, StandardCharsets.UTF_8) ;
     }
     
     private List<String> getMV(String name)
@@ -160,13 +145,15 @@ public class Params
         MultiValueException(String msg) { super(msg) ; }
     }
         
-    public static class Pair
+    public static class Pair implements NameValuePair
     { 
         String name ;
         String value ;
 
         Pair(String name, String value) { setName(name) ; setValue(value) ; }
+        @Override
         public String getName()  { return name ;  }
+        @Override
         public String getValue() { return value ; }
 
         void setName(String name)   { this.name = name ; }

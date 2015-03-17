@@ -102,7 +102,7 @@ public class IndexTestLib
             System.err.printf("Warning: too many keys\n") ;
             
         int[] keys1 = rand(numKeys, 0, maxValue) ;
-        int[] keys2 = permute(keys1, 4*numKeys) ;
+        int[] keys2 = permute(keys1) ;
         try {
             testInsert(index, keys1);
             if ( true )

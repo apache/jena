@@ -30,7 +30,7 @@ import com.hp.hpl.jena.rdf.model.AnonId ;
  *  The reverse operation is {@link NodeToLabel#createBNodeByLabelAsGiven()}
  *  but it is unsafe in general.
  *  
- *  Use {@linkplain BlankNodeAllocatorLabelEncoded} and {@linkplain NodeToLabel#createBNodeByLabelEncoded()}
+ *  Use {@link BlankNodeAllocatorLabelEncoded} and {@link NodeToLabel#createBNodeByLabelEncoded()}
  *  for round-tripping output-input.
  */
 

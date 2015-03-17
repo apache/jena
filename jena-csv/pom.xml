@@ -21,12 +21,12 @@
   <artifactId>jena-csv</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - Data Tables for RDF and SPARQL</name>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.2-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>12-SNAPSHOT</version>
+    <version>13-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
   
@@ -56,22 +56,15 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>2.12.2-SNAPSHOT</version>
+      <version>2.13.1-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
     
-    <!-- Google Code Guava -->
-    <dependency>
-	  <groupId>com.google.guava</groupId>
-	  <artifactId>guava</artifactId>
-	  <version>17.0</version>
-    </dependency>
-	
     <!-- Testing support -->
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.12.2-SNAPSHOT</version>
+      <version>2.13.1-SNAPSHOT</version>
       <type>jar</type>
       <classifier>tests</classifier>
       <scope>test</scope>

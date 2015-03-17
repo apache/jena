@@ -31,7 +31,7 @@ import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgMonth ;
 import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgMonthDay ;
 import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgYear ;
 import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgYearMonth ;
-import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDinteger ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.* ;
 import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDstring ;
 import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDtime ;
 import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_BOOLEAN ;
@@ -80,9 +80,9 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
@@ -95,6 +95,7 @@ import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.* ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 public abstract class NodeValue extends ExprNode
 {
@@ -340,9 +341,9 @@ public abstract class NodeValue extends ExprNode
         return nv ;
     }
                                
-    public static NodeValue makeNode(String lexicalForm, XSDDatatype dtype)
+    public static NodeValue makeNode(String lexicalForm, RDFDatatype dtype)
     {
-        Node n = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lexicalForm, null, dtype) ;
+        Node n = NodeFactory.createLiteral(lexicalForm, dtype) ;
         NodeValue nv = NodeValue.makeNode(n) ;
         return nv ;
     }
@@ -364,14 +365,14 @@ public abstract class NodeValue extends ExprNode
             Log.warn(NodeValue.class, "Both lang tag and datatype defined (lexcial form '"+lexicalForm+"')") ;
         
         Node n = null ; 
-        
-        if ( datatype != null)
-        {
+        if ( langTag != null )
+            n = NodeFactory.createLiteral(lexicalForm, langTag) ;
+        else if ( datatype != null) {
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatype) ;
-            n = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lexicalForm, null, dType) ;
-        }
-        else
-            n = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lexicalForm, langTag, null) ;
+            n = NodeFactory.createLiteral(lexicalForm, dType) ;
+        } else 
+            n = NodeFactory.createLiteral(lexicalForm) ;
+            
         return NodeValue.makeNode(n) ;
     }
     
@@ -652,7 +653,6 @@ public abstract class NodeValue extends ExprNode
 
     public static int compareAlways(NodeValue nv1, NodeValue nv2)
     {
-        // ***** Only called from a test. Sort out with NodeUtils.
         try {
             int x = compare(nv1, nv2, true) ;
             // Same?
@@ -728,6 +728,18 @@ public abstract class NodeValue extends ExprNode
             case VSPACE_DURATION:
             {
                 int x = XSDFuncOp.compareDuration(nv1, nv2) ;
+                // Fix up - Java (Oracle java7 at least) returns "equals" for 
+                // "D1Y"/"D365D" and "D1M"/"D28D", and others split over 
+                // YearMoth/DayTime.
+                
+                // OR return Expr.CMP_INDETERMINATE ??
+                if ( x == Expr.CMP_EQUAL ) {
+                    Duration d1 = nv1.getDuration() ;
+                    Duration d2 = nv2.getDuration() ;
+                    if ( ( XSDFuncOp.isDayTime(d1) && XSDFuncOp.isYearMonth(d2) ) ||
+                         ( XSDFuncOp.isDayTime(d2) && XSDFuncOp.isYearMonth(d1) ) )
+                        x = Expr.CMP_INDETERMINATE ;
+                }
                 if ( x != Expr.CMP_INDETERMINATE )
                     return x ;
                 // Indeterminate => can't compare as strict values.
@@ -800,13 +812,13 @@ public abstract class NodeValue extends ExprNode
                 x = StrUtils.strCompare(node1.getLiteralLexicalForm(), node2.getLiteralLexicalForm()) ;
                 if ( x != Expr.CMP_EQUAL )
                     return x ;
-                // Same lexcial forms, same lang tag by value
+                // Same lexical forms, same lang tag by value
                 // Try to split by syntactic lang tags.
                 x = StrUtils.strCompare(node1.getLiteralLanguage(), node2.getLiteralLanguage()) ;
                 // Maybe they are the same after all!
                 // Should be node.equals by now.
                 if ( x == Expr.CMP_EQUAL  && ! NodeFunctions.sameTerm(node1, node2) )
-                    throw new ARQInternalErrorException("Look the same (lang tags) but no node equals") ;
+                    throw new ARQInternalErrorException("Looks like the same (lang tags) but not node equals") ;
                 return x ;
             }
             
@@ -979,7 +991,7 @@ public abstract class NodeValue extends ExprNode
             // Not a literal - no value to extract
             return new NodeValueNode(node) ;
 
-        boolean hasLangTag = ( node.getLiteralLanguage() != null && ! node.getLiteralLanguage().equals("")) ;
+        boolean hasLangTag = NodeUtils.isLangString(node) ;
         boolean isPlainLiteral = ( node.getLiteralDatatypeURI() == null && ! hasLangTag ) ; 
             
         if ( isPlainLiteral )
@@ -987,7 +999,8 @@ public abstract class NodeValue extends ExprNode
 
         if ( hasLangTag )
         {
-            if ( node.getLiteralDatatypeURI() != null )
+            // Works for RDF 1.0 and RDF 1.1
+            if ( node.getLiteralDatatype() != null && ! RDF.dtLangString.equals(node.getLiteralDatatype()) )
             {
                 if ( NodeValue.VerboseWarnings )
                     Log.warn(NodeValue.class, "Lang tag and datatype (datatype ignored)") ;
@@ -1022,16 +1035,11 @@ public abstract class NodeValue extends ExprNode
     }
 
     // Jena code does not have these types (yet)
-    private static final String dtXSDdateTimeStamp      = XSD+"#dateTimeStamp" ; 
-    private static final String dtXSDdayTimeDuration    = XSD+"#dayTimeDuration" ; 
-    private static final String dtXSDyearMonthDuration  = XSD+"#yearMonthDuration" ; 
     private static final String dtXSDprecisionDecimal   = XSD+"#precisionDecimal" ; 
     
     // Returns null for unrecognized literal.
-    private static NodeValue _setByValue(Node node)
-    {
+    private static NodeValue _setByValue(Node node) {
         if ( NodeUtils.hasLang(node) )
-            // Check for RDF 1.1!
             return null ;
         LiteralLabel lit = node.getLiteral() ;
         String lex = lit.getLexicalForm() ;
@@ -1041,16 +1049,15 @@ public abstract class NodeValue extends ExprNode
         // Only XSD supported.
         // And (for testing) roman numerals.
         String datatypeURI = datatype.getURI() ;
-        if ( ! datatypeURI.startsWith(xsdNamespace) && ! SystemARQ.EnableRomanNumerals )
-        {
+        if ( !datatypeURI.startsWith(xsdNamespace) && !SystemARQ.EnableRomanNumerals ) {
             // Not XSD.
             return null ;
         }
 
         try { // DatatypeFormatException - should not happen
             
-            if ( SystemARQ.SameValueAsString && XSDstring.isValidLiteral(lit) ) 
-                    // String - plain or xsd:string
+            if ( XSDstring.isValidLiteral(lit) ) 
+                // String - plain or xsd:string, or derived datatype.
                 return new NodeValueString(lit.getLexicalForm(), node) ;
             
             // Otherwise xsd:string is like any other unknown datatype.
@@ -1063,8 +1070,7 @@ public abstract class NodeValue extends ExprNode
 
             // Order here is promotion order integer-decimal-float-double
             
-            if ( ! datatype.equals(XSDdecimal) ) 
-            {
+            if ( ! datatype.equals(XSDdecimal) ) {
                 // XSD integer and derived types 
                 if ( XSDinteger.isValidLiteral(lit) )
                 {
@@ -1079,93 +1085,77 @@ public abstract class NodeValue extends ExprNode
                 }
             }
             
-            if ( datatype.equals(XSDdecimal) && XSDdecimal.isValidLiteral(lit) )
-            {
+            if ( datatype.equals(XSDdecimal) && XSDdecimal.isValidLiteral(lit) ) {
                 BigDecimal decimal = new BigDecimal(lit.getLexicalForm()) ;
                 return new NodeValueDecimal(decimal, node) ;
             }
-            
-            if ( datatype.equals(XSDfloat) && XSDfloat.isValidLiteral(lit) )
-            {
+
+            if ( datatype.equals(XSDfloat) && XSDfloat.isValidLiteral(lit) ) {
                 // NB If needed, call to floatValue, then assign to double.
                 // Gets 1.3f != 1.3d right
                 float f = ((Number)lit.getValue()).floatValue() ;
                 return new NodeValueFloat(f, node) ;
             }
 
-            if ( datatype.equals(XSDdouble) && XSDdouble.isValidLiteral(lit) )
-            {
+            if ( datatype.equals(XSDdouble) && XSDdouble.isValidLiteral(lit) ) {
                 double d = ((Number)lit.getValue()).doubleValue() ;
                 return new NodeValueDouble(d, node) ;
             }
 
-            // XXX Pending Jena update ... 
-            if ( ( datatype.equals(XSDdateTime) || dtXSDdateTimeStamp.equals(datatypeURI) ) &&
-                    XSDdateTime.isValid(lex) ) 
-            {
+            if ( (datatype.equals(XSDdateTime) || datatype.equals(XSDdateTimeStamp)) && XSDdateTime.isValid(lex) ) {
                 XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
-            
-            if ( datatype.equals(XSDdate) && XSDdate.isValidLiteral(lit) )
-            {
-                // Jena datatype support works on masked dataTimes. 
+
+            if ( datatype.equals(XSDdate) && XSDdate.isValidLiteral(lit) ) {
+                // Jena datatype support works on masked dataTimes.
                 XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
-            
-            if ( datatype.equals(XSDtime) && XSDtime.isValidLiteral(lit) )
-            {
-                // Jena datatype support works on masked dataTimes. 
+
+            if ( datatype.equals(XSDtime) && XSDtime.isValidLiteral(lit) ) {
+                // Jena datatype support works on masked dataTimes.
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
-            
-            if ( datatype.equals(XSDgYear) && XSDgYear.isValidLiteral(lit) )
-            {
+
+            if ( datatype.equals(XSDgYear) && XSDgYear.isValidLiteral(lit) ) {
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
-            if ( datatype.equals(XSDgYearMonth) && XSDgYearMonth.isValidLiteral(lit) )
-            {
+            if ( datatype.equals(XSDgYearMonth) && XSDgYearMonth.isValidLiteral(lit) ) {
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
-            if ( datatype.equals(XSDgMonth) && XSDgMonth.isValidLiteral(lit) )
-            {
+            if ( datatype.equals(XSDgMonth) && XSDgMonth.isValidLiteral(lit) ) {
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
-            
-            if ( datatype.equals(XSDgMonthDay) && XSDgMonthDay.isValidLiteral(lit) )
-            {
+
+            if ( datatype.equals(XSDgMonthDay) && XSDgMonthDay.isValidLiteral(lit) ) {
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
-            if ( datatype.equals(XSDgDay) && XSDgDay.isValidLiteral(lit) )
-            {
+            if ( datatype.equals(XSDgDay) && XSDgDay.isValidLiteral(lit) ) {
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
-            
-            // XXX Pending Jena update ... 
-            if ( ( datatype.equals(XSDduration) || 
-                   dtXSDdayTimeDuration.equals(datatypeURI) || 
-                   dtXSDyearMonthDuration.equals(datatypeURI) ) &&
-                   XSDduration.isValid(lex) ) // use lex
-            {
+
+            if ( datatype.equals(XSDduration) && XSDduration.isValid(lex) ) {
                 Duration duration = xmlDatatypeFactory.newDuration(lex) ;
-                
-                if ( dtXSDdayTimeDuration.equals(datatypeURI) && ! XSDFuncOp.isDayTime(duration) )
-                    return null ;
-                if ( dtXSDyearMonthDuration.equals(datatypeURI) && ! XSDFuncOp.isYearMonth(duration) )
-                    return null ;
-                
                 return new NodeValueDuration(duration, node) ;
             }
             
-            if ( datatype.equals(XSDboolean) && XSDboolean.isValidLiteral(lit) )
-            {
+            if ( datatype.equals(XSDyearMonthDuration) && XSDyearMonthDuration.isValid(lex) ) {
+                Duration duration = xmlDatatypeFactory.newDuration(lex) ;
+                return new NodeValueDuration(duration, node) ;
+            }
+            if ( datatype.equals(XSDdayTimeDuration) && XSDdayTimeDuration.isValid(lex) ) {
+                Duration duration = xmlDatatypeFactory.newDuration(lex) ;
+                return new NodeValueDuration(duration, node) ;
+            }
+            
+            if ( datatype.equals(XSDboolean) && XSDboolean.isValidLiteral(lit) ) {
                 boolean b = (Boolean) lit.getValue();
                 return new NodeValueBoolean(b, node) ;
             }

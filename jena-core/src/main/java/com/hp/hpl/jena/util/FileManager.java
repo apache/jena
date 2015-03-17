@@ -245,8 +245,7 @@ public class FileManager
     // -------- Cache operations (end)
 
     /** Load a model from a file (local or remote).
-     *  Guesses the syntax of the file based on filename extension, 
-     *  defaulting to RDF/XML.
+     *  This operation may attempt content negotiation for http URLs.
      *  @param filenameOrURI The filename or a URI (file:, http:)
      *  @return a new model
      *  @exception JenaException if there is syntax error in file.
@@ -259,7 +258,6 @@ public class FileManager
         
         return loadModelWorker(filenameOrURI, null, null) ;
     }
-
 
     /** Load a model from a file (local or remote).
      *  URI is the base for reading the model.

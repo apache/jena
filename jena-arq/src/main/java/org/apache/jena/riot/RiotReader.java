@@ -122,7 +122,7 @@ public class RiotReader
     // -------- Parsers
     
     /** Create a parser 
-     * @deprecated Use {@linkplain RDFDataMgr#createReader(Lang)}
+     * @deprecated Use {@link RDFDataMgr#createReader(Lang)}
      */
     @Deprecated
     public static LangRIOT createParser(InputStream input, Lang lang, String baseIRI, StreamRDF dest)
@@ -142,7 +142,7 @@ public class RiotReader
     }
 
     /** Create a parser 
-     * @deprecated Use {@linkplain RDFDataMgr#createReader(Lang)}
+     * @deprecated Use {@link RDFDataMgr#createReader(Lang)}
      */
     @Deprecated
     public static LangRIOT createParser(Reader input, Lang lang, String baseIRI, StreamRDF dest)
@@ -150,7 +150,7 @@ public class RiotReader
         if ( lang == RDFXML )
         {
             if ( baseIRI != null )
-                baseIRI = IRIResolver.resolveString(baseIRI) ;
+                baseIRI = IRIResolver.resolveStringSilent(baseIRI) ;
             return LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(), dest) ;
         } else if ( lang == CSV){
         	return new LangCSV (input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(),  dest);
@@ -162,7 +162,7 @@ public class RiotReader
     }
 
     /** Create a parser 
-     * @deprecated Use {@linkplain RDFDataMgr#createReader(Lang)}
+     * @deprecated Use {@link RDFDataMgr#createReader(Lang)}
      */
     @Deprecated  
     public static LangRIOT createParser(Tokenizer tokenizer, Lang lang, String baseIRI, StreamRDF dest)

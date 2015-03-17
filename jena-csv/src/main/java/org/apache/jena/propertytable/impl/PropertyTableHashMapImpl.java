@@ -18,25 +18,20 @@
 
 package org.apache.jena.propertytable.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.* ;
+import java.util.Map.Entry ;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.iterator.IteratorConcat;
+import org.apache.jena.atlas.lib.MultiMapToSet ;
 import org.apache.jena.propertytable.Column;
 import org.apache.jena.propertytable.PropertyTable;
 import org.apache.jena.propertytable.Row;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.SetMultimap;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NullIterator ;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 /**
@@ -52,16 +47,11 @@ public class PropertyTableHashMapImpl implements PropertyTable {
 	private List<Row> rowList; // Stores the list of rows in the table
 
 	// PSO index
-	private Map<Node, Map<Node, Node>> valueIndex; // Maps column Node to
-													// (subject Node, value)
-													// pairs
+	// Maps column Node to (subject Node, value) pairs
+	private Map<Node, Map<Node, Node>> valueIndex; 
 	// POS index
-	private Map<Node, SetMultimap<Node, Node>> valueReverseIndex; // Maps column
-																	// Node to
-																	// (value,
-																	// subject
-																	// Node)
-																	// pairs
+	// Maps column Node to (value, subject Node) pairs
+	private Map<Node, MultiMapToSet<Node, Node>> valueReverseIndex; 
 
 	PropertyTableHashMapImpl() {
 		columnIndex = new HashMap<Node, Column>();
@@ -69,7 +59,7 @@ public class PropertyTableHashMapImpl implements PropertyTable {
 		rowIndex = new HashMap<Node, Row>();
 		rowList = new ArrayList<Row>();
 		valueIndex = new HashMap<Node, Map<Node, Node>>();
-		valueReverseIndex = new HashMap<Node, SetMultimap<Node, Node>>();
+		valueReverseIndex = new HashMap<Node, MultiMapToSet<Node, Node>>();
 	}
 
 	@Override
@@ -131,12 +121,13 @@ public class PropertyTableHashMapImpl implements PropertyTable {
 		
 		
 		Node p = column.getColumnKey();
-		final SetMultimap<Node, Node> valueToSubjectMap = valueReverseIndex
-				.get(p);
+		final MultiMapToSet<Node, Node> valueToSubjectMap = valueReverseIndex.get(p);
+		if ( valueToSubjectMap == null ) 
+		    return NullIterator.instance() ;
 		final Set<Node> subjects = valueToSubjectMap.get(value);
 		ArrayList<Triple> triples = new ArrayList<Triple>();
 		for (Node subject : subjects) {
-			triples.add(Triple.create(subject, p, value));
+		    triples.add(Triple.create(subject, p, value));
 		}
 		return WrappedIterator.create(triples.iterator());
 	}
@@ -181,7 +172,7 @@ public class PropertyTableHashMapImpl implements PropertyTable {
 		columnIndex.put(p, new ColumnImpl(this, p));
 		columnList.add(columnIndex.get(p));
 		valueIndex.put(p, new HashMap<Node, Node>());
-		valueReverseIndex.put(p, HashMultimap.<Node, Node> create());
+		valueReverseIndex.put(p, MultiMapToSet.<Node, Node> create());
 		return getColumn(p);
 	}
 
@@ -236,13 +227,15 @@ public class PropertyTableHashMapImpl implements PropertyTable {
 		
 		
 		Node p = column.getColumnKey();
-		final SetMultimap<Node, Node> valueToSubjectMap = valueReverseIndex
-				.get(p);
+		final MultiMapToSet<Node, Node> valueToSubjectMap = valueReverseIndex.get(p);
+		if ( valueToSubjectMap == null )
+		    return Collections.emptyList() ;
 		final Set<Node> subjects = valueToSubjectMap.get(value);
-		
+		if ( subjects == null )
+		    return Collections.emptyList() ;
 		final ArrayList<Row> matchingRows = new ArrayList<Row>();
 		for (Node subject : subjects) {
-			matchingRows.add(this.getRow(subject));
+		    matchingRows.add(this.getRow(subject));
 		}
 		return matchingRows;
 	}
@@ -263,11 +256,11 @@ public class PropertyTableHashMapImpl implements PropertyTable {
 		addToReverseMap(p, s, oldValue, value);
 	}
 
-	private void addToReverseMap(final Node p, final Node s,
-			final Node oldValue, final Node value) {
+	private void addToReverseMap(final Node p, final Node s, final Node oldValue, final Node value) {
 
-		final SetMultimap<Node, Node> valueToSubjectMap = valueReverseIndex
-				.get(p);
+		final MultiMapToSet<Node, Node> valueToSubjectMap = valueReverseIndex.get(p);
+		if ( valueToSubjectMap == null )
+            return ; 
 		valueToSubjectMap.remove(oldValue, s);
 		valueToSubjectMap.put(value, s);
 	}
@@ -289,7 +282,9 @@ public class PropertyTableHashMapImpl implements PropertyTable {
 
 	private void removeFromReverseMap(final Node p, final Node s,
 			final Node value) {
-		final SetMultimap<Node, Node> valueTokeysMap = valueReverseIndex.get(p);
+		final MultiMapToSet<Node, Node> valueTokeysMap = valueReverseIndex.get(p);
+		if ( valueTokeysMap == null )
+		    return ;
 		valueTokeysMap.remove(s, value);
 	}
 

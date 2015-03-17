@@ -27,19 +27,14 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 abstract class AggMaxBase extends AggregatorBase
 {
     // ---- MAX(expr) and MAX(DISTINCT expr)
-    protected final Expr expr ;
-
-    public AggMaxBase(Expr expr) { this.expr = expr ; } 
+    protected AggMaxBase(Expr expr, boolean isDistinct) { super("MAX", isDistinct, expr) ; } 
 
     @Override
     public
     final Accumulator createAccumulator()
     { 
-        return new AccMax(expr) ;
+        return new AccMax(getExpr()) ;
     }
-
-    @Override
-    public final Expr getExpr() { return expr ; }
 
     @Override
     public final Node getValueEmpty()     { return null ; } 

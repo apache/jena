@@ -65,7 +65,10 @@ public abstract class MultiMap<K, V>
         x.add(value) ;
     }
     
-    public void remove(K key, V value)  { map.get(key).remove(value) ; }
+    public void remove(K key, V value)  {
+        if ( map.containsKey(key))
+            map.get(key).remove(value) ;
+    }
     public void removeKey(K key)        { map.remove(key) ; }
     
     protected Collection<V> valuesForKey(K key) { return map.get(key); }
@@ -93,13 +96,20 @@ public abstract class MultiMap<K, V>
     }
     
     @Override
-    public boolean equals(Object other)
-    {
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof MultiMap<?,?> ) ) return true ;
-        @SuppressWarnings("unchecked")
-        MultiMap<K,V> mmap = (MultiMap<K,V>)other ;
-        return map.equals(mmap.map) ;
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true ;
+        if ( obj == null )
+            return false ;
+        if ( getClass() != obj.getClass() )
+            return false ;
+        MultiMap<?,?> other = (MultiMap<?,?>)obj ;
+        if ( map == null ) {
+            if ( other.map != null )
+                return false ;
+        } else if ( !map.equals(other.map) )
+            return false ;
+        return true ;
     }
     
     @Override

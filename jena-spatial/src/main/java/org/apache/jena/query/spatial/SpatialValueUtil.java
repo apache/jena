@@ -18,22 +18,28 @@
 
 package org.apache.jena.query.spatial;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.impl.LiteralLabel ;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 public class SpatialValueUtil {
 
-	public static boolean isDecimal(LiteralLabel literal) {
-		RDFDatatype dtype = literal.getDatatype();
-		if (dtype == null) {
-			try {
-				Double.parseDouble(literal.getLexicalForm());
-				return true;
-			} catch (NumberFormatException e) {
-				return false;
-			}
-		}
+    /** Does the LiteralLabel look like a decimal? 
+     * (Maybe a string - if so, OK if it parses as a decimal)
+     */
+	public static boolean isDecimal(Node n) {
+	    if ( NodeUtils.isSimpleString(n) || NodeUtils.isLangString(n) ) {
+	        try {
+                Double.parseDouble(n.getLiteralLexicalForm()) ;
+                return true;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+	    }
+	    
+		RDFDatatype dtype = n.getLiteralDatatype();
 		if ((dtype.equals(XSDDatatype.XSDfloat))
 				|| (dtype.equals(XSDDatatype.XSDdecimal))
 				|| (dtype.equals(XSDDatatype.XSDdouble) || (dtype

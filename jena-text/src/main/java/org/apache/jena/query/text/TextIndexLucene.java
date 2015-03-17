@@ -19,18 +19,26 @@
 package org.apache.jena.query.text ;
 
 import java.io.IOException ;
-import java.util.* ;
+import java.util.ArrayList ;
+import java.util.HashMap ;
+import java.util.List ;
+import java.util.Map ;
 import java.util.Map.Entry ;
 
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.analysis.core.KeywordAnalyzer ;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
-import org.apache.lucene.document.* ;
+import org.apache.lucene.document.Document ;
+import org.apache.lucene.document.Field ;
+import org.apache.lucene.document.FieldType ;
+import org.apache.lucene.document.StringField ;
+import org.apache.lucene.document.TextField ;
 import org.apache.lucene.index.DirectoryReader ;
 import org.apache.lucene.index.IndexReader ;
 import org.apache.lucene.index.IndexWriter ;
 import org.apache.lucene.index.IndexWriterConfig ;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException ;
 import org.apache.lucene.queryparser.classic.QueryParser ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
@@ -67,10 +75,23 @@ public class TextIndexLucene implements TextIndex {
 
     private final EntityDefinition docDef ;
     private final Directory        directory ;
-    private IndexWriter            indexWriter ;
-    private Analyzer               analyzer ;
-
-    public TextIndexLucene(Directory directory, EntityDefinition def) {
+    private final Analyzer         analyzer ;
+    private final Analyzer         queryAnalyzer ;
+    
+    // The IndexWriter can't be final because we may have to recreate it if rollback() is called.
+    // However, it needs to be volatile in case the next write transaction is on a different thread,
+    // but we do not need locking because we are assuming that there can only be one writer
+    // at a time (enforced elsewhere).
+    private volatile IndexWriter   indexWriter ;
+    
+    /**
+     * Constructs a new TextIndexLucene.
+     * 
+     * @param directory The Lucene Directory for the index
+     * @param def The EntityDefinition that defines how entities are stored in the index
+     * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
+     */
+    public TextIndexLucene(Directory directory, EntityDefinition def, Analyzer queryAnalyzer) {
         this.directory = directory ;
         this.docDef = def ;
 
@@ -89,14 +110,25 @@ public class TextIndexLucene implements TextIndex {
         }
         
         this.analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(VER), analyzerPerField) ;
+        this.queryAnalyzer = (null != queryAnalyzer) ? queryAnalyzer : analyzer ;
 
-        // force creation of the index if it don't exist
-        // otherwise if we get a search before data is written we get an
-        // exception
-        startIndexing() ;
-        finishIndexing() ;
+        openIndexWriter();
     }
-
+    
+    private void openIndexWriter() {
+        IndexWriterConfig wConfig = new IndexWriterConfig(VER, analyzer) ;
+        try
+        {
+            indexWriter = new IndexWriter(directory, wConfig) ;
+            // Force a commit to create the index, otherwise querying before writing will cause an exception
+            indexWriter.commit();
+        }
+        catch (IOException e)
+        {
+            throw new TextIndexException(e) ;
+        }
+    }
+    
     public Directory getDirectory() {
         return directory ;
     }
@@ -104,49 +136,70 @@ public class TextIndexLucene implements TextIndex {
     public Analyzer getAnalyzer() {
         return analyzer ;
     }
-
+    
+    public Analyzer getQueryAnalyzer() {
+        return queryAnalyzer ;
+    }
+    
+    public IndexWriter getIndexWriter() {
+        return indexWriter;
+    }
+    
     @Override
-    public void startIndexing() {
+    public void prepareCommit() {
         try {
-            IndexWriterConfig wConfig = new IndexWriterConfig(VER, analyzer) ;
-            indexWriter = new IndexWriter(directory, wConfig) ;
+            indexWriter.prepareCommit();
         }
         catch (IOException e) {
-            exception(e) ;
+            throw new TextIndexException(e);
         }
     }
-
+    
     @Override
-    public void finishIndexing() {
+    public void commit() {
         try {
-            indexWriter.commit() ;
-            indexWriter.close() ;
-            indexWriter = null ;
+            indexWriter.commit();
         }
         catch (IOException e) {
-            exception(e) ;
+            throw new TextIndexException(e);
         }
     }
-
+    
     @Override
-    public void abortIndexing() {
+    public void rollback() {
+        IndexWriter idx = indexWriter;
+        indexWriter = null;
         try {
-            indexWriter.rollback() ;
+            idx.rollback();
         }
-        catch (IOException ex) {
-            exception(ex) ;
+        catch (IOException e) {
+            throw new TextIndexException(e);
         }
+        
+        // The rollback will close the indexWriter, so we need to reopen it
+        openIndexWriter();
     }
 
     @Override
     public void close() {
-        if ( indexWriter != null )
-            try {
-                indexWriter.close() ;
-            }
-            catch (IOException ex) {
-                exception(ex) ;
-            }
+        try {
+            indexWriter.close() ;
+        }
+        catch (IOException ex) {
+            throw new TextIndexException(ex) ;
+        }
+    }
+    
+    @Override public void updateEntity(Entity entity) {
+        if ( log.isDebugEnabled() )
+            log.debug("Update entity: " + entity) ;
+        try {
+        	Document doc = doc(entity);
+        	Term term = new Term(docDef.getEntityField(), entity.getId());
+        	indexWriter.updateDocument(	term, doc);
+        } catch (IOException e) {
+            throw new TextIndexException(e) ;
+        }
     }
 
     @Override
@@ -154,17 +207,11 @@ public class TextIndexLucene implements TextIndex {
         if ( log.isDebugEnabled() )
             log.debug("Add entity: " + entity) ;
         try {
-            boolean autoBatch = (indexWriter == null) ;
-
             Document doc = doc(entity) ;
-            if ( autoBatch )
-                startIndexing() ;
             indexWriter.addDocument(doc) ;
-            if ( autoBatch )
-                finishIndexing() ;
         }
         catch (IOException e) {
-            exception(e) ;
+            throw new TextIndexException(e) ;
         }
     }
 
@@ -189,7 +236,7 @@ public class TextIndexLucene implements TextIndex {
     @Override
     public Map<String, Node> get(String uri) {
         try {
-            IndexReader indexReader = DirectoryReader.open(directory) ;
+            IndexReader indexReader = DirectoryReader.open(directory);
             List<Map<String, Node>> x = get$(indexReader, uri) ;
             if ( x.size() == 0 )
                 return null ;
@@ -198,8 +245,7 @@ public class TextIndexLucene implements TextIndex {
             return x.get(0) ;
         }
         catch (Exception ex) {
-            exception(ex) ;
-            return null ;
+            throw new TextIndexException(ex) ;
         }
     }
 
@@ -213,7 +259,7 @@ public class TextIndexLucene implements TextIndex {
     private List<Map<String, Node>> get$(IndexReader indexReader, String uri) throws ParseException, IOException {
         String escaped = QueryParserBase.escape(uri) ;
         String qs = docDef.getEntityField() + ":" + escaped ;
-        Query query = parseQuery(qs, docDef.getPrimaryField(), analyzer) ;
+        Query query = parseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
         ScoreDoc[] sDocs = indexSearcher.search(query, 1).scoreDocs ;
         List<Map<String, Node>> records = new ArrayList<Map<String, Node>>() ;
@@ -250,18 +296,17 @@ public class TextIndexLucene implements TextIndex {
     @Override
     public List<Node> query(String qs, int limit) {
         //** score
-        try(IndexReader indexReader = DirectoryReader.open(directory)) {
+        try (IndexReader indexReader = DirectoryReader.open(directory)) {
             return query$(indexReader, qs, limit) ;
         } 
         catch (Exception ex) {
-            exception(ex) ;
-            return null ;
+            throw new TextIndexException(ex) ;
         }
     }
 
     private List<Node> query$(IndexReader indexReader, String qs, int limit) throws ParseException, IOException {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
-        Query query = parseQuery(qs, docDef.getPrimaryField(), analyzer) ;
+        Query query = parseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
         if ( limit <= 0 )
             limit = MAX_N ;
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
@@ -288,9 +333,5 @@ public class TextIndexLucene implements TextIndex {
     private Node entryToNode(String v) {
         // TEMP
         return NodeFactoryExtra.createLiteralNode(v, null, null) ;
-    }
-
-    private static void exception(Exception ex) {
-        throw new TextIndexException(ex) ;
     }
 }

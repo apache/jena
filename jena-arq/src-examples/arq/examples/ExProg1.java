@@ -82,9 +82,7 @@ public class ExProg1
         query.serialize(new IndentedWriter(System.out,true)) ;
         System.out.println() ;
         
-        QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
-        
-        try {
+        try ( QueryExecution qexec = QueryExecutionFactory.create(query, model) ) {
             // Assumption: it's a SELECT query.
             ResultSet rs = qexec.execSelect() ;
             
@@ -107,11 +105,6 @@ public class ExProg1
                     System.out.println("Strange - not a literal: "+x) ;
                     
             }
-        }
-        finally
-        {
-            // QueryExecution objects should be closed to free any system resources 
-            qexec.close() ;
         }
     }
     

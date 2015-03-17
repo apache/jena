@@ -520,7 +520,7 @@ public class T_TransSystemMultiDatasets
         Node g = Quad.defaultGraphNodeGenerated ; // urn:x-arq:DefaultGraphNode
         Node s = NodeFactory.createURI("S") ;
         Node p = NodeFactory.createURI("P") ;
-        Node o = NodeFactory.createLiteral(Integer.toString(value), null, XSDDatatype.XSDinteger) ;
+        Node o = NodeFactory.createLiteral(Integer.toString(value), XSDDatatype.XSDinteger) ;
         return new Quad(g,s,p,o) ;
     }
 

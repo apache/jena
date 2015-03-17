@@ -110,8 +110,7 @@ public class LangTag {
      * alphanum = (ALPHA / DIGIT) ; letters and numbers
      */
 
-    private static final String languageRE_1         = "(?:[a-zA-Z]{2,3}(?:-[a-zA-Z]{3}){0,3})" ;                   // including
-                                                                                                                     // extlang
+    private static final String languageRE_1         = "(?:[a-zA-Z]{2,3}(?:-[a-zA-Z]{3}){0,3})" ;
     private static final String languageRE_2         = "[a-zA-Z]{4}" ;
     private static final String languageRE_3         = "[a-zA-Z]{5,8}" ;
     private static final String language             = languageRE_1 + "|" + languageRE_2 + "|" + languageRE_3 ;

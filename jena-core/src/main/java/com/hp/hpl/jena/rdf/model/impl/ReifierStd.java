@@ -48,14 +48,22 @@ public class ReifierStd
 
     // All the methods of the old Reifier interface, converted to statics. 
     
+    /** @deprecated Use {@link #findEither(Graph, Triple, boolean)} */
+    @Deprecated
+    public static ExtendedIterator<Triple> findEither(Graph graph, TripleMatch match, boolean showHidden)
+    {
+        if ( showHidden )
+            return NullIterator.instance() ;
+        else
+            return graph.find(match) ;
+    }
+    
     /**
     Answer an iterator over the reification triples of this Reifier, or an empty 
     iterator - if showHidden is false, only the exposed triples, otherwise only
     the concealed ones.
      */
-
-    public static ExtendedIterator<Triple> findEither(Graph graph, TripleMatch match, boolean showHidden)
-    {
+    public static ExtendedIterator<Triple> findEither(Graph graph, Triple match, boolean showHidden) {
         if ( showHidden )
             return NullIterator.instance() ;
         else
@@ -70,13 +78,23 @@ public class ReifierStd
                    triple.getPredicate().equals(predicate) ||
                    triple.getPredicate().equals(object) ||
                    ( triple.getPredicate().equals(rdfType) && triple.getObject().equals(statement) ) ;
-        }} ; 
+        }
+    } ; 
+
+    /** @deprecated Use {@link #findExposed(Graph, Triple)} */
+    @Deprecated
+    public static ExtendedIterator<Triple> findExposed(Graph graph, TripleMatch match)
+    {
+        ExtendedIterator<Triple> it = graph.find(match) ;
+        it = it.filterKeep(filterReif) ;
+        return WrappedIterator.create(it) ;
+    }
 
     /**
         Answer an iterator over all the reification triples that this Reifier exposes
         (ie all if Standard, none otherwise) that match m.
     */
-    public static ExtendedIterator<Triple> findExposed(Graph graph, TripleMatch match)
+    public static ExtendedIterator<Triple> findExposed(Graph graph, Triple match)
     {
         ExtendedIterator<Triple> it = graph.find(match) ;
         it = it.filterKeep(filterReif) ;

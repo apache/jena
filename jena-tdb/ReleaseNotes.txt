@@ -1,6 +1,10 @@
 ChangeLog for TDB
 =================
 
+==== TDB 1.1.2
+
++ JENA-782 : StoreParams allow configurability of TDB databases. 
+
 ==== TDB 1.1.0
 
 Jena now requires Java7 as of this version.

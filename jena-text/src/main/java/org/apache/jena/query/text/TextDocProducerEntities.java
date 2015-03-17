@@ -30,32 +30,40 @@ import com.hp.hpl.jena.sparql.core.QuadAction ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 // Currently unused 
-// This would index multiple quads at a time from batched stream of chnages (e.g. rdf-patch)
+// This would index multiple quads at a time from batched stream of changes (e.g. rdf-patch)
 public class TextDocProducerEntities extends DatasetChangesBatched implements TextDocProducer {
     private static Logger          log     = LoggerFactory.getLogger(TextDocProducer.class) ;
     private final EntityDefinition defn ;
     private final TextIndex        indexer ;
-    private boolean                started = false ;
+    
+    // Have to have a ThreadLocal here to keep track of whether or not we are in a transaction,
+    // therefore whether or not we have to do autocommit
+    private final ThreadLocal<Boolean> inTransaction = new ThreadLocal<Boolean>() {
+        @Override
+        protected Boolean initialValue() {
+            return Boolean.FALSE ;
+        }
+    } ;
 
-    public TextDocProducerEntities(EntityDefinition defn, TextIndex indexer) {
-        this.defn = defn ;
+    public TextDocProducerEntities(TextIndex indexer) {
+        this.defn = indexer.getDocDef() ;
         this.indexer = indexer ;
+        inTransaction.set(false) ;
     }
 
     @Override
     protected void startBatched() {
-        indexer.startIndexing() ;
-        started = true ;
+        inTransaction.set(true) ;
     }
 
     @Override
     protected void finishBatched() {
-        indexer.finishIndexing() ;
+        inTransaction.set(false) ;
     }
 
     @Override
     protected void dispatch(QuadAction quadAction, List<Quad> batch) {
-        if ( !started )
+        if ( !inTransaction.get() )
             throw new IllegalStateException("Not started") ;
         if ( !QuadAction.ADD.equals(quadAction) )
             return ;

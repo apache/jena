@@ -222,7 +222,7 @@ public class FmtExprSPARQL
         @Override
         public void visit(ExprAggregator eAgg)
         {
-            out.print(eAgg.asSparqlExpr()) ;
+            out.print(eAgg.asSparqlExpr(context)) ;
         }
         
         

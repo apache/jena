@@ -229,8 +229,6 @@ public class SQLBridge2 extends SQLBridgeBase
             lex = "" ;
         return lex;
     }
-    
-    
 
     private static Node makeNode(String lex, String datatype, String lang, ValueType vType)
     {
@@ -241,18 +239,18 @@ public class SQLBridge2 extends SQLBridgeBase
             case URI:
                 return NodeFactory.createURI(lex) ;
             case STRING:
-                return NodeFactory.createLiteral(lex, lang, false) ;
+                return NodeFactory.createLiteral(lex, lang) ;
             case XSDSTRING:
-                return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDstring) ;
+                return NodeFactory.createLiteral(lex, XSDDatatype.XSDstring) ;
             case INTEGER:
-                return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDinteger) ;
+                return NodeFactory.createLiteral(lex, XSDDatatype.XSDinteger) ;
             case DOUBLE:
-                return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdouble) ;
+                return NodeFactory.createLiteral(lex, XSDDatatype.XSDdouble) ;
             case DATETIME:       
-                return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
+                return NodeFactory.createLiteral(lex, XSDDatatype.XSDdateTime) ;
             case OTHER:
                 RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(datatype);
-                return NodeFactory.createLiteral(lex, null, dt) ;
+                return NodeFactory.createLiteral(lex, dt) ;
             default:
                 log.warn("Unrecognized: ("+lex+", "+lang+", "+vType+")") ;
             return NodeFactory.createLiteral("UNRECOGNIZED") ; 

@@ -585,14 +585,12 @@ public abstract class TurtleShell {
             }
 
             for ( Node p : predicates ) {
-                List<Node> rdfLiterals = new ArrayList<>() ; // Literals in the
-                                                             // group
-                List<Node> rdfSimpleNodes = new ArrayList<>() ; // Non-literals,
-                                                                // printed
-                List<Node> rdfComplexNodes = new ArrayList<>() ; // Non-literals,
-                                                                 // printed ()
-                                                                 // or
-                                                                 // []-embedded
+                // Literals in the group
+                List<Node> rdfLiterals = new ArrayList<>() ; 
+                // Non-literals, printed
+                List<Node> rdfSimpleNodes = new ArrayList<>() ; 
+                // Non-literals, printed (), or []-embedded
+                List<Node> rdfComplexNodes = new ArrayList<>() ; 
 
                 for ( Node o : pGroups.get(p) ) {
                     if ( o.isLiteral() ) {

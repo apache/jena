@@ -65,7 +65,7 @@ public class JenaTextExample1
         Directory dir =  new RAMDirectory();
         
         // Join together into a dataset
-        Dataset ds = TextDatasetFactory.createLucene(ds1, dir, entDef) ;
+        Dataset ds = TextDatasetFactory.createLucene(ds1, dir, entDef, null) ;
         
         return ds ;
     }

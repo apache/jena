@@ -17,18 +17,17 @@
  */
 package org.apache.jena.security.graph;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphStatisticsHandler;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
-import com.hp.hpl.jena.shared.AddDeniedException;
-import com.hp.hpl.jena.shared.DeleteDeniedException;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.security.AccessDeniedException ;
+import org.apache.jena.security.SecurityEvaluator ;
+import org.apache.jena.security.SecurityEvaluator.SecNode ;
 
-import org.apache.jena.security.AccessDeniedException;
-import org.apache.jena.security.SecurityEvaluator;
-import org.apache.jena.security.SecurityEvaluator.SecNode;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphStatisticsHandler ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.shared.AddDeniedException ;
+import com.hp.hpl.jena.shared.DeleteDeniedException ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /**
  * The interface for secured Graph instances.
@@ -91,13 +90,24 @@ public interface SecuredGraph extends Graph
 	public ExtendedIterator<Triple> find( final Node s, final Node p,
 			final Node o ) throws AccessDeniedException;
 
-	/**
+    /**
+     * @sec.graph Read
+     * @sec.triple Read, otherwise filtered from iterator.
+     * @throws AccessDeniedException
+     * @deprecated Use {@link #find(Triple)}
+     */
+	@Deprecated
+    @Override
+    public ExtendedIterator<Triple> find( final com.hp.hpl.jena.graph.TripleMatch triple )
+            throws AccessDeniedException;
+
+    /**
 	 * @sec.graph Read
 	 * @sec.triple Read, otherwise filtered from iterator.
 	 * @throws AccessDeniedException
 	 */
 	@Override
-	public ExtendedIterator<Triple> find( final TripleMatch m )
+	public ExtendedIterator<Triple> find( final Triple triple )
 			throws AccessDeniedException;
 
 	@Override

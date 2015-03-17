@@ -23,13 +23,14 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>2.12.2-SNAPSHOT</version>
+  <version>2.13.1-SNAPSHOT</version>
 
   <!-- Needed for -Papache-release -->
+  <!-- The org.apache:apache version is also in jena-parent pom.xml -->
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>13</version>
+    <version>16</version>
     <relativePath />
   </parent>
 
@@ -60,27 +61,24 @@
         does not build SDB nor the slow-to-test JDBC module.
       -->
       <id>dev</id>
+      <!-- The maven artifacts of the basic modules -->
       <modules>
         <module>jena-parent</module>
-        <!-- <module>jena-iri</module> -->
+	<!-- <module>jena-iri</module> -->
         <module>jena-core</module>
         <module>jena-arq</module>
         <module>jena-tdb</module>
-        <module>jena-text</module>
-        <module>jena-spatial</module>
-        <module>jena-csv</module>
+        <!--<module>jena-fuseki1</module>-->
+	<module>jena-fuseki2</module>
 
-        <!-- Slow to build - exclude from dev build -->
-        <!-- <module>jena-sdb</module>            -->
+	<!-- <module>jena-security</module> Lots of output and warnings -->
 
-        <module>jena-fuseki</module>
-        <!--<module>jena-fuseki2</module>-->
-        <module>jena-security</module>
         <!-- Slow to build - exclude from dev build -->
         <!-- <module>jena-jdbc</module>           -->
         <!-- <module>jena-maven-tools</module>    -->
         <!-- <module>apache-jena-libs</module>    -->
         <!-- <module>apache-jena</module>         -->
+        <!-- <module>jena-elephas</module> -->
         <module>jena-extras</module>
       </modules>
     </profile>
@@ -112,15 +110,18 @@
 
         <module>jena-sdb</module>
 
-        <module>jena-fuseki</module>
+        <module>jena-fuseki1</module>
         <module>jena-fuseki2</module>
-        <module>jena-security</module>
+	<module>jena-security</module>
 
         <module>jena-jdbc</module>
         <module>jena-maven-tools</module>
+        
+        <module>jena-elephas</module>
 
         <module>apache-jena-libs</module>
         <module>apache-jena</module>
+        <module>apache-jena-osgi</module>
         <module>jena-extras</module>
       </modules>
     </profile>
@@ -162,4 +163,5 @@
     <system>JIRA</system>
     <url>http://issues.apache.org/jira/browse/JENA</url>
   </issueManagement>
+
 </project>

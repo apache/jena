@@ -36,6 +36,7 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.riot.out.NodeFmtLib ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
@@ -126,10 +127,14 @@ public class NodeLib
                 hash(h, n.getBlankNodeLabel(), null, null, nt) ;
                 return ;
             case LITERAL:
-                hash(h,
-                     n.getLiteralLexicalForm(),
-                     n.getLiteralLanguage(),
-                     n.getLiteralDatatypeURI(), nt) ;
+                String dt = n.getLiteralDatatypeURI() ;
+                if ( NodeUtils.isSimpleString(n) || NodeUtils.isLangString(n) ) {
+                    // RDF 1.1 : No datatype for:
+                    //   xsd:String as simple literals
+                    //   rdf:langString and @ 
+                    dt = null ;
+                }
+                hash(h, n.getLiteralLexicalForm(), n.getLiteralLanguage(), dt, nt) ;
                 return  ;
             case OTHER:
                 throw new TDBException("Attempt to hash something strange: "+n) ; 

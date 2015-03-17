@@ -41,9 +41,8 @@ public class IRILib
      */
     
     private static char uri_reserved[] = 
-    { 
-      '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
-      '=', '+', '$', ',', '/', '?', '%', '#', '[', ']'} ;
+    { '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
+      '=', '+', '$', ',', '/', '?', '%', '#', '[', ']' } ;
 
     // No allowed in URIs
     private static char uri_non_chars[] = { '<', '>', '{', '}', '|', '\\', '`', '^', ' ',  '\n', '\r', '\t', '£' } ;
@@ -70,10 +69,7 @@ public class IRILib
           '~'} ;
 
     private static char[] charsPath =  
-    {
-        // Reserved except leave the separators alone. 
-        // Leave the path separator alone.
-        // Leave the drive separator alone.
+    {   // Reserved except leave the separators alone. 
         '!', '*', '"', '\'', '(', ')', ';', /*':',*/ '@', '&',
         '=', '+', '$', ',', /*'/',*/ '?', '%', '#', '[', ']',
         '{', '}', '|', '\\', '`', '^',
@@ -95,18 +91,17 @@ public class IRILib
     
     // See also IRIResolver
     /** Return a string that is an IRI for the filename.*/
-    public static String fileToIRI(File f)
-    {
+    public static String fileToIRI(File f) {
         return filenameToIRI(f.getAbsolutePath()) ;
     }
     
     /** Create a string that is a IRI for the filename.
-     *  The file name may already have file:.
-     *  The file name may be relative. 
-     *  Encode using the rules for a path (e.g. ':' and'/' do not get encoded)
+     *  <li>The file name may already have {@code file:}.
+     *  <li>The file name may be relative. 
+     *  <li>Encode using the rules for a path (e.g. ':' and'/' do not get encoded)
+     *  <li>Non-IRI characters get %-encoded. 
      */
-    public static String filenameToIRI(String fn)
-    {
+    public static String filenameToIRI(String fn) {
         if ( fn == null ) return cwdURL ;
         
         if ( fn.length() == 0 ) return cwdURL ;
@@ -116,9 +111,8 @@ public class IRILib
         return plainFilenameToURL(fn) ;
     }
     
-    /** Convert an IRI to a filename */
-    public static String IRIToFilename(String iri)
-    {
+    /** Convert a file: IRI to a filename */
+    public static String IRIToFilename(String iri) {
         if ( ! iri.startsWith("file:") )
             throw new AtlasException("Not a file: URI: "+iri) ; 
         
@@ -131,8 +125,7 @@ public class IRILib
     }
     
     /** Convert a plain file name (no file:) to a file: URL */
-    private static String plainFilenameToURL(String fn)
-    {
+    private static String plainFilenameToURL(String fn) {
         // No "file:"
         // Make Absolute filename.
         boolean trailingSlash = fn.endsWith("/") ;
@@ -162,8 +155,7 @@ public class IRILib
     
     
     /** Sanitize a "file:" URL. Must start "file:" */
-    private static String normalizeFilenameURI(String fn)
-    {
+    private static String normalizeFilenameURI(String fn) {
         if ( ! fn.startsWith("file:/") )
         {
             // Relative path.
@@ -173,7 +165,7 @@ public class IRILib
         
         // Starts file:///
         if ( fn.startsWith("file:///") )
-            // Assume it's good as return as-is.
+            // Assume it's good and return as-is.
             return fn ;
 
         if ( fn.startsWith("file://") )
@@ -190,8 +182,7 @@ public class IRILib
     /** Encode using the rules for a component (e.g. ':' and '/' get encoded) 
      * Does not encode non-ASCII characters 
      */
-    public static String encodeUriComponent(String string)
-    {
+    public static String encodeUriComponent(String string) {
         String encStr = StrUtils.encodeHex(string,'%', charsComponent) ;
         return encStr ;
     }
@@ -199,15 +190,13 @@ public class IRILib
     /** Encode using the rules for a file: URL.  
      *  Does not encode non-ASCII characters
      */
-    public static String encodeFileURL(String string)
-    {
+    public static String encodeFileURL(String string) {
         String encStr = StrUtils.encodeHex(string,'%', charsFilename) ;
         return encStr ;
     }
 
     /** Encode using the rules for a path (e.g. ':' and '/' do not get encoded) */
-    public static String encodeUriPath(String uri)
-    {
+    public static String encodeUriPath(String uri) {
         // Not perfect.
         // Encode path.
         // %-encode chars.
@@ -215,13 +204,11 @@ public class IRILib
         return uri ;
     }
 
-    public static String decode(String string)
-    {
+    public static String decode(String string) {
         return StrUtils.decodeHex(string, '%') ;
     }
 
-    public static String encodeNonASCII(String string)
-    {
+    public static String encodeNonASCII(String string) {
         if ( ! containsNonASCII(string) )
             return string ;
         
@@ -245,8 +232,7 @@ public class IRILib
         return sw.toString() ;
     }
 
-    public static boolean containsNonASCII(String string)
-    {
+    public static boolean containsNonASCII(String string){
         boolean clean = true ;
         for ( int i = 0 ; i < string.length() ; i++ )
         {

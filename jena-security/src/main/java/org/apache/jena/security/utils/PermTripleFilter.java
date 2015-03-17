@@ -39,6 +39,7 @@ public class PermTripleFilter extends Filter<Triple>
 	private final SecurityEvaluator evaluator;
 	private final SecNode modelNode;
 	private final Set<Action> actions;
+	private final Object principal;
 
 	/**
 	 * Creates a filter that requires that the user have all the permissions
@@ -54,6 +55,7 @@ public class PermTripleFilter extends Filter<Triple>
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(new Action[] { action });
 		this.evaluator = securedItem.getSecurityEvaluator();
+		this.principal = evaluator.getPrincipal();
 	}
 
 	/**
@@ -73,6 +75,7 @@ public class PermTripleFilter extends Filter<Triple>
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(new Action[] { action });
 		this.evaluator = evaluator;
+		this.principal = evaluator.getPrincipal();
 	}
 
 	/**
@@ -90,6 +93,7 @@ public class PermTripleFilter extends Filter<Triple>
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(actions);
 		this.evaluator = securedItem.getSecurityEvaluator();
+		this.principal = evaluator.getPrincipal();
 	}
 
 	/**
@@ -109,6 +113,7 @@ public class PermTripleFilter extends Filter<Triple>
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(actions);
 		this.evaluator = evaluator;
+		this.principal = evaluator.getPrincipal();
 	}
 
 	/**
@@ -126,6 +131,7 @@ public class PermTripleFilter extends Filter<Triple>
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(actions);
 		this.evaluator = securedItem.getSecurityEvaluator();
+		this.principal = evaluator.getPrincipal();
 	}
 
 	/**
@@ -145,12 +151,13 @@ public class PermTripleFilter extends Filter<Triple>
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(actions);
 		this.evaluator = evaluator;
+		this.principal = evaluator.getPrincipal();
 	}
 
 	@Override
 	public boolean accept( final Triple t )
 	{
-		return evaluator.evaluateAny(actions, modelNode,
+		return evaluator.evaluateAny(principal, actions, modelNode,
 				SecuredItemImpl.convert(t));
 	}
 

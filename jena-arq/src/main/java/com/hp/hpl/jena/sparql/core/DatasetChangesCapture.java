@@ -47,7 +47,7 @@ public class DatasetChangesCapture implements DatasetChanges
     { this(true, true, false, false) ; }
 
     /** Capture quad actions, either including or excluding the "no ops"
-     * @param recordNoOps   Whether to record {@linkplain QuadAction#NO_ADD} and {@linkplain QuadAction#NO_DELETE}  
+     * @param recordNoOps   Whether to record {@link QuadAction#NO_ADD} and {@link QuadAction#NO_DELETE}  
      */
     public DatasetChangesCapture(boolean recordNoOps)
     { this(true, true, recordNoOps, recordNoOps) ; }

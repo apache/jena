@@ -46,7 +46,7 @@ public class NodeValueFloat extends NodeValue
 
     @Override
     protected Node makeNode()
-    { return NodeFactory.createLiteral(Utils.stringForm(value), null, XSDDatatype.XSDfloat) ; }
+    { return NodeFactory.createLiteral(Utils.stringForm(value), XSDDatatype.XSDfloat) ; }
     
     @Override
     public String asString() { return toString() ; }

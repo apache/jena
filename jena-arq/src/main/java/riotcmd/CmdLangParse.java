@@ -22,6 +22,8 @@ import java.io.InputStream ;
 import java.io.OutputStream ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.* ;
@@ -38,6 +40,8 @@ import arq.cmdline.* ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 
 /** Common framework for running RIOT parsers */
 public abstract class CmdLangParse extends CmdGeneral
@@ -110,6 +114,8 @@ public abstract class CmdLangParse extends CmdGeneral
     @Override
     protected void processModulesAndArgs() {}
     
+    protected interface PostParseHandler { void postParse(); }
+    
     @Override
     protected void exec()
     {
@@ -119,7 +125,15 @@ public abstract class CmdLangParse extends CmdGeneral
         if ( modLangParse.getRDFSVocab() != null )
             setup = new InferenceSetupRDFS(modLangParse.getRDFSVocab()) ;
      
-        outputStream = createSink() ;
+        outputStream = null ;
+        PostParseHandler postParse = null ;
+
+        outputStream = createStreamSink() ;
+        if ( outputStream == null ) {
+            Pair<StreamRDF, PostParseHandler> p = createAccumulateSink() ;
+            outputStream = p.getLeft() ;
+            postParse = p.getRight();
+        }
         
         try {
             if ( super.getPositional().isEmpty() )
@@ -140,6 +154,9 @@ public abstract class CmdLangParse extends CmdGeneral
             if ( super.getPositional().size() > 1 && modTime.timingEnabled() )
                 output("Total", totalTuples, totalMillis, langHandlerOverall) ;
         }
+        
+        if ( postParse != null )
+            postParse.postParse() ;
     }
     
     public void parseFile(String filename)
@@ -252,7 +269,6 @@ public abstract class CmdLangParse extends CmdGeneral
         } catch (RiotException ex) {
             // Should have handled the exception and logged a message by now.
             // System.err.println("++++"+ex.getMessage());
-
             if ( modLangParse.stopOnBadTerm() )
                 return ;
         } finally {
@@ -269,11 +285,41 @@ public abstract class CmdLangParse extends CmdGeneral
         totalTuples += n ;
     }
     
-    protected StreamRDF createSink() {
+    
+    /** Create a streaming outoput sink if possible */
+    protected StreamRDF createStreamSink() {
         if ( modLangParse.toBitBucket() )
             return StreamRDFLib.sinkNull() ;
-        RDFFormat fmt = modLangOutput.getOutputFormat() ;
+        
+        RDFFormat fmt = modLangOutput.getOutputStreamFormat() ;
+        if ( fmt == null )
+            return null ;
         return StreamRDFWriter.getWriterStream(System.out, fmt) ;
+    }
+    
+    /** Create an accumulating output stream for later pretty printing */
+    protected Pair<StreamRDF, PostParseHandler> createAccumulateSink() {
+        final DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        StreamRDF sink = StreamRDFLib.dataset(dsg) ;
+        final RDFFormat fmt = modLangOutput.getOutputFormatted() ;
+        PostParseHandler handler = new PostParseHandler() {
+            @Override
+            public void postParse() {
+                // Try as dataset, then as graph.
+                WriterDatasetRIOTFactory w = RDFWriterRegistry.getWriterDatasetFactory(fmt) ;
+                if ( w != null ) {
+                    RDFDataMgr.write(System.out, dsg, fmt) ;
+                    return ;
+                }
+                WriterGraphRIOTFactory wg = RDFWriterRegistry.getWriterGraphFactory(fmt) ;
+                if ( wg != null ) {
+                    RDFDataMgr.write(System.out, dsg.getDefaultGraph(), fmt) ;
+                    return ;
+                }
+                throw new InternalErrorException("failed to find the writer: "+fmt) ;  
+            }
+        } ;
+        return Pair.create(sink, handler) ;
     }
     
     protected Tokenizer makeTokenizer(InputStream in)

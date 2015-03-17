@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
+import java.io.OutputStream ;
+import java.io.PrintWriter ;
 import java.util.Iterator ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
@@ -29,6 +31,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
+import com.hp.hpl.jena.util.FileUtils ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
 
@@ -47,7 +50,7 @@ public class RDFOutput
      * @return Model       Model contains the results
      */
 
-    public Model toModel(ResultSet resultSet)
+    public Model asModel(ResultSet resultSet)
     {
         Model m = GraphFactory.makeJenaDefaultModel() ;
         asRDF(m, resultSet) ;
@@ -63,8 +66,11 @@ public class RDFOutput
      * @param model     The place where to put the RDF.
      * @return Resource The resource for the result set.
      */ 
-
-    public Resource asRDF(Model model, ResultSet resultSet)
+    public Resource asRDF(Model model, ResultSet resultSet) {
+        return asRDF(model, resultSet, false) ;
+    }
+    
+    public Resource asRDF(Model model, ResultSet resultSet, boolean includeRowIndex)
     {
         Resource results = model.createResource() ;
         // This always goes in.
@@ -82,8 +88,12 @@ public class RDFOutput
             if ( includeTypeProperties )
                 thisSolution.addProperty(RDF.type, ResultSetGraphVocab.ResultSolution) ;
             results.addProperty(ResultSetGraphVocab.solution, thisSolution) ;
-            if ( false )
-                results.addLiteral(ResultSetGraphVocab.index, count) ;
+            if ( includeRowIndex ) {
+                // This can lead to equivalent result sets having different graphs
+                // Best used if and only if query was completely sorted. 
+                Literal x = model.createTypedLiteral(count+"",XSDDatatype.XSDinteger) ;
+                thisSolution.addLiteral(ResultSetGraphVocab.index, x) ;
+            }
 
             Iterator<String> iter = getAllVars() ?
                                     rBind.varNames() :
@@ -123,10 +133,10 @@ public class RDFOutput
     
     // Boolean results
     
-    public Model toModel(boolean result)
+    public Model asModel(boolean result)
     {
         Model m = GraphFactory.makeJenaDefaultModel() ;
-        asRDF(m, result) ;
+        encodeAsRDF(m, result) ;
         addPrefixes(m) ;
         return m ;
     }
@@ -150,4 +160,127 @@ public class RDFOutput
         return results ;
     }
 
+    /**
+     * Encode a boolean result set as RDF. 
+     * @param booleanResult
+     * @return Model       Model contains the results
+     */
+    public static Model encodeAsModel(boolean booleanResult)
+    {
+        RDFOutput rOut = new RDFOutput() ;
+        return rOut.asModel(booleanResult) ;
+    }
+
+    /** Encode the result set as RDF.
+     * @param  resultSet
+     * @return Model       Model contains the results
+     */
+    
+    static public Model encodeAsModel(ResultSet resultSet)
+    {
+        RDFOutput rOut = new RDFOutput() ;
+        return rOut.asModel(resultSet) ;
+    }
+
+    /** Encode the boolean as RDF in the model provided.
+     *  
+     * @param  model     The place where to put the RDF.
+     * @param  booleanResult
+     * @return Resource  The resource for the result set.
+     */ 
+    
+    static public Resource encodeAsRDF(Model model, boolean booleanResult)
+    {
+        RDFOutput rOut = new RDFOutput() ;
+        return rOut.asRDF(model, booleanResult) ;
+    }
+
+    /** Encode the result set as RDF in the model provided.
+     *  
+     * @param  model     The place where to put the RDF.
+     * @param  resultSet
+     * @return Resource  The resource for the result set.
+     */ 
+    
+    static public Resource encodeAsRDF(Model model, ResultSet resultSet)
+    {
+        RDFOutput rOut = new RDFOutput() ;
+        return rOut.asRDF(model, resultSet) ;
+    }
+
+    /** Write out an RDF model that encodes the result set.
+     *  See also the same method taking an output stream.
+     *  
+     * @param out           Output : ideally, should be a UTF-8 print writer (not system default) 
+     * @param format        Name of RDF format (names as Jena writers) 
+     * @param resultSet     The result set to encode in RDF
+     */
+    
+    private static void outputAsRDF(PrintWriter out, String format, ResultSet resultSet)
+    {
+        Model m = RDFOutput.encodeAsModel(resultSet) ;
+        m.write(out, format) ;
+        out.flush() ;
+    }
+
+    /** Write out an RDF model that encodes the result set
+     * 
+     * @param outStream     Output
+     * @param format        Name of RDF format (names as Jena writers) 
+     * @param resultSet     The result set to encode in RDF
+     */
+    
+    static public void outputAsRDF(OutputStream outStream, String format, ResultSet resultSet)
+    {
+        PrintWriter out = FileUtils.asPrintWriterUTF8(outStream) ;
+        RDFOutput.outputAsRDF(out, format, resultSet) ;
+        out.flush() ;
+    }
+
+    /** Write out an RDF model that encodes the result set
+     * 
+     * @param format        Name of RDF format (names as Jena writers) 
+     * @param resultSet     The result set to encode in RDF
+     */
+    
+    static public void outputAsRDF(String format, ResultSet resultSet)
+    { RDFOutput.outputAsRDF(System.out, format, resultSet) ; }
+
+    /** Write out an RDF model that encodes a boolean result
+     * 
+     * @param format        Name of RDF format (names as Jena writers) 
+     * @param booleanResult The boolean result to encode in RDF
+     */
+    
+    static public void outputAsRDF(String format,  boolean booleanResult)
+    { RDFOutput.outputAsRDF(System.out, format, booleanResult) ; }
+
+    /** Write out an RDF model that encodes a boolean result
+     * 
+     * @param outStream     Output
+     * @param format        Name of RDF format (names as Jena writers) 
+     * @param booleanResult The boolean result to encode in RDF
+     */
+    
+    static public void outputAsRDF(OutputStream outStream, String format,  boolean booleanResult)
+    {
+        PrintWriter out = FileUtils.asPrintWriterUTF8(outStream) ;
+        RDFOutput.outputAsRDF(out, format, booleanResult) ;
+        out.flush() ;
+    }
+
+    /** Write out an RDF model that encodes a boolean result.
+     *  See also the same method taking an output stream.
+     *  
+     * @param out           Output : ideally, should be a UTF-8 print writer (not system default) 
+     * @param format        Name of RDF format (names as Jena writers) 
+     * @param booleanResult The boolean result to encode in RDF
+     */
+    
+    private static void outputAsRDF(PrintWriter out, String format,  boolean booleanResult)
+    {
+        Model m = RDFOutput.encodeAsModel(booleanResult) ;
+        m.write(out, format) ;
+        out.flush() ;
+    }
 }

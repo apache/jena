@@ -112,25 +112,25 @@ public class ResultSetFactory {
         if (format.equals(ResultsFormat.FMT_RDF_XML)) {
             Model m = ModelFactory.createDefaultModel();
             m.read(input, null);
-            return ResultSetFactory.fromRDF(m);
+            return RDFInput.fromRDF(m);
         }
 
         if (format.equals(ResultsFormat.FMT_RDF_TTL)) {
             Model m = ModelFactory.createDefaultModel();
             m.read(input, null, "TURTLE");
-            return ResultSetFactory.fromRDF(m);
+            return RDFInput.fromRDF(m);
         }
 
         if (format.equals(ResultsFormat.FMT_RDF_N3)) {
             Model m = ModelFactory.createDefaultModel();
             m.read(input, null, "N3");
-            return ResultSetFactory.fromRDF(m);
+            return RDFInput.fromRDF(m);
         }
 
         if (format.equals(ResultsFormat.FMT_RDF_NT)) {
             Model m = ModelFactory.createDefaultModel();
             m.read(input, null, "N-TRIPLES");
-            return ResultSetFactory.fromRDF(m);
+            return RDFInput.fromRDF(m);
         }
 
         Log.warn(ResultSet.class, "Unknown result set syntax: " + format);
@@ -220,9 +220,9 @@ public class ResultSetFactory {
                 x = XMLInput.make(in, GraphFactory.makeDefaultModel());
 
             if (x.isResultSet())
-                ResultSetFormatter.asRDF(model, x.getResultSet());
+                RDFOutput.encodeAsRDF(model, x.getResultSet());
             else
-                ResultSetFormatter.asRDF(model, x.getBooleanResult());
+                RDFOutput.encodeAsRDF(model, x.getBooleanResult());
 
             return model;
         }
@@ -327,9 +327,11 @@ public class ResultSetFactory {
      * 
      * @param model
      * @return ResultSet
+     * @deprecated Use {@link RDFInput#fromRDF(Model)} directly instead
      */
+    @Deprecated
     public static ResultSet fromRDF(Model model) {
-        return new RDFInput(model);
+        return RDFInput.fromRDF(model) ;
     }
 
     /**

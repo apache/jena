@@ -24,6 +24,7 @@ import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.junit.Test ;
 
+import com.hp.hpl.jena.JenaRuntime ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
@@ -83,9 +84,20 @@ public class TestNodeFmt extends BaseTest
 
     @Test public void nodefmt_nt_15()        { test(nodeFormatterNTascii, "'\\n\\t\\f'", "\"\\n\\t\\f\"") ; }
     
+    // RDF 1.1 sensitive.
+    // xsd:strings output without ^^
+    @Test public void nodefmt_rdf11_01()     
+    { 
+        if ( JenaRuntime.isRDF11 )
+            test(nodeFormatterNTutf8, "'abc'^^xsd:string", "\"abc\"") ;
+        else
+            test(nodeFormatterNTutf8, "'abc'^^xsd:string", "\"abc\"^^<http://www.w3.org/2001/XMLSchema#string>") ;
+    }
     
-
-    
+    @Test public void nodefmt_rdf11_02() {
+        // Same in RDF 1.0 and RDF 1.1
+        test(nodeFormatterNTutf8, "'abc'^^rdf:langString",  "\"abc\"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#langString>") ;
+    }
     
     @Test public void nodefmt_ttl_01()  { test(nodeFormatterTTL, "?x") ; }
     @Test public void nodefmt_ttl_02()  { test(nodeFormatterTTL, "?xyz") ; }

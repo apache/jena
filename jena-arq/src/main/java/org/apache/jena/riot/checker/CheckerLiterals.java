@@ -16,8 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.checker;
+package org.apache.jena.riot.checker ;
 
+import java.util.Objects ;
 import java.util.regex.Pattern ;
 
 import org.apache.jena.riot.SysRIOT ;
@@ -28,91 +29,88 @@ import org.apache.xerces.impl.dv.ValidationContext ;
 import org.apache.xerces.impl.dv.XSSimpleType ;
 import org.apache.xerces.impl.validation.ValidationState ;
 
+import com.hp.hpl.jena.JenaRuntime ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType ;
 import com.hp.hpl.jena.datatypes.xsd.impl.XSDBaseNumericType ;
 import com.hp.hpl.jena.datatypes.xsd.impl.XSDDouble ;
 import com.hp.hpl.jena.datatypes.xsd.impl.XSDFloat ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.graph.NodeConst ;
 
-public class CheckerLiterals implements NodeChecker
-{
+public class CheckerLiterals implements NodeChecker {
     // A flag to enable the test suite to read bad data.
     public static boolean WarnOnBadLiterals = true ;
-    
-    private ErrorHandler handler ;
-    public CheckerLiterals(ErrorHandler handler)
-    {
+
+    private ErrorHandler  handler ;
+
+    public CheckerLiterals(ErrorHandler handler) {
         this.handler = handler ;
     }
-    
+
     @Override
-    public boolean check(Node node, long line, long col)
-    { return node.isLiteral() && checkLiteral(node, handler, line, col) ; }
-    
+    public boolean check(Node node, long line, long col) {
+        return node.isLiteral() && checkLiteral(node, handler, line, col) ;
+    }
+
     final static private Pattern langPattern = Pattern.compile("[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*") ;
 
-    public static boolean checkLiteral(Node node, ErrorHandler handler, long line, long col)
-    {
-        if ( ! node.isLiteral() )
-        {
-            handler.error("Not a literal: "+node, line, col) ;
+    public static boolean checkLiteral(Node node, ErrorHandler handler, long line, long col) {
+        if ( !node.isLiteral() ) {
+            handler.error("Not a literal: " + node, line, col) ;
             return false ;
         }
-       
-        return checkLiteral(node.getLiteralLexicalForm(), node.getLiteralLanguage(), node.getLiteralDatatype(),  
-                            handler, line, col) ;
+
+        return checkLiteral(node.getLiteralLexicalForm(), node.getLiteralLanguage(), node.getLiteralDatatype(), handler, line, col) ;
     }
-    
-    
-    public static boolean checkLiteral(String lexicalForm, RDFDatatype datatype, 
-                                       ErrorHandler handler, long line, long col)
-    {
+
+    public static boolean checkLiteral(String lexicalForm, RDFDatatype datatype, ErrorHandler handler, long line, long col) {
         return checkLiteral(lexicalForm, null, datatype, handler, line, col) ;
     }
 
-    public static boolean checkLiteral(String lexicalForm, String lang, 
-                                       ErrorHandler handler, long line, long col)
-    {
+    public static boolean checkLiteral(String lexicalForm, String lang, ErrorHandler handler, long line, long col) {
         return checkLiteral(lexicalForm, lang, null, handler, line, col) ;
     }
-    
-    public static boolean checkLiteral(String lexicalForm, String lang, RDFDatatype datatype, 
-                                       ErrorHandler handler, long line, long col)
-    {
-        if ( ! WarnOnBadLiterals )
-            return true ;
-        
-        boolean hasLang = lang != null && ! lang.equals("") ;
-        
-        if ( datatype != null && hasLang )
-            handler.error("Literal has datatype and language", line, col) ;
-        
-        // Datatype check (and plain literals are always well formed)
-        if ( datatype != null )
-            return validateByDatatype(lexicalForm, datatype, handler, line, col) ;
-        
-        // No datatype.  Language?
 
-        if ( hasLang )
-        {
-            // Not a perfect test.
-            if ( lang.length() > 0 && ! langPattern.matcher(lang).matches() ) 
-            {
-                handler.warning("Language not valid: "+lang, line, col) ;
-                return false; 
+    public static boolean checkLiteral(String lexicalForm, String lang, RDFDatatype datatype, ErrorHandler handler,
+                                       long line, long col) {
+        if ( !WarnOnBadLiterals )
+            return true ;
+
+        boolean hasLang = lang != null && !lang.equals("") ;
+        if ( !hasLang ) {
+            // Datatype check (and RDF 1.0 simpl literals are always well
+            // formed)
+            if ( datatype != null )
+                return validateByDatatype(lexicalForm, datatype, handler, line, col) ;
+            return true ;
+        }
+
+        // Has a language.
+        if ( JenaRuntime.isRDF11 ) {
+            if ( datatype != null && !Objects.equals(datatype.getURI(), NodeConst.rdfLangString.getURI()) ) {
+                handler.error("Literal has language but wrong datatype", line, col) ;
+                return false ;
+            }
+        } else {
+            if ( datatype != null ) {
+                handler.error("Literal has datatype and language", line, col) ;
+                return false ;
             }
         }
-        
+
+        // Test language tag format -- not a perfect test.
+        if ( !lang.isEmpty() && !langPattern.matcher(lang).matches() ) {
+            handler.warning("Language not valid: " + lang, line, col) ;
+            return false ;
+        }
         return true ;
     }
 
-    protected static boolean validateByDatatype(String lexicalForm, RDFDatatype datatype, ErrorHandler handler, long line, long col)
-    {
-        // XXX Reconsider.
-        if ( SysRIOT.StrictXSDLexicialForms )
-        {
-            if ( datatype instanceof XSDBaseNumericType || datatype instanceof XSDFloat || datatype instanceof XSDDouble )
+    protected static boolean validateByDatatype(String lexicalForm, RDFDatatype datatype, ErrorHandler handler, long line, long col) {
+        if ( SysRIOT.StrictXSDLexicialForms ) {
+            if ( datatype instanceof XSDBaseNumericType || datatype instanceof XSDFloat
+                 || datatype instanceof XSDDouble )
                 return validateByDatatypeNumeric(lexicalForm, datatype, handler, line, col) ;
             if ( datatype instanceof XSDAbstractDateTimeType )
                 return validateByDatatypeDateTime(lexicalForm, datatype, handler, line, col) ;
@@ -120,30 +118,46 @@ public class CheckerLiterals implements NodeChecker
         return validateByDatatypeJena(lexicalForm, datatype, handler, line, col) ;
     }
 
-    protected static boolean validateByDatatypeJena(String lexicalForm, RDFDatatype datatype, ErrorHandler handler, long line, long col)
-    {
+    protected static boolean validateByDatatypeJena(String lexicalForm, RDFDatatype datatype, ErrorHandler handler,
+                                                    long line, long col) {
         if ( datatype.isValid(lexicalForm) )
-            return true ; 
-        handler.warning("Lexical form '"+lexicalForm+"' not valid for datatype "+datatype.getURI(), line, col) ;
+            return true ;
+        handler.warning("Lexical form '" + lexicalForm + "' not valid for datatype " + datatype.getURI(), line, col) ;
         return false ;
     }
-    
-    protected static boolean validateByDatatypeDateTime(String lexicalForm, RDFDatatype datatype, ErrorHandler handler, long line, long col)
-    {
-        if ( lexicalForm.contains(" ") )  { handler.warning("Whitespace in XSD date or time literal: '"+lexicalForm+"'", line, col) ; return false ; }
-        if ( lexicalForm.contains("\n") ) { handler.warning("Newline in XSD date or time literal: '"+lexicalForm+"'", line, col) ; return false ; }
-        if ( lexicalForm.contains("\r") ) { handler.warning("Newline in XSD date or time literal: '"+lexicalForm+"'", line, col) ; return false ; }
-        //if ( ! StrictXSDLexicialForms )
+
+    protected static boolean validateByDatatypeDateTime(String lexicalForm, RDFDatatype datatype, ErrorHandler handler, long line, long col) {
+        if ( lexicalForm.contains(" ") ) {
+            handler.warning("Whitespace in XSD date or time literal: '" + lexicalForm + "'", line, col) ;
+            return false ;
+        }
+        if ( lexicalForm.contains("\n") ) {
+            handler.warning("Newline in XSD date or time literal: '" + lexicalForm + "'", line, col) ;
+            return false ;
+        }
+        if ( lexicalForm.contains("\r") ) {
+            handler.warning("Newline in XSD date or time literal: '" + lexicalForm + "'", line, col) ;
+            return false ;
+        }
+        // if ( ! StrictXSDLexicialForms )
         // Jena is already strict.
         return validateByDatatypeJena(lexicalForm, datatype, handler, line, col) ;
     }
-    
-    protected static boolean validateByDatatypeNumeric(String lexicalForm, RDFDatatype datatype, ErrorHandler handler, long line, long col)
-    {
+
+    protected static boolean validateByDatatypeNumeric(String lexicalForm, RDFDatatype datatype, ErrorHandler handler, long line, long col) {
         // Do a white space check as well for numerics.
-        if ( lexicalForm.contains(" ") )  { handler.warning("Whitespace in numeric XSD literal: '"+lexicalForm+"'", line, col) ; return false ; } 
-        if ( lexicalForm.contains("\n") ) { handler.warning("Newline in numeric XSD literal: '"+lexicalForm+"'", line, col) ; return false ; }
-        if ( lexicalForm.contains("\r") ) { handler.warning("Carriage return in numeric XSD literal: '"+lexicalForm+"'", line, col) ; return false ; }
+        if ( lexicalForm.contains(" ") ) {
+            handler.warning("Whitespace in numeric XSD literal: '" + lexicalForm + "'", line, col) ;
+            return false ;
+        }
+        if ( lexicalForm.contains("\n") ) {
+            handler.warning("Newline in numeric XSD literal: '" + lexicalForm + "'", line, col) ;
+            return false ;
+        }
+        if ( lexicalForm.contains("\r") ) {
+            handler.warning("Carriage return in numeric XSD literal: '" + lexicalForm + "'", line, col) ;
+            return false ;
+        }
         
 //        if ( lit.getDatatype() instanceof XSDAbstractDateTimeType )
 //        {

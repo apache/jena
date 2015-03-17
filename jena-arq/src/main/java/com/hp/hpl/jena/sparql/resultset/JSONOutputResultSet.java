@@ -35,6 +35,7 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Literal ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.impl.Util ;
 
 /**
  * A JSON writer for SPARQL Result Sets.  Uses Jena Atlas JSON support. 
@@ -189,15 +190,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
         String datatype = literal.getDatatypeURI() ;
         String lang = literal.getLanguage() ;
         
-        if ( datatype != null )
-        {
-            out.print(quoteName(kDatatype)+": "+quote(datatype)+" , ") ;
-            if ( multiLineValues ) out.println() ;
-            
-            out.print(quoteName(kType)+": "+quote(kTypedLiteral)+" , ") ;
-            if ( multiLineValues ) out.println() ;
-        }
-        else
+        if ( Util.isSimpleString(literal) || Util.isLangString(literal) )
         {
             out.print(quoteName(kType)+": "+quote(kLiteral)+" , ") ;
             if ( multiLineValues ) out.println() ;
@@ -207,6 +200,12 @@ public class JSONOutputResultSet implements ResultSetProcessor
                 out.print(quoteName(kXmlLang)+": "+quote(lang)+" , ") ;
                 if ( multiLineValues ) out.println() ;
             }
+        } else {
+            out.print(quoteName(kDatatype)+": "+quote(datatype)+" , ") ;
+            if ( multiLineValues ) out.println() ;
+            
+            out.print(quoteName(kType)+": "+quote(kTypedLiteral)+" , ") ;
+            if ( multiLineValues ) out.println() ;
         }
             
         out.print(quoteName(kValue)+": "+quote(literal.getLexicalForm())) ;

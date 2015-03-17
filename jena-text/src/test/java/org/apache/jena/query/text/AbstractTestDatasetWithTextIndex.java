@@ -53,9 +53,9 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
 		doTestSearch(turtle, queryString, expectedURIs);
 	}
 
-	static String R_S1 = RESOURCE_BASE + "s1" ;
-    static String R_S2 = RESOURCE_BASE + "s2" ;
-	static String PF_DATA = StrUtils.strjoinNL(
+	static final String R_S1 = RESOURCE_BASE + "s1" ;
+    static final String R_S2 = RESOURCE_BASE + "s2" ;
+	static final String PF_DATA = StrUtils.strjoinNL(
 	                                           TURTLE_PROLOG,
 	                                           "<" + R_S1 + "> rdfs:label 'text' .",
 	                                           "<" + R_S2 + "> rdfs:label 'fuzz' ."

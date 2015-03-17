@@ -35,7 +35,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 /** A list of quads. 
  * 
  * <code>OpQuadBlock</code> is anny colelction of quads, whereas
- * {@linkplain OpQuadPattern} is quads with the same graph node.  
+ * {@link OpQuadPattern} is quads with the same graph node.  
  * The flip in naming is historical. 
  */
 public class OpQuadBlock extends Op0

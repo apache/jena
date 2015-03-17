@@ -22,8 +22,8 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 
 /** Wrap a DatasetGraph with implementations of
- * {@linkplain DatasetGraph#getDefaultGraph} and
- * {@linkplain DatasetGraph#getGraph}
+ * {@link DatasetGraph#getDefaultGraph} and
+ * {@link DatasetGraph#getGraph}
  * that use the view graph mechanism.
  * 
  * @see GraphView

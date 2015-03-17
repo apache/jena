@@ -5,4 +5,4 @@ SELECT ?x ?v
 {
     ?x ?p ?v 
 }
-ORDER BY desc(?v)
+ORDER BY desc(?v) ?x

@@ -47,7 +47,7 @@ public class NodeValueDuration extends NodeValue
     protected Node makeNode()
     {
         String lex = duration.toString() ;
-        return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDduration) ;
+        return NodeFactory.createLiteral(lex, XSDDatatype.XSDduration) ;
     }
     
     @Override

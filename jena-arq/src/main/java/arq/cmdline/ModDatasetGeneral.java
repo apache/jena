@@ -27,7 +27,6 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.LabelExistsException ;
 import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.sparql.core.DataFormat ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
@@ -48,8 +47,6 @@ public class ModDatasetGeneral extends ModDataset
     private List<String> dataURLs                = null ;
     private List<String> graphURLs               = null ;
     private List<String> namedGraphURLs          = null ;
-    private DataFormat dataSyntax        = null ;
-
     protected ModDatasetGeneral() {}
     
     @Override

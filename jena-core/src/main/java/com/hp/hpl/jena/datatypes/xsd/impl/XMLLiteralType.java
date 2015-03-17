@@ -33,7 +33,6 @@ import com.hp.hpl.jena.rdfxml.xmlinput.ARP ;
 import com.hp.hpl.jena.rdfxml.xmlinput.AResource ;
 import com.hp.hpl.jena.rdfxml.xmlinput.StatementHandler ;
 import com.hp.hpl.jena.shared.BrokenException ;
-import com.hp.hpl.jena.vocabulary.RDF ;
 
 /**
  * Builtin data type to represent XMLLiteral (i.e. items created
@@ -41,7 +40,8 @@ import com.hp.hpl.jena.vocabulary.RDF ;
  */
 public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
     /** Singleton instance */
-    public static final RDFDatatype theXMLLiteralType = new XMLLiteralType(RDF.getURI() + "XMLLiteral");
+    // Include the string for the RDF namespace, not use RDF.getURI(), to avoid an initializer circularity
+    public static final RDFDatatype theXMLLiteralType = new XMLLiteralType("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral");
     
     /**
      * Private constructor.

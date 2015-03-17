@@ -211,10 +211,14 @@ public final class TokenizerText implements Tokenizer
                 token.setType((ch == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2) ;
             }
 
+            // Whte space after lexical part of a literal.
+            skip() ;
+            
             // Literal. Is it @ or ^^
             if ( reader.peekChar() == CH_AT ) {
                 reader.readChar() ;
-
+                // White space is not legal here.
+                // The Turtle spec terminal is "LANGTAG" which includes the '@'.
                 Token mainToken = new Token(token) ;
                 mainToken.setType(TokenType.LITERAL_LANG) ;
                 mainToken.setSubToken1(token) ;
@@ -224,10 +228,14 @@ public final class TokenizerText implements Tokenizer
                     checkLiteralLang(token.getImage(), token.getImage2()) ;
             } else if ( reader.peekChar() == '^' ) {
                 expect("^^") ;
-                // Check no whitespace.
-                int nextCh = reader.peekChar() ;
-                if ( isWhitespace(nextCh) )
-                    exception("No whitespace after ^^ in literal with datatype") ;
+                // White space is legal after a ^^. 
+                // It's not a good idea, but it is legal.
+//                // Check no whitespace.
+//                int nextCh = reader.peekChar() ;
+//                if ( isWhitespace(nextCh) )
+//                    exception("No whitespace after ^^ in literal with datatype") ;
+                skip() ;
+                
                 // Stash current token.
                 Token mainToken = new Token(token) ;
                 mainToken.setSubToken1(token) ;
@@ -483,7 +491,7 @@ public final class TokenizerText implements Tokenizer
         // If we made no progress, nothing found, not even a keyword -- it's an
         // error.
         if ( posn == reader.getPosition() )
-            exception("Unknown char: %c(%d;0x%04X)", ch, ch, ch) ;
+            exception("Failed to find a prefix name or keyword: %c(%d;0x%04X)", ch, ch, ch) ;
 
         if ( Checking )
             checkKeyword(token.getImage()) ;

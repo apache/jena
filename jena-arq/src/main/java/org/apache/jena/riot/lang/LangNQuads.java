@@ -30,7 +30,8 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 
 /**
  * N-Quads.
- * http://sw.deri.org/2008/07/n-quads/
+ *
+ * @see <a href="http://www.w3.org/TR/n-quads/">http://www.w3.org/TR/n-quads/</a>
  */
 public class LangNQuads extends LangNTuple<Quad>
 {

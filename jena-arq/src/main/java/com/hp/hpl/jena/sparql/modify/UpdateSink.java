@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sparql.modify.request.QuadDataAccSink ;
 import com.hp.hpl.jena.update.Update ;
 
 /**
- * An {@linkplain UpdateSink} is an object usually created by a container (such as a storage engine
+ * An {@link UpdateSink} is an object usually created by a container (such as a storage engine
  * or an {@link com.hp.hpl.jena.update.UpdateRequest}) that can process or store a single SPARQL Update
  * request which consists of one or more SPARQL Update operations.
  */

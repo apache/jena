@@ -28,6 +28,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Group aggregation functions calculated a value during grouping and
@@ -95,8 +96,8 @@ public class ExprAggregator extends ExprNode
     public ExprVar getAggVar() { return exprVar ; }
     
     // As an expression suitable for outputting the calculation. 
-    public String asSparqlExpr()        
-    { return aggregator.toString() ; }
+    public String asSparqlExpr(SerializationContext sCxt)        
+    { return aggregator.asSparqlExpr(sCxt) ; }
     
     @Override
     public ExprAggregator copySubstitute(Binding binding)
@@ -129,7 +130,7 @@ public class ExprAggregator extends ExprNode
                 (var==null?"<>":"?"+var.getVarName())+
                 " "+aggregator.toString()+")"; }
     
-    public Expr copy(Var v)  { return new ExprAggregator(v, aggregator.copy(aggregator.getExpr())) ; }
+    public Expr copy(Var v)  { return new ExprAggregator(v, aggregator.copy(aggregator.getExprList())) ; }
     
     @Override
     public NodeValue eval(Binding binding, FunctionEnv env)

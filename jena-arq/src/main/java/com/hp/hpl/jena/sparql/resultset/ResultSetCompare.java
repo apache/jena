@@ -36,8 +36,8 @@ import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.sparql.util.NodeUtils.EqualityTest ;
 
 /** Comparison of ResultSets.
- *  Note that reading ResultSets is destructive so consiuder using {@linkplain ResultSetRewindable}
- *  from {@linkplain ResultSetFactory#makeRewindable} 
+ *  Note that reading ResultSets is destructive so consiuder using {@link ResultSetRewindable}
+ *  from {@link ResultSetFactory#makeRewindable} 
  */
 
 public class ResultSetCompare
@@ -99,9 +99,6 @@ public class ResultSetCompare
         
         //return equivalent(convert(rs1), convert(rs2), new BNodeIso(NodeUtils.sameValue)) ;
         
-        // Add the isomprohism test
-        // Imperfect - need by-value and isomorphism - but this covers test suite needs. 
-
         ResultSetRewindable rs1a = ResultSetFactory.makeRewindable(rs1) ;
         ResultSetRewindable rs2a = ResultSetFactory.makeRewindable(rs2) ;
         
@@ -109,7 +106,7 @@ public class ResultSetCompare
             return true ;
         rs1a.reset() ;    
         rs2a.reset() ;
-        return isomorphic(rs1, rs2) ;
+        return isomorphic(rs1a, rs2a) ;
     }
     
     public static boolean equalsByTest(Collection<Binding> b1, Collection<Binding> b2, EqualityTest match)
@@ -206,8 +203,8 @@ public class ResultSetCompare
      * Only does RDF term comparison.
      */ 
     public static boolean isomorphic(ResultSet rs1, ResultSet rs2) {
-        Model m1 = ResultSetFormatter.toModel(rs1) ;
-        Model m2 = ResultSetFormatter.toModel(rs2) ;
+        Model m1 = RDFOutput.encodeAsModel(rs1) ;
+        Model m2 = RDFOutput.encodeAsModel(rs2) ;
         return m1.isIsomorphicWith(m2) ;
     }
     

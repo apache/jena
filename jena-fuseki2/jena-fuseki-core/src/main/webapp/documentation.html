@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Apache Jena Fuseki - documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/font-awesome.min.css" rel="stylesheet" media="screen">
+    <link href="css/codemirror.css" rel="stylesheet" media="screen">
+    <link href="css/qonsole.css" rel="stylesheet" media="screen">
+    <link href="css/jquery.dataTables.css" rel="stylesheet" media="screen">
+    <link href="css/fui.css" rel="stylesheet" media="screen">
+
+    <!--[if lt IE 9]>
+      <script src="../js/lib/html5shiv.js"></script>
+      <script src="../js/lib/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container">
+        <div class="row">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">
+              <img src="images/jena-logo-notext-small.png" alt="Apache Jena logo" title="Apache Jena" />
+              <div>Apache<br />Jena<br /><strong>Fuseki</strong></div>
+            </a>
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+              <li class=""><a href="index.html"><i class="fa fa-home"></i></a></li>
+              <li class=""><a href="dataset.html"><i class="fa fa-database"></i> dataset</a></li>
+              <li class=""><a href="manage.html"><i class="fa fa-cogs"></i> manage datasets</a></li>
+              <!-- JENA-887 not yet implemented
+              <li class=""><a href="services.html"><i class="fa fa-wrench"></i> services</a></li>
+              -->
+              <li class="active"><a href="documentation.html"><i class="fa fa-info-circle"></i> help</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li class="status-indicator">
+                <div>Server<br />status:</div>
+              </li>
+              <li class="status-indicator">
+                <a class="" href="#admin/server-log.html" id="server-status-light" title="current server status">
+                  <span class="server-up"></span>
+                </a>
+              </li>
+            </ul>
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /row -->
+      </div><!-- /container -->
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <h1>Fuseki &ndash; documentation</h1>
+
+        <p><a href="http://jena.apache.org/documentation/fuseki2/"
+              >Apache Jena Fuseki</a></p>
+
+        <h4>Standards</h4>
+        <ul>
+          <li> <a href="http://www.w3.org/TR/sparql11-query/">SPARQL 1.1 Query</a></li>
+          <li> <a href="http://www.w3.org/TR/sparql11-update/">SPARQL 1.1 Update</a></li>
+          <li> <a href="http://www.w3.org/TR/sparql11-protocol/">SPARQL 1.1 Protocol</a></li>
+          <li> <a href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL 1.1 Graph Store HTTP Protocol</a></li>
+    </ul>
+      </div>
+    </div>
+
+    <script src="../js/lib/jquery-1.10.2.min.js"></script>
+    <script src="../js/lib/bootstrap.min.js"></script>
+  </body>
+</html>

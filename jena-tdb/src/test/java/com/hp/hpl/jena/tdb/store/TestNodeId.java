@@ -111,7 +111,7 @@ public class TestNodeId extends BaseTest
     
     // Just this once, directly create the Node.
     @Test public void nodeId_decimal_3()
-    { test("12.89", NodeFactory.createLiteral("12.89", null, XSDDatatype.XSDdecimal)) ; }
+    { test("12.89", NodeFactory.createLiteral("12.89", XSDDatatype.XSDdecimal)) ; }
 
     @Test public void nodeId_decimal_4()
     { test("-1.0",  NodeFactoryExtra.parseNode("-1.0")) ; }
@@ -126,11 +126,11 @@ public class TestNodeId extends BaseTest
 
     @Test public void nodeId_decimal_7()
     { test("'0.00000001'^^xsd:decimal",  
-           NodeFactory.createLiteral("0.00000001", null, XSDDatatype.XSDdecimal)) ; 
+           NodeFactory.createLiteral("0.00000001", XSDDatatype.XSDdecimal)) ; 
     }
 
     @Test public void nodeId_decimal_8()
-    { test("0.00000001", NodeFactory.createLiteral("0.00000001", null, XSDDatatype.XSDdecimal)) ; }
+    { test("0.00000001", NodeFactory.createLiteral("0.00000001", XSDDatatype.XSDdecimal)) ; }
 
     @Test public void nodeId_dateTime_01()
     { test("'2008-04-28T15:36:15+01:00'^^xsd:dateTime") ; }
@@ -225,10 +225,7 @@ public class TestNodeId extends BaseTest
     @Test public void nodeId_boolean_4()
     { test("'0'^^xsd:boolean", NodeFactoryExtra.parseNode("'false'^^xsd:boolean")) ; }
 
-    private void test(String x)
-    {
-        test(x, x) ;
-    }
+    private void test(String x) { test(x, x) ; }
     
     private void test(String x, String expected)
     {
@@ -239,6 +236,11 @@ public class TestNodeId extends BaseTest
     {
         Node n = NodeFactoryExtra.parseNode(x) ;
         NodeId nodeId = NodeId.inline(n) ;
+        boolean b = NodeId.hasInlineDatatype(n) ;
+
+        if ( nodeId != null )
+            assertTrue("Converted NodeId but datatype test was false", b) ;
+        
         if ( correct == null )
         {
             assertNull("Expected no encoding: got: "+nodeId, nodeId) ;

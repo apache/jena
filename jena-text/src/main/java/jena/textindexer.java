@@ -107,7 +107,6 @@ public class textindexer extends CmdARQ {
     @Override
     protected void exec() {
         Set<Node> properties = getIndexedProperties() ;
-        textIndex.startIndexing() ;
 
         // there are various strategies possible here
         // what is implemented is a first cut simple approach
@@ -130,7 +129,8 @@ public class textindexer extends CmdARQ {
                 }
             }
         }
-        textIndex.finishIndexing() ;
+        
+        textIndex.commit();
         progressMonitor.close() ;
     }
 

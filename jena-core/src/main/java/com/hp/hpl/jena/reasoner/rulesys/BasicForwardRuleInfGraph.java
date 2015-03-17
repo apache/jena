@@ -293,7 +293,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * will have also consulted the raw data.
      */
     @Override
-    public ExtendedIterator<Triple> graphBaseFind(Node subject, Node property, Node object) {
+    protected ExtendedIterator<Triple> graphBaseFind(Node subject, Node property, Node object) {
         return findWithContinuation(new TriplePattern(subject, property, object), null);
     }
 

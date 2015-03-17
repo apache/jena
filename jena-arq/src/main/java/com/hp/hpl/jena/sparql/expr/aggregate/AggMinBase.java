@@ -27,19 +27,14 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 abstract class AggMinBase extends AggregatorBase
 {
     // ---- MIN(expr) and MIN(DISTINCT expr)
-    protected final Expr expr ;
-
-    public AggMinBase(Expr expr) { this.expr = expr ; } 
+    protected AggMinBase(Expr expr, boolean isDistinct) { super("MIN", isDistinct, expr) ; } 
 
     @Override
     public
     final Accumulator createAccumulator()
     { 
-        return new AccMin(expr) ;
+        return new AccMin(getExpr()) ;
     }
-
-    @Override
-    public final Expr getExpr() { return expr ; }
 
     @Override
     public final Node getValueEmpty()     { return null ; } 

@@ -22,12 +22,17 @@ import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
 /** IteratorCons : the concatenation of two iterators.
+ * See also {@link IteratorConcat}.
+ * If there potentially many iterators to be joined, it is better to 
+ *  create an IteratorConcat explicitly and add each iterator.
+ *  IteratorCons is slightly better in the two iterator case.
  */
-
 public class IteratorCons<T> implements Iterator<T>, Iterable<T>
 {
     // No - we don't really need IteratorCons and IteratorConcat
-    // Historical.
+    // Historical - IteratorCons came first.
+    // IteratorConcat is nearly as good as IteratorCons in the small when it
+    // it is hard to see when it woudl matter much.
     
     private Iterator<? extends T> iter1 ;
     private Iterator<? extends T> iter2 ;

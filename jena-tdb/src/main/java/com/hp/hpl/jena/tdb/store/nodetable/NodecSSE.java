@@ -35,6 +35,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev ;
 
@@ -70,7 +71,7 @@ public class NodecSSE implements Nodec
                 node = NodeFactory.createURI(x) ; 
         }
         
-        if ( node.isLiteral() && node.getLiteralLanguage() != null )
+        if ( node.isLiteral() && NodeUtils.isLangString(node) )
         {
             // Check syntactically valid.
             String lang = node.getLiteralLanguage() ;
@@ -150,14 +151,14 @@ public class NodecSSE implements Nodec
             return 2+maxLength(node.getURI()) ;
         if ( node.isLiteral() )
         {
-            if ( node.getLiteralDatatypeURI() != null )
+            int len = 2+maxLength(node.getLiteralLexicalForm()) ;
+            if ( NodeUtils.isLangString(node) )
+                // Space for @ (language tag is ASCII)
+                len = len + 3 + node.getLiteralLanguage().length() ;
+            else if ( ! NodeUtils.isSimpleString(node) )
                 // The quotes and also space for ^^<>
-                return 6+maxLength(node.getLiteralLexicalForm())+maxLength(node.getLiteralDatatypeURI()) ;
-            else if ( node.getLiteralLanguage() != null )
-                // The quotes and also space for @ (language tag is ASCII)
-                return 3+maxLength(node.getLiteralLexicalForm())+node.getLiteralLanguage().length() ;
-            else
-                return 2+maxLength(node.getLiteralLexicalForm()) ;
+                len = len + 4 + maxLength(node.getLiteralDatatypeURI()) ;
+            return len ;
         }
         if ( node.isVariable() )
             // "?"

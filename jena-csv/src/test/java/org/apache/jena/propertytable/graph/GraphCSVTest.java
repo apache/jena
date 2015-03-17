@@ -32,7 +32,6 @@ import com.hp.hpl.jena.sparql.engine.main.StageGenerator ;
 
 /**
  * Tests related to GraphCSV with some real world data.
- *
  */
 public class GraphCSVTest extends Assert {
 	

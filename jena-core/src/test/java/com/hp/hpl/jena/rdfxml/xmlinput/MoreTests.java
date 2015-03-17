@@ -166,7 +166,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		RDFReader rdr = m.getReader();
 		try ( FileReader r = new FileReader("testing/wg/rdfms-syntax-incomplete/test001.rdf") ) {
 		    if (r.getEncoding().startsWith("UTF")) {
-		        logger.warn("Encoding mismatch tests not executed on platform with default UTF encoding.");
+		        //logger.warn("Encoding mismatch tests not executed on platform with default UTF encoding.");
 		        r.close() ;
 		        return;
 		    }

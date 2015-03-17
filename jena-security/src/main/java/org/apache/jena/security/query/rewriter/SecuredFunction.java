@@ -71,10 +71,11 @@ public class SecuredFunction extends ExprFunctionN
 	
 	private boolean checkAccess( Binding values )
 	{
+		Object principal = securityEvaluator.getPrincipal();
 		for (final Triple t : bgp)
 		{
 			final SecTriple secT = createSecTriple(t, values);
-			if (!securityEvaluator.evaluate(Action.Read, graphIRI, secT))
+			if (!securityEvaluator.evaluate(principal, Action.Read, graphIRI, secT))
 			{
 				return false;
 			}

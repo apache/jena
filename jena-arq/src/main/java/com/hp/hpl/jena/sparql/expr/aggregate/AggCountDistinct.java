@@ -21,24 +21,28 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 
 import org.apache.jena.atlas.logging.Log ;
 
 public class AggCountDistinct extends AggregatorBase
 {
     // ---- COUNT(DISTINCT *)
-    public AggCountDistinct() { super() ; }
+    public AggCountDistinct() { super("COUNT", true, (ExprList)null) ; }
     @Override
-    public Aggregator copy(Expr expr)
+    public Aggregator copy(ExprList expr)
     { 
         if ( expr != null )
             Log.warn(this, "Copying non-null expression for COUNT(DISTINCT *)") ;
         return new AggCountDistinct() ; 
     }
     
+    @Override
+    public String asSparqlExpr(SerializationContext sCxt)       { return "count(distinct *)" ; }
     @Override
     public String toString()        { return "count(distinct *)" ; }
     @Override

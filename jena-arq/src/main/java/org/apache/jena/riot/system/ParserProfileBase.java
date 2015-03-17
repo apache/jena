@@ -119,12 +119,12 @@ public class ParserProfileBase implements ParserProfile {
 
     @Override
     public Node createTypedLiteral(String lexical, RDFDatatype dt, long line, long col) {
-        return NodeFactory.createLiteral(lexical, null, dt) ;
+        return NodeFactory.createLiteral(lexical, dt) ;
     }
 
     @Override
     public Node createLangLiteral(String lexical, String langTag, long line, long col) {
-        return NodeFactory.createLiteral(lexical, langTag, null) ;
+        return NodeFactory.createLiteral(lexical, langTag) ;
     }
 
     @Override

@@ -147,8 +147,17 @@ public class XSD {
     /** Resource URI for xsd:dateTime */
     public static Resource dateTime;
 
+    /** Resource URI for xsd:dateTimeStamp */
+    public static Resource dateTimeStamp;
+
     /** Resource URI for xsd:duration */
     public static Resource duration;
+
+    /** Resource URI for xsd:yearMonthDuration */
+    public static Resource yearMonthDuration;
+
+    /** Resource URI for xsd:dayTimeDuration */
+    public static Resource dayTimeDuration;
 
     /** Resource URI for xsd:gDay */
     public static Resource gDay;
@@ -202,7 +211,10 @@ public class XSD {
         date = ResourceFactory.createResource(XSDDatatype.XSDdate.getURI());
         time = ResourceFactory.createResource(XSDDatatype.XSDtime.getURI());
         dateTime = ResourceFactory.createResource(XSDDatatype.XSDdateTime.getURI());
+        dateTimeStamp = ResourceFactory.createResource(XSDDatatype.XSDdateTimeStamp.getURI());
         duration = ResourceFactory.createResource(XSDDatatype.XSDduration.getURI());
+        yearMonthDuration = ResourceFactory.createResource(XSDDatatype.XSDyearMonthDuration.getURI());
+        dayTimeDuration = ResourceFactory.createResource(XSDDatatype.XSDdayTimeDuration.getURI());
         gDay = ResourceFactory.createResource(XSDDatatype.XSDgDay.getURI());
         gMonth = ResourceFactory.createResource(XSDDatatype.XSDgMonth.getURI());
         gYear = ResourceFactory.createResource(XSDDatatype.XSDgYear.getURI());

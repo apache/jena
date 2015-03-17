@@ -32,7 +32,7 @@ import org.junit.Test;
 
 public class SecuredAssemblerTest
 {
-	private Assembler assembler;
+    private Assembler assembler;
 	private Model model;
 	
 	public SecuredAssemblerTest() 
@@ -57,4 +57,30 @@ public class SecuredAssemblerTest
 		Assert.assertTrue( o instanceof SecuredModel );
 	}
 
+	@Test
+	public void testCreationWithArgs() throws Exception {
+		
+		Resource r = model.createResource( "http://apache.org/jena/security/test#secModel2");
+		Object o = assembler.open( r );
+		Assert.assertTrue( o instanceof Model);
+		Assert.assertTrue( o instanceof SecuredModel );
+	}
+	
+	@Test
+	public void testSecurityEvaluatorWithStringArgs() throws Exception {
+		
+		Resource r = model.createResource( "http://apache.org/jena/security/test#secEvaluator");
+		Object o = assembler.open( r );
+		Assert.assertTrue( o instanceof SecurityEvaluator );
+		Assert.assertTrue( o instanceof StaticSecurityEvaluator );
+	}
+	
+	@Test
+	public void testSecurityEvaluatorWithModelArgs() throws Exception {
+		
+		Resource r = model.createResource( "http://apache.org/jena/security/test#secEvaluator2");
+		Object o = assembler.open( r );
+		Assert.assertTrue( o instanceof SecurityEvaluator );
+		Assert.assertTrue( o instanceof ModelBasedSecurityEvaluator );
+	}
 }

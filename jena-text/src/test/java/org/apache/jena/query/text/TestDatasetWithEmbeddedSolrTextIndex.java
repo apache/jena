@@ -20,8 +20,8 @@ package org.apache.jena.query.text;
 
 import java.io.File ;
 
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
+import org.junit.After ;
+import org.junit.Before ;
 
 public class TestDatasetWithEmbeddedSolrTextIndex extends AbstractTestDatasetWithTextIndex {
     
@@ -31,21 +31,24 @@ public class TestDatasetWithEmbeddedSolrTextIndex extends AbstractTestDatasetWit
     private static final File    INDEX_DIR      = new File(INDEX_PATH);
     private static final String  TEST_ASSEM     = "testing/TextQuery/text-solr-config.ttl" ;
 
-	@BeforeClass public static void beforeClass() {
-	    deleteOldFiles();
+	@Before
+	public void before() {
+//	    deleteOldFiles();
 	    INDEX_DIR.mkdirs();
 	    TextQuery.init() ;
 	    TextSearchUtil.createEmptyIndex(INDEX_DIR);
 	    dataset = TextDatasetFactory.create(TEST_ASSEM) ;
 	}
 
-	@AfterClass public static void afterClass() {
+	@After
+	public void after() {
 		TextIndexSolr index = (TextIndexSolr) dataset.getContext().get(TextQuery.textIndex) ;
 		index.getServer().shutdown();
 		deleteOldFiles();
 	}
 
-	public static void deleteOldFiles() {
+	public void deleteOldFiles() {
+	    dataset.close();
 		if (DATA_DIR.exists()) 
 			TextSearchUtil.emptyAndDeleteDirectory(DATA_DIR);
 	}

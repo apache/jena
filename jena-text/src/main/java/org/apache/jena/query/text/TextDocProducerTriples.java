@@ -28,22 +28,29 @@ public class TextDocProducerTriples implements TextDocProducer {
     private static Logger          log     = LoggerFactory.getLogger(TextDocProducerTriples.class) ;
     private final EntityDefinition defn ;
     private final TextIndex        indexer ;
-    private boolean                started = false ;
-
-    public TextDocProducerTriples(EntityDefinition defn, TextIndex indexer) {
-        this.defn = defn ;
+    
+    // Have to have a ThreadLocal here to keep track of whether or not we are in a transaction,
+    // therefore whether or not we have to do autocommit
+    private final ThreadLocal<Boolean> inTransaction = new ThreadLocal<Boolean>() {
+        @Override
+        protected Boolean initialValue() {
+            return Boolean.FALSE ;
+        }
+    } ;
+    
+    public TextDocProducerTriples(TextIndex indexer) {
+        this.defn = indexer.getDocDef() ;
         this.indexer = indexer ;
     }
 
     @Override
     public void start() {
-        indexer.startIndexing() ;
-        started = true ;
+        inTransaction.set(true) ;
     }
 
     @Override
     public void finish() {
-        indexer.finishIndexing() ;
+        inTransaction.set(false) ;
     }
 
     @Override
@@ -54,8 +61,14 @@ public class TextDocProducerTriples implements TextDocProducer {
             return ;
 
         Entity entity = TextQueryFuncs.entityFromQuad(defn, g, s, p, o) ;
-        if ( entity != null )
-            // Null means does not match defn
+        // Null means does not match defn
+        if ( entity != null ) {
             indexer.addEntity(entity) ;
+            
+            // Auto commit the entity if we aren't in a transaction
+            if (!inTransaction.get()) {
+                indexer.commit() ;
+            }
+        }
     }
 }

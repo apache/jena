@@ -19,8 +19,9 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 
 /** An Aggregator is the processor for the whole result stream.
  *  BindingKeys identify which section of a group we're in. */ 
@@ -40,13 +41,18 @@ public interface Aggregator
     // Key to identify an aggregator as syntax for duplicate use in a query.
     public String key() ;           
     
-    /** Get the expression - may be null (e.g COUNT(*)) ; */ 
-    public Expr getExpr() ;
-    public Aggregator copy(Expr expr) ;
+    /** Get the SPARQL name (COUNT, AVG etc) */
+    public String getName() ;
+    
+    public ExprList getExprList() ;
+    public Aggregator copy(ExprList exprs) ;
     public Aggregator copyTransform(NodeTransform transform) ;
     
     @Override
     public int hashCode() ;
     @Override
     public boolean equals(Object other) ;
+
+    /** Format as an (extended) SPARQL expression */
+    public String asSparqlExpr(SerializationContext sCxt) ;
 }

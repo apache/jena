@@ -19,6 +19,12 @@
 package com.hp.hpl.jena.assembler.assemblers;
 
 import java.io.File ;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.JA ;
@@ -32,6 +38,9 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 public class FileModelAssembler extends NamedModelAssembler implements Assembler
     {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileModelAssembler.class);
+
     @Override
     protected Model openEmptyModel( Assembler a, Resource root, Mode mode )
         {
@@ -90,6 +99,12 @@ public class FileModelAssembler extends NamedModelAssembler implements Assembler
 
     private String getDirectoryName( Resource root )
         {
-        return getRequiredResource( root, JA.directory ).getURI().replaceFirst( "file:", "" );
+        String dir = getRequiredResource( root, JA.directory ).getURI().replaceFirst( "file:", "" );
+        try {
+            dir = URLDecoder.decode(dir, StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            LOGGER.warn(String.format("Failed to decode dir %s: %s", dir, e.getMessage()), e);
+        }
+        return dir;
         }
     }

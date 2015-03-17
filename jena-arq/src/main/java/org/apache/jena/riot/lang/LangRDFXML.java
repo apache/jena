@@ -43,6 +43,10 @@ import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
 import com.hp.hpl.jena.rdfxml.xmlinput.* ;
 import com.hp.hpl.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
 
+/** RDF/XML.
+ *
+ * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/">http://www.w3.org/TR/rdf-syntax-grammar/</a>
+ */
 public class LangRDFXML implements LangRIOT
 {
     // This is not a full member of the RIOT suite because it needs to work
@@ -174,14 +178,14 @@ public class LangRDFXML implements LangRIOT
         private static Node convert(ALiteral lit) {
             String dtURI = lit.getDatatypeURI();
             if (dtURI == null)
-                return NodeFactory.createLiteral(lit.toString(), lit.getLang(), false);
+                return NodeFactory.createLiteral(lit.toString(), lit.getLang());
 
             if (lit.isWellFormedXML()) {
                 return NodeFactory.createLiteral(lit.toString(), null, true);
             }
 
             RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
-            return NodeFactory.createLiteral(lit.toString(), null, dt);
+            return NodeFactory.createLiteral(lit.toString(), dt);
 
         }
 

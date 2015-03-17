@@ -51,7 +51,7 @@ public class SpatialIndexContext {
 		String x = SpatialQueryFuncs.subjectToString(s) ;
 		Log.info(getClass(), "Subject: "+x) ;
 
-		if (defn.isSpatialPredicate(p) && SpatialValueUtil.isDecimal(o.getLiteral())) {
+		if (defn.isSpatialPredicate(p) && SpatialValueUtil.isDecimal(o)) {
 
 			boolean isLat = defn.isLatitudePredicate(p);
 
@@ -73,11 +73,10 @@ public class SpatialIndexContext {
 					if (theOtherValue != null) {
 						if (isLat) {
 							indexer.add(x, SpatialQuery.ctx.makePoint(
-									theOtherValue, Double.parseDouble(o
-											.getLiteralLexicalForm())));
+									theOtherValue, 
+									Double.parseDouble(o.getLiteralLexicalForm())));
 						} else {
-							indexer.add(x, SpatialQuery.ctx.makePoint(Double
-									.parseDouble(o.getLiteralLexicalForm()),
+							indexer.add(x, SpatialQuery.ctx.makePoint(Double.parseDouble(o.getLiteralLexicalForm()),
 									theOtherValue));
 						}
 						toRemove = pairValue;

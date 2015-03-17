@@ -21,7 +21,7 @@ package com.hp.hpl.jena.tdb.setup;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 
 public class StoreParamsBuilder {
-    // Immuatable.
+    // Immutable.
     static class Item<X> {
         final X value  ;
         final boolean isSet ;
@@ -108,7 +108,7 @@ public class StoreParamsBuilder {
         return new StoreParamsBuilder(params) ;
     }
 
-    /** Using a base set of {@linkplain StoreParams}, and update with dynamic parameters.
+    /** Using a base set of {@link StoreParams}, and update with dynamic parameters.
      * 
      * @param baseParams
      * @param additionalParams

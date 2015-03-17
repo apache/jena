@@ -21,7 +21,7 @@ package com.hp.hpl.jena.datatypes.xsd;
 import java.io.Reader ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
-import java.net.URI;
+import java.net.URI ;
 import java.util.ArrayList ;
 import java.util.List ;
 
@@ -176,8 +176,17 @@ public class XSDDatatype extends BaseDatatype {
     /** Datatype representing xsd:dateTime */
     public static final XSDDatatype XSDdateTime = new XSDDateTimeType("dateTime");
 
+    /** Datatype representing xsd:dateTime */
+    public static final XSDDatatype XSDdateTimeStamp = new XSDDateTimeStampType("dateTimeStamp");
+
     /** Datatype representing xsd:duration */
     public static final XSDDatatype XSDduration = new XSDDurationType();
+
+    /** Datatype representing xsd:dayTimeDration */
+    public static final XSDDatatype XSDdayTimeDuration = new XSDDayTimeDurationType();
+
+    /** Datatype representing xsd:yearMonthDuration */
+    public static final XSDDatatype XSDyearMonthDuration = new XSDYearMonthDurationType();
 
     /** Datatype representing xsd:gDay */
     public static final XSDDatatype XSDgDay = new XSDDayType("gDay");
@@ -209,7 +218,7 @@ public class XSDDatatype extends BaseDatatype {
 // local variables
 
     /** the Xerces internal type declaration */
-    protected XSSimpleType typeDeclaration;
+    XSSimpleType typeDeclaration;
 
     /** the corresponding java primitive class, if any */
     protected Class<?> javaClass = null;
@@ -244,14 +253,12 @@ public class XSDDatatype extends BaseDatatype {
     }
 
     /**
-     * Constructor used when loading in external user defined XSD types -
-     * should only be used by the internals but public scope because
-     * the internals spread across multiple packages.
-     *
+     * Constructor used when loading in external user defined XSD types via 
+     * 
      * @param xstype the XSSimpleType definition to be wrapped
      * @param namespace the namespace for the type (used because the grammar loading doesn't seem to keep that)
      */
-    public XSDDatatype(XSSimpleType xstype, String namespace) {
+    protected XSDDatatype(XSSimpleType xstype, String namespace) {
         super("");
         typeDeclaration = xstype;
         this.uri = namespace + "#" + typeDeclaration.getName();
@@ -284,8 +291,6 @@ public class XSDDatatype extends BaseDatatype {
 
     /**
      * Compares two instances of values of the given datatype.
-     * This ignores lang tags and defers to the equality function
-     * defined by the Xerces package - to be checked.
      */
     @Override
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
@@ -392,7 +397,7 @@ public class XSDDatatype extends BaseDatatype {
      * @param validatedInfo a fully populated Xerces data validation context
      * @return the appropriate java wrapper type
      */
-    public Object convertValidatedDataValue(ValidatedInfo validatedInfo) throws DatatypeFormatException {
+    Object convertValidatedDataValue(ValidatedInfo validatedInfo) throws DatatypeFormatException {
         switch (validatedInfo.actualValueType) {
             case XSConstants.BASE64BINARY_DT:
                 byte[] decoded = Base64.decode(validatedInfo.normalizedValue);
@@ -574,7 +579,10 @@ public class XSDDatatype extends BaseDatatype {
         tm.registerDatatype(XSDdate);
         tm.registerDatatype(XSDtime);
         tm.registerDatatype(XSDdateTime);
+        tm.registerDatatype(XSDdateTimeStamp);
         tm.registerDatatype(XSDduration);
+        tm.registerDatatype(XSDyearMonthDuration);
+        tm.registerDatatype(XSDdayTimeDuration) ;
         tm.registerDatatype(XSDgYearMonth);
         tm.registerDatatype(XSDgMonthDay);
         tm.registerDatatype(XSDgMonth);
@@ -601,33 +609,44 @@ public class XSDDatatype extends BaseDatatype {
 //        tm.registerDatatype(XSDNMTOKENS);
     }
 
-    // Temporary - used bootstrap the above initialization code
+    /**
+     * Generic XML Schema datatype (outside the xsd: namespace)
+     * <p>
+     * Datatype template that adapts any response back from Xerces type parsing
+     * to an appropriate java representation. This is primarily used in creating
+     * user defined types - the built in types have a fixed mapping.
+     */
+    public static class XSDGenericType extends XSDDatatype {
+
+        /**
+         * Hidden constructor used when loading in external user defined XSD
+         * types
+         * 
+         * @param xstype
+         *            the XSSimpleType definition to be wrapped
+         * @param namespace
+         *            the namespace for the type (used because the grammar
+         *            loading doesn't seem to keep that)
+         */
+        XSDGenericType(XSSimpleType xstype, String namespace) {
+            super(xstype, namespace);
+        }
+    }
+
+    
+    // Used to bootstrap the above initialization code
     public static void main(String[] args) {
         SymbolHash types = SchemaDVFactory.getInstance().getBuiltInTypes();
         int len = types.getLength();
         Object[] values = new Object[len];
         types.getValues(values, 0);
-        for ( Object value : values )
-        {
-            if ( value instanceof XSSimpleTypeDecl )
-            {
-                XSSimpleTypeDecl decl = (XSSimpleTypeDecl) value;
-                System.out.println( "tm.registerDatatype(new XSDDatatype(\"" + decl.getName() + "\"));" );
-            }
-            else
-            {
-                System.out.println( " - " + value );
+        for ( Object value : values ) {
+            if ( value instanceof XSSimpleTypeDecl ) {
+                XSSimpleTypeDecl decl = (XSSimpleTypeDecl)value ;
+                System.out.println("tm.registerDatatype(new XSDDatatype(\"" + decl.getName() + "\"));") ;
+            } else {
+                System.out.println(" - " + value) ;
             }
         }
     }
-
-    public int getHashCode( byte [] bytes )
-        {
-        int length = bytes.length;
-        return length == 0
-            ? 0
-            : (bytes[0] << 12) ^ (bytes[length / 2] << 6) ^ (bytes[length - 1]) ^ length
-            ;
-        }
-
 }

@@ -19,14 +19,21 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import java.util.HashMap ;
+import java.util.Locale ;
 import java.util.Map ;
+
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
+import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
 /** Aggregate that does everything except the per-group aggregation that is needed for each operation */  
 public abstract class AggregatorBase implements Aggregator 
@@ -43,7 +50,19 @@ public abstract class AggregatorBase implements Aggregator
     // but COUNT(*) and COUNT(Expr) are different beasts
     // each in DISTINCT and non-DISTINCT versions 
     
-    protected AggregatorBase() {}
+    protected final String name ; 
+    protected final boolean isDistinct ;
+    protected final ExprList exprList ;
+    
+    protected AggregatorBase(String name, boolean isDistinct, Expr expr) {
+        this(name, isDistinct, new ExprList(expr)) ;
+    }
+    
+    protected AggregatorBase(String name, boolean isDistinct, ExprList exprList) {
+        this.name = name ;
+        this.isDistinct = isDistinct ;  
+        this.exprList = exprList ;
+    }
     
     private Map<Binding, Accumulator> buckets = new HashMap<>() ;   // Bindingkey => Accumulator
 
@@ -70,17 +89,59 @@ public abstract class AggregatorBase implements Aggregator
     @Override
     public final Aggregator copyTransform(NodeTransform transform)
     {
-        Expr e = getExpr() ;
+        ExprList e = getExprList() ;
         if ( e != null )
             e = e.applyNodeTransform(transform) ;
         return copy(e) ;
     }
     
+    /** Many aggergate use a single expression.
+     *  This convebnience operation gets the expression if there is exactly one.
+     */
+    protected Expr getExpr() {
+        if ( exprList != null && exprList.size() == 1 )
+            return getExprList().get(0) ;
+        return null ;
+    }
+    
     @Override
-    public abstract String toString() ;
+    public ExprList getExprList()           { return exprList ; }
 
     @Override
-    public abstract String toPrefixString() ;
+    public String getName()                 { return name ; } 
+
+    @Override
+    public String toString()                { return asSparqlExpr(null) ; }
+
+    @Override
+    public String asSparqlExpr(SerializationContext sCxt) {
+        IndentedLineBuffer x = new IndentedLineBuffer() ;
+        x.append(getName()) ;
+        x.append("(") ;
+        if ( isDistinct )
+            x.append("DISTINCT ") ;
+        if ( getExprList() != null )
+            ExprUtils.fmtSPARQL(x, getExprList(), sCxt) ;
+        x.append(")") ;
+        return x.asString() ;
+    }
+
+    @Override
+    public String toPrefixString() {
+        IndentedLineBuffer x = new IndentedLineBuffer() ;
+        x.append("(") ;
+        x.append(getName().toLowerCase(Locale.ROOT)) ;
+        x.incIndent(); 
+        if ( isDistinct )
+            x.append(" distinct") ;
+        for ( Expr e : getExprList() ) {
+            x.append(" ");
+            WriterExpr.output(x, e, null) ;
+        }
+        x.decIndent();
+        x.append(")") ;
+        return x.asString() ;
+    }
     
     @Override
     public abstract int hashCode() ;
@@ -113,5 +174,6 @@ public abstract class AggregatorBase implements Aggregator
     protected static final int HC_AggGroupConcatDistinct    =  0x17F ;
     
     protected static final int HC_AggNull                   =  0x180 ;
+    protected static final int HC_AggCustom                 =  0x181 ;
     
 }

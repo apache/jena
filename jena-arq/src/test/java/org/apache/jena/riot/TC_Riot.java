@@ -26,6 +26,7 @@ import org.apache.jena.riot.resultset.TS_ResultSetRIOT ;
 import org.apache.jena.riot.stream.TS_IO2 ;
 import org.apache.jena.riot.system.TS_RiotSystem ;
 import org.apache.jena.riot.thrift.TS_RDFThrift ;
+import org.apache.jena.riot.tokens.TS_Tokens ;
 import org.apache.jena.riot.web.TS_RiotWeb ;
 import org.apache.jena.riot.writer.TS_RiotWriter ;
 import org.junit.BeforeClass ;
@@ -34,7 +35,8 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TS_Out.class
+    TS_Tokens.class
+    , TS_Out.class
     , TS_Lang.class
     , TS_LangSuite.class
     , TS_ReaderRIOT.class

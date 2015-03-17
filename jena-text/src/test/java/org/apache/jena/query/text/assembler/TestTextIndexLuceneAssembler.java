@@ -18,23 +18,90 @@
 
 package org.apache.jena.query.text.assembler;
 
-import static org.junit.Assert.assertEquals;
+import org.apache.jena.query.text.TextIndexLucene ;
+import org.apache.lucene.analysis.core.KeywordAnalyzer ;
+import org.apache.lucene.store.RAMDirectory ;
+import org.junit.Test ;
 
-import org.apache.jena.query.text.TextIndexLucene;
-import org.junit.Test;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.vocabulary.RDFS;
+import static org.junit.Assert.* ;
 
 public class TestTextIndexLuceneAssembler extends AbstractTestTextAssembler {
-	
-	@Test public void testIndexHasEntityMap() {
-		TextIndexLucene indexLucene = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC);
-		assertEquals(RDFS.label.asNode(), indexLucene.getDocDef().getPrimaryPredicate());		
-	}
-	
-	static {
-		TextAssembler.init();
-	}
+    
+    @Test public void testIndexHasEntityMap() {
+        TextIndexLucene index = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC);
+        try {
+            assertEquals(RDFS.label.asNode(), index.getDocDef().getPrimaryPredicate());
+        }
+        finally {
+            index.close();
+        }
+    }
+
+    @Test public void testLiteralDirectory() {
+        TextIndexLuceneAssembler assembler = new TextIndexLuceneAssembler();
+        
+        Resource root = SIMPLE_INDEX_SPEC_LITERAL_DIR;
+        Assembler a = Assembler.general;
+        // the open method is not supposed to throw exceptions when the directory is
+        // a literal
+        TextIndexLucene index = (TextIndexLucene)assembler.open(a, root, /*mode*/ null);
+        try {
+            assertNotNull(index);
+        }
+        finally {
+            index.close();
+        }
+    }
+
+    @Test public void testResourceDirectory() {
+        TextIndexLuceneAssembler assembler = new TextIndexLuceneAssembler();
+
+        Resource root = SIMPLE_INDEX_SPEC2;
+        Assembler a = Assembler.general;
+        // the open method is not supposed to throw exceptions when the directory is
+        // a resource
+        TextIndexLucene index = (TextIndexLucene) assembler.open(a, root, /*mode*/ null);
+        try {
+            assertFalse(index.getDirectory() instanceof RAMDirectory);
+            assertNotNull(index.getQueryAnalyzer());
+        }
+        finally {
+            index.close();
+        }
+    }
+
+    @Test public void testMemDirectory() {
+        TextIndexLuceneAssembler assembler = new TextIndexLuceneAssembler();
+
+        Resource root = SIMPLE_INDEX_SPEC_MEM_DIR;
+        Assembler a = Assembler.general;
+        // the open method is not supposed to throw exceptions when the directory is
+        // a iri resource
+        TextIndexLucene index = (TextIndexLucene) assembler.open(a, root, /*mode*/ null);
+        try {
+            assertTrue(index.getDirectory() instanceof RAMDirectory);
+        }
+        finally {
+            index.close();
+        }
+    }
+    
+    @Test public void testQueryAnalyzer() {
+        TextIndexLucene index = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC_QUERY_ANALYZER);
+        try {
+            assertTrue(index.getQueryAnalyzer() instanceof KeywordAnalyzer);
+        }
+        finally {
+            index.close();
+        }
+    }
+
+    static {
+        TextAssembler.init();
+    }
 
 }

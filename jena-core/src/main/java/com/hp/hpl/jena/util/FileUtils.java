@@ -21,8 +21,7 @@ package com.hp.hpl.jena.util;
 import java.io.* ;
 import java.net.URL ;
 import java.nio.charset.Charset ;
-
-import org.slf4j.LoggerFactory ;
+import java.nio.charset.StandardCharsets ;
 
 import com.hp.hpl.jena.JenaRuntime ;
 import com.hp.hpl.jena.shared.JenaException ;
@@ -36,19 +35,7 @@ public class FileUtils
     public static final String langN3           = "N3" ;
     public static final String langTurtle       = "TURTLE" ;
     
-    /** Java name for UTF-8 encoding */
-    public static final String encodingUTF8     = "utf-8" ;
-    
-    static Charset utf8 = null ;
-    static {
-        try {
-            utf8 = Charset.forName(encodingUTF8) ;
-        } catch (Throwable ex)
-        {
-            LoggerFactory.getLogger(FileUtils.class).warn("Failed to get charset for UTF-8", ex) ;
-        }
-    }
-    
+    static Charset utf8 = StandardCharsets.UTF_8 ;
     
     /** Create a reader that uses UTF-8 encoding */ 
     
