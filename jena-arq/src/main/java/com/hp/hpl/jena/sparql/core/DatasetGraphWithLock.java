@@ -49,10 +49,28 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
 
     private final ThreadLocalReadWrite readWrite     = new ThreadLocalReadWrite() ;
     private final ThreadLocalBoolean   inTransaction = new ThreadLocalBoolean() ;
-    private DatasetGraph dsg ;
+    private final DatasetGraph dsg ;
+    // Associated DatasetChanges (if any, may be null)
+    private final DatasetChanges dsChanges ;
 
     public DatasetGraphWithLock(DatasetGraph dsg) {
         this.dsg = dsg ;
+        this.dsChanges = findDatasetChanges(dsg) ;
+    }
+    
+    /** Find a DatasetChanges handler.
+     *  Unwrap layers of DatasetGraphWrapper to
+     *  look for a DatasetGraphMonitor.
+     */
+    private static DatasetChanges findDatasetChanges(DatasetGraph dataset) {
+        for(;;) {
+            // DatasetGraphMonitor extends DatasetGraphWrapper
+            if ( dataset instanceof DatasetGraphMonitor )
+                return ((DatasetGraphMonitor)dataset).getMonitor() ;
+            if ( ! ( dataset instanceof DatasetGraphWrapper ) )
+                return null ;
+            dataset = ((DatasetGraphWrapper)dataset).getWrapped() ;
+        }
     }
 
     @Override
@@ -87,9 +105,8 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
         boolean b = isTransactionType(ReadWrite.READ) ;
         get().getLock().enterCriticalSection(b) ;
         inTransaction.set(true) ;
-        if (get() instanceof DatasetGraphMonitor) {
-            ((DatasetGraphMonitor)get()).getMonitor().start();
-        }
+        if ( dsChanges != null )
+            dsChanges.start() ;
     }
 
     @Override
@@ -118,9 +135,8 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
     @Override
     protected void _end() {
         if ( isInTransaction() ) {
-            if (get() instanceof DatasetGraphMonitor) {
-                ((DatasetGraphMonitor)get()).getMonitor().finish();
-            }
+            if ( dsChanges != null )
+                dsChanges.finish();
             get().getLock().leaveCriticalSection() ;
             clearState() ;
         }
