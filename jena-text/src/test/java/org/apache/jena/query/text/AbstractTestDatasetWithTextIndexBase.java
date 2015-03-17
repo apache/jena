@@ -43,54 +43,54 @@ import com.hp.hpl.jena.rdf.model.Model;
  * the actual tests.
  */
 public abstract class AbstractTestDatasetWithTextIndexBase {
-	protected static final String RESOURCE_BASE = "http://example.org/data/resource/";
-	protected static final String QUERY_PROLOG = 
-			StrUtils.strjoinNL(
-				"PREFIX text: <http://jena.apache.org/text#>",
-				"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
-				);
-	
-	protected static final String TURTLE_PROLOG = 
-				StrUtils.strjoinNL(
-						"@prefix text: <http://jena.apache.org/text#> .",
-						"@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ."
-						);
-	
-	protected Dataset dataset;
-	
-	protected void doTestSearch(String turtle, String queryString, Set<String> expectedEntityURIs) {
-		doTestSearch("", turtle, queryString, expectedEntityURIs);
-	}
-	
-	protected void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs) {
-		doTestSearch(label, turtle, queryString, expectedEntityURIs, expectedEntityURIs.size());
-	}
-	
-	protected void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs, int expectedNumResults) {
-		Model model = dataset.getDefaultModel();
-		Reader reader = new StringReader(turtle);
-		dataset.begin(ReadWrite.WRITE);
-		model.read(reader, "", "TURTLE");
-		dataset.commit();
-		doTestQuery(dataset, label, queryString, expectedEntityURIs, expectedNumResults);
-	}
-	
-	public static void doTestQuery(Dataset dataset, String label, String queryString, Set<String> expectedEntityURIs, int expectedNumResults) {
-		Query query = QueryFactory.create(queryString) ;
-		dataset.begin(ReadWrite.READ);
-		try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
-		    ResultSet results = qexec.execSelect() ;
-		    
-		    assertEquals(label, expectedNumResults > 0, results.hasNext());
-		    int count;
-		    for (count=0; results.hasNext(); count++) {
-		    	String entityURI = results.next().getResource("s").getURI();
-		        assertTrue(label + ": unexpected result: " + entityURI, expectedEntityURIs.contains(entityURI));
-		    }
-		    assertEquals(label, expectedNumResults, count);
-		}
-		finally {
-		    dataset.end() ;
-	    }		
-	}
+    protected static final String RESOURCE_BASE = "http://example.org/data/resource/";
+    protected static final String QUERY_PROLOG = 
+            StrUtils.strjoinNL(
+                "PREFIX text: <http://jena.apache.org/text#>",
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+                );
+    
+    protected static final String TURTLE_PROLOG = 
+                StrUtils.strjoinNL(
+                        "@prefix text: <http://jena.apache.org/text#> .",
+                        "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ."
+                        );
+    
+    protected Dataset dataset;
+    
+    protected void doTestSearch(String turtle, String queryString, Set<String> expectedEntityURIs) {
+        doTestSearch("", turtle, queryString, expectedEntityURIs);
+    }
+    
+    protected void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs) {
+        doTestSearch(label, turtle, queryString, expectedEntityURIs, expectedEntityURIs.size());
+    }
+    
+    protected void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs, int expectedNumResults) {
+        Model model = dataset.getDefaultModel();
+        Reader reader = new StringReader(turtle);
+        dataset.begin(ReadWrite.WRITE);
+        model.read(reader, "", "TURTLE");
+        dataset.commit();
+        doTestQuery(dataset, label, queryString, expectedEntityURIs, expectedNumResults);
+    }
+    
+    public static void doTestQuery(Dataset dataset, String label, String queryString, Set<String> expectedEntityURIs, int expectedNumResults) {
+        Query query = QueryFactory.create(queryString) ;
+        dataset.begin(ReadWrite.READ);
+        try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
+            ResultSet results = qexec.execSelect() ;
+            
+            assertEquals(label, expectedNumResults > 0, results.hasNext());
+            int count;
+            for (count=0; results.hasNext(); count++) {
+                String entityURI = results.next().getResource("s").getURI();
+                assertTrue(label + ": unexpected result: " + entityURI, expectedEntityURIs.contains(entityURI));
+            }
+            assertEquals(label, expectedNumResults, count);
+        }
+        finally {
+            dataset.end() ;
+        }        
+    }
 }

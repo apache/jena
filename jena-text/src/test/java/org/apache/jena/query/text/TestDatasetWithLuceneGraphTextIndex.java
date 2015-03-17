@@ -21,10 +21,10 @@ package org.apache.jena.query.text;
 import org.junit.Before ;
 
 public class TestDatasetWithLuceneGraphTextIndex extends AbstractTestDatasetWithLuceneGraphTextIndex {
-	
-	@Before
-	public void before() {
-		init();
-	}
-	
+
+    @Before
+    public void before() {
+        init();
+    }
+
 }

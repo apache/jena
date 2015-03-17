@@ -34,15 +34,15 @@ import com.hp.hpl.jena.vocabulary.RDFS ;
 public class AbstractTestDatasetWithLuceneGraphTextIndex extends AbstractTestDatasetWithGraphTextIndex {
 
     @Before
-	public void init() {
+    public void init() {
         Dataset ds1 = TDBFactory.createDataset() ;
         Directory dir = new RAMDirectory() ;
         EntityDefinition eDef = new EntityDefinition("iri", "text", "graph", RDFS.label.asNode()) ;
         eDef.set("comment", RDFS.comment.asNode()) ; // some tests require indexing rdfs:comment
         TextIndex tidx = new TextIndexLucene(dir, eDef, null) ;
         dataset = TextDatasetFactory.create(ds1, tidx) ;
-	}
-    
+    }
+
     @After
     public void teardown() {
         dataset.close();

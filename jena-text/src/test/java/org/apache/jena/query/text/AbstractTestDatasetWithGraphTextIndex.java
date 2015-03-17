@@ -50,126 +50,126 @@ public abstract class AbstractTestDatasetWithGraphTextIndex extends AbstractTest
         }
     }
 
-	@Test
-	public void testOneSimpleResultInGraph() {
-		final String turtle = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"<" + RESOURCE_BASE + "testOneSimpleResult>",
-				"  rdfs:label 'bar testOneSimpleResult barfoo foo'",
-				"."
-				);
+    @Test
+    public void testOneSimpleResultInGraph() {
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testOneSimpleResult>",
+                "  rdfs:label 'bar testOneSimpleResult barfoo foo'",
+                "."
+                );
                 putTurtleInModel(turtle, "http://example.org/modelA") ;
-		String queryString = StrUtils.strjoinNL(
-				QUERY_PROLOG,
-				"SELECT ?s",
-				"WHERE {",
-				"  GRAPH ?g { ?s text:query ( rdfs:label 'testOneSimpleResult' 10 ) . }",
-				"}"
-				);
-		Set<String> expectedURIs = new HashSet<>() ;
-		expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testOneSimpleResult")) ;
-		doTestQuery(dataset, "", queryString, expectedURIs, expectedURIs.size()) ;
-	}
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "  GRAPH ?g { ?s text:query ( rdfs:label 'testOneSimpleResult' 10 ) . }",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testOneSimpleResult")) ;
+        doTestQuery(dataset, "", queryString, expectedURIs, expectedURIs.size()) ;
+    }
 
-	@Test
-	public void testOneResultTwoGraphs() {
-		final String turtleA = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"<" + RESOURCE_BASE + "testResultInModelA>",
-				"  rdfs:label 'bar testOneResult barfoo foo'",
-				"."
-				);
+    @Test
+    public void testOneResultTwoGraphs() {
+        final String turtleA = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testResultInModelA>",
+                "  rdfs:label 'bar testOneResult barfoo foo'",
+                "."
+                );
                 putTurtleInModel(turtleA, "http://example.org/modelA") ;
-		final String turtleB = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"<" + RESOURCE_BASE + "testResultInModelB>",
-				"  rdfs:label 'bar testOneResult barfoo foo'",
-				"."
-				);
+        final String turtleB = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testResultInModelB>",
+                "  rdfs:label 'bar testOneResult barfoo foo'",
+                "."
+                );
                 putTurtleInModel(turtleB, "http://example.org/modelB") ;
-		String queryString = StrUtils.strjoinNL(
-				QUERY_PROLOG,
-				"SELECT ?s",
-				"WHERE {",
-				"  GRAPH <http://example.org/modelA> { ?s text:query ( rdfs:label 'testOneResult' 10 ) . }",
-				"}"
-				);
-		Set<String> expectedURIs = new HashSet<>() ;
-		expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testResultInModelA")) ;
-		doTestQuery(dataset, "", queryString, expectedURIs, expectedURIs.size()) ;
-	}
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "  GRAPH <http://example.org/modelA> { ?s text:query ( rdfs:label 'testOneResult' 10 ) . }",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testResultInModelA")) ;
+        doTestQuery(dataset, "", queryString, expectedURIs, expectedURIs.size()) ;
+    }
 
-	@Test
-	public void testORFromGraphs() {
-		final String turtleA = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"<" + RESOURCE_BASE + "testResultOneInModelA>",
-				"  rdfs:label 'bar testResultOne barfoo foo'",
-				".",
-				"<" + RESOURCE_BASE + "testResultTwoInModelA>",
-				"  rdfs:label 'bar testResultTwo barfoo foo'",
-				".",
-				"<" + RESOURCE_BASE + "testResultThreeInModelA>",
-				"  rdfs:label 'bar testResultThree barfoo foo'",
-				"."
-				);
+    @Test
+    public void testORFromGraphs() {
+        final String turtleA = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testResultOneInModelA>",
+                "  rdfs:label 'bar testResultOne barfoo foo'",
+                ".",
+                "<" + RESOURCE_BASE + "testResultTwoInModelA>",
+                "  rdfs:label 'bar testResultTwo barfoo foo'",
+                ".",
+                "<" + RESOURCE_BASE + "testResultThreeInModelA>",
+                "  rdfs:label 'bar testResultThree barfoo foo'",
+                "."
+                );
                 putTurtleInModel(turtleA, "http://example.org/modelA") ;
-		final String turtleB = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"<" + RESOURCE_BASE + "testResultOneInModelB>",
-				"  rdfs:label 'bar testResultOne barfoo foo'",
-				"."
-				);
+        final String turtleB = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testResultOneInModelB>",
+                "  rdfs:label 'bar testResultOne barfoo foo'",
+                "."
+                );
                 putTurtleInModel(turtleB, "http://example.org/modelB") ;
-		String queryString = StrUtils.strjoinNL(
-				QUERY_PROLOG,
-				"SELECT ?s",
-				"WHERE {",
-				"  GRAPH <http://example.org/modelA> { ?s text:query ( rdfs:label 'testResultOne OR testResultTwo' 10 ) . }",
-				"}"
-				);
-		Set<String> expectedURIs = new HashSet<>() ;
-		expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testResultOneInModelA", RESOURCE_BASE + "testResultTwoInModelA")) ;
-		doTestQuery(dataset, "", queryString, expectedURIs, expectedURIs.size()) ;
-	}
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "  GRAPH <http://example.org/modelA> { ?s text:query ( rdfs:label 'testResultOne OR testResultTwo' 10 ) . }",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testResultOneInModelA", RESOURCE_BASE + "testResultTwoInModelA")) ;
+        doTestQuery(dataset, "", queryString, expectedURIs, expectedURIs.size()) ;
+    }
 
-	@Test
-	public void testQueryFromDefaultGraph() {
-		final String turtleA = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"<" + RESOURCE_BASE + "testResultInModelA>",
-				"  rdfs:label 'bar testOneResult barfoo foo'",
-				"."
-				);
+    @Test
+    public void testQueryFromDefaultGraph() {
+        final String turtleA = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testResultInModelA>",
+                "  rdfs:label 'bar testOneResult barfoo foo'",
+                "."
+                );
                 putTurtleInModel(turtleA, null) ; // put in default graph
-		final String turtleB = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"<" + RESOURCE_BASE + "testResultInModelB>",
-				"  rdfs:label 'bar testOneResult barfoo foo'",
-				"."
-				);
+        final String turtleB = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testResultInModelB>",
+                "  rdfs:label 'bar testOneResult barfoo foo'",
+                "."
+                );
                 putTurtleInModel(turtleB, "http://example.org/modelB") ;
-		String queryString = StrUtils.strjoinNL(
-				QUERY_PROLOG,
-				"SELECT ?s",
-				"WHERE {",
-				"    ?s text:query ( rdfs:label 'testOneResult' 10 ) .",
-				"}"
-				);
-		Set<String> expectedURIs = new HashSet<>() ;
-		expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testResultInModelA")) ;
-		doTestQuery(dataset, "", queryString, expectedURIs, expectedURIs.size()) ;
-	}
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:label 'testOneResult' 10 ) .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testResultInModelA")) ;
+        doTestQuery(dataset, "", queryString, expectedURIs, expectedURIs.size()) ;
+    }
 
-	@Test
-	public void testBnodeIdentifiedGraph() {
-		final String trig = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"_:graphA {",
-				"  <" + RESOURCE_BASE + "testResultInGraphA>",
-				"    rdfs:label 'bar testResult barfoo foo' .",
-				"}"
-				);
+    @Test
+    public void testBnodeIdentifiedGraph() {
+        final String trig = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "_:graphA {",
+                "  <" + RESOURCE_BASE + "testResultInGraphA>",
+                "    rdfs:label 'bar testResult barfoo foo' .",
+                "}"
+                );
         StringReader reader = new StringReader(trig);
         dataset.begin(ReadWrite.WRITE) ;
         try {
@@ -180,15 +180,15 @@ public abstract class AbstractTestDatasetWithGraphTextIndex extends AbstractTest
             dataset.end();
         }
 
-		String queryString = StrUtils.strjoinNL(
-				QUERY_PROLOG,
-				"SELECT ?s",
-				"WHERE {",
-				"  GRAPH ?g { ?s text:query ( rdfs:label 'testResult' 10 ) . }",
-				"}"
-				);
-		Set<String> expectedURIs = new HashSet<>() ;
-		expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testResultInGraphA")) ;
-		doTestQuery(dataset, "", queryString, expectedURIs, expectedURIs.size()) ;
-	}
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "  GRAPH ?g { ?s text:query ( rdfs:label 'testResult' 10 ) . }",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testResultInGraphA")) ;
+        doTestQuery(dataset, "", queryString, expectedURIs, expectedURIs.size()) ;
+    }
 }

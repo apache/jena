@@ -44,123 +44,123 @@ import com.hp.hpl.jena.vocabulary.RDF ;
  */
 public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
 
-	private static final String TESTBASE = "http://example.org/testDatasetAssembler/";
+    private static final String TESTBASE = "http://example.org/testDatasetAssembler/";
 
-	private static final Resource spec1;
-	private static final Resource noDatasetPropertySpec;
-	private static final Resource noIndexPropertySpec;
-	private static final Resource customTextDocProducerSpec;
-	private static final Resource customDyadicTextDocProducerSpec;
+    private static final Resource spec1;
+    private static final Resource noDatasetPropertySpec;
+    private static final Resource noIndexPropertySpec;
+    private static final Resource customTextDocProducerSpec;
+    private static final Resource customDyadicTextDocProducerSpec;
 
-	@Test
-	public void testSimpleDatasetAssembler() {
-		Dataset dataset = (Dataset) Assembler.general.open(spec1);
-		assertTrue(dataset.getContext().get(TextQuery.textIndex) instanceof TextIndexLucene);
-	}
+    @Test
+    public void testSimpleDatasetAssembler() {
+        Dataset dataset = (Dataset) Assembler.general.open(spec1);
+        assertTrue(dataset.getContext().get(TextQuery.textIndex) instanceof TextIndexLucene);
+    }
 
-	@Test(expected = AssemblerException.class)
-	public void testErrorOnNoDataset() {
-		Assembler.general.open(noDatasetPropertySpec);
-	}
+    @Test(expected = AssemblerException.class)
+    public void testErrorOnNoDataset() {
+        Assembler.general.open(noDatasetPropertySpec);
+    }
 
-	@Test(expected = AssemblerException.class)
-	public void testErrorOnNoIndex() {
-		Assembler.general.open(noIndexPropertySpec);
-	}
+    @Test(expected = AssemblerException.class)
+    public void testErrorOnNoIndex() {
+        Assembler.general.open(noIndexPropertySpec);
+    }
 
-	@Test
-	public void testCustomTextDocProducer() {
-		Dataset dataset = (Dataset)Assembler.general.open(customTextDocProducerSpec) ;
-		DatasetGraphText dsgText = (DatasetGraphText)dataset.asDatasetGraph() ;
-		assertTrue(dsgText.getMonitor() instanceof CustomTextDocProducer) ;
-		dataset.close();
-	}
+    @Test
+    public void testCustomTextDocProducer() {
+        Dataset dataset = (Dataset)Assembler.general.open(customTextDocProducerSpec) ;
+        DatasetGraphText dsgText = (DatasetGraphText)dataset.asDatasetGraph() ;
+        assertTrue(dsgText.getMonitor() instanceof CustomTextDocProducer) ;
+        dataset.close();
+    }
 
-	@Test
-	public void testCustomTextDocProducerDyadicConstructor() {
-		Dataset dataset = (Dataset)Assembler.general.open(customDyadicTextDocProducerSpec) ;
-		DatasetGraphText dsgText = (DatasetGraphText)dataset.asDatasetGraph() ;
-		assertTrue(dsgText.getMonitor() instanceof CustomDyadicTextDocProducer) ;
-	
-		Node G= NodeFactory.createURI("http://example.com/G");
-		Node S = NodeFactory.createURI("http://example.com/S");
-		Node P = NodeFactory.createURI("http://example.com/P");
-		Node O = NodeFactory.createLiteral("http://example.com/O");
-	
-		dsgText.begin(ReadWrite.WRITE);
-		dsgText.add(G, S, P, O);
-		dsgText.commit();
-		dataset.close();
-	}
+    @Test
+    public void testCustomTextDocProducerDyadicConstructor() {
+        Dataset dataset = (Dataset)Assembler.general.open(customDyadicTextDocProducerSpec) ;
+        DatasetGraphText dsgText = (DatasetGraphText)dataset.asDatasetGraph() ;
+        assertTrue(dsgText.getMonitor() instanceof CustomDyadicTextDocProducer) ;
 
-	static {
-		TextAssembler.init();
-		AssemblerTDB.init();
-		spec1 =
-			model.createResource(TESTBASE + "spec1")
-			     .addProperty(RDF.type, TextVocab.textDataset)
-			     .addProperty(TextVocab.pDataset, SIMPLE_DATASET_SPEC)
-			     .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC3);
-		noDatasetPropertySpec =
-			model.createResource(TESTBASE + "noDatasetPropertySpec")
-			     .addProperty(RDF.type, TextVocab.textDataset)
-			     .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC4);
-		noIndexPropertySpec =
-			model.createResource(TESTBASE + "noIndexPropertySpec")
-			     .addProperty(RDF.type, TextVocab.textDataset)
-			     .addProperty(TextVocab.pDataset, SIMPLE_DATASET_SPEC);
-		customTextDocProducerSpec =
-			model.createResource(TESTBASE + "customTextDocProducerSpec")
-		    	.addProperty(RDF.type, TextVocab.textDataset)
-		    	.addProperty(TextVocab.pDataset, SIMPLE_DATASET_SPEC)
-		    	.addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC5)
-		    	.addProperty(TextVocab.pTextDocProducer, model.createResource("java:org.apache.jena.query.text.assembler.TestTextDatasetAssembler$CustomTextDocProducer"));
+        Node G= NodeFactory.createURI("http://example.com/G");
+        Node S = NodeFactory.createURI("http://example.com/S");
+        Node P = NodeFactory.createURI("http://example.com/P");
+        Node O = NodeFactory.createLiteral("http://example.com/O");
 
-		customDyadicTextDocProducerSpec =
-			model.createResource(TESTBASE + "customDyadicTextDocProducerSpec")
-				.addProperty(RDF.type, TextVocab.textDataset)
-				.addProperty(TextVocab.pDataset, SIMPLE_DATASET_SPEC)
-				.addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC5)
-				.addProperty(TextVocab.pTextDocProducer, model.createResource("java:org.apache.jena.query.text.assembler.TestTextDatasetAssembler$CustomDyadicTextDocProducer"));
-	}
+        dsgText.begin(ReadWrite.WRITE);
+        dsgText.add(G, S, P, O);
+        dsgText.commit();
+        dataset.close();
+    }
 
-	private static class CustomTextDocProducer implements TextDocProducer {
-	    
-		public CustomTextDocProducer(TextIndex textIndex) { }
+    static {
+        TextAssembler.init();
+        AssemblerTDB.init();
+        spec1 =
+            model.createResource(TESTBASE + "spec1")
+                 .addProperty(RDF.type, TextVocab.textDataset)
+                 .addProperty(TextVocab.pDataset, SIMPLE_DATASET_SPEC)
+                 .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC3);
+        noDatasetPropertySpec =
+            model.createResource(TESTBASE + "noDatasetPropertySpec")
+                 .addProperty(RDF.type, TextVocab.textDataset)
+                 .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC4);
+        noIndexPropertySpec =
+            model.createResource(TESTBASE + "noIndexPropertySpec")
+                 .addProperty(RDF.type, TextVocab.textDataset)
+                 .addProperty(TextVocab.pDataset, SIMPLE_DATASET_SPEC);
+        customTextDocProducerSpec =
+            model.createResource(TESTBASE + "customTextDocProducerSpec")
+                 .addProperty(RDF.type, TextVocab.textDataset)
+                 .addProperty(TextVocab.pDataset, SIMPLE_DATASET_SPEC)
+                 .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC5)
+                 .addProperty(TextVocab.pTextDocProducer, model.createResource("java:org.apache.jena.query.text.assembler.TestTextDatasetAssembler$CustomTextDocProducer"));
 
-		@Override
-		public void start() { }
+        customDyadicTextDocProducerSpec =
+            model.createResource(TESTBASE + "customDyadicTextDocProducerSpec")
+                 .addProperty(RDF.type, TextVocab.textDataset)
+                 .addProperty(TextVocab.pDataset, SIMPLE_DATASET_SPEC)
+                 .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC5)
+                 .addProperty(TextVocab.pTextDocProducer, model.createResource("java:org.apache.jena.query.text.assembler.TestTextDatasetAssembler$CustomDyadicTextDocProducer"));
+    }
 
-		@Override
-		public void finish() { }
+    private static class CustomTextDocProducer implements TextDocProducer {
 
-		@Override
-		public void change(QuadAction qaction, Node g, Node s, Node p, Node o) { }
-	}
+        public CustomTextDocProducer(TextIndex textIndex) { }
+
+        @Override
+        public void start() { }
+
+        @Override
+        public void finish() { }
+
+        @Override
+        public void change(QuadAction qaction, Node g, Node s, Node p, Node o) { }
+    }
 
 
-	private static class CustomDyadicTextDocProducer implements TextDocProducer {
-	    
-		final DatasetGraph dg;
-		Node lastSubject = null;
+    private static class CustomDyadicTextDocProducer implements TextDocProducer {
 
-		public CustomDyadicTextDocProducer(DatasetGraph dg, TextIndex textIndex) { 
-			this.dg = dg;
-		}
+        final DatasetGraph dg;
+        Node lastSubject = null;
 
-		@Override
-		public void start() { }
+        public CustomDyadicTextDocProducer(DatasetGraph dg, TextIndex textIndex) { 
+            this.dg = dg;
+        }
 
-		@Override
-		public void finish() { 
-			Iterator<Quad> qi = dg.find(null, lastSubject, Node.ANY, Node.ANY);
-			while (qi.hasNext()) qi.next();
-		}
+        @Override
+        public void start() { }
 
-		@Override
-		public void change(QuadAction qaction, Node g, Node s, Node p, Node o) { 
-			lastSubject = s;
-		}
-	}
+        @Override
+        public void finish() { 
+            Iterator<Quad> qi = dg.find(null, lastSubject, Node.ANY, Node.ANY);
+            while (qi.hasNext()) qi.next();
+        }
+
+        @Override
+        public void change(QuadAction qaction, Node g, Node s, Node p, Node o) { 
+            lastSubject = s;
+        }
+    }
 
 }

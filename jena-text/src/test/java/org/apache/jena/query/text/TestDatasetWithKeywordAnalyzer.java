@@ -40,29 +40,29 @@ import com.hp.hpl.jena.rdf.model.Resource ;
  * This class defines a setup configuration for a dataset that uses a keyword analyzer with a Lucene index.
  */
 public class TestDatasetWithKeywordAnalyzer extends AbstractTestDatasetWithTextIndexBase {
-	
-	private static final String SPEC_BASE = "http://example.org/spec#";
-	private static final String SPEC_ROOT_LOCAL = "lucene_text_dataset";
-	private static final String SPEC_ROOT_URI = SPEC_BASE + SPEC_ROOT_LOCAL;
+    
+    private static final String SPEC_BASE = "http://example.org/spec#";
+    private static final String SPEC_ROOT_LOCAL = "lucene_text_dataset";
+    private static final String SPEC_ROOT_URI = SPEC_BASE + SPEC_ROOT_LOCAL;
 
-	private static String makeSpec(String analyzer) {
-	    return StrUtils.strjoinNL(
-					"prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ",
-					"prefix ja:   <http://jena.hpl.hp.com/2005/11/Assembler#> ",
-					"prefix tdb:  <http://jena.hpl.hp.com/2008/tdb#>",
-					"prefix text: <http://jena.apache.org/text#>",
-					"prefix :     <" + SPEC_BASE + ">",
-					"",
-					"[] ja:loadClass    \"org.apache.jena.query.text.TextQuery\" .",
-				    "text:TextDataset      rdfs:subClassOf   ja:RDFDataset .",
-				    "text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .",
-				    
-				    ":" + SPEC_ROOT_LOCAL,
-				    "    a              text:TextDataset ;",
-				    "    text:dataset   :dataset ;",
-				    "    text:index     :indexLucene ;",
-				    "    .",
-				    "",
+    private static String makeSpec(String analyzer) {
+        return StrUtils.strjoinNL(
+                    "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ",
+                    "prefix ja:   <http://jena.hpl.hp.com/2005/11/Assembler#> ",
+                    "prefix tdb:  <http://jena.hpl.hp.com/2008/tdb#>",
+                    "prefix text: <http://jena.apache.org/text#>",
+                    "prefix :     <" + SPEC_BASE + ">",
+                    "",
+                    "[] ja:loadClass    \"org.apache.jena.query.text.TextQuery\" .",
+                    "text:TextDataset      rdfs:subClassOf   ja:RDFDataset .",
+                    "text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .",
+                    
+                    ":" + SPEC_ROOT_LOCAL,
+                    "    a              text:TextDataset ;",
+                    "    text:dataset   :dataset ;",
+                    "    text:index     :indexLucene ;",
+                    "    .",
+                    "",
                     ":dataset",
                     "    a               ja:RDFDataset ;",
                     "    ja:defaultGraph :graph ;",
@@ -71,84 +71,84 @@ public class TestDatasetWithKeywordAnalyzer extends AbstractTestDatasetWithTextI
                     "    a               ja:MemoryModel ;",
                     ".",
                     "",
-				    ":indexLucene",
+                    ":indexLucene",
                     "    a text:TextIndexLucene ;",
-				    "    text:directory \"mem\" ;",
-				    "    text:entityMap :entMap ;",
-				    "    .",
+                    "    text:directory \"mem\" ;",
+                    "    text:entityMap :entMap ;",
+                    "    .",
                     "",
-				    ":entMap",
+                    ":entMap",
                     "    a text:EntityMap ;",
-				    "    text:entityField      \"uri\" ;",
-				    "    text:defaultField     \"label\" ;",
-				    "    text:map (",
-				    "         [ text:field \"label\" ; ",
-				    "           text:predicate rdfs:label ;",
-				    "           text:analyzer [ a " + analyzer + " ]",
-				    "         ]",
-				    "         [ text:field \"comment\" ; text:predicate rdfs:comment ]",
-				    "         ) ."
-				    );
-	}      
-	
-	public void init(String analyzer) {
-		Reader reader = new StringReader(makeSpec(analyzer));
-		Model specModel = ModelFactory.createDefaultModel();
-		specModel.read(reader, "", "TURTLE");
-		TextAssembler.init();			
-		Resource root = specModel.getResource(SPEC_ROOT_URI);
-		dataset = (Dataset) Assembler.general.open(root);
-	}
-	
-	
-	@Before
-	public void before() {
-		init("text:KeywordAnalyzer");
-	}
-	
-	@After
-	public void after() {
-		dataset.close();
-	}
-	
-	@Test
-	public void testKeywordAnalyzerDoesNotSplitTokensAtSpace() {
-		final String testName = "testKeywordAnalyzerDoesNotSplitTokensAtSpace";
-		final String turtle = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"<" + RESOURCE_BASE + testName + ">",
-				"  rdfs:label 'EC1V 9BE'",
-				"."
-				);
-		String queryString = StrUtils.strjoinNL(
-				QUERY_PROLOG,
-				"SELECT ?s",
-				"WHERE {",
-				"    ?s text:query ( rdfs:label 'EC1V' 10 ) .",
-				"}"
-				);
-		Set<String> expectedURIs = new HashSet<>() ;
-		doTestSearch(turtle, queryString, expectedURIs);
-	}
-	
-	@Test
-	public void testKeywordAnalyzerMatchesWholeField() {
-		final String testName = "testKeywordAnalyzerMatchesWholeField";
-		final String turtle = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"<" + RESOURCE_BASE + testName + ">",
-				"  rdfs:label 'EC2V 9BE'",
-				"."
-				);
-		String queryString = StrUtils.strjoinNL(
-				QUERY_PROLOG,
-				"SELECT ?s",
-				"WHERE {",
-				"    ?s text:query ( rdfs:label '\"EC2V 9BE\"' 10 ) .",
-				"}"
-				);
-		Set<String> expectedURIs = new HashSet<>() ;
-		expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + testName)) ;
-		doTestSearch(turtle, queryString, expectedURIs);
-	}
+                    "    text:entityField      \"uri\" ;",
+                    "    text:defaultField     \"label\" ;",
+                    "    text:map (",
+                    "         [ text:field \"label\" ; ",
+                    "           text:predicate rdfs:label ;",
+                    "           text:analyzer [ a " + analyzer + " ]",
+                    "         ]",
+                    "         [ text:field \"comment\" ; text:predicate rdfs:comment ]",
+                    "         ) ."
+                    );
+    }      
+    
+    public void init(String analyzer) {
+        Reader reader = new StringReader(makeSpec(analyzer));
+        Model specModel = ModelFactory.createDefaultModel();
+        specModel.read(reader, "", "TURTLE");
+        TextAssembler.init();            
+        Resource root = specModel.getResource(SPEC_ROOT_URI);
+        dataset = (Dataset) Assembler.general.open(root);
+    }
+    
+    
+    @Before
+    public void before() {
+        init("text:KeywordAnalyzer");
+    }
+    
+    @After
+    public void after() {
+        dataset.close();
+    }
+    
+    @Test
+    public void testKeywordAnalyzerDoesNotSplitTokensAtSpace() {
+        final String testName = "testKeywordAnalyzerDoesNotSplitTokensAtSpace";
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + testName + ">",
+                "  rdfs:label 'EC1V 9BE'",
+                "."
+                );
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:label 'EC1V' 10 ) .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>() ;
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
+    
+    @Test
+    public void testKeywordAnalyzerMatchesWholeField() {
+        final String testName = "testKeywordAnalyzerMatchesWholeField";
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + testName + ">",
+                "  rdfs:label 'EC2V 9BE'",
+                "."
+                );
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:label '\"EC2V 9BE\"' 10 ) .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + testName)) ;
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
 }

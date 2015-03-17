@@ -41,31 +41,31 @@ import com.hp.hpl.jena.rdf.model.Resource ;
  * This class defines a setup configuration for a dataset that uses a simple analyzer with a Lucene index.
  */
 public class TestDatasetWithSimpleAnalyzer extends AbstractTestDatasetWithTextIndexBase {
-	private static final String INDEX_PATH = "target/test/TestDatasetWithLuceneIndex";
-	private static final File indexDir = new File(INDEX_PATH);
-	
-	private static final String SPEC_BASE = "http://example.org/spec#";
-	private static final String SPEC_ROOT_LOCAL = "lucene_text_dataset";
-	private static final String SPEC_ROOT_URI = SPEC_BASE + SPEC_ROOT_LOCAL;
-	private static final String SPEC;
-	static {
-	    SPEC = StrUtils.strjoinNL(
-					"prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ",
-					"prefix ja:   <http://jena.hpl.hp.com/2005/11/Assembler#> ",
-					"prefix tdb:  <http://jena.hpl.hp.com/2008/tdb#>",
-					"prefix text: <http://jena.apache.org/text#>",
-					"prefix :     <" + SPEC_BASE + ">",
-					"",
-					"[] ja:loadClass    \"org.apache.jena.query.text.TextQuery\" .",
-				    "text:TextDataset      rdfs:subClassOf   ja:RDFDataset .",
-				    "text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .",
-				    
-				    ":" + SPEC_ROOT_LOCAL,
-				    "    a              text:TextDataset ;",
-				    "    text:dataset   :dataset ;",
-				    "    text:index     :indexLucene ;",
-				    "    .",
-				    "",
+    private static final String INDEX_PATH = "target/test/TestDatasetWithLuceneIndex";
+    private static final File indexDir = new File(INDEX_PATH);
+    
+    private static final String SPEC_BASE = "http://example.org/spec#";
+    private static final String SPEC_ROOT_LOCAL = "lucene_text_dataset";
+    private static final String SPEC_ROOT_URI = SPEC_BASE + SPEC_ROOT_LOCAL;
+    private static final String SPEC;
+    static {
+        SPEC = StrUtils.strjoinNL(
+                    "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ",
+                    "prefix ja:   <http://jena.hpl.hp.com/2005/11/Assembler#> ",
+                    "prefix tdb:  <http://jena.hpl.hp.com/2008/tdb#>",
+                    "prefix text: <http://jena.apache.org/text#>",
+                    "prefix :     <" + SPEC_BASE + ">",
+                    "",
+                    "[] ja:loadClass    \"org.apache.jena.query.text.TextQuery\" .",
+                    "text:TextDataset      rdfs:subClassOf   ja:RDFDataset .",
+                    "text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .",
+                    
+                    ":" + SPEC_ROOT_LOCAL,
+                    "    a              text:TextDataset ;",
+                    "    text:dataset   :dataset ;",
+                    "    text:index     :indexLucene ;",
+                    "    .",
+                    "",
                     ":dataset",
                     "    a               ja:RDFDataset ;",
                     "    ja:defaultGraph :graph ;",
@@ -74,71 +74,71 @@ public class TestDatasetWithSimpleAnalyzer extends AbstractTestDatasetWithTextIn
                     "    a               ja:MemoryModel ;",
                     ".",
                     "",
-				    ":indexLucene",
+                    ":indexLucene",
                     "    a text:TextIndexLucene ;",
-				    "    text:directory <file:" + INDEX_PATH + "> ;",
-				    "    text:entityMap :entMap ;",
-				    "    .",
+                    "    text:directory <file:" + INDEX_PATH + "> ;",
+                    "    text:entityMap :entMap ;",
+                    "    .",
                     "",
-				    ":entMap",
+                    ":entMap",
                     "    a text:EntityMap ;",
-				    "    text:entityField      \"uri\" ;",
-				    "    text:defaultField     \"label\" ;",
-				    "    text:map (",
-				    "         [ text:field \"label\" ; ",
-				    "           text:predicate rdfs:label ;",
-				    "           text:analyzer [ a text:SimpleAnalyzer ]",
-				    "         ]",
-				    "         [ text:field \"comment\" ; text:predicate rdfs:comment ]",
-				    "         ) ."
-				    );
-	}      
-	
-	public void init() {
-		Reader reader = new StringReader(SPEC);
-		Model specModel = ModelFactory.createDefaultModel();
-		specModel.read(reader, "", "TURTLE");
-		TextAssembler.init();			
-//		deleteOldFiles();
-		indexDir.mkdirs();
-		Resource root = specModel.getResource(SPEC_ROOT_URI);
-		dataset = (Dataset) Assembler.general.open(root);
-	}
-	
-	
-	public void deleteOldFiles() {
-	    dataset.close();
-		if (indexDir.exists()) TextSearchUtil.emptyAndDeleteDirectory(indexDir);
-	}	
+                    "    text:entityField      \"uri\" ;",
+                    "    text:defaultField     \"label\" ;",
+                    "    text:map (",
+                    "         [ text:field \"label\" ; ",
+                    "           text:predicate rdfs:label ;",
+                    "           text:analyzer [ a text:SimpleAnalyzer ]",
+                    "         ]",
+                    "         [ text:field \"comment\" ; text:predicate rdfs:comment ]",
+                    "         ) ."
+                    );
+    }      
+    
+    public void init() {
+        Reader reader = new StringReader(SPEC);
+        Model specModel = ModelFactory.createDefaultModel();
+        specModel.read(reader, "", "TURTLE");
+        TextAssembler.init();            
+//        deleteOldFiles();
+        indexDir.mkdirs();
+        Resource root = specModel.getResource(SPEC_ROOT_URI);
+        dataset = (Dataset) Assembler.general.open(root);
+    }
+    
+    
+    public void deleteOldFiles() {
+        dataset.close();
+        if (indexDir.exists()) TextSearchUtil.emptyAndDeleteDirectory(indexDir);
+    }    
 
-	@Before 
-	public void beforeClass() {
-		init();
-	}	
-	
-	@After
-	public void afterClass() {
-		deleteOldFiles();
-	}
-	
-	@Test
-	public void testSimpleAnalyzer() {
-		final String turtle = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"<" + RESOURCE_BASE + "testSimpleAnalyzer>",
-				"  rdfs:label 'bar the barfoo foo'",
-				"."
-				);
-		// the simple analyzer should not filter out the 'the' word
-		String queryString = StrUtils.strjoinNL(
-				QUERY_PROLOG,
-				"SELECT ?s",
-				"WHERE {",
-				"    ?s text:query ( rdfs:label 'the' 10 ) .",
-				"}"
-				);
-		Set<String> expectedURIs = new HashSet<>() ;
-		expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testSimpleAnalyzer")) ;
-		doTestSearch(turtle, queryString, expectedURIs);
-	}
+    @Before 
+    public void beforeClass() {
+        init();
+    }    
+    
+    @After
+    public void afterClass() {
+        deleteOldFiles();
+    }
+    
+    @Test
+    public void testSimpleAnalyzer() {
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testSimpleAnalyzer>",
+                "  rdfs:label 'bar the barfoo foo'",
+                "."
+                );
+        // the simple analyzer should not filter out the 'the' word
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:label 'the' 10 ) .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testSimpleAnalyzer")) ;
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
 }

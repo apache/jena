@@ -33,7 +33,7 @@ import org.apache.lucene.util.Version;
 public class TextSearchUtil {
     private static Version VER = TextIndexLucene.VER ;
     private static final Analyzer analyzer = new StandardAnalyzer(VER);
-	
+
     public static void emptyAndDeleteDirectory(File dir) {
         File[] contents = dir.listFiles() ;
         if (contents != null) {
@@ -58,6 +58,6 @@ public class TextSearchUtil {
         } catch (IOException ex) {
             IO.exception(ex) ;
         }
-	}
+    }
 
 }

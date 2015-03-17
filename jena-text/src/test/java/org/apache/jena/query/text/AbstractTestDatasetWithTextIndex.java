@@ -32,35 +32,35 @@ import org.junit.Test ;
  * the actual tests.
  */
 public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatasetWithTextIndexBase {
-	
-	@Test
-	public void testOneSimpleResult() {
-		final String turtle = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"<" + RESOURCE_BASE + "testOneSimpleResult>",
-				"  rdfs:label 'bar testOneSimpleResult barfoo foo'",
-				"."
-				);
-		String queryString = StrUtils.strjoinNL(
-				QUERY_PROLOG,
-				"SELECT ?s",
-				"WHERE {",
-				"    ?s text:query ( rdfs:label 'testOneSimpleResult' 10 ) .",
-				"}"
-				);
-		Set<String> expectedURIs = new HashSet<>() ;
-		expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testOneSimpleResult")) ;
-		doTestSearch(turtle, queryString, expectedURIs);
-	}
+    
+    @Test
+    public void testOneSimpleResult() {
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testOneSimpleResult>",
+                "  rdfs:label 'bar testOneSimpleResult barfoo foo'",
+                "."
+                );
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:label 'testOneSimpleResult' 10 ) .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testOneSimpleResult")) ;
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
 
-	static final String R_S1 = RESOURCE_BASE + "s1" ;
+    static final String R_S1 = RESOURCE_BASE + "s1" ;
     static final String R_S2 = RESOURCE_BASE + "s2" ;
-	static final String PF_DATA = StrUtils.strjoinNL(
-	                                           TURTLE_PROLOG,
-	                                           "<" + R_S1 + "> rdfs:label 'text' .",
-	                                           "<" + R_S2 + "> rdfs:label 'fuzz' ."
-	                                           );
-	
+    static final String PF_DATA = StrUtils.strjoinNL(
+                                               TURTLE_PROLOG,
+                                               "<" + R_S1 + "> rdfs:label 'text' .",
+                                               "<" + R_S2 + "> rdfs:label 'fuzz' ."
+                                               );
+    
     @Test
     public void propertyFunctionText_1() {
         final String turtle = PF_DATA ;
@@ -222,31 +222,31 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
 
 
     @Test
-	public void testMultipleResults() {
-		String label = "testMultipleResults";
-		final String turtle = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"<" + RESOURCE_BASE + label +"1>",
-				"  rdfs:label '" + label + "1'",
-				".",
-				"<" + RESOURCE_BASE + label + "2>",
-				"  rdfs:label '" + label + "2'",
-				"."
-				);
-		String queryString = StrUtils.strjoinNL(
-				QUERY_PROLOG,
-				"SELECT ?s",
-				"WHERE {",
-				"    ?s text:query ( rdfs:label '" + label + "?' 10 ) .",
-				"}"
-				);
-		Set<String> expectedURIs = new HashSet<>() ;
-		expectedURIs.addAll( Arrays.asList(
-			    "http://example.org/data/resource/" + label + "1",
-			    "http://example.org/data/resource/" + label + "2"
-		    ));
-		doTestSearch(turtle, queryString, expectedURIs);
-	}
+    public void testMultipleResults() {
+        String label = "testMultipleResults";
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + label +"1>",
+                "  rdfs:label '" + label + "1'",
+                ".",
+                "<" + RESOURCE_BASE + label + "2>",
+                "  rdfs:label '" + label + "2'",
+                "."
+                );
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:label '" + label + "?' 10 ) .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList(
+                "http://example.org/data/resource/" + label + "1",
+                "http://example.org/data/resource/" + label + "2"
+            ));
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
 
     @Test
     public void testMultipleResults_dft() {
@@ -276,74 +276,74 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
     }
 
     @Test
-	public void testSearchCorrectField() {
-		String label = "tscf";
-		String label2 = "tscfo";
-		final String turtle = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"<" + RESOURCE_BASE + label +"1>",
-				"  rdfs:label '" + label + "a' ; ",
-				"  rdfs:comment '" + label2 + "a' ;",
-				".",
-				"<" + RESOURCE_BASE + label + "2>",
-				"  rdfs:label '" + label2 + "b' ; ",
-				"  rdfs:comment '" + label + "b' ; ",
-				"."
-				);
-		String queryStringLabel = StrUtils.strjoinNL(
-				QUERY_PROLOG,
-				"SELECT ?s",
-				"WHERE {",
-				"    ?s text:query ( rdfs:label '" + label + "?' 10 ) .",
-				"}"
-				);
-		String queryStringComment = StrUtils.strjoinNL(
-				QUERY_PROLOG,
-				"SELECT ?s",
-				"WHERE {",
-				"    ?s text:query ( rdfs:comment '" + label + "?' 10 ) .",
-				"}"
-				);
-		Set<String> expectedURIsLabel = new HashSet<>() ;
-		expectedURIsLabel.addAll( Arrays.asList(
-			    "http://example.org/data/resource/" + label + "1"
-		    ));
-		Set<String> expectedURIsComment = new HashSet<>() ;
-		expectedURIsComment.addAll( Arrays.asList(
-			    "http://example.org/data/resource/" + label + "2"
-		    ));
-		doTestSearch("label:", turtle, queryStringLabel, expectedURIsLabel);
-		doTestSearch("comment:", turtle, queryStringComment, expectedURIsComment);
-	}
+    public void testSearchCorrectField() {
+        String label = "tscf";
+        String label2 = "tscfo";
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + label +"1>",
+                "  rdfs:label '" + label + "a' ; ",
+                "  rdfs:comment '" + label2 + "a' ;",
+                ".",
+                "<" + RESOURCE_BASE + label + "2>",
+                "  rdfs:label '" + label2 + "b' ; ",
+                "  rdfs:comment '" + label + "b' ; ",
+                "."
+                );
+        String queryStringLabel = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:label '" + label + "?' 10 ) .",
+                "}"
+                );
+        String queryStringComment = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:comment '" + label + "?' 10 ) .",
+                "}"
+                );
+        Set<String> expectedURIsLabel = new HashSet<>() ;
+        expectedURIsLabel.addAll( Arrays.asList(
+                "http://example.org/data/resource/" + label + "1"
+            ));
+        Set<String> expectedURIsComment = new HashSet<>() ;
+        expectedURIsComment.addAll( Arrays.asList(
+                "http://example.org/data/resource/" + label + "2"
+            ));
+        doTestSearch("label:", turtle, queryStringLabel, expectedURIsLabel);
+        doTestSearch("comment:", turtle, queryStringComment, expectedURIsComment);
+    }
 
     @Test
-	public void testSearchDefaultField() {
-		String label = "testSearchDefaultField";
-		String label2 = "testSearchDefaultFieldOther";
-		final String turtle = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"<" + RESOURCE_BASE + label +"1>",
-				"  rdfs:label '" + label + "1' ; ",
-				"  rdfs:comment '" + label2 + "1' ;",
-				".",
-				"<" + RESOURCE_BASE + label + "2>",
-				"  rdfs:label '" + label2 + "2' ; ",
-				"  rdfs:comment '" + label + "2' ; ",
-				"."
-				);
-		String queryString = StrUtils.strjoinNL(
-				QUERY_PROLOG,
-				"SELECT ?s",
-				"WHERE {",
-				"    ?s text:query ( rdfs:label '" + label + "?' 10 ) .",
-				"}"
-				);
-		Set<String> expectedURIs = new HashSet<>() ;
-		expectedURIs.addAll( Arrays.asList(
-			    "http://example.org/data/resource/" + label + "1"
-		    ));
-		doTestSearch("default field:", turtle, queryString, expectedURIs);
-	}
+    public void testSearchDefaultField() {
+        String label = "testSearchDefaultField";
+        String label2 = "testSearchDefaultFieldOther";
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + label +"1>",
+                "  rdfs:label '" + label + "1' ; ",
+                "  rdfs:comment '" + label2 + "1' ;",
+                ".",
+                "<" + RESOURCE_BASE + label + "2>",
+                "  rdfs:label '" + label2 + "2' ; ",
+                "  rdfs:comment '" + label + "2' ; ",
+                "."
+                );
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:label '" + label + "?' 10 ) .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList(
+                "http://example.org/data/resource/" + label + "1"
+            ));
+        doTestSearch("default field:", turtle, queryString, expectedURIs);
+    }
 
     @Test
     public void testSearchDefaultField_dft() {
@@ -375,37 +375,37 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
     }
 
     @Test
-	public void testSearchLimitsResults() {
-		String label = "testSearchLimitsResults";
-		final String turtle = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"<" + RESOURCE_BASE + label + "1>",
-				"  rdfs:label '" + label + "' ;",
-				".",
-				"<" + RESOURCE_BASE + label + "2>",
-				"  rdfs:label '" + label + "' ;",
-				".",
-				"<" + RESOURCE_BASE + label + "3>",
-				"  rdfs:label '" + label + "' ;",
-				".",
-				"<" + RESOURCE_BASE + label + "4>",
-				"  rdfs:label '" + label + "' ;",
-				"."
-				);
-		String queryString = StrUtils.strjoinNL(
-				QUERY_PROLOG,
-				"SELECT ?s",
-				"WHERE {",
-				"    ?s text:query ( '" + label + "' 3 ) .",
-				"}"
-				);
-		Set<String> expectedURIs = new HashSet<>() ;
-		expectedURIs.addAll( Arrays.asList(
-					    "http://example.org/data/resource/" + label + "1",
-					    "http://example.org/data/resource/" + label + "2",
-					    "http://example.org/data/resource/" + label + "3",
-					    "http://example.org/data/resource/" + label + "4"
-		    ));
-		doTestSearch("default field:", turtle, queryString, expectedURIs, 3 );
-	}
+    public void testSearchLimitsResults() {
+        String label = "testSearchLimitsResults";
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + label + "1>",
+                "  rdfs:label '" + label + "' ;",
+                ".",
+                "<" + RESOURCE_BASE + label + "2>",
+                "  rdfs:label '" + label + "' ;",
+                ".",
+                "<" + RESOURCE_BASE + label + "3>",
+                "  rdfs:label '" + label + "' ;",
+                ".",
+                "<" + RESOURCE_BASE + label + "4>",
+                "  rdfs:label '" + label + "' ;",
+                "."
+                );
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( '" + label + "' 3 ) .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList(
+                        "http://example.org/data/resource/" + label + "1",
+                        "http://example.org/data/resource/" + label + "2",
+                        "http://example.org/data/resource/" + label + "3",
+                        "http://example.org/data/resource/" + label + "4"
+            ));
+        doTestSearch("default field:", turtle, queryString, expectedURIs, 3 );
+    }
 }
