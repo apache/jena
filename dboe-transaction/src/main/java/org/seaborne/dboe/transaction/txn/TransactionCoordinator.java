@@ -138,7 +138,6 @@ public class TransactionCoordinator {
         components.forEachComponent(c -> c.finishRecovery()) ;
         journal.reset() ;
         log.info("Journal recovery end") ;
-
     }
     
     private void recover(List<JournalEntry> entries) {
