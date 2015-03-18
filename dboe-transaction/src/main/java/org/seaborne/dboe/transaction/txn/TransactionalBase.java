@@ -21,6 +21,7 @@ import java.util.Objects ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 
+import org.apache.jena.atlas.logging.Log ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.txn.Transaction.TxnState ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
@@ -58,16 +59,31 @@ public class TransactionalBase implements Transactional {
         return txnMgr ;
     }
 
-    public TransactionCoordinatorState detach() { 
+    // Development
+    private static final boolean trackAttachDetach = false ;
+    
+    public TransactionCoordinatorState detach() {
+        if ( trackAttachDetach )
+            Log.info(this,  ">> detach");
         checkRunning() ;
-        checkActive() ;
+        // Not if it just commited but before end.
+        //checkActive() ;
         Transaction txn = theTxn.get() ;
-        TransactionCoordinatorState coordinatorState = txnMgr.detach(txn) ;
-        theTxn.remove() ;
+        TransactionCoordinatorState coordinatorState = null ;
+        if ( txn != null )
+            // We are not ending.
+            coordinatorState = txnMgr.detach(txn) ;
+        if ( trackAttachDetach )
+            Log.info(this,  "  theTxn = "+txn) ;
+        theTxn.remove() ; ///??????
+        if ( trackAttachDetach )
+            Log.info(this,  "<< detach");
         return coordinatorState ;
     }
     
     public void attach(TransactionCoordinatorState coordinatorState) {
+        if ( trackAttachDetach )
+            Log.info(this,  ">> attach");
         Objects.nonNull(coordinatorState) ;
         checkRunning() ;
         checkNotActive() ;
@@ -75,7 +91,11 @@ public class TransactionalBase implements Transactional {
         if ( txnState != TxnState.DETACHED )
             throw new TransactionException("Not a detached transaction") ;
         txnMgr.attach(coordinatorState) ;
+        if ( trackAttachDetach )
+            Log.info(this,  "  theTxn = "+coordinatorState.transaction) ;
         theTxn.set(coordinatorState.transaction);
+        if ( trackAttachDetach )
+            Log.info(this,  "<< attach");
     } 
     
     @Override
@@ -102,12 +122,8 @@ public class TransactionalBase implements Transactional {
         checkRunning() ;
         checkActive() ;
         Transaction txn = theTxn.get() ;
-        try {
-            txn.abort() ;
-        }
-        finally {
-            _end() ;
-        }
+        try { txn.abort() ; }
+        finally { _end() ; }
     }
 
     @Override
