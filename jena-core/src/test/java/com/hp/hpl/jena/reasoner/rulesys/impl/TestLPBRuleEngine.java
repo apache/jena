@@ -87,6 +87,24 @@ public class TestLPBRuleEngine extends TestCase {
 	        assertEquals(MAX, engine.tabledGoals.size());
 	        System.gc();
 	        System.out.println(RamUsageEstimator.sizeOf(engine));
+	        data.clear();
+	        System.out.println(RamUsageEstimator.sizeOf(engine));
+	        System.out.println(RamUsageEstimator.sizeOf(engine));
+	        for (int i=0; i<MAX*4096; i++) {
+	        	Node test = NodeFactory.createURI("test" + i);
+	        	infgraph.find(test, ty, C2).close();
+	        }
+	        data.clear();
+	        infgraph.clear();
+	        System.gc();
+	        for (int i=0; i<MAX*4096; i++) {
+	        	Node test = NodeFactory.createURI("test" + i);
+	        	infgraph.find(test, ty, C2).close();
+	        }
+	        infgraph.clear();
+	        data.clear();
+	        engine.reset();
+	        System.out.println(RamUsageEstimator.sizeOf(engine));
     	} finally {
         	System.clearProperty("jena.rulesys.lp.max_cached_tabled_goals");
 
