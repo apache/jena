@@ -27,11 +27,13 @@ import junit.framework.TestSuite;
 
 import org.junit.Test;
 
+import com.carrotsearch.sizeof.RamUsageEstimator;
 import com.hp.hpl.jena.graph.Factory;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.reasoner.rulesys.FBRuleInfGraph;
 import com.hp.hpl.jena.reasoner.rulesys.FBRuleReasoner;
 import com.hp.hpl.jena.reasoner.rulesys.Rule;
@@ -59,8 +61,9 @@ public class TestLPBRuleEngine extends TestCase {
     
     @Test
     public void testSaturateTabledGoals() throws Exception {
+    	final int MAX = 1;
     	// Set the cache size very small just for this test
-    	System.setProperty("jena.rulesys.lp.max_cached_tabled_goals", "100");
+    	System.setProperty("jena.rulesys.lp.max_cached_tabled_goals", ""+MAX);
     	try {    	
 	        Graph data = Factory.createGraphMem();
 	        data.add(new Triple(a, ty, C1));
@@ -72,7 +75,7 @@ public class TestLPBRuleEngine extends TestCase {
 	        
 	        // JENA-901
 	        // Let's ask about lots of unknown subjects 
-	        for (int i=0; i<256; i++) {
+	        for (int i=0; i<MAX*4096; i++) {
 	        	Node test = NodeFactory.createURI("test" + i);
 	        	infgraph.find(test, ty, C2).close();
 	        }
@@ -81,7 +84,9 @@ public class TestLPBRuleEngine extends TestCase {
 	        Field bEngine = FBRuleInfGraph.class.getDeclaredField("bEngine");
 	        bEngine.setAccessible(true);
 	        LPBRuleEngine engine = (LPBRuleEngine) bEngine.get(infgraph);
-	        assertEquals(100, engine.tabledGoals.size());
+	        assertEquals(MAX, engine.tabledGoals.size());
+	        System.gc();
+	        System.out.println(RamUsageEstimator.sizeOf(engine));
     	} finally {
         	System.clearProperty("jena.rulesys.lp.max_cached_tabled_goals");
 

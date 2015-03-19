@@ -36,6 +36,8 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.reasoner.rulesys.BackwardRuleInfGraphI;
 import com.hp.hpl.jena.reasoner.rulesys.Rule;
 import com.hp.hpl.jena.util.BoundedMap;
+import com.hp.hpl.jena.util.cache.CacheControl;
+import com.hp.hpl.jena.util.cache.CacheManager;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
@@ -73,6 +75,7 @@ public class LPBRuleEngine {
      *  This is here so that partial goal state can be shared across multiple queries.
      */
     protected Map<TriplePattern, Generator> tabledGoals = new BoundedMap<>(MAX_CACHED_TABLED_GOALS);
+    //protected Map<TriplePattern, Generator> tabledGoals = new HashMap<>();
     
     /** Set of generators waiting to be run */
     protected LinkedList<LPAgendaEntry> agenda = new LinkedList<>();
