@@ -56,7 +56,7 @@ public final class TokenizerText implements Tokenizer
     private Token token = null ; 
     private final StringBuilder stringBuilder = new StringBuilder(200) ;
     private final PeekReader reader ;
-    private final boolean lineMode ;        // Whether whiespace includes or excludes NL (in its various forms).  
+    private final boolean lineMode ;        // Whether whitespace includes or excludes NL (in its various forms).  
     private boolean finished = false ;
     private TokenChecker checker = null ;
 
