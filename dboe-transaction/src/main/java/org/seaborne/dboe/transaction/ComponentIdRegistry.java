@@ -31,7 +31,7 @@ import org.seaborne.dboe.transaction.txn.L ;
 
 public class ComponentIdRegistry {
     // Not stable across JVMs hence "local" 
-    private ComponentId localCid = new ComponentId("Local", L.uuidAsBytes(UUID.randomUUID())) ;
+    private ComponentId localCid = ComponentId.create("Local", L.uuidAsBytes(UUID.randomUUID())) ;
     
     // No! byte[].equals is Object.equals
     

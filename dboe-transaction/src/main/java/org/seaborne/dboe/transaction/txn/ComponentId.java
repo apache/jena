@@ -32,7 +32,15 @@ public class ComponentId {
     private final byte[] bytes ;
     private final String displayName ;
     
+    /** Create a new ComponentId from the given bytes.
+     * The bytes are <em>not</em> copied. 
+     * The caller must not modify them after this call.
+     * The static method {@link #create(String, byte[])}
+     * does copy and is preferred.
+     */
     public ComponentId(String label, byte[] bytes) {
+        // Ultra safe - 
+        //bytes = Arrays.copyOf(bytes, bytes.length) ;
         if ( bytes.length > SIZE )
             throw new IllegalArgumentException("Bytes for ComponentId too long") ;
         if ( bytes.length < SIZE )
@@ -71,6 +79,12 @@ public class ComponentId {
         return true ;
     }
 
+    /** Create a ComponentId from the given bytes */
+    public static ComponentId create(String label, byte[] bytes) {
+        bytes = Arrays.copyOf(bytes, bytes.length) ;
+        return new ComponentId(label, bytes) ;
+    }
+    
     /** Given a base componentId, create a derived (different) one.
      * This is deterministically done based on  baseComponentId and index.
      * The label is just for display purposes; the index is appended.
@@ -85,6 +99,7 @@ public class ComponentId {
     }
     
     private static ComponentId create(byte[] bytes, String label, int index) {
+        bytes = Arrays.copyOf(bytes, bytes.length) ;
         int x = Bytes.getInt(bytes, bytes.length-SystemBase.SizeOfInt) ;
         x = x ^ index ;
         Bytes.setInt(x, bytes, bytes.length - SystemBase.SizeOfInt) ;

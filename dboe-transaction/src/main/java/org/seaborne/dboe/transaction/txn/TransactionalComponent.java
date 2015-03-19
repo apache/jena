@@ -29,7 +29,7 @@ import java.nio.ByteBuffer ;
 * Transactions were either were properly committed by the previous coordinator,
 * and hence redo actions (finalization) should be done,
 * or they were not, in which case undo actions may be needed.
-* Transctions to discard are not notified, only fully commited trasnaction are
+* Transctions to discard are not notified, only fully commited transaction are
 * notified during recovery. The component may need to keepit's own record of
 * undo actions needed across restarts.
 * <p><br/>

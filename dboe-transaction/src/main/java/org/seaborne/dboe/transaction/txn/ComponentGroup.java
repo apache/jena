@@ -38,8 +38,14 @@ public class ComponentGroup {
     }
     
     /*package*/ void add(TransactionalComponent component) {
-        if ( group.containsKey(component))
-            Log.warn(this,  "Add component already in the group: "+component) ; 
+        if ( component.getComponentId() == null )
+            Log.warn(this,  "Null component id - likely to be overwritten: "+component) ;
+            
+        if ( group.containsKey(component.getComponentId()) ) {
+            Log.warn(this,  component.getComponentId().toString()) ;
+            Log.warn(this,  "Add component already in the group: "+component) ;
+        }
+        
         group.put(component.getComponentId(), component) ;
     }
     

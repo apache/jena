@@ -18,8 +18,10 @@
 package org.seaborne.dboe.transaction.txn;
 
 import java.util.Objects ;
+import java.util.concurrent.atomic.AtomicInteger ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.seaborne.dboe.transaction.Transactional ;
@@ -31,6 +33,8 @@ import org.seaborne.dboe.transaction.txn.journal.Journal ;
  */
 
 public class TransactionalBase implements Transactional {
+    // Help debugging by generaing names for Transactionals.  Remove sometime.
+    static AtomicInteger counter = new AtomicInteger() ;
     private final String label ; 
     protected boolean hasStarted = false ;
     protected boolean isShutdown = false ; 
@@ -40,8 +44,9 @@ public class TransactionalBase implements Transactional {
     private final ThreadLocal<Transaction> theTxn = new ThreadLocal<Transaction>() ;
     
     public TransactionalBase(Journal journal, TransactionalComponent ... elements) {
-        this.label = null ;
+        int i = counter.incrementAndGet() ;
         this.txnMgr = new TransactionCoordinator(journal) ;
+        this.label = Utils.className(this)+"("+i+")" ;
         for ( TransactionalComponent elt : elements )
             this.txnMgr.add(elt) ;
     }
@@ -168,8 +173,7 @@ public class TransactionalBase implements Transactional {
     }
     
     final
-    protected void checkActive()
-    {
+    protected void checkActive() {
         checkNotShutdown() ;
         if ( ! isInTransaction() )
             throw new TransactionException(label("Not in an active transaction")) ;
@@ -192,6 +196,7 @@ public class TransactionalBase implements Transactional {
         checkNotShutdown() ;
         Transaction txn = theTxn.get() ;
         if ( txn != null ) {
+            Log.info(this,  label("_end ")); 
             txn.end() ;
             theTxn.set(null) ;
             theTxn.remove() ;
