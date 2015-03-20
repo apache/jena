@@ -66,7 +66,7 @@ public class LPBRuleEngine {
     protected boolean recordDerivations;
         
     /** List of engine instances which are still processing queries */
-    protected List<LPInterpreter> activeInterpreters = new ArrayList<>();
+    protected List<LPInterpreter> activeInterpreters = new LinkedList<>();
 
     protected final int MAX_CACHED_TABLED_GOALS = 
 			Integer.getInteger("jena.rulesys.lp.max_cached_tabled_goals", 512*1024);

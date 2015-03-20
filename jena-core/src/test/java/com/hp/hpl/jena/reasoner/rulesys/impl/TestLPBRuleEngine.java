@@ -27,16 +27,15 @@ import junit.framework.TestSuite;
 
 import org.junit.Test;
 
-import com.carrotsearch.sizeof.RamUsageEstimator;
 import com.hp.hpl.jena.graph.Factory;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.reasoner.rulesys.FBRuleInfGraph;
 import com.hp.hpl.jena.reasoner.rulesys.FBRuleReasoner;
 import com.hp.hpl.jena.reasoner.rulesys.Rule;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
@@ -61,7 +60,7 @@ public class TestLPBRuleEngine extends TestCase {
     
     @Test
     public void testSaturateTabledGoals() throws Exception {
-    	final int MAX = 1;
+    	final int MAX = 1024;
     	// Set the cache size very small just for this test
     	System.setProperty("jena.rulesys.lp.max_cached_tabled_goals", ""+MAX);
     	try {    	
@@ -72,39 +71,26 @@ public class TestLPBRuleEngine extends TestCase {
 	        "[r2:  (?t rdf:type C2) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]");
 	        
 	        FBRuleInfGraph infgraph = (FBRuleInfGraph) createReasoner(rules).bind(data);
-	        
-	        // JENA-901
-	        // Let's ask about lots of unknown subjects 
-	        for (int i=0; i<MAX*4096; i++) {
-	        	Node test = NodeFactory.createURI("test" + i);
-	        	infgraph.find(test, ty, C2).close();
-	        }
-	        
-	        // Let's see how many were cached
+
 	        Field bEngine = FBRuleInfGraph.class.getDeclaredField("bEngine");
 	        bEngine.setAccessible(true);
 	        LPBRuleEngine engine = (LPBRuleEngine) bEngine.get(infgraph);
+	        assertEquals(0, engine.activeInterpreters.size());
+	        assertEquals(0, engine.tabledGoals.size());
+	        
+	        // JENA-901
+	        // Let's ask about lots of unknown subjects 
+	        for (int i=0; i<MAX*128; i++) {
+	        	Node test = NodeFactory.createURI("test" + i);
+	        	ExtendedIterator<Triple> it = infgraph.find(test, ty, C2); 
+	        	assertFalse(it.hasNext());
+	        	it.close();	        	
+	        }
+	        
+	        // Let's see how many were cached
 	        assertEquals(MAX, engine.tabledGoals.size());
-	        System.gc();
-	        System.out.println(RamUsageEstimator.sizeOf(engine));
-	        data.clear();
-	        System.out.println(RamUsageEstimator.sizeOf(engine));
-	        System.out.println(RamUsageEstimator.sizeOf(engine));
-	        for (int i=0; i<MAX*4096; i++) {
-	        	Node test = NodeFactory.createURI("test" + i);
-	        	infgraph.find(test, ty, C2).close();
-	        }
-	        data.clear();
-	        infgraph.clear();
-	        System.gc();
-	        for (int i=0; i<MAX*4096; i++) {
-	        	Node test = NodeFactory.createURI("test" + i);
-	        	infgraph.find(test, ty, C2).close();
-	        }
-	        infgraph.clear();
-	        data.clear();
-	        engine.reset();
-	        System.out.println(RamUsageEstimator.sizeOf(engine));
+	        // and no leaks of activeInterpreters (this will happen if we forget to call hasNext above)
+	        assertEquals(0, engine.activeInterpreters.size());
     	} finally {
         	System.clearProperty("jena.rulesys.lp.max_cached_tabled_goals");
 
