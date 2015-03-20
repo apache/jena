@@ -127,7 +127,7 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
     }
 
     /** Return whether abort is provided.
-     *  Just by locking, a transaction can not write-abort (the chnages have been made and not recorded).
+     *  Just by locking, a transaction can not write-abort (the changes have been made and not recorded).
      *  Subclasses may do better and still rely on this locking class.  
      */
     protected boolean abortImplemented() { return false ; }

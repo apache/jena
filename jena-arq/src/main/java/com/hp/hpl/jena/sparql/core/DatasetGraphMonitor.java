@@ -66,7 +66,7 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
      * @param dsg       The DatasetGraph to monitor
      * @param monitor   The handler for a change
      * @param recordOnlyIfRealChange
-     *         If true, check to see if the chnage would have an effect (e.g. add is a new quad).
+     *         If true, check to see if the change would have an effect (e.g. add is a new quad).
      *         If false, log changes as ADD/DELETE regardless of whether the dataset actually changes.
      *         
      * @see DatasetChanges

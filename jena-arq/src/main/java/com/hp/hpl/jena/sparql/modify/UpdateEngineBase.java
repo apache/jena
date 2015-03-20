@@ -44,7 +44,7 @@ public abstract class UpdateEngineBase implements UpdateEngine
     private static Context setupContext(Context context, DatasetGraph dataset)
     {
         // To many copies?
-        if ( context == null )      // Copy of global context to protect against chnage.
+        if ( context == null )      // Copy of global context to protect against change.
             context = ARQ.getContext() ;
         context = context.copy() ;
 

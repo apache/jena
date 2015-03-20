@@ -32,7 +32,7 @@ public interface Page extends Printable
     public Block getBackingBlock() ;
     
     /** The underlying block for this page has changed (e.g. it's been promoted and 
-     * the promotion may have caused something to chnage */ 
+     * the promotion may have caused something to change */ 
     public abstract void reset(Block block) ;
 
 }

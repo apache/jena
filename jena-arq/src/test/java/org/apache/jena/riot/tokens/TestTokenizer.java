@@ -477,7 +477,7 @@ public class TestTokenizer extends BaseTest {
 
     @Test
     public void tokenUnit_num2() {
-        // This is a chnage in Turtle (and SPARQL 1.1)
+        // This is a change in Turtle (and SPARQL 1.1)
         tokenizeAndTestFirst("123.", TokenType.INTEGER, "123") ;
     }
 

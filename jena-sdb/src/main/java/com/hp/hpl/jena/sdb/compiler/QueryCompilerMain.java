@@ -100,7 +100,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
     
     /*
         // This rewrite can be done in all layouts but for layout2, it needs to be
-        // done after other chnages so QueryCompiler2 overrides this method
+        // done after other changes so QueryCompiler2 overrides this method
         // and does things in the right order.
         
         // (slice (distinct ....))
