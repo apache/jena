@@ -211,6 +211,15 @@ public class Transaction {
     public TxnId getTxnId()     { return txnId ; } 
     public ReadWrite getMode()  { return mode ; }
     
+    /** Is this a READ transaction?
+     * Convenience operation equivalent to {@code (getMode() == READ)}
+     */
+    public boolean isRead()  { return mode == ReadWrite.READ ; }
+    /** Is this a WRITE transaction?
+     * Convenience operation equivalent to {@code (getMode() == WRITE)}
+     */
+    public boolean isWrite()  { return mode ==ReadWrite.WRITE ; }
+    
     // hashCode/equality
     // These must be object equality.  No two transactions objects are .equals unless they are ==   
     
