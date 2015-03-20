@@ -195,8 +195,7 @@ public class TransactionCoordinator {
     
     public TransactionCoordinatorState detach(Transaction txn) {
         txn.detach();
-        TransactionCoordinatorState coordinatorState = new TransactionCoordinatorState() ;
-        coordinatorState.transaction = txn ;
+        TransactionCoordinatorState coordinatorState = new TransactionCoordinatorState(txn) ;
         components.forEach((id, c) -> {
             SysTransState s = c.detach() ;
             coordinatorState.componentStates.put(id, s) ;

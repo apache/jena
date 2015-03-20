@@ -21,8 +21,13 @@ import java.util.HashMap ;
 import java.util.Map ;
 
 public class TransactionCoordinatorState {
-    Transaction transaction ;
-    // This is "List<Object>" because each component has arbitrary state.
-    // "attach" is doing a downcast in the TransactionCoordinator  
-    Map<ComponentId, SysTransState> componentStates = new HashMap<>();
+    /*package*/final Transaction transaction ;
+    /*package*/Map<ComponentId, SysTransState> componentStates = new HashMap<>();
+    /*package*/ TransactionCoordinatorState(Transaction transaction) {
+        this.transaction = transaction ;
+    }
+    
+    public Transaction getTransaction() {
+        return transaction ;
+    }
 }
