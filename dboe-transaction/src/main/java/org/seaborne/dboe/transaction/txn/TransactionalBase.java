@@ -196,7 +196,6 @@ public class TransactionalBase implements Transactional {
         checkNotShutdown() ;
         Transaction txn = theTxn.get() ;
         if ( txn != null ) {
-            Log.info(this,  label("_end ")); 
             txn.end() ;
             theTxn.set(null) ;
             theTxn.remove() ;
