@@ -24,14 +24,14 @@ import junit.framework.TestSuite;
 
 import org.junit.Test;
 
-public class TestBoundedMap extends TestCase {
+public class TestBoundedLRUMap extends TestCase {
 	public static TestSuite suite() {
-		return new TestSuite(TestBoundedMap.class, "TestBoundedMap");
+		return new TestSuite(TestBoundedLRUMap.class, "TestBoundedLRUMap");
 	}
 	
 	@Test
 	public void testBoundedMap() throws Exception {
-		BoundedMap<Integer, Integer> map = new BoundedMap<Integer, Integer>(4);
+		BoundedLRUMap<Integer, Integer> map = new BoundedLRUMap<Integer, Integer>(4);
 		map.put(1, 1);
 		map.put(2, 2);
 		map.put(3, 3);

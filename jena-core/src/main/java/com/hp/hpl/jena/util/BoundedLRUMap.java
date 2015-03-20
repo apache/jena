@@ -33,17 +33,17 @@ import java.util.Map;
  * @param <V>
  *            Type of values
  */
-public class BoundedMap<K,V> extends LinkedHashMap<K, V> implements Map<K,V> {		
+public class BoundedLRUMap<K,V> extends LinkedHashMap<K, V> implements Map<K,V> {		
 	
 	private static final long serialVersionUID = -1424511852972661771L;
 	private int maxEntries;
 
 	/**
-	 * Construct a BoundedMap
+	 * Construct a BoundedLRUMap
 	 * 
 	 * @param maxEntries Maximum number of entries
 	 */
-	public BoundedMap(int maxEntries) {
+	public BoundedLRUMap(int maxEntries) {
 		super(Math.max(maxEntries/16, 16), 0.75f, true);
 		if (maxEntries <= 0) {
 			throw new IllegalArgumentException("maxEntries <= 0");
