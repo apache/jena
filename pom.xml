@@ -98,6 +98,7 @@
       </activation>
       <modules>
         <module>jena-parent</module>
+        <module>jena-shadowed-ext</module>
         <module>jena-iri</module>
         <module>jena-core</module>
 
