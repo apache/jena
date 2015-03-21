@@ -20,8 +20,11 @@ package com.hp.hpl.jena.reasoner.rulesys.test;
 
 
 import junit.framework.TestSuite ;
+
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+
+import com.hp.hpl.jena.reasoner.rulesys.impl.TestLPBRuleEngineLeak;
 
 /**
  * Aggregate tester that runs all the test associated with the rulesys package.
@@ -49,6 +52,7 @@ public class TestPackage extends TestSuite {
         addTest( "TestGenericRules", TestGenericRules.suite() );
         addTest( "TestRETE", TestRETE.suite() );
         addTest( TestSetRules.suite() );
+        addTest( TestLPBRuleEngineLeak.suite() );
         addTest( "OWLRuleUnitTests", OWLUnitTest.suite() );
         addTest( "TestBugs", TestBugs.suite() );
         addTest( "TestOWLMisc", TestOWLMisc.suite() );
