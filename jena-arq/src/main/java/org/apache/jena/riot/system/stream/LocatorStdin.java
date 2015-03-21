@@ -20,6 +20,7 @@ package org.apache.jena.riot.system.stream;
 
 import org.apache.jena.atlas.web.TypedInputStream ;
 
+/** Locator for the resource called "-" mapped to {@code System.in}. */
 public class LocatorStdin implements Locator {
     @Override
     public TypedInputStream open(String uri) {
