@@ -50,7 +50,7 @@ public class TestTDBFactory extends BaseTest
     
     @Test public void testTDBFactory1()
     {
-        TDBFactory.reset() ;
+        TDBMaker.reset() ;
         DatasetGraph dg1 = TDBFactory.createDatasetGraph(Location.mem("FOO")) ;
         DatasetGraph dg2 = TDBFactory.createDatasetGraph(Location.mem("FOO")) ;
         dg1.add(quad1) ;
@@ -59,7 +59,7 @@ public class TestTDBFactory extends BaseTest
     
     @Test public void testTDBFactory2()
     {
-        TDBFactory.reset() ;
+        TDBMaker.reset() ;
         // The unnamed location is unique each time.
         DatasetGraph dg1 = TDBFactory.createDatasetGraph(Location.mem()) ;
         DatasetGraph dg2 = TDBFactory.createDatasetGraph(Location.mem()) ;

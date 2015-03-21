@@ -28,6 +28,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.setup.StoreParams ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
@@ -37,9 +38,8 @@ public class TDBFactory
 {
     private TDBFactory() {} 
     
-    /** Read the file and assembler a dataset */ 
-    public static Dataset assembleDataset(String assemblerFile)
-    {
+    /** Read the file and assembler a dataset */
+    public static Dataset assembleDataset(String assemblerFile) {
         return (Dataset)AssemblerUtils.build(assemblerFile, VocabTDB.tDatasetTDB) ;
     }
     
@@ -59,11 +59,6 @@ public class TDBFactory
     private static Dataset createDataset(DatasetGraph datasetGraph)
     { return DatasetFactory.create(datasetGraph) ; }
     
-    // Meaningless unless there is only one in-memory dataset */
-    //    /** Create a TDB model for named model for an in-memory */  
-    //    public static Graph createNamedGraph(String name)
-    //    { return createDataset().getNamedModel(name) ; }
-
     /** Create or connect to a TDB-backed dataset (graph-level) */
     public static DatasetGraph createDatasetGraph(String directory)
     { return createDatasetGraph(Location.create(directory)) ; }
@@ -73,59 +68,52 @@ public class TDBFactory
     { return _createDatasetGraph(location) ; }
 
     /** Create a TDB-backed dataset (graph-level) in memory (for testing) */
-    public static DatasetGraph createDatasetGraph()
-    {
+    public static DatasetGraph createDatasetGraph() {
         return _createDatasetGraph() ;
     }
     
-    /** Create a TDB-backed Dataset directly over the storage in memory (not transactional) (testing only) */  
-    public static void release(Dataset dataset)
-    {
+    /** Release from the JVM. All caching is lost. */
+    public static void release(Dataset dataset) {
         _release(location(dataset)) ;
     }
     
-    /** Create a TDB-backed Dataset directly over the storage in memory (not transactional) (testing only) */  
-    public static void release(DatasetGraph dataset)
-    {
+    /** Release from the JVM.  All caching is lost. */
+    public static void release(DatasetGraph dataset) {
         _release(location(dataset)) ;
     }
     
     /** Reset internal state, releasing all datasets.
      *  No checking done, do not call while TDB is execution queries or updates.
-     *  Mainly for the tests to have a known clean state. 
+     *  Mainly for the tests to have a known clean state.
+     *  @deprecated
      */
-    public static void reset()
-    {
+    @Deprecated
+    public static void reset() {
         TDBMaker.reset() ;
     }
 
-    private static DatasetGraph _createDatasetGraph(Location location)
-    {
+    private static DatasetGraph _createDatasetGraph(Location location) {
         return TDBMaker.createDatasetGraphTransaction(location) ;
     }
-    
-    private static DatasetGraph _createDatasetGraph()
-    {
+
+    private static DatasetGraph _createDatasetGraph() {
         return TDBMaker.createDatasetGraphTransaction() ;
     }
     
-    private static void _release(Location location)
-    {
+    private static void _release(Location location) {
         if ( location == null )
             return ;
         TDBMaker.releaseLocation(location) ;
     }
 
     /** Return the location of a dataset if it is backed by TDB, else null */ 
-    public static boolean isBackedByTDB(Dataset dataset)
-    {
+    public static boolean isBackedByTDB(Dataset dataset) {
         DatasetGraph dsg = dataset.asDatasetGraph() ;
         return isBackedByTDB(dsg) ;
     }
     
     /** Return the location of a dataset if it is backed by TDB, else null */ 
-    public static boolean isBackedByTDB(DatasetGraph datasetGraph)
-    {
+    public static boolean isBackedByTDB(DatasetGraph datasetGraph) {
         if ( datasetGraph instanceof DatasetGraphTransaction )
             // The swicthing "connection" for TDB 
             return true ;
@@ -134,19 +122,15 @@ public class TDBFactory
             return true ;
         return false ;
     }
-    
-        
 
-    /** Return the location of a dataset if it is backed by TDB, else null */ 
-    public static Location location(Dataset dataset)
-    {
+    /** Return the location of a dataset if it is backed by TDB, else null */
+    public static Location location(Dataset dataset) {
         DatasetGraph dsg = dataset.asDatasetGraph() ;
         return location(dsg) ;
     }
 
-    /** Return the location of a DatasetGraph if it is backed by TDB, else null */ 
-    public static Location location(DatasetGraph datasetGraph)
-    {
+    /** Return the location of a DatasetGraph if it is backed by TDB, else null */
+    public static Location location(DatasetGraph datasetGraph) {
         if ( datasetGraph instanceof DatasetGraphTDB )
             return ((DatasetGraphTDB)datasetGraph).getLocation() ;
         if ( datasetGraph instanceof DatasetGraphTransaction )
@@ -154,12 +138,30 @@ public class TDBFactory
         return null ;
     }
 
+    /** Set the {@link StoreParams} for specific Location.
+     *  This call must only be called before a dataset from Location
+     *  is created. This operation should be used with care; bad choices
+     *  of {@link StoreParams} can reduce performance.
+     *  
+     *  <a href="http://jena.apache.org/documentation/tdb/store-paramters.html"
+     *  >See documentation</a>.
+     *  
+     *  @param location  The persistent storage location
+     *  @param params  StoreParams to use
+     *  @throws IllegalStateException If the dataset has already been setup.
+     */
+    public static void setup(Location location, StoreParams params) {
+        StoreConnection sConn = StoreConnection.getExisting(location) ;
+        if ( sConn != null )
+            throw new IllegalStateException("Location is already active") ;
+        StoreConnection.make(location, params) ;
+    }
+    
     /** Read the file and assembler a graph, of type TDB persistent graph
      *  @deprecated Assemble a Dataset and use the default graph.
      */
     @Deprecated 
-    public static Graph assembleGraph(String assemblerFile)
-    {
+    public static Graph assembleGraph(String assemblerFile) {
         Model m = assembleModel(assemblerFile) ;
         Graph g = m.getGraph() ;
         return g ;
@@ -169,8 +171,7 @@ public class TDBFactory
      *  @deprecated Assemble a Dataset and use the default model.
      */
     @Deprecated 
-    public static Model assembleModel(String assemblerFile)
-    {
+    public static Model assembleModel(String assemblerFile) {
         return (Model)AssemblerUtils.build(assemblerFile, VocabTDB.tGraphTDB) ;
     }
 
@@ -180,8 +181,7 @@ public class TDBFactory
      *  @deprecated Create a Dataset and use the default model.
      */
     @Deprecated
-    public static Model createModel(Location loc)
-    {
+    public static Model createModel(Location loc) {
         return ModelFactory.createModelForGraph(createGraph(loc)) ;
     }
 
@@ -191,8 +191,7 @@ public class TDBFactory
      *  @deprecated Create a Dataset and get the default model.
      */
     @Deprecated
-    public static Model createModel(String dir)
-    {
+    public static Model createModel(String dir) {
         return ModelFactory.createModelForGraph(createGraph(dir)) ;
     }
 
