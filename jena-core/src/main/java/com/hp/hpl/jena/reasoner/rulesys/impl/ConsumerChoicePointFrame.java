@@ -161,6 +161,14 @@ public class ConsumerChoicePointFrame extends GenericTripleMatchFrame
         context.setReady(this);
     }
     
+    @Override
+    public void close() {    	
+    	super.close();
+    	if (generator != null) {
+    		generator.setComplete();
+    	}
+    }
+    
     /**
      * Notify that this consumer choice point has finished consuming all
      * the results of a closed generator.

@@ -55,6 +55,9 @@ public class FrameObject {
      * frees the frame to which this is linked.
      */
     public void close() {
+    	if (link != null) {
+    		link.close();
+    	}
     }
     
 }
