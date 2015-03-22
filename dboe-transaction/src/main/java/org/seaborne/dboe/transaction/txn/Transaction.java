@@ -19,8 +19,6 @@ package org.seaborne.dboe.transaction.txn;
 
 import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.* ;
 
-import java.nio.ByteBuffer ;
-import java.util.ArrayList ;
 import java.util.List ;
 import java.util.Objects ;
 import java.util.concurrent.atomic.AtomicReference ;
@@ -105,18 +103,22 @@ public class Transaction {
         }
     }
     
+    public void prepare() {
+        checkState(ACTIVE) ;
+        if ( mode == ReadWrite.WRITE ) 
+            txnMgr.executePrepare(this) ;
+        setState(PREPARE);
+    }
+    
     public void commit() { 
         // Split into READ and WRITE forms.
-        checkState(ACTIVE) ;
-        setState(PREPARE) ;
-        List<PrepareState> txnPrepared = prepare() ;
+        checkState(PREPARE, ACTIVE) ;
         setState(COMMIT) ;
-        
-        // Includes notification start/finish
-        txnMgr.executeCommit(this, txnPrepared,
-              ()->{components.forEach((c) -> c.commit()) ; } ,
-              ()->{components.forEach((c) -> c.commitEnd()) ; } ) ;
-        
+        if ( mode == ReadWrite.WRITE ) { 
+            txnMgr.executeCommit(this,
+                                 ()->{components.forEach((c) -> c.commit()) ; } ,
+                                 ()->{components.forEach((c) -> c.commitEnd()) ; } ) ;
+        }
         setState(COMMITTED) ;
     }
     
@@ -129,19 +131,7 @@ public class Transaction {
         endInternal() ;
     }
 
-    private List<PrepareState> prepare() {
-        txnMgr.notifyPrepareStart(this);
-        List<PrepareState> x = new ArrayList<>(components.size()) ;
-        components.forEach((c) -> {
-            ByteBuffer data = c.commitPrepare() ;
-            if ( data != null ) {
-                PrepareState s = new PrepareState(c.getComponentId(), data) ;
-                x.add(s) ;
-            }
-        }) ;
-        txnMgr.notifyPrepareFinish(this);
-        return x ; 
-    }
+   
     
 //    public TransactionCoordinatorState detach() {
 //        return txnMgr.detach(this) ;
@@ -178,7 +168,7 @@ public class Transaction {
     }
     
     /*package*/ void detach() {
-        checkState(ACTIVE) ;
+        checkState(ACTIVE,PREPARE) ;
         setState(DETACHED) ;
     }
     
@@ -228,6 +218,7 @@ public class Transaction {
             throw new TransactionException("Not in a write transaction") ;
     }
 
+    // XXX Duplicate -- TransactionalComponentLifecycle
     private void checkState(TxnState expected) {
         TxnState s = getState();
         if ( s != expected )

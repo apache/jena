@@ -341,34 +341,30 @@ public class TransactionCoordinator {
         journal.reset() ;
     }
 
-    /*package*/ void executeCommit(Transaction transaction, List<PrepareState> prepareState, Runnable commit, Runnable finish) {
-        
-        // TODO Journal.
-        // Write prepared state, no sync.
-        // Jounral use is sync'ed 
-        // (effectively no-op by the single writer assumption
-        // but this machinery is more general)
-        synchronized(lock) {
-            // No transactions begin during this block.
-            notifyCommitStart(transaction) ;
+    /*package*/ void executePrepare(Transaction transaction) {
+        notifyPrepareStart(transaction);
+        components.forEach((id, c) -> {
+            // XXX Pass journal to TransactionalComponent.commitPrepare?
+            ByteBuffer data = c.commitPrepare(transaction) ;
+            if ( data != null ) {
+                PrepareState s = new PrepareState(c.getComponentId(), data) ;
+                journal.write(s) ;
+            }
+        }) ;
+        notifyPrepareFinish(transaction);
+    }
 
-            prepareState.forEach((ps) -> {
-                journal.write(ps); 
-            }) ;
-            journal.writeJournal(JournalEntry.COMMIT) ;
+    /*package*/ void executeCommit(Transaction transaction,  Runnable commit, Runnable finish) {
+        // This is the commit point. 
+        synchronized(lock) {
             // *** COMMIT POINT
             journal.sync() ;
             // *** COMMIT POINT
-            
             // Now run the Transactions commit actions. 
             commit.run() ;
-            // Can forget the journal entries now.
-            
-            //journal.truncate(0) ;
-            
+            journal.truncate(0) ;
             // and tell the Transaction it's finished. 
             finish.run() ;
-            
             // Bump global serialization point if necessary.
             if ( transaction.getMode() == WRITE )
                 advanceEpoch() ;
@@ -376,6 +372,30 @@ public class TransactionCoordinator {
         }
     }
 
+    
+    // V1
+    
+//    /*package*/ void executeCommit(Transaction transaction, List<PrepareState> prepareState, Runnable commit, Runnable finish) {
+//        // This is the commit point. 
+//        synchronized(lock) {
+//            // No transactions begin during this block.
+//            notifyCommitStart(transaction) ;
+//            prepareState.forEach(ps -> journal.write(ps) ) ;
+//            journal.writeJournal(JournalEntry.COMMIT) ;
+//            // *** COMMIT POINT
+//            journal.sync() ;
+//            // *** COMMIT POINT
+//            // Now run the Transactions commit actions. 
+//            commit.run() ;
+//            journal.truncate(0) ;
+//            // and tell the Transaction it's finished. 
+//            finish.run() ;
+//            // Bump global serialization point if necessary.
+//            if ( transaction.getMode() == WRITE )
+//                advanceEpoch() ;
+//            notifyCommitFinish(transaction) ;
+//        }
+//    }
 
     // Inside the global transaction start/commit lock.
     private void advanceEpoch() {
@@ -390,8 +410,7 @@ public class TransactionCoordinator {
         notifyAbortFinish(transaction) ;
     }
     
-    // Active transactions
-    // ConcurrentHashSet
+    // Active transactions: this is (the missing) ConcurrentHashSet
     private final static Object dummy                   = new Object() ;    
     private Map<Transaction, Object> activeTransactions = new ConcurrentHashMap<>() ;
 

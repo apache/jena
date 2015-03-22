@@ -24,7 +24,6 @@ import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 import org.apache.jena.atlas.logging.Log ;
-import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.txn.Transaction.TxnState ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
@@ -32,8 +31,8 @@ import org.seaborne.dboe.transaction.txn.journal.Journal ;
  * Framework for implementing a Transactional.
  */
 
-public class TransactionalBase implements Transactional {
-    // Help debugging by generaing names for Transactionals.  Remove sometime.
+public class TransactionalBase implements TransactionalSystem {
+    // Help debugging by generating names for Transactionals.  Remove sometime.
     static AtomicInteger counter = new AtomicInteger() ;
     private final String label ; 
     protected boolean hasStarted = false ;
@@ -67,6 +66,7 @@ public class TransactionalBase implements Transactional {
     // Development
     private static final boolean trackAttachDetach = false ;
     
+    @Override
     public TransactionCoordinatorState detach() {
         if ( trackAttachDetach )
             Log.info(this,  ">> detach");
@@ -86,6 +86,7 @@ public class TransactionalBase implements Transactional {
         return coordinatorState ;
     }
     
+    @Override
     public void attach(TransactionCoordinatorState coordinatorState) {
         if ( trackAttachDetach )
             Log.info(this,  ">> attach");
@@ -115,18 +116,33 @@ public class TransactionalBase implements Transactional {
     @Override
     public final void commit() {
         checkRunning() ;
-        // These steps are per-thread so no synchronization needed.
-        checkActive() ;
-        Transaction txn = theTxn.get() ;
+        TransactionalSystem.super.commit() ;
+    }
+
+    @Override
+    public void commitPrepare() {
+        Transaction txn = getValidTransaction() ;
+        txn.prepare() ;
+    }
+
+    @Override
+    public void commitExec() {
+        Transaction txn = getValidTransaction() ;
         txn.commit() ;
         _end() ;
     }
 
+//    /** Signal end of commit phase */
+//    @Override
+//    public void commitEnd() {
+//        _end() ;
+//    }
+    
     @Override
     public final void abort() {
         checkRunning() ;
         checkActive() ;
-        Transaction txn = theTxn.get() ;
+        Transaction txn = getValidTransaction() ;
         try { txn.abort() ; }
         finally { _end() ; }
     }
@@ -143,6 +159,14 @@ public class TransactionalBase implements Transactional {
     final 
     public boolean isInTransaction() {
         return theTxn.get() != null ;
+    }
+    
+    /** Get the transaction, checkign there is one */  
+    private Transaction getValidTransaction() {
+        Transaction txn = theTxn.get() ;
+        if ( txn == null )
+            throw new TransactionException("Not in a transaction") ;
+        return txn ;
     }
 
     public void start() {
@@ -193,7 +217,6 @@ public class TransactionalBase implements Transactional {
     }
 
     private final void _end() {
-        checkNotShutdown() ;
         Transaction txn = theTxn.get() ;
         if ( txn != null ) {
             txn.end() ;

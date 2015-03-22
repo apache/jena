@@ -21,7 +21,9 @@ import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 /** 
- * A Transactional (unit of begin/commit) of a single integer component (a {@link TransInteger}).
+ * A Transactional (unit of begin/commit) of a single integer component.
+ * Testing support.  Use {@link TransInteger} for application code.
+ * @see TransInteger 
  */
 public class TransactionalInteger extends TransactionalBase {
     final private TransInteger integer ;
