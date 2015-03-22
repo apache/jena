@@ -18,9 +18,12 @@
 package dev;
 
 
+
 public class NOTES {
     // ARQ :: extract Atlas.
 
+    // Components to write directly to the Journal during prepare.
+    
     // What about:
     // Index<K,R> c.f. Map<K,V>
     // Index<R>

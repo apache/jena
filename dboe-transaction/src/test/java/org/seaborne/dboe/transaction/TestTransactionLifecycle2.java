@@ -96,6 +96,23 @@ public class TestTransactionLifecycle2 {
         checkClear() ;
     }
     
+    @Test
+    public void txn_direct_05() {
+        Transaction txn1 = txnMgr.begin(ReadWrite.WRITE) ;
+        txn1.prepare() ;
+        txn1.commit() ;
+        txn1.end() ; 
+        checkClear() ;
+    }
+
+    @Test
+    public void txn_direct_06() {
+        Transaction txn1 = txnMgr.begin(ReadWrite.WRITE) ;
+        // txn1.prepare() ; Optional.
+        txn1.commit() ;
+        txn1.end() ; 
+        checkClear() ;
+    }
     
     @Test
     public void txn_overlap_WW() {

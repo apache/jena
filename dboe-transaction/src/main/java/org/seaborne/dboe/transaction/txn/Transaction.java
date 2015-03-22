@@ -112,7 +112,11 @@ public class Transaction {
     
     public void commit() { 
         // Split into READ and WRITE forms.
-        checkState(PREPARE, ACTIVE) ;
+        TxnState s = getState();
+        if ( s == ACTIVE ) 
+            // Auto exec prepare().
+            prepare() ;
+        checkState(PREPARE) ;
         setState(COMMIT) ;
         if ( mode == ReadWrite.WRITE ) { 
             txnMgr.executeCommit(this,
