@@ -61,6 +61,22 @@
       <artifactId>xercesImpl</artifactId>
     </dependency>
 
+    <dependency>
+
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <!-- Version number specified explicitly and not in jena-parent, 
+           as it should only be used here, and further shadowing/bundle/NOTICE
+           consideration might be needed on upgrade. -->
+      <version>18.0</version>
+      <!--
+        As Guava does not contain a NOTICE and is also 
+        licensed under Apache License, no additional
+        NOTICE is required by us. In a way we should probably
+        NOT include our own NOTICE file in this JAR..
+      -->
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -145,7 +161,7 @@
           <windowtitle>Apache Jena</windowtitle>
           <doctitle>Apache Jena Core ${project.version}</doctitle>
           <bottom>Licenced under the Apache License, Version 2.0</bottom>
-          <excludePackageNames>com.hp.hpl.jena.shared.*:*.impl:com.hp.hpl.jena.assembler.assemblers:*.exceptions:*.regexptrees:com.hp.hpl.jena.mem:com.hp.hpl.jena.mem.*:com.hp.hpl.jena.n3:com.hp.hpl.jena.n3.*:com.hp.hpl.jena.rdf.arp.*:com.hp.hpl.jena.util.*:jena.cmdline:jena.util</excludePackageNames>
+          <excludePackageNames>com.hp.hpl.jena.shared.*:*.impl:com.hp.hpl.jena.assembler.assemblers:*.exceptions:*.regexptrees:com.hp.hpl.jena.mem:com.hp.hpl.jena.mem.*:com.hp.hpl.jena.n3:com.hp.hpl.jena.n3.*:com.hp.hpl.jena.rdf.arp.*:com.hp.hpl.jena.util.*:jena.cmdline:jena.util:org.apache.jena.impl.ext.*</excludePackageNames>
           <groups>
             <group>
               <title>API - Application Programming Interface</title>
@@ -197,7 +213,47 @@
         </executions>
       </plugin>
       -->
+
+      <plugin>
+
+        <!--
+    This module shadows some external libraries like Guava, 
+    which we don't want to be depending on in their regular
+    package names, as they are likely to change/upgrade
+    externally and also be used in other libraries 
+    in potentially conflicting versions.
+
+    This module uses the Shade plugin to re-package them
+    under the package name
+    org.apache.jena.ext, which should 
+    only be used by used by other Jena modules.
+    -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <artifactSet>
+            <includes>
+              <artifact>com.google.guava:guava</artifact>
+            </includes>
+          </artifactSet>
+          <relocations>
+            <relocation>
+              <pattern>com.google</pattern>
+              <shadedPattern>org.apache.jena.ext.impl.com.google</shadedPattern>
+            </relocation>
+          </relocations>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+
 
 </project>
