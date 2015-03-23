@@ -80,10 +80,34 @@
               <artifact>com.google.guava:guava</artifact>
             </includes>
           </artifactSet>
+
+          <filters>
+            <filter>
+              <!-- Modify the below patterns if a later guava contains other
+                   packages -->
+              <artifact>com.google.guava:guava</artifact>
+              <includes>
+                <include>com/google/common/**</include>
+                <include>com/google/thirdparty/**</include>
+              </includes>
+            </filter>
+          </filters>
+
+          <!-- 
+            Shade to a different package, so the JAR we produce will not be
+            in conflict with any newer/older guava present in client code
+            depending on Jena.
+          -->
           <relocations>
+              <!-- Modify the below patterns if a later guava contains other
+                   packages -->
             <relocation>
-              <pattern>com.google</pattern>
-              <shadedPattern>org.apache.jena.ext.com.google</shadedPattern>
+              <pattern>com.google.common</pattern>
+              <shadedPattern>org.apache.jena.ext.com.google.common</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>com.google.thirdparty</pattern>
+              <shadedPattern>org.apache.jena.ext.com.google.thirdparty</shadedPattern>
             </relocation>
           </relocations>
         </configuration>
@@ -93,11 +117,14 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Export-Package>!org.apache.jena.ext.com.google.common.base.internal,org.apache.jena.ext.*</Export-Package>
-            <Import-Package>
-              javax.annotation;resolution:=optional,
-              sun.misc.*;resolution:=optional
-            </Import-Package>
+<!-- From META-INF/MANIFEST.MF of
+http://central.maven.org/maven2/com/google/guava/guava/18.0/guava-18.0.jar
+Update below if a newer guava is used
+-->
+
+            <Export-Package>org.apache.jena.ext.com.google.common.net;uses:="javax.annotation,org.apache.jena.ext.com.google.common.base,org.apache.jena.ext.com.google.common.hash,org.apache.jena.ext.com.google.common.io,org.apache.jena.ext.com.google.common.primitives,org.apache.jena.ext.com.google.common.collect,org.apache.jena.ext.com.google.common.escape";version="18.0.0",org.apache.jena.ext.com.google.common.html;uses:="org.apache.jena.ext.com.google.common.escape,javax.annotation";version="18.0.0",org.apache.jena.ext.com.google.common.collect;uses:="org.apache.jena.ext.com.google.common.base,javax.annotation,org.apache.jena.ext.com.google.common.primitives,org.apache.jena.ext.com.google.common.math";version="18.0.0",org.apache.jena.ext.com.google.common.primitives;uses:="org.apache.jena.ext.com.google.common.base,javax.annotation,sun.misc";version="18.0.0",org.apache.jena.ext.com.google.common.base;uses:="javax.annotation";version="18.0.0",org.apache.jena.ext.com.google.common.escape;uses:="org.apache.jena.ext.com.google.common.base,javax.annotation";version="18.0.0",org.apache.jena.ext.com.google.common.cache;uses:="org.apache.jena.ext.com.google.common.collect,org.apache.jena.ext.com.google.common.util.concurrent,javax.annotation,org.apache.jena.ext.com.google.common.base,org.apache.jena.ext.com.google.common.primitives,sun.misc";version="18.0.0",org.apache.jena.ext.com.google.common.eventbus;uses:="org.apache.jena.ext.com.google.common.collect,org.apache.jena.ext.com.google.common.cache,javax.annotation,org.apache.jena.ext.com.google.common.base,org.apache.jena.ext.com.google.common.util.concurrent,org.apache.jena.ext.com.google.common.reflect";version="18.0.0",org.apache.jena.ext.com.google.common.util.concurrent;uses:="org.apache.jena.ext.com.google.common.base,javax.annotation,org.apache.jena.ext.com.google.common.collect,org.apache.jena.ext.com.google.common.primitives,org.apache.jena.ext.com.google.common.math";version="18.0.0",org.apache.jena.ext.com.google.common.hash;uses:="org.apache.jena.ext.com.google.common.primitives,org.apache.jena.ext.com.google.common.base,javax.annotation,org.apache.jena.ext.com.google.common.math";version="18.0.0",org.apache.jena.ext.com.google.common.io;uses:="javax.annotation,org.apache.jena.ext.com.google.common.base,org.apache.jena.ext.com.google.common.math,org.apache.jena.ext.com.google.common.hash,org.apache.jena.ext.com.google.common.collect,org.apache.jena.ext.com.google.common.primitives";version="18.0.0",org.apache.jena.ext.com.google.common.xml;uses:="org.apache.jena.ext.com.google.common.escape,javax.annotation";version="18.0.0",org.apache.jena.ext.com.google.common.reflect;uses:="javax.annotation,org.apache.jena.ext.com.google.common.base,org.apache.jena.ext.com.google.common.collect,org.apache.jena.ext.com.google.common.primitives";version="18.0.0",org.apache.jena.ext.com.google.common.math;uses:="org.apache.jena.ext.com.google.common.base,org.apache.jena.ext.com.google.common.primitives,javax.annotation";version="18.0.0",org.apache.jena.ext.com.google.common.annotations;version="18.0.0"</Export-Package>
+    <Import-Package>javax.annotation;resolution:=optional,sun.misc;resolution:=optional</Import-Package>
+
           </instructions>
         </configuration>
       </plugin>
