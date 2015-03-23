@@ -16,9 +16,7 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -36,13 +34,13 @@
     which we don't want to be depending on in their regular
     package names, as they are likely to change/upgrade
     externally and also be used in other libraries 
-    in potentialyl conflicting versions.
+    in potentially conflicting versions.
 
     This module uses the Shade plugin to re-package them
     under the package name
-    org.apache.jena.ext and is also a valid OSGi bundle
-    (but should only be used by used by other Jena modules).
-
+    org.apache.jena.ext and is also a valid OSGi bundle.
+    This module should only be used internally by other 
+    Jena modules.
   </description>
 
 
