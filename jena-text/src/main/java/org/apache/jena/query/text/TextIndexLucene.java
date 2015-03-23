@@ -200,6 +200,10 @@ public class TextIndexLucene implements TextIndex {
             String property = map.keySet().iterator().next();
             String value = (String)map.get(property);
 
+            //escaping ? and * to avoid these characters as first in WildcardQuery
+            value = value.replace( "?", "\\?" );
+            value = value.replace( "*", "\\*" );
+
             //replacing single and double quotes when unbalanced
             int countOfSingleQuotes = value.length() - value.replace( "'", "" ).length();
             if( countOfSingleQuotes % 2 != 0 )
@@ -210,6 +214,7 @@ public class TextIndexLucene implements TextIndex {
                 value = value.replace( "\"", "?" );
             //
 
+            System.out.println("value = " + value);
             QueryParser qp = new QueryParser(VER, property, analyzer);
             Query qPropValue = qp.parse("\"" + BORDER_DELIMITER + " " + value + " " + BORDER_DELIMITER + "\"");
 
