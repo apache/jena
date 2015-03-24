@@ -36,6 +36,7 @@ import org.apache.lucene.queryparser.classic.QueryParser ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory ;
+import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -78,6 +79,10 @@ public class TextIndexLucene implements TextIndex {
         this.directory = directory ;
         this.docDef = def ;
 
+        boolean needInit = false;
+        if (directory instanceof FSDirectory)
+            needInit = !((FSDirectory)directory).getDirectory().exists();
+
         // create the analyzer as a wrapper that uses KeywordAnalyzer for
         // entity and graph fields and StandardAnalyzer for all other
         Map<String, Analyzer> analyzerPerField = new HashMap<>() ;
@@ -104,11 +109,12 @@ public class TextIndexLucene implements TextIndex {
 
         this.analyzer = new PerFieldAnalyzerWrapper(_analyzer, analyzerPerField) ;
 
-        // force creation of the index if it don't exist
-        // otherwise if we get a search before data is written we get an
-        // exception
-        startIndexing() ;
-        finishIndexing() ;
+        // force creation of the index if it doesn't exist
+        // otherwise if we get a search before data is written we get an exception
+        if (needInit) {
+            startIndexing();
+            finishIndexing();
+        }
     }
 
     public Directory getDirectory() {
