@@ -24,6 +24,23 @@ public class NOTES {
 
     // Components to write directly to the Journal during prepare.
     
+    // Split READ and WRITE internally to be two different lifecycles.
+    //   Revisit TransactionalComponent
+    // Split read lifecycle completely from write lifecycle : read commit from write commit:
+    // R_commit, R_abort, R_end, W_Prepare, W_Commit, W_Abort, W_End
+    //   Transaction/Mantis -> Component driver.
+    
+    // Document
+    
+    // Transactional -> TransactionalSystem -> TransactionalBase -> theTxn (ThreadLocal)
+    //   This is the transaction-per-thread point
+    // Transaction -> TransactionCoordinator.
+    
+    // Also: TransactionCoordinator.begin -> Transaction.
+    // TransactionCoordinator -> set of components
+    
+    // TransactionalComponent
+    
     // What about:
     // Index<K,R> c.f. Map<K,V>
     // Index<R>
@@ -42,7 +59,6 @@ public class NOTES {
     //    Bulk patch.
     
     // ---------------------
-    // Split READ and WRITE internally to be two different lifecycles.
     // See TransactionalComponentLifecycle
     
     // Constants organisation: SystemBase, SystemFile, SystemBPTree simple, SystemBPTreeTxt

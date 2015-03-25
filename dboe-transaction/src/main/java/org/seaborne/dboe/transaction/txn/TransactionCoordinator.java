@@ -56,6 +56,7 @@ public class TransactionCoordinator {
     private final ComponentGroup components = new ComponentGroup() ;
     //List<TransactionalComponent> elements ;
     private List<ShutdownHook> shutdownHooks ;
+    private TxnIdGenerator txnIdGenerator = TxnIdFactory.txnIdGenSimple ;
     
     // Semaphore to implement "Single Active Writer" - independent of readers 
     private Semaphore writersWaiting = new Semaphore(1, true) ;
@@ -189,6 +190,10 @@ public class TransactionCoordinator {
         }
     }
     
+    public void setTxnIdGenerator(TxnIdGenerator generator) {
+        this.txnIdGenerator = generator ;
+    }
+    
     public Journal getJournal() {
         return journal ;
     }
@@ -290,7 +295,7 @@ public class TransactionCoordinator {
                 ( readWrite == WRITE ) ?
                     writerEpoch.incrementAndGet() :
                     readerEpoch.get() ;
-            TxnId txnId = TxnId.create() ;
+            TxnId txnId = txnIdGenerator.generate() ;
             List<SysTrans> sysTransList = new ArrayList<>() ;
             Transaction transaction = new Transaction(this, txnId, readWrite, dataVersion, sysTransList) ;
             try {

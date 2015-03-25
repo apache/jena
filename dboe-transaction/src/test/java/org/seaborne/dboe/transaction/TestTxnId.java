@@ -21,25 +21,28 @@ import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertNotEquals ;
 import static org.junit.Assert.assertNotNull ;
 import static org.junit.Assert.assertNotSame ;
+
 import org.junit.Test ;
 import org.seaborne.dboe.transaction.txn.TxnId ;
+import org.seaborne.dboe.transaction.txn.TxnIdFactory ;
+import org.seaborne.dboe.transaction.txn.TxnIdSimple ;
 
 public class TestTxnId {
     @Test public void txnId_1() {
-        TxnId id1 = TxnId.create() ;
+        TxnId id1 = TxnIdFactory.createSimple() ;
         assertNotNull(id1) ;
     }
 
     @Test public void txnId_2() {
-        TxnId id1 = TxnId.create() ;
-        TxnId id2 = TxnId.create() ;
+        TxnId id1 = TxnIdFactory.createSimple() ;
+        TxnId id2 = TxnIdFactory.createSimple() ;
         assertNotSame(id1, id2) ;
         assertNotEquals(id1, id2) ;
     }
 
     @Test public void txnId_3() {
-        TxnId id1 = TxnId.create() ;
-        TxnId id2 = TxnId.create(id1.bytes()) ;
+        TxnId id1 = TxnIdFactory.createSimple() ;
+        TxnId id2 = TxnIdSimple.create(id1.bytes()) ;
         assertNotSame(id1, id2) ;
         assertEquals(id1, id2) ;
         assertEquals(id1.name(), id2.name()) ;

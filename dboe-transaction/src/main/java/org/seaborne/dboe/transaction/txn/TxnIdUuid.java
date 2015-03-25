@@ -23,11 +23,11 @@ import org.apache.jena.atlas.lib.Bytes ;
 
 import com.hp.hpl.jena.shared.uuid.JenaUUID ;
 
-/* {@link TxnId} based on a {@link UUID}. 
+/** {@link TxnId} based on a {@link UUID}. 
  */
 public class TxnIdUuid implements TxnId {
     
-    public static TxnIdUuid create() {
+    static TxnIdUuid create() {
         UUID id = JenaUUID.generate().asUUID() ; // UUID.randomUUID() ;
         return new TxnIdUuid(id) ; 
     }
@@ -65,6 +65,12 @@ public class TxnIdUuid implements TxnId {
         if ( bytes == null )
             bytes = L.uuidAsBytes(mostSignificantBits, leastSignificantBits) ;
         return bytes ;
+    }
+
+    @Override
+    public long runtime() {
+        // In type 1, the mostSignificantBits have the timestamp in it.
+        return mostSignificantBits ;
     }
 
     @Override

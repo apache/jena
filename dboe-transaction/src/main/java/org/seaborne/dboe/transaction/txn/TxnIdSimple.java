@@ -27,7 +27,7 @@ import org.apache.jena.atlas.lib.Bytes ;
 public class TxnIdSimple implements TxnId {
     private static AtomicLong counter = new AtomicLong(0) ;
     
-    public static TxnIdSimple create() {
+    static TxnIdSimple create() {
         return new TxnIdSimple(counter.incrementAndGet()) ; 
     }
 
@@ -73,6 +73,11 @@ public class TxnIdSimple implements TxnId {
     @Override
     public String toString() {
         return "txn:"+x ;
+    }
+
+    @Override
+    public long runtime() {
+        return x ;
     }
 }
 

@@ -118,10 +118,18 @@ public class Transaction {
             prepare() ;
         checkState(PREPARE) ;
         setState(COMMIT) ;
-        if ( mode == ReadWrite.WRITE ) { 
-            txnMgr.executeCommit(this,
-                                 ()->{components.forEach((c) -> c.commit()) ; } ,
-                                 ()->{components.forEach((c) -> c.commitEnd()) ; } ) ;
+        switch(mode) {
+            case WRITE:
+                txnMgr.executeCommit(this,
+                                     ()->{components.forEach((c) -> c.commit()) ; } ,
+                                     ()->{components.forEach((c) -> c.commitEnd()) ; } ) ;
+                break ;
+            case READ:
+                // Different lifecycle?
+                txnMgr.executeCommit(this, 
+                                     ()->{components.forEach((c) -> c.commit()) ; } ,
+                                     ()->{components.forEach((c) -> c.commitEnd()) ; } ) ;
+                break ;
         }
         setState(COMMITTED) ;
     }

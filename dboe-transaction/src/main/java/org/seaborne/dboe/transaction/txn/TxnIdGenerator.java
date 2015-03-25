@@ -19,6 +19,7 @@ package org.seaborne.dboe.transaction.txn;
 
 
 /**
+ * Generator of {@link TxnId}s. 
  * {@code TxnId} is a identfier for a transaction.
  * A component in a transaction can use it as a unique key.
  * The {@code TxnId}
@@ -31,33 +32,7 @@ package org.seaborne.dboe.transaction.txn;
  * <p>
  * It is preferrable that the TxnId is global unique over time and space.
  */
-public interface TxnId {
-//    public static TxnId create() { return TxnIdSimple.create() ; }
-//    
-//    public static TxnId create(byte[] bytes) {
-//        switch(bytes.length) {
-//            case 8:  return TxnIdSimple.create(bytes) ;
-//            case 16: return TxnIdUuid.create(bytes) ;
-//            default:
-//                throw new TransactionException("TxnId bytes unrecognized: length="+bytes.length) ;
-//        }
-//    }
-//    
-    // Reminder to implement.
-    @Override
-    public int hashCode() ;
-    @Override
-    public boolean equals(Object other) ;
-    
-    public String name() ;
-    public byte[] bytes() ;
-    /**  A long that is a subset, or all or, the bytes.
-     * This should be unique for the lifetime of the transaction and
-     * ideally unique per system instance. It is not a persistent record
-     * of a transaction, it is for a transaction identifier in running code.
-     * ("system" maybe larger than on e JVM).    
-     */
-    public long runtime() ;
-    
+public interface TxnIdGenerator {
+    public TxnId generate() ;
 }
 
