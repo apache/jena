@@ -37,7 +37,7 @@ public class TxnIdSimple implements TxnId {
 
     private final long x ;
     
-    /*package*/ TxnIdSimple(long x) { 
+    public TxnIdSimple(long x) { 
         this.x = x ; 
     }
 
