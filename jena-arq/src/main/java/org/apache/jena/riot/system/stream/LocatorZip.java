@@ -31,9 +31,7 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.shared.JenaException ;
 
-
 /** Location files in a zip file */
-
 public class LocatorZip implements Locator
 {
     private static Logger log = LoggerFactory.getLogger(LocatorZip.class) ;

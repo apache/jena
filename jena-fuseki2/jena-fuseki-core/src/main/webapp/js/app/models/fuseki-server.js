@@ -137,7 +137,10 @@ define(
       /** Extract the server root path from the current window href */
       currentRootPath: function() {
         var path = window.location.pathname.replace( /\/[^/]*$/, "" );
-        return sprintf( "%s//%s:%s%s",  window.location.protocol, window.location.hostname, window.location.port, path );
+	// Relative URL
+	return path;
+	// Absolute URL
+        //return sprintf( "%s//%s:%s%s",  window.location.protocol, window.location.hostname, window.location.port, path );
       }
     } );
 
