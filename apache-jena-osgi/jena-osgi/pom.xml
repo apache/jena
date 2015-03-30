@@ -112,7 +112,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-shadowed-ext</artifactId>
+      <artifactId>jena-shaded-guava</artifactId>
       <version>2.13.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>

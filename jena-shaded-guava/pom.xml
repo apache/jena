@@ -25,21 +25,17 @@
     <version>13-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
-  <artifactId>jena-shadowed-ext</artifactId>
+  <artifactId>jena-shaded-guava</artifactId>
   <version>2.13.1-SNAPSHOT</version>
   <name>Apache Jena - Shadowed external libraries</name>
   <description>
-    This module shadows some external libraries like Guava, 
-    which we don't want to be depending on in their regular
-    package names, as they are likely to change/upgrade
-    externally and also be used in other libraries 
-    in potentially conflicting versions.
-
-    This module uses the Shade plugin to re-package them
-    under the package name
-    org.apache.jena.ext and is also a valid OSGi bundle.
-    This module should only be used internally by other 
-    Jena modules.
+    This module shades Google's Guava.
+    Direct use can lead to versioning problems 
+    as some systems are dependent on specific
+    versions of guava. 
+    This module uses the Shade plugin to 
+    re-package them under the package name
+    org.apache.jena.ext.com.google....
   </description>
 
 
@@ -51,12 +47,6 @@
            as it should only be used here, and further shadowing/bundle/NOTICE
            consideration might be needed on upgrade. -->
       <version>18.0</version>
-      <!--
-        As Guava does not contain a NOTICE and is also 
-        licensed under Apache License, no additional
-        NOTICE is required by us. In a way we should probably
-        NOT include our own NOTICE file in this JAR..
-      -->
     </dependency>
   </dependencies>
 
@@ -82,8 +72,9 @@
 
           <filters>
             <filter>
-              <!-- Modify the below patterns if a later guava contains other
-                   packages -->
+              <!-- Modify the below patterns if a later guava 
+		   contains other packages 
+	      -->
               <artifact>com.google.guava:guava</artifact>
               <includes>
                 <include>com/google/common/**</include>
