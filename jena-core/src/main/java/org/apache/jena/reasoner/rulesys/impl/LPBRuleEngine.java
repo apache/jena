@@ -73,8 +73,11 @@ public class LPBRuleEngine {
 
     /** Table mapping tabled goals to generators for those goals.
      *  This is here so that partial goal state can be shared across multiple queries.
+     *
+     *  Note: Do no expose as protected/public, as this depends on
+     *  the shadowed org.apache.jena.ext.com.google.common.*
      */
-    protected Cache<TriplePattern, Generator> tabledGoals = CacheBuilder.newBuilder()
+    Cache<TriplePattern, Generator> tabledGoals = CacheBuilder.newBuilder()
     	       .maximumSize(MAX_CACHED_TABLED_GOALS).weakValues().build();
 
     /** Set of generators waiting to be run */
@@ -130,7 +133,7 @@ public class LPBRuleEngine {
      */
     public synchronized void reset() {
         checkSafeToUpdate();
-        tabledGoals.invalidateAll();
+        clearCachedTabledGoals();
         agenda.clear();
     }
 
@@ -277,30 +280,23 @@ public class LPBRuleEngine {
      * @param clauses the precomputed set of code blocks used to implement the goal
      */
     public synchronized Generator generatorFor(final TriplePattern goal, final List<RuleClauseCode> clauses) {
-        try {
-			return tabledGoals.get(goal, new Callable<Generator>() {
-			 	@Override
-			    public Generator call() {
-			 		/** FIXME: Unify with #generatorFor(TriplePattern) - but investigate what about
-			 		 * the edge case that this method might have been called with the of goal == null
-			 		 * or goal.size()==0 -- which gives different behaviour in
-			 		 * LPInterpreter constructor than through the route of
-			 		 * generatorFor(TriplePattern) which calls a different LPInterpreter constructor
-			 		 * which would fill in from RuleStore.
-			 		 */
-			        LPInterpreter interpreter = new LPInterpreter(LPBRuleEngine.this, goal, clauses, false);
-			        activeInterpreters.add(interpreter);
-			        Generator generator = new Generator(interpreter, goal);
-			        schedule(generator);
-			        return generator;
-			 	}
-			});
-		} catch (ExecutionException e) {
-			if (e.getCause() instanceof RuntimeException) {
-				throw (RuntimeException)e.getCause();
-			}
-			throw new RuntimeException(e);
-		}
+          return getCachedTabledGoal(goal, new Callable<Generator>() {
+      		 	@Override
+      		    public Generator call() {
+      		 		/** FIXME: Unify with #generatorFor(TriplePattern) - but investigate what about
+      		 		 * the edge case that this method might have been called with the of goal == null
+      		 		 * or goal.size()==0 -- which gives different behaviour in
+      		 		 * LPInterpreter constructor than through the route of
+      		 		 * generatorFor(TriplePattern) which calls a different LPInterpreter constructor
+      		 		 * which would fill in from RuleStore.
+      		 		 */
+      		        LPInterpreter interpreter = new LPInterpreter(LPBRuleEngine.this, goal, clauses, false);
+      		        activeInterpreters.add(interpreter);
+      		        Generator generator = new Generator(interpreter, goal);
+      		        schedule(generator);
+      		        return generator;
+      		 	}
+      		});
     }
 
     /**
@@ -309,28 +305,37 @@ public class LPBRuleEngine {
      * @param goal the goal whose results are to be generated
      */
     public synchronized Generator generatorFor(final TriplePattern goal) {
-        try {
-			return tabledGoals.get(goal, new Callable<Generator>() {
-			 	@Override
-			    public Generator call() {
-		            LPInterpreter interpreter = new LPInterpreter(LPBRuleEngine.this, goal, false);
-		            activeInterpreters.add(interpreter);
-		            Generator generator = new Generator(interpreter, goal);
-		            schedule(generator);
-		            return generator;
-			 	}
-			});
+		return getCachedTabledGoal(goal, new Callable<Generator>() {
+		 	@Override
+		    public Generator call() {
+	            LPInterpreter interpreter = new LPInterpreter(LPBRuleEngine.this, goal, false);
+	            activeInterpreters.add(interpreter);
+	            Generator generator = new Generator(interpreter, goal);
+	            schedule(generator);
+	            return generator;
+		 	}
+		});
+    }
+
+    protected Generator getCachedTabledGoal(TriplePattern goal,
+			Callable<Generator> callable) {
+    	try {
+			return tabledGoals.get(goal, callable);
 		} catch (ExecutionException e) {
 			if (e.getCause() instanceof RuntimeException) {
 				throw (RuntimeException)e.getCause();
 			}
 			throw new RuntimeException(e);
 		}
-    }
+	}
 
-    long cachedTabledGoals() {
+	protected long cachedTabledGoals() {
     	return tabledGoals.size();
     }
+
+	protected void clearCachedTabledGoals() {
+		tabledGoals.invalidateAll();
+	}
 
     /**
      * Register that a generator or specific generator state (Consumer choice point)
