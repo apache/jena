@@ -27,7 +27,6 @@
   </parent>
   <artifactId>jena-shadowed-ext</artifactId>
   <version>2.13.1-SNAPSHOT</version>
-  <packaging>bundle</packaging>
   <name>Apache Jena - Shadowed external libraries</name>
   <description>
     This module shadows some external libraries like Guava, 
@@ -112,22 +111,7 @@
           </relocations>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-<!-- From META-INF/MANIFEST.MF of
-http://central.maven.org/maven2/com/google/guava/guava/18.0/guava-18.0.jar
-Update below if a newer guava is used
--->
 
-            <Export-Package>org.apache.jena.ext.com.google.common.net;uses:="javax.annotation,org.apache.jena.ext.com.google.common.base,org.apache.jena.ext.com.google.common.hash,org.apache.jena.ext.com.google.common.io,org.apache.jena.ext.com.google.common.primitives,org.apache.jena.ext.com.google.common.collect,org.apache.jena.ext.com.google.common.escape";version="18.0.0",org.apache.jena.ext.com.google.common.html;uses:="org.apache.jena.ext.com.google.common.escape,javax.annotation";version="18.0.0",org.apache.jena.ext.com.google.common.collect;uses:="org.apache.jena.ext.com.google.common.base,javax.annotation,org.apache.jena.ext.com.google.common.primitives,org.apache.jena.ext.com.google.common.math";version="18.0.0",org.apache.jena.ext.com.google.common.primitives;uses:="org.apache.jena.ext.com.google.common.base,javax.annotation,sun.misc";version="18.0.0",org.apache.jena.ext.com.google.common.base;uses:="javax.annotation";version="18.0.0",org.apache.jena.ext.com.google.common.escape;uses:="org.apache.jena.ext.com.google.common.base,javax.annotation";version="18.0.0",org.apache.jena.ext.com.google.common.cache;uses:="org.apache.jena.ext.com.google.common.collect,org.apache.jena.ext.com.google.common.util.concurrent,javax.annotation,org.apache.jena.ext.com.google.common.base,org.apache.jena.ext.com.google.common.primitives,sun.misc";version="18.0.0",org.apache.jena.ext.com.google.common.eventbus;uses:="org.apache.jena.ext.com.google.common.collect,org.apache.jena.ext.com.google.common.cache,javax.annotation,org.apache.jena.ext.com.google.common.base,org.apache.jena.ext.com.google.common.util.concurrent,org.apache.jena.ext.com.google.common.reflect";version="18.0.0",org.apache.jena.ext.com.google.common.util.concurrent;uses:="org.apache.jena.ext.com.google.common.base,javax.annotation,org.apache.jena.ext.com.google.common.collect,org.apache.jena.ext.com.google.common.primitives,org.apache.jena.ext.com.google.common.math";version="18.0.0",org.apache.jena.ext.com.google.common.hash;uses:="org.apache.jena.ext.com.google.common.primitives,org.apache.jena.ext.com.google.common.base,javax.annotation,org.apache.jena.ext.com.google.common.math";version="18.0.0",org.apache.jena.ext.com.google.common.io;uses:="javax.annotation,org.apache.jena.ext.com.google.common.base,org.apache.jena.ext.com.google.common.math,org.apache.jena.ext.com.google.common.hash,org.apache.jena.ext.com.google.common.collect,org.apache.jena.ext.com.google.common.primitives";version="18.0.0",org.apache.jena.ext.com.google.common.xml;uses:="org.apache.jena.ext.com.google.common.escape,javax.annotation";version="18.0.0",org.apache.jena.ext.com.google.common.reflect;uses:="javax.annotation,org.apache.jena.ext.com.google.common.base,org.apache.jena.ext.com.google.common.collect,org.apache.jena.ext.com.google.common.primitives";version="18.0.0",org.apache.jena.ext.com.google.common.math;uses:="org.apache.jena.ext.com.google.common.base,org.apache.jena.ext.com.google.common.primitives,javax.annotation";version="18.0.0",org.apache.jena.ext.com.google.common.annotations;version="18.0.0"</Export-Package>
-    <Import-Package>javax.annotation;resolution:=optional,sun.misc;resolution:=optional</Import-Package>
-
-          </instructions>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
