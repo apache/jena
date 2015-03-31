@@ -16,36 +16,31 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.writer;
+package org.apache.jena.riot.writer ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.riot.system.PrefixMap ;
 
 import com.hp.hpl.jena.graph.Graph ;
 
-public class TurtleWriter extends TurtleWriterBase
-{
+public class TurtleWriter extends TurtleWriterBase {
     @Override
-    protected void output(IndentedWriter iOut, Graph graph, PrefixMap prefixMap, String baseURI)
-    {
-          TurtleWriter$ w = new TurtleWriter$(iOut, prefixMap, baseURI) ;
-          w.write(graph) ;
+    protected void output(IndentedWriter iOut, Graph graph, PrefixMap prefixMap, String baseURI) {
+        TurtleWriter$ w = new TurtleWriter$(iOut, prefixMap, baseURI) ;
+        w.write(graph) ;
     }
 
-    private static class TurtleWriter$ extends TurtleShell
-    {
-        public TurtleWriter$(IndentedWriter out, PrefixMap prefixMap, String baseURI)
-        {
+    private static class TurtleWriter$ extends TurtleShell {
+        public TurtleWriter$(IndentedWriter out, PrefixMap prefixMap, String baseURI) {
             super(out, prefixMap, baseURI) ;
         }
-        private void write(Graph graph)
-        {
+
+        private void write(Graph graph) {
             writeBase(baseURI) ;
             writePrefixes(prefixMap) ;
-            if ( ! prefixMap.isEmpty() && !graph.isEmpty() )
+            if ( !prefixMap.isEmpty() && !graph.isEmpty() )
                 out.println() ;
             writeGraphTTL(graph) ;
         }
     }
 }
-
