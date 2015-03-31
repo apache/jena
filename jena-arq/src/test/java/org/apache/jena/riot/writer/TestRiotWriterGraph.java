@@ -106,6 +106,7 @@ public class TestRiotWriterGraph extends AbstractWriterTest
     @Test public void writer15() { test("writer-rt-15.ttl") ; }
     @Test public void writer16() { test("writer-rt-16.ttl") ; }
     @Test public void writer17() { test("writer-rt-17.ttl") ; }
+    @Test public void writer18() { test("writer-rt-18.ttl") ; }
 
     private void test(String filename)
     {

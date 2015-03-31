@@ -257,7 +257,7 @@ public class RiotLib
         return PrefixMapFactory.create(dsg.getDefaultGraph().getPrefixMapping()) ;
     }
 
-    private static int calcWidth(PrefixMap prefixMap, String baseURI, Node p)
+    public static int calcWidth(PrefixMap prefixMap, String baseURI, Node p)
     {
         if ( ! prefixMap.contains(rdfNS) && RDF_type.equals(p) )
             return 1 ;

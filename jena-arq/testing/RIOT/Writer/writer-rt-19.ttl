@@ -1,0 +1,18 @@
+@prefix :     <http://example/> .
+@prefix ns:   <http://example/ns#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  .
+
+# Blank node cycles and other one-connected objects together.
+
+:s :pp [] .
+:s :pp [] .
+
+_:aaa :p _:bbb .
+_:bbb :q _:aaa .
+
+_:b1 :p _:b2 .
+_:b2 :q _:b3 .
+_:b3 :r _:b1 .
+
+#
+:s rdf:rest ( 1 ) .

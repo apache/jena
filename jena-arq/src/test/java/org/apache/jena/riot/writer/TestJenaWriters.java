@@ -58,24 +58,6 @@ public class TestJenaWriters extends AbstractWriterTest
     // We are not testing the correctness of the writers,
     // only the wiring up of the writers to model.write.
 
-//    @Test public void jwrite_01() { test("writer-rt-00.ttl") ; }
-//    @Test public void jwrite_01() { test("writer-rt-01.ttl") ; }
-//    @Test public void jwrite_02() { test("writer-rt-02.ttl") ; }
-//    @Test public void jwrite_03() { test("writer-rt-03.ttl") ; }
-//    @Test public void jwrite_04() { test("writer-rt-04.ttl") ; }
-//    @Test public void jwrite_05() { test("writer-rt-05.ttl") ; }
-//    @Test public void jwrite_06() { test("writer-rt-06.ttl") ; }
-//    @Test public void jwrite_07() { test("writer-rt-07.ttl") ; }
-//    @Test public void jwrite_08() { test("writer-rt-08.ttl") ; }
-//    @Test public void jwrite_09() { test("writer-rt-09.ttl") ; }
-//    @Test public void jwrite_10() { test("writer-rt-10.ttl") ; }
-//    @Test public void jwrite_11() { test("writer-rt-11.ttl") ; }
-//    @Test public void jwrite_12() { test("writer-rt-12.ttl") ; }
-//    @Test public void jwrite_13() { test("writer-rt-13.ttl") ; }
-//    @Test public void jwrite_14() { test("writer-rt-14.ttl") ; }
-//    @Test public void jwrite_15() { test("writer-rt-15.ttl") ; }
-//    @Test public void jwrite_16() { test("writer-rt-16.ttl") ; }
-    
     private void test(String filename) {
         Model m = readModel(filename) ;
         ByteArrayOutputStream out2 = new ByteArrayOutputStream() ;

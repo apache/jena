@@ -39,6 +39,7 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.atlas.lib.SetUtils ;
 import org.apache.jena.riot.other.GLib ;
 import org.apache.jena.riot.out.NodeFormatter ;
 import org.apache.jena.riot.out.NodeFormatterTTL ;
@@ -109,6 +110,7 @@ public abstract class TurtleShell {
         
         // Blank nodes that have one incoming triple
         private final Set<Node>             nestedObjects ; 
+        private final Set<Node>             nestedObjectsWritten ;
 
         // Blank node subjects that are not referenced as objects or graph names
         // excluding unlnked lists. 
@@ -134,13 +136,13 @@ public abstract class TurtleShell {
             
             this.graph = graph ;
             this.nestedObjects = new HashSet<>() ;
+            this.nestedObjectsWritten = new HashSet<>() ;
             this.freeBnodes = new HashSet<>() ;
 
             this.lists = new HashMap<>() ;
             this.freeLists = new HashMap<>() ;
             this.nLinkedLists = new HashMap<>() ;
             this.listElts = new HashSet<>() ;
-
             
             // Must be in this order.
             findLists() ;
@@ -431,23 +433,23 @@ public abstract class TurtleShell {
         // ----
 
         private void writeGraph() {
+            
             Iterator<Node> subjects = listSubjects() ;
             boolean somethingWritten = writeBySubject(subjects) ;
 
             // Write remainders
             // 1 - Shared lists
+            somethingWritten = writeRemainingNLinkedLists(somethingWritten) ;
             // 2 - Free standing lists
-
-            if ( !nLinkedLists.isEmpty() )
-                somethingWritten = writeNLinkedLists(somethingWritten) ;
-
-            if ( !freeLists.isEmpty() )
-                somethingWritten = writeFreeLists(somethingWritten) ;
-
+            somethingWritten = writeRemainingFreeLists(somethingWritten) ;
+            
+            // 3 - Blank nodes that are unwrittern single objects.
+            Set<Node> singleNodes = SetUtils.difference(nestedObjects, nestedObjectsWritten) ;
+            somethingWritten = writeRemainingNestedObjects(singleNodes, somethingWritten) ;
         }
 
-        // Write lists that are shared objects
-        private boolean writeNLinkedLists(boolean somethingWritten) {
+        // Write any lists that are shared objects
+        private boolean writeRemainingNLinkedLists(boolean somethingWritten) {
             // Print carefully - need a label for the first cell.
             // So we write out the first element of the list in triples, then
             // put
@@ -460,14 +462,9 @@ public abstract class TurtleShell {
                 List<Node> x = nLinkedLists.get(n) ;
                 writeNode(n) ;
 
-                if ( out.getCol() > LONG_SUBJECT )
-                    println() ;
-                else
-                    gap(GAP_S_P) ;
-                out.incIndent(INDENT_PREDICATE) ;
-                // ----
-                // DRY writeCluster.
+                write_S_P_Gap();
                 out.pad() ;
+                
                 writeNode(RDF_First) ;
                 print(" ") ;
                 writeNode(x.get(0)) ;
@@ -485,12 +482,9 @@ public abstract class TurtleShell {
         }
 
         // Write free standing lists - ones where the head is not an object of
-        // some other triple.
-        // Turtle does not (... ) . so write as a predicateObjectList for one
-        // element.
-        private boolean writeFreeLists(boolean somethingWritten) {
-            // out.println("# Free standing lists") ;
-            // Write free lists.
+        // some other triple. Turtle does not allow free standing (... ) .
+        // so write as a predicateObjectList for one element.
+        private boolean writeRemainingFreeLists(boolean somethingWritten) {
             for ( Node n : freeLists.keySet() ) {
                 if ( somethingWritten )
                     out.println() ;
@@ -514,6 +508,33 @@ public abstract class TurtleShell {
             return somethingWritten ;
         }
 
+        // Write any left over nested objects
+        // These come from blank node cycles : _:a <p> _:b . _b: <p> _:b .  
+        private boolean writeRemainingNestedObjects(Set<Node> objects, boolean somethingWritten) {
+            for ( Node n : objects ) {
+                Iterator<Triple> iter = graph.find(null, null, n) ;
+                somethingWritten = true ;
+                if ( somethingWritten )
+                    out.println() ;
+                while(iter.hasNext()) {
+                    Triple t = iter.next() ;
+                    writeNode(t.getSubject()) ;
+                    write_S_P_Gap();
+                    
+                    out.incIndent(INDENT_PREDICATE) ;
+                    Node p = t.getPredicate() ;
+                    int pWidth = RiotLib.calcWidth(prefixMap, baseURI, p) ;
+                    writePredicate(p, pWidth, true) ;
+                    writeNode(t.getObject()) ;
+                    out.decIndent(INDENT_PREDICATE) ;
+                    print(" .") ;
+                    println() ;
+                }
+            }
+            
+            return somethingWritten ;
+        }
+
         // return true if did write something.
         private boolean writeBySubject(Iterator<Node> subjects) {
             boolean first = true ;
@@ -521,7 +542,6 @@ public abstract class TurtleShell {
                 Node subj = subjects.next() ;
                 if ( nestedObjects.contains(subj) )
                     continue ;
-
                 if ( listElts.contains(subj) )
                     continue ;
                 if ( !first )
@@ -529,7 +549,7 @@ public abstract class TurtleShell {
                 first = false ;
                 if ( freeBnodes.contains(subj) ) {
                     // Write in "[....]" form.
-                    nestedObject(subj) ;
+                    writeNestedObject(subj) ;
                     out.println(" .") ;
                     continue ;
                 }
@@ -546,11 +566,7 @@ public abstract class TurtleShell {
             if ( cluster.isEmpty() )
                 return ;
             writeNode(subject) ;
-
-            if ( out.getCol() > LONG_SUBJECT )
-                out.println() ;
-            else
-                gap(GAP_S_P) ;
+            write_S_P_Gap() ;
             out.incIndent(INDENT_PREDICATE) ;
             out.pad() ;
             writePredicateObjectList(cluster) ;
@@ -689,7 +705,7 @@ public abstract class TurtleShell {
             return x.size() ;
         }
 
-        private void nestedObject(Node node) {
+        private void writeNestedObject(Node node) {
             Collection<Triple> x = triplesOfSubject(node) ;
 
             if ( x.isEmpty() ) {
@@ -758,11 +774,27 @@ public abstract class TurtleShell {
             if ( lists.containsKey(obj) )
                 list(lists.get(obj)) ;
             else if ( nestedObjects.contains(obj) )
-                nestedObject(obj) ;
+                writeNestedObject(obj) ;
             else if ( RDF_Nil.equals(obj) )
                 out.println("()") ;
             else
                 writeNode(obj) ;
+            if ( nestedObjects.contains(obj) )
+                nestedObjectsWritten.add(obj) ;
+
+        }
+
+        // Order of properties.
+        // rdf:type ("a")
+        // RDF and RDFS
+        // Other.
+        // Sorted by URI.
+        
+        private void write_S_P_Gap() {
+            if ( out.getCol() > LONG_SUBJECT )
+                out.println() ;
+            else
+                gap(GAP_S_P) ;
         }
     }
 
