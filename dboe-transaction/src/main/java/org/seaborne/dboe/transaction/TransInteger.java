@@ -26,6 +26,7 @@ import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.Log ;
+import org.seaborne.dboe.migrate.L ;
 import org.seaborne.dboe.transaction.txn.* ;
 
 import com.hp.hpl.jena.query.ReadWrite ;

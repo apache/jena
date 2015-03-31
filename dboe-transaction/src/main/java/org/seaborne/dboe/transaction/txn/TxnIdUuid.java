@@ -20,6 +20,7 @@ package org.seaborne.dboe.transaction.txn;
 import java.util.UUID ;
 
 import org.apache.jena.atlas.lib.Bytes ;
+import org.seaborne.dboe.migrate.L ;
 
 import com.hp.hpl.jena.shared.uuid.JenaUUID ;
 

@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.transaction.txn;
+package org.seaborne.dboe.migrate;
 
 import java.io.IOException ;
 import java.io.OutputStream ;
@@ -24,6 +24,7 @@ import java.io.Writer ;
 import java.nio.ByteBuffer ;
 import java.nio.charset.StandardCharsets ;
 import java.util.UUID ;
+import java.util.concurrent.Semaphore ;
 import java.util.concurrent.locks.Lock ;
 import java.util.function.Supplier ;
 
@@ -69,12 +70,42 @@ public class L {
         //JenaUUID.toString(mostSignificantBits, leastSignificantBits)
     }
     
-    public static  <V> V withLock(Lock lock, Supplier<V> r) {
+    /**
+     * Run asynchronously another thread ; the therad has started when this
+     * function returns.
+     */
+    public static void async(Runnable r) {
+        Semaphore semaStart = new Semaphore(0, true) ;
+        Runnable r2 = () -> {
+            semaStart.release(1) ;
+            r.run();
+        } ;
+        new Thread(r2).start();
+        semaStart.acquireUninterruptibly();
+    }
+    
+    /** Run synchronously but on another thread. */
+    public static void syncOtherThread(Runnable r) {
+        Semaphore semaStart = new Semaphore(0, true) ;
+        Semaphore semaFinish = new Semaphore(0, true) ;
+        Runnable r2 = () -> {
+            semaStart.acquireUninterruptibly(); 
+            r.run();
+            semaFinish.release(1);
+        } ;
+        new Thread(r2).start();
+        semaStart.release(1);
+        semaFinish.acquireUninterruptibly();
+    }
+
+    /** Run inside a Lock */
+    public static  <V> V callWithLock(Lock lock, Supplier<V> r) {
         lock.lock();
         try { return r.get() ; }
         finally { lock.unlock() ; }
     }
     
+    /** Run inside a Lock */
     // Surely there is a utility in the std library to do this?
     public static void withLock(Lock lock, Runnable r) {
         lock.lock();

@@ -23,10 +23,9 @@ import java.util.UUID ;
 import java.util.concurrent.ConcurrentHashMap ;
 
 import org.apache.jena.atlas.lib.Bytes ;
+import org.seaborne.dboe.migrate.L ;
 import org.seaborne.dboe.sys.SystemBase ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
-import org.seaborne.dboe.transaction.txn.L ;
-//package org.apache.jena.fuseki.migrate;
 
 
 public class ComponentIdRegistry {

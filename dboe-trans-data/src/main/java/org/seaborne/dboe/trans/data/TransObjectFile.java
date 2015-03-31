@@ -27,6 +27,7 @@ import org.apache.jena.atlas.lib.Pair ;
 import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.objectfile.ObjectFile ;
+import org.seaborne.dboe.migrate.L ;
 import org.seaborne.dboe.transaction.txn.* ;
 
 /** Transactional {@link ObjectFile}.
