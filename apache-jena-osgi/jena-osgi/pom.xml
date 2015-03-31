@@ -219,6 +219,8 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <!-- re-enable extensions here for older Mavens -->
+        <extensions>true</extensions>
         <configuration>
           <instructions>
             <Export-Package>com.hp.hpl.jena.*,org.apache.jena.*</Export-Package>
