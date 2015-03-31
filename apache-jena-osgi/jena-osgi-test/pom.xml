@@ -137,6 +137,8 @@ limitations under the License.
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <!-- re-enable extensions here for older Mavens -->
+        <extensions>true</extensions>
       </plugin>
       <plugin>
         <!-- generate target/pax-exam-links -->
@@ -184,6 +186,8 @@ limitations under the License.
             <org.ops4j.pax.logging.DefaultServiceLog.level>WARN</org.ops4j.pax.logging.DefaultServiceLog.level>
           </systemPropertyVariables>
         </configuration>
+        <!-- Explicit execution to run in a phase after the OSGi bundle
+             has been created -->
         <executions>
           <execution>
             <id>default-test</id>
