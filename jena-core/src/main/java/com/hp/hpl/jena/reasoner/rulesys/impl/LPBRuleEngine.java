@@ -18,14 +18,28 @@
 
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.util.iterator.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.*;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.reasoner.ReasonerException;
+import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.reasoner.rulesys.BackwardRuleInfGraphI;
+import com.hp.hpl.jena.reasoner.rulesys.Rule;
+import com.hp.hpl.jena.util.BoundedLRUMap;
+import com.hp.hpl.jena.util.cache.CacheControl;
+import com.hp.hpl.jena.util.cache.CacheManager;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 /**
  * LP version of the core backward chaining engine. For each parent inference
@@ -52,11 +66,16 @@ public class LPBRuleEngine {
     protected boolean recordDerivations;
         
     /** List of engine instances which are still processing queries */
-    protected List<LPInterpreter> activeInterpreters = new ArrayList<>();
-    
+    protected List<LPInterpreter> activeInterpreters = new LinkedList<>();
+
+    protected final int MAX_CACHED_TABLED_GOALS = 
+			Integer.getInteger("jena.rulesys.lp.max_cached_tabled_goals", 512*1024);
+
     /** Table mapping tabled goals to generators for those goals.
-     *  This is here so that partial goal state can be shared across multiple queries. */
-    protected HashMap<TriplePattern, Generator> tabledGoals = new HashMap<>();
+     *  This is here so that partial goal state can be shared across multiple queries.
+     */
+    protected Map<TriplePattern, Generator> tabledGoals = new BoundedLRUMap<>(MAX_CACHED_TABLED_GOALS);
+    //protected Map<TriplePattern, Generator> tabledGoals = new HashMap<>();
     
     /** Set of generators waiting to be run */
     protected LinkedList<LPAgendaEntry> agenda = new LinkedList<>();
@@ -113,7 +132,7 @@ public class LPBRuleEngine {
      */
     public synchronized void reset() {
         checkSafeToUpdate();
-        tabledGoals = new HashMap<>();
+        tabledGoals.clear();
         agenda.clear();
     }
     
@@ -282,6 +301,10 @@ public class LPBRuleEngine {
             tabledGoals.put(goal, generator);
         }
         return generator;
+    }
+    
+    int cachedTabledGoals() {
+    	return tabledGoals.size();
     }
     
     /**
