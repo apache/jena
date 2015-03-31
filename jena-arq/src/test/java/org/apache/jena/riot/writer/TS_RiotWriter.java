@@ -32,6 +32,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestRiotWriterDataset.class
     , TestJenaWriters.class
     , TestRDFJSON.class
+    , TestTurtleWriter.class
     , TestTriXWriter.class
 })
 
