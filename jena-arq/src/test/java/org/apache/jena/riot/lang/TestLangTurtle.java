@@ -22,14 +22,17 @@ import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerNoLogg
 import static org.apache.jena.riot.system.ErrorHandlerFactory.getDefaultErrorHandler ;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.setDefaultErrorHandler ;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.Reader ;
 import java.io.StringReader ;
+import java.nio.charset.Charset;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
-import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
-import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.StreamRDF ;
@@ -37,7 +40,9 @@ import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.AfterClass ;
+import org.junit.Assert;
 import org.junit.BeforeClass ;
+import org.junit.Ignore;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -236,5 +241,79 @@ public class TestLangTurtle extends BaseTest
 
     @Test (expected=ExWarning.class)
     public void turtle_23()     { parse("@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> . <x> <p> 'number'^^xsd:byte }") ; }
+    
+    @Test
+    @Ignore // Currently ignored due to JENA-908
+    public void bnode_cycles_01() {
+        // An example graph with a simple blank node cycle that fails to be output correctly using some Turtle variants
+        Model m = RDFDataMgr.loadModel("testing/DAWG-Final/construct/data-ident.ttl");
+        Assert.assertTrue(m.size() > 0);
+        
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        RDFDataMgr.write(output, m, Lang.TURTLE);
+        
+        ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
+        System.out.println(new String(output.toByteArray(), Charset.forName("utf-8")));
+        Model m2 = ModelFactory.createDefaultModel();
+        RDFDataMgr.read(m2, input, Lang.TURTLE);
+        Assert.assertTrue(m2.size() > 0);
+        
+        Assert.assertTrue(m.isIsomorphicWith(m2));
+    }
+    
+    @Test
+    public void bnode_cycles_02() {
+        // An example graph with a simple blank node cycle that fails to be output correctly using some Turtle variants
+        Model m = RDFDataMgr.loadModel("testing/DAWG-Final/construct/data-ident.ttl");
+        Assert.assertTrue(m.size() > 0);
+        
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        RDFDataMgr.write(output, m, RDFFormat.TURTLE_BLOCKS);
+        
+        ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
+        System.out.println(new String(output.toByteArray(), Charset.forName("utf-8")));
+        Model m2 = ModelFactory.createDefaultModel();
+        RDFDataMgr.read(m2, input, Lang.TURTLE);
+        Assert.assertTrue(m2.size() > 0);
+        
+        Assert.assertTrue(m.isIsomorphicWith(m2));
+    }
+    
+    @Test
+    public void bnode_cycles_03() {
+        // An example graph with a simple blank node cycle that fails to be output correctly using some Turtle variants
+        Model m = RDFDataMgr.loadModel("testing/DAWG-Final/construct/data-ident.ttl");
+        Assert.assertTrue(m.size() > 0);
+        
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        RDFDataMgr.write(output, m, RDFFormat.TURTLE_FLAT);
+        
+        ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
+        System.out.println(new String(output.toByteArray(), Charset.forName("utf-8")));
+        Model m2 = ModelFactory.createDefaultModel();
+        RDFDataMgr.read(m2, input, Lang.TURTLE);
+        Assert.assertTrue(m2.size() > 0);
+        
+        Assert.assertTrue(m.isIsomorphicWith(m2));
+    }
+    
+    @Test
+    @Ignore // Currently ignored due to JENA-908
+    public void bnode_cycles_04() {
+        // An example graph with a simple blank node cycle that fails to be output correctly using some Turtle variants
+        Model m = RDFDataMgr.loadModel("testing/DAWG-Final/construct/data-ident.ttl");
+        Assert.assertTrue(m.size() > 0);
+        
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        RDFDataMgr.write(output, m, RDFFormat.TURTLE_PRETTY);
+        
+        ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
+        System.out.println(new String(output.toByteArray(), Charset.forName("utf-8")));
+        Model m2 = ModelFactory.createDefaultModel();
+        RDFDataMgr.read(m2, input, Lang.TURTLE);
+        Assert.assertTrue(m2.size() > 0);
+        
+        Assert.assertTrue(m.isIsomorphicWith(m2));
+    }
 
 }
