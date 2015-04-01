@@ -37,6 +37,7 @@ import java.util.* ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.SetUtils ;
@@ -109,7 +110,7 @@ public abstract class TurtleShell {
         private final Graph                 graph ;
         
         // Blank nodes that have one incoming triple
-        private final Set<Node>             nestedObjects ; 
+        private /*final*/ Set<Node>             nestedObjects ; 
         private final Set<Node>             nestedObjectsWritten ;
 
         // Blank node subjects that are not referenced as objects or graph names
@@ -117,7 +118,7 @@ public abstract class TurtleShell {
         private final Set<Node>             freeBnodes ;  
 
         // The head node in each well-formed list -> list elements
-        private final Map<Node, List<Node>> lists ;   
+        private /*final*/ Map<Node, List<Node>> lists ;   
 
         // List that do not have any incoming triples
         private final Map<Node, List<Node>> freeLists ; 
@@ -127,6 +128,11 @@ public abstract class TurtleShell {
 
         // All nodes that are part of list structures.
         private final Collection<Node>      listElts ;  
+        
+        // Allow lists and nest bnode objects.
+        // This is true for the main pretty printing then
+        // false when we are clearing up unwritten triples. 
+        private boolean allowDeepPretty = true ;
 
         private ShellGraph(Graph graph, Node graphName, DatasetGraph dsg) {
             this.dsg = dsg ;
@@ -143,6 +149,7 @@ public abstract class TurtleShell {
             this.freeLists = new HashMap<>() ;
             this.nLinkedLists = new HashMap<>() ;
             this.listElts = new HashSet<>() ;
+            this.allowDeepPretty = true ;
             
             // Must be in this order.
             findLists() ;
@@ -462,13 +469,12 @@ public abstract class TurtleShell {
         // ----
 
         private void writeGraph() {
-            
             Iterator<Node> subjects = listSubjects() ;
             boolean somethingWritten = writeBySubject(subjects) ;
-
             // Write remainders
             // 1 - Shared lists
             somethingWritten = writeRemainingNLinkedLists(somethingWritten) ;
+            
             // 2 - Free standing lists
             somethingWritten = writeRemainingFreeLists(somethingWritten) ;
             
@@ -543,37 +549,31 @@ public abstract class TurtleShell {
         // Also from from blank node cycles + tail: _:a <p> _:b . _:a <p> "" .  _b: <p> _:a .
         private boolean writeRemainingNestedObjects(Set<Node> objects, boolean somethingWritten) {
             for ( Node n : objects ) {
-                Iterator<Triple> iter = graph.find(null, null, n) ;
-                somethingWritten = true ;
                 if ( somethingWritten )
                     out.println() ;
-                while(iter.hasNext()) {
-                    Triple t = iter.next() ;
-                    Iterator<Triple> iter2 = graph.find(t.getSubject(), null, null) ;
-                    writeTriples(iter2) ;
-                }
+                somethingWritten = true ;
+                
+                Triple t = triple1(null, null, n) ;
+                if ( t == null )
+                    throw new InternalErrorException("Expected exactly one triple") ;
+              
+                Node subj = t.getSubject() ;
+                boolean b = allowDeepPretty ;
+                try {
+                    allowDeepPretty = false;
+                    Collection<Triple> triples = triples(subj, null, null) ;
+                    writeCluster(subj, triples);
+                } finally { allowDeepPretty = b ; }
             }
 
             return somethingWritten ;
         }
 
-        // Write triples,flat and simply. (duplicated code?)
-        private void writeTriples(Iterator<Triple> iter) {
-            // Can write simple preciate-lists
-            while(iter.hasNext()) {
-                Triple t = iter.next() ;
-                writeNode(t.getSubject()) ;
-                write_S_P_Gap();
-
-                out.incIndent(INDENT_PREDICATE) ;
-                Node p = t.getPredicate() ;
-                int pWidth = RiotLib.calcWidth(prefixMap, baseURI, p) ;
-                writePredicate(p, pWidth, true) ;
-                writeNode(t.getObject()) ;
-                out.decIndent(INDENT_PREDICATE) ;
-                print(" .") ;
-                println() ;
-            }
+        // Write triples, flat and simply.
+        // Reset the state variables so "isPretty" return false. 
+        private void writeTriples(Node subj, Iterator<Triple> iter) {
+            allowDeepPretty = false;
+            writeCluster(subj, Iter.toList(iter));
         }
 
         // return true if did write something.
@@ -617,10 +617,10 @@ public abstract class TurtleShell {
             println() ;
         }
 
-        // Writing predciate-object lists.
+        // Writing predicate-object lists.
         // We group the cluster by predicate and within each group
         // we print:
-        // literals, then simple objects, then pretty objects
+        //    literals, then simple objects, then pretty objects
 
         private void writePredicateObjectList(Collection<Triple> cluster) {
             Map<Node, List<Node>> pGroups = groupByPredicates(cluster) ;
@@ -694,7 +694,6 @@ public abstract class TurtleShell {
                 else
                     firstObject = false ;
                 writeNode(o) ;
-                // writeNodePretty(obj) ;
             }
             out.decIndent(INDENT_OBJECT) ;
         }
@@ -800,10 +799,13 @@ public abstract class TurtleShell {
 
         private boolean isPrettyNode(Node n) {
             // Order matters? - one connected objects may include list elements.
-            if ( lists.containsKey(n) )
-                return true ;
-            if ( nestedObjects.contains(n) )
-                return true ;
+            
+            if ( allowDeepPretty ) {
+                if ( lists.containsKey(n) )
+                    return true ;
+                if ( nestedObjects.contains(n) )
+                    return true ;
+            }
             if ( RDF_Nil.equals(n) )
                 return true ;
             return false ;
@@ -811,13 +813,14 @@ public abstract class TurtleShell {
 
         // --> write S or O??
         private void writeNodePretty(Node obj) {
+            // Assumes "isPrettyNode" is true.
             // Order matters? - one connected objects may include list elements.
             if ( lists.containsKey(obj) )
                 list(lists.get(obj)) ;
             else if ( nestedObjects.contains(obj) )
                 writeNestedObject(obj) ;
             else if ( RDF_Nil.equals(obj) )
-                out.println("()") ;
+                out.print("()") ;
             else
                 writeNode(obj) ;
             if ( nestedObjects.contains(obj) )

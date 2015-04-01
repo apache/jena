@@ -21,14 +21,12 @@ package org.apache.jena.riot.writer;
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.io.StringReader ;
-import java.nio.charset.Charset ;
 
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.junit.Assert ;
-import org.junit.Ignore ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -97,7 +95,7 @@ public class TestTurtleWriter {
         RDFDataMgr.write(output, m, Lang.TURTLE);
         
         ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
-        System.out.println(new String(output.toByteArray(), Charset.forName("utf-8")));
+        //System.out.println(new String(output.toByteArray(), Charset.forName("utf-8")));
         Model m2 = ModelFactory.createDefaultModel();
         RDFDataMgr.read(m2, input, Lang.TURTLE);
         Assert.assertTrue(m2.size() > 0);
