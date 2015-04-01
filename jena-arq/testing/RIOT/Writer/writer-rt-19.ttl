@@ -9,10 +9,7 @@
 
 _:aaa :p _:bbb .
 _:bbb :q _:aaa .
-
-_:b1 :p _:b2 .
-_:b2 :q _:b3 .
-_:b3 :r _:b1 .
+_:aaa :r 1 .
 
 #
 :s rdf:rest ( 1 ) .

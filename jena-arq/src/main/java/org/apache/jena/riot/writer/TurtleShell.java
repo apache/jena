@@ -150,7 +150,36 @@ public abstract class TurtleShell {
             // Stop head of lists printed as triples going all the way to the
             // good part.
             nestedObjects.removeAll(listElts) ;
+
+            //printDetails() ;
         }
+
+        // Debug
+        private void printDetails() {
+            printDetails("nestedObjects", nestedObjects) ;
+            //printDetails("nestedObjectsWritten", nestedObjectsWritten) ;
+            printDetails("freeBnodes", freeBnodes) ;
+
+            printDetails("lists", lists) ;
+            printDetails("freeLists", freeLists) ;
+            printDetails("nLinkedLists", nLinkedLists) ;
+            printDetails("listElts", listElts) ;
+        }
+
+        private void printDetails(String label, Map<Node, List<Node>> map) {
+            System.err.print("## ") ;
+            System.err.print(label) ;
+            System.err.print(" = ") ;
+            System.err.println(map) ;
+        }
+
+        private void printDetails(String label, Collection<Node> nodes) {
+            System.err.print("## ") ;
+            System.err.print(label) ;
+            System.err.print(" = ") ;
+            System.err.println(nodes) ;
+        }
+        // Debug
 
         private ShellGraph(Graph graph) {
             this(graph, null, null) ;
@@ -444,16 +473,17 @@ public abstract class TurtleShell {
             somethingWritten = writeRemainingFreeLists(somethingWritten) ;
             
             // 3 - Blank nodes that are unwrittern single objects.
+            //            System.err.println("## ## ##") ;
+            //            printDetails("nestedObjects", nestedObjects) ;
+            //            printDetails("nestedObjectsWritten", nestedObjectsWritten) ;
             Set<Node> singleNodes = SetUtils.difference(nestedObjects, nestedObjectsWritten) ;
             somethingWritten = writeRemainingNestedObjects(singleNodes, somethingWritten) ;
         }
 
-        // Write any lists that are shared objects
         private boolean writeRemainingNLinkedLists(boolean somethingWritten) {
             // Print carefully - need a label for the first cell.
             // So we write out the first element of the list in triples, then
-            // put
-            // the remainer as a pretty list
+            // put the remainer as a pretty list
             for ( Node n : nLinkedLists.keySet() ) {
                 if ( somethingWritten )
                     out.println() ;
@@ -509,7 +539,8 @@ public abstract class TurtleShell {
         }
 
         // Write any left over nested objects
-        // These come from blank node cycles : _:a <p> _:b . _b: <p> _:b .  
+        // These come from blank node cycles : _:a <p> _:b . _b: <p> _:a .  
+        // Also from from blank node cycles + tail: _:a <p> _:b . _:a <p> "" .  _b: <p> _:a .
         private boolean writeRemainingNestedObjects(Set<Node> objects, boolean somethingWritten) {
             for ( Node n : objects ) {
                 Iterator<Triple> iter = graph.find(null, null, n) ;
@@ -518,21 +549,31 @@ public abstract class TurtleShell {
                     out.println() ;
                 while(iter.hasNext()) {
                     Triple t = iter.next() ;
-                    writeNode(t.getSubject()) ;
-                    write_S_P_Gap();
-                    
-                    out.incIndent(INDENT_PREDICATE) ;
-                    Node p = t.getPredicate() ;
-                    int pWidth = RiotLib.calcWidth(prefixMap, baseURI, p) ;
-                    writePredicate(p, pWidth, true) ;
-                    writeNode(t.getObject()) ;
-                    out.decIndent(INDENT_PREDICATE) ;
-                    print(" .") ;
-                    println() ;
+                    Iterator<Triple> iter2 = graph.find(t.getSubject(), null, null) ;
+                    writeTriples(iter2) ;
                 }
             }
-            
+
             return somethingWritten ;
+        }
+
+        // Write triples,flat and simply. (duplicated code?)
+        private void writeTriples(Iterator<Triple> iter) {
+            // Can write simple preciate-lists
+            while(iter.hasNext()) {
+                Triple t = iter.next() ;
+                writeNode(t.getSubject()) ;
+                write_S_P_Gap();
+
+                out.incIndent(INDENT_PREDICATE) ;
+                Node p = t.getPredicate() ;
+                int pWidth = RiotLib.calcWidth(prefixMap, baseURI, p) ;
+                writePredicate(p, pWidth, true) ;
+                writeNode(t.getObject()) ;
+                out.decIndent(INDENT_PREDICATE) ;
+                print(" .") ;
+                println() ;
+            }
         }
 
         // return true if did write something.

@@ -21,7 +21,9 @@ package org.apache.jena.riot.writer;
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.io.StringReader ;
+import java.nio.charset.Charset ;
 
+import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RDFLanguages ;
@@ -34,7 +36,8 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 public class TestTurtleWriter {
     // Tests data.
-    static String cycle = "_:a <urn:p> _:b . _:b <urn:q> _:a ." ;
+    static String cycle1 = "_:a <urn:p> _:b . _:b <urn:q> _:a ." ;
+    static String cycle2 = "_:a <urn:p> _:b . _:b <urn:q> _:a . _:a <urn:r> \"abc\" . " ;
     
     
     /** Read in N-Triples data, which is not empty,
@@ -60,20 +63,47 @@ public class TestTurtleWriter {
         Assert.assertTrue(m.isIsomorphicWith(m2));
     }
     
+    // Tests from JENA-908 
+    @Test
+    public void bnode_cycles_01() { blankNodeLang(cycle1, RDFFormat.TURTLE) ; }
+    
+    @Test
+    public void bnode_cycles_02() { blankNodeLang(cycle1, RDFFormat.TURTLE_BLOCKS) ; }
+    
+    @Test
+    public void bnode_cycles_03() { blankNodeLang(cycle1, RDFFormat.TURTLE_FLAT) ; }
+    
+    @Test
+    public void bnode_cycles_04() { blankNodeLang(cycle1, RDFFormat.TURTLE_PRETTY) ; }
 
     @Test
-    @Ignore // Currently ignored due to JENA-908
-    public void bnode_cycles_01() { blankNodeLang(cycle, RDFFormat.TURTLE) ; }
+    public void bnode_cycles_05() { blankNodeLang(cycle2, RDFFormat.TURTLE) ; }
     
     @Test
-    public void bnode_cycles_02() { blankNodeLang(cycle, RDFFormat.TURTLE_BLOCKS) ; }
+    public void bnode_cycles_06() { blankNodeLang(cycle2, RDFFormat.TURTLE_BLOCKS) ; }
     
     @Test
-    public void bnode_cycles_03() { blankNodeLang(cycle, RDFFormat.TURTLE_FLAT) ; }
+    public void bnode_cycles_07() { blankNodeLang(cycle2, RDFFormat.TURTLE_FLAT) ; }
     
     @Test
-    @Ignore // Currently ignored due to JENA-908
-    public void bnode_cycles_04() { blankNodeLang(cycle, RDFFormat.TURTLE_PRETTY) ; }
+    public void bnode_cycles_08() { blankNodeLang(cycle2, RDFFormat.TURTLE_PRETTY) ; }
 
+    @Test
+    public void bnode_cycles() {
+        Model m = RDFDataMgr.loadModel("testing/DAWG-Final/construct/data-ident.ttl");
+        Assert.assertTrue(m.size() > 0);
+        
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        RDFDataMgr.write(output, m, Lang.TURTLE);
+        
+        ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
+        System.out.println(new String(output.toByteArray(), Charset.forName("utf-8")));
+        Model m2 = ModelFactory.createDefaultModel();
+        RDFDataMgr.read(m2, input, Lang.TURTLE);
+        Assert.assertTrue(m2.size() > 0);
+        
+        Assert.assertTrue(m.isIsomorphicWith(m2));
+    }
+    
 }
 
