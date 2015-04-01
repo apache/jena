@@ -219,12 +219,14 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <!-- re-enable extensions here for older Mavens -->
+        <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Export-Package>com.hp.hpl.jena.*,org.apache.jena.*</Export-Package>
+            <Export-Package>com.hp.hpl.jena.*,!org.apache.taverna.ext.*,org.apache.jena.*</Export-Package>
             <Embed-Dependency>artifactId=jena*;inline=true,artifactId=xercesImpl;inline=true,artifactId=xml-apis;inline=true</Embed-Dependency>
             <Embed-Transitive>true</Embed-Transitive>
-            <Import-Package>!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.xml.*,!org.apache.xerces.*,!org.apache.jena.ext.*,*</Import-Package>
+            <Import-Package>!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.xml.*,!org.apache.xerces.*,!org.apache.jena.ext.*,sun.misc;resolution:=optional,*</Import-Package>
             <Private-Package>org.apache.jena.ext.*</Private-Package>
           </instructions>
         </configuration>
