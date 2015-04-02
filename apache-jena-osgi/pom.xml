@@ -45,7 +45,10 @@
 
   <modules>
     <module>jena-osgi</module>
+    <!--
+      See JENA-913 - this breaks a clean build unless "install" is used.
     <module>jena-osgi-test</module>
+    -->
   </modules>
   
 </project>
