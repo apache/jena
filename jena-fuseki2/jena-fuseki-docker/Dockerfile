@@ -29,15 +29,14 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y $DEPS && \
     apt-get autoremove -y && \
     apt-get autoclean && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /tmp/*
+    rm -rf /var/lib/apt/lists/* /tmp/* 
 
 
 WORKDIR /tmp
 COPY . /tmp/
 # Use target/ from host as-is, or build inside if missing
 RUN if [ ! -d target/dist ] ; then mvn install ; fi && \
-    mv target/dist/* $FUSEKI_HOME && rm -rf /tmp/*
+    mv target/dist/* $FUSEKI_HOME && rm -rf /tmp/* /root/.m2
 
 
 # As "localhost" is often inaccessible within Docker container,
