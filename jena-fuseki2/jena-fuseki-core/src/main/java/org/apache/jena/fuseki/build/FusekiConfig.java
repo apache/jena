@@ -20,7 +20,12 @@ package org.apache.jena.fuseki.build ;
 
 import java.io.File ;
 import java.io.FilenameFilter ;
+import java.io.IOException ;
 import java.lang.reflect.Method ;
+import java.nio.file.DirectoryStream ;
+import java.nio.file.Files ;
+import java.nio.file.Path ;
+import java.nio.file.Paths ;
 import java.util.ArrayList ;
 import java.util.Collections ;
 import java.util.List ;
@@ -35,6 +40,7 @@ import org.apache.jena.fuseki.server.DatasetStatus ;
 import org.apache.jena.fuseki.server.FusekiVocab ;
 import org.apache.jena.fuseki.server.SystemState ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.system.IRILib ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.assembler.JA ;
@@ -186,19 +192,37 @@ public class FusekiConfig {
     
     /** Read service descriptions in the given directory */ 
     public static List<DataAccessPoint> readConfigurationDirectory(String dir) {
-        List<DataAccessPoint> dataServiceRef = new ArrayList<>() ;
-        File d = new File(dir) ;
-        String[] aFiles = d.list(visibleFiles) ;
-        if ( aFiles == null ) {
+         Path pDir = Paths.get(dir).normalize() ;
+        File dirFile = pDir.toFile() ;
+        if ( ! dirFile.exists() ) {
             log.warn("Not found: directory for assembler files for services: '"+dir+"'") ;
             return Collections.emptyList() ;
         }
-        for ( String assemFile : aFiles ) {
-            Model m = RDFDataMgr.loadModel(assemFile) ;
-            DataAccessPoint acc = readConfiguration(m) ; 
-            dataServiceRef.add(acc) ;
+        if ( ! dirFile.isDirectory() ) {
+            log.warn("Not a directory: '"+dir+"'") ;
+            return Collections.emptyList() ;
         }
+        // Files that are not hidden.
+        DirectoryStream.Filter<Path> filter = new DirectoryStream.Filter<Path>() {
+            @Override
+            public boolean accept(Path entry) throws IOException {
+                File f = entry.toFile() ;
+                return ! f.isHidden() && f.isFile() ;
+            }
+        } ;
 
+        List<DataAccessPoint> dataServiceRef = new ArrayList<>() ;
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(pDir, filter)) {
+            for ( Path p : stream ) {
+                String fn = IRILib.filenameToIRI(p.toString()) ;
+                log.info("Load configuration: "+fn);
+                Model m = RDFDataMgr.loadModel(fn) ;
+                DataAccessPoint acc = readConfiguration(m) ; 
+                dataServiceRef.add(acc) ;
+            }
+        } catch (IOException ex) {
+            log.warn("IOException:"+ex.getMessage(), ex);
+        }
         return dataServiceRef ;
     }
 
