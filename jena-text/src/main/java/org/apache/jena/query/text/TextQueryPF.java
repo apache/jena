@@ -46,10 +46,11 @@ import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 /** property function that accesses a Solr server */
 public class TextQueryPF extends PropertyFunctionBase {
-    private static Logger log           = LoggerFactory.getLogger(TextQueryPF.class) ;
+    private static Logger log = LoggerFactory.getLogger(TextQueryPF.class) ;
     /*
-     * ?uri :queryPF (property? "string" limit? score?) score? not implemented
-     * Look for "//** score" in TextIndexLucene and TextIndexSolr
+     * ?uri :queryPF (property? "string" limit? score?) 
+     * (?uri ?score) not implemented
+     * Look for "//** score" in TextQueryPF, TextIndexLucene and TextIndexSolr
      */
 
     private TextIndex     server        = null ;
