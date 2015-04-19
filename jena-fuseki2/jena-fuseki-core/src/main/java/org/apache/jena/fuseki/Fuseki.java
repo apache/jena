@@ -165,7 +165,7 @@ public class Fuseki {
     
     private static boolean            initialized       = false ;
     
-    // Serevr start time and uptime.
+    // Server start time and uptime.
     private static final long startMillis = System.currentTimeMillis() ;
     // Hide server locale
     private static final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("00:00")) ; 
