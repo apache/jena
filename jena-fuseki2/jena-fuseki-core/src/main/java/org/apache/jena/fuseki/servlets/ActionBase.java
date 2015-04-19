@@ -80,8 +80,13 @@ public abstract class ActionBase extends ServletBase
             try {
                 execCommonWorker(action) ;
             } catch (QueryCancelledException ex) {
-                // Also need the per query info ...
-                String message = String.format("The query timed out (restricted to %s ms)", cxt.get(ARQ.queryTimeout));
+                // To put in the action timeout, need (1) global, (2) dataset and (3) protocol settings.
+                // See
+                //    global -- cxt.get(ARQ.queryTimeout) 
+                //    dataset -- dataset.getContect(ARQ.queryTimeout)
+                //    protocol -- SPARQL_Query.setAnyTimeouts
+                
+                String message = String.format("Query timed out");
                 // Possibility :: response.setHeader("Retry-after", "600") ;    // 5 minutes
                 ServletOps.responseSendError(response, HttpSC.SERVICE_UNAVAILABLE_503, message);
             } catch (ActionErrorException ex) {
