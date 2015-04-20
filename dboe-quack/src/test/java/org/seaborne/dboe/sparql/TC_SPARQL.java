@@ -23,7 +23,7 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TS_SPARQLTests.class
-//    , TS_SPARQLTestsRef.class     // Value issues.
+    , TS_SPARQLTestsRef.class
     , TS_SPARQLTestsDAWG.class
 //    , TS_SPARQLTestsSPARQL11.class
 })
