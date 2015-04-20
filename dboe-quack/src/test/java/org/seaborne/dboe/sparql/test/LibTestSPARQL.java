@@ -135,19 +135,40 @@ public class LibTestSPARQL
             while (rs.hasNext()) {
                 QuerySolution row = rs.nextSolution() ;
                 Resource entry = row.getResource("test") ;
-                //System.out.println(row) ;
-                if ( tests.containsKey(entry) ) {
-                    QuerySolution row0 = tests.get(entry) ;
-                    System.out.println(row0) ;
-                    System.out.println(row) ;
-                    System.err.println("Test already seen: " + entry) ;
-                }
-                String name = row.getLiteral("name").getString() ;
                 Resource testType = row.getResource("testType") ;
                 Resource query = row.getResource("query") ;
                 Resource action = row.getResource("action") ;
                 Resource result = row.getResource("result") ;
+                String name = row.getLiteral("name").getString() ;
+                
+                //System.out.println(row) ;
+                if ( tests.containsKey(entry) ) {
+                    QuerySolution row0 = tests.get(entry) ;
+                    Resource entry0 = row.getResource("test") ;
+                    Resource testType0 = row.getResource("testType") ;
+                    Resource query0 = row.getResource("query") ;
+                    Resource action0 = row.getResource("action") ;
+                    Resource result0 = row.getResource("result") ;
+                    String name0 = row.getLiteral("name").getString() ;
+                    
+                    
+                    if ( Objects.equals(query, query0) && Objects.equals(action, action0) && Objects.equals(result, result0) ) {
+                        // This happens when there are two names, for example.
+                        continue ;
+                    }
+                    
+                    System.out.println(row0) ;
+                    System.out.println(row) ;
+                    System.err.println("Test already seen: " + entry) ;
+                    
+                }
+                
 
+                if ( query == null ) {
+                    System.err.println("Query is null : "+name) ;
+                    continue ;
+                }
+                
                 String fileName ;
                 if ( query.isURIResource() )
                     fileName = query.getURI().replaceAll("^.*/", "") ;
