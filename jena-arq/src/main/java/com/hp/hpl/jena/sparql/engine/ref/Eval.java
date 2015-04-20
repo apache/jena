@@ -22,6 +22,8 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.apache.jena.atlas.lib.InternalErrorException ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ARQ ;
@@ -96,10 +98,13 @@ public class Eval
         
         if ( ! Var.isVar(opGraph.getNode()) )
         {
-            Graph graph = execCxt.getDataset().getGraph(opGraph.getNode()) ;
-            if ( graph == null )
-                // No such name in the dataset
+            DatasetGraph dsg = execCxt.getDataset() ;
+            Node graphNode = opGraph.getNode() ;
+            if ( ! dsg.containsGraph(graphNode) )
                 return new TableEmpty() ;
+            Graph graph = execCxt.getDataset().getGraph(opGraph.getNode()) ;
+            if ( graph == null ) // But contains was true?!!
+                throw new InternalErrorException("Graph was present, now it's not") ;
             ExecutionContext execCxt2 = new ExecutionContext(execCxt, graph) ;
             Evaluator e2 = EvaluatorFactory.create(execCxt2) ;
             return eval(e2, opGraph.getSubOp()) ;
