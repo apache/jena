@@ -482,9 +482,7 @@
           </configuration>
         </plugin>
 
-        <!-- Avoid the warning from m2e: 
-	     "maven-remote-resources-plugin (goal "process") is ignored by m2e." 
-	-->
+        <!-- Avoid the warnings and errors from m2e -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
@@ -493,8 +491,8 @@
             <lifecycleMappingMetadata>
               <pluginExecutions>
                 <pluginExecution>
-                  <!-- 
-		    Warning: 
+                  <!--
+		    Warning:
 		    "maven-remote-resources-plugin (goal "process") is ignored by m2e." 
 		  -->
                   <pluginExecutionFilter>
@@ -510,13 +508,34 @@
                   </action>
                 </pluginExecution>
                 <pluginExecution>
-                  <!-- Warning: "maven-enforcer-plugin (goal "enforce") is ignored by m2e." -->
+                  <!-- 
+		    Warning:
+		    "maven-enforcer-plugin (goal "enforce") is ignored by m2e." 
+		  -->
                   <pluginExecutionFilter>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-remote-resources-plugin</artifactId>
                     <versionRange>[1.0.0,)</versionRange>
                     <goals>
                       <goal>process</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+
+		<pluginExecution>
+                  <!--
+		    Error:
+		    Plugin execution not covered by lifecycle configuration
+		  -->
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.rat</groupId>
+                    <artifactId>apache-rat-plugin</artifactId>
+                    <versionRange>[0.11,)</versionRange>
+                    <goals>
+                      <goal>check</goal>
                     </goals>
                   </pluginExecutionFilter>
                   <action>
