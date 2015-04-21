@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.core;
 
 
 import java.util.Iterator ;
+import java.util.concurrent.Callable ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Cache ;
@@ -83,17 +84,18 @@ abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
     }
 
     @Override
-    public final Graph getGraph(Node graphNode) {
+    public final Graph getGraph(final Node graphNode) {
         if ( !caching )
             return _createNamedGraph(graphNode) ;
 
         synchronized (this) { 
+            Callable<Graph> filler = new Callable<Graph>() {
+                @Override
+                public Graph call() {
+                    return _createNamedGraph(graphNode) ;
+                }} ;
             // MRSW - need to create and update the cache atomically.
-            Graph graph = namedGraphs.get(graphNode) ;
-            if ( graph == null ) {
-                graph = _createNamedGraph(graphNode) ;
-                namedGraphs.put(graphNode, graph) ;
-            }
+            Graph graph = namedGraphs.getOrFill(graphNode, filler) ;
             return graph ;
         }
     }

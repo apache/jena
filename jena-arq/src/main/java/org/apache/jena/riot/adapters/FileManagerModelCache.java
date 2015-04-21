@@ -56,7 +56,7 @@ class FileManagerModelCache {
     { 
         if ( ! isCachingModels() )
             return null; 
-        return modelCache.get(filenameOrURI) ;
+        return modelCache.getIfPresent(filenameOrURI) ;
     }
     
     public boolean hasCachedModel(String filenameOrURI)

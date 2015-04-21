@@ -20,6 +20,7 @@ package org.apache.jena.atlas.lib.cache;
 
 import java.util.Arrays ;
 import java.util.Iterator ;
+import java.util.concurrent.Callable ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorArray ;
@@ -67,7 +68,7 @@ public class CacheSimple<K,V> implements Cache<K,V>
     @Override
     public boolean containsKey(K key)
     {
-        return get(key) != null ;
+        return getIfPresent(key) != null ;
     }
 
     // Return key index : -(index+1) if the key does not match
@@ -82,14 +83,11 @@ public class CacheSimple<K,V> implements Cache<K,V>
     private final int decode(int x)
     { 
         if ( x >= 0 ) return x ;
-        
-        // y = -x-1 ==> x = -y-1 
         return -x-1 ;
     }
     
     @Override
-    //public V getObject(K key, boolean exclusive)
-    public V get(K key)
+    public V getIfPresent(K key)
     {
         int x = index(key) ;
         if ( x < 0 )
@@ -98,7 +96,12 @@ public class CacheSimple<K,V> implements Cache<K,V>
     }
 
     @Override
-    public V put(K key, V thing)
+    public V getOrFill(K key, Callable<V> callable) {
+        return CacheOps.getOrFill(this, key, callable) ;
+    }
+
+    @Override
+    public void put(K key, V thing)
     {
         int x = index(key) ;
         V old = null ;
@@ -107,6 +110,7 @@ public class CacheSimple<K,V> implements Cache<K,V>
             x = decode(x) ;
         else
         {
+            // Drop the old K->V
             old = values[x] ;
             if ( dropHandler != null )
                 dropHandler.apply(keys[x], old) ;
@@ -117,17 +121,16 @@ public class CacheSimple<K,V> implements Cache<K,V>
         if ( thing == null )
             //put(,null) is a remove.
             keys[x] = null ;
-        else
+        else {
             keys[x] = key ;
-        currentSize++ ;
-        return old ;
+            currentSize++ ;
+        }
     }
 
     @Override
-    public boolean remove(K key)
+    public void remove(K key)
     {
-        V old = put(key, null) ;
-        return old != null ;
+        put(key, null) ;
     }
 
     @Override

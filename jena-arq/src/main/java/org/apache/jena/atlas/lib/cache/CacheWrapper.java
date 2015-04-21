@@ -18,6 +18,7 @@
 
 package org.apache.jena.atlas.lib.cache;
 import java.util.Iterator ;
+import java.util.concurrent.Callable ;
 
 import org.apache.jena.atlas.lib.ActionKeyValue ;
 import org.apache.jena.atlas.lib.Cache ;
@@ -37,8 +38,10 @@ public class CacheWrapper<Key,T> implements Cache<Key,T>
     public boolean containsKey(Key key)             { return cache.containsKey(key) ; }
     
     @Override
-    //public V getObject(K key, boolean exclusive)    { return cache.getObject(key, exclusive) ; }
-    public T get(Key key)                           { return cache.get(key) ; }
+    public T getIfPresent(Key key)                  { return cache.getIfPresent(key) ; }
+
+    @Override
+    public T getOrFill(Key key, Callable<T> callable)  { return cache.getOrFill(key, callable) ; }
 
     @Override
     public boolean isEmpty()                        { return cache.isEmpty() ; }
@@ -47,10 +50,10 @@ public class CacheWrapper<Key,T> implements Cache<Key,T>
     public Iterator<Key> keys()                     { return cache.keys(); }
 
     @Override
-    public T put(Key key, T thing)                  { return cache.put(key, thing) ; }
+    public void put(Key key, T thing)               { cache.put(key, thing) ; }
 
     @Override
-    public boolean remove(Key key)                  { return cache.remove(key) ; }
+    public void remove(Key key)                     { cache.remove(key) ; }
 
     @Override
     public void setDropHandler(ActionKeyValue<Key, T> dropHandler)

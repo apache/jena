@@ -341,6 +341,7 @@ public class RiotReader
     /** Create a parser for Turtle */
     public static LangTurtle createParserTurtle(Tokenizer tokenizer, String baseIRI, StreamRDF dest)
     {
+        RiotLib.profile(RDFLanguages.TURTLE, baseIRI) ;
         LangTurtle parser = new LangTurtle(tokenizer, RiotLib.profile(RDFLanguages.TURTLE, baseIRI), dest) ;
         return parser ;
     }

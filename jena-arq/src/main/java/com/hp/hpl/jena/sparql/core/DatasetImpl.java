@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.core;
 
 import java.util.Iterator ;
+import java.util.concurrent.Callable ;
 
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
@@ -246,7 +247,7 @@ public class DatasetImpl implements Dataset
         cache = null ;
     }
 
-    protected Cache<Graph, Model> createCache() { return CacheFactory.createCache(0.75f, 20) ; }
+    protected Cache<Graph, Model> createCache() { return CacheFactory.createCache(100) ; }
     
     protected void removeFromCache(Graph graph)
     {
@@ -262,16 +263,15 @@ public class DatasetImpl implements Dataset
         cache.put(model.getGraph(), model) ;
     }
 
-    protected Model graph2model(Graph graph)
+    protected Model graph2model(final Graph graph)
     { 
-        // Outer synchronization needed.
-        Model model = cache.get(graph) ;
-        if ( model == null )
-        {
-            model = ModelFactory.createModelForGraph(graph) ;
-            cache.put(graph, model) ;
-        }
-        return model ;
+        Callable<Model> filler = new Callable<Model>() {
+            @Override
+            public Model call() {
+                return ModelFactory.createModelForGraph(graph) ;
+            }
+        } ;
+        return cache.getOrFill(graph, filler) ;
     }
     
     protected static void checkGraphName(String uri)

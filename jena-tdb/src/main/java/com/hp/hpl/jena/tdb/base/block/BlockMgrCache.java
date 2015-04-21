@@ -99,7 +99,7 @@ public class BlockMgrCache extends BlockMgrSync
     {
         // A Block may be in the read cache or the write cache.
         // It can be just in the write cache because the read cache is finite.
-        Block blk = readCache.get(id) ;
+        Block blk = readCache.getIfPresent(id) ;
         if ( blk != null )
         {
             cacheReadHits++ ;
@@ -113,7 +113,7 @@ public class BlockMgrCache extends BlockMgrSync
         if ( writeCache != null )
             // Might still be in the dirty blocks.
             // Leave in write cache
-            blk = writeCache.get(id) ;
+            blk = writeCache.getIfPresent(id) ;
         if ( blk != null )
         {
             cacheWriteHits++ ;
@@ -144,7 +144,7 @@ public class BlockMgrCache extends BlockMgrSync
         Long id = _id;
         Block blk = null ;
         if ( writeCache != null )
-            blk = writeCache.get(id) ;
+            blk = writeCache.getIfPresent(id) ;
         if ( blk != null )
         {
             cacheWriteHits++ ;
@@ -157,7 +157,7 @@ public class BlockMgrCache extends BlockMgrSync
         
         if ( readCache.containsKey(id) )
         {
-            blk = readCache.get(id) ;
+            blk = readCache.getIfPresent(id) ;
             cacheReadHits++ ;
             log("Hit(w->r) : %d", id) ;
             blk = promote(blk) ;
@@ -343,7 +343,7 @@ public class BlockMgrCache extends BlockMgrSync
     // Do not call from drop handler.
     private void expelEntry(Long id)
     {
-        Block block = writeCache.get(id) ;
+        Block block = writeCache.getIfPresent(id) ;
         if ( block == null )
         {
             log.warn("Write cache: "+id+" expelling entry that isn't there") ;

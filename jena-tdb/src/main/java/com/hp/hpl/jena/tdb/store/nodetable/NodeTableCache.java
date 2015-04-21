@@ -160,7 +160,7 @@ public class NodeTableCache implements NodeTable
     private Node cacheLookup(NodeId id)
     {
         if ( id2node_Cache == null ) return null ;
-        return id2node_Cache.get(id) ;
+        return id2node_Cache.getIfPresent(id) ;
     }
     
     /** Check caches to see if we can map a Node to a NodeId. Returns null on no cache entry. */ 
@@ -171,12 +171,15 @@ public class NodeTableCache implements NodeTable
             return null ;
         if ( node2id_Cache == null )
             return null ;
-        return node2id_Cache.get(node) ; 
+        return node2id_Cache.getIfPresent(node) ; 
     }
 
     /** Update the Node->NodeId caches */
     private void cacheUpdate(Node node, NodeId id)
     {
+        if ( node == null )
+            return ;
+        
         // synchronized is further out.
         // The "notPresent" cache is used to note whether a node
         // is known not to exist.
@@ -257,7 +260,7 @@ public class NodeTableCache implements NodeTable
         {
             Node n = iter1.next() ;
             
-            NodeId nId = node2id_Cache.get(n) ; 
+            NodeId nId = node2id_Cache.getIfPresent(n) ; 
             if ( !id2node_Cache.containsKey(nId) )
                 throw new TDBException("Inconsistent: "+n+" => "+nId) ;
             if ( notPresent.contains(n) )
@@ -267,7 +270,7 @@ public class NodeTableCache implements NodeTable
         for ( ; iter2.hasNext() ; )
         {
             NodeId nId = iter2.next() ;
-            Node n =  id2node_Cache.get(nId) ; 
+            Node n =  id2node_Cache.getIfPresent(nId) ; 
             if ( !node2id_Cache.containsKey(n) )
                 throw new TDBException("Inconsistent: "+nId+" => "+n) ;
             if ( notPresent.contains(n) )

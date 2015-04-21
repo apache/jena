@@ -16,40 +16,50 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.lib.cache;
+package org.apache.jena.atlas.lib.cache ;
 
+import org.apache.jena.atlas.iterator.Action ;
 import org.apache.jena.atlas.lib.CacheSet ;
 
-public class CacheSetSync<T> implements CacheSet<T>
-{
+public class CacheSetSync<T> implements CacheSet<T> {
     private CacheSet<T> cache ;
 
-    public CacheSetSync(CacheSet<T> cache){ this.cache = cache ; }
-    
-    //@Overview
-    @Override
-    synchronized public void add(T e)               { cache.add(e) ; }
+    public CacheSetSync(CacheSet<T> cache) {
+        this.cache = cache ;
+    }
 
-    //@Overview
     @Override
-    synchronized public void clear()                { cache.clear() ; }
+    synchronized public void add(T e) {
+        cache.add(e) ;
+    }
 
-    //@Overview
     @Override
-    synchronized public boolean contains(T obj)     { return cache.contains(obj) ; }
+    synchronized public void clear() {
+        cache.clear() ;
+    }
 
-    //@Overview
     @Override
-    synchronized
-    public boolean isEmpty()                        { return cache.isEmpty() ; }
+    synchronized public boolean contains(T obj) {
+        return cache.contains(obj) ;
+    }
 
-    //@Overview
     @Override
-    synchronized
-    public void remove(T obj)                       { cache.remove(obj) ; }
+    synchronized public boolean isEmpty() {
+        return cache.isEmpty() ;
+    }
 
-    //@Overview
     @Override
-    synchronized
-    public long size()                              { return cache.size() ; } 
+    synchronized public void remove(T obj) {
+        cache.remove(obj) ;
+    }
+
+    @Override
+    synchronized public long size() {
+        return cache.size() ;
+    }
+
+    @Override
+    synchronized public void setDropHandler(Action<T> dropHandler) {
+        cache.setDropHandler(dropHandler) ;
+    }
 }
