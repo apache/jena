@@ -40,6 +40,7 @@ public class NodeTableCache implements NodeTable
 {
     // These caches are updated together.
     // See synchronization in _retrieveNodeByNodeId and _idForNode
+    // The cache is assumed to be single operation-thread-safe.
     private Cache<Node, NodeId> node2id_Cache = null ;
     private Cache<NodeId, Node> id2node_Cache = null ;
     
@@ -57,19 +58,17 @@ public class NodeTableCache implements NodeTable
         return new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, params.getNodeMissCacheSize()) ;
     }
 
-    public static NodeTable create(NodeTable nodeTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize)
-    {
+    public static NodeTable create(NodeTable nodeTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize) {
         if ( nodeToIdCacheSize <= 0 && idToNodeCacheSize <= 0 )
             return nodeTable ;
         return new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, nodeMissesCacheSize) ;
     }
 
-    private NodeTableCache(NodeTable baseTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize)
-    {
+    private NodeTableCache(NodeTable baseTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize) {
         this.baseTable = baseTable ;
-        if ( nodeToIdCacheSize > 0) 
+        if ( nodeToIdCacheSize > 0 )
             node2id_Cache = CacheFactory.createCache(nodeToIdCacheSize) ;
-        if ( idToNodeCacheSize > 0)
+        if ( idToNodeCacheSize > 0 )
             id2node_Cache = CacheFactory.createCache(idToNodeCacheSize) ;
         if ( nodeMissesCacheSize > 0 )
             notPresent = CacheFactory.createCacheSet(nodeMissesCacheSize) ;
@@ -80,8 +79,7 @@ public class NodeTableCache implements NodeTable
     
     /** Get the Node for this NodeId, or null if none */
     @Override
-    public Node getNodeForNodeId(NodeId id)
-    {
+    public Node getNodeForNodeId(NodeId id) {
         return _retrieveNodeByNodeId(id) ;
     }
 
@@ -107,16 +105,21 @@ public class NodeTableCache implements NodeTable
 
     // ---- The worker functions
     // NodeId ==> Node
-    private Node _retrieveNodeByNodeId(NodeId id)
-    {
+    private Node _retrieveNodeByNodeId(NodeId id) {
         if ( NodeId.isDoesNotExist(id) )
             return null ;
         if ( NodeId.isAny(id) )
             return null ;
+        // Try once outside the synchronized
+        // (Cache access is thread-safe) 
+        Node n = cacheLookup(id) ;
+        if ( n != null )
+            return n ; 
 
-        synchronized (lock)
-        {
-            Node n = cacheLookup(id) ;
+        synchronized (lock) {
+            // Lock to update two caches consisently.
+            // Verify cache miss
+            n = cacheLookup(id) ;
             if ( n != null )
                 return n ; 
 
@@ -134,11 +137,15 @@ public class NodeTableCache implements NodeTable
     {
         if ( node == Node.ANY )
             return NodeId.NodeIdAny ;
-        
-        synchronized (lock)
-        {
-            // Check caches.
-            NodeId nodeId = cacheLookup(node) ;
+        // Try once outside the synchronized
+        // (Cache access is thread-safe.) 
+        NodeId nodeId = cacheLookup(node) ;
+        if ( nodeId != null )
+            return nodeId ; 
+        synchronized (lock) {
+            // Update two caches inside synchronized.
+            // Check stil valid.
+            nodeId = cacheLookup(node) ;
             if ( nodeId != null )
                 return nodeId ; 
 
@@ -146,7 +153,6 @@ public class NodeTableCache implements NodeTable
                 nodeId = baseTable.getAllocateNodeId(node) ;
             else
                 nodeId = baseTable.getNodeIdForNode(node) ;
-
             // Ensure caches have it.  Includes recording "no such node"
             cacheUpdate(node, nodeId) ;
             return nodeId ;
@@ -166,7 +172,8 @@ public class NodeTableCache implements NodeTable
     /** Check caches to see if we can map a Node to a NodeId. Returns null on no cache entry. */ 
     private NodeId cacheLookup(Node node)
     {
-        // Remember things known (currently) not to exist
+        // Remember things known (currently) not to exist.
+        // Does not matter if notPresent is being updated elsewhere.
         if ( notPresent != null && notPresent.contains(node) ) 
             return null ;
         if ( node2id_Cache == null )
@@ -184,15 +191,13 @@ public class NodeTableCache implements NodeTable
         // The "notPresent" cache is used to note whether a node
         // is known not to exist.
         // This must be specially handled later if the node is added. 
-        if ( NodeId.isDoesNotExist(id) )
-        {
+        if ( NodeId.isDoesNotExist(id) ) {
             if ( notPresent != null ) 
                 notPresent.add(node) ;
             return ;
         }
         
-        if ( id == NodeId.NodeIdAny )
-        {
+        if ( id == NodeId.NodeIdAny ) {
             Log.warn(this, "Attempt to cache NodeIdAny - ignored") ;
             return ;
         }

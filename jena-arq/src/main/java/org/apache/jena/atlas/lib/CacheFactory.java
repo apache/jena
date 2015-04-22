@@ -23,8 +23,9 @@ import org.apache.jena.atlas.lib.cache.* ;
 public class CacheFactory {
     /**
      * Create a cache which has space for up to a certain number of objects.
-     * This is an LRU cache, or similar. The cache returns null for a cache
-     * miss.
+     * This is an LRU cache, or similar.
+     * The cache returns null for a cache miss.
+     * The cache is thread-safe for single operations.
      */
     public static <Key, Value> Cache<Key, Value> createCache(int maxSize) {
         return new CacheGuava<>(maxSize) ;
@@ -47,6 +48,7 @@ public class CacheFactory {
 
     /**
      * Create set-cache, rather than a map-cache.
+     * The cache is thread-safe for single operations.
      * 
      * @see Pool
      */
