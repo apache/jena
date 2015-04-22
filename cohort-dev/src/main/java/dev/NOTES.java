@@ -22,6 +22,7 @@ package dev;
 public class NOTES {
     // ARQ :: extract Atlas.
 
+    // Recovery in after prepare.
     // Components to write directly to the Journal during prepare.
     
     // Split READ and WRITE internally to be two different lifecycles.
