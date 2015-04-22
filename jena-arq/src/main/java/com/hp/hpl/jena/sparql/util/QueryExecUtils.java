@@ -27,7 +27,6 @@ import org.apache.jena.riot.ResultSetMgr ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.rdf.model.RDFWriter ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
@@ -135,9 +134,8 @@ public class QueryExecUtils {
              || outputFormat.equals(ResultsFormat.FMT_RDF_TTL) ) {
             Model m = RDFOutput.encodeAsModel(results) ;
             m.setNsPrefixes(prologue.getPrefixMapping()) ;
-            RDFWriter rdfw = m.getWriter("TURTLE") ;
             m.setNsPrefix("rs", ResultSetGraphVocab.getURI()) ;
-            rdfw.write(m, System.out, null) ;
+            RDFDataMgr.write(System.out, m, Lang.TURTLE) ;
             done = true ;
         }
 
