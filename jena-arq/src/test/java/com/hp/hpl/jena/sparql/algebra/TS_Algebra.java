@@ -18,8 +18,6 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-
-import junit.framework.TestSuite ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
@@ -36,5 +34,5 @@ import org.junit.runners.Suite ;
     , TestTransformOpExt.class
 })
 
-public class TS_Algebra extends TestSuite
+public class TS_Algebra
 { }

@@ -18,8 +18,6 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
-
-import junit.framework.TestSuite ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
@@ -38,5 +36,5 @@ import org.junit.runners.Suite ;
     , TestOptimizer.class
 })
 
-public class TS_Optimization extends TestSuite
+public class TS_Optimization
 {}

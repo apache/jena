@@ -18,7 +18,6 @@
 
 package com.hp.hpl.jena.sparql.transaction;
 
-import junit.framework.TestSuite ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
@@ -27,5 +26,6 @@ import org.junit.runners.Suite.SuiteClasses ;
 @SuiteClasses( {
     TestTransactionMem.class
 })
-public class TS_Transaction extends TestSuite
+
+public class TS_Transaction
 { }
