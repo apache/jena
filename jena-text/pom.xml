@@ -140,7 +140,6 @@
 	  <includes>
 	    <include>**/TS_*.java</include>
 	  </includes>
-        <skipTests>true</skipTests>
 	</configuration>
       </plugin>
 

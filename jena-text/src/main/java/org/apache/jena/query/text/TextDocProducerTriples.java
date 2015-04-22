@@ -63,7 +63,12 @@ public class TextDocProducerTriples implements TextDocProducer {
         Entity entity = TextQueryFuncs.entityFromQuad(defn, g, s, p, o) ;
         // Null means does not match defn
         if ( entity != null ) {
-            indexer.addEntity(entity) ;
+            if (indexer instanceof TextIndexLuceneMultiLingual) {
+                String lang = o.getLiteral().language();
+                ((TextIndexLuceneMultiLingual)indexer).addEntity(entity, lang);
+            }
+            else
+                indexer.addEntity(entity) ;
             
             // Auto commit the entity if we aren't in a transaction
             if (!inTransaction.get()) {
