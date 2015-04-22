@@ -450,12 +450,6 @@ public final class TokenizerText implements Tokenizer
                 // Drop through.
             }
 
-            // ---- OLD
-            // Ban certain very bad characters
-            if ( !VeryVeryLax && ch == '<' )
-                exception("Broken IRI (bad character: '%c'): %s", ch, stringBuilder.toString()) ;
-            // ---- OLD
-
             if ( !VeryVeryLax ) {
                 // JENA-911
 //                if ( ch == 0x09 )
