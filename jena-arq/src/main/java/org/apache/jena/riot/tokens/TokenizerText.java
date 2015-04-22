@@ -428,21 +428,19 @@ public final class TokenizerText implements Tokenizer
 
     private static final boolean VeryVeryLax = false ;
     
+    // [8]  IRIREF  ::= '<' ([^#x00-#x20<>"{}|^`\] | UCHAR)* '>'
     private String readIRI() {
         stringBuilder.setLength(0) ;
         for (;;) {
             int ch = reader.readChar() ;
-            if ( ch == EOF ) {
-                exception("Broken IRI: " + stringBuilder.toString()) ;
-            }
-
+            if ( ch == EOF )
+                exception("Broken IRI (End of file): %s", stringBuilder.toString()) ;
             if ( ch == '\n' )
-                exception("Broken IRI (newline): " + stringBuilder.toString()) ;
-
-            if ( ch == CH_GT ) {
+                exception("Broken IRI (newline): %s", stringBuilder.toString()) ;
+            if ( ch == '\r' )
+                exception("Broken IRI (CR): %s", stringBuilder.toString()) ;
+            if ( ch == CH_GT )
                 return stringBuilder.toString() ;
-            }
-
             if ( ch == '\\' ) {
                 if ( VeryVeryLax )
                     ch = readCharEscapeAnyURI() ;
@@ -451,9 +449,27 @@ public final class TokenizerText implements Tokenizer
                     ch = readUnicodeEscape() ;
                 // Drop through.
             }
+
+            // ---- OLD
             // Ban certain very bad characters
             if ( !VeryVeryLax && ch == '<' )
                 exception("Broken IRI (bad character: '%c'): %s", ch, stringBuilder.toString()) ;
+            // ---- OLD
+
+            if ( !VeryVeryLax ) {
+                // JENA-911
+//                if ( ch == 0x09 )
+//                    exception("Broken IRI (Tab character): %s", stringBuilder.toString()) ;
+//                if ( ch <= 0x19 )
+//                    exception("Broken IRI (control char 0x%02X): %s", ch, stringBuilder.toString()) ;
+//                if ( ch == 0x20 )
+//                    exception("Broken IRI (space): %s...", stringBuilder.toString()) ;
+//                if ( ch == '"' || ch == '{' || ch == '}' || ch == '|' || ch == '^' || ch == '`')
+//                    exception("Broken IRI (Illegal character 0x%02X, '%c'): %s", ch, (char)ch, stringBuilder.toString()) ;
+                // Ban certain very bad characters
+                if ( ch == '<' )
+                    exception("Broken IRI (bad character: '%c'): %s", ch, stringBuilder.toString()) ;
+            }
             insertCodepoint(stringBuilder, ch) ;
         }
     }
