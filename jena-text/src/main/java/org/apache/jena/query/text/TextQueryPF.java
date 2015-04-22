@@ -18,6 +18,7 @@
 
 package org.apache.jena.query.text ;
 
+import java.util.Iterator;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
@@ -77,6 +78,16 @@ public class TextQueryPF extends PropertyFunctionBase {
             if (list.size() > 4)
                 throw new QueryBuildException("Too many arguments in list : " + list) ;
         }
+
+        // If retrieved index is an instance of TextIndexLuceneMultiLingual, we need to switch with the right index.
+        // The pattern is :
+        // ?uri text:query (property 'string' ['lang:language'])
+        // ex : ?uri text:query (rdfs:label 'livre' 'lang:fr')
+        // note: default index is the unlocalized index (if lang arg is not present).
+        if (server instanceof TextIndexLuceneMultiLingual) {
+            String lang = getArg("lang", argObject);
+            server = ((TextIndexLuceneMultiLingual)server).getIndex(lang);
+        }
     }
 
     private static TextIndex chooseTextIndex(DatasetGraph dsg) {
@@ -99,6 +110,18 @@ public class TextQueryPF extends PropertyFunctionBase {
         }
         Log.warn(TextQueryPF.class, "Failed to find the text index : tried context and as a text-enabled dataset") ;
         return null ;
+    }
+
+    private String getArg(String prefix, PropFuncArg argObject) {
+        for (Iterator it = argObject.getArgList().iterator(); it.hasNext(); ) {
+            Node node = (Node)it.next();
+            if (node.isLiteral()) {
+                String arg = node.getLiteral().toString();
+                if (arg.startsWith(prefix + ":"))
+                    return arg.split(":")[1];
+            }
+        }
+        return null;
     }
 
     @Override
