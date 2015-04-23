@@ -70,13 +70,13 @@ public class ARQConstants
     public static final String ARQProcedureLibraryURI = "http://jena.hpl.hp.com/ARQ/procedure#" ;
     
     /** The ARQ function library */
-    public static final String ARQFunctionLibrary = javaClassURIScheme+"com.hp.hpl.jena.sparql.function.library." ;
+    public static final String ARQFunctionLibrary = javaClassURIScheme+"org.apache.jena.sparql.function.library." ;
     
     /** The ARQ property function library */
-    public static final String ARQPropertyFunctionLibrary = javaClassURIScheme+"com.hp.hpl.jena.sparql.pfunction.library." ;
+    public static final String ARQPropertyFunctionLibrary = javaClassURIScheme+"org.apache.jena.sparql.pfunction.library." ;
 
     /** The ARQ property function library */
-    public static final String ARQProcedureLibrary = javaClassURIScheme+"com.hp.hpl.jena.sparql.procedure.library." ;
+    public static final String ARQProcedureLibrary = javaClassURIScheme+"org.apache.jena.sparql.procedure.library." ;
 
     /** Common prefixes */
     protected static final PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;

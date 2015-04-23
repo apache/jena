@@ -35,5 +35,5 @@ public class LeviathanConstants {
     /**
      * Leviathan Function Library package
      */
-    public static final String LeviathanFunctionLibrary = "java:com.hp.hpl.jena.sparql.function.library.leviathan.";
+    public static final String LeviathanFunctionLibrary = "java:org.apache.jena.sparql.function.library.leviathan.";
 }
