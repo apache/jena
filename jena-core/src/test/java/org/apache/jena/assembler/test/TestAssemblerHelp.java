@@ -176,7 +176,7 @@ public class TestAssemblerHelp extends AssemblerTestBase
             { return null; }
         }
     
-    static Model gremlinModel = modelWithStatements( "eh:Wossname ja:assembler 'com.hp.hpl.jena.assembler.test.TestAssemblerHelp$Gremlin'" );
+    static Model gremlinModel = modelWithStatements( "eh:Wossname ja:assembler 'org.apache.jena.assembler.test.TestAssemblerHelp$Gremlin'" );
     
     static boolean gremlinInvoked = false;
     
@@ -199,7 +199,7 @@ public class TestAssemblerHelp extends AssemblerTestBase
     
     public void testClassAssociation()
         {
-        String className = "com.hp.hpl.jena.assembler.test.TestAssemblerHelp$Imp";
+        String className = "org.apache.jena.assembler.test.TestAssemblerHelp$Imp";
         AssemblerGroup group = AssemblerGroup.create();
         Model m = model( "eh:Wossname ja:assembler '" + className + "'" );
         assertEquals( false, impIsLoaded );
@@ -212,7 +212,7 @@ public class TestAssemblerHelp extends AssemblerTestBase
     public void testClassResourceConstructor()
         {
         AssemblerGroup group = AssemblerGroup.create();
-        Model m = model( "eh:Wossname ja:assembler 'com.hp.hpl.jena.assembler.test.TestAssemblerHelp$Gremlin'" );
+        Model m = model( "eh:Wossname ja:assembler 'org.apache.jena.assembler.test.TestAssemblerHelp$Gremlin'" );
         assertEquals( false, gremlinInvoked );
         AssemblerHelp.loadAssemblerClasses( group, m );
         assertEquals( true, gremlinInvoked );

@@ -29,7 +29,7 @@ import org.apache.jena.shared.* ;
  */
 public class RDFReaderFImpl extends Object implements RDFReaderF {
     // ** The setting in this class are overrided by RIOT **
-    private static final String GRDDLREADER = "com.hp.hpl.jena.grddl.GRDDLReader";
+    private static final String GRDDLREADER = "org.apache.jena.grddl.GRDDLReader";
     private static final String TURTLEREADER = org.apache.jena.n3.turtle.TurtleReader.class.getName() ;
     
 	protected static Properties langToClassName = null;

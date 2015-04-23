@@ -134,7 +134,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
         { return get( y ).iterator();  }
     
     /** 
-        @see com.hp.hpl.jena.mem.Temp#get(java.lang.Object)
+        @see org.apache.jena.mem.Temp#get(java.lang.Object)
     */
     private TripleBunch get( Object y )
         { return bunchMap.get( y ); }

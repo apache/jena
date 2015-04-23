@@ -30,7 +30,7 @@ import org.apache.jena.rdf.model.* ;
 
 /** Entry point for N3 writers.  This writer will choose the actual writer
  *  to use by looking at the system property
- *  <code>com.hp.hpl.jena.n3.N3JenaWriter.writer</code> to get the
+ *  <code>org.apache.jena.n3.N3JenaWriter.writer</code> to get the
  *  writer name.
  *  <p>
  *  The following N3 writers are provided:
@@ -59,7 +59,7 @@ public class N3JenaWriter implements RDFWriter
      * General name for the N3 writer.  Will make a decision on exactly which
      * writer to use (pretty writer, plain writer or simple writer) when created.
      * Default is the pretty writer but can be overridden with system property
-     * <code>com.hp.hpl.jena.n3.N3JenaWriter.writer</code>.  
+     * <code>org.apache.jena.n3.N3JenaWriter.writer</code>.  
      */
      
     static public final String n3Writer              = "N3" ;

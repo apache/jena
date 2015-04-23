@@ -38,7 +38,6 @@ import junit.framework.TestCase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-
 /**
  * A test harness for running the OWL working group tests. This
  * differs from the RDF one in several ways (separate manifest files,
@@ -217,7 +216,7 @@ public class OWLWGTester {
 //                System.out.println("Error: deductions graph was ...");
 //                FBRuleInfGraph fbGraph = (FBRuleInfGraph)graph;
 //                Graph deductions = fbGraph.getDeductionsGraph();
-//                com.hp.hpl.jena.util.PrintUtil.printOut(deductions.find(null,null,null));
+//                org.apache.jena.PrintUtil.printOut(deductions.find(null,null,null));
 //            }
         }
         

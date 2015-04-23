@@ -118,10 +118,10 @@ public class ARPTests extends java.lang.Object {
 		pw.println(" * limitations under the License.") ;
 		pw.println(" */") ;
 		pw.println() ;
-        pw.println("package com.hp.hpl.jena.rdfxml.xmlinput.test;");
+        pw.println("package org.apache.jena.rdfxml.xmlinput.test;");
         pw.println("import junit.framework.TestSuite;");
         pw.println("import junit.framework.Test;");
-        pw.println("import com.hp.hpl.jena.shared.wg.*;");
+        pw.println("import org.apache.jena.shared.wg.*;");
         pw.println("public class TestPackage{");
         pw.println("static public Test suite() {");
         String tsname = toJava(ts, pw, "xx");

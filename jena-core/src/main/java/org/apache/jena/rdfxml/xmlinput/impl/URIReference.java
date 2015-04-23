@@ -102,7 +102,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
     /*
      * (non-Javadoc)
      * 
-     * @see com.hp.hpl.jena.rdf.arp.AResource#hasNodeID()
+     * @see org.apache.jena.rdf.arp.AResource#hasNodeID()
      */
     @Override
     public boolean hasNodeID() {
@@ -112,7 +112,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
     /*
      * (non-Javadoc)
      * 
-     * @see com.hp.hpl.jena.rdf.arp.AResourceInternal#setHasBeenUsed()
+     * @see org.apache.jena.rdf.arp.AResourceInternal#setHasBeenUsed()
      */
     @Override
     public void setHasBeenUsed() {
@@ -121,7 +121,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
     /*
      * (non-Javadoc)
      * 
-     * @see com.hp.hpl.jena.rdf.arp.AResourceInternal#getHasBeenUsed()
+     * @see org.apache.jena.rdf.arp.AResourceInternal#getHasBeenUsed()
      */
     @Override
     public boolean getHasBeenUsed() {

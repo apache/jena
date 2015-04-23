@@ -22,8 +22,6 @@ import org.apache.jena.graph.* ;
 import org.apache.jena.reasoner.rulesys.* ;
 import org.apache.jena.reasoner.rulesys.impl.BBRuleContext ;
 
-//import com.hp.hpl.jena.util.PrintUtil;
-
 /**
  * Create or lookup an anonymous instance of a property value. Syntax of the call is:
  * <pre>

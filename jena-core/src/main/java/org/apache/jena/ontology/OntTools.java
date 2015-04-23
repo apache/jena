@@ -35,7 +35,7 @@ import org.apache.jena.util.iterator.Filter ;
  * Some general utilities and algorithms to support developers working with the
  * general classes in the Jena ontology API. <strong>Warning</strong> these
  * utilities are <strong>experimental</strong>. Extensive testing has not yet
- * occurred (see <tt>com.hp.hpl.jena.ontology.impl.TestOntTools</tt> in the
+ * occurred (see {@link org.apache.jena.ontology.impl.TestOntTools} in the
  * test area for basic unit tests), 
  * and in particular performance testing has not been carried out yet. 
  * Users are advised to exercise caution before relying on these utilities in 

@@ -25,8 +25,6 @@ import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
 import org.junit.Assert;
 
-// import com.hp.hpl.jena.regression.Regression.*;
-
 public class TestSelectorUse extends AbstractModelTestBase
 {
 

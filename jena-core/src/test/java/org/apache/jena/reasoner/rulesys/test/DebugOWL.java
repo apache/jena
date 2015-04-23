@@ -18,10 +18,6 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-//import com.hp.hpl.jena.rdf.model.*;
-//import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
-
-
 import org.apache.jena.graph.* ;
 import org.apache.jena.graph.compose.Union ;
 import org.apache.jena.reasoner.* ;

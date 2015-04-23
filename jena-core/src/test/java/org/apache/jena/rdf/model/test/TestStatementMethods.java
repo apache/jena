@@ -24,8 +24,6 @@ import org.apache.jena.test.JenaTestBase ;
 import org.apache.jena.vocabulary.RDF ;
 import org.junit.Assert;
 
-// import com.hp.hpl.jena.regression.Regression.*;
-
 public class TestStatementMethods extends AbstractModelTestBase
 {
 

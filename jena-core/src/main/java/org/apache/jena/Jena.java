@@ -26,7 +26,7 @@ package org.apache.jena;
 public interface Jena
 {
 	/** The root package name for Jena */    
-    public static final String PATH = "com.hp.hpl.jena";
+    public static final String PATH = "org.apache.jena";
     
     /** The root name for metadata */
     

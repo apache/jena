@@ -236,7 +236,7 @@ class NTripleTestSuite extends WGTestSuite {
 			return -countDown;
 		}
 		/* (non-Javadoc)
-		 * @see com.hp.hpl.jena.rdf.arp.ExtendedHandler#discardNodesWithNodeID()
+		 * @see org.apache.jena.rdf.arp.ExtendedHandler#discardNodesWithNodeID()
 		 */
 		@Override
         public boolean discardNodesWithNodeID() {

@@ -395,14 +395,14 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 			// assertTrue(rslt>=0);
 	}
 	/* (non-Javadoc)
-         * @see com.hp.hpl.jena.rdf.arp.test.WGTestSuite.Test#createMe()
+         * @see org.apache.jena.rdf.arp.test.WGTestSuite.Test#createMe()
 	 */
 	@Override
     String createMe() {
 		throw new UnsupportedOperationException();
 	}
 	/* (non-Javadoc)
-	 * @see com.hp.hpl.jena.rdf.arp.test.WGTestSuite.Test#reallyRunTest()
+	 * @see org.apache.jena.rdf.arp.test.WGTestSuite.Test#reallyRunTest()
 	 */
 	@Override
     void reallyRunTest() {

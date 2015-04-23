@@ -144,14 +144,14 @@ implements ARPConfig {
         super.setHandlersWith(handlers);
     }
     /* (non-Javadoc)
-     * @see com.hp.hpl.jena.rdf.arp.ARPConfig#getOptions()
+     * @see org.apache.jena.rdf.arp.ARPConfig#getOptions()
      */
     @Override
     public ARPOptions getOptions() {
         return super.getOptions();
     }
     /* (non-Javadoc)
-     * @see com.hp.hpl.jena.rdf.arp.ARPConfig#setOptions(com.hp.hpl.jena.rdf.arp.ARPOptions)
+     * @see org.apache.jena.rdf.arp.ARPConfig#setOptions(org.apache.jena.rdf.arp.ARPOptions)
      */
     @Override
     public void setOptionsWith(ARPOptions opts) {

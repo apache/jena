@@ -88,7 +88,7 @@ public class TestModelExtract extends AbstractModelTestBase
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.hp.hpl.jena.rdf.model.StatementBoundary#asTripleBoundary(com.hp.hpl
+	 * org.apache.jena.rdf.model.StatementBoundary#asTripleBoundary(com.hp.hpl
 	 * .jena.rdf.model.Model)
 	 */
 	public TripleBoundary asTripleBoundary( final Model m )
@@ -97,13 +97,6 @@ public class TestModelExtract extends AbstractModelTestBase
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.hp.hpl.jena.rdf.model.StatementBoundary#stopAt(com.hp.hpl.jena.rdf
-	 * .model.Statement)
-	 */
 	public boolean stopAt( final Statement s )
 	{
 		// TODO Auto-generated method stub

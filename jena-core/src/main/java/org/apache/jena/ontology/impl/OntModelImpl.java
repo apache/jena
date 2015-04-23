@@ -68,7 +68,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * This variable is how the OntModel knows how to construct
      * a syntax checker. This part of the design may change.
      */
-    static public String owlSyntaxCheckerClassName = "com.hp.hpl.jena.ontology.tidy.JenaChecker";
+    static public String owlSyntaxCheckerClassName = "org.apache.jena.ontology.tidy.JenaChecker";
 
 
     // Static variables

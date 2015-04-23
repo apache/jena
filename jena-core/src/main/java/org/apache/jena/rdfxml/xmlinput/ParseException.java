@@ -26,7 +26,7 @@ import java.lang.reflect.Field;
 /**
  * An exception during the RDF processing of ARP. Note: it is distinguished from
  * an XML related exception from Xerces because while both are
- * SAXParseException's, the latter are not com.hp.hpl.jena.arp.ParseException's.
+ * SAXParseException's, the latter are not {@link ParseException}'s.
  */
 public class ParseException extends SAXParseException implements
         ARPErrorNumbers {

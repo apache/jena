@@ -92,7 +92,7 @@ public class TestOntTools
     }
 
     /**
-     * Test method for <code>com.hp.hpl.jena.ontology.OntTools#indexLCA</code>
+     * Test method for <code>org.apache.jena.ontology.OntTools#indexLCA</code>
      */
     public void testIndexLCA0() {
         m_a.addSubClass( m_b );

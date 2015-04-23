@@ -31,9 +31,6 @@ import org.apache.jena.vocabulary.TestManifestX ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//import com.hp.hpl.jena.sparql.vocabulary.TestManifest;
-//import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
-
 /**
  * A test manifest for a single manifest file.
  */

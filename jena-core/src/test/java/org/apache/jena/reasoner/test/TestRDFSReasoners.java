@@ -18,7 +18,6 @@
 
 package org.apache.jena.reasoner.test;
 
-//import com.hp.hpl.jena.reasoner.rdfsReasoner1.*;
 import java.io.*;
 import java.util.Iterator;
 

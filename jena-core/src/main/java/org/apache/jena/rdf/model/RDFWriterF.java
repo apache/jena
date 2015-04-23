@@ -30,7 +30,7 @@ package org.apache.jena.rdf.model;
  * </ul>
  *<p>System wide defaults for classes to use as readers for these languages
  *are defined.  These defaults may be overwridden by setting a system property
- *with a name of the form com.hp.hpl.jena.readers.<lang> to the class
+ *with a name of the form org.apache.jena.readers.<lang> to the class
  *name.</p>
  *<p><b>NOTE:</b> All settings are global in nature</p>
  */

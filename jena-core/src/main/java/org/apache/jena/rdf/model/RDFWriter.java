@@ -27,8 +27,7 @@ import java.io.OutputStream;
  */
 public interface RDFWriter {
 
-	public static final String NSPREFIXPROPBASE
-	  = "com.hp.hpl.jena.nsprefix.";
+	public static final String NSPREFIXPROPBASE = "org.apache.jena.nsprefix.";
 	/** Caution: Serialize Model <code>model</code> to Writer <code>out</code>.
 	 * It is often better to use an OutputStream and permit Jena
 	 * to choose the character encoding. The charset restrictions

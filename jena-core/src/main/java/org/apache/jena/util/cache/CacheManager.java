@@ -38,9 +38,8 @@ public class CacheManager {
      * may be used to identify the cache in logging and
      * other operations.  To ensure uniqueness it is
      * suggested that cache's be given names similar to
-     * full java names such as
-     * com.hp.hpl.jena.graph.Node.NodeCache.
-     * @param size Teh size of the cache in terms of the number of
+     * full java names such as org.apache.jena.graph.Node.NodeCache.
+     * @param size The size of the cache in terms of the number of
      * objects it can store.
      * @return a newly created cache object
      *

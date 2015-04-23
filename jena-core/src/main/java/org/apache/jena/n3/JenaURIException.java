@@ -21,12 +21,8 @@ package org.apache.jena.n3;
 import org.apache.jena.shared.JenaException ;
 
 
-/** com.hp.hpl.jena.query.util.RelativeURIException
- */
-
 public class JenaURIException extends JenaException
 {
-    public JenaURIException(Exception e) { super(e) ; }
-	
-    public JenaURIException(String msg) { super(msg) ; }
+    public JenaURIException(Exception e)    { super(e) ; }
+    public JenaURIException(String msg)     { super(msg) ; }
 }

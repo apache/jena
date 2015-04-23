@@ -320,9 +320,9 @@ public class schemagen {
         }
         else {
             // we have to do the imports at least
-            writeln( 0, "import com.hp.hpl.jena.rdf.model.*;" );
+            writeln( 0, "import org.apache.jena.rdf.model.*;" );
             if (m_options.hasOntologyOption()) {
-                writeln( 0, "import com.hp.hpl.jena.ontology.*;" );
+                writeln( 0, "import org.apache.jena.ontology.*;" );
             }
             if (m_options.hasIncludeSourceOption()) {
                 writeln( 0, "import java.io.ByteArrayInputStream;" );
@@ -458,11 +458,11 @@ public class schemagen {
     /** Determine the list of imports to include in the file */
     protected String getImports() {
         StringBuffer buf = new StringBuffer();
-        buf.append( "import com.hp.hpl.jena.rdf.model.*;" );
+        buf.append( "import org.apache.jena.rdf.model.*;" );
         buf.append( m_nl );
 
         if (useOntology()) {
-            buf.append( "import com.hp.hpl.jena.ontology.*;" );
+            buf.append( "import org.apache.jena.ontology.*;" );
             buf.append( m_nl );
         }
 
