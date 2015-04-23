@@ -18,9 +18,8 @@
 
 package org.apache.jena.riot.lang;
 
-import com.hp.hpl.jena.graph.Node ;
-
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.riot.ErrorHandlerTestLib ;

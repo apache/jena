@@ -21,20 +21,19 @@ package org.apache.jena.query.text.assembler ;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.Mode ;
+import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.query.text.TextIndexException;
 import org.apache.jena.query.text.TextIndexLucene;
+import org.apache.jena.rdf.model.Literal ;
+import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.Statement ;
+import org.apache.jena.vocabulary.RDF ;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
-
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * Assembler to create standard analyzers with keyword list.

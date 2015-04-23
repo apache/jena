@@ -20,13 +20,12 @@ package arq.examples.update;
 
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-
-import com.hp.hpl.jena.sparql.modify.request.Target ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateCreate ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateLoad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.* ;
+import org.apache.jena.sparql.modify.request.Target ;
+import org.apache.jena.sparql.modify.request.UpdateCreate ;
+import org.apache.jena.sparql.modify.request.UpdateDrop ;
+import org.apache.jena.sparql.modify.request.UpdateLoad ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.update.* ;
 
 /** Build an update request up out of indvidiual Update objects, not by parsing.
  *  This is quite low-level.

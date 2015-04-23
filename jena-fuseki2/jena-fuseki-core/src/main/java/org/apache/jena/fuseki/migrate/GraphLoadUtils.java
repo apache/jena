@@ -21,14 +21,13 @@ package org.apache.jena.fuseki.migrate;
 
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.graph.Factory ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
-
-import com.hp.hpl.jena.graph.Factory ;
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 /** A packaging of code to do a controlled read of a graph or model */
 

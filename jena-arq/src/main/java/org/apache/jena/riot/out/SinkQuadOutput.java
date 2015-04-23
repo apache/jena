@@ -23,12 +23,11 @@ import java.io.OutputStream ;
 import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.Prologue ;
 import org.apache.jena.riot.writer.WriterStreamRDFPlain ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Quad ;
 
 /** A class that print quads, N-Quads style *  
  * @see WriterStreamRDFPlain

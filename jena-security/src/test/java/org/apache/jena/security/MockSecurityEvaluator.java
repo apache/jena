@@ -17,12 +17,11 @@
  */
 package org.apache.jena.security;
 
-import com.hp.hpl.jena.rdf.model.Resource;
-
 import java.security.Principal;
 import java.util.Collections;
 import java.util.Set;
 
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.security.SecurityEvaluator;
 
 public class MockSecurityEvaluator implements SecurityEvaluator

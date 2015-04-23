@@ -25,6 +25,10 @@ import java.util.Calendar ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.security.AccessDeniedException ;
 import org.apache.jena.security.graph.SecuredGraph ;
 import org.apache.jena.security.graph.SecuredPrefixMapping ;
@@ -32,12 +36,7 @@ import org.apache.jena.security.model.impl.SecuredNodeIterator ;
 import org.apache.jena.security.model.impl.SecuredRSIterator ;
 import org.apache.jena.security.model.impl.SecuredResIterator ;
 import org.apache.jena.security.model.impl.SecuredStatementIterator ;
-
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.shared.PropertyNotFoundException ;
+import org.apache.jena.shared.PropertyNotFoundException ;
 
 /**
  * The interface for secured Model instances.

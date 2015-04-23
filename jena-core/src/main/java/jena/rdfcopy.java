@@ -20,11 +20,11 @@ package jena;
 
 import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
 
-import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.rdf.model.*;
-
 import java.net.*;
 import java.io.*;
+
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.shared.JenaException ;
 
 /** A program which read an RDF model and copy it to the standard output stream.
  *

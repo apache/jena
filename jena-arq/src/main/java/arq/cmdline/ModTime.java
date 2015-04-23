@@ -18,7 +18,7 @@
 
 package arq.cmdline;
 
-import com.hp.hpl.jena.sparql.util.Timer ;
+import org.apache.jena.sparql.util.Timer ;
 
 
 public class ModTime implements ArgModuleGeneral

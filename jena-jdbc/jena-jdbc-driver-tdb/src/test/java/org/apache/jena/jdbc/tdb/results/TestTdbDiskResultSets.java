@@ -21,14 +21,13 @@ package org.apache.jena.jdbc.tdb.results;
 import java.sql.SQLException;
 
 import org.apache.jena.jdbc.utils.TestUtils;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.tdb.StoreConnection ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb.base.file.Location ;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
-
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.tdb.StoreConnection;
-import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.base.file.Location;
 
 /**
  * Tests for result sets using a disk backed TDB dataset

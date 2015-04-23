@@ -17,21 +17,20 @@
  */
 package org.apache.jena.security.model.impl;
 
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.Filter;
-import com.hp.hpl.jena.util.iterator.Map1;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.apache.jena.rdf.model.Statement ;
+import org.apache.jena.rdf.model.StmtIterator ;
 import org.apache.jena.security.SecurityEvaluator.Action;
 import org.apache.jena.security.model.SecuredModel;
 import org.apache.jena.security.model.SecuredStatement;
 import org.apache.jena.security.utils.PermStatementFilter;
+import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.util.iterator.Filter ;
+import org.apache.jena.util.iterator.Map1 ;
 
 /**
  * A secured StatementIterator implementation

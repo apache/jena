@@ -17,10 +17,10 @@
  */
 package org.apache.jena.security.utils;
 
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.util.iterator.Filter;
-import com.hp.hpl.jena.vocabulary.RDF;
+import org.apache.jena.rdf.model.Property ;
+import org.apache.jena.rdf.model.Statement ;
+import org.apache.jena.util.iterator.Filter ;
+import org.apache.jena.vocabulary.RDF ;
 
 public class ContainerFilter extends Filter<Statement>
 {

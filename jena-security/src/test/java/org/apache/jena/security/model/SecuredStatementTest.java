@@ -17,17 +17,9 @@
  */
 package org.apache.jena.security.model;
 
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.ReifiedStatement;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.shared.PropertyNotFoundException;
-
 import java.util.Set;
 
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.Factory;
 import org.apache.jena.security.MockSecurityEvaluator;
@@ -37,6 +29,7 @@ import org.apache.jena.security.SecurityEvaluator.Action;
 import org.apache.jena.security.model.SecuredModel;
 import org.apache.jena.security.model.SecuredStatement;
 import org.apache.jena.security.model.impl.SecuredStatementImpl;
+import org.apache.jena.shared.PropertyNotFoundException ;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -22,14 +22,13 @@ import java.io.StringReader;
 
 import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.IRIResolver;
 import org.junit.Test;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 public class TestLangCSV extends BaseTest {
 	private static final String FILE_NAME = "src/test/resources/test.csv";

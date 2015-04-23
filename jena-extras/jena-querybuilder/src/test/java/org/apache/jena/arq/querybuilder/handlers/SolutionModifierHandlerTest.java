@@ -24,14 +24,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.query.SortCondition ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.SortCondition;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException;
 
 public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 

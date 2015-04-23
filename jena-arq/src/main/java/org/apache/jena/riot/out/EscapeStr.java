@@ -20,8 +20,7 @@ package org.apache.jena.riot.out;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.AWriter ;
-
-import com.hp.hpl.jena.sparql.lang.ParserBase ;
+import org.apache.jena.sparql.lang.ParserBase ;
 
 public class EscapeStr
 {

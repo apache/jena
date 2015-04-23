@@ -17,6 +17,11 @@
  */
 package org.apache.jena.security.model.impl;
 
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.security.AccessDeniedException ;
 import org.apache.jena.security.SecurityEvaluator.Action ;
 import org.apache.jena.security.impl.ItemHolder ;
@@ -26,14 +31,8 @@ import org.apache.jena.security.model.SecuredModel ;
 import org.apache.jena.security.model.SecuredResource ;
 import org.apache.jena.security.model.SecuredStatement ;
 import org.apache.jena.security.utils.PermStatementFilter ;
-
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.shared.PropertyNotFoundException ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.shared.PropertyNotFoundException ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /**
  * Implementation of SecuredResource to be used by a SecuredItemInvoker proxy.

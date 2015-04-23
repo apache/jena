@@ -24,9 +24,8 @@ import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.RiotParseException ;
+import org.apache.jena.sparql.ARQConstants ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.sparql.ARQConstants ;
 
 public class TestTokenizer extends BaseTest {
     // WORKERS

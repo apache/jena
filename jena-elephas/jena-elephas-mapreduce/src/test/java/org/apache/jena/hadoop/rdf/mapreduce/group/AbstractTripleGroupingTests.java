@@ -18,12 +18,11 @@
 
 package org.apache.jena.hadoop.rdf.mapreduce.group;
 
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.mapreduce.group.AbstractTripleGroupingMapper;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
-
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * Abstract tests for {@link AbstractTripleGroupingMapper} implementations

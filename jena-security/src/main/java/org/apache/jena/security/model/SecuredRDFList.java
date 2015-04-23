@@ -17,19 +17,14 @@
  */
 package org.apache.jena.security.model;
 
-import com.hp.hpl.jena.rdf.model.EmptyListException;
-import com.hp.hpl.jena.rdf.model.InvalidListException;
-import com.hp.hpl.jena.rdf.model.ListIndexException;
-import com.hp.hpl.jena.rdf.model.RDFList;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.SecurityEvaluator.Action;
+import org.apache.jena.util.iterator.ExtendedIterator ;
 
 public interface SecuredRDFList extends RDFList, SecuredResource
 {

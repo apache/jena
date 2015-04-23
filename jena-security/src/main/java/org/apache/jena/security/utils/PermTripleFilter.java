@@ -17,17 +17,16 @@
  */
 package org.apache.jena.security.utils;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.util.iterator.Filter;
-
 import java.util.Collection;
 import java.util.Set;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator.Action;
 import org.apache.jena.security.SecurityEvaluator.SecNode;
 import org.apache.jena.security.impl.SecuredItem;
 import org.apache.jena.security.impl.SecuredItemImpl;
+import org.apache.jena.util.iterator.Filter ;
 
 /**
  * A filter for to filter ExtendedIterators on Triples.

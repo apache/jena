@@ -21,7 +21,7 @@ package org.apache.jena.atlas.iterator;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
-import com.hp.hpl.jena.sparql.util.Utils ;
+import org.apache.jena.sparql.util.Utils ;
 
 /** An Iterator with a one slot lookahead. */  
 public abstract class IteratorSlotted<T> implements Iterator<T>

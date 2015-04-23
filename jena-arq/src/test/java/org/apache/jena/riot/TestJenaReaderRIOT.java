@@ -25,16 +25,15 @@ import java.io.StringReader ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.adapters.RDFReaderFactoryRIOT ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.util.FileUtils ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 /* Test of integration with Jena via model.read.
  * Also tests triples format reading of RDFDataMgr */

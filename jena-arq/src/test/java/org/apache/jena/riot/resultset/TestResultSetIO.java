@@ -31,20 +31,19 @@ import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.query.ResultSet ;
+import org.apache.jena.query.ResultSetFactory ;
+import org.apache.jena.query.ResultSetRewindable ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.ResultSetMgr ;
+import org.apache.jena.sparql.resultset.ResultSetCompare ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.sse.builders.BuilderResultSet ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
-
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
-import com.hp.hpl.jena.query.ResultSetRewindable ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
 
 @RunWith(Parameterized.class)
 public class TestResultSetIO extends BaseTest {

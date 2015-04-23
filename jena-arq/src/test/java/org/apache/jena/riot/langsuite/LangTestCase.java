@@ -21,9 +21,8 @@ package org.apache.jena.riot.langsuite;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
-
-import com.hp.hpl.jena.sparql.junit.EarlReport ;
-import com.hp.hpl.jena.sparql.junit.EarlTestCase ;
+import org.apache.jena.sparql.junit.EarlReport ;
+import org.apache.jena.sparql.junit.EarlTestCase ;
 
 public abstract class LangTestCase extends EarlTestCase
 {

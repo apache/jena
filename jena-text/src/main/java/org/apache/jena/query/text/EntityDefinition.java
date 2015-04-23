@@ -24,10 +24,9 @@ import java.util.HashMap ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.lib.MultiMap ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.lucene.analysis.Analyzer ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.rdf.model.Resource ;
 
 /**
  * Definition of a "document"

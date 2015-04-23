@@ -17,6 +17,7 @@
  */
 package org.apache.jena.security.graph.impl;
 
+import org.apache.jena.graph.* ;
 import org.apache.jena.security.SecurityEvaluator ;
 import org.apache.jena.security.SecurityEvaluator.Action ;
 import org.apache.jena.security.graph.* ;
@@ -24,11 +25,9 @@ import org.apache.jena.security.impl.ItemHolder ;
 import org.apache.jena.security.impl.SecuredItem ;
 import org.apache.jena.security.impl.SecuredItemImpl ;
 import org.apache.jena.security.utils.PermTripleFilter ;
-
-import com.hp.hpl.jena.graph.* ;
-import com.hp.hpl.jena.shared.AddDeniedException ;
-import com.hp.hpl.jena.shared.DeleteDeniedException ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.shared.AddDeniedException ;
+import org.apache.jena.shared.DeleteDeniedException ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /**
  * Implementation of SecuredGraph to be used by a SecuredItemInvoker proxy.

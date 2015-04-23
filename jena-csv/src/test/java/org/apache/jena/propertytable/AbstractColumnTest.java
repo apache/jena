@@ -20,11 +20,10 @@ package org.apache.jena.propertytable;
 
 import java.util.List;
 
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
 
 /**
  * Tests related to Column.

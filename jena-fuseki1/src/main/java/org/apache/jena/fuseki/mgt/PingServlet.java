@@ -30,9 +30,8 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.riot.web.HttpNames ;
+import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.web.HttpSC ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** 
  * The ping servlet provides a low costy, uncached endpoint that can be used

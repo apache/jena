@@ -17,19 +17,6 @@
  */
 package org.apache.jena.security.model.impl;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Container;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.Map1;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
-
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -37,6 +24,9 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.security.SecurityEvaluator.Action;
 import org.apache.jena.security.impl.ItemHolder;
 import org.apache.jena.security.impl.SecuredItemInvoker;
@@ -44,6 +34,10 @@ import org.apache.jena.security.model.SecuredContainer;
 import org.apache.jena.security.model.SecuredModel;
 import org.apache.jena.security.utils.ContainerFilter;
 import org.apache.jena.security.utils.PermStatementFilter;
+import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.util.iterator.Map1 ;
+import org.apache.jena.util.iterator.WrappedIterator ;
+import org.apache.jena.vocabulary.RDF ;
 
 /**
  * Implementation of SecuredContainer to be used by a SecuredItemInvoker proxy.

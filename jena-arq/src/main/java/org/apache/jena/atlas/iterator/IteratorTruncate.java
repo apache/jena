@@ -21,7 +21,7 @@ package org.apache.jena.atlas.iterator;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
-import com.hp.hpl.jena.util.iterator.NiceIterator ;
+import org.apache.jena.util.iterator.NiceIterator ;
 
 /** Iterate while a condition return true, then stop */
 public class IteratorTruncate<T> implements Iterator<T>

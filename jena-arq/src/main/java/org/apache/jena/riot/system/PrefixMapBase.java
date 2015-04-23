@@ -27,8 +27,7 @@ import org.apache.jena.atlas.lib.ActionKeyValue;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIFactory;
-
-import com.hp.hpl.jena.shared.PrefixMapping;
+import org.apache.jena.shared.PrefixMapping ;
 
 /**
  * Abstract base implementation of a {@link PrefixMap} which provides

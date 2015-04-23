@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.metadata.JenaMetadata;
 import org.apache.jena.jdbc.postprocessing.ResultsPostProcessor;
@@ -51,12 +52,10 @@ import org.apache.jena.jdbc.results.metadata.SelectResultsMetadata;
 import org.apache.jena.jdbc.results.metadata.TripleResultsMetadata;
 import org.apache.jena.jdbc.statements.JenaPreparedStatement;
 import org.apache.jena.jdbc.statements.JenaStatement;
+import org.apache.jena.query.Query ;
+import org.apache.jena.update.UpdateRequest ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.update.UpdateRequest;
 
 /**
  * Abstract base implementation of a Jena JDBC connection
@@ -344,7 +343,7 @@ public abstract class JenaConnection implements Connection {
      * @return Results after processing by registered post-processors
      * @throws SQLException
      */
-    public final com.hp.hpl.jena.query.ResultSet applyPostProcessors(com.hp.hpl.jena.query.ResultSet results) throws SQLException {
+    public final org.apache.jena.query.ResultSet applyPostProcessors(org.apache.jena.query.ResultSet results) throws SQLException {
         for (ResultsPostProcessor postProcessor : this.postProcessors) {
             if (postProcessor == null)
                 continue;

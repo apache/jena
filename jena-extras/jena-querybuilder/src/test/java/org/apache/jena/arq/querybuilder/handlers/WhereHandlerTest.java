@@ -22,18 +22,17 @@ import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.impl.LiteralLabelFactory ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.rdf.model.ResourceFactory ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.lang.sparql_11.ParseException ;
+import org.apache.jena.vocabulary.RDF ;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 public class WhereHandlerTest extends AbstractHandlerTest {
 

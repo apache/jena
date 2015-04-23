@@ -26,17 +26,16 @@ import java.sql.SQLException ;
 import java.util.Iterator ;
 import java.util.Properties ;
 
+import org.apache.jena.graph.Node ;
 import org.apache.jena.jdbc.connections.JenaConnection ;
 import org.apache.jena.jdbc.postprocessing.ResultsEcho ;
 import org.apache.jena.jdbc.postprocessing.ResultsPostProcessor ;
 import org.apache.jena.jdbc.preprocessing.CommandPreProcessor ;
 import org.apache.jena.jdbc.preprocessing.Echo ;
+import org.apache.jena.query.ARQ ;
 import org.junit.Assert ;
 import org.junit.Assume ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.ARQ ;
 
 /**
  * Abstract tests for {@link JenaDriver} implementations

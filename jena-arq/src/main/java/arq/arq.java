@@ -18,7 +18,7 @@
 
 package arq;
 
-import com.hp.hpl.jena.query.Syntax ;
+import org.apache.jena.query.Syntax ;
 
 /** A program to execute queries from the command line in ARQ mode. */
 

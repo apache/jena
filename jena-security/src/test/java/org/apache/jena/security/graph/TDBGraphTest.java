@@ -17,15 +17,14 @@
  */
 package org.apache.jena.security.graph;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.TDBFactory;
-
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.jena.graph.Graph ;
 import org.apache.jena.security.MockSecurityEvaluator;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.TDBFactory ;
 import org.junit.After;
 
 public class TDBGraphTest extends MemGraphTest

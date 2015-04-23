@@ -17,10 +17,9 @@
  */
 package org.apache.jena.security.model;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-
+import org.apache.jena.graph.Node ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.impl.SecuredItem;
 

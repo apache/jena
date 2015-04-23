@@ -20,9 +20,8 @@ package arq.cmdline;
 
 import java.io.PrintStream ;
 
-import com.hp.hpl.jena.query.ARQ ;
-
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.query.ARQ ;
 import arq.cmd.CmdUtils ;
 import arq.cmd.TerminationException ;
 

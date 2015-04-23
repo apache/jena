@@ -20,8 +20,8 @@ package org.apache.jena.propertytable;
 
 import java.util.Collection;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 
 public abstract class BaseTest {
 	protected PropertyTable table;

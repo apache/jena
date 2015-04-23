@@ -40,6 +40,8 @@ import org.apache.jena.fuseki.validation.IRIValidator ;
 import org.apache.jena.fuseki.validation.QueryValidator ;
 import org.apache.jena.fuseki.validation.UpdateValidator ;
 import org.apache.jena.riot.WebContent ;
+import org.apache.jena.sparql.mgt.ARQMgt ;
+import org.apache.jena.sparql.util.Utils ;
 import org.eclipse.jetty.http.MimeTypes ;
 import org.eclipse.jetty.security.* ;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
@@ -52,9 +54,6 @@ import org.eclipse.jetty.servlet.ServletHolder ;
 import org.eclipse.jetty.servlets.GzipFilter ;
 import org.eclipse.jetty.util.security.Constraint ;
 import org.eclipse.jetty.xml.XmlConfiguration ;
-
-import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /**
  * SPARQLServer is the Jena server instance which wraps/utilizes 

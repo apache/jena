@@ -17,12 +17,11 @@
  */
 package org.apache.jena.security.contract.graph;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.test.MetaTestGraph;
-import com.hp.hpl.jena.tdb.TDBFactory;
-
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.test.MetaTestGraph ;
 import org.apache.jena.security.MockSecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator;
+import org.apache.jena.tdb.TDBFactory ;
 
 public class SecuredTDBGraphContractTests extends MetaTestGraph
 {

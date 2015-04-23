@@ -20,15 +20,15 @@ package org.apache.jena.query.spatial;
 
 import org.apache.jena.query.spatial.assembler.SpatialAssembler ;
 import org.apache.jena.query.spatial.pfunction.library.* ;
+import org.apache.jena.sparql.SystemARQ ;
+import org.apache.jena.sparql.lib.Metadata ;
+import org.apache.jena.sparql.mgt.SystemInfo ;
+import org.apache.jena.sparql.pfunction.PropertyFunction ;
+import org.apache.jena.sparql.pfunction.PropertyFunctionFactory ;
+import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
+import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.tdb.TDB ;
 
-import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.lib.Metadata ;
-import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunction ;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionFactory ;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry ;
-import com.hp.hpl.jena.sparql.util.Symbol ;
-import com.hp.hpl.jena.tdb.TDB ;
 import com.spatial4j.core.context.SpatialContext ;
 
 public class SpatialQuery

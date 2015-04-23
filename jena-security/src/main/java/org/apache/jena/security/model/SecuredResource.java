@@ -17,13 +17,8 @@
  */
 package org.apache.jena.security.model;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.model.impl.SecuredStatementIterator;
 

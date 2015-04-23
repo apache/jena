@@ -17,11 +17,11 @@
  */
 package org.apache.jena.security.utils;
 
-import com.hp.hpl.jena.rdf.model.RDFList;
-import com.hp.hpl.jena.vocabulary.RDF;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import org.apache.jena.rdf.model.RDFList ;
+import org.apache.jena.vocabulary.RDF ;
 
 public class RDFListIterator implements Iterator<RDFList>
 {

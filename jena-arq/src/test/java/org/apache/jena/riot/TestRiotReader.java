@@ -28,9 +28,8 @@ import java.io.UnsupportedEncodingException ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.graph.Triple ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Triple ;
 
 public class TestRiotReader
 {

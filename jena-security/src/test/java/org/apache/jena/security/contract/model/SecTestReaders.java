@@ -17,9 +17,9 @@
  */
 package org.apache.jena.security.contract.model;
 
-import com.hp.hpl.jena.rdf.model.test.TestPackage;
+import org.apache.jena.rdf.model.test.TestPackage ;
 
-public class SecTestReaders extends com.hp.hpl.jena.rdf.model.test.TestReaders {
+public class SecTestReaders extends org.apache.jena.rdf.model.test.TestReaders {
 
 	public SecTestReaders() {
 		super( new TestPackage.PlainModelFactory(), "SecTestReaders" );

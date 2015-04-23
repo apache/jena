@@ -17,15 +17,14 @@
  */
 package org.apache.jena.security.model.impl;
 
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.security.impl.ItemHolder ;
 import org.apache.jena.security.impl.SecuredItemImpl ;
 import org.apache.jena.security.impl.SecuredItemInvoker ;
 import org.apache.jena.security.model.* ;
-
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.shared.PropertyNotFoundException ;
+import org.apache.jena.shared.PropertyNotFoundException ;
 
 /**
  * Implementation of SecuredStatement to be used by a SecuredItemInvoker proxy.

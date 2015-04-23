@@ -20,13 +20,12 @@ package org.apache.jena.riot.lang ;
 
 import java.util.concurrent.atomic.AtomicLong ;
 
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.riot.out.NodeToLabel ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
 
 /**
  * Allocate blank nodes according to the label given. 

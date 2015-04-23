@@ -21,8 +21,7 @@ package riotcmd;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
+import org.apache.jena.sparql.util.Utils ;
 
 /** Run the RDf/XML parser - and produce triples */
 public class rdfxml extends CmdLangParse

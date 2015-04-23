@@ -17,8 +17,7 @@
  */
 package org.apache.jena.security.graph;
 
-import com.hp.hpl.jena.graph.Capabilities;
-
+import org.apache.jena.graph.Capabilities ;
 import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator.Action;
 import org.apache.jena.security.SecurityEvaluator.SecNode;

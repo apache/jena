@@ -20,10 +20,10 @@ package jena;
 
 import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
 
-import com.hp.hpl.jena.rdf.model.*;
-
 import java.net.URL;
 import java.io.FileInputStream;
+
+import org.apache.jena.rdf.model.* ;
 
 /** A program which read two RDF models and determines if they are the same.
  *

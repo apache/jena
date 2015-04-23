@@ -42,14 +42,13 @@ import org.apache.jena.fuseki.build.FusekiConfig ;
 import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.build.TemplateFunctions ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.tdb.sys.Names ;
 import arq.cmd.CmdException ;
-
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.tdb.sys.Names ;
 
 public class FusekiServer
 {

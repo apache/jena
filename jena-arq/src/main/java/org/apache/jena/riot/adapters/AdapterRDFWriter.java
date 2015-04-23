@@ -21,14 +21,13 @@ package org.apache.jena.riot.adapters;
 import java.io.OutputStream ;
 import java.io.Writer ;
 
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.RDFWriter ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.writer.WriterGraphRIOTBase ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFWriter ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Context ;
 
 /** Wrapper for using old-style Jena RDFWriters in RIOT. */
 

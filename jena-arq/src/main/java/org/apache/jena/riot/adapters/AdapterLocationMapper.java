@@ -20,12 +20,11 @@ package org.apache.jena.riot.adapters;
 
 import java.util.Iterator ;
 
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.system.stream.LocationMapper ;
 
-import com.hp.hpl.jena.rdf.model.Model ;
-
 /** Adapter from Jena2 LocationMapper to RIOT LocationMapper */ 
-public class AdapterLocationMapper extends com.hp.hpl.jena.util.LocationMapper 
+public class AdapterLocationMapper extends org.apache.jena.util.LocationMapper 
 {
     private final LocationMapper mapper ;
 

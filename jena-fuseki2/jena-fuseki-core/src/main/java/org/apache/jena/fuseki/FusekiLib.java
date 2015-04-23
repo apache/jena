@@ -27,22 +27,21 @@ import org.apache.jena.atlas.lib.MultiMapToList ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.server.SystemState ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Literal ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.rdf.model.Literal ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.Convert ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.Convert ;
+import org.apache.jena.vocabulary.RDFS ;
 
 public class FusekiLib {
     // ==> ActionLib

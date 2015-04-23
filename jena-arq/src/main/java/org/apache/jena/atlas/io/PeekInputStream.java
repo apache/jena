@@ -27,8 +27,7 @@ import java.io.IOException ;
 import java.io.InputStream ;
 
 import org.apache.jena.atlas.AtlasException ;
-
-import com.hp.hpl.jena.shared.JenaException ;
+import org.apache.jena.shared.JenaException ;
 
 /** Parsing-centric input stream.
  *  @see PeekReader

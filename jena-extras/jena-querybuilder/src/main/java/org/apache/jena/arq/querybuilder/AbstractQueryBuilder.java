@@ -35,19 +35,18 @@ import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
 import org.apache.jena.arq.querybuilder.handlers.SelectHandler;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
+import org.apache.jena.graph.FrontsNode ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.impl.LiteralLabelFactory ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.system.PrefixMapFactory;
-
-import com.hp.hpl.jena.graph.FrontsNode;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.ExprVar;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
+import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.expr.ExprVar ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
 /**
  * Base class for all QueryBuilders.

@@ -17,14 +17,8 @@
  */
 package org.apache.jena.security.model.impl;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Alt;
-import com.hp.hpl.jena.rdf.model.AltHasNoDefaultException;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.ResourceF;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.security.SecurityEvaluator.Action;
 import org.apache.jena.security.impl.ItemHolder;
 import org.apache.jena.security.impl.SecuredItemInvoker;
@@ -35,6 +29,7 @@ import org.apache.jena.security.model.SecuredModel;
 import org.apache.jena.security.model.SecuredRDFNode;
 import org.apache.jena.security.model.SecuredResource;
 import org.apache.jena.security.model.SecuredSeq;
+import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /**
  * Implementation of SecuredAlt to be used by a SecuredItemInvoker proxy.

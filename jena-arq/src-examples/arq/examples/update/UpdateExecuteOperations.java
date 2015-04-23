@@ -21,9 +21,8 @@ package arq.examples.update;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.* ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.update.* ;
 
 /** Build an update request up out of indvidiual Updates specified as strings.
  *  See UpdatePorgrammatic for another way to build up a request. 

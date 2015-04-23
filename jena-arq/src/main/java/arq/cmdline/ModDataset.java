@@ -18,7 +18,7 @@
 
 package arq.cmdline;
 
-import com.hp.hpl.jena.query.Dataset ;
+import org.apache.jena.query.Dataset ;
 
 public abstract class ModDataset extends ModBase
 {

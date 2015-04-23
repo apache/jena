@@ -17,25 +17,20 @@
  */
 package org.apache.jena.security.query.rewriter;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprFunctionN;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.ExprVar;
-import com.hp.hpl.jena.sparql.expr.ExprVisitor;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
-import com.hp.hpl.jena.sparql.graph.NodeTransform;
 import java.util.List;
 
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator.Action;
 import org.apache.jena.security.SecurityEvaluator.SecNode;
 import org.apache.jena.security.SecurityEvaluator.SecTriple;
 import org.apache.jena.security.impl.SecuredItemImpl;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.expr.* ;
+import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.sparql.graph.NodeTransform ;
 
 public class SecuredFunction extends ExprFunctionN
 {

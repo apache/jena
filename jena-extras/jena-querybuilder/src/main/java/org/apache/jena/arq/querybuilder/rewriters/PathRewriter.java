@@ -18,27 +18,10 @@
 package org.apache.jena.arq.querybuilder.rewriters;
 
 import java.util.Map;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.path.P_Alt;
-import com.hp.hpl.jena.sparql.path.P_Distinct;
-import com.hp.hpl.jena.sparql.path.P_FixedLength;
-import com.hp.hpl.jena.sparql.path.P_Inverse;
-import com.hp.hpl.jena.sparql.path.P_Link;
-import com.hp.hpl.jena.sparql.path.P_Mod;
-import com.hp.hpl.jena.sparql.path.P_Multi;
-import com.hp.hpl.jena.sparql.path.P_NegPropSet;
-import com.hp.hpl.jena.sparql.path.P_OneOrMore1;
-import com.hp.hpl.jena.sparql.path.P_OneOrMoreN;
-import com.hp.hpl.jena.sparql.path.P_Path0;
-import com.hp.hpl.jena.sparql.path.P_ReverseLink;
-import com.hp.hpl.jena.sparql.path.P_Seq;
-import com.hp.hpl.jena.sparql.path.P_Shortest;
-import com.hp.hpl.jena.sparql.path.P_ZeroOrMore1;
-import com.hp.hpl.jena.sparql.path.P_ZeroOrMoreN;
-import com.hp.hpl.jena.sparql.path.P_ZeroOrOne;
-import com.hp.hpl.jena.sparql.path.Path;
-import com.hp.hpl.jena.sparql.path.PathVisitor;
+
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.path.* ;
 
 /**
  * A rewriter that implements PathVisitor.

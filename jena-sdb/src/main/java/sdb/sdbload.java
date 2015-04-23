@@ -22,19 +22,18 @@ package sdb;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.GraphListener ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.sdb.SDB ;
+import org.apache.jena.sdb.store.StoreBaseHSQL ;
+import org.apache.jena.sparql.util.Timer ;
+import org.apache.jena.sparql.util.Utils ;
+import org.apache.jena.util.FileUtils ;
 import sdb.cmd.CmdArgsDB;
 import sdb.cmd.ModGraph;
 import arq.cmdline.ArgDecl;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphListener;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sdb.SDB ;
-import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
-import com.hp.hpl.jena.sparql.util.Timer;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.util.FileUtils;
  
  /** Load data files into an SDB model in a database.
   * 

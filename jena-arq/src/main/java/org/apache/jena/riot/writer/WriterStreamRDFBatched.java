@@ -25,10 +25,9 @@ import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.core.Quad ;
 
 /** Convert the incoming print stream into batches. */
 abstract class WriterStreamRDFBatched extends WriterStreamRDFBase

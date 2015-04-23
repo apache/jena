@@ -20,18 +20,18 @@ package jena;
 
 
 import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
-
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.reasoner.Reasoner;
-import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.reasoner.rulesys.builtins.BaseBuiltin;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.FileUtils;
-
 import jena.cmdline.*;
+
 import java.util.*;
 import java.io.*;
+
+import org.apache.jena.graph.* ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.reasoner.Reasoner ;
+import org.apache.jena.reasoner.rulesys.* ;
+import org.apache.jena.reasoner.rulesys.builtins.BaseBuiltin ;
+import org.apache.jena.util.FileManager ;
+import org.apache.jena.util.FileUtils ;
 
 /**
  * General command line utility to process one RDF file into another

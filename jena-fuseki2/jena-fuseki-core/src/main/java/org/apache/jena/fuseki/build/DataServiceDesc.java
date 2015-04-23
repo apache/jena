@@ -26,16 +26,15 @@ import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.server.DataService ;
 import org.apache.jena.fuseki.server.FusekiServer ;
 import org.apache.jena.fuseki.server.FusekiVocab ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.sparql.util.TypeNotUniqueException ;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
+import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.sparql.util.TypeNotUniqueException ;
+import org.apache.jena.sparql.util.graph.GraphUtils ;
 
 // Check whether this is used or needed
 public abstract class DataServiceDesc

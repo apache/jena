@@ -22,9 +22,8 @@ import java.util.* ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.jena.fuseki.Fuseki ;
-
-import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 
 public class DatasetRef implements DatasetMXBean, Counters
 {

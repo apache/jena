@@ -19,7 +19,7 @@ package org.apache.jena.security;
 
 import java.util.Set;
 
-import com.hp.hpl.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Model ;
 
 public class ModelBasedSecurityEvaluator implements SecurityEvaluator {
 

@@ -18,13 +18,12 @@
 
 package arq.cmdline;
 
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.shared.JenaException ;
+import org.apache.jena.shared.NotFoundException ;
+import org.apache.jena.sparql.ARQException ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import arq.cmd.CmdException ;
-
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.shared.NotFoundException ;
-import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 
 
 public class ModAssembler extends ModBase

@@ -24,8 +24,7 @@ import java.sql.SQLException;
 import org.apache.jena.jdbc.JenaJDBC;
 import org.apache.jena.jdbc.metadata.JenaMetadata;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
-
-import com.hp.hpl.jena.sparql.util.Version;
+import org.apache.jena.sparql.util.Version ;
 
 /**
  * Represents metadata about connections to remote endpoints

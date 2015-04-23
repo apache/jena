@@ -17,25 +17,19 @@
  */
 package org.apache.jena.security.query;
 
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.security.Factory;
 import org.apache.jena.security.MockSecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator.SecNode.Type;
 import org.apache.jena.security.model.SecuredModel;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.TDBFactory ;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.TDBFactory;
 
 public class DataSetTest {
 	private Dataset dataset;

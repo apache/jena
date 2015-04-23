@@ -20,8 +20,7 @@ package org.apache.jena.riot.adapters;
 
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Model ;
 
 // Legacy support.
 class FileManagerModelCache {

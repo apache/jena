@@ -20,8 +20,7 @@ package tdb.cmdline;
 
 import java.io.File;
 
-import com.hp.hpl.jena.tdb.base.file.Location;
-
+import org.apache.jena.tdb.base.file.Location ;
 import arq.cmd.CmdException;
 import arq.cmdline.CmdArgModule;
 import arq.cmdline.CmdGeneral;

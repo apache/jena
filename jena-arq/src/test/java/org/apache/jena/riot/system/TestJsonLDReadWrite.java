@@ -26,16 +26,15 @@ import java.util.Iterator ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.util.IsoMatcher ;
 import org.junit.Assert ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.IsoMatcher ;
 
 /** tests : JSONLD->RDF ; JSONLD->RDF->JSONLD */
 public class TestJsonLDReadWrite extends BaseTest

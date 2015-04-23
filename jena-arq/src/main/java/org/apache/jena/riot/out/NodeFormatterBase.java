@@ -18,13 +18,12 @@
 
 package org.apache.jena.riot.out;
 
+import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.io.AWriter ;
-
-import com.hp.hpl.jena.JenaRuntime ;
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.ARQInternalErrorException ;
 
 /** Provide implementations of the operations of NodeFormatter in terms
  * of core operations for each node type.

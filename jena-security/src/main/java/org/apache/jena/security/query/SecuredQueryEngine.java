@@ -17,22 +17,21 @@
  */
 package org.apache.jena.security.query;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.util.Context;
-
 import java.security.Principal;
 import java.util.Set;
 
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.query.Query ;
 import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator.SecNode;
 import org.apache.jena.security.SecurityEvaluator.SecNode.Type;
 import org.apache.jena.security.graph.SecuredGraph;
 import org.apache.jena.security.query.rewriter.OpRewriter;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.main.QueryEngineMain ;
+import org.apache.jena.sparql.util.Context ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

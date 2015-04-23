@@ -19,7 +19,7 @@
 package org.apache.jena.web;
 
 
-import com.hp.hpl.jena.shared.JenaException ;
+import org.apache.jena.shared.JenaException ;
 
 public class JenaHttpException extends JenaException
 {

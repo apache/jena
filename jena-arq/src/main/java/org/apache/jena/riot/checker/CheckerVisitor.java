@@ -18,14 +18,9 @@
 
 package org.apache.jena.riot.checker;
 
-import com.hp.hpl.jena.graph.NodeVisitor ;
-import com.hp.hpl.jena.graph.Node_ANY ;
-import com.hp.hpl.jena.graph.Node_Blank ;
-import com.hp.hpl.jena.graph.Node_Literal ;
-import com.hp.hpl.jena.graph.Node_URI ;
-import com.hp.hpl.jena.graph.Node_Variable ;
-import com.hp.hpl.jena.graph.impl.LiteralLabel ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
+import org.apache.jena.graph.* ;
+import org.apache.jena.graph.impl.LiteralLabel ;
+import org.apache.jena.rdf.model.AnonId ;
 
 public class CheckerVisitor implements NodeVisitor
 {

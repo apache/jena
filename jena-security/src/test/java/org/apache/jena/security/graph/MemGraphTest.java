@@ -17,17 +17,10 @@
  */
 package org.apache.jena.security.graph;
 
-import com.hp.hpl.jena.graph.BulkUpdateHandler;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
-import com.hp.hpl.jena.sparql.graph.GraphFactory;
-
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import org.apache.jena.graph.* ;
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.EqualityTester;
 import org.apache.jena.security.MockSecurityEvaluator;
@@ -36,6 +29,7 @@ import org.apache.jena.security.SecurityEvaluatorParameters;
 import org.apache.jena.security.SecurityEvaluator.Action;
 import org.apache.jena.security.graph.SecuredBulkUpdateHandler;
 import org.apache.jena.security.graph.SecuredGraph;
+import org.apache.jena.sparql.graph.GraphFactory ;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

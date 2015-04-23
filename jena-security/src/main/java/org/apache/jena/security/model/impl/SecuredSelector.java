@@ -17,13 +17,7 @@
  */
 package org.apache.jena.security.model.impl;
 
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Selector;
-import com.hp.hpl.jena.rdf.model.SimpleSelector;
-import com.hp.hpl.jena.rdf.model.Statement;
-
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.security.SecurityEvaluator.SecNode;
 import org.apache.jena.security.SecurityEvaluator.SecTriple;
 import org.apache.jena.security.impl.SecuredItem;

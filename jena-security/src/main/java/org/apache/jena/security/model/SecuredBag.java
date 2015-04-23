@@ -17,7 +17,7 @@
  */
 package org.apache.jena.security.model;
 
-import com.hp.hpl.jena.rdf.model.Bag;
+import org.apache.jena.rdf.model.Bag ;
 
 /**
  * The interface for secured Bag instances.

@@ -27,11 +27,10 @@ import org.apache.jena.arq.querybuilder.handlers.ConstructHandler;
 import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
-
-import com.hp.hpl.jena.graph.FrontsTriple;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException;
+import org.apache.jena.graph.FrontsTriple ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 
 /**
  * Build an Construct query.

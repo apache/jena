@@ -27,16 +27,8 @@ import java.io.StringReader;
 import java.util.Set;
 
 import org.apache.jena.atlas.lib.StrUtils;
-
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryException;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ReadWrite;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Model ;
 
 /*
  * This abstract class defines a collection of test methods for testing

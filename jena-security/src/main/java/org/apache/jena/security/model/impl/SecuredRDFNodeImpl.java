@@ -17,17 +17,16 @@
  */
 package org.apache.jena.security.model.impl;
 
-import com.hp.hpl.jena.enhanced.UnsupportedPolymorphismException;
-import com.hp.hpl.jena.graph.FrontsNode;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.apache.jena.enhanced.UnsupportedPolymorphismException ;
+import org.apache.jena.graph.FrontsNode ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.rdf.model.Literal ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.security.impl.ItemHolder;
 import org.apache.jena.security.impl.SecuredItemImpl;
 import org.apache.jena.security.model.SecuredModel;

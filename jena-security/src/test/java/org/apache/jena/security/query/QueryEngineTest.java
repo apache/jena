@@ -17,27 +17,26 @@
  */
 package org.apache.jena.security.query;
 
+import org.apache.jena.query.QueryExecution ;
+import org.apache.jena.query.QueryExecutionFactory ;
+import org.apache.jena.query.QuerySolution ;
+import org.apache.jena.query.ResultSet ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.ResourceFactory ;
 import org.apache.jena.security.Factory;
 import org.apache.jena.security.MockSecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator.SecNode.Type;
 import org.apache.jena.security.model.SecuredModel;
+import org.apache.jena.vocabulary.RDF ;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 public class QueryEngineTest {
 

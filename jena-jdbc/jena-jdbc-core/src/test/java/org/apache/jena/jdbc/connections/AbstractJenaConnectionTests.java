@@ -24,6 +24,8 @@ import java.sql.ResultSet ;
 import java.util.HashMap ;
 import java.util.Properties ;
 
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.jdbc.JdbcCompatibility ;
 import org.apache.jena.jdbc.postprocessing.ResultsEcho ;
 import org.apache.jena.jdbc.preprocessing.Echo ;
@@ -33,16 +35,13 @@ import org.apache.jena.jdbc.results.TripleIteratorResults ;
 import org.apache.jena.jdbc.results.metadata.AskResultsMetadata ;
 import org.apache.jena.jdbc.results.metadata.TripleResultsMetadata ;
 import org.apache.jena.jdbc.utils.TestUtils ;
+import org.apache.jena.query.* ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateRequest ;
 import org.junit.Assert ;
 import org.junit.Assume ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 /**
  * Abstract tests for {@link JenaConnection} implementations

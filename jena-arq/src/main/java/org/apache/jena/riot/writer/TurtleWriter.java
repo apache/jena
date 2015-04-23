@@ -19,9 +19,8 @@
 package org.apache.jena.riot.writer ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.graph.Graph ;
 import org.apache.jena.riot.system.PrefixMap ;
-
-import com.hp.hpl.jena.graph.Graph ;
 
 public class TurtleWriter extends TurtleWriterBase {
     @Override

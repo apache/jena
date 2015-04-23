@@ -22,6 +22,7 @@ import static org.apache.jena.riot.tokens.TokenType.STRING2 ;
 
 import java.util.Iterator ;
 
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Token ;
@@ -29,8 +30,6 @@ import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.graph.Node ;
 
 /** N-Quads, N-triples parser framework, with both push and pull interfaces.
  * 

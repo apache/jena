@@ -27,6 +27,12 @@ import java.io.StringReader ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.Property ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
@@ -36,18 +42,11 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.sparql.graph.GraphFactory ;
+import org.apache.jena.sparql.sse.SSE ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.Property ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.graph.GraphFactory ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestLangTurtle extends BaseTest
 {

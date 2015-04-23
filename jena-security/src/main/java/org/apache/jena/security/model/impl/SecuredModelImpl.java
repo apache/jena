@@ -21,6 +21,13 @@ import java.io.* ;
 import java.net.URL ;
 import java.util.* ;
 
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.impl.CollectionGraph ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.impl.RDFReaderFImpl ;
 import org.apache.jena.security.AccessDeniedException ;
 import org.apache.jena.security.SecurityEvaluator ;
 import org.apache.jena.security.SecurityEvaluator.SecTriple ;
@@ -31,19 +38,11 @@ import org.apache.jena.security.impl.SecuredItem ;
 import org.apache.jena.security.impl.SecuredItemImpl ;
 import org.apache.jena.security.impl.SecuredItemInvoker ;
 import org.apache.jena.security.model.* ;
-
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.impl.CollectionGraph ;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
-import com.hp.hpl.jena.shared.* ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
-import com.hp.hpl.jena.util.iterator.Filter ;
-import com.hp.hpl.jena.util.iterator.WrappedIterator ;
-import com.hp.hpl.jena.vocabulary.RDF ;
+import org.apache.jena.shared.* ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.util.iterator.Filter ;
+import org.apache.jena.util.iterator.WrappedIterator ;
+import org.apache.jena.vocabulary.RDF ;
 
 /**
  * Implementation of SecuredModel to be used by a SecuredItemInvoker proxy.

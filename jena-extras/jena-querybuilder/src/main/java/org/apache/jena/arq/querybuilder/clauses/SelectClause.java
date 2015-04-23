@@ -18,10 +18,10 @@
 package org.apache.jena.arq.querybuilder.clauses;
 
 import java.util.List;
+
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.handlers.SelectHandler;
-
-import com.hp.hpl.jena.sparql.core.Var;
+import org.apache.jena.sparql.core.Var ;
 
 /**
  * Interface that defines the SelectClause as per

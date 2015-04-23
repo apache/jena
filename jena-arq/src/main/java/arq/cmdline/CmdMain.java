@@ -19,11 +19,10 @@
 package arq.cmdline;
 
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.shared.JenaException ;
+import org.apache.jena.sparql.util.Utils ;
 import arq.cmd.CmdException ;
 import arq.cmd.TerminationException ;
-
-import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Adds main()-like methods
  * 

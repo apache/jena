@@ -21,16 +21,15 @@ package org.apache.jena.jdbc.utils;
 import java.util.Iterator;
 
 import org.apache.jena.atlas.web.auth.HttpAuthenticator;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetAccessor;
-import com.hp.hpl.jena.query.DatasetAccessorFactory;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.Quad;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetAccessor ;
+import org.apache.jena.query.DatasetAccessorFactory ;
+import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * Test utility methods

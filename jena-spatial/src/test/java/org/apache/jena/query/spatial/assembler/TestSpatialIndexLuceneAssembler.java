@@ -19,11 +19,9 @@
 package org.apache.jena.query.spatial.assembler;
 
 import static org.junit.Assert.assertEquals;
-
+import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.query.spatial.SpatialIndexLucene;
 import org.junit.Test;
-
-import com.hp.hpl.jena.assembler.Assembler;
 
 public class TestSpatialIndexLuceneAssembler extends AbstractTestSpatialAssembler {
 	

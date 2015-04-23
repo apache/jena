@@ -3,9 +3,9 @@ package org.apache.jena.security.graph;
 import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphListener;
-import com.hp.hpl.jena.graph.Triple;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.GraphListener ;
+import org.apache.jena.graph.Triple ;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

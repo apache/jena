@@ -20,10 +20,9 @@ package org.apache.jena.hadoop.rdf.io.output.writers;
 
 import java.io.Writer;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.system.StreamRDF;
-
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * A writer for {@link StreamRDF} based triple writers

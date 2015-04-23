@@ -24,18 +24,17 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIter1;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.Utils;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.iterator.QueryIter1 ;
+import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.sparql.util.Utils ;
 
 /**
  * Split the incoming BasicPattern by subjects, (i.e. it becomes multiple sub BasicPatterns grouped by the same subjects.

@@ -22,9 +22,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
-
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * Abstract tests for Triple input formats

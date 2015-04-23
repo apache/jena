@@ -17,8 +17,7 @@
  */
 package org.apache.jena.security.model.impl;
 
-import com.hp.hpl.jena.rdf.model.ReifiedStatement;
-
+import org.apache.jena.rdf.model.ReifiedStatement ;
 import org.apache.jena.security.impl.ItemHolder;
 import org.apache.jena.security.impl.SecuredItemInvoker;
 import org.apache.jena.security.model.SecuredModel;

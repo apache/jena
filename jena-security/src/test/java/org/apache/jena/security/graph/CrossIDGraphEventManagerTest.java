@@ -17,16 +17,15 @@
  */
 package org.apache.jena.security.graph;
 
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.GraphEventManager ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.security.Factory;
 import org.apache.jena.security.StaticSecurityEvaluator;
+import org.apache.jena.sparql.graph.GraphFactory ;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphEventManager;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.graph.GraphFactory;
 
 public class CrossIDGraphEventManagerTest {
 

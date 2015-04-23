@@ -21,14 +21,13 @@ package tdb.tools ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.Tuple ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
-import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.sparql.util.Utils ;
+import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.store.NodeId ;
+import org.apache.jena.tdb.store.tupletable.TupleIndex ;
+import org.apache.jena.tdb.sys.Names ;
+import org.apache.jena.tdb.sys.SetupTDB ;
+import org.apache.jena.tdb.sys.SystemTDB ;
 
 /** copy one index to another, possibly changing the order */
 public class tdbgenindex {

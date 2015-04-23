@@ -18,7 +18,7 @@
 
 package org.apache.jena.jdbc;
 
-import com.hp.hpl.jena.sparql.lib.Metadata;
+import org.apache.jena.sparql.lib.Metadata ;
 
 /**
  * Root class for Jena JDBC

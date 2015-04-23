@@ -32,24 +32,23 @@ import org.apache.jena.atlas.web.auth.PreemptiveBasicAuthenticator ;
 import org.apache.jena.atlas.web.auth.ScopedAuthenticator ;
 import org.apache.jena.atlas.web.auth.ServiceAuthenticator ;
 import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.query.DatasetAccessor ;
+import org.apache.jena.query.DatasetAccessorFactory ;
+import org.apache.jena.query.QueryExecutionFactory ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
+import org.apache.jena.sparql.engine.http.QueryExceptionHTTP ;
+import org.apache.jena.sparql.engine.http.Service ;
+import org.apache.jena.sparql.modify.UpdateProcessRemoteBase ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.update.UpdateExecutionFactory ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateRequest ;
 import org.junit.AfterClass ;
 import org.junit.Assert ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.DatasetAccessor ;
-import com.hp.hpl.jena.query.DatasetAccessorFactory ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP ;
-import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP ;
-import com.hp.hpl.jena.sparql.engine.http.Service ;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessRemoteBase ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.update.UpdateExecutionFactory ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 /**
  * Tests Fuseki operation with authentication enabled

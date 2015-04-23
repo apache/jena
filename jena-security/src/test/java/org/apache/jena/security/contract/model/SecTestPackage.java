@@ -17,25 +17,22 @@
  */
 package org.apache.jena.security.contract.model;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.test.AbstractTestPackage;
-import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.util.FileUtils;
-
-
 import java.lang.reflect.InvocationTargetException;
 
 import junit.framework.TestSuite;
-
 import org.apache.jena.atlas.web.TypedInputStream;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.test.AbstractTestPackage ;
+import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
 import org.apache.jena.riot.system.stream.Locator;
 import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.riot.system.stream.LocatorZip;
 import org.apache.jena.security.MockSecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.util.FileUtils ;
 
 /**
  * Test package to test Model implementation.

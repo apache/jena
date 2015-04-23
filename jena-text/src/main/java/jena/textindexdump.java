@@ -20,6 +20,8 @@ package jena ;
 
 import org.apache.jena.query.text.* ;
 import org.apache.jena.query.text.assembler.TextVocab ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.sparql.util.Utils ;
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.document.Document ;
 import org.apache.lucene.index.DirectoryReader ;
@@ -35,9 +37,6 @@ import org.slf4j.LoggerFactory ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
-
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /**
  * Text index development tool - dump the index.

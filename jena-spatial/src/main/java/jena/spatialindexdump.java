@@ -23,6 +23,8 @@ import org.apache.jena.query.spatial.SpatialIndexException;
 import org.apache.jena.query.spatial.SpatialIndexLucene;
 import org.apache.jena.query.spatial.SpatialQuery;
 import org.apache.jena.query.spatial.assembler.SpatialVocab;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.sparql.util.Utils ;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
@@ -35,13 +37,9 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import arq.cmd.CmdException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdARQ;
-
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
-import com.hp.hpl.jena.sparql.util.Utils;
 
 /**
  * Text index development tool - dump the index.

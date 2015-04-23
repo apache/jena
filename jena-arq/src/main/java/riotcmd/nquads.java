@@ -21,8 +21,7 @@ package riotcmd;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
+import org.apache.jena.sparql.util.Utils ;
 
 /** Run the N-Quads parser - and produce N-Quads */
 public class nquads extends CmdLangParse

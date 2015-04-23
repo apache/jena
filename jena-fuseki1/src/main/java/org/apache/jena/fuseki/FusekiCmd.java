@@ -33,25 +33,24 @@ import org.apache.jena.fuseki.mgt.ManagementServer ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.SysRIOT ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb.sys.Names ;
+import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.eclipse.jetty.server.Server ;
 import org.slf4j.Logger ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModDatasetAssembler ;
-
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 public class FusekiCmd extends CmdARQ
 {

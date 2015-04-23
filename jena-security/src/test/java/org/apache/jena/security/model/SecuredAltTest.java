@@ -17,11 +17,10 @@
  */
 package org.apache.jena.security.model;
 
-import com.hp.hpl.jena.rdf.model.Alt;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-
 import java.util.Set;
 
+import org.apache.jena.rdf.model.Alt ;
+import org.apache.jena.rdf.model.ResourceFactory ;
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.MockSecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator;

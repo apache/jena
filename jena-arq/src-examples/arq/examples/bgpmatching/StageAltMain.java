@@ -19,18 +19,13 @@
 package arq.examples.bgpmatching;
 
 import org.apache.jena.atlas.lib.StrUtils ;
-
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.Property ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.engine.main.StageGenerator ;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.Property ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sparql.engine.main.StageGenerator ;
+import org.apache.jena.sparql.util.QueryExecUtils ;
 
 /** Example to execute a query but handle the
  *  basic graph patterns in the query in some special way.

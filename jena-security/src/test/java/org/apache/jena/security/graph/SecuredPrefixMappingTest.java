@@ -17,16 +17,11 @@
  */
 package org.apache.jena.security.graph;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.graph.GraphFactory;
-
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import org.junit.Assert;
-
+import org.apache.jena.graph.Graph ;
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.Factory;
 import org.apache.jena.security.SecurityEvaluator;
@@ -34,6 +29,9 @@ import org.apache.jena.security.SecurityEvaluatorParameters;
 import org.apache.jena.security.SecurityEvaluator.Action;
 import org.apache.jena.security.graph.SecuredGraph;
 import org.apache.jena.security.graph.SecuredPrefixMapping;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.shared.impl.PrefixMappingImpl ;
+import org.apache.jena.sparql.graph.GraphFactory ;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

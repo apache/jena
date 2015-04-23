@@ -18,9 +18,9 @@
 
 package arq.examples.propertyfunction;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.sparql.pfunction.PFuncAssignToObject ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.sparql.pfunction.PFuncAssignToObject ;
 
 /** Example property function that uppercases the lexical form of a literal.
  *  The subject must be bound, the object not bound. {@link localname} shows a

@@ -23,21 +23,20 @@ import java.io.Reader ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.adapters.RDFReaderRIOT ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.sse.Item ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.sse.Item ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.sse.builders.BuilderGraph ;
+import org.apache.jena.sparql.util.Context ;
 
 /** Example of using RIOT : register a new language */
 public class ExRIOT_5

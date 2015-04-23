@@ -22,8 +22,7 @@ import java.util.Collections ;
 import java.util.Map ;
 
 import org.apache.jena.iri.IRI ;
-
-import com.hp.hpl.jena.shared.PrefixMapping ;
+import org.apache.jena.shared.PrefixMapping ;
 
 /** A PrefixMap that traps update operations on a wrapped prefix map */ 
 public class PrefixMapUnmodifiable extends PrefixMapWrapper

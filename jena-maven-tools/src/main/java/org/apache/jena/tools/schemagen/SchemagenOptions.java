@@ -26,8 +26,7 @@ import java.util.List;
 
 import jena.schemagen;
 import jena.schemagen.OptionDefinition;
-
-import com.hp.hpl.jena.rdf.model.*;
+import org.apache.jena.rdf.model.* ;
 
 
 /**

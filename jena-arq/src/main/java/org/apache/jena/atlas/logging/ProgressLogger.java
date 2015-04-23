@@ -18,10 +18,9 @@
 
 package org.apache.jena.atlas.logging;
 
-import static com.hp.hpl.jena.sparql.util.Utils.nowAsString ;
+import static org.apache.jena.sparql.util.Utils.nowAsString ;
+import org.apache.jena.sparql.util.Timer ;
 import org.slf4j.Logger ;
-
-import com.hp.hpl.jena.sparql.util.Timer ;
 
 /** Progress monitor */
 public class ProgressLogger

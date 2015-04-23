@@ -28,21 +28,14 @@ import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
 import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
 import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException;
-import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11;
-import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.ElementFilter;
-import com.hp.hpl.jena.sparql.syntax.ElementGroup;
-import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
-import com.hp.hpl.jena.sparql.syntax.ElementOptional;
-import com.hp.hpl.jena.sparql.syntax.ElementSubQuery;
-import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
-import com.hp.hpl.jena.sparql.syntax.ElementUnion;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.lang.sparql_11.ParseException ;
+import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11 ;
+import org.apache.jena.sparql.syntax.* ;
 
 /**
  * The where handler

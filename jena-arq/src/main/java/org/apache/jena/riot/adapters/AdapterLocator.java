@@ -21,14 +21,14 @@ package org.apache.jena.riot.adapters;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.system.stream.Locator ;
 
-public class AdapterLocator implements com.hp.hpl.jena.util.Locator
+public class AdapterLocator implements org.apache.jena.util.Locator
 {
     private final Locator locator ;
 
     public AdapterLocator(Locator locator) { this.locator = locator ; }
 
     @Override
-    public com.hp.hpl.jena.util.TypedStream open(String filenameOrURI)
+    public org.apache.jena.util.TypedStream open(String filenameOrURI)
     {
         TypedInputStream in = locator.open(filenameOrURI) ;
         return AdapterLib.convert(in) ;

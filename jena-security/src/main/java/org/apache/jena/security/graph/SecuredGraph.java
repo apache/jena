@@ -17,17 +17,16 @@
  */
 package org.apache.jena.security.graph;
 
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.GraphStatisticsHandler ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.security.AccessDeniedException ;
 import org.apache.jena.security.SecurityEvaluator ;
 import org.apache.jena.security.SecurityEvaluator.SecNode ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.GraphStatisticsHandler ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.shared.AddDeniedException ;
-import com.hp.hpl.jena.shared.DeleteDeniedException ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.shared.AddDeniedException ;
+import org.apache.jena.shared.DeleteDeniedException ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /**
  * The interface for secured Graph instances.
@@ -98,7 +97,7 @@ public interface SecuredGraph extends Graph
      */
 	@Deprecated
     @Override
-    public ExtendedIterator<Triple> find( final com.hp.hpl.jena.graph.TripleMatch triple )
+    public ExtendedIterator<Triple> find( final org.apache.jena.graph.TripleMatch triple )
             throws AccessDeniedException;
 
     /**

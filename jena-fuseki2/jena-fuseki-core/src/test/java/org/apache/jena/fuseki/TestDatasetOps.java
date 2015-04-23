@@ -37,12 +37,11 @@ import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.web.HttpOp ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.web.HttpSC ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 
 /** TestDatasetAccessorHTTP does most of the GSP testing.
  *  This class adds the testing of Fuseki extras.

@@ -19,16 +19,15 @@
 package arq;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.sparql.sse.Item ;
+import org.apache.jena.sparql.sse.ItemWriter ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.util.Utils ;
 import arq.cmd.TerminationException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ_SSE ;
-
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.sse.Item ;
-import com.hp.hpl.jena.sparql.sse.ItemWriter ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class sse extends CmdARQ_SSE
 {

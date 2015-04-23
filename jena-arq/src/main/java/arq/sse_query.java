@@ -20,6 +20,16 @@ package arq;
 
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.sparql.algebra.Algebra ;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.engine.Plan ;
+import org.apache.jena.sparql.engine.PlanOp ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.util.QueryExecUtils ;
+import org.apache.jena.sparql.util.Utils ;
 import arq.cmd.CmdException ;
 import arq.cmd.TerminationException ;
 import arq.cmdline.ArgDecl ;
@@ -30,17 +40,6 @@ import arq.cmdline.ModDatasetGeneralAssembler ;
 import arq.cmdline.ModEngine ;
 import arq.cmdline.ModResultsOut ;
 import arq.cmdline.ModTime ;
-
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.engine.Plan ;
-import com.hp.hpl.jena.sparql.engine.PlanOp ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class sse_query extends CmdARQ
 {

@@ -23,6 +23,11 @@ import java.util.ArrayList ;
 import java.util.List ;
 import java.util.Set ;
 
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.security.* ;
 import org.apache.jena.security.SecurityEvaluator.Action ;
 import org.apache.jena.security.graph.SecuredGraph ;
@@ -31,12 +36,6 @@ import org.junit.Assert ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
-
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.* ;
 
 @RunWith( value = SecurityEvaluatorParameters.class )
 public class SecuredModelTest

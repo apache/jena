@@ -30,6 +30,7 @@ import java.util.ArrayList ;
 import java.util.Collections ;
 import java.util.List ;
 
+import org.apache.jena.assembler.JA ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
@@ -39,20 +40,18 @@ import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DatasetStatus ;
 import org.apache.jena.fuseki.server.FusekiVocab ;
 import org.apache.jena.fuseki.server.SystemState ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.QuerySolution ;
+import org.apache.jena.query.ResultSet ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.IRILib ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.update.UpdateAction ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateRequest ;
+import org.apache.jena.vocabulary.RDF ;
 import org.slf4j.Logger ;
-
-import com.hp.hpl.jena.assembler.JA ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
-import com.hp.hpl.jena.update.UpdateAction ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
-import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class FusekiConfig {
     static { Fuseki.init() ; }

@@ -17,8 +17,7 @@
  */
 package org.apache.jena.security.model;
 
-import com.hp.hpl.jena.rdf.model.Bag;
-
+import org.apache.jena.rdf.model.Bag ;
 import org.apache.jena.security.MockSecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluatorParameters;
 import org.apache.jena.security.model.impl.SecuredBagImpl;

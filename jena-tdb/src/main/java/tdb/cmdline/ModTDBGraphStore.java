@@ -18,12 +18,11 @@
 
 package tdb.cmdline;
 
+import org.apache.jena.update.GraphStore ;
+import org.apache.jena.update.GraphStoreFactory ;
 import arq.cmdline.CmdArgModule ;
 import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModGraphStore ;
-
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
 
 public class ModTDBGraphStore extends ModGraphStore
 {

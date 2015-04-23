@@ -17,8 +17,7 @@
  */
 package org.apache.jena.security.model;
 
-import com.hp.hpl.jena.enhanced.UnsupportedPolymorphismException;
-
+import org.apache.jena.enhanced.UnsupportedPolymorphismException ;
 import org.apache.jena.security.model.impl.SecuredRDFNodeImpl;
 
 /**

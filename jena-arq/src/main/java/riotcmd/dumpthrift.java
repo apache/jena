@@ -24,8 +24,7 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.thrift.BinRDF ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
+import org.apache.jena.sparql.util.Utils ;
 
 /** Dump an rdf-thrift file to show structure */ 
 public class dumpthrift {

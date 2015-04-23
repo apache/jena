@@ -17,21 +17,20 @@
  */
 package org.apache.jena.security.impl;
 
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
-
 import java.lang.reflect.Proxy;
 
 import org.apache.commons.collections4.map.LRUMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.jena.rdf.model.Statement ;
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator.Action;
 import org.apache.jena.security.SecurityEvaluator.SecNode;
 import org.apache.jena.security.SecurityEvaluator.SecTriple;
 import org.apache.jena.security.SecurityEvaluator.SecNode.Type;
+import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.vocabulary.RDF ;
 
 /**
  * An abstract implementation of SecuredItem that caches security checks.
@@ -141,9 +140,9 @@ public abstract class SecuredItemImpl implements SecuredItem
 	 * @param jenaNode The Jena node to convert.
 	 * @return The SecNode that represents the jenaNode.
 	 */
-	public static SecNode convert( final com.hp.hpl.jena.graph.Node jenaNode )
+	public static SecNode convert( final org.apache.jena.graph.Node jenaNode )
 	{
-		if (com.hp.hpl.jena.graph.Node.ANY.equals(jenaNode))
+		if (org.apache.jena.graph.Node.ANY.equals(jenaNode))
 		{
 			return SecNode.ANY;
 		}
@@ -168,7 +167,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 	 * @return The SecTriple that represents the jenaTriple.
 	 */
 	public static SecTriple convert(
-			final com.hp.hpl.jena.graph.Triple jenaTriple )
+			final org.apache.jena.graph.Triple jenaTriple )
 	{
 		return new SecTriple(SecuredItemImpl.convert(jenaTriple.getSubject()),
 				SecuredItemImpl.convert(jenaTriple.getPredicate()),
@@ -340,7 +339,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 		return retval;
 	}
 
-	public boolean canCreate( final com.hp.hpl.jena.graph.Triple t )
+	public boolean canCreate( final org.apache.jena.graph.Triple t )
 	{
 		return canCreate(SecuredItemImpl.convert(t));
 	}
@@ -381,7 +380,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 		return retval;
 	}
 
-	public boolean canDelete( final com.hp.hpl.jena.graph.Triple t )
+	public boolean canDelete( final org.apache.jena.graph.Triple t )
 	{
 		return canDelete(SecuredItemImpl.convert(t));
 	}
@@ -422,7 +421,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 		return retval;
 	}
 
-	public boolean canRead( final com.hp.hpl.jena.graph.Triple t )
+	public boolean canRead( final org.apache.jena.graph.Triple t )
 	{
 		return canRead(SecuredItemImpl.convert(t));
 	}
@@ -463,8 +462,8 @@ public abstract class SecuredItemImpl implements SecuredItem
 		return retval;
 	}
 
-	public boolean canUpdate( final com.hp.hpl.jena.graph.Triple from,
-			final com.hp.hpl.jena.graph.Triple to )
+	public boolean canUpdate( final org.apache.jena.graph.Triple from,
+			final org.apache.jena.graph.Triple to )
 	{
 		return canUpdate(SecuredItemImpl.convert(from),
 				SecuredItemImpl.convert(to));
@@ -502,7 +501,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 		}
 	}
 
-	protected void checkCreate( final com.hp.hpl.jena.graph.Triple t )
+	protected void checkCreate( final org.apache.jena.graph.Triple t )
 	{
 		checkCreate(SecuredItemImpl.convert(t));
 	}
@@ -559,7 +558,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 	}
 
 	protected void checkCreateTriples(
-			final ExtendedIterator<com.hp.hpl.jena.graph.Triple> triples )
+			final ExtendedIterator<org.apache.jena.graph.Triple> triples )
 	{
 		if (!canCreate(SecTriple.ANY))
 		{
@@ -591,7 +590,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 		}
 	}
 
-	protected void checkDelete( final com.hp.hpl.jena.graph.Triple t )
+	protected void checkDelete( final org.apache.jena.graph.Triple t )
 	{
 		checkDelete(SecuredItemImpl.convert(t));
 	}
@@ -636,7 +635,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 	}
 
 	protected void checkDeleteTriples(
-			final ExtendedIterator<com.hp.hpl.jena.graph.Triple> triples )
+			final ExtendedIterator<org.apache.jena.graph.Triple> triples )
 	{
 		if (!canDelete(SecTriple.ANY))
 		{
@@ -668,7 +667,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 		}
 	}
 
-	protected void checkRead( final com.hp.hpl.jena.graph.Triple t )
+	protected void checkRead( final org.apache.jena.graph.Triple t )
 	{
 		checkRead(SecuredItemImpl.convert(t));
 	}
@@ -709,7 +708,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 	}
 
 	protected void checkReadTriples(
-			final ExtendedIterator<com.hp.hpl.jena.graph.Triple> triples )
+			final ExtendedIterator<org.apache.jena.graph.Triple> triples )
 	{
 		try
 		{
@@ -738,8 +737,8 @@ public abstract class SecuredItemImpl implements SecuredItem
 		}
 	}
 
-	protected void checkUpdate( final com.hp.hpl.jena.graph.Triple from,
-			final com.hp.hpl.jena.graph.Triple to )
+	protected void checkUpdate( final org.apache.jena.graph.Triple from,
+			final org.apache.jena.graph.Triple to )
 	{
 		checkUpdate(SecuredItemImpl.convert(from), SecuredItemImpl.convert(to));
 	}

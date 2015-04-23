@@ -17,13 +17,12 @@
  */
 package org.apache.jena.security.model.impl;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFVisitor;
-import com.hp.hpl.jena.rdf.model.ResourceRequiredException;
-
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.rdf.model.Literal ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.RDFVisitor ;
+import org.apache.jena.rdf.model.ResourceRequiredException ;
 import org.apache.jena.security.impl.ItemHolder;
 import org.apache.jena.security.impl.SecuredItemInvoker;
 import org.apache.jena.security.model.SecuredLiteral;

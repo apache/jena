@@ -20,13 +20,12 @@ package sdb;
 
 import java.util.List;
 
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.sdb.SDB ;
+import org.apache.jena.sparql.util.Utils ;
 import sdb.cmd.CmdArgsDB;
 import sdb.cmd.ModGraph;
 import arq.cmdline.ArgDecl;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sdb.SDB ;
-import com.hp.hpl.jena.sparql.util.Utils;
 
  /** Write out the data from an SDB model.  Only works for small models
   * because of JDBC limitations in default configurations. 

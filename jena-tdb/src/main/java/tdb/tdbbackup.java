@@ -18,9 +18,8 @@
 
 package tdb;
 
+import org.apache.jena.tdb.TDBBackup ;
 import tdb.cmdline.CmdTDB ;
-
-import com.hp.hpl.jena.tdb.TDBBackup ;
 
 public class tdbbackup extends CmdTDB
 {

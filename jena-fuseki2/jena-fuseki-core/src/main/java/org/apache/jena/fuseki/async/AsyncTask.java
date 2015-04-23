@@ -22,12 +22,11 @@ import static java.lang.String.format ;
 
 import java.util.concurrent.Callable ;
 
-import com.hp.hpl.jena.sparql.util.Utils ;
-
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.DataService ;
+import org.apache.jena.sparql.util.Utils ;
 import org.slf4j.Logger ;
 
 /** An asynchronous task */ 

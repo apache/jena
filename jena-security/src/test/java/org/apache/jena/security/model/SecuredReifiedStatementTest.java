@@ -17,8 +17,7 @@
  */
 package org.apache.jena.security.model;
 
-import com.hp.hpl.jena.rdf.model.ReifiedStatement;
-
+import org.apache.jena.rdf.model.ReifiedStatement ;
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.MockSecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluatorParameters;

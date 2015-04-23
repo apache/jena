@@ -25,24 +25,19 @@ import java.util.HashMap;
 import java.util.List ;
 import java.util.Map;
 
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.Mode ;
+import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.atlas.lib.MultiMap ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.* ;
 import org.apache.jena.query.text.EntityDefinition ;
 import org.apache.jena.query.text.TextIndexException ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.vocabulary.RDF ;
 import org.apache.lucene.analysis.Analyzer;
-
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.assembler.Mode ;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 public class EntityDefinitionAssembler extends AssemblerBase implements Assembler
 {

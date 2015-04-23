@@ -24,8 +24,7 @@ import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.jena.hadoop.rdf.io.output.AbstractBatchedNodeTupleOutputFormat;
 import org.apache.jena.hadoop.rdf.io.output.writers.trig.BatchedTriGWriter;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
-
-import com.hp.hpl.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * Output format for TriG that uses a batched approach, note that this will

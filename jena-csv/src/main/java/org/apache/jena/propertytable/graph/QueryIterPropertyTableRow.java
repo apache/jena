@@ -21,26 +21,26 @@ package org.apache.jena.propertytable.graph;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.propertytable.PropertyTable;
 import org.apache.jena.propertytable.Row;
 
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingFactory;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIter;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
+import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.binding.BindingFactory ;
+import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.iterator.QueryIter ;
+import org.apache.jena.sparql.engine.iterator.QueryIterRepeatApply ;
+import org.apache.jena.util.iterator.ClosableIterator ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.util.iterator.NiceIterator ;
+import org.apache.jena.util.iterator.WrappedIterator ;
 
 /**
  * If the triple size within a BasicePattern is greater than 1 (i.e. at least 2 triples), it's turned into a row querying.

@@ -27,18 +27,17 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.io.Writer2;
 import org.apache.jena.atlas.lib.Tuple;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.types.NodeTupleWritable;
 import org.apache.jena.hadoop.rdf.types.NodeWritable;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterNT;
+import org.apache.jena.sparql.core.Quad ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.Quad;
 
 /**
  * Abstract implementation of a record writer which writes pairs of nodes and

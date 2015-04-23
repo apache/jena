@@ -18,18 +18,16 @@
 package org.apache.jena.arq.querybuilder.clauses;
 
 import static org.junit.Assert.*;
-
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.handlers.SelectHandler;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.VarExprList ;
 import org.junit.After;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractTest;
 import org.xenei.junit.contract.IProducer;
-
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarExprList;
 
 @Contract(SelectClause.class)
 public class SelectClauseTest<T extends SelectClause<?>> extends

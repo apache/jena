@@ -25,6 +25,9 @@ import java.util.List ;
 import java.util.Map ;
 import java.util.Map.Entry ;
 
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.analysis.core.KeywordAnalyzer ;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper ;
@@ -49,10 +52,6 @@ import org.apache.lucene.store.Directory ;
 import org.apache.lucene.util.Version ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 public class TextIndexLucene implements TextIndex {
     private static Logger          log      = LoggerFactory.getLogger(TextIndexLucene.class) ;

@@ -17,22 +17,21 @@
  */
 package org.apache.jena.security.graph;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphEventManager;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.impl.CollectionGraph;
-import com.hp.hpl.jena.sparql.graph.GraphFactory;
-
 import java.util.Arrays;
 import java.util.Set;
 
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.GraphEventManager ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.impl.CollectionGraph ;
 import org.apache.jena.security.Factory;
 import org.apache.jena.security.MockSecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluatorParameters;
 import org.apache.jena.security.SecurityEvaluator.Action;
 import org.apache.jena.security.graph.SecuredGraph;
+import org.apache.jena.sparql.graph.GraphFactory ;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -21,19 +21,18 @@ package org.apache.jena.propertytable.graph;
 import java.util.ArrayList ;
 import java.util.Locale ;
 
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.propertytable.Column ;
 import org.apache.jena.propertytable.PropertyTable ;
 import org.apache.jena.propertytable.Row ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.impl.GraphBase ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
-import com.hp.hpl.jena.util.iterator.Filter ;
-import com.hp.hpl.jena.util.iterator.NullIterator ;
-import com.hp.hpl.jena.util.iterator.WrappedIterator ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.util.iterator.Filter ;
+import org.apache.jena.util.iterator.NullIterator ;
+import org.apache.jena.util.iterator.WrappedIterator ;
 
 /**
  * GraphPropertyTable implements the Graph interface (read-only) over a PropertyTable.

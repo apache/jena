@@ -20,13 +20,11 @@ package sdb;
 
 import java.util.List;
 
+import org.apache.jena.sdb.SDB ;
+import org.apache.jena.sparql.util.Utils ;
 import sdb.cmd.CmdArgsDB;
-
 import arq.cmd.CmdException;
 import arq.cmdline.ArgDecl;
-
-import com.hp.hpl.jena.sdb.SDB ;
-import com.hp.hpl.jena.sparql.util.Utils;
 
 /** Format an SDB database.  Destroys all existing data permanently.
  *  Ignores -dbName argument in favour of the command line positional parameter. 

@@ -42,12 +42,11 @@ import java.sql.Types;
 import java.util.Calendar;
 import java.util.Map;
 
+import org.apache.jena.graph.Node ;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.statements.JenaStatement;
 import org.apache.jena.jdbc.utils.JdbcNodeUtils;
-
-import com.hp.hpl.jena.graph.Node;
 
 /**
  * Abstract implementation of a JDBC Result Set which makes all update methods

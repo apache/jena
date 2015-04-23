@@ -23,16 +23,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.rewriters.ExprRewriter;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.SortCondition;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarExprList;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.ExprVar;
-import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException;
-import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.query.SortCondition ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.VarExprList ;
+import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.expr.ExprVar ;
+import org.apache.jena.sparql.lang.sparql_11.ParseException ;
+import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 
 /**
  * The Solution Modifier handerl.

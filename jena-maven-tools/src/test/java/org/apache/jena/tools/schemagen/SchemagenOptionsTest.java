@@ -27,12 +27,10 @@ import static org.junit.Assert.*;
 import java.util.List;
 
 import jena.schemagen.SchemagenOptions.OPT;
-
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.ResourceFactory ;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 /**
  * <p>Unit tests for {@link SchemagenOptions}</p>

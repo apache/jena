@@ -23,9 +23,8 @@ import java.sql.SQLException;
 import org.apache.jena.jdbc.JenaJDBC;
 import org.apache.jena.jdbc.connections.DatasetConnection;
 import org.apache.jena.jdbc.metadata.DatasetMetadata;
-
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.util.Version;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.sparql.util.Version ;
 
 /**
  * Connection metadata for in-memory datasets

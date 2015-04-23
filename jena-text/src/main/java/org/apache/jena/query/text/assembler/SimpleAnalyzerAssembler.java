@@ -18,14 +18,13 @@
 
 package org.apache.jena.query.text.assembler ;
 
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.Mode ;
+import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.query.text.TextIndexLucene;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
-
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  * Assembler to create simple analyzers.

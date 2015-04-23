@@ -44,17 +44,16 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
+import org.apache.jena.query.QueryCancelledException ;
+import org.apache.jena.query.ResultSet ;
+import org.apache.jena.query.ResultSetFormatter ;
 import org.apache.jena.riot.ResultSetMgr ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.resultset.ResultSetLang ;
+import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.query.QueryCancelledException ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.sparql.core.Prologue ;
 
 /** This is the content negotiation for each kind of SPARQL query result */ 
 public class ResponseResultSet

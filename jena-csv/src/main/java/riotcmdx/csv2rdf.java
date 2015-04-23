@@ -21,9 +21,8 @@ package riotcmdx;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.sparql.util.Utils ;
 import riotcmd.CmdLangParse ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /**
  * A command line tool for direct and scalable transforming from CSV to the formatted RDF syntax (i.e. N-Triples), 

@@ -18,11 +18,10 @@
 
 package arq.examples.riot;
 
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 /** Example of using RIOT with Jena readers.
  * Normally, the application just needs to call model.read and

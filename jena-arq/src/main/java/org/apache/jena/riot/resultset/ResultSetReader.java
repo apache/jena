@@ -21,9 +21,9 @@ package org.apache.jena.riot.resultset;
 import java.io.InputStream ;
 import java.io.Reader ;
 
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.query.ResultSet ;
+import org.apache.jena.query.ResultSetFactory ;
+import org.apache.jena.sparql.util.Context ;
 
 public interface ResultSetReader {
     

@@ -37,18 +37,17 @@ import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.riot.system.* ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.web.HttpSC ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
 public class SPARQL_Upload extends SPARQL_ServletBase 
 {

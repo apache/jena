@@ -17,7 +17,7 @@
  */
 package org.apache.jena.security.query;
 
-import com.hp.hpl.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Context ;
 
 public class SecuredQueryEngineConfig
 {

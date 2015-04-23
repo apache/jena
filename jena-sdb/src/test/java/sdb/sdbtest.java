@@ -21,21 +21,20 @@ package sdb;
 import java.util.List;
 
 import junit.framework.TestSuite;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sdb.SDB ;
+import org.apache.jena.sdb.test.junit.QueryTestSDBFactory ;
+import org.apache.jena.sparql.junit.EarlReport ;
+import org.apache.jena.sparql.junit.ScriptTestSuiteFactory ;
+import org.apache.jena.sparql.junit.SimpleTestRunner ;
+import org.apache.jena.sparql.util.Utils ;
+import org.apache.jena.sparql.vocabulary.FOAF ;
+import org.apache.jena.vocabulary.DC ;
+import org.apache.jena.vocabulary.DCTerms ;
 import sdb.cmd.CmdArgsDB;
 import arq.cmdline.ArgDecl;
-
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.test.junit.QueryTestSDBFactory;
-import com.hp.hpl.jena.sparql.junit.EarlReport;
-import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
-import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.sparql.vocabulary.FOAF;
-import com.hp.hpl.jena.vocabulary.DC;
-import com.hp.hpl.jena.vocabulary.DCTerms;
  
  /** Run a test suite
   * 

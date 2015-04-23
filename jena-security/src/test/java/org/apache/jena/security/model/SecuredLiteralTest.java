@@ -17,22 +17,21 @@
  */
 package org.apache.jena.security.model;
 
+import org.apache.jena.datatypes.DatatypeFormatException ;
+import org.apache.jena.rdf.model.Literal ;
+import org.apache.jena.rdf.model.ResourceFactory ;
+import org.apache.jena.rdf.model.ResourceRequiredException ;
 import org.apache.jena.security.AccessDeniedException ;
 import org.apache.jena.security.MockSecurityEvaluator ;
 import org.apache.jena.security.SecurityEvaluator.Action ;
 import org.apache.jena.security.SecurityEvaluatorParameters ;
 import org.apache.jena.security.model.impl.SecuredLiteralImpl ;
+import org.apache.jena.shared.BadBooleanException ;
+import org.apache.jena.shared.BadCharLiteralException ;
 import org.junit.Assert ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
-
-import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
-import com.hp.hpl.jena.rdf.model.Literal ;
-import com.hp.hpl.jena.rdf.model.ResourceFactory ;
-import com.hp.hpl.jena.rdf.model.ResourceRequiredException ;
-import com.hp.hpl.jena.shared.BadBooleanException ;
-import com.hp.hpl.jena.shared.BadCharLiteralException ;
 
 @RunWith( value = SecurityEvaluatorParameters.class )
 public class SecuredLiteralTest extends SecuredRDFNodeTest

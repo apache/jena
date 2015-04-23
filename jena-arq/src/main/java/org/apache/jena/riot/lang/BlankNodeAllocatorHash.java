@@ -27,10 +27,9 @@ import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.rdf.model.AnonId ;
 
 /**
  * Allocate bnode labels using a per-run seed and the label presented.

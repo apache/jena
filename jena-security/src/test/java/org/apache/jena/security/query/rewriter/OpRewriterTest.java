@@ -17,21 +17,20 @@
  */
 package org.apache.jena.security.query.rewriter;
 
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.vocabulary.RDF;
-
 import java.util.Arrays;
 
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.MockSecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.query.rewriter.OpRewriter;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.op.OpBGP ;
+import org.apache.jena.sparql.algebra.op.OpFilter ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.vocabulary.RDF ;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

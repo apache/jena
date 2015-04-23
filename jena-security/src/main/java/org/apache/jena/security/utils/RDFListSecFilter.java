@@ -17,17 +17,16 @@
  */
 package org.apache.jena.security.utils;
 
-import com.hp.hpl.jena.rdf.model.RDFList;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.util.iterator.Filter;
-import com.hp.hpl.jena.vocabulary.RDF;
-
 import java.util.Set;
 
+import org.apache.jena.rdf.model.RDFList ;
+import org.apache.jena.rdf.model.Statement ;
 import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator.Action;
 import org.apache.jena.security.impl.SecuredItem;
 import org.apache.jena.security.impl.SecuredItemImpl;
+import org.apache.jena.util.iterator.Filter ;
+import org.apache.jena.vocabulary.RDF ;
 
 public class RDFListSecFilter<T extends RDFList> extends Filter<T>
 {

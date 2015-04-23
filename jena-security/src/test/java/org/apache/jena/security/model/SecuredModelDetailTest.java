@@ -22,22 +22,15 @@ import java.security.Principal;
 import java.util.Set;
 
 import org.apache.http.auth.BasicUserPrincipal;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.security.Factory;
 import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.model.SecuredModel;
+import org.apache.jena.vocabulary.RDF ;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * Tests secured model functions against graph where only partial data is 

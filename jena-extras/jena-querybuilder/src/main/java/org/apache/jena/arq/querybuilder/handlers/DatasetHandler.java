@@ -23,9 +23,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.core.Var;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.sparql.core.Var ;
 
 /**
  * Handler for a dataset.

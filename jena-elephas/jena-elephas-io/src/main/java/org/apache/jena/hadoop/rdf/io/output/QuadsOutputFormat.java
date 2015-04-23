@@ -27,8 +27,7 @@ import org.apache.jena.hadoop.rdf.io.registry.HadoopRdfIORegistry;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
-
-import com.hp.hpl.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * An output format for RDF quads that dynamically selects the appropriate quad

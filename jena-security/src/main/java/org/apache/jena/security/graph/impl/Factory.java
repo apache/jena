@@ -17,16 +17,15 @@
  */
 package org.apache.jena.security.graph.impl;
 
-import com.hp.hpl.jena.graph.BulkUpdateHandler;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.shared.PrefixMapping;
-
+import org.apache.jena.graph.BulkUpdateHandler ;
+import org.apache.jena.graph.Graph ;
 import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.graph.SecuredBulkUpdateHandler;
 import org.apache.jena.security.graph.SecuredGraph;
 import org.apache.jena.security.graph.SecuredPrefixMapping;
 import org.apache.jena.security.impl.ItemHolder;
 import org.apache.jena.security.impl.SecuredItemInvoker;
+import org.apache.jena.shared.PrefixMapping ;
 
 public class Factory
 {

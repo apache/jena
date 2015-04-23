@@ -29,8 +29,7 @@ import java.io.Reader ;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.lib.Chars ;
-
-import com.hp.hpl.jena.shared.JenaException ;
+import org.apache.jena.shared.JenaException ;
 
 /**
  * Parsing-centric reader. This class is not thread safe.

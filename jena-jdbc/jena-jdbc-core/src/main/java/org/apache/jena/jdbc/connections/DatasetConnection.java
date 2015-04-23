@@ -28,9 +28,8 @@ import org.apache.jena.jdbc.statements.DatasetPreparedStatement;
 import org.apache.jena.jdbc.statements.DatasetStatement;
 import org.apache.jena.jdbc.statements.JenaPreparedStatement;
 import org.apache.jena.jdbc.statements.JenaStatement;
-
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.ReadWrite;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.ReadWrite ;
 
 /**
  * Represents a connection to a {@link Dataset} instance

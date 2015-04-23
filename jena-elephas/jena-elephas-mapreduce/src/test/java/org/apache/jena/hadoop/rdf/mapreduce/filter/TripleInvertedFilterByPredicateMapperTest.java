@@ -21,15 +21,14 @@ package org.apache.jena.hadoop.rdf.mapreduce.filter;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mrunit.mapreduce.MapDriver;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.mapreduce.RdfMapReduceConstants;
 import org.apache.jena.hadoop.rdf.mapreduce.filter.positional.TripleFilterByPredicateUriMapper;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
-
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.RDFS ;
 
 /**
  * Tests for the {@link TripleFilterByPredicateUriMapper}

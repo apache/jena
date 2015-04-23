@@ -18,11 +18,10 @@
 
 package arq.cmdline;
 
+import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.RIOT ;
-
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase ;
-import com.hp.hpl.jena.sparql.util.Utils ;
+import org.apache.jena.sparql.engine.iterator.QueryIteratorBase ;
+import org.apache.jena.sparql.util.Utils ;
 
 public abstract class CmdARQ extends CmdGeneral
 {

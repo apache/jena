@@ -18,9 +18,9 @@
 
 package arq.cmdline;
 
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.update.GraphStore ;
+import org.apache.jena.query.Syntax ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.update.GraphStore ;
 
 public abstract class CmdUpdate extends CmdARQ
 {

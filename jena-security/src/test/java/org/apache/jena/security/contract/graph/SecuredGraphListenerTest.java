@@ -17,10 +17,9 @@
  */
 package org.apache.jena.security.contract.graph;
 
-import com.hp.hpl.jena.graph.Factory;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.test.TestGraphListener;
-
+import org.apache.jena.graph.Factory ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.test.TestGraphListener ;
 import org.apache.jena.security.MockSecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator;
 

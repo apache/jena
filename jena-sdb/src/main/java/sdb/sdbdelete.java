@@ -21,14 +21,13 @@ package sdb;
 
 import java.util.List;
 
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.sdb.SDB ;
+import org.apache.jena.sdb.SDBFactory ;
+import org.apache.jena.sdb.store.StoreBaseHSQL ;
+import org.apache.jena.sparql.util.Utils ;
 import sdb.cmd.CmdArgsDB;
 import arq.cmdline.ArgDecl;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sdb.SDB ;
-import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
-import com.hp.hpl.jena.sparql.util.Utils;
  
  /** Delete a model in an SDB database.
   * 

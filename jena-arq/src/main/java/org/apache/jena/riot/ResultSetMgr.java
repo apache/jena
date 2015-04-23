@@ -23,12 +23,11 @@ import java.io.OutputStream ;
 
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.query.ResultSet ;
+import org.apache.jena.query.ResultSetFactory ;
+import org.apache.jena.query.ResultSetFormatter ;
 import org.apache.jena.riot.resultset.* ;
-
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Context ;
 
 /** 
  * Reading and writing of Result Sets.

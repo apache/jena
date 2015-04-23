@@ -17,19 +17,18 @@
  */
 package org.apache.jena.security.query;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.Plan;
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
-import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.util.Context;
-
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.query.Query ;
 import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.graph.SecuredGraph;
+import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.engine.Plan ;
+import org.apache.jena.sparql.engine.QueryEngineFactory ;
+import org.apache.jena.sparql.engine.QueryEngineRegistry ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.util.Context ;
 
 public class SecuredQueryEngineFactory implements QueryEngineFactory
 {

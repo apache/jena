@@ -29,15 +29,14 @@ import org.apache.http.entity.EntityTemplate ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
 import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.system.IRILib ;
 import org.apache.jena.riot.web.* ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.shared.JenaException ;
+import org.apache.jena.shared.JenaException ;
 
 /**
  * A dataset graph accessor that talks to stores that implement the SPARQL 1.1

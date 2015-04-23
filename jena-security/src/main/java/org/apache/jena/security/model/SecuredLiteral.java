@@ -17,11 +17,10 @@
  */
 package org.apache.jena.security.model;
 
-import com.hp.hpl.jena.datatypes.DatatypeFormatException;
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-
+import org.apache.jena.datatypes.DatatypeFormatException ;
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.rdf.model.Literal ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.security.AccessDeniedException;
 
 /**

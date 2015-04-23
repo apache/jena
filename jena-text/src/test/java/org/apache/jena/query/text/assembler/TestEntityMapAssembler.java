@@ -23,23 +23,22 @@ import static org.junit.Assert.assertTrue ;
 
 import java.util.Collection ;
 
+import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.query.text.EntityDefinition ;
 import org.apache.jena.query.text.TextIndexException ;
 import org.apache.jena.query.text.analyzer.LowerCaseKeywordAnalyzer ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.analysis.core.KeywordAnalyzer ;
 import org.apache.lucene.analysis.core.SimpleAnalyzer ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.vocabulary.RDF ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
 
 /**
  * Test assembler for EntityMap

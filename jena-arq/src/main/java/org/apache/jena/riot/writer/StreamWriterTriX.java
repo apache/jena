@@ -20,18 +20,17 @@ import java.io.OutputStream ;
 import java.util.Objects ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.datatypes.xsd.impl.XMLLiteralType ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.lang.ReaderTriX ;
 import org.apache.jena.riot.lang.TriX ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
-
-import com.hp.hpl.jena.datatypes.xsd.impl.XMLLiteralType ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.impl.Util ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Quad ;
 
 
 /** Write TriX by streaming. 

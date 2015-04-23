@@ -22,21 +22,20 @@ import static org.junit.Assert.assertTrue ;
 
 import java.util.Iterator;
 
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.exceptions.AssemblerException ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.text.* ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.QuadAction ;
+import org.apache.jena.tdb.assembler.AssemblerTDB ;
+import org.apache.jena.vocabulary.RDF ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.assembler.exceptions.AssemblerException ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.ReadWrite;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.QuadAction ;
-import com.hp.hpl.jena.tdb.assembler.AssemblerTDB ;
-import com.hp.hpl.jena.vocabulary.RDF ;
 
 
 /**

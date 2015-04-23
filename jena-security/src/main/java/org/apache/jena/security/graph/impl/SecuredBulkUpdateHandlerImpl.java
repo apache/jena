@@ -17,21 +17,20 @@
  */
 package org.apache.jena.security.graph.impl;
 
-import com.hp.hpl.jena.graph.BulkUpdateHandler;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.jena.graph.BulkUpdateHandler ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.security.graph.SecuredBulkUpdateHandler;
 import org.apache.jena.security.graph.SecuredGraph;
 import org.apache.jena.security.impl.ItemHolder;
 import org.apache.jena.security.impl.SecuredItemImpl;
+import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.util.iterator.WrappedIterator ;
 
 /**
  * Implementation of SecuredBulkUpdateHandler to be used by a SecuredItemInvoker

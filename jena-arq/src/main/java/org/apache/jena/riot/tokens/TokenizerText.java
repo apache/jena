@@ -28,8 +28,7 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.riot.RiotParseException ;
 import org.apache.jena.riot.system.RiotChars ;
-
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.ARQInternalErrorException ;
 
 /** Tokenizer for all sorts of things RDF-ish */
 

@@ -26,18 +26,17 @@ import java.io.InputStream ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.ResultSet ;
+import org.apache.jena.query.ResultSetFactory ;
+import org.apache.jena.query.ResultSetRewindable ;
 import org.apache.jena.riot.thrift.BinRDF ;
+import org.apache.jena.sparql.resultset.ResultSetCompare ;
+import org.apache.jena.sparql.sse.Item ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.sse.builders.BuilderResultSet ;
+import org.apache.jena.sparql.util.NodeUtils.EqualityTest ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
-import com.hp.hpl.jena.query.ResultSetRewindable ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
-import com.hp.hpl.jena.sparql.sse.Item ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
-import com.hp.hpl.jena.sparql.util.NodeUtils.EqualityTest ;
 
 public class TestResultSetThrift extends BaseTest {
     // Only datatypes that transmitted perfectly. 

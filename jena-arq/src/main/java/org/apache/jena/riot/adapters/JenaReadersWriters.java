@@ -19,8 +19,7 @@
 package org.apache.jena.riot.adapters;
 
 import static org.apache.jena.riot.RDFLanguages.JSONLD ;
-
-import com.hp.hpl.jena.n3.N3JenaWriter ;
+import org.apache.jena.n3.N3JenaWriter ;
 
 public class JenaReadersWriters
 {

@@ -17,15 +17,14 @@
  */
 package org.apache.jena.security.graph.impl;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.jena.security.graph.SecuredPrefixMapping;
 import org.apache.jena.security.impl.ItemHolder;
 import org.apache.jena.security.impl.SecuredItemImpl;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.shared.impl.PrefixMappingImpl ;
 
 /**
  * Implementation of SecuredPrefixMapping to be used by a SecuredItemInvoker

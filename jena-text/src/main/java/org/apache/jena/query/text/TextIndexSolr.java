@@ -25,6 +25,9 @@ import java.util.List ;
 import java.util.Map ;
 import java.util.Map.Entry ;
 
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.solr.client.solrj.SolrQuery ;
 import org.apache.solr.client.solrj.SolrServer ;
 import org.apache.solr.client.solrj.SolrServerException ;
@@ -36,10 +39,6 @@ import org.apache.solr.common.SolrInputDocument ;
 import org.apache.solr.common.params.CommonParams ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 public class TextIndexSolr implements TextIndex
 {

@@ -17,15 +17,13 @@
  */
 package org.apache.jena.security;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
 import java.net.URL;
 
-
 import org.junit.Assert;
-
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.security.model.SecuredModel;
 import org.junit.Before;
 import org.junit.Test;

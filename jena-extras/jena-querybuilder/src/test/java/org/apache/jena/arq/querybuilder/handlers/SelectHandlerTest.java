@@ -18,13 +18,11 @@
 package org.apache.jena.arq.querybuilder.handlers;
 
 import static org.junit.Assert.*;
-
+import org.apache.jena.query.Query ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.VarExprList ;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarExprList;
 
 public class SelectHandlerTest extends AbstractHandlerTest {
 

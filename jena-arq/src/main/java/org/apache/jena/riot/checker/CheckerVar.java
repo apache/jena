@@ -18,10 +18,9 @@
 
 package org.apache.jena.riot.checker;
 
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.system.ErrorHandler ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 public class CheckerVar implements NodeChecker
 {

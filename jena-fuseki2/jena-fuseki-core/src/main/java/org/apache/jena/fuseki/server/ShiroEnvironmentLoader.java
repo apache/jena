@@ -28,13 +28,12 @@ import javax.servlet.ServletContextEvent ;
 import javax.servlet.ServletContextListener ;
 
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.util.FileUtils ;
 import org.apache.shiro.config.ConfigurationException ;
 import org.apache.shiro.io.ResourceUtils ;
 import org.apache.shiro.web.env.EnvironmentLoader ;
 import org.apache.shiro.web.env.ResourceBasedWebEnvironment ;
 import org.apache.shiro.web.env.WebEnvironment ;
-
-import com.hp.hpl.jena.util.FileUtils ;
 
 /** A place to perform Fuseki-specific initialization of Apache Shiro.
  *  Runs after listener FusekiServerEnvironmentInit and before FusekiServerListener

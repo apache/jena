@@ -23,6 +23,7 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.Bytes ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.system.IO_JenaWriters ;
@@ -30,8 +31,6 @@ import org.junit.Test ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
 
 @RunWith(Parameterized.class)
 public class TestJenaWriters extends AbstractWriterTest

@@ -28,21 +28,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.GraphEventManager ;
+import org.apache.jena.graph.GraphListener ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.impl.CollectionGraph ;
 import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator.Action;
 import org.apache.jena.security.graph.impl.SecuredGraphImpl;
 import org.apache.jena.security.impl.CachedSecurityEvaluator;
 import org.apache.jena.security.impl.SecuredItemImpl;
 import org.apache.jena.security.utils.PermTripleFilter;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphEventManager;
-import com.hp.hpl.jena.graph.GraphListener;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.impl.CollectionGraph;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
+import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.util.iterator.NiceIterator ;
+import org.apache.jena.util.iterator.WrappedIterator ;
 
 /**
  * Since we sit between the graph and other items we have to determine when the

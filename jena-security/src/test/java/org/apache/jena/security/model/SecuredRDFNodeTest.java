@@ -17,13 +17,7 @@
  */
 package org.apache.jena.security.model;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.Factory;
 import org.apache.jena.security.MockSecurityEvaluator;

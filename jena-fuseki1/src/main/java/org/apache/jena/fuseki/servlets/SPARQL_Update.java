@@ -43,20 +43,19 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.query.QueryParseException ;
+import org.apache.jena.query.Syntax ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.sparql.modify.UsingList ;
+import org.apache.jena.update.UpdateAction ;
+import org.apache.jena.update.UpdateException ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateRequest ;
 import org.apache.jena.web.HttpSC ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.query.QueryParseException ;
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.sparql.modify.UsingList ;
-import com.hp.hpl.jena.update.UpdateAction ;
-import com.hp.hpl.jena.update.UpdateException ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class SPARQL_Update extends SPARQL_Protocol
 {

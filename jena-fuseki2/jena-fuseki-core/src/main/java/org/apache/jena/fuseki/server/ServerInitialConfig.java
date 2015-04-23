@@ -21,7 +21,7 @@ package org.apache.jena.fuseki.server;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 
 /** Dataset setup (command line, config file) for a dataset (or several if config file) */
 public class ServerInitialConfig {

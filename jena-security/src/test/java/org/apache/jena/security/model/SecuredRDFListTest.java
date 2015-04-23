@@ -17,21 +17,14 @@
  */
 package org.apache.jena.security.model;
 
-import com.hp.hpl.jena.rdf.model.EmptyListException;
-import com.hp.hpl.jena.rdf.model.ListIndexException;
-import com.hp.hpl.jena.rdf.model.RDFList;
-import com.hp.hpl.jena.rdf.model.RDFList.ApplyFn;
-import com.hp.hpl.jena.rdf.model.RDFList.ReduceFn;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.RDFList.ApplyFn ;
+import org.apache.jena.rdf.model.RDFList.ReduceFn ;
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.MockSecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator;
@@ -41,6 +34,7 @@ import org.apache.jena.security.model.SecuredRDFList;
 import org.apache.jena.security.model.impl.SecuredRDFListImpl;
 import org.apache.jena.security.utils.RDFListIterator;
 import org.apache.jena.security.utils.RDFListSecFilter;
+import org.apache.jena.util.iterator.WrappedIterator ;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

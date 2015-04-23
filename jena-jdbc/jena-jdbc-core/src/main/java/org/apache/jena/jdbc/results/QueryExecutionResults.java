@@ -19,11 +19,11 @@
 package org.apache.jena.jdbc.results;
 
 import java.sql.SQLException;
+
 import org.apache.jena.jdbc.statements.JenaStatement;
+import org.apache.jena.query.QueryExecution ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.query.QueryExecution;
 
 /**
  * Abstract base class for result sets that are backed by a {@link QueryExecution} 

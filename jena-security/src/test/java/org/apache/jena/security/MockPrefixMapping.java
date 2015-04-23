@@ -17,10 +17,10 @@
  */
 package org.apache.jena.security;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
-
 import java.util.Collections;
 import java.util.Map;
+
+import org.apache.jena.shared.PrefixMapping ;
 
 public class MockPrefixMapping implements PrefixMapping
 {

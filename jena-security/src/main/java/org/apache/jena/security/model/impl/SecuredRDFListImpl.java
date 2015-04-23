@@ -17,29 +17,15 @@
  */
 package org.apache.jena.security.model.impl;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.EmptyListException;
-import com.hp.hpl.jena.rdf.model.EmptyListUpdateException;
-import com.hp.hpl.jena.rdf.model.InvalidListException;
-import com.hp.hpl.jena.rdf.model.ListIndexException;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFList;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.Map1;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator.Action;
@@ -51,6 +37,10 @@ import org.apache.jena.security.model.SecuredRDFList;
 import org.apache.jena.security.model.SecuredRDFNode;
 import org.apache.jena.security.utils.RDFListIterator;
 import org.apache.jena.security.utils.RDFListSecFilter;
+import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.util.iterator.Map1 ;
+import org.apache.jena.util.iterator.WrappedIterator ;
+import org.apache.jena.vocabulary.RDF ;
 
 public class SecuredRDFListImpl extends SecuredResourceImpl implements
 		SecuredRDFList

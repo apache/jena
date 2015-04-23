@@ -17,12 +17,11 @@
  */
 package org.apache.jena.security.graph;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
-
 import java.util.Map;
 
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.impl.SecuredItem;
+import org.apache.jena.shared.PrefixMapping ;
 
 /**
  * The interface for secured PrefixMapping instances.

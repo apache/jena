@@ -23,8 +23,7 @@ import java.util.Objects ;
 import java.util.Properties ;
 
 import org.apache.jena.atlas.AtlasException ;
-
-import com.hp.hpl.jena.util.FileUtils ;
+import org.apache.jena.util.FileUtils ;
 
 public class PropertyUtils
 {

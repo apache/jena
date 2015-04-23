@@ -24,10 +24,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.rdf.model.Property ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.ResourceFactory ;
+
 import com.spatial4j.core.context.SpatialContextFactory;
 
 /**

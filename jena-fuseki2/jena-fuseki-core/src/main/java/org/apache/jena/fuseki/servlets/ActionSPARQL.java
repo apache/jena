@@ -27,6 +27,7 @@ import java.io.InputStream ;
 import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.* ;
+import org.apache.jena.query.QueryCancelledException ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.ReaderRIOT ;
@@ -34,8 +35,6 @@ import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
-
-import com.hp.hpl.jena.query.QueryCancelledException ;
 
 /** SPARQL request lifecycle */
 public abstract class ActionSPARQL extends ActionBase

@@ -19,8 +19,7 @@
 package org.apache.jena.riot ;
 
 import org.apache.jena.atlas.lib.Lib ;
-
-import com.hp.hpl.jena.sparql.util.Symbol ;
+import org.apache.jena.sparql.util.Symbol ;
 
 /** Modifier for an RDF Format */
 public class RDFFormatVariant {

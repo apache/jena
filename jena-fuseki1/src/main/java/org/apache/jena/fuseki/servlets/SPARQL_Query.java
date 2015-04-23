@@ -38,14 +38,13 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
+import org.apache.jena.sparql.core.Prologue ;
+import org.apache.jena.sparql.resultset.SPARQLResult ;
 import org.apache.jena.web.HttpSC ;
-
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.core.Prologue ;
-import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
 /**
  * Handles SPARQL Query requests.

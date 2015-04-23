@@ -17,20 +17,20 @@
  */
 package org.apache.jena.security;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.JA;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
-import com.hp.hpl.jena.assembler.assemblers.ModelAssembler;
-import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.util.MappingRegistry;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.JA ;
+import org.apache.jena.assembler.Mode ;
+import org.apache.jena.assembler.assemblers.AssemblerGroup ;
+import org.apache.jena.assembler.assemblers.ModelAssembler ;
+import org.apache.jena.assembler.exceptions.AssemblerException ;
+import org.apache.jena.rdf.model.Literal ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sparql.util.MappingRegistry ;
 
 /**
  * Assembler for a secured model.

@@ -22,14 +22,13 @@ import java.io.InputStream ;
 
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.stream.TestLocationMapper ;
+import org.apache.jena.shared.NotFoundException ;
+import org.apache.jena.util.FileManager ;
+import org.apache.jena.util.LocationMapper ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.shared.NotFoundException ;
-import com.hp.hpl.jena.util.FileManager ;
-import com.hp.hpl.jena.util.LocationMapper ;
 
 public class TestFileManager extends TestCase
 {

@@ -29,12 +29,18 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.iterator.Action ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Chars ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.writer.WriterDatasetRIOTBase ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.vocabulary.RDF ;
 
 import com.fasterxml.jackson.core.JsonGenerationException ;
 import com.fasterxml.jackson.databind.JsonMappingException ;
@@ -42,12 +48,6 @@ import com.github.jsonldjava.core.JsonLdError ;
 import com.github.jsonldjava.core.JsonLdOptions ;
 import com.github.jsonldjava.core.JsonLdProcessor ;
 import com.github.jsonldjava.utils.JsonUtils ;
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class JsonLDWriter extends WriterDatasetRIOTBase
 {

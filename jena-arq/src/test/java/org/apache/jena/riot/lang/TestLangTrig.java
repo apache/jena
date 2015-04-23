@@ -20,6 +20,7 @@ package org.apache.jena.riot.lang;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.ErrorHandlerTestLib ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
@@ -28,12 +29,10 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 
 /** Test the behaviour of the RIOT reader for TriG.  TriG includes checking of terms */
 public class TestLangTrig extends BaseTest

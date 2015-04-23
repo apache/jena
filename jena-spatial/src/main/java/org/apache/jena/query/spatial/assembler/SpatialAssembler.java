@@ -18,8 +18,8 @@
 
 package org.apache.jena.query.spatial.assembler;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 
 public class SpatialAssembler
 {

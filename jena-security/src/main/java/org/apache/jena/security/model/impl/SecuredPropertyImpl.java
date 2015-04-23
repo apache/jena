@@ -17,10 +17,9 @@
  */
 package org.apache.jena.security.model.impl;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
-
+import org.apache.jena.graph.Node ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.security.impl.ItemHolder;
 import org.apache.jena.security.impl.SecuredItemInvoker;
 import org.apache.jena.security.model.SecuredModel;

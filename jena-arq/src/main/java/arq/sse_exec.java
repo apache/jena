@@ -18,11 +18,10 @@
 
 package arq;
 
+import org.apache.jena.sparql.sse.Item ;
+import org.apache.jena.sparql.sse.builders.BuilderExec ;
+import org.apache.jena.sparql.util.Utils ;
 import arq.cmdline.CmdARQ_SSE ;
-
-import com.hp.hpl.jena.sparql.sse.Item ;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderExec ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class sse_exec extends CmdARQ_SSE
 {

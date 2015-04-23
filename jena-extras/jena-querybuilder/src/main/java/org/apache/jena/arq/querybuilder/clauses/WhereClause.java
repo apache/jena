@@ -20,10 +20,9 @@ package org.apache.jena.arq.querybuilder.clauses;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
-
-import com.hp.hpl.jena.graph.FrontsTriple;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException;
+import org.apache.jena.graph.FrontsTriple ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 
 /**
  * Interface that defines the WhereClause as per

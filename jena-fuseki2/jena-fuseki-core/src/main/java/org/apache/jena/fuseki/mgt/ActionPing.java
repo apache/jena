@@ -28,10 +28,9 @@ import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import com.hp.hpl.jena.sparql.util.Utils ;
-
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
+import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.web.HttpSC ;
 
 /** The ping servlet provides a low costy, uncached endpoint that can be used

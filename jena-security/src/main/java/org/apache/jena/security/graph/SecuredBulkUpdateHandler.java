@@ -17,14 +17,13 @@
  */
 package org.apache.jena.security.graph;
 
-import com.hp.hpl.jena.graph.BulkUpdateHandler;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.jena.graph.BulkUpdateHandler ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.impl.SecuredItem;
 
