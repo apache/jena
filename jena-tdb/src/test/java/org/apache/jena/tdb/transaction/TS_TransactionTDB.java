@@ -45,12 +45,12 @@ public class TS_TransactionTDB
     static Level level ;
     @BeforeClass static public void beforeClass()
     {
-        level = Logger.getLogger("com.hp.hpl.jena.tdb.transaction").getLevel() ;
-        Logger.getLogger("com.hp.hpl.jena.tdb.transaction").setLevel(Level.INFO) ;
+        level = Logger.getLogger("org.apache.jena.tdb.transaction").getLevel() ;
+        Logger.getLogger("org.apache.jena.tdb.transaction").setLevel(Level.INFO) ;
     }
     
     @AfterClass static public void afterClass()
     {
-        Logger.getLogger("com.hp.hpl.jena.tdb.transaction").setLevel(level) ;
+        Logger.getLogger("org.apache.jena.tdb.transaction").setLevel(level) ;
     }
 }

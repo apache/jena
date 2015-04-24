@@ -78,7 +78,7 @@ public class TDB {
     public static final Logger  logInfo                          = LoggerFactory.getLogger(logInfoName) ;
 
     // /** Logger for execution information */
-    // public static final String logExecName = "com.hp.hpl.jena.tdb.exec" ;
+    // public static final String logExecName = "org.apache.jena.tdb.exec" ;
     // /** Logger for execution information */
     // public static final Logger logExec = LoggerFactory.getLogger(logExecName)
     // ;

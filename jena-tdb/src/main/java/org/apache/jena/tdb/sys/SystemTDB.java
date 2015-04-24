@@ -103,7 +103,7 @@ public class SystemTDB
     public static final String tdbSymbolPrefix      = "tdb" ;
     
     /** Root of any TDB-defined Java system properties */   
-    public static final String tdbPropertyRoot      = "com.hp.hpl.jena.tdb" ;
+    public static final String tdbPropertyRoot      = "org.apache.jena.tdb" ;
 
     /** Log duplicates during loading */
     public static final Symbol symLogDuplicates     = allocSymbol("logDuplicates") ;
@@ -190,7 +190,7 @@ public class SystemTDB
     /** Unsupported (for non-standard setups) 
      * @see #enableInlineLiterals
      */
-    public static String propertyEnableInlineLiterals1 = "com.hp.hpl.jena.tdb.store.enableInlineLiterals" ;
+    public static String propertyEnableInlineLiterals1 = "org.apache.jena.tdb.store.enableInlineLiterals" ;
     /** Unsupported (for non-standard setups) 
      * @see #enableInlineLiterals
      */

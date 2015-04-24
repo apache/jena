@@ -77,8 +77,8 @@ public class TC_TDB
     {
         //org.apache.log4j.LogManager.resetConfiguration() ;
         //org.apache.log4j.PropertyConfigurator.configure("log4j.properties") ;
-        Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.WARN) ;
-        //Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
+        Logger.getLogger("org.apache.jena.tdb.info").setLevel(Level.WARN) ;
+        //Logger.getLogger("org.apache.jena.tdb.exec").setLevel(Level.WARN) ;
         dftReorder = SystemTDB.defaultReorderTransform ;
         SystemTDB.defaultReorderTransform = ReorderLib.identity() ;
     }

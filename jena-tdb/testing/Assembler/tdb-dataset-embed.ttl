@@ -18,7 +18,7 @@
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
-[] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
+[] ja:loadClass "org.apache.jena.tdb.TDB" .
 tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
 ## tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 

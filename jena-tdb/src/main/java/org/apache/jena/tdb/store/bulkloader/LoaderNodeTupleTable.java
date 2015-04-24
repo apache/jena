@@ -51,7 +51,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     private long count = 0 ;
     private String itemsName ;
     
-    static private Logger logLoad = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.loader") ;
+    static private Logger logLoad = LoggerFactory.getLogger("org.apache.jena.tdb.loader") ;
 
     public LoaderNodeTupleTable(NodeTupleTable nodeTupleTable, String itemsName, LoadMonitor monitor)
     {

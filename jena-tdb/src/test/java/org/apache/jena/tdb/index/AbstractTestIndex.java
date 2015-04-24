@@ -27,8 +27,6 @@ import org.apache.jena.tdb.index.Index ;
 import org.junit.After;
 import org.junit.Test;
 
-//import com.hp.hpl.jena.tdb.base.record.RecordLib;
-
 public abstract class AbstractTestIndex extends BaseTest 
 {
     Index index = null ;

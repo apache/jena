@@ -35,8 +35,8 @@ import org.junit.Test ;
 public class TestTripleTable extends BaseTest
 {
     static {
-        Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.WARN) ;
-        Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
+        Logger.getLogger("org.apache.jena.tdb.info").setLevel(Level.WARN) ;
+        Logger.getLogger("org.apache.jena.tdb.exec").setLevel(Level.WARN) ;
     }
 
     private static void add(TripleTable table, Node s, Node p, Node o)

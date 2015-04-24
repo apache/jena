@@ -42,11 +42,6 @@ import org.junit.Test ;
 
 public class TestConcurrentAccess extends BaseTest
 {
-//    static { 
-//        Log.disable("com.hp.hpl.jena.tdb.exec") ;
-//        Log.disable("com.hp.hpl.jena.tdb.info") ;
-//    }
-    
     static String data = StrUtils.strjoinNL(
        "(graph",
        "  (<x> <p> 1)" ,
@@ -214,8 +209,6 @@ public class TestConcurrentAccess extends BaseTest
         iter.hasNext() ;
         iter.next() ;
     }
-    
-    
    
     // More DSG tests ..
 }

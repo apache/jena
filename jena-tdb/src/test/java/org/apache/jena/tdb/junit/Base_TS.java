@@ -34,8 +34,8 @@ public class Base_TS
     @BeforeClass static public void beforeClass()   
     {
         rt = SystemTDB.defaultReorderTransform ;
-        level = Logger.getLogger("com.hp.hpl.jena.tdb.info").getLevel() ;
-        Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.FATAL) ;
+        level = Logger.getLogger("org.apache.jena.tdb.info").getLevel() ;
+        Logger.getLogger("org.apache.jena.tdb.info").setLevel(Level.FATAL) ;
         SystemTDB.defaultReorderTransform = ReorderLib.identity() ;
         rt = SystemTDB.defaultReorderTransform ;
     }
@@ -43,7 +43,7 @@ public class Base_TS
     @AfterClass static public void afterClass()
     {
         if ( level != null )
-            Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(level) ;
+            Logger.getLogger("org.apache.jena.tdb.info").setLevel(level) ;
         SystemTDB.defaultReorderTransform = rt ;
     }
 }
