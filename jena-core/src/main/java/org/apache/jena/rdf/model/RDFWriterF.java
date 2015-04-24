@@ -55,11 +55,13 @@ public interface RDFWriterF {
  * @throws NullPointerException if lang or classname is null.
  * @return the old class name for this language
  */    
+    @Deprecated
     public String setWriterClassName(String lang, String className);
     
     /**
      * Resets the values to the initial condition.
      */
+    @Deprecated
     public void resetRDFWriterF();
     
     /**
@@ -69,5 +71,6 @@ public interface RDFWriterF {
      * @return the old class name for this language
      * @throws IllegalArgumentException if lang is one of the initial languages
      */
+    @Deprecated
     public String removeWriter( String lang ) throws IllegalArgumentException;
 }
