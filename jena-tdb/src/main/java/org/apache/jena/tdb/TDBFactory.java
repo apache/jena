@@ -18,12 +18,8 @@
 
 package org.apache.jena.tdb;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.tdb.assembler.VocabTDB ;
@@ -82,16 +78,6 @@ public class TDBFactory
         _release(location(dataset)) ;
     }
     
-    /** Reset internal state, releasing all datasets.
-     *  No checking done, do not call while TDB is execution queries or updates.
-     *  Mainly for the tests to have a known clean state.
-     *  @deprecated
-     */
-    @Deprecated
-    public static void reset() {
-        TDBMaker.reset() ;
-    }
-
     private static DatasetGraph _createDatasetGraph(Location location) {
         return TDBMaker.createDatasetGraphTransaction(location) ;
     }
@@ -156,100 +142,4 @@ public class TDBFactory
             throw new IllegalStateException("Location is already active") ;
         StoreConnection.make(location, params) ;
     }
-    
-    /** Read the file and assembler a graph, of type TDB persistent graph
-     *  @deprecated Assemble a Dataset and use the default graph.
-     */
-    @Deprecated 
-    public static Graph assembleGraph(String assemblerFile) {
-        Model m = assembleModel(assemblerFile) ;
-        Graph g = m.getGraph() ;
-        return g ;
-    }
-
-    /** Read the file and assembler a model, of type TDB persistent graph
-     *  @deprecated Assemble a Dataset and use the default model.
-     */
-    @Deprecated 
-    public static Model assembleModel(String assemblerFile) {
-        return (Model)AssemblerUtils.build(assemblerFile, VocabTDB.tGraphTDB) ;
-    }
-
-    /** Create a model, at the given location.
-     *  It is better to create a dataset and get the default model from that.
-     *  This Model is not connected to the TDB transaction system.
-     *  @deprecated Create a Dataset and use the default model.
-     */
-    @Deprecated
-    public static Model createModel(Location loc) {
-        return ModelFactory.createModelForGraph(createGraph(loc)) ;
-    }
-
-    /** Create a model, at the given location 
-     *  It is better to create a dataset and get the default model from that.
-     *  This Model is not connected to the TDB transaction system. 
-     *  @deprecated Create a Dataset and get the default model.
-     */
-    @Deprecated
-    public static Model createModel(String dir) {
-        return ModelFactory.createModelForGraph(createGraph(dir)) ;
-    }
-
-    /** Create a TDB model backed by an in-memory block manager. For testing. */
-    @Deprecated
-    
-    public static Model createModel()
-    { return ModelFactory.createModelForGraph(createGraph()) ; }
-
-    /** Create a TDB model for named model
-     * It is better to create a dataset and get the named model from that.
-     * This Model is not connected to the TDB transaction system.
-     *  @deprecated Create a Dataset and get the name model.
-     */
-    @Deprecated
-    public static Model createNamedModel(String name, String location)
-    { return createDataset(location).getNamedModel(name) ; }
-
-    /** Create a TDB model for named model.
-     * It is better to create a dataset and get the named model from that.
-     * This Model is not connected to the TDB transaction system.
-     *  @deprecated Create a Dataset and get the name model.
-     */  
-    @Deprecated
-    public static Model createNamedModel(String name, Location location)
-    { return createDataset(location).getNamedModel(name) ; }
-
-    /** Create a graph, at the given location 
-     * @deprecated Create a DatasetGraph and use the default graph.
-     */
-    @Deprecated
-    public static Graph createGraph(Location loc)       { return createDatasetGraph(loc).getDefaultGraph() ; }
-
-    /** Create a graph, at the given location 
-     * @deprecated Create a DatasetGraph and use the default graph.
-     */
-    @Deprecated
-    public static Graph createGraph(String dir)
-    {
-        Location loc = Location.create(dir) ;
-        return createGraph(loc) ;
-    }
-    
-    /** Create a TDB graph backed by an in-memory block manager. For testing. */  
-    @Deprecated
-    public static Graph createGraph()   { return createDatasetGraph().getDefaultGraph() ; }
-
-    /** Create a TDB graph for named graph
-     * @deprecated Create a DatasetGraph and get the name graph from that.
-     */  
-    @Deprecated
-    public static Graph createNamedGraph(String name, String location)
-    { return createDatasetGraph(location).getGraph(NodeFactory.createURI(name)) ; }
-    
-    /** Create a TDB graph for named graph
-     * @deprecated Create a DatasetGraph and get the name graph from that.
-     */  
-    @Deprecated
-    public static Graph createNamedGraph(String name, Location location)
-    { return createDatasetGraph(location).getGraph(NodeFactory.createURI(name)) ; }
 }

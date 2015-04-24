@@ -61,14 +61,6 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
         return getDSG().chooseNodeTupleTable(getGraphName()) ;
     }
 
-    /**
-     * @deprecated Use DatasetGraphTDB.chooseNodeTupleTable
-     */
-    @Deprecated
-    public static NodeTupleTable chooseNodeTupleTable(DatasetGraphTDB dsg, Node graphNode) {
-        return dsg.chooseNodeTupleTable(graphNode) ;
-    }
-
     @Override
     protected PrefixMapping createPrefixMapping() {
         if ( isDefaultGraph() )

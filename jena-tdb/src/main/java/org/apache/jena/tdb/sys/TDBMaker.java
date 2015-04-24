@@ -72,21 +72,12 @@ public class TDBMaker
     
     /* The one we are using */
     private static DatasetGraphMakerTDB builder = new BuilderStd() ;
-
     
     public static DatasetGraphTDB createDatasetGraphTDB(Location loc, StoreParams params)
     { return builder.createDatasetGraph(loc, params) ; }
 
-    
-    @Deprecated
-    public static DatasetGraphTDB createDatasetGraphTDB(Location loc) {
-        return createDatasetGraphTDB(loc, null) ;
-    }
-    
-    // -- Different ways of doing it.
-    
     /** Interface to maker of the actual implementations of TDB datasets */ 
-    private interface DatasetGraphMakerTDB 
+    private interface DatasetGraphMakerTDB  
     {
         /** Create a TDB-backed dataset at a given location */
         public DatasetGraphTDB createDatasetGraph(Location location, StoreParams params) ;
