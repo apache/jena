@@ -297,12 +297,4 @@ case 0X11C2: // HANGUL JONGSEONG HIEUH
                 return false;
         }
     }
-
-   
-/*   
-   static public void main(String args[]) {
-   	int ch = Integer.parseInt(args[0],16);
-   	System.out.println(UCharacter.getCombiningClass(ch));
-   }
- */
 }

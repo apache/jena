@@ -16,39 +16,31 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.sse.builders;
+package org.apache.jena.sparql.sse.builders ;
 
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.resultset.ResultsFormat ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.ItemList ;
-import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.Tags ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
 
-public class BuilderExec
+public class BuilderExec 
 {
-    static public void main(String[] argv)
-    {
-        Item item = SSE.readFile("SSE/all.sse") ;
-        exec(item) ;
-    }
-    
-    static public void exec(Item item)
-    {
-        if (item.isNode() )
+    static public void exec(Item item) {
+        if ( item.isNode() )
             BuilderLib.broken(item, "Attempt to build evaluation from a plain node") ;
 
-        if (item.isSymbol() )
+        if ( item.isSymbol() )
             BuilderLib.broken(item, "Attempt to build evaluation from a bare symbol") ;
 
-        if ( ! item.isTagged(Tags.tagExec) )
-            throw new BuildException("Wanted ("+Tags.tagExec+"...) : got: "+item.shortString());
+        if ( !item.isTagged(Tags.tagExec) )
+            throw new BuildException("Wanted (" + Tags.tagExec + "...) : got: " + item.shortString()) ;
 
         ItemList list = item.getList() ;
-        BuilderLib.checkLength(3, list, item.shortString()+ " does not have 2 components");
-        
+        BuilderLib.checkLength(3, list, item.shortString() + " does not have 2 components") ;
+
         DatasetGraph dsg = BuilderGraph.buildDataset(list.get(1)) ;
         Op op = BuilderOp.build(list.get(2)) ;
         QueryExecUtils.execute(op, dsg, ResultsFormat.FMT_TEXT) ;

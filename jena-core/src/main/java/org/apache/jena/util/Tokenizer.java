@@ -160,13 +160,4 @@ public class Tokenizer {
     private boolean is(String classification) {
         return classification.indexOf(source.charAt(p)) != -1;
     }
-    
-    public static void main(String[] args) {
-        System.out.println("Starting");
-        Tokenizer tokenizer = new Tokenizer("foo     ''  'a literal' \"a double literal\" 'literal with \\\" in it' 'literal with unquoted\"in it'", "()[], \t\n\r", "'\"", true);
-        while (tokenizer.hasMoreTokens()) {
-            String t = tokenizer.nextToken();
-            System.out.println("Token: [" +  t + "]");
-        }
-    }
 }

@@ -416,12 +416,6 @@ public class TestData implements ARPErrorNumbers{
         }
     }
 
-    static public void main(String args[]) throws IOException {
-        long start = System.currentTimeMillis();
-        new TestData().test1();
-        System.out.println((System.currentTimeMillis()-start) + " ms");
-    }
-
     public static String stateLongName(String sh) {
         return state2Name.get(shortName2State.get(sh));
     }
