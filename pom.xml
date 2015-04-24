@@ -117,7 +117,12 @@
 	<module>jena-security</module>
 
         <module>jena-jdbc</module>
+	<!-- Jena3 note: 
+	     "mvn release:update-versions" did not work 
+	     cleanly on this module so skipped depending
+	     manual update
         <module>jena-maven-tools</module>
+	-->
         
         <module>jena-elephas</module>
 
