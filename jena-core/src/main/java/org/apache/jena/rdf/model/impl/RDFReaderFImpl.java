@@ -29,7 +29,6 @@ import org.apache.jena.shared.* ;
  */
 public class RDFReaderFImpl extends Object implements RDFReaderF {
     // ** The setting in this class are overrided by RIOT **
-    private static final String GRDDLREADER = "org.apache.jena.grddl.GRDDLReader";
     private static final String TURTLEREADER = org.apache.jena.n3.turtle.TurtleReader.class.getName() ;
     
 	protected static Properties langToClassName = null;
@@ -46,7 +45,6 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
                                               "TURTLE",
                                               "Turtle",
                                               "TTL",
-                                              "GRDDL",
                                               "CSV"};
     // default readers for each language
 
@@ -61,7 +59,6 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
         TURTLEREADER,
         TURTLEREADER,
         TURTLEREADER,
-        GRDDLREADER,
         "org.apache.jena.riot.adapters.RDFReaderRIOT_CSV",
         
     };
@@ -122,8 +119,6 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
           return (RDFReader) Class.forName(className)
                                   .newInstance();
         } catch (ClassNotFoundException e) {
-        	if (className.equals(GRDDLREADER))
-                throw new ConfigException("The GRDDL reader must be downloaded separately from Sourceforge, and included on the classpath.",e);
         	throw new ConfigException("Reader not found on classpath",e);
         } catch (Exception e) {
             throw new JenaException(e);

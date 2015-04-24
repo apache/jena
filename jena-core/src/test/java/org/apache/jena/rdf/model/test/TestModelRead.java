@@ -23,7 +23,6 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.test.helpers.ModelHelper ;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
-import org.apache.jena.shared.ConfigException ;
 import org.junit.Assert ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -46,15 +45,6 @@ public class TestModelRead extends AbstractModelTestBase
     public void testDefaultLangXML() {
         final Model model = ModelFactory.createDefaultModel() ;
         model.read(getFileName("modelReading/plain.rdf"), null, null) ;
-    }
-
-    public void testGRDDLConfigMessage() {
-        try {
-            model.read("http://www.w3.org/", "GRDDL") ;
-            // ok.
-        } catch (final ConfigException e) {
-            // expected.
-        }
     }
 
     public void testLoadsSimpleModel() {
