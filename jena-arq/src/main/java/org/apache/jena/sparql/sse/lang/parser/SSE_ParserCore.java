@@ -16,19 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.jena.sparql.sse.lang.parser ;
-
-import org.apache.jena.sparql.sse.lang.ParserSSEBase ;
-
-//This is javacc generated code
-@SuppressWarnings("all")
-
+import org.apache.sparql.sse.lang.ParserSSEBase ;
 public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConstants {
 
 // Now has explicit WS control in the grammar.
 // Policy - eat trailing WS
-
 // ---- Entry points : check for EOF.
   final public void parse() throws ParseException {
       parseStart() ;

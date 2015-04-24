@@ -29,7 +29,7 @@ function grammar
 
     echo $1 $2 $3
 
-    DIR="$ROOT/src/com/hp/hpl/jena/sparql/$PKG"
+    DIR="$ROOT/src/main/java/org/apache/jena/sparql/$PKG"
     (cd "$DIR" ; rm -f TokenMgrError.java ParseException.java Token.java JavaCharStream.java )
 
     echo "---- Process grammar -- $1"
@@ -101,7 +101,7 @@ for G in "$@"
   do
   case "$G" in
   unisyn)
-    dos2unix < "$GRAMMAR" | cpp -P -C | unix2dos > parser.jj
+    cat "$GRAMMAR" | cpp -P -C - > parser.jj
     grammar parser.jj sse/lang/parser SSE_ParserCore
     [ "$RC" = 0 ] && rm parser.jj
     ;;

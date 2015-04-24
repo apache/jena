@@ -17,7 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.jena.sparql.sse.lang.parser ;
 
 /** Token Manager Error. */
@@ -66,7 +65,7 @@ public class TokenMgrError extends Error
    * equivalents in the given string
    */
   protected static final String addEscapes(String str) {
-    StringBuilder retval = new StringBuilder();
+    StringBuffer retval = new StringBuffer();
     char ch;
     for (int i = 0; i < str.length(); i++) {
       switch (str.charAt(i))
@@ -162,4 +161,4 @@ public class TokenMgrError extends Error
     this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
   }
 }
-/* JavaCC - OriginalChecksum=6132db4efb4d21f0848c26d0b8abe054 (do not edit this line) */
+/* JavaCC - OriginalChecksum=bbf60389fd6887fd1749ecfb1778e7bb (do not edit this line) */

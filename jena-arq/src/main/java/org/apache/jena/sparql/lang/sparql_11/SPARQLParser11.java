@@ -3,12 +3,12 @@ package org.apache.jena.sparql.lang.sparql_11 ;
 import org.apache.jena.graph.* ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.expr.* ;
-import org.apache.jena.sparql.expr.aggregate.* ;
-import org.apache.jena.sparql.modify.request.* ;
-import org.apache.jena.sparql.path.* ;
 import org.apache.jena.sparql.syntax.* ;
+import org.apache.jena.sparql.expr.* ;
+import org.apache.jena.sparql.path.* ;
+import org.apache.jena.sparql.expr.aggregate.* ;
 import org.apache.jena.update.* ;
+import org.apache.jena.sparql.modify.request.* ;
 
 @SuppressWarnings("all")
 public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11Constants {

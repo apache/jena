@@ -17,7 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.jena.sparql.sse.lang.parser ;
 
 /**
@@ -632,4 +631,4 @@ class JavaCharStream
   }
 
 }
-/* JavaCC - OriginalChecksum=252e61e16e221885b5b7879b56e1991b (do not edit this line) */
+/* JavaCC - OriginalChecksum=dc8b067e438c2036c7fe7c1930f1f4d8 (do not edit this line) */
