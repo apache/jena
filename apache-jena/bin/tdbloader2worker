@@ -42,7 +42,7 @@ then
 fi
 
 USAGE="Usage: tdbloader2 --loc location datafile ..."
-PKG=com.hp.hpl.jena.tdb.store.bulkloader2
+PKG=org.apache.jena.tdb.store.bulkloader2
 
 if [ "$#" -lt 2 ] ; then echo "$USAGE" 1>&2 ; exit 1 ; fi
 
