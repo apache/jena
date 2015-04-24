@@ -57,8 +57,6 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
 
     protected static final String DEFAULTWRITERS[] =
         {
-        
-        
             org.apache.jena.rdfxml.xmloutput.impl.Basic.class.getName(),
             org.apache.jena.rdfxml.xmloutput.impl.Abbreviated.class.getName(),
             
@@ -66,21 +64,6 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
             org.apache.jena.rdf.model.impl.NTripleWriter.class.getName(),
             org.apache.jena.rdf.model.impl.NTripleWriter.class.getName(),
             
-//            /*
-//            Jena.PATH + ".n3.N3JenaWriter",
-//            Jena.PATH + ".n3.N3JenaWriterPP",
-//
-//            Jena.PATH + ".n3.N3TurtleJenaWriter",   // Write Turtle to ensure safe round tripping.
-//            Jena.PATH + ".n3.N3TurtleJenaWriter",   // Ditto.
-//
-////            Jena.PATH + ".n3.N3JenaWriterPlain",      // Keep as N3 for now - a test fails.
-////            Jena.PATH + ".n3.N3JenaWriterTriples",
-//            
-//            Jena.PATH + ".n3.N3JenaWriterTriples",  // Same writer, different writer name
-//            Jena.PATH + ".n3.N3TurtleJenaWriter",   // Alternative names for Turtle
-//            Jena.PATH + ".n3.N3TurtleJenaWriter",
-//            Jena.PATH + ".n3.N3TurtleJenaWriter",             */
-//            
             org.apache.jena.n3.N3JenaWriter.class.getName(),
             org.apache.jena.n3.N3JenaWriterPP.class.getName(),
             org.apache.jena.n3.N3TurtleJenaWriter.class.getName(),   // Write Turtle to ensure safe round tripping.
