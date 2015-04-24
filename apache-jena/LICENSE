@@ -178,9 +178,9 @@
 
 The following files contain code contributed by Plugged In Software:
 
-src/main/java/com/hp/hpl/jena/rdf/arp/ExtendedHandler.java
-src/main/java/com/hp/hpl/jena/rdf/arp/impl/XMLHandler.java
-src/main/java/com/hp/hpl/jena/rdf/arp/ARP.java 
+src/main/java/org/apache/jena/rdf/arp/ExtendedHandler.java
+src/main/java/org/apache/jena/rdf/arp/impl/XMLHandler.java
+src/main/java/org/apache/jena/rdf/arp/ARP.java 
 
   (c) Copyright 2003, Plugged In Software 
 
