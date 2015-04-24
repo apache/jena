@@ -82,7 +82,7 @@
         <!-- <module>apache-jena-libs</module>    -->
         <!-- <module>apache-jena</module>         -->
         <!-- <module>jena-elephas</module> -->
-        <module>jena-extras</module>
+	<!-- <module>jena-extras</module> -->
       </modules>
     </profile>
 
