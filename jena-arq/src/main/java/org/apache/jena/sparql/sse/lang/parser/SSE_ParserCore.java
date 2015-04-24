@@ -17,7 +17,9 @@
  * limitations under the License.
  */
 package org.apache.jena.sparql.sse.lang.parser ;
-import org.apache.sparql.sse.lang.ParserSSEBase ;
+import org.apache.jena.sparql.sse.lang.ParserSSEBase ;
+
+@SuppressWarnings("all")
 public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConstants {
 
 // Now has explicit WS control in the grammar.
