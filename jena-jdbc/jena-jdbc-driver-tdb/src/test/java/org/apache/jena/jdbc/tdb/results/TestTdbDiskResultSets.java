@@ -52,7 +52,7 @@ public class TestTdbDiskResultSets extends AbstractTdbResultSetTests {
         if (currDataset != null) {
             currDataset.close();
         }
-        StoreConnection.expel(new Location(tempDir.getRoot().getAbsolutePath()), true);
+        StoreConnection.expel(Location.create(tempDir.getRoot().getAbsolutePath()), true);
     }
 
     @Override

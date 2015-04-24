@@ -54,7 +54,7 @@ public class TestTdbDiskConnection extends AbstractJenaConnectionTests {
      */
     @After
     public void cleanupTest() {
-        StoreConnection.expel(new Location(tempDir.getRoot().getAbsolutePath()), true);
+        StoreConnection.expel(Location.create(tempDir.getRoot().getAbsolutePath()), true);
     }
 
     @Override
