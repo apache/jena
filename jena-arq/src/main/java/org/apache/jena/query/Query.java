@@ -19,13 +19,7 @@
 package org.apache.jena.query;
 
 import java.io.OutputStream ;
-import java.util.ArrayList ;
-import java.util.Collection ;
-import java.util.HashMap ;
-import java.util.Iterator ;
-import java.util.LinkedHashSet ;
-import java.util.List ;
-import java.util.Map ;
+import java.util.* ;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
@@ -41,7 +35,6 @@ import org.apache.jena.sparql.expr.ExprAggregator ;
 import org.apache.jena.sparql.expr.ExprVar ;
 import org.apache.jena.sparql.expr.aggregate.Aggregator ;
 import org.apache.jena.sparql.serializer.QuerySerializerFactory ;
-import org.apache.jena.sparql.serializer.Serializer ;
 import org.apache.jena.sparql.serializer.SerializerRegistry ;
 import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.PatternVars ;
@@ -59,7 +52,6 @@ import org.apache.jena.sparql.util.FmtUtils ;
  * @see QueryExecutionFactory
  * @see ResultSet */
 
-@SuppressWarnings("deprecation") // For use of Serializer
 public class Query extends Prologue implements Cloneable, Printable
 {
     static { ARQ.init() ; /* Ensure everything has started properly */ }
@@ -880,12 +872,7 @@ public class Query extends Prologue implements Cloneable, Printable
     {
         // Try to use a serializer factory if available
         QuerySerializerFactory factory = SerializerRegistry.get().getQuerySerializerFactory(outSyntax);
-        if (factory != null) {
-            QueryVisitor serializer = factory.create(outSyntax, this, writer);
-            this.visit(serializer);
-        } else {
-            // Otherwise fall back to old default behaviour
-            Serializer.serialize(this, writer, outSyntax) ;
-        }
+        QueryVisitor serializer = factory.create(outSyntax, this, writer);
+        this.visit(serializer);
     }
 }

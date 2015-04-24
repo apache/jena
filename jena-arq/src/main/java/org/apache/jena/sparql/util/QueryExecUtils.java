@@ -104,6 +104,7 @@ public class QueryExecUtils {
         outputResultSet(results, null, outputFormat) ;
     }
 
+    @SuppressWarnings("deprecation")
     public static void outputResultSet(ResultSet results, Prologue prologue, ResultsFormat outputFormat) {
         // Proper ResultSet formats.
         Lang lang = ResultsFormat.convert(outputFormat) ;

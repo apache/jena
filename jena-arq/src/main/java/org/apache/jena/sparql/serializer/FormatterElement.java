@@ -443,18 +443,14 @@ public class FormatterElement extends FormatterBase
         out.decIndent(INDENT) ;
     }
     
-    @SuppressWarnings("deprecation")
     @Override
     public void visit(ElementSubQuery el)
     {
         out.print("{ ") ;
         out.incIndent(INDENT) ;
-        Query q = el.getQuery() ; 
+        Query q = el.getQuery() ;
+        q.serialize(out);
         // It's SELECT query so no template formatter needed.
-        Serializer.serializeARQ(q, out, 
-                                new FormatterElement(out, context),
-                                new FmtExprSPARQL(out, context),
-                                null) ;
         out.decIndent(INDENT) ;
         out.print("}") ;
     }

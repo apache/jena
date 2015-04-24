@@ -65,50 +65,6 @@ public class ResultSetMgr {
         return parse(uri, lang, null) ;
     }
 
-//    /**
-//     * Read from an {@code Reader} and produce a {@link ResultSet};
-//     * the stream is expect to use syntax {@code lang}.  
-//     * Using InputStreams is better to ensure the character set
-//     * of the input matches that of the syntax.  
-//     * Note that returned
-//     * result set may stream and so the input stream be read while the ResultSet is used.
-//     * See {@link ResultSetFactory#copyResults(ResultSet)}
-//     * for a ResultSet that is detached from the {@code InputStream}.
-//     * 
-//     * @param in
-//     * @param lang
-//     * @return ResultSet
-//     */
-//    @Deprecated
-//    public static ResultSet read(Reader in, Lang lang) {
-//        ResultSetReaderFactory f = ResultSetReaderRegistry.getFactory(lang) ;
-//        if ( f == null )
-//            throw new RiotException("No result set reader for "+lang) ;
-//        ResultSetReader rsr = f.create(lang) ;
-//        return rsr.read(in, ARQ.getContext()) ;
-//    }
-//    
-//    
-//    /**
-//     * Read from an {@code StringReader} and produce a {@link ResultSet};
-//     * the stream is expect to use syntax {@code lang}.  
-//     * Note that returned
-//     * result set may stream and so the input stream be read while the ResultSet is used.
-//     * See {@link ResultSetFactory#copyResults(ResultSet)}
-//     * for a ResultSet that is detached from the {@code InputStream}.
-//     * 
-//     * @param in
-//     * @param lang
-//     * @return ResultSet
-//     */
-//    public static ResultSet read(StringReader in, Lang lang) {
-//        ResultSetReaderFactory f = ResultSetReaderRegistry.getFactory(lang) ;
-//        if ( f == null )
-//            throw new RiotException("No result set reader for "+lang) ;
-//        ResultSetReader rsr = f.create(lang) ;
-//        return rsr.read(in, ARQ.getContext()) ;
-//    }
-    
     /** Read ResultSet.
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param hintLang  Hint for the syntax

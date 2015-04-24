@@ -320,20 +320,6 @@ public class ResultSetFactory {
     }
 
     /**
-     * Turns an RDF model, with properties and classses from the result set
-     * vocabulary, into a SPARQL result set. The result set formed is a copy in
-     * memory.
-     * 
-     * @param model
-     * @return ResultSet
-     * @deprecated Use {@link RDFInput#fromRDF(Model)} directly instead
-     */
-    @Deprecated
-    public static ResultSet fromRDF(Model model) {
-        return RDFInput.fromRDF(model) ;
-    }
-
-    /**
      * Read from an input stream which is the format of the SPARQL result set
      * format in JSON.
      * 

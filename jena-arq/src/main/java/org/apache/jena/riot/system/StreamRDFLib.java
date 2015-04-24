@@ -20,7 +20,6 @@ package org.apache.jena.riot.system;
 
 import java.io.OutputStream ;
 import java.io.Writer ;
-import java.util.Iterator ;
 
 import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.io.IO ;
@@ -70,18 +69,6 @@ public class StreamRDFLib
     public static StreamRDF graph(Graph graph)               { return new ParserOutputGraph(graph) ; }
     
     public static StreamRDF dataset(DatasetGraph dataset)    { return new ParserOutputDataset(dataset) ; }
-    
-    /** Set triples to a StreamRDF - does not call .start/.finish 
-     * @deprecated Use {@link StreamOps#sendTriplesToStream} instead*/ 
-    @Deprecated
-    public static void triplesToStream(StreamRDF dest, Iterator<Triple> iter)
-    { StreamOps.sendTriplesToStream(iter, dest) ; }
-
-    /** Set quads to a StreamRDF - does not call .start/.finish 
-     * @deprecated Use {@link StreamOps#sendQuadsToStream} instead*/
-    @Deprecated
-    public static void quadsToStream(StreamRDF dest, Iterator<Quad> iter)
-    { StreamOps.sendQuadsToStream(iter, dest) ; }
     
     /** 
      * Output to a sink; prefix and base handled only within the parser.
