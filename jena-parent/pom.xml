@@ -63,7 +63,7 @@
     <ver.solr>4.6.1</ver.solr>
     <ver.spatial4j>0.4</ver.spatial4j>
 
-    <jdk.version>1.7</jdk.version>
+    <jdk.version>1.8</jdk.version>
     <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -341,7 +341,7 @@
             <configuration combine.self="override">
               <rules>
                 <requireJavaVersion>
-                  <version>1.7.0</version>
+                  <version>1.8.0</version>
                 </requireJavaVersion>
                 <requirePluginVersions>
                   <message>Best practice is to always define plugin versions!</message>

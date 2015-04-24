@@ -66,9 +66,11 @@
         <module>jena-parent</module>
 	<!-- <module>jena-shared-guava</module> -->
 	<!-- <module>jena-iri</module> -->
-        <module>jena-core</module>
+	<module>jena-core</module>
         <module>jena-arq</module>
-        <module>jena-tdb</module>
+        <module>jena-tdb</module> 
+	<module>apache-jena-libs</module>
+
         <!--<module>jena-fuseki1</module>-->
 	<module>jena-fuseki2</module>
 
@@ -106,6 +108,8 @@
         <module>jena-arq</module>
         <module>jena-tdb</module>
 
+        <module>apache-jena-libs</module>
+
         <module>jena-text</module>
         <module>jena-spatial</module>
         <module>jena-csv</module>
@@ -123,12 +127,11 @@
 	     manual update
         <module>jena-maven-tools</module>
 	-->
-        
         <module>jena-elephas</module>
 
-        <module>apache-jena-libs</module>
         <module>apache-jena</module>
         <module>apache-jena-osgi</module>
+
         <module>jena-extras</module>
       </modules>
     </profile>
