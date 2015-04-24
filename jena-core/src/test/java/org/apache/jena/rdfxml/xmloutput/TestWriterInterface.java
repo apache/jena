@@ -26,7 +26,6 @@ import org.apache.jena.rdf.model.impl.NTripleWriter ;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
 import org.apache.jena.rdfxml.xmloutput.impl.Abbreviated ;
 import org.apache.jena.rdfxml.xmloutput.impl.Basic ;
-import org.apache.jena.shared.NoWriterForLangException ;
 
 public class TestWriterInterface extends ModelTestBase {
     private String lang;
@@ -69,25 +68,6 @@ public class TestWriterInterface extends ModelTestBase {
         assertTrue(
             "N-TRIPLE writer should be NTripleWriter.",
             m1.getWriter("N-TRIPLE") instanceof NTripleWriter);
-    }
-
-    public void testNoWriter() {
-        Model m1 = createMemModel();
-        try {
-            m1.setWriterClassName("foobar", "");
-            m1.getWriter("foobar");
-            fail("Missing Writer undetected.");
-        } catch (NoWriterForLangException jx) {
-            // that's what we expected
-        }
-    }
-
-    public void testAnotherWriter() {
-        Model m1 = createMemModel();
-        m1.setWriterClassName("foobar", org.apache.jena.rdfxml.xmloutput.impl.Basic.class.getName());
-        assertTrue(
-            "Failed to access set writer",
-            (m1.getWriter("foobar") instanceof Basic));
     }
 
     public void testWriting() {

@@ -27,7 +27,6 @@ import org.apache.jena.rdf.model.RDFReader ;
 import org.apache.jena.rdf.model.StmtIterator ;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
 import org.apache.jena.shared.JenaException ;
-import org.apache.jena.shared.NoReaderForLangException ;
 import org.junit.Assert ;
 import org.slf4j.LoggerFactory ;
 
@@ -49,27 +48,6 @@ public class TestReaders extends AbstractModelTestBase
         Assert.assertNotNull(reader) ;
     }
 	
-    public void testMissingReader() {
-        model.setReaderClassName("foobar", "") ;
-        try {
-            model.getReader("foobar") ;
-            Assert.fail("Should have thrown NoReaderForLangException") ;
-        }
-        catch (final NoReaderForLangException expected) {
-            // that's what we expect
-        }
-
-        try {
-            model.setReaderClassName("foobar", org.apache.jena.rdfxml.xmlinput.JenaReader.class.getName()) ;
-            final RDFReader reader = model.getReader("foobar") ;
-            Assert.assertTrue("Wrong reader type", reader instanceof org.apache.jena.rdfxml.xmlinput.JenaReader) ;
-        }
-        finally {
-            // unset the reader
-            model.setReaderClassName("foobar", "") ;
-        }
-	}
-
     public void testReadLocalNTriple() {
         model.read(getInputStream("TestReaders.nt"), "", "N-TRIPLE") ;
         Assert.assertEquals("Wrong size model", 5, model.size()) ;
