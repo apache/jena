@@ -1,7 +1,7 @@
 The following changes are needed for RDF 1.1 where xsd:strings and simple
 literals are the same term.
 
-In both case, the results are alterted.  See the two results files
+In both case, the results are altered.  See the two results files
 ("RDF_11", "RDF_10"); copy the right one to the base results file.
 the appropriate one to the on used by the 
 
@@ -9,9 +9,6 @@ the appropriate one to the on used by the
 
 2/ ARQ/Sort/sort-2.rq => sort-result-2.ttl
 3/ ARQ/Sort/sort-3.rq => sort-result-3.ttl
-
-query and results changed (data must be changed for stable results).
-
 
 4/ "Strings: Distinct"
 ARQ/Distinct/
@@ -22,3 +19,11 @@ ARQ/Distinct/
 ARQ/Distinct/
   distinct-1.rq + <data-num.ttl> , <data-str.ttl> , <data-node.ttl> 
   => <distinct-all.srx>
+
+------------------
+
+   cp BasicPatterns/test-B-01_RDF_11.ttl BasicPatterns/test-B-01.ttl
+   cp Sort/sort-result-2_RDF_11.ttl Sort/sort-result-2.ttl
+   cp Sort/sort-result-3_RDF_11.ttl Sort/sort-result-3.ttl
+   cp Distinct/distinct-all_RDF_11.srx Distinct/distinct-all.srx
+   cp Distinct/distinct-str_RDF_11.srx Distinct/distinct-str.srx

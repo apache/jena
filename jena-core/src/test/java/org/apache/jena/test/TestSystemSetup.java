@@ -28,10 +28,11 @@ public class TestSystemSetup extends TestCase {
         return new TestSuite(TestSystemSetup.class, "System setup") ;
     }
     
-    public void testRDF10() {
+    public void testRDF11() {
         // This should be "false" in Jena2. 
-        if ( JenaRuntime.isRDF11 )
-            fail("RDF 1.1 mode enabled in Jena2 test run") ;
+        // This should be "true" in Jena3. 
+        if ( ! JenaRuntime.isRDF11 )
+            fail("RDF 1.0 mode enabled in Jena3 test run") ;
     }
 
 }
