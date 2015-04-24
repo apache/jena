@@ -57,6 +57,7 @@ public class SDB
     public static final Symbol unionDefaultGraph        = SDBConstants.allocSymbol("unionDefaultGraph") ;
 
     /** Control whether GraphSDB streams results to find - must ensure all Jena iterators are closed if this is set true */
+
     public static final Symbol streamGraphAPI           = SDBConstants.allocSymbol("streamGraphAPI") ;
     
     /** Control/attempt  JDBC streaming - mosty databases allow only one outstanding streaming request */  
@@ -150,11 +151,11 @@ public class SDB
 
     // ----------------------------------
     
-    static private String metadataLocation = "com/hp/hpl/jena/sdb/sdb-properties.xml" ;
+    static private String metadataLocation = "org/apacge/jena/sdb/sdb-properties.xml" ;
     static private Metadata metadata = new Metadata(metadataLocation) ;
     
     /** The root package name for SDB */   
-    public static final String PATH = "com.hp.hpl.jena.sdb";
+    public static final String PATH = "org.apache.jena.sdb";
    
     /** The product name */   
     public static final String NAME = "SDB";

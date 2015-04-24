@@ -18,7 +18,7 @@
 
 package org.apache.jena.sdb.store;
 
-//import com.hp.hpl.jena.rdf.model.Property;
+//import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.util.Vocab ;

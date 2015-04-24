@@ -99,7 +99,7 @@
   <build>
     <resources>
       <resource>
-        <targetPath>com/hp/hpl/jena/sdb/</targetPath>
+        <targetPath>org/apache/jena/sdb/</targetPath>
         <filtering>true</filtering>
         <directory>src/main/resources</directory>
       </resource>
@@ -119,7 +119,7 @@
             <!-- Requires HSQL and Apache Derbey to be set in 
                  store-list.ttl and store-list-simple.ttl
             -->
-            <include>com/hp/hpl/jena/sdb/test/SDBTestAll.java</include>
+            <include>org/apache/jena/sdb/test/SDBTestAll.java</include>
           </includes>
         </configuration>
       </plugin>
