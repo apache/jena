@@ -118,7 +118,7 @@ public abstract class GraphDataBag extends GraphMemBase
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Triple m)
     {
-        Iterator<Triple> iter = Iter.filter(db.iterator(), (t) -> m.matches(t)) ;
+        Iterator<Triple> iter = Iter.filter(db.iterator(), m::matches) ;
         return WrappedIterator.create(iter) ;
     }
 }
