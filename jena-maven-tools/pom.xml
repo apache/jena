@@ -77,7 +77,7 @@
     <url>http://www.apache.org</url>
   </organization>
   <properties>
-      <jenaCoreVersion>2.13.1-SNAPSHOT</jenaCoreVersion>
+      <jenaCoreVersion>3.0.0-SNAPSHOT</jenaCoreVersion>
       <version>${project.version}</version>
       <mavenVersion>3.0.4</mavenVersion>
   </properties>
