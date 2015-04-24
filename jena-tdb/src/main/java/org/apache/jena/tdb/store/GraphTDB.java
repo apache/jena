@@ -31,7 +31,6 @@ import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.GraphView ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.tdb.TDBException ;
-import org.apache.jena.tdb.graph.BulkUpdateHandlerTDB ;
 import org.apache.jena.tdb.graph.TransactionHandlerTDB ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
@@ -42,7 +41,6 @@ import org.apache.jena.util.iterator.WrappedIterator ;
  * named graphs)
  */
 public class GraphTDB extends GraphView implements Closeable, Sync {
-    private final BulkUpdateHandler  bulkUpdateHandler  = new BulkUpdateHandlerTDB(this) ;
     private final TransactionHandler transactionHandler = new TransactionHandlerTDB(this) ;
 
     // Switch this to DatasetGraphTransaction
@@ -274,12 +272,6 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
             } ;
 
         return super.getCapabilities() ;
-    }
-
-    @Deprecated
-    @Override
-    public BulkUpdateHandler getBulkUpdateHandler() {
-        return bulkUpdateHandler ;
     }
 
     @Override

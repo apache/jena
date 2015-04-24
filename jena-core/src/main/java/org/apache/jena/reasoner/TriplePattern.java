@@ -65,20 +65,6 @@ public class TriplePattern implements ClauseEntry {
     }
     
     /**
-     * Constructor - builds a pattern from a standard triple match.
-     * Node that any filter part of the triple match will not be
-     * represented within the pattern and will need to be checked
-     * for separately.
-     * @deprecated Use {@link #TriplePattern(Triple)}
-     */
-    @Deprecated
-    public TriplePattern(TripleMatch match) {
-        this.subject   = normalize(match.getMatchSubject());
-        this.predicate = normalize(match.getMatchPredicate());
-        this.object    = normalize(match.getMatchObject());
-    }
-    
-    /**
      * Constructor - builds a degenerate pattern from a simple triple.
      * This would be much easier if we merged Triples and TriplePatterns!
      */

@@ -18,11 +18,9 @@
 
 package org.apache.jena.sparql.graph;
 
-import org.apache.jena.graph.BulkUpdateHandler ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.TransactionHandler ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.SimpleBulkUpdateHandler ;
 import org.apache.jena.graph.impl.SimpleTransactionHandler ;
 import org.apache.jena.graph.impl.WrappedGraph ;
 import org.apache.jena.shared.AddDeniedException ;
@@ -53,13 +51,5 @@ public class GraphReadOnly extends WrappedGraph
     {
         // AKA "no".  
         return new SimpleTransactionHandler() ;
-    }
-
-    @Deprecated
-    @Override
-    public BulkUpdateHandler getBulkUpdateHandler()
-    {
-        //This turns all operations into calls to add/remove.
-        return new SimpleBulkUpdateHandler(this) ;
     }
 }

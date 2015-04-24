@@ -114,9 +114,7 @@ public interface GraphListener
          <code>value</code> is usually a {@link GraphEvents}.
          Special attention is drawn to {@link GraphEvents#removeAll}
          and events whose {@link GraphEvents#getTitle()} is <code>"remove"</code>
-         (see {@link GraphEvents#remove(Node, Node, Node)}. These correspond
-         to the bulk operations {@link BulkUpdateHandler#removeAll()},
-         and {@link BulkUpdateHandler#remove(Node, Node, Node)}, respectively.
+         (see {@link GraphEvents#remove(Node, Node, Node)}.
          Unlike other notifications, the listener cannot tell which triples
          have been modified, since they have already been deleted by the time
          this event is sent, and the event does not include a record of them.

@@ -25,7 +25,6 @@ import java.util.List ;
 
 import junit.framework.TestSuite ;
 import org.apache.jena.graph.* ;
-import org.apache.jena.graph.impl.SimpleBulkUpdateHandler ;
 import org.apache.jena.mem.GraphMem ;
 
 /**
@@ -103,19 +102,14 @@ public class TestGraphListener extends MetaTestGraph {
 			verify();
 		}
 
-
 		public void notifyRemoveAll(Graph source, Triple t) {
-			SimpleBulkUpdateHandler.removeAll(copy, t.getSubject(), t.getPredicate(), t.getObject());
+			GraphUtil.remove(copy, t.getSubject(), t.getPredicate(), t.getObject());
 			verify();
-			
 		}
-
-
 		@Override
         public void notifyAddList(Graph g, List<Triple> triples) {
 			notifyAddIterator(g, triples.iterator());
 		}
-
 
 		@Override
         public void notifyDeleteArray(Graph g, Triple[] triples) {

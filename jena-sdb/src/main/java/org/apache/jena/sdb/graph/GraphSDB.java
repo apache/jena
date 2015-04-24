@@ -250,14 +250,6 @@ public class GraphSDB extends GraphBase implements Graph
     
     public StoreLoader getBulkLoader() { return store.getLoader() ; }
     
-    @Deprecated
-    @Override
-    public BulkUpdateHandler getBulkUpdateHandler()
-    {
-    	if (bulkHandler == null) bulkHandler = new UpdateHandlerSDB(this);
-    	return bulkHandler;
-    }
-    
     @Override
     public GraphEventManager getEventManager()
     {

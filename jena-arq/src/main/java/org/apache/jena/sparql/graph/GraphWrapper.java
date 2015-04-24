@@ -50,13 +50,6 @@ public class GraphWrapper implements Graph
         return graph.getTransactionHandler() ;
     }
 
-    @Deprecated
-    @Override
-    public BulkUpdateHandler getBulkUpdateHandler()
-    {
-        return graph.getBulkUpdateHandler() ;
-    }
-
     @Override
     public Capabilities getCapabilities()
     {
@@ -85,14 +78,6 @@ public class GraphWrapper implements Graph
     public void delete(Triple t) throws DeleteDeniedException
     {
         graph.delete(t) ;
-    }
-
-    /** @deprecated Use {@link #find(Triple)} */
-    @Deprecated
-    @Override
-    public ExtendedIterator<Triple> find(TripleMatch triple)
-    {
-        return graph.find(triple) ;
     }
 
     @Override

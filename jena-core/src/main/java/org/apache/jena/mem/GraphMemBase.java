@@ -18,7 +18,6 @@
 
 package org.apache.jena.mem;
 
-import org.apache.jena.graph.BulkUpdateHandler ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.graph.impl.TripleStore ;
@@ -86,14 +85,6 @@ public abstract class GraphMemBase extends GraphBase
             }
         }
     
-    @Override
-    @Deprecated
-    public BulkUpdateHandler getBulkUpdateHandler()
-        {
-        if (bulkHandler == null) bulkHandler = new GraphMemBulkUpdateHandler( this );
-        return bulkHandler;
-        }
-
     /**
         Answer true iff this triple can be compared for sameValueAs by .equals(),
         ie, it is a concrete triple with a non-literal object.

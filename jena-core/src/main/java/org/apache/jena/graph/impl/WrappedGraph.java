@@ -28,7 +28,6 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
 public class WrappedGraph implements GraphWithPerform
 {
     protected Graph base;
-    protected BulkUpdateHandler bud;
     protected GraphEventManager gem;
     
     public WrappedGraph( Graph base )
@@ -41,14 +40,6 @@ public class WrappedGraph implements GraphWithPerform
     @Override
     public TransactionHandler getTransactionHandler()
     { return base.getTransactionHandler(); }
-
-    @Override
-    @Deprecated
-    public BulkUpdateHandler getBulkUpdateHandler()
-    {
-        if (bud == null)  bud = new WrappedBulkUpdateHandler( this, base.getBulkUpdateHandler() );
-        return bud;
-    }
 
     @Override
     public GraphStatisticsHandler getStatisticsHandler()
@@ -96,12 +87,6 @@ public class WrappedGraph implements GraphWithPerform
         base.remove(s,p,o) ;
         getEventManager().notifyEvent(this, GraphEvents.remove(s, p, o) ) ;
     }
-
-    /** @depracted Use {@link #find(Triple)} */
-    @Override
-    @Deprecated
-    public ExtendedIterator<Triple> find( TripleMatch m )
-    { return SimpleEventManager.notifyingRemove( this, base.find( m ) ); }
 
     @Override
     public ExtendedIterator<Triple> find( Triple m )

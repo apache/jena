@@ -24,7 +24,6 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestPrefixMappingTDB.class
-    , TestBulkUpdateTDB.class
     , TestDatasetGraphTDB.class
     , TestGraphsTDB1.class
     , TestGraphsTDB2.class

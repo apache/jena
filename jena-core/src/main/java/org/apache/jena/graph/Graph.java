@@ -54,13 +54,6 @@ public interface Graph
     /** returns this Graph's transaction handler */
     TransactionHandler getTransactionHandler();
     
-    /** returns this Graph's bulk-update handler
-     * @deprecated Bulk update operations are going to be removed.  
-     * @see GraphUtil for convenience helpers.
-     */
-    @Deprecated
-    BulkUpdateHandler getBulkUpdateHandler();
-    
     /** returns this Graph's capabilities */
     Capabilities getCapabilities();
     
@@ -96,16 +89,6 @@ public interface Graph
     */   
 	void delete(Triple t) throws DeleteDeniedException;
       
-    /** 
-        Returns an iterator over all the Triples that match the triple pattern.
-	   
-        @param m a Triple[Match] encoding the pattern to look for
-        @return an iterator of all triples in this graph that match m
-        @deprecated Use {@link #find(Triple)}
-    */
-	@Deprecated 
-	ExtendedIterator<Triple> find(TripleMatch m);
-	
 	/** 
         Returns an iterator over all the Triples that match the triple pattern.
    

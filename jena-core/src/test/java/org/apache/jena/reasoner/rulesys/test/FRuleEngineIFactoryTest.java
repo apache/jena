@@ -133,10 +133,6 @@ public class FRuleEngineIFactoryTest extends TestCase {
         @Override
         public TransactionHandler getTransactionHandler() { return null; }
 
-        @Deprecated
-        @Override
-        public BulkUpdateHandler getBulkUpdateHandler() { return null; }
-
         @Override
         public Capabilities getCapabilities() { return null; }
 
@@ -154,10 +150,6 @@ public class FRuleEngineIFactoryTest extends TestCase {
 
         @Override
         public void delete(Triple t) throws DeleteDeniedException {}
-
-        @SuppressWarnings("deprecation")
-        @Override
-        public ExtendedIterator<Triple> find(TripleMatch m) { return null; }
 
         @Override
         public ExtendedIterator<Triple> find(Triple m) { return null; }

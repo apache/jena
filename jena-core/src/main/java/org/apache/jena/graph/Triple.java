@@ -26,8 +26,7 @@ import org.apache.jena.util.iterator.* ;
     object field (all nodes) and express the notion that the relationship named
     by the predicate holds between the subject and the object.
  */
-@SuppressWarnings("deprecation")
-public class Triple implements TripleMatch 
+public class Triple 
     {    
 	private final Node subj, pred, obj;
  
@@ -80,7 +79,7 @@ public class Triple implements TripleMatch
 	public final Node getObject() 
         { return obj; }
 
-    @Override
+	/** Return subject or null, not Node.ANY */ 
     public Node getMatchSubject()
         { return anyToNull( subj ); }
     
@@ -95,12 +94,12 @@ public class Triple implements TripleMatch
     public static final Map1<Triple, Node> getObject = new Map1<Triple, Node>() 
         { @Override
         public Node map1( Triple t ) { return t.getObject(); } };
-        
-    @Override
+
+    /** Return predicate or null, not Node.ANY */ 
     public Node getMatchPredicate()
         { return anyToNull( pred ); }
         
-    @Override
+    /** Return object or null, not Node.ANY */ 
     public Node getMatchObject()
         { return anyToNull( obj ); }
         
@@ -109,12 +108,6 @@ public class Triple implements TripleMatch
 
     private static Node nullToAny( Node n )
         { return n == null ? Node.ANY : n; }        
-        
-    /** @deprecated Not needed. */
-    @Override
-    @Deprecated
-    public Triple asTriple()
-        { return this; }
         
     public boolean isConcrete()
         { return subj.isConcrete() && pred.isConcrete() && obj.isConcrete(); }

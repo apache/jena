@@ -27,11 +27,9 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.graph.BulkUpdateHandler ;
 import org.apache.jena.graph.Capabilities ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.TransactionHandler ;
-import org.apache.jena.graph.impl.WrappedBulkUpdateHandler ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.util.iterator.ClosableIterator ;
@@ -237,7 +235,6 @@ public abstract class Polyadic extends CompositionBase
     public void setBaseGraph( Graph graph ) {
         if (m_subGraphs.contains( graph )) {
             m_baseGraph = graph;
-            bulkHandler = null;
         }
         else {
             throw new IllegalArgumentException( "The updateable graph must be one of the graphs from the composition" );
@@ -261,17 +258,6 @@ public abstract class Polyadic extends CompositionBase
 
         return sg;
     }
-
-    @Override
-    @Deprecated
-    public BulkUpdateHandler getBulkUpdateHandler() {
-        if (bulkHandler == null)
-            bulkHandler = new WrappedBulkUpdateHandler( this, getRequiredBaseGraph().getBulkUpdateHandler() );
-        return bulkHandler;
-    }
-
-    // the following methods all delegate handling capabilities to the base graph
-    // TODO: this needs to be integrated with WrappedGraph, but we don't have time to do so before Jena 2.0 release
 
     @Override
     public TransactionHandler getTransactionHandler() {

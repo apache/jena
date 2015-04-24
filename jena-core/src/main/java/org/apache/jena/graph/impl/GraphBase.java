@@ -139,27 +139,6 @@ public abstract class GraphBase implements GraphWithPerform
         { return new SimpleTransactionHandler(); }
         
     /**
-         Answer a BulkUpdateHandler bound to this graph. The default is a
-         SimpleBulkUpdateHandler, which does bulk update by repeated simple
-         (add/delete) updates; the same handler is returned on each call. Subclasses
-         may override if they have specialised implementations.
-         @deprecated Bulk update operations are going to be removed.  
-         @see GraphUtil for convenience helpers.
-    */
-    @Override
-    @Deprecated
-    public BulkUpdateHandler getBulkUpdateHandler()
-        { 
-        if (bulkHandler == null) bulkHandler = new SimpleBulkUpdateHandler( this ); 
-        return bulkHandler;
-        }
-
-    /**
-         The allocated BulkUpdateHandler, or null if no handler has been allocated yet.
-    */
-    protected BulkUpdateHandler bulkHandler;
-    
-    /**
          Answer the capabilities of this graph; the default is an AllCapabilities object
          (the same one each time, not that it matters - Capabilities should be 
          immutable).
@@ -255,42 +234,11 @@ public abstract class GraphBase implements GraphWithPerform
 	    getEventManager().notifyEvent(this, GraphEvents.remove(s, p, o) ) ;
 	}
 	
-	/**
-	     Answer an (extended) iterator over all the triples in this Graph matching
-         <code>m</code>. Subclasses cannot over-ride this, because it implements
-         the appending of reification quadlets; instead they must implement
-         graphBaseFind(TripleMatch).
-         @deprecated Use {@link #find(Triple)} 
-	*/
-	@Deprecated
-    @Override
-    public final ExtendedIterator<Triple> find(TripleMatch m)
-    {
-        checkOpen() ;
-        return graphBaseFind(m) ;
-    }
-
     @Override
     public final ExtendedIterator<Triple> find(Triple m)
     {
         checkOpen() ;
         return graphBaseFind(m) ;
-    }
-
-    /**
-        Answer an iterator over all the triples held in this graph's non-reified triple store
-        that match <code>m</code>. Subclasses <i>must</i> override; it is the core
-        implementation for <code>find(TripleMatch)</code>.
-        @deprecated Use/implement {@link #graphBaseFind(Triple)}
-    */
-    @Deprecated
-    protected ExtendedIterator<Triple> graphBaseFind( TripleMatch m ) {
-        try {
-            return graphBaseFind( (Triple)m ) ;
-        } catch (ClassCastException ex) {
-            Triple t = Triple.createMatch(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
-            return graphBaseFind( t ) ;
-        }
     }
 
     protected abstract ExtendedIterator<Triple> graphBaseFind( Triple triplePattern );

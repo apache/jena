@@ -20,7 +20,6 @@ package org.apache.jena.sparql.graph;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.SimpleBulkUpdateHandler ;
 import org.apache.jena.graph.impl.WrappedGraph ;
 
 public class UnmodifiableGraph extends WrappedGraph
@@ -28,7 +27,6 @@ public class UnmodifiableGraph extends WrappedGraph
     public UnmodifiableGraph(Graph base)
     {
         super(base) ;
-        bud = new SimpleBulkUpdateHandler(this) ;
     }
     
     /** Return base graph that this class protects.  Caveat emptor. */
