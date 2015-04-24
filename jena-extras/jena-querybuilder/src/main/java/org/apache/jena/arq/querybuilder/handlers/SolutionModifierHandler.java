@@ -35,7 +35,7 @@ import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 
 /**
- * The Solution Modifier handerl.
+ * The Solution Modifier handler.
  *
  */
 public class SolutionModifierHandler implements Handler {
@@ -44,7 +44,7 @@ public class SolutionModifierHandler implements Handler {
 	 */
 	public enum Order {
 		ASCENDING, DESCENDING
-	};
+	}
 
 	// the query to modify
 	private final Query query;

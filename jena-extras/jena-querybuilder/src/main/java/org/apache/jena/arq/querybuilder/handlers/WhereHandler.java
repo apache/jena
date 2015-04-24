@@ -218,7 +218,8 @@ public class WhereHandler implements Handler {
 	 * @param subQuery The sub query to convert
 	 * @return THe converted element.
 	 */
-	private ElementSubQuery makeSubQuery(SelectBuilder subQuery) {
+	@SuppressWarnings("cast")
+    private ElementSubQuery makeSubQuery(SelectBuilder subQuery) {
 		Query q = new Query();
 		PrologHandler ph = new PrologHandler(query);
 		ph.addAll(subQuery.getPrologHandler());
