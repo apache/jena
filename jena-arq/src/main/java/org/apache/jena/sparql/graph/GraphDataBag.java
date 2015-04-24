@@ -18,14 +18,17 @@
 
 package org.apache.jena.sparql.graph;
 
+import java.util.Iterator ;
+
 import org.apache.jena.atlas.data.DataBag ;
 import org.apache.jena.atlas.data.ThresholdPolicy ;
+import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Capabilities ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.TripleMatchIterator ;
 import org.apache.jena.graph.impl.TripleStore ;
 import org.apache.jena.mem.GraphMemBase ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.util.iterator.WrappedIterator ;
 
 /**
  * A Graph based on top of a DataBag.  This means it has some limitations:
@@ -115,8 +118,8 @@ public abstract class GraphDataBag extends GraphMemBase
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Triple m)
     {
-        return new TripleMatchIterator(m, db.iterator()) ;
+        Iterator<Triple> iter = Iter.filter(db.iterator(), (t) -> m.matches(t)) ;
+        return WrappedIterator.create(iter) ;
     }
-
 }
 

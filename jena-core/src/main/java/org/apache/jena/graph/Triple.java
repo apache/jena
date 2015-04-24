@@ -126,6 +126,7 @@ public class Triple
     public boolean sameAs( Node s, Node p, Node o )
         { return subj.equals( s ) && pred.equals( p ) && obj.equals( o ); }
         
+    /** Does this triple, used as a pattern match, the other triple (usually a ground triple) */ 
     public boolean matches( Triple other )
         { return other.matchedBy( subj, pred, obj  ); }
         
