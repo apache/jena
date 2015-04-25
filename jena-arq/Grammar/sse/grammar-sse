@@ -89,8 +89,7 @@ function grammar
 
      echo "---- Fixing Java warnings in ${CLASS} ..."
     F="$DIR/${CLASS}.java"
-    sed -e 's/public class /\n@SuppressWarnings("all")\npublic class /' < $F > F 
-
+    sed -e 's/public class /\n@SuppressWarnings("all")\npublic class /' < $F > F
     mv F $F
 
     echo "---- Done"
