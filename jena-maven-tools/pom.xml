@@ -30,7 +30,7 @@ limitations under the License.
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>13-SNAPSHOT</version>
+    <version>14-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 
