@@ -19,7 +19,7 @@
 
 GRAMMAR="${GRAMMAR:-"json.jj"}"
 ROOT="../.."
-PKG=org/openjena/atlas/json/io/parserjavacc/javacc
+PKG=org/apache/jena/atlas/json/io/parserjavacc/javacc
 
 # --------------------------------------------------------
 
@@ -84,10 +84,11 @@ function grammar
 	-e 's/public String getMessage/@Override public String getMessage/' < $F > F
     mv F $F
 
-##     echo "---- Fixing Java warnings in ${CLASS} ..."
-##     F="$DIR/${CLASS}.java"
-##     cat $F > F
-##     mv F $F
+    echo "---- Fixing Java warnings in ${CLASS} ..."
+    F="$DIR/${CLASS}.java"
+    sed -e 's/public class /\n@SuppressWarnings("all")\npublic class /' < $F > F
+    mv F $F
+
     echo "---- Done"
 }
 
