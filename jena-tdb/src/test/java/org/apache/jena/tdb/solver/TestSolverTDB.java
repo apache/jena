@@ -23,7 +23,6 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
@@ -72,8 +71,7 @@ public class TestSolverTDB extends BaseTest
     static private void addAll(Graph srcGraph, Graph dstGraph)
     {
         Iterator<Triple> triples = srcGraph.find(Node.ANY, Node.ANY, Node.ANY) ;
-        for ( Triple t : Iter.iter(triples) )
-            dstGraph.add(t) ;
+        triples.forEachRemaining(dstGraph::add) ;
     }
 
 

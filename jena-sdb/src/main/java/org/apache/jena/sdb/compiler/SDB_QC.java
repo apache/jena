@@ -102,7 +102,7 @@ public class SDB_QC
         // If part query, need all variables. 
         
         // Project variables
-        List<Var> vars = toList(map(query.getResultVars(), StringToVar)) ;
+        List<Var> vars = toList(map(query.getResultVars().iterator(), StringToVar)) ;
         
         if ( vars.size() == 0 )
         {
@@ -114,7 +114,7 @@ public class SDB_QC
             q2.setQueryPattern(query.getQueryPattern()) ;
             q2.setQuerySelectType() ;
             q2.setQueryResultStar(true) ;
-            vars = toList(map(q2.getResultVars(), StringToVar)) ;
+            vars = toList(map(q2.getResultVars().iterator(), StringToVar)) ;
         }
         
         

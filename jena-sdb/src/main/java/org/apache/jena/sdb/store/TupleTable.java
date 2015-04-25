@@ -22,7 +22,6 @@ import java.sql.SQLException ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.query.ResultSetFactory ;
 import org.apache.jena.query.ResultSetFormatter ;
 import org.apache.jena.sdb.Store ;
@@ -58,12 +57,11 @@ public class TupleTable
         this.desc = desc ;
         sqlTable = new SqlTable(desc.getTableName(), desc.getTableName()) ;
         vars = new ArrayList<Var>() ;
-        for (String colName : Iter.iter(desc.colNames()) )
-        {
+        desc.colNames().forEachRemaining(colName -> {
             Var var = Var.alloc(colName) ;
             vars.add(var) ;
             sqlTable.setIdColumnForVar(var, new SqlColumn(sqlTable, colName)) ;
-        }
+        }) ;
     }
     
     private static TableDesc getDesc(Store store, String tableName)

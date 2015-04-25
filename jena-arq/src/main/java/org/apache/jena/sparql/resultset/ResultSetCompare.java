@@ -281,14 +281,14 @@ public class ResultSetCompare
         return true ;
     }
     
-    // Is bind1 contained in bind22?  For every (var,value) in bind1, is it in bind2?
+    // Is bind1 contained in bind2?  For every (var,value) in bind1, is it in bind2?
     // Maybe more in bind2.
     private static boolean containedIn(Binding bind1, Binding bind2, EqualityTest test) {
         // There are about 100 ways to do this! 
         Iterator<Var> iter1 =  bind1.vars() ;
         
-        for ( Var v : Iter.iter(iter1) )
-        {
+        while(iter1.hasNext()) {
+            Var v = iter1.next() ;
             Node n1 = bind1.get(v) ;
             Node n2 = bind2.get(v) ;
             if ( n2 == null )

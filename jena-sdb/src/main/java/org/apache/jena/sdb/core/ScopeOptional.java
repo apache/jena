@@ -57,7 +57,7 @@ public class ScopeOptional implements Scope
     public Set<ScopeEntry> findScopes()
     {
         Set<ScopeEntry> x = scope.findScopes() ;
-        Iter.apply(x, ScopeEntry.SetOpt) ;
+        Iter.apply(x.iterator(), ScopeEntry.SetOpt) ;
         return x ;
     }
     

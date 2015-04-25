@@ -37,20 +37,20 @@ public class StreamsPrint
     public static <T extends Printable> String printString(Iterable<? extends T> struct, String sep)
     {
         IndentedLineBuffer b = new IndentedLineBuffer() ;
-        apply(struct, new ActionPrint<T>(b, sep)) ;
+        apply(struct.iterator(), new ActionPrint<T>(b, sep)) ;
         return b.asString() ; 
     }
     
     public static <T extends Printable> void print(IndentedWriter out, Iterable<? extends T> struct)
     {
-        apply(struct, new ActionPrint<T>(out)) ;
+        apply(struct.iterator(), new ActionPrint<T>(out)) ;
     }
 
     public static <T extends Printable> void print(IndentedWriter out, 
                                                    Iterable<? extends T> struct,
                                                    String sep)
     {
-        apply(struct, new ActionPrint<T>(out, sep)) ;
+        apply(struct.iterator(), new ActionPrint<T>(out, sep)) ;
     }
 
 }

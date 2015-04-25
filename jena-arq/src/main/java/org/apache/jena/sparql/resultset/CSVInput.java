@@ -87,7 +87,7 @@ public class CSVInput
                 count++ ;
                 return binding ;
             }} ;
-        Iterator<Binding> bindings = Iter.map(parser, transform) ;
+        Iterator<Binding> bindings = Iter.map(parser.iterator(), transform) ;
         
         //Generate an instance of ResultSetStream using TSVInputIterator
         //This will parse actual result rows as needed thus minimising memory usage

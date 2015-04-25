@@ -112,8 +112,8 @@ public class TransformSDB extends TransformCopy
         Set<ScopeEntry> scopes = sqlLeft.getIdScope().findScopes() ;
         
         // Find optional-on-left
-        Set<ScopeEntry> scopes2 = toSet(filter(scopes, ScopeEntry.OptionalFilter)) ;
-        Set<Var> leftOptVars = toSet(map(scopes2, ScopeEntry.ToVar)) ;              // Vars from left optionals.
+        Set<ScopeEntry> scopes2 = toSet(filter(scopes.iterator(), ScopeEntry.OptionalFilter)) ;
+        Set<Var> leftOptVars = toSet(map(scopes2.iterator(), ScopeEntry.ToVar)) ;              // Vars from left optionals.
         
         if ( false )
         {

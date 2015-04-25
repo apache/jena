@@ -178,7 +178,7 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
                 out.print(String.valueOf(quad)) ;
             } } ;
 
-            apply(this, strAction) ;
+            apply(this.iterator(), strAction) ;
     }
 
     @Override

@@ -64,7 +64,7 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
         // Or done here as a second pass mutate of PatternTriples
 
         // Convert to a mutable form (that allows things like "TERM")
-        List<PatternTriple> components = Iter.toList(Iter.map(triples, convert)) ;
+        List<PatternTriple> components = Iter.toList(Iter.map(triples.iterator(), convert)) ;
 
         // Allow subclasses to get in (e.g. static reordering).
         components = modifyComponents(components) ;

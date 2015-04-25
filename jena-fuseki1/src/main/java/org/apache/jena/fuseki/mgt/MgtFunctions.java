@@ -70,7 +70,7 @@ public class MgtFunctions
     /** Return lists of datasets */ 
     public static List<String> datasets(HttpServletRequest request)
     {
-        return Iter.toList(DatasetRegistry.get().keys()) ;
+        return Iter.toList(DatasetRegistry.get().keys().iterator()) ;
     }
 
     /** Return name of */  

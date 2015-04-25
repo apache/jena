@@ -288,7 +288,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     
     private static Set<SqlTable> tables(Set<SqlColumn> cols)
     {
-        return Iter.toSet(Iter.map(cols, colToTable)) ;
+        return Iter.toSet(Iter.map(cols.iterator(), colToTable)) ;
     }
 
     @Override

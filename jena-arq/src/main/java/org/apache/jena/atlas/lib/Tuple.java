@@ -148,6 +148,6 @@ public class Tuple<T> implements Iterable<T> {
 
     @Override
     public String toString() {
-        return "[" + Iter.asString(this, ", ") + "]" ;
+        return "[" + Iter.asString(iterator(), ", ") + "]" ;
     }
 }

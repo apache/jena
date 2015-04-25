@@ -143,7 +143,7 @@ public class ServerTest {
             server.stop() ;
         server = null ;
         // Clear out the registry.
-        Collection<String> keys = Iter.toList(DataAccessPointRegistry.get().keys()) ;
+        Collection<String> keys = Iter.toList(DataAccessPointRegistry.get().keys().iterator()) ;
         for (String k : keys)
             DataAccessPointRegistry.get().remove(k) ;
     }
