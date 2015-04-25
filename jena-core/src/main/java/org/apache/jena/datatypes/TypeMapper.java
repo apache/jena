@@ -186,12 +186,4 @@ public class TypeMapper {
             classToDT.put(jc, type);
         }
     }
-
-    // Temporary development code
-    public static void main(final String[] args) {
-        for (final Iterator<RDFDatatype> iter = theTypeMap.listTypes(); iter.hasNext();) {
-            final RDFDatatype dt = iter.next();
-            System.out.println(" - " + dt);
-        }
-    }
 }

@@ -155,16 +155,4 @@ public class URIref extends Object {
                     throw new IllegalArgumentException("Bad Hex escape character: " + ((b)&255) );
         }
     }
-    
-    /** For simple testing ...
-     */
-    static public void main(String args[]) {
-        for ( String arg : args )
-        {
-            System.out.println( arg + " => " + decode( arg ) + " => " + encode( decode( arg ) ) );
-        }
-    }
-
-    
-
 }

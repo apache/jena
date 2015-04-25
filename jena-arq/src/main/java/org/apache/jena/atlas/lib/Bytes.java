@@ -20,7 +20,6 @@ package org.apache.jena.atlas.lib;
 
 import java.io.UnsupportedEncodingException ;
 import java.nio.ByteBuffer ;
-import java.nio.ByteOrder ;
 import java.nio.CharBuffer ;
 import java.nio.charset.CharsetDecoder ;
 import java.nio.charset.CharsetEncoder ;
@@ -34,26 +33,6 @@ import java.nio.charset.CoderResult ;
 public class Bytes
 {
     private Bytes() {}
-    
-    // Binary search - see atlas.lib.Alg
-    
-    // http://en.wikipedia.org/wiki/Endianness
-    // Java is, by default, network order (big endian)
-    // i.e what you get from ByteBuffer.allocate/.allocateDirect();
-    
-    public static void main(String ... args)
-    {
-        ByteBuffer bb = ByteBuffer.allocate(8) ;
-        System.out.println("Native order = "+ByteOrder.nativeOrder()) ;
-        System.out.println("Default order = "+bb.order()) ;
-        //bb.order(ByteOrder.BIG_ENDIAN) ;
-        //bb.order(ByteOrder.LITTLE_ENDIAN) ;
-        System.out.println("Order = "+bb.order()) ;
-        bb.asLongBuffer().put(0x0102030405060708L) ;
-        for ( int i = 0 ; i < bb.capacity(); i++ )
-            System.out.printf("0x%02X ",bb.get(i)) ;
-        // Comes out hight to low : 0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x08 
-    }
     
     /** Compare two byte arrays which may be of different lengths */ 
     public static int compare(byte[] x1, byte[] x2)
@@ -182,38 +161,34 @@ public class Bytes
      * @param b byte array 
      * @param idx starting point
      */
-    public static final void setLong(long value, byte[]b, int idx)
-    {
-        int lo = (int)(value&0xFFFFFFFFL) ;
-        int hi = (int)(value>>>32) ;
+    public static final void setLong(long value, byte[] b, int idx) {
+        int lo = (int)(value & 0xFFFFFFFFL) ;
+        int hi = (int)(value >>> 32) ;
         setInt(hi, b, idx) ;
-        setInt(lo, b, idx+4) ;
+        setInt(lo, b, idx + 4) ;
     }
 
     /** int to byte array */
-    public static byte[] packInt(int val)
-    {
-        byte[] valBytes = new byte[Integer.SIZE/Byte.SIZE] ;
+    public static byte[] packInt(int val) {
+        byte[] valBytes = new byte[Integer.SIZE / Byte.SIZE] ;
         setInt(val, valBytes, 0) ;
         return valBytes ;
     }
-    
+
     /** long to byte array */
-    public static byte[] packLong(long val)
-    {
-        byte[] valBytes = new byte[Long.SIZE/Byte.SIZE] ;
+    public static byte[] packLong(long val) {
+        byte[] valBytes = new byte[Long.SIZE / Byte.SIZE] ;
         setLong(val, valBytes, 0) ;
         return valBytes ;
     }
-    
+
     /** Make an int order of args -- high to low */
-    static private int assembleInt(byte b3, byte b2, byte b1, byte b0)
-    {
+    static private int assembleInt(byte b3, byte b2, byte b1, byte b0) {
         return ( ((b3 & 0xFF) << 24) |
-                      ((b2 & 0xFF) << 16) |
-                      ((b1 & 0xFF) <<  8) |
-                      ((b0 & 0xFF) <<  0)
-                    );
+                 ((b2 & 0xFF) << 16) |
+                 ((b1 & 0xFF) <<  8) |
+                 ((b0 & 0xFF) <<  0)
+            );
     }
 
     /** Make a long order of args -- high to low */
@@ -236,38 +211,32 @@ public class Bytes
     private static byte byte0(int x) { return (byte)(x >>  0); }
 
     /** Return the UTF-8 bytes for a string */
-    public static byte[] string2bytes(String x)
-    {
-        try
-        {
+    public static byte[] string2bytes(String x) {
+        try {
             return x.getBytes("UTF-8") ;
-        } catch (UnsupportedEncodingException ex)
-        {
+        }
+        catch (UnsupportedEncodingException ex) {
             // Impossible.
-            ex.printStackTrace();
+            ex.printStackTrace() ;
             return null ;
         }
     }
     
     /** Return the string for some UTF-8 bytes */
-    public static String bytes2string(byte[] x)
-    {
-        try
-        {
+    public static String bytes2string(byte[] x) {
+        try {
             return new String(x, "UTF-8") ;
-        } catch (UnsupportedEncodingException ex)
-        {
+        }
+        catch (UnsupportedEncodingException ex) {
             // Impossible-ish.
-            ex.printStackTrace();
+            ex.printStackTrace() ;
             return null ;
         }
     }
 
     /** Encode a string into a ByteBuffer : on return position is the end of the encoding */
-    public static int toByteBuffer(CharSequence s, ByteBuffer bb)
-    {
+    public static int toByteBuffer(CharSequence s, ByteBuffer bb) {
         //BlockUTF8.fromChars(s, bb) ;
-        // To be removed (Dec 2011)
         CharsetEncoder enc = Chars.allocEncoder();
         int x = toByteBuffer(s, bb, enc) ;
         Chars.deallocEncoder(enc) ;
@@ -275,8 +244,7 @@ public class Bytes
     }
     
     /** Encode a string into a ByteBuffer : on return position is the end of the encoding */
-    public static int toByteBuffer(CharSequence s, ByteBuffer bb, CharsetEncoder enc)
-    {
+    public static int toByteBuffer(CharSequence s, ByteBuffer bb, CharsetEncoder enc) {
         int start = bb.position() ;
         CharBuffer cBuff = CharBuffer.wrap(s);
         enc.reset();
@@ -304,12 +272,10 @@ public class Bytes
     }
     
     /** Decode a string into a ByteBuffer */
-    public static String fromByteBuffer(ByteBuffer bb, CharsetDecoder dec)
-    {
+    public static String fromByteBuffer(ByteBuffer bb, CharsetDecoder dec) {
         if ( bb.remaining() == 0 )
             return "" ;
-
-        dec.reset();
+        dec.reset() ;
         CharBuffer cBuff = CharBuffer.allocate(bb.remaining()) ;
         CoderResult r = dec.decode(bb, cBuff, true) ;
         if ( r.isOverflow() )
@@ -317,35 +283,33 @@ public class Bytes
         r = dec.flush(cBuff) ;
         if ( r.isOverflow() )
             throw new InternalErrorException("fromByteBuffer: decode overflow (2)") ;
-        cBuff.flip();
+        cBuff.flip() ;
         return cBuff.toString() ;
     }
 
-    /** Return a hex string representing the bytes, zero padded to length of byte array. */
-    public static String asHex(byte[] bytes)
-    {
-        return asHexUC(bytes) ; 
+    /**
+     * Return a hex string representing the bytes, zero padded to length of byte
+     * array.
+     */
+    public static String asHex(byte[] bytes) {
+        return asHexUC(bytes) ;
     }
 
-    public static String asHexUC(byte[] bytes)
-    {
-        return asHex(bytes, 0, bytes.length, Chars.hexDigitsUC) ; 
+    public static String asHexUC(byte[] bytes) {
+        return asHex(bytes, 0, bytes.length, Chars.hexDigitsUC) ;
     }
 
-    public static String asHexLC(byte[] bytes)
-    {
-        return asHex(bytes, 0, bytes.length, Chars.hexDigitsLC) ; 
+    public static String asHexLC(byte[] bytes) {
+        return asHex(bytes, 0, bytes.length, Chars.hexDigitsLC) ;
     }
-    
-    public static String asHex(byte[] bytes, int start, int finish, char[] hexDigits)
-    {
+
+    public static String asHex(byte[] bytes, int start, int finish, char[] hexDigits) {
         StringBuilder sw = new StringBuilder() ;
-        for ( int i = start ; i < finish ; i++ )
-        {
+        for ( int i = start ; i < finish ; i++ ) {
             byte b = bytes[i] ;
             int hi = (b & 0xF0) >> 4 ;
             int lo = b & 0xF ;
-            //if ( i != start ) sw.append(' ') ;
+            // if ( i != start ) sw.append(' ') ;
             sw.append(hexDigits[hi]) ;
             sw.append(hexDigits[lo]) ;
         }

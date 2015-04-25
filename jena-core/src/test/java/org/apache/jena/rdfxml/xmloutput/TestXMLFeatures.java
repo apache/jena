@@ -18,18 +18,26 @@
 
 package org.apache.jena.rdfxml.xmloutput;
 
-import java.io.*;
-import java.util.*;
-import java.util.regex.Pattern;
+import java.io.* ;
+import java.util.Collection ;
+import java.util.HashSet ;
+import java.util.Iterator ;
+import java.util.Set ;
+import java.util.regex.Pattern ;
 
 import org.apache.jena.graph.* ;
-import org.apache.jena.iri.*;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.RDFReader ;
+import org.apache.jena.rdf.model.RDFWriter ;
 import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.rdfxml.xmloutput.impl.* ;
-import org.apache.jena.shared.* ;
+import org.apache.jena.rdfxml.xmloutput.impl.BaseXMLWriter ;
+import org.apache.jena.rdfxml.xmloutput.impl.SimpleLogger ;
+import org.apache.jena.shared.BadURIException ;
+import org.apache.jena.shared.InvalidPropertyURIException ;
+import org.apache.jena.shared.JenaException ;
 import org.apache.jena.vocabulary.RDF ;
 
 public class TestXMLFeatures extends XMLOutputTestBase {
@@ -681,31 +689,4 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 			"http://www.example.org/A/B#foo/",
 			"http://www.example.org/a/b/c/d/X#bar", "http://example.com/A",
 			"http://www.example.org/a/b/c/d/z?x=a", };
-
-	static IRIFactory factory = IRIFactory.jenaImplementation();
-
-	static public void main(String args[]) throws Exception {
-		String b[] = { "http://www.example.org/a/b/c/d/",
-				"http://www.example.org/a/b/c/d",
-				"http://www.example.org/A/B#", };
-		String n[] = { "", "same-document", "absolute", "relative", "parent",
-				"network", "grandparent" };
-        for ( String aB : b )
-        {
-            System.out.println( "// " + aB );
-            IRI bb = factory.create( aB );
-
-            for ( int i = 0; i < n.length; i++ )
-            {
-                System.out.print( " { \"" + n[i] + "\", " );
-                int f = BaseXMLWriter.str2flags( n[i] );
-                for ( int j = 0; j < uris.length; j++ )
-                {
-                    String r = bb.relativize( uris[j], f ).toString();
-                    System.out.print( ( i != 0 && r.equals( uris[j] ) ) ? "null, " : "\"" + r + "\"" + ", " );
-                }
-                System.out.println( "}," );
-            }
-        }
-	}
 }
