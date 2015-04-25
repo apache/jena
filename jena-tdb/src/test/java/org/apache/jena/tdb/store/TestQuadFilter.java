@@ -48,16 +48,6 @@ public class TestQuadFilter extends BaseTest
     
     @AfterClass public static void afterClass() {}
     
-//    public static void main(String ... args)
-//    {
-//        // This also works for default union graph ....
-//        TDB.getContext().setTrue(TDB.symUnionDefaultGraph) ;
-//        
-//        Dataset ds = setup() ;
-//        Filter<Tuple<NodeId>> filter = createFilter(ds) ;
-//        example(ds, filter) ;
-//    }
-    
     /** Example setup - in-memory dataset with two graphs, one triple in each */
     private static Dataset setup()
     {
