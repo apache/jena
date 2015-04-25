@@ -114,7 +114,7 @@ public class DistinctDataNet<E> extends DistinctDataBag<E>
         // If we havn't spilled, then we have already indicated all distinct values via .netAdd()
         if (!spilled)
         {
-            return Iter.nullIter();
+            return Iter.nullIterator();
         }
         
         Iterator<E> blacklist;
