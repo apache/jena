@@ -160,16 +160,17 @@ final class PathEngine1 extends PathEngine
         }
         if ( fixedLength == 1 ) {
             Iter<Node> iter = eval(pathStep, node) ;
-            for (Node n : iter) {
+            iter.forEachRemaining(n->{
                 if ( !output.contains(n) )
                     output.add(n) ;
-            }
+            });
             return ;
         }
         // Loop, not recurse.
         Iter<Node> iter = eval(pathStep, node) ;
-        for (Node n : iter)
+        iter.forEachRemaining(n->{
             doFixedLengthPath(pathStep, n, fixedLength - 1, output) ;
+        }) ;
         return ;
     }
 

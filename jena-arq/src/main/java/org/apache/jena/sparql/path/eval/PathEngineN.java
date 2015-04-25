@@ -87,8 +87,7 @@ final class PathEngineN extends PathEngine
 
         // Feed one side into the other
         Iter<Node> iter = eval(part1, node) ;
-        for (Node n : iter)
-            eval(part2, n, output) ;
+        iter.forEachRemaining((n)->eval(part2, n, output)) ;
     }
 
     @Override
