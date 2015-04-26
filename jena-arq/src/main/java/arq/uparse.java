@@ -75,7 +75,7 @@ public class uparse extends CmdARQ
             else
             {
                 throw new CmdException(
-                    "Not a recognized print form: " + arg + " : Choices are: query, op, quad, opt, optquad" );
+                    "Not a recognized print form: " + arg + " : Choices are: update, none" );
             }
         }
         
