@@ -16,52 +16,36 @@
  * limitations under the License.
  */
 
-package org.apache.jena.graph.impl;
+package org.apache.jena.mem;
 
-import static org.apache.jena.testing_framework.GraphHelper.memGraph;
-
-import java.util.HashSet;
-
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.CollectionGraph ;
-import org.apache.jena.testing_framework.AbstractGraphProducer;
 import org.junit.runner.RunWith;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractImpl;
 import org.xenei.junit.contract.ContractSuite;
+
+import org.apache.jena.graph.Graph;
+import org.apache.jena.mem.GraphTripleStore;
 import org.xenei.junit.contract.IProducer;
 
 @RunWith(ContractSuite.class)
-@ContractImpl(CollectionGraph.class)
-public class TestCollectionGraph {
-	 
-	protected IProducer<CollectionGraph> graphProducer;
-	
-	public TestCollectionGraph() {
-		graphProducer = new AbstractGraphProducer<CollectionGraph>() {
-			
-			@Override
-			protected CollectionGraph createNewGraph() {
-				return new CollectionGraph( new HashSet<Triple>() );
-			}
+@ContractImpl(GraphTripleStore.class)
+public class GraphTripleStoreTest {
 
-			@Override
-			public Graph[] getDependsOn(Graph d) {
-				return null;
-			}
+	private IProducer<GraphTripleStore> producer = new IProducer<GraphTripleStore>() {
 
-			@Override
-			public Graph[] getNotDependsOn(Graph g) {
-				return new Graph[] { memGraph() };
-			}
+		@Override
+		public GraphTripleStore newInstance() {
+			return new GraphTripleStore(Graph.emptyGraph);
+		}
 
-		};
-	}
+		@Override
+		public void cleanUp() {
+		}
+
+	};
 
 	@Contract.Inject
-	public final IProducer<CollectionGraph> getDeltaTestProducer() {
-		return graphProducer;
+	public IProducer<GraphTripleStore> getTripleStore() {
+		return producer;
 	}
-
 }
