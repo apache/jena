@@ -2,7 +2,6 @@
 <!-- 	Issue: rdfms-nested-bagIDs
         Test:  2
         Author: Dave Beckett, ILRT
-        $Header: /home/afs/SourceForge/Jena-CVS/jena2/testing/wg/rdfms-nested-bagIDs/test002.rdf,v 1.2 2005-08-04 09:53:15 jeremy_carroll Exp $
 
         An RDF/XML file equivalenet to the example in the issues list.
         The WG considers this equivalence to be the intent of M&S.

@@ -2,7 +2,6 @@
 <!-- 	Issue: rdfms-not-id-and-resource-attr
         Test:  5
         Author: Jeremy Carroll, HP
-        $Header: /home/afs/SourceForge/Jena-CVS/jena2/testing/wg/rdfms-not-id-and-resource-attr/test005.rdf,v 1.2 2005-08-04 09:53:21 jeremy_carroll Exp $
 
         rdf:ID and rdf:resource are allowed together on empty property element.
 -->
