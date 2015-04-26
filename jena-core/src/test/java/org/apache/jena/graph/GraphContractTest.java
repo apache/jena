@@ -1486,12 +1486,14 @@ public class GraphContractTest<T extends Graph> extends
 				"'simple'xsd:string", true);
 		testLiteralTypingBasedFind("a P 'simple'", 1, "'simple'xsd:string",
 				"'simple'", true);
+		// ensure that adding identical strings one with type yields single result
+		// and that querying with or without type works
 		testLiteralTypingBasedFind("a P 'simple'xsd:string", 1,
 				"'simple'xsd:string", "'simple'xsd:string", false);
-//		testLiteralTypingBasedFind("a P 'simple'; a P 'simple'xsd:string", 2,
-//				"'simple'", "'simple' 'simple'xsd:string", true);
-//		testLiteralTypingBasedFind("a P 'simple'; a P 'simple'xsd:string", 2,
-//				"'simple'xsd:string", "'simple' 'simple'xsd:string", true);
+		testLiteralTypingBasedFind("a P 'simple'; a P 'simple'xsd:string", 1,
+				"'simple'", "'simple'xsd:string", true);
+		testLiteralTypingBasedFind("a P 'simple'; a P 'simple'xsd:string", 1,
+				"'simple'xsd:string", "'simple'", true);
 		testLiteralTypingBasedFind("a P 'simple'; a P 'simple'xsd:string", 1,
 				"'simple'", "'simple'", true);
 		testLiteralTypingBasedFind("a P 'simple'; a P 'simple'xsd:string", 1,
