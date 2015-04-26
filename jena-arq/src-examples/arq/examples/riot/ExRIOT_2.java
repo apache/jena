@@ -29,12 +29,10 @@ import org.apache.jena.riot.system.* ;
 
 /** Example of using RIOT directly.
  * 
- * RDFDataMgr is the general place to read data - see {@link ExRIOT_1}  
+ * RDFDataMgr is the general place to read data.
  * 
- * RiotReader is the place for making parsers and can be used to read
- * from files or InputStreams. It can give more detailed control of error handling
- * and specialised destination of parser output.
- * It does not perform HTTP content negotiation.  
+ * The parsers produce a stream of triples and quads so processing does not need
+ * to hold everything in memory at the same time. See also {@link ExRIOT_4}
  */
 public class ExRIOT_2
 {
@@ -51,7 +49,7 @@ public class ExRIOT_2
         // --- Or create a parser and do the parsing as separate steps.
         String baseURI = "http://example/base" ;
             
-        // It is always better to use an  InputStream, rather than a Java Reader.
+        // It is always better to use an InputStream, rather than a Java Reader.
         // The parsers will do the necessary character set conversion.  
         in = new FileInputStream("data.trig") ;
         

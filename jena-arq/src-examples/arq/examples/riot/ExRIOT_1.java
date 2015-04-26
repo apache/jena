@@ -24,8 +24,7 @@ import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 
 /** Example of using RIOT with Jena readers.
- * Normally, the application just needs to call model.read and
- * not interact with RIOT directly. 
+ * An application can use model.read or RDFDataMgr.
  */
 public class ExRIOT_1
 {
