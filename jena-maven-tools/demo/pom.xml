@@ -65,7 +65,7 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
       <!-- replace with something like
-        <version>2.13.0</version>
+        <version>3.0.0</version>
       -->
       <version>RELEASE</version>
     </dependency>
