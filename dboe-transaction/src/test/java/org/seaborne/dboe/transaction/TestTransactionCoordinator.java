@@ -20,7 +20,7 @@ package org.seaborne.dboe.transaction;
 import static org.junit.Assert.assertEquals ;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 public class TestTransactionCoordinator extends AbstractTestTxn {
     @Test public void txn_coord_read_1() {

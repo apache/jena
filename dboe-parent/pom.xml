@@ -210,22 +210,6 @@
 	</executions>
       </plugin>
       -->
-      <!--
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-javadoc-plugin</artifactId>
-	<configuration>
-	  <version>true</version>
-	  <show>public</show>
-	  <quiet>true</quiet>
-	  <encoding>UTF-8</encoding>
-	  <windowtitle>Apache Jena TDB</windowtitle>
-	  <doctitle>Apache Jena TDB ${project.version}</doctitle>
-	  <excludePackageNames>com.hp.hpl.jena.tdb.*</excludePackageNames>
-	  <bottom>Licenced under the Apache License, Version 2.0</bottom>
-	</configuration>
-      </plugin>
-      -->
     </plugins>
   </build>
 

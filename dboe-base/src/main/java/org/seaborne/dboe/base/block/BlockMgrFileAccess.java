@@ -19,7 +19,7 @@ package org.seaborne.dboe.base.block ;
 
 import static java.lang.String.format ;
 
-import com.hp.hpl.jena.sparql.util.Utils ;
+import org.apache.jena.sparql.util.Utils ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.seaborne.dboe.base.file.BlockAccess ;

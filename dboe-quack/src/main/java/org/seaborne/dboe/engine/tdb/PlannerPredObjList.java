@@ -24,7 +24,7 @@ import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.seaborne.dboe.engine.* ;
 
-import com.hp.hpl.jena.tdb.store.NodeId ;
+import org.apache.jena.tdb.store.NodeId ;
 
 public class PlannerPredObjList implements Planner {
     private AccessorTDB accessor ;

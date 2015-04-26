@@ -22,12 +22,12 @@ import java.util.Iterator ;
 import org.apache.jena.riot.out.NodeFmtLib ;
 import org.seaborne.dboe.engine.Row ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingBase ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.binding.BindingBase ;
+import org.apache.jena.tdb.store.NodeId ;
+import org.apache.jena.tdb.store.nodetable.NodeTable ;
 
 final
 public class BindingRow extends BindingBase {

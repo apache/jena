@@ -29,7 +29,7 @@ import org.seaborne.dboe.engine.Row ;
 import org.seaborne.dboe.engine.RowList ;
 import org.seaborne.dboe.engine.RowListBuilder ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 /** General RowListBuilder */
 public class RowListBuilderBase<X> implements RowListBuilder<X>{

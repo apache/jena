@@ -28,7 +28,7 @@ import org.seaborne.dboe.engine.RowList ;
 import org.seaborne.dboe.engine.row.RowBase ;
 import org.seaborne.dboe.engine.row.RowVarBinding ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 public class TestRows extends Assert
 {

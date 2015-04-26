@@ -21,8 +21,8 @@ import java.io.File ;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
 
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.sys.Names ;
+import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.sys.Names ;
 
 /** Index name, as location and index name within location */ 
 public class IndexRef {

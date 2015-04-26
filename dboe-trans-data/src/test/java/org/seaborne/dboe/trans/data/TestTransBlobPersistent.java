@@ -17,7 +17,7 @@
 
 package org.seaborne.dboe.trans.data;
 
-import com.hp.hpl.jena.util.FileUtils ;
+import org.apache.jena.util.FileUtils ;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.* ;

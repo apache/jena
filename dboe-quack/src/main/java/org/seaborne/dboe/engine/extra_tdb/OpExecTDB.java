@@ -19,9 +19,9 @@ package org.seaborne.dboe.engine.extra_tdb;
 
 import org.seaborne.dboe.engine.general.OpExecLib ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTable ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 
 public class OpExecTDB
 {

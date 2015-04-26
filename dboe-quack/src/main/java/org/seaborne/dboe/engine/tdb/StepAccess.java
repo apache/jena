@@ -24,8 +24,8 @@ import org.apache.jena.atlas.lib.Tuple ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.access.AccessRows ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.tdb.store.NodeId ;
 
 class StepAccess implements Step<NodeId> {
     private final AccessRows<NodeId> accessor ;

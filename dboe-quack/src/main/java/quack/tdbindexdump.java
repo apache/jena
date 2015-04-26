@@ -25,10 +25,10 @@ import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.store.tupletable.TupleIndex ;
 
 /**
  * Dump a TDB index.

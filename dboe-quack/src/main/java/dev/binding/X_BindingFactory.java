@@ -19,8 +19,8 @@ package dev.binding;
 
 import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.Var ;
 
 public class X_BindingFactory
 {

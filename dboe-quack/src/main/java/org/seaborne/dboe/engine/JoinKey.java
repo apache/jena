@@ -23,7 +23,7 @@ import java.util.List ;
 
 import org.apache.jena.atlas.lib.DS ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 public final class JoinKey implements Iterable<Var>
 {

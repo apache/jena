@@ -28,7 +28,7 @@ import org.seaborne.dboe.engine.row.RowListBuilderBase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 /** The merge join algorithm - it assumes the inputs are in clustered order.
  * This version materializes the results first, mainly for development

@@ -27,21 +27,21 @@ import org.junit.Test ;
 import org.seaborne.dboe.engine.Quack ;
 import org.seaborne.dboe.engine.tdb.OpExecutorQuackTDB ;
 
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.OpVars ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory ;
-import com.hp.hpl.jena.sparql.engine.main.QC ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.sys.Names ;
+import org.apache.jena.query.* ;
+import org.apache.jena.sparql.algebra.Algebra ;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.OpVars ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.ResultSetStream ;
+import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
+import org.apache.jena.sparql.engine.main.QC ;
+import org.apache.jena.sparql.resultset.ResultSetCompare ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.sys.Names ;
 
 /** Basic testing of OpExecutorQuackTDB, mainly to make sure its called. 
  *  More complete testing happens when the full TDB test suite is run with this engine.

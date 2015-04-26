@@ -23,10 +23,10 @@ import java.util.Map ;
 
 import org.apache.jena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.util.FmtUtils ;
 
 /** A muatable mapping from a name to a value such that we can create a tree of levels
  *  with higher (earlier levels) being shared.

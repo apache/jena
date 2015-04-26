@@ -25,7 +25,7 @@ import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.join.SubstitutionJoin ;
 import org.seaborne.dboe.engine.row.RowBuilderBase ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 /** Build a simple Accessor on top of the "accessRows" operation.
  * Also provies, as statiuc, functions to build the operations on topof simpler ones

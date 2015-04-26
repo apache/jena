@@ -31,27 +31,27 @@ import org.seaborne.dboe.engine.general.QueryEngineMain2 ;
 import org.seaborne.dboe.engine.tdb.* ;
 import quack.IndexRef ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.sparql.algebra.optimize.Optimize ;
-import com.hp.hpl.jena.sparql.algebra.optimize.Optimize.RewriterFactory ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory ;
-import com.hp.hpl.jena.sparql.engine.main.QC ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.setup.DatasetBuilder ;
-import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
-import com.hp.hpl.jena.tdb.setup.StoreParams ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.sys.FileRef ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.* ;
+import org.apache.jena.sparql.algebra.optimize.Optimize ;
+import org.apache.jena.sparql.algebra.optimize.Optimize.RewriterFactory ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
+import org.apache.jena.sparql.engine.main.QC ;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
+import org.apache.jena.sparql.resultset.ResultSetCompare ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.util.QueryExecUtils ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.setup.DatasetBuilder ;
+import org.apache.jena.tdb.setup.DatasetBuilderStd ;
+import org.apache.jena.tdb.setup.StoreParams ;
+import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.tdb.store.NodeId ;
+import org.apache.jena.tdb.sys.FileRef ;
+import org.apache.jena.tdb.sys.SystemTDB ;
 
 public class MainQuack {
     static { LogCtl.setLog4j() ; }

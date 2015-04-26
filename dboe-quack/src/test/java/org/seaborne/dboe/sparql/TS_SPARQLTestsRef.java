@@ -24,10 +24,10 @@ import org.seaborne.dboe.sparql.test.Label ;
 import org.seaborne.dboe.sparql.test.Manifests ;
 import org.seaborne.dboe.sparql.test.RunnerSPARQL ;
 
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
-import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
-import com.hp.hpl.jena.sparql.expr.E_Function ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import org.apache.jena.sparql.engine.main.QueryEngineMain ;
+import org.apache.jena.sparql.engine.ref.QueryEngineRef ;
+import org.apache.jena.sparql.expr.E_Function ;
+import org.apache.jena.sparql.expr.NodeValue ;
 
 @RunWith(RunnerSPARQL.class)
 @Label("SPARQL [ref]")

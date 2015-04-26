@@ -21,8 +21,8 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.Tuple ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.tdb.store.NodeId ;
 
 /** Low access to data where the pattern constrains the results 
  * by constants (fixed terms) or wildcard.  The wildcard may be {@code null} or

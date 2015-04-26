@@ -22,7 +22,7 @@ import java.util.Collections ;
 
 import org.seaborne.dboe.engine.Row ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 /* A row of zero variables */ 
 public class RowIdentity<X> implements Row<X>  {

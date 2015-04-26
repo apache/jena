@@ -27,9 +27,9 @@ import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.access.Accessor ;
 import org.seaborne.dboe.engine.row.RowBuilderBase ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.tdb.store.NodeId ;
+import org.apache.jena.tdb.store.nodetable.NodeTable ;
 
 public class AccessorTDB implements Accessor<NodeId> {
     private final StorageTDB db ;

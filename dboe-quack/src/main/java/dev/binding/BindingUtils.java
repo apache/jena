@@ -21,11 +21,11 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.QuerySolution ;
+import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.core.Var ;
 
 public class BindingUtils {
 //    /** Convert a query solution to a binding */

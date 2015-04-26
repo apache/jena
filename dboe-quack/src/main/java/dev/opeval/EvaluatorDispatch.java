@@ -17,12 +17,12 @@
 
 package dev.opeval ;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
-import com.hp.hpl.jena.sparql.algebra.op.* ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.OpVisitor ;
+import org.apache.jena.sparql.algebra.op.* ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
 
 /** One level visitor dispatch and results as QueryIterator */
 public class EvaluatorDispatch implements OpVisitor

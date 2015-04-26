@@ -27,21 +27,21 @@ import org.seaborne.dboe.engine.Row ;
 import org.seaborne.dboe.engine.RowList ;
 import org.seaborne.dboe.engine.Slot ;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.core.Substitute ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.iterator.* ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Substitute ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.iterator.* ;
+import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.ExprList ;
 
 /** Helper functions related to OpExecutor implementation */ 
 public class OpExecLib {

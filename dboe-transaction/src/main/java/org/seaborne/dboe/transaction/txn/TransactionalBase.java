@@ -20,8 +20,8 @@ package org.seaborne.dboe.transaction.txn;
 import java.util.Objects ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.sparql.util.Utils ;
+import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.util.Utils ;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.seaborne.dboe.transaction.txn.Transaction.TxnState ;

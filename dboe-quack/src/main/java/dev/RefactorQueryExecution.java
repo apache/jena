@@ -21,23 +21,23 @@ import java.util.List ;
 
 import org.apache.jena.atlas.logging.LogCtl ;
 
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.OpVars ;
-import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.Plan ;
-import com.hp.hpl.jena.sparql.engine.PlanOp ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutor ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory ;
-import com.hp.hpl.jena.sparql.engine.main.QC ;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
+import org.apache.jena.query.ResultSet ;
+import org.apache.jena.query.ResultSetFactory ;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.OpVars ;
+import org.apache.jena.sparql.algebra.op.OpProject ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.Plan ;
+import org.apache.jena.sparql.engine.PlanOp ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.main.OpExecutor ;
+import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
+import org.apache.jena.sparql.engine.main.QC ;
+import org.apache.jena.sparql.resultset.ResultsFormat ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.QueryExecUtils ;
 
 public class RefactorQueryExecution
 {

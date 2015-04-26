@@ -21,7 +21,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.seaborne.dboe.engine.Quack ;
 
-import com.hp.hpl.jena.tdb.solver.TestSolverTDB ;
+import org.apache.jena.tdb.solver.TestSolverTDB ;
 
 public class TestSolverExecution extends TestSolverTDB {
     // As we implement more, then this class can hook into more a general test suite 

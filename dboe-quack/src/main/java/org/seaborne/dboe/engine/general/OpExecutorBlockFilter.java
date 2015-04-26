@@ -17,18 +17,18 @@
 
 package org.seaborne.dboe.engine.general;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutor ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.op.OpBGP ;
+import org.apache.jena.sparql.algebra.op.OpFilter ;
+import org.apache.jena.sparql.algebra.op.OpQuadPattern ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.main.OpExecutor ;
+import org.apache.jena.sparql.expr.ExprList ;
 
 /** Framework for writing an OpExecutor.  
  *  This class provides all execution and makes calls to the abstract methods

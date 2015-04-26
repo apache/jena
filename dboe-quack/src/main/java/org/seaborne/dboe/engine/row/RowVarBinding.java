@@ -23,7 +23,7 @@ import java.util.Collection ;
 import org.seaborne.dboe.engine.Row ;
 import org.seaborne.dboe.engine.RowBuilder ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 /** 
  * Implementation of Row based on a parent+chain of additonal bindings.
  */

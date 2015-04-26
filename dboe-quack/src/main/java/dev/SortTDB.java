@@ -25,7 +25,7 @@ import java.util.List ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Tuple ;
 
-import com.hp.hpl.jena.tdb.store.NodeId ;
+import org.apache.jena.tdb.store.NodeId ;
 
 /** Sort operations specific to TDB */
 public class SortTDB

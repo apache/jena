@@ -19,7 +19,7 @@ package org.seaborne.dboe.engine;
 
 import org.apache.jena.atlas.lib.Lib ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 /** Abstraction of either a variable or a term, never both. */
 public final class Slot<X> {

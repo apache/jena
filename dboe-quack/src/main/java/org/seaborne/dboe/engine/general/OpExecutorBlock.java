@@ -17,12 +17,12 @@
 
 package org.seaborne.dboe.engine.general;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.expr.ExprList ;
 
 /** Execution framework for extension by adding matching for
  *  graphNode (inclued variables) basic graph pattern or a particular graph and a basic graph pattern.

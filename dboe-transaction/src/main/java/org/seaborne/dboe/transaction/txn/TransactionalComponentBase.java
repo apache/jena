@@ -19,7 +19,7 @@ package org.seaborne.dboe.transaction.txn;
 
 import java.nio.ByteBuffer ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 /**
  * A transaction component that does nothing - can be used as a helper for

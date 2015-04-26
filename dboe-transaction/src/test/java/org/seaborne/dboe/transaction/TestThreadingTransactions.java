@@ -25,7 +25,7 @@ import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 public class TestThreadingTransactions {
     static final long InitValue = 3 ;

@@ -17,8 +17,8 @@
 
 package org.seaborne.dboe.transaction.txn;
 
-import static com.hp.hpl.jena.query.ReadWrite.READ ;
-import static com.hp.hpl.jena.query.ReadWrite.WRITE ;
+import static org.apache.jena.query.ReadWrite.READ ;
+import static org.apache.jena.query.ReadWrite.WRITE ;
 import static org.seaborne.dboe.transaction.txn.journal.JournalEntryType.UNDO ;
 
 import java.nio.ByteBuffer ;
@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap ;
 import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicLong ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.seaborne.dboe.sys.SystemBase ;

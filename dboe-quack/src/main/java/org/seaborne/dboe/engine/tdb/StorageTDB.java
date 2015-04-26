@@ -21,12 +21,12 @@ import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.seaborne.dboe.engine.general.OpExecLib ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTable ;
-import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
-import com.hp.hpl.jena.tdb.store.tupletable.TupleTable ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.tdb.store.nodetable.NodeTable ;
+import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
+import org.apache.jena.tdb.store.tupletable.TupleIndex ;
+import org.apache.jena.tdb.store.tupletable.TupleTable ;
 
 /** Eventually - add this as an interface to DatasetGraphTDB.
  *  This is a collection getters to important parts of a TDB storage dataset. 

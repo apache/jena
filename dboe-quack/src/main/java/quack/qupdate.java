@@ -22,10 +22,10 @@ import java.util.List ;
 import tdb.cmdline.CmdTDB ;
 import arq.cmd.CmdException ;
 
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
-import com.hp.hpl.jena.tdb.sys.Names ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.store.tupletable.TupleIndex ;
+import org.apache.jena.tdb.sys.Names ;
 
 // Nor needed : use tdbindexcopy location1:name1 location2:name2 
 

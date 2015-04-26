@@ -20,7 +20,7 @@ package org.seaborne.dboe.engine;
 import java.util.Iterator ;
 import java.util.Set ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.Transform ;

@@ -19,10 +19,10 @@ package dev.binding;
 
 import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.util.FmtUtils ;
 
 // Parent vs copy.
 

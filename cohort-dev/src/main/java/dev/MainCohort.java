@@ -21,7 +21,7 @@ import static org.seaborne.dboe.test.RecordLib.r ;
 
 import java.util.concurrent.Semaphore ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.logging.LogCtl ;

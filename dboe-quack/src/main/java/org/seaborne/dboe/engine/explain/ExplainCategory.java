@@ -17,7 +17,7 @@
 
 package org.seaborne.dboe.engine.explain;
 
-import com.hp.hpl.jena.sparql.util.Symbol ;
+import org.apache.jena.sparql.util.Symbol ;
 
 // "Open enum"
 public class ExplainCategory extends Symbol {

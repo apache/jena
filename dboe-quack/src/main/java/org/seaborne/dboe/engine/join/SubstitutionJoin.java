@@ -29,7 +29,7 @@ import org.apache.jena.atlas.logging.FmtLog ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.access.AccessRows ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 /** Index join done by substituting for variables */
 public class SubstitutionJoin {

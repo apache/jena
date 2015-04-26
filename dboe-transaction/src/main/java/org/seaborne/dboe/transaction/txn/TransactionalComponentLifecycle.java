@@ -22,7 +22,7 @@ import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.* ;
 import java.nio.ByteBuffer ;
 import java.util.Objects ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.seaborne.dboe.transaction.txn.Transaction.TxnState ;

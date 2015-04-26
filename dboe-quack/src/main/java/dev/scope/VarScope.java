@@ -17,8 +17,8 @@
 
 package dev.scope;
 
-import static com.hp.hpl.jena.sparql.util.VarUtils.addVar ;
-import static com.hp.hpl.jena.sparql.util.VarUtils.addVars ;
+import static org.apache.jena.sparql.util.VarUtils.addVar ;
+import static org.apache.jena.sparql.util.VarUtils.addVars ;
 
 import java.util.* ;
 import java.util.Map.Entry ;
@@ -26,15 +26,15 @@ import java.util.Map.Entry ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.SetUtils ;
 
-import com.hp.hpl.jena.sparql.algebra.* ;
-import com.hp.hpl.jena.sparql.algebra.op.* ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.core.VarExprList ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.* ;
+import org.apache.jena.sparql.algebra.op.* ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.VarExprList ;
+import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
 public class VarScope {
     

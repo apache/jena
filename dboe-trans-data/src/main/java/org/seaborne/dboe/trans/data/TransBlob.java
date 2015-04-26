@@ -20,7 +20,7 @@ package org.seaborne.dboe.trans.data;
 import java.nio.ByteBuffer ;
 import java.util.concurrent.atomic.AtomicReference ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 import org.apache.jena.atlas.RuntimeIOException ;
 import org.seaborne.dboe.base.file.BufferChannel ;

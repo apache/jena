@@ -27,7 +27,7 @@ import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Tuple ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 /** Library of functions for the generic join engine */
 

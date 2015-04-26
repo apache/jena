@@ -23,7 +23,7 @@ import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.bplustree.BPlusTreeRewriter ;
 import org.seaborne.dboe.sys.SystemIndex ;
 
-import com.hp.hpl.jena.sparql.util.Utils ;
+import org.apache.jena.sparql.util.Utils ;
 
 public class CmdTestBPlusTreeRewriter
 {

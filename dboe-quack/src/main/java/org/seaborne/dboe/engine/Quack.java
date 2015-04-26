@@ -17,8 +17,8 @@
 
 package org.seaborne.dboe.engine;
 
-import static com.hp.hpl.jena.tdb.sys.Names.primaryIndexQuads ;
-import static com.hp.hpl.jena.tdb.sys.Names.primaryIndexTriples ;
+import static org.apache.jena.tdb.sys.Names.primaryIndexQuads ;
+import static org.apache.jena.tdb.sys.Names.primaryIndexTriples ;
 
 import java.util.Arrays ;
 
@@ -31,24 +31,24 @@ import org.seaborne.dboe.engine.tdb.QueryEngineQuackTDB ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory ;
-import com.hp.hpl.jena.sparql.engine.main.QC ;
-import com.hp.hpl.jena.sparql.mgt.Explain.InfoLevel ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.MappingRegistry ;
-import com.hp.hpl.jena.sparql.util.Symbol ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
-import com.hp.hpl.jena.tdb.setup.StoreParams ;
-import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.sys.FileRef ;
-import com.hp.hpl.jena.tdb.sys.Names ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
+import org.apache.jena.sparql.engine.main.QC ;
+import org.apache.jena.sparql.mgt.Explain.InfoLevel ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.MappingRegistry ;
+import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.setup.DatasetBuilderStd ;
+import org.apache.jena.tdb.setup.StoreParams ;
+import org.apache.jena.tdb.solver.QueryEngineTDB ;
+import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.tdb.sys.FileRef ;
+import org.apache.jena.tdb.sys.Names ;
 
 public class Quack {
     /**

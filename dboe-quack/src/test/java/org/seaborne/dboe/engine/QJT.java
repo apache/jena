@@ -27,11 +27,11 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.seaborne.dboe.engine.row.RowBuilderBase ;
 import org.seaborne.dboe.engine.row.RowListBuilderBase ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.sse.Item ;
-import com.hp.hpl.jena.sparql.sse.ItemList ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderLib ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.sse.Item ;
+import org.apache.jena.sparql.sse.ItemList ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.sse.builders.BuilderLib ;
 
 public class QJT // Quack Join Test
 {

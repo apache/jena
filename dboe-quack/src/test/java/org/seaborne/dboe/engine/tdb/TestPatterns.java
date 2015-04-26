@@ -32,17 +32,17 @@ import org.junit.runners.Parameterized.Parameters ;
 import org.seaborne.dboe.engine.Quack2 ;
 import org.seaborne.dboe.engine.tdb.OpExecutorQuackTDB ;
 
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.sparql.algebra.optimize.Optimize ;
-import com.hp.hpl.jena.sparql.algebra.optimize.Optimize.RewriterFactory ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory ;
-import com.hp.hpl.jena.sparql.engine.main.QC ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.solver.OpExecutorTDB1 ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.query.* ;
+import org.apache.jena.sparql.algebra.optimize.Optimize ;
+import org.apache.jena.sparql.algebra.optimize.Optimize.RewriterFactory ;
+import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
+import org.apache.jena.sparql.engine.main.QC ;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
+import org.apache.jena.sparql.resultset.ResultSetCompare ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb.solver.OpExecutorTDB1 ;
+import org.apache.jena.tdb.sys.SystemTDB ;
 
 @RunWith(Parameterized.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

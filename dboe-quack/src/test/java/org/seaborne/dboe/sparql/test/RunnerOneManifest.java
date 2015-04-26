@@ -26,8 +26,8 @@ import org.junit.runner.Runner ;
 import org.junit.runner.notification.Failure ;
 import org.junit.runner.notification.RunNotifier ;
 
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.junit.EarlTestCase ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.sparql.junit.EarlTestCase ;
 
 /** Run one manifest, which can contain included manifests and individual tests */  
 public class RunnerOneManifest extends Runner

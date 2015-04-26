@@ -26,7 +26,7 @@ import org.seaborne.dboe.engine.join.HashJoin ;
 import org.seaborne.dboe.engine.join.HashJoin.Hasher ;
 import org.seaborne.dboe.engine.row.RowBuilderBase ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 public class TestJoinMisc extends Assert {
     // Various of these tests check to see if two unrelated hashes

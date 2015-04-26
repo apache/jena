@@ -26,7 +26,7 @@ import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.dboe.test.RecordLib ;
 
-//import com.hp.hpl.jena.tdb.base.record.RecordLib;
+//import org.apache.jena.tdb.base.record.RecordLib;
 
 public abstract class AbstractTestIndex extends Assert 
 {

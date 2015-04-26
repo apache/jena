@@ -17,7 +17,7 @@
 
 package org.seaborne.dboe.trans.bplustree;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 import org.junit.Assert ;
 import org.junit.Test ;

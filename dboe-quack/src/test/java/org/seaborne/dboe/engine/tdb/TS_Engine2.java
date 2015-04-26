@@ -24,9 +24,9 @@ import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
 import org.seaborne.dboe.engine.Quack ;
 
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
+import org.apache.jena.tdb.sys.SystemTDB ;
 
 @RunWith(Suite.class)
 @SuiteClasses( {

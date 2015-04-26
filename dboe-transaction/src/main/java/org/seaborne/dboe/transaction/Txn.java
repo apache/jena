@@ -19,7 +19,7 @@ package org.seaborne.dboe.transaction;
 
 import java.util.function.Supplier ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 /** Application utilities for transactions. */
 public class Txn {

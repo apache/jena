@@ -22,7 +22,7 @@ import org.apache.jena.atlas.lib.Tuple ;
 //import org.junit.Test ;
 import org.seaborne.dboe.engine.Slot ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 public class T_TestSlots
 {

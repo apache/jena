@@ -29,7 +29,7 @@ import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.dboe.transaction.txn.TransactionException ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 /**
  * Details tests of the transaction lifecycle in one JVM

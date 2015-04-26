@@ -30,7 +30,7 @@ import org.apache.jena.atlas.logging.FmtLog ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.join.HashJoin.Hasher ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 /** Implmentation of HashJoin that materizes its results and then returns an iterator.
  *  As much a test of the algorithm.  

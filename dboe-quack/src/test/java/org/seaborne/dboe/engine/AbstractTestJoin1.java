@@ -27,7 +27,7 @@ import org.junit.Assert ;
 import org.junit.Test ;
 import org.seaborne.dboe.engine.join.RowOrder ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 /** Simple stuff - includes answers, rather than comparing to InnerLoopJoinBase */
 public abstract class AbstractTestJoin1 extends Assert {

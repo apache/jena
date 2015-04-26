@@ -32,7 +32,7 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.StrUtils ;
 
-import com.hp.hpl.jena.shared.uuid.JenaUUID ;
+import org.apache.jena.shared.uuid.JenaUUID ;
 
 /** Misc class */
 public class L {

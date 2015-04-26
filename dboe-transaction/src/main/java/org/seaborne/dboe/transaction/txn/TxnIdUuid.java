@@ -22,7 +22,7 @@ import java.util.UUID ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.seaborne.dboe.migrate.L ;
 
-import com.hp.hpl.jena.shared.uuid.JenaUUID ;
+import org.apache.jena.shared.uuid.JenaUUID ;
 
 /** {@link TxnId} based on a {@link UUID}. 
  */

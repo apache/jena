@@ -20,19 +20,19 @@ package org.seaborne.dboe.engine.tdb;
 import org.apache.jena.atlas.lib.Lib ;
 import org.seaborne.dboe.engine.Quack ;
 
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.engine.Plan ;
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory ;
-import com.hp.hpl.jena.sparql.engine.main.QC ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.tdb.TDBException ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.engine.Plan ;
+import org.apache.jena.sparql.engine.QueryEngineFactory ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
+import org.apache.jena.sparql.engine.main.QC ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.tdb.TDBException ;
+import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class QueryEngineFactoryQuackTDB implements QueryEngineFactory
 {

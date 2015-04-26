@@ -25,9 +25,9 @@ import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
 import org.seaborne.dboe.engine.tdb.OpExecutorQuackTDB ;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
+import org.apache.jena.tdb.TDBFactory ;
 
 @RunWith(Parameterized.class)
 public class TestOpExecutorNodeId extends AbstractTestOpExecutor

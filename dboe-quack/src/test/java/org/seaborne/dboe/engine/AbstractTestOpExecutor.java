@@ -23,10 +23,10 @@ import org.junit.Assert ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory ;
-import com.hp.hpl.jena.sparql.engine.main.QC ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
+import org.apache.jena.query.* ;
+import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
+import org.apache.jena.sparql.engine.main.QC ;
+import org.apache.jena.sparql.resultset.ResultSetCompare ;
 
 /** Tests of OpExecutor */
 public abstract class AbstractTestOpExecutor extends Assert

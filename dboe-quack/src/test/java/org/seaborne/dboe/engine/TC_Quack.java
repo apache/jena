@@ -24,7 +24,7 @@ import org.seaborne.dboe.engine.Quack ;
 import org.seaborne.dboe.engine.Quack2 ;
 import org.seaborne.dboe.engine.tdb.TS_Engine2 ;
 
-import com.hp.hpl.jena.tdb.TDB ;
+import org.apache.jena.tdb.TDB ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {

@@ -21,8 +21,8 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.Var ;
 
 /** Special purpose binding for nothing. Surprisingly useful.
  */

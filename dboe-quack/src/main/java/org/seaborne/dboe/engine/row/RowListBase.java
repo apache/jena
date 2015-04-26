@@ -26,7 +26,7 @@ import org.apache.jena.atlas.logging.Log ;
 import org.seaborne.dboe.engine.Row ;
 import org.seaborne.dboe.engine.RowList ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 public class RowListBase<X> implements RowList<X>
 {

@@ -17,7 +17,7 @@
 
 package org.seaborne.dboe.engine.tdb;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 /** One-sided merge into an existing stream */
 public class MergeActionVarIdx

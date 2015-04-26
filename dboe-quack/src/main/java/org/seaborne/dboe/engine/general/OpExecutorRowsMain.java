@@ -30,21 +30,21 @@ import org.seaborne.dboe.engine.row.RowBuilderBase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Substitute ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterCommonParent ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutor ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Substitute ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.iterator.QueryIterCommonParent ;
+import org.apache.jena.sparql.engine.iterator.QueryIterRepeatApply ;
+import org.apache.jena.sparql.engine.main.OpExecutor ;
+import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
+import org.apache.jena.sparql.expr.ExprList ;
 
 /** OpExecutor in Node space using Quack and Rows.*/
 public class OpExecutorRowsMain extends OpExecutorBlockFilter {

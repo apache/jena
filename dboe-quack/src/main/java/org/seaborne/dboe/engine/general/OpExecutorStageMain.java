@@ -20,13 +20,13 @@ package org.seaborne.dboe.engine.general;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutor ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.main.OpExecutor ;
+import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
 
 /** OpExecutor in Node space; direct graph matcher; quads iterated over to make graph calls.
  *  Old style - not quack/rows (see OpExecutorRowsMain for that). 

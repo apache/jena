@@ -25,7 +25,7 @@ import java.util.Set ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Tuple ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 /** A predicate-object list of 'X' */
 public final class PredicateObjectList<X>

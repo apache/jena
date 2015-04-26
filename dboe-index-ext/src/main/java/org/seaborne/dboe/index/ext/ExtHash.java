@@ -44,7 +44,7 @@ import org.seaborne.dboe.sys.SystemIndex ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.util.Utils ;
+import org.apache.jena.sparql.util.Utils ;
 
 /** Extensible hashing
  * http://en.wikipedia.org/wiki/Extendible_hashing

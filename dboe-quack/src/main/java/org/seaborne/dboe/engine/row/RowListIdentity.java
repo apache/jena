@@ -23,7 +23,7 @@ import org.seaborne.dboe.engine.Row ;
 import org.seaborne.dboe.engine.RowLib ;
 import org.seaborne.dboe.engine.RowList ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 /** The join identity RowList : one row, no variables */ 
 public class RowListIdentity<X> implements RowList<X>

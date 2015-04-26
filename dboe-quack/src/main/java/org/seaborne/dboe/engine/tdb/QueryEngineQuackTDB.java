@@ -17,16 +17,16 @@
 
 package org.seaborne.dboe.engine.tdb ;
 
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
-import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.engine.QueryEngineFactory ;
+import org.apache.jena.sparql.engine.QueryEngineRegistry ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.tdb.solver.QueryEngineTDB ;
+import org.apache.jena.tdb.store.DatasetGraphTDB ;
 
 /**
  * Quack query engine - convenient to have quack specific

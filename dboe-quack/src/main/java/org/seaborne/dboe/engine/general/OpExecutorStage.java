@@ -22,15 +22,15 @@ import java.util.List ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.NotImplemented ;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.* ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterCommonParent ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply ;
-import com.hp.hpl.jena.sparql.graph.GraphUnionRead ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.* ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.iterator.QueryIterCommonParent ;
+import org.apache.jena.sparql.engine.iterator.QueryIterRepeatApply ;
+import org.apache.jena.sparql.graph.GraphUnionRead ;
 
 /** Execution framework for extension by matching a basic graph pattern;
  *  everything else is taken care of by the framework.

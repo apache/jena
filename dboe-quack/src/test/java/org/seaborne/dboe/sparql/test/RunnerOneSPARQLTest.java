@@ -26,7 +26,7 @@ import org.junit.runner.Runner ;
 import org.junit.runner.notification.Failure ;
 import org.junit.runner.notification.RunNotifier ;
 
-import com.hp.hpl.jena.sparql.junit.EarlTestCase ;
+import org.apache.jena.sparql.junit.EarlTestCase ;
 
 /** Run a single SPARQL test. */
 public class RunnerOneSPARQLTest extends Runner

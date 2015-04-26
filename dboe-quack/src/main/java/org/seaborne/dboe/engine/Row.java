@@ -19,7 +19,7 @@ package org.seaborne.dboe.engine;
 
 import java.util.Collection ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 public interface Row<X>  { 
     X get(Var key) ;

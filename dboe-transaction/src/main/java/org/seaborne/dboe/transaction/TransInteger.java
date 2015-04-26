@@ -29,7 +29,7 @@ import org.apache.jena.atlas.logging.Log ;
 import org.seaborne.dboe.migrate.L ;
 import org.seaborne.dboe.transaction.txn.* ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 /** A transaction component with an integer supporting MR+SW (=one writer AND many readers).
  * @see TransactionalInteger

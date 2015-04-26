@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertNotEquals ;
 import static org.junit.Assert.fail ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 import org.junit.Test ;
 

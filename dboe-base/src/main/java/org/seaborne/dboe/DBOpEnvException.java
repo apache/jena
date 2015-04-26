@@ -17,7 +17,7 @@
 
 package org.seaborne.dboe;
 
-import com.hp.hpl.jena.shared.JenaException;
+import org.apache.jena.shared.JenaException;
 
 public class DBOpEnvException extends JenaException
 {

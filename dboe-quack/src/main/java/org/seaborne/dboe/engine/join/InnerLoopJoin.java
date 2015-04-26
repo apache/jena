@@ -26,7 +26,7 @@ import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.SetUtils ;
 import org.seaborne.dboe.engine.* ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 /** Simple, dependable join.  
  * Two versions: one materializing the whole results, then returning a RowList and

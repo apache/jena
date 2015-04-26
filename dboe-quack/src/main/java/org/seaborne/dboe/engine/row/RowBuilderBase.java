@@ -17,7 +17,7 @@
 
 package org.seaborne.dboe.engine.row ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Lib ;

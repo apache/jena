@@ -24,7 +24,7 @@ import org.seaborne.dboe.engine.access.AccessRows ;
 import org.seaborne.dboe.engine.join.InnerLoopJoin ;
 import org.seaborne.dboe.engine.row.RowListBase ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 public class StepInnerLoopJoin<X> implements Step<X> {
 

@@ -19,15 +19,15 @@ package org.seaborne.dboe.engine.extra_tdb;
 
 import org.seaborne.dboe.engine.general.OpExecutorBlockFilter ;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.GraphTDB ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.tdb.store.GraphTDB ;
 
 /** Framework for writing an OpExecutor for TDB based on OpExecutorBlockFilter. */
 public abstract class OpExecutorTDBBase extends OpExecutorBlockFilter

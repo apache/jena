@@ -28,10 +28,10 @@ import org.junit.runners.Parameterized.Parameters ;
 import org.seaborne.dboe.engine.general.OpExecutorRowsMain ;
 import org.seaborne.dboe.engine.general.OpExecutorStageMain ;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutor ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.sparql.engine.main.OpExecutor ;
+import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
 
 /** Tests of OpExecutor that work in Node space and hence on a plain in-memory dataset */
 @RunWith(Parameterized.class)

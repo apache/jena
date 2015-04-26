@@ -19,9 +19,9 @@ package dev.binding ;
 
 import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.core.Var ;
 
 /**
  * A binding implementation that supports 0, 1, 2, or 3 bindings only but is

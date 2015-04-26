@@ -23,7 +23,7 @@ import java.util.Map ;
 import org.apache.jena.atlas.lib.DS ;
 import org.seaborne.dboe.engine.Row ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 public class RowBase<X> implements Row<X>
 {

@@ -21,18 +21,18 @@ import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.atlas.logging.Log ;
 import org.seaborne.dboe.engine.general.OpExecLib ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.op.* ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterDistinguishedVars ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutor ;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.op.* ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.iterator.QueryIterDistinguishedVars ;
+import org.apache.jena.sparql.engine.iterator.QueryIterRoot ;
+import org.apache.jena.sparql.engine.main.OpExecutor ;
+import org.apache.jena.sparql.engine.ref.Evaluator ;
 
 /**
  * Evaluator as a Tree.

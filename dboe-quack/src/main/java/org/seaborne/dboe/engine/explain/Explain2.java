@@ -22,7 +22,7 @@ import java.util.HashSet ;
 
 import org.slf4j.Logger ;
 
-import com.hp.hpl.jena.query.ARQ ;
+import org.apache.jena.query.ARQ ;
 
 public class Explain2
 {

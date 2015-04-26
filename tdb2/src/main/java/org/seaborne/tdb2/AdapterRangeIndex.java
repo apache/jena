@@ -21,9 +21,9 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 
-import com.hp.hpl.jena.tdb.base.record.Record ;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.RangeIndex ;
+import org.apache.jena.tdb.base.record.Record ;
+import org.apache.jena.tdb.base.record.RecordFactory ;
+import org.apache.jena.tdb.index.RangeIndex ;
 // And don't import any "dboe"
 
 public class AdapterRangeIndex implements RangeIndex {

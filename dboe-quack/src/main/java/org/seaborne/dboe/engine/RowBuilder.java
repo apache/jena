@@ -17,7 +17,7 @@
 
 package org.seaborne.dboe.engine;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 public interface RowBuilder<X>  { 
     RowBuilder<X> merge(Row<X> other) ;

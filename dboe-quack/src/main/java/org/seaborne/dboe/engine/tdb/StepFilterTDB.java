@@ -25,13 +25,13 @@ import org.apache.jena.atlas.logging.Log ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.row.RowBuilderBase ;
 
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprException ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.ExprException ;
+import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.tdb.store.NodeId ;
+import org.apache.jena.tdb.store.nodetable.NodeTable ;
 
 /** Filter step for TDB (which delays Binding fetching until needed) */ 
 public class StepFilterTDB implements Step<NodeId> {

@@ -28,8 +28,8 @@ import org.seaborne.dboe.engine.row.RowBuilderBase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.tdb.store.NodeId ;
 
 /** Given a {@code List<Tuple<Slot<NodeId>>>} (a basic graph pattern or quad pattern),
  *  generate a physical plan.  Assumes input is in the "best" order.

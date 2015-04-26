@@ -21,7 +21,7 @@ import static org.junit.Assert.fail ;
 import org.junit.Test ;
 import org.seaborne.dboe.transaction.txn.TransactionException ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 /**
  * Tests of transaction lifecycle in one JVM.

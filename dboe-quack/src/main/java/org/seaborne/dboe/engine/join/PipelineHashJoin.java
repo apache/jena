@@ -24,7 +24,7 @@ import org.apache.jena.atlas.lib.SetUtils ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.join.HashJoin.Hasher ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 /** Symmetric hash join that can read from either inputs */  
 public class PipelineHashJoin {

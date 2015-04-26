@@ -23,7 +23,7 @@ import java.util.List ;
 import java.util.Objects ;
 import java.util.concurrent.atomic.AtomicReference ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 /** 
  * A transaction as the composition of actions on components. 

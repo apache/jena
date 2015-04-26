@@ -21,7 +21,7 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Set ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 public interface RowList<X> extends Iterable<Row<X>>
 {

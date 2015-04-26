@@ -24,16 +24,16 @@ import org.apache.jena.atlas.logging.Log ;
 import org.junit.runner.Description ;
 import org.junit.runner.Runner ;
 
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.junit.* ;
-import com.hp.hpl.jena.sparql.vocabulary.TestManifest ;
-import com.hp.hpl.jena.sparql.vocabulary.TestManifestUpdate_11 ;
-import com.hp.hpl.jena.sparql.vocabulary.TestManifestX ;
-import com.hp.hpl.jena.sparql.vocabulary.TestManifest_11 ;
-import com.hp.hpl.jena.vocabulary.RDF ;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sparql.junit.* ;
+import org.apache.jena.sparql.vocabulary.TestManifest ;
+import org.apache.jena.sparql.vocabulary.TestManifestUpdate_11 ;
+import org.apache.jena.sparql.vocabulary.TestManifestX ;
+import org.apache.jena.sparql.vocabulary.TestManifest_11 ;
+import org.apache.jena.vocabulary.RDF ;
 
 /** In support of testing */
 public class LibTestSPARQL

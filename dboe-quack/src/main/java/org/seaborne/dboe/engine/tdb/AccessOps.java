@@ -38,7 +38,7 @@ import org.seaborne.dboe.engine.row.RowVarBinding ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 /** Support for AccessorTDB */
 public class AccessOps

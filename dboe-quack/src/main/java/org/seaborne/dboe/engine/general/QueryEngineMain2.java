@@ -17,19 +17,19 @@
 
 package org.seaborne.dboe.engine.general;
 
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.optimize.TransformScopeRename ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.engine.Plan ;
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
-import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.main.QC ;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.sparql.algebra.Algebra ;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.optimize.TransformScopeRename ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.engine.Plan ;
+import org.apache.jena.sparql.engine.QueryEngineFactory ;
+import org.apache.jena.sparql.engine.QueryEngineRegistry ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.main.QC ;
+import org.apache.jena.sparql.engine.main.QueryEngineMain ;
+import org.apache.jena.sparql.util.Context ;
 
 /** Query engine using substitution joins only - a test of the SubstitutionJoin code */ 
 public class QueryEngineMain2 extends QueryEngineMain {

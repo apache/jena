@@ -21,7 +21,7 @@ import java.util.Objects ;
 
 import org.seaborne.dboe.base.record.Record ;
 
-import com.hp.hpl.jena.sparql.core.DatasetChanges ;
+import org.apache.jena.sparql.core.DatasetChanges ;
 
 /** Temporary class to refien what to put into Jena itself.
  * @see DatasetChanges

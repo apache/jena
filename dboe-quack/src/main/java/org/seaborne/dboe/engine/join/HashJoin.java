@@ -24,7 +24,7 @@ import org.apache.jena.atlas.iterator.IteratorSlotted ;
 import org.apache.jena.atlas.lib.SetUtils ;
 import org.seaborne.dboe.engine.* ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 public class HashJoin
 {

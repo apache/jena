@@ -29,11 +29,11 @@ import org.slf4j.LoggerFactory ;
 import arq.cmd.CmdException ;
 import arq.cmdline.CmdARQ ;
 
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
-import com.hp.hpl.jena.tdb.sys.Names ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.store.tupletable.TupleIndex ;
+import org.apache.jena.tdb.sys.Names ;
 
 /**
  * Copy a TDB index.

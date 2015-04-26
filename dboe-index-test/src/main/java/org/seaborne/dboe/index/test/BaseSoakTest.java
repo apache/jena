@@ -22,7 +22,7 @@ import java.util.List ;
 import arq.cmd.CmdException ;
 import arq.cmdline.CmdGeneral ;
 
-import com.hp.hpl.jena.sparql.util.Utils ;
+import org.apache.jena.sparql.util.Utils ;
 
 import org.apache.jena.atlas.lib.RandomLib ;
 import org.apache.jena.atlas.logging.LogCtl ;

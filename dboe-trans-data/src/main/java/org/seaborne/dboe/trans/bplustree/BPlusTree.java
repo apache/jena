@@ -34,7 +34,7 @@ import org.seaborne.dboe.transaction.txn.TxnId ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 /** 
  * 

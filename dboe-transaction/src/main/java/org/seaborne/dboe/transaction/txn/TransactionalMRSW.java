@@ -24,7 +24,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock ;
 
 import org.apache.jena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 /** Implementation of the component interface for {@link TransactionalComponent}.
  *  Useful for in-memory transactions that do not provide durability or abort (undo). 

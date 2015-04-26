@@ -21,7 +21,7 @@ import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 import java.util.concurrent.atomic.AtomicLong ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 import org.apache.jena.atlas.lib.Pair ;
 import org.seaborne.dboe.base.block.Block ;

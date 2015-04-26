@@ -21,7 +21,7 @@ import org.apache.jena.atlas.lib.Tuple ;
 import org.seaborne.dboe.engine.access.AccessRows ;
 import org.seaborne.dboe.engine.join.* ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var ;
 
 /** Join library */ 
 public class Join

@@ -17,7 +17,7 @@
 
 package org.seaborne.dboe.transaction;
 
-import com.hp.hpl.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite ;
 
 /** Interface that encapulsated begin/abort|commit/close.
  * <p>The read lifcycle is:

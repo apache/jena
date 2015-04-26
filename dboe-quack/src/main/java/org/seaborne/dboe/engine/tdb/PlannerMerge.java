@@ -29,9 +29,9 @@ import org.seaborne.dboe.engine.PhysicalPlan ;
 import org.seaborne.dboe.engine.Slot ;
 import org.seaborne.dboe.engine.Step ;
 
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.tdb.store.NodeId ;
+import org.apache.jena.tdb.store.tupletable.TupleIndex ;
 
 public class PlannerMerge {
     // --- Merge

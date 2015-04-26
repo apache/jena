@@ -20,16 +20,16 @@ package org.seaborne.dboe.engine;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
-import com.hp.hpl.jena.tdb.TS_Factory ;
-import com.hp.hpl.jena.tdb.base.TC_Base ;
-import com.hp.hpl.jena.tdb.base.objectfile.TS_ObjectFile ;
-import com.hp.hpl.jena.tdb.index.TS_Index ;
-import com.hp.hpl.jena.tdb.lib.TS_LibTDB ;
-import com.hp.hpl.jena.tdb.solver.TS_SolverTDB ;
-import com.hp.hpl.jena.tdb.store.* ;
-import com.hp.hpl.jena.tdb.store.nodetable.TS_NodeTable ;
-import com.hp.hpl.jena.tdb.sys.TS_Sys ;
-import com.hp.hpl.jena.tdb.transaction.* ;
+import org.apache.jena.tdb.TS_Factory ;
+import org.apache.jena.tdb.base.TC_Base ;
+import org.apache.jena.tdb.base.objectfile.TS_ObjectFile ;
+import org.apache.jena.tdb.index.TS_Index ;
+import org.apache.jena.tdb.lib.TS_LibTDB ;
+import org.apache.jena.tdb.solver.TS_SolverTDB ;
+import org.apache.jena.tdb.store.* ;
+import org.apache.jena.tdb.store.nodetable.TS_NodeTable ;
+import org.apache.jena.tdb.sys.TS_Sys ;
+import org.apache.jena.tdb.transaction.* ;
 
 /** TDB tests run directly here as appropriate */
 

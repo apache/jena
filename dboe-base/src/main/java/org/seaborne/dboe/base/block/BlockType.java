@@ -21,7 +21,7 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.io.Printable ;
 import org.seaborne.dboe.DBOpEnvException ;
 
-import com.hp.hpl.jena.sparql.util.Named ;
+import org.apache.jena.sparql.util.Named ;
 
 public enum BlockType implements Printable, Named
 {
