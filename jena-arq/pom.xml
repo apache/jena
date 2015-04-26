@@ -203,7 +203,7 @@
           <groups>
             <group>
               <title>SPARQL Query and Update</title>
-              <packages>com.hp.hpl.jena.query:com.hp.hpl.jena.update</packages>
+              <packages>org.apache.jena.query:org.apache.jena.update</packages>
             </group>
             <group>
               <title>RIOT</title>
