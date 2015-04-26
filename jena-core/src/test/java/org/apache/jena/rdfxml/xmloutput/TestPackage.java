@@ -43,12 +43,6 @@ public class TestPackage extends TestCase{
         /* */
         suite.addTestSuite( PrettyWriterTest.class );
         suite.addTest(new TestWriterInterface("testInterface", null)); 
-        /* */
-        suite.addTest(new TestWriterInterface("testNoWriter", null)); 
-        /* */
-        suite.addTest(new TestWriterInterface("testAnotherWriter", null));
-        /* */
-        if (false) suite.addTest( BigAbbrevTestPackage.suite() ); // TODO may be obsolete. Ask Jeremy.
         suite.addTest( testWriterAndReader.suiteXML() );
         suite.addTest( testWriterAndReader.suiteXML_ABBREV() );
         suite.addTest( testWriterAndReader.suiteN_TRIPLE() );
