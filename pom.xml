@@ -74,7 +74,7 @@
         <!--<module>jena-fuseki1</module>-->
 	<module>jena-fuseki2</module>
 
-	<!-- <module>jena-permissions</module> Lots of output and warnings -->
+	<module>jena-permissions</module>
 
         <!-- Slow to build - exclude from dev build -->
         <!-- <module>jena-jdbc</module>           -->

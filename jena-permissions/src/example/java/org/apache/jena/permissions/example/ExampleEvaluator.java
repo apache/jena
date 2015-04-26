@@ -15,13 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.security.example;
+package org.apache.jena.permissions.example;
 
 import java.security.Principal;
 import java.util.Set;
 
 import org.apache.http.auth.BasicUserPrincipal;
-import org.apache.jena.security.SecurityEvaluator;
+import org.apache.jena.permissions.SecurityEvaluator;
 
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.AnonId;

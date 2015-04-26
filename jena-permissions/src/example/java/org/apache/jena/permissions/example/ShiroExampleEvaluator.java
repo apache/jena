@@ -15,11 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.security.example;
+package org.apache.jena.permissions.example;
 
 import java.util.Set;
 
-import org.apache.jena.security.SecurityEvaluator;
+import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;

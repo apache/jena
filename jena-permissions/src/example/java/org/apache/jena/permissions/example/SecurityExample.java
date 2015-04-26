@@ -15,11 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.security.example;
+package org.apache.jena.permissions.example;
 
 import java.net.URL;
 
-import org.apache.jena.security.Factory;
+import org.apache.jena.permissions.Factory;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
