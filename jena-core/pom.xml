@@ -117,6 +117,7 @@
 					</systemProperties>
 					<includes>
 						<include>com/hp/hpl/jena/test/TestPackage.java</include>
+						<include>**/*_CS.java</include>
 					</includes>
 				</configuration>
 			</plugin>

@@ -16,20 +16,39 @@
  * limitations under the License.
  */
 
-package org.apache.jena.testing_framework;
+package org.apache.jena.graph.impl;
 
+import org.junit.runner.RunWith;
+import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractImpl;
+import org.xenei.junit.contract.ContractSuite;
 import org.xenei.junit.contract.IProducer;
 
-public class ContractTemplate<P extends IProducer<?>> {
+@RunWith(ContractSuite.class)
+@ContractImpl(SimpleTransactionHandler.class)
+public class SimpleTransactionHandler_CS {
+	 
+	protected IProducer<SimpleTransactionHandler> graphProducer;
+	
+	public SimpleTransactionHandler_CS() {
+		graphProducer = new IProducer<SimpleTransactionHandler>() {
+			
+			@Override
+			public SimpleTransactionHandler newInstance() {
+				return new SimpleTransactionHandler();
+			}
 
-	private P producer;
+			@Override
+			public void cleanUp() {
+				// nothing to do
+			}
 
-	public final void setProducer(P producer) {
-		this.producer = producer;
+		};
 	}
 
-	protected final P getProducer() {
-		return producer;
+	@Contract.Inject
+	public final IProducer<SimpleTransactionHandler> getCollectionTestProducer() {
+		return graphProducer;
 	}
 
 }

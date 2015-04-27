@@ -57,9 +57,7 @@ import org.apache.jena.util.iterator.Map1;
 import static org.apache.jena.testing_framework.GraphHelper.*;
 
 /**
- * AbstractTestGraph provides a bunch of basic tests for something that purports
- * to be a Graph. The abstract method getGraph must be overridden in subclasses
- * to deliver a Graph of interest.
+ * Graph contract test.
  */
 @Contract(Graph.class)
 public class GraphContractTest<T extends Graph> extends

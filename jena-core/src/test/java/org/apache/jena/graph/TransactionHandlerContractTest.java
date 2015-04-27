@@ -29,7 +29,6 @@ import static org.junit.Assert.*;
 
 import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.impl.SimpleTransactionHandler;
 import org.apache.jena.shared.Command;
 import org.apache.jena.shared.JenaException;
 import org.xenei.junit.contract.IProducer;
@@ -47,18 +46,6 @@ public class TransactionHandlerContractTest {
 	private IProducer<TransactionHandler> producer;
 
 	public TransactionHandlerContractTest() {
-//		producer = new IProducer<TransactionHandler>() {
-//
-//			@Override
-//			public TransactionHandler newInstance() {
-//				return new SimpleTransactionHandler();
-//			}
-//
-//			@Override
-//			public void cleanUp() {
-//
-//			}
-//		};
 	}
 
 	@Contract.Inject

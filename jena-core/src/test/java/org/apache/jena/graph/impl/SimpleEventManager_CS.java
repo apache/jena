@@ -16,19 +16,38 @@
  * limitations under the License.
  */
 
-package org.apache.jena.testing_framework;
+package org.apache.jena.graph.impl;
+
+import org.junit.runner.RunWith;
+import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractImpl;
+import org.xenei.junit.contract.ContractSuite;
 
 import org.xenei.junit.contract.IProducer;
 
-public class ContractTemplate<P extends IProducer<?>> {
+/**
+ * Test the SimpleGraphFactory by extending AbstractTestGraphFactory and
+ * supplying new SimplGraphFactorys via getGraph.
+ */
+@RunWith(ContractSuite.class)
+@ContractImpl(SimpleEventManager.class)
+public class SimpleEventManager_CS {
 
-	private P producer;
+	private IProducer<SimpleEventManager> producer = new IProducer<SimpleEventManager>() {
 
-	public final void setProducer(P producer) {
-		this.producer = producer;
-	}
+		@Override
+		public SimpleEventManager newInstance() {
+			return new SimpleEventManager();
+		}
 
-	protected final P getProducer() {
+		@Override
+		public void cleanUp() {
+			// nothing to do.
+		}
+	};
+
+	@Contract.Inject
+	public IProducer<SimpleEventManager> getEventManagerProducer() {
 		return producer;
 	}
 

@@ -29,13 +29,13 @@ import org.xenei.junit.contract.IProducer;
 
 @RunWith(ContractSuite.class)
 @ContractImpl(GraphTripleStore.class)
-public class GraphTripleStoreTest {
+public class GraphTripleStoreMem_CS {
 
-	private IProducer<GraphTripleStore> producer = new IProducer<GraphTripleStore>() {
+	private IProducer<GraphTripleStoreMem> producer = new IProducer<GraphTripleStoreMem>() {
 
 		@Override
-		public GraphTripleStore newInstance() {
-			return new GraphTripleStore(Graph.emptyGraph);
+		public GraphTripleStoreMem newInstance() {
+			return new GraphTripleStoreMem(Graph.emptyGraph);
 		}
 
 		@Override
@@ -45,7 +45,7 @@ public class GraphTripleStoreTest {
 	};
 
 	@Contract.Inject
-	public IProducer<GraphTripleStore> getTripleStore() {
+	public IProducer<GraphTripleStoreMem> getTripleStore() {
 		return producer;
 	}
 }

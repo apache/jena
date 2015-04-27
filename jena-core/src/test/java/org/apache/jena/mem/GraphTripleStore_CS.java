@@ -16,13 +16,36 @@
  * limitations under the License.
  */
 
-package org.apache.jena.testing_framework;
+package org.apache.jena.mem;
 
-import org.apache.jena.rdf.model.Resource;
+import org.junit.runner.RunWith;
+import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractImpl;
+import org.xenei.junit.contract.ContractSuite;
 
-public interface IResourceProducer<X extends Resource> extends INodeProducer<X> {
-	/**
-	 * Returns true if the Resource implementation supports non URI values
-	 */
-	boolean supportsAnonymous();
+import org.apache.jena.graph.Graph;
+import org.apache.jena.mem.GraphTripleStore;
+import org.xenei.junit.contract.IProducer;
+
+@RunWith(ContractSuite.class)
+@ContractImpl(GraphTripleStore.class)
+public class GraphTripleStore_CS {
+
+	private IProducer<GraphTripleStore> producer = new IProducer<GraphTripleStore>() {
+
+		@Override
+		public GraphTripleStore newInstance() {
+			return new GraphTripleStore(Graph.emptyGraph);
+		}
+
+		@Override
+		public void cleanUp() {
+		}
+
+	};
+
+	@Contract.Inject
+	public IProducer<GraphTripleStore> getTripleStore() {
+		return producer;
+	}
 }
