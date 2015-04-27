@@ -18,10 +18,6 @@
 
 package org.apache.jena.graph.impl;
 
-import static org.apache.jena.testing_framework.GraphHelper.memGraph;
-
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.testing_framework.AbstractGraphProducer;
 import org.junit.runner.RunWith;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractImpl;
@@ -29,34 +25,29 @@ import org.xenei.junit.contract.ContractSuite;
 import org.xenei.junit.contract.IProducer;
 
 @RunWith(ContractSuite.class)
-@ContractImpl(WrappedGraph.class)
-public class TestWrappedGraph {
+@ContractImpl(SimpleGraphMaker.class)
+public class SimpleGraphMaker_CS {
 	 
-	protected IProducer<WrappedGraph> graphProducer;
+	protected IProducer<SimpleGraphMaker> graphProducer;
 	
-	public TestWrappedGraph() {
-		graphProducer = new AbstractGraphProducer<WrappedGraph>() {
+	public SimpleGraphMaker_CS() {
+		graphProducer = new IProducer<SimpleGraphMaker>() {
 			
 			@Override
-			protected WrappedGraph createNewGraph() {
-				return new WrappedGraph( memGraph() );
+			public SimpleGraphMaker newInstance() {
+				return new SimpleGraphMaker();
 			}
 
 			@Override
-			public Graph[] getDependsOn(Graph d) {
-				return null;
-			}
-
-			@Override
-			public Graph[] getNotDependsOn(Graph g) {
-				return new Graph[] { memGraph() };
+			public void cleanUp() {
+				// nothing to do
 			}
 
 		};
 	}
 
 	@Contract.Inject
-	public final IProducer<WrappedGraph> getDeltaTestProducer() {
+	public final IProducer<SimpleGraphMaker> getCollectionTestProducer() {
 		return graphProducer;
 	}
 

@@ -26,7 +26,6 @@ import org.xenei.junit.contract.ContractTest;
 import static org.junit.Assert.*;
 
 import static org.apache.jena.testing_framework.GraphHelper.*;
-import org.apache.jena.mem.GraphTripleStore;
 import org.apache.jena.graph.impl.TripleStore;
 import org.apache.jena.testing_framework.ContractTemplate;
 
@@ -43,21 +42,6 @@ public class TripleStoreContractTest<T extends TripleStore> extends
 	protected TripleStore store;
 
 	public TripleStoreContractTest() {
-		IProducer<TripleStore> producer = new IProducer<TripleStore>() {
-
-			@Override
-			public TripleStore newInstance() {
-				return new GraphTripleStore(memGraph());
-			}
-
-			@Override
-			public void cleanUp() {
-				// TODO Auto-generated method stub
-
-			}
-
-		};
-		setProducer((IProducer<T>) producer);
 	}
 
 	/**

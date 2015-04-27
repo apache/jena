@@ -30,7 +30,6 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphMaker;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.impl.SimpleGraphMaker;
 import org.apache.jena.shared.AlreadyExistsException;
 import org.apache.jena.shared.DoesNotExistException;
 import org.apache.jena.testing_framework.GraphHelper;
@@ -38,14 +37,8 @@ import org.xenei.junit.contract.IProducer;
 import org.apache.jena.testing_framework.TestUtils;
 
 /**
- * Abstract base class for testing graph factories. Subclasses define the method
- * <code>getGraphFactory()</code> which supplies a new graph factory to be
- * tested: ATGF invokes that during <code>setUp</code> and closes it in
- * <code>tearDown</code>.
- * <p>
- * This bunch of tests is not remotely exhaustive, but it was sufficent to drive
- * the development of the first full graph factory. (Although at the time it
- * wasn't abstract.)
+ * GraphMaker contract test.
+ *
  */
 @Contract(GraphMaker.class)
 public class GraphMakerContractTest {
@@ -55,18 +48,6 @@ public class GraphMakerContractTest {
 	private GraphMaker graphMaker;
 
 	public GraphMakerContractTest() {
-//		producer = new IProducer<GraphMaker>() {
-//
-//			@Override
-//			public GraphMaker newInstance() {
-//				return new SimpleGraphMaker();
-//			}
-//
-//			@Override
-//			public void cleanUp() {
-//
-//			}
-//		};
 	}
 
 	@Contract.Inject

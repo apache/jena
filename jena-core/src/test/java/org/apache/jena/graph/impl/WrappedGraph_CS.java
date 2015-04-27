@@ -20,11 +20,7 @@ package org.apache.jena.graph.impl;
 
 import static org.apache.jena.testing_framework.GraphHelper.memGraph;
 
-import java.util.HashSet;
-
 import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.CollectionGraph ;
 import org.apache.jena.testing_framework.AbstractGraphProducer;
 import org.junit.runner.RunWith;
 import org.xenei.junit.contract.Contract;
@@ -33,17 +29,17 @@ import org.xenei.junit.contract.ContractSuite;
 import org.xenei.junit.contract.IProducer;
 
 @RunWith(ContractSuite.class)
-@ContractImpl(CollectionGraph.class)
-public class TestCollectionGraph {
+@ContractImpl(WrappedGraph.class)
+public class WrappedGraph_CS {
 	 
-	protected IProducer<CollectionGraph> graphProducer;
+	protected IProducer<WrappedGraph> graphProducer;
 	
-	public TestCollectionGraph() {
-		graphProducer = new AbstractGraphProducer<CollectionGraph>() {
+	public WrappedGraph_CS() {
+		graphProducer = new AbstractGraphProducer<WrappedGraph>() {
 			
 			@Override
-			protected CollectionGraph createNewGraph() {
-				return new CollectionGraph( new HashSet<Triple>() );
+			protected WrappedGraph createNewGraph() {
+				return new WrappedGraph( memGraph() );
 			}
 
 			@Override
@@ -60,7 +56,7 @@ public class TestCollectionGraph {
 	}
 
 	@Contract.Inject
-	public final IProducer<CollectionGraph> getDeltaTestProducer() {
+	public final IProducer<WrappedGraph> getDeltaTestProducer() {
 		return graphProducer;
 	}
 

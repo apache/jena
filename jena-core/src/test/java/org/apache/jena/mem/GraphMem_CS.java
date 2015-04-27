@@ -40,7 +40,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 
 @RunWith(ContractSuite.class)
 @ContractImpl(GraphMem.class)
-public class GraphMemTest {
+public class GraphMem_CS {
 
 	protected IProducer<GraphMem> graphProducer = new AbstractGraphProducer<GraphMem>() {
 

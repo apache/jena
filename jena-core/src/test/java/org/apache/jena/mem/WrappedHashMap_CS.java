@@ -15,27 +15,38 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package org.apache.jena.testing_framework;
+package org.apache.jena.mem;
 
-/**
- * Creates the graph for testing. Implementations must track the creation of
- * graphs created with newGraph and close them when closeGraphs is called.
- * 
- */
-//public interface GraphProducerInterface<T> {
-//
-//	/**
-//	 * Returns a new Graph to take part in the test.
-//	 * 
-//	 * @return The graph implementation to test.
-//	 */
-//	public abstract Graph newGraph();
-//
-//	/**
-//	 * provides a hook to close down graphs. When called all graphs created by
-//	 * the newGraph() method should be closed. Note that some graphs may have
-//	 * been closed during the test, so graphs should be tested for being closed
-//	 * prior to closing.
-//	 */
-//	public abstract void closeGraphs();
-// }
+import org.junit.runner.RunWith;
+import org.xenei.junit.contract.Contract.Inject;
+import org.xenei.junit.contract.ContractImpl;
+import org.xenei.junit.contract.ContractSuite;
+import org.xenei.junit.contract.IProducer;
+
+@RunWith(ContractSuite.class)
+@ContractImpl(WrappedHashMap.class)
+public class WrappedHashMap_CS {
+
+	protected IProducer<WrappedHashMap> mapProducer = new IProducer<WrappedHashMap>() {
+
+		@Override
+		public WrappedHashMap newInstance() {
+			return new WrappedHashMap();
+		}
+
+		@Override
+		public void cleanUp() {
+			// nothing to do
+		}
+
+		
+
+	};
+
+	@Inject
+	public IProducer<WrappedHashMap> getGraphProducer() {
+		return mapProducer;
+	}
+
+
+}
