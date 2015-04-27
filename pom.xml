@@ -66,6 +66,8 @@
         <module>jena-parent</module>
 	<!-- <module>jena-shared-guava</module> -->
 	<!-- <module>jena-iri</module> -->
+	<module>jena-base</module>
+
 	<module>jena-core</module>
         <module>jena-arq</module>
         <module>jena-tdb</module> 
@@ -103,11 +105,11 @@
         <module>jena-parent</module>
         <module>jena-shaded-guava</module>
         <module>jena-iri</module>
-        <module>jena-core</module>
+        <module>jena-base</module>
 
+        <module>jena-core</module>
         <module>jena-arq</module>
         <module>jena-tdb</module>
-
         <module>apache-jena-libs</module>
 
         <module>jena-text</module>
