@@ -21,10 +21,10 @@ package org.apache.jena.riot.lang;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.ErrorHandlerTestLib ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
-import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -72,13 +72,13 @@ public class TestLangTrig extends BaseTest
     // Also need to check that the RiotExpection is called in normal use. 
     
     // Bad terms.
-    @Test (expected=ExWarning.class)
+    @Test (expected=ExFatal.class)
     public void trig_20()     { parse("@prefix ex:  <bad iri> .", "{ ex:s ex:p 123 }") ; }
     
-    @Test (expected=ExWarning.class)
+    @Test (expected=ExFatal.class)
     public void trig_21()     { parse("@prefix ex:  <http://example/> .", "{ ex:s <http://example/broken p> 123 }") ; }
     
-    @Test (expected=ExWarning.class)
+    @Test (expected=ExFatal.class)
     public void trig_22()     { parse("{ <x> <p> 'number'^^<bad uri> }") ; }
 
     @Test (expected=ExWarning.class)

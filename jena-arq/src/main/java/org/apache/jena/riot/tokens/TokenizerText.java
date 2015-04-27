@@ -37,7 +37,7 @@ public final class TokenizerText implements Tokenizer
     // TODO Remove CNTL and make SYMBOLS
     // Drop through to final general symbol/keyword reader, including <=, != 
     // Care with <=
-    // STRING, not STIRNG1/2, LONG_STRING1,2
+    // STRING, not STRING1/2, LONG_STRING1/2
     // Policy driven for CURIES?
     
     // Various allow/deny options (via checker?)
@@ -432,36 +432,36 @@ public final class TokenizerText implements Tokenizer
         stringBuilder.setLength(0) ;
         for (;;) {
             int ch = reader.readChar() ;
-            if ( ch == EOF )
-                exception("Broken IRI (End of file): %s", stringBuilder.toString()) ;
-            if ( ch == '\n' )
-                exception("Broken IRI (newline): %s", stringBuilder.toString()) ;
-            if ( ch == '\r' )
-                exception("Broken IRI (CR): %s", stringBuilder.toString()) ;
-            if ( ch == CH_GT )
-                return stringBuilder.toString() ;
-            if ( ch == '\\' ) {
-                if ( VeryVeryLax )
-                    ch = readCharEscapeAnyURI() ;
-                else
-                    // NORMAL
-                    ch = readUnicodeEscape() ;
-                // Drop through.
+            switch(ch) {
+                case EOF:
+                    exception("Broken IRI (End of file): %s", stringBuilder.toString()) ;
+                case NL:
+                    exception("Broken IRI (newline): %s", stringBuilder.toString()) ;
+                case CR:
+                    exception("Broken IRI (CR): %s", stringBuilder.toString()) ;
+                case CH_GT:
+                    // Done!
+                    return stringBuilder.toString() ;
+                case CH_RSLASH:
+                    if ( VeryVeryLax )
+                        ch = readCharEscapeAnyURI() ;
+                    else
+                        // NORMAL
+                        ch = readUnicodeEscape() ;
+                    break ;
             }
 
             if ( !VeryVeryLax ) {
-                // JENA-911
-//                if ( ch == 0x09 )
-//                    exception("Broken IRI (Tab character): %s", stringBuilder.toString()) ;
-//                if ( ch <= 0x19 )
-//                    exception("Broken IRI (control char 0x%02X): %s", ch, stringBuilder.toString()) ;
-//                if ( ch == 0x20 )
-//                    exception("Broken IRI (space): %s...", stringBuilder.toString()) ;
-//                if ( ch == '"' || ch == '{' || ch == '}' || ch == '|' || ch == '^' || ch == '`')
-//                    exception("Broken IRI (Illegal character 0x%02X, '%c'): %s", ch, (char)ch, stringBuilder.toString()) ;
-                // Ban certain very bad characters
-                if ( ch == '<' )
-                    exception("Broken IRI (bad character: '%c'): %s", ch, stringBuilder.toString()) ;
+                if ( ch == CH_LT )  // '<' -- very bad
+                    exception("Broken IRI (bad character: '%c'): %s", (char)ch, stringBuilder.toString()) ;
+                if ( ch == TAB )
+                    exception("Broken IRI (Tab character): %s", stringBuilder.toString()) ;
+                if ( ch <= 0x19 )
+                    exception("Broken IRI (control char 0x%02X): %s", ch, stringBuilder.toString()) ;
+                if ( ch == SPC )
+                    exception("Broken IRI (space): %s...", stringBuilder.toString()) ;
+                if ( ch == '"' || ch == '{' || ch == '}' || ch == '|' || ch == '^' || ch == '`')
+                    exception("Broken IRI (Illegal character 0x%02X, '%c'): %s", ch, (char)ch, stringBuilder.toString()) ;
             }
             insertCodepoint(stringBuilder, ch) ;
         }
