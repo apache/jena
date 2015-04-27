@@ -22,8 +22,6 @@ import static org.apache.jena.atlas.iterator.Iter.apply ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.io.Printable ;
-import org.apache.jena.atlas.iterator.ActionPrint ;
-
 
 public class StreamsPrint
 {

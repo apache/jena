@@ -16,10 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.iterator;
+package org.apache.jena.sdb.print;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.io.Printable ;
+import org.apache.jena.atlas.iterator.Action ;
 
 public class ActionPrint <T extends Printable> implements Action<T> 
 {
