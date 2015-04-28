@@ -59,12 +59,12 @@ public class IRILib
     private static char[] charsFilename =
         // reserved, + non-chars + nasties.
         // Leave : (Windows drive charcater) and / (separator) alone
-        // include SPC and ~
+        // include SPC.
+        // Should this include "~"?
         { '!', '*', '"', '\'', '(', ')', ';', /*':',*/ '@', '&', 
           '=', '+', '$', ',', /*'/',*/ '?', '%', '#', '[', ']',
           '{', '}', '|', '\\', '`', '^',
-          ' ', '<', '>', '\n', '\r', '\t',
-          '~'} ;
+          ' ', '<', '>', '\n', '\r', '\t'} ;
 
     private static char[] charsPath =  
     {   // Reserved except leave the separators alone. 
