@@ -22,6 +22,7 @@ import java.math.BigInteger ;
 import java.util.HashSet ;
 import java.util.Set ;
 
+import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
@@ -34,6 +35,7 @@ import org.apache.jena.n3.JenaURIException ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.riot.checker.CheckerIRI ;
+import org.apache.jena.riot.out.EscapeStr ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.RiotLib ;
@@ -453,144 +455,20 @@ public class ParserBase
 //    { return unescape(s, '\\', true, line, column) ; }
 
     
+    // Do we nee dthe line/column versions?  
+    // Why not catch exceptions and comvert to  QueryParseException
+    
     public static String unescapeStr(String s, int line, int column)
     { return unescape(s, '\\', false, line, column) ; }
     
     // Worker function
-    public static String unescape(String s, char escape, boolean pointCodeOnly, int line, int column)
-    {
-        int i = s.indexOf(escape) ;
-        
-        if ( i == -1 )
-            return s ;
-        
-        // Dump the initial part straight into the string buffer
-        StringBuilder sb = new StringBuilder(s.substring(0,i)) ;
-        
-        for ( ; i < s.length() ; i++ )
-        {
-            char ch = s.charAt(i) ;
-            // Keep line and column numbers.
-            switch (ch)
-            {
-                case '\n': 
-                case '\r':
-                    line++ ;
-                    column = 1 ;
-                    break ;
-                default:
-                    column++ ;
-                    break ;
-            }
-
-            if ( ch != escape )
-            {
-                sb.append(ch) ;
-                continue ;
-            }
-                
-            // Escape
-            if ( i >= s.length()-1 )
-                throwParseException("Illegal escape at end of string", line, column) ;
-            char ch2 = s.charAt(i+1) ;
-            column = column+1 ;
-            i = i + 1 ;
-            
-            // \\u and \\U
-            if ( ch2 == 'u' )
-            {
-                // i points to the \ so i+6 is next character
-                if ( i+4 >= s.length() )
-                    throwParseException("\\u escape too short", line, column) ;
-                int x = hex(s, i+1, 4, line, column) ;
-                sb.append((char)x) ;
-                // Jump 1 2 3 4 -- already skipped \ and u
-                i = i+4 ;
-                column = column+4 ;
-                continue ;
-            }
-            if ( ch2 == 'U' )
-            {
-                // i points to the \ so i+6 is next character
-                if ( i+8 >= s.length() )
-                    throwParseException("\\U escape too short", line, column) ;
-                int x = hex(s, i+1, 8, line, column) ;
-                // Convert to UTF-16 codepoint pair.
-                sb.append((char)x) ;
-                // Jump 1 2 3 4 5 6 7 8 -- already skipped \ and u
-                i = i+8 ;
-                column = column+8 ;
-                continue ;
-            }
-            
-            // Are we doing just point code escapes?
-            // If so, \X-anything else is legal as a literal "\" and "X" 
-            
-            if ( pointCodeOnly )
-            {
-                sb.append('\\') ;
-                sb.append(ch2) ;
-                i = i + 1 ;
-                continue ;
-            }
-            
-            // Not just codepoints.  Must be a legal escape.
-            char ch3 = 0 ;
-            switch (ch2)
-            {
-                case 'n': ch3 = '\n' ;  break ; 
-                case 't': ch3 = '\t' ;  break ;
-                case 'r': ch3 = '\r' ;  break ;
-                case 'b': ch3 = '\b' ;  break ;
-                case 'f': ch3 = '\f' ;  break ;
-                case '\'': ch3 = '\'' ; break ;
-                case '\"': ch3 = '\"' ; break ;
-                case '\\': ch3 = '\\' ; break ;
-                default:
-                    throwParseException("Unknown escape: \\"+ch2, line, column) ;
-            }
-            sb.append(ch3) ;
+    public static String unescape(String s, char escape, boolean pointCodeOnly, int line, int column) {
+        try {
+            return EscapeStr.unescape(s, escape, pointCodeOnly) ;
+        } catch (AtlasException ex) {
+            throwParseException(ex.getMessage(), line, column) ;
+            return null ;
         }
-        return sb.toString() ;
-    }
-
-    // Line and column that started the escape
-    public static int hex(String s, int i, int len, int line, int column)
-    {
-//        if ( i+len >= s.length() )
-//        {
-//            
-//        }
-        int x = 0 ;
-        for ( int j = i ; j < i+len ; j++ )
-        {
-           char ch = s.charAt(j) ;
-           column++ ;
-           int k = 0  ;
-           switch (ch)
-           {
-               case '0': k = 0 ; break ; 
-               case '1': k = 1 ; break ;
-               case '2': k = 2 ; break ;
-               case '3': k = 3 ; break ;
-               case '4': k = 4 ; break ;
-               case '5': k = 5 ; break ;
-               case '6': k = 6 ; break ;
-               case '7': k = 7 ; break ;
-               case '8': k = 8 ; break ;
-               case '9': k = 9 ; break ;
-               case 'A': case 'a': k = 10 ; break ;
-               case 'B': case 'b': k = 11 ; break ;
-               case 'C': case 'c': k = 12 ; break ;
-               case 'D': case 'd': k = 13 ; break ;
-               case 'E': case 'e': k = 14 ; break ;
-               case 'F': case 'f': k = 15 ; break ;
-               default:
-                   throwParseException("Illegal hex escape: "+ch, line, column) ;
-           }
-           x = (x<<4)+k ;
-        }
-        return x ;
     }
     
     public static String  unescapePName(String s, int line, int column)
