@@ -16,10 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.util ;
+package org.apache.jena.atlas.lib ;
 
-import org.apache.jena.sparql.ARQException ;
+import org.apache.jena.atlas.AtlasException ;
 
+/** A Timer of operations */ 
 public class Timer {
 
     protected long    timeFinish = -1 ;
@@ -30,7 +31,7 @@ public class Timer {
 
     public void startTimer() {
         if ( inTimer )
-            throw new ARQException("Already in timer") ;
+            throw new AtlasException("Already in timer") ;
 
         timeStart = System.currentTimeMillis() ;
         timeFinish = -1 ;
@@ -40,7 +41,7 @@ public class Timer {
     /** Return time in millisecods */
     public long endTimer() {
         if ( !inTimer )
-            throw new ARQException("Not in timer") ;
+            throw new AtlasException("Not in timer") ;
         timeFinish = System.currentTimeMillis() ;
         inTimer = false ;
         return getTimeInterval() ;
@@ -48,15 +49,15 @@ public class Timer {
 
     public long readTimer() {
         if ( !inTimer )
-            throw new ARQException("Not in timer") ;
+            throw new AtlasException("Not in timer") ;
         return System.currentTimeMillis() - timeStart ;
     }
 
     public long getTimeInterval() {
         if ( inTimer )
-            throw new ARQException("Still timing") ;
+            throw new AtlasException("Still timing") ;
         if ( timeFinish == -1 )
-            throw new ARQException("No valid interval") ;
+            throw new AtlasException("No valid interval") ;
 
         return timeFinish - timeStart ;
     }

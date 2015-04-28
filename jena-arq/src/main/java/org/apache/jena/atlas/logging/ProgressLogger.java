@@ -19,7 +19,7 @@
 package org.apache.jena.atlas.logging;
 
 import static org.apache.jena.sparql.util.Utils.nowAsString ;
-import org.apache.jena.sparql.util.Timer ;
+import org.apache.jena.atlas.lib.Timer ;
 import org.slf4j.Logger ;
 
 /** Progress monitor */

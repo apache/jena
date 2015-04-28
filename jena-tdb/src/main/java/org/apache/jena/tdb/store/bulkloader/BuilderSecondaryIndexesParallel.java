@@ -20,7 +20,7 @@ package org.apache.jena.tdb.store.bulkloader;
 
 import java.util.concurrent.Semaphore ;
 
-import org.apache.jena.sparql.util.Timer ;
+import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.tdb.store.tupletable.TupleIndex ;
 
 public class BuilderSecondaryIndexesParallel implements BuilderSecondaryIndexes

@@ -22,9 +22,9 @@ import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.sparql.util.Timer ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.store.GraphTDB ;
 import org.apache.jena.tdb.store.bulkloader.BulkLoader ;

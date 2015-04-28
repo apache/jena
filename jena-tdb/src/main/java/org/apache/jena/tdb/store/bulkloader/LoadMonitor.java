@@ -21,9 +21,9 @@ package org.apache.jena.tdb.store.bulkloader;
 import static org.apache.jena.sparql.util.Utils.nowAsString ;
 import org.apache.jena.atlas.event.Event ;
 import org.apache.jena.atlas.event.EventManager ;
+import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.StringUtils ;
-import org.apache.jena.sparql.util.Timer ;
 import org.slf4j.Logger ;
 
 public final class LoadMonitor

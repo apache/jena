@@ -18,7 +18,7 @@
 
 package org.apache.jena.tdb.store.bulkloader;
 
-import org.apache.jena.sparql.util.Timer ;
+import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.tdb.store.tupletable.TupleIndex ;
 
 public class BuilderSecondaryIndexesInterleaved implements BuilderSecondaryIndexes

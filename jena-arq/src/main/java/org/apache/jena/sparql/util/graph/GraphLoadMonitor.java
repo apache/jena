@@ -20,8 +20,8 @@ package org.apache.jena.sparql.util.graph;
 
 import java.util.Date ;
 
+import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.sparql.util.StringUtils ;
-import org.apache.jena.sparql.util.Timer ;
 
 // To be retired.
 // Use a sink instead.

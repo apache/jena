@@ -21,8 +21,8 @@ package org.apache.jena.tdb.store;
 import java.util.Date ;
 
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.sparql.util.StringUtils ;
-import org.apache.jena.sparql.util.Timer ;
 
 
 public class SinkProgress<X> implements Sink<X>

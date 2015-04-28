@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
+import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.util.Timer ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
