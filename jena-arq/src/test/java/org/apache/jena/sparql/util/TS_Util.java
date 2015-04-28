@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.util;
 
+import org.apache.jena.atlas.lib.TestDateTimeUtils ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
@@ -27,7 +28,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     TestDateTimeParsing.class ,
     TestList.class ,
     TestVersion.class ,
-    TestUtils.class ,
+    TestDateTimeUtils.class ,
     TestFmtUtils.class
 })
 

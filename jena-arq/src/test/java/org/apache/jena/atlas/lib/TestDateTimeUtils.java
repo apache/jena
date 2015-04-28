@@ -15,35 +15,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.sparql.util;
+package org.apache.jena.atlas.lib;
 
-import static org.apache.jena.sparql.util.Utils.calendarToXSDDateString ;
-import static org.apache.jena.sparql.util.Utils.calendarToXSDDateTimeString ;
-import static org.apache.jena.sparql.util.Utils.calendarToXSDTimeString ;
 import static org.junit.Assert.*;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.junit.Test;
 
-public class TestUtils {
+public class TestDateTimeUtils {
 
 	@Test
 	public void testCalendarToXSDDateTimeString_1() throws Exception {
 		Calendar cal = createCalendar(1984, Calendar.MARCH, 22, 14, 32, 1, 0, "Z") ;
-		assertEquals("1984-03-22T14:32:01+00:00", calendarToXSDDateTimeString(cal));
+		assertEquals("1984-03-22T14:32:01+00:00", DateTimeUtils.calendarToXSDDateTimeString(cal));
 		cal.setTimeZone(TimeZone.getTimeZone("MST"));
-		assertEquals("1984-03-22T07:32:01-07:00", calendarToXSDDateTimeString(cal));
+		assertEquals("1984-03-22T07:32:01-07:00", DateTimeUtils.calendarToXSDDateTimeString(cal));
 	}
 
     @Test
     public void testCalendarToXSDDateTimeString_2() throws Exception {
         Calendar cal = createCalendar(1984, Calendar.MARCH, 22, 14, 32, 1, 50, "Z") ;
-        assertEquals("1984-03-22T14:32:01.050+00:00", calendarToXSDDateTimeString(cal));
+        assertEquals("1984-03-22T14:32:01.050+00:00", DateTimeUtils.calendarToXSDDateTimeString(cal));
         cal.setTimeZone(TimeZone.getTimeZone("MST"));
-        assertEquals("1984-03-22T07:32:01.050-07:00", calendarToXSDDateTimeString(cal));
+        assertEquals("1984-03-22T07:32:01.050-07:00", DateTimeUtils.calendarToXSDDateTimeString(cal));
     }
 
 
@@ -51,27 +49,27 @@ public class TestUtils {
 	public void testCalendarToXSDDateString() throws Exception {
 		Calendar cal = createCalendar(1984, Calendar.MARCH, 22, 23, 59, 1, 0, "Z");
 		cal.setTimeZone(TimeZone.getTimeZone("Z")) ;
-		assertEquals("1984-03-22+00:00", calendarToXSDDateString(cal));
+		assertEquals("1984-03-22+00:00", DateTimeUtils.calendarToXSDDateString(cal));
 		cal.setTimeZone(TimeZone.getTimeZone("MST"));
-		assertEquals("1984-03-22-07:00", calendarToXSDDateString(cal));
+		assertEquals("1984-03-22-07:00", DateTimeUtils.calendarToXSDDateString(cal));
 	}
     
     @Test
 	public void testCalendarToXSDTimeString_1() throws Exception {
 		Calendar cal = createCalendar(1984, Calendar.MARCH, 22, 14, 32, 1, 0, "GMT+01:00");
-		assertEquals("14:32:01+01:00", calendarToXSDTimeString(cal));
+		assertEquals("14:32:01+01:00", DateTimeUtils.calendarToXSDTimeString(cal));
 		// Different timezone - moves the cal point-in-time.
 		cal.setTimeZone(TimeZone.getTimeZone("MST"));
-		assertEquals("06:32:01-07:00", calendarToXSDTimeString(cal));
+		assertEquals("06:32:01-07:00", DateTimeUtils.calendarToXSDTimeString(cal));
 	}
 	
     @Test
     public void testCalendarToXSDTimeString_2() throws Exception {
         Calendar cal = createCalendar(1984, Calendar.MARCH, 22, 14, 32, 1, 500, "GMT+01:00");
-        assertEquals("14:32:01.500+01:00", calendarToXSDTimeString(cal));
+        assertEquals("14:32:01.500+01:00", DateTimeUtils.calendarToXSDTimeString(cal));
         // Different timezone - moves the cal point-in-time.
         cal.setTimeZone(TimeZone.getTimeZone("MST"));
-        assertEquals("06:32:01.500-07:00", calendarToXSDTimeString(cal));
+        assertEquals("06:32:01.500-07:00", DateTimeUtils.calendarToXSDTimeString(cal));
     }
     
 	private static Calendar createCalendar(int year, int month, int dayOfMonth, int hourOfDay,

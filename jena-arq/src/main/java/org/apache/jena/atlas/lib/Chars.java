@@ -174,6 +174,15 @@ public class Chars
         
     }
 
+    /** Is char in the array? */
+    public static boolean charInArray(int ch, char[] chars) {
+        for ( int xch : chars ) {
+            if ( ch == xch )
+                return true ;
+        }
+        return false ;
+    }
+
     /** End of file - not a Unicode codepoint */
     public static final int EOF             = -1 ;
     // BOM  : U+FEFF encoded in bytes as xEF,0xBB,0xBF

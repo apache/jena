@@ -46,10 +46,18 @@
       <version>3.0.0-SNAPSHOT</version>
     </dependency>
 
+    <!-- Remove when jena-base is used -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-csv</artifactId>
     </dependency> 
+
+    <!-- Remove when jena-base is used -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+
     
   </dependencies>
 

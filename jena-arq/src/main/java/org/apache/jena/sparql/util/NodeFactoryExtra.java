@@ -20,6 +20,7 @@ package org.apache.jena.sparql.util;
 
 import java.util.Calendar;
 
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
@@ -214,35 +215,35 @@ public class NodeFactoryExtra
     /** Calendar to xsd:dateTime Node */
     public static Node dateTimeToNode(Calendar c)
     {
-        String lex = Utils.calendarToXSDDateTimeString(c);
+        String lex = DateTimeUtils.calendarToXSDDateTimeString(c);
         return NodeFactory.createLiteral(lex, XSDDatatype.XSDdateTime);
     }
     
     /** Calendar to xsd:date Node */
     public static Node dateToNode(Calendar c)
     {
-        String lex = Utils.calendarToXSDDateString(c);
+        String lex = DateTimeUtils.calendarToXSDDateString(c);
         return NodeFactory.createLiteral(lex, XSDDatatype.XSDdate);
     }
     
     /** Calendar to xsd:time Node */
     public static Node timeToNode(Calendar c)
     {
-        String lex = Utils.calendarToXSDTimeString(c);
+        String lex = DateTimeUtils.calendarToXSDTimeString(c);
         return NodeFactory.createLiteral(lex, XSDDatatype.XSDtime);
     }
 
     /** Now, as xsd:dateTime Node */
     public static Node nowAsDateTime()
     {
-        String lex = Utils.nowAsXSDDateTimeString() ;
+        String lex = DateTimeUtils.nowAsXSDDateTimeString() ;
         return NodeFactory.createLiteral(lex, XSDDatatype.XSDdateTime) ;
     }
 
     /** Today, as xsd:date Node */
     public static Node todayAsDate()
     {
-        String lex = Utils.todayAsXSDDateString() ;
+        String lex = DateTimeUtils.todayAsXSDDateString() ;
         return NodeFactory.createLiteral(lex, XSDDatatype.XSDdate) ;
     }
 

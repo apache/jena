@@ -57,6 +57,7 @@ import javax.xml.datatype.DatatypeFactory ;
 import javax.xml.datatype.Duration ;
 import javax.xml.datatype.XMLGregorianCalendar ;
 
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.DatatypeFormatException ;
@@ -277,7 +278,7 @@ public abstract class NodeValue extends ExprNode
 
     public static NodeValue makeDateTime(Calendar cal)
     {
-        String lex = Utils.calendarToXSDDateTimeString(cal) ;
+        String lex = DateTimeUtils.calendarToXSDDateTimeString(cal) ;
         return NodeValue.makeNode(lex, XSDdateTime) ;
     }
 
@@ -290,7 +291,7 @@ public abstract class NodeValue extends ExprNode
 
     public static NodeValue makeDate(Calendar cal)
     { 
-        String lex = Utils.calendarToXSDDateString(cal) ;
+        String lex = DateTimeUtils.calendarToXSDDateString(cal) ;
         return NodeValue.makeNode(lex, XSDdate) ;
     }
     
@@ -428,7 +429,7 @@ public abstract class NodeValue extends ExprNode
     
     public static NodeValue makeNodeDateTime(Calendar date)
     {
-        String lex = Utils.calendarToXSDDateTimeString(date) ;
+        String lex = DateTimeUtils.calendarToXSDDateTimeString(date) ;
         NodeValue nv = makeNode(lex, XSDdateTime) ;
         return nv ;
     }
@@ -441,7 +442,7 @@ public abstract class NodeValue extends ExprNode
     
     public static NodeValue makeNodeDate(Calendar date)
     {
-        String lex = Utils.calendarToXSDDateString(date) ;
+        String lex = DateTimeUtils.calendarToXSDDateString(date) ;
         NodeValue nv = makeNode(lex, XSDdate) ;
         return nv ;
     }

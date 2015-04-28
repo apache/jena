@@ -16,39 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.out;
+package org.apache.jena.atlas.lib;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.io.OutputUtils ;
 
+/** Escape processing for strings */ 
 public class EscapeStr
 {
-    // Tests: TestOutput
-    // See also OutputLangUtils.outputEsc.
-    private final boolean ascii ;
-
-    public EscapeStr(CharSpace charSpace) { this.ascii = ( charSpace == CharSpace.ASCII ) ; } 
-
-    public void writeURI(AWriter w, String s)
-    {
-        if ( ascii )
-            stringEsc(w, s, true, ascii) ;
-        else
-            // It's a URI - assume legal.
-            w.print(s) ;
-    }
-
-    public void writeStr(AWriter w, String s) 
-    {
-        stringEsc(w, s, true, ascii) ;
-    }
-
-    public void writeStrMultiLine(AWriter w, String s) 
-    {
-        // N-Triples does not have """
-        stringEsc(w, s, false, ascii) ;
-    }
 
     // Utility
     /*

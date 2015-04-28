@@ -23,9 +23,6 @@ import java.util.ArrayList ;
 import java.util.List ;
 import java.util.Map ;
 
-import org.apache.jena.riot.out.EscapeStr ;
-import org.apache.jena.riot.system.RiotChars ;
-
 
 public class StrUtils //extends StringUtils
 {
@@ -215,7 +212,7 @@ public class StrUtils //extends StringUtils
         for ( ; idx < N ; idx++ )
         {
             char ch = str.charAt(idx) ;
-            if ( RiotChars.charInArray(ch, escapees) )
+            if ( Chars.charInArray(ch, escapees) )
                 break ;
         }
         if ( idx == N )
@@ -227,7 +224,7 @@ public class StrUtils //extends StringUtils
         for ( ; idx < N ; idx++ )
         {
             char ch = str.charAt(idx) ;
-            if ( RiotChars.charInArray(ch, escapees) )
+            if ( Chars.charInArray(ch, escapees) )
             {
                 Chars.encodeAsHex(buff, marker, ch) ;
                 continue ;

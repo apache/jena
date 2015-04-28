@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,23 +16,34 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.lib;
+package org.apache.jena.riot.out;
 
-/** Binding of a value to a Callback as a Runnable */
-public class Pingback<T> implements Runnable
-{
-    private final T arg ;
-    private final Callback<T> callback ; 
+import org.apache.jena.atlas.io.AWriter ;
+import org.apache.jena.atlas.lib.EscapeStr ;
 
-    private Pingback(Callback<T> callback, T arg)
-    {
-        this.arg = arg ;
-        this.callback = callback ;
+public class EscapeProc {
+    private final boolean ascii ;
+
+    public EscapeProc(CharSpace charSpace) {
+        this.ascii = ( charSpace == CharSpace.ASCII ) ; 
+    } 
+
+    public void writeURI(AWriter w, String s) {
+        if ( ascii )
+            EscapeStr.stringEsc(w, s, true, ascii) ;
+        else
+            // It's a URI - assume legal.
+            w.print(s) ;
     }
 
-    @Override
-    public void run()
-    {
-        callback.proc(arg) ;
+    public void writeStr(AWriter w, String s) {
+        EscapeStr.stringEsc(w, s, true, ascii) ;
     }
+
+    public void writeStrMultiLine(AWriter w, String s) {
+        // N-Triples does not have """
+        EscapeStr.stringEsc(w, s, false, ascii) ;
+    }
+
 }
+

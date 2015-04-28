@@ -26,11 +26,11 @@ public class NodeFormatterNT extends NodeFormatterBase
     // Formatting for NTriples 
     // Turtles extends this class to intercept forms it can do better.
 
-    private final EscapeStr escapeProc ; 
+    private final EscapeProc escapeProc ; 
 
     public NodeFormatterNT() { this(CharSpace.UTF8) ; }
 
-    public NodeFormatterNT(CharSpace charSpace) { escapeProc = new EscapeStr(charSpace) ;}
+    public NodeFormatterNT(CharSpace charSpace) { escapeProc = new EscapeProc(charSpace) ;}
 
     @Override
     public void formatURI(AWriter w, String uriStr)

@@ -18,6 +18,7 @@
 
 package org.apache.jena.atlas.lib;
 
+@FunctionalInterface
 public interface ActionKeyValue<KeyType, ValueType>
 {
     public void apply(KeyType key, ValueType value) ;

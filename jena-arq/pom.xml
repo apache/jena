@@ -111,7 +111,7 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
 
-  </dependencies>
+ </dependencies>
 
   <build>
     <resources>

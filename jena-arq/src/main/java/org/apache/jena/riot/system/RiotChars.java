@@ -131,13 +131,4 @@ Notes: PN_CHARS_BASE has a hole above #xD800 -- these are the  surrogate pairs
     {
         return ( ch >= a && ch <= b ) ;
     }
-
-    public static boolean charInArray(int ch, char[] chars)
-    {
-        for ( int xch : chars )
-        {
-            if ( ch == xch )  return true ;
-        }
-        return false ;
-    }
 }

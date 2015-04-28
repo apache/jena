@@ -20,9 +20,9 @@ package org.apache.jena.sparql.mgt;
 
 import java.util.concurrent.atomic.AtomicLong ;
 
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.util.Utils ;
 
 public class QueryEngineInfo implements QueryEngineInfoMBean
 {
@@ -58,7 +58,7 @@ public class QueryEngineInfo implements QueryEngineInfoMBean
     private String timeSeen = "" ;
     @Override
     public String getLastQueryExecAt()          { return timeSeen ; }
-    public void setLastQueryExecAt()            { timeSeen = Utils.nowAsString() ; }
+    public void setLastQueryExecAt()            { timeSeen = DateTimeUtils.nowAsString() ; }
 
 //    private long lastExecTime ;
 //    public long getLastQueryExecTime()          { return lastExecTime ; }

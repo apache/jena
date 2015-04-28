@@ -48,6 +48,7 @@ import org.junit.runners.Suite ;
     , TestFilenameProcessing.class
     , TestMultiSet.class
     , TestNumberUtils.class
+    , TestDateTimeUtils.class
 } )
 
 public class TS_Lib
