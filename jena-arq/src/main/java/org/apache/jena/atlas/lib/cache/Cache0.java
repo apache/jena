@@ -16,65 +16,57 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.lib.cache;
+package org.apache.jena.atlas.lib.cache ;
 
 import java.util.Iterator ;
+import java.util.concurrent.Callable ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.ActionKeyValue ;
 import org.apache.jena.atlas.lib.Cache ;
 
-/** A cache that keeps nothing */ 
-public final class Cache0<K, V> implements Cache<K,V>
-{
+/** A cache that keeps nothing */
+public final class Cache0<K, V> implements Cache<K, V> {
     @Override
-    public boolean containsKey(K key)
-    {
+    public boolean containsKey(K key) {
         return false ;
     }
 
     @Override
-    public V get(K key)
-    {
+    public V getIfPresent(K key) {
         return null ;
     }
 
     @Override
-    public V put(K key, V thing)
-    {
+    public V getOrFill(K key, Callable<V> callable) {
         return null ;
     }
 
     @Override
-    public boolean remove(K key)
-    {
-        return false ;
-    }
+    public void put(K key, V thing) {}
 
     @Override
-    public Iterator<K> keys()
-    {
+    public void remove(K key) {}
+
+    @Override
+    public Iterator<K> keys() {
         return Iter.nullIterator() ;
     }
 
     @Override
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return true ;
     }
 
     @Override
-    public void clear()
-    {}
+    public void clear() {}
 
     @Override
-    public long size()
-    {
+    public long size() {
         return 0 ;
     }
 
     @Override
-    public void setDropHandler(ActionKeyValue<K, V> dropHandler)
-    {}
+    public void setDropHandler(ActionKeyValue<K, V> dropHandler) {}
 
 }

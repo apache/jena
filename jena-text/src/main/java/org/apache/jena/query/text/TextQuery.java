@@ -19,15 +19,14 @@
 package org.apache.jena.query.text;
 
 import org.apache.jena.query.text.assembler.TextAssembler ;
-
-import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.lib.Metadata ;
-import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunction ;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionFactory ;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry ;
-import com.hp.hpl.jena.sparql.util.Symbol ;
-import com.hp.hpl.jena.tdb.TDB ;
+import org.apache.jena.sparql.SystemARQ ;
+import org.apache.jena.sparql.lib.Metadata ;
+import org.apache.jena.sparql.mgt.SystemInfo ;
+import org.apache.jena.sparql.pfunction.PropertyFunction ;
+import org.apache.jena.sparql.pfunction.PropertyFunctionFactory ;
+import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
+import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.tdb.TDB ;
 
 public class TextQuery
 {

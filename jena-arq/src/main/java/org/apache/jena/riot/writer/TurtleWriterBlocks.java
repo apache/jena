@@ -19,11 +19,10 @@
 package org.apache.jena.riot.writer;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.graph.Graph ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.StreamOps ;
 import org.apache.jena.riot.system.StreamRDF ;
-
-import com.hp.hpl.jena.graph.Graph ;
 
 /** Turtle writer that streams - print in blocks of triples formatted
  *  by adjacent same subject.

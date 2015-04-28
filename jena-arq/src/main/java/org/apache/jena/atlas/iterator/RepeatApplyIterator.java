@@ -22,8 +22,7 @@ import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
 import org.apache.jena.atlas.lib.Closeable ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
+import org.apache.jena.atlas.lib.Lib ;
 
 public abstract class RepeatApplyIterator<T> implements Iterator<T>, Closeable
 {
@@ -71,7 +70,7 @@ public abstract class RepeatApplyIterator<T> implements Iterator<T>, Closeable
     public T next()
     {
         if ( ! hasNext() )
-            throw new NoSuchElementException(Utils.className(this)+".next()/finished") ;
+            throw new NoSuchElementException(Lib.className(this)+".next()/finished") ;
         return currentStage.next() ;
     }
 

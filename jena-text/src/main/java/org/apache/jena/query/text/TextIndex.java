@@ -22,8 +22,7 @@ import java.util.List ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.lib.Closeable ;
-
-import com.hp.hpl.jena.graph.Node ;
+import org.apache.jena.graph.Node ;
 
 /** TextIndex abstraction */ 
 public interface TextIndex extends Closeable //, Transactional 

@@ -22,15 +22,14 @@ import static org.apache.jena.fuseki.ServerTest.serviceREST ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.fuseki.http.TestDatasetAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestHttpOp ;
+import org.apache.jena.query.DatasetAccessor ;
+import org.apache.jena.query.DatasetAccessorFactory ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.query.DatasetAccessor ;
-import com.hp.hpl.jena.query.DatasetAccessorFactory ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 /** Additional tests for the SPARQL Graph Store protocol, 
  * mainly for HTTP file upload. See {@linkplain TestDatasetAccessorHTTP}

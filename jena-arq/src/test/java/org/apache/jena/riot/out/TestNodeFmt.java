@@ -18,16 +18,15 @@
 
 package org.apache.jena.riot.out;
 
+import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.io.StringWriterI ;
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.JenaRuntime ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 public class TestNodeFmt extends BaseTest
 {

@@ -37,7 +37,6 @@ import org.junit.runners.Suite ;
     , TestSetUtils.class
     , TestCache.class
     , TestCache2.class
-    , TestCacheStats.class
     , TestColumnMap.class
     , TestFileOps.class
     , TestStrUtils.class
@@ -46,6 +45,9 @@ import org.junit.runners.Suite ;
     , TestRefLong.class
     , TestReverseComparator.class
     , TestTrie.class
+    , TestFilenameProcessing.class
+    , TestMultiSet.class
+    , TestNumberUtils.class
 } )
 
 public class TS_Lib

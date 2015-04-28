@@ -20,9 +20,8 @@ package tdb;
 
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import tdb.cmdline.CmdTDB ;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 public class tdbdump extends CmdTDB
 {

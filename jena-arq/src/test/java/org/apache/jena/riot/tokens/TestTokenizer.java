@@ -23,10 +23,10 @@ import java.io.ByteArrayInputStream ;
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.RiotParseException ;
+import org.apache.jena.sparql.ARQConstants ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.sparql.ARQConstants ;
 
 public class TestTokenizer extends BaseTest {
     // WORKERS
@@ -151,6 +151,52 @@ public class TestTokenizer extends BaseTest {
     public void tokenUnit_iri5() {
         // \\\\ is a double \\ in the data. 0x41 is 'A'
         tokenizeAndTestFirst("<abc\\u0041def>   123", TokenType.IRI, "abcAdef") ;
+    }
+
+    // Bad IRIs
+    @Test(expected=RiotException.class)
+    public void tokenUnit_iri10() {
+        tokenFirst("<abc def>") ;
+    }
+
+    @Test(expected=RiotException.class)
+    public void tokenUnit_iri11() {
+        tokenFirst("<abc<def>") ;
+    }
+
+    @Test(expected=RiotException.class)
+    public void tokenUnit_iri12() {
+        tokenFirst("<abc{def>") ;
+    }
+    
+    @Test(expected=RiotException.class)
+    public void tokenUnit_iri13() {
+        tokenFirst("<abc}def>") ;
+    }
+    
+    @Test(expected=RiotException.class)
+    public void tokenUnit_iri14() {
+        tokenFirst("<abc|def>") ;
+    }
+    
+    @Test(expected=RiotException.class)
+    public void tokenUnit_iri15() {
+        tokenFirst("<abc^def>") ;
+    }
+
+    @Test(expected=RiotException.class)
+    public void tokenUnit_iri16() {
+        tokenFirst("<abc`def>") ;
+    }
+    
+    @Test(expected=RiotException.class)
+    public void tokenUnit_iri17() {
+        tokenFirst("<abc\tdef>") ;  // Java escae - real tab
+    }
+
+    @Test(expected=RiotException.class)
+    public void tokenUnit_iri18() {
+        tokenFirst("<abc\u0007def>") ;  // Java escape - codepoint 7 
     }
 
     @Test

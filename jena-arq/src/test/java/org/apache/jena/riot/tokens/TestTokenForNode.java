@@ -19,14 +19,13 @@
 package org.apache.jena.riot.tokens;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 public class TestTokenForNode extends BaseTest 
 {
@@ -62,7 +61,7 @@ public class TestTokenForNode extends BaseTest
     { test( "<http://example/bar>", TokenType.PREFIXED_NAME, "ex", "bar", null, null) ; }
     
     @Test public void tokenForNode07()
-    { test( com.hp.hpl.jena.graph.NodeFactory.createAnon(new AnonId("abc")), TokenType.BNODE, "abc", null, null, null ) ; }
+    { test( org.apache.jena.graph.NodeFactory.createAnon(new AnonId("abc")), TokenType.BNODE, "abc", null, null, null ) ; }
 
     @Test public void tokenForNode08()
     { test( Node.ANY, TokenType.KEYWORD, "ANY", null, null, null) ; }

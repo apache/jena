@@ -20,7 +20,8 @@ package org.apache.jena.atlas.lib;
 
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
-import com.hp.hpl.jena.sparql.ARQException;
+
+import org.apache.jena.sparql.ARQException ;
 
 /** Finite capacity pool - capacity is fixed at create time */ 
 public class PoolFiniteBlocking<T> implements Pool<T>

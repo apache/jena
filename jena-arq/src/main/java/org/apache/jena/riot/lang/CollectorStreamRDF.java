@@ -21,12 +21,11 @@ package org.apache.jena.riot.lang;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * StreamRDF implementations which store received triples and quads 

@@ -19,6 +19,9 @@
 package org.apache.jena.riot.thrift;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.thrift.TRDF ;
@@ -27,15 +30,11 @@ import org.apache.jena.riot.thrift.wire.RDF_BNode ;
 import org.apache.jena.riot.thrift.wire.RDF_IRI ;
 import org.apache.jena.riot.thrift.wire.RDF_Literal ;
 import org.apache.jena.riot.thrift.wire.RDF_Term ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.RDFS ;
+import org.apache.jena.vocabulary.XSD ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.vocabulary.RDF ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
-import com.hp.hpl.jena.vocabulary.XSD ;
 
 public class TestThriftTerm extends BaseTest {
     static PrefixMap prefixMap = PrefixMapFactory.create() ;

@@ -26,25 +26,18 @@ import java.util.concurrent.Executors ;
 import java.util.concurrent.Future ;
 import java.util.concurrent.TimeUnit ;
 
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.query.* ;
 import org.apache.jena.query.text.assembler.TextVocab ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ResourceFactory ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.modify.GraphStoreNullTransactional ;
+import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
 import org.apache.lucene.store.RAMDirectory ;
 import org.apache.lucene.util.Version ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ResourceFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.modify.GraphStoreNullTransactional ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
-
 import static org.junit.Assert.* ;
 
 /**

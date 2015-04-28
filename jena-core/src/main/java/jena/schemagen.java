@@ -33,15 +33,14 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.apache.jena.ontology.* ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.shared.JenaException ;
+import org.apache.jena.util.FileManager ;
+import org.apache.jena.util.iterator.* ;
+import org.apache.jena.vocabulary.* ;
 import org.apache.xerces.util.XMLChar;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.vocabulary.*;
 
 
 
@@ -321,9 +320,9 @@ public class schemagen {
         }
         else {
             // we have to do the imports at least
-            writeln( 0, "import com.hp.hpl.jena.rdf.model.*;" );
+            writeln( 0, "import org.apache.jena.rdf.model.*;" );
             if (m_options.hasOntologyOption()) {
-                writeln( 0, "import com.hp.hpl.jena.ontology.*;" );
+                writeln( 0, "import org.apache.jena.ontology.*;" );
             }
             if (m_options.hasIncludeSourceOption()) {
                 writeln( 0, "import java.io.ByteArrayInputStream;" );
@@ -459,11 +458,11 @@ public class schemagen {
     /** Determine the list of imports to include in the file */
     protected String getImports() {
         StringBuffer buf = new StringBuffer();
-        buf.append( "import com.hp.hpl.jena.rdf.model.*;" );
+        buf.append( "import org.apache.jena.rdf.model.*;" );
         buf.append( m_nl );
 
         if (useOntology()) {
-            buf.append( "import com.hp.hpl.jena.ontology.*;" );
+            buf.append( "import org.apache.jena.ontology.*;" );
             buf.append( m_nl );
         }
 

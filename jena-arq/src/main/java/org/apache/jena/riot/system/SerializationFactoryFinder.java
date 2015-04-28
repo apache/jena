@@ -24,6 +24,7 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.data.SerializationFactory ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.LangNQuads ;
 import org.apache.jena.riot.lang.LangNTriples ;
@@ -35,12 +36,10 @@ import org.apache.jena.riot.system.ParserProfileBase ;
 import org.apache.jena.riot.system.Prologue ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingInputStream ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingOutputStream ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.binding.BindingInputStream ;
+import org.apache.jena.sparql.engine.binding.BindingOutputStream ;
 
 public class SerializationFactoryFinder
 {

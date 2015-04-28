@@ -20,14 +20,13 @@ package org.apache.jena.riot.langsuite ;
 
 import junit.framework.Test ;
 import junit.framework.TestSuite ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
-
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.junit.EarlReport ;
-import com.hp.hpl.jena.util.junit.TestFactoryManifest ;
-import com.hp.hpl.jena.util.junit.TestUtils ;
-import com.hp.hpl.jena.vocabulary.RDF ;
+import org.apache.jena.sparql.junit.EarlReport ;
+import org.apache.jena.util.junit.TestFactoryManifest ;
+import org.apache.jena.util.junit.TestUtils ;
+import org.apache.jena.vocabulary.RDF ;
 
 public class FactoryTestRiot extends TestFactoryManifest
 {

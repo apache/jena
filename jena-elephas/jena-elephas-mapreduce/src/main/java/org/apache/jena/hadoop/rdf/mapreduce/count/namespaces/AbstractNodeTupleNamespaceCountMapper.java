@@ -23,11 +23,10 @@ import java.io.IOException;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.hadoop.rdf.mapreduce.TextCountReducer;
 import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 import org.apache.jena.hadoop.rdf.types.NodeWritable;
-
-import com.hp.hpl.jena.graph.Node;
 
 /**
  * Abstract mapper class for mappers which split node tuple values and extract

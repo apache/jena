@@ -18,7 +18,7 @@
 
 package org.apache.jena.query.text;
 
-import com.hp.hpl.jena.graph.Node;
+import org.apache.jena.graph.Node;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;

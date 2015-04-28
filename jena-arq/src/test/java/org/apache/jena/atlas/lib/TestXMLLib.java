@@ -22,6 +22,7 @@ import org.apache.jena.atlas.lib.XMLLib ;
 import org.junit.Assert ;
 import org.junit.Test ;
 
+/** XML related functionality */
 public class TestXMLLib
 {
     @Test public void ws_collapse_01()  { test("abc", "abc") ; }

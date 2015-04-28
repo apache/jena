@@ -22,11 +22,16 @@ import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerNoLogg
 import static org.apache.jena.riot.system.ErrorHandlerFactory.getDefaultErrorHandler ;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.setDefaultErrorHandler ;
 
-import java.io.Reader ;
 import java.io.StringReader ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.Property ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
@@ -36,18 +41,11 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.sparql.graph.GraphFactory ;
+import org.apache.jena.sparql.sse.SSE ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.Property ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.graph.GraphFactory ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestLangTurtle extends BaseTest
 {
@@ -136,7 +134,7 @@ public class TestLangTurtle extends BaseTest
     private static Graph parse(String ...strings)
     {
         String string = StrUtils.strjoin("\n", strings) ;
-        Reader reader = new StringReader(string) ;
+        StringReader reader = new StringReader(string) ;
         String baseIRI = "http://base/" ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
         
@@ -183,7 +181,7 @@ public class TestLangTurtle extends BaseTest
     @Test(expected=ExFatal.class)
     public void errorBadDatatype()          { parse("<p> <p> 'q'^^.") ; }
     
-    @Test(expected=ExWarning.class)
+    @Test(expected=RiotException.class)
     public void errorBadURI_1()
     { parse("<http://example/a b> <http://example/p> 123 .") ; }
 
@@ -196,25 +194,29 @@ public class TestLangTurtle extends BaseTest
     public void errorBadURI_3()
     { parse("<http://example/a%Aab> <http://example/p> 123 .") ; }
 
+    // Bad URIs
+    @Test (expected=ExFatal.class)
+    public void errorBadURI_4()     { parse("@prefix ex:  <bad iri> .  ex:s ex:p 123 ") ; }
+    
+    @Test (expected=ExFatal.class)
+    public void errorBadURI_5()     { parse("<x> <p> 'number'^^<bad uri> ") ; }
+    
     @Test
-    public void turtle_01()         
-    { 
+    public void turtle_01() {
         Triple t = parseOneTriple("<s> <p> 123 . ") ;
         Triple t2 = SSE.parseTriple("(<http://base/s> <http://base/p> 123)") ;
         assertEquals(t2, t) ;
     }
 
     @Test
-    public void turtle_02()         
-    { 
+    public void turtle_02() {
         Triple t = parseOneTriple("@base <http://example/> . <s> <p> 123 . ") ;
         Triple t2 = SSE.parseTriple("(<http://example/s> <http://example/p> 123)") ;
         assertEquals(t2, t) ;
     }
 
     @Test
-    public void turtle_03()         
-    { 
+    public void turtle_03() {
         Triple t = parseOneTriple("@prefix ex: <http://example/x/> . ex:s ex:p 123 . ") ;
         Triple t2 = SSE.parseTriple("(<http://example/x/s> <http://example/x/p> 123)") ;
         assertEquals(t2, t) ;
@@ -224,16 +226,6 @@ public class TestLangTurtle extends BaseTest
     @Test (expected=ExFatal.class)
     public void turtle_10()     { parse("@prefix ex:  <http://example/> .  { ex:s ex:p 123 . } ") ; }
     
-    // Bad terms.
     @Test (expected=ExWarning.class)
-    public void turtle_20()     { parse("@prefix ex:  <bad iri> .  ex:s ex:p 123 ") ; }
-    
-    @Test (expected=ExWarning.class)
-    public void turtle_21()     { parse("@prefix ex:  <http://example/> . ex:s <http://example/broken p> 123") ; }
-    
-    @Test (expected=ExWarning.class)
-    public void turtle_22()     { parse("<x> <p> 'number'^^<bad uri> ") ; }
-
-    @Test (expected=ExWarning.class)
-    public void turtle_23()     { parse("@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> . <x> <p> 'number'^^xsd:byte }") ; }
+    public void turtle_20()     { parse("@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> . <x> <p> 'number'^^xsd:byte }") ; }
 }

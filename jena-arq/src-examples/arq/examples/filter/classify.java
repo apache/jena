@@ -18,8 +18,8 @@
 
 package arq.examples.filter;
 
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.sparql.function.FunctionBase1 ;
 
 /** Example filter function that returns an indicative type string.
  *  <ul>

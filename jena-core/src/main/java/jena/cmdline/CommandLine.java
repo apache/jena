@@ -21,7 +21,7 @@ package jena.cmdline;
 import java.io.* ;
 import java.util.* ;
 
-import com.hp.hpl.jena.util.FileUtils ;
+import org.apache.jena.util.FileUtils ;
 
 /**
  * Command line argument processing based on a trigger model.

@@ -31,12 +31,10 @@ import java.util.regex.Pattern;
 import jena.schemagen;
 import jena.schemagen.SchemagenOptionsImpl;
 import junit.framework.TestCase;
-
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.util.FileUtils ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.FileUtils;
 
 
 /**

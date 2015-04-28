@@ -23,11 +23,10 @@ import org.apache.jena.atlas.event.EventListener ;
 import org.apache.jena.atlas.event.EventManager ;
 import org.apache.jena.atlas.event.EventType ;
 import org.apache.jena.atlas.lib.Sink ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.GraphEvents ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.SystemARQ ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.GraphEvents ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.SystemARQ ;
 
 /**
  * Send triples to a graph.

@@ -21,10 +21,9 @@ package org.apache.jena.riot;
 import java.io.OutputStream ;
 import java.util.Iterator ;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.writer.* ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Quad ;
 
 /** Direct call to create writers for specific formats.
  *  The normal way to write is {@link RDFDataMgr} 

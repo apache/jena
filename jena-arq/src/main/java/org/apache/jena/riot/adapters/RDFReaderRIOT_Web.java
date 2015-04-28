@@ -23,14 +23,13 @@ import java.io.Reader ;
 
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.system.stream.StreamManager ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.shared.NotFoundException ;
+import org.apache.jena.shared.NotFoundException ;
 
 /** This is a reader primarily for model.read(url)
  */ 

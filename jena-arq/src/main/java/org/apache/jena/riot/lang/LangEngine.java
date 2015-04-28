@@ -22,14 +22,13 @@ import static org.apache.jena.riot.tokens.TokenType.EOF ;
 import static org.apache.jena.riot.tokens.TokenType.NODE ;
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.iterator.PeekIterator ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.RiotParseException ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-
-import com.hp.hpl.jena.graph.Node ;
 
 /** Common operations for RIOT parsers - not the implementation LangRIOT  */
 public class LangEngine

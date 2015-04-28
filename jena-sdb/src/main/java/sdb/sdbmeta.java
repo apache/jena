@@ -23,20 +23,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.sdb.SDB ;
+import org.apache.jena.sdb.sql.SDBConnection ;
+import org.apache.jena.sdb.store.StoreConfig ;
+import org.apache.jena.sparql.util.Utils ;
+import org.apache.jena.util.FileManager ;
 import sdb.cmd.CmdArgsDB;
 import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.sparql.util.Utils;
-
-import com.hp.hpl.jena.sdb.SDB ;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.StoreConfig;
 
 public class sdbmeta extends CmdArgsDB
 {

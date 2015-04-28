@@ -21,15 +21,14 @@ package org.apache.jena.fuseki.server;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
-
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.base.block.FileMode ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.setup.StoreParams ;
-import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.tdb.StoreConnection ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb.base.block.FileMode ;
+import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.setup.StoreParams ;
+import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class SystemState {
     private static String SystemDatabaseLocation ;

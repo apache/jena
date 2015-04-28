@@ -18,8 +18,11 @@
 
 package org.apache.jena.riot.system ;
 
+import java.util.concurrent.Callable ;
+
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
+import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIException ;
 import org.apache.jena.iri.IRIFactory ;
@@ -335,12 +338,16 @@ public abstract class IRIResolver
         }
 
         @Override
-        public IRI resolveSilent(String uriStr) {
-            if (resolvedIRIs != null && resolvedIRIs.containsKey(uriStr))
-                return resolvedIRIs.get(uriStr) ;
-            IRI iri = iriFactory.create(uriStr) ;
-            if (resolvedIRIs != null)
-                resolvedIRIs.put(uriStr, iri) ;
+        public IRI resolveSilent(final String uriStr) {
+            if ( resolvedIRIs == null ) 
+                return iriFactory.create(uriStr) ;
+            Callable<IRI> filler = new Callable<IRI>() {
+                @Override
+                public IRI call() throws Exception {
+                    return iriFactory.create(uriStr) ;
+                }
+            } ;
+            IRI iri = resolvedIRIs.getOrFill(uriStr, filler) ;
             return iri ;
         }
 
@@ -422,13 +429,16 @@ public abstract class IRIResolver
          */
 
         @Override
-        public IRI resolveSilent(String relURI) {
-            if (resolvedIRIs != null && resolvedIRIs.containsKey(relURI))
-                return resolvedIRIs.get(relURI) ;
-            IRI iri = base.resolve(relURI) ;
-            if (resolvedIRIs != null)
-                resolvedIRIs.put(relURI, iri) ;
-            return iri ;
+        public IRI resolveSilent(final String relURI) {
+            if ( resolvedIRIs == null ) 
+                return iriFactory.create(relURI) ;
+            Callable<IRI> filler = new Callable<IRI>() {
+                @Override
+                public IRI call() throws Exception {
+                    return base.create(relURI) ;
+                }
+            } ;
+            return resolvedIRIs.getOrFill(relURI, filler) ;
         }
     }
     

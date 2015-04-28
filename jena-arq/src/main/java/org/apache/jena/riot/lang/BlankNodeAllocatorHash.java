@@ -21,16 +21,15 @@ package org.apache.jena.riot.lang ;
 import java.security.MessageDigest ;
 import java.security.NoSuchAlgorithmException ;
 import java.util.UUID ;
+import java.util.concurrent.Callable ;
 
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.lib.cache.Getter ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.rdf.model.AnonId ;
 
 /**
  * Allocate bnode labels using a per-run seed and the label presented.
@@ -65,15 +64,7 @@ public class BlankNodeAllocatorHash implements BlankNodeAllocator {
         } catch (NoSuchAlgorithmException e) {
             throw new InternalErrorException("failed to create message digest", e) ;
         }
-
-        Getter<String, Node> getter = new Getter<String, Node>() {
-            @Override
-            public Node get(String key) {
-                return alloc(key) ;
-            }
-        } ;
-        Cache<String, Node> cache1 = CacheFactory.createCache(CacheSize) ;
-        cache = CacheFactory.createCacheWithGetter(cache1, getter) ;
+        cache = CacheFactory.createCache(CacheSize) ;
     }
     
     /**
@@ -103,11 +94,20 @@ public class BlankNodeAllocatorHash implements BlankNodeAllocator {
         seedBytes = new byte[128 / 8] ;
         Bytes.setLong(seed.getMostSignificantBits(), seedBytes, 0) ;
         Bytes.setLong(seed.getLeastSignificantBits(), seedBytes, 8) ;
+        if ( cache != null )
+            cache.clear();
     }
 
     @Override
-    public Node alloc(String label) {
-        return alloc(Bytes.string2bytes(label)) ;
+    public Node alloc(final String label) {
+        Callable<Node> getter = new Callable<Node>() {
+            @Override
+            public Node call() {
+                return alloc(Bytes.string2bytes(label)) ;
+            }
+        } ;
+        Node n = cache.getOrFill(label, getter) ;
+        return n ;
     }
 
     @Override
@@ -121,6 +121,7 @@ public class BlankNodeAllocatorHash implements BlankNodeAllocator {
     }
 
     private Node alloc(byte[] labelBytes) {
+        // ?? UUID.nameUUIDFromBytes(seedBytes+labelBytes) ;
         mDigest.update(seedBytes) ;
         mDigest.update(labelBytes) ;
         byte[] bytes = mDigest.digest() ; // resets

@@ -19,11 +19,10 @@
 package org.apache.jena.riot.process;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.process.normalize.CanonicalizeLiteral ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 public class TestNormalization extends BaseTest
 {

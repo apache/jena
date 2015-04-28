@@ -18,11 +18,10 @@
 
 package org.apache.jena.hadoop.rdf.mapreduce.filter.positional;
 
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.mapreduce.filter.AbstractTripleFilterMapper;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * An abstract triple filter that filters triples based on different criteria

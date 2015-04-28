@@ -18,8 +18,8 @@
 
 package org.apache.jena.riot.process.normalize;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.graph.Node ;
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.graph.Node ;
 
 interface DatatypeHandler
 {

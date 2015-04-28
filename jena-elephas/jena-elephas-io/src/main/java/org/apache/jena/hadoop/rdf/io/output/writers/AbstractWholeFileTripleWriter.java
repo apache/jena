@@ -20,13 +20,12 @@ package org.apache.jena.hadoop.rdf.io.output.writers;
 
 import java.io.Writer;
 
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.graph.GraphFactory;
+import org.apache.jena.sparql.graph.GraphFactory ;
 
 /**
  * An abstract record writer for whole file triple formats

@@ -21,10 +21,9 @@ package org.apache.jena.riot.process.normalize;
 import static org.apache.jena.atlas.lib.Chars.CH_DOT ;
 import static org.apache.jena.atlas.lib.Chars.CH_MINUS ;
 import static org.apache.jena.atlas.lib.Chars.CH_PLUS ;
-
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 
 class NormalizeValue2
 {

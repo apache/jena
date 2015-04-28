@@ -19,7 +19,8 @@
 package org.apache.jena.jdbc.results.metadata.columns;
 
 import java.sql.SQLException;
-import com.hp.hpl.jena.graph.Node;
+
+import org.apache.jena.graph.Node ;
 
 /**
  * Abstract class for column information for columns originating from SPARQL results

@@ -23,7 +23,7 @@
   <artifactId>jena-parent</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>13-SNAPSHOT</version>
+  <version>14-SNAPSHOT</version>
   <name>Apache Jena - Parent</name>
 
   <parent>
@@ -47,9 +47,9 @@
   </organization>
 
   <properties>
-    <ver.slf4j>1.7.6</ver.slf4j>
+    <ver.slf4j>1.7.9</ver.slf4j>
     <ver.log4j>1.2.17</ver.log4j>
-    <ver.junit>4.11</ver.junit>
+    <ver.junit>4.12</ver.junit>
     <ver.xerces>2.11.0</ver.xerces>
 
     <ver.jsonldjava>0.5.1</ver.jsonldjava>
@@ -63,7 +63,7 @@
     <ver.solr>4.6.1</ver.solr>
     <ver.spatial4j>0.4</ver.spatial4j>
 
-    <jdk.version>1.7</jdk.version>
+    <jdk.version>1.8</jdk.version>
     <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -341,7 +341,7 @@
             <configuration combine.self="override">
               <rules>
                 <requireJavaVersion>
-                  <version>1.7.0</version>
+                  <version>1.8.0</version>
                 </requireJavaVersion>
                 <requirePluginVersions>
                   <message>Best practice is to always define plugin versions!</message>
@@ -482,9 +482,7 @@
           </configuration>
         </plugin>
 
-        <!-- Avoid the warning from m2e: 
-	     "maven-remote-resources-plugin (goal "process") is ignored by m2e." 
-	-->
+        <!-- Avoid the warnings and errors from m2e -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
@@ -493,8 +491,8 @@
             <lifecycleMappingMetadata>
               <pluginExecutions>
                 <pluginExecution>
-                  <!-- 
-		    Warning: 
+                  <!--
+		    Warning:
 		    "maven-remote-resources-plugin (goal "process") is ignored by m2e." 
 		  -->
                   <pluginExecutionFilter>
@@ -510,13 +508,34 @@
                   </action>
                 </pluginExecution>
                 <pluginExecution>
-                  <!-- Warning: "maven-enforcer-plugin (goal "enforce") is ignored by m2e." -->
+                  <!-- 
+		    Warning:
+		    "maven-enforcer-plugin (goal "enforce") is ignored by m2e." 
+		  -->
                   <pluginExecutionFilter>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-remote-resources-plugin</artifactId>
                     <versionRange>[1.0.0,)</versionRange>
                     <goals>
                       <goal>process</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+
+		<pluginExecution>
+                  <!--
+		    Error:
+		    Plugin execution not covered by lifecycle configuration
+		  -->
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.rat</groupId>
+                    <artifactId>apache-rat-plugin</artifactId>
+                    <versionRange>[0.11,)</versionRange>
+                    <goals>
+                      <goal>check</goal>
                     </goals>
                   </pluginExecutionFilter>
                   <action>

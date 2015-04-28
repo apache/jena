@@ -22,18 +22,16 @@ import java.io.IOException ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
-
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.query.QueryParseException ;
+import org.apache.jena.query.Syntax ;
+import org.apache.jena.sparql.modify.request.UpdateWriter ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateRequest ;
+import org.apache.jena.util.FileUtils ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
-
-import com.hp.hpl.jena.query.QueryParseException ;
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
-import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 public class uparse extends CmdARQ
 {
@@ -77,7 +75,7 @@ public class uparse extends CmdARQ
             else
             {
                 throw new CmdException(
-                    "Not a recognized print form: " + arg + " : Choices are: query, op, quad, opt, optquad" );
+                    "Not a recognized print form: " + arg + " : Choices are: update, none" );
             }
         }
         
@@ -87,7 +85,7 @@ public class uparse extends CmdARQ
     }
     
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary() { return getCommandName()+" --file=<request file> | <update string>" ; }

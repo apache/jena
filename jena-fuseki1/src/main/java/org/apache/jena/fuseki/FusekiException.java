@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki;
 
-import com.hp.hpl.jena.sparql.ARQException ;
+import org.apache.jena.sparql.ARQException ;
 
 public class FusekiException extends ARQException
 {

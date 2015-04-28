@@ -16,44 +16,50 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.lib.cache;
+package org.apache.jena.atlas.lib.cache ;
 
+import org.apache.jena.atlas.iterator.Action ;
 import org.apache.jena.atlas.lib.CacheSet ;
 
-public class CacheSetWrapper<T> implements CacheSet<T>
-{
+public class CacheSetWrapper<T> implements CacheSet<T> {
     private CacheSet<T> cache ;
 
-    public CacheSetWrapper(CacheSet<T> cache){ this.cache = cache ; }
-    
-    @Override
-    public void add(T e)
-    { cache.add(e) ; }
+    public CacheSetWrapper(CacheSet<T> cache) {
+        this.cache = cache ;
+    }
 
     @Override
-    public void clear()
-    { cache.clear() ; }
+    public void add(T e) {
+        cache.add(e) ;
+    }
 
     @Override
-    public boolean contains(T obj)
-    {
+    public void clear() {
+        cache.clear() ;
+    }
+
+    @Override
+    public boolean contains(T obj) {
         return cache.contains(obj) ;
     }
 
     @Override
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return cache.isEmpty() ;
     }
 
     @Override
-    public void remove(T obj)
-    { cache.remove(obj) ; }
-
-    @Override
-    public long size()
-    {
-        return cache.size() ; 
+    public void remove(T obj) {
+        cache.remove(obj) ;
     }
 
+    @Override
+    public long size() {
+        return cache.size() ;
+    }
+
+    @Override
+    public void setDropHandler(Action<T> dropHandler) {
+        cache.setDropHandler(dropHandler) ;
+    }
 }

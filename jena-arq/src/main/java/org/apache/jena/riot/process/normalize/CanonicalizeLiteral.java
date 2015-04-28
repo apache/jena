@@ -21,15 +21,14 @@ package org.apache.jena.riot.process.normalize;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.web.LangTag ;
-
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.sparql.graph.NodeTransform ;
-import com.hp.hpl.jena.sparql.util.NodeUtils ;
-import com.hp.hpl.jena.vocabulary.RDF ;
+import org.apache.jena.sparql.graph.NodeTransform ;
+import org.apache.jena.sparql.util.NodeUtils ;
+import org.apache.jena.vocabulary.RDF ;
 
 public class CanonicalizeLiteral implements NodeTransform    
 {

@@ -28,11 +28,10 @@ import static org.apache.jena.riot.writer.WriterConst.NL_GNMD_START ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.system.PrefixMap ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Quad ;
 
 /** TriG pretty writer */
 public class TriGWriter extends TriGWriterBase

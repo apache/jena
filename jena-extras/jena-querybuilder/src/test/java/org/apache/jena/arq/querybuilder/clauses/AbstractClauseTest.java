@@ -26,8 +26,7 @@ import java.util.List;
 
 import org.apache.jena.arq.AbstractRegexpBasedTest;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
-
-import com.hp.hpl.jena.query.Query;
+import org.apache.jena.query.Query ;
 
 public abstract class AbstractClauseTest extends AbstractRegexpBasedTest {
 

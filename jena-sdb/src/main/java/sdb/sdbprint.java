@@ -20,22 +20,21 @@ package sdb;
 
 import java.util.List;
 
+import org.apache.jena.query.Query ;
+import org.apache.jena.query.Syntax ;
+import org.apache.jena.sdb.SDB ;
+import org.apache.jena.sdb.Store ;
+import org.apache.jena.sdb.StoreDesc ;
+import org.apache.jena.sdb.engine.QueryEngineSDB ;
+import org.apache.jena.sdb.sql.JDBC ;
+import org.apache.jena.sdb.store.LayoutType ;
+import org.apache.jena.sdb.util.PrintSDB ;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.util.Utils ;
 import sdb.cmd.CmdArgsDB;
 import arq.cmd.CmdException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.ModQueryIn;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
-import com.hp.hpl.jena.sdb.sql.JDBC;
-import com.hp.hpl.jena.sdb.store.LayoutType;
-import com.hp.hpl.jena.sdb.util.PrintSDB;
 
 
 /**

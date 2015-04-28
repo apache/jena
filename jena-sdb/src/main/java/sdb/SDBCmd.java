@@ -18,8 +18,7 @@
 
 package sdb;
 
-import com.hp.hpl.jena.sparql.util.Utils;
-
+import org.apache.jena.sparql.util.Utils ;
 import arq.cmdline.CmdMain;
 
 /** Convenience ways to execute commands (import static) */

@@ -56,15 +56,14 @@ import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator;
 import org.apache.jena.atlas.web.auth.ServiceAuthenticator;
+import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.WebContent;
+import org.apache.jena.sparql.engine.http.Params ;
+import org.apache.jena.sparql.engine.http.Params.Pair ;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.engine.http.Params;
-import com.hp.hpl.jena.sparql.engine.http.Params.Pair;
 
 /**
  * Simplified HTTP operations; simplification means only supporting certain uses

@@ -19,23 +19,28 @@
 package org.apache.jena.atlas.lib;
 
 import java.util.Iterator ;
+import java.util.concurrent.Callable ;
 
 /** A cache */
 public interface Cache<Key, Value>
 {
+    
     /** Does the cache contain the key? */
     public boolean containsKey(Key key) ;
     
-    /** Get from cache - or return null.  
-     * Implementations should state whether
-     * they are thread-safe or not. */ 
-    public Value get(Key key) ;
+    /** Get from cache - or return null. */  
+    public Value getIfPresent(Key key) ;
     
-    /** Insert into from cache and return old value (or null if none) */
-    public Value put(Key key, Value thing) ;
+    /** Get from cache, of not present, call the {@code callable}
+     *  to try to fill the cache.
+     */
+    public Value getOrFill(Key key, Callable<Value> callable) ;
+
+    /** Insert into the cache */
+    public void put(Key key, Value thing) ;
 
     /** Remove from cache - return true if key referenced an entry */
-    public boolean remove(Key key) ;
+    public void remove(Key key) ;
     
     /** Iterate over all keys. Iteratering over the keys requires the caller be thread-safe. */ 
     public Iterator<Key> keys() ;

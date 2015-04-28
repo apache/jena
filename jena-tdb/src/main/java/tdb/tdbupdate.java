@@ -18,12 +18,11 @@
 
 package tdb;
 
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.transaction.TransactionManager ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.ModTDBGraphStore ;
 import arq.cmdline.ModGraphStore ;
-
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 public class tdbupdate extends arq.update
 {

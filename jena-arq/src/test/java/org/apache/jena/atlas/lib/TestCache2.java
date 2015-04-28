@@ -18,11 +18,12 @@
 
 package org.apache.jena.atlas.lib;
 
+import java.util.concurrent.Callable ;
+
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.atlas.lib.cache.Cache1 ;
-import org.apache.jena.atlas.lib.cache.Getter ;
 import org.junit.Test ;
 
 // Non-parameterized tests
@@ -32,50 +33,54 @@ public class TestCache2 extends BaseTest
     @Test public void cache_10()
     {
         Cache<Integer, String> cache = new Cache1<>() ;
-        String str = cache.get(1) ;
+        String str = cache.getIfPresent(1) ;
         assertNull(str) ;
 
         cache.put(1, "1") ;
-        str = cache.get(1) ;
+        str = cache.getIfPresent(1) ;
         assertEquals("1", str) ;
 
         cache.put(2, "2") ;
-        str = cache.get(1) ;
+        str = cache.getIfPresent(1) ;
         assertNull(str) ;
         
         cache.put(1, "1") ;
-        str = cache.get(2) ;
+        str = cache.getIfPresent(2) ;
         assertNull(str) ;
-        str = cache.get(1) ;
+        str = cache.getIfPresent(1) ;
         assertEquals("1", str) ;
     }
     
-    static Getter<Integer, String> getter = new Getter<Integer, String>() {
-        @Override
-        public String get(Integer key)
-        { return key.toString() ; }
-    } ;
+    
+    
+    static Callable<String> getter(final Integer key) {
+        return new Callable<String>() {
+            @Override
+            public String call() {
+                return key.toString() ; }
+        } ;
+    }
 
     // Cache + getters
     @Test public void cacheGetter_1()
     {
-        Cache<Integer, String> cache = CacheFactory.createCache(getter, 2) ;
-        String str = cache.get(1) ;
+        Cache<Integer, String> cache = CacheFactory.createCache(2) ;
+        String str = cache.getOrFill(1,  getter(1)) ;
         assertEquals("1", str) ;
     }
     
     // Cache + getters
     @Test public void cacheGetter_2()
     {
-        Cache<Integer, String> cache = CacheFactory.createCache(getter, 2) ;
-        String str1 = cache.get(1) ;
-        String str2 = cache.get(2) ;
-        String str3 = cache.get(3) ;
+        Cache<Integer, String> cache = CacheFactory.createCache(2) ;
+        String str1 = cache.getOrFill(1, getter(1)) ;
+        String str2 = cache.getOrFill(2, getter(2)) ;
+        String str3 = cache.getOrFill(3, getter(3)) ;
         assertEquals("1", str1) ;
         assertEquals("2", str2) ;
         assertEquals("3", str3) ;
         cache.put(1, "10") ;
-        str1 = cache.get(1) ;
+        str1 = cache.getIfPresent(1) ;
         assertEquals("10", str1) ;
     }
 

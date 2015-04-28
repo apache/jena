@@ -21,8 +21,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.update.UpdateRequest;
+import org.apache.jena.query.Query ;
+import org.apache.jena.update.UpdateRequest ;
 
 /**
  * Interface for command pre-processors

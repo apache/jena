@@ -18,4 +18,5 @@
 
 package org.apache.jena.atlas.iterator;
 
+@FunctionalInterface
 public interface Filter <T> { boolean accept(T item) ; }

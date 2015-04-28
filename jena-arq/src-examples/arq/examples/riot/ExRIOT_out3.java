@@ -22,16 +22,15 @@ import java.io.OutputStream ;
 import java.io.Writer ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.adapters.RDFWriterRIOT ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.writer.WriterGraphRIOTBase ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.util.Context ;
 
 /** Example of registering a new writer with RIOT */
 public class ExRIOT_out3

@@ -39,7 +39,7 @@ public class TestIter
     @Test
     public void append_1()
     {
-        Iterator<String> iter = Iter.append(data1, data0) ;
+        Iterator<String> iter = Iter.append(data1.iterator(), data0.iterator()) ;
         test(iter, "a") ;
     }
         
@@ -47,14 +47,14 @@ public class TestIter
     @Test
     public void append_2()
     {
-        Iterator<String> iter = Iter.append(data0, data1) ;
+        Iterator<String> iter = Iter.append(data0.iterator(), data1.iterator()) ;
         test(iter, "a") ;
     }
         
     @Test
     public void append_3()
     {
-        Iterator<String> iter = Iter.append(data1, data2) ;
+        Iterator<String> iter = Iter.append(data1.iterator(), data2.iterator()) ;
         test(iter, "a", "x", "y", "z") ;
     }
 
@@ -71,7 +71,7 @@ public class TestIter
         R.add("f");
         
         
-        Iterator<String> LR = Iter.append(L, R) ;
+        Iterator<String> LR = Iter.append(L.iterator(), R.iterator()) ;
         
         while (LR.hasNext())
         {
@@ -101,7 +101,7 @@ public class TestIter
         R.add("f");
         
         
-        Iterator<String> LR = Iter.append(L, R) ;
+        Iterator<String> LR = Iter.append(L.iterator(), R.iterator()) ;
         
         while (LR.hasNext())
         {
@@ -131,7 +131,7 @@ public class TestIter
         R.add("f");
         
         
-        Iterator<String> LR = Iter.append(L, R) ;
+        Iterator<String> LR = Iter.append(L.iterator(), R.iterator()) ;
         
         while (LR.hasNext())
         {
@@ -435,13 +435,13 @@ public class TestIter
     @Test
     public void filter_01()
     {
-        test(Iter.removeNulls(data3), "x", "y", "z");
+        test(Iter.removeNulls(data3.iterator()), "x", "y", "z");
     }
     
     @Test
     public void filter_02()
     {
-        Iterator<String> it = Iter.filter(data3, new Filter<String>()
+        Iterator<String> it = Iter.filter(data3.iterator(), new Filter<String>()
         {
             @Override
             public boolean accept(String item)
@@ -456,7 +456,7 @@ public class TestIter
     @Test
     public void filter_03()
     {
-        Iterator<String> it = Iter.filter(data3, new Filter<String>()
+        Iterator<String> it = Iter.filter(data3.iterator(), new Filter<String>()
         {
             @Override
             public boolean accept(String item)
@@ -471,28 +471,28 @@ public class TestIter
     @Test public void distinct_01() 
     {
         List<String> x = Arrays.asList("a", "b", "a") ;
-        Iterator<String> iter = Iter.distinct(x) ;
+        Iterator<String> iter = Iter.distinct(x.iterator()) ;
         test(iter, "a", "b") ;
     }
     
     @Test public void distinct_02() 
     {
         List<String> x = Arrays.asList("a", "b", "a") ;
-        Iterator<String> iter = Iter.distinctAdjacent(x) ;
+        Iterator<String> iter = Iter.distinctAdjacent(x.iterator()) ;
         test(iter, "a", "b", "a") ;
     }
     
     @Test public void distinct_03() 
     {
         List<String> x = Arrays.asList("a", "a", "b", "b", "b", "a", "a") ;
-        Iterator<String> iter = Iter.distinct(x) ;
+        Iterator<String> iter = Iter.distinct(x.iterator()) ;
         test(iter, "a", "b") ;
     }
     
     @Test public void distinct_04() 
     {
         List<String> x = Arrays.asList("a", "a", "b", "b", "b", "a", "a") ;
-        Iterator<String> iter = Iter.distinctAdjacent(x) ;
+        Iterator<String> iter = Iter.distinctAdjacent(x.iterator()) ;
         test(iter, "a", "b", "a") ;
     }
     

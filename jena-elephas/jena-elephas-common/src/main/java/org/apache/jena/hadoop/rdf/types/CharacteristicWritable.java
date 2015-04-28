@@ -24,8 +24,7 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.WritableComparable;
-
-import com.hp.hpl.jena.graph.Node;
+import org.apache.jena.graph.Node ;
 
 /**
  * Represents a characteristic for a single node and contains the node and a

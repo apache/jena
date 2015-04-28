@@ -28,6 +28,7 @@ import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.mgt.MgtJMX ;
 import org.apache.jena.fuseki.server.FusekiEnv ;
+import org.apache.jena.sparql.util.Utils ;
 import org.eclipse.jetty.security.* ;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
 import org.eclipse.jetty.server.* ;
@@ -35,8 +36,6 @@ import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.util.security.Constraint ;
 import org.eclipse.jetty.webapp.WebAppContext ;
 import org.eclipse.jetty.xml.XmlConfiguration ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Standalone server, not run as a WAR file.
  * Used in testing and development.

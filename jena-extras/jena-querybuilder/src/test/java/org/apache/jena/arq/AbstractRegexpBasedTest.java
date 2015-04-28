@@ -22,7 +22,7 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
-import com.hp.hpl.jena.JenaRuntime ;
+import org.apache.jena.JenaRuntime ;
 
 public abstract class AbstractRegexpBasedTest {
 	protected static final String SPACE = "\\s+";

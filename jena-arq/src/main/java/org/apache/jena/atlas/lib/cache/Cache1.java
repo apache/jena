@@ -19,14 +19,12 @@
 package org.apache.jena.atlas.lib.cache;
 
 import java.util.Iterator ;
+import java.util.concurrent.Callable ;
 
 import org.apache.jena.atlas.iterator.SingletonIterator ;
 import org.apache.jena.atlas.lib.ActionKeyValue ;
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.Lib ;
-
-
-
 
 /** A one-slot cache.*/
 public class Cache1<K, V> implements Cache<K,V>
@@ -46,11 +44,16 @@ public class Cache1<K, V> implements Cache<K,V>
     }
 
     @Override
-    public V get(K key)
+    public V getIfPresent(K key)
     {
         if ( cacheKey == null ) return null ;
         if ( cacheKey.equals(key) ) return cacheValue ;
         return null ;
+    }
+
+    @Override
+    public V getOrFill(K key, Callable<V> callable) {
+        return CacheOps.getOrFillSync(this, key, callable) ;
     }
 
     @Override
@@ -80,11 +83,11 @@ public class Cache1<K, V> implements Cache<K,V>
     }
 
     @Override
-    public V put(K key, V thing)
+    public void put(K key, V thing)
     {
         if ( Lib.equal(cacheKey, key) && Lib.equal(cacheValue, thing) )
             // No change.
-            return cacheValue ;
+            return ;
 
         // Change
         K k = cacheKey ;
@@ -93,20 +96,14 @@ public class Cache1<K, V> implements Cache<K,V>
         cacheKey = key ;
         cacheValue = thing ;
         notifyDrop(k, v) ;
-        return v ;
     }
 
     @Override
-    public boolean remove(K key)
+    public void remove(K key)
     {
-        if ( cacheKey == null ) return false ;
-        
+        if ( cacheKey == null ) return ;
         if ( cacheKey.equals(key) )
-        {
             clear() ;   // Will notify
-            return true ;
-        }
-        return false ;
     }
 
     @Override

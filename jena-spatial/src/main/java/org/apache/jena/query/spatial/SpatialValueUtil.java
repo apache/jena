@@ -18,11 +18,11 @@
 
 package org.apache.jena.query.spatial;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.impl.LiteralLabel ;
-import com.hp.hpl.jena.sparql.util.NodeUtils ;
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.impl.LiteralLabel ;
+import org.apache.jena.sparql.util.NodeUtils ;
 
 public class SpatialValueUtil {
 

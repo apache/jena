@@ -18,9 +18,9 @@
 
 package org.apache.jena.query.spatial.assembler;
 
-import com.hp.hpl.jena.rdf.model.Property ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.tdb.assembler.Vocab ;
+import org.apache.jena.rdf.model.Property ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.tdb.assembler.Vocab ;
 
 public class SpatialVocab
 {

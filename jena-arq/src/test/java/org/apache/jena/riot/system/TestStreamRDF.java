@@ -19,12 +19,11 @@
 package org.apache.jena.riot.system;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestStreamRDF extends BaseTest {
     private static Triple triple1 = SSE.parseTriple("(<s> <p> <o>)") ;

@@ -19,9 +19,8 @@
 package org.apache.jena.fuseki.mgt;
 
 import org.apache.jena.fuseki.servlets.HttpAction ;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Transactional ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Transactional ;
 
 /** Base of async tasks - this caries some useful information aroud, leaving the
  * implementation of Callable.run() to the specific task.

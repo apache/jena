@@ -22,13 +22,12 @@ import java.util.Iterator ;
 
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.adapters.TestFileManager ;
+import org.apache.jena.util.FileManager ;
+import org.apache.jena.util.LocationMapper ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.util.FileManager ;
-import com.hp.hpl.jena.util.LocationMapper ;
 
 public class TestLocationMapper extends TestCase
 {

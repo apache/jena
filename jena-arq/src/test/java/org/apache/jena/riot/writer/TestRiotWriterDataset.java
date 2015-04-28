@@ -23,15 +23,14 @@ import java.io.ByteArrayOutputStream ;
 import java.util.Arrays ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.riot.* ;
+import org.apache.jena.sparql.util.IsoMatcher ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
-
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.sparql.util.IsoMatcher ;
 
 @RunWith(Parameterized.class)
 public class TestRiotWriterDataset extends AbstractWriterTest

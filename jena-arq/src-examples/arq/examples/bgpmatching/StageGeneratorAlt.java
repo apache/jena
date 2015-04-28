@@ -19,13 +19,13 @@
 package arq.examples.bgpmatching;
 
 
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.impl.GraphBase ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterTriplePattern ;
-import com.hp.hpl.jena.sparql.engine.main.StageGenerator ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.impl.GraphBase ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.iterator.QueryIterTriplePattern ;
+import org.apache.jena.sparql.engine.main.StageGenerator ;
 
 /** Example stage generator that compiles a BasicPattern into a sequence of
  *  individual triple matching steps.

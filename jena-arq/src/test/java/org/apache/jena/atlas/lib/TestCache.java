@@ -26,8 +26,6 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
-import org.apache.jena.atlas.lib.cache.CacheStatsAtomic ;
-import org.apache.jena.atlas.lib.cache.CacheStatsSimple ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
@@ -60,34 +58,6 @@ public class TestCache extends BaseTest
         }
     ;
 
-    private static CacheMaker<Integer, Integer> stats = 
-        new CacheMaker<Integer, Integer>()
-        {
-        @Override
-        public Cache<Integer, Integer> make(int size)
-        { 
-            Cache<Integer, Integer> c = CacheFactory.createCache(size) ;
-            return new CacheStatsSimple<>(c) ;
-        }
-        @Override
-        public String name() { return "Stats" ; }
-        }
-    ;
-
-    private static CacheMaker<Integer, Integer> statsAtomic = 
-        new CacheMaker<Integer, Integer>()
-        {
-        @Override
-        public Cache<Integer, Integer> make(int size)
-        { 
-            Cache<Integer, Integer> c = CacheFactory.createCache(size) ;
-            return new CacheStatsAtomic<>(c) ;
-        }
-        @Override
-        public String name() { return "StatsAtomic" ; }
-        }
-    ;
-           
     @Parameters
     public static Collection<Object[]> cacheMakers()
     {
@@ -98,12 +68,6 @@ public class TestCache extends BaseTest
             , { standard , 10 }
             , { standard , 2 }
             , { standard , 1 }
-            , { stats , 10 }
-            , { stats , 2 }
-            , { stats , 1 }
-            , { statsAtomic , 10 }
-            , { statsAtomic , 2 }
-            , { statsAtomic , 1 }
         } ) ; 
     }
 
@@ -129,43 +93,40 @@ public class TestCache extends BaseTest
     
     @Test public void cache_01()
     {
-        Integer x = cache.put(7, 7) ;
+        Integer x = cache.getIfPresent(7) ;
+        cache.put(7, 7) ;
         assertEquals(1, cache.size()) ;
         assertNull(x) ;
         assertTrue(cache.containsKey(7)) ;
-        assertEquals(Integer.valueOf(7), cache.get(7)) ;
+        assertEquals(Integer.valueOf(7), cache.getIfPresent(7)) ;
     }
     
     @Test public void cache_02()
     {
-        Integer x1 = cache.put(7, 7) ;
-        Integer x2 = cache.put(8, 8) ;
+        cache.put(7, 7) ;
+        cache.put(8, 8) ;
         // Not true for Cache1.
         if ( size > 2 )
             assertEquals(2, cache.size()) ;
-        assertNull(x1) ;
-        if ( size > 2 )
-            assertNull(x2) ;
-        // else don't know.
-        
         if ( size > 2 )
             assertTrue(cache.containsKey(7)) ;
         
         if ( size > 2 )
-            assertEquals(Integer.valueOf(7), cache.get(7)) ;
+            assertEquals(Integer.valueOf(7), cache.getIfPresent(7)) ;
         
         assertTrue(cache.containsKey(8)) ;
-        assertEquals(Integer.valueOf(8), cache.get(8)) ;
+        assertEquals(Integer.valueOf(8), cache.getIfPresent(8)) ;
     }
     
     @Test public void cache_03()
     {
-        Integer x1 = cache.put(7, 7) ;
-        Integer x2 = cache.put(7, 18) ;
+        cache.put(7, 7) ;
+        Integer x1 = cache.getIfPresent(7) ;
+        cache.put(7, 18) ;
         assertEquals(1, cache.size()) ;
-        assertEquals(7, x2.intValue()) ;
+        assertEquals(7, x1.intValue()) ;
         assertTrue(cache.containsKey(7)) ;
-        assertEquals(Integer.valueOf(18), cache.get(7)) ;
+        assertEquals(Integer.valueOf(18), cache.getIfPresent(7)) ;
     }
     
     @Test public void cache_04()

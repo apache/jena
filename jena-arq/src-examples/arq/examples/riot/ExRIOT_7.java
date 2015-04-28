@@ -18,11 +18,10 @@
 
 package arq.examples.riot;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.lang.CollectorStreamBase;
 import org.apache.jena.riot.lang.CollectorStreamTriples;
-
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * Example of using RIOT for streaming RDF to be stored into a Collection.

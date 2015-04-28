@@ -30,10 +30,9 @@ import javax.servlet.http.HttpServletRequest ;
 import org.apache.jena.atlas.iterator.Filter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Lib ;
-
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryParseException ;
-import com.hp.hpl.jena.sparql.core.DatasetDescription ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.query.QueryParseException ;
+import org.apache.jena.sparql.core.DatasetDescription ;
 
 /** Support for the SPARQL protocol (SPARQL Query, SPARQL Update)
  */

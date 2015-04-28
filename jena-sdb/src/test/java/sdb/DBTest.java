@@ -21,6 +21,7 @@ package sdb;
 import java.sql.Connection;
 import java.util.List;
 
+import org.apache.jena.sparql.util.Utils ;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.notification.RunListener;
 import sdb.cmd.CmdArgsDB;
@@ -30,8 +31,6 @@ import sdb.test.ParamsVocab;
 import sdb.test.TestI18N;
 import sdb.test.TestStringBasic;
 import arq.cmd.CmdException;
-
-import com.hp.hpl.jena.sparql.util.Utils;
 
 /** Run some DB tests to check setup */ 
 

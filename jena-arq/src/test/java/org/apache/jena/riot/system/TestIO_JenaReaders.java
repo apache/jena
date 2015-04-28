@@ -24,6 +24,7 @@ import java.util.LinkedHashMap ;
 import java.util.Map ;
 import java.util.Properties ;
 
+import org.apache.jena.rdf.model.impl.RDFReaderFImpl ;
 import org.apache.jena.riot.IO_Jena ;
 import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_NT ;
 import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_RDFJSON ;
@@ -34,8 +35,6 @@ import org.apache.jena.riot.adapters.* ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
 
 public class TestIO_JenaReaders {
     @BeforeClass public static void beforeClass() { } 

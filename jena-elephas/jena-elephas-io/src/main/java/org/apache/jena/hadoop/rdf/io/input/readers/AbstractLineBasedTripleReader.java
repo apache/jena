@@ -20,10 +20,10 @@ package org.apache.jena.hadoop.rdf.io.input.readers;
 
 import java.util.Iterator;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.tokens.Tokenizer;
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * An abstract record reader for line based triple formats

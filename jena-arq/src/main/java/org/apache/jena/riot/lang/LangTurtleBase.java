@@ -32,17 +32,16 @@ import static org.apache.jena.riot.tokens.TokenType.PREFIXED_NAME ;
 import static org.apache.jena.riot.tokens.TokenType.RBRACKET ;
 import static org.apache.jena.riot.tokens.TokenType.RPAREN ;
 import static org.apache.jena.riot.tokens.TokenType.SEMICOLON ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.sparql.graph.NodeConst ;
-import com.hp.hpl.jena.vocabulary.OWL ;
+import org.apache.jena.sparql.graph.NodeConst ;
+import org.apache.jena.vocabulary.OWL ;
 
 /** The main engine for all things Turtle-ish (Turtle, TriG). */
 public abstract class LangTurtleBase extends LangBase {

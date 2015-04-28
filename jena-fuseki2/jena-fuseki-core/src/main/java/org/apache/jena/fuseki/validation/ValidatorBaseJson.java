@@ -29,7 +29,9 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.web.HttpNames ;
+import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.fuseki.servlets.ActionErrorException ;
 import org.apache.jena.fuseki.servlets.ActionLib ;
 import org.apache.jena.fuseki.servlets.ServletBase ;
@@ -37,9 +39,6 @@ import org.apache.jena.fuseki.servlets.ServletOps ;
 import static org.apache.jena.riot.WebContent.* ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
-
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.util.Context ;
 
 /** ValidationBase for JSON out */ 
 public abstract class ValidatorBaseJson extends ServletBase

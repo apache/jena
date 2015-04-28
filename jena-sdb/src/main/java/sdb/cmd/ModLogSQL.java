@@ -20,8 +20,7 @@ package sdb.cmd;
 
 import java.util.List;
 
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-
+import org.apache.jena.sdb.sql.SDBConnection ;
 import arq.cmd.CmdException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdArgModule;

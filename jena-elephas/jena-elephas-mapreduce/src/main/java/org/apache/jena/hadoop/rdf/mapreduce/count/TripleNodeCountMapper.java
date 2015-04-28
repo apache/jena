@@ -18,10 +18,9 @@
 
 package org.apache.jena.hadoop.rdf.mapreduce.count;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.types.NodeWritable;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
-
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * A mapper for counting node usages within triples designed primarily for use

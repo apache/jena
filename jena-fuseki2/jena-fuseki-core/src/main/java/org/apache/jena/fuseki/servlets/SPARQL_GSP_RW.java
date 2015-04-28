@@ -30,14 +30,13 @@ import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.servlets.UploadDetails.PreState ;
+import org.apache.jena.graph.Graph ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.web.HttpNames ;
+import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.web.HttpSC ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
 /** The WRITE operations added to the READ operations */
 public class SPARQL_GSP_RW extends SPARQL_GSP_R

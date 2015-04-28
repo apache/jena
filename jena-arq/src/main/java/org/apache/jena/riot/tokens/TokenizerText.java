@@ -28,8 +28,7 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.riot.RiotParseException ;
 import org.apache.jena.riot.system.RiotChars ;
-
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.ARQInternalErrorException ;
 
 /** Tokenizer for all sorts of things RDF-ish */
 
@@ -38,7 +37,7 @@ public final class TokenizerText implements Tokenizer
     // TODO Remove CNTL and make SYMBOLS
     // Drop through to final general symbol/keyword reader, including <=, != 
     // Care with <=
-    // STRING, not STIRNG1/2, LONG_STRING1,2
+    // STRING, not STRING1/2, LONG_STRING1/2
     // Policy driven for CURIES?
     
     // Various allow/deny options (via checker?)
@@ -428,32 +427,42 @@ public final class TokenizerText implements Tokenizer
 
     private static final boolean VeryVeryLax = false ;
     
+    // [8]  IRIREF  ::= '<' ([^#x00-#x20<>"{}|^`\] | UCHAR)* '>'
     private String readIRI() {
         stringBuilder.setLength(0) ;
         for (;;) {
             int ch = reader.readChar() ;
-            if ( ch == EOF ) {
-                exception("Broken IRI: " + stringBuilder.toString()) ;
+            switch(ch) {
+                case EOF:
+                    exception("Broken IRI (End of file): %s", stringBuilder.toString()) ;
+                case NL:
+                    exception("Broken IRI (newline): %s", stringBuilder.toString()) ;
+                case CR:
+                    exception("Broken IRI (CR): %s", stringBuilder.toString()) ;
+                case CH_GT:
+                    // Done!
+                    return stringBuilder.toString() ;
+                case CH_RSLASH:
+                    if ( VeryVeryLax )
+                        ch = readCharEscapeAnyURI() ;
+                    else
+                        // NORMAL
+                        ch = readUnicodeEscape() ;
+                    break ;
             }
 
-            if ( ch == '\n' )
-                exception("Broken IRI (newline): " + stringBuilder.toString()) ;
-
-            if ( ch == CH_GT ) {
-                return stringBuilder.toString() ;
+            if ( !VeryVeryLax ) {
+                if ( ch == CH_LT )  // '<' -- very bad
+                    exception("Broken IRI (bad character: '%c'): %s", (char)ch, stringBuilder.toString()) ;
+                if ( ch == TAB )
+                    exception("Broken IRI (Tab character): %s", stringBuilder.toString()) ;
+                if ( ch <= 0x19 )
+                    exception("Broken IRI (control char 0x%02X): %s", ch, stringBuilder.toString()) ;
+                if ( ch == SPC )
+                    exception("Broken IRI (space): %s...", stringBuilder.toString()) ;
+                if ( ch == '"' || ch == '{' || ch == '}' || ch == '|' || ch == '^' || ch == '`')
+                    exception("Broken IRI (Illegal character 0x%02X, '%c'): %s", ch, (char)ch, stringBuilder.toString()) ;
             }
-
-            if ( ch == '\\' ) {
-                if ( VeryVeryLax )
-                    ch = readCharEscapeAnyURI() ;
-                else
-                    // NORMAL
-                    ch = readUnicodeEscape() ;
-                // Drop through.
-            }
-            // Ban certain very bad characters
-            if ( !VeryVeryLax && ch == '<' )
-                exception("Broken IRI (bad character: '%c'): %s", ch, stringBuilder.toString()) ;
             insertCodepoint(stringBuilder, ch) ;
         }
     }

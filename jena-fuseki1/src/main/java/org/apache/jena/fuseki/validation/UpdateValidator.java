@@ -26,11 +26,10 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
-
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import org.apache.jena.query.Syntax ;
+import org.apache.jena.sparql.ARQException ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateRequest ;
 
 public class UpdateValidator extends ValidatorBase
 {

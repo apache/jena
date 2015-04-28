@@ -19,16 +19,15 @@ package org.apache.jena.arq.querybuilder.clauses;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder ;
 import org.apache.jena.arq.querybuilder.SelectBuilder ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.impl.LiteralLabelFactory ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 import org.junit.After ;
 import org.xenei.junit.contract.Contract ;
 import org.xenei.junit.contract.ContractTest ;
 import org.xenei.junit.contract.IProducer ;
-
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException ;
 
 @Contract(WhereClause.class)
 public class WhereClauseTest<T extends WhereClause<?>> extends

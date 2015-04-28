@@ -26,18 +26,17 @@ import java.util.List ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Action ;
+import org.apache.jena.query.ResultSet ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.thrift.wire.RDF_StreamRow ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.ResultSetStream ;
+import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.thrift.TException ;
 import org.apache.thrift.protocol.TProtocol ;
 import org.apache.thrift.transport.TTransportException ;
-
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 /** Operations on binary RDF (which uses <a href="http://thrift.apache.org/">Apache Thrift</a>).
  * See also {@link ThriftConvert}, for specific functions on binary RDF.

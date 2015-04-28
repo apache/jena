@@ -20,18 +20,17 @@ package org.apache.jena.riot.langsuite;
 
 import static org.apache.jena.riot.SysRIOT.fmtMessage ;
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
-
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.junit.EarlReport ;
+import org.apache.jena.sparql.junit.EarlReport ;
 
 public class UnitTestBadSyntax extends LangTestCase
 {

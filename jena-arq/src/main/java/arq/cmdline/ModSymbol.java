@@ -19,12 +19,12 @@
 package arq.cmdline;
 
 import java.io.PrintStream ;
-import org.apache.jena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.MappingRegistry ;
-import com.hp.hpl.jena.sparql.util.Symbol ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.MappingRegistry ;
+import org.apache.jena.sparql.util.Symbol ;
 
 public class ModSymbol implements ArgModuleGeneral
 {

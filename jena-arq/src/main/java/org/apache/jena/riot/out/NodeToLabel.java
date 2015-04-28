@@ -22,10 +22,9 @@ import java.util.HashMap ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.system.MapWithScope ;
 import org.apache.jena.riot.system.SyntaxLabels ;
-
-import com.hp.hpl.jena.graph.Node ;
 
 /** Map nodes to string (usually, blank nodes to labels).
  * See {@link SyntaxLabels#createNodeToLabel} for getting a default setup.

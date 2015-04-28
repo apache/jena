@@ -18,28 +18,27 @@
 
 package org.apache.jena.query.spatial.assembler;
 
-import static org.apache.jena.query.spatial.assembler.SpatialVocab.pDefinition;
-import static org.apache.jena.query.spatial.assembler.SpatialVocab.pDirectory;
+import static org.apache.jena.query.spatial.assembler.SpatialVocab.pDefinition ;
+import static org.apache.jena.query.spatial.assembler.SpatialVocab.pDirectory ;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.File ;
+import java.io.IOException ;
 
-import org.apache.jena.atlas.io.IO;
-import org.apache.jena.query.spatial.EntityDefinition;
-import org.apache.jena.query.spatial.SpatialDatasetFactory;
-import org.apache.jena.query.spatial.SpatialIndex;
-import org.apache.jena.query.spatial.SpatialIndexException;
-import org.apache.jena.riot.system.IRILib;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.store.RAMDirectory;
-
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.Mode ;
+import org.apache.jena.assembler.assemblers.AssemblerBase ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.query.spatial.EntityDefinition ;
+import org.apache.jena.query.spatial.SpatialDatasetFactory ;
+import org.apache.jena.query.spatial.SpatialIndex ;
+import org.apache.jena.query.spatial.SpatialIndexException ;
+import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sparql.util.graph.GraphUtils ;
+import org.apache.lucene.store.Directory ;
+import org.apache.lucene.store.FSDirectory ;
+import org.apache.lucene.store.RAMDirectory ;
 
 public class SpatialIndexLuceneAssembler extends AssemblerBase
 {

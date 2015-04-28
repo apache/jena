@@ -30,13 +30,12 @@ import org.apache.jena.atlas.lib.MultiMapToList ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.build.DataServiceDesc ;
-
-import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphReadOnly ;
-import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
+import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.DatasetGraphReadOnly ;
+import org.apache.jena.tdb.StoreConnection ;
+import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class DataService { //implements DatasetMXBean {
     // XXX Add a "null model assembler".

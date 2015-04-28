@@ -111,7 +111,7 @@ public class ListUtils
                 first = false ;
             }
         } ;
-        Iter.apply(list, output) ;
+        Iter.apply(list.iterator(), output) ;
     }
     
     /** Return a list of lists of all the elements of collection in every order

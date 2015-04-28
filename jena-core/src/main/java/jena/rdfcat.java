@@ -32,17 +32,16 @@ import java.util.* ;
 import jena.cmdline.ArgDecl ;
 import jena.cmdline.ArgHandler ;
 import jena.cmdline.CommandLine ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.impl.IO_Ctl ;
+import org.apache.jena.rdf.model.impl.RDFWriterFImpl ;
+import org.apache.jena.shared.NoWriterForLangException ;
+import org.apache.jena.util.FileManager ;
+import org.apache.jena.util.FileUtils ;
+import org.apache.jena.vocabulary.OWL ;
+import org.apache.jena.vocabulary.RDFS ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.rdf.model.impl.IO_Ctl ;
-import com.hp.hpl.jena.rdf.model.impl.RDFWriterFImpl ;
-import com.hp.hpl.jena.shared.NoWriterForLangException ;
-import com.hp.hpl.jena.util.FileManager ;
-import com.hp.hpl.jena.util.FileUtils ;
-import com.hp.hpl.jena.vocabulary.OWL ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
 
 
 /**
@@ -100,7 +99,7 @@ import com.hp.hpl.jena.vocabulary.RDFS ;
  * the including statements (e.g <code>owl:imports</code> to be filtered
  * from the output models. To leave such statements in place, use the <code>--nofilter</code>
  * option.</p>
- * <p>rdfcat uses the Jena {@link com.hp.hpl.jena.util.FileManager FileManager}
+ * <p>rdfcat uses the Jena {@link org.apache.jena.util.FileManager FileManager}
  * to resolve input URI's to locations. This allows, for example, <code>http:</code>
  * URI's to be re-directed to local <code>file:</code> locations, to avoid a
  * network transaction.</p>

@@ -25,14 +25,13 @@ import java.util.List;
 import java.util.Stack;
 
 import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.jdbc.results.metadata.SelectResultsMetadata;
 import org.apache.jena.jdbc.statements.JenaStatement;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.ResultSetRewindable;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import org.apache.jena.query.QueryExecution ;
+import org.apache.jena.query.ResultSetRewindable ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.binding.Binding ;
 
 /**
  * Represents SPARQL SELECT results

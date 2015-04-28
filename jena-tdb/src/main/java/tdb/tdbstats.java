@@ -22,19 +22,18 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.tdb.solver.SolverLib ;
+import org.apache.jena.tdb.solver.stats.Stats ;
+import org.apache.jena.tdb.solver.stats.StatsCollectorNodeId ;
+import org.apache.jena.tdb.solver.stats.StatsResults ;
+import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.tdb.store.NodeId ;
+import org.apache.jena.tdb.store.nodetable.NodeTable ;
+import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.CmdTDBGraph ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.tdb.solver.SolverLib ;
-import com.hp.hpl.jena.tdb.solver.stats.Stats ;
-import com.hp.hpl.jena.tdb.solver.stats.StatsCollectorNodeId ;
-import com.hp.hpl.jena.tdb.solver.stats.StatsResults ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTable ;
 
 public class tdbstats extends CmdTDBGraph
 {

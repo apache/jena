@@ -24,6 +24,14 @@ import java.io.Reader ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.datatypes.TypeMapper ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.RDFErrorHandler ;
+import org.apache.jena.rdfxml.xmlinput.* ;
+import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.checker.CheckerLiterals ;
@@ -33,15 +41,6 @@ import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
-
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.datatypes.TypeMapper ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
-import com.hp.hpl.jena.rdfxml.xmlinput.* ;
-import com.hp.hpl.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
 
 /** RDF/XML.
  *

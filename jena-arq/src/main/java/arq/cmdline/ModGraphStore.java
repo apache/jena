@@ -18,10 +18,10 @@
 
 package arq.cmdline;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.update.GraphStore ;
+import org.apache.jena.update.GraphStoreFactory ;
 
 public class ModGraphStore extends ModDatasetGeneralAssembler
 {

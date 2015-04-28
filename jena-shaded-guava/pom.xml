@@ -22,11 +22,11 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>13-SNAPSHOT</version>
+    <version>14-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
   <artifactId>jena-shaded-guava</artifactId>
-  <version>2.13.1-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <name>Apache Jena - Shadowed external libraries</name>
   <description>
     This module shades Google's Guava.
@@ -64,6 +64,7 @@
           </execution>
         </executions>
         <configuration>
+	  <createSourcesJar>true</createSourcesJar>
           <artifactSet>
             <includes>
               <artifact>com.google.guava:guava</artifact>

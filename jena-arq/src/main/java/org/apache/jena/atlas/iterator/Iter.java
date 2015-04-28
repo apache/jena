@@ -20,12 +20,28 @@ package org.apache.jena.atlas.iterator ;
 
 import java.io.PrintStream ;
 import java.util.* ;
+import java.util.stream.Stream ;
+import java.util.stream.StreamSupport ;
 
 import org.apache.jena.atlas.lib.ActionKeyValue ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sink ;
 
-public class Iter<T> implements Iterable<T>, Iterator<T> {
+public class Iter<T> implements Iterator<T> {
+    
+    // Most Iterable<T> operations have been removed - use streams instad.
+    
+    public static <T> Stream<T> asStream(Iterator<T> iterator) {
+        // Why isn't there a JDK operation for iterator -> (sequential) stream?
+        return asStream(iterator, false);
+    }
+
+    public static <T> Stream<T> asStream(Iterator<T> iterator, boolean parallel) {
+        // Why isn't there a JDK operation for iterator -> (sequential) stream?  
+        Iterable<T> iterable = () -> iterator;
+        return StreamSupport.stream(iterable.spliterator(), parallel);
+    }
+
     // First part : the static function library.
     // Often with both Iterator<? extends T> and Iterable<? extends T>
 
@@ -42,9 +58,9 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
 //        return new NullIterator<T>() ;
 //    }
     
-    public static <T> Set<T> toSet(Iterable<? extends T> stream) {
-        return toSet(stream.iterator()) ;
-    }
+//    public static <T> Set<T> toSet(Iterable<? extends T> stream) {
+//        return toSet(stream.iterator()) ;
+//    }
 
     public static <T> Set<T> toSet(Iterator<? extends T> stream) {
         Accumulate<T, Set<T>> action = new Accumulate<T, Set<T>>() {
@@ -71,9 +87,9 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         return reduce(stream, action) ;
     }
 
-    public static <T> List<T> toList(Iterable<? extends T> stream) {
-        return toList(stream.iterator()) ;
-    }
+//    public static <T> List<T> toList(Iterable<? extends T> stream) {
+//        return toList(stream.iterator()) ;
+//    }
 
     public static <T> List<T> toList(Iterator<? extends T> stream) {
         Accumulate<T, List<T>> action = new Accumulate<T, List<T>>() {
@@ -162,9 +178,9 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
     // map without the results - do immediately.
     // Also, apply with call in between?
 
-    public static <T> void apply(Iterable<? extends T> stream, Action<T> action) {
-        apply(stream.iterator(), action) ;
-    }
+//    public static <T> void apply(Iterable<? extends T> stream, Action<T> action) {
+//        apply(stream.iterator(), action) ;
+//    }
 
     public static <T> void apply(Iterator<? extends T> stream, Action<T> action) {
         for (; stream.hasNext();) {
@@ -182,9 +198,9 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
 
     // ---- Filter
 
-    public static <T> Iterator<T> filter(Iterable<? extends T> stream, Filter<T> filter) {
-        return filter(stream.iterator(), filter) ;
-    }
+//    public static <T> Iterator<T> filter(Iterable<? extends T> stream, Filter<T> filter) {
+//        return filter(stream.iterator(), filter) ;
+//    }
 
     public static <T> Iterator<T> filter(final Iterator<? extends T> stream, final Filter<T> filter) {
         final Iterator<T> iter = new Iterator<T>() {
@@ -246,9 +262,9 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         }
     }
 
-    public static <T> Iterator<T> notFilter(Iterable<? extends T> stream, Filter<T> filter) {
-        return notFilter(stream.iterator(), filter) ;
-    }
+//    public static <T> Iterator<T> notFilter(Iterable<? extends T> stream, Filter<T> filter) {
+//        return notFilter(stream.iterator(), filter) ;
+//    }
 
     public static <T> Iterator<T> notFilter(final Iterator<? extends T> stream, final Filter<T> filter) {
         Filter<T> flippedFilter = InvertedFilter.invert(filter) ;
@@ -257,16 +273,16 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
 
     // Filter-related
 
-    /**
-     * Return true if every element of stream passes the filter (reads the
-     * stream)
-     */
-    public static <T> boolean every(Iterable<? extends T> stream, Filter<T> filter) {
-        for (T item : stream)
-            if ( !filter.accept(item) )
-                return false ;
-        return true ;
-    }
+//    /**
+//     * Return true if every element of stream passes the filter (reads the
+//     * stream)
+//     */
+//    public static <T> boolean every(Iterable<? extends T> stream, Filter<T> filter) {
+//        for (T item : stream)
+//            if ( !filter.accept(item) )
+//                return false ;
+//        return true ;
+//    }
 
     /**
      * Return true if every element of stream passes the filter (reads the
@@ -281,16 +297,16 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         return true ;
     }
 
-    /**
-     * Return true if every element of stream passes the filter (reads the
-     * stream until the first element passing the filter)
-     */
-    public static <T> boolean some(Iterable<? extends T> stream, Filter<T> filter) {
-        for (T item : stream)
-            if ( filter.accept(item) )
-                return true ;
-        return false ;
-    }
+//    /**
+//     * Return true if every element of stream passes the filter (reads the
+//     * stream until the first element passing the filter)
+//     */
+//    public static <T> boolean some(Iterable<? extends T> stream, Filter<T> filter) {
+//        for (T item : stream)
+//            if ( filter.accept(item) )
+//                return true ;
+//        return false ;
+//    }
 
     /**
      * Return true if one or more elements of stream passes the filter (reads
@@ -307,9 +323,9 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
 
     // ---- Map
 
-    public static <T, R> Iterator<R> map(Iterable<? extends T> stream, Transform<T, R> converter) {
-        return map(stream.iterator(), converter) ;
-    }
+//    public static <T, R> Iterator<R> map(Iterable<? extends T> stream, Transform<T, R> converter) {
+//        return map(stream.iterator(), converter) ;
+//    }
 
     public static <T, R> Iterator<R> map(final Iterator<? extends T> stream, final Transform<T, R> converter) {
         final Iterator<R> iter = new Iterator<R>() {
@@ -385,21 +401,21 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         return iter ;
     }
 
-    public static <T, R> Iterator<R> mapMany(Iterable<? extends T> stream, Transform<T, Iterator<R>> converter) {
-        return mapMany(stream.iterator(), converter) ;
-    }
+//    public static <T, R> Iterator<R> mapMany(Iterable<? extends T> stream, Transform<T, Iterator<R>> converter) {
+//        return mapMany(stream.iterator(), converter) ;
+//    }
 
     public static <T, R> List<R> mapMany(List<? extends T> list, Transform<T, Iterator<R>> converter) {
         return toList(mapMany(list.iterator(), converter)) ;
     }
 
-    /**
-     * Apply an action to everything in stream, yielding a stream of the same
-     * items
-     */
-    public static <T> Iterator<T> operate(Iterable<? extends T> stream, Action<T> converter) {
-        return operate(stream.iterator(), converter) ;
-    }
+//    /**
+//     * Apply an action to everything in stream, yielding a stream of the same
+//     * items
+//     */
+//    public static <T> Iterator<T> operate(Iterable<? extends T> stream, Action<T> converter) {
+//        return operate(stream.iterator(), converter) ;
+//    }
 
     /**
      * Apply an action to everything in stream, yielding a stream of the same
@@ -443,13 +459,13 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         return Iter.operate(stream, action) ;
     }
 
-    /** Join two iteratables
-     * If there, potentially, going to be many iterators, it is better to 
-     * create an {@link IteratorConcat} explicitly and add each iterator.
-     */
-    public static <T> Iterator<T> append(Iterable<? extends T> iter1, Iterable<? extends T> iter2) {
-        return IteratorCons.create(iterator(iter1), iterator(iter2)) ;
-    }
+//    /** Join two iteratables
+//     * If there, potentially, going to be many iterators, it is better to 
+//     * create an {@link IteratorConcat} explicitly and add each iterator.
+//     */
+//    public static <T> Iterator<T> append(Iterable<? extends T> iter1, Iterable<? extends T> iter2) {
+//        return IteratorCons.create(iterator(iter1), iterator(iter2)) ;
+//    }
 
     /** Join two iterator
      * If there, potentially, going to be many iterators, it is better to 
@@ -459,31 +475,31 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         return IteratorCons.create(iter1, iter2) ;
     }
 
-    private static <T> Iterator<T> iterator(Iterable<T> iter) {
-        return (iter == null) ? null : iter.iterator() ;
-    }
+//    private static <T> Iterator<T> iterator(Iterable<T> iter) {
+//        return (iter == null) ? null : iter.iterator() ;
+//    }
 
-    public static <T> Iterator<T> distinct(Iterable<T> iter) {
-        return distinct(iter.iterator()) ;
-    }
+//    public static <T> Iterator<T> distinct(Iterable<T> iter) {
+//        return distinct(iter.iterator()) ;
+//    }
 
     public static <T> Iterator<T> distinct(Iterator<T> iter) {
         return filter(iter, new FilterUnique<T>()) ;
     }
 
-    /** Remove adjacent duplicates */
-    public static <T> Iterator<T> distinctAdjacent(Iterable<T> iter) {
-        return distinctAdjacent(iter.iterator()) ;
-    }
+//    /** Remove adjacent duplicates */
+//    public static <T> Iterator<T> distinctAdjacent(Iterable<T> iter) {
+//        return distinctAdjacent(iter.iterator()) ;
+//    }
 
     /** Remove adjacent duplicates */
     public static <T> Iterator<T> distinctAdjacent(Iterator<T> iter) {
         return filter(iter, new FilterDistinctAdjacent<T>()) ;
     }
 
-    public static <T> Iterator<T> removeNulls(Iterable<T> iter) {
-        return filter(iter, new FilterOutNulls<T>()) ;
-    }
+//    public static <T> Iterator<T> removeNulls(Iterable<T> iter) {
+//        return filter(iter, new FilterOutNulls<T>()) ;
+//    }
 
     public static <T> Iterator<T> removeNulls(Iterator<T> iter) {
         return filter(iter, new FilterOutNulls<T>()) ;
@@ -538,13 +554,13 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         return (Iterator<T>)iterator ;
     }
 
-    /**
-     * Count the iterable - many iterable objects have a .size() operation which
-     * should be used in preference to this explicit counting operation
-     */
-    public static <T> long count(Iterable<T> iterable) {
-        return count(iterable.iterator()) ;
-    }
+//    /**
+//     * Count the iterable - many iterable objects have a .size() operation which
+//     * should be used in preference to this explicit counting operation
+//     */
+//    public static <T> long count(Iterable<T> iterable) {
+//        return count(iterable.iterator()) ;
+//    }
 
     /** Count the iterator (this is destructive on the iterator) */
     public static <T> long count(Iterator<T> iterator) {
@@ -559,11 +575,11 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         // return action.getCount() ;
     }
 
-    // --- Consume the iterator.
-    /** Consume the iterable */
-    public static <T> void consume(Iterable<T> iterator) {
-        count(iterator) ;
-    }
+//    // --- Consume the iterator.
+//    /** Consume the iterable */
+//    public static <T> void consume(Iterable<T> iterator) {
+//        count(iterator) ;
+//    }
 
     /** Consume the iterator */
     public static <T> void consume(Iterator<T> iterator) {
@@ -580,9 +596,10 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         return asString(stream, new AccString<T>()) ;
     }
 
-    public static <T> String asString(Iter<T> stream) {
-        return asString(stream, new AccString<T>()) ;
-    }
+//    public static <T> String asString(Iter<T> stream) {
+//        return asString(stream, new AccString<T>()) ;
+//    }
+//
 
     public static <T> String asString(Iterable<T> stream, String sep) {
         return asString(stream, new AccString<T>(sep)) ;
@@ -592,21 +609,21 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         return asString(stream, new AccString<T>(sep)) ;
     }
 
-    public static <T> String asString(Iter<T> stream, String sep) {
-        return asString(stream.iterator(), new AccString<T>(sep)) ;
-    }
-
+//    public static <T> String asString(Iter<T> stream, String sep) {
+//        return asString(stream.iterator(), new AccString<T>(sep)) ;
+//    }
+//
     public static <T> String asString(Iterable<T> stream, AccString<T> formatter) {
-        return reduce(stream, formatter) ;
+        return asString(stream.iterator(), formatter) ;
     }
 
     public static <T> String asString(Iterator<T> stream, AccString<T> formatter) {
         return reduce(stream, formatter) ;
     }
 
-    public static <T> String asString(Iter<T> stream, AccString<T> formatter) {
-        return reduce(stream.iterator(), formatter) ;
-    }
+//    public static <T> String asString(Iter<T> stream, AccString<T> formatter) {
+//        return reduce(stream.iterator(), formatter) ;
+//    }
 
     // ----
 
@@ -678,15 +695,15 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         apply(stream, x) ;
     }
 
-    /** Print an iterable */
-    public static <T> void print(PrintStream out, Iterable<T> iterable) {
-        print(out, iterable.iterator()) ;
-    }
-
-    /** Print an iterable */
-    public static <T> void print(Iterable<T> iterable) {
-        print(iterable.iterator()) ;
-    }
+//    /** Print an iterable */
+//    public static <T> void print(PrintStream out, Iterable<T> iterable) {
+//        print(out, iterable.iterator()) ;
+//    }
+//
+//    /** Print an iterable */
+//    public static <T> void print(Iterable<T> iterable) {
+//        print(iterable.iterator()) ;
+//    }
 
     /** Send the elements of the iterator to a sink - consumes the iterator */
     public static <T> void sendToSink(Iterator<T> iter, Sink<T> sink) {
@@ -697,13 +714,13 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         sink.close() ;
     }
 
-    /** Send the elements of the iterator to a sink - consumes the iterator */
+    /** Send the elements of the iterable to a sink */
     public static <T> void sendToSink(Iterable<T> stream, Sink<T> sink) {
         sendToSink(stream.iterator(), sink) ;
     }
 
     // ----
-    // Iter class part ; factories
+    // Iter class part : factories
 
     public static <T> Iter<T> iter(Iter<T> iter) {
         return iter ;
@@ -727,18 +744,18 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         return new Iter<>(iterator) ;
     }
 
-    public static <T> Iter<T> iter(Iterable<T> iterable) {
-        if ( iterable instanceof Iter<? > )
-            return (Iter<T>)iterable ;
-        return new Iter<>(iterable.iterator()) ;
-    }
+//    public static <T> Iter<T> iter(Iterable<T> iterable) {
+//        if ( iterable instanceof Iter<? > )
+//            return (Iter<T>)iterable ;
+//        return new Iter<>(iterable.iterator()) ;
+//    }
 
     public static <T> Iter<T> singletonIter(T item) {
-        return new Iter<>(new SingletonIterator<>(item)) ;
+        return iter(new SingletonIterator<>(item)) ;
     }
 
     public static <T> Iter<T> nullIter() {
-        return new Iter<>(new NullIterator<T>()) ;
+        return iter(new NullIterator<T>()) ;
     }
 
     /**
@@ -898,7 +915,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
      * and <tt>.add</tt> each iterator.  The overheads are much lower. 
      */
     public Iter<T> append(Iterator<T> iter) {
-        return new Iter<>(IteratorCons.create(iterator, iter)) ;
+        return iter(IteratorCons.create(iterator, iter)) ;
     }
 
     /** Return an Iter that yields at most the first N items */
@@ -922,15 +939,15 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
     }
 
     public Iter<T> distinct() {
-        return new Iter<>(distinct(iterator())) ;
+        return iter((distinct(iterator()))) ;
     }
 
     public Iter<T> distinctAdjacent() {
-        return new Iter<>(distinctAdjacent(iterator())) ;
+        return iter(distinctAdjacent(iterator())) ;
     }
 
     // ---- Iterable
-    @Override
+//    @Override
     public Iterator<T> iterator() {
         return iterator ;
     }

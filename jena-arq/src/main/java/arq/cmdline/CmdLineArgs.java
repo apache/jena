@@ -27,10 +27,8 @@ import java.util.List ;
 import java.util.Map ;
 
 import arq.cmd.CmdException ;
-
 import org.apache.jena.atlas.logging.Log ;
-
-import com.hp.hpl.jena.util.FileManager ;
+import org.apache.jena.util.FileManager ;
 
 /**
  * Command line, using the common named/positional arguments paradigm

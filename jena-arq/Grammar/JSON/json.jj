@@ -2,7 +2,7 @@
 // (Run through cpp -P -C first)
 #endif
 
-#define PACKAGE     org.openjena.atlas.json.io.parserjavacc.javacc
+#define PACKAGE     org.apache.jena.atlas.json.io.parserjavacc.javacc
 #define CLASS       JSON_Parser
 #define PARSERBASE  JSON_ParserBase
 

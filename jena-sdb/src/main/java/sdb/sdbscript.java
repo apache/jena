@@ -20,8 +20,7 @@ package sdb;
 
 import java.lang.reflect.Method;
 
-import com.hp.hpl.jena.sdb.SDB ;
-
+import org.apache.jena.sdb.SDB ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

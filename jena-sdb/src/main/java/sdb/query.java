@@ -18,10 +18,9 @@
 
 package sdb;
 
+import org.apache.jena.sparql.util.Utils ;
 import sdb.cmd.ModDatasetStore;
 import arq.cmdline.ModDataset;
-
-import com.hp.hpl.jena.sparql.util.Utils;
 
 public class query extends arq.query
 {

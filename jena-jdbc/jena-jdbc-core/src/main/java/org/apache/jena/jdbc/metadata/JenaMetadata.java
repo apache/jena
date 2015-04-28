@@ -25,10 +25,11 @@ import java.sql.RowIdLifetime;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Types;
+
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.metadata.results.MetaResultSet;
-import com.hp.hpl.jena.vocabulary.XSD;
+import org.apache.jena.vocabulary.XSD ;
 
 /**
  * Database metadata for Jena JDBC connections

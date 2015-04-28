@@ -18,15 +18,14 @@
 
 package tdb.cmdline;
 
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.tdb.store.GraphTDB ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.store.GraphTDB ;
 
 public abstract class CmdTDBGraph extends CmdTDB
 {
@@ -75,7 +74,7 @@ public abstract class CmdTDBGraph extends CmdTDB
     @Override
     protected String getCommandName()
     {
-        return Utils.className(this) ;
+        return Lib.className(this) ;
     }
     
 }

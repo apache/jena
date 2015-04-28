@@ -22,7 +22,6 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.Closeable ;
 
-
 public interface Tokenizer extends Iterator<Token>, Closeable
 {
     /** Is there another token? */

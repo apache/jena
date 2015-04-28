@@ -24,9 +24,8 @@ import java.sql.SQLException;
 import org.apache.jena.jdbc.JenaJDBC;
 import org.apache.jena.jdbc.connections.DatasetConnection;
 import org.apache.jena.jdbc.metadata.DatasetMetadata;
-
-import com.hp.hpl.jena.sparql.util.Version;
-import com.hp.hpl.jena.tdb.TDB;
+import org.apache.jena.sparql.util.Version ;
+import org.apache.jena.tdb.TDB ;
 
 /**
  * Connection metadata for TDB datasets

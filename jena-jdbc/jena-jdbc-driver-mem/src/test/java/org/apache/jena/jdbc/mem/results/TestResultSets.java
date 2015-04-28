@@ -21,8 +21,7 @@ package org.apache.jena.jdbc.mem.results;
 import java.sql.SQLException;
 
 import org.apache.jena.jdbc.mem.connections.DebugMemConnection;
-
-import com.hp.hpl.jena.query.Dataset;
+import org.apache.jena.query.Dataset ;
 
 /**
  * Tests for result sets run against an in-memory dataset {@link DebugMemConnection}

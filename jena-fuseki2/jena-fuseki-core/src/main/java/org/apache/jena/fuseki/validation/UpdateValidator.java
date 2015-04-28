@@ -22,11 +22,10 @@ import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
-
-import com.hp.hpl.jena.query.QueryParseException ;
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import org.apache.jena.query.QueryParseException ;
+import org.apache.jena.query.Syntax ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateRequest ;
 
 public class UpdateValidator extends ValidatorBaseJson {
     public UpdateValidator() {}

@@ -25,8 +25,7 @@ import java.util.zip.GZIPInputStream ;
 import java.util.zip.GZIPOutputStream ;
 
 import org.apache.jena.atlas.RuntimeIOException ;
-import org.apache.jena.riot.out.CharSpace ;
-import org.apache.jena.riot.system.IRILib ;
+import org.apache.jena.atlas.lib.IRILib ;
 
 public class IO
 {
@@ -155,20 +154,11 @@ public class IO
     }
     
     /** Wrap in a general writer interface */ 
-    static public AWriter wrapUTF8(OutputStream out)        { return wrap(out, CharSpace.UTF8); } 
+    static public AWriter wrapUTF8(OutputStream out)        { return wrap(asUTF8(out)) ; } 
     
     /** Wrap in a general writer interface */ 
-    static public AWriter wrapASCII(OutputStream out)       { return wrap(out, CharSpace.ASCII) ; } 
+    static public AWriter wrapASCII(OutputStream out)       { return wrap(asASCII(out)) ; } 
 
-    /** Wrap in a general writer interface */ 
-    static public AWriter wrap(OutputStream out, CharSpace charSpace) {
-        switch (charSpace) {
-            case UTF8: return wrap(asUTF8(out)) ;
-            case ASCII: return wrap(asASCII(out)) ;
-        }
-        return null ;
-    }
-    
     /** Create a print writer that uses UTF-8 encoding */ 
     static public PrintWriter asPrintWriterUTF8(OutputStream out) {
         return new PrintWriter(asUTF8(out)); 

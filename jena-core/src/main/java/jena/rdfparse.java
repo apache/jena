@@ -22,8 +22,8 @@ import static jena.cmdline.CmdLineUtils.setLog4jConfiguration ;
 
 import java.lang.reflect.Constructor ;
 
-import com.hp.hpl.jena.rdfxml.xmlinput.NTriple ;
-import com.hp.hpl.jena.shared.Command ;
+import org.apache.jena.rdfxml.xmlinput.NTriple ;
+import org.apache.jena.shared.Command ;
 
 /** A command line interface into ARP.
  * Creates NTriple's or just error messages.

@@ -22,12 +22,11 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.RecordReader;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.io.registry.HadoopRdfIORegistry;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
-
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * A record reader that reads triples from any RDF triples format

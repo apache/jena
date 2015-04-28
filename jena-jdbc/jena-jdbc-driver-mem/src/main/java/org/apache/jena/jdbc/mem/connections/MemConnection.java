@@ -24,8 +24,7 @@ import java.sql.SQLException;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.DatasetConnection;
 import org.apache.jena.jdbc.mem.metadata.MemDatasetMetadata;
-
-import com.hp.hpl.jena.query.Dataset;
+import org.apache.jena.query.Dataset ;
 
 /**
  * Represents a dataset connection backed by an in-memory dataset

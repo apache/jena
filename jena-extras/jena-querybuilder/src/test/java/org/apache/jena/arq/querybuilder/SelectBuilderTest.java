@@ -19,11 +19,10 @@
 package org.apache.jena.arq.querybuilder;
 
 import org.apache.jena.arq.AbstractRegexpBasedTest;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.vocabulary.RDF ;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
