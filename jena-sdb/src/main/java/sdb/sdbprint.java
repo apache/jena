@@ -30,7 +30,7 @@ import org.apache.jena.sdb.sql.JDBC ;
 import org.apache.jena.sdb.store.LayoutType ;
 import org.apache.jena.sdb.util.PrintSDB ;
 import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.util.Utils ;
+import org.apache.jena.atlas.lib.Lib ;
 import sdb.cmd.CmdArgsDB;
 import arq.cmd.CmdException;
 import arq.cmdline.ArgDecl;
@@ -169,5 +169,5 @@ public class sdbprint extends CmdArgsDB
     }
 
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
 }

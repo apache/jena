@@ -18,19 +18,19 @@
 
 package sdb;
 
-import java.sql.Connection;
-import java.util.List;
+import java.sql.Connection ;
+import java.util.List ;
 
-import org.apache.jena.sparql.util.Utils ;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.notification.RunListener;
-import sdb.cmd.CmdArgsDB;
-import sdb.junit.TextListener2;
-import sdb.test.Params;
-import sdb.test.ParamsVocab;
-import sdb.test.TestI18N;
-import sdb.test.TestStringBasic;
-import arq.cmd.CmdException;
+import org.apache.jena.atlas.lib.Lib ;
+import org.junit.runner.JUnitCore ;
+import org.junit.runner.notification.RunListener ;
+import sdb.cmd.CmdArgsDB ;
+import sdb.junit.TextListener2 ;
+import sdb.test.Params ;
+import sdb.test.ParamsVocab ;
+import sdb.test.TestI18N ;
+import sdb.test.TestStringBasic ;
+import arq.cmd.CmdException ;
 
 /** Run some DB tests to check setup */ 
 
@@ -50,7 +50,7 @@ public class DBTest extends CmdArgsDB
     }
     
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary()  { return getCommandName()+" <SPEC> "; }

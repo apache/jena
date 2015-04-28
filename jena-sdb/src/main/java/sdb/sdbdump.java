@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sdb.SDB ;
-import org.apache.jena.sparql.util.Utils ;
+import org.apache.jena.atlas.lib.Lib ;
 import sdb.cmd.CmdArgsDB;
 import sdb.cmd.ModGraph;
 import arq.cmdline.ArgDecl;
@@ -61,10 +61,10 @@ public class sdbdump extends CmdArgsDB
     }
     
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
-    protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> [--out syntax]" ; }
+    protected String getSummary()  { return Lib.className(this)+" --sdb <SPEC> [--out syntax]" ; }
 
     @Override
     protected void processModulesAndArgs()

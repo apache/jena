@@ -28,7 +28,7 @@ import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.sql.SDBConnection ;
 import org.apache.jena.sdb.store.StoreConfig ;
-import org.apache.jena.sparql.util.Utils ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.util.FileManager ;
 import sdb.cmd.CmdArgsDB;
 import arq.cmd.CmdException;
@@ -76,10 +76,10 @@ public class sdbmeta extends CmdArgsDB
 
     @Override
     protected String getSummary()
-    { return Utils.className(this)+" --sdb <SPEC> [--tag=TAG] [get|tags|put|remove|reset]" ; }
+    { return Lib.className(this)+" --sdb <SPEC> [--tag=TAG] [get|tags|put|remove|reset]" ; }
 
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
 
     @Override
     protected void execCmd(List<String> positionalArgs)

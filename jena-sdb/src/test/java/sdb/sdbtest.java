@@ -18,9 +18,10 @@
 
 package sdb;
 
-import java.util.List;
+import java.util.List ;
 
-import junit.framework.TestSuite;
+import junit.framework.TestSuite ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.Resource ;
@@ -29,12 +30,11 @@ import org.apache.jena.sdb.test.junit.QueryTestSDBFactory ;
 import org.apache.jena.sparql.junit.EarlReport ;
 import org.apache.jena.sparql.junit.ScriptTestSuiteFactory ;
 import org.apache.jena.sparql.junit.SimpleTestRunner ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.sparql.vocabulary.FOAF ;
 import org.apache.jena.vocabulary.DC ;
 import org.apache.jena.vocabulary.DCTerms ;
-import sdb.cmd.CmdArgsDB;
-import arq.cmdline.ArgDecl;
+import sdb.cmd.CmdArgsDB ;
+import arq.cmdline.ArgDecl ;
  
  /** Run a test suite
   * 
@@ -65,10 +65,10 @@ public class sdbtest extends CmdArgsDB
     }
 
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
-    protected String getSummary()  { return Utils.className(this)+" <SPEC> [--earl] [--direct] [manifest]" ; }
+    protected String getSummary()  { return Lib.className(this)+" <SPEC> [--earl] [--direct] [manifest]" ; }
     
     @Override
     protected void processModulesAndArgs()
