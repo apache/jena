@@ -18,14 +18,14 @@
 
 package org.apache.jena.sdb.core.sqlnode;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedHashSet ;
+import java.util.Set ;
 
-import org.apache.jena.atlas.io.IndentedLineBuffer;
-import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sdb.core.AnnotationsBase ;
 import org.apache.jena.sdb.core.sqlexpr.SqlColumn ;
-import org.apache.jena.sparql.util.Utils ;
 
 
 public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
@@ -100,7 +100,7 @@ public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
 
     private void classError(Class<?> wanted)
     {
-        throw new ClassCastException("Wanted class: "+Utils.className(wanted)+" :: Actual class "+Utils.className(this) ) ;
+        throw new ClassCastException("Wanted class: "+Lib.className(wanted)+" :: Actual class "+Lib.className(this) ) ;
     }
     
     @Override

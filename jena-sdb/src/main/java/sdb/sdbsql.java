@@ -24,7 +24,7 @@ import java.util.List;
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.sql.RS ;
 import org.apache.jena.sdb.sql.ResultSetJDBC ;
-import org.apache.jena.sparql.util.Utils ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.util.FileManager ;
 import sdb.cmd.CmdArgsDB;
 import arq.cmd.TerminationException;
@@ -50,7 +50,7 @@ public class sdbsql extends CmdArgsDB
     }
     
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary()  { return getCommandName()+" --sdb <SPEC> SQLSTRING | --file=FILE"; }

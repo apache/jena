@@ -18,7 +18,7 @@
 
 package sdb;
 
-import org.apache.jena.sparql.util.Utils ;
+import org.apache.jena.atlas.lib.Lib ;
 import arq.cmdline.CmdMain;
 
 /** Convenience ways to execute commands (import static) */
@@ -49,7 +49,7 @@ public class SDBCmd
         int code = cmd.mainRun(false, false) ;
         if ( code != 0 && exitOnError )
         {
-            System.err.println("Exit: command: "+Utils.className(cmd)) ;
+            System.err.println("Exit: command: "+Lib.className(cmd)) ;
             System.exit(code) ;
         }
         return code ;

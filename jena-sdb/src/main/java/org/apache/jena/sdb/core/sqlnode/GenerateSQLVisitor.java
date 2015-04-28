@@ -21,11 +21,10 @@ package org.apache.jena.sdb.core.sqlnode;
 import java.util.List ;
 import java.util.Set ;
 
+import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.Transform ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
-import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.core.Annotations ;
 import org.apache.jena.sdb.core.sqlexpr.S_Equal ;
@@ -35,7 +34,8 @@ import org.apache.jena.sdb.core.sqlexpr.SqlExprList ;
 import org.apache.jena.sdb.shared.SDBInternalError ;
 import org.apache.jena.sdb.shared.SDBNotImplemented ;
 import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.util.Utils ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 // This is not a general purpose SQL writer - it needs only work with the
 // SQL node trees that the SDB compiler generate.
@@ -67,7 +67,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     public void visit(SqlRename sqlNode)    { shouldNotSee(sqlNode) ; }
 
     private void shouldNotSee(SqlNode sqlNode)
-    { throw new SDBInternalError("Didn't expect: "+Utils.className(sqlNode)) ; }
+    { throw new SDBInternalError("Didn't expect: "+Lib.className(sqlNode)) ; }
 
     // If nested (subquery) 
     

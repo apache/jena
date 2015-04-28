@@ -28,7 +28,7 @@ import org.apache.jena.sdb.engine.QueryEngineSDB ;
 import org.apache.jena.sdb.util.PrintSDB ;
 import org.apache.jena.sparql.engine.QueryExecutionBase ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
-import org.apache.jena.sparql.util.Utils ;
+import org.apache.jena.atlas.lib.Lib ;
 import sdb.cmd.CmdArgsDB;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.ModQueryIn;
@@ -76,7 +76,7 @@ public class sdbquery extends CmdArgsDB
     }
 
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary()  { return getCommandName()+" <SPEC> [--direct] [ <query> | --query=file ]"; }

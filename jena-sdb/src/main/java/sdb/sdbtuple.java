@@ -25,7 +25,7 @@ import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.store.TableDesc ;
 import org.apache.jena.sdb.store.TupleTable ;
-import org.apache.jena.sparql.util.Utils ;
+import org.apache.jena.atlas.lib.Lib ;
 import sdb.cmd.CmdArgsDB;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdArgModule;
@@ -129,7 +129,7 @@ public class sdbtuple extends CmdArgsDB
     { return getCommandName()+" --sdb <SPEC> [--print|--load|--create|--drop] [--table TableName] TableName..." ; }
 
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
 
     static final String divider = "- - - - - - - - - - - - - -" ;
     boolean needDivider = false ;
