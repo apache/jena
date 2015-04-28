@@ -22,6 +22,7 @@ import java.io.InputStream ;
 import java.util.List ;
 
 import org.apache.jena.atlas.event.EventType ;
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.Lang ;
@@ -29,7 +30,6 @@ import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.solver.stats.Stats ;
@@ -123,7 +123,7 @@ public class BulkLoader {
     private static void loadTriples$(BulkStreamRDF dest, List<String> urls) {
         dest.startBulk() ;
         for ( String url : urls ) {
-            loadLogger.info("Load: " + url + " -- " + Utils.nowAsString()) ;
+            loadLogger.info("Load: " + url + " -- " + DateTimeUtils.nowAsString()) ;
             Lang lang = RDFLanguages.filenameToLang(url, Lang.NTRIPLES) ;
             RDFDataMgr.parse(dest, url, lang) ;
         }
@@ -132,7 +132,7 @@ public class BulkLoader {
 
     /** Load into a graph */
     private static void loadTriples$(BulkStreamRDF dest, InputStream input) {
-        loadLogger.info("Load: from input stream -- " + Utils.nowAsString()) ;
+        loadLogger.info("Load: from input stream -- " + DateTimeUtils.nowAsString()) ;
         dest.startBulk() ;
         RDFDataMgr.parse(dest, input, Lang.NTRIPLES) ;
         dest.finishBulk() ;
@@ -142,7 +142,7 @@ public class BulkLoader {
     private static void loadQuads$(BulkStreamRDF dest, List<String> urls) {
         dest.startBulk() ;
         for ( String url : urls ) {
-            loadLogger.info("Load: " + url + " -- " + Utils.nowAsString()) ;
+            loadLogger.info("Load: " + url + " -- " + DateTimeUtils.nowAsString()) ;
             Lang lang = RDFLanguages.filenameToLang(url, Lang.NQUADS) ;
             RDFDataMgr.parse(dest, url, lang) ;
         }
@@ -151,7 +151,7 @@ public class BulkLoader {
 
     /** Load quads into a dataset */
     private static void loadQuads$(BulkStreamRDF dest, InputStream input) {
-        loadLogger.info("Load: from input stream -- " + Utils.nowAsString()) ;
+        loadLogger.info("Load: from input stream -- " + DateTimeUtils.nowAsString()) ;
         dest.startBulk() ;
         RDFDataMgr.parse(dest, input, RDFLanguages.NQUADS) ;
         dest.finishBulk() ;

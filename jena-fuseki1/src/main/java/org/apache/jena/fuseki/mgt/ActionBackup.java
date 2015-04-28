@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.FusekiException ;
@@ -41,7 +42,6 @@ import org.apache.jena.fuseki.servlets.ServletBase ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.web.HttpSC ;
 
 public class ActionBackup extends ServletBase
@@ -89,7 +89,7 @@ public class ActionBackup extends ServletBase
         String dsName = action.dsRef.name ;
         final String ds = dsName.startsWith("/")? dsName : "/"+dsName ;
         
-        String timestamp = Utils.nowAsString("yyyy-MM-dd_HH-mm-ss") ;
+        String timestamp = DateTimeUtils.nowAsString("yyyy-MM-dd_HH-mm-ss") ;
         final String filename = BackupArea + ds + "_" + timestamp ;
         FileOps.ensureDir(BackupArea) ;
         

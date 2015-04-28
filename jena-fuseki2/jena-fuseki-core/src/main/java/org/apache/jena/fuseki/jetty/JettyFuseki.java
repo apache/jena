@@ -23,12 +23,12 @@ import static org.apache.jena.fuseki.Fuseki.serverLog ;
 
 import java.io.FileInputStream ;
 
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.mgt.MgtJMX ;
 import org.apache.jena.fuseki.server.FusekiEnv ;
-import org.apache.jena.sparql.util.Utils ;
 import org.eclipse.jetty.security.* ;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
 import org.eclipse.jetty.server.* ;
@@ -104,7 +104,7 @@ public class JettyFuseki {
         if ( version != null && version.equals("${project.version}") )
             version = null ;
         if ( buildDate != null && buildDate.equals("${build.time.xsd}") )
-            buildDate = Utils.nowAsXSDDateTimeString() ;
+            buildDate = DateTimeUtils.nowAsXSDDateTimeString() ;
         
         if ( version != null && buildDate != null )
             serverLog.info(format("%s %s %s", Fuseki.NAME, version, buildDate)) ;
@@ -125,7 +125,7 @@ public class JettyFuseki {
             serverLog.error("SPARQLServer: Failed to start server: " + ex.getMessage(), ex) ;
             System.exit(1) ;
         }
-        String now = Utils.nowAsString() ;
+        String now = DateTimeUtils.nowAsString() ;
         serverLog.info(format("Started %s on port %d", now, serverConnector.getPort())) ;
     }
 
@@ -143,7 +143,7 @@ public class JettyFuseki {
      * Stop the {@link JettyFuseki} instance.
      */
     public void stop() {
-        String now = Utils.nowAsString() ;
+        String now = DateTimeUtils.nowAsString() ;
         serverLog.info(format("Stopped %s on port %d", now, serverConnector.getPort())) ;
         try {
             server.stop() ;

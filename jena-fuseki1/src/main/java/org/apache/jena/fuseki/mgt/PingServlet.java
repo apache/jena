@@ -28,9 +28,9 @@ import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.riot.web.HttpNames ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.web.HttpSC ;
 
 /** 
@@ -64,7 +64,7 @@ public class PingServlet extends HttpServlet
             response.setCharacterEncoding(charsetUTF8) ;
             response.setStatus(HttpSC.OK_200);
             ServletOutputStream out = response.getOutputStream() ;
-            out.println(Utils.nowAsXSDDateTimeString());
+            out.println(DateTimeUtils.nowAsXSDDateTimeString());
         } catch (IOException ex) {
             Fuseki.serverLog.warn("ping :: IOException :: "+ex.getMessage());
         }

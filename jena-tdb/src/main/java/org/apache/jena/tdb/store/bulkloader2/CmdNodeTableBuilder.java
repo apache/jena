@@ -18,8 +18,6 @@
 
 package org.apache.jena.tdb.store.bulkloader2;
 
-import static org.apache.jena.sparql.util.Utils.nowAsString ;
-
 import java.io.FileNotFoundException ;
 import java.io.FileOutputStream ;
 import java.io.OutputStream ;
@@ -28,6 +26,7 @@ import java.util.List ;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
@@ -38,7 +37,6 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.setup.DatasetBuilderStd ;
@@ -157,7 +155,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         for( String filename : datafiles)
         {
             if ( datafiles.size() > 0 )
-                cmdLog.info("Load: "+filename+" -- "+Utils.nowAsString()) ;
+                cmdLog.info("Load: "+filename+" -- "+DateTimeUtils.nowAsString()) ;
             RiotReader.parse(filename, sink) ;
         }
         sink.finishBulk() ;
@@ -176,7 +174,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         long total = monitor.getTicks() ;
         float elapsedSecs = time/1000F ;
         float rate = (elapsedSecs!=0) ? total/elapsedSecs : 0 ;
-        String str =  String.format("Total: %,d tuples : %,.2f seconds : %,.2f tuples/sec [%s]", total, elapsedSecs, rate, nowAsString()) ;
+        String str =  String.format("Total: %,d tuples : %,.2f seconds : %,.2f tuples/sec [%s]", total, elapsedSecs, rate, DateTimeUtils.nowAsString()) ;
         cmdLog.info(str) ;
     }
 

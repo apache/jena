@@ -23,10 +23,10 @@ import java.util.List ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.DatasetPrefixStorage ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.base.file.FileFactory ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -232,7 +232,7 @@ public class tdbconfig extends CmdSub
         @Override
         protected void exec()
         {
-            System.out.println("-- "+Utils.nowAsString()+" --") ;
+            System.out.println("-- "+DateTimeUtils.nowAsString()+" --") ;
             ModVersion v = new ModVersion(true) ;
             v.addClass(TDB.class) ;
             v.printVersionAndExit() ;

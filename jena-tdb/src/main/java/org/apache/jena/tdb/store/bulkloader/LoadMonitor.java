@@ -18,9 +18,9 @@
 
 package org.apache.jena.tdb.store.bulkloader;
 
-import static org.apache.jena.sparql.util.Utils.nowAsString ;
 import org.apache.jena.atlas.event.Event ;
 import org.apache.jena.atlas.event.EventManager ;
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.StringUtils ;
@@ -257,7 +257,7 @@ public final class LoadMonitor
     private void elapsed(long timerReading)
     {
         float elapsedSecs = (timerReading-processStartTime)/1000F ;
-        print("  Elapsed: %,.2f seconds [%s]", elapsedSecs, nowAsString()) ;
+        print("  Elapsed: %,.2f seconds [%s]", elapsedSecs, DateTimeUtils.nowAsString()) ;
     }
 
     private static boolean tickPoint(long counter, long quantum)
