@@ -19,11 +19,11 @@
 package tdb.cmdline;
 
 import org.apache.jena.Jena ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.setup.DatasetBuilderStd ;
@@ -80,6 +80,6 @@ public abstract class CmdTDB extends CmdARQ
 
     @Override
     protected String getCommandName() {
-        return Utils.className(this) ;
+        return Lib.className(this) ;
     }
 }

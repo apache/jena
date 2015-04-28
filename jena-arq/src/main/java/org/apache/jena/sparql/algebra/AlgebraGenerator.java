@@ -20,6 +20,7 @@ package org.apache.jena.sparql.algebra;
 
 import java.util.* ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
@@ -36,7 +37,6 @@ import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.path.PathLib ;
 import org.apache.jena.sparql.syntax.* ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.sparql.util.Utils ;
 
 /**
  * Class used to compile SPARQL queries into SPARQL algebra
@@ -153,7 +153,7 @@ public class AlgebraGenerator
         if ( elt == null )
             return OpNull.create() ;
 
-        return compileUnknownElement(elt, "compile(Element)/Not a structural element: "+Utils.className(elt));
+        return compileUnknownElement(elt, "compile(Element)/Not a structural element: "+Lib.className(elt));
     }
     
     /**
@@ -417,7 +417,7 @@ public class AlgebraGenerator
 //        }
         
         
-        return compileUnknownElement(elt, "compile/Element not recognized: "+Utils.className(elt));
+        return compileUnknownElement(elt, "compile/Element not recognized: "+Lib.className(elt));
     }
 
     protected Op compileElementUnion(ElementUnion el)

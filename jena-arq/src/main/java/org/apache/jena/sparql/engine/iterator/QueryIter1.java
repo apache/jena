@@ -19,10 +19,10 @@
 package org.apache.jena.sparql.engine.iterator;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.Utils ;
 
 /**
  * This class supports a QueryIter that takes one QueryIterator as input. */
@@ -81,7 +81,7 @@ public abstract class QueryIter1 extends QueryIter
 
     protected void details(IndentedWriter out, SerializationContext sCxt)
     {
-        out.println(Utils.className(this)) ;
+        out.println(Lib.className(this)) ;
     }
 
 }

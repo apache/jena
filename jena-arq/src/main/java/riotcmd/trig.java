@@ -18,10 +18,10 @@
 
 package riotcmd;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** Run the TriG parser - and produce N-Quads */
 public class trig extends CmdLangParse
@@ -39,7 +39,7 @@ public class trig extends CmdLangParse
     @Override
     protected String getCommandName()
     {
-        return Utils.classShortName(trig.class) ;
+        return Lib.classShortName(trig.class) ;
     }
 
     @Override

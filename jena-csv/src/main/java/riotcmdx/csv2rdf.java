@@ -18,10 +18,10 @@
 
 package riotcmdx;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.sparql.util.Utils ;
 import riotcmd.CmdLangParse ;
 
 /**
@@ -47,6 +47,6 @@ public class csv2rdf extends CmdLangParse{
 
 	@Override
 	protected String getCommandName() {
-		return Utils.classShortName(csv2rdf.class) ;
+		return Lib.classShortName(csv2rdf.class) ;
 	}
 }

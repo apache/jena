@@ -18,10 +18,10 @@
 
 package org.apache.jena.tdb.sys;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.store.NodeId ;
@@ -128,7 +128,7 @@ public class TDBInternal
     {
         if ( datasetGraph instanceof DatasetGraphTransaction )
             return ((DatasetGraphTransaction)datasetGraph).getBaseDatasetGraph() ;
-        throw new TDBException("Not a suitable DatasetGraph to get it's base storage: "+Utils.classShortName(datasetGraph.getClass())) ; 
+        throw new TDBException("Not a suitable DatasetGraph to get it's base storage: "+Lib.classShortName(datasetGraph.getClass())) ; 
     }
 }
 

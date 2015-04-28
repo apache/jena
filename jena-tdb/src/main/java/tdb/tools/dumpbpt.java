@@ -24,9 +24,9 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.ColumnMap ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.base.record.Record ;
 import org.apache.jena.tdb.base.record.RecordFactory ;
@@ -71,7 +71,7 @@ public class dumpbpt extends CmdGeneral {
 
     @Override
     protected String getCommandName() {
-        return Utils.className(this) ;
+        return Lib.className(this) ;
     }
 
     @Override

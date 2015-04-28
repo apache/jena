@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.expr;
 
 import static org.apache.jena.atlas.lib.Lib.equal ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -28,7 +29,6 @@ import org.apache.jena.sparql.expr.aggregate.Aggregator ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.graph.NodeTransform ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** Group aggregation functions calculated a value during grouping and
  *  placed in the output binding.  This class is relationship of 
@@ -48,9 +48,9 @@ public class ExprAggregator extends ExprNode
     public void setVar(Var v)
     {
         if (this.var != null) 
-            throw new ARQInternalErrorException(Utils.className(this)+ ": Attempt to set variable to " + v + " when already set as " + this.var) ;
+            throw new ARQInternalErrorException(Lib.className(this)+ ": Attempt to set variable to " + v + " when already set as " + this.var) ;
         if (v == null) 
-            throw new ARQInternalErrorException(Utils.className(this)+ ": Attempt to set variable to null") ;
+            throw new ARQInternalErrorException(Lib.className(this)+ ": Attempt to set variable to null") ;
         _setVar(v) ;
     }
 

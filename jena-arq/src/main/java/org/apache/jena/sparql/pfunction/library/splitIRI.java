@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.pfunction.library;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -34,7 +35,6 @@ import org.apache.jena.sparql.pfunction.PropFuncArgType ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionEval ;
 import org.apache.jena.sparql.util.IterLib ;
 import org.apache.jena.sparql.util.NodeUtils ;
-import org.apache.jena.sparql.util.Utils ;
 
 public class splitIRI extends PropertyFunctionEval //PropertyFunctionBase
 {
@@ -49,11 +49,11 @@ public class splitIRI extends PropertyFunctionEval //PropertyFunctionBase
         // Do some checking.
         // These checks are assumed to be passed in .exec()
         if ( argSubject.isList() )
-            throw new QueryBuildException(Utils.className(this)+ "Subject must be a single node or variable, not a list") ;
+            throw new QueryBuildException(Lib.className(this)+ "Subject must be a single node or variable, not a list") ;
         if ( ! argObject.isList() )
-            throw new QueryBuildException(Utils.className(this)+ "Object must be a list of two elements") ;
+            throw new QueryBuildException(Lib.className(this)+ "Object must be a list of two elements") ;
         if ( argObject.getArgList().size() != 2 )
-            throw new QueryBuildException(Utils.className(this)+ "Object is a list but it has "+argObject.getArgList().size()+" elements - should be 2") ; 
+            throw new QueryBuildException(Lib.className(this)+ "Object is a list but it has "+argObject.getArgList().size()+" elements - should be 2") ; 
     }
 
     // Implementing .exec requires considering all the cases of variable being

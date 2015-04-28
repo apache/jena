@@ -21,10 +21,10 @@ package org.apache.jena.sparql.engine.iterator;
 import java.util.NoSuchElementException ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** A query iterator that yields the same thing N times. */
 
@@ -59,7 +59,7 @@ public class QueryIterYieldN extends QueryIter
     {
         if ( ! hasNextBinding() )
             // Try to get the class name as specific as possible for subclasses
-            throw new NoSuchElementException(Utils.className(this)) ;
+            throw new NoSuchElementException(Lib.className(this)) ;
         countYielded++ ;
         return binding ;
     }

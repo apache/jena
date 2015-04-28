@@ -21,11 +21,11 @@ package org.apache.jena.sparql.engine.iterator;
 import java.util.NoSuchElementException ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** Closeable empty query iterator */
 
@@ -44,7 +44,7 @@ public class QueryIterNullIterator extends QueryIter
 
     @Override
     protected Binding moveToNextBinding()
-    { throw new NoSuchElementException(Utils.className(this)) ; }
+    { throw new NoSuchElementException(Lib.className(this)) ; }
 
     @Override
     protected void closeIterator() {}
@@ -54,5 +54,5 @@ public class QueryIterNullIterator extends QueryIter
 
     @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
-    { out.println(Utils.className(this)) ; }
+    { out.println(Lib.className(this)) ; }
 }

@@ -20,13 +20,13 @@ package org.apache.jena.sparql.function.library;
 
 //import org.apache.commons.logging.*;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprException ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.function.FunctionBase0 ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** Function that returns the value of a system variable. */
 
@@ -49,7 +49,7 @@ public class SystemVar extends FunctionBase0
         if ( obj == null )
             throw new ExprEvalException("null for system symbol: "+systemSymbol) ;
         if ( ! ( obj instanceof Node ) )
-            throw new ExprEvalException("Not a Node: "+Utils.className(obj)) ;
+            throw new ExprEvalException("Not a Node: "+Lib.className(obj)) ;
         
         Node n = (Node)obj ;
 //        if ( n == null )

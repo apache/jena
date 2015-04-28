@@ -61,21 +61,22 @@ public class Lib
         return ! equal(obj1, obj2) ;
     }
 
-    static public final String className(Object obj)
-    { return classShortName(obj.getClass()) ; }
-    
-    static public final String classShortName(Class<?> cls)
-    {
-        return cls.getSimpleName() ;
-//        String tmp = cls.getName() ;
-//        int i = tmp.lastIndexOf('.') ;
-//        tmp = tmp.substring(i+1) ;
-//        return tmp ;
+    /** Safely return the class short name for an object -- obj.getClass().getSimpleName() */
+    static public final String className(Object obj) {
+        if ( obj == null )
+            return "null" ;
+        return classShortName(obj.getClass()) ;
     }
-    
-    /** Do two lists have the same elements? */ 
-    public static <T> boolean equalsListAsSet(List<T> list1, List<T> list2)
-    {
+
+    /** Safely return the class short name for a class */
+    static public final String classShortName(Class<? > cls) {
+        if ( cls == null )
+            return "null" ;
+        return cls.getSimpleName() ;
+    }
+
+    /** Do two lists have the same elements? */
+    public static <T> boolean equalsListAsSet(List<T> list1, List<T> list2) {
         if ( list1 == null && list2 == null )
             return true ;
         if ( list1 == null ) return false ;

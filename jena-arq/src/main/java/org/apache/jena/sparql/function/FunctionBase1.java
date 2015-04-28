@@ -20,12 +20,12 @@ package org.apache.jena.sparql.function;
 
 import java.util.List ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.QueryBuildException ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** Support for a function of one argument. */
 
@@ -35,7 +35,7 @@ public abstract class FunctionBase1 extends FunctionBase
     public void checkBuild(String uri, ExprList args)
     { 
         if ( args.size() != 1 )
-            throw new QueryBuildException("Function '"+Utils.className(this)+"' takes one argument") ;
+            throw new QueryBuildException("Function '"+Lib.className(this)+"' takes one argument") ;
     }
 
     @Override

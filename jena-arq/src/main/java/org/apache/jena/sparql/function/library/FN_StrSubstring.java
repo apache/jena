@@ -20,13 +20,13 @@ package org.apache.jena.sparql.function.library;
 
 import java.util.List ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.QueryBuildException ;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.function.FunctionBase ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** substring(string, start[, length]) - F&O style*/
 
@@ -38,7 +38,7 @@ public class FN_StrSubstring extends FunctionBase
     public void checkBuild(String uri, ExprList args)
     {
         if ( args.size() != 2 && args.size() != 3 )
-            throw new QueryBuildException("Function '"+Utils.className(this)+"' takes two or three arguments") ;
+            throw new QueryBuildException("Function '"+Lib.className(this)+"' takes two or three arguments") ;
     }
     @Override
     public NodeValue exec(List<NodeValue> args)

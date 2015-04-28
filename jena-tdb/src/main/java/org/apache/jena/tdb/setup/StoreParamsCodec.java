@@ -50,7 +50,7 @@ import org.apache.jena.atlas.json.JsonParseException;
 import org.apache.jena.atlas.json.JsonArray ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonObject ;
-import org.apache.jena.sparql.util.Utils ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.block.FileMode ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -209,6 +209,6 @@ public class StoreParamsCodec {
             builder.finishArray() ;
             return ;
         }
-        throw new TDBException("Class of value not recognized: "+Utils.classShortName(value.getClass())) ;
+        throw new TDBException("Class of value not recognized: "+Lib.classShortName(value.getClass())) ;
     }
 }

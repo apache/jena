@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.util;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -91,7 +92,7 @@ public class Loader {
         }
 
         if (requiredClass != null && !requiredClass.isAssignableFrom(classObj)) {
-            Log.warn(Loader.class, "Class '" + className + "' found but not a " + Utils.classShortName(requiredClass));
+            Log.warn(Loader.class, "Class '" + className + "' found but not a " + Lib.classShortName(requiredClass));
             return null;
         }
         return classObj;

@@ -18,9 +18,9 @@
 
 package arq.cmdline;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.shared.JenaException ;
-import org.apache.jena.sparql.util.Utils ;
 import arq.cmd.CmdException ;
 import arq.cmd.TerminationException ;
 
@@ -65,7 +65,7 @@ public abstract class CmdMain extends CmdLineArgs
         {
             ex.printStackTrace(System.err) ;
             
-            String s = Utils.className(ex) ;
+            String s = Lib.className(ex) ;
 //            System.err.println(s) ;
 //            System.err.println(ex.getMessage()) ;
             if ( exitOnFailure ) System.exit(2) ;

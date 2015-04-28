@@ -20,12 +20,12 @@ package org.apache.jena.sparql.function;
 
 import java.util.List ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.QueryBuildException ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** Support for a function of one argument. */
 
@@ -35,7 +35,7 @@ public abstract class FunctionBase3 extends FunctionBase
     public void checkBuild(String uri, ExprList args)
     { 
         if ( args.size() != 3 )
-            throw new QueryBuildException("Function '"+Utils.className(this)+"' takes three arguments") ;
+            throw new QueryBuildException("Function '"+Lib.className(this)+"' takes three arguments") ;
     }
     
     @Override
@@ -43,10 +43,10 @@ public abstract class FunctionBase3 extends FunctionBase
     {
         if ( args == null )
             // The contract on the function interface is that this should not happen.
-            throw new ARQInternalErrorException(Utils.className(this)+": Null args list") ;
+            throw new ARQInternalErrorException(Lib.className(this)+": Null args list") ;
         
         if ( args.size() != 3 )
-            throw new ExprEvalException(Utils.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;
+            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;
         
         NodeValue v1 = args.get(0) ;
         NodeValue v2 = args.get(1) ;

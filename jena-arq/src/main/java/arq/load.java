@@ -22,11 +22,11 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.modify.request.UpdateLoad ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.sparql.util.graph.GraphLoadMonitor ;
 import org.apache.jena.update.GraphStore ;
 import org.apache.jena.update.UpdateExecutionFactory ;
@@ -67,7 +67,7 @@ public class load extends CmdUpdate
     }
     
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary() { return getCommandName()+" --desc=assembler [--dump] --update=<request file>" ; }

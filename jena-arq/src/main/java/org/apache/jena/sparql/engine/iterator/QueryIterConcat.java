@@ -24,11 +24,11 @@ import java.util.List ;
 import java.util.NoSuchElementException ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.Utils ;
 
 
 /**
@@ -101,9 +101,9 @@ public class QueryIterConcat extends QueryIter
     protected Binding moveToNextBinding()
     {
         if ( ! hasNextBinding() )
-            throw new NoSuchElementException(Utils.className(this)) ; 
+            throw new NoSuchElementException(Lib.className(this)) ; 
         if ( currentQIter == null )
-            throw new NoSuchElementException(Utils.className(this)) ; 
+            throw new NoSuchElementException(Lib.className(this)) ; 
         
         Binding binding = currentQIter.nextBinding() ;
         return binding ;
@@ -131,7 +131,7 @@ public class QueryIterConcat extends QueryIter
     @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     { 
-        out.println(Utils.className(this)) ;
+        out.println(Lib.className(this)) ;
         out.incIndent() ;
         for ( QueryIterator qIter : iteratorList )
         {

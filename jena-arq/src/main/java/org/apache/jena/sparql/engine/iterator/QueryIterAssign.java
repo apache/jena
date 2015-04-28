@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.engine.iterator;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.sparql.core.Var ;
@@ -30,7 +31,6 @@ import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** Extend each solution by a (var, expression) */ 
 
@@ -92,7 +92,7 @@ public class QueryIterAssign extends QueryIterProcessBinding
     @Override
     protected void details(IndentedWriter out, SerializationContext cxt)
     { 
-        out.print(Utils.className(this)) ;
+        out.print(Lib.className(this)) ;
         out.print(" ") ;
         out.print(exprs.toString()) ;
     }

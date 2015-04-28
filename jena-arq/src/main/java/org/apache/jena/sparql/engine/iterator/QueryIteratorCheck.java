@@ -21,11 +21,11 @@ package org.apache.jena.sparql.engine.iterator;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** Query iterator that checks everything was closed correctly */
 
@@ -89,7 +89,7 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
 
     private static void warn(QueryIterator qIter, String str)
     {
-        str = str + Utils.className(qIter) ;
+        str = str + Lib.className(qIter) ;
 
         if ( qIter instanceof QueryIteratorBase )
         {

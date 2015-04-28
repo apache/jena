@@ -20,6 +20,7 @@ package arq;
 
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.sparql.algebra.Algebra ;
@@ -29,7 +30,6 @@ import org.apache.jena.sparql.engine.Plan ;
 import org.apache.jena.sparql.engine.PlanOp ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
-import org.apache.jena.sparql.util.Utils ;
 import arq.cmd.CmdException ;
 import arq.cmd.TerminationException ;
 import arq.cmdline.ArgDecl ;
@@ -94,7 +94,7 @@ public class sse_query extends CmdARQ
     }
     
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary() { return getCommandName()+" --data=<file> --query=<query>" ; }

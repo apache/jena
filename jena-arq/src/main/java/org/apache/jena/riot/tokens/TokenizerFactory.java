@@ -36,7 +36,7 @@ public class TokenizerFactory {
         return tokenizer ;
     }
 
-    /** Discouraged - be careful about character sets */
+    /** Safe use of a StringReader */
     public static Tokenizer makeTokenizer(StringReader reader) {
         PeekReader peekReader = PeekReader.make(reader) ;
         Tokenizer tokenizer = new TokenizerText(peekReader) ;

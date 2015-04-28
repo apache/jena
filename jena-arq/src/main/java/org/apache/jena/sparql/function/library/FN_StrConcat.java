@@ -22,12 +22,12 @@ package org.apache.jena.sparql.function.library;
 
 import java.util.List ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.function.FunctionBase ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** Function that concatenates arguments as strings.
  *  fn:concat */
@@ -40,7 +40,7 @@ public class FN_StrConcat extends FunctionBase
     {
         if ( args == null )
             // The contract on the function interface is that this should not happen.
-            throw new ARQInternalErrorException(Utils.className(this)+": Null args list") ;
+            throw new ARQInternalErrorException(Lib.className(this)+": Null args list") ;
         
         return XSDFuncOp.fnConcat(args) ;
     }

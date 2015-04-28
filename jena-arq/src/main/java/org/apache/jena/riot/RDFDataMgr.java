@@ -22,6 +22,7 @@ import java.io.* ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.graph.Graph ;
@@ -42,7 +43,6 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.sparql.util.Utils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -845,7 +845,7 @@ public class RDFDataMgr
         {
             try { sMgr = (StreamManager)context.get(streamManagerSymbol, context) ; }
             catch (ClassCastException ex) 
-            { log.warn("Context symbol '"+streamManagerSymbol+"' is not a "+Utils.classShortName(StreamManager.class)) ; }
+            { log.warn("Context symbol '"+streamManagerSymbol+"' is not a "+Lib.classShortName(StreamManager.class)) ; }
         }
         
         return open(filenameOrURI, sMgr) ;

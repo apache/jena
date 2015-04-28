@@ -21,6 +21,7 @@ package org.apache.jena.sparql.engine.ref;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFormatter ;
@@ -43,7 +44,6 @@ import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
 import org.apache.jena.sparql.procedure.ProcEval ;
 import org.apache.jena.sparql.procedure.Procedure ;
-import org.apache.jena.sparql.util.Utils ;
 
 public class EvaluatorSimple implements Evaluator
 {
@@ -335,7 +335,7 @@ public class EvaluatorSimple implements Evaluator
 
     private static void dump(Table table)
     {
-        System.out.println("Table: "+Utils.className(table)) ;
+        System.out.println("Table: "+Lib.className(table)) ;
         QueryIterator qIter = table.iterator(null) ;
         ResultSet rs = new ResultSetStream(table.getVarNames(), null, table.iterator(null)) ;
         ResultSetFormatter.out(rs) ;

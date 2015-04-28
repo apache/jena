@@ -23,6 +23,7 @@ import java.util.NoSuchElementException ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.SingletonIterator ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -39,7 +40,6 @@ import org.apache.jena.sparql.engine.iterator.QueryIterRepeatApply ;
 import org.apache.jena.sparql.engine.iterator.QueryIterSingleton ;
 import org.apache.jena.sparql.engine.iterator.QueryIterSub ;
 import org.apache.jena.sparql.engine.main.QC ;
-import org.apache.jena.sparql.util.Utils ;
 
 public class QueryIterGraph extends QueryIterRepeatApply
 {
@@ -133,7 +133,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
         protected Binding moveToNextBinding()
         {
             if ( iter == null )
-                throw new NoSuchElementException(Utils.className(this)+".moveToNextBinding") ;
+                throw new NoSuchElementException(Lib.className(this)+".moveToNextBinding") ;
                 
             return iter.nextBinding() ;
         }

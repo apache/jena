@@ -20,10 +20,10 @@ package org.apache.jena.riot.adapters ;
 
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.stream.* ;
-import org.apache.jena.sparql.util.Utils ;
 
 class AdapterLib {
     public static org.apache.jena.util.TypedStream convert(TypedInputStream in) {
@@ -66,6 +66,6 @@ class AdapterLib {
             return new LocatorZip(zipLoc.getZipFileName()) ;
         }
 
-        throw new RiotException("Unrecognized Locator: " + Utils.className(oldloc)) ;
+        throw new RiotException("Unrecognized Locator: " + Lib.className(oldloc)) ;
     }
 }

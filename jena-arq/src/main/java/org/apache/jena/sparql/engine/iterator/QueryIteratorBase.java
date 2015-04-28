@@ -20,6 +20,7 @@ package org.apache.jena.sparql.engine.iterator;
 
 import java.util.NoSuchElementException ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.QueryCancelledException ;
 import org.apache.jena.query.QueryException ;
@@ -27,7 +28,6 @@ import org.apache.jena.query.QueryFatalException ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.util.PrintSerializableBase ;
-import org.apache.jena.sparql.util.Utils ;
 
 /**
  * This class provides the general machinary for iterators.  This includes:
@@ -145,14 +145,14 @@ public abstract class QueryIteratorBase
             }
 
             if ( finished )
-                throw new NoSuchElementException(Utils.className(this)) ;
+                throw new NoSuchElementException(Lib.className(this)) ;
             
             if ( ! hasNextBinding() )
-                throw new NoSuchElementException(Utils.className(this)) ;
+                throw new NoSuchElementException(Lib.className(this)) ;
     
             Binding obj = moveToNextBinding() ;
             if ( obj == null )
-                throw new NoSuchElementException(Utils.className(this)) ;
+                throw new NoSuchElementException(Lib.className(this)) ;
             
             if ( shouldCancel && ! finished ) 
             {
@@ -172,8 +172,8 @@ public abstract class QueryIteratorBase
     @Override
     public final void remove()
     {
-        Log.warn(this, "Call to QueryIterator.remove() : "+Utils.className(this)+".remove") ;
-        throw new UnsupportedOperationException(Utils.className(this)+".remove") ;
+        Log.warn(this, "Call to QueryIterator.remove() : "+Lib.className(this)+".remove") ;
+        throw new UnsupportedOperationException(Lib.className(this)+".remove") ;
     }
     
     @Override

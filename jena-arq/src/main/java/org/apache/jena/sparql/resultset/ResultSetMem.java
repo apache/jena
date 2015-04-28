@@ -22,12 +22,12 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.PeekIterator ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.ResultBinding ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** An in-memory result set.  
  * Also useful for writing input processors which
@@ -140,7 +140,7 @@ public class ResultSetMem implements org.apache.jena.query.ResultSetRewindable, 
     public void remove() throws java.lang.UnsupportedOperationException
     {
         throw new java.lang.UnsupportedOperationException(
-            Utils.className(this)+": Attempt to remove an element");
+            Lib.className(this)+": Attempt to remove an element");
     }
 
     /**

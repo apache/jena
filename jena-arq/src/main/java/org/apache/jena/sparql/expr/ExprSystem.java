@@ -18,10 +18,10 @@
 
 package org.apache.jena.sparql.expr;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.sparql.util.Utils ;
 
 public abstract class ExprSystem extends ExprFunction0
 {
@@ -41,7 +41,7 @@ public abstract class ExprSystem extends ExprFunction0
         if ( obj == null )
             throw new ExprEvalException("null for system symbol: "+systemSymbol) ;
         if ( ! ( obj instanceof Node ) )
-            throw new ExprEvalException("Not a Node: "+Utils.className(obj)) ;
+            throw new ExprEvalException("Not a Node: "+Lib.className(obj)) ;
         
         Node n = (Node)obj ;
 //        if ( n == null )

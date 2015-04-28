@@ -20,10 +20,10 @@ package org.apache.jena.sparql.engine;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorCloseable ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.Utils ;
 
 public class PlanOp extends PlanBase
 {
@@ -53,7 +53,7 @@ public class PlanOp extends PlanBase
     {
         if ( getOp() == null )
         {
-            out.println(Utils.className(this)) ;
+            out.println(Lib.className(this)) ;
             return ;
         }
 

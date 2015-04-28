@@ -19,10 +19,10 @@
 package org.apache.jena.sparql.engine.iterator;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.Utils ;
 
 public class QueryIteratorResultSet extends QueryIteratorBase
 {
@@ -41,6 +41,6 @@ public class QueryIteratorResultSet extends QueryIteratorBase
     @Override
     public void output(IndentedWriter out, SerializationContext cxt)
     {
-        out.print(Utils.className(this)) ;
+        out.print(Lib.className(this)) ;
     }
 }

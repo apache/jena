@@ -19,12 +19,12 @@
 package arq;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.ItemWriter ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.util.Utils ;
 import arq.cmd.TerminationException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ_SSE ;
@@ -65,7 +65,7 @@ public class sse extends CmdARQ_SSE
     }
 
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
 
     @Override
     protected String getSummary() { return getCommandName() ; }

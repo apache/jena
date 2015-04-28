@@ -21,6 +21,7 @@ package org.apache.jena.sparql.engine.iterator;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.ListUtils ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
@@ -28,7 +29,6 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingProject ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.Utils ;
 
 
 public class QueryIterProject extends QueryIterConvert
@@ -51,7 +51,7 @@ public class QueryIterProject extends QueryIterConvert
     @Override
     protected void details(IndentedWriter out, SerializationContext sCxt)
     {
-        out.print(Utils.className(this)) ;
+        out.print(Lib.className(this)) ;
         out.print(" ") ;
         ListUtils.print(out, projectionVars) ;
     }

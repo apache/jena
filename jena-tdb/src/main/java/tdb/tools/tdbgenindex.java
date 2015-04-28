@@ -20,8 +20,8 @@ package tdb.tools ;
 
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Tuple ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.store.tupletable.TupleIndex ;
@@ -34,7 +34,7 @@ public class tdbgenindex {
     public static void main(String... argv) {
         // Usage: srcLocation indexName dstLocation indexName
         if ( argv.length != 4 ) {
-            System.err.println("Usage: " + Utils.classShortName(tdbgenindex.class) + " srcLocation srcIndex dstLocation dstIndex") ;
+            System.err.println("Usage: " + Lib.classShortName(tdbgenindex.class) + " srcLocation srcIndex dstLocation dstIndex") ;
             System.exit(1) ;
         }
 

@@ -22,10 +22,10 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.util.iterator.NiceIterator ;
 
 /** Turn an normal java.util.Iterator (of Bindings) into a QueryIterator */
@@ -73,5 +73,5 @@ public class QueryIterPlainWrapper extends QueryIter
     
     @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
-    { out.print(Utils.className(this)) ; }
+    { out.print(Lib.className(this)) ; }
 }

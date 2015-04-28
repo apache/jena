@@ -19,11 +19,11 @@
 package org.apache.jena.sparql.engine.iterator;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.Utils ;
 
 
 /** Iterator over another QueryIterator, applying a converter function
@@ -67,6 +67,6 @@ public class QueryIterConvert extends QueryIter1
     @Override
     protected void details(IndentedWriter out, SerializationContext cxt)
     { 
-        out.println(Utils.className(this)) ;
+        out.println(Lib.className(this)) ;
     }
 }

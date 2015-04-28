@@ -19,11 +19,11 @@
 package org.apache.jena.sparql.engine.iterator;
 import java.util.NoSuchElementException ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** Repeatedly execute the subclass operation for each Binding in the input iterator. */
  
@@ -86,7 +86,7 @@ public abstract class QueryIterRepeatApply extends QueryIter1
     protected Binding moveToNextBinding()
     {
         if ( ! hasNextBinding() )
-            throw new NoSuchElementException(Utils.className(this)+".next()/finished") ;
+            throw new NoSuchElementException(Lib.className(this)+".next()/finished") ;
         return currentStage.nextBinding() ;
         
     }

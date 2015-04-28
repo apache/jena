@@ -20,13 +20,13 @@ package arq;
 
 import java.util.List ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.sparql.core.TransactionalNull ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.update.GraphStore ;
 import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateFactory ;
@@ -63,7 +63,7 @@ public class update extends CmdUpdate
     }
     
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary() { return getCommandName()+" --desc=assembler [--dump] --update=<request file>" ; }

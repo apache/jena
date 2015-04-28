@@ -25,6 +25,7 @@ import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 
 /** Manage version information for subsystems */
 public class Version
@@ -62,7 +63,7 @@ public class Version
     {
         for ( Class<?> c : classes )
         {
-            String x = Utils.classShortName( c );
+            String x = Lib.classShortName( c );
             fields( writer, x, c );
         }
     }
@@ -78,7 +79,7 @@ public class Version
             while (iter.hasNext())
             {
                 Class<?> c = iter.next();
-                String component = Utils.classShortName(c) ;
+                String component = Lib.classShortName(c) ;
                 String version = field(FIELD_VERSION, c);
                 String timestamp = field(FIELD_BUILD_DATE, c);
                 buffer.append("%s Version %s (Built %s)", component, version, timestamp);

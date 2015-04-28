@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.engine.main;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.sparql.core.BasicPattern ;
@@ -32,7 +33,6 @@ import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderProc ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.sparql.mgt.Explain ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** Generic - always works - StageGenerator */
 public class StageGeneratorGeneric implements StageGenerator {
@@ -42,7 +42,7 @@ public class StageGeneratorGeneric implements StageGenerator {
     @Override
     public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt) {
         if ( input == null )
-            Log.fatal(this, "Null input to " + Utils.classShortName(this.getClass())) ;
+            Log.fatal(this, "Null input to " + Lib.classShortName(this.getClass())) ;
 
         Graph graph = execCxt.getActiveGraph() ;
 

@@ -22,10 +22,10 @@ import java.io.IOException ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.query.Syntax ;
 import org.apache.jena.sparql.modify.request.UpdateWriter ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;
 import org.apache.jena.util.FileUtils ;
@@ -85,7 +85,7 @@ public class uparse extends CmdARQ
     }
     
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary() { return getCommandName()+" --file=<request file> | <update string>" ; }

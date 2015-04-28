@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql.pfunction;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.QueryBuildException ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** PropertyFunction factory that instantiates a class each time. */ 
 
@@ -33,7 +33,7 @@ class PropertyFunctionFactoryAuto implements PropertyFunctionFactory
         extClass = xClass ;
         
         if ( ! PropertyFunction.class.isAssignableFrom(xClass) )
-            throw new ARQInternalErrorException("No PropertyFunction interface for "+Utils.classShortName(xClass)) ;
+            throw new ARQInternalErrorException("No PropertyFunction interface for "+Lib.classShortName(xClass)) ;
     }
     
     @Override

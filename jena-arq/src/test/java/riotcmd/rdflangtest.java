@@ -20,6 +20,7 @@ package riotcmd;
 
 import junit.framework.TestSuite ;
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.rdf.model.Literal ;
@@ -35,7 +36,6 @@ import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.junit.EarlReport ;
 import org.apache.jena.sparql.junit.SimpleTestRunner ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.sparql.vocabulary.DOAP ;
 import org.apache.jena.sparql.vocabulary.FOAF ;
 import org.apache.jena.vocabulary.DC ;
@@ -94,7 +94,7 @@ public class rdflangtest extends CmdGeneral
     }
     
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary() { return getCommandName()+" [ --data=<file> --query=<query> --result=<results> ] | --all | --dawg | <manifest>" ; }

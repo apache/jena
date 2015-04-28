@@ -20,10 +20,10 @@ package org.apache.jena.sparql.engine.iterator;
 
 import java.util.NoSuchElementException ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** An iterator that returns at least one element from another iterator
  *  or a default value (once) if the wrapped iterator returns nothing. */ 
@@ -67,7 +67,7 @@ public class QueryIterDefaulting extends QueryIterSub
     protected Binding moveToNextBinding()
     {
         if ( isFinished() )
-            throw new NoSuchElementException(Utils.className(this)) ;
+            throw new NoSuchElementException(Lib.className(this)) ;
         
         if ( returnDefaultObject )
         {

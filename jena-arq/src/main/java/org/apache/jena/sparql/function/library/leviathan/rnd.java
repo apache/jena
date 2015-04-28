@@ -20,13 +20,13 @@ package org.apache.jena.sparql.function.library.leviathan;
 
 import java.util.List;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.RandomLib;
 import org.apache.jena.query.QueryBuildException ;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.function.FunctionBase ;
-import org.apache.jena.sparql.util.Utils ;
 
 public class rnd extends FunctionBase {
 
@@ -62,7 +62,7 @@ public class rnd extends FunctionBase {
     @Override
     public void checkBuild(String uri, ExprList args) {
         if (args.size() > 2)
-            throw new QueryBuildException("Function '" + Utils.className(this)
+            throw new QueryBuildException("Function '" + Lib.className(this)
                     + "' takes between 0, 1 or 2 argument(s)");
     }
 

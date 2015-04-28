@@ -206,6 +206,7 @@ public class DataValidator extends ValidatorBase
         }
     }
     
+    @SuppressWarnings("deprecation")
     private Tokenizer createTokenizer(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws Exception
     {
         Reader reader = null ;  

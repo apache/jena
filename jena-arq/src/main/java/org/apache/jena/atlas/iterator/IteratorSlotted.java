@@ -21,7 +21,7 @@ package org.apache.jena.atlas.iterator;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
-import org.apache.jena.sparql.util.Utils ;
+import org.apache.jena.atlas.lib.Lib ;
 
 /** An Iterator with a one slot lookahead. */  
 public abstract class IteratorSlotted<T> implements Iterator<T>
@@ -77,7 +77,7 @@ public abstract class IteratorSlotted<T> implements Iterator<T>
     @Override
     public final T next()
     {
-        if ( ! hasNext() ) throw new NoSuchElementException(Utils.className(this)) ;
+        if ( ! hasNext() ) throw new NoSuchElementException(Lib.className(this)) ;
         
         T obj = slot ;
         slot = null ;
@@ -102,7 +102,7 @@ public abstract class IteratorSlotted<T> implements Iterator<T>
     @Override
     public final void remove()
     {
-        throw new UnsupportedOperationException(Utils.className(this)+".remove") ;
+        throw new UnsupportedOperationException(Lib.className(this)+".remove") ;
     }
     
     public final void close()

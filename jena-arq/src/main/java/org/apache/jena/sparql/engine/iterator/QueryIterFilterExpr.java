@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.engine.iterator;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
@@ -27,7 +28,6 @@ import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprException ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.util.ExprUtils ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** 
  *  Filter a stream of bindings by a constraint. */
@@ -64,7 +64,7 @@ public class QueryIterFilterExpr extends QueryIterProcessBinding
     @Override
     protected void details(IndentedWriter out, SerializationContext cxt)
     { 
-        out.print(Utils.className(this)) ;
+        out.print(Lib.className(this)) ;
         out.print(" ") ;
         ExprUtils.fmtSPARQL(out, expr, cxt) ;
     }

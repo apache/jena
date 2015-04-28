@@ -20,6 +20,7 @@ package org.apache.jena.sparql.util;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.io.PrintUtils ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.engine.Plan ;
 
@@ -39,7 +40,7 @@ public abstract class PrintSerializableBase implements PrintSerializable
     public void output(IndentedWriter out)
     {
         out.print(Plan.startMarker) ;
-        out.print(Utils.className(this)) ;
+        out.print(Lib.className(this)) ;
         out.print(Plan.finishMarker) ;
     }
 }

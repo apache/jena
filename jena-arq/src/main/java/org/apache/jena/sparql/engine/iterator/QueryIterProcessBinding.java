@@ -20,11 +20,11 @@ package org.apache.jena.sparql.engine.iterator ;
 
 import java.util.NoSuchElementException ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.util.Utils ;
 
 /**
  * An iterator that applies a condition. The condition may return a different
@@ -61,7 +61,7 @@ public abstract class QueryIterProcessBinding extends QueryIter1 {
 
         // Null iterator.
         if ( getInput() == null )
-            throw new ARQInternalErrorException(Utils.className(this) + ": Null iterator") ;
+            throw new ARQInternalErrorException(Lib.className(this) + ": Null iterator") ;
 
         while (getInput().hasNext()) {
             // Skip forward until a binding to return is found.

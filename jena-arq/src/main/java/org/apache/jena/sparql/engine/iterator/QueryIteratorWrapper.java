@@ -19,10 +19,10 @@
 package org.apache.jena.sparql.engine.iterator;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.Utils ;
 
 /** Wrap a QueryIterator so it can have some/all of it's methods intercepted. */
 
@@ -63,7 +63,7 @@ public class QueryIteratorWrapper extends QueryIteratorBase
     @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     {   
-        out.println(Utils.className(this)+"/"+Utils.className(iterator)) ;
+        out.println(Lib.className(this)+"/"+Lib.className(iterator)) ;
         out.incIndent() ;
         iterator.output(out, sCxt) ;
         out.decIndent() ;

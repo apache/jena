@@ -21,7 +21,7 @@ package tdb;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.sparql.util.Utils ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.tdb.base.block.BlockMgr ;
 import org.apache.jena.tdb.base.block.BlockMgrFactory ;
 import org.apache.jena.tdb.base.file.FileSet ;
@@ -44,7 +44,7 @@ public class CmdRewriteIndex
         // Usage: srcLocation dstLocation indexName
         if ( argv.length != 3 )
         {
-            System.err.println("Usage: "+Utils.classShortName(CmdRewriteIndex.class)+" SrcLocation DstLocation IndexName") ;
+            System.err.println("Usage: "+Lib.classShortName(CmdRewriteIndex.class)+" SrcLocation DstLocation IndexName") ;
             System.exit(1) ;
         }
         

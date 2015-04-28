@@ -24,6 +24,7 @@ import java.util.Date ;
 import java.util.GregorianCalendar ;
 
 import org.apache.commons.lang3.time.FastDateFormat ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.datatypes.xsd.XSDDateTime ;
 
 /** Miscellaneous operations - not query specific */
@@ -55,17 +56,20 @@ public class Utils {
     // For milliseconds != 0
     private static final FastDateFormat timeFmt_XSD_ms          = FastDateFormat.getInstance("HH:mm:ss.SSSZZ") ;
     
+    /**
+     * @deprecated Use {@link Lib#className(Object)} instead
+     */
+    @Deprecated
     static public String className(Object obj) {
-        if ( obj == null )
-            return "null" ;
-        return classShortName(obj.getClass()) ;
+        return Lib.className(obj) ;
     }
 
+    /**
+     * @deprecated Use {@link Lib#classShortName(Class)} instead
+     */
+    @Deprecated
     static public String classShortName(Class<? > cls) {
-        String tmp = cls.getName() ;
-        int i = tmp.lastIndexOf('.') ;
-        tmp = tmp.substring(i + 1) ;
-        return tmp ;
+        return Lib.classShortName(cls) ;
     }
 
     public static String nowAsXSDDateTimeString() {

@@ -21,6 +21,7 @@ package arq;
 import java.io.PrintStream ;
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.* ;
 import org.apache.jena.shared.JenaException ;
@@ -30,7 +31,6 @@ import org.apache.jena.sparql.lang.ParserBase ;
 import org.apache.jena.sparql.resultset.ResultSetException ;
 import org.apache.jena.sparql.util.QueryOutputUtils ;
 import org.apache.jena.sparql.util.QueryUtils ;
-import org.apache.jena.sparql.util.Utils ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
@@ -230,7 +230,7 @@ public class qparse extends CmdARQ
     }
 
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
 
 //    static String usage = qparse.class.getName()+
 //            " [--in syntax] [--out syntax] [\"query\" | --query <file>\n"+
