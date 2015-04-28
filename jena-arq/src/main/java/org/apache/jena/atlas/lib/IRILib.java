@@ -16,14 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system;
+package org.apache.jena.atlas.lib;
 
 import java.io.File ;
 import java.io.IOException ;
 
 import org.apache.jena.atlas.AtlasException ;
-import org.apache.jena.atlas.lib.Chars ;
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.SysRIOT ;
 
 /** Operations related to IRIs */

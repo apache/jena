@@ -21,7 +21,6 @@ package org.apache.jena.atlas.lib;
 import java.io.File ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.riot.system.IRILib ;
 import org.junit.Test ;
 
 public class TestFilenameProcessing extends BaseTest
@@ -37,6 +36,41 @@ public class TestFilenameProcessing extends BaseTest
     private static String cwd = new File(".").getAbsolutePath() ;
     // Without trailing slash.
     static { cwd = cwd.substring(0, cwd.length()-2) ; }
+    
+    @Test public void fileIRI_1()
+    {
+        String uri = testFileIRI("D.ttl") ; 
+        assertTrue(uri.endsWith("D.ttl")) ;
+    }
+    
+    @Test public void fileIRI_2()
+    {
+        String uri = testFileIRI("file:/D.ttl") ; 
+        assertTrue(uri.endsWith("D.ttl")) ;
+    }
+    
+    @Test public void fileIRI_3()
+    {
+        String uri = testFileIRI("file://D.ttl") ; 
+        assertTrue(uri.endsWith("D.ttl")) ;
+    }
+
+    @Test public void fileIRI_4()
+    {
+        String iri = testFileIRI("file:///D.ttl") ;
+        // Even on windows, this is used as-is so no drive letter. 
+        assertEquals("file:///D.ttl", iri) ;
+    }
+    
+    private static String testFileIRI(String fn)
+    {
+        String uri1 = IRILib.filenameToIRI(fn) ;
+        assertTrue(uri1.startsWith("file:///")) ;
+        String uri2 = IRILib.filenameToIRI(uri1) ;
+        assertEquals(uri1, uri2) ;
+        return uri1 ;
+    }
+
     
     @Test public void fileURL_1() { assertNotEquals(cwd, "") ; assertNotNull(cwd) ; filenameToIRI("abc", "file://"+cwd+"/abc" ) ; }
     

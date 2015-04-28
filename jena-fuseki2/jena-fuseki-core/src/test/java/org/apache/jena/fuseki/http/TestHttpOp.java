@@ -19,11 +19,11 @@
 package org.apache.jena.fuseki.http;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.fuseki.ServerTest ;
 import org.apache.jena.riot.WebContent ;
-import org.apache.jena.riot.system.IRILib ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.engine.http.Params ;
 import org.apache.jena.web.HttpSC ;

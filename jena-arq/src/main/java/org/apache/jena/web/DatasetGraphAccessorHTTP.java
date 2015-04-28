@@ -26,6 +26,7 @@ import org.apache.http.client.methods.HttpHead ;
 import org.apache.http.client.methods.HttpUriRequest ;
 import org.apache.http.entity.ContentProducer ;
 import org.apache.http.entity.EntityTemplate ;
+import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
 import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
@@ -34,7 +35,6 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.WebContent ;
-import org.apache.jena.riot.system.IRILib ;
 import org.apache.jena.riot.web.* ;
 import org.apache.jena.shared.JenaException ;
 

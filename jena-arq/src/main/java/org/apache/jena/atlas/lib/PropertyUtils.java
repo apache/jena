@@ -23,6 +23,7 @@ import java.util.Objects ;
 import java.util.Properties ;
 
 import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.util.FileUtils ;
 
 public class PropertyUtils
@@ -42,7 +43,7 @@ public class PropertyUtils
         if ( "-".equals(filename) )
             throw new IllegalArgumentException("Filename is \"-\" (stdin not supported)") ;
 
-        try (InputStream in = new FileInputStream(filename); Reader r = FileUtils.asBufferedUTF8(in);) {
+        try (InputStream in = new FileInputStream(filename); Reader r = IO.asBufferedUTF8(in);) {
             properties.load(r) ;
         }
     }

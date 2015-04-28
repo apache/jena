@@ -21,12 +21,12 @@ package org.apache.jena.riot.adapters;
 import java.io.InputStream ;
 import java.io.Reader ;
 
+import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdf.model.RDFReader ;
 import org.apache.jena.rdfxml.xmlinput.JenaReader ;
 import org.apache.jena.riot.SysRIOT ;
-import org.apache.jena.riot.system.IRILib ;
 import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.FileUtils ;
 

@@ -22,6 +22,7 @@ import java.util.concurrent.Callable ;
 
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
+import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIException ;
 import org.apache.jena.iri.IRIFactory ;

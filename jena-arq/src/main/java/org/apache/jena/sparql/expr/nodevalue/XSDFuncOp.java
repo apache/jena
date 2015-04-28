@@ -44,6 +44,7 @@ import javax.xml.datatype.DatatypeConstants.Field ;
 import javax.xml.datatype.Duration ;
 import javax.xml.datatype.XMLGregorianCalendar ;
 
+import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.RDFDatatype ;
@@ -51,7 +52,6 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDateTime ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.riot.system.IRILib ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.expr.* ;

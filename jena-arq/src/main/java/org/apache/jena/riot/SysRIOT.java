@@ -20,7 +20,7 @@ package org.apache.jena.riot;
 
 import java.io.File ;
 
-import org.apache.jena.riot.system.IRILib ;
+import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.util.FileUtils ;
 import org.slf4j.Logger ;

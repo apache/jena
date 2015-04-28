@@ -24,10 +24,10 @@ import java.io.InputStream ;
 import java.security.AccessControlException ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.system.IRILib ;
 import org.apache.jena.util.FileUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;

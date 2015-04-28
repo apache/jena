@@ -25,7 +25,7 @@ import java.util.zip.GZIPInputStream ;
 import java.util.zip.GZIPOutputStream ;
 
 import org.apache.jena.atlas.RuntimeIOException ;
-import org.apache.jena.riot.system.IRILib ;
+import org.apache.jena.atlas.lib.IRILib ;
 
 public class IO
 {

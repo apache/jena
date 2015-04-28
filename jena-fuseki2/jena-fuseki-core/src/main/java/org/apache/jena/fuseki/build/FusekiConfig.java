@@ -32,6 +32,7 @@ import java.util.List ;
 
 import org.apache.jena.assembler.JA ;
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
@@ -45,7 +46,6 @@ import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.system.IRILib ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.update.UpdateAction ;
 import org.apache.jena.update.UpdateFactory ;

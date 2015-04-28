@@ -45,6 +45,9 @@ import org.junit.runners.Suite ;
     , TestRefLong.class
     , TestReverseComparator.class
     , TestTrie.class
+    , TestFilenameProcessing.class
+    , TestMultiSet.class
+    , TestNumberUtils.class
 } )
 
 public class TS_Lib
