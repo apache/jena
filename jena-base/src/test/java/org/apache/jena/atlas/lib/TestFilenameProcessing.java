@@ -21,6 +21,7 @@ package org.apache.jena.atlas.lib;
 import java.io.File ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.base.Sys ;
 import org.junit.Test ;
 
 public class TestFilenameProcessing extends BaseTest
@@ -34,6 +35,11 @@ public class TestFilenameProcessing extends BaseTest
     // Portablility
     
     private static String cwd = new File(".").getAbsolutePath() ;
+    static {
+        if ( Sys.isWindows )
+            // Canonical
+            cwd = cwd.replace('\\', '/') ;
+    }
     // Without trailing slash.
     static { cwd = cwd.substring(0, cwd.length()-2) ; }
     
@@ -72,9 +78,17 @@ public class TestFilenameProcessing extends BaseTest
     }
 
     
-    @Test public void fileURL_1() { assertNotEquals(cwd, "") ; assertNotNull(cwd) ; filenameToIRI("abc", "file://"+cwd+"/abc" ) ; }
-    
-    @Test public void fileURL_2() { filenameToIRI("/abc", "file:///abc" ) ; }
+    @Test
+    public void fileURL_1() {
+        assertNotEquals(cwd, "") ;
+        assertNotNull(cwd) ;
+        filenameToIRI("abc", "file://" + cwd + "/abc") ;
+    }
+
+    @Test
+    public void fileURL_2() {
+        filenameToIRI("/abc", "file:///abc") ;
+    }
     
     static boolean isWindows = File.pathSeparator.equals(";") ;
 
