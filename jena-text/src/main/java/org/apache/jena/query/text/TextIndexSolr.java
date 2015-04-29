@@ -104,6 +104,11 @@ public class TextIndexSolr implements TextIndex
         } catch (Exception e) { exception(e) ; }
     }
 
+    @Override
+    public void deleteEntity(Entity entity) {
+         //to be implemented
+    }
+
     private SolrInputDocument solrDoc(Entity entity)
     {
         SolrInputDocument doc = new SolrInputDocument() ;

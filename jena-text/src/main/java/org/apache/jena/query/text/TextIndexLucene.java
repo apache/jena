@@ -45,9 +45,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException ;
 import org.apache.lucene.queryparser.classic.QueryParser ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
-import org.apache.lucene.search.IndexSearcher ;
-import org.apache.lucene.search.Query ;
-import org.apache.lucene.search.ScoreDoc ;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory ;
 import org.apache.lucene.util.Version ;
 import org.slf4j.Logger ;
@@ -76,6 +74,9 @@ public class TextIndexLucene implements TextIndex {
     private final Directory        directory ;
     private final Analyzer         analyzer ;
     private final Analyzer         queryAnalyzer ;
+
+    //the BORDER_DELIMITER constant is required for...
+    private static final String BORDER_DELIMITER = "borderdelimiter";
 
     // The IndexWriter can't be final because we may have to recreate it if rollback() is called.
     // However, it needs to be volatile in case the next write transaction is on a different thread,
@@ -214,6 +215,35 @@ public class TextIndexLucene implements TextIndex {
         }
     }
 
+    @Override
+    public void deleteEntity(Entity entity) {
+        if ( log.isDebugEnabled() )
+            log.debug("Delete entity: "+entity) ;
+        try {
+            TermQuery qUri = new TermQuery(new Term("uri", entity.getId()));
+            Map<String, Object> map = entity.getMap();
+            String property = map.keySet().iterator().next();
+            String value = (String)map.get(property);
+
+            //escaping special characters to avoid problem in WildcardQuery
+            value = value.replace( "?", "\\?" );
+            value = value.replace( "*", "\\*" );
+            value = value.replace( "\"", "\\\"" );
+
+            QueryParser qp = new QueryParser(VER, property, analyzer);
+            Query qPropValue = qp.parse("\"" + BORDER_DELIMITER + " " + value + " " + BORDER_DELIMITER + "\"");
+
+            BooleanQuery q = new BooleanQuery();
+            q.add(qUri, BooleanClause.Occur.MUST);
+            q.add(qPropValue, BooleanClause.Occur.MUST);
+
+            indexWriter.deleteDocuments(q);
+
+        } catch (Exception e) {
+            throw new TextIndexException(e) ;
+        }
+    }
+
     private Document doc(Entity entity) {
         Document doc = new Document() ;
         Field entField = new Field(docDef.getEntityField(), entity.getId(), ftIRI) ;
@@ -226,7 +256,7 @@ public class TextIndexLucene implements TextIndex {
         }
 
         for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
-            Field field = new Field(e.getKey(), (String)e.getValue(), ftText) ;
+            Field field = new Field(e.getKey(), BORDER_DELIMITER + " " + e.getValue() + " " + BORDER_DELIMITER, ftText) ;
             doc.add(field) ;
         }
         return doc ;
