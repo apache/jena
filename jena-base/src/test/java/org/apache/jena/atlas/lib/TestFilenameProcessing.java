@@ -19,9 +19,9 @@
 package org.apache.jena.atlas.lib;
 
 import java.io.File ;
+import java.nio.file.Paths ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.base.Sys ;
 import org.junit.Test ;
 
 public class TestFilenameProcessing extends BaseTest
@@ -33,15 +33,21 @@ public class TestFilenameProcessing extends BaseTest
 
     // ---- Main tests.
     // Portablility
+
     
-    private static String cwd = new File(".").getAbsolutePath() ;
+    private static String cwd = Paths.get(".").toAbsolutePath().normalize().toString() ;
+    // Sort out cwd.
+    // Must start "/", must not end "/"
+    // Must be /-style, not \
     static {
-        if ( Sys.isWindows )
+        if ( File.separatorChar != '/' ) {
             // Canonical
-            cwd = cwd.replace('\\', '/') ;
+            cwd = cwd.replace(File.separatorChar, '/') ;
+        }
+        // Drive letters.
+        if ( ! cwd.startsWith("/" ) )
+            cwd = "/" + cwd ;
     }
-    // Without trailing slash.
-    static { cwd = cwd.substring(0, cwd.length()-2) ; }
     
     @Test public void fileIRI_1()
     {
