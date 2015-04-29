@@ -19,7 +19,7 @@
 package riotcmd;
 
 import junit.framework.TestSuite ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.legacy.BaseTest2 ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ARQ ;
@@ -111,7 +111,7 @@ public class rdflangtest extends CmdGeneral
     protected void exec()
     {
         // Paradoxical naming - the boolean is a visibility flag.
-        BaseTest.setTestLogging() ;
+        BaseTest2.setTestLogging() ;
         
         if ( contains(strictDecl) )
         {

@@ -16,14 +16,28 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.lib;
+package org.apache.jena.atlas.legacy;
 
+import org.apache.jena.atlas.csv.TestCSVParser ;
+import org.apache.jena.atlas.data.TS_Data ;
+import org.apache.jena.atlas.event.TS_Event ;
+import org.apache.jena.atlas.json.TS_JSON ;
+import org.apache.jena.atlas.web.TS_Web ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
-/** Interface for the destination of things */
-public interface Sink<T> extends Closeable
-{
-    // Can't help but think it should be "Pipe"
-    // If Sync looses Sync(boolean), then make this "extends Sync"
-    void send(T item) ;
-    void flush() ;
-}
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    // Library
+//      TS_Lib.class
+//    , TS_Iterator.class
+    TS_Event.class
+//    , TS_IO.class
+    , TS_JSON.class
+    , TS_Data.class
+    , TS_Web.class
+    , TestCSVParser.class
+}) 
+
+public class TC_Atlas_ARQ
+{}
