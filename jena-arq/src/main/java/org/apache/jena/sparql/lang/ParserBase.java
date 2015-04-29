@@ -23,6 +23,7 @@ import java.util.HashSet ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.lib.EscapeStr ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
@@ -35,7 +36,6 @@ import org.apache.jena.n3.JenaURIException ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.riot.checker.CheckerIRI ;
-import org.apache.jena.riot.out.EscapeStr ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.RiotLib ;

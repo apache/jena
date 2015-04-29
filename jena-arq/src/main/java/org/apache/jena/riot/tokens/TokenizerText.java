@@ -26,6 +26,7 @@ import java.util.NoSuchElementException ;
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.PeekReader ;
+import org.apache.jena.atlas.lib.Chars ;
 import org.apache.jena.riot.RiotParseException ;
 import org.apache.jena.riot.system.RiotChars ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -738,7 +739,7 @@ public final class TokenizerText implements Tokenizer
         for (;; idx++) {
             int ch = reader.peekChar() ;
 
-            if ( isAlphaNumeric(ch) || charInArray(ch, extraChars) ) {
+            if ( isAlphaNumeric(ch) || Chars.charInArray(ch, extraChars) ) {
                 reader.readChar() ;
                 stringBuilder.append((char)ch) ;
                 continue ;

@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.lang;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.legacy.BaseTest2 ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
@@ -50,7 +50,7 @@ import org.junit.runners.Suite ;
 
 public class TS_Lang
 {
-    @BeforeClass public static void beforeClass()   { BaseTest.setTestLogging() ; } 
-    @AfterClass public static void afterClass()     { BaseTest.unsetTestLogging() ; }
+    @BeforeClass public static void beforeClass()   { BaseTest2.setTestLogging() ; } 
+    @AfterClass public static void afterClass()     { BaseTest2.unsetTestLogging() ; }
 }
 

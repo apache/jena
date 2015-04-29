@@ -24,12 +24,13 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.legacy.BaseTest2 ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.riot.system.PrefixMapFactory;
+import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.apache.jena.sparql.core.Var ;
@@ -47,12 +48,12 @@ public class TestBindingStreams extends BaseTest
 {
     @BeforeClass public static void beforeClass()
     { 
-        setTestLogging() ;
+        BaseTest2.setTestLogging() ;
     }
 
     @AfterClass public static void afterClass()
     { 
-        unsetTestLogging() ;
+        BaseTest2.unsetTestLogging() ;
     }
     
     static Binding b12 = build("(?a 1) (?b 2)") ;

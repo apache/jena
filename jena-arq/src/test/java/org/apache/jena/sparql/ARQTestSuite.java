@@ -20,8 +20,8 @@ package org.apache.jena.sparql;
 
 import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestSuite ;
-import org.apache.jena.atlas.TC_Atlas ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.legacy.BaseTest2 ;
+import org.apache.jena.atlas.legacy.TC_Atlas_ARQ ;
 import org.apache.jena.common.TC_Common ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.TC_Riot ;
@@ -53,10 +53,10 @@ public class ARQTestSuite extends TestSuite
         TestSuite ts = new ARQTestSuite() ;
         
         // No warnings (e.g. bad lexical forms).
-        BaseTest.setTestLogging() ;
+        BaseTest2.setTestLogging() ;
         
         // ARQ dependencies
-        ts.addTest(new JUnit4TestAdapter(TC_Atlas.class)) ;
+        ts.addTest(new JUnit4TestAdapter(TC_Atlas_ARQ.class)) ;
         ts.addTest(new JUnit4TestAdapter(TC_Common.class)) ;
         ts.addTest(new JUnit4TestAdapter(TC_Riot.class)) ;
 

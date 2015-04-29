@@ -18,10 +18,9 @@
 
 package org.apache.jena.tdb.store.bulkloader2;
 
-import static org.apache.jena.sparql.util.Utils.nowAsString ;
-
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.atlas.logging.ProgressLogger ;
@@ -110,7 +109,7 @@ public class CmdIndexCopy
         
         float rate = (elapsedSecs!=0) ? counter/elapsedSecs : 0 ;
         
-        print("Total: %,d records : %,.2f seconds : %,.2f records/sec [%s]", counter, elapsedSecs, rate, nowAsString()) ;
+        print("Total: %,d records : %,.2f seconds : %,.2f records/sec [%s]", counter, elapsedSecs, rate, DateTimeUtils.nowAsString()) ;
     }
     
     static private void print(String fmt, Object...args)

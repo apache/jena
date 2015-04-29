@@ -22,6 +22,7 @@ import java.util.Calendar ;
 import java.util.TimeZone ;
 import java.util.concurrent.TimeUnit ;
 
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.system.stream.LocatorFTP ;
@@ -32,7 +33,6 @@ import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.slf4j.Logger ;
@@ -170,7 +170,7 @@ public class Fuseki {
     private static final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("00:00")) ; 
     static { cal.setTimeInMillis(startMillis) ; }  // Exactly the same start point!
     
-    private static final String startDateTime = Utils.calendarToXSDDateTimeString(cal) ; 
+    private static final String startDateTime = DateTimeUtils.calendarToXSDDateTimeString(cal) ; 
     
     /** Return the number of milliseconds since the server started */  
     public static long serverUptimeMillis() {

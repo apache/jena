@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql.junit;
 
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.sparql.vocabulary.DOAP ;
 import org.apache.jena.sparql.vocabulary.EARL ;
 import org.apache.jena.sparql.vocabulary.FOAF ;
@@ -140,7 +140,7 @@ public class EarlReport
 //        Literal now = 
 //            ResourceFactory.createTypedLiteral(nowStr, XSDDatatype.XSDdateTime) ;
 
-        String todayStr = Utils.todayAsXSDDateString() ;
+        String todayStr = DateTimeUtils.todayAsXSDDateString() ;
         
         Literal now = 
             ResourceFactory.createTypedLiteral(todayStr, XSDDatatype.XSDdate) ;

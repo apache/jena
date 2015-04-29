@@ -29,6 +29,7 @@ import java.util.Iterator ;
 import java.util.Map ;
 import java.util.Map.Entry ;
 
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -39,7 +40,6 @@ import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.ItemList ;
 import org.apache.jena.sparql.sse.ItemWriter ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.apache.jena.sparql.util.Utils ;
 
 public class Stats
 {
@@ -101,7 +101,7 @@ public class Stats
 
         Item meta = createTagged(StatsMatcher.META) ;
         addPair(meta.getList(), "timestamp", NodeFactoryExtra.nowAsDateTime()) ;
-        addPair(meta.getList(), "run@",  Utils.nowAsString()) ;
+        addPair(meta.getList(), "run@",  DateTimeUtils.nowAsString()) ;
         if ( count >= 0 )
             addPair(meta.getList(), StatsMatcher.COUNT, NodeFactoryExtra.intToNode((int)count)) ;
         statsList.add(meta) ;

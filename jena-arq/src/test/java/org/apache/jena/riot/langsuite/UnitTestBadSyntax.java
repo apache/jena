@@ -19,7 +19,7 @@
 package org.apache.jena.riot.langsuite;
 
 import static org.apache.jena.riot.SysRIOT.fmtMessage ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.legacy.BaseTest2 ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.rdf.model.Model ;
@@ -69,10 +69,10 @@ public class UnitTestBadSyntax extends LangTestCase
     } ;
 
     @Override
-    protected void _setUp()         { BaseTest.setTestLogging(ErrorHandlerFactory.errorHandlerStrictNoLogging) ; }
+    protected void _setUp()         { BaseTest2.setTestLogging(ErrorHandlerFactory.errorHandlerStrictNoLogging) ; }
 
     @Override
-    protected void _tearDown()      { BaseTest.unsetTestLogging() ; }
+    protected void _tearDown()      { BaseTest2.unsetTestLogging() ; }
 
     @Override
     public void runTestForReal()
