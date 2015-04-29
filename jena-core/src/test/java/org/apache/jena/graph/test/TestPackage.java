@@ -46,8 +46,6 @@ public class TestPackage extends TestSuite {
         addTest( TestFactory.suite() );
         addTest( TestGraph.suite() );
         addTest( TestSimpleGraphMaker.suite() );
-        addTest( TestFileGraph.suite() );
-        addTest( TestFileGraphMaker.suite() );
         addTest( TestGraphExtract.suite() );
         addTest( TestCapabilities.suite() );
         addTest( TestGraphUtils.suite() );
