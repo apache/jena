@@ -85,6 +85,17 @@ public class TextIndexLucene implements TextIndex {
 
     /**
      * Constructs a new TextIndexLucene.
+     *
+     * @param directory The Lucene Directory for the index
+     * @param def The EntityDefinition that defines how entities are stored in the index
+     * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
+     */
+    public TextIndexLucene(Directory directory, EntityDefinition def, Analyzer queryAnalyzer) {
+        this(directory, def, null, queryAnalyzer);
+    }
+
+    /**
+     * Constructs a new TextIndexLucene.
      * 
      * @param directory The Lucene Directory for the index
      * @param def The EntityDefinition that defines how entities are stored in the index

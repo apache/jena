@@ -92,7 +92,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             Resource r = GraphUtils.getResourceValue(root, pEntityMap) ;
             EntityDefinition docDef = (EntityDefinition)a.open(r) ;
 
-            return TextDatasetFactory.createLuceneIndex(directory, docDef, null, queryAnalyzer) ;
+            return TextDatasetFactory.createLuceneIndex(directory, docDef, queryAnalyzer) ;
         } catch (IOException e) {
             IO.exception(e) ;
             return null ;

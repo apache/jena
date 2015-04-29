@@ -98,15 +98,14 @@ public class TextIndexLuceneMultiLingual implements TextIndex {
 
     @Override
     public void addEntity(Entity entity) {
-    }
-
-    public void addEntity(Entity entity, String lang) {
+        String lang = entity.getLanguage();
         getIndex(lang).addEntity(entity);
     }
 
     @Override
     public void updateEntity(Entity entity) {
-
+        String lang = entity.getLanguage();
+        getIndex(lang).updateEntity(entity);
     }
 
     @Override

@@ -116,7 +116,7 @@ public class TestBuildTextDataset extends BaseTest
         Directory dir = new RAMDirectory() ;
 
         // Join together into a dataset
-        Dataset ds = TextDatasetFactory.createLucene(ds1, dir, entDef, null, null) ;
+        Dataset ds = TextDatasetFactory.createLucene(ds1, dir, entDef, null) ;
 
         return ds ;
     }
