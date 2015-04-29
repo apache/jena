@@ -151,10 +151,7 @@ public class TestFilenameProcessing extends BaseTest
     }
 
     @Test public void fileURL_14() {
-        String x = cwd ;
-        if ( isWindows )
-            x = x.replace('\\', '/') ; 
-        x = cwd.replaceAll("/[^/]*$", "") ;
+        String x = cwd.replaceAll("/[^/]*$", "") ;
         filenameToIRI("file:..", "file://"+x ) ;
     }
     
