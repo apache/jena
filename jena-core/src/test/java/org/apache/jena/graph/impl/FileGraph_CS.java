@@ -30,8 +30,8 @@ import org.xenei.junit.contract.ContractImpl;
 import org.xenei.junit.contract.ContractSuite;
 import org.xenei.junit.contract.IProducer;
 
-@RunWith(ContractSuite.class)
-@ContractImpl(FileGraph.class)
+//@RunWith(ContractSuite.class)
+//@ContractImpl(FileGraph.class)
 public class FileGraph_CS {
 	 
 	protected IProducer<FileGraph> graphProducer;
@@ -52,10 +52,11 @@ public class FileGraph_CS {
 			File f;
 			try {
 				f = File.createTempFile("fgp", ".ttl" );
+				f.delete();
 			} catch (IOException e) {
 				throw new RuntimeException( "Can not create file", e );
 			}
-			return new FileGraph( f, false, true );
+			return new FileGraph( f, true, true );
 		}
 
 		@Override
