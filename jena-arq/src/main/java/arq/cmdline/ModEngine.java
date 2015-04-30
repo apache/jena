@@ -20,11 +20,13 @@ package arq.cmdline;
 
 import java.util.List ;
 
+import arq.cmd.ArgDecl ;
+import arq.cmd.CmdArgModule ;
+import arq.cmd.CmdException ;
 import org.apache.jena.sparql.engine.main.QueryEngineMain ;
 import org.apache.jena.sparql.engine.main.QueryEngineMainQuad ;
 import org.apache.jena.sparql.engine.ref.QueryEngineRef ;
 import org.apache.jena.sparql.engine.ref.QueryEngineRefQuad ;
-import arq.cmd.CmdException ;
 
 
 public class ModEngine extends ModBase

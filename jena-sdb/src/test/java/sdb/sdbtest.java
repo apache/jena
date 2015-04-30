@@ -20,6 +20,7 @@ package sdb;
 
 import java.util.List ;
 
+import arq.cmd.ArgDecl ;
 import junit.framework.TestSuite ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ARQ ;
@@ -34,7 +35,6 @@ import org.apache.jena.sparql.vocabulary.FOAF ;
 import org.apache.jena.vocabulary.DC ;
 import org.apache.jena.vocabulary.DCTerms ;
 import sdb.cmd.CmdArgsDB ;
-import arq.cmdline.ArgDecl ;
  
  /** Run a test suite
   * 

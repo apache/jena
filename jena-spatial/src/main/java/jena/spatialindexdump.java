@@ -37,8 +37,8 @@ import org.apache.lucene.search.ScoreDoc ;
 import org.apache.lucene.store.Directory ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+import arq.cmd.ArgDecl ;
 import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 
 /**

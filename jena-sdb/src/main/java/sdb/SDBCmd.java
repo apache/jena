@@ -18,8 +18,8 @@
 
 package sdb;
 
+import arq.cmd.CmdMain ;
 import org.apache.jena.atlas.lib.Lib ;
-import arq.cmdline.CmdMain;
 
 /** Convenience ways to execute commands (import static) */
 public class SDBCmd

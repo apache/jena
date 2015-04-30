@@ -29,8 +29,8 @@ import org.apache.jena.riot.process.inf.InfFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.util.FileManager ;
+import arq.cmd.ArgDecl ;
 import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdGeneral ;
 
 /*

@@ -16,11 +16,12 @@
  * limitations under the License.
  */
 
-package arq.cmdline;
+package arq.cmd;
 
 
-public interface ArgModuleGeneral extends ArgModule
+
+public interface ArgModule
 {
-    // Registration phase for usage messages
-    public abstract void registerWith(CmdGeneral cmdLine) ;
+    // Argument processing phase
+    public void processArgs(CmdArgModule cmdLine) ;
 }

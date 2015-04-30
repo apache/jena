@@ -22,10 +22,9 @@ package arq.cmdline;
 import java.util.Arrays;
 import java.util.List;
 
-import arq.cmdline.ArgDecl;
-import arq.cmdline.ArgModuleGeneral;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.CmdGeneral;
+import arq.cmd.ArgDecl ;
+import arq.cmd.ArgModuleGeneral ;
+import arq.cmd.CmdArgModule ;
 
 public class ModFormat implements ArgModuleGeneral
 {

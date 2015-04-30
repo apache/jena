@@ -26,7 +26,7 @@ import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.StoreDesc ;
 import org.apache.jena.sdb.assembler.AssemblerVocab ;
-import arq.cmdline.CmdGeneral;
+import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModSymbol;
 import arq.cmdline.ModTime;
 

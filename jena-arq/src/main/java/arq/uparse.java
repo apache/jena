@@ -29,8 +29,8 @@ import org.apache.jena.sparql.modify.request.UpdateWriter ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;
 import org.apache.jena.util.FileUtils ;
+import arq.cmd.ArgDecl ;
 import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 
 public class uparse extends CmdARQ

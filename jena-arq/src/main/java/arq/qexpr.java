@@ -18,6 +18,10 @@
 
 package arq;
 
+import arq.cmd.ArgDecl ;
+import arq.cmd.CmdException ;
+import arq.cmd.CmdLineArgs ;
+import arq.cmd.TerminationException ;
 import org.apache.jena.Jena ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.logging.LogCtl ;
@@ -37,10 +41,6 @@ import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.sse.WriterSSE ;
 import org.apache.jena.sparql.util.ExprUtils ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import arq.cmd.CmdException ;
-import arq.cmd.TerminationException ;
-import arq.cmdline.ArgDecl ;
-import arq.cmdline.CmdLineArgs ;
 
 /** A program to execute expressions from the command line. */
 

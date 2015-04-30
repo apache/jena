@@ -18,6 +18,7 @@
 
 package arq.cmdline;
 
+import arq.cmd.CmdArgModule ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.update.GraphStore ;

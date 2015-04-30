@@ -18,12 +18,13 @@
 
 package arq.cmdline;
 
+import arq.cmd.CmdArgModule ;
+import arq.cmd.CmdException ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.NotFoundException ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab ;
-import arq.cmd.CmdException ;
 
 /** Add assembler to a general dataset description */
 public class ModDatasetAssembler extends ModDataset

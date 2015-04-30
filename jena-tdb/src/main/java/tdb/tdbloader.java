@@ -20,6 +20,8 @@ package tdb ;
 
 import java.util.List ;
 
+import arq.cmd.ArgDecl ;
+import arq.cmd.CmdException ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
@@ -28,8 +30,6 @@ import org.apache.jena.tdb.TDBLoader ;
 import org.apache.jena.tdb.store.GraphTDB ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.CmdTDBGraph ;
-import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
 
 public class tdbloader extends CmdTDBGraph {
     // private static final ArgDecl argParallel = new ArgDecl(ArgDecl.NoValue, "parallel") ;

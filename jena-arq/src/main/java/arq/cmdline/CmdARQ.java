@@ -18,6 +18,7 @@
 
 package arq.cmdline;
 
+import arq.cmd.ArgDecl ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.RIOT ;

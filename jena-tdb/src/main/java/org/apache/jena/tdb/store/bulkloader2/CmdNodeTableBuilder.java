@@ -51,8 +51,8 @@ import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.tdb.sys.Names ;
 import org.slf4j.Logger ;
 import tdb.cmdline.CmdTDB ;
+import arq.cmd.ArgDecl ;
 import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdGeneral ;
 
 /** Build node table - write triples/quads as text file */

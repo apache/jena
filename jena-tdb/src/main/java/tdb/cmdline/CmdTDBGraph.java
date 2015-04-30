@@ -18,14 +18,14 @@
 
 package tdb.cmdline;
 
+import arq.cmd.ArgDecl ;
+import arq.cmd.CmdException ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.tdb.store.GraphTDB ;
-import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
 
 public abstract class CmdTDBGraph extends CmdTDB
 {
