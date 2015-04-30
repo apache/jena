@@ -1111,7 +1111,7 @@ public final class TokenizerText implements Tokenizer
             case 'u':   return readUnicode4Escape();
             case 'U':   return readUnicode8Escape();
             default:
-                exception("illegal escape sequence value: %c (0x%02X)", c, c);
+                exception("Illegal escape sequence value: %c (0x%02X)", c, c);
                 return 0 ;
         }
     }
@@ -1137,17 +1137,17 @@ public final class TokenizerText implements Tokenizer
         }
     }
     
+    // Read a unicode escape : does not allow \\ bypass
     private final int readUnicodeEscape() {
         int ch = reader.readChar() ;
         if ( ch == EOF )
             exception("Broken escape sequence") ;
 
         switch (ch) {
-            case '\\':  return '\\' ;
             case 'u': return readUnicode4Escape(); 
             case 'U': return readUnicode8Escape(); 
             default:
-                exception("illegal escape sequence value: %c (0x%02X)", ch, ch);
+                exception("Illegal unicode escape sequence value: \\%c (0x%02X)", ch, ch);
         }
         return 0 ;
     }
@@ -1158,7 +1158,7 @@ public final class TokenizerText implements Tokenizer
     private final int readUnicode8Escape() {
         int ch8 = readHexSequence(8) ;
         if ( ch8 > Character.MAX_CODE_POINT )
-            exception("illegal code point in \\U sequence value: 0x%08X", ch8) ;
+            exception("Illegal code point in \\U sequence value: 0x%08X", ch8) ;
         return ch8 ;
     }
 
