@@ -138,10 +138,17 @@ public class AssemblerHelp
         }
     
     private static Class<?> loadClassNamedBy( Statement s )
-        {
-        try { return Class.forName( getString( s ) ); }
+    {
+        String x = getString( s ) ;
+        // Jena2 -> Jena3 transition 
+        if ( x.startsWith("com.hp.hpl.jena") )
+            x = x.replaceFirst("com.hp.hpl.jena", "org.apache.jena") ;
+        
+        System.err.println( "********* "+x) ;
+        
+        try { return Class.forName(x); }
         catch (Exception e) { throw new JenaException( e ); }
-        }
+    }
 
     private static void runAnyAssemblerConstructor( AssemblerGroup group,  Statement s, Class<?> c )
         {
