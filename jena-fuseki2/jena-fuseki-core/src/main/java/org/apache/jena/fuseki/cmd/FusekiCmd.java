@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki.cmd ;
 
 import java.util.List ;
-import java.util.Map ;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
