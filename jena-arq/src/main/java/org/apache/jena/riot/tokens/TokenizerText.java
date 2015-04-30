@@ -426,7 +426,8 @@ public final class TokenizerText implements Tokenizer
         return token ;
     }
 
-    private static final boolean VeryVeryLax = false ;
+    
+    private static final boolean VeryVeryLaxIRI = false ;
     
     // [8]  IRIREF  ::= '<' ([^#x00-#x20<>"{}|^`\] | UCHAR)* '>'
     private String readIRI() {
@@ -435,7 +436,7 @@ public final class TokenizerText implements Tokenizer
             int ch = reader.readChar() ;
             switch(ch) {
                 case EOF:
-                    exception("Broken IRI (End of file): %s", stringBuilder.toString()) ;
+                    exception("Broken IRI (End of file)") ;
                 case NL:
                     exception("Broken IRI (newline): %s", stringBuilder.toString()) ;
                 case CR:
@@ -444,42 +445,31 @@ public final class TokenizerText implements Tokenizer
                     // Done!
                     return stringBuilder.toString() ;
                 case CH_RSLASH:
-                    if ( VeryVeryLax )
-                        ch = readCharEscapeAnyURI() ;
+                    if ( VeryVeryLaxIRI )
+                        // Includes unicode escapes and also \n etc 
+                        ch = readLiteralEscape() ;
                     else
                         // NORMAL
                         ch = readUnicodeEscape() ;
+                    // Don't check legality of ch (strict syntax at this point).
+                    // That does not mean it is a good idea to bypass checking.
+                    // Bad characters will lead to trouble elsewhere.
                     break ;
-            }
-
-            if ( !VeryVeryLax ) {
-                if ( ch == CH_LT )  // '<' -- very bad
-                    exception("Broken IRI (bad character: '%c'): %s", (char)ch, stringBuilder.toString()) ;
-                if ( ch == TAB )
-                    exception("Broken IRI (Tab character): %s", stringBuilder.toString()) ;
-                if ( ch <= 0x19 )
-                    exception("Broken IRI (control char 0x%02X): %s", ch, stringBuilder.toString()) ;
-                if ( ch == SPC )
-                    exception("Broken IRI (space): %s...", stringBuilder.toString()) ;
-                if ( ch == '"' || ch == '{' || ch == '}' || ch == '|' || ch == '^' || ch == '`')
-                    exception("Broken IRI (Illegal character 0x%02X, '%c'): %s", ch, (char)ch, stringBuilder.toString()) ;
+                case CH_LT:
+                    // Probably a corrupt file so not a warning.
+                    exception("Bad character in IRI (bad character: '<'): <%s<...>", stringBuilder.toString()) ;
+                case TAB:
+                    exception("Bad character in IRI (Tab character): <%s[tab]...>", stringBuilder.toString()) ;
+                case SPC:
+                    warning("Bad character in IRI (space): <%s[space]...>", stringBuilder.toString()) ;
+                case '{': case '}': case '"': case '|': case '^': case '`' :
+                    if ( ! VeryVeryLaxIRI )
+                        warning("Illegal character in IRI (codepoint 0x%02X, '%c'): <%s[%c]...>", ch, (char)ch, stringBuilder.toString(), (char)ch) ;
+                default:
+                    if ( ch <= 0x19 )
+                        warning("Illegal character in IRI (control char 0x%02X): %s", ch, stringBuilder.toString()) ;
             }
             insertCodepoint(stringBuilder, ch) ;
-        }
-    }
-    
-    private final
-    int readCharEscapeAnyURI() {
-        int c = reader.readChar();
-        if ( c==EOF )
-            exception("Escape sequence not completed") ;
-
-        switch (c) {
-            case 'u': return readUnicode4Escape(); 
-            case 'U': return readUnicode8Escape(); 
-            default:
-                // Anything \X
-                return c ;
         }
     }
     
@@ -1147,7 +1137,6 @@ public final class TokenizerText implements Tokenizer
         }
     }
     
-    
     private final int readUnicodeEscape() {
         int ch = reader.readChar() ;
         if ( ch == EOF )
@@ -1213,6 +1202,10 @@ public final class TokenizerText implements Tokenizer
         return true ;
     }
 
+    private void warning(String message, Object... args) {
+        exception(message, args); 
+    }
+    
     private void exception(String message, Object... args) {
         exception$(message, reader.getLineNum(), reader.getColNum(), args) ;
     }
