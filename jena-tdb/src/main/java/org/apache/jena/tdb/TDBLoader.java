@@ -37,7 +37,7 @@ public class TDBLoader
 {
     /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
      *  To a triples format, use {@link #load(GraphTDB, String)}
-     *  or {@link #load(DatasetGraphTDB, List, boolean)}
+     *  or {@link #load(DatasetGraphTDB, List, boolean, boolean)}
     */
     public static void load(DatasetGraphTDB dataset, String url)
     {
@@ -46,30 +46,31 @@ public class TDBLoader
 
     /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
      *  To a triples format, use {@link #load(GraphTDB, String, boolean)} 
-     *  or {@link #load(DatasetGraphTDB, List, boolean)}
+     *  or {@link #load(DatasetGraphTDB, List, boolean, boolean)}
     */
     public static void load(DatasetGraphTDB dataset, String url, boolean showProgress)
     {
-        load(dataset, asList(url), showProgress) ;
+        load(dataset, asList(url), showProgress, true) ;
     }
 
     /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
      *  To load a triples format, use {@link #load(GraphTDB, List, boolean)} 
-     *  or {@link #load(DatasetGraphTDB, List, boolean)} 
+     *  or {@link #load(DatasetGraphTDB, List, boolean, boolean)} 
     */
     public static void load(DatasetGraphTDB dataset, List<String> urls)
     {
-        load(dataset, urls, false) ;
+        load(dataset, urls, false, true) ;
     }
     
     /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
      *  To load a triples format, use {@link #load(GraphTDB, List, boolean)} 
-     *  or {@link #load(DatasetGraphTDB, List, boolean)} 
+     *  or {@link #load(DatasetGraphTDB, List, boolean, boolean)} 
     */
-    public static void load(DatasetGraphTDB dataset, List<String> urls, boolean showProgress)
+    public static void load(DatasetGraphTDB dataset, List<String> urls, boolean showProgress, boolean generateStats)
     {
         TDBLoader loader = new TDBLoader() ;
         loader.setShowProgress(showProgress) ;
+        loader.setGenerateStats(generateStats);
         loader.loadDataset(dataset, urls) ;
     }
     
@@ -144,7 +145,7 @@ public class TDBLoader
     // ---- The class itself.
     
     private boolean showProgress = true ;
-    private boolean generateStats = false ;
+    private boolean generateStats = true ;
     private Logger loaderLog  = TDB.logLoader ;
     private boolean checking ;
     
@@ -170,13 +171,13 @@ public class TDBLoader
     /** Load a graph from a list of URL - assumes the URLs name triples format documents */
     public void loadGraph(GraphTDB graph, List<String> urls)
     {
-        loadGraph$(graph, urls, showProgress) ;
+        loadGraph$(graph, urls, showProgress, generateStats) ;
     }
     
     /** Load a graph from a list of URL - assumes the URLs name triples format documents */
     public void loadGraph(GraphTDB graph, InputStream in)
     {
-        loadGraph$(graph, in, showProgress) ;
+        loadGraph$(graph, in, showProgress, generateStats) ;
     }
     
     /** Load a dataset from a URL - assumes URL names a quads format */
@@ -189,14 +190,14 @@ public class TDBLoader
     public void loadDataset(DatasetGraphTDB dataset, List<String> urls)
     {
         // Triples languages are quads languages so no test for quad-ness needed.
-        loadDataset$(dataset, urls, showProgress) ;
+        loadDataset$(dataset, urls, showProgress, generateStats) ;
     }
     
     /** Load a dataset from an input steram which must be in N-Quads form */
     public void loadDataset(DatasetGraphTDB dataset, InputStream input)
     {
         // Triples languages are quads languages so no test for quad-ness needed.
-        loadDataset$(dataset, input, showProgress) ;
+        loadDataset$(dataset, input, showProgress, generateStats) ;
     }
 
     public boolean getChecking()  
@@ -224,44 +225,44 @@ public class TDBLoader
 //    public final void setLogger(Logger log)
 //    { this.loaderLog = log ; }
     
-    private static void loadGraph$(GraphTDB graph, List<String> urls, boolean showProgress) {
+    private static void loadGraph$(GraphTDB graph, List<String> urls, boolean showProgress, boolean collectStats) {
         if ( graph.getGraphName() == null )
-            loadDefaultGraph$(graph.getDSG(), urls, showProgress) ;
+            loadDefaultGraph$(graph.getDSG(), urls, showProgress, collectStats) ;
         else
-            loadNamedGraph$(graph.getDSG(), graph.getGraphName(), urls, showProgress) ;
+            loadNamedGraph$(graph.getDSG(), graph.getGraphName(), urls, showProgress, collectStats) ;
     }
 
     // These are the basic operations for TDBLoader.
 
-    private static void loadGraph$(GraphTDB graph, InputStream input, boolean showProgress) {
+    private static void loadGraph$(GraphTDB graph, InputStream input, boolean showProgress, boolean collectStats) {
         if ( graph.getGraphName() == null )
-            loadDefaultGraph$(graph.getDSG(), input, showProgress) ;
+            loadDefaultGraph$(graph.getDSG(), input, showProgress, collectStats) ;
         else
-            loadNamedGraph$(graph.getDSG(), graph.getGraphName(), input, showProgress) ;
+            loadNamedGraph$(graph.getDSG(), graph.getGraphName(), input, showProgress, collectStats) ;
     }
 
-    private static void loadDefaultGraph$(DatasetGraphTDB dataset, List<String> urls, boolean showProgress) {
-        BulkLoader.loadDefaultGraph(dataset, urls, showProgress) ;
+    private static void loadDefaultGraph$(DatasetGraphTDB dataset, List<String> urls, boolean showProgress, boolean collectStats) {
+        BulkLoader.loadDefaultGraph(dataset, urls, showProgress, collectStats) ;
     }
 
-    private static void loadDefaultGraph$(DatasetGraphTDB dataset, InputStream input, boolean showProgress) {
-        BulkLoader.loadDefaultGraph(dataset, input, showProgress) ;
+    private static void loadDefaultGraph$(DatasetGraphTDB dataset, InputStream input, boolean showProgress, boolean collectStats) {
+        BulkLoader.loadDefaultGraph(dataset, input, showProgress, collectStats) ;
     }
 
-    private static void loadNamedGraph$(DatasetGraphTDB dataset, Node graphName, List<String> urls, boolean showProgress) {
-        BulkLoader.loadNamedGraph(dataset, graphName, urls, showProgress) ;
+    private static void loadNamedGraph$(DatasetGraphTDB dataset, Node graphName, List<String> urls, boolean showProgress, boolean collectStats) {
+        BulkLoader.loadNamedGraph(dataset, graphName, urls, showProgress, collectStats) ;
     }
 
-    private static void loadNamedGraph$(DatasetGraphTDB dataset, Node graphName, InputStream input, boolean showProgress) {
-        BulkLoader.loadNamedGraph(dataset, graphName, input, showProgress) ;
+    private static void loadNamedGraph$(DatasetGraphTDB dataset, Node graphName, InputStream input, boolean showProgress, boolean collectStats) {
+        BulkLoader.loadNamedGraph(dataset, graphName, input, showProgress, collectStats) ;
     }
 
-    private static void loadDataset$(DatasetGraphTDB dataset, List<String> urls, boolean showProgress) {
-        BulkLoader.loadDataset(dataset, urls, showProgress) ;
+    private static void loadDataset$(DatasetGraphTDB dataset, List<String> urls, boolean showProgress, boolean collectStats) {
+        BulkLoader.loadDataset(dataset, urls, showProgress, collectStats) ;
     }
 
-    private static void loadDataset$(DatasetGraphTDB dataset, InputStream input, boolean showProgress) {
-        BulkLoader.loadDataset(dataset, input, showProgress) ;
+    private static void loadDataset$(DatasetGraphTDB dataset, InputStream input, boolean showProgress, boolean collectStats) {
+        BulkLoader.loadDataset(dataset, input, showProgress, collectStats) ;
     }
 
     /** Load any model, not necessarily efficiently. */

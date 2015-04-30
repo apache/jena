@@ -80,42 +80,42 @@ public class BulkLoader {
     // }
 
     /** Load into default graph */
-    public static void loadDefaultGraph(DatasetGraphTDB dsg, List<String> urls, boolean showProgress) {
-        BulkStreamRDF dest = destinationDefaultGraph(dsg, showProgress) ;
+    public static void loadDefaultGraph(DatasetGraphTDB dsg, List<String> urls, boolean showProgress, boolean collectStats) {
+        BulkStreamRDF dest = destinationDefaultGraph(dsg, showProgress, collectStats) ;
         loadTriples$(dest, urls) ;
     }
 
     /** Load into default graph */
-    public static void loadDefaultGraph(DatasetGraphTDB dsg, InputStream input, boolean showProgress) {
-        BulkStreamRDF dest = destinationDefaultGraph(dsg, showProgress) ;
+    public static void loadDefaultGraph(DatasetGraphTDB dsg, InputStream input, boolean showProgress, boolean collectStats) {
+        BulkStreamRDF dest = destinationDefaultGraph(dsg, showProgress, collectStats) ;
         loadTriples$(dest, input) ;
     }
 
-    private static BulkStreamRDF destinationDefaultGraph(DatasetGraphTDB dsg, boolean showProgress) {
-        return destinationGraph(dsg, null, showProgress) ;
+    private static BulkStreamRDF destinationDefaultGraph(DatasetGraphTDB dsg, boolean showProgress, boolean collectStats) {
+        return destinationGraph(dsg, null, showProgress, collectStats) ;
     }
 
     /** Load into named graph */
-    public static void loadNamedGraph(DatasetGraphTDB dsg, Node graphNode, List<String> urls, boolean showProgress) {
-        BulkStreamRDF dest = destinationNamedGraph(dsg, graphNode, showProgress) ;
+    public static void loadNamedGraph(DatasetGraphTDB dsg, Node graphNode, List<String> urls, boolean showProgress, boolean collectStats) {
+        BulkStreamRDF dest = destinationNamedGraph(dsg, graphNode, showProgress, collectStats) ;
         loadTriples$(dest, urls) ;
     }
 
     /** Load into named graph */
-    public static void loadNamedGraph(DatasetGraphTDB dsg, Node graphNode, InputStream input, boolean showProgress) {
-        BulkStreamRDF dest = destinationNamedGraph(dsg, graphNode, showProgress) ;
+    public static void loadNamedGraph(DatasetGraphTDB dsg, Node graphNode, InputStream input, boolean showProgress, boolean collectStats) {
+        BulkStreamRDF dest = destinationNamedGraph(dsg, graphNode, showProgress, collectStats) ;
         loadTriples$(dest, input) ;
     }
 
     /** Load into a dataset */
-    public static void loadDataset(DatasetGraphTDB dsg, List<String> urls, boolean showProgress) {
-        BulkStreamRDF dest = destinationDataset(dsg, showProgress) ;
+    public static void loadDataset(DatasetGraphTDB dsg, List<String> urls, boolean showProgress, boolean collectStats) {
+        BulkStreamRDF dest = destinationDataset(dsg, showProgress, collectStats) ;
         loadQuads$(dest, urls) ;
     }
 
     /** Load into a dataset */
-    public static void loadDataset(DatasetGraphTDB dsg, InputStream input, boolean showProgress) {
-        BulkStreamRDF dest = destinationDataset(dsg, showProgress) ;
+    public static void loadDataset(DatasetGraphTDB dsg, InputStream input, boolean showProgress, boolean collectStats) {
+        BulkStreamRDF dest = destinationDataset(dsg, showProgress, collectStats) ;
         loadQuads$(dest, input) ;
     }
 
@@ -157,10 +157,10 @@ public class BulkLoader {
         dest.finishBulk() ;
     }
 
-    private static BulkStreamRDF destinationNamedGraph(DatasetGraphTDB dsg, Node graphName, boolean showProgress) {
+    private static BulkStreamRDF destinationNamedGraph(DatasetGraphTDB dsg, Node graphName, boolean showProgress, boolean collectStats) {
         if ( graphName == null )
-            return destinationDefaultGraph(dsg, showProgress) ;
-        return destinationGraph(dsg, graphName, showProgress) ;
+            return destinationDefaultGraph(dsg, showProgress, collectStats) ;
+        return destinationGraph(dsg, graphName, showProgress, collectStats) ;
     }
 
     public static LoadMonitor createLoadMonitor(DatasetGraphTDB dsg, String itemName, boolean showProgress) {
@@ -170,12 +170,12 @@ public class BulkLoader {
             return new LoadMonitor(dsg, null, itemName, DataTickPoint, IndexTickPoint) ;
     }
 
-    private static BulkStreamRDF destinationDataset(DatasetGraphTDB dsg, boolean showProgress) {
-        return new DestinationDSG(dsg, showProgress) ;
+    private static BulkStreamRDF destinationDataset(DatasetGraphTDB dsg, boolean showProgress, boolean collectStats) {
+        return new DestinationDSG(dsg, showProgress, collectStats) ;
     }
 
-    private static BulkStreamRDF destinationGraph(DatasetGraphTDB dsg, Node graphNode, boolean showProgress) {
-        return new DestinationGraph(dsg, graphNode, showProgress) ;
+    private static BulkStreamRDF destinationGraph(DatasetGraphTDB dsg, Node graphNode, boolean showProgress, boolean collectStats) {
+        return new DestinationGraph(dsg, graphNode, showProgress, collectStats) ;
     }
 
     // Load triples and quads into a dataset.
@@ -188,9 +188,10 @@ public class BulkLoader {
         final private LoaderNodeTupleTable loaderQuads ;
         final private boolean              showProgress ;
         private long                       count = 0 ;
-        private StatsCollector             stats ;
+        private StatsCollector             stats = null ;
+        private final boolean collectStats ;
 
-        DestinationDSG(final DatasetGraphTDB dsg, boolean showProgress) {
+        DestinationDSG(final DatasetGraphTDB dsg, boolean showProgress, boolean collectStats) {
             this.dsg = dsg ;
             startedEmpty = dsg.isEmpty() ;
             monitor1 = createLoadMonitor(dsg, "triples", showProgress) ;
@@ -199,6 +200,7 @@ public class BulkLoader {
             loaderTriples = new LoaderNodeTupleTable(dsg.getTripleTable().getNodeTupleTable(), "triples", monitor1) ;
             loaderQuads = new LoaderNodeTupleTable(dsg.getQuadTable().getNodeTupleTable(), "quads", monitor2) ;
             this.showProgress = showProgress ;
+            this.collectStats = collectStats ;
         }
 
         @Override
@@ -208,7 +210,8 @@ public class BulkLoader {
 
             loaderTriples.loadDataStart() ;
             loaderQuads.loadDataStart() ;
-            this.stats = new StatsCollector() ;
+            if ( collectStats )
+                this.stats = new StatsCollector() ;
         }
 
         @Override
@@ -237,7 +240,8 @@ public class BulkLoader {
             else
                 loaderQuads.load(g, s, p, o) ;
             count++ ;
-            stats.record(g, s, p, o) ;
+            if ( stats != null )
+                stats.record(g, s, p, o) ;
         }
 
         @Override
@@ -253,7 +257,7 @@ public class BulkLoader {
 
             loaderTriples.loadFinish() ;
             loaderQuads.loadFinish() ;
-            if ( !dsg.getLocation().isMem() && startedEmpty ) {
+            if ( !dsg.getLocation().isMem() && startedEmpty && stats != null ) {
                 String filename = dsg.getLocation().getPath(Names.optStats) ;
                 Stats.write(filename, stats.results()) ;
             }
@@ -283,13 +287,14 @@ public class BulkLoader {
         final private LoaderNodeTupleTable loaderTriples ;
         final private boolean              startedEmpty ;
         private long                       count = 0 ;
-        private StatsCollector             stats ;
+        private StatsCollector             stats = null ;
+        private final boolean              collectStats ;
 
         // Graph node is null for default graph.
-        DestinationGraph(final DatasetGraphTDB dsg, Node graphNode, boolean showProgress) {
+        DestinationGraph(final DatasetGraphTDB dsg, Node graphNode, boolean showProgress, boolean collectStats) {
             this.dsg = dsg ;
             this.graphName = graphNode ;
-
+            this.collectStats = collectStats ;
             // Choose NodeTupleTable.
             NodeTupleTable nodeTupleTable ;
             if ( graphNode == null || Quad.isDefaultGraph(graphNode) )
@@ -307,8 +312,8 @@ public class BulkLoader {
         final public void startBulk() {
             loaderTriples.loadStart() ;
             loaderTriples.loadDataStart() ;
-
-            this.stats = new StatsCollector() ;
+            if ( collectStats )
+                this.stats = new StatsCollector() ;
         }
 
         @Override
@@ -318,7 +323,8 @@ public class BulkLoader {
             Node o = triple.getObject() ;
 
             loaderTriples.load(s, p, o) ;
-            stats.record(null, s, p, o) ;
+            if ( stats != null )
+                stats.record(null, s, p, o) ;
             count++ ;
         }
 
@@ -329,7 +335,7 @@ public class BulkLoader {
             loaderTriples.loadIndexFinish() ;
             loaderTriples.loadFinish() ;
 
-            if ( !dsg.getLocation().isMem() && startedEmpty ) {
+            if ( !dsg.getLocation().isMem() && startedEmpty && stats != null ) {
                 String filename = dsg.getLocation().getPath(Names.optStats) ;
                 Stats.write(filename, stats.results()) ;
             }

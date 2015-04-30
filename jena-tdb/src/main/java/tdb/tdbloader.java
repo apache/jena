@@ -28,12 +28,17 @@ import org.apache.jena.tdb.TDBLoader ;
 import org.apache.jena.tdb.store.GraphTDB ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.CmdTDBGraph ;
+import arq.cmd.CmdException ;
+import arq.cmdline.ArgDecl ;
 
 public class tdbloader extends CmdTDBGraph {
     // private static final ArgDecl argParallel = new ArgDecl(ArgDecl.NoValue, "parallel") ;
     // private static final ArgDecl argIncremental = new ArgDecl(ArgDecl.NoValue, "incr", "incremental") ;
+    private static final ArgDecl argNoStats = new ArgDecl(ArgDecl.NoValue, "nostats") ;
+    private static final ArgDecl argStats = new ArgDecl(ArgDecl.HasValue,  "stats") ;
 
     private boolean showProgress  = true ;
+    private boolean generateStats  = true ;
     // private boolean doInParallel = false ;
     // private boolean doIncremental = false ;
 
@@ -45,6 +50,9 @@ public class tdbloader extends CmdTDBGraph {
 
     protected tdbloader(String[] argv) {
         super(argv) ;
+//        super.getUsage().startCategory("Stats") ;
+        super.add(argNoStats, "--nostats", "Switch off statistics gathering") ;
+        super.add(argStats) ;   // Hidden argument
         // super.add(argParallel, "--parallel",
         // "Do rebuilding of secondary indexes in a parallel") ;
         // super.add(argIncremental, "--incremental",
@@ -76,7 +84,15 @@ public class tdbloader extends CmdTDBGraph {
             showProgress = true ;
         if ( isQuiet() )
             showProgress = false ;
+        if ( super.contains(argStats) ) {
+            if ( ! hasValueOfTrue(argStats) && ! hasValueOfFalse(argStats) )
+                throw new CmdException("Not a boolean value: "+getValue(argStats)) ;
+            generateStats = super.hasValueOfTrue(argStats) ;
+        }
 
+        if ( super.contains(argNoStats))
+            generateStats = false ;
+        
         List<String> urls = getPositional() ;
         if ( urls.size() == 0 )
             urls.add("-") ;
@@ -114,7 +130,7 @@ public class tdbloader extends CmdTDBGraph {
     }
 
     void loadQuads(List<String> urls) {
-        TDBLoader.load(getDatasetGraphTDB(), urls, showProgress) ;
+        TDBLoader.load(getDatasetGraphTDB(), urls, showProgress, generateStats) ;
         return ;
     }
 }
