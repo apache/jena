@@ -135,6 +135,17 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				+ OPEN_PAREN + var("one") + OPT_SPACE + LT + OPT_SPACE + "10"
 				+ CLOSE_PAREN + CLOSE_CURLY, query.toString());
 	}
+	
+	@Test
+	public void testAddFilterWithNamespaces() throws ParseException {
+		query.setPrefix( "afn", "http://jena.hpl.hp.com/ARQ/function#");
+		handler.addFilter("afn:namespace(?one) = 'namespace'");
+
+		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE
+				+ OPEN_PAREN + "afn:namespace"+OPEN_PAREN+var("one") +CLOSE_PAREN +  OPT_SPACE + "="+
+				OPT_SPACE + QUOTE + "namespace"+QUOTE
+				+ CLOSE_PAREN + CLOSE_CURLY, query.toString());
+	}
 
 	@Test
 	public void testAddFilterVarOnly() throws ParseException {

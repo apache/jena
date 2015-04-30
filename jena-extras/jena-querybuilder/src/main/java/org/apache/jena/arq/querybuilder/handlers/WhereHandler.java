@@ -28,9 +28,11 @@ import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
 import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
 import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException;
@@ -201,6 +203,8 @@ public class WhereHandler implements Handler {
 		String filterClause = "FILTER( " + expression + ")";
 		SPARQLParser11 parser = new SPARQLParser11(new ByteArrayInputStream(
 				filterClause.getBytes()));
+		Prologue prologue = new Prologue( query.getPrefixMapping() );
+		parser.setPrologue(prologue);
 		getClause().addElement(parser.Filter());
 	}
 
