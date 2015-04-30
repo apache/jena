@@ -1192,12 +1192,13 @@ public final class TokenizerText implements Tokenizer
                 exception("End of input during expected string: " + str) ;
                 return false ;
             }
-            int inChar = reader.readChar() ;
+            int inChar = reader.peekChar() ;
             if ( inChar != want ) {
                 // System.err.println("N-triple reader error");
                 exception("expected \"" + str + "\"") ;
                 return false ;
             }
+            reader.readChar() ;
         }
         return true ;
     }
