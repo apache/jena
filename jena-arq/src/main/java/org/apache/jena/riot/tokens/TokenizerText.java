@@ -206,7 +206,7 @@ public final class TokenizerText implements Tokenizer
                 }
             } else {
                 // Single quote character.
-                token.setImage(readString(ch, ch, true)) ;
+                token.setImage(readString(ch, ch)) ;
                 // Single quoted string.
                 token.setType((ch == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2) ;
             }
@@ -473,6 +473,21 @@ public final class TokenizerText implements Tokenizer
         }
     }
     
+    // Read a unicode escape : does not allow \\ bypass
+    private final int readUnicodeEscape() {
+        int ch = reader.readChar() ;
+        if ( ch == EOF )
+            exception("Broken escape sequence") ;
+    
+        switch (ch) {
+            case 'u': return readUnicode4Escape(); 
+            case 'U': return readUnicode8Escape(); 
+            default:
+                exception("Illegal unicode escape sequence value: \\%c (0x%02X)", ch, ch);
+        }
+        return 0 ;
+    }
+
     private void readPrefixedNameOrKeyword(Token token) {
         long posn = reader.getPosition() ;
         String prefixPart = readPrefixPart() ; // Prefix part or keyword
@@ -635,8 +650,7 @@ public final class TokenizerText implements Tokenizer
     
     // Get characters between two markers.
     // strEscapes may be processed
-    // endNL end of line as an ending is OK
-    private String readString(int startCh, int endCh, boolean strEscapes) {
+    private String readString(int startCh, int endCh) {
         long y = getLine() ;
         long x = getColumn() ;
         stringBuilder.setLength(0) ;
@@ -654,14 +668,11 @@ public final class TokenizerText implements Tokenizer
                 exception("Broken token (newline): " + stringBuilder.toString(), y, x) ;
 
             if ( ch == endCh ) {
-                // sb.append(((char)ch)) ;
                 return stringBuilder.toString() ;
             }
 
-            if ( ch == CH_RSLASH ) {
-                ch = strEscapes ? readLiteralEscape() : readUnicodeEscape() ;
-                // Drop through.
-            }
+            if ( ch == CH_RSLASH )
+                ch = readLiteralEscape() ;
             insertCodepoint(stringBuilder, ch) ;
         }
     }
@@ -1135,21 +1146,6 @@ public final class TokenizerText implements Tokenizer
                 exception("illegal character escape value: \\%c", c);
                 return 0 ;
         }
-    }
-    
-    // Read a unicode escape : does not allow \\ bypass
-    private final int readUnicodeEscape() {
-        int ch = reader.readChar() ;
-        if ( ch == EOF )
-            exception("Broken escape sequence") ;
-
-        switch (ch) {
-            case 'u': return readUnicode4Escape(); 
-            case 'U': return readUnicode8Escape(); 
-            default:
-                exception("Illegal unicode escape sequence value: \\%c (0x%02X)", ch, ch);
-        }
-        return 0 ;
     }
     
     private final
