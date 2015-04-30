@@ -143,9 +143,6 @@ public class AssemblerHelp
         // Jena2 -> Jena3 transition 
         if ( x.startsWith("com.hp.hpl.jena") )
             x = x.replaceFirst("com.hp.hpl.jena", "org.apache.jena") ;
-        
-        System.err.println( "********* "+x) ;
-        
         try { return Class.forName(x); }
         catch (Exception e) { throw new JenaException( e ); }
     }
