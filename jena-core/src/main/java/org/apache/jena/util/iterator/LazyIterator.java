@@ -18,6 +18,8 @@
 
 package org.apache.jena.util.iterator;
 
+import java.util.function.Function;
+
 /** An ExtendedIterator that is created lazily.
  * This is useful when constructing an iterator is expensive and 
  * you'd prefer to delay doing it until certain it's actually needed.
@@ -74,7 +76,7 @@ abstract public class LazyIterator<T> implements ExtendedIterator<T> {
 	}
 
 	@Override
-    public <U> ExtendedIterator<U> mapWith(Map1<T,U> map1) {
+    public <U> ExtendedIterator<U> mapWith(Function<T,U> map1) {
 		lazy();
 		return it.mapWith(map1);
 	}

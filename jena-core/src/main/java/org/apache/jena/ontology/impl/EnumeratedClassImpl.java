@@ -151,7 +151,7 @@ public class EnumeratedClassImpl
      */
     @Override
     public ExtendedIterator<? extends OntResource> listOneOf() {
-        return getOneOf().iterator().mapWith( new AsMapper<>( OntResource.class ) );
+        return getOneOf().iterator().mapWith( n -> n.as( OntResource.class ) );
     }
 
     /**

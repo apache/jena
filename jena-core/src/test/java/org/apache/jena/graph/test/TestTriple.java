@@ -258,9 +258,9 @@ public class TestTriple extends GraphTestBase
     
     public void testTripleMaps()
         {
-        assertEquals( node( "x" ), Triple.getSubject.map1( NodeCreateUtils.createTriple( "x P z" ) ) );
-        assertEquals( node( "P" ), Triple.getPredicate.map1( NodeCreateUtils.createTriple( "x P z" ) ) );
-        assertEquals( node( "z" ), Triple.getObject.map1( NodeCreateUtils.createTriple( "x P z" ) ) );
+        assertEquals( node( "x" ), Triple.getSubject.apply( NodeCreateUtils.createTriple( "x P z" ) ) );
+        assertEquals( node( "P" ), Triple.getPredicate.apply( NodeCreateUtils.createTriple( "x P z" ) ) );
+        assertEquals( node( "z" ), Triple.getObject.apply( NodeCreateUtils.createTriple( "x P z" ) ) );
         }
     
 

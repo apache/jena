@@ -27,18 +27,11 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.LiteralLabelFactory ;
-import org.apache.jena.util.iterator.Map1 ;
 
 public class TestFindLiterals extends GraphTestBase
     {
     public TestFindLiterals( String name )
         { super( name ); }
-
-    static final Map1<Triple, Node> getObject = new Map1<Triple, Node>() 
-        {
-        @Override
-        public Node map1( Triple o ) { return o.getObject(); }
-        };
     
     public static TestFindLiterals aTest
         ( final String graph, final int size, final String search, final String results )
@@ -56,7 +49,7 @@ public class TestFindLiterals extends GraphTestBase
                 Node literal = NodeCreateUtils.create( search );
             //
                 assertEquals( "graph has wrong size", size, g.size() );
-                Set<Node> got = g.find( Node.ANY, Node.ANY, literal ).mapWith( getObject ).toSet();
+                Set<Node> got = g.find( Node.ANY, Node.ANY, literal ).mapWith( t -> t.getObject() ).toSet();
                 assertEquals( nodeSet( results ), got );
                 }
             };

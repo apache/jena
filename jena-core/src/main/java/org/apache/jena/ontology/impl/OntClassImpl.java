@@ -624,7 +624,7 @@ public class OntClassImpl
 
         // return the results, using the ont property facet
         return WrappedIterator.create( cands.iterator() )
-                              .mapWith( new AsMapper<>( OntProperty.class ) );
+                              .mapWith( n -> n.as( OntProperty.class ) );
     }
 
 
@@ -669,7 +669,7 @@ public class OntClassImpl
     public ExtendedIterator<Individual> listInstances( final boolean direct ) {
         return getModel()
                 .listStatements( null, RDF.type, this )
-                .mapWith( new SubjectAsMapper<>( Individual.class ) )
+                .mapWith( s -> s.getSubject().as( Individual.class ) )
                 .filterKeep( new Filter<Individual>() {
                     @Override
                     public boolean accept( Individual o ) {

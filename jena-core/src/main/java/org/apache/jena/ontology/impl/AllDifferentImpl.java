@@ -30,7 +30,6 @@ import org.apache.jena.graph.* ;
 import org.apache.jena.ontology.* ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Map1 ;
 
 
 /**
@@ -149,11 +148,7 @@ public class AllDifferentImpl
      */
     @Override
     public ExtendedIterator<? extends OntResource> listDistinctMembers() {
-        return getDistinctMembers().mapWith( new Map1<RDFNode,OntResource>() {
-            @Override
-            public OntResource map1( RDFNode o ) {
-                return ((Resource) o).as( OntResource.class );
-            }} );
+        return getDistinctMembers().mapWith( o -> ((Resource) o).as( OntResource.class ));
     }
 
     /**

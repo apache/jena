@@ -1587,16 +1587,8 @@ class Unparser {
         // Now all the pleasing resources are in the buckets.
         // Add all their iterators togethor:
 
-        Map1<Set<Resource>, Iterator<Resource>> mapper = new Map1<Set<Resource>, Iterator<Resource>>() {
-
-            @Override
-            public Iterator<Resource> map1(Set<Resource> bkt)
-            {
-                return bkt.iterator() ;
-            }} ;
-        
-            return WrappedIterator.createIteratorIterator(
-            		new Map1Iterator<>(mapper,
+        return WrappedIterator.createIteratorIterator(
+            		new Map1Iterator<>(bkt -> bkt.iterator(),
             				Arrays.asList(bucketArray).iterator()));
     }
 

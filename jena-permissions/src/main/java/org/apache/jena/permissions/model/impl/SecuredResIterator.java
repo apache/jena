@@ -20,6 +20,7 @@ package org.apache.jena.permissions.model.impl;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.model.SecuredResource;
@@ -27,12 +28,11 @@ import org.apache.jena.rdf.model.ResIterator ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.Filter ;
-import org.apache.jena.util.iterator.Map1 ;
 
 public class SecuredResIterator implements ResIterator
 {
 
-	private class PermResourceMap implements Map1<Resource, Resource>
+	private class PermResourceMap implements Function<Resource, Resource>
 	{
 		private final SecuredModel securedModel;
 
@@ -42,7 +42,7 @@ public class SecuredResIterator implements ResIterator
 		}
 
 		@Override
-		public SecuredResource map1( final Resource o )
+		public SecuredResource apply( final Resource o )
 		{
 			return SecuredResourceImpl.getInstance(securedModel, o);
 		}
@@ -90,7 +90,7 @@ public class SecuredResIterator implements ResIterator
 	}
 
 	@Override
-	public <U> ExtendedIterator<U> mapWith( final Map1<Resource, U> map1 )
+	public <U> ExtendedIterator<U> mapWith( final Function<Resource, U> map1 )
 	{
 		return iter.mapWith(map1);
 	}

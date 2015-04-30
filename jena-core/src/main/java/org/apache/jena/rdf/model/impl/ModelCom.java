@@ -1120,13 +1120,8 @@ implements Model, PrefixMapping, Lock
     }
 
     private Iterator<Triple> asTriples( StmtIterator it )
-    { return it.mapWith( mapAsTriple ); }
+    { return it.mapWith( s -> s.asTriple() ); }
 
-    private Map1<Statement, Triple> mapAsTriple = new Map1<Statement, Triple>() {
-        @Override
-        public Triple map1( Statement s ) { return s.asTriple(); } 
-    };
-    
     /**
         remove all the Statements from the model by converting them to triples and
         removing those triples from the underlying graph.        
@@ -1413,11 +1408,7 @@ implements Model, PrefixMapping, Lock
       { return new ModelCom( g ); }
 
       public StmtIterator asStatements( final Iterator<Triple> it ) 
-      { return new StmtIteratorImpl( new Map1Iterator<>( mapAsStatement, it ) ); }
-
-      protected Map1<Triple, Statement> mapAsStatement = new Map1<Triple, Statement>()
-          { @Override
-          public Statement map1( Triple t ) { return asStatement( t ); } };
+      { return new StmtIteratorImpl( new Map1Iterator<>( t -> asStatement( t ), it ) ); }
 
           public StmtIterator listBySubject( Container cont )
           { return listStatements( cont, null, (RDFNode) null ); }

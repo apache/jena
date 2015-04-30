@@ -19,30 +19,15 @@
 package org.apache.jena.assembler.assemblers;
 
 import java.util.List;
-
 import org.apache.jena.assembler.* ;
 import org.apache.jena.assembler.exceptions.* ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.JenaException ;
-import org.apache.jena.util.iterator.Map1 ;
 import org.apache.jena.vocabulary.RDF ;
 
 public abstract class AssemblerBase implements Assembler
     {
-    protected static class MapObjectToContent implements Map1<Statement, Content>
-        {
-        protected final Assembler a;
-        
-        public MapObjectToContent( Assembler a ) 
-            { this.a = a; }
-        
-        @Override
-        public Content map1( Statement o )
-            { return (Content) a.open( getResource( o ) ); }
-        }
 
-    protected static final Map1<Statement, RDFNode> getObject = Statement.Util.getObject;
-        
     @Override
     public final Object open( Resource root )
         { return open( this, root ); }
@@ -70,7 +55,7 @@ public abstract class AssemblerBase implements Assembler
     
     protected static RDFNode getUnique( Resource root, Property property )
         {
-        List<RDFNode> nodes = root.listProperties( property ) .mapWith( getObject ).toList();
+        List<RDFNode> nodes = root.listProperties( property ) .mapWith( s -> s.getObject() ).toList();
         if (nodes.size() == 0) return null;
         if (nodes.size() == 1) return nodes.get(0);
         throw new NotUniqueException( root, property );

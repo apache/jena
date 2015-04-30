@@ -30,6 +30,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -972,12 +973,7 @@ public class schemagen {
         }
 
         // collect the classes to list
-        List<Resource> classes = m_source.listStatements( null, RDF.type, cls ).mapWith( new Map1<Statement, Resource>() {
-                                                            @Override
-                                                            public Resource map1( Statement s ) {
-                                                                return s.getSubject();
-                                                            }}
-                                                          ).toList();
+        List<Resource> classes = m_source.listStatements( null, RDF.type, cls ).mapWith( s -> s.getSubject()).toList();
 
         for (Iterator<? extends RDFNode> i = sorted( classes ); i.hasNext(); ) {
             writeValue( (Resource) i.next(), template, "Resource", "createResource", "_CLASS" );
