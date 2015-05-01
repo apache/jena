@@ -901,7 +901,7 @@ class Unparser {
             print(" ");
             printRdfAt("ID");
             print("=");
-            print(quote(getLocalName(r)));
+            print(quote(getXMLLocalName(r)));
             return true;
 
         }
@@ -956,7 +956,7 @@ class Unparser {
             print(" ");
             printRdfAt("ID");
             print("=");
-            print(quote(getLocalName(res)));
+            print(quote(getXMLLocalName(res)));
             haveReified.add(res);
         }
     }
@@ -1180,7 +1180,7 @@ class Unparser {
         }
     }
 
-    private String getNameSpace(Resource r) {
+    private String getXMLNameSpace(Resource r) {
         if (r.isAnon()) {
             logger.error("Internal error - Unparser.getNameSpace; giving up");
             throw new BrokenException("Internal error: getNameSpace(bNode)");
@@ -1204,8 +1204,8 @@ class Unparser {
     }
 
     private boolean isLocalReference(Resource r) {
-        return (!r.isAnon()) && getNameSpace(r).equals(localName + "#")
-                && XMLChar.isValidNCName(getLocalName(r));
+        return (!r.isAnon()) && getXMLNameSpace(r).equals(localName + "#")
+                && XMLChar.isValidNCName(getXMLLocalName(r));
     }
 
     /*
@@ -1217,7 +1217,7 @@ class Unparser {
      * return getSuffix(more) + new Character((char) ('a' + suffixId % 26)); } }
      */
 
-    private String getLocalName(Resource r) {
+    private String getXMLLocalName(Resource r) {
         if (r.isAnon()) {
             logger.error("Internal error - giving up - Unparser.getLocalName");
             throw new BrokenException("Internal error: getLocalName(bNode)");
@@ -1343,7 +1343,7 @@ class Unparser {
 
             if (l.getLanguage().equals("")) {
                 // j.cook.up bug fix
-                if (prettyWriter.isDefaultNamespace(getNameSpace(p)))
+                if (prettyWriter.isDefaultNamespace(getXMLNameSpace(p)))
                     return false;
 
                 String str = l.getString();
