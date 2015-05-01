@@ -83,17 +83,11 @@ public class Triple
     public Node getMatchSubject()
         { return anyToNull( subj ); }
     
-    public static final Map1<Triple, Node> getSubject = new Map1<Triple, Node>() 
-        { @Override
-        public Node map1( Triple t ) { return t.getSubject(); } };
+    public static final Map1<Triple, Node> getSubject = t -> t.getSubject();
         
-    public static final Map1<Triple, Node> getPredicate = new Map1<Triple, Node>() 
-        { @Override
-        public Node map1( Triple t ) { return t.getPredicate(); } };
+    public static final Map1<Triple, Node> getPredicate = t -> t.getPredicate();
         
-    public static final Map1<Triple, Node> getObject = new Map1<Triple, Node>() 
-        { @Override
-        public Node map1( Triple t ) { return t.getObject(); } };
+    public static final Map1<Triple, Node> getObject = t -> t.getObject();
 
     /** Return predicate or null, not Node.ANY */ 
     public Node getMatchPredicate()

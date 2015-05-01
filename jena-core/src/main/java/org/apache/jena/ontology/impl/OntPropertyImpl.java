@@ -762,7 +762,7 @@ public class OntPropertyImpl
      */
     @Override
     public ExtendedIterator<OntProperty> listInverse() {
-        return getModel().listStatements( null, getProfile().INVERSE_OF(), this ).mapWith( new SubjectAsMapper<>( OntProperty.class ) );
+        return getModel().listStatements( null, getProfile().INVERSE_OF(), this ).mapWith( s -> s.getSubject().as( OntProperty.class ) );
     }
 
     /**
@@ -874,7 +874,7 @@ public class OntPropertyImpl
     @Override
     public ExtendedIterator<Restriction> listReferringRestrictions() {
         return getModel().listStatements( null, getProfile().ON_PROPERTY(), this )
-                         .mapWith( new SubjectAsMapper<>( Restriction.class ) );
+                         .mapWith( s -> s.getSubject().as( Restriction.class ) );
     }
 
 

@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.model.SecuredModel;
@@ -30,7 +31,6 @@ import org.apache.jena.rdf.model.Statement ;
 import org.apache.jena.rdf.model.StmtIterator ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.Filter ;
-import org.apache.jena.util.iterator.Map1 ;
 
 /**
  * A secured StatementIterator implementation
@@ -38,7 +38,7 @@ import org.apache.jena.util.iterator.Map1 ;
 public class SecuredStatementIterator implements StmtIterator
 {
 
-	private class PermStatementMap implements Map1<Statement, Statement>
+	private class PermStatementMap implements Function<Statement, Statement>
 	{
 		private final SecuredModel securedModel;
 
@@ -48,7 +48,7 @@ public class SecuredStatementIterator implements StmtIterator
 		}
 
 		@Override
-		public SecuredStatement map1( final Statement o )
+		public SecuredStatement apply( final Statement o )
 		{
 			return SecuredStatementImpl.getInstance(securedModel, o);
 		}
@@ -105,7 +105,7 @@ public class SecuredStatementIterator implements StmtIterator
 	}
 
 	@Override
-	public <U> ExtendedIterator<U> mapWith( final Map1<Statement, U> map1 )
+	public <U> ExtendedIterator<U> mapWith( final Function<Statement, U> map1 )
 	{
 		return iter.mapWith(map1);
 	}

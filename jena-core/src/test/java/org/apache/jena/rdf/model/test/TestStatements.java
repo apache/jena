@@ -117,11 +117,11 @@ public class TestStatements extends AbstractModelTestBase
 	{
 		final Statement s = ModelHelper.statement("sub pred obj");
 		Assert.assertEquals(ModelHelper.resource("sub"),
-				Statement.Util.getSubject.map1(s));
+				Statement.Util.getSubject.apply(s));
 		Assert.assertEquals(ModelHelper.resource("pred"),
-				Statement.Util.getPredicate.map1(s));
+				Statement.Util.getPredicate.apply(s));
 		Assert.assertEquals(ModelHelper.resource("obj"),
-				Statement.Util.getObject.map1(s));
+				Statement.Util.getObject.apply(s));
 	}
 
 	/**

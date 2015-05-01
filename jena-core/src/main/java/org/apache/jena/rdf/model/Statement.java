@@ -396,22 +396,10 @@ public interface Statement extends FrontsTriple
     */
     public static class Util
         {
-        public static final Map1<Statement, Resource> getSubject = new Map1<Statement, Resource>() 
-            {
-            @Override
-            public Resource map1( Statement o ) { return o.getSubject(); }
-            };
+        public static final Map1<Statement, Resource> getSubject = s -> s.getSubject();
             
-        public static final Map1<Statement, Property> getPredicate = new Map1<Statement, Property>() 
-            {
-            @Override
-            public Property map1( Statement o ) { return o.getPredicate(); }
-            };
+        public static final Map1<Statement, Property> getPredicate = s -> s.getPredicate();
             
-        public static final Map1<Statement, RDFNode> getObject = new Map1<Statement, RDFNode>() 
-            {
-            @Override
-            public RDFNode map1( Statement o ) { return o.getObject(); }
-            };
-        }
+        public static final Map1<Statement, RDFNode> getObject = s -> s.getObject();
+    }
 }

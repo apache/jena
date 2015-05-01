@@ -21,11 +21,9 @@ package org.apache.jena.graph;
 import java.util.Iterator ;
 import java.util.List ;
 import java.util.Set ;
-
 import org.apache.jena.graph.impl.GraphWithPerform ;
 import org.apache.jena.util.IteratorCollection ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Map1 ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 
 /**
@@ -38,28 +36,6 @@ public class GraphUtil
      */
     private GraphUtil()
     {}
-    
-    private static Map1<Triple, Node> mapSubject   = new Map1<Triple, Node>() {
-        @Override
-        public Node map1(Triple triple)
-        {
-            return triple.getSubject() ;
-        }
-    } ;
-    private static Map1<Triple, Node> mapPredicate = new Map1<Triple, Node>() {
-        @Override
-        public Node map1(Triple triple)
-        {
-            return triple.getPredicate() ;
-        }
-    } ;
-    private static Map1<Triple, Node> mapObject    = new Map1<Triple, Node>() {
-        @Override
-        public Node map1(Triple triple)
-        {
-            return triple.getObject() ;
-        }
-    } ;
 
     /** Return an iterator over the unique subjects with predciate p and object o.
      * p and o can be wildcards (Node.ANY)
@@ -71,7 +47,7 @@ public class GraphUtil
     public static ExtendedIterator<Node> listSubjects(Graph g, Node p, Node o) { 
         // Restore a minimal QueryHandler?
         ExtendedIterator<Triple> iter = g.find(Node.ANY, p, o) ;
-        Set<Node> nodes = iter.mapWith(mapSubject).toSet() ;
+        Set<Node> nodes = iter.mapWith(t -> t.getSubject()).toSet() ;
         return WrappedIterator.createNoRemove(nodes.iterator()) ;
     }
     
@@ -84,7 +60,7 @@ public class GraphUtil
      */
     public static ExtendedIterator<Node> listPredicates(Graph g, Node s, Node o) {
         ExtendedIterator<Triple> iter = g.find(s,Node.ANY, o) ;
-        Set<Node> nodes = iter.mapWith(mapPredicate).toSet() ;
+        Set<Node> nodes = iter.mapWith(t -> t.getPredicate()).toSet() ;
         return WrappedIterator.createNoRemove(nodes.iterator()) ;
     }
     
@@ -97,7 +73,7 @@ public class GraphUtil
      */
     public static ExtendedIterator<Node> listObjects(Graph g, Node s, Node p) {
         ExtendedIterator<Triple> iter = g.find(s, p, Node.ANY) ;
-        Set<Node> nodes = iter.mapWith(mapObject).toSet() ;
+        Set<Node> nodes = iter.mapWith(t -> t.getObject()).toSet() ;
         return WrappedIterator.createNoRemove(nodes.iterator()) ;
     }
     

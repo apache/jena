@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -38,7 +39,6 @@ import org.apache.jena.permissions.utils.RDFListIterator;
 import org.apache.jena.permissions.utils.RDFListSecFilter;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Map1 ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 import org.apache.jena.vocabulary.RDF ;
 
@@ -46,11 +46,11 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 		SecuredRDFList
 {
 	// called plain node but still returns a secured node
-	private class PlainNodeMap implements Map1<RDFList, RDFNode>
+	private class PlainNodeMap implements Function<RDFList, RDFNode>
 	{
 
 		@Override
-		public RDFNode map1( final RDFList o )
+		public RDFNode apply( final RDFList o )
 		{
 			return SecuredRDFNodeImpl.getInstance(getModel(), o
 					.getRequiredProperty(listFirst()).getObject());
@@ -58,18 +58,18 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 
 	}
 
-	private class SecuredListMap implements Map1<RDFList, SecuredRDFList>
+	private class SecuredListMap implements Function<RDFList, SecuredRDFList>
 	{
 
 		@Override
-		public SecuredRDFList map1( final RDFList o )
+		public SecuredRDFList apply( final RDFList o )
 		{
 			return SecuredRDFListImpl.getInstance(getModel(), o);
 		}
 
 	}
 
-	private class SecuredNodeMap implements Map1<RDFList, SecuredRDFNode>
+	private class SecuredNodeMap implements Function<RDFList, SecuredRDFNode>
 	{
 
 		private Property p;
@@ -79,7 +79,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 		}
 		
 		@Override
-		public SecuredRDFNode map1( final RDFList o )
+		public SecuredRDFNode apply( final RDFList o )
 		{
 			return SecuredRDFNodeImpl.getInstance(getModel(), o
 					.getRequiredProperty(p).getObject());
@@ -525,16 +525,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 		if (canRead())
 		{
 			final ExtendedIterator<RDFNode> iter = getSecuredRDFListIterator(Action.Read)
-					.mapWith( new Map1<RDFList, RDFNode>()
-					{
-
-						@Override
-						public RDFNode map1( final RDFList o )
-						{
-							return  o.getRequiredProperty(listFirst()).getObject();
-						}
-
-					});
+					.mapWith( list -> list.getRequiredProperty(listFirst()).getObject());
 			if (iter.hasNext())
 			{
 				retval = getModel().createList(iter);
@@ -756,7 +747,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	}
 
 	@Override
-	public <T> ExtendedIterator<T> mapWith( final Map1<RDFNode, T> fn )
+	public <T> ExtendedIterator<T> mapWith( final Function<RDFNode, T> fn )
 	{
 		return iterator().mapWith(fn);
 	}
@@ -917,7 +908,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 				if (i == idx)
 				{
 					final SecuredRDFList list = iter.next();
-					final SecuredRDFNode retval = map.map1(list);
+					final SecuredRDFNode retval = map.apply(list);
 					final Triple t = new Triple(list.asNode(), listFirst()
 							.asNode(), retval.asNode());
 					final Triple t2 = new Triple(list.asNode(), listFirst()

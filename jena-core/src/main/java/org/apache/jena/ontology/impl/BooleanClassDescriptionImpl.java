@@ -125,7 +125,7 @@ public abstract class BooleanClassDescriptionImpl
      */
     @Override
     public ExtendedIterator<? extends OntClass> listOperands() {
-        return getOperands().iterator().mapWith( new AsMapper<>( OntClass.class ) );
+        return getOperands().iterator().mapWith( n -> n.as( OntClass.class ) );
     }
 
     /**

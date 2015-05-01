@@ -18,13 +18,16 @@
 
 package org.apache.jena.util.iterator;
 
+import java.util.function.Function;
+
 /** Converts an Object to another Object.
  */
-public interface Map1<From, To>
-{  /** Convert an object.
-    * @param o The thing to be converted.
-    * @return The converted thing.
-    * 
-    */
-    To map1( From o );
+@Deprecated
+public interface Map1<From, To> extends Function<From, To>
+{
+	@Deprecated
+	default To map1(From input) {
+		return apply(input);
+	}
+	
 }
