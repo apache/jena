@@ -208,7 +208,7 @@ public class AssemblerHelp
     */
     public static Set<Resource> findSpecificTypes( Resource root, Resource baseType )
         {
-        List<RDFNode> types = root.listProperties( RDF.type ).mapWith( Statement.Util.getObject ).toList();
+        List<RDFNode> types = root.listProperties( RDF.type ).mapWith( Statement::getObject ).toList();
         Set<Resource> results = new HashSet<>();
         for (int i = 0; i < types.size(); i += 1)
             {

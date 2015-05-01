@@ -19,7 +19,9 @@
 package org.apache.jena.graph;
 
 import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.util.iterator.* ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.util.iterator.Filter ;
+import org.apache.jena.util.iterator.NullIterator ;
 
 /**
     Triples are the basis for RDF statements; they have a subject, predicate, and
@@ -83,12 +85,6 @@ public class Triple
     public Node getMatchSubject()
         { return anyToNull( subj ); }
     
-    public static final Map1<Triple, Node> getSubject = t -> t.getSubject();
-        
-    public static final Map1<Triple, Node> getPredicate = t -> t.getPredicate();
-        
-    public static final Map1<Triple, Node> getObject = t -> t.getObject();
-
     /** Return predicate or null, not Node.ANY */ 
     public Node getMatchPredicate()
         { return anyToNull( pred ); }

@@ -314,21 +314,21 @@ public class TestResources extends AbstractModelTestBase
 		Assert.assertEquals(13,
 				GraphTestBase.iteratorToSet(r.listProperties(RDF.value)).size());
 		Assert.assertEquals(setOf(r), GraphTestBase.iteratorToSet(r
-				.listProperties(RDF.value).mapWith(Statement.Util.getSubject)));
+				.listProperties(RDF.value).mapWith(Statement::getSubject)));
 		//
 		Assert.assertEquals(0, GraphTestBase.iteratorToSet(r.listProperties(p))
 				.size());
 		Assert.assertEquals(
 				new HashSet<Resource>(),
 				GraphTestBase.iteratorToSet(r.listProperties(p).mapWith(
-						Statement.Util.getSubject)));
+						Statement::getSubject)));
 		//
 		Assert.assertEquals(13 + numProps,
 				GraphTestBase.iteratorToSet(r.listProperties()).size());
 		Assert.assertEquals(
 				setOf(r),
 				GraphTestBase.iteratorToSet(r.listProperties().mapWith(
-						Statement.Util.getSubject)));
+						Statement::getSubject)));
 		//
 		r.removeProperties();
 		Assert.assertEquals(0,

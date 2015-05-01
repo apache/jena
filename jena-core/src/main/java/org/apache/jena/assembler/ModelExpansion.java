@@ -270,7 +270,7 @@ public class ModelExpansion
 
     private static Set<Resource> subjectSet( Model result, Resource S, Property P, RDFNode O )
         {
-        return result.listStatements( S, P, O ) .mapWith( Statement.Util.getSubject ).toSet();
+        return result.listStatements( S, P, O ) .mapWith( Statement::getSubject ).toSet();
         }
 
     private static List<RDFNode> asJavaList( Resource resource )

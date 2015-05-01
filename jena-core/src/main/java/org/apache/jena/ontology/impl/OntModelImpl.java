@@ -28,7 +28,6 @@ import java.io.OutputStream ;
 import java.io.Reader ;
 import java.io.Writer ;
 import java.util.* ;
-import java.util.function.Function;
 
 import org.apache.jena.enhanced.BuiltinPersonalities ;
 import org.apache.jena.enhanced.EnhNode ;

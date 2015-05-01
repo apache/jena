@@ -23,25 +23,33 @@ package jena;
 
 // Imports
 ///////////////
-import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
+import static jena.cmdline.CmdLineUtils.setLog4jConfiguration ;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.function.Function;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
+import java.io.ByteArrayOutputStream ;
+import java.io.File ;
+import java.io.FileOutputStream ;
+import java.io.PrintStream ;
+import java.net.MalformedURLException ;
+import java.net.URL ;
+import java.text.SimpleDateFormat ;
+import java.util.* ;
+import java.util.regex.Pattern ;
+import java.util.regex.PatternSyntaxException ;
 
-import org.apache.jena.ontology.* ;
+import org.apache.jena.ontology.Individual ;
+import org.apache.jena.ontology.OntModel ;
+import org.apache.jena.ontology.OntModelSpec ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.util.FileManager ;
-import org.apache.jena.util.iterator.* ;
-import org.apache.jena.vocabulary.* ;
-import org.apache.xerces.util.XMLChar;
-import org.slf4j.LoggerFactory;
+import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.util.iterator.WrappedIterator ;
+import org.apache.jena.vocabulary.OWL ;
+import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.RDFS ;
+import org.apache.jena.vocabulary.XSD ;
+import org.apache.xerces.util.XMLChar ;
+import org.slf4j.LoggerFactory ;
 
 
 

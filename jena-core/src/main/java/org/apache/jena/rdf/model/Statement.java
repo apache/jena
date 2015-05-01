@@ -18,8 +18,7 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.util.iterator.Map1 ;
+import org.apache.jena.graph.FrontsTriple ;
 
 /** An RDF Statement.
  *
@@ -390,16 +389,4 @@ public interface Statement extends FrontsTriple
      * removes all four triples of the reification quad.
      */
     void removeReification();
-    
-    /**
-        Utility constants -- in a nested class for namespace reasons.
-    */
-    public static class Util
-        {
-        public static final Map1<Statement, Resource> getSubject = s -> s.getSubject();
-            
-        public static final Map1<Statement, Property> getPredicate = s -> s.getPredicate();
-            
-        public static final Map1<Statement, RDFNode> getObject = s -> s.getObject();
-    }
 }
