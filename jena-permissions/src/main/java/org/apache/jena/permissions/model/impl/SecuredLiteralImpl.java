@@ -18,12 +18,12 @@
 package org.apache.jena.permissions.model.impl;
 
 import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.permissions.impl.ItemHolder;
-import org.apache.jena.permissions.impl.SecuredItemInvoker;
-import org.apache.jena.permissions.model.SecuredLiteral;
-import org.apache.jena.permissions.model.SecuredModel;
-import org.apache.jena.permissions.model.SecuredResource;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.permissions.impl.ItemHolder ;
+import org.apache.jena.permissions.impl.SecuredItemInvoker ;
+import org.apache.jena.permissions.model.SecuredLiteral ;
+import org.apache.jena.permissions.model.SecuredModel ;
+import org.apache.jena.permissions.model.SecuredResource ;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFVisitor ;
@@ -118,8 +118,7 @@ public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements
 		}
 		else
 		{
-			throw new ResourceRequiredException(
-					Node.createLiteral("Can not read"));
+			throw new ResourceRequiredException(NodeFactory.createLiteral("Can not read"));
 		}
 	}
 
