@@ -115,6 +115,8 @@ package org.apache.jena.rdfxml.xmloutput.impl;
  * 
  * [6.34] literal ::= (any well-formed XML)
  */
+import static org.apache.jena.util.iterator.WrappedIterator.create;
+
 import java.io.PrintWriter ;
 import java.util.* ;
 
@@ -1542,12 +1544,12 @@ class Unparser {
      * This class is an iterator over the set infinite, but we wait until it is
      * used before instantiating the underlying iterator.
      */
-    private Iterator<Resource> allInfiniteLeft() {
-        return new LateBindingIterator<Resource>() {
+    private ExtendedIterator<Resource> allInfiniteLeft() {
+        return create(new LateBindingIterator<Resource>() {
             @Override public Iterator<Resource> create() {
                 return infinite.iterator();
             }
-        };
+        });
     }
 
     private Iterator<Resource> pleasingTypeIterator() {
@@ -1630,13 +1632,14 @@ class Unparser {
 
         // Subjects that are not objects of anything.
 //        Iterator<Resource> nonObjects = new FilterIterator<Resource>(new Filter<Resource>() {
-//            @Override public boolean accept( Resource o ) {
+//            @Override public boolean test( Resource o ) {
 //                return (!objectTable.containsKey(o))
 //                        && (!wantReification(o));
 //            }
 //        }, modelListSubjects());
-        Iterator<Resource> nonObjects = modelListSubjects().filterKeep( new Filter<Resource>() {@Override public boolean accept( Resource o ) { return (!objectTable.containsKey(o))  && (!wantReification(o) ); } } );
-        
+		Iterator<Resource> nonObjects = modelListSubjects()
+				.filterKeep( o -> !objectTable.containsKey(o) && !wantReification(o));
+
         // At these stage we evaluate a dependency graph of the remaining
         // resources.
         // This is stuck in the master iterator so that it's hasNext is called
@@ -1652,26 +1655,22 @@ class Unparser {
         };
         // non-anonymous resources that are the object of more than one
         // triple that are in infinite cycles.
-        Iterator<Resource> firstChoiceCyclic = new FilterIterator<>(new Filter<Resource>() {
-            @Override
-            public boolean accept(Resource r) {
-                codeCoverage[4]++;
-                if (r.isAnon())
-                    return false;
-                Integer cnt = objectTable.get(r);
-                if (cnt == null || cnt.intValue() <= 1)
-                    return false;
-                return true;
-            }
-        }, this.allInfiniteLeft());
+		Iterator<Resource> firstChoiceCyclic = allInfiniteLeft()
+				.filterKeep(r -> {
+					codeCoverage[4]++;
+					if (r.isAnon())
+						return false;
+					Integer cnt = objectTable.get(r);
+					if (cnt == null || cnt.intValue() <= 1)
+						return false;
+					return true;
+				});
         // any non genuinely anonymous resources that are in infinite cycles
-        Iterator<Resource> nonAnonInfinite = new FilterIterator<>(new Filter<Resource>() {
-            @Override
-            public boolean accept(Resource r) {
-                codeCoverage[5]++;
-                return !isGenuineAnon(r);
-            }
-        }, allInfiniteLeft());
+		Iterator<Resource> nonAnonInfinite = allInfiniteLeft()
+				.filterKeep(r -> {
+					codeCoverage[5]++;
+					return !isGenuineAnon(r);
+				});
         // any other resource in an infinite cyle
         Iterator<Resource> inf = allInfiniteLeft();
         Iterator<Resource> anotherFake = new NullIterator<Resource>() {
@@ -1681,13 +1680,10 @@ class Unparser {
                 return false;
             }
         };
-        Iterator<Resource> reifications = new FilterIterator<>(new Filter<Resource>() {
-            @Override
-            public boolean accept(Resource r) {
-                codeCoverage[6]++;
-                return res2statement.containsKey(r);
-            }
-        }, allInfiniteLeft());
+		Iterator<Resource> reifications = allInfiniteLeft().filterKeep(r -> {
+			codeCoverage[6]++;
+			return res2statement.containsKey(r);
+		});
         // any other resource.
         Iterator<Resource> backStop = modelListSubjects();
 
@@ -1703,15 +1699,10 @@ class Unparser {
                                 return false;
                             }
                         }, backStop };
-        Iterator<Resource> allAsOne = WrappedIterator.createIteratorIterator( Arrays.asList(all).iterator() );
+        ExtendedIterator<Resource> allAsOne = WrappedIterator.createIteratorIterator( Arrays.asList(all).iterator() );
         		
         // Filter for those that still have something to list.
-        return new FilterIterator<>(new Filter<Resource>() {
-            @Override
-            public boolean accept(Resource r) {
-                return hasProperties(r);
-            }
-        }, allAsOne);
+        return allAsOne.filterKeep(this::hasProperties);
     }
 
     private Set<ResIterator> openResIterators = new HashSet<>();

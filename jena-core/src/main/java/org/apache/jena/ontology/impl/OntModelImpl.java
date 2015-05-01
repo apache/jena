@@ -28,6 +28,7 @@ import java.io.OutputStream ;
 import java.io.Reader ;
 import java.io.Writer ;
 import java.util.* ;
+import java.util.function.Predicate;
 
 import org.apache.jena.enhanced.BuiltinPersonalities ;
 import org.apache.jena.enhanced.EnhNode ;
@@ -536,17 +537,8 @@ public class OntModelImpl extends ModelCom implements OntModel
 
         // no easy shortcut, so we use brute force
         return listClasses()
-                 .filterDrop( new Filter<OntClass>() {
-                     @Override
-                    public boolean accept( OntClass o ) {
-                         return ((OntResource) o).isOntLanguageTerm();
-                     }} )
-                 .filterKeep( new Filter<OntClass>() {
-                     @Override
-                    public boolean accept( OntClass o ) {
-                         return o.isHierarchyRoot();
-                     }} )
-                    ;
+                 .filterDrop( OntResource::isOntLanguageTerm )
+                 .filterKeep( OntClass::isHierarchyRoot );
     }
 
 
@@ -658,14 +650,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     @Override
     public ExtendedIterator<OntClass> listNamedClasses() {
-        return listClasses().filterDrop(
-            new Filter<OntClass>() {
-                @Override
-                public boolean accept( OntClass x ) {
-                    return x.isAnon();
-                }
-            }
-        );
+        return listClasses().filterDrop( OntClass::isAnon );
     }
 
 
@@ -3112,13 +3097,13 @@ public class OntModelImpl extends ModelCom implements OntModel
     // Inner class definitions
     //==============================================================================
 
-    protected class NodeCanAs<T extends RDFNode> extends Filter<Node>
+    protected class NodeCanAs<T extends RDFNode> implements Predicate<Node>
     {
         protected Class<T> m_asKey;
         protected NodeCanAs( Class<T> asKey ) { m_asKey = asKey; }
 
         @Override
-        public boolean accept( Node x ) {
+        public boolean test( Node x ) {
                 try { getNodeAs( x, m_asKey );  }
                 catch (Exception ignore) { return false; }
         return true;
@@ -3127,14 +3112,14 @@ public class OntModelImpl extends ModelCom implements OntModel
 
     }
 
-    /** Filter that accepts nodes that can be mapped to the given facet */
-    protected class SubjectNodeCanAs<T extends RDFNode> extends Filter<T>
+    /** Predicate that accepts nodes that can be mapped to the given facet */
+    protected class SubjectNodeCanAs<T extends RDFNode> implements Predicate<T>
     {
         protected Class<T> m_asKey;
         protected SubjectNodeCanAs( Class<T> asKey ) { m_asKey = asKey; }
 
         @Override
-        public boolean accept( T x ) {
+        public boolean test( T x ) {
             Node n = (x instanceof Triple)
                     ? ((Triple) x).getSubject()
                     : ((x instanceof EnhNode) ? ((EnhNode) x).asNode() :  (Node) x);

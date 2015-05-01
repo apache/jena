@@ -20,6 +20,7 @@ package org.apache.jena.util.iterator;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
     an ExtendedIterator is a ClosableIterator on which other operations are
@@ -54,14 +55,14 @@ public interface ExtendedIterator<T> extends ClosableIterator<T>
          pass the filter _f_. The order of the elements is preserved. Does not
          copy _this_, which is consumed as the result is consumed.
      */
-     public ExtendedIterator<T> filterKeep( Filter<T> f );
+     public ExtendedIterator<T> filterKeep( Predicate<T> f );
 
      /**
          return a new iterator containing only the elements of _this_ which
          are rejected by the filter _f_. The order of the elements is preserved.
          Does not copy _this_, which is consumed as the result is consumed.
      */
-     public ExtendedIterator<T> filterDrop( Filter<T> f );
+     public ExtendedIterator<T> filterDrop( Predicate<T> f );
 
      /**
          return a new iterator where each element is the result of applying

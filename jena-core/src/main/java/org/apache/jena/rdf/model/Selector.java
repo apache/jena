@@ -18,6 +18,8 @@
 
 package org.apache.jena.rdf.model;
 
+import java.util.function.Predicate;
+
 /** A Statement selector.
  *
  * <p>Model includes list and query methods which will return all the
@@ -26,12 +28,7 @@ package org.apache.jena.rdf.model;
  *
 */
 
-public interface Selector {
-    /** Determine whether a Statement should be selected.
-     * @param s The statement to be considered.
-     * @return true if the statement has been selected.
-     */
-    boolean test( Statement s );
+public interface Selector extends Predicate<Statement> {
     
     /**
         Answer true iff this Selector is completely characterised by its subject,

@@ -18,7 +18,10 @@
 
 package org.apache.jena.mem;
 
+import static org.apache.jena.util.iterator.WrappedIterator.create;
+
 import java.util.*;
+import java.util.function.Predicate;
 
 import org.apache.jena.graph.* ;
 import org.apache.jena.graph.Triple.* ;
@@ -106,24 +109,18 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
             }
         }
     
-    public ExtendedIterator<Triple> iterateAll( Triple pattern )
-        {
-        return
-            indexField.filterOn( pattern )
-            .and( f2.filterOn( pattern ) )
-            .and( f3.filterOn( pattern ) )
-            .filterKeep( iterateAll() )
-            ;
-        }
+	public ExtendedIterator<Triple> iterateAll(Triple pattern) {
+		Predicate<Triple> filter = indexField.filterOn(pattern)
+				.and(f2.filterOn(pattern)).and(f3.filterOn(pattern));
+		return create(iterateAll()).filterKeep(filter);  
+	}
 
     @Override public ExtendedIterator<Triple> iterator( Node index, Node n2, Node n3 )
         {
         TripleBunch s = bunchMap.get( index.getIndexingValue() );
-        return s == null
-            ? NullIterator.<Triple>instance()
-            : f2.filterOn( n2 ).and( f3.filterOn( n3 ) )
-                .filterKeep( s.iterator() )
-            ;
+        if (s == null) return NullIterator.<Triple>instance();
+        final Predicate<Triple> filter = f2.filterOn( n2 ).and( f3.filterOn( n3 ) );
+        return create(s.iterator()).filterKeep(filter);    
         }
 
     /**

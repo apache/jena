@@ -19,6 +19,7 @@
 package org.apache.jena.util.iterator;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /** An ExtendedIterator that is created lazily.
  * This is useful when constructing an iterator is expensive and 
@@ -64,13 +65,13 @@ abstract public class LazyIterator<T> implements ExtendedIterator<T> {
 	}
 
 	@Override
-    public ExtendedIterator<T> filterKeep(Filter<T> f) {
+    public ExtendedIterator<T> filterKeep(Predicate<T> f) {
 		lazy();
 		return it.filterKeep(f);
 	}
 
 	@Override
-    public ExtendedIterator<T> filterDrop(Filter<T> f) {
+    public ExtendedIterator<T> filterDrop(Predicate<T> f) {
 		lazy();
 		return it.filterDrop(f);
 	}

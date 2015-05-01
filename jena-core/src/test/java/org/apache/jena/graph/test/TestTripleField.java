@@ -54,32 +54,25 @@ public class TestTripleField extends GraphTestBase
     
     public void testFilterSubject()
         {
-        assertTrue( Field.fieldSubject.filterOn( node( "a" ) ).accept( triple( "a P b" ) ) );
-        assertFalse( Field.fieldSubject.filterOn( node( "x" ) ).accept( triple( "a P b" ) ) );
+        assertTrue( Field.fieldSubject.filterOn( node( "a" ) ).test( triple( "a P b" ) ) );
+        assertFalse( Field.fieldSubject.filterOn( node( "x" ) ).test( triple( "a P b" ) ) );
         }    
     
     public void testFilterObject()
         {
-        assertTrue( Field.fieldObject.filterOn( node( "b" ) ).accept( triple( "a P b" ) ) );
-        assertFalse( Field.fieldObject.filterOn( node( "c" ) ).accept( triple( "a P b" ) ) );
+        assertTrue( Field.fieldObject.filterOn( node( "b" ) ).test( triple( "a P b" ) ) );
+        assertFalse( Field.fieldObject.filterOn( node( "c" ) ).test( triple( "a P b" ) ) );
         }
     
     public void testFilterPredicate()
         {
-        assertTrue( Field.fieldPredicate.filterOn( node( "P" ) ).accept( triple( "a P b" ) ) );
-        assertFalse( Field.fieldPredicate.filterOn( node( "Q" ) ).accept( triple( "a P b" ) ) );
+        assertTrue( Field.fieldPredicate.filterOn( node( "P" ) ).test( triple( "a P b" ) ) );
+        assertFalse( Field.fieldPredicate.filterOn( node( "Q" ) ).test( triple( "a P b" ) ) );
         }
     
     public void testFilterByTriple()
         {
-        assertTrue( Field.fieldSubject.filterOn( triple( "s P o" ) ).accept( triple( "s Q p" ) ) );
-        assertFalse( Field.fieldSubject.filterOn( triple( "s P o" ) ).accept( triple( "x Q p" ) ) );
-        }
-    
-    public void testWildcardFilterIsAny()
-        {
-        assertTrue( Field.fieldSubject.filterOn( triple( "?x R s" ) ).isAny() );
-        assertTrue( Field.fieldObject.filterOn( triple( "x R ?s" ) ).isAny() );
-        assertTrue( Field.fieldPredicate.filterOn( triple( "x ?R s" ) ).isAny() );
+        assertTrue( Field.fieldSubject.filterOn( triple( "s P o" ) ).test( triple( "s Q p" ) ) );
+        assertFalse( Field.fieldSubject.filterOn( triple( "s P o" ) ).test( triple( "x Q p" ) ) );
         }
     }

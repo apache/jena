@@ -17,13 +17,14 @@
  */
 package org.apache.jena.permissions.model.impl;
 
+import java.util.function.Predicate;
+
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.permissions.impl.ItemHolder;
 import org.apache.jena.permissions.impl.SecuredItemInvoker;
 import org.apache.jena.permissions.model.*;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Filter ;
 import org.apache.jena.vocabulary.RDF ;
 
 /**
@@ -35,7 +36,7 @@ import org.apache.jena.vocabulary.RDF ;
  */
 public class SecuredSeqImpl extends SecuredContainerImpl implements SecuredSeq
 {
-	private class RDFNodeFilter extends Filter<Statement>
+	private class RDFNodeFilter implements Predicate<Statement>
 	{
 		private final RDFNode n;
 
@@ -45,7 +46,7 @@ public class SecuredSeqImpl extends SecuredContainerImpl implements SecuredSeq
 		}
 
 		@Override
-		public boolean accept( final Statement o )
+		public boolean test( final Statement o )
 		{
 			return (o.getPredicate().getOrdinal() != 0)
 					&& n.equals(o.getObject());

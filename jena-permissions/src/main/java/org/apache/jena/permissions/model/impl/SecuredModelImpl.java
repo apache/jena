@@ -20,6 +20,7 @@ package org.apache.jena.permissions.model.impl;
 import java.io.* ;
 import java.net.URL ;
 import java.util.* ;
+import java.util.function.Predicate;
 
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.Node ;
@@ -40,7 +41,6 @@ import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.RDFReaderFImpl ;
 import org.apache.jena.shared.* ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Filter ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 import org.apache.jena.vocabulary.RDF ;
 
@@ -265,7 +265,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 			this.p = p;
 		}
 		@Override
-		public boolean accept(Resource o) {
+		public boolean test(Resource o) {
 			Triple t = new Triple( r.asNode(), p.asNode(), o.asNode());
 			return si.canRead( SecuredItemImpl.convert( t ) );
 		}};
@@ -2673,7 +2673,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 
 	}
 	
-	private class ResourceFilter extends Filter<Resource> {
+	private class ResourceFilter implements Predicate<Resource> {
 		Property p;
 		RDFNode o;
 		
@@ -2693,7 +2693,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 		}
 		
 		@Override
-		public boolean accept(Resource s) {
+		public boolean test(Resource s) {
 			StmtIterator iter = listStatements(s, p, o);
 			try {
 				return iter.hasNext();
@@ -2705,7 +2705,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 		
 	}
 	
-	private class ObjectFilter extends Filter<RDFNode> {
+	private class ObjectFilter implements Predicate<RDFNode> {
 		Resource s;
 		Property p;
 
@@ -2725,7 +2725,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 		}
 		
 		@Override
-		public boolean accept(RDFNode o) {
+		public boolean test(RDFNode o) {
 			StmtIterator iter = listStatements(s, p, o);
 			try {
 				return iter.hasNext();
