@@ -22,8 +22,7 @@ import java.util.List ;
 import arq.cmd.CmdException ;
 import arq.cmdline.CmdGeneral ;
 
-import org.apache.jena.sparql.util.Utils ;
-
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.RandomLib ;
 import org.apache.jena.atlas.logging.LogCtl ;
 
@@ -45,7 +44,7 @@ public abstract class BaseSoakTest extends CmdGeneral {
 
     @Override
     protected String getSummary() {
-        return "Usage: "+Utils.className(this)+" maxOrder maxSize NumTests" ;
+        return "Usage: "+Lib.className(this)+" maxOrder maxSize NumTests" ;
     }
 
     @Override
@@ -136,6 +135,6 @@ public abstract class BaseSoakTest extends CmdGeneral {
     protected abstract void runOneTest(int testCount, int order, int size) ;
 
     @Override
-    protected String getCommandName() { return Utils.className(this) ; } 
+    protected String getCommandName() { return Lib.className(this) ; } 
 }
 

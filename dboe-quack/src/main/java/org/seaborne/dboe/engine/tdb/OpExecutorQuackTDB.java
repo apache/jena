@@ -26,13 +26,8 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.PeekIterator ;
 import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Tuple ;
-import org.seaborne.dboe.engine.* ;
-import org.seaborne.dboe.engine.explain.Explain2 ;
-import org.seaborne.dboe.engine.extra_tdb.OpExecutorTDBBase ;
-import org.seaborne.dboe.engine.general.OpExecLib ;
-import org.seaborne.dboe.engine.row.RowBuilderBase ;
-
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -55,12 +50,16 @@ import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderProc ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.util.Utils ;
 import org.apache.jena.tdb.solver.OpExecutorTDB1 ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.store.GraphTDB ;
 import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.store.nodetable.NodeTable ;
+import org.seaborne.dboe.engine.* ;
+import org.seaborne.dboe.engine.explain.Explain2 ;
+import org.seaborne.dboe.engine.extra_tdb.OpExecutorTDBBase ;
+import org.seaborne.dboe.engine.general.OpExecLib ;
+import org.seaborne.dboe.engine.row.RowBuilderBase ;
 
 /** Query execution for TDB */ 
 public class OpExecutorQuackTDB extends OpExecutorTDBBase
@@ -343,7 +342,7 @@ public class OpExecutorQuackTDB extends OpExecutorTDBBase
                 return ;
             throw new InternalErrorException("Data table") ;
         }
-        throw new InternalErrorException("Unknown Op passed to accumulatePlan: "+Utils.className(op) ) ;
+        throw new InternalErrorException("Unknown Op passed to accumulatePlan: "+Lib.className(op) ) ;
     }
     
     private void accumulatePlan(PhysicalPlan<NodeId> plan, Node graphNode, BasicPattern basicPattern) {

@@ -30,6 +30,7 @@ import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.BitsLong ;
 import org.apache.jena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.seaborne.dboe.base.StorageException ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
@@ -43,8 +44,6 @@ import org.seaborne.dboe.sys.SystemBase ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import org.apache.jena.sparql.util.Utils ;
 
 /** Extensible hashing
  * http://en.wikipedia.org/wiki/Extendible_hashing
@@ -345,7 +344,7 @@ public final class ExtHash implements Index
     
     @Override
     public void clear()
-    { throw new UnsupportedOperationException("RangeIndex("+Utils.classShortName(this.getClass())+").clear") ; }
+    { throw new UnsupportedOperationException("RangeIndex("+Lib.classShortName(this.getClass())+").clear") ; }
 
     @Override
     public long size()

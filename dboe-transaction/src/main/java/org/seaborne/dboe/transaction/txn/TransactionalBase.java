@@ -20,10 +20,9 @@ package org.seaborne.dboe.transaction.txn;
 import java.util.Objects ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
-import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.util.Utils ;
-
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.query.ReadWrite ;
 import org.seaborne.dboe.transaction.txn.Transaction.TxnState ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
@@ -45,7 +44,7 @@ public class TransactionalBase implements TransactionalSystem {
     public TransactionalBase(Journal journal, TransactionalComponent ... elements) {
         int i = counter.incrementAndGet() ;
         this.txnMgr = new TransactionCoordinator(journal) ;
-        this.label = Utils.className(this)+"("+i+")" ;
+        this.label = Lib.className(this)+"("+i+")" ;
         for ( TransactionalComponent elt : elements )
             this.txnMgr.add(elt) ;
     }

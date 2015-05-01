@@ -17,13 +17,11 @@
 
 package org.seaborne.dboe.index.bplustree;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.RandomLib ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.seaborne.dboe.base.record.RecordFactory ;
-import org.seaborne.dboe.index.bplustree.BPlusTreeRewriter ;
 import org.seaborne.dboe.sys.SystemIndex ;
-
-import org.apache.jena.sparql.util.Utils ;
 
 public class CmdTestBPlusTreeRewriter
 {
@@ -34,7 +32,7 @@ public class CmdTestBPlusTreeRewriter
         // Usage: maxOrder maxSize NumTests
         if ( argv.length != 3 )
         {
-            System.err.println("Usage: "+Utils.classShortName(CmdTestBPlusTreeRewriter.class)+" maxOrder maxSize NumTests") ;
+            System.err.println("Usage: "+Lib.classShortName(CmdTestBPlusTreeRewriter.class)+" maxOrder maxSize NumTests") ;
             System.exit(1) ;
         }
 

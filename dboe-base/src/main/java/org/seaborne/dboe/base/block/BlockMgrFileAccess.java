@@ -19,9 +19,8 @@ package org.seaborne.dboe.base.block ;
 
 import static java.lang.String.format ;
 
-import org.apache.jena.sparql.util.Utils ;
-
 import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.seaborne.dboe.base.file.BlockAccess ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -75,7 +74,7 @@ final public class BlockMgrFileAccess extends BlockMgrBase {
 
     private void checkNotClosed() {
         if ( closed )
-            throw new InternalErrorException(Utils.className(this)+" : already closed") ;
+            throw new InternalErrorException(Lib.className(this)+" : already closed") ;
     }
 
     @Override

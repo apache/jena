@@ -17,18 +17,18 @@
 
 package quack ;
 
-import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.riot.RIOT ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import arq.cmd.ArgDecl ;
 import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.ARQ ;
+import org.apache.jena.riot.RIOT ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.store.tupletable.TupleIndex ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 /**
  * Dump a TDB index.

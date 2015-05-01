@@ -17,7 +17,6 @@
 
 package quack;
 
-import org.apache.jena.tdb.base.file.Location ;
 
 //import static org.junit.Assert.* ;
 //import org.junit.Test ;

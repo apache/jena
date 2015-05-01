@@ -18,11 +18,8 @@
 package dev;
 
 //import static org.junit.Assert.* ;
-import org.apache.jena.atlas.lib.Tuple ;
-//import org.junit.Test ;
-import org.seaborne.dboe.engine.Slot ;
-
 import org.apache.jena.sparql.core.Var ;
+//import org.junit.Test ;
 
 public class T_TestSlots
 {
