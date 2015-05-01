@@ -60,16 +60,10 @@ public class UpdateEngineNonStreaming extends UpdateEngineMain
     }
 
     @Override
-    public void startRequest()
-    {
-        graphStore.startRequest() ;
-    }
+    public void startRequest()  {}
     
     @Override
-    public void finishRequest()
-    {
-        graphStore.finishRequest();
-    }
+    public void finishRequest() {}
     
     /**
      * Returns an {@link UpdateSink} that adds all update operations into an internal {@link UpdateRequest} object.

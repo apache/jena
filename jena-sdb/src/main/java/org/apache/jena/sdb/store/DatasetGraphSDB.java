@@ -23,8 +23,6 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.graph.GraphSDB ;
 import org.apache.jena.sdb.util.StoreUtils ;
@@ -64,21 +62,6 @@ public class DatasetGraphSDB extends DatasetGraphCaching
         return StoreUtils.storeGraphNames(store) ;
     }
 
-    //---- Update
-
-    @Override
-    public void startRequest()
-    {}
-
-    @Override
-    public void finishRequest()
-    {}
-
-
-    @Override
-    public Dataset toDataset()
-    { return DatasetFactory.create(this) ; }
-    
     @Override
     protected boolean _containsGraph(Node graphNode)
     {

@@ -43,16 +43,10 @@ public class UpdateEngineMain extends UpdateEngineBase
     }
 
     @Override
-    public void startRequest()
-    {
-        graphStore.startRequest();
-    }
+    public void startRequest() {}
     
     @Override
-    public void finishRequest()
-    {
-        graphStore.finishRequest();
-    }
+    public void finishRequest() {}
     
     private UpdateSink updateSink = null ;
     

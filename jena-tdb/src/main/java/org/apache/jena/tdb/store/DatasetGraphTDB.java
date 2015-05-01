@@ -29,9 +29,7 @@ import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraphCaching ;
-import org.apache.jena.sparql.core.DatasetImpl ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -268,18 +266,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         prefixes.sync() ;
     }
     
-    // --- GraphStore
-    @Override
-    public void startRequest()
-    { }
-
-    @Override
-    public void finishRequest()
-    { } 
-
-    @Override
-    public Dataset toDataset()      { return DatasetImpl.wrap(this) ; }
-
     @Override
     public void setDefaultGraph(Graph g) { 
         throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
