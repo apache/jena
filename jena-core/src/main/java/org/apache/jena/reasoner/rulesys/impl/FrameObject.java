@@ -54,7 +54,10 @@ public class FrameObject {
      * Close the frame actively. This frees any internal resources, frees this frame and
      * frees the frame to which this is linked.
      */
-    public void close() {
+    public void close() {  
+    	if (link != null) {
+    		link.close();
+    	}
     }
     
 }

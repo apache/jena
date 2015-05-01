@@ -73,6 +73,7 @@ public class TripleMatchFrame extends GenericTripleMatchFrame {
      */
     @Override public void close() {
         if (matchIterator != null) matchIterator.close();
+        super.close();
     }
     
 }
