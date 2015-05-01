@@ -21,7 +21,6 @@ package org.apache.jena.rdf.model.impl;
 import java.io.* ;
 import java.net.URL ;
 import java.util.* ;
-
 import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
@@ -494,39 +493,34 @@ implements Model, PrefixMapping, Lock
         }
     }
     
-    private class StringFilteredStmtIterator extends FilterKeepIterator<Statement> implements StmtIterator {
-        public StringFilteredStmtIterator(final String str, Iterator<Statement> it ) {
-            super(
-                    new Filter<Statement>() {
-                        @Override public boolean accept(Statement s) {
-                            RDFNode o = s.getObject();
-                            if (o instanceof Literal) {
-                                if (str == null) return true; // should not happen
-                                return (str.equals(((Literal) o).getString()));
-                            } 
-                            return false;
-                        }
-              }, 
-              it );
-        }
+	private class StringFilteredStmtIterator extends FilterIterator<Statement>
+			implements StmtIterator {
+		public StringFilteredStmtIterator(final String str, Iterator<Statement> it) {
+			super(s -> {
+				RDFNode o = s.getObject();
+				if (o instanceof Literal) {
+					if (str == null)
+						return true; // should not happen
+				return (str.equals(o.asLiteral().getString()));
+			}
+			return false;
+		}, it);
+		}
         @Override public Statement nextStatement() { return next(); }
     }
     
-    private class LangFilteredStmtIterator extends FilterKeepIterator<Statement> implements StmtIterator {
-        public LangFilteredStmtIterator(final String l, Iterator<Statement> it ) {
-            super(
-                    new Filter<Statement>() {
-                        @Override public boolean accept(Statement s) {
-                            RDFNode o = s.getObject();
-                            if (o instanceof Literal) {
-                                if (l == null) return true;
-                                return (l.equals(((Literal) o).getLanguage()));
-                            } 
-                            return false;
-                        }
-              }, 
-              it );
-        }
+    private class LangFilteredStmtIterator extends FilterIterator<Statement> implements StmtIterator {
+		public LangFilteredStmtIterator(final String l, Iterator<Statement> it) {
+			super(s -> {
+				RDFNode o = s.getObject();
+				if (o instanceof Literal) {
+					if (l == null)
+						return true;
+					return (l.equals(o.asLiteral().getLanguage()));
+				}
+				return false;
+			}, it);
+		}
         @Override public Statement nextStatement() { return next(); }
     }
   
@@ -1286,21 +1280,9 @@ implements Model, PrefixMapping, Lock
         StmtIterator sts = IteratorFactory.asStmtIterator( findTriplesFrom( selector ), this );
         return selector.isSimple() 
             ? sts 
-            : new StmtIteratorImpl( sts .filterKeep ( asFilter( selector ) ) )
+            : new StmtIteratorImpl( sts .filterKeep ( selector ) )
         ;
     }
-
-    /**
-        Answer a Filter that filters exactly those things the Selector selects.
-
-        @param s a Selector on statements
-        @return a Filter that accepts statements that s passes tests on
-     */
-     public Filter<Statement> asFilter( final Selector s )
-     { return new Filter<Statement>()
-         { @Override public boolean accept( Statement x ) { return s.test( x ); } };
-     }
-
 
      /**
         Answer an [extended] iterator which returns the triples in this graph which

@@ -25,6 +25,7 @@ package org.apache.jena.ontology.impl;
 ///////////////
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.enhanced.* ;
@@ -68,7 +69,6 @@ public class OntResourceImpl
      * Note: should not be invoked directly by user code: use
      * {@link org.apache.jena.rdf.model.RDFNode#as as()} instead.
      */
-    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override
         public EnhNode wrap( Node n, EnhGraph eg ) {
@@ -1654,23 +1654,14 @@ public class OntResourceImpl
 
 
     /** Filter for matching language tags on the objects of statements */
-    protected class LangTagFilter extends Filter<Statement>
+    protected class LangTagFilter implements Predicate<Statement>
     {
         protected String m_lang;
         public LangTagFilter( String lang ) { m_lang = lang; }
         @Override
-        public boolean accept( Statement x ) {
+        public boolean test( Statement x ) {
             RDFNode o = x.getObject();
-            return o.isLiteral() && langTagMatch( m_lang, ((Literal) o).getLanguage() );
+            return o.isLiteral() && langTagMatch( m_lang, o.asLiteral().getLanguage() );
         }
-    }
-
-    /** Filter for accepting only the given value, based on .equals() */
-    protected class SingleEqualityFilter<T>
-        extends Filter<T>
-    {
-        private T m_obj;
-        public SingleEqualityFilter( T x ) { m_obj = x; }
-        @Override public boolean accept( T x ) {return m_obj.equals( x );}
     }
 }

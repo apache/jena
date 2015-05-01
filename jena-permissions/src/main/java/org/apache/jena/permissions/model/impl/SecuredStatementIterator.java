@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.model.SecuredModel;
@@ -30,7 +31,6 @@ import org.apache.jena.permissions.utils.PermStatementFilter;
 import org.apache.jena.rdf.model.Statement ;
 import org.apache.jena.rdf.model.StmtIterator ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Filter ;
 
 /**
  * A secured StatementIterator implementation
@@ -87,13 +87,13 @@ public class SecuredStatementIterator implements StmtIterator
 	}
 
 	@Override
-	public ExtendedIterator<Statement> filterDrop( final Filter<Statement> f )
+	public ExtendedIterator<Statement> filterDrop( final Predicate<Statement> f )
 	{
 		return iter.filterDrop(f);
 	}
 
 	@Override
-	public ExtendedIterator<Statement> filterKeep( final Filter<Statement> f )
+	public ExtendedIterator<Statement> filterKeep( final Predicate<Statement> f )
 	{
 		return iter.filterKeep(f);
 	}

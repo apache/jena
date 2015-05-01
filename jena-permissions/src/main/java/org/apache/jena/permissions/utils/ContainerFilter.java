@@ -17,16 +17,17 @@
  */
 package org.apache.jena.permissions.utils;
 
+import java.util.function.Predicate;
+
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Statement ;
-import org.apache.jena.util.iterator.Filter ;
 import org.apache.jena.vocabulary.RDF ;
 
-public class ContainerFilter extends Filter<Statement>
+public class ContainerFilter implements Predicate<Statement>
 {
 
 	@Override
-	public boolean accept( final Statement o )
+	public boolean test( final Statement o )
 	{
 		final Property p = o.getPredicate();
 		if (p.getNameSpace().equals(RDF.getURI())

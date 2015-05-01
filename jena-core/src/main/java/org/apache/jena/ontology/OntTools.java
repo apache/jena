@@ -24,10 +24,10 @@ package org.apache.jena.ontology;
 // Imports
 ///////////////
 import java.util.*;
+import java.util.function.Predicate;
 
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.JenaException ;
-import org.apache.jena.util.iterator.Filter ;
 
 
 /**
@@ -152,7 +152,7 @@ public class OntTools
      * @return A path, consisting of a list of statements whose first subject is <code>start</code>,
      * and whose last object is <code>end</code>, or null if no such path exists.
      */
-    public static Path findShortestPath( Model m, Resource start, RDFNode end, Filter<Statement> onPath ) {
+    public static Path findShortestPath( Model m, Resource start, RDFNode end, Predicate<Statement> onPath ) {
         List<Path> bfs = new LinkedList<>();
         Set<Resource> seen = new HashSet<>();
 
@@ -585,7 +585,7 @@ public class OntTools
      * A filter which accepts statements whose predicate matches one of a collection
      * of predicates held by the filter object.
      */
-    public static class PredicatesFilter extends Filter<Statement>
+    public static class PredicatesFilter implements Predicate<Statement>
     {
         public Collection<Property> m_preds;
 
@@ -609,7 +609,7 @@ public class OntTools
             m_preds.add( pred );
         }
 
-        @Override public boolean accept( Statement s ) {
+        @Override public boolean test( Statement s ) {
             return m_preds.contains( s.getPredicate() );
         }
     }

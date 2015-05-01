@@ -36,7 +36,6 @@ import org.apache.jena.shared.impl.JenaParameters ;
 import org.apache.jena.util.OneToManyMap ;
 import org.apache.jena.util.PrintUtil ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Filter ;
 import org.apache.jena.util.iterator.UniqueFilter ;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.jena.vocabulary.ReasonerVocabulary ;
@@ -562,9 +561,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         }
         if (filterFunctors) {
 //            return result.filterDrop(Functor.acceptFilter);
-            return result.filterDrop( new Filter<Triple>() {
-                @Override public boolean accept( Triple o )
-                    { return FBRuleInfGraph.this.accept( o ); }} );
+            return result.filterDrop( t -> FBRuleInfGraph.this.accept( t ) );
         } else {
             return result;
         }

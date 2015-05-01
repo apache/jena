@@ -21,11 +21,11 @@ package org.apache.jena.reasoner.rulesys;
 import org.apache.jena.datatypes.* ;
 import org.apache.jena.graph.* ;
 import org.apache.jena.util.PrintUtil ;
-import org.apache.jena.util.iterator.Filter ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * A functor comprises a functor name and a list of 
@@ -46,14 +46,11 @@ public class Functor implements ClauseEntry {
     /** A built in that implements the functor */
     protected Builtin implementor;
     
-    /** A static Filter instance that detects triples with Functor objects */
-    public static final Filter<Triple> acceptFilter = new Filter<Triple>() {
-                @Override
-                public boolean accept( Triple t) {
+    /** A static Predicate instance that detects triples with Functor objects */
+    public static final Predicate<Triple> acceptFilter = t ->  {
                     if (t.getSubject().isLiteral()) return true;
                     Node n = t.getObject();
                     return n.isLiteral() && n.getLiteralDatatype() == FunctorDatatype.theFunctorDatatype;
-                }
             };
     
     protected static Logger logger = LoggerFactory.getLogger(Functor.class);

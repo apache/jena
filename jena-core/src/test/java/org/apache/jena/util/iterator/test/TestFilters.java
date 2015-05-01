@@ -19,10 +19,11 @@
 package org.apache.jena.util.iterator.test;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 import junit.framework.TestSuite;
+
 import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.shared.JenaException ;
 import org.apache.jena.util.iterator.* ;
 
 public class TestFilters extends ModelTestBase
@@ -32,86 +33,13 @@ public class TestFilters extends ModelTestBase
     
     public static TestSuite suite()
         { return new TestSuite( TestFilters.class ); }
-    
-    public void testFilterAnyExists()
-        { assertInstanceOf( Filter.class, Filter.any() ); }
-    
-    public void testFilterAnyAcceptsThings()
-        {
-        assertTrue( Filter.any().accept( "hello" ) );
-        assertTrue( Filter.any().accept( 17 ) );
-        assertTrue( Filter.any().accept( node( "frodo" ) ) );
-        assertTrue( Filter.any().accept( node( "_cheshire" ) ) );
-        assertTrue( Filter.any().accept( node( "17" ) ) );
-        assertTrue( Filter.any().accept( triple( "s p o" ) ) );
-        assertTrue( Filter.any().accept( Filter.any() ) );
-        assertTrue( Filter.any().accept( this ) );
-        }
-    
-    public void testFilterFilterMethod()
-        {
-        assertFalse( Filter.any().filterKeep( NullIterator.instance() ).hasNext() );
-        }
-    
-    public void testFilteringThings()
-        {
-        ExtendedIterator<String> it = iteratorOfStrings( "gab geb bag big lava hall end" );
-        Filter<String> f = new Filter<String>() 
-            {
-            @Override public boolean accept( String o )
-                { return o.charAt( 1 ) == 'a'; }
-            };
-        assertEquals( listOfStrings( "gab bag lava hall" ), iteratorToList( f.filterKeep( it ) ) );
-        }
-    
-    public void testAnyFilterSimple()
-        {
-        ExtendedIterator<String> it = iteratorOfStrings( "" );
-        assertSame( it, Filter.<String>any().filterKeep( it ) );
-        }
 
-    protected Filter<String> containsA = new Filter<String>() 
-        { @Override public boolean accept( String o ) { return contains( o, 'a' ); } };
+    protected Predicate<String> containsA = o -> contains( o, 'a' );    
     
-    public void testFilterAnd()
-        {
-        Filter<String> containsB = new Filter<String>() 
-            { @Override public boolean accept( String o ) { return contains( o, 'b' ); } };
-        Filter<String> f12 = containsA.and( containsB );
-        assertFalse( f12.accept( "a" ) );
-        assertFalse( f12.accept( "b" ) );
-        assertTrue( f12.accept( "ab" ) );
-        assertTrue( f12.accept( "xyzapqrbijk" ) );
-        assertTrue( f12.accept( "ba" ) );
-        }
-    
-    public void testFilterShortcircuit()
-        {
-        Filter<String> oops = new Filter<String>() 
-            { @Override public boolean accept( String o ) { throw new JenaException( "oops" ); } };
-        Filter<String> f12 = containsA.and( oops );
-        assertFalse( f12.accept( "z" ) );
-        try { f12.accept( "a" ); fail( "oops" ); }
-        catch (JenaException e) { assertEquals( "oops", e.getMessage() ); }
-        }
-    
-    public void testAnyAndTrivial()
-        { assertSame( containsA, Filter.<String>any().and( containsA ) ); }
-    
-    public void testSomethingAndAny()
-        { assertSame( containsA, containsA.and( Filter.<String>any() ) ); }
-    
-    public void testFilterDropIterator()
+    public void testFilterIterator()
         {
         Iterator<String> i = iteratorOfStrings( "there's an a in some animals" );
-        Iterator<String> it = new FilterDropIterator<>( containsA, i );
-        assertEquals( listOfStrings( "there's in some" ), iteratorToList( it ) );
-        }
-    
-    public void testFilterKeepIterator()
-        {
-        Iterator<String> i = iteratorOfStrings( "there's an a in some animals" );
-        Iterator<String> it = new FilterKeepIterator<>( containsA, i );
+        Iterator<String> it = new FilterIterator<>( containsA, i );
         assertEquals( listOfStrings( "an a animals" ), iteratorToList( it ) );
         }
     

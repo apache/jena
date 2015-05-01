@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.model.SecuredRDFNode;
 import org.apache.jena.rdf.model.NodeIterator ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Filter ;
 
 /**
  * A secured RDFNode iterator implementation
@@ -82,13 +82,13 @@ public class SecuredNodeIterator<T extends RDFNode> implements NodeIterator
 	}
 
 	@Override
-	public ExtendedIterator<RDFNode> filterDrop( final Filter<RDFNode> f )
+	public ExtendedIterator<RDFNode> filterDrop( final Predicate<RDFNode> f )
 	{
 		return iter.filterDrop(f);
 	}
 
 	@Override
-	public ExtendedIterator<RDFNode> filterKeep( final Filter<RDFNode> f )
+	public ExtendedIterator<RDFNode> filterKeep( final Predicate<RDFNode> f )
 	{
 		return iter.filterKeep(f);
 	}

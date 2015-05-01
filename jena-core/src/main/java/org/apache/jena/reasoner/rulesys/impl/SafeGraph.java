@@ -24,7 +24,6 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.SimpleEventManager ;
 import org.apache.jena.graph.impl.WrappedGraph ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Filter ;
 
 /**
  * A SafeGraph wraps a graph which might contain generalized RDF
@@ -46,14 +45,8 @@ public class SafeGraph extends WrappedGraph implements Graph {
     @Override
     public ExtendedIterator<Triple> find( Node s, Node p, Node o ) {
         return SimpleEventManager.notifyingRemove( this, 
-                base.find( s, p, o ).filterDrop( new Filter<Triple>() {
-                    @Override
-                    public boolean accept(Triple t) {
-                        if (t.getSubject().isLiteral()) return true;
-                        if (t.getPredicate().isBlank() || t.getPredicate().isLiteral()) return true;
-                        return false;
-                    }
-                } ) );
+                base.find( s, p, o ).filterDrop( t -> t.getSubject().isLiteral() ||
+                		t.getPredicate().isBlank() || t.getPredicate().isLiteral() ) );
     }
 
     /**
