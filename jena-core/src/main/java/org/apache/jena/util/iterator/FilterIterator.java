@@ -20,6 +20,7 @@ package org.apache.jena.util.iterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.Predicate;
 
 /** 
      Creates a sub-Iterator by filtering. This class should not be used
@@ -28,7 +29,7 @@ import java.util.NoSuchElementException;
  */
 public class FilterIterator<T> extends WrappedIterator<T>
     {
-	protected final Filter<T> f;
+	protected final Predicate<T> f;
 	protected T current;
     protected boolean canRemove;
     protected boolean hasCurrent;
@@ -38,7 +39,7 @@ public class FilterIterator<T> extends WrappedIterator<T>
         @param fl An object is included if it is accepted by this Filter.
         @param e The base Iterator.
     */        
-	public FilterIterator( Filter<T> fl, Iterator<T> e ) 
+	public FilterIterator( Predicate<T> fl, Iterator<T> e ) 
         {
 		super( e );
 		f = fl;
@@ -52,18 +53,11 @@ public class FilterIterator<T> extends WrappedIterator<T>
 	@Override public boolean hasNext() 
         {
 	    while (!hasCurrent && super.hasNext())
-            hasCurrent = accept( current = super.next() );
+            hasCurrent = f.test( current = super.next() );
         canRemove = false;
         return hasCurrent;
         }
 
-    /**
-        Overridden in Drop/Keep as appropriate. Answer true if the object is
-        to be kept in the output, false if it is to be dropped.
-    */
-    protected boolean accept( T x )
-        { return f.accept( x ); }
-    
     /** 
          Remove the current member from the underlying iterator. Legal only
          after a .next() but before any subsequent .hasNext(), because that

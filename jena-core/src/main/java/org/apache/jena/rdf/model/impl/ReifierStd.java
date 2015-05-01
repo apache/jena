@@ -20,12 +20,12 @@ package org.apache.jena.rdf.model.impl;
 
 
 import java.util.* ;
+import java.util.function.Predicate;
 
 import org.apache.jena.graph.* ;
 import org.apache.jena.shared.AlreadyReifiedException ;
 import org.apache.jena.shared.CannotReifyException ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Filter ;
 import org.apache.jena.util.iterator.NullIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 import org.apache.jena.vocabulary.RDF ;
@@ -60,16 +60,10 @@ public class ReifierStd
             return graph.find(match) ;
     }
     
-    static Filter<Triple> filterReif = new Filter<Triple>() {
-        @Override
-        public boolean accept(Triple triple)
-        {
-            return triple.getPredicate().equals(subject) ||
+    static Predicate<Triple> filterReif = triple -> triple.getPredicate().equals(subject) ||
                    triple.getPredicate().equals(predicate) ||
                    triple.getPredicate().equals(object) ||
                    ( triple.getPredicate().equals(rdfType) && triple.getObject().equals(statement) ) ;
-        }
-    } ; 
 
     /**
         Answer an iterator over all the reification triples that this Reifier exposes

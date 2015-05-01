@@ -21,13 +21,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.model.SecuredResource;
 import org.apache.jena.rdf.model.ResIterator ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Filter ;
 
 public class SecuredResIterator implements ResIterator
 {
@@ -72,13 +72,13 @@ public class SecuredResIterator implements ResIterator
 	}
 
 	@Override
-	public ExtendedIterator<Resource> filterDrop( final Filter<Resource> f )
+	public ExtendedIterator<Resource> filterDrop( final Predicate<Resource> f )
 	{
 		return iter.filterDrop(f);
 	}
 
 	@Override
-	public ExtendedIterator<Resource> filterKeep( final Filter<Resource> f )
+	public ExtendedIterator<Resource> filterKeep( final Predicate<Resource> f )
 	{
 		return iter.filterKeep(f);
 	}

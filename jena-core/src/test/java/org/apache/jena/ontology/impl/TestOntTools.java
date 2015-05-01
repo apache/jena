@@ -24,8 +24,10 @@ package org.apache.jena.ontology.impl;
 // Imports
 ///////////////
 import java.util.List ;
+import java.util.function.Predicate;
 
 import junit.framework.TestCase ;
+
 import org.apache.jena.ontology.OntClass ;
 import org.apache.jena.ontology.OntModel ;
 import org.apache.jena.ontology.OntModelSpec ;
@@ -34,7 +36,6 @@ import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.ResourceFactory ;
 import org.apache.jena.rdf.model.Statement ;
-import org.apache.jena.util.iterator.Filter ;
 import org.apache.jena.vocabulary.OWL ;
 
 
@@ -227,7 +228,7 @@ public class TestOntTools
 
     /** Shortest path tests */
 
-    static final Filter<Statement> ANY = Filter.any();
+    static final Predicate<Statement> ANY = s -> true;
 
     public void testShortestPath0() {
         Property p = m_model.createProperty( NS + "p" );

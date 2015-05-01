@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
@@ -30,14 +31,13 @@ import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.rdf.model.RSIterator ;
 import org.apache.jena.rdf.model.ReifiedStatement ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Filter ;
 
 /**
  * A secured RSIterator implementation
  */
 public class SecuredRSIterator implements RSIterator
 {
-	private class PermReifiedStatementFilter extends Filter<ReifiedStatement>
+	private class PermReifiedStatementFilter implements Predicate<ReifiedStatement>
 	{
 		private final SecurityEvaluator evaluator;
 		private final SecNode modelNode;
@@ -52,7 +52,7 @@ public class SecuredRSIterator implements RSIterator
 		}
 
 		@Override
-		public boolean accept( final ReifiedStatement t )
+		public boolean test( final ReifiedStatement t )
 		{
 			return evaluator.evaluateAny(evaluator.getPrincipal(), actions, modelNode,
 					SecuredItemImpl.convert(t.getStatement().asTriple()));
@@ -111,14 +111,14 @@ public class SecuredRSIterator implements RSIterator
 
 	@Override
 	public ExtendedIterator<ReifiedStatement> filterDrop(
-			final Filter<ReifiedStatement> f )
+			final Predicate<ReifiedStatement> f )
 	{
 		return iter.filterDrop(f);
 	}
 
 	@Override
 	public ExtendedIterator<ReifiedStatement> filterKeep(
-			final Filter<ReifiedStatement> f )
+			final Predicate<ReifiedStatement> f )
 	{
 		return iter.filterKeep(f);
 	}

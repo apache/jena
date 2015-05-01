@@ -18,9 +18,10 @@
 
 package org.apache.jena.graph;
 
+import java.util.function.Predicate;
+
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Filter ;
 import org.apache.jena.util.iterator.NullIterator ;
 
 /**
@@ -173,23 +174,22 @@ public class Triple
         {
         public abstract Node getField( Triple t );
         
-        public abstract Filter<Triple> filterOn( Node n );
+        public abstract Predicate<Triple> filterOn( Node n );
         
-        public final Filter<Triple> filterOn( Triple t )
+        public final Predicate<Triple> filterOn( Triple t )
             { return filterOn( getField( t ) ); }
         
-        protected static final Filter<Triple> anyTriple = Filter.any();
+        protected static final Predicate<Triple> anyTriple = t -> true;
         
         public static final Field fieldSubject = new Field() 
             { 
             @Override public Node getField( Triple t ) 
                 { return t.subj; }
             
-            @Override public Filter<Triple> filterOn( final Node n )
+            @Override public Predicate<Triple> filterOn( final Node n )
                 { 
                 return n.isConcrete() 
-                    ? new Filter<Triple>() 
-                        { @Override public boolean accept( Triple x ) { return n.equals( x.subj ); } }
+                    ? x -> n.equals( x.subj )
                     : anyTriple
                     ;
                 }
@@ -200,11 +200,9 @@ public class Triple
             @Override public Node getField( Triple t ) 
                 { return t.obj; } 
             
-            @Override public Filter<Triple> filterOn( final Node n )
+            @Override public Predicate<Triple> filterOn( final Node n )
                 { return n.isConcrete() 
-                    ? new Filter<Triple>() 
-                        { @Override public boolean accept( Triple x ) 
-                            { return n.sameValueAs( x.obj ); } }
+                    ? x -> n.sameValueAs( x.obj )
                     : anyTriple; 
                 }
             };
@@ -214,11 +212,9 @@ public class Triple
             @Override public Node getField( Triple t ) 
                 { return t.pred; } 
             
-            @Override public Filter<Triple> filterOn( final Node n )
+            @Override public Predicate<Triple> filterOn( final Node n )
                 { return n.isConcrete()
-                    ? new Filter<Triple>() 
-                        { @Override
-                        public boolean accept( Triple x ) { return n.equals( x.pred ); } }
+                    ? x -> n.equals( x.pred )
                     : anyTriple; 
                 }
             };
