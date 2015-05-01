@@ -118,7 +118,7 @@ public class TestUtil
         if ( namespace != null && localname == null )
             fail("Bad test - namespace is not null but local name is") ;
         
-        int idx = Util.splitNamespace(uriStr) ;
+        int idx = Util.splitNamespaceXML(uriStr) ;
         if ( idx == uriStr.length() ) 
         {
             // No split.

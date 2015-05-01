@@ -943,7 +943,7 @@ implements Model, PrefixMapping, Lock
             if (node.isURI())
             {
                 String uri = node.getURI();
-                String ns = uri.substring( 0, Util.splitNamespace( uri ) );
+                String ns = uri.substring( 0, Util.splitNamespaceXML( uri ) );
                 // String ns = IteratorFactory.asResource( node, this ).getNameSpace();
                 set.add( ns );
             }

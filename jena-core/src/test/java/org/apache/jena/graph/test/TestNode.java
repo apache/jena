@@ -663,7 +663,7 @@ public class TestNode extends GraphTestBase
     {
         for ( String uri : someURIs )
         {
-            int split = Util.splitNamespace( uri );
+            int split = Util.splitNamespaceXML( uri );
             Node n = NodeCreateUtils.create( uri );
             assertEquals( "check namespace", uri.substring( 0, split ), n.getNameSpace() );
             assertEquals( "check localname", uri.substring( split ), n.getLocalName() );

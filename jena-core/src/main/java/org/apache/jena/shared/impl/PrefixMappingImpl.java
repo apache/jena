@@ -206,7 +206,7 @@ public class PrefixMappingImpl implements PrefixMapping
     @Override
     public String qnameFor( String uri )
         { 
-        int split = Util.splitNamespace( uri );
+        int split = Util.splitNamespaceXML( uri );
         String ns = uri.substring( 0, split ), local = uri.substring( split );
         if (local.equals( "" )) return null;
         String prefix = URItoPrefix.get( ns );

@@ -1186,7 +1186,7 @@ class Unparser {
             throw new BrokenException("Internal error: getNameSpace(bNode)");
         }
         String uri = r.getURI();
-        int split = Util.splitNamespace(uri);
+        int split = Util.splitNamespaceXML(uri);
         return uri.substring(0, split);
 
     }
@@ -1223,7 +1223,7 @@ class Unparser {
             throw new BrokenException("Internal error: getLocalName(bNode)");
         }
         String uri = r.getURI();
-        int split = Util.splitNamespace(uri);
+        int split = Util.splitNamespaceXML(uri);
         return uri.substring(split);
 
     }
@@ -1505,7 +1505,7 @@ class Unparser {
         // Only allow resources with namespace and fragment ID
         String uri = ((Resource) n).getURI();
 
-        int split = Util.splitNamespace(uri);
+        int split = Util.splitNamespaceXML(uri);
         if (split == 0 || split == uri.length())
             return -1;
 

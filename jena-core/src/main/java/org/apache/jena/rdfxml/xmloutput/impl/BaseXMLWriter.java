@@ -390,7 +390,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	}
     
 	String splitTag(String uriref, int type) {
-		int split = Util.splitNamespace( uriref );
+		int split = Util.splitNamespaceXML( uriref );
 		if (split == uriref.length()) throw new InvalidPropertyURIException( uriref );
 		return tag( uriref.substring( 0, split ), uriref.substring( split ), type, true );
     }
@@ -525,7 +525,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             return attributeQuoted( substituted );
         else
             {
-            int split = Util.splitNamespace( substituted );
+            int split = Util.splitNamespaceXML( substituted );
             String namespace = substituted.substring(  0, split );
             String prefix = modelPrefixMapping.getNsURIPrefix( namespace );
             return prefix == null || isPredefinedEntityName( prefix )
