@@ -54,6 +54,7 @@ public class OntPropertyImpl
      * Note: should not be invoked directly by user code: use
      * {@link org.apache.jena.rdf.model.RDFNode#as as()} instead.
      */
+    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override
         public EnhNode wrap( Node n, EnhGraph eg ) {
