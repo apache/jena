@@ -27,9 +27,10 @@ import java.util.function.Predicate;
  * Deprecated in favor of {@link Predicate}.
  */
 @Deprecated
-public abstract class Filter<T> implements Predicate<T> {
-
-	public boolean test(T o) {
+public abstract class Filter<T> implements Predicate<T> 
+{
+    @Override
+    public boolean test(T o) {
 		return accept(o);
 	}
 
