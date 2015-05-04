@@ -60,7 +60,6 @@ public class AssemblerUtils
     {
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
         g.implementWith(DatasetAssembler.getType(), new DatasetAssembler()) ;
-        g.implementWith(GraphStoreAssembler.getType(), new GraphStoreAssembler()) ;
         g.implementWith(DatasetNullAssembler.getType(), new DatasetNullAssembler()) ;
     }
     

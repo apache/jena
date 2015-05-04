@@ -19,13 +19,13 @@
 package org.apache.jena.sdb.modify;
 
 import org.apache.jena.sdb.store.DatasetGraphSDB ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.modify.UpdateEngine ;
 import org.apache.jena.sparql.modify.UpdateEngineFactory ;
 import org.apache.jena.sparql.modify.UpdateEngineMain ;
 import org.apache.jena.sparql.modify.UpdateEngineRegistry ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.update.GraphStore ;
 
 public class UpdateEngineSDB extends UpdateEngineMain
 {
@@ -40,13 +40,13 @@ public class UpdateEngineSDB extends UpdateEngineMain
         return new UpdateEngineFactory()
         {
             @Override
-            public boolean accept(GraphStore graphStore, Context context)
+            public boolean accept(DatasetGraph graphStore, Context context)
             {
                 return (graphStore instanceof DatasetGraphSDB) ;
             }
             
             @Override
-            public UpdateEngine create(GraphStore graphStore, Binding inputBinding, Context context)
+            public UpdateEngine create(DatasetGraph graphStore, Binding inputBinding, Context context)
             {
                 return new UpdateEngineSDB((DatasetGraphSDB)graphStore, inputBinding, context);
             }

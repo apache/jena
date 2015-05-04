@@ -18,6 +18,7 @@
 
 package org.apache.jena.update;
 
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
 
 /** An instance of a execution of an UpdateRequest */ 
@@ -35,8 +36,18 @@ public interface UpdateProcessor
      * The dataset against which the query will execute.
      * May be null, implying the there isn't a local GraphStore target for this UpdateProcessor.
      */
-    public GraphStore getGraphStore() ;
+    public DatasetGraph getDatasetGraph() ;
     
+    /**
+     * The dataset against which the query will execute.
+     * May be null, implying the there isn't a local GraphStore target for this UpdateProcessor.
+     * @deprecated Use {@link #getDatasetGraph()} 
+     */
+    @Deprecated
+    public default DatasetGraph getGraphStore() {
+        return getDatasetGraph() ;
+    }
+
     /** Execute */
     public void execute() ;
 }

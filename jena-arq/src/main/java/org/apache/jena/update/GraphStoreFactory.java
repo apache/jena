@@ -26,7 +26,9 @@ import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.modify.GraphStoreBasic ;
 
 /** Operations to create a GraphStore
+ * @deprecated Use a {@link DatasetGraph} directly.  many operations also accept a {@link Dataset}.
  */
+@Deprecated 
 public class GraphStoreFactory
 {
     /** Create an empty GraphStore with an empty default graph (in-memory) */

@@ -21,8 +21,8 @@ package org.apache.jena.sparql.modify;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.update.GraphStore ;
 
 public class UpdateEngineRegistry
 {
@@ -51,7 +51,7 @@ public class UpdateEngineRegistry
      * @param graphStore The graph store
      * @return A QueryExecutionFactory or null if none accept the request
      */
-    public static UpdateEngineFactory findFactory(GraphStore graphStore, Context context)
+    public static UpdateEngineFactory findFactory(DatasetGraph graphStore, Context context)
     { return get().find(graphStore, context) ; }
     
     /** Locate a suitable factory for this dataset
@@ -59,7 +59,7 @@ public class UpdateEngineRegistry
      * @param graphStore    A GraphStore
      * @return A UpdateProcessorFactroy or null if none accept the request
      */
-    public UpdateEngineFactory find(GraphStore graphStore, Context context)
+    public UpdateEngineFactory find(DatasetGraph graphStore, Context context)
     {
         for ( UpdateEngineFactory f : factories )
         {

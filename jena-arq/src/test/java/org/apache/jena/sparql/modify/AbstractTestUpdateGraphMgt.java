@@ -20,10 +20,10 @@ package org.apache.jena.sparql.modify;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.modify.request.UpdateCreate ;
 import org.apache.jena.sparql.modify.request.UpdateDrop ;
-import org.apache.jena.update.GraphStore ;
 import org.apache.jena.update.Update ;
 import org.apache.jena.update.UpdateAction ;
 import org.apache.jena.update.UpdateException ;
@@ -35,7 +35,7 @@ public abstract class AbstractTestUpdateGraphMgt extends AbstractTestUpdateBase
     
     @Test public void testCreateDrop1()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         Update u = new UpdateCreate(graphIRI) ;
         UpdateAction.execute(u, gStore) ;
         assertTrue(gStore.containsGraph(graphIRI)) ;
@@ -71,7 +71,7 @@ public abstract class AbstractTestUpdateGraphMgt extends AbstractTestUpdateBase
 
     @Test public void testCreateDrop2()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         Update u = new UpdateCreate(graphIRI) ;
         UpdateAction.execute(u, gStore) ;
         
@@ -91,7 +91,7 @@ public abstract class AbstractTestUpdateGraphMgt extends AbstractTestUpdateBase
     
     @Test public void testCreateDrop3()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         script(gStore, "create-1.ru") ;
         assertTrue(gStore.containsGraph(graphIRI)) ;
         assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
@@ -99,7 +99,7 @@ public abstract class AbstractTestUpdateGraphMgt extends AbstractTestUpdateBase
 
     @Test public void testCreateDrop4()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         gStore.addGraph(graphIRI, GraphFactory.createDefaultGraph()) ;
         script(gStore, "drop-1.ru") ;
         assertFalse(gStore.containsGraph(graphIRI)) ;

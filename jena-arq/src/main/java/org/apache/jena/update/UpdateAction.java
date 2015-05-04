@@ -28,6 +28,7 @@ import org.apache.jena.query.Syntax ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingUtils ;
 import org.apache.jena.sparql.lang.UpdateParser ;
@@ -49,16 +50,25 @@ public class UpdateAction
      */
     public static void readExecute(String filename, Model model)
     {
-        readExecute(filename, GraphStoreFactory.create(model)) ; 
+        readExecute(filename, toDatasetGraph(model.getGraph())) ; 
     }
     
+    /** Read a file containing SPARQL Update operations, and execute the operations.
+     * @param filename
+     * @param graph
+     */
+    public static void readExecute(String filename, Graph graph)
+    {
+        readExecute(filename, toDatasetGraph(graph)) ; 
+    }
+
     /** Read a file containing SPARQL Update operations, and execute the operations.
      * @param filename
      * @param dataset
      */
     public static void readExecute(String filename, Dataset dataset)
     {
-        readExecute(filename, GraphStoreFactory.create(dataset)) ;
+        readExecute(filename, dataset.asDatasetGraph()) ;
     }
 
     /** Read a file containing SPARQL Update operations, and execute the operations.
@@ -67,66 +77,54 @@ public class UpdateAction
      */
     public static void readExecute(String filename, DatasetGraph dataset)
     {
-        readExecute(filename, GraphStoreFactory.create(dataset)) ;
+        readExecute(filename, dataset, null) ;
     }
 
     /** Read a file containing SPARQL Update operations, and execute the operations.
      * @param filename
-     * @param graph
-     */
-    public static void readExecute(String filename, Graph graph)
-    {
-        readExecute(filename, GraphStoreFactory.create(graph)) ; 
-    }
-    
-    /** Read a file containing SPARQL Update operations, and execute the operations.
-     * @param filename
-     * @param graphStore
-     */
-    @Deprecated
-    public static void readExecute(String filename, GraphStore graphStore)
-    {
-        readExecute(filename, graphStore, (Binding)null);
-    }
-
-    /** Read a file containing SPARQL Update operations, and execute the operations.
-     * @param filename
-     * @param graphStore
+     * @param dataset
      * @param inputBinding
      */
-    public static void readExecute(String filename, GraphStore graphStore, QuerySolution inputBinding)
-    {
-        readExecute(filename, graphStore, BindingUtils.asBinding(inputBinding)) ;
-    }
-    
-
-    /** Read a file containing SPARQL Update operations, and execute the operations.
-     * @param filename
-     * @param graphStore
-     * @param inputBinding
-     */
-    public static void readExecute(String filename, GraphStore graphStore, Binding inputBinding)
-    {
+    public static void readExecute(String filename, Dataset dataset, QuerySolution inputBinding) {
         UpdateRequest req = UpdateFactory.read(filename) ;
-        execute(req, graphStore, inputBinding) ;
+        execute(req, dataset, inputBinding) ;
     }
     
+    /** Read a file containing SPARQL Update operations, and execute the operations.
+     * @param filename
+     * @param datasetGraph
+     * @param inputBinding
+     */
+    public static void readExecute(String filename, DatasetGraph datasetGraph, Binding inputBinding) {
+        UpdateRequest req = UpdateFactory.read(filename) ;
+        execute$(req, datasetGraph, inputBinding) ;
+    }
+
     /** Parse a string containing SPARQL Update operations, and execute the operations.
      * @param updateString
      * @param model
      */
     public static void parseExecute(String updateString, Model model)
     {
-        parseExecute(updateString, GraphStoreFactory.create(model)) ; 
+        parseExecute(updateString, model.getGraph()) ; 
     }
     
+    /** Parse a string containing SPARQL Update operations, and execute the operations.
+     * @param updateString
+     * @param graph
+     */
+    public static void parseExecute(String updateString, Graph graph)
+    {
+        parseExecute(updateString, toDatasetGraph(graph)) ; 
+    }
+
     /** Parse a string containing SPARQL Update operations, and execute the operations.
      * @param updateString
      * @param dataset
      */
     public static void parseExecute(String updateString, Dataset dataset)
     {
-        parseExecute(updateString, GraphStoreFactory.create(dataset)) ; 
+        parseExecute(updateString, dataset.asDatasetGraph()) ; 
     }
 
     /** Parse a string containing SPARQL Update operations, and execute the operations.
@@ -135,29 +133,30 @@ public class UpdateAction
      */
     public static void parseExecute(String updateString, DatasetGraph dataset)
     {
-        parseExecute(updateString, GraphStoreFactory.create(dataset)) ; 
+        UpdateRequest req = UpdateFactory.create(updateString) ;
+        execute(req, dataset) ;
     }
-
 
     /** Parse a string containing SPARQL Update operations, and execute the operations.
      * @param updateString
-     * @param graph
+     * @param dataset
+     * @param inputBinding
      */
-    public static void parseExecute(String updateString, Graph graph)
+    public static void parseExecute(String updateString, Dataset dataset, QuerySolution inputBinding)
     {
-        parseExecute(updateString, GraphStoreFactory.create(graph)) ; 
+        parseExecute(updateString, dataset.asDatasetGraph(), BindingUtils.asBinding(inputBinding)) ; 
     }
 
     /** Parse a string containing SPARQL Update operations, and execute the operations.
      * @param updateString
-     * @param graphStore
+     * @param dataset
+     * @param inputBinding
      */
-    public static void parseExecute(String updateString, GraphStore graphStore)
+    public static void parseExecute(String updateString, DatasetGraph dataset, Binding inputBinding)
     {
         UpdateRequest req = UpdateFactory.create(updateString) ;
-        execute(req, graphStore) ;
+        execute(req, dataset, inputBinding) ;
     }
-    
 
     /** Execute SPARQL Update operations.
      * @param request
@@ -165,16 +164,25 @@ public class UpdateAction
      */
     public static void execute(UpdateRequest request, Model model)
     {
-        execute(request, GraphStoreFactory.create(model)) ; 
+        execute(request, model.getGraph()) ; 
     }
     
+    /** Execute SPARQL Update operations.
+     * @param request
+     * @param graph
+     */
+    public static void execute(UpdateRequest request, Graph graph)
+    {
+        execute(request, toDatasetGraph(graph)) ; 
+    }
+
     /** Execute SPARQL Update operations.
      * @param request
      * @param dataset
      */
     public static void execute(UpdateRequest request, Dataset dataset)
     {
-        execute(request, GraphStoreFactory.create(dataset)) ; 
+        execute(request, dataset.asDatasetGraph()) ; 
     }
 
     /** Execute SPARQL Update operations.
@@ -183,52 +191,38 @@ public class UpdateAction
      */
     public static void execute(UpdateRequest request, DatasetGraph dataset)
     {
-        execute(request, GraphStoreFactory.create(dataset)) ; 
+        execute$(request, dataset, null) ; 
     }
 
     /** Execute SPARQL Update operations.
      * @param request
-     * @param graph
+     * @param dataset
+     * @param inputBinding
      */
-    public static void execute(UpdateRequest request, Graph graph)
+    public static void execute(UpdateRequest request, Dataset dataset, QuerySolution inputBinding)
     {
-        execute(request, GraphStoreFactory.create(graph)) ; 
+        execute(request, dataset.asDatasetGraph(), BindingUtils.asBinding(inputBinding)) ;
     }
     
     /** Execute SPARQL Update operations.
      * @param request
-     * @param graphStore
+     * @param datasetGraph
+     * @param inputBinding
      */
-    public static void execute(UpdateRequest request, GraphStore graphStore)
+    public static void execute(UpdateRequest request, DatasetGraph datasetGraph, Binding inputBinding)
     {
-        execute(request, graphStore, (Binding)null);
+        execute$(request, datasetGraph, inputBinding) ;
     }
+    
 
-    /** Execute SPARQL Update operations.
-     * @param request
-     * @param graphStore
-     * @param inputBinding
-     */
-    public static void execute(UpdateRequest request, GraphStore graphStore, QuerySolution inputBinding)
-    {
-        execute(request, graphStore, BindingUtils.asBinding(inputBinding)) ;
+    private static DatasetGraph toDatasetGraph(Graph graph) {
+        return DatasetGraphFactory.create(graph) ;
     }
-    
-    /** Execute SPARQL Update operations.
-     * @param request
-     * @param graphStore
-     * @param inputBinding
-     */
-    public static void execute(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
-    {
-        execute$(request, graphStore, inputBinding) ;
-    }
-    
 
     // All non-streaming updates come through here.
-    private static void execute$(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
+    private static void execute$(UpdateRequest request, DatasetGraph datasetGraph, Binding inputBinding)
     {
-        UpdateProcessor uProc = UpdateExecutionFactory.create(request, graphStore, inputBinding);
+        UpdateProcessor uProc = UpdateExecutionFactory.create(request, datasetGraph, inputBinding);
         if (uProc == null)
             throw new ARQException("No suitable update procesors are registered/able to execute your updates");
         uProc.execute();
@@ -241,16 +235,25 @@ public class UpdateAction
      */
     public static void execute(Update update, Model model)
     {
-        execute(update, GraphStoreFactory.create(model)) ; 
+        execute(update, model.getGraph()) ; 
     }
     
+    /** Execute a single SPARQL Update operation.
+     * @param update
+     * @param graph
+     */
+    public static void execute(Update update, Graph graph)
+    {
+        execute(update, toDatasetGraph(graph)) ; 
+    }
+
     /** Execute a single SPARQL Update operation.
      * @param update
      * @param dataset
      */
     public static void execute(Update update, Dataset dataset)
     {
-        execute(update, GraphStoreFactory.create(dataset)) ; 
+        execute(update, dataset.asDatasetGraph()) ; 
     }
 
     /** Execute a single SPARQL Update operation.
@@ -259,52 +262,34 @@ public class UpdateAction
      */
     public static void execute(Update update, DatasetGraph dataset)
     {
-        execute(update, GraphStoreFactory.create(dataset)) ; 
+        execute(update, dataset, null) ; 
     }
 
     /** Execute a single SPARQL Update operation.
      * @param update
-     * @param graph
+     * @param dataset
+     * @param inputBinding
      */
-    public static void execute(Update update, Graph graph)
+    public static void execute(Update update, Dataset dataset, QuerySolution inputBinding)
     {
-        execute(update, GraphStoreFactory.create(graph)) ; 
+        execute(update, dataset.asDatasetGraph(), BindingUtils.asBinding(inputBinding)) ;
     }
     
     /** Execute a single SPARQL Update operation.
      * @param update
-     * @param graphStore
-     */
-    public static void execute(Update update, GraphStore graphStore)
-    {
-        execute(update, graphStore, (Binding)null);
-    }
-
-    /** Execute a single SPARQL Update operation.
-     * @param update
-     * @param graphStore
+     * @param datasetGraph
      * @param inputBinding
      */
-    public static void execute(Update update, GraphStore graphStore, QuerySolution inputBinding)
+    public static void execute(Update update, DatasetGraph datasetGraph, Binding inputBinding)
     {
-        execute(update, graphStore, BindingUtils.asBinding(inputBinding)) ;
-    }
-    
-    /** Execute a single SPARQL Update operation.
-     * @param update
-     * @param graphStore
-     * @param inputBinding
-     */
-    public static void execute(Update update, GraphStore graphStore, Binding inputBinding)
-    {
-        execute$(update, graphStore, inputBinding) ;
+        execute$(update, datasetGraph, inputBinding) ;
     }
 
-    private static void execute$(Update update, GraphStore graphStore, Binding inputBinding)
+    private static void execute$(Update update, DatasetGraph datasetGraph, Binding inputBinding)
     {
         UpdateRequest request = new UpdateRequest() ;
         request.add(update) ;
-        execute$(request, graphStore, inputBinding) ;
+        execute$(request, datasetGraph, inputBinding) ;
     }  
     
     // Streaming Updates:
@@ -422,9 +407,7 @@ public class UpdateAction
      */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, Binding inputBinding, String baseURI, Syntax syntax)
     {
-        GraphStore graphStore = GraphStoreFactory.create(dataset);
-        
-        UpdateProcessorStreaming uProc = UpdateExecutionFactory.createStreaming(graphStore, inputBinding) ;
+        UpdateProcessorStreaming uProc = UpdateExecutionFactory.createStreaming(dataset, inputBinding) ;
         if (uProc == null)
             throw new ARQException("No suitable update procesors are registered/able to execute your updates");
         

@@ -58,20 +58,19 @@ import org.apache.jena.sparql.syntax.ElementGroup ;
 import org.apache.jena.sparql.syntax.ElementNamedGraph ;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.update.GraphStore ;
 import org.apache.jena.update.UpdateException ;
 
 /** Implementation of general purpose update request execution */ 
 public class UpdateEngineWorker implements UpdateVisitor
 {
-    protected final GraphStore graphStore ;
+    protected final DatasetGraph datasetGraph ;
     protected final boolean alwaysSilent = true ;
     protected final Binding inputBinding;  // Used for UpdateModify and UpdateDeleteWhere only
     protected final Context context ;
 
-    public UpdateEngineWorker(GraphStore graphStore, Binding inputBinding, Context context)
+    public UpdateEngineWorker(DatasetGraph datasetGraph, Binding inputBinding, Context context)
     {
-        this.graphStore = graphStore ;
+        this.datasetGraph = datasetGraph ;
         this.inputBinding = inputBinding ;
         this.context = context ;
     }
@@ -105,23 +104,23 @@ public class UpdateEngineWorker implements UpdateVisitor
     {
         if ( ! alwaysSilent )
         {
-            if ( g != null && ! graphStore.containsGraph(g) && ! update.isSilent())
+            if ( g != null && ! datasetGraph.containsGraph(g) && ! update.isSilent())
                 error("No such graph: "+g) ;
         }
         
         if ( isClear )
         {
-            if ( g == null || graphStore.containsGraph(g) )
-                graph(graphStore, g).clear() ;
+            if ( g == null || datasetGraph.containsGraph(g) )
+                graph(datasetGraph, g).clear() ;
         }
         else
-            graphStore.removeGraph(g) ;
+            datasetGraph.removeGraph(g) ;
     }
 
     protected void execDropClearAllNamed(UpdateDropClear update, boolean isClear)
     {
         // Avoid ConcurrentModificationException
-        List<Node> list = Iter.toList(graphStore.listGraphNodes()) ;
+        List<Node> list = Iter.toList(datasetGraph.listGraphNodes()) ;
         
         for ( Node gn : list )
             execDropClear(update, gn, isClear) ;
@@ -133,14 +132,14 @@ public class UpdateEngineWorker implements UpdateVisitor
         Node g = update.getGraph() ;
         if ( g == null )
             return ;
-        if ( graphStore.containsGraph(g) )
+        if ( datasetGraph.containsGraph(g) )
         {
             if ( ! alwaysSilent && ! update.isSilent() )
                 error("Graph store already contains graph : "+g) ;
             return ;
         }
         // In-memory specific 
-        graphStore.addGraph(g, GraphFactory.createDefaultGraph()) ;
+        datasetGraph.addGraph(g, GraphFactory.createDefaultGraph()) ;
     }
 
     @Override
@@ -158,7 +157,7 @@ public class UpdateEngineWorker implements UpdateVisitor
                 Graph g = GraphFactory.createGraphMem() ;
                 StreamRDF stream = StreamRDFLib.graph(g) ;
                 RDFDataMgr.parse(stream, s, source) ;
-                Graph g2 = graph(graphStore, dest) ;
+                Graph g2 = graph(datasetGraph, dest) ;
                 GraphUtil.addInto(g2, g) ;
             } else {
                 // Quads
@@ -171,7 +170,7 @@ public class UpdateEngineWorker implements UpdateVisitor
                 for ( ; iter.hasNext() ; )
                 {
                     Quad q = iter.next() ;
-                    graphStore.add(q) ;
+                    datasetGraph.add(q) ;
                 }
             }
         } catch (RuntimeException ex)
@@ -193,7 +192,7 @@ public class UpdateEngineWorker implements UpdateVisitor
             return ;
         //  ADD (DEFAULT or GRAPH) TO (DEFAULT or GRAPH)
         // Different source and destination.
-        gsCopyTriples(graphStore, update.getSrc(), update.getDest()) ;
+        gsCopyTriples(datasetGraph, update.getSrc(), update.getDest()) ;
     }
 
     @Override
@@ -203,7 +202,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         if ( update.getSrc().equals(update.getDest()) )
             return ;
         // COPY (DEFAULT or GRAPH) TO (DEFAULT or GRAPH) 
-        gsCopy(graphStore, update.getSrc(), update.getDest(), update.getSilent()) ;
+        gsCopy(datasetGraph, update.getSrc(), update.getDest(), update.getSilent()) ;
     }
 
     @Override
@@ -214,8 +213,8 @@ public class UpdateEngineWorker implements UpdateVisitor
             return ;
         // MOVE (DEFAULT or GRAPH) TO (DEFAULT or GRAPH)
         // Difefrent source and destination.
-        gsCopy(graphStore, update.getSrc(), update.getDest(), update.getSilent()) ;
-        gsDrop(graphStore, update.getSrc(), true) ;
+        gsCopy(datasetGraph, update.getSrc(), update.getDest(), update.getSilent()) ;
+        gsDrop(datasetGraph, update.getSrc(), true) ;
     }
 
     private boolean validBinaryGraphOp(UpdateBinaryOp update)
@@ -226,7 +225,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         if ( update.getSrc().isOneNamedGraph() )
         {
             Node gn =  update.getSrc().getGraph() ;
-            if ( ! graphStore.containsGraph(gn) )
+            if ( ! datasetGraph.containsGraph(gn) )
             {
                 if ( ! update.getSilent() )
                     error("No such graph: "+gn) ;
@@ -241,21 +240,21 @@ public class UpdateEngineWorker implements UpdateVisitor
     // ----
     // Core operations
     
-    protected static void gsCopy(GraphStore gStore, Target src, Target dest, boolean isSilent)
+    protected static void gsCopy(DatasetGraph dsg, Target src, Target dest, boolean isSilent)
     {
         if ( dest.equals(src) ) 
             return ;
-        gsClear(gStore, dest, true) ;
-        gsCopyTriples(gStore, src, dest) ;
+        gsClear(dsg, dest, true) ;
+        gsCopyTriples(dsg, src, dest) ;
     }
 
-    protected static void gsCopyTriples(GraphStore gStore, Target src, Target dest)
+    protected static void gsCopyTriples(DatasetGraph dsg, Target src, Target dest)
     {
-        Graph gSrc = graph(gStore, src) ;
-        Graph gDest = graph(gStore, dest) ;
+        Graph gSrc = graph(dsg, src) ;
+        Graph gDest = graph(dsg, dest) ;
         
         // Avoids concurrency problems by reading fully before writing
-        ThresholdPolicy<Triple> policy = ThresholdPolicyFactory.policyFromContext(gStore.getContext());
+        ThresholdPolicy<Triple> policy = ThresholdPolicyFactory.policyFromContext(dsg.getContext());
         DataBag<Triple> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.tripleSerializationFactory()) ;
         try
         {
@@ -267,19 +266,19 @@ public class UpdateEngineWorker implements UpdateVisitor
         finally { db.close() ; }
     }
 
-    protected static void gsClear(GraphStore gStore, Target target, boolean isSilent)
+    protected static void gsClear(DatasetGraph dsg, Target target, boolean isSilent)
     {
         // No create - we tested earlier.
-        Graph g = graph(gStore, target) ;
+        Graph g = graph(dsg, target) ;
         g.clear() ;
     }
 
-    protected static void gsDrop(GraphStore gStore, Target target, boolean isSilent)
+    protected static void gsDrop(DatasetGraph dsg, Target target, boolean isSilent)
     {
         if ( target.isDefault() )
-            gStore.getDefaultGraph().clear() ;
+            dsg.getDefaultGraph().clear() ;
         else
-            gStore.removeGraph(target.getGraph()) ;
+            dsg.removeGraph(target.getGraph()) ;
     }
     
     // ----
@@ -292,13 +291,13 @@ public class UpdateEngineWorker implements UpdateVisitor
             @Override
             public void send(Quad quad)
             {
-                addToGraphStore(graphStore, quad);
+                addTodatasetGraph(datasetGraph, quad);
             }
 
             @Override
             public void flush()
             {
-                SystemARQ.sync(graphStore);
+                SystemARQ.sync(datasetGraph);
             }
     
             @Override
@@ -311,7 +310,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     public void visit(UpdateDataInsert update)
     {
         for ( Quad quad : update.getQuads() )
-            addToGraphStore(graphStore, quad) ;
+            addTodatasetGraph(datasetGraph, quad) ;
     }
     
     @Override
@@ -322,13 +321,13 @@ public class UpdateEngineWorker implements UpdateVisitor
             @Override
             public void send(Quad quad)
             {
-                deleteFromGraphStore(graphStore, quad);
+                deleteFromdatasetGraph(datasetGraph, quad);
             }
 
             @Override
             public void flush()
             {
-                SystemARQ.sync(graphStore);
+                SystemARQ.sync(datasetGraph);
             }
     
             @Override
@@ -341,7 +340,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     public void visit(UpdateDataDelete update)
     {
         for ( Quad quad : update.getQuads() )
-            deleteFromGraphStore(graphStore, quad) ;
+            deleteFromdatasetGraph(datasetGraph, quad) ;
     }
 
     @Override
@@ -358,7 +357,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         // Decided to serialize the bindings, but could also have decided to
         // serialize the quads after applying the template instead.
         
-        ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(graphStore.getContext());
+        ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(datasetGraph.getContext());
         DataBag<Binding> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.bindingSerializationFactory()) ;
         try
         {
@@ -408,10 +407,10 @@ public class UpdateEngineWorker implements UpdateVisitor
         // -------------------
         
         if ( dsg == null )
-            dsg = graphStore ;
+            dsg = datasetGraph ;
         
         Query query = elementToQuery(elt) ;
-        ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(graphStore.getContext());
+        ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(datasetGraph.getContext());
         DataBag<Binding> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.bindingSerializationFactory()) ;
         try
         {
@@ -420,7 +419,7 @@ public class UpdateEngineWorker implements UpdateVisitor
             if ( false )
             {   
 //                System.out.println("=======================================") ;
-//                System.out.println(graphStore) ;
+//                System.out.println(datasetGraph) ;
                 List<Binding> x = Iter.toList(bindings) ;
                 System.out.printf("====>> Bindings (%d)\n", x.size()) ;
                 Iter.print(System.out, x.iterator()) ;
@@ -451,7 +450,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         if ( update.getUsing().size() == 0 && update.getUsingNamed().size() == 0 )
             return null ;
      
-        return DynamicDatasets.dynamicDataset(update.getUsing(), update.getUsingNamed(), graphStore, false) ;
+        return DynamicDatasets.dynamicDataset(update.getUsing(), update.getUsingNamed(), datasetGraph, false) ;
     }
     
     protected DatasetGraph processWith(UpdateModify update)
@@ -459,14 +458,14 @@ public class UpdateEngineWorker implements UpdateVisitor
         Node withGraph = update.getWithIRI() ;
         if ( withGraph == null )
             return null ;
-        Graph g = graphOrDummy(graphStore, withGraph) ;
-        DatasetGraph dsg = new DatasetGraphAltDefaultGraph(graphStore, g) ;
+        Graph g = graphOrDummy(datasetGraph, withGraph) ;
+        DatasetGraph dsg = new DatasetGraphAltDefaultGraph(datasetGraph, g) ;
         return dsg ;
     }
     
     private Graph graphOrDummy(DatasetGraph dsg, Node gn)
     {
-        Graph g = graph(graphStore, gn) ;
+        Graph g = graph(datasetGraph, gn) ;
         if ( g == null )
             g = GraphFactory.createGraphMem() ;
         return g ;
@@ -513,14 +512,14 @@ public class UpdateEngineWorker implements UpdateVisitor
         while (it.hasNext())
         {
             Quad q = it.next();
-            graphStore.delete(q);
+            datasetGraph.delete(q);
         }
         
         
         // Alternate implementation that can use the graph BulkUpdateHandler, but forces all quads into
         // memory (we don't want that!).  The issue is that all of the quads can be mixed up based on the
         // user supplied template.  If graph stores can benefit from bulk insert/delete operations, then we
-        // need to expose a bulk update interface on GraphStore, not just Graph.
+        // need to expose a bulk update interface on datasetGraph, not just Graph.
 //        MultiMap<Node, Triple> acc = MultiMap.createMapList() ;
 //        while (it.hasNext())
 //        {
@@ -530,7 +529,7 @@ public class UpdateEngineWorker implements UpdateVisitor
 //        for ( Node gn : acc.keys() )
 //        {
 //            Collection<Triple> triples = acc.get(gn) ;
-//            graph(graphStore, gn).getBulkUpdateHandler().delete(triples.iterator()) ;
+//            graph(datasetGraph, gn).getBulkUpdateHandler().delete(triples.iterator()) ;
 //        }
     }
 
@@ -542,23 +541,23 @@ public class UpdateEngineWorker implements UpdateVisitor
         while (it.hasNext())
         {
             Quad q = it.next();
-            addToGraphStore(graphStore, q);
+            addTodatasetGraph(datasetGraph, q);
         }
     }
     
     // Catch all individual adds of quads (and deletes - mainly for symmetry). 
-    private static void addToGraphStore(GraphStore graphStore, Quad quad) 
+    private static void addTodatasetGraph(DatasetGraph datasetGraph, Quad quad) 
     {
         // Check legal triple.
         if ( quad.isLegalAsData() )
-            graphStore.add(quad);
+            datasetGraph.add(quad);
         // Else drop.
         //Log.warn(UpdateEngineWorker.class, "Bad quad as data: "+quad) ;
     }
 
-    private static void deleteFromGraphStore(GraphStore graphStore, Quad quad)
+    private static void deleteFromdatasetGraph(DatasetGraph datasetGraph, Quad quad)
     {
-        graphStore.delete(quad) ;
+        datasetGraph.delete(quad) ;
     }
 
     protected Query elementToQuery(Element pattern)
@@ -580,7 +579,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     
     protected Iterator<Binding> evalBindings(Query query, Node dftGraph)
     {
-        DatasetGraph dsg = graphStore ;
+        DatasetGraph dsg = datasetGraph ;
         if ( query != null )
         {
             if ( dftGraph != null )
@@ -613,20 +612,20 @@ public class UpdateEngineWorker implements UpdateVisitor
         return toReturn ;
     }
     
-    protected static Graph graph(GraphStore graphStore, Node gn)
+    protected static Graph graph(DatasetGraph datasetGraph, Node gn)
     {
         if ( gn == null || gn == Quad.defaultGraphNodeGenerated )
-            return graphStore.getDefaultGraph() ;
+            return datasetGraph.getDefaultGraph() ;
         else
-            return graphStore.getGraph(gn) ;
+            return datasetGraph.getGraph(gn) ;
     }
 
-    protected static Graph graph(GraphStore graphStore, Target target)
+    protected static Graph graph(DatasetGraph datasetGraph, Target target)
     {
         if ( target.isDefault() )
-            return graphStore.getDefaultGraph() ;
+            return datasetGraph.getDefaultGraph() ;
         if ( target.isOneNamedGraph() )
-            return graph(graphStore, target.getGraph()) ;
+            return graph(datasetGraph, target.getGraph()) ;
         error("Target does not name one graph: "+target) ;
         return null ;
     }

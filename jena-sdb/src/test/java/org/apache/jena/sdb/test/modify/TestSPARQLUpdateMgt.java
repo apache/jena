@@ -23,8 +23,8 @@ import junit.framework.TestSuite ;
 import org.apache.jena.sdb.SDBFactory ;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.test.junit.SDBTestUtils ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.modify.AbstractTestUpdateGraphMgt ;
-import org.apache.jena.update.GraphStore ;
 
 public class TestSPARQLUpdateMgt extends AbstractTestUpdateGraphMgt
 {
@@ -36,10 +36,8 @@ public class TestSPARQLUpdateMgt extends AbstractTestUpdateGraphMgt
     }
     
     @Override
-    protected GraphStore getEmptyGraphStore()
-    {
+    protected DatasetGraph getEmptyDatasetGraph() {
         Store store = SDBTestUtils.createInMemoryStore() ;
-        GraphStore graphStore = SDBFactory.connectGraphStore(store) ;
-        return graphStore ;
+        return SDBFactory.connectDataset(store).asDatasetGraph() ;
     }
 }
