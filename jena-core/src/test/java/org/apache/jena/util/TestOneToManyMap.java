@@ -83,12 +83,12 @@ public class TestOneToManyMap
         assertTrue( map0.contains( s0, s1 ) );
         
         OneToManyMap<String, String> map1 = new OneToManyMap<>( map0 );
-        assertTrue( map0.contains( s0, s1 ) );
+        assertTrue( map1.contains( s0, s1 ) );
         
         map0.put( s0, s2 );
         assertTrue( map0.contains( s0, s2 ) );
+        assertFalse( map1.contains( s0, s2 ) );
         assertFalse( map0.contains( s1, s2 ) );
-        
     }
     
     public void testClear() {

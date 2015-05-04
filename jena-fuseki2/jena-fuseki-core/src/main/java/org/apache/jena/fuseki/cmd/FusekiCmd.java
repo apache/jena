@@ -185,7 +185,7 @@ public class FusekiCmd {
                     throw new CmdException("Multiple ways providing a dataset. Only one of --mem, --file, --loc or --desc") ;
             }
             
-            boolean configPresent = ( x != 0 ) || ( cmdLineDataset.fusekiConfigFile != null ) ;
+            boolean cmdlineConfigPresent = ( x != 0 ) ;
 
             if ( contains(argMem) ) {
                 log.info("Dataset: in-memory") ;
@@ -232,9 +232,9 @@ public class FusekiCmd {
                 //cmdLineDataset.dsg = ds.asDatasetGraph() ;
             }
             
-            if ( configPresent && getPositional().size() == 0 )
+            if ( cmdlineConfigPresent && getPositional().size() == 0 )
                 throw new CmdException("Missing service name") ;
-            if ( !configPresent && getPositional().size() > 0 )
+            if ( !cmdlineConfigPresent && getPositional().size() > 0 )
                 throw new CmdException("Service name given but no configuration argument to match") ;
 
             if ( cmdLineDataset != null ) {
