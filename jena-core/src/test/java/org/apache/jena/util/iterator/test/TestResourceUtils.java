@@ -197,12 +197,14 @@ public class TestResourceUtils
         in.addAll( abcde );
         List<Resource> out = null;
         assertTrue( in.equals( abcde ) );
+        assertFalse( in.equals(abde) );
         assertFalse( in.equals( cde ));
         assertNull( out );
 
         out = ResourceUtils.removeEquiv( in, RDFS.subClassOf, a );
 
         assertFalse( in.equals( abcde ) );
+        assertFalse( in.equals(abde) );
         assertTrue( in.equals( cde ));
         assertNotNull( out );
         assertEquals( out, ab );
@@ -210,6 +212,7 @@ public class TestResourceUtils
         out = ResourceUtils.removeEquiv( in, RDFS.subClassOf, e );
 
         assertFalse( in.equals( abcde ) );
+        assertFalse( in.equals(abde) );
         assertTrue( in.equals( Collections.singletonList( c ) ));
         assertNotNull( out );
         assertEquals( out, de );
