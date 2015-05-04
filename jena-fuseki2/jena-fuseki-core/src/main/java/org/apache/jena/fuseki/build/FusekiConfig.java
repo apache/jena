@@ -124,7 +124,7 @@ public class FusekiConfig {
     private static List<DataAccessPoint> servicesAndDatasets(Model model) {
         // Old style configuration file : server to services.
         // ---- Services
-        ResultSet rs = FusekiLib.query("SELECT * { ?s fu:services [ list:member ?member ] }", model) ;
+        ResultSet rs = FusekiLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model) ;
         // If the old config.ttl file becomes just the server configuration file,
         // then don't warn here.
 //        if ( !rs.hasNext() )
@@ -132,12 +132,18 @@ public class FusekiConfig {
 
         List<DataAccessPoint> accessPoints = new ArrayList<>() ;
 
+        if ( ! rs.hasNext() )
+            // No "fu:services ( .... )" so try looking for services directly.
+            // This means Fuseki2, service configuration files (no server section) work for --conf. 
+            rs = FusekiLib.query("SELECT ?service { ?service a fu:Service }", model) ;
+
         for ( ; rs.hasNext() ; ) {
             QuerySolution soln = rs.next() ;
-            Resource svc = soln.getResource("member") ;
+            Resource svc = soln.getResource("service") ;
             DataAccessPoint acc = Builder.buildDataAccessPoint(svc) ;
             accessPoints.add(acc) ;
         }
+        
         return accessPoints ;
     }
     
