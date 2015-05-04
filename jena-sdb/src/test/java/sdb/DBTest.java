@@ -21,6 +21,7 @@ package sdb;
 import java.sql.Connection ;
 import java.util.List ;
 
+import arq.cmd.CmdException ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.junit.runner.JUnitCore ;
 import org.junit.runner.notification.RunListener ;
@@ -30,7 +31,6 @@ import sdb.test.Params ;
 import sdb.test.ParamsVocab ;
 import sdb.test.TestI18N ;
 import sdb.test.TestStringBasic ;
-import arq.cmd.CmdException ;
 
 /** Run some DB tests to check setup */ 
 

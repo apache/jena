@@ -19,6 +19,8 @@
 package org.apache.jena.util.iterator;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
     NiceIterator is the standard base class implementing ExtendedIterator. It provides
@@ -151,21 +153,21 @@ public class NiceIterator<T> implements ExtendedIterator<T>
         make a new iterator, which is our elements that pass the filter
     */
     @Override
-    public ExtendedIterator<T> filterKeep( Filter<T> f )
-        { return new FilterKeepIterator<>( f, this ); }
+    public FilterIterator<T> filterKeep( Predicate<T> f )
+        { return new FilterIterator<>( f, this ); }
 
     /**
         make a new iterator, which is our elements that do not pass the filter
     */        
     @Override
-    public ExtendedIterator<T> filterDrop( final Filter<T> f )
-        { return new FilterDropIterator<>( f, this ); }
+    public FilterIterator<T> filterDrop( final Predicate<T> f )
+        { return new FilterIterator<>( f.negate(), this ); }
    
     /**
         make a new iterator which is the elementwise _map1_ of the base iterator.
     */     
     @Override
-    public <U> ExtendedIterator<U> mapWith( Map1<T, U> map1 )
+    public <U> ExtendedIterator<U> mapWith( Function<T, U> map1 )
         { return new Map1Iterator<>( map1, this ); }
 
     /**

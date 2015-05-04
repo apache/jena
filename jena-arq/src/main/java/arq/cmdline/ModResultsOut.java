@@ -19,6 +19,9 @@
 package arq.cmdline;
 
 
+import arq.cmd.ArgDecl ;
+import arq.cmd.ArgModuleGeneral ;
+import arq.cmd.CmdArgModule ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.resultset.ResultsFormat ;

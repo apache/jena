@@ -30,6 +30,7 @@ import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
 
+import arq.cmd.CmdException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.FileOps ;
@@ -48,7 +49,6 @@ import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.tdb.sys.Names ;
-import arq.cmd.CmdException ;
 
 public class FusekiServer
 {

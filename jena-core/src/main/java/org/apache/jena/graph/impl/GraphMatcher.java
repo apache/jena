@@ -17,6 +17,8 @@
  */
 
 package org.apache.jena.graph.impl;
+import static org.apache.jena.util.iterator.WrappedIterator.create;
+
 import java.util.*;
 
 import org.apache.jena.graph.* ;
@@ -256,25 +258,19 @@ public class GraphMatcher extends java.lang.Object {
         // Otherwise if some member of the bucket has friends
         // we can refine the hash, and we set refinableHash.
         check(HASH_OK);
-        return new FilterIterator<>(
-        new Filter<Bucket>() {
-            @Override public boolean accept(Bucket o) {
-                Bucket b = o;
-                if (b.size()==1)
-                    return true;
-                if (!refinableHash) {
-                    Iterator<AnonResource> it = b.members();
-                    while ( it.hasNext() )
-                        if (!it.next()
-                        .friends.isEmpty()) {
-                            refinableHash = true;
-                            break;
-                        }
-                }
-                return false;
-            }
-        },table.values().iterator());
-        
+		return create(table.values().iterator()).filterKeep(b -> {
+			if (b.size() == 1)
+				return true;
+			if (!refinableHash) {
+				Iterator<AnonResource> it = b.members();
+				while (it.hasNext())
+					if (!it.next().friends.isEmpty()) {
+						refinableHash = true;
+						break;
+					}
+			}
+			return false;
+		});
     }
     private void unbindAll(Set<AnonResource> s)  {
         for ( AnonResource value : s )

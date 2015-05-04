@@ -20,9 +20,9 @@ package tdb.cmdline;
 
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.util.FileManager ;
-import arq.cmdline.ArgDecl ;
-import arq.cmdline.ArgModuleGeneral ;
-import arq.cmdline.CmdArgModule ;
+import arq.cmd.ArgDecl ;
+import arq.cmd.ArgModuleGeneral ;
+import arq.cmd.CmdArgModule ;
 import arq.cmdline.CmdGeneral ;
 
 /** Name a model */

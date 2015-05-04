@@ -24,6 +24,7 @@ package org.apache.jena.ontology.impl;
 // Imports
 ///////////////
 import java.util.*;
+import java.util.function.Predicate;
 
 import org.apache.jena.enhanced.* ;
 import org.apache.jena.graph.* ;
@@ -175,7 +176,7 @@ public class OntPropertyImpl
     @Override
     public ExtendedIterator<OntProperty> listSuperProperties( boolean direct ) {
         return listDirectPropertyValues( getProfile().SUB_PROPERTY_OF(), "SUB_PROPERTY_OF", OntProperty.class, getProfile().SUB_PROPERTY_OF(), direct, false )
-                        .filterDrop( new SingleEqualityFilter<OntProperty>( this ) );
+                        .filterDrop( this::equals );
     }
 
     /**
@@ -762,7 +763,7 @@ public class OntPropertyImpl
      */
     @Override
     public ExtendedIterator<OntProperty> listInverse() {
-        return getModel().listStatements( null, getProfile().INVERSE_OF(), this ).mapWith( new SubjectAsMapper<>( OntProperty.class ) );
+        return getModel().listStatements( null, getProfile().INVERSE_OF(), this ).mapWith( s -> s.getSubject().as( OntProperty.class ) );
     }
 
     /**
@@ -835,11 +836,7 @@ public class OntPropertyImpl
                 // in the non-direct case, global properties appear in the ldp
                 // of all classes, but we ignore the built-in classes
                 return ((OntModel) getModel()).listClasses()
-                                              .filterDrop( new Filter<OntClass>() {
-                                                @Override
-                                                public boolean accept( OntClass c ) {
-                                                    return c.isOntLanguageTerm();
-                                                }} );
+                                              .filterDrop( OntClass::isOntLanguageTerm );
             }
             else {
                 // in the direct case, global properties only attach to the
@@ -874,7 +871,7 @@ public class OntPropertyImpl
     @Override
     public ExtendedIterator<Restriction> listReferringRestrictions() {
         return getModel().listStatements( null, getProfile().ON_PROPERTY(), this )
-                         .mapWith( new SubjectAsMapper<>( Restriction.class ) );
+                         .mapWith( s -> s.getSubject().as( Restriction.class ) );
     }
 
 
@@ -902,7 +899,7 @@ public class OntPropertyImpl
      * <p>Filter that accepts classes which have the given property as one of
      * their declared properties.</p>
      */
-    private class FilterDeclaringClass extends Filter<OntClass>
+    private class FilterDeclaringClass implements Predicate<OntClass>
     {
         private boolean m_direct;
         private Property m_prop;
@@ -912,7 +909,7 @@ public class OntPropertyImpl
             m_direct = direct;
         }
 
-        @Override public boolean accept( OntClass o ) {
+        @Override public boolean test( OntClass o ) {
             return o.hasDeclaredProperty( m_prop, m_direct );
         }
 

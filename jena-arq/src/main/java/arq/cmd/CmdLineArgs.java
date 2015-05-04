@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package arq.cmdline;
+package arq.cmd;
 
 import java.util.ArrayList ;
 import java.util.Arrays ;
@@ -26,7 +26,6 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
-import arq.cmd.CmdException ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.util.FileManager ;
 

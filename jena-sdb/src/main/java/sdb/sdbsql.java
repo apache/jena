@@ -21,14 +21,14 @@ package sdb;
 import java.sql.SQLException;
 import java.util.List;
 
+import arq.cmd.ArgDecl ;
+import arq.cmd.TerminationException ;
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.sql.RS ;
 import org.apache.jena.sdb.sql.ResultSetJDBC ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.util.FileManager ;
 import sdb.cmd.CmdArgsDB;
-import arq.cmd.TerminationException;
-import arq.cmdline.ArgDecl;
 
 public class sdbsql extends CmdArgsDB
 {

@@ -22,6 +22,7 @@ import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Locale ;
 import java.util.Set ;
+import java.util.function.Predicate;
 
 import org.apache.jena.graph.Capabilities ;
 import org.apache.jena.graph.Node ;
@@ -31,7 +32,6 @@ import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.graph.impl.SimpleEventManager ;
 import org.apache.jena.util.iterator.ClosableIterator ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Filter ;
 
 /**
  * A version of Graph that does term equality only 
@@ -114,7 +114,7 @@ public class GraphMemPlain extends GraphBase
         return node ; 
     }
     
-    static class TripleMatchFilterEquality extends Filter<Triple>
+    static class TripleMatchFilterEquality implements Predicate<Triple>
     {
         final protected Triple tMatch;
     
@@ -123,7 +123,7 @@ public class GraphMemPlain extends GraphBase
             { this.tMatch = tMatch; }
         
         @Override
-        public boolean accept(Triple t)
+        public boolean test(Triple t)
         {
             return tripleContained(tMatch, t) ;
         }

@@ -28,6 +28,7 @@ import java.io.OutputStream ;
 import java.io.Reader ;
 import java.io.Writer ;
 import java.util.* ;
+import java.util.function.Predicate;
 
 import org.apache.jena.enhanced.BuiltinPersonalities ;
 import org.apache.jena.enhanced.EnhNode ;
@@ -530,23 +531,14 @@ public class OntModelImpl extends ModelCom implements OntModel
             {
                 // we have have both direct sub-class of and a :Thing class to test against
                 return listStatements( null, ReasonerVocabulary.directSubClassOf, getProfile().THING() )
-                       .mapWith( new OntResourceImpl.SubjectAsMapper<>( OntClass.class ));
+                       .mapWith( s -> s.getSubject().as( OntClass.class ));
             }
         }
 
         // no easy shortcut, so we use brute force
         return listClasses()
-                 .filterDrop( new Filter<OntClass>() {
-                     @Override
-                    public boolean accept( OntClass o ) {
-                         return ((OntResource) o).isOntLanguageTerm();
-                     }} )
-                 .filterKeep( new Filter<OntClass>() {
-                     @Override
-                    public boolean accept( OntClass o ) {
-                         return o.isHierarchyRoot();
-                     }} )
-                    ;
+                 .filterDrop( OntResource::isOntLanguageTerm )
+                 .filterKeep( OntClass::isHierarchyRoot );
     }
 
 
@@ -658,14 +650,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     @Override
     public ExtendedIterator<OntClass> listNamedClasses() {
-        return listClasses().filterDrop(
-            new Filter<OntClass>() {
-                @Override
-                public boolean accept( OntClass x ) {
-                    return x.isAnon();
-                }
-            }
-        );
+        return listClasses().filterDrop( OntClass::isAnon );
     }
 
 
@@ -750,7 +735,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         }
         else {
             return findByType( r )
-            		.mapWith( new SubjectNodeAs<>( AnnotationProperty.class ) )
+            		.mapWith( p -> getNodeAs( p.getSubject(), AnnotationProperty.class ) )
             		.filterKeep( new UniqueFilter<AnnotationProperty>());
         }
     }
@@ -2314,13 +2299,12 @@ public class OntModelImpl extends ModelCom implements OntModel
     public ExtendedIterator<OntModel> listSubModels( final boolean withImports ) {
         ExtendedIterator<Graph> i = WrappedIterator.create( getSubGraphs().iterator() );
 
-        return i.mapWith( new Map1<Graph, OntModel>() {
-                    @Override
-                    public OntModel map1( Graph o ) {
+        return i.mapWith( 
+                    o -> {
                         Model base = ModelFactory.createModelForGraph( o );
                         OntModel om = new OntModelImpl( m_spec, base, withImports );
                         return om;
-                    }} );
+                    } );
     }
 
 
@@ -2934,7 +2918,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over all triples <code>_x rdf:type type</code>
      */
     protected <T extends RDFNode> ExtendedIterator<T> findByTypeAs( Resource type, Iterator<Resource> types, Class<T> asKey ) {
-        return findByType( type, types ).mapWith( new SubjectNodeAs<>( asKey ) );
+        return findByType( type, types ).mapWith( p -> getNodeAs( p.getSubject(), asKey ) );
     }
 
     /**
@@ -2967,7 +2951,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * the given polymorphic class.
      */
     protected <T extends RDFNode> ExtendedIterator<T> findByTypeAs( Resource type, Class<T> asKey ) {
-        return findByType( type ).mapWith( new SubjectNodeAs<>( asKey ) );
+        return findByType( type ).mapWith( p -> getNodeAs( p.getSubject(), asKey ) );
     }
 
     /**
@@ -2994,7 +2978,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return ExtendedIterator over subjects of p, presented as the facet.
      */
     protected <T extends RDFNode> ExtendedIterator<T> findByDefiningPropertyAs( Property p, Class<T> asKey ) {
-        return findByDefiningProperty( p ).mapWith( new SubjectNodeAs<>( asKey ) );
+        return findByDefiningProperty( p ).mapWith( x -> getNodeAs( x.getSubject(), asKey ) );
     }
 
 
@@ -3113,39 +3097,13 @@ public class OntModelImpl extends ModelCom implements OntModel
     // Inner class definitions
     //==============================================================================
 
-    /** Map triple subjects or single nodes to subject enh nodes, presented as() the given class */
-    protected class SubjectNodeAs<To extends RDFNode> implements Map1<Triple, To>
-    {
-        protected Class<To> m_asKey;
-
-        protected SubjectNodeAs( Class<To> asKey ) { m_asKey = asKey; }
-
-        @Override
-        public To map1( Triple x ) {
-            return getNodeAs( x.getSubject(), m_asKey );
-        }
-
-    }
-
-    /** Map triple subjects or single nodes to subject enh nodes, presented as() the given class */
-    protected class NodeAs<To extends RDFNode> implements Map1<Node, To>
-    {
-        protected Class<To> m_asKey;
-        protected NodeAs( Class<To> asKey ) { m_asKey = asKey; }
-
-        @Override
-        public To map1( Node x ) {
-            return getNodeAs( x, m_asKey );
-        }
-    }
-
-    protected class NodeCanAs<T extends RDFNode> extends Filter<Node>
+    protected class NodeCanAs<T extends RDFNode> implements Predicate<Node>
     {
         protected Class<T> m_asKey;
         protected NodeCanAs( Class<T> asKey ) { m_asKey = asKey; }
 
         @Override
-        public boolean accept( Node x ) {
+        public boolean test( Node x ) {
                 try { getNodeAs( x, m_asKey );  }
                 catch (Exception ignore) { return false; }
         return true;
@@ -3154,14 +3112,14 @@ public class OntModelImpl extends ModelCom implements OntModel
 
     }
 
-    /** Filter that accepts nodes that can be mapped to the given facet */
-    protected class SubjectNodeCanAs<T extends RDFNode> extends Filter<T>
+    /** Predicate that accepts nodes that can be mapped to the given facet */
+    protected class SubjectNodeCanAs<T extends RDFNode> implements Predicate<T>
     {
         protected Class<T> m_asKey;
         protected SubjectNodeCanAs( Class<T> asKey ) { m_asKey = asKey; }
 
         @Override
-        public boolean accept( T x ) {
+        public boolean test( T x ) {
             Node n = (x instanceof Triple)
                     ? ((Triple) x).getSubject()
                     : ((x instanceof EnhNode) ? ((EnhNode) x).asNode() :  (Node) x);

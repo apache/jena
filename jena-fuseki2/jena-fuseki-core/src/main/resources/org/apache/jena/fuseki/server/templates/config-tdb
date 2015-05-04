@@ -7,11 +7,6 @@
 @prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
-# TDB
-[] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
-tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
-tdb:GraphTDB    rdfs:subClassOf  ja:Model .
-
 ## ---------------------------------------------------------------
 ## Updatable TDB dataset with all services enabled.
 

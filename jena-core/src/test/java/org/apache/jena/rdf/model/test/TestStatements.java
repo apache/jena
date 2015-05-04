@@ -115,13 +115,10 @@ public class TestStatements extends AbstractModelTestBase
 
 	public void testStatmentMap1Selectors()
 	{
-		final Statement s = ModelHelper.statement("sub pred obj");
-		Assert.assertEquals(ModelHelper.resource("sub"),
-				Statement.Util.getSubject.map1(s));
-		Assert.assertEquals(ModelHelper.resource("pred"),
-				Statement.Util.getPredicate.map1(s));
-		Assert.assertEquals(ModelHelper.resource("obj"),
-				Statement.Util.getObject.map1(s));
+		final Statement stmt = ModelHelper.statement("sub pred obj");
+		Assert.assertEquals(ModelHelper.resource("sub"), stmt.getSubject());
+		Assert.assertEquals(ModelHelper.resource("pred"), stmt.getPredicate()) ;
+		Assert.assertEquals(ModelHelper.resource("obj"), stmt.getObject()) ;
 	}
 
 	/**

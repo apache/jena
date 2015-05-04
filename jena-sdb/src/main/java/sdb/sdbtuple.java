@@ -27,9 +27,9 @@ import org.apache.jena.sdb.store.TableDesc ;
 import org.apache.jena.sdb.store.TupleTable ;
 import org.apache.jena.atlas.lib.Lib ;
 import sdb.cmd.CmdArgsDB;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.CmdGeneral;
+import arq.cmd.ArgDecl ;
+import arq.cmd.CmdArgModule ;
+import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModBase;
 
 

@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import arq.cmd.CmdLineArgs ;
 import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.Resource ;
@@ -29,7 +30,6 @@ import org.apache.jena.sdb.SDBException ;
 import org.apache.jena.sdb.util.Pair ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 import org.apache.jena.util.FileManager ;
-import arq.cmdline.CmdLineArgs;
 
 /** Java description of a command - class and arguments. The assmbler build one of these */
 

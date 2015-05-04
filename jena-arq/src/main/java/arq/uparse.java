@@ -29,8 +29,8 @@ import org.apache.jena.sparql.modify.request.UpdateWriter ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;
 import org.apache.jena.util.FileUtils ;
+import arq.cmd.ArgDecl ;
 import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 
 public class uparse extends CmdARQ
@@ -39,7 +39,7 @@ public class uparse extends CmdARQ
     protected static final ArgDecl syntaxArg        = new ArgDecl(ArgDecl.HasValue, "syntax", "syn") ;
     protected static final ArgDecl argDeclPrint     = new ArgDecl(ArgDecl.HasValue, "print") ;
     List<String> requestFiles = null ;
-    protected Syntax updateSyntax = Syntax.defaultUpdateSyntax ;
+    protected Syntax updateSyntax = null ;
     private boolean printUpdate = false ;
     private boolean printNone  = false ;
     
@@ -62,21 +62,24 @@ public class uparse extends CmdARQ
         if ( super.cmdStrictMode )
             updateSyntax = Syntax.syntaxSPARQL_11 ;
 
+        // Set syntax
+        if ( super.contains(syntaxArg) ) {
+            // short name
+            String s = super.getValue(syntaxArg) ;
+            Syntax syn = Syntax.lookup(s) ;
+            if ( syn == null )
+                super.cmdError("Unrecognized syntax: " + s) ;
+            updateSyntax = syn ;
+        }
+        
         for ( String arg : getValues( argDeclPrint ) )
         {
             if ( arg.equalsIgnoreCase( "query" ) )
-            {
                 printUpdate = true;
-            }
             else if ( arg.equalsIgnoreCase( "none" ) )
-            {
                 printNone = true;
-            }
             else
-            {
-                throw new CmdException(
-                    "Not a recognized print form: " + arg + " : Choices are: update, none" );
-            }
+                throw new CmdException("Not a recognized print form: " + arg + " : Choices are: update, none" );
         }
         
         if ( !printUpdate && ! printNone )
@@ -95,17 +98,27 @@ public class uparse extends CmdARQ
     {
         for ( String filename : requestFiles )
         {
+            Syntax syntax = updateSyntax ;
+            if ( syntax == null )
+                syntax = Syntax.guessUpdateFileSyntax(filename) ;
             String x = oneFile( filename );
             if ( x != null )
-            {
-                execOne( x );
-            }
+                execOne( x, syntax );
         }
 
-        for ( String x : super.positionals )
-        {
-            x = indirect( x );
-            execOne( x );
+        
+        
+        
+        for ( String x : super.positionals ) {
+            Syntax syntax = updateSyntax ;    
+            if ( matchesIndirect(x) ) {
+                if ( syntax == null )
+                    syntax = Syntax.guessUpdateFileSyntax(x) ;
+                x = indirect( x );
+            }
+            if ( syntax == null )
+                syntax = Syntax.defaultUpdateSyntax ;
+            execOne( x, syntax );
         }
 
     }
@@ -123,11 +136,11 @@ public class uparse extends CmdARQ
         }
     }
     
-    private void execOne(String updateString)
+    private void execOne(String updateString, Syntax syntax)
     {
         UpdateRequest req ; 
         try {
-            req = UpdateFactory.create(updateString, updateSyntax) ;
+            req = UpdateFactory.create(updateString, syntax) ;
         } catch (QueryParseException ex)
         {
             System.err.print("Parse error: ") ;
@@ -147,7 +160,7 @@ public class uparse extends CmdARQ
         String updateString2 = w.asString() ;
         UpdateRequest req2 = null ;
         try {
-            req2 = UpdateFactory.create(updateString2, updateSyntax) ;
+            req2 = UpdateFactory.create(updateString2, syntax) ;
         } catch (QueryParseException ex)
         {
             System.err.println("Can not reparse update after serialization") ;

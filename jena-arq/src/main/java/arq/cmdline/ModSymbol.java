@@ -20,6 +20,9 @@ package arq.cmdline;
 
 import java.io.PrintStream ;
 
+import arq.cmd.ArgDecl ;
+import arq.cmd.ArgModuleGeneral ;
+import arq.cmd.CmdArgModule ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.util.Context ;

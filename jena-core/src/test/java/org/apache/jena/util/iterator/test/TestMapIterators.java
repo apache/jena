@@ -30,14 +30,8 @@ public class TestMapIterators extends ModelTestBase
 
     public void testCloseClosesBaseIterator()
         {
-        Map1<String, String> map = new Map1<String, String>() 
-            {
-            @Override
-            public String map1( String o )
-                { return null; }
-            };
         LoggingClosableIterator<String> base = new LoggingClosableIterator<>( null );
-        Map1Iterator<String, String> mit = new Map1Iterator<>( map, base );
+        Map1Iterator<String, String> mit = new Map1Iterator<>( s -> null, base );
         mit.close();
         assertTrue( "base must have been closed by closing map", base.isClosed() );
         }

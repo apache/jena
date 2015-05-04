@@ -24,7 +24,6 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.AlreadyReifiedException ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Map1 ;
 
 /**
     This class impedance-matches the reification requests of Model[Com] to the operations
@@ -151,22 +150,12 @@ public class ModelReifier
             createReifiedStatement( rs.getURI(), rs.getStatement() );
             }
         }
-        
-    /**
-        A mapper that maps modes to their corresponding ReifiedStatement objects. This
-        cannot be static: getRS cannot be static, because the mapping is model-specific.
-    */
-    protected final Map1<Node, ReifiedStatement> mapToRS = new Map1<Node, ReifiedStatement>()
-        {
-        @Override
-        public ReifiedStatement map1( Node node ) { return getRS( node ); }
-        };
 
     private ExtendedIterator<ReifiedStatement> findReifiedStatements()
-        { return ReifierStd .allNodes(model.getGraph()) .mapWith( mapToRS ); }
+        { return ReifierStd .allNodes(model.getGraph()) .mapWith( n -> getRS( n ) ); }
 
     private ExtendedIterator<ReifiedStatement> findReifiedStatements( Triple t )
-        { return ReifierStd .allNodes(model.getGraph(), t ) .mapWith( mapToRS ); }
+        { return ReifierStd .allNodes(model.getGraph(), t ) .mapWith( n -> getRS( n ) ); }
         
     /**
         Answer a ReifiedStatement that is based on the given node. 

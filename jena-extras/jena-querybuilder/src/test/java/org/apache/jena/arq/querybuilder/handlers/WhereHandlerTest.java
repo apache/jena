@@ -22,15 +22,15 @@ import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.LiteralLabelFactory ;
-import org.apache.jena.query.Query ;
-import org.apache.jena.rdf.model.ResourceFactory ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.lang.sparql_11.ParseException ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.LiteralLabelFactory;
+import org.apache.jena.query.Query;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.lang.sparql_11.ParseException;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -136,6 +136,17 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	}
 
 	@Test
+	public void testAddFilterWithNamespace() throws ParseException {
+		query.setPrefix("afn", "http://jena.hpl.hp.com/ARQ/function#");
+		handler.addFilter("afn:namespace(?one) = 'foo'");
+
+		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE
+				+ OPEN_PAREN + "afn:namespace" + OPEN_PAREN + var("one")
+				+ CLOSE_PAREN + OPT_SPACE + EQ + OPT_SPACE + QUOTE + "foo"
+				+ QUOTE + CLOSE_PAREN + CLOSE_CURLY, query.toString());
+	}
+
+	@Test
 	public void testAddFilterVarOnly() throws ParseException {
 		handler.addFilter("?one");
 
@@ -229,8 +240,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				+ var("v") + CLOSE_PAREN + CLOSE_CURLY, query.toString());
 		Map<Var, Node> values = new HashMap<Var, Node>();
 
-		values.put(Var.alloc("v"),
-				NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10)));
+		values.put(Var.alloc("v"), NodeFactory
+				.createLiteral(LiteralLabelFactory.createTypedLiteral(10)));
 		handler.setVars(values);
 		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE
 				+ OPEN_PAREN + var("one") + OPT_SPACE + LT + OPT_SPACE

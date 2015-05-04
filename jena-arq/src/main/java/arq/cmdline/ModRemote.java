@@ -18,6 +18,10 @@
 
 package arq.cmdline;
 
+import arq.cmd.ArgDecl ;
+import arq.cmd.ArgModuleGeneral ;
+import arq.cmd.CmdArgModule ;
+
 
 public class ModRemote implements ArgModuleGeneral
 {

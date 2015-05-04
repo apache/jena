@@ -24,6 +24,7 @@ package org.apache.jena.graph.compose;
 // Imports
 ///////////////
 import java.util.*;
+import java.util.function.Predicate;
 
 import org.apache.jena.graph.* ;
 import org.apache.jena.graph.impl.* ;
@@ -42,18 +43,17 @@ public abstract class CompositionBase extends GraphBase
 {
     /**
      * <p>
-     * Answer a {@link Filter} that will reject any element that is a member of iterator i.
+     * Answer a {@link Predicate} that will reject any element that is a member of iterator i.
      * As a side-effect, i will be closed. 
      * </p>
      * 
      * @param i A closable iterator
-     * @return A Filter that will accept any object not a member of i.
+     * @return A Predicate that will accept any object not a member of i.
      */
-    public static <T> Filter<T> reject( final ClosableIterator<? extends T> i )
+    public static <T> Predicate<T> reject( final ClosableIterator<? extends T> i )
         {
         final Set< ? extends T> suppress = IteratorCollection.iteratorToSet( i );
-        return new Filter<T>()
-            { @Override public boolean accept( T o ) { return !suppress.contains( o ); } };
+        return o -> !suppress.contains( o );
         }
         
     /**
@@ -117,10 +117,7 @@ public abstract class CompositionBase extends GraphBase
      */
     public static ExtendedIterator<Triple> rejecting( final ExtendedIterator<Triple> i, final Set<Triple> seen )
         {
-        Filter<Triple> seenFilter = new Filter<Triple>()
-            { @Override
-            public boolean accept( Triple x ) { return seen.contains( x ); } };
-        return i.filterDrop( seenFilter );
+        return i.filterDrop( seen::contains );
         }
         
     /**
@@ -129,50 +126,36 @@ public abstract class CompositionBase extends GraphBase
     */
     public static ExtendedIterator<Triple> rejecting( final ExtendedIterator<Triple> i, final Graph seen )
         {
-        Filter<Triple> seenFilter = new Filter<Triple>()
-            { @Override public boolean accept( Triple x ) { return seen.contains( x ); } };
-        return i.filterDrop( seenFilter );
+        return i.filterDrop( seen::contains );
         }
   
     /**
      * <p>
-     * Answer a {@link Filter} that will accept any object that is an element of 
+     * Answer a {@link Predicate} that will accept any object that is an element of 
      * iterator i.  As a side-effect, i will be evaluated and closed. 
      * </p>
      * 
      * @param i A closable iterator 
-     * @return A Filter that will accept any object in iterator i.
+     * @return A Predicate that will accept any object in iterator i.
      */
-    public static <T> Filter<T> ifIn( final ClosableIterator<T> i )
+    public static <T> Predicate<T> ifIn( final ClosableIterator<T> i )
         {
         final Set<T> allow = IteratorCollection.iteratorToSet( i );
-        return new Filter<T>()
-            { @Override public boolean accept( T x ) { return allow.contains( x ); } };
+        return allow::contains;
         }
         
     /**
      * <p>
-     * Answer a {@link Filter} that will accept any triple that is an edge of 
+     * Answer a {@link Predicate} that will accept any triple that is an edge of 
      * graph g. 
      * </p>
      * 
      * @param g A graph 
-     * @return A Filter that will accept any triple that is an edge in g.
+     * @return A Predicate that will accept any triple that is an edge in g.
      */
-    public static Filter<Triple> ifIn( final Graph g )
+    public static Predicate<Triple> ifIn( final Graph g )
         {
-        return new Filter<Triple>()
-            { @Override public boolean accept( Triple x ) { return g.contains( x ); } };
+        return g::contains;
         }
         
-
-    // Internal implementation methods
-    //////////////////////////////////
-
-
-    //==============================================================================
-    // Inner class definitions
-    //==============================================================================
-
-
 }

@@ -161,8 +161,8 @@ public class FusekiConfig {
         SystemState.init$();        // Why? mvn jetty:run-war
         String x1 = StrUtils.strjoinNL
             ( SystemState.PREFIXES, 
-              "INSERT                    { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' }",
-              "WHERE { FILTER NOT EXISTS { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' } }"
+              "INSERT                    { [] ja:loadClass 'org.apache.jena.tdb.TDB' }",
+              "WHERE { FILTER NOT EXISTS { [] ja:loadClass 'org.apache.jena.tdb.TDB' } }"
              ) ;
         String x2 = StrUtils.strjoinNL
             (SystemState.PREFIXES,

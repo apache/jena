@@ -18,6 +18,8 @@
 
 package org.apache.jena.graph.test;
 
+import java.util.function.Function ;
+
 import junit.framework.TestSuite ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -258,10 +260,12 @@ public class TestTriple extends GraphTestBase
     
     public void testTripleMaps()
         {
-        assertEquals( node( "x" ), Triple.getSubject.map1( NodeCreateUtils.createTriple( "x P z" ) ) );
-        assertEquals( node( "P" ), Triple.getPredicate.map1( NodeCreateUtils.createTriple( "x P z" ) ) );
-        assertEquals( node( "z" ), Triple.getObject.map1( NodeCreateUtils.createTriple( "x P z" ) ) );
+        assertEquals( node( "x" ), getSubject.apply( NodeCreateUtils.createTriple( "x P z" ) ) );
+        assertEquals( node( "P" ), getPredicate.apply( NodeCreateUtils.createTriple( "x P z" ) ) );
+        assertEquals( node( "z" ), getObject.apply( NodeCreateUtils.createTriple( "x P z" ) ) );
         }
     
-
+    public static final Function<Triple, Node> getSubject = t -> t.getSubject();
+    public static final Function<Triple, Node> getPredicate = t -> t.getPredicate();
+    public static final Function<Triple, Node> getObject = t -> t.getObject();
     }

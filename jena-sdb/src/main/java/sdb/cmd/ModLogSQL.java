@@ -21,10 +21,10 @@ package sdb.cmd;
 import java.util.List;
 
 import org.apache.jena.sdb.sql.SDBConnection ;
-import arq.cmd.CmdException;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.CmdGeneral;
+import arq.cmd.ArgDecl ;
+import arq.cmd.CmdArgModule ;
+import arq.cmd.CmdException ;
+import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModBase;
 
 public class ModLogSQL extends ModBase

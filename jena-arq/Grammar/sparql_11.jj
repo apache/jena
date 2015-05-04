@@ -470,7 +470,8 @@ void Quads(QuadAccSink acc) : { }
 }
 void QuadsNotTriples(QuadAccSink acc) : {Node gn ; Node prev = acc.getGraph() ; }
 {
-    <GRAPH> gn = VarOrIri()
+    <GRAPH>
+       gn = VarOrIri()
     { setAccGraph(acc, gn) ; }
     <LBRACE>
     (TriplesTemplate(acc))?
@@ -1015,6 +1016,11 @@ Node VarOrTerm() : {Node n = null ; }
 Node VarOrIri() : {Node n = null ; String iri ; }
 {
   ( n = Var() | iri = iri() { n = createNode(iri) ; } )
+  { return n ; }
+}
+Node VarOrBlankNodeOrIri() : {Node n = null ; String iri ; }
+{
+  ( n = Var() | n = BlankNode() | iri = iri() { n = createNode(iri) ; } )
   { return n ; }
 }
 Var Var() : { Token t ;}

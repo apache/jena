@@ -25,7 +25,6 @@ import org.apache.jena.assembler.AssemblerHelp ;
 import org.apache.jena.graph.Factory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.compose.Union ;
-import org.apache.jena.graph.impl.FileGraphMaker ;
 import org.apache.jena.graph.impl.SimpleGraphMaker ;
 import org.apache.jena.ontology.OntModel ;
 import org.apache.jena.ontology.OntModelSpec ;
@@ -122,17 +121,6 @@ public class ModelFactory extends ModelFactoryBase
     public static Model createModelForGraph( Graph g ) {
         return new ModelCom( g );
     }
-
-    /**
-        Answer a ModelMaker that constructs memory-based Models that
-        are backed by files in the root directory. The Model is loaded from the
-        file when it is opened, and when the Model is closed it is written back.
-
-        @param root the name of the directory in which the backing files are held
-        @return a ModelMaker linked to the files in the root
-    */
-    public static ModelMaker createFileModelMaker( String root )
-        { return new ModelMakerImpl( new FileGraphMaker( root ) ); }
 
     /**
         Answer a ModelMaker that constructs memory-based Models that do

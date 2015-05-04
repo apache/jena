@@ -21,21 +21,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.model.SecuredRDFNode;
 import org.apache.jena.rdf.model.NodeIterator ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Filter ;
-import org.apache.jena.util.iterator.Map1 ;
 
 /**
  * A secured RDFNode iterator implementation
  */
 public class SecuredNodeIterator<T extends RDFNode> implements NodeIterator
 {
-	private class PermNodeMap<N extends RDFNode> implements Map1<N, RDFNode>
+	private class PermNodeMap<N extends RDFNode> implements Function<N, RDFNode>
 	{
 		private final SecuredModel securedModel;
 
@@ -45,7 +45,7 @@ public class SecuredNodeIterator<T extends RDFNode> implements NodeIterator
 		}
 
 		@Override
-		public SecuredRDFNode map1( final RDFNode o )
+		public SecuredRDFNode apply( final RDFNode o )
 		{
 			return SecuredRDFNodeImpl.getInstance(securedModel, o);
 		}
@@ -82,13 +82,13 @@ public class SecuredNodeIterator<T extends RDFNode> implements NodeIterator
 	}
 
 	@Override
-	public ExtendedIterator<RDFNode> filterDrop( final Filter<RDFNode> f )
+	public ExtendedIterator<RDFNode> filterDrop( final Predicate<RDFNode> f )
 	{
 		return iter.filterDrop(f);
 	}
 
 	@Override
-	public ExtendedIterator<RDFNode> filterKeep( final Filter<RDFNode> f )
+	public ExtendedIterator<RDFNode> filterKeep( final Predicate<RDFNode> f )
 	{
 		return iter.filterKeep(f);
 	}
@@ -100,7 +100,7 @@ public class SecuredNodeIterator<T extends RDFNode> implements NodeIterator
 	}
 
 	@Override
-	public <U> ExtendedIterator<U> mapWith( final Map1<RDFNode, U> map1 )
+	public <U> ExtendedIterator<U> mapWith( final Function<RDFNode, U> map1 )
 	{
 		return iter.mapWith(map1);
 	}

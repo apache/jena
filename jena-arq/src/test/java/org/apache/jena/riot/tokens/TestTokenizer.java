@@ -137,20 +137,26 @@ public class TestTokenizer extends BaseTest {
             tokenFirst("<abc\\>def>") ;
         } catch (RiotParseException ex) {
             String x = ex.getMessage() ;
-            assertTrue(x.contains("illegal escape sequence value: >")) ;
+            assertTrue(x.contains("Illegal")) ;
         }
     }
 
     @Test
     public void tokenUnit_iri4() {
-        // \\\\ is a double \\ in the data.
-        tokenizeAndTestFirst("   <abc\\\\def>   123", TokenType.IRI, "abc\\def") ;
+        // \\\\ is a double \\ in the data. 0x41 is 'A'
+        tokenizeAndTestFirst("<abc\\u0041def>   123", TokenType.IRI, "abcAdef") ;
     }
 
     @Test
     public void tokenUnit_iri5() {
         // \\\\ is a double \\ in the data. 0x41 is 'A'
-        tokenizeAndTestFirst("<abc\\u0041def>   123", TokenType.IRI, "abcAdef") ;
+        tokenizeAndTestFirst("<\\u0041def>   123", TokenType.IRI, "Adef") ;
+    }
+
+    @Test
+    public void tokenUnit_iri6() {
+        // \\\\ is a double \\ in the data. 0x41 is 'A'
+        tokenizeAndTestFirst("<abc\\u0041>   123", TokenType.IRI, "abcA") ;
     }
 
     // Bad IRIs
@@ -191,12 +197,39 @@ public class TestTokenizer extends BaseTest {
     
     @Test(expected=RiotException.class)
     public void tokenUnit_iri17() {
-        tokenFirst("<abc\tdef>") ;  // Java escae - real tab
+        tokenFirst("<abc\tdef>") ;          // Java escae - real tab
     }
 
     @Test(expected=RiotException.class)
     public void tokenUnit_iri18() {
-        tokenFirst("<abc\u0007def>") ;  // Java escape - codepoint 7 
+        tokenFirst("<abc\u0007def>") ;      // Java escape - codepoint 7 
+    }
+
+    @Test(expected=RiotException.class)
+    public void tokenUnit_iri19() {
+        tokenFirst("<abc\\>") ;          
+    }
+
+    @Test(expected=RiotException.class)
+    public void tokenUnit_iri20() {
+        tokenFirst("<abc\\def>") ;          
+    }
+
+    @Test(expected=RiotException.class)
+    public void tokenUnit_iri21() {
+        // \\\\ is a double \\ in the data.
+        // RDF 1.1 - \\ is not legal in a IRIREF
+        tokenFirst("<abc\\\\def>") ;
+    }
+
+    @Test(expected=RiotException.class)
+    public void tokenUnit_iri22() {
+        tokenFirst("<abc\\u00ZZdef>") ;
+    }
+
+    @Test(expected=RiotException.class)
+    public void tokenUnit_iri23() {
+        tokenFirst("<abc\\uZZ20def>") ;
     }
 
     @Test

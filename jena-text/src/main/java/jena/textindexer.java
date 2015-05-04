@@ -28,8 +28,8 @@ import org.apache.jena.query.text.* ;
 import org.apache.jena.sparql.core.Quad ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+import arq.cmd.ArgDecl ;
 import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 
 /**

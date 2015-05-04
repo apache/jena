@@ -19,7 +19,7 @@
 package org.apache.jena.atlas.lib;
 
 import java.io.File ;
-import java.io.IOException ;
+import java.nio.file.Paths ;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.base.Sys ;
@@ -127,10 +127,7 @@ public class IRILib
         // No "file:"
         // Make Absolute filename.
         boolean trailingSlash = fn.endsWith("/") ;
-        File file = new File(fn) ;
-        
-        try { fn = file.getCanonicalPath() ; }
-        catch (IOException e) { fn = file.getAbsolutePath() ; }
+        fn = Paths.get(fn).toAbsolutePath().normalize().toString() ;
         
         if ( trailingSlash && ! fn.endsWith("/") )
             fn = fn + "/" ;

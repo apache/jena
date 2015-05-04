@@ -99,7 +99,7 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
         
         public Set<Resource> implementsTypes()
             { 
-            return implementTypes.listStatements().mapWith( Statement.Util.getSubject ).toSet(); }
+            return implementTypes.listStatements().mapWith( Statement::getSubject ).toSet(); }
             }
     
     static class PlainAssemblerGroup extends AssemblerGroup

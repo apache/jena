@@ -85,9 +85,9 @@ public class Syntax extends Symbol
 
     public static TranslationTable<Syntax> updateSyntaxNames = new TranslationTable<>(true) ;
     static {
-        querySyntaxNames.put("sparql",      syntaxSPARQL) ;
-        querySyntaxNames.put("sparql_11",   syntaxSPARQL_11) ;
-        querySyntaxNames.put("arq",         syntaxARQ) ;
+        updateSyntaxNames.put("sparql",      syntaxSPARQL) ;
+        updateSyntaxNames.put("sparql_11",   syntaxSPARQL_11) ;
+        updateSyntaxNames.put("arq",         syntaxARQ) ;
     }
 
     protected Syntax(String s) { super(s) ; }

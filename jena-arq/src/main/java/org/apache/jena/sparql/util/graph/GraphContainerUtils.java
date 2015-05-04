@@ -22,6 +22,7 @@ import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.SortedMap ;
 import java.util.TreeMap ;
+import java.util.function.Predicate;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
 
@@ -31,7 +32,6 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Filter ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
 
@@ -98,9 +98,9 @@ public class GraphContainerUtils
     }
     
     private static Node RDFSmember = RDFS.member.asNode() ;
-    private static Filter<Triple> filterRDFSmember = new Filter<Triple>() {
+    private static Predicate<Triple> filterRDFSmember = new Predicate<Triple>() {
         @Override
-        public boolean accept(Triple triple) {
+        public boolean test(Triple triple) {
             Node p = triple.getPredicate() ;
             if ( ! triple.getPredicate().isURI() )
                 return false ;

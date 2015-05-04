@@ -16,9 +16,14 @@
  * limitations under the License.
  */
 
-package arq.cmdline;
+package arq.cmd;
 
-public interface CallbackVersion
+import arq.cmdline.CmdGeneral ;
+
+
+
+public interface ArgModuleGeneral extends ArgModule
 {
-    void doHelp() ; 
+    // Registration phase for usage messages
+    public abstract void registerWith(CmdGeneral cmdLine) ;
 }

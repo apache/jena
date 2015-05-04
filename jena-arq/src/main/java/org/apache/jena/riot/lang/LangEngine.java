@@ -35,15 +35,18 @@ public class LangEngine
 {
     protected ParserProfile profile ;
     protected final Tokenizer tokens ;
-    private final PeekIterator<Token> peekIter ;
+    private PeekIterator<Token> peekIter ;
 
     protected LangEngine(Tokenizer tokens, ParserProfile profile)
     {
         this.tokens = tokens ;
         this.profile = profile ;
-        this.peekIter = new PeekIterator<>(tokens) ;
+        // The PeekIterator is always loaded with the next token until the end
+        // (for simplicity) but it measn this can throw an exception. 
+        try { this.peekIter = new PeekIterator<>(tokens) ; }
+        catch (RiotParseException ex) { raiseException(ex) ; }
     }
-     
+    
     // ---- Managing tokens.
     
     protected final Token peekToken()

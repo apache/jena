@@ -20,6 +20,8 @@ package org.apache.jena.permissions.model.impl;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
@@ -29,15 +31,13 @@ import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.rdf.model.RSIterator ;
 import org.apache.jena.rdf.model.ReifiedStatement ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Filter ;
-import org.apache.jena.util.iterator.Map1 ;
 
 /**
  * A secured RSIterator implementation
  */
 public class SecuredRSIterator implements RSIterator
 {
-	private class PermReifiedStatementFilter extends Filter<ReifiedStatement>
+	private class PermReifiedStatementFilter implements Predicate<ReifiedStatement>
 	{
 		private final SecurityEvaluator evaluator;
 		private final SecNode modelNode;
@@ -52,7 +52,7 @@ public class SecuredRSIterator implements RSIterator
 		}
 
 		@Override
-		public boolean accept( final ReifiedStatement t )
+		public boolean test( final ReifiedStatement t )
 		{
 			return evaluator.evaluateAny(evaluator.getPrincipal(), actions, modelNode,
 					SecuredItemImpl.convert(t.getStatement().asTriple()));
@@ -60,8 +60,7 @@ public class SecuredRSIterator implements RSIterator
 
 	}
 
-	private class PermReifiedStatementMap implements
-			Map1<ReifiedStatement, ReifiedStatement>
+	private class PermReifiedStatementMap implements Function<ReifiedStatement, ReifiedStatement>
 	{
 		private final SecuredModel securedModel;
 
@@ -71,7 +70,7 @@ public class SecuredRSIterator implements RSIterator
 		}
 
 		@Override
-		public ReifiedStatement map1( final ReifiedStatement o )
+		public ReifiedStatement apply( final ReifiedStatement o )
 		{
 			return SecuredReifiedStatementImpl.getInstance(securedModel, o);
 		}
@@ -112,14 +111,14 @@ public class SecuredRSIterator implements RSIterator
 
 	@Override
 	public ExtendedIterator<ReifiedStatement> filterDrop(
-			final Filter<ReifiedStatement> f )
+			final Predicate<ReifiedStatement> f )
 	{
 		return iter.filterDrop(f);
 	}
 
 	@Override
 	public ExtendedIterator<ReifiedStatement> filterKeep(
-			final Filter<ReifiedStatement> f )
+			final Predicate<ReifiedStatement> f )
 	{
 		return iter.filterKeep(f);
 	}
@@ -131,7 +130,7 @@ public class SecuredRSIterator implements RSIterator
 	}
 
 	@Override
-	public <U> ExtendedIterator<U> mapWith( final Map1<ReifiedStatement, U> map1 )
+	public <U> ExtendedIterator<U> mapWith( final Function<ReifiedStatement, U> map1 )
 	{
 		return iter.mapWith(map1);
 	}
