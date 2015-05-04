@@ -18,10 +18,7 @@
 
 package org.apache.jena.atlas.lib;
 
-import java.nio.charset.Charset ;
-import java.nio.charset.CharsetDecoder ;
-import java.nio.charset.CharsetEncoder ;
-import java.nio.charset.CodingErrorAction ;
+import java.nio.charset.* ;
 
 public class Chars
 {
@@ -48,13 +45,8 @@ public class Chars
 //        'o' , 'p' , 'q' , 'r' , 's' , 't' ,
 //        'u' , 'v' , 'w' , 'x' , 'y' , 'z'
     
-    /** Java name for UTF-8 encoding */
-    private static final String encodingUTF8     = "utf-8" ;
-    /** Java name for ASCII encoding */
-    private static final String encodingASCII    = "ascii" ;
-    
-    public static final Charset charsetUTF8 = Charset.forName(encodingUTF8) ;
-    public static final Charset charsetASCII = Charset.forName(encodingASCII) ;
+    public static final Charset charsetUTF8 = StandardCharsets.UTF_8 ;
+    public static final Charset charsetASCII = StandardCharsets.US_ASCII ;
     
     // Pools for encoders/decoder.
     // Better? use a ThreadLocal.
