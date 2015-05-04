@@ -25,6 +25,7 @@ import java.util.List ;
 import java.util.Map ;
 import java.util.Map.Entry ;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
@@ -74,9 +75,6 @@ public class TextIndexLucene implements TextIndex {
     private final Directory        directory ;
     private final Analyzer         analyzer ;
     private final Analyzer         queryAnalyzer ;
-
-    //the BORDER_DELIMITER constant is required for...
-    private static final String BORDER_DELIMITER = "borderdelimiter";
 
     // The IndexWriter can't be final because we may have to recreate it if rollback() is called.
     // However, it needs to be volatile in case the next write transaction is on a different thread,
@@ -220,24 +218,13 @@ public class TextIndexLucene implements TextIndex {
         if ( log.isDebugEnabled() )
             log.debug("Delete entity: "+entity) ;
         try {
-            TermQuery qUri = new TermQuery(new Term("uri", entity.getId()));
             Map<String, Object> map = entity.getMap();
             String property = map.keySet().iterator().next();
             String value = (String)map.get(property);
+            String key = entity.getGraph() + "-" + entity.getId() + "-" + value + "-" + entity.getLanguage();
+            Term uid = new Term("uid", DigestUtils.shaHex(key));
 
-            //escaping special characters to avoid problem in WildcardQuery
-            value = value.replace( "?", "\\?" );
-            value = value.replace( "*", "\\*" );
-            value = value.replace( "\"", "\\\"" );
-
-            QueryParser qp = new QueryParser(VER, property, analyzer);
-            Query qPropValue = qp.parse("\"" + BORDER_DELIMITER + " " + value + " " + BORDER_DELIMITER + "\"");
-
-            BooleanQuery q = new BooleanQuery();
-            q.add(qUri, BooleanClause.Occur.MUST);
-            q.add(qPropValue, BooleanClause.Occur.MUST);
-
-            indexWriter.deleteDocuments(q);
+            indexWriter.deleteDocuments(uid);
 
         } catch (Exception e) {
             throw new TextIndexException(e) ;
@@ -256,7 +243,10 @@ public class TextIndexLucene implements TextIndex {
         }
 
         for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
-            Field field = new Field(e.getKey(), BORDER_DELIMITER + " " + e.getValue() + " " + BORDER_DELIMITER, ftText) ;
+            Field field = new Field(e.getKey(), (String)e.getValue(), ftText) ;
+            doc.add(field) ;
+            String key = entity.getGraph() + "-" + entity.getId() + "-" + e.getValue() + "-" + entity.getLanguage();
+            field = new Field("uid", DigestUtils.shaHex(key), StringField.TYPE_STORED ) ;
             doc.add(field) ;
         }
         return doc ;
