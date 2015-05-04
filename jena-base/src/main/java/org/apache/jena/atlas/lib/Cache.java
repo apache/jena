@@ -20,6 +20,7 @@ package org.apache.jena.atlas.lib;
 
 import java.util.Iterator ;
 import java.util.concurrent.Callable ;
+import java.util.function.BiConsumer;
 
 /** A cache */
 public interface Cache<Key, Value>
@@ -52,5 +53,5 @@ public interface Cache<Key, Value>
     public long size() ;
     
     /** Register a callback - called when an object is dropped from the cache (optional operation) */ 
-    public void setDropHandler(ActionKeyValue<Key,Value> dropHandler) ;
+    public void setDropHandler(BiConsumer<Key,Value> dropHandler) ;
 }

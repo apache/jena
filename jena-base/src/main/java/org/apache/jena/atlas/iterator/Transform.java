@@ -18,4 +18,10 @@
 
 package org.apache.jena.atlas.iterator;
 
-public interface Transform <T, R> { R convert(T item) ; }
+import java.util.function.Function;
+
+/**
+ * Prefer {@link Function}.
+ */
+@Deprecated
+public interface Transform <T, R> extends Function<T,R>{ }

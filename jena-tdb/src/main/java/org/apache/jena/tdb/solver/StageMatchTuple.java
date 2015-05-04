@@ -21,6 +21,9 @@ package org.apache.jena.tdb.solver;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.jena.atlas.iterator.* ;
 import org.apache.jena.atlas.lib.Tuple ;
@@ -38,11 +41,11 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
 
     private final ExecutionContext execCxt ;
     private boolean anyGraphs ;
-    private Filter<Tuple<NodeId>> filter ;
+    private Predicate<Tuple<NodeId>> filter ;
 
     public StageMatchTuple(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> input, 
                             Tuple<Node> tuple, boolean anyGraphs, 
-                            Filter<Tuple<NodeId>> filter, 
+                            Predicate<Tuple<NodeId>> filter, 
                             ExecutionContext execCxt)
     {
         super(input) ;
@@ -117,10 +120,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         }
         
         // Map Tuple<NodeId> to BindingNodeId
-        Transform<Tuple<NodeId>, BindingNodeId> binder = new Transform<Tuple<NodeId>, BindingNodeId>()
-        {
-            @Override
-            public BindingNodeId convert(Tuple<NodeId> tuple)
+        Function<Tuple<NodeId>, BindingNodeId> binder = tuple -> 
             {
                 BindingNodeId output = new BindingNodeId(input) ;
                 for ( int i = 0 ; i < var.length ; i++ )
@@ -134,26 +134,10 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
                     output.put(v, id) ;
                 }
                 return output ;
-            }
         } ;
         
         return Iter.iter(iterMatches).map(binder).removeNulls() ;
     }
-    
-   
-    // -- Copying
-    private static Transform<Tuple<NodeId>,Tuple<NodeId>> projectToTriples = new Transform<Tuple<NodeId>,Tuple<NodeId>>(){
-        @Override
-        public Tuple<NodeId> convert(Tuple<NodeId> item)
-        {
-            // Zap graph node id.
-            Tuple<NodeId> t2 = Tuple.createTuple(NodeId.NodeIdAny,    // Can't be null - gets bound to a daft variable.
-                                                 item.get(1),
-                                                 item.get(2),
-                                                 item.get(3)) ;
-            return t2 ;
-        } } ;
-    
     
     private static Iterator<Tuple<NodeId>> print(Iterator<Tuple<NodeId>> iter)
     {
@@ -202,9 +186,5 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
     }
     
     // -- Mutating "transform in place"
-    private static Action<Tuple<NodeId>> quadsToAnyTriples = new Action<Tuple<NodeId>>(){
-        @Override
-        public void apply(Tuple<NodeId> item)
-        { item.tuple()[0] = NodeId.NodeIdAny ; }
-    } ;
+    private static Consumer<Tuple<NodeId>> quadsToAnyTriples = item -> item.tuple()[0] = NodeId.NodeIdAny ;
 }

@@ -18,13 +18,15 @@
 
 package org.apache.jena.sparql.expr;
 
+import java.util.function.Function;
+
+import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.core.Substitute ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.graph.NodeTransform ;
 import org.apache.jena.sparql.graph.NodeTransformLib ;
 import org.apache.jena.sparql.sse.Tags ;
 import org.apache.jena.sparql.syntax.Element ;
@@ -56,7 +58,7 @@ public class E_Exists extends ExprFunctionOp
     }
 
     @Override
-    public Expr applyNodeTransform(NodeTransform nodeTransform)
+    public Expr applyNodeTransform(Function<Node, Node> nodeTransform)
     {
         Op op2 = NodeTransformLib.transform(nodeTransform, getGraphPattern()) ;
         return new E_Exists(getElement(), op2) ;

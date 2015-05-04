@@ -19,9 +19,7 @@
 package org.apache.jena.sparql.resultset;
 
 import java.util.* ;
-
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.* ;
@@ -230,7 +228,7 @@ public class ResultSetCompare
     }
 
     static private List<Binding> convert(ResultSet rs) {
-        return Iter.iter(rs).map(qs2b).toList() ;
+        return Iter.iter(rs).map(item -> BindingUtils.asBinding(item)).toList() ;
     }
     
     
@@ -299,14 +297,6 @@ public class ResultSetCompare
         }
         return true ;
     }
-
-    private static Transform<QuerySolution, Binding> qs2b = new Transform<QuerySolution, Binding> () {
-        @Override
-        public Binding convert(QuerySolution item)
-        {
-            return BindingUtils.asBinding(item) ;
-        }
-    } ;
     
     public static class BNodeIso implements EqualityTest
     {

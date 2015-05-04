@@ -21,10 +21,8 @@ package org.apache.jena.sdb.test.junit;
 import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.List ;
-
 import org.junit.runners.Parameterized.Parameters ;
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.StoreDesc ;
 import org.apache.jena.sdb.test.SDBTestSetup ;
@@ -33,13 +31,6 @@ import org.apache.jena.sdb.util.Pair ;
 //@RunWith(Parameterized.class)
 public abstract class ParamAllStores
 {
-    // Make into Object[]{String,Store} lists just for JUnit. 
-    static Transform<Pair<String, StoreDesc>, Object[]> fix = new Transform<Pair<String, StoreDesc>, Object[]>()
-    {
-        @Override
-        public Object[] convert(Pair<String, StoreDesc> item)
-        { return new Object[]{item.car(), item.cdr()} ; }
-    } ;
 
     // Build once and return the same for parametrized types each time.
     // Connections are slow to create.
@@ -49,7 +40,7 @@ public abstract class ParamAllStores
         List<Pair<String, StoreDesc>> x = new ArrayList<Pair<String, StoreDesc>>() ;
         x.addAll(StoreList.stores(SDBTestSetup.storeList)) ;
         x.addAll(StoreList.stores(SDBTestSetup.storeListSimple)) ;
-        data = Iter.iter(x).map(fix).toList() ;
+        data = Iter.iter(x).map(p -> new Object[]{p.car(), p.cdr()}).toList() ;
     }
     
     // ----

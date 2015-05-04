@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.expr;
 
+import java.util.function.Function;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Query ;
@@ -25,7 +27,6 @@ import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.graph.NodeTransform ;
 
 /** An expression that is a variable in an expression. */
  
@@ -75,9 +76,9 @@ public class ExprVar extends ExprNode
     }
     
     @Override
-    public Expr applyNodeTransform(NodeTransform transform)
+    public Expr applyNodeTransform(Function<Node, Node> transform)
     {
-        Node node = transform.convert(varNode) ;
+        Node node = transform.apply(varNode) ;
         if ( Var.isVar(node))
             return new ExprVar(Var.alloc(node)) ;
         return NodeValue.makeNode(node) ;

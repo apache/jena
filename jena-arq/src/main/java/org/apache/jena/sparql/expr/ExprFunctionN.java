@@ -20,10 +20,11 @@ package org.apache.jena.sparql.expr;
 
 import java.util.ArrayList ;
 import java.util.List ;
+import java.util.function.Function;
 
+import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.graph.NodeTransform ;
 
 /** A function which takes N arguments (N may be variable e.g. regex) */
  
@@ -81,7 +82,7 @@ public abstract class ExprFunctionN extends ExprFunction
     }
 
     @Override
-    public Expr applyNodeTransform(NodeTransform transform)
+    public Expr applyNodeTransform(Function<Node, Node> transform)
     {
         ExprList newArgs = new ExprList() ;
         for ( int i = 1 ; i <= numArgs() ; i++ )

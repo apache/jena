@@ -20,10 +20,9 @@ package org.apache.jena.atlas.lib;
 
 import java.util.ArrayList ;
 import java.util.List ;
-
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.iterator.Action ;
 import org.apache.jena.atlas.iterator.FilterUnique ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.logging.Log ;
@@ -101,10 +100,10 @@ public class ListUtils
     
     public static <T> void print(final IndentedWriter out, List<T> list, final String sep)
     {
-        Action<T> output = new Action<T>() {
+        Consumer<T> output = new Consumer<T>() {
             boolean first = true ;
             @Override
-            public void apply(T item)
+            public void accept(T item)
             {
                 if ( ! first ) out.print(sep) ;
                 out.print(item.toString()) ;

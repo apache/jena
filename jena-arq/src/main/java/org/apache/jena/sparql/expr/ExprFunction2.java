@@ -18,10 +18,12 @@
 
 package org.apache.jena.sparql.expr;
 
+import java.util.function.Function;
+
 import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.graph.NodeTransform ;
 
 
 /** A function of two arguments */
@@ -95,7 +97,7 @@ public abstract class ExprFunction2 extends ExprFunction
     
 
     @Override
-    final public Expr applyNodeTransform(NodeTransform transform)
+    final public Expr applyNodeTransform(Function<Node, Node> transform)
     {
         Expr e1 = (expr1 == null ? null : expr1.applyNodeTransform(transform)) ;
         Expr e2 = (expr2 == null ? null : expr2.applyNodeTransform(transform)) ;

@@ -20,13 +20,14 @@ package org.apache.jena.sparql.expr;
 
 import java.util.Collection ;
 import java.util.Set ;
+import java.util.function.Function;
 
 import javax.xml.datatype.DatatypeConstants ;
 
+import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.graph.NodeTransform ;
 
 public interface Expr
 {
@@ -63,7 +64,7 @@ public interface Expr
     /**
      * Rewrite, applying a node->node transformation
      */
-    public Expr applyNodeTransform(NodeTransform transform) ;
+    public Expr applyNodeTransform(Function<Node, Node> transform) ;
 
     /** Deep copy */
     public Expr deepCopy() ;

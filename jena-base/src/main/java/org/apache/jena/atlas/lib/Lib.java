@@ -24,6 +24,7 @@ import java.util.zip.CRC32 ;
 import java.util.zip.Checksum ;
 
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.ext.com.google.common.base.Objects;
 
 public class Lib
 {
@@ -35,15 +36,13 @@ public class Lib
             ((Sync)object).sync() ;
     }
     
-    /** Return true if obj1 and obj are both null or are .equals, else return false */
+    /** Return true if obj1 and obj are both null or are .equals, else return false 
+     * Prefer {@link Objects#equal(Object, Object)}
+     */
+    @Deprecated
     public static final <T> boolean equal(T obj1, T obj2)
     {
-        if ( obj1 == null )
-            return obj2 == null ;
-        // obj1 != null
-        if ( obj2 == null )
-            return false ;
-        return obj1.equals(obj2) ;
+    		return Objects.equal(obj1, obj2);
     }
     
     /** Return true if obj1 and obj are both null or are .equals, else return false */

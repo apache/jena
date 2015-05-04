@@ -18,9 +18,10 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
+import java.util.function.Function;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.graph.NodeTransform ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 
 /** An Aggregator is the processor for the whole result stream.
@@ -46,7 +47,7 @@ public interface Aggregator
     
     public ExprList getExprList() ;
     public Aggregator copy(ExprList exprs) ;
-    public Aggregator copyTransform(NodeTransform transform) ;
+    public Aggregator copyTransform(Function<Node, Node> transform) ;
     
     @Override
     public int hashCode() ;

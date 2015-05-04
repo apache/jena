@@ -22,6 +22,7 @@ import java.util.Collection ;
 import java.util.HashMap ;
 import java.util.Map ;
 import java.util.Set ;
+import java.util.function.Function;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQConstants ;
@@ -29,7 +30,6 @@ import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.graph.NodeTransform ;
 import org.apache.jena.sparql.graph.NodeTransformLib ;
 
 /** Support for renaming all the variables in an algebra expession
@@ -49,14 +49,14 @@ public class Rename
     /** Rename one node to another */
     public static Op renameNode(Op op, Node oldName, Node newName)
     {
-        NodeTransform renamer = new RenameNode(oldName, newName) ;
+    		Function<Node, Node> renamer = new RenameNode(oldName, newName) ;
         return NodeTransformLib.transform(renamer, op) ;
     }
 
     /** Rename one variable to another */
     public static Op renameVar(Op op, Var oldName, Var newName)
     {
-        NodeTransform renamer = new RenameNode(oldName, newName) ;
+    		Function<Node, Node> renamer = new RenameNode(oldName, newName) ;
         return NodeTransformLib.transform(renamer, op) ;
     }
     
@@ -76,13 +76,13 @@ public class Rename
     /** Rename all variables in an expression, EXCEPT for those named as constant */ 
     public static ExprList renameVars(ExprList exprList, Set<Var> constants)
     {
-        NodeTransform renamer = new RenameAnyVars(constants, prefix) ;
+    		Function<Node, Node> renamer = new RenameAnyVars(constants, prefix) ;
         return NodeTransformLib.transform(renamer, exprList) ;
     }
         
     public static Expr renameVars(Expr expr, Set<Var> constants)
     {
-        NodeTransform renamer = new RenameAnyVars(constants, prefix) ;
+    		Function<Node, Node> renamer = new RenameAnyVars(constants, prefix) ;
         return NodeTransformLib.transform(renamer, expr) ;
     }
     
@@ -90,13 +90,13 @@ public class Rename
      * This assumes the op was renamed by VarRename.rename */
     public static Op reverseVarRename(Op op, boolean repeatedly)
     {
-        NodeTransform renamer = new UnrenameAnyVars(prefix, repeatedly) ;
+    		Function<Node, Node> renamer = new UnrenameAnyVars(prefix, repeatedly) ;
         return NodeTransformLib.transform(renamer, op) ;
     }
     
     // ---- Transforms that do the renaming and unrenaming.
     
-    static class RenameNode implements NodeTransform
+    static class RenameNode implements Function<Node, Node>
     {
         private final Node oldName ;
         private final Node newName ;
@@ -107,7 +107,7 @@ public class Rename
         }
         
         @Override
-        public Node convert(Node node)
+        public Node apply(Node node)
         {
             if ( node.equals(oldName) )
                 return newName ;
@@ -116,7 +116,7 @@ public class Rename
         
     }
     
-    static class RenameAnyVars implements NodeTransform
+    static class RenameAnyVars implements Function<Node, Node>
     {
         private final Map<Var, Var> aliases = new HashMap<>() ;
         private final Collection<Var> constants ;
@@ -129,7 +129,7 @@ public class Rename
         }
         
         @Override
-        public final Node convert(Node node)
+        public final Node apply(Node node)
         {
             if ( ! Var.isVar(node) ) return node ;
             if ( constants.contains(node) ) return node ;
@@ -151,7 +151,7 @@ public class Rename
     }
 
     /** Reverse a renaming (assuming renaming was done by prefixing variable names) */
-    static class UnrenameAnyVars implements NodeTransform
+    static class UnrenameAnyVars implements Function<Node, Node>
     {
         private final String varPrefix ;
         private final boolean repeatedly ;
@@ -163,7 +163,7 @@ public class Rename
         }
 
         @Override
-        public Node convert(Node node)
+        public Node apply(Node node)
         {
             if ( ! Var.isVar(node) ) 
                 return node ;

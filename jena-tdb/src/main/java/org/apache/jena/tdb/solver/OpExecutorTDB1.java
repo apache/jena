@@ -18,8 +18,9 @@
 
 package org.apache.jena.tdb.solver;
 
-import org.apache.jena.atlas.iterator.Filter ;
-import org.apache.jena.atlas.lib.Tuple ;
+import java.util.function.Predicate;
+
+import org.apache.jena.atlas.lib.Tuple;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -44,7 +45,7 @@ import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.store.GraphTDB ;
-import org.apache.jena.tdb.store.NodeId ;
+import org.apache.jena.tdb.store.NodeId;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -345,7 +346,7 @@ public class OpExecutorTDB1 extends OpExecutor
     protected QueryIterator execute(OpDatasetNames dsNames, QueryIterator input)
     { 
         DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
-        Filter<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext()) ;
+        Predicate<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext()) ;
         Node gn = dsNames.getGraphNode() ;
         if ( Var.isVar(gn) )
             return SolverLib.graphNames(ds, dsNames.getGraphNode(), input, filter, execCxt) ;
@@ -368,7 +369,7 @@ public class OpExecutorTDB1 extends OpExecutor
     /** An op executor that simply executes a BGP or QuadPattern without any reordering */ 
     private static class OpExecutorPlainTDB extends OpExecutor
     {
-        Filter<Tuple<NodeId>> filter = null ;
+        Predicate<Tuple<NodeId>> filter = null ;
         
         public OpExecutorPlainTDB(ExecutionContext execCxt)
         {

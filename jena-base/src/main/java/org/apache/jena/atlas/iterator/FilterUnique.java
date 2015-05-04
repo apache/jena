@@ -20,20 +20,16 @@ package org.apache.jena.atlas.iterator;
 
 import java.util.HashSet ;
 import java.util.Set ;
+import java.util.function.Predicate;
 
-public class FilterUnique<T> implements Filter<T>
+public class FilterUnique<T> implements Predicate<T>
 {
     private Set<T> seen = new HashSet<>() ;
     
-    public FilterUnique() { }
-    
     @Override
-    public boolean accept(T item)
+    public boolean test(T item)
     {
-        if ( seen.contains(item) )
-            return false ;
-        seen.add(item) ;
-        return true ;
+        return seen.add(item) ;
     }
 
 }

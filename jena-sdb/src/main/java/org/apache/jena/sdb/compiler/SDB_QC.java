@@ -23,10 +23,8 @@ import static org.apache.jena.atlas.iterator.Iter.* ;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.jena.atlas.iterator.Transform;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sdb.SDB ;
@@ -102,7 +100,7 @@ public class SDB_QC
         // If part query, need all variables. 
         
         // Project variables
-        List<Var> vars = toList(map(query.getResultVars().iterator(), StringToVar)) ;
+        List<Var> vars = toList(map(query.getResultVars().iterator(), Var::alloc)) ;
         
         if ( vars.size() == 0 )
         {
@@ -114,7 +112,7 @@ public class SDB_QC
             q2.setQueryPattern(query.getQueryPattern()) ;
             q2.setQuerySelectType() ;
             q2.setQueryResultStar(true) ;
-            vars = toList(map(q2.getResultVars().iterator(), StringToVar)) ;
+            vars = toList(map(q2.getResultVars().iterator(), Var::alloc)) ;
         }
         
         
@@ -146,12 +144,4 @@ public class SDB_QC
     {
         return ( x instanceof OpSQL ) ;
     }
-
-    
-    private static Transform<String, Var> StringToVar = new Transform<String, Var>(){
-        @Override
-        public Var convert(String varName)
-        {
-            return Var.alloc(varName) ;
-        }} ;
 }

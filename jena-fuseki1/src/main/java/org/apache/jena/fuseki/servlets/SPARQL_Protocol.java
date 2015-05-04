@@ -24,10 +24,8 @@ import static org.apache.jena.fuseki.HttpNames.paramNamedGraphURI ;
 import java.util.Arrays ;
 import java.util.Collections ;
 import java.util.List ;
-
 import javax.servlet.http.HttpServletRequest ;
 
-import org.apache.jena.atlas.iterator.Filter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.Query ;
@@ -76,16 +74,8 @@ public  abstract class SPARQL_Protocol extends SPARQL_ServletBase
 
     private static List<String> removeEmptyValues(List<String> list)
     {
-        return Iter.iter(list).filter(acceptNonEmpty).toList() ;
+        return Iter.iter(list).filter(item -> item != null && item.length() != 0).toList() ;
     }
-    
-    private static Filter<String> acceptNonEmpty = new Filter<String>(){ 
-        @Override
-        public boolean accept(String item)
-        {
-            return item != null && item.length() != 0 ;
-        }
-    } ;
     
     protected static int countParamOccurences(HttpServletRequest request, String param)
     {

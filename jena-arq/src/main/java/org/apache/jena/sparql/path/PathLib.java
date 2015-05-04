@@ -21,8 +21,8 @@ package org.apache.jena.sparql.path;
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.function.Predicate;
 
-import org.apache.jena.atlas.iterator.Filter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Graph ;
@@ -247,7 +247,7 @@ public class PathLib
         if ( ! subject.isConcrete() || !object.isConcrete() )
             throw new ARQInternalErrorException("Non concrete node for existsPath evaluation") ;
         Iterator<Node> iter = PathEval.eval(graph, subject, path, execCxt.getContext()) ;
-        Filter<Node> filter = new Filter<Node>() { @Override public boolean accept(Node node) { return Lib.equal(node,  object) ; } } ; 
+        Predicate<Node> filter = node -> Lib.equal(node,  object); 
         // See if we got to the node we're interested in finishing at.
         iter = Iter.filter(iter, filter) ;
         long x = Iter.count(iter) ; 

@@ -18,5 +18,11 @@
 
 package org.apache.jena.atlas.iterator;
 
+import java.util.function.Predicate;
+
+/**
+ * Prefer {@link Predicate}.
+ */
 @FunctionalInterface
-public interface Filter <T> { boolean accept(T item) ; }
+@Deprecated
+public interface Filter <T> extends Predicate<T>{  }
