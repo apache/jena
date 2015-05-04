@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
+import static java.util.Arrays.asList;
+
 import java.util.Arrays ;
 import java.util.Comparator ;
 import java.util.Iterator ;
@@ -25,7 +27,6 @@ import java.util.List ;
 import java.util.PriorityQueue ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.IteratorArray ;
 import org.apache.jena.atlas.iterator.IteratorDelayedInitialization ;
 import org.apache.jena.atlas.lib.ReverseComparator ;
 import org.apache.jena.query.Query ;
@@ -87,7 +88,7 @@ public class QueryIterTopN extends QueryIterPlainWrapper
         return new IteratorDelayedInitialization<Binding>() {
             @Override
             protected Iterator<Binding> initializeIterator() {
-                for (; qIter.hasNext();) {
+                while ( qIter.hasNext() ) {
                     Binding binding = qIter.next() ;
                     if ( heap.size() < limit )
                         add(binding) ;
@@ -101,8 +102,7 @@ public class QueryIterTopN extends QueryIterPlainWrapper
                 Binding[] y = heap.toArray(new Binding[]{}) ;
                 heap = null ;
                 Arrays.sort(y, comparator) ;
-                IteratorArray<Binding> iter = IteratorArray.create(y) ;
-                return iter ;
+                return asList(y).iterator() ;
             }
         } ;
     }

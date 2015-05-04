@@ -25,7 +25,8 @@ import java.util.Spliterator;
 
 /** Iterator over a Java base array */
 /**
- * Prefer {@link Arrays#spliterator(Object[])} or {@link Arrays#stream(Object[])}
+ * Prefer {@link Arrays#asList(Object...)} with {@link Iterable#iterator()} or
+ * {@link Arrays#spliterator(Object[])} or {@link Arrays#stream(Object[])}
  */
 @Deprecated
 public final class IteratorArray<T> implements Iterator<T>

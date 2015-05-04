@@ -21,6 +21,7 @@ package org.apache.jena.atlas.lib ;
 import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.apache.jena.atlas.iterator.Iter ;
@@ -37,9 +38,6 @@ public class Tuple<T> implements Iterable<T> {
     /**
      * Create a tuple from an array of elements. The array is not copied and
      * should not be modified after this call.
-     * <p>
-     * There is also a {@link TupleBuilder} which does create an idendent
-     * copy, in case that style is preferrable for creating tuples.
      */
     public static <X> Tuple<X> create(X[] elements) {
         return new Tuple<>(elements) ;
@@ -90,7 +88,7 @@ public class Tuple<T> implements Iterable<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return Arrays.stream(tuple).iterator() ;
+        return Arrays.asList(tuple).iterator() ;
     }
 
     /** Return a tuple with the column mapping applied */
@@ -130,7 +128,7 @@ public class Tuple<T> implements Iterable<T> {
         for ( int i = 0 ; i < tuple.length ; i++ ) {
             Object obj1 = tuple[i] ;
             Object obj2 = x.tuple[i] ;
-            if ( !Lib.equal(obj1, obj2) )
+            if ( !Objects.equals(obj1, obj2) )
                 return false ;
         }
         return true ;

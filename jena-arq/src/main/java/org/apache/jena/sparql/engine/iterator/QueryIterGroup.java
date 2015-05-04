@@ -25,8 +25,10 @@ import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorDelayedInitialization ;
-import org.apache.jena.atlas.lib.MultiMap ;
 import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
+import org.apache.jena.ext.com.google.common.collect.HashMultimap;
+import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
@@ -77,12 +79,12 @@ public class QueryIterGroup extends QueryIterPlainWrapper
             @Override
             protected Iterator<Binding> initializeIterator() {
 
-                boolean noAggregators =  ( aggregators == null || aggregators.size() == 0 ) ;
+                boolean noAggregators =  ( aggregators == null || aggregators.isEmpty() ) ;
                 
-                // Phase 1 : assign bindings to buckets by key and pump through the aggregrators.
-                MultiMap<Binding, Pair<Var, Accumulator>> accumulators = MultiMap.createMapList() ;
+                // Phase 1 : assign bindings to buckets by key and pump through the aggregators.
+                Multimap<Binding, Pair<Var, Accumulator>> accumulators = HashMultimap.create() ;
 
-                for ( ; iter.hasNext() ; )
+                while ( iter.hasNext() )
                 {
                     Binding b = iter.nextBinding() ;
                     Binding key = genKey(groupVarExpr, b, execCxt) ;
@@ -94,9 +96,8 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                         continue ;
                     }
 
-                    Collection<Pair<Var, Accumulator>> accs = accumulators.get(key) ;
                     // Create if does not exist.
-                    if ( accs == null )
+                    if ( !accumulators.containsKey(key) )
                     {
                         for ( ExprAggregator agg : aggregators )
                         {
@@ -104,11 +105,10 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                             Var v = agg.getVar() ;
                             accumulators.put(key, Pair.create(v, x)) ;
                         }
-                        accs = accumulators.get(key) ;
                     }
 
                     // Do the per-accumulator calculation.
-                    for ( Pair<Var, Accumulator> pair : accs )
+                    for ( Pair<Var, Accumulator> pair : accumulators.get(key) )
                         pair.getRight().accumulate(b, execCxt) ;
                 }
 
@@ -153,11 +153,11 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                 
                 if ( noAggregators )
                     // We used placeholder so there are always the key. 
-                    return accumulators.keys().iterator() ;
+                    return accumulators.keySet().iterator() ;
                 
                 List<Binding> results = new ArrayList<>() ;
 
-                for ( Binding k : accumulators.keys() )
+                for ( Binding k : accumulators.keySet() )
                 {
                     Collection<Pair<Var, Accumulator>> accs = accumulators.get(k) ;
                     BindingMap b = BindingFactory.create(k) ;
