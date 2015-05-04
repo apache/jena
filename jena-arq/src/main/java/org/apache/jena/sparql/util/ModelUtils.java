@@ -22,7 +22,6 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorResourceClosing ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -101,14 +100,7 @@ public class ModelUtils
     
     public static StmtIterator triplesToStatements(final Iterator<Triple> it, final Model refModel)
     {
-        return new StmtIteratorImpl(Iter.map(it, new Transform<Triple,Statement>()
-        {
-            @Override
-            public Statement convert(Triple item)
-            {
-                return refModel.asStatement(item);
-            }
-        }))
+        return new StmtIteratorImpl(Iter.map(it, refModel::asStatement))
         {
             // Make sure to close the incoming iterator
             @Override
@@ -128,14 +120,7 @@ public class ModelUtils
     
     public static Iterator<Triple> statementsToTriples(final Iterator<Statement> it)
     {
-        return new IteratorResourceClosing<>(Iter.map(it, new Transform<Statement,Triple>()
-        {
-            @Override
-            public Triple convert(Statement item)
-            {
-                return item.asTriple();
-            }
-        }),
+        return new IteratorResourceClosing<>(Iter.map(it, Statement::asTriple),
         new Closeable()
         {
             @Override

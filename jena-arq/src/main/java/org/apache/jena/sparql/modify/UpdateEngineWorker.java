@@ -22,6 +22,7 @@ import static org.apache.jena.sparql.modify.TemplateLib.template ;
 
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.function.Function;
 
 import org.apache.jena.atlas.data.BagFactory ;
 import org.apache.jena.atlas.data.DataBag ;
@@ -50,7 +51,6 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingRoot ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.graph.GraphOps ;
-import org.apache.jena.sparql.graph.NodeTransform ;
 import org.apache.jena.sparql.graph.NodeTransformLib ;
 import org.apache.jena.sparql.modify.request.* ;
 import org.apache.jena.sparql.syntax.Element ;
@@ -474,7 +474,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     
     protected static List<Quad> unused_convertBNodesToVariables(List<Quad> quads)
     {
-        NodeTransform bnodesToVariables = new NodeTransformBNodesToVariables() ;
+    		Function<Node, Node> bnodesToVariables = new NodeTransformBNodesToVariables() ;
         return NodeTransformLib.transformQuads(bnodesToVariables, quads) ;
     }
     

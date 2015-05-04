@@ -21,8 +21,6 @@ package org.apache.jena.riot.thrift;
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.util.Iterator ;
-
-import org.apache.jena.atlas.iterator.Filter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
@@ -130,7 +128,7 @@ public class TestStreamRDFThrift extends BaseTest {
         boolean b = IsoMatcher.isomorphic(dsg1, dsg2) ;
         assertTrue(b) ;
         // Stronger - same bNode and same as in original data.
-        Node obj = Iter.first(dsg1.listGraphNodes(), filterBlankNode) ;
+        Node obj = Iter.first(dsg1.listGraphNodes(), Node::isBlank) ;
         termAsObject(dsg1, obj) ;
     }
 
@@ -149,7 +147,7 @@ public class TestStreamRDFThrift extends BaseTest {
         boolean b = IsoMatcher.isomorphic(dsg1, dsg2) ;
         assertTrue(b) ;
         // Stronger - same bNode and same as in original data.
-        Node obj = Iter.first(dsg1.listGraphNodes(), filterBlankNode) ;
+        Node obj = Iter.first(dsg1.listGraphNodes(), Node::isBlank) ;
         termAsObject(dsg1, obj) ;
     }
     
@@ -173,13 +171,6 @@ public class TestStreamRDFThrift extends BaseTest {
         }
         fail("Failed to find "+term) ;
     }
-    
-    static Filter<Node> filterBlankNode = new Filter<Node>() {
-        @Override
-        public boolean accept(Node item) {
-            return item.isBlank() ;
-        }
-    } ;
     
     // ** Java8
 //    public static <T> Stream<T> stream(Iterator<? extends T> iterator) {

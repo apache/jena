@@ -18,13 +18,7 @@
 
 package org.apache.jena.query.spatial;
 
-import java.util.List;
-
-import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.iterator.Transform;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.QuadAction ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,17 +56,4 @@ public class SpatialDocProducerTriples implements SpatialDocProducer {
 			return;
 		context.index(g, s, p, o);
 	}
-
-	static Transform<Quad, Triple> QuadsToTriples = new Transform<Quad, Triple>() {
-		@Override
-		public Triple convert(Quad item) {
-			return item.asTriple();
-		}
-
-	};
-
-	static private List<Triple> quadsToTriples(List<Quad> quads) {
-		return Iter.map(quads, QuadsToTriples);
-	}
-
 }

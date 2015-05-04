@@ -18,13 +18,15 @@
 
 package org.apache.jena.atlas.iterator;
 
+import java.util.function.Consumer;
 
-public class ActionCount<T> implements Action<T>
+
+public class ActionCount<T> implements Consumer<T>
 {
     private long count = 0 ;
     
     @Override
-    public void apply(T item)
+    public void accept(T item)
     { count++ ; }
     
     public long getCount() { return count ; }

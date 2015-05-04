@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.tdb.base.record.Record ;
 import org.apache.jena.tdb.base.record.RecordFactory ;
@@ -83,13 +82,7 @@ public class RecordLib
 
     public static List<Integer> toIntList(Iterator<Record> iter)
     {
-        return Iter.toList(Iter.map(iter, new Transform<Record, Integer>(){
-            @Override
-            public Integer convert(Record item)
-            {
-                return recordToInt(item) ;
-            }}
-        )) ;
+        return Iter.toList(Iter.map(iter, item -> recordToInt(item))) ;
     }
     
     public static Record r(int v)

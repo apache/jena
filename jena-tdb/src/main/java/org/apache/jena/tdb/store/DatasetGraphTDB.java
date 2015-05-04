@@ -20,9 +20,7 @@ package org.apache.jena.tdb.store;
 
 
 import java.util.Iterator ;
-
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.Tuple ;
@@ -171,21 +169,12 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     public ReorderTransformation getReorderTransform()      { return transform ; }
     
     public DatasetPrefixesTDB getPrefixes()                 { return prefixes ; }
-
-    static private Transform<Tuple<NodeId>, NodeId> project0 = new Transform<Tuple<NodeId>, NodeId>()
-    {
-        @Override
-        public NodeId convert(Tuple<NodeId> item)
-        {
-            return item.get(0) ;
-        }
-    } ;
     
     @Override
     public Iterator<Node> listGraphNodes()
     {
         Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().findAll() ;
-        Iterator<NodeId> z =  Iter.iter(x).map(project0).distinct() ;
+        Iterator<NodeId> z =  Iter.iter(x).map(t -> t.get(0)).distinct() ;
         return NodeLib.nodes(quadTable.getNodeTupleTable().getNodeTable(), z) ;
     }
 

@@ -20,9 +20,9 @@ package org.apache.jena.atlas.lib.cache ;
 
 import java.util.Iterator ;
 import java.util.concurrent.Callable ;
+import java.util.function.BiConsumer;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.ActionKeyValue ;
 import org.apache.jena.atlas.lib.Cache ;
 
 /** A cache that keeps nothing */
@@ -67,6 +67,6 @@ public final class Cache0<K, V> implements Cache<K, V> {
     }
 
     @Override
-    public void setDropHandler(ActionKeyValue<K, V> dropHandler) {}
+    public void setDropHandler(BiConsumer<K, V> dropHandler) {}
 
 }

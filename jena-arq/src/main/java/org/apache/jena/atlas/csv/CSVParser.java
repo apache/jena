@@ -23,12 +23,12 @@ import java.io.InputStream ;
 import java.io.Reader ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.function.Function;
 
 import org.apache.commons.csv.CSVFormat ;
 import org.apache.commons.csv.CSVRecord ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 
 /** 
  *  Wrapper for Commons CSV parser.
@@ -63,12 +63,7 @@ public class CSVParser implements Iterable<List<String>>
         }
     }
     
-    private static Transform<CSVRecord, List<String>> transform = new Transform<CSVRecord, List<String>>() {
-        @Override
-        public List<String> convert(CSVRecord record) {
-            return recordToList(record) ;
-        }
-    } ;
+    private static Function<CSVRecord, List<String>> transform = rec -> recordToList(rec) ;
     
     @Override
     public Iterator<List<String>> iterator() {

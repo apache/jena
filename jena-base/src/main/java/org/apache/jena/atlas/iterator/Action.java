@@ -18,7 +18,12 @@
 
 package org.apache.jena.atlas.iterator;
 
-public interface Action<T>
+import java.util.function.Consumer;
+
+/**
+ * Prefer {@link Consumer}
+ */
+@Deprecated
+public interface Action<T> extends Consumer<T>
 {
-    public void apply(T item) ;
 }

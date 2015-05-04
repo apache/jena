@@ -51,6 +51,7 @@ import java.util.Calendar ;
 import java.util.Iterator ;
 import java.util.Properties ;
 import java.util.ServiceLoader ;
+import java.util.function.Function;
 
 import javax.xml.datatype.DatatypeConfigurationException ;
 import javax.xml.datatype.DatatypeFactory ;
@@ -75,7 +76,6 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.nodevalue.* ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.graph.NodeConst ;
-import org.apache.jena.sparql.graph.NodeTransform ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.util.* ;
 import org.apache.jena.vocabulary.RDF ;
@@ -468,10 +468,10 @@ public abstract class NodeValue extends ExprNode
     }
     
     @Override
-    public Expr applyNodeTransform(NodeTransform transform)
+    public Expr applyNodeTransform(Function<Node, Node> transform)
     { 
         Node n = asNode() ;
-        n = transform.convert(n) ;
+        n = transform.apply(n) ;
         return makeNode(n) ;
     }
 

@@ -19,34 +19,16 @@
 package org.apache.jena.atlas.lib;
 
 import java.util.Collection ;
-import java.util.Iterator ;
+import java.util.Objects;
 
 public class CollectionUtils
 {
     static public <T> void removeNulls(Collection<T> list)
-    {
-        for ( Iterator<T> iter = list.iterator() ; iter.hasNext() ; )
-        {
-            T e = iter.next() ;
-            if ( e == null )
-                iter.remove() ;
-        }
+    {	
+    		list.removeIf(Objects::isNull);
     }
     
     static public <T> boolean disjoint(Collection<T> c1, Collection<T> c2)
     {
-        if ( c2.size() < c1.size() )
-        {
-            Collection<T> t = c1 ;
-            c1 = c2 ;
-            c2 = t ;
-        }
-        
-        for ( T t : c1 )
-        {
-            if ( c2.contains(t) )
-                return false ;
-        }
-        return true ;
-    }
+		return c1.stream().noneMatch(c2::contains);
 }

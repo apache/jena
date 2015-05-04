@@ -20,13 +20,14 @@ package org.apache.jena.sparql.expr;
 
 import java.util.Collection ;
 import java.util.Set ;
+import java.util.function.Function;
 
+import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.graph.NodeTransform ;
 import org.apache.jena.sparql.util.ExprUtils ;
 
 
@@ -85,7 +86,7 @@ public abstract class ExprNode implements Expr
     public abstract Expr copySubstitute(Binding binding) ;
     
     @Override
-    public abstract Expr applyNodeTransform(NodeTransform transform) ;
+    public abstract Expr applyNodeTransform(Function<Node, Node> transform) ;
 
         
     // ---- Default implementations

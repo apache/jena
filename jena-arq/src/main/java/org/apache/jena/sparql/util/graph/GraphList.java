@@ -24,10 +24,8 @@ import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.List ;
 import java.util.Set ;
-
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorConcat ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -139,13 +137,7 @@ public class GraphList
                 return Iter.nullIterator() ;
         }
         List<Node> x = members(gn) ;
-        Transform<Node, Triple> transform = new Transform<Node, Triple>() {
-            @Override
-            public Triple convert(Node obj) {
-                return Triple.create(s, ListPFunction.nListMember, obj) ;
-            }
-        } ;
-        return Iter.map(x.iterator(), transform) ;
+        return Iter.map(x.iterator(), t -> Triple.create(s, ListPFunction.nListMember, t)) ;
     }
 
     private static boolean isAny(Node x) {
@@ -353,8 +345,6 @@ public class GraphList
     private static final Node NIL = RDF.nil.asNode() ;
 
     private static GNode next(GNode gnode) { return new GNode(gnode, cdr(gnode)) ; }
-
-    private static Node value(GNode gnode) { return car(gnode) ; }
 
     public static boolean isListNode (GNode gnode)
     { return gnode.node.equals(NIL) || isCons(gnode) ; }

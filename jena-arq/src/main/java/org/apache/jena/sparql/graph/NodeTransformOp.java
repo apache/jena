@@ -20,6 +20,7 @@ package org.apache.jena.sparql.graph;
 
 import java.util.ArrayList ;
 import java.util.List ;
+import java.util.function.Function;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -50,8 +51,8 @@ class NodeTransformOp extends TransformCopy
     // Not:
     //   Conditional (no expression)
     
-    private final NodeTransform transform ;
-    NodeTransformOp(NodeTransform transform)
+    private final Function<Node, Node> transform ;
+    NodeTransformOp(Function<Node, Node> transform)
     {
         this.transform = transform ;
     }
@@ -85,9 +86,9 @@ class NodeTransformOp extends TransformCopy
     { 
         TriplePath tp = opPath.getTriplePath() ;
         Node s = tp.getSubject() ;
-        Node s1 = transform.convert(s) ;
+        Node s1 = transform.apply(s) ;
         Node o = tp.getObject() ;
-        Node o1 = transform.convert(o) ;
+        Node o1 = transform.apply(o) ;
         
         if ( s1 == s && o1 == o )
             // No change.
@@ -111,7 +112,7 @@ class NodeTransformOp extends TransformCopy
         // The internal representation is (graph, BGP)
         BasicPattern bgp2 = NodeTransformLib.transform(transform, opQuadPattern.getBasicPattern()) ;
         Node g2 = opQuadPattern.getGraphNode() ;
-        g2 = transform.convert(g2) ;
+        g2 = transform.apply(g2) ;
         
         if ( g2 == opQuadPattern.getGraphNode() && bgp2 == opQuadPattern.getBasicPattern() )
             return super.transform(opQuadPattern) ;
@@ -120,7 +121,7 @@ class NodeTransformOp extends TransformCopy
     
     @Override public Op transform(OpGraph opGraph, Op subOp)
     {
-        Node g2 = transform.convert(opGraph.getNode()) ;
+        Node g2 = transform.apply(opGraph.getNode()) ;
         if ( g2 == opGraph.getNode() )
             return super.transform(opGraph, subOp) ;
         return new OpGraph(g2, subOp) ;
@@ -128,7 +129,7 @@ class NodeTransformOp extends TransformCopy
     
     @Override public Op transform(OpDatasetNames opDatasetNames)
     {
-        Node g2 = transform.convert(opDatasetNames.getGraphNode()) ;
+        Node g2 = transform.apply(opDatasetNames.getGraphNode()) ;
         if ( g2 == opDatasetNames.getGraphNode() )
             return super.transform(opDatasetNames) ;
         return new OpDatasetNames(g2) ;

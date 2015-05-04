@@ -19,9 +19,9 @@
 package org.apache.jena.tdb.store ;
 
 import java.util.Iterator ;
+import java.util.function.Function;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.Tuple ;
@@ -166,18 +166,11 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
         return (int)Iter.count(iter) ;
     }
 
-    private static Transform<Tuple<NodeId>, Tuple<NodeId>> project4TupleTo3Tuple = new Transform<Tuple<NodeId>, Tuple<NodeId>>() {
-                                                                                     @Override
-                                                                                     public Tuple<NodeId> convert(Tuple<NodeId> item) {
-                                                                                         if ( item.size() != 4 )
-                                                                                             throw new TDBException(
-                                                                                                                    "Expected a Tuple of 4, got: "
-                                                                                                                        + item) ;
-                                                                                         return Tuple.createTuple(item.get(1),
-                                                                                                                  item.get(2),
-                                                                                                                  item.get(3)) ;
-                                                                                     }
-                                                                                 } ;
+	private static Function<Tuple<NodeId>, Tuple<NodeId>> project4TupleTo3Tuple = item -> {
+		if (item.size() != 4)
+			throw new TDBException("Expected a Tuple of 4, got: " + item);
+		return Tuple.createTuple(item.get(1), item.get(2), item.get(3));
+	};
 
     // Convert from Iterator<Quad> to Iterator<Triple>
     static class ProjectQuadsToTriples implements Iterator<Triple> {

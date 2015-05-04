@@ -20,14 +20,14 @@ package org.apache.jena.sparql.modify;
 
 import java.util.HashMap ;
 import java.util.Map ;
+import java.util.function.Function;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarAlloc ;
-import org.apache.jena.sparql.graph.NodeTransform ;
 
-public class NodeTransformBNodesToVariables implements NodeTransform
+public class NodeTransformBNodesToVariables implements Function<Node, Node>
 {
     private VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarBNodeToVar) ;
     private Map<Node, Var> mapping ;
@@ -38,7 +38,7 @@ public class NodeTransformBNodesToVariables implements NodeTransform
     }
 
     @Override
-    public Node convert(Node node)
+    public Node apply(Node node)
     {
         if ( ! node.isBlank() )
             return node ;

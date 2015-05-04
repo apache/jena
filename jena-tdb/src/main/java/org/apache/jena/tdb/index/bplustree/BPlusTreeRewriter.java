@@ -23,10 +23,10 @@ import static org.apache.jena.tdb.index.bplustree.BPlusTreeRewriterUtils.printIn
 import static org.apache.jena.tdb.index.bplustree.BPlusTreeRewriterUtils.summarizeDataBlocks ;
 
 import java.util.Iterator ;
+import java.util.function.Function;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorWithBuffer ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.tdb.base.block.BlockMgr ;
 import org.apache.jena.tdb.base.buffer.PtrBuffer ;
@@ -141,17 +141,13 @@ public class BPlusTreeRewriter
         final RecordBufferPageMgr mgr = bpt.getRecordsMgr().getRecordBufferPageMgr() ;
         Iterator<RecordBufferPage> iter = new RecordBufferPageLinker(new RecordBufferPagePacker(records, mgr)) ;
 
-        Transform<RecordBufferPage, Pair<Integer, Record>> transform = new Transform<RecordBufferPage, Pair<Integer, Record>>()
-        {
-            @Override
-            public Pair<Integer, Record> convert(RecordBufferPage rbp)
+        Function<RecordBufferPage, Pair<Integer, Record>> transform = rbp ->
             {
                 mgr.put(rbp) ;
                 Record r = rbp.getRecordBuffer().getHigh() ;
                 r = bpt.getRecordFactory().createKeyOnly(r) ;
                 return new Pair<>(rbp.getId(), r) ;
-            }
-        } ;
+            };
         // Write and convert to split pairs.
         Iterator<Pair<Integer, Record>> iter2 = Iter.map(iter, transform) ;
 
