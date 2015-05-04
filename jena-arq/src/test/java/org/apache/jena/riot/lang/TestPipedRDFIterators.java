@@ -20,6 +20,7 @@ package org.apache.jena.riot.lang;
 
 import java.io.ByteArrayInputStream ;
 import java.nio.charset.Charset ;
+import java.nio.charset.StandardCharsets ;
 import java.util.concurrent.* ;
 
 import org.apache.jena.graph.Triple ;
@@ -392,7 +393,7 @@ public class TestPipedRDFIterators {
 
             @Override
             public void run() {
-                Charset utf8 = Charset.forName("utf8");
+                Charset utf8 = StandardCharsets.UTF_8 ;
                 ByteArrayInputStream input = new ByteArrayInputStream(data.getBytes(utf8));
                 try {
                     RDFDataMgr.parse(out, input, null, RDFLanguages.TURTLE, null);
