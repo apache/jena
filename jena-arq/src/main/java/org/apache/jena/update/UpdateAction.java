@@ -83,6 +83,7 @@ public class UpdateAction
      * @param filename
      * @param graphStore
      */
+    @Deprecated
     public static void readExecute(String filename, GraphStore graphStore)
     {
         readExecute(filename, graphStore, (Binding)null);

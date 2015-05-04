@@ -34,8 +34,4 @@ public class GraphStoreBasic extends DatasetGraphWrapper implements GraphStore
     { 
         super(dsg) ;
     }
-
-    @Override
-    public void close()
-    {}
 }
