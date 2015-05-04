@@ -24,7 +24,8 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.atlas.lib.MultiSet ;
+import org.apache.jena.ext.com.google.common.collect.HashMultiset;
+import org.apache.jena.ext.com.google.common.collect.Multiset;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.tdb.TDBException ;
 import org.slf4j.Logger ;
@@ -42,9 +43,9 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     // ---- State for tracking
     // Track and count block references and releases
     //   No - the page is dirty.
-    protected final MultiSet<Long> activeReadBlocks   = new MultiSet<>() ;
-    protected final MultiSet<Long> activeWriteBlocks  = new MultiSet<>() ;
-    protected final MultiSet<Long> activeIterBlocks   = new MultiSet<>() ;
+    protected final Multiset<Long> activeReadBlocks   = HashMultiset.create() ;
+    protected final Multiset<Long> activeWriteBlocks  = HashMultiset.create() ;
+    protected final Multiset<Long> activeIterBlocks   = HashMultiset.create() ;
     // Track the operations 
     protected final List<Pair<Action, Long>> actions = new ArrayList<>() ;
     protected final List<Iterator<?>> activeIterators = new ArrayList<>() ;
@@ -59,13 +60,6 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         actions.clear() ;
     }
     
-    private void clearInternalIter()
-    {
-        clearInternalRW() ;
-        activeIterators.clear() ;
-        activeIterBlocks.clear() ;
-    }
-
     private int inRead = 0 ;
     private int inIterator = 0 ;
     private boolean inUpdate = false ;
@@ -79,11 +73,6 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         return new BlockMgrTracker(label, blkMgr) ;
     }
 
-    private BlockMgrTracker(BlockMgr blockMgr)
-    {
-        this(LoggerFactory.getLogger(BlockMgrTracker.class), blockMgr.getLabel(), blockMgr) ;
-    }
-    
     private BlockMgrTracker(String label, BlockMgr blockMgr)
     {
         this(loggerDefault, label, blockMgr) ;
@@ -411,7 +400,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     }
 
 
-    private void checkEmpty(String string, MultiSet<Long> blocks)
+    private void checkEmpty(String string, Multiset<Long> blocks)
     {
         if ( ! blocks.isEmpty() )
         {
@@ -440,11 +429,6 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         log.warn(msg(string)) ;
     }
 
-    private void warn(Action action, String string)
-    {
-        warn(action + ": " + string) ;
-    }
-   
     private void error(String string)
     {
         log.error(msg(string)) ;
@@ -460,9 +444,6 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         throw new BlockException(msg(action+": "+string)) ;
         //debugPoint() ;
     }
-
-    // Do nothing - but use a a breakpoint point.
-    private void debugPoint() {}
 
     private void history()
     {

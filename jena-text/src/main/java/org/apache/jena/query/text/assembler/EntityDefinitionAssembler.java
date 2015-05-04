@@ -28,9 +28,11 @@ import java.util.Map;
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.Mode ;
 import org.apache.jena.assembler.assemblers.AssemblerBase ;
-import org.apache.jena.atlas.lib.MultiMap ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.ext.com.google.common.collect.HashMultimap;
+import org.apache.jena.ext.com.google.common.collect.Multimap;
+import org.apache.jena.ext.com.google.common.collect.Multimaps;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.* ;
 import org.apache.jena.query.text.EntityDefinition ;
@@ -88,7 +90,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
         String graphField = qsol1.contains("graphField") ? qsol1.getLiteral("graphField").getLexicalForm() : null;
         String defaultField = qsol1.contains("dftField") ? qsol1.getLiteral("dftField").getLexicalForm() : null ;
 
-        MultiMap<String, Node> mapDefs = MultiMap.createMapList() ; 
+        Multimap<String, Node> mapDefs = HashMultimap.create() ; 
         Map<String, Analyzer> analyzerDefs = new HashMap<>();
 
         Statement listStmt = root.getProperty(TextVocab.pMap);
@@ -97,7 +99,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
             if (! n.isResource()) {
                 throw new TextIndexException("Text list node is not a resource : " + n);
             }
-            Resource listResource = (Resource) n;
+            Resource listResource = n.asResource();
             if (listResource.equals(RDF.nil)) {
                 break;  // end of the list
             }
@@ -110,7 +112,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
             if (! n.isResource()) {
                 throw new TextIndexException("Text map list entry is not a resource : " + n);
             }
-            Resource listEntry = (Resource) n;
+            Resource listEntry = n.asResource();
 
             Statement fieldStatement = listEntry.getProperty(TextVocab.pField);
             if (fieldStatement == null) {
@@ -120,7 +122,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
             if (! n.isLiteral()) {
                 throw new TextIndexException("Text map entry field property has no literal value : " + n);
             }
-            String field = ((Literal)n).getLexicalForm();
+            String field = n.asLiteral().getLexicalForm();
 
             Statement predicateStatement = listEntry.getProperty(TextVocab.pPredicate);
             if (predicateStatement == null) {
@@ -130,8 +132,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
             if (! n.isURIResource()) {
                 throw new TextIndexException("Text map entry predicate property has non resource value : " + n);
             }
-            Resource predicate = (Resource) n;
-            mapDefs.put(field, predicate.asNode()) ;
+            mapDefs.put(field, n.asNode()) ;
 
             Statement analyzerStatement = listEntry.getProperty(TextVocab.pAnalyzer);
             if (analyzerStatement != null) {
@@ -139,7 +140,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
                 if (! n.isResource()) {
                     throw new TextIndexException("Text map entry analyzer property is not a resource : " + n);
                 }
-                Resource analyzerResource = (Resource) n;
+                Resource analyzerResource = n.asResource();
                 Analyzer analyzer = (Analyzer) a.open(analyzerResource);
                 analyzerDefs.put(field, analyzer);
             }
@@ -151,7 +152,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
         // Primary field/predicate
         if ( defaultField != null ) {
             Collection<Node> c = mapDefs.get(defaultField) ;
-            if ( c == null )
+            if ( c.isEmpty() )
                 throw new TextIndexException("No definition of primary field '"+defaultField+"'") ;
         }
 

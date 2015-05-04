@@ -267,7 +267,7 @@ public class Iter<T> implements Iterator<T> {
      * stream until the first element not passing the filter)
      */
     public static <T> boolean every(Iterator<? extends T> stream, Predicate<T> filter) {
-        for (; stream.hasNext();) {
+        while ( stream.hasNext() ) {
             T item = stream.next() ;
             if ( !filter.test(item) )
                 return false ;
@@ -291,7 +291,7 @@ public class Iter<T> implements Iterator<T> {
      * the stream to first element passing the filter)
      */
     public static <T> boolean some(Iterator<? extends T> stream, Predicate<T> filter) {
-        for (; stream.hasNext();) {
+        while ( stream.hasNext() ) {
             T item = stream.next() ;
             if ( filter.test(item) )
                 return true ;
@@ -420,14 +420,14 @@ public class Iter<T> implements Iterator<T> {
 //    }
 
     public static <T> Iterator<T> removeNulls(Iterator<T> iter) {
-        return filter(iter, x -> x != null) ;
+        return filter(iter, Objects::nonNull) ;
     }
 
     /** Take the first N elements of an iterator - stop early if too few */
     public static <T> List<T> take(Iterator<T> iter, int N) {
         iter = new IteratorN<>(iter, N) ;
         List<T> x = new ArrayList<>(N) ;
-        for (; iter.hasNext();)
+        while ( iter.hasNext() )
             x.add(iter.next()) ;
         return x ;
     }
@@ -611,7 +611,7 @@ public class Iter<T> implements Iterator<T> {
 
     /** Send the elements of the iterator to a sink - consumes the iterator */
     public static <T> void sendToSink(Iterator<T> iter, Sink<T> sink) {
-        for (; iter.hasNext();) {
+        while ( iter.hasNext() ) {
             T thing = iter.next() ;
             sink.send(thing) ;
         }
@@ -635,11 +635,11 @@ public class Iter<T> implements Iterator<T> {
     // { return Iter.iter(Arrays.asList(objects)) ; }
 
     public static <T> Iter<T> iterSingleton(T x) {
-        return Iter.iter(SingletonIterator.create(x)) ;
+        return iter(SingletonIterator.create(x)) ;
     }
 
     public static <T> Iter<T> iter(Collection<T> collection) {
-        return Iter.iter(collection.iterator()) ;
+        return iter(collection.iterator()) ;
     }
 
     public static <T> Iter<T> iter(Iterator<T> iterator) {
@@ -667,7 +667,7 @@ public class Iter<T> implements Iterator<T> {
      * debugging
      */
     public static <T> Iterator<T> materialize(Iterator<T> iter) {
-        return Iter.toList(iter).iterator() ;
+        return toList(iter).iterator() ;
     }
 
     public static <T> Iter<T> concat(Iter<T> iter1, Iter<T> iter2) {
@@ -683,7 +683,7 @@ public class Iter<T> implements Iterator<T> {
             return iter2 ;
         if ( iter2 == null )
             return iter1 ;
-        return Iter.iter(iter1).append(Iter.iter(iter2)) ;
+        return iter(iter1).append(iter(iter2)) ;
     }
 
     public static <T> T first(Iterator<T> iter, Predicate<T> filter) {
@@ -790,7 +790,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     public Iter<T> removeNulls() {
-        return filter(x -> x != null) ;
+        return iter(removeNulls(this)) ;
     }
 
     public <R> Iter<R> map(Function<T, R> converter) {
@@ -823,7 +823,7 @@ public class Iter<T> implements Iterator<T> {
 
     /** Return an Iter that yields at most the first N items */
     public Iter<T> take(int N) {
-        return Iter.iter(take(iterator, N)) ;
+        return iter(take(iterator, N)) ;
     }
 
     /** Count the iterator (this is destructive on the iterator) */

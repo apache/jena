@@ -79,7 +79,7 @@ public  abstract class SPARQL_Protocol extends ActionSPARQL
         return Iter.iter(list).filter(acceptNonEmpty).toList() ;
     }
     
-    private static Predicate<String> acceptNonEmpty = item -> item != null && item.length() != 0;
+    private static Predicate<String> acceptNonEmpty = item -> item != null && !item.isEmpty();
     
     protected static int countParamOccurences(HttpServletRequest request, String param)
     {
