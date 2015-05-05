@@ -26,6 +26,7 @@ import org.seaborne.dboe.engine.* ;
 
 import org.apache.jena.sparql.core.Var ;
 
+/** General hash join (creates the rpobe table from the left hand side) */
 public class HashJoin
 {
     // No hash key marker.
