@@ -19,12 +19,10 @@
 package org.apache.jena.sparql.expr;
 
 import java.util.* ;
-import java.util.function.Function;
-
-import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.util.Context ;
 
 public class ExprList implements Iterable<Expr>
@@ -77,7 +75,7 @@ public class ExprList implements Iterable<Expr>
     /**
      * Rewrite, applying a node->node transformation
      */
-    public ExprList applyNodeTransform(Function<Node, Node> transform) {
+    public ExprList applyNodeTransform(NodeTransform transform) {
         ExprList x = new ExprList() ;
         for ( Expr e : expressions)
             x.add(e.applyNodeTransform(transform));

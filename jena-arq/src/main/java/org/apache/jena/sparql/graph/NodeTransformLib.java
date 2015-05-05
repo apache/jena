@@ -22,8 +22,6 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 import java.util.Objects;
-import java.util.function.Function;
-
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -43,14 +41,14 @@ import org.apache.jena.sparql.expr.ExprList ;
 public class NodeTransformLib
 {
     /** Do a node->node conversion of an Op - return original BGP for "no change" */
-    public static Op transform(Function<Node, Node> nodeTransform, Op op)
+    public static Op transform(NodeTransform nodeTransform, Op op)
     {
         Transform opTransform = new NodeTransformOp(nodeTransform) ; 
         return Transformer.transform(opTransform, null, op) ;   // No expr transform - we do it ourselves.
     }
     
     /** Do a node->node conversion of a BGP - return original BGP for "no change" */
-    public static BasicPattern transform(Function<Node, Node> nodeTransform, BasicPattern pattern)  
+    public static BasicPattern transform(NodeTransform nodeTransform, BasicPattern pattern)  
     {
         BasicPattern bgp2 = new BasicPattern() ;
         boolean changed = false ;
@@ -67,7 +65,7 @@ public class NodeTransformLib
     }
 
     /** Do a node->node conversion of a QuadPattern - return original QuadPattern for "no change" */
-    public static QuadPattern transform(Function<Node, Node> nodeTransform, QuadPattern pattern)  
+    public static QuadPattern transform(NodeTransform nodeTransform, QuadPattern pattern)  
     {
         QuadPattern qp2 = new QuadPattern() ;
         boolean changed = false ;
@@ -84,7 +82,7 @@ public class NodeTransformLib
     }
 
     /** Do a node->node conversion of a Triple - return original Triple for "no change" */
-    public static Triple transform(Function<Node, Node> nodeTransform, Triple triple)  
+    public static Triple transform(NodeTransform nodeTransform, Triple triple)  
     {
         boolean change = false ;
         Node s = triple.getSubject() ;
@@ -104,7 +102,7 @@ public class NodeTransformLib
     }
 
     /** Do a node->node conversion of a Quad - return original Quad for "no change" */
-    public static Quad transform(Function<Node, Node> nodeTransform, Quad quad)  
+    public static Quad transform(NodeTransform nodeTransform, Quad quad)  
     {
         boolean change = false ;
         Node s = quad.getSubject() ;
@@ -126,7 +124,7 @@ public class NodeTransformLib
         return new Quad(g,s,p,o) ;
     }
     
-    public static Table transform(Table table, Function<Node, Node> transform) {
+    public static Table transform(Table table, NodeTransform transform) {
         // Non-streaming rewrite 
         List<Var> vars = transformVars(transform, table.getVars()) ;
         Iterator<Binding> iter = table.rows() ; 
@@ -139,7 +137,7 @@ public class NodeTransformLib
         return new TableData(vars, newRows) ;
     }
     
-    public static Binding transform(Binding b, Function<Node, Node> transform) {
+    public static Binding transform(Binding b, NodeTransform transform) {
         BindingMap b2 = BindingFactory.create() ;
         List<Var> vars = Iter.toList(b.vars()) ;
         for ( Var v : vars ) {
@@ -152,7 +150,7 @@ public class NodeTransformLib
 
 
     /** Do a node->node conversion of a List&lt;Quad&gt; - return original List&lt;Quad&gt; for "no change" */
-    public static List<Quad> transformQuads(Function<Node, Node> nodeTransform, List<Quad> quads)
+    public static List<Quad> transformQuads(NodeTransform nodeTransform, List<Quad> quads)
     {
         List<Quad> x = new ArrayList<>() ;
         boolean changed = false ; 
@@ -169,7 +167,7 @@ public class NodeTransformLib
     }
 
     /** Do a node->node conversion of a VarExprList - return original VarExprList for "no change" */
-    public static VarExprList transform(Function<Node, Node> nodeTransform, VarExprList varExprList)
+    public static VarExprList transform(NodeTransform nodeTransform, VarExprList varExprList)
     {
         VarExprList varExprList2 = new VarExprList() ;
         boolean changed = false ;
@@ -188,7 +186,7 @@ public class NodeTransformLib
         return varExprList2 ;
     }
 
-    public static List<Var> transformVars(Function<Node, Node> nodeTransform, List<Var> varList)
+    public static List<Var> transformVars(NodeTransform nodeTransform, List<Var> varList)
     {
         List<Var> varList2 = new ArrayList<>(varList.size()) ;
         boolean changed = false ;
@@ -204,7 +202,7 @@ public class NodeTransformLib
         return varList2 ;
     }
 
-    public static ExprList transform(Function<Node, Node> nodeTransform, ExprList exprList)
+    public static ExprList transform(NodeTransform nodeTransform, ExprList exprList)
     {
           ExprList exprList2 = new ExprList() ;
           boolean changed = false ;
@@ -219,12 +217,12 @@ public class NodeTransformLib
           return exprList2 ;
     }
 
-    public static Expr transform(Function<Node, Node> nodeTransform, Expr expr)
+    public static Expr transform(NodeTransform nodeTransform, Expr expr)
     {
         return expr.applyNodeTransform(nodeTransform) ;
     }
 
-    public static List<SortCondition> transform(Function<Node, Node> nodeTransform, List<SortCondition> conditions)
+    public static List<SortCondition> transform(NodeTransform nodeTransform, List<SortCondition> conditions)
     {
         List<SortCondition> conditions2 = new ArrayList<>() ;
         boolean same = true ;

@@ -18,8 +18,6 @@
 package org.apache.jena.permissions.query.rewriter;
 
 import java.util.List;
-import java.util.function.Function;
-
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.permissions.SecurityEvaluator;
@@ -31,6 +29,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.sparql.graph.NodeTransform;
 
 public class SecuredFunction extends ExprFunctionN
 {
@@ -103,7 +102,7 @@ public class SecuredFunction extends ExprFunctionN
 	}
 
 	@Override
-	public Expr applyNodeTransform( Function<Node, Node> transform )
+	public Expr applyNodeTransform( NodeTransform transform )
 	{
 		return this;
 	}

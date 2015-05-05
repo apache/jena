@@ -174,9 +174,7 @@ public class ResultSetCompare
         if ( ! compareHeader(rs1, rs2) ) return false ;
         return equivalentByOrder(convert(rs1) , convert(rs2), new BNodeIso(NodeUtils.sameTerm)) ;
     }
-    
-    private static EqualityTest nodeExactTest = new EqualityTestExact() ;
-    
+
     /** compare two result sets for exact equality equivalence.
      * Exact equalitymeans:
      * Each row in rs1 matches the same index row in rs2.
@@ -192,7 +190,7 @@ public class ResultSetCompare
     {
         if ( ! compareHeader(rs1, rs2) ) return false ;
 
-        return equivalentByOrder(convert(rs1) , convert(rs2), nodeExactTest) ;
+        return equivalentByOrder(convert(rs1) , convert(rs2), new EqualityTest(){}) ;
     }
 
     /** Compare two result sets for bNode isomorphism equivalence.
@@ -327,13 +325,6 @@ public class ResultSetCompare
                 return mapping.makeIsomorphic(n1, n2) ;
             
             return false ;
-        }
-    }
-
-    private static class EqualityTestExact implements EqualityTest {
-        @Override
-        public boolean equal(Node n1, Node n2) {
-            return Objects.equals(n1, n2) ;
         }
     }
 }

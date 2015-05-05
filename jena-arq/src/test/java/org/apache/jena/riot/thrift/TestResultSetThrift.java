@@ -26,7 +26,6 @@ import java.io.InputStream ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
 import org.apache.jena.query.ResultSetRewindable ;
@@ -35,7 +34,6 @@ import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderResultSet ;
-import org.apache.jena.sparql.util.NodeUtils.EqualityTest ;
 import org.junit.Test ;
 
 public class TestResultSetThrift extends BaseTest {
@@ -64,15 +62,6 @@ public class TestResultSetThrift extends BaseTest {
          , ")"
          ) ;
 
-    
-    static class EqualityTestExact implements EqualityTest {
-        @Override
-        public boolean equal(Node n1, Node n2) {
-            return n1.equals(n2) ;
-        }
-    }
-    private static EqualityTest exactTest = new EqualityTestExact() ;
-    
     @Test public void resultSet_01() { test(rs0) ; }
     
     @Test public void resultSet_02() { 

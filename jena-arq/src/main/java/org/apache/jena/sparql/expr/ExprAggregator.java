@@ -19,8 +19,6 @@
 package org.apache.jena.sparql.expr;
 
 import java.util.Objects;
-import java.util.function.Function;
-
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
@@ -29,6 +27,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.aggregate.Aggregator ;
 import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 
 /** Group aggregation functions calculated a value during grouping and
@@ -108,7 +107,7 @@ public class ExprAggregator extends ExprNode
     }
     
     @Override
-    public ExprAggregator applyNodeTransform(Function<Node, Node> transform)
+    public ExprAggregator applyNodeTransform(NodeTransform transform)
     {
         // Can't rewrite this to a non-variable.
         Node node = transform.apply(var) ;
