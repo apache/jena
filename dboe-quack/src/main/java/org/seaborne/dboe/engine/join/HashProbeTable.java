@@ -23,7 +23,8 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.MultiMap ;
+import org.apache.jena.ext.com.google.common.collect.HashMultimap ;
+import org.apache.jena.ext.com.google.common.collect.Multimap ;
 import org.seaborne.dboe.engine.JoinKey ;
 import org.seaborne.dboe.engine.Row ;
 import org.seaborne.dboe.engine.join.HashJoin.Hasher ;
@@ -37,14 +38,14 @@ class HashProbeTable<X> {
     private long s_maxMatchGroup        = 0 ;
 
     private final List <Row<X>> noKeyBucket = new ArrayList<>() ;
-    private final MultiMap<Object, Row<X>> buckets ;
+    private final Multimap<Object, Row<X>> buckets ;
     private final Hasher<X> hasher ;
     private final JoinKey   joinKey ;
     
     HashProbeTable(Hasher<X> hasher, JoinKey joinKey) {
         this.hasher = hasher ;
         this.joinKey = joinKey ;
-        buckets = MultiMap.createMapList() ;
+        buckets = HashMultimap.create() ;
     }
     
     public void put(Row<X> row) {
@@ -61,7 +62,7 @@ class HashProbeTable<X> {
         Iterator<Row<X>> iter = null ;
         Object longHash = PipelineHashJoin.hash(hasher, joinKey, row) ;
         if ( longHash == PipelineHashJoin.noKeyHash )
-            iter = buckets.flatten() ;
+            iter = buckets.values().iterator() ;
         else {
             Collection<Row<X>> x = buckets.get(longHash) ;
             if ( x != null ) {
@@ -103,8 +104,6 @@ class HashProbeTable<X> {
         Collection<Row<X>> list = buckets.get(longHash) ;
         return list ;
     }
-    
-    public Iterator<Row<X>> flatten$() { return buckets.flatten() ; } 
     
     public void clear() {
         buckets.clear() ;

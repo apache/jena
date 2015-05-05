@@ -32,8 +32,9 @@ import static org.seaborne.dboe.base.block.BlockMgrTracker.Action.Write ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.atlas.lib.MultiSet ;
 import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.ext.com.google.common.collect.HashMultiset ;
+import org.apache.jena.ext.com.google.common.collect.Multiset ;
 import org.seaborne.dboe.DBOpEnvException ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -52,8 +53,10 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
     // ---- State for tracking
     // Track and count block references and releases
     // No - the page is dirty.
-    protected final MultiSet<Long>           activeReadBlocks  = new MultiSet<>() ;
-    protected final MultiSet<Long>           activeWriteBlocks = new MultiSet<>() ;
+    
+    
+    protected final Multiset<Long>           activeReadBlocks  = HashMultiset.create() ;
+    protected final Multiset<Long>           activeWriteBlocks = HashMultiset.create() ;
     // Track the operations
     protected final List<Pair<Action, Long>> actions           = new ArrayList<>() ;
     // ---- State for tracking
@@ -342,7 +345,7 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
             error(action, "Called outside update and read") ;
     }
 
-    private void checkEmpty(String string, MultiSet<Long> blocks) {
+    private void checkEmpty(String string, Multiset<Long> blocks) {
         if ( !blocks.isEmpty() ) {
             error(string) ;
             for ( Long id : blocks )

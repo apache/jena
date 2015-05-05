@@ -23,11 +23,11 @@ import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorSlotted ;
-import org.apache.jena.atlas.lib.MultiMap ;
 import org.apache.jena.atlas.lib.SetUtils ;
-import org.seaborne.dboe.engine.* ;
-
+import org.apache.jena.ext.com.google.common.collect.HashMultimap ;
+import org.apache.jena.ext.com.google.common.collect.Multimap ;
 import org.apache.jena.sparql.core.Var ;
+import org.seaborne.dboe.engine.* ;
 
 public class HashJoin_Standalone
 {
@@ -61,7 +61,7 @@ public class HashJoin_Standalone
         private final JoinKey                  joinKey ;
         private final Hasher<X>                hasher ;
         private final RowBuilder<X>            builder ;
-        private final MultiMap<Object, Row<X>> buckets ;
+        private final Multimap<Object, Row<X>> buckets ;
         private final Collection<Row<X>>       leftNoKey ;
 
         private Iterator<Row<X>>               iterRight ;
@@ -77,7 +77,7 @@ public class HashJoin_Standalone
             this.iterRight = right.iterator() ;
 
             // Phase 1 : Build hash table. 
-            buckets = MultiMap.createMapList() ;
+            buckets = HashMultimap.create() ;
             Iterator<Row<X>> iter1 = left.iterator() ; 
             for (; iter1.hasNext();) {
                 Row<X> row1 = iter1.next() ;
@@ -128,7 +128,7 @@ public class HashJoin_Standalone
                     
                     if ( longHash == noKeyHash ) {
                         // No shared vars with the JoinKey; iterator over the whole of the left.
-                        iterCurrent = buckets.flatten() ;
+                        iterCurrent = buckets.values().iterator() ;
                     } else {
                         // Get all rows matching with the hash from the right row. 
                         Collection<Row<X>> sameKey = buckets.get(longHash) ;    // Maybe null.

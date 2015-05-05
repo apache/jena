@@ -24,13 +24,13 @@ import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.DS ;
-import org.apache.jena.atlas.lib.MultiMap ;
 import org.apache.jena.atlas.lib.SetUtils ;
 import org.apache.jena.atlas.logging.FmtLog ;
+import org.apache.jena.ext.com.google.common.collect.HashMultimap ;
+import org.apache.jena.ext.com.google.common.collect.Multimap ;
+import org.apache.jena.sparql.core.Var ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.join.HashJoin.Hasher ;
-
-import org.apache.jena.sparql.core.Var ;
 
 /** Implmentation of HashJoin that materizes its results and then returns an iterator.
  *  As much a test of the algorithm.  
@@ -52,7 +52,7 @@ public class HashJoinConcrete {
         Set<Var> vars = SetUtils.union(left.vars(), right.vars()) ;
         if ( Quack.JOIN_EXPLAIN ) FmtLog.info(Quack.joinStatsLog, "Phase 1 : "+joinKey) ;
         // Phase 1.hasher, 
-        MultiMap<Object, Row<X>> buckets = MultiMap.createMapList() ;
+        Multimap<Object, Row<X>> buckets = HashMultimap.create() ;  // Approximate sizes
         long count1 = 0 ;
         Iterator<Row<X>> iter1 = left.iterator() ; 
         for (; iter1.hasNext();) {
@@ -82,7 +82,7 @@ public class HashJoinConcrete {
             if ( longHash == HashJoin.noKeyHash ) {
                 // No key on the right.
                 // Need to cross product with the left.
-                Iterator<Row<X>> iter = buckets.flatten() ;
+                Iterator<Row<X>> iter = buckets.values().iterator() ;
                 for ( ; iter.hasNext() ; ) {
                     Row<X> rLeft = iter.next() ;
                     builder.reset() ;
@@ -96,7 +96,7 @@ public class HashJoinConcrete {
             Iterator<Row<X>> iter ; 
             if ( longHash == HashJoin.noKeyHash ) {
                 // No shared vars with the JoinKey; iterator over the whole of the left.
-                iter = buckets.flatten() ;
+                iter = buckets.values().iterator() ;
             } else {
                 // Get all rows matching with the hash from the right row. 
                 Collection<Row<X>> sameKey = buckets.get(longHash) ;    // Maybe null.

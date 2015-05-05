@@ -32,8 +32,9 @@ import static org.seaborne.dboe.trans.bplustree.BlockTracker.Action.Write ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.atlas.lib.MultiSet ;
 import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.ext.com.google.common.collect.HashMultiset ;
+import org.apache.jena.ext.com.google.common.collect.Multiset ;
 import org.seaborne.dboe.DBOpEnvException ;
 import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.block.BlockException ;
@@ -70,8 +71,8 @@ public class BlockTracker implements BlockMgr {
     // ---- State for tracking
     // Track and count block references and releases
     // No - the page is dirty.
-    protected final MultiSet<Long>           activeWriteBlocks = new MultiSet<>() ;
-    protected final MultiSet<Long>           activeReadBlocks  = new MultiSet<>() ;
+    protected final Multiset<Long>           activeWriteBlocks = HashMultiset.create() ;
+    protected final Multiset<Long>           activeReadBlocks  = HashMultiset.create() ;
     // Track the operations
     protected final List<Pair<Action, Long>> actions           = new ArrayList<>() ;
     // ---- State for tracking
@@ -174,8 +175,8 @@ public class BlockTracker implements BlockMgr {
             if ( !activeWriteBlocks.contains(id) && !activeReadBlocks.contains(id) )
                 error(Promote, id + " is not an active block") ;
 
-            if ( activeReadBlocks.contains(id) )
-                activeReadBlocks.removeAll(id) ;
+            while ( activeReadBlocks.contains(id) )
+                activeReadBlocks.remove(id) ;
 
             // Double promotion results in only one entry.
             if ( !activeWriteBlocks.contains(id) )
@@ -357,7 +358,7 @@ public class BlockTracker implements BlockMgr {
             error(action, "Called outside update and read") ;
     }
 
-    private void checkEmpty(String string, MultiSet<Long> blocks) {
+    private void checkEmpty(String string, Multiset<Long> blocks) {
         if ( !blocks.isEmpty() ) {
             error(string) ;
             for ( Long id : blocks )

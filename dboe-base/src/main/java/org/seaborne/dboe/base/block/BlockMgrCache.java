@@ -40,16 +40,9 @@ public class BlockMgrCache extends BlockMgrSync {
     // Delayed dirty writes. May be present, may not.
     private final Cache<Long, Block> writeCache ;
 
-    public static boolean            globalLogging  = false ;                                       // Also
-                                                                                                     // enable
-                                                                                                     // the
-                                                                                                     // logging
-                                                                                                     // level.
-    private boolean                  logging        = false ;                                       // Also
-                                                                                                     // enable
-                                                                                                     // the
-                                                                                                     // logging
-                                                                                                     // level.
+    // Also enable the logging level.
+    public static boolean            globalLogging  = false ;    
+    private boolean                  logging        = false ;
     // ---- stats
     long                             cacheReadHits  = 0 ;
     long                             cacheMisses    = 0 ;
