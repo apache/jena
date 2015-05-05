@@ -19,7 +19,6 @@ package org.seaborne.dboe.base.block ;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.lib.ActionKeyValue ;
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
 import org.slf4j.Logger ;
@@ -65,29 +64,19 @@ public class BlockMgrCache extends BlockMgrSync {
             writeCache = null ;
         else {
             writeCache = CacheFactory.createCache(writeSlots) ;
-            writeCache.setDropHandler(new ActionKeyValue<Long, Block>() {
-                @Override
-                public void apply(Long id, Block block) {
-                    // We're inside a synchronized operation at this point.
-                    log("Cache spill: write block: %d", id) ;
-                    if ( block == null ) {
-                        log.warn("Write cache: " + id + " dropping an entry that isn't there") ;
-                        return ;
-                    }
-                    // Force the block to be writtern
-                    // by sending it to the wrapped BlockMgr
-                    BlockMgrCache.super.write(block) ;
+            writeCache.setDropHandler((id, block) -> { 
+                // We're inside a synchronized operation at this point.
+                log("Cache spill: write block: %d", id) ;
+                if ( block == null ) {
+                    log.warn("Write cache: " + id + " dropping an entry that isn't there") ;
+                    return ;
                 }
+                // Force the block to be writtern
+                // by sending it to the wrapped BlockMgr
+                BlockMgrCache.super.write(block) ;
             }) ;
         }
     }
-
-    // Pool?
-    // @Override
-    // public ByteBuffer allocateBuffer(int id)
-    // {
-    // super.allocateBuffer(id) ;
-    // }
 
     @Override
     synchronized public Block getRead(long id) {
