@@ -115,6 +115,9 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         Map<String, IRI> pmap = prefixMap.getMapping() ;
         for ( Entry<String, IRI> e : pmap.entrySet() ) {
             String key = e.getKey() ;
+            if ( key.isEmpty() )
+                // Prefix "" is not allowed in JSON-LD
+                continue ;
             IRI iri = e.getValue() ;
             ctx.put(e.getKey(), e.getValue().toString()) ;
         }
