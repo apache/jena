@@ -18,11 +18,11 @@
 
 package org.apache.jena.atlas.web ;
 
-import static org.apache.jena.atlas.lib.Lib.equal ;
 import static org.apache.jena.atlas.lib.Lib.hashCodeObject ;
 
 import java.util.LinkedHashMap ;
 import java.util.Map ;
+import java.util.Objects;
 
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -172,7 +172,7 @@ public class MediaType {
         if ( !(object instanceof MediaType) )
             return false ;
         MediaType mt = (MediaType)object ;
-        return equal(type, mt.type) && equal(subType, mt.subType) && equal(params, mt.params) ;
+        return Objects.equals(type, mt.type) && Objects.equals(subType, mt.subType) && Objects.equals(params, mt.params) ;
     }
 
     public String getParameter(String name) {

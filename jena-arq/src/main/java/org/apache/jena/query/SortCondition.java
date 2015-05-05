@@ -18,8 +18,9 @@
 
 package org.apache.jena.query;
 
+import java.util.Objects;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
@@ -125,7 +126,7 @@ public class SortCondition extends PrintSerializableBase
         if ( sc.getDirection() != this.getDirection() )
             return false ;
         
-        if ( ! Lib.equal(this.getExpression(), sc.getExpression()) )
+        if ( ! Objects.equals(this.getExpression(), sc.getExpression()) )
             return false ;
         
 //        if ( ! Utils.eq(this.getVariable(), sc.getVariable()) )

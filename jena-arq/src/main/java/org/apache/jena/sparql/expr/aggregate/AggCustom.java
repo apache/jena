@@ -19,9 +19,9 @@
 package org.apache.jena.sparql.expr.aggregate;
 
 import java.util.Locale ;
+import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -142,9 +142,9 @@ public class AggCustom extends AggregatorBase
             return false ;
         AggCustom agg = (AggCustom)other ;
         return 
-            Lib.equal(this.iri, agg.iri) &&
+        		Objects.equals(this.iri, agg.iri) &&
             this.isDistinct == agg.isDistinct &&
-            Lib.equal(this.getExprList(), agg.getExprList()) ;
+            	Objects.equals(this.getExprList(), agg.getExprList()) ;
     } 
 
     public static Accumulator createAccNull() { return new  AccCustom() ; }

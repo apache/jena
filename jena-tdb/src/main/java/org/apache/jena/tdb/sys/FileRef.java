@@ -20,10 +20,10 @@ package org.apache.jena.tdb.sys;
 
 import java.util.HashMap ;
 import java.util.Map ;
+import java.util.Objects;
 import java.util.TreeMap ;
 
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.tdb.TDBException ;
@@ -182,7 +182,7 @@ public class FileRef
         if ( id != other.id )
             return false ;
         // Should not be needed.
-        if ( ! Lib.equal(filename, other.filename) ) return false ;
+        if ( ! Objects.equals(filename, other.filename) ) return false ;
         return true ;
     }
 }

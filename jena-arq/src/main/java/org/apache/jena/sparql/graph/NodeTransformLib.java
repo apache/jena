@@ -21,6 +21,7 @@ package org.apache.jena.sparql.graph;
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.apache.jena.atlas.iterator.Iter ;
@@ -38,8 +39,6 @@ import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
-
-import static org.apache.jena.atlas.lib.Lib.equal ;
 
 public class NodeTransformLib
 {
@@ -180,7 +179,7 @@ public class NodeTransformLib
             Var v2 = (Var)nodeTransform.apply(v) ;
             Expr expr2 = ( expr != null ) ? transform(nodeTransform, expr) : null ;
             
-            if ( ! equal(v, v2) || ! equal(expr, expr2) )
+            if ( ! Objects.equals(v, v2) || ! Objects.equals(expr, expr2) )
                 changed = true ;
             varExprList2.add(v2, expr2) ;
         }
@@ -197,7 +196,7 @@ public class NodeTransformLib
         {
             Var v2 = (Var)nodeTransform.apply(v) ;
             varList2.add(v2) ;
-            if ( !equal(v, v2) )
+            if ( !Objects.equals(v, v2) )
                 changed = true ;
         }
         if ( ! changed )

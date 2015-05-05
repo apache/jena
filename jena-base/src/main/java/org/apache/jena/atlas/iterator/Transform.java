@@ -21,6 +21,7 @@ package org.apache.jena.atlas.iterator;
 import java.util.function.Function;
 
 /**
+ * @deprecated
  * Prefer {@link Function}.
  */
 @Deprecated

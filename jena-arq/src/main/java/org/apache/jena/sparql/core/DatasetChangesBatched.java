@@ -20,8 +20,8 @@ package org.apache.jena.sparql.core;
 
 import java.util.ArrayList ;
 import java.util.List ;
+import java.util.Objects;
 
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 
 /** Collect a stream of DatasetChanges into batches.
@@ -69,9 +69,9 @@ public abstract class DatasetChangesBatched implements DatasetChanges
                 startBatch() ;
             // Drop and through and include in the current batch.
         }
-        else if ( ! Lib.equal(currentAction, qaction) ||
-                  ! Lib.equal(currentGraph, g) ||
-                  ! Lib.equal(currentSubject, s) )
+        else if ( ! Objects.equals(currentAction, qaction) ||
+                  ! Objects.equals(currentGraph, g) ||
+                  ! Objects.equals(currentSubject, s) )
         {
             finishBatch() ;
             startBatch() ;

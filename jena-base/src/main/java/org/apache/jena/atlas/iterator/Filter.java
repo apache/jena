@@ -21,6 +21,7 @@ package org.apache.jena.atlas.iterator;
 import java.util.function.Predicate;
 
 /**
+ * @deprecated
  * Prefer {@link Predicate}.
  */
 @FunctionalInterface

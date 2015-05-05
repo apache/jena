@@ -20,8 +20,8 @@ package org.apache.jena.riot.adapters;
 
 import java.io.InputStream ;
 import java.io.Reader ;
+import java.util.Objects;
 
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
@@ -74,7 +74,7 @@ public class RDFReaderRIOT_Web extends RDFReaderRIOT
         // Reading a URL, no hint language provided.
         // Use the URL structure as the hint.
         Lang lang = null ;
-        if ( ! Lib.equal(contentType, WebContent.contentTypeTextPlain) )
+        if ( ! Objects.equals(contentType, WebContent.contentTypeTextPlain) )
             lang = RDFLanguages.contentTypeToLang(contentType) ; 
         
         if ( lang == null )
