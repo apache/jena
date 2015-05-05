@@ -20,8 +20,6 @@ package org.apache.jena.sparql.graph;
 
 import java.util.ArrayList ;
 import java.util.List ;
-import java.util.function.Function;
-
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.SortCondition ;
@@ -51,8 +49,8 @@ class NodeTransformOp extends TransformCopy
     // Not:
     //   Conditional (no expression)
     
-    private final Function<Node, Node> transform ;
-    NodeTransformOp(Function<Node, Node> transform)
+    private final NodeTransform transform ;
+    NodeTransformOp(NodeTransform transform)
     {
         this.transform = transform ;
     }

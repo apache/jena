@@ -18,11 +18,9 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.function.Function;
-
-import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.sparql.graph.NodeTransform;
 
 /** An expression that is constant (does not depend on evaluating a sub expression). */
 
@@ -55,7 +53,7 @@ public abstract class ExprFunction0 extends ExprFunction
     public abstract NodeValue eval(FunctionEnv env)  ;
     
     @Override
-    final public Expr applyNodeTransform(Function<Node, Node> transform)
+    final public Expr applyNodeTransform(NodeTransform transform)
     {
         // Nothing to transform. 
         return copy() ;
