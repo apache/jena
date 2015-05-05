@@ -25,6 +25,7 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.PrintStream ;
 import java.util.Comparator ;
+import java.util.Objects;
 import java.util.Properties ;
 import java.util.SortedSet ;
 import java.util.TreeSet ;
@@ -160,7 +161,7 @@ public class MetaFile implements Sync, Closeable
     /** Test whether a property has a value.  Null tests equal to not present. */
     public boolean propertyEquals(String key, String value)
     {
-        return Lib.equal(getProperty(key), value) ;
+        return Objects.equals(getProperty(key), value) ;
     }
 
     /** Set property if not already set. */
@@ -201,7 +202,7 @@ public class MetaFile implements Sync, Closeable
     {
         String value = getProperty(key) ;
         
-        if ( ! Lib.equal(value, value) )
+        if ( ! Objects.equals(value, value) )
             inconsistent(key, value, expected) ;
     }
 

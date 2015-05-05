@@ -21,6 +21,7 @@ package org.apache.jena.sparql.algebra.optimize ;
 import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.Objects;
 import java.util.Set ;
 
 import org.apache.jena.atlas.lib.CollectionUtils ;
@@ -68,7 +69,7 @@ public class TransformFilterPlacement extends TransformCopy {
             if ( obj == null ) return false ;
             if ( getClass() != obj.getClass() ) return false ;
             Placement other = (Placement)obj ;
-            return Lib.equal(op, other.op) && Lib.equal(unplaced, other.unplaced) ;
+            return Objects.equals(op, other.op) && Objects.equals(unplaced, other.unplaced) ;
         }
     }
     

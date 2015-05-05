@@ -22,9 +22,9 @@ import java.io.OutputStream ;
 import java.io.Writer ;
 import java.util.ArrayList ;
 import java.util.List ;
+import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.Quad ;
@@ -79,7 +79,7 @@ abstract class WriterStreamRDFBatched extends WriterStreamRDFBase
         Node g = quad.getGraph() ;
         Node s = quad.getSubject() ;
 
-        if ( !Lib.equal(g, currentGraph) || !Lib.equal(s, currentSubject) ) {
+        if ( !Objects.equals(g, currentGraph) || !Objects.equals(s, currentSubject) ) {
             if ( currentSubject != null ) {
                 if ( currentGraph == null )
                     finishBatchTriples(currentSubject) ;
@@ -96,7 +96,7 @@ abstract class WriterStreamRDFBatched extends WriterStreamRDFBase
     @Override
     protected final void print(Triple triple) {
         Node s = triple.getSubject() ;
-        if ( !Lib.equal(s, currentSubject) ) {
+        if ( !Objects.equals(s, currentSubject) ) {
             if ( currentSubject != null )
                 finishBatchTriples(currentSubject) ;
             startBatchTriple(s) ;

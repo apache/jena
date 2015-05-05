@@ -21,7 +21,7 @@ package org.apache.jena.atlas.lib;
 /** Close this object.
  *  This form does not allow Exceptions (it does allow RuntimeExceptions).  
  */
-public interface Closeable extends java.io.Closeable
+public interface Closeable
 {
     public void close() ;
 }

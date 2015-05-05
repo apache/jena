@@ -19,8 +19,8 @@
 package org.apache.jena.sparql.resultset;
 
 import java.util.* ;
+
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
@@ -333,7 +333,7 @@ public class ResultSetCompare
     private static class EqualityTestExact implements EqualityTest {
         @Override
         public boolean equal(Node n1, Node n2) {
-            return Lib.equal(n1, n2) ;
+            return Objects.equals(n1, n2) ;
         }
     }
 }

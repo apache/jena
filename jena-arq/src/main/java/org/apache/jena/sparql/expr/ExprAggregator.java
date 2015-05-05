@@ -18,8 +18,7 @@
 
 package org.apache.jena.sparql.expr;
 
-import static org.apache.jena.atlas.lib.Lib.equal ;
-
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.apache.jena.atlas.lib.Lib ;
@@ -80,9 +79,9 @@ public class ExprAggregator extends ExprNode
         if ( ! ( other instanceof ExprAggregator ) )
             return false ;
         ExprAggregator agg = (ExprAggregator)other ;
-        if ( ! equal(var, agg.var) )
+        if ( ! Objects.equals(var, agg.var) )
             return false ;
-        return equal(aggregator, agg.aggregator) ;
+        return Objects.equals(aggregator, agg.aggregator) ;
     }
 
     // Ensure no confusion - in an old design, an ExprAggregator was a subclass of ExprVar. 

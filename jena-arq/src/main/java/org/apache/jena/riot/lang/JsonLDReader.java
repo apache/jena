@@ -23,11 +23,11 @@ import java.io.InputStream ;
 import java.io.Reader ;
 import java.util.List ;
 import java.util.Map ;
+import java.util.Objects;
 import java.util.Map.Entry;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
@@ -155,7 +155,7 @@ public class JsonLDReader implements ReaderRIOT
         else if ( type.equals(LITERAL) ) {
             String lang = (String)map.get("language") ;
             String datatype = (String)map.get("datatype") ;
-            if ( Lib.equal(xsdString, datatype) )
+            if ( Objects.equals(xsdString, datatype) )
                 // In RDF 1.1, simple literals and xsd:string are the same.
                 // During migration, we prefer simple literals to xsd:strings. 
                 datatype = null ;

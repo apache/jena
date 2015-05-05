@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.apache.jena.atlas.lib.Lib.equal ;
 import static org.apache.jena.riot.WebContent.charsetUTF8 ;
 import static org.apache.jena.riot.WebContent.contentTypeRDFXML ;
 import static org.apache.jena.riot.WebContent.contentTypeResultsJSON ;
@@ -33,6 +32,7 @@ import static org.apache.jena.riot.WebContent.contentTypeXML ;
 import java.io.IOException ;
 import java.util.HashMap ;
 import java.util.Map ;
+import java.util.Objects;
 
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
@@ -134,7 +134,7 @@ public class ResponseResultSet
              
         // Stylesheet - change to application/xml.
         final String stylesheetURL = ResponseOps.paramStylesheet(request) ;
-        if ( stylesheetURL != null && equal(serializationType,contentTypeResultsXML) )
+        if ( stylesheetURL != null && Objects.equals(serializationType,contentTypeResultsXML) )
             contentType = contentTypeXML ;
         
         // Force to text/plain?
@@ -143,17 +143,17 @@ public class ResponseResultSet
             contentType = contentTypeTextPlain ;
 
         // Better : dispatch on MediaType
-        if ( equal(serializationType, contentTypeResultsXML) )
+        if ( Objects.equals(serializationType, contentTypeResultsXML) )
             sparqlXMLOutput(action, contentType, resultSet, stylesheetURL, booleanResult) ;
-        else if ( equal(serializationType, contentTypeResultsJSON) )
+        else if ( Objects.equals(serializationType, contentTypeResultsJSON) )
             jsonOutput(action, contentType, resultSet, booleanResult) ;
-        else if ( equal(serializationType, contentTypeTextPlain) )
+        else if ( Objects.equals(serializationType, contentTypeTextPlain) )
             textOutput(action, contentType, resultSet, qPrologue, booleanResult) ;
-        else if ( equal(serializationType, contentTypeTextCSV) ) 
+        else if ( Objects.equals(serializationType, contentTypeTextCSV) ) 
             csvOutput(action, contentType, resultSet, booleanResult) ;
-        else if (equal(serializationType, contentTypeTextTSV) )
+        else if (Objects.equals(serializationType, contentTypeTextTSV) )
             tsvOutput(action, contentType, resultSet, booleanResult) ;
-        else if (equal(serializationType, WebContent.contentTypeResultsThrift) )
+        else if (Objects.equals(serializationType, WebContent.contentTypeResultsThrift) )
             thriftOutput(action, contentType, resultSet, booleanResult) ;
         else
             ServletOps.errorBadRequest("Can't determine output serialization: "+serializationType) ;
