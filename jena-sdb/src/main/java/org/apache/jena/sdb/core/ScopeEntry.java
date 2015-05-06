@@ -18,9 +18,9 @@
 
 package org.apache.jena.sdb.core;
 
-import org.apache.jena.atlas.iterator.Action ;
-import org.apache.jena.atlas.iterator.Filter ;
-import org.apache.jena.atlas.iterator.Transform ;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
 import org.apache.jena.sdb.core.sqlexpr.SqlColumn ;
 import org.apache.jena.sparql.core.Var ;
 
@@ -30,27 +30,9 @@ public class ScopeEntry
     SqlColumn column;
     ScopeStatus status ;
     
-    public static Filter<ScopeEntry> OptionalFilter = new Filter<ScopeEntry>()
-    {
-        @Override
-        public boolean accept(ScopeEntry item)
-        { return item.getStatus() == ScopeStatus.OPTIONAL ; }
-    } ;
+    public static Predicate<ScopeEntry> OptionalFilter = item -> item.getStatus() == ScopeStatus.OPTIONAL;
     
-    public static Transform<ScopeEntry, Var> ToVar = new Transform<ScopeEntry, Var>()
-    {
-        @Override
-        public Var convert(ScopeEntry item)
-        { return item.getVar() ; } 
-    } ;
-    
-    public static Action<ScopeEntry> SetOpt = new Action<ScopeEntry>()
-    {
-        @Override
-        public void apply(ScopeEntry item)
-        { item.setStatus(ScopeStatus.OPTIONAL) ; } 
-    } ;
-
+    public static Consumer<ScopeEntry> SetOpt = item -> item.setStatus(ScopeStatus.OPTIONAL) ;
     
     public ScopeEntry(Var var, SqlColumn column)
     { this(var, column, ScopeStatus.FIXED) ; }

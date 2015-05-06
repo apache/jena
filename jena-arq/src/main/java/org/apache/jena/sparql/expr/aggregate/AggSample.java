@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import org.apache.jena.atlas.lib.Lib ;
+import java.util.Objects;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
@@ -52,7 +53,7 @@ public class AggSample extends AggregatorBase
         if ( ! ( other instanceof AggSample ) )
             return false ;
         AggSample agg = (AggSample)other ;
-        return Lib.equal(this.exprList, agg.exprList) ;
+        return Objects.equals(this.exprList, agg.exprList) ;
     } 
 
     // ---- Accumulator

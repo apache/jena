@@ -18,10 +18,15 @@
 
 package org.apache.jena.atlas.lib;
 
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
 import java.io.UnsupportedEncodingException ;
 import java.util.ArrayList ;
 import java.util.List ;
 import java.util.Map ;
+import java.util.stream.Collectors;
 
 
 public class StrUtils //extends StringUtils
@@ -54,27 +59,12 @@ public class StrUtils //extends StringUtils
     
     private static String join(String sep, List<String> a)
     {
-        return join(sep, a.toArray(new String[0])) ;
+        return a.stream().collect(joining(sep));
     }
     
     private static String join(String sep, String...a)
-    {
-        if ( a.length == 0 )
-            return "" ;
-
-        if ( a.length == 1)
-            return a[0] ;
-
-        StringBuilder sbuff = new StringBuilder() ;
-        sbuff.append(a[0]) ;
-
-        for ( int i = 1 ; i < a.length ; i++ )
-        {
-            if ( sep != null )
-                sbuff.append(sep) ;
-            sbuff.append(a[i]) ;
-        }
-        return sbuff.toString() ;
+    {	
+    		return stream(a).collect(joining(sep));
     }
     
     public static final int CMP_GREATER  = +1 ;
@@ -127,12 +117,7 @@ public class StrUtils //extends StringUtils
     /** Split but also trim whiespace. */
     public static String[] split(String s, String splitStr)
     {
-        String[] x = s.split(splitStr) ;
-        for ( int i = 0 ; i < x.length ; i++ )
-        {
-            x[i] = x[i].trim() ;
-        }
-        return x ;
+        return stream(s.split(splitStr)).map(String::trim).toArray(String[]::new);
     }
     
     /** Does one string contain another string?
@@ -152,7 +137,7 @@ public class StrUtils //extends StringUtils
     
     public static String substitute(String str, Map<String, String>subs)
     {
-        for ( Map.Entry<String, String> e : subs.entrySet() )
+    		for ( Map.Entry<String, String> e : subs.entrySet() )
         {
             String param = e.getKey() ;
             if ( str.contains(param) ) 
@@ -182,10 +167,8 @@ public class StrUtils //extends StringUtils
     
     public static List<Character> toCharList(String str)
     {
-        List<Character> characters = new ArrayList<>(str.length()) ;
-        for ( Character ch : str.toCharArray() )
-            characters.add(ch) ;
-        return characters ;
+		return str.codePoints().mapToObj(i -> (char) i).map(Character::new)
+				.collect(toList());
     }
     
     // ==== Encoding and decoding strings based on a marker character (e.g. %)

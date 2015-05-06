@@ -20,8 +20,8 @@ package org.apache.jena.sparql.expr;
 
 import java.util.ArrayList ;
 import java.util.List ;
+import java.util.Objects;
 
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 
 /** A function in the expression hierarchy.
@@ -98,7 +98,7 @@ public abstract class ExprFunction extends ExprNode
         {
             Expr a1 = this.getArg(i) ;
             Expr a2 = ex.getArg(i) ;
-            if ( ! Lib.equal(a1, a2) )
+            if ( ! Objects.equals(a1, a2) )
                 return false ;
         }
         return true ;

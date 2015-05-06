@@ -273,7 +273,7 @@ public class Context
     {
         for ( Callback<Symbol> c : callbacks )
         {
-            c.proc(symbol) ;
+            c.apply(symbol) ;
         }
     }
     

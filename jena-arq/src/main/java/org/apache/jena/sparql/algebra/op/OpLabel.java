@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.algebra.op;
 
+import java.util.Objects;
+
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVisitor ;
@@ -51,10 +53,10 @@ public class OpLabel extends Op1
         if ( !(other instanceof OpLabel) )
             return false ;
         OpLabel opLabel = (OpLabel)other ;
-        if ( !Lib.equal(object, opLabel.object) )
+        if ( !Objects.equals(object, opLabel.object) )
             return false ;
 
-        return Lib.equal(getSubOp(), opLabel.getSubOp()) ;
+        return Objects.equals(getSubOp(), opLabel.getSubOp()) ;
     }
 
     @Override

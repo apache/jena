@@ -19,8 +19,8 @@
 package org.apache.jena.atlas.lib.cache;
 import java.util.Iterator ;
 import java.util.concurrent.Callable ;
+import java.util.function.BiConsumer;
 
-import org.apache.jena.atlas.lib.ActionKeyValue ;
 import org.apache.jena.atlas.lib.Cache ;
 
 
@@ -56,7 +56,7 @@ public class CacheWrapper<Key,T> implements Cache<Key,T>
     public void remove(Key key)                     { cache.remove(key) ; }
 
     @Override
-    public void setDropHandler(ActionKeyValue<Key, T> dropHandler)
+    public void setDropHandler(BiConsumer<Key, T> dropHandler)
     { cache.setDropHandler(dropHandler) ; }
 
     @Override

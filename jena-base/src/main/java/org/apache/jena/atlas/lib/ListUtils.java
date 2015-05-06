@@ -18,14 +18,13 @@
 
 package org.apache.jena.atlas.lib;
 
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList ;
 import java.util.List ;
-
-
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.iterator.Action ;
-import org.apache.jena.atlas.iterator.FilterUnique ;
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.logging.Log ;
 
 /** Various things for lists */
@@ -36,14 +35,13 @@ public class ListUtils
     public static <T>
     List<T> unique(List<T> list)
     {
-        Iter<T> iter = Iter.iter(list.iterator()) ;
-        return iter.filter(new FilterUnique<T>()).toList() ;
+    		return list.stream().distinct().collect(toList());
     }
     
     public static
     List<Integer> asList(int... values)
     {
-        List<Integer> x = new ArrayList<>() ;
+        List<Integer> x = new ArrayList<>(values.length) ;
         for ( int v : values )
             x.add(v) ;
         return x ;
@@ -51,47 +49,17 @@ public class ListUtils
     
     public static <T> String str(T[] array)
     {
-        StringBuilder buff = new StringBuilder() ;
-        String sep = "[" ;
-
-        for ( T anArray : array )
-        {
-            buff.append( sep );
-            sep = ", ";
-            buff.append( anArray );
-        }
-        buff.append("]") ;
-        return buff.toString() ;
+        return stream(array).map(String::valueOf).collect(joining(", ", "[", "]"));
     }
     
     public static String str(int[] array)
     {
-        StringBuilder buff = new StringBuilder() ;
-        String sep = "[" ;
-
-        for ( int anArray : array )
-        {
-            buff.append( sep );
-            sep = ", ";
-            buff.append( anArray );
-        }
-        buff.append("]") ;
-        return buff.toString() ;
+    		return stream(array).mapToObj(String::valueOf).collect(joining(", ", "[", "]"));
     }
     
     public static String str(long[] array)
     {
-        StringBuilder buff = new StringBuilder() ;
-        String sep = "[" ;
-
-        for ( long anArray : array )
-        {
-            buff.append( sep );
-            sep = ", ";
-            buff.append( anArray );
-        }
-        buff.append("]") ;
-        return buff.toString() ;
+    		return stream(array).mapToObj(String::valueOf).collect(joining(", ", "[", "]"));
     }
 
     public static <T> void print(IndentedWriter out, List<T> list)
@@ -99,23 +67,15 @@ public class ListUtils
         print(out, list, " ") ;
     }
     
-    public static <T> void print(final IndentedWriter out, List<T> list, final String sep)
+    public static <T> void print(final IndentedWriter out, List<T> list, final CharSequence sep)
     {
-        Action<T> output = new Action<T>() {
-            boolean first = true ;
-            @Override
-            public void apply(T item)
-            {
-                if ( ! first ) out.print(sep) ;
-                out.print(item.toString()) ;
-                first = false ;
-            }
-        } ;
-        Iter.apply(list.iterator(), output) ;
+		out.print(list.stream().map(String::valueOf).collect(joining(sep)));
     }
     
     /** Return a list of lists of all the elements of collection in every order
      *  Easy to run out of heap memory.
+     *  
+     *  See {@link com.google.common.collect.Collections2#permutations(Collection<E>)}
      */  
     static public <T> List<List<T>> permute(List<T> c)
     {

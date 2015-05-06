@@ -24,7 +24,7 @@ import org.apache.jena.sparql.core.Substitute ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.graph.NodeTransform ;
+import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.graph.NodeTransformLib ;
 import org.apache.jena.sparql.sse.Tags ;
 import org.apache.jena.sparql.syntax.Element ;

@@ -22,8 +22,6 @@ import java.util.HashMap ;
 import java.util.HashSet ;
 import java.util.Map ;
 import java.util.Set ;
-
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.sdb.core.sqlexpr.SqlColumn ;
 import org.apache.jena.sparql.core.Var ;
 import org.slf4j.Logger ;
@@ -114,23 +112,4 @@ public class ScopeRename implements Scope
     {
         return frame + " " + scope ; 
     }
-    
-    private Transform<ScopeEntry, ScopeEntry> converter = 
-        new Transform<ScopeEntry, ScopeEntry>(){
-            @Override
-            public ScopeEntry convert(ScopeEntry entry)
-            {
-                entry = new ScopeEntry(entry.getVar(), entry.getColumn()) ;
-                Var var = entry.getVar() ;
-                SqlColumn col = frame.get(var) ;
-                if ( col == null )
-                {
-                    log.warn("No alias for variable "+var) ;
-                    return entry ;
-                }
-                ScopeEntry entry2 = new ScopeEntry(entry.getVar(), entry.getColumn()) ;
-                entry2.setStatus(entry.getStatus()) ;
-                //entry.reset(var, col, entry.getStatus()) ;
-                return entry2 ;
-            }} ;
 }

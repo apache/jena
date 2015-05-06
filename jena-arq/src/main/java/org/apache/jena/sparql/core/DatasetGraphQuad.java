@@ -19,28 +19,19 @@
 package org.apache.jena.sparql.core;
 
 import java.util.Iterator ;
-
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.graph.Node ;
 
 
 /** A DatasetGraph base class for pure quad-centric storage.     
  */
 public abstract class DatasetGraphQuad extends DatasetGraphBase
-{
-    static Transform<Quad, Node> projectGraphName = new Transform<Quad, Node>() {
-        @Override
-        public Node convert(Quad quad)
-        {
-            return quad.getGraph() ; 
-        }} ;
-    
+{   
     @Override
     public Iterator<Node> listGraphNodes()
     {
         Iter<Quad> iter = Iter.iter(find(Node.ANY, Node.ANY, Node.ANY, Node.ANY)) ;
-        return iter.map(projectGraphName).distinct() ;
+        return iter.map(Quad::getGraph).distinct() ;
     }
 
     @Override

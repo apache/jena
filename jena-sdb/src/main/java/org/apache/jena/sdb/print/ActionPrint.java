@@ -18,11 +18,12 @@
 
 package org.apache.jena.sdb.print;
 
+import java.util.function.Consumer;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.io.Printable ;
-import org.apache.jena.atlas.iterator.Action ;
 
-public class ActionPrint <T extends Printable> implements Action<T> 
+public class ActionPrint <T extends Printable> implements Consumer<T> 
 {
     private boolean first = true ;
     private IndentedWriter out ;
@@ -32,7 +33,7 @@ public class ActionPrint <T extends Printable> implements Action<T>
     public ActionPrint(IndentedWriter out) { this(out, " ") ; }
     
     @Override
-    public void apply(Printable item)
+    public void accept(Printable item)
     {
         if ( ! first && sep != null )
             out.print(sep) ;

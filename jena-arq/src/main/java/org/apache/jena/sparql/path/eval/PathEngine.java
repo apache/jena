@@ -22,9 +22,7 @@ import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.List ;
-
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -100,10 +98,10 @@ abstract public class PathEngine
         Iterator<Node> iter2 = null ;
         if ( direction() ) {
             Iter<Triple> iter1 = Iter.iter(graphFind(node, property, Node.ANY)) ;
-            iter2 = iter1.map(PathEngine.selectObject) ;
+            iter2 = iter1.map(Triple::getObject) ;
         } else {
             Iter<Triple> iter1 = Iter.iter(graphFind(Node.ANY, property, node)) ;
-            iter2 = iter1.map(PathEngine.selectSubject) ;
+            iter2 = iter1.map(Triple::getSubject) ;
         }
 
         return iter2 ;
@@ -151,30 +149,15 @@ abstract public class PathEngine
         return (x <= 0) ? x : x - 1 ;
     }
 
-    protected static Transform<Triple, Node> selectSubject = new Transform<Triple, Node>() {
-        @Override
-        public Node convert(Triple triple) { return triple.getSubject() ; }
-    } ;
-    
-    protected static Transform<Triple, Node> selectPredicate = new Transform<Triple, Node>() {
-        @Override
-        public Node convert(Triple triple) { return triple.getPredicate() ; }
-    } ;
-    
-    protected static Transform<Triple, Node> selectObject = new Transform<Triple, Node>() {
-        @Override
-        public Node convert(Triple triple) { return triple.getObject() ; }
-    } ;
-
     protected Iterator<Node> stepExcludeForwards(Node node, List<Node> excludedNodes) {
         Iter<Triple> iter1 = forwardLinks(node, excludedNodes) ;
-        Iter<Node> r1 = iter1.map(selectObject) ;
+        Iter<Node> r1 = iter1.map(Triple::getObject) ;
         return r1 ;
     }
 
     protected Iterator<Node> stepExcludeBackwards(Node node, List<Node> excludedNodes) {
         Iter<Triple> iter1 = backwardLinks(node, excludedNodes) ;
-        Iter<Node> r1 = iter1.map(selectSubject) ;
+        Iter<Node> r1 = iter1.map(Triple::getSubject) ;
         return r1 ;
     }
 

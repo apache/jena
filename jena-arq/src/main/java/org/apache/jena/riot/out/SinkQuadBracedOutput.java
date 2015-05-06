@@ -19,10 +19,10 @@
 package org.apache.jena.riot.out ;
 
 import java.io.OutputStream ;
+import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -83,7 +83,7 @@ public class SinkQuadBracedOutput implements Sink<Quad>, Closeable
             graphName = null ;
         }
 
-        if ( !Lib.equal(currentGraph, graphName) ) {
+        if ( !Objects.equals(currentGraph, graphName) ) {
             if ( null != currentGraph ) {
                 out.decIndent(BLOCK_INDENT) ;
                 out.println("}") ;

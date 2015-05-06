@@ -18,7 +18,8 @@
 
 package org.apache.jena.tdb.solver;
 
-import org.apache.jena.atlas.iterator.Filter ;
+import java.util.function.Predicate;
+
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.tdb.TDBException ;
@@ -27,13 +28,13 @@ import org.apache.jena.tdb.sys.SystemTDB ;
 
 public class QC2
 {
-    public static Filter<Tuple<NodeId>> getFilter(Context context)
+    public static Predicate<Tuple<NodeId>> getFilter(Context context)
     {
         Object x = context.get(SystemTDB.symTupleFilter) ;
 
         try {
             @SuppressWarnings("unchecked")
-            Filter<Tuple<NodeId>> f = (Filter<Tuple<NodeId>>)x ;
+            Predicate<Tuple<NodeId>> f = (Predicate<Tuple<NodeId>>)x ;
             return f ;
         } catch (ClassCastException ex)
         {
@@ -41,7 +42,7 @@ public class QC2
         }
     }
 
-    public static void setFilter(Context context, Filter<Tuple<NodeId>> filter)
+    public static void setFilter(Context context, Predicate<Tuple<NodeId>> filter)
     {
         context.set(SystemTDB.symTupleFilter, filter) ;
     }

@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.modify.request;
 
-import org.apache.jena.atlas.lib.Lib ;
+import java.util.Objects;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.util.Iso ;
@@ -73,7 +74,7 @@ public class UpdateLoad extends Update
         UpdateLoad other = (UpdateLoad)obj ;
         return 
             silent == other.silent &&
-            Lib.equal(source, other.source) &&
+            	Objects.equals(source, other.source) &&
             Iso.nodeIso(dest, other.dest, isoMap) ;
     }
 }

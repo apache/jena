@@ -92,7 +92,7 @@ public class PropertyUtils {
 
     /** Test whether a property has a value. Null tests equal to not present. */
     public boolean propertyEquals(Properties properties, String key, String value) {
-        return Lib.equal(properties.getProperty(key), value) ;
+        return Objects.equals(properties.getProperty(key), value) ;
     }
 
     /** Set property if not already set. */
@@ -130,7 +130,7 @@ public class PropertyUtils {
     public void checkMetadata(Properties properties, String key, String expected) {
         String value = properties.getProperty(key) ;
 
-        if ( !Lib.equal(value, value) )
+        if ( !Objects.equals(value, value) )
             inconsistent(properties, key, value, expected) ;
     }
 

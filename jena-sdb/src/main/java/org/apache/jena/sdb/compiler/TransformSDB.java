@@ -113,12 +113,12 @@ public class TransformSDB extends TransformCopy
         
         // Find optional-on-left
         Set<ScopeEntry> scopes2 = toSet(filter(scopes.iterator(), ScopeEntry.OptionalFilter)) ;
-        Set<Var> leftOptVars = toSet(map(scopes2.iterator(), ScopeEntry.ToVar)) ;              // Vars from left optionals.
+        Set<Var> leftOptVars = toSet(map(scopes2.iterator(), ScopeEntry::getVar)) ;              // Vars from left optionals.
         
         if ( false )
         {
             Iter<ScopeEntry> iter = Iter.iter(scopes) ;
-            Set<Var> leftOptVars_ = iter.filter(ScopeEntry.OptionalFilter).map(ScopeEntry.ToVar).toSet() ;
+            Set<Var> leftOptVars_ = iter.filter(ScopeEntry.OptionalFilter).map(ScopeEntry::getVar).toSet() ;
         }
         
         // Find optional-on-right (easier - it's all variables) 

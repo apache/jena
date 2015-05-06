@@ -38,12 +38,7 @@ public class SetUtils
 
     public static <T> boolean intersectionP(Set<? extends T> s1, Set<? extends T> s2)
     {
-        for( T elt : s1 )
-        {
-            if ( s2.contains(elt) ) 
-                return true ;
-        }
-        return false ;
+    		return s1.stream().anyMatch(s2::contains);
     }
 
     public static <T> Set<T> union(Set<? extends T> s1, Set<? extends T> s2)
@@ -60,25 +55,6 @@ public class SetUtils
         Set<T> s3 = new HashSet<>(s1) ;
         s3.removeAll(s2) ;
         return s3 ;
-    }
-    
-    /** Return true if s1 and s2 are disjoint */
-    public static <T> boolean isDisjoint(Set<? extends T> s1, Set<? extends T> s2)
-    {
-        Set<? extends T> x = s1 ;
-        Set<? extends T> y = s2 ;
-        if ( s1.size() < s2.size() )
-        {
-            x = s2 ;
-            y = s1 ;
-        }        
-        
-        for ( T item : x )
-        {
-            if ( y.contains(item)) 
-                return false ;
-        }
-        return true ;
     }
 }
 

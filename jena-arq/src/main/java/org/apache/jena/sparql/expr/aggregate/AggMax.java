@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import org.apache.jena.atlas.lib.Lib ;
+import java.util.Objects;
+
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 
@@ -39,6 +40,6 @@ public class AggMax extends AggMaxBase
         if ( ! ( other instanceof AggMax ) )
             return false ;
         AggMax agg = (AggMax)other ;
-        return Lib.equal(exprList, agg.exprList) ;
+        return Objects.equals(exprList, agg.exprList) ;
     }
 }

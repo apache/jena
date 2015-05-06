@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import org.apache.jena.atlas.lib.Lib ;
+import java.util.Objects;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
@@ -80,7 +81,7 @@ public class AggGroupConcatDistinct extends AggregatorBase
         if ( ! ( other instanceof AggGroupConcatDistinct ) )
             return false ;
         AggGroupConcatDistinct agg = (AggGroupConcatDistinct)other ;
-        return Lib.equal(agg.getSeparator(),getSeparator()) && agg.getExpr().equals(getExpr()) ;
+        return Objects.equals(agg.getSeparator(),getSeparator()) && agg.getExpr().equals(getExpr()) ;
     }
     
     // ---- Accumulator

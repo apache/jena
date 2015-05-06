@@ -23,7 +23,8 @@ import java.util.Collections ;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.apache.jena.atlas.lib.MultiMap ;
+import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
+import org.apache.jena.ext.com.google.common.collect.ListMultimap;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.lucene.analysis.Analyzer ;
@@ -34,7 +35,7 @@ import org.apache.lucene.analysis.Analyzer ;
 public class EntityDefinition {
     private final Map<Node, String>      predicateToField = new HashMap<>() ;
     private final Map<String, Analyzer>    fieldToAnalyzer  = new HashMap<>();
-    private final MultiMap<String, Node> fieldToPredicate = MultiMap.createMapList() ;
+    private final ListMultimap<String, Node> fieldToPredicate = ArrayListMultimap.create() ;
     private final Collection<String>     fields           = Collections.unmodifiableCollection(fieldToPredicate.keys()) ;
     // private final Collection<String> fields =
     // Collections.unmodifiableCollection(fieldToPredicate.keySet()) ;

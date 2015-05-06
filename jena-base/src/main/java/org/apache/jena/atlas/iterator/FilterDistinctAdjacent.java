@@ -18,19 +18,18 @@
 
 package org.apache.jena.atlas.iterator;
 
-import org.apache.jena.atlas.lib.Lib ;
+import java.util.Objects;
+import java.util.function.Predicate;
 
-public class FilterDistinctAdjacent<T> implements Filter<T>
+public class FilterDistinctAdjacent<T> implements Predicate<T>
 {
     private boolean isSet = false ;
     private T last = null ; 
     
-    public FilterDistinctAdjacent() { }
-    
     @Override
-    public boolean accept(T item)
+    public boolean test(T item)
     {
-        if ( isSet && Lib.equal(last, item) )
+        if ( isSet && Objects.equals(last, item) )
             return false ;
         last = item ;
         isSet = true ;

@@ -21,7 +21,7 @@ package org.apache.jena.sparql.expr;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.graph.NodeTransform ;
+import org.apache.jena.sparql.graph.NodeTransform;
 
 
 /** A function of three arguments */

@@ -18,15 +18,13 @@
 
 package org.apache.jena.riot.writer;
 
-import static org.apache.jena.atlas.lib.Lib.equal ;
-
 import java.io.OutputStream ;
 import java.io.Writer ;
 import java.util.Collection ;
 import java.util.List ;
+import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.other.GLib ;
@@ -85,7 +83,7 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
     protected void printBatchQuads(Node g, Node s, List<Quad> quads) {
         if ( g == null )
             g = Quad.defaultGraphNodeGenerated ;
-        if ( Lib.equal(g, lastGraph) ) {
+        if ( Objects.equals(g, lastGraph) ) {
             // Same graph, different subject.
             out.println(" .") ;
             out.println() ;
@@ -195,7 +193,7 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
             return ;
 
         // End of graph
-        if ( !equal(lastGraph, g) ) {
+        if ( !Objects.equals(lastGraph, g) ) {
             boolean NL_END = (dftGraph(g) ? NL_GDFT_END : NL_GNMD_END) ;
 
             if ( lastSubject != null )

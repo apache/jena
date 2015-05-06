@@ -20,8 +20,8 @@ package org.apache.jena.tdb.base.file ;
 
 import java.io.File ;
 import java.io.IOException ;
+import java.util.Objects;
 
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.tdb.sys.Names ;
 
 /**
@@ -256,7 +256,7 @@ public class Location {
         if ( isMemUnique )
             return false ;
 
-        return Lib.equal(pathname, other.pathname) ;
+        return Objects.equals(pathname, other.pathname) ;
     }
 
     @Override
