@@ -18,7 +18,12 @@
 
 package org.apache.jena.atlas.lib;
 
-public interface ActionKeyValue<KeyType, ValueType>
+import java.util.function.BiConsumer;
+
+/**
+ * Prefer {@link BiConsumer<KeyType, ValueType>}.
+ */
+@Deprecated
+public interface ActionKeyValue<KeyType, ValueType> extends BiConsumer<KeyType, ValueType>
 {
-    public void apply(KeyType key, ValueType value) ;
 }

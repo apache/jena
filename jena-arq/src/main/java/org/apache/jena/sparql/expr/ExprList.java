@@ -19,11 +19,10 @@
 package org.apache.jena.sparql.expr;
 
 import java.util.* ;
-
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.graph.NodeTransform ;
+import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.util.Context ;
 
 public class ExprList implements Iterable<Expr>

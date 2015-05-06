@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.core;
 
-import org.apache.jena.atlas.lib.Lib ;
+import java.util.Objects;
+
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.shared.PrefixMapping ;
@@ -137,7 +138,7 @@ public class Prologue
             // Removal may involve regeneration of the reverse mapping
             // so only do if needed.   
             String oldExpansion = prefixMap.getNsPrefixURI(prefix) ;
-            if ( Lib.equal(oldExpansion, expansion) )
+            if ( Objects.equals(oldExpansion, expansion) )
                 return ;
             if ( oldExpansion != null )
                 prefixMap.removeNsPrefix(prefix) ;
@@ -199,7 +200,7 @@ public class Prologue
         // Prologue are mutable and superclasses so .equals is left as the default.
         String base1 = explicitlySetBaseURI() ? getBaseURI() : null ;
         String base2 = other.explicitlySetBaseURI() ? other.getBaseURI() : null ;        
-        if (! Lib.equal(base1,  base2) )
+        if (! Objects.equals(base1,  base2) )
             return false ;
         if ( getPrefixMapping() == null && other.getPrefixMapping() == null )
             return true ;

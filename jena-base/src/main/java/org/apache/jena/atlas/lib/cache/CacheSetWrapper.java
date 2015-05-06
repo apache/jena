@@ -18,7 +18,8 @@
 
 package org.apache.jena.atlas.lib.cache ;
 
-import org.apache.jena.atlas.iterator.Action ;
+import java.util.function.Consumer;
+
 import org.apache.jena.atlas.lib.CacheSet ;
 
 public class CacheSetWrapper<T> implements CacheSet<T> {
@@ -59,7 +60,7 @@ public class CacheSetWrapper<T> implements CacheSet<T> {
     }
 
     @Override
-    public void setDropHandler(Action<T> dropHandler) {
+    public void setDropHandler(Consumer<T> dropHandler) {
         cache.setDropHandler(dropHandler) ;
     }
 }

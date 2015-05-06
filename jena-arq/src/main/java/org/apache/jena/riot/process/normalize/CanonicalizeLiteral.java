@@ -20,17 +20,17 @@ package org.apache.jena.riot.process.normalize;
 
 import java.util.HashMap ;
 import java.util.Map ;
+import java.util.function.Function;
 
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.web.LangTag ;
-import org.apache.jena.sparql.graph.NodeTransform ;
 import org.apache.jena.sparql.util.NodeUtils ;
 import org.apache.jena.vocabulary.RDF ;
 
-public class CanonicalizeLiteral implements NodeTransform    
+public class CanonicalizeLiteral implements Function<Node, Node>    
 {
     private static final CanonicalizeLiteral singleton = new CanonicalizeLiteral(); 
 
@@ -39,7 +39,7 @@ public class CanonicalizeLiteral implements NodeTransform
     private CanonicalizeLiteral() {}
     
     @Override
-    public Node convert(Node node) {
+    public Node apply(Node node) {
         if ( ! node.isLiteral() )
             return node ;
             

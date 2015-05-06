@@ -20,10 +20,8 @@ package org.apache.jena.sdb.core.sqlnode;
 
 import java.util.List ;
 import java.util.Set ;
-
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.core.Annotations ;
@@ -281,14 +279,9 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         return join2 ;
     }
     
-    static final Transform<SqlColumn, SqlTable> colToTable = new Transform<SqlColumn, SqlTable>() {
-        @Override
-        public SqlTable convert(SqlColumn item) { return item.getTable() ; }
-    } ;
-    
     private static Set<SqlTable> tables(Set<SqlColumn> cols)
     {
-        return Iter.toSet(Iter.map(cols.iterator(), colToTable)) ;
+        return Iter.toSet(Iter.map(cols.iterator(), SqlColumn::getTable)) ;
     }
 
     @Override

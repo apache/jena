@@ -20,13 +20,12 @@ package org.apache.jena.sparql.expr;
 
 import java.util.Collection ;
 import java.util.Set ;
-
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.graph.NodeTransform ;
+import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.util.ExprUtils ;
 
 

@@ -21,7 +21,6 @@ package org.apache.jena.sparql.expr.aggregate;
 import java.util.HashMap ;
 import java.util.Locale ;
 import java.util.Map ;
-
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -29,7 +28,7 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.graph.NodeTransform ;
+import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.sse.writers.WriterExpr ;
 import org.apache.jena.sparql.util.ExprUtils ;

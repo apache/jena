@@ -19,10 +19,8 @@
 package org.apache.jena.sparql.core;
 
 import java.util.Iterator ;
-
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -189,15 +187,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
 
     protected static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter)
     {
-        Transform<Triple, Quad> transformNamedGraph = new Transform<Triple, Quad> () {
-            @Override
-            public Quad convert(Triple triple)
-            {
-                return new Quad(graphNode, triple) ;
-            }
-        } ;
-
-        return Iter.iter(iter).map(transformNamedGraph) ;
+        return Iter.iter(iter).map(t -> new Quad(graphNode, t)) ;
     }
 
     

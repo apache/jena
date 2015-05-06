@@ -46,7 +46,6 @@ import org.junit.runners.Suite ;
     , TestReverseComparator.class
     , TestTrie.class
     , TestFilenameProcessing.class
-    , TestMultiSet.class
     , TestNumberUtils.class
     , TestDateTimeUtils.class
 } )

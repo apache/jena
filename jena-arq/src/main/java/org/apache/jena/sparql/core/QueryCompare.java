@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.core ;
 
+import java.util.Objects;
+
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryVisitor ;
@@ -171,7 +173,7 @@ public class QueryCompare implements QueryVisitor
     
     private void check(String msg, Object obj1, Object obj2)
     {
-        check(msg, Lib.equal(obj1,obj2)) ;
+        check(msg, Objects.equals(obj1,obj2)) ;
     }
     
     private void check(String msg, boolean b)

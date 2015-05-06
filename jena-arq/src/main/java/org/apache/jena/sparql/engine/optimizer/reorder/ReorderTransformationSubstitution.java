@@ -22,10 +22,8 @@ import static org.apache.jena.sparql.util.StringUtils.printAbbrev ;
 
 import java.util.ArrayList ;
 import java.util.List ;
-
 import org.apache.jena.atlas.iterator.AccString ;
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -64,7 +62,7 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
         // Or done here as a second pass mutate of PatternTriples
 
         // Convert to a mutable form (that allows things like "TERM")
-        List<PatternTriple> components = Iter.toList(Iter.map(triples.iterator(), convert)) ;
+        List<PatternTriple> components = Iter.toList(Iter.map(triples.iterator(), PatternTriple::new)) ;
 
         // Allow subclasses to get in (e.g. static reordering).
         components = modifyComponents(components) ;
@@ -299,12 +297,4 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
                 return "(" + printAbbrev(pt.toString()) + ")" ;
         }
     } ;
-
-    // Triples to TriplePatterns.
-    private static Transform<Triple, PatternTriple> convert = new Transform<Triple, PatternTriple>(){
-        @Override
-        public PatternTriple convert(Triple triple)
-        {
-            return new PatternTriple(triple) ;
-        }} ;
 }

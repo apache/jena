@@ -21,6 +21,9 @@ package org.apache.jena.tdb.solver;
 import static org.apache.jena.tdb.lib.Lib2.printAbbrev ;
 
 import java.util.* ;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.jena.atlas.iterator.* ;
 import org.apache.jena.atlas.lib.Tuple ;
@@ -54,7 +57,7 @@ public class SolverLib
     
     /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, 
-                                        QueryIterator input, Filter<Tuple<NodeId>> filter,
+                                        QueryIterator input, Predicate<Tuple<NodeId>> filter,
                                         ExecutionContext execCxt)
     {
         // Maybe default graph or named graph.
@@ -67,7 +70,7 @@ public class SolverLib
      *  GraphNode is null for execution over the real default graph.
      */ 
     public static QueryIterator execute(DatasetGraphTDB ds, Node graphNode, BasicPattern pattern,
-                                        QueryIterator input, Filter<Tuple<NodeId>> filter,
+                                        QueryIterator input, Predicate<Tuple<NodeId>> filter,
                                         ExecutionContext execCxt)
     {
         NodeTupleTable ntt = ds.chooseNodeTupleTable(graphNode) ;
@@ -81,14 +84,14 @@ public class SolverLib
      * (in convToBinding(BindingNodeId, NodeTable)
      */
     public static Iterator<Binding> convertToNodes(Iterator<BindingNodeId> iterBindingIds, NodeTable nodeTable)
-    { return Iter.map(iterBindingIds, convToBinding(nodeTable)) ; }
+    { return Iter.map(iterBindingIds, bindingNodeIds -> convToBinding(bindingNodeIds, nodeTable)) ; }
     
     // The worker.  Callers choose the NodeTupleTable.  
     //     graphNode may be Node.ANY, meaning we should make triples unique.
     //     graphNode may be null, meaning default graph
 
     private static QueryIterator execute(NodeTupleTable nodeTupleTable, Node graphNode, BasicPattern pattern, 
-                                         QueryIterator input, Filter<Tuple<NodeId>> filter,
+                                         QueryIterator input, Predicate<Tuple<NodeId>> filter,
                                          ExecutionContext execCxt)
     {
         if ( Quad.isUnionGraph(graphNode) )
@@ -202,20 +205,10 @@ public class SolverLib
     public static Iterator<BindingNodeId> solve(NodeTupleTable nodeTupleTable, 
                                                 Tuple<Node> tuple,
                                                 boolean anyGraph,
-                                                Iterator<BindingNodeId> chain, Filter<Tuple<NodeId>> filter,
+                                                Iterator<BindingNodeId> chain, Predicate<Tuple<NodeId>> filter,
                                                 ExecutionContext execCxt)
     {
         return new StageMatchTuple(nodeTupleTable, chain, tuple, anyGraph, filter, execCxt) ;
-    }
-    
-    // Transform : BindingNodeId ==> Binding
-    private static Transform<BindingNodeId, Binding> convToBinding(final NodeTable nodeTable) {
-        return new Transform<BindingNodeId, Binding>() {
-            @Override
-            public Binding convert(BindingNodeId bindingNodeIds) {
-                return convToBinding(bindingNodeIds, nodeTable) ;
-            }
-        } ;
     }
 
     public static Binding convToBinding(BindingNodeId bindingNodeIds, NodeTable nodeTable) {
@@ -235,15 +228,9 @@ public class SolverLib
     }
     
     // Transform : Binding ==> BindingNodeId
-    public static Transform<Binding, BindingNodeId> convFromBinding(final NodeTable nodeTable)
+    public static Function<Binding, BindingNodeId> convFromBinding(final NodeTable nodeTable)
     {
-        return new Transform<Binding, BindingNodeId>()
-        {
-            @Override
-            public BindingNodeId convert(Binding binding) {
-                return SolverLib.convert(binding, nodeTable) ;
-            }
-        } ;
+        return binding -> SolverLib.convert(binding, nodeTable);
     }
     
     /** Binding ==> BindingNodeId, given a NodeTable */
@@ -276,7 +263,7 @@ public class SolverLib
     
     /** Find whether a specific graph name is in the quads table. */
     public static QueryIterator testForGraphName(DatasetGraphTDB ds, Node graphNode, QueryIterator input,
-                                                 Filter<Tuple<NodeId>> filter, ExecutionContext execCxt) {
+                                                 Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
         NodeId nid = TDBInternal.getNodeId(ds, graphNode) ;
         boolean exists = !NodeId.isDoesNotExist(nid) ;
         if ( exists ) {
@@ -302,7 +289,7 @@ public class SolverLib
 
     /** Find all the graph names in the quads table. */
     public static QueryIterator graphNames(DatasetGraphTDB ds, Node graphNode, QueryIterator input,
-                                           Filter<Tuple<NodeId>> filter, ExecutionContext execCxt) {
+                                           Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
         List<Abortable> killList = new ArrayList<>() ;
         Iterator<Tuple<NodeId>> iter1 = ds.getQuadTable().getNodeTupleTable().find(NodeId.NodeIdAny, NodeId.NodeIdAny,
                                                                                    NodeId.NodeIdAny, NodeId.NodeIdAny) ;
@@ -319,14 +306,7 @@ public class SolverLib
         Iterator<Node> iter4 = NodeLib.nodes(ds.getQuadTable().getNodeTupleTable().getNodeTable(), iter3) ;
 
         final Var var = Var.alloc(graphNode) ;
-        Transform<Node, Binding> bindGraphName = new Transform<Node, Binding>() {
-            @Override
-            public Binding convert(Node node) {
-                return BindingFactory.binding(var, node) ;
-            }
-        } ;
-
-        Iterator<Binding> iterBinding = Iter.map(iter4, bindGraphName) ;
+        Iterator<Binding> iterBinding = Iter.map(iter4, node -> BindingFactory.binding(var, node)) ;
         // Not abortable.
         return new QueryIterTDB(iterBinding, killList, input, execCxt) ;
     }
@@ -364,10 +344,6 @@ public class SolverLib
     }
     
     // -- Mutating "transform in place"
-    private static Action<Tuple<NodeId>> quadsToAnyTriples = new Action<Tuple<NodeId>>(){
-        @Override
-        public void apply(Tuple<NodeId> item)
-        { item.tuple()[0] = NodeId.NodeIdAny ; }
-    } ;
+    private static Consumer<Tuple<NodeId>> quadsToAnyTriples = item -> item.tuple()[0] = NodeId.NodeIdAny ;
 
 }

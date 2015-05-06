@@ -18,7 +18,8 @@
 
 package org.apache.jena.atlas.lib;
 
-public interface Callback<T>
+import java.util.function.Function;
+
+public interface Callback<T> extends Function<T, Void>
 {
-    public void proc(T arg) ;
 }
