@@ -43,9 +43,13 @@ public class TestJsonLDReadWrite extends BaseTest
     
     @Test public void read_g01() { graphJ2R("graph1.jsonld", "graph1.ttl") ; }
 
+    @Test public void read_g02() { graphJ2R("graph2.jsonld", "graph2.ttl") ; }
+
     @Test public void read_ds01() { datasetJ2R("graph1.jsonld", "graph1.ttl") ; }
 
-    @Test public void read_ds02() { datasetJ2R("dataset1.jsonld", "dataset1.trig") ; }
+    @Test public void read_ds02() { datasetJ2R("graph2.jsonld", "graph2.ttl") ; }
+
+    @Test public void read_ds03() { datasetJ2R("dataset1.jsonld", "dataset1.trig") ; }
 
     private void graphJ2R(String inFile, String outFile)
     {
@@ -144,6 +148,7 @@ public class TestJsonLDReadWrite extends BaseTest
     	if (namespaces == null) return;
     	
     	for (String prefix : namespaces.keySet()) {
+    	    if ( ! prefix.isEmpty() )
     		Assert.assertEquals("Model does contain expected namespace " + prefix + ": <" + namespaces.get(prefix) + ">", namespaces.get(prefix), m.getNsPrefixURI(prefix));
     	}
     }

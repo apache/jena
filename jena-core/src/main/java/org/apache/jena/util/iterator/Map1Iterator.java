@@ -19,6 +19,7 @@
 package org.apache.jena.util.iterator;
 
 import java.util.Iterator;
+import java.util.function.Function;
 
 /**
     An iterator that consumes an underlying iterator and maps its results before
@@ -27,7 +28,7 @@ import java.util.Iterator;
 
 public class Map1Iterator<From, To> extends NiceIterator<To> implements ClosableIterator<To>
     {
-	private Map1<From, To> map;
+	private Function<From, To> map;
 	private Iterator<From> base;
 	
         /**
@@ -35,14 +36,14 @@ public class Map1Iterator<From, To> extends NiceIterator<To> implements Closable
          * @param map The conversion to apply.
          * @param base the iterator of elements to convert
          */
-	public Map1Iterator( Map1<From, To> map, Iterator<From> base ) 
+	public Map1Iterator( Function<From, To> map, Iterator<From> base ) 
         {
         this.map = map;
         this.base = base;
         }
     
 	public @Override To next() 
-        { return map.map1( base.next() ); }
+        { return map.apply( base.next() ); }
 	
 	public @Override boolean hasNext()
 	    { return base.hasNext(); }

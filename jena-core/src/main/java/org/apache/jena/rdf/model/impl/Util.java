@@ -32,17 +32,20 @@ import org.apache.xerces.util.XMLChar ;
  */
 public class Util extends Object {
 
-    /** Given an absolute URI, determine the split point between the namespace part
-     * and the localname part.
-     * If there is no valid localname part then the length of the
-     * string is returned.
-     * The algorithm tries to find the longest NCName at the end
-     * of the uri, not immediately preceeded by the first colon
-     * in the string.
+    /**
+     * Given an absolute URI, determine the split point between the namespace
+     * part and the localname part. If there is no valid localname part then the
+     * length of the string is returned. The algorithm tries to find the longest
+     * NCName at the end of the uri, not immediately preceeded by the first
+     * colon in the string.
+     * <p>
+     * This operation follows XML QName rules which are more complicated than
+     * needed for Turtle and TriG.   For example, QName can't start with a digit. 
+     * 
      * @param uri
      * @return the index of the first character of the localname
      */
-    public static int splitNamespace(String uri) {
+    public static int splitNamespaceXML(String uri) {
         
         // XML Namespaces 1.0:
         // A qname name is NCName ':' NCName

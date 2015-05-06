@@ -66,6 +66,8 @@ public class TopLevelTripleMatchFrame extends GenericChoiceFrame {
     @Override
     public void close() {
         if (matchIterator != null) matchIterator.close();
+        super.close();
+        
     }
         
 }

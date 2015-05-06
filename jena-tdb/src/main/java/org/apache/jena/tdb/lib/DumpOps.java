@@ -24,6 +24,7 @@ import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
 
+import arq.cmd.CmdException ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.ByteBufferLib ;
 import org.apache.jena.atlas.lib.Pair ;
@@ -41,7 +42,6 @@ import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.tdb.store.tupletable.TupleIndex ;
 import org.apache.jena.tdb.store.tupletable.TupleTable ;
-import arq.cmd.CmdException ;
 
 public class DumpOps
 {

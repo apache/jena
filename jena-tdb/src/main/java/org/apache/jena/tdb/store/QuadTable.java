@@ -20,9 +20,7 @@ package org.apache.jena.tdb.store;
 
 
 import java.util.Iterator ;
-
 import org.apache.jena.atlas.iterator.NullIterator ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -89,13 +87,6 @@ public class QuadTable extends TableBase
         Iterator<Quad> iter2 = TupleLib.convertToQuads(table.getNodeTable(), iter) ;
         return iter2 ;
     }
-    
-    private static Transform<Tuple<Node>, Quad> action = new Transform<Tuple<Node>, Quad>(){
-        @Override
-        public Quad convert(Tuple<Node> item)
-        {
-            return new Quad(item.get(0), item.get(1), item.get(2), item.get(3)) ;
-        }} ; 
 
     /** Clear - does not clear the associated node tuple table */
     public void clearQuads()

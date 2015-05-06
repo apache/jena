@@ -20,6 +20,9 @@ package arq.cmdline;
 
 import java.util.List ;
 
+import arq.cmd.ArgDecl ;
+import arq.cmd.CmdArgModule ;
+import arq.cmd.CmdException ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.query.LabelExistsException ;
@@ -28,7 +31,6 @@ import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.util.DatasetUtils ;
-import arq.cmd.CmdException ;
 
 /** ModDataset: arguments to build a dataset - 
  * see also ModDatasetAssembler which extends ModDataset

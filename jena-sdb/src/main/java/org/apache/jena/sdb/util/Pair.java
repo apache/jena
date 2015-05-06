@@ -20,7 +20,8 @@ package org.apache.jena.sdb.util;
 
 import static org.apache.jena.atlas.lib.Lib.hashCodeObject ;
 import static org.apache.jena.atlas.lib.StrUtils.str ;
-import org.apache.jena.atlas.lib.Lib ;
+
+import java.util.Objects;
 
 public class Pair<A, B>
 {
@@ -53,7 +54,7 @@ public class Pair<A, B>
         
         if( ! ( other instanceof Pair<?,?> ) ) return false ;
         Pair<?,?> p2 = (Pair<?,?>)other ;
-        return Lib.equal(car(), p2.car()) && Lib.equal(cdr(), p2.cdr()) ;
+        return Objects.equals(car(), p2.car()) && Objects.equals(cdr(), p2.cdr()) ;
     }
     
     @Override 

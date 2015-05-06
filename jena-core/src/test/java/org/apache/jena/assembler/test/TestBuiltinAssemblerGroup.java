@@ -36,7 +36,6 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
         assertAssemblerClass( JA.DefaultModel, DefaultModelAssembler.class );
         assertAssemblerClass( JA.PrefixMapping, PrefixMappingAssembler.class );      
         assertAssemblerClass( JA.SinglePrefixMapping, PrefixMappingAssembler.class );      
-        assertAssemblerClass( JA.FileModel, FileModelAssembler.class );       
         assertAssemblerClass( JA.OntModel, OntModelAssembler.class );       
         assertAssemblerClass( JA.OntModelSpec, OntModelSpecAssembler.class );     
         assertAssemblerClass( JA.Content, ContentAssembler.class );         
@@ -56,7 +55,6 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
         {
         assertInstanceOf( DefaultModelAssembler.class, Assembler.defaultModel );
         assertInstanceOf( PrefixMappingAssembler.class, Assembler.prefixMapping );
-        assertInstanceOf( FileModelAssembler.class, Assembler.fileModel );
         assertInstanceOf( OntModelAssembler.class, Assembler.ontModel );
         assertInstanceOf( OntModelSpecAssembler.class, Assembler.ontModelSpec );
         assertInstanceOf( ContentAssembler.class, Assembler.content );

@@ -18,7 +18,10 @@
 
 package org.apache.jena.mem;
 
+import static org.apache.jena.util.iterator.WrappedIterator.create;
+
 import java.util.Iterator ;
+import java.util.function.Predicate;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -122,11 +125,9 @@ public class NodeToTriplesMapMem extends NodeToTriplesMapBase
        Object indexValue = index.getIndexingValue();
        TripleBunch s = bunchMap.get( indexValue );
 //       System.err.println( ">> ntmf::iterator: " + (s == null ? (Object) "None" : s.getClass()) );
-       return s == null
-           ? NullIterator.<Triple>instance()
-           : f2.filterOn( n2 ).and( f3.filterOn( n3 ) )
-               .filterKeep( s.iterator( new NotifyMe( indexValue ) ) )
-           ;
+       if (s == null) return NullIterator.<Triple>instance();
+       final Predicate<Triple> filter = f2.filterOn( n2 ).and( f3.filterOn( n3 ) );
+       return create(s.iterator( new NotifyMe( indexValue ))).filterKeep(filter);
        }    
 
     protected TripleBunch get( Object index )

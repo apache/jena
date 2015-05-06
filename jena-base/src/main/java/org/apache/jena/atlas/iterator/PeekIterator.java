@@ -27,7 +27,7 @@ public class PeekIterator<T> implements Iterator<T>
 {
     private final Iterator<T> iter ;
     private boolean finished = false ;
-    // Slot always full when iterator active.  Null is a a valid element.
+    // Slot always full when iterator active.  Null is a valid element.
     private T slot ;
     
     public static <T> PeekIterator<T> create(PeekIterator<T> iter) { return iter ; }

@@ -19,8 +19,8 @@
 package arq;
 
 import org.apache.jena.shared.uuid.* ;
-import arq.cmdline.ArgDecl ;
-import arq.cmdline.CmdArgModule ;
+import arq.cmd.ArgDecl ;
+import arq.cmd.CmdArgModule ;
 import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModBase ;
 

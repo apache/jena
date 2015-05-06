@@ -27,7 +27,6 @@ import java.security.NoSuchAlgorithmException ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.Pool ;
 import org.apache.jena.atlas.lib.PoolBase ;
@@ -222,12 +221,6 @@ public class NodeLib
     
     public static Iterator<Node> nodes(final NodeTable nodeTable, Iterator<NodeId> iter)
     {
-        return Iter.map(iter, new Transform<NodeId, Node>(){
-            @Override
-            public Node convert(NodeId item)
-            {
-                return nodeTable.getNodeForNodeId(item) ;
-            }
-        }) ;
+        return Iter.map(iter, nodeTable::getNodeForNodeId) ;
     }
 }

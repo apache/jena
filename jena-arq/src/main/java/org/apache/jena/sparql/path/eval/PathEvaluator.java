@@ -20,8 +20,8 @@ package org.apache.jena.sparql.path.eval ;
 
 import java.util.Collection ;
 import java.util.Iterator ;
+import java.util.function.Predicate;
 
-import org.apache.jena.atlas.iterator.Filter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -164,7 +164,7 @@ final class PathEvaluator implements PathVisitor
     // Other operations can produce duplicates and so may be executed in
     // different ways depending on cardibnality requirements.
 
-    protected static class FilterExclude implements Filter<Triple>
+    protected static class FilterExclude implements Predicate<Triple>
     {
         private Collection<Node> excludes ;
 
@@ -173,7 +173,7 @@ final class PathEvaluator implements PathVisitor
         }
 
         @Override
-        public boolean accept(Triple triple) {
+        public boolean test(Triple triple) {
             return !excludes.contains(triple.getPredicate()) ;
         }
     }

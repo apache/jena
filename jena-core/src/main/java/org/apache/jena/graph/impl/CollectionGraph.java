@@ -21,13 +21,11 @@ import java.util.Collection ;
 import java.util.HashSet ;
 import java.util.Locale ;
 import java.util.Set ;
-
 import org.apache.jena.graph.Capabilities ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Filter ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 
 /**
@@ -64,21 +62,6 @@ public class CollectionGraph extends GraphBase
 		
 	};
 	
-	static class TripleMatchFilterEquality extends Filter<Triple>
-    {
-        final protected Triple tMatch;
-    
-        /** Creates new TripleMatchFilter */
-        public TripleMatchFilterEquality(Triple tMatch) 
-            { this.tMatch = tMatch; }
-        
-        @Override
-        public boolean accept(Triple t)
-        {
-            return tripleContained(tMatch, t) ;
-        }
-        
-    }
 	static boolean tripleContained(Triple patternTriple, Triple dataTriple)
     {
         return
@@ -122,7 +105,7 @@ public class CollectionGraph extends GraphBase
 	 */
 	public CollectionGraph()
 	{
-		this(new HashSet<Triple>(), true);
+		this(new HashSet<>(), true);
 	}
 
 	/**
@@ -163,7 +146,7 @@ public class CollectionGraph extends GraphBase
 		{
 			iter = WrappedIterator.createNoRemove( triples.iterator() );
 		}
-		return iter.filterKeep ( new TripleMatchFilterEquality( m ) );
+		return iter.filterKeep ( t -> tripleContained(m, t) );
 	}
 
 	@Override

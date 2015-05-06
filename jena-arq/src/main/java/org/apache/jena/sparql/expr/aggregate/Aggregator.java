@@ -20,7 +20,7 @@ package org.apache.jena.sparql.expr.aggregate;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.graph.NodeTransform ;
+import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 
 /** An Aggregator is the processor for the whole result stream.

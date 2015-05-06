@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-package arq.cmdline;
+package arq.cmd;
 
 
-interface ArgProc {
 
-    void startArgs() ;
-    void finishArgs() ;
-    void arg(String arg, int i) ;
+public interface ArgModule
+{
+    // Argument processing phase
+    public void processArgs(CmdArgModule cmdLine) ;
 }

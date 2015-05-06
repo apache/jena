@@ -20,8 +20,8 @@ package org.apache.jena.sparql.algebra.op;
 
 import java.util.ArrayList ;
 import java.util.List ;
+import java.util.Objects;
 
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVisitor ;
 import org.apache.jena.sparql.algebra.Transform ;
@@ -63,7 +63,7 @@ public class OpProject extends OpModifier
     {
         if ( ! (other instanceof OpProject) ) return false ;
         OpProject opProject = (OpProject)other ;
-        if ( ! Lib.equal(vars, opProject.vars ) )
+        if ( ! Objects.equals(vars, opProject.vars ) )
             return false ;
         return getSubOp().equalTo(opProject.getSubOp(), labelMap) ;
     }

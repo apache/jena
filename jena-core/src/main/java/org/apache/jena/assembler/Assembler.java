@@ -73,8 +73,6 @@ public interface Assembler
     
     public static final Assembler prefixMapping = new PrefixMappingAssembler();
 
-    public static final Assembler fileModel = new FileModelAssembler();
-
     public static final Assembler unionModel = new UnionModelAssembler();
 
     public static final Assembler ontModelSpec = new OntModelSpecAssembler();
@@ -100,7 +98,6 @@ public interface Assembler
         .implementWith( JA.UnionModel, unionModel )
         .implementWith( JA.PrefixMapping, prefixMapping )
         .implementWith( JA.SinglePrefixMapping, prefixMapping )
-        .implementWith( JA.FileModel, fileModel )
         .implementWith( JA.OntModel, ontModel )
         .implementWith( JA.OntModelSpec, ontModelSpec )
         .implementWith( JA.RuleSet, ruleSet )

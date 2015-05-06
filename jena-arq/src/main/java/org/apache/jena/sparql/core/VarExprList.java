@@ -22,8 +22,8 @@ import java.util.ArrayList ;
 import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
+import java.util.Objects;
 
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -141,7 +141,7 @@ public class VarExprList
         if ( ! ( other instanceof VarExprList ) )
             return false ;
         VarExprList x = (VarExprList)other ;
-        return Lib.equal(vars, x.vars) && Lib.equal(exprs, x.exprs) ;
+        return Objects.equals(vars, x.vars) && Objects.equals(exprs, x.exprs) ;
     }
     
     @Override

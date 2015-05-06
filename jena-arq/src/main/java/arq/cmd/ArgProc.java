@@ -16,19 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.util.iterator;
+package arq.cmd;
 
-import java.util.Iterator;
 
-/**
-    A subclass of FilterIterator which keeps the elements that pass the
-    test.
-*/
-public class FilterKeepIterator<T> extends FilterIterator<T> implements Iterator<T>
-    {
-    public FilterKeepIterator( Filter<T> f, Iterator<T> it )
-        { super( f, it ); }
-    
-    @Override protected boolean accept( T x )
-        { return f.accept( x ); }
-    }
+interface ArgProc {
+
+    void startArgs() ;
+    void finishArgs() ;
+    void arg(String arg, int i) ;
+}

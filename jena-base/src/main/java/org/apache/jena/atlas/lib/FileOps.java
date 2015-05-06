@@ -19,11 +19,8 @@
 package org.apache.jena.atlas.lib ;
 
 import java.io.File ;
-import java.io.FileInputStream ;
-import java.io.FileOutputStream ;
 import java.io.IOException ;
-import java.nio.channels.FileChannel ;
-
+import java.nio.file.Files;
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.logging.Log ;
@@ -83,9 +80,8 @@ public class FileOps {
         if ( ! d.exists() )
             return ;
         
-        for ( File f : d.listFiles() ) {
-            if ( ".".equals(f.getName()) || "..".equals(f.getName()) )
-                continue ;
+		for (File f : d.listFiles(f -> !f.getName().equals(".")
+				&& !f.getName().equals(".."))) {
             if ( f.isDirectory() )
                 clearAll(f) ;
             f.delete() ;
@@ -215,13 +211,7 @@ public class FileOps {
     /** Copy a file */
     public static void copyFile(File source, File dest) {
         try {
-            @SuppressWarnings("resource")
-            FileChannel sourceChannel = new FileInputStream(source).getChannel() ;
-            @SuppressWarnings("resource")
-            FileChannel destChannel = new FileOutputStream(dest).getChannel() ;
-            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size()) ;
-            sourceChannel.close() ;
-            destChannel.close() ;
+        		Files.copy(source.toPath(), dest.toPath());
         }
         catch (IOException ex) {
             IO.exception(ex) ;

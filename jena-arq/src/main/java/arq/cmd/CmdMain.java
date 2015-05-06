@@ -16,13 +16,11 @@
  * limitations under the License.
  */
 
-package arq.cmdline;
+package arq.cmd;
 
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.shared.JenaException ;
-import arq.cmd.CmdException ;
-import arq.cmd.TerminationException ;
 
 /** Adds main()-like methods
  * 

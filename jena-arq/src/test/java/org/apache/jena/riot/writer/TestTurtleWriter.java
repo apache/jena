@@ -94,7 +94,6 @@ public class TestTurtleWriter {
         RDFDataMgr.write(output, m, Lang.TURTLE);
         
         ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
-        //System.out.println(new String(output.toByteArray(), Charset.forName("utf-8")));
         Model m2 = ModelFactory.createDefaultModel();
         RDFDataMgr.read(m2, input, Lang.TURTLE);
         Assert.assertTrue(m2.size() > 0);

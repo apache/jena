@@ -30,7 +30,7 @@ import org.apache.jena.sparql.engine.QueryExecutionBase ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
 import org.apache.jena.atlas.lib.Lib ;
 import sdb.cmd.CmdArgsDB;
-import arq.cmdline.ArgDecl;
+import arq.cmd.ArgDecl ;
 import arq.cmdline.ModQueryIn;
 import arq.cmdline.ModResultsOut;
 

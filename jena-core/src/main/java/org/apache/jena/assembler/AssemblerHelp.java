@@ -138,10 +138,14 @@ public class AssemblerHelp
         }
     
     private static Class<?> loadClassNamedBy( Statement s )
-        {
-        try { return Class.forName( getString( s ) ); }
+    {
+        String x = getString( s ) ;
+        // Jena2 -> Jena3 transition 
+        if ( x.startsWith("com.hp.hpl.jena") )
+            x = x.replaceFirst("com.hp.hpl.jena", "org.apache.jena") ;
+        try { return Class.forName(x); }
         catch (Exception e) { throw new JenaException( e ); }
-        }
+    }
 
     private static void runAnyAssemblerConstructor( AssemblerGroup group,  Statement s, Class<?> c )
         {
@@ -204,7 +208,7 @@ public class AssemblerHelp
     */
     public static Set<Resource> findSpecificTypes( Resource root, Resource baseType )
         {
-        List<RDFNode> types = root.listProperties( RDF.type ).mapWith( Statement.Util.getObject ).toList();
+        List<RDFNode> types = root.listProperties( RDF.type ).mapWith( Statement::getObject ).toList();
         Set<Resource> results = new HashSet<>();
         for (int i = 0; i < types.size(); i += 1)
             {

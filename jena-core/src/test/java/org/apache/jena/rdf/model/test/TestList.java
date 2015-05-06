@@ -29,7 +29,6 @@ import java.util.List;
 
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
-import org.apache.jena.util.iterator.Map1 ;
 import org.apache.jena.vocabulary.RDF ;
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -548,13 +547,7 @@ public class TestList extends AbstractModelTestBase
 		model.read(getFileName("ontology/list5.rdf"));
 
 		final RDFList root = getListRoot(model);
-		TestList.iteratorTest(root.mapWith(new Map1<RDFNode, String>() {
-			@Override
-			public String map1( final RDFNode x )
-			{
-				return ((Resource) x).getLocalName();
-			}
-		}), new Object[] { "a", "b", "c", "d", "e" });
+		TestList.iteratorTest(root.mapWith(n ->((Resource) n).getLocalName()), new Object[] { "a", "b", "c", "d", "e" });
 
 	}
 

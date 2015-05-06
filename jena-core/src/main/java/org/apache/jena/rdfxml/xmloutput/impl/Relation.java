@@ -23,9 +23,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
-
-import org.apache.jena.util.iterator.Map1 ;
 import org.apache.jena.util.iterator.Map1Iterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 
@@ -207,23 +204,11 @@ class Relation<T> {
         return cols.get(b);
     }
  
-    // ------------
-    private static <X> Map1<X, PairEntry<X, X>> inner(final X a)
-    {
-        return new Map1<X, PairEntry<X, X>>() {
-            @Override
-            public PairEntry<X, X> map1(X b)
-            {
-                return new PairEntry<>(a, b) ;
-            }
-        } ;
-    }
-
     private static <T> Iterator<PairEntry<T, T>> pairEntry(Map.Entry<T, Set<T>> pair)
     {
         final T a = pair.getKey() ;
         Set<T> bs = pair.getValue() ;
-        return new Map1Iterator<>(inner(a), bs.iterator()) ;
+        return new Map1Iterator<>(b -> new PairEntry<>(a, b), bs.iterator()) ;
     }
 
     /**
@@ -235,16 +220,8 @@ class Relation<T> {
      */   
     public Iterator<PairEntry<T, T>> iterator()
     {
-        Map1<Map.Entry<T, Set<T>>, Iterator<PairEntry<T, T>>> m1 = 
-        new Map1<Map.Entry<T, Set<T>>, Iterator<PairEntry<T, T>>>(){
-            @Override
-            public Iterator<PairEntry<T, T>> map1(Entry<T, Set<T>> entry)
-            {
-                return pairEntry(entry) ;
-            }} ;
-        
         Map1Iterator<Map.Entry<T, Set<T>>,Iterator<PairEntry<T, T>>> iter1 =
-            new Map1Iterator<>(m1 , rows.entrySet().iterator()) ;
+            new Map1Iterator<>( entry -> pairEntry(entry) , rows.entrySet().iterator()) ;
         // And now flatten it.
         Iterator<PairEntry<T, T>> iter2 = WrappedIterator.createIteratorIterator(iter1) ;
         return iter2 ;

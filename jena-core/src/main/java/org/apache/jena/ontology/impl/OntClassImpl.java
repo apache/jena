@@ -34,7 +34,6 @@ import org.apache.jena.ontology.* ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Filter ;
 import org.apache.jena.util.iterator.UniqueFilter ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 import org.apache.jena.vocabulary.OWL ;
@@ -177,7 +176,7 @@ public class OntClassImpl
     @Override
     public ExtendedIterator<OntClass> listSuperClasses( boolean direct ) {
         return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, false )
-                .filterDrop( new SingleEqualityFilter<OntClass>( this ) ).filterKeep( new UniqueFilter<OntClass>());
+                .filterDrop( this::equals ).filterKeep( new UniqueFilter<OntClass>());
     }
 
     /**
@@ -367,7 +366,7 @@ public class OntClassImpl
     @Override
     public ExtendedIterator<OntClass> listSubClasses( boolean direct ) {
         return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, true )
-                .filterDrop( new SingleEqualityFilter<OntClass>( this ) ).filterKeep( new UniqueFilter<OntClass>());
+                .filterDrop( this::equals ).filterKeep( new UniqueFilter<OntClass>());
     }
 
 
@@ -624,7 +623,7 @@ public class OntClassImpl
 
         // return the results, using the ont property facet
         return WrappedIterator.create( cands.iterator() )
-                              .mapWith( new AsMapper<>( OntProperty.class ) );
+                              .mapWith( n -> n.as( OntProperty.class ) );
     }
 
 
@@ -669,13 +668,9 @@ public class OntClassImpl
     public ExtendedIterator<Individual> listInstances( final boolean direct ) {
         return getModel()
                 .listStatements( null, RDF.type, this )
-                .mapWith( new SubjectAsMapper<>( Individual.class ) )
-                .filterKeep( new Filter<Individual>() {
-                    @Override
-                    public boolean accept( Individual o ) {
-                        // if direct, ignore the sub-class typed resources
-                        return o.hasRDFType( OntClassImpl.this, direct );
-                    }} ).filterKeep( new UniqueFilter<Individual>());
+                .mapWith( s -> s.getSubject().as( Individual.class ) )
+                .filterKeep( o -> o.hasRDFType( OntClassImpl.this, direct ))
+                .filterKeep( new UniqueFilter<Individual>());
     }
 
 

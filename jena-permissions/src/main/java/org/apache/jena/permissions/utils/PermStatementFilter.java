@@ -19,6 +19,7 @@ package org.apache.jena.permissions.utils;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
@@ -26,14 +27,13 @@ import org.apache.jena.permissions.SecurityEvaluator.SecNode;
 import org.apache.jena.permissions.impl.SecuredItem;
 import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.rdf.model.Statement ;
-import org.apache.jena.util.iterator.Filter ;
 
 /**
  * A filter for to filter ExtendedIterators on Statements.
  * This filter removes any triple that the user can not perform all
  * the actions on.
  */
-public class PermStatementFilter extends Filter<Statement>
+public class PermStatementFilter implements Predicate<Statement>
 {
 	private final SecurityEvaluator evaluator;
 	private final SecNode modelNode;
@@ -155,7 +155,7 @@ public class PermStatementFilter extends Filter<Statement>
 	}
 
 	@Override
-	public boolean accept( final Statement s )
+	public boolean test( final Statement s )
 	{
 		return evaluator.evaluateAny(principal, actions, modelNode,
 				SecuredItemImpl.convert(s.asTriple()));

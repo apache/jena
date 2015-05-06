@@ -1,0 +1,15 @@
+@prefix : <http://example/> .
+@prefix ns: <http://example/ns#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+:s ns:p 1 , 2 .
+
+:x1 ns:q ("a" "b") .
+
+:s1 ns:b ns:a .
+:s2 ns:b ns:a .
+
+:s3 :b1 _:aa .
+:s2 :b2 _:aa .
+
+:x2 :q [ :r 4.5 ] .

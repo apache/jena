@@ -18,15 +18,16 @@
 
 package org.apache.jena.tdb.solver;
 
-import org.apache.jena.atlas.iterator.Filter ;
-import org.apache.jena.atlas.lib.Tuple ;
+import java.util.function.Predicate;
+
+import org.apache.jena.atlas.lib.Tuple;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.main.StageGenerator ;
 import org.apache.jena.tdb.store.GraphTDB ;
-import org.apache.jena.tdb.store.NodeId ;
+import org.apache.jena.tdb.store.NodeId;
 
 /** Execute TDB requests directly -- no reordering
  *  Using OpExecutor is preferred.
@@ -51,7 +52,7 @@ public class StageGeneratorDirectTDB implements StageGenerator
             // Not us - bounce up the StageGenerator chain
             return above.execute(pattern, input, execCxt) ;
         GraphTDB graph = (GraphTDB)g ;
-        Filter<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext()) ;
+        Predicate<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext()) ;
         return SolverLib.execute(graph, pattern, input, filter, execCxt) ;
     }
 }

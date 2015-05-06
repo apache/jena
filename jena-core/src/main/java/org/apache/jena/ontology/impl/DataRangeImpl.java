@@ -153,7 +153,7 @@ public class DataRangeImpl
      */
     @Override
     public ExtendedIterator<Literal> listOneOf() {
-        return getOneOf().iterator().mapWith( new AsMapper<>( Literal.class ) );
+        return getOneOf().iterator().mapWith( n -> n.as( Literal.class ) );
     }
 
     /**

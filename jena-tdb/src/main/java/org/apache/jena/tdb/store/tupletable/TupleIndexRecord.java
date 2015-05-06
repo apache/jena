@@ -22,6 +22,7 @@ import static java.lang.String.format;
 import static org.apache.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
 
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 import org.apache.jena.atlas.iterator.* ;
 import org.apache.jena.atlas.lib.Bytes ;
@@ -166,7 +167,7 @@ public class TupleIndexRecord extends TupleIndexBase
             iter = index.iterator(minRec, maxRec) ;
         }
         
-        Iterator<Tuple<NodeId>> tuples = Iter.map(iter, transformToTuple) ;
+        Iterator<Tuple<NodeId>> tuples = Iter.map(iter, item -> TupleLib.tuple(item, colMap)) ;
         
         if ( leadingIdx < numSlots-1 )
         {
@@ -185,25 +186,16 @@ public class TupleIndexRecord extends TupleIndexBase
     public Iterator<Tuple<NodeId>> all()
     {
         Iterator<Record> iter = index.iterator() ;
-        return Iter.map(iter, transformToTuple) ;
+        return Iter.map(iter, item -> TupleLib.tuple(item, colMap)) ;
     }
-    
-    private final Transform<Record, Tuple<NodeId>> transformToTuple = new Transform<Record, Tuple<NodeId>>()
-    {
-        @Override
-        public final Tuple<NodeId> convert(Record item)
-        {
-            return TupleLib.tuple(item, colMap) ;
-        }
-    } ; 
     
     private Iterator<Tuple<NodeId>> scan(Iterator<Tuple<NodeId>> iter,
                                          final Tuple<NodeId> pattern)
     {
-        Filter<Tuple<NodeId>> filter = new Filter<Tuple<NodeId>>()
+        Predicate<Tuple<NodeId>> filter = new Predicate<Tuple<NodeId>>()
         {
             @Override
-            public boolean accept(Tuple<NodeId> item)
+            public boolean test(Tuple<NodeId> item)
             {
                 // Check on pattern and item (both in natural order)
                 for ( int i = 0 ; i < tupleLength ; i++ )

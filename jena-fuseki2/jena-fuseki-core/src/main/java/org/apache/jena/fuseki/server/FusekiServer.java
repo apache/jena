@@ -29,12 +29,14 @@ import java.util.ArrayList ;
 import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
+import java.util.Objects;
+
+import arq.cmd.CmdException ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.build.Builder ;
@@ -48,7 +50,6 @@ import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.tdb.sys.Names ;
-import arq.cmd.CmdException ;
 
 public class FusekiServer
 {
@@ -256,7 +257,7 @@ public class FusekiServer
             Fuseki.configLog.info("Template file: " + params.templateFile) ;
             String dir = params.params.get(Template.DIR) ;
             if ( dir != null ) {
-                if ( Lib.equal(dir, Names.memName) ) {
+                if ( Objects.equals(dir, Names.memName) ) {
                     Fuseki.configLog.info("TDB dataset: in-memory") ;
                 } else {
                     if ( !FileOps.exists(dir) )

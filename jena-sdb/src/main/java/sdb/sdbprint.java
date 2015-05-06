@@ -32,8 +32,8 @@ import org.apache.jena.sdb.util.PrintSDB ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.atlas.lib.Lib ;
 import sdb.cmd.CmdArgsDB;
-import arq.cmd.CmdException;
-import arq.cmdline.ArgDecl;
+import arq.cmd.ArgDecl ;
+import arq.cmd.CmdException ;
 import arq.cmdline.ModQueryIn;
 
 

@@ -20,8 +20,8 @@ package org.apache.jena.riot.other;
 
 import java.util.ArrayList ;
 import java.util.List ;
+import java.util.Objects;
 
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.system.StreamRDF ;
@@ -64,7 +64,7 @@ public class BatchedStreamRDF implements StreamRDF
 //        Node p = triple.getPredicate() ;
 //        Node o = triple.getObject() ;
 
-        if ( ! Lib.equal(s, currentSubject) )
+        if ( ! Objects.equals(s, currentSubject) )
         {
             if ( currentSubject != null )
                 finishBatchTriple(currentSubject) ;
@@ -110,7 +110,7 @@ public class BatchedStreamRDF implements StreamRDF
 //            Node p = triple.getPredicate() ;
 //            Node o = triple.getObject() ;
         
-        if ( ! Lib.equal(g, currentGraph) || ! Lib.equal(s,  currentSubject) )
+        if ( ! Objects.equals(g, currentGraph) || ! Objects.equals(s,  currentSubject) )
         {
             if ( currentSubject != null )
                 finishBatchQuad(currentGraph, currentSubject) ;

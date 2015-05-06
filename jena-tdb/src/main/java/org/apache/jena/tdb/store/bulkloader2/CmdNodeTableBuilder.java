@@ -23,12 +23,12 @@ import java.io.FileOutputStream ;
 import java.io.OutputStream ;
 import java.util.Arrays ;
 import java.util.List ;
+import java.util.Objects;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.atlas.logging.ProgressLogger ;
 import org.apache.jena.graph.Node ;
@@ -50,9 +50,10 @@ import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.tdb.sys.Names ;
 import org.slf4j.Logger ;
+
 import tdb.cmdline.CmdTDB ;
+import arq.cmd.ArgDecl ;
 import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdGeneral ;
 
 /** Build node table - write triples/quads as text file */
@@ -61,14 +62,17 @@ public class CmdNodeTableBuilder extends CmdGeneral
     static { LogCtl.setLog4j() ; }
     private static Logger cmdLog =TDB.logLoader ;
 
-    private static ArgDecl argLocation = new ArgDecl(ArgDecl.HasValue, "loc", "location") ;
-    private static ArgDecl argTriplesOut = new ArgDecl(ArgDecl.HasValue, "triples") ;
-    private static ArgDecl argQuadsOut = new ArgDecl(ArgDecl.HasValue, "quads") ;
+    private static ArgDecl argLocation      = new ArgDecl(ArgDecl.HasValue, "loc", "location") ;
+    private static ArgDecl argTriplesOut    = new ArgDecl(ArgDecl.HasValue, "triples") ;
+    private static ArgDecl argQuadsOut      = new ArgDecl(ArgDecl.HasValue, "quads") ;
+    private static ArgDecl argNoStats       = new ArgDecl(ArgDecl.NoValue, "nostats") ;
+    
     private String locationString ;
     private String dataFileTriples ;
     private String dataFileQuads ;
     private List<String> datafiles ;
     private Location location ;
+    private boolean collectStats = true ;
     
     public static void main(String...argv)
     {
@@ -83,6 +87,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         super.add(argLocation,      "--loc",        "Location") ;
         super.add(argTriplesOut,    "--triples",    "Output file for triples") ;
         super.add(argQuadsOut,      "--quads",      "Output file for quads") ;
+        super.add(argNoStats,       "--nostats",    "Don't collect stats") ;
     }
         
     @Override
@@ -103,8 +108,11 @@ public class CmdNodeTableBuilder extends CmdGeneral
         if ( dataFileQuads == null )
             dataFileQuads = location.getPath("quads", "tmp") ;
         
-        if ( Lib.equal(dataFileTriples, dataFileQuads) )
+        if ( Objects.equals(dataFileTriples, dataFileQuads) )
             cmdError("Triples and Quads work files are the same") ;
+        
+        if ( super.contains(argNoStats) )
+            collectStats = false ;
         
         //datafiles  = getPositionalOrStdin() ;
         datafiles  = getPositional() ;
@@ -149,7 +157,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         }
         catch (FileNotFoundException e) { throw new AtlasException(e) ; }
         
-        NodeTableBuilder sink = new NodeTableBuilder(dsg, monitor, outputTriples, outputQuads) ; 
+        NodeTableBuilder sink = new NodeTableBuilder(dsg, monitor, outputTriples, outputQuads, collectStats) ; 
         monitor.start() ;
         sink.startBulk() ;
         for( String filename : datafiles)
@@ -165,7 +173,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         // ---- Stats
         
         // See Stats class.
-        if ( ! location.isMem() )
+        if ( ! location.isMem() && sink.getCollector() != null )
             Stats.write(dsg.getLocation().getPath(Names.optStats), sink.getCollector().results()) ;
         
         // ---- Monitor
@@ -187,7 +195,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         private ProgressLogger monitor ;
         private StatsCollectorNodeId stats ;
 
-        NodeTableBuilder(DatasetGraphTDB dsg, ProgressLogger monitor, OutputStream outputTriples, OutputStream outputQuads)
+        NodeTableBuilder(DatasetGraphTDB dsg, ProgressLogger monitor, OutputStream outputTriples, OutputStream outputQuads, boolean collectStats)
         {
             this.dsg = dsg ;
             this.monitor = monitor ;
@@ -195,7 +203,8 @@ public class CmdNodeTableBuilder extends CmdGeneral
             this.nodeTable = ntt.getNodeTable() ;
             this.writerTriples = new WriteRows(outputTriples, 3, 20000) ; 
             this.writerQuads = new WriteRows(outputQuads, 4, 20000) ; 
-            this.stats = new StatsCollectorNodeId(nodeTable) ;
+            if ( collectStats )
+                this.stats = new StatsCollectorNodeId(nodeTable) ;
         }
         
         @Override
@@ -255,7 +264,8 @@ public class CmdNodeTableBuilder extends CmdGeneral
                 writerQuads.write(pId.getId()) ;
                 writerQuads.write(oId.getId()) ;
                 writerQuads.endOfRow() ;
-                stats.record(gId, sId, pId, oId) ;
+                if ( stats != null )
+                    stats.record(gId, sId, pId, oId) ;
             }
             else
             {
@@ -263,7 +273,8 @@ public class CmdNodeTableBuilder extends CmdGeneral
                 writerTriples.write(pId.getId()) ;
                 writerTriples.write(oId.getId()) ;
                 writerTriples.endOfRow() ;
-                stats.record(null, sId, pId, oId) ;
+                if ( stats != null )
+                    stats.record(null, sId, pId, oId) ;
             }
             monitor.tick() ;
         }

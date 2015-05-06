@@ -23,10 +23,10 @@ import java.io.OutputStream ;
 import java.io.OutputStreamWriter ;
 import java.io.Writer ;
 import java.util.* ;
-import java.util.Map.Entry ;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.iterator.Action ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Chars ;
 import org.apache.jena.graph.Graph ;
@@ -115,6 +115,9 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         Map<String, IRI> pmap = prefixMap.getMapping() ;
         for ( Entry<String, IRI> e : pmap.entrySet() ) {
             String key = e.getKey() ;
+            if ( key.isEmpty() )
+                // Prefix "" is not allowed in JSON-LD
+                continue ;
             IRI iri = e.getValue() ;
             ctx.put(e.getKey(), e.getValue().toString()) ;
         }
@@ -123,9 +126,9 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
     private static void addProperties(final Map<String, Object> ctx, Graph graph) {
         // Add some properties directly so it becomes "localname": ....
         final Set<String> dups = new HashSet<>() ;
-        Action<Triple> x = new Action<Triple>() {
+        Consumer<Triple> x = new Consumer<Triple>() {
             @Override
-            public void apply(Triple item) {
+            public void accept(Triple item) {
                 Node p = item.getPredicate() ;
                 Node o = item.getObject() ;
                 if ( p.equals(RDF.type.asNode()) )

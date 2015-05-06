@@ -1,0 +1,63 @@
+{
+  "@graph" : [ {
+    "@id" : "_:b1",
+    "r" : "4.5"
+  }, {
+    "@id" : "http://example/s",
+    "ns:p" : [ 2, 1 ]
+  }, {
+    "@id" : "http://example/s1",
+    "b" : "ns:a"
+  }, {
+    "@id" : "http://example/s2",
+    "b2" : "_:b2",
+    "b" : "ns:a"
+  }, {
+    "@id" : "http://example/s3",
+    "b1" : "_:b2"
+  }, {
+    "@id" : "http://example/x1",
+    "ns:q" : {
+      "@list" : [ "a", "b" ]
+    }
+  }, {
+    "@id" : "http://example/x2",
+    "q" : "_:b1"
+  } ],
+  "@context" : {
+    "rest" : {
+      "@id" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
+      "@type" : "@id"
+    },
+    "first" : {
+      "@id" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
+      "@type" : "http://www.w3.org/2001/XMLSchema#string"
+    },
+    "q" : {
+      "@id" : "http://example/q",
+      "@type" : "@id"
+    },
+    "b2" : {
+      "@id" : "http://example/b2",
+      "@type" : "@id"
+    },
+    "b" : {
+      "@id" : "http://example/ns#b",
+      "@type" : "@id"
+    },
+    "r" : {
+      "@id" : "http://example/r",
+      "@type" : "http://www.w3.org/2001/XMLSchema#decimal"
+    },
+    "p" : {
+      "@id" : "http://example/ns#p",
+      "@type" : "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "b1" : {
+      "@id" : "http://example/b1",
+      "@type" : "@id"
+    },
+    "ns" : "http://example/ns#",
+    "xsd" : "http://www.w3.org/2001/XMLSchema#"
+  }
+}

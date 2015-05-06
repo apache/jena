@@ -20,10 +20,12 @@ package org.apache.jena.atlas.iterator ;
 
 import java.io.PrintStream ;
 import java.util.* ;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream ;
 import java.util.stream.StreamSupport ;
 
-import org.apache.jena.atlas.lib.ActionKeyValue ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sink ;
 
@@ -182,18 +184,11 @@ public class Iter<T> implements Iterator<T> {
 //        apply(stream.iterator(), action) ;
 //    }
 
-    public static <T> void apply(Iterator<? extends T> stream, Action<T> action) {
+    public static <T> void apply(Iterator<? extends T> stream, Consumer<T> action) {
         for (; stream.hasNext();) {
             T item = stream.next() ;
-            action.apply(item) ;
+            action.accept(item) ;
         }
-    }
-
-    // -- Map specific apply. No results - do immediately.
-
-    public static <K, V> void apply(Map<K, V> map, ActionKeyValue<K, V> action) {
-        for (Map.Entry<K, V> entry : map.entrySet())
-            action.apply(entry.getKey(), entry.getValue()) ;
     }
 
     // ---- Filter
@@ -202,7 +197,7 @@ public class Iter<T> implements Iterator<T> {
 //        return filter(stream.iterator(), filter) ;
 //    }
 
-    public static <T> Iterator<T> filter(final Iterator<? extends T> stream, final Filter<T> filter) {
+    public static <T> Iterator<T> filter(final Iterator<? extends T> stream, final Predicate<T> filter) {
         final Iterator<T> iter = new Iterator<T>() {
 
             boolean finished     = false ;
@@ -219,7 +214,7 @@ public class Iter<T> implements Iterator<T> {
                         break ;
                     }
                     T nextItem = stream.next() ;
-                    if ( filter.accept(nextItem) ) {
+                    if ( filter.test(nextItem) ) {
                         slot = nextItem ;
                         slotOccupied = true ;
                         break ;
@@ -246,29 +241,12 @@ public class Iter<T> implements Iterator<T> {
         return iter ;
     }
 
-    private static class InvertedFilter<T> implements Filter<T> {
-        public static <T> Filter<T> invert(Filter<T> filter) {
-            return new InvertedFilter<>(filter) ;
-        }
-        private Filter<T> baseFilter ;
-
-        private InvertedFilter(Filter<T> baseFilter) {
-            this.baseFilter = baseFilter ;
-        }
-
-        @Override
-        public boolean accept(T item) {
-            return !baseFilter.accept(item) ;
-        }
-    }
-
 //    public static <T> Iterator<T> notFilter(Iterable<? extends T> stream, Filter<T> filter) {
 //        return notFilter(stream.iterator(), filter) ;
 //    }
 
-    public static <T> Iterator<T> notFilter(final Iterator<? extends T> stream, final Filter<T> filter) {
-        Filter<T> flippedFilter = InvertedFilter.invert(filter) ;
-        return filter(stream, flippedFilter) ;
+    public static <T> Iterator<T> notFilter(final Iterator<? extends T> stream, final Predicate<T> filter) {
+        return filter(stream, filter.negate()) ;
     }
 
     // Filter-related
@@ -288,10 +266,10 @@ public class Iter<T> implements Iterator<T> {
      * Return true if every element of stream passes the filter (reads the
      * stream until the first element not passing the filter)
      */
-    public static <T> boolean every(Iterator<? extends T> stream, Filter<T> filter) {
-        for (; stream.hasNext();) {
+    public static <T> boolean every(Iterator<? extends T> stream, Predicate<T> filter) {
+        while ( stream.hasNext() ) {
             T item = stream.next() ;
-            if ( !filter.accept(item) )
+            if ( !filter.test(item) )
                 return false ;
         }
         return true ;
@@ -312,10 +290,10 @@ public class Iter<T> implements Iterator<T> {
      * Return true if one or more elements of stream passes the filter (reads
      * the stream to first element passing the filter)
      */
-    public static <T> boolean some(Iterator<? extends T> stream, Filter<T> filter) {
-        for (; stream.hasNext();) {
+    public static <T> boolean some(Iterator<? extends T> stream, Predicate<T> filter) {
+        while ( stream.hasNext() ) {
             T item = stream.next() ;
-            if ( filter.accept(item) )
+            if ( filter.test(item) )
                 return true ;
         }
         return false ;
@@ -327,7 +305,7 @@ public class Iter<T> implements Iterator<T> {
 //        return map(stream.iterator(), converter) ;
 //    }
 
-    public static <T, R> Iterator<R> map(final Iterator<? extends T> stream, final Transform<T, R> converter) {
+    public static <T, R> Iterator<R> map(final Iterator<? extends T> stream, final Function<T, R> converter) {
         final Iterator<R> iter = new Iterator<R>() {
             @Override
             public boolean hasNext() {
@@ -336,7 +314,7 @@ public class Iter<T> implements Iterator<T> {
 
             @Override
             public R next() {
-                return converter.convert(stream.next()) ;
+                return converter.apply(stream.next()) ;
             }
 
             @Override
@@ -347,67 +325,13 @@ public class Iter<T> implements Iterator<T> {
         return iter ;
     }
 
-    public static <T, R> List<R> map(List<? extends T> list, Transform<T, R> converter) {
+    public static <T, R> List<R> map(List<? extends T> list, Function<T, R> converter) {
         return toList(map(list.iterator(), converter)) ;
-    }
-
-    /**
-     * Projects each element of a sequence to an Iterator&lt;R&gt; and flattens
-     * the resulting sequences into one sequence.
-     */
-    public static <T, R> Iterator<R> mapMany(final Iterator<? extends T> stream,
-                                             final Transform<? super T, Iterator<R>> converter) {
-        final Iterator<R> iter = new Iterator<R>() {
-
-            private Iterator<? extends R> it = null ; // Iterator for the
-                                                      // current element of
-                                                      // stream.
-
-            @Override
-            public boolean hasNext() {
-                if ( it != null && it.hasNext() )
-                    // Element of the current iterator.
-                    return true ;
-                // Start or current iterator has ended.
-                it = null ;
-
-                // Need to move to next non-empty iterator of the stream.
-                while (stream.hasNext()) {
-                    it = converter.convert(stream.next()) ;
-                    if ( it.hasNext() )
-                        // There is something.
-                        return true ;
-                }
-                it = null ;
-                // Stream ran out.
-                return false ;
-            }
-
-            @Override
-            public R next() {
-                if ( !hasNext() )
-                    throw new NoSuchElementException() ;
-                // "it" is always left with something to yield if hashNext is
-                // true.
-                return it.next() ;
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException("mapMany.remove") ;
-            }
-        } ;
-
-        return iter ;
     }
 
 //    public static <T, R> Iterator<R> mapMany(Iterable<? extends T> stream, Transform<T, Iterator<R>> converter) {
 //        return mapMany(stream.iterator(), converter) ;
 //    }
-
-    public static <T, R> List<R> mapMany(List<? extends T> list, Transform<T, Iterator<R>> converter) {
-        return toList(mapMany(list.iterator(), converter)) ;
-    }
 
 //    /**
 //     * Apply an action to everything in stream, yielding a stream of the same
@@ -421,7 +345,7 @@ public class Iter<T> implements Iterator<T> {
      * Apply an action to everything in stream, yielding a stream of the same
      * items
      */
-    public static <T> Iterator<T> operate(final Iterator<? extends T> stream, final Action<T> action) {
+    public static <T> Iterator<T> operate(final Iterator<? extends T> stream, final Consumer<T> action) {
         final Iterator<T> iter = new Iterator<T>() {
             @Override
             public boolean hasNext() {
@@ -431,7 +355,7 @@ public class Iter<T> implements Iterator<T> {
             @Override
             public T next() {
                 T t = stream.next() ;
-                action.apply(t) ;
+                action.accept(t) ;
                 return t ;
             }
 
@@ -450,13 +374,7 @@ public class Iter<T> implements Iterator<T> {
 
     /** Print an iterator as it gets used - this adds a printing wrapper */
     public static <T> Iterator<T> printWrapper(final PrintStream out, final Iterator<? extends T> stream) {
-        Action<T> action = new Action<T>() {
-            @Override
-            public void apply(T item) {
-                out.println(item) ;
-            }
-        } ;
-        return Iter.operate(stream, action) ;
+        return Iter.operate(stream, out::println) ;
     }
 
 //    /** Join two iteratables
@@ -502,14 +420,14 @@ public class Iter<T> implements Iterator<T> {
 //    }
 
     public static <T> Iterator<T> removeNulls(Iterator<T> iter) {
-        return filter(iter, new FilterOutNulls<T>()) ;
+        return filter(iter, Objects::nonNull) ;
     }
 
     /** Take the first N elements of an iterator - stop early if too few */
     public static <T> List<T> take(Iterator<T> iter, int N) {
         iter = new IteratorN<>(iter, N) ;
         List<T> x = new ArrayList<>(N) ;
-        for (; iter.hasNext();)
+        while ( iter.hasNext() )
             x.add(iter.next()) ;
         return x ;
     }
@@ -667,14 +585,7 @@ public class Iter<T> implements Iterator<T> {
      */
     public static <T> Iterator<T> debug(final PrintStream out, Iterator<T> stream) {
         try { 
-            Transform<T, T> x = new Transform<T, T>() {
-                @Override
-                public T convert(T item) {
-                    out.println(item) ;
-                    return item ;
-                }
-            } ;
-            return map(stream, x) ;
+            return map(stream, item -> {out.println(item); return item;}) ;
         } finally { out.flush() ; }
     }
 
@@ -685,14 +596,7 @@ public class Iter<T> implements Iterator<T> {
 
     /** Print an iterator (destructive) */
     public static <T> void print(final PrintStream out, Iterator<T> stream) {
-        Action<T> x = new Action<T>() {
-            @Override
-            public void apply(T item) {
-                out.println(item) ;
-            }
-
-        } ;
-        apply(stream, x) ;
+        apply(stream, out::println) ;
     }
 
 //    /** Print an iterable */
@@ -707,7 +611,7 @@ public class Iter<T> implements Iterator<T> {
 
     /** Send the elements of the iterator to a sink - consumes the iterator */
     public static <T> void sendToSink(Iterator<T> iter, Sink<T> sink) {
-        for (; iter.hasNext();) {
+        while ( iter.hasNext() ) {
             T thing = iter.next() ;
             sink.send(thing) ;
         }
@@ -731,11 +635,11 @@ public class Iter<T> implements Iterator<T> {
     // { return Iter.iter(Arrays.asList(objects)) ; }
 
     public static <T> Iter<T> iterSingleton(T x) {
-        return Iter.iter(SingletonIterator.create(x)) ;
+        return iter(SingletonIterator.create(x)) ;
     }
 
     public static <T> Iter<T> iter(Collection<T> collection) {
-        return Iter.iter(collection.iterator()) ;
+        return iter(collection.iterator()) ;
     }
 
     public static <T> Iter<T> iter(Iterator<T> iterator) {
@@ -763,7 +667,7 @@ public class Iter<T> implements Iterator<T> {
      * debugging
      */
     public static <T> Iterator<T> materialize(Iterator<T> iter) {
-        return Iter.toList(iter).iterator() ;
+        return toList(iter).iterator() ;
     }
 
     public static <T> Iter<T> concat(Iter<T> iter1, Iter<T> iter2) {
@@ -779,61 +683,60 @@ public class Iter<T> implements Iterator<T> {
             return iter2 ;
         if ( iter2 == null )
             return iter1 ;
-        return Iter.iter(iter1).append(Iter.iter(iter2)) ;
+        return iter(iter1).append(iter(iter2)) ;
     }
 
-    public static <T> T first(Iterator<T> iter, Filter<T> filter) {
-        for (int idx = 0; iter.hasNext(); idx++) {
+    public static <T> T first(Iterator<T> iter, Predicate<T> filter) {
+        while (iter.hasNext()) {
             T t = iter.next() ;
-            if ( filter.accept(t) )
+            if ( filter.test(t) )
                 return t ;
-            // return idx ;
         }
         return null ;
     }
 
-    public static <T> T first(Collection<T> collection, Filter<T> filter) {
-        return first(collection.iterator(), filter) ;
+    public static <T> T first(Collection<T> collection, Predicate<T> filter) {
+        return collection.stream().filter(filter).findFirst().orElse(null);
     }
 
-    public static <T> int firstIndex(Iterator<T> iter, Filter<T> filter) {
+    public static <T> int firstIndex(Iterator<T> iter, Predicate<T> filter) {
         for (int idx = 0; iter.hasNext(); idx++) {
             T t = iter.next() ;
-            if ( filter.accept(t) )
+            if ( filter.test(t) )
                 return idx ;
         }
         return -1 ;
     }
 
-    public static <T> int firstIndex(Collection<T> collection, Filter<T> filter) {
+    public static <T> int firstIndex(Collection<T> collection, Predicate<T> filter) {
         return firstIndex(collection.iterator(), filter) ;
     }
 
-    public static <T> T last(Iterator<T> iter, Filter<T> filter) {
+    public static <T> T last(Iterator<T> iter, Predicate<T> filter) {
         T thing = null ;
-        for (int idx = 0; iter.hasNext(); idx++) {
+        while (iter.hasNext()) {
             T t = iter.next() ;
-            if ( filter.accept(t) )
+            if ( filter.test(t) )
                 thing = t ;
         }
         return thing ;
     }
 
-    public static <T> T last(Collection<T> collection, Filter<T> filter) {
+    public static <T> T last(Collection<T> collection, Predicate<T> filter) {
         return last(collection.iterator(), filter) ;
     }
 
-    public static <T> int lastIndex(Iterator<T> iter, Filter<T> filter) {
+    public static <T> int lastIndex(Iterator<T> iter, Predicate<T> filter) {
         int location = -1 ;
         for (int idx = 0; iter.hasNext(); idx++) {
             T t = iter.next() ;
-            if ( filter.accept(t) )
+            if ( filter.test(t) )
                 location = idx ;
         }
         return location ;
     }
 
-    public static <T> int lastIndex(Collection<T> collection, Filter<T> filter) {
+    public static <T> int lastIndex(Collection<T> collection, Predicate<T> filter) {
         return lastIndex(collection.iterator(), filter) ;
     }
 
@@ -858,39 +761,39 @@ public class Iter<T> implements Iterator<T> {
         sendToSink(iterator, sink) ;
     }
 
-    public T first(Filter<T> filter) {
+    public T first(Predicate<T> filter) {
         return first(iterator, filter) ;
     }
 
-    public int firstIndex(Filter<T> filter) {
+    public int firstIndex(Predicate<T> filter) {
         return firstIndex(iterator, filter) ;
     }
 
-    public T last(Filter<T> filter) {
+    public T last(Predicate<T> filter) {
         return last(iterator, filter) ;
     }
 
-    public int lastIndex(Filter<T> filter) {
+    public int lastIndex(Predicate<T> filter) {
         return lastIndex(iterator, filter) ;
     }
 
-    public Iter<T> filter(Filter<T> filter) {
+    public Iter<T> filter(Predicate<T> filter) {
         return iter(filter(iterator, filter)) ;
     }
 
-    public boolean every(Filter<T> filter) {
+    public boolean every(Predicate<T> filter) {
         return every(iterator, filter) ;
     }
 
-    public boolean some(Filter<T> filter) {
+    public boolean some(Predicate<T> filter) {
         return some(iterator, filter) ;
     }
 
     public Iter<T> removeNulls() {
-        return filter(new FilterOutNulls<T>()) ;
+        return iter(removeNulls(this)) ;
     }
 
-    public <R> Iter<R> map(Transform<T, R> converter) {
+    public <R> Iter<R> map(Function<T, R> converter) {
         return iter(map(iterator, converter)) ;
     }
 
@@ -898,7 +801,7 @@ public class Iter<T> implements Iterator<T> {
      * Apply an action to everything in the stream, yielding a stream of the
      * same items
      */
-    public Iter<T> operate(Action<T> action) {
+    public Iter<T> operate(Consumer<T> action) {
         return iter(operate(iterator, action)) ;
     }
 
@@ -906,7 +809,7 @@ public class Iter<T> implements Iterator<T> {
         return reduce(iterator, aggregator) ;
     }
 
-    public void apply(Action<T> action) {
+    public void apply(Consumer<T> action) {
         apply(iterator, action) ;
     }
 
@@ -920,7 +823,7 @@ public class Iter<T> implements Iterator<T> {
 
     /** Return an Iter that yields at most the first N items */
     public Iter<T> take(int N) {
-        return Iter.iter(take(iterator, N)) ;
+        return iter(take(iterator, N)) ;
     }
 
     /** Count the iterator (this is destructive on the iterator) */

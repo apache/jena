@@ -33,9 +33,9 @@ import org.apache.jena.tdb.assembler.VocabTDB ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.apache.jena.util.FileManager ;
+import arq.cmd.ArgDecl ;
+import arq.cmd.CmdArgModule ;
 import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
-import arq.cmdline.CmdArgModule ;
 import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModDataset ;
 

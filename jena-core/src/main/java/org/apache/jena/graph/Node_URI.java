@@ -65,14 +65,14 @@ public class Node_URI extends Node_Concrete
     public String getNameSpace()
         { 
         String s = (String) label;
-        return s.substring( 0, Util.splitNamespace( s ) );
+        return s.substring( 0, Util.splitNamespaceXML( s ) );
         }
     
     @Override
     public String getLocalName()
         {  
         String s = (String) label;
-        return s.substring( Util.splitNamespace( s ) );
+        return s.substring( Util.splitNamespaceXML( s ) );
         }
     
     @Override

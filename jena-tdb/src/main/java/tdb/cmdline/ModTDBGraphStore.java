@@ -20,7 +20,7 @@ package tdb.cmdline;
 
 import org.apache.jena.update.GraphStore ;
 import org.apache.jena.update.GraphStoreFactory ;
-import arq.cmdline.CmdArgModule ;
+import arq.cmd.CmdArgModule ;
 import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModGraphStore ;
 

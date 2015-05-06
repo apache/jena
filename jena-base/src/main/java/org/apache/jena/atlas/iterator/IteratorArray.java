@@ -18,10 +18,17 @@
 
 package org.apache.jena.atlas.iterator;
 
+import java.util.Arrays;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
 /** Iterator over a Java base array */
+/**
+ * @deprecated 
+ * Prefer {@link Arrays#asList(Object...)} with {@link Iterable#iterator()} or
+ * {@link Arrays#spliterator(Object[])} or {@link Arrays#stream(Object[])}
+ */
+@Deprecated
 public final class IteratorArray<T> implements Iterator<T>
 {
     /** Iterator over all the array elements */ 

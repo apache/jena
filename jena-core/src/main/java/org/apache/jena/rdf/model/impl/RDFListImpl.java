@@ -24,6 +24,7 @@ package org.apache.jena.rdf.model.impl;
 // Imports
 ///////////////
 import java.util.*;
+import java.util.function.Function;
 
 import org.apache.jena.enhanced.* ;
 import org.apache.jena.graph.* ;
@@ -669,7 +670,7 @@ public class RDFListImpl
      * @return The iterator of the elements of this list mapped with the given map function.
      */
     @Override
-    public <T> ExtendedIterator<T> mapWith( Map1<RDFNode, T> fn ) {
+    public <T> ExtendedIterator<T> mapWith( Function<RDFNode, T> fn ) {
         return iterator().mapWith( fn );
     }
         

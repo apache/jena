@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package arq.cmdline;
+package arq.cmd;
 
 import java.io.PrintStream ;
 import java.util.ArrayList ;

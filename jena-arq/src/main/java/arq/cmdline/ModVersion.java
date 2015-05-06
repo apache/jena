@@ -18,6 +18,9 @@
 
 package arq.cmdline;
 
+import arq.cmd.ArgDecl ;
+import arq.cmd.ArgModuleGeneral ;
+import arq.cmd.CmdArgModule ;
 import org.apache.jena.Jena ;
 import org.apache.jena.sparql.util.Version ;
 

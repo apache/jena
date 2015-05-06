@@ -111,11 +111,7 @@ public abstract class GraphTripleStoreBase implements TripleStore
          { return expectOnlyNodes( predicates.domain() ); }
     
      private ExtendedIterator<Node> expectOnlyNodes( Iterator<Object> elements )
-        { return WrappedIterator.createNoRemove( elements ).mapWith( expectNode ); }
-     
-     private static final Map1<Object, Node> expectNode = new Map1<Object, Node>()
-         { @Override
-        public Node map1( Object o ) { return (Node) o; }};
+        { return WrappedIterator.createNoRemove( elements ).mapWith( o -> (Node) o ); }
      
      @Override
     public ExtendedIterator<Node> listObjects()

@@ -21,9 +21,9 @@ package sdb.cmd;
 import java.util.ArrayList;
 import java.util.List;
 
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.CmdGeneral;
+import arq.cmd.ArgDecl ;
+import arq.cmd.CmdArgModule ;
+import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModBase;
 
 public class ModData extends ModBase

@@ -26,6 +26,7 @@ import java.util.ArrayList ;
 import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.function.Predicate;
 
 import org.junit.Test ;
 
@@ -225,97 +226,11 @@ public class TestIter
     @Test
     public void map_01()
     {
-        Iterator<String> it = Iter.map(data2.iterator(), new Transform<String,String>()
-        {
-            @Override
-            public String convert(String item)
-            {
-                return item + item;
-            }
-        });
+        Iterator<String> it = Iter.map(data2.iterator(), item -> item + item);
         test(it, "xx", "yy", "zz");
     }
-    
-    @Test
-    public void mapMany_01()
-    {
-        Iterator<String> it = Iter.mapMany(data2.iterator(), new Transform<String,Iterator<String>>()
-        {
-            @Override
-            public Iterator<String> convert(String item)
-            {
-                List<String> l = new ArrayList<>(2);
-                l.add(item);
-                l.add(item + item);
-                return l.iterator();
-            }
-        });
-        
-        test(it, "x", "xx", "y", "yy", "z", "zz");
-    }
-    
-    @Test
-    public void mapMany_02()
-    {
-        Iterator<String> it = Iter.mapMany(data2.iterator(), new Transform<String,Iterator<String>>()
-        {
-            @Override
-            public Iterator<String> convert(String item)
-            {
-                return Iter.nullIterator() ;
-            }
-        });
-        
-        assertFalse(it.hasNext()) ;
-    }
-    
-    @Test
-    public void mapMany_03()
-    {
-        Iterator<String> it = Iter.mapMany(data2.iterator(), new Transform<String,Iterator<String>>()
-        {
-            int count = 0 ;
-            @Override
-            public Iterator<String> convert(String item)
-            {
-                count++ ;
-                if ( count%2 == 1 )
-                    return Iter.singleton(item) ;
-                else
-                    return Iter.nullIterator() ;
-            }
-        });
-        
-        test(it, "x", "z");
-    }
-
-    @Test
-    public void mapMany_04()
-    {
-        Iterator<String> it = Iter.mapMany(data2.iterator(), new Transform<String,Iterator<String>>()
-        {
-            int count = 0 ;
-            @Override
-            public Iterator<String> convert(String item)
-            {
-                count++ ;
-                if ( count%2 == 0 )
-                    return Iter.singleton(item) ;
-                else
-                    return Iter.nullIterator() ;
-            }
-        });
-        
-        test(it, "y");
-    }
-
 	
-    Filter<String> filter = new Filter<String>() {
-        @Override
-        public boolean accept(String item)
-        {
-            return item.length() == 1 ;
-        }} ;
+    Predicate<String> filter = item -> item.length() == 1;
    
     @Test
     public void first_01()
@@ -441,14 +356,7 @@ public class TestIter
     @Test
     public void filter_02()
     {
-        Iterator<String> it = Iter.filter(data3.iterator(), new Filter<String>()
-        {
-            @Override
-            public boolean accept(String item)
-            {
-                return "x".equals(item) || "z".equals(item) ;
-            }
-        });
+        Iterator<String> it = Iter.filter(data3.iterator(), item -> "x".equals(item) || "z".equals(item));
         
         test(it, "x", "z");
     }
@@ -456,14 +364,7 @@ public class TestIter
     @Test
     public void filter_03()
     {
-        Iterator<String> it = Iter.filter(data3.iterator(), new Filter<String>()
-        {
-            @Override
-            public boolean accept(String item)
-            {
-                return (null == item) || "x".equals(item) ;
-            }
-        });
+        Iterator<String> it = Iter.filter(data3.iterator(), item -> null == item || "x".equals(item));
         
         test(it, null, "x", null, null, null, null);
     }
@@ -496,23 +397,8 @@ public class TestIter
         test(iter, "a", "b", "a") ;
     }
     
-    private static class AlwaysAcceptFilter implements Filter<Object> {
-        @Override
-        public boolean accept(Object o) {
-            return true;
-        }
-    }
-
-    private static class NeverAcceptFilter implements Filter<Object> {
-        @Override
-        public boolean accept(Object o) {
-            return false;
-        }
-    }
-
-    
     private static class AlwaysAcceptFilterStack extends FilterStack<Object> {
-        public AlwaysAcceptFilterStack(Filter<Object> f) {
+        public AlwaysAcceptFilterStack(Predicate<Object> f) {
             super(f);
         }
 
@@ -524,16 +410,16 @@ public class TestIter
 
     @Test
     public void testFilterStack_01() {
-        Filter<Object> filter = new AlwaysAcceptFilter();
+        Predicate<Object> filter = x -> true;
         FilterStack<Object> filterStack = new AlwaysAcceptFilterStack(filter);
-        assertTrue(filterStack.accept(new Object()));
+        assertTrue(filterStack.test(new Object()));
     }
     
     @Test
     public void testFilterStack_02() {
-        Filter<Object> filter = new NeverAcceptFilter();
+        Predicate<Object> filter = x -> false;
         FilterStack<Object> filterStack = new AlwaysAcceptFilterStack(filter);
-        assertFalse(filterStack.accept(new Object()));
+        assertFalse(filterStack.test(new Object()));
     }
 
 }

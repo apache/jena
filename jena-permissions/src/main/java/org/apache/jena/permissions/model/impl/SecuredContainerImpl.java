@@ -35,7 +35,6 @@ import org.apache.jena.permissions.utils.ContainerFilter;
 import org.apache.jena.permissions.utils.PermStatementFilter;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.Map1 ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 import org.apache.jena.vocabulary.RDF ;
 
@@ -342,7 +341,7 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements
 	        		result.add( stmt );
 	        	}
 	        }
-	        return new SecuredNodeIterator<RDFNode>(getModel(), new StatementRemovingIterator(result.iterator()).mapWith( new NodeMap() ) );
+	        return new SecuredNodeIterator<RDFNode>(getModel(), new StatementRemovingIterator(result.iterator()).mapWith( s -> s.getObject() ) );
         }
         finally {
         	iter.close();
@@ -356,14 +355,7 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements
 		final Set<Action> permsCopy = new HashSet<Action>(perms);
 		permsCopy.add(Action.Read);
 		final ExtendedIterator<RDFNode> ni = getStatementIterator(perms)
-				.mapWith(new Map1<Statement, RDFNode>() {
-
-					@Override
-					public RDFNode map1( final Statement o )
-					{
-						return o.getObject();
-					}
-				});
+				.mapWith(o -> o.getObject());
 		return new SecuredNodeIterator<RDFNode>(getModel(), ni);
 
 	}
@@ -525,18 +517,7 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements
 	 * 
 	 * }
 	 */
-	
-	static class NodeMap implements Map1<Statement,RDFNode>
-	{
 
-		@Override
-		public RDFNode map1( Statement o )
-		{
-			return o.getObject();
-		}
-		
-	}
-	
 	static class ContainerComparator implements Comparator<Statement>
 	{
 

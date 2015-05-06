@@ -19,12 +19,12 @@
 package org.apache.jena.assembler.assemblers;
 
 import java.util.*;
+import java.util.function.Function;
 
 import org.apache.jena.assembler.* ;
 import org.apache.jena.assembler.exceptions.* ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.* ;
-import org.apache.jena.util.iterator.Map1 ;
 import org.apache.jena.vocabulary.RDF ;
 
 public abstract class ModelAssembler extends AssemblerBase implements Assembler
@@ -107,27 +107,17 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
 
     private void transferContentProperties( Model partial, Resource someInitial, Resource combined )
         {
-        Map1<Statement, Statement> replace = replaceSubjectMap( partial, combined );
-            for ( Property contentProperty : ContentAssembler.contentProperties )
+     	for ( Property contentProperty : ContentAssembler.contentProperties )
             {
-                partial.add( copyProperties( someInitial, replace, contentProperty ) );
+                partial.add( copyProperties( someInitial, replaceSubjectMap( partial, combined ), contentProperty ) );
             }
         }
     
-    private List<Statement> copyProperties( Resource root, Map1<Statement, Statement> replace, Property property )
+    private List<Statement> copyProperties( Resource root, Function<Statement, Statement> replace, Property property )
         { return root.listProperties( property  ).mapWith( replace ).toList(); }
 
-    private Map1<Statement, Statement> replaceSubjectMap( final Model inModel, final Resource newSubject )
-        {
-        Map1<Statement, Statement> replace = new Map1<Statement, Statement>() 
-            {
-            @Override
-            public Statement map1( Statement o )
-                { 
-                Statement s = o;
-                return inModel.createStatement( newSubject, s.getPredicate(), s.getObject() );
-                }
-            };
-        return replace;
-        }
+	private Function<Statement, Statement> replaceSubjectMap( final Model inModel, final Resource newSubject ) {
+		return s -> inModel.createStatement(newSubject, s.getPredicate(), s.getObject());
+	}
+	
     }

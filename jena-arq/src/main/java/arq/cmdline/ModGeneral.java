@@ -18,6 +18,9 @@
 
 package arq.cmdline;
 
+import arq.cmd.ArgDecl ;
+import arq.cmd.CmdArgModule ;
+
 public class ModGeneral extends ModBase
 {
     private CallbackHelp helpCallback = null ;

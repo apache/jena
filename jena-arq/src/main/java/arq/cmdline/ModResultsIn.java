@@ -18,12 +18,12 @@
 
 package arq.cmdline;
 
+import arq.cmd.* ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
 import org.apache.jena.shared.NotFoundException ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.resultset.ResultsFormat ;
-import arq.cmd.TerminationException ;
 
 public class ModResultsIn implements ArgModuleGeneral
 {

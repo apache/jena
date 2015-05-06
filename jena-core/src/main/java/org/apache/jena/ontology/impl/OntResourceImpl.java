@@ -24,6 +24,8 @@ package org.apache.jena.ontology.impl;
 // Imports
 ///////////////
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.enhanced.* ;
@@ -338,7 +340,7 @@ public class OntResourceImpl
     public ExtendedIterator<RDFNode> listSeeAlso() {
         checkProfile( getProfile().SEE_ALSO(), "SEE_ALSO" );
         return WrappedIterator.create( listProperties( getProfile().SEE_ALSO() ) )
-               .mapWith( new ObjectAsOntResourceMapper() );
+               .mapWith( s -> asOntResource( s.getObject() ) );
     }
 
     /**
@@ -406,7 +408,7 @@ public class OntResourceImpl
     public ExtendedIterator<RDFNode> listIsDefinedBy() {
         checkProfile( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
         return WrappedIterator.create( listProperties( getProfile().IS_DEFINED_BY() ) )
-               .mapWith( new ObjectAsOntResourceMapper() );
+               .mapWith( s -> asOntResource( s.getObject() ) );
     }
 
     /**
@@ -482,7 +484,7 @@ public class OntResourceImpl
     public ExtendedIterator<String> listVersionInfo() {
         checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
         return WrappedIterator.create( listProperties( getProfile().VERSION_INFO() ) )
-               .mapWith( new ObjectAsStringMapper() );
+               .mapWith( s -> s.getString() );
     }
 
     /**
@@ -583,7 +585,7 @@ public class OntResourceImpl
         checkProfile( getProfile().LABEL(), "LABEL" );
         return WrappedIterator.create( listProperties( getProfile().LABEL() ) )
                .filterKeep( new LangTagFilter( lang ) )
-               .mapWith( new ObjectMapper() );
+               .mapWith( s -> s.getObject() );
     }
 
     /**
@@ -713,7 +715,7 @@ public class OntResourceImpl
         checkProfile( getProfile().COMMENT(), "COMMENT" );
         return WrappedIterator.create( listProperties( getProfile().COMMENT() ) )
                .filterKeep( new LangTagFilter( lang ) )
-               .mapWith( new ObjectMapper() );
+               .mapWith( s -> s.getObject() );
     }
 
     /**
@@ -1014,7 +1016,7 @@ public class OntResourceImpl
      */
     @Override
     public NodeIterator listPropertyValues( Property property ) {
-        return new NodeIteratorImpl( listProperties( property ).mapWith( new ObjectAsOntResourceMapper() ), null );
+        return new NodeIteratorImpl( listProperties( property ).mapWith( s -> asOntResource( s.getObject() ) ), null );
     }
 
     /**
@@ -1438,7 +1440,7 @@ public class OntResourceImpl
     /** Answer an iterator for the given property, whose values are .as() some class */
     protected <T extends RDFNode> ExtendedIterator<T> listAs( Property p, String name, Class<T> cls ) {
         checkProfile( p, name );
-        return WrappedIterator.create( listProperties( p ) ).mapWith( new ObjectAsMapper<>( cls ) );
+        return WrappedIterator.create( listProperties( p ) ).mapWith( s -> s.getObject().as( cls ) );
     }
 
 
@@ -1531,7 +1533,7 @@ public class OntResourceImpl
         // determine the subject and object pairs for the list statements calls
         Resource subject = inverse ? null : this;
         Resource object  = inverse ? this : null;
-        Map1<Statement, T> mapper      = inverse ? new SubjectAsMapper<>( cls ) : new ObjectAsMapper<>( cls );
+        Function<Statement, T> mapper      = inverse ? s -> s.getSubject().as( cls ) : s -> s.getObject().as( cls );
 
         // are we working on an inference graph?
         OntModel m = (OntModel) getGraph();
@@ -1567,7 +1569,7 @@ public class OntResourceImpl
      * @return
      */
     @SuppressWarnings("unchecked")
-    private <T extends Resource> Iterator<T> computeDirectValues( Property p, Property orderRel, boolean inverse, Resource subject, Resource object, Map1<Statement, T> mapper ) {
+    private <T extends Resource> Iterator<T> computeDirectValues( Property p, Property orderRel, boolean inverse, Resource subject, Resource object, Function<Statement, T> mapper ) {
         // graph does not support direct directly
         ExtendedIterator<T> j = getModel().listStatements( subject, p, object )
                                        .mapWith( mapper );
@@ -1651,97 +1653,16 @@ public class OntResourceImpl
     // Inner class definitions
     //==============================================================================
 
-    /** Implementation of Map1 that performs as( Class ) for a given class, against an argument {@link RDFNode} */
-    protected static class AsMapper<T extends RDFNode> implements Map1<RDFNode, T>
-    {
-        private Class<T> m_as;
-        public AsMapper( Class<T> as ) { m_as = as; }
-        @Override
-        public T map1( RDFNode x ) { return x.as( m_as ); }
-    }
-
-    /** Implementation of Map1 that performs as( Class ) for a given class, against an argument {@link Resource} */
-    protected static class ResourceAsMapper<T extends RDFNode> implements Map1<Resource, T>
-    {
-        private Class<T> m_as;
-        public ResourceAsMapper( Class<T> as ) { m_as = as; }
-        @Override
-        public T map1( Resource x ) { return x.as( m_as ); }
-    }
-
-    /** Implementation of Map1 that performs as( Class ) for a given class, on the subject of a statement */
-    protected static class SubjectAsMapper<T extends RDFNode> implements Map1<Statement, T>
-    {
-        private Class<T> m_as;
-        public SubjectAsMapper( Class<T> as ) { m_as = as; }
-        @Override
-        public T map1( Statement x ) {
-            return x.getSubject().as( m_as );
-        }
-    }
-
-    /** Implementation of Map1 that extracts the subject of a statement */
-    protected static class SubjectMapper implements Map1<Statement, Resource>
-    {
-        @Override
-        public Resource map1( Statement x ) {
-            return x.getSubject();
-        }
-    }
-
-    /** Implementation of Map1 that performs as( Class ) for a given class, on the object of a statement */
-    protected static class ObjectAsMapper<T extends RDFNode> implements Map1<Statement, T>
-    {
-        private Class<T> m_as;
-        public ObjectAsMapper( Class<T> as )
-            { m_as = as; }
-        @Override
-        public T map1( Statement x ) {
-            return x.getObject().as( m_as );
-        }
-    }
-
-    /** Implementation of Map1 that performs getString on the object of a statement */
-    protected class ObjectAsStringMapper implements Map1<Statement, String>
-    {
-        @Override
-        public String map1( Statement x ) { return x.getString(); }
-    }
-
-    /** Implementation of Map1 that returns the object of a statement */
-    protected static class ObjectMapper implements Map1<Statement, RDFNode>
-    {
-        @Override
-        public RDFNode map1( Statement x ) { return x.getObject(); }
-    }
-
-    /** Implementation of Map1 that returns the object of a statement as an ont resource */
-    protected static class ObjectAsOntResourceMapper implements Map1<Statement, RDFNode>
-    {
-        @Override
-        public RDFNode map1( Statement x ) {
-            return asOntResource( x.getObject() );
-        }
-    }
 
     /** Filter for matching language tags on the objects of statements */
-    protected class LangTagFilter extends Filter<Statement>
+    protected class LangTagFilter implements Predicate<Statement>
     {
         protected String m_lang;
         public LangTagFilter( String lang ) { m_lang = lang; }
         @Override
-        public boolean accept( Statement x ) {
+        public boolean test( Statement x ) {
             RDFNode o = x.getObject();
-            return o.isLiteral() && langTagMatch( m_lang, ((Literal) o).getLanguage() );
+            return o.isLiteral() && langTagMatch( m_lang, o.asLiteral().getLanguage() );
         }
-    }
-
-    /** Filter for accepting only the given value, based on .equals() */
-    protected class SingleEqualityFilter<T>
-        extends Filter<T>
-    {
-        private T m_obj;
-        public SingleEqualityFilter( T x ) { m_obj = x; }
-        @Override public boolean accept( T x ) {return m_obj.equals( x );}
     }
 }

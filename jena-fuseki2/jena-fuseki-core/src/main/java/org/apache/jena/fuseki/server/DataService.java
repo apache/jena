@@ -25,8 +25,8 @@ import java.util.* ;
 import java.util.concurrent.atomic.AtomicBoolean ;
 import java.util.concurrent.atomic.AtomicLong ;
 
-import org.apache.jena.atlas.lib.MultiMap ;
-import org.apache.jena.atlas.lib.MultiMapToList ;
+import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
+import org.apache.jena.ext.com.google.common.collect.ListMultimap;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.build.DataServiceDesc ;
@@ -54,7 +54,7 @@ public class DataService { //implements DatasetMXBean {
     private final DataServiceDesc svcDesc ;
     private DatasetGraph dataset = null ;              // Only valid if active.
 
-    private MultiMapToList<OperationName, Endpoint> operations     = MultiMap.createMapList() ;
+    private ListMultimap<OperationName, Endpoint> operations     = ArrayListMultimap.create() ;
     private Map<String, Endpoint> endpoints                        = new HashMap<>() ;
     
     private volatile DatasetStatus state = UNINITIALIZED ;

@@ -24,8 +24,8 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLogging ;
 import org.apache.jena.fuseki.build.Template ;
-import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.jetty.JettyFuseki ;
+import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.server.FusekiEnv ;
 import org.apache.jena.fuseki.server.FusekiServerListener ;
 import org.apache.jena.fuseki.server.ServerInitialConfig ;
@@ -39,8 +39,8 @@ import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.sys.Names ;
 import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.slf4j.Logger ;
+import arq.cmd.ArgDecl ;
 import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModDatasetAssembler ;
 
@@ -184,6 +184,8 @@ public class FusekiCmd {
                 if ( x > 1 )
                     throw new CmdException("Multiple ways providing a dataset. Only one of --mem, --file, --loc or --desc") ;
             }
+            
+            boolean cmdlineConfigPresent = ( x != 0 ) ;
 
             if ( contains(argMem) ) {
                 log.info("Dataset: in-memory") ;
@@ -218,7 +220,6 @@ public class FusekiCmd {
             if ( contains(argTDB) ) {
                 cmdLineDataset = new ServerInitialConfig() ;
                 cmdLineDataset.templateFile = Template.templateTDBDirFN ;
-
                 String dir = getValue(argTDB) ;
                 cmdLineDataset.params.put(Template.DIR, dir) ;
             }
@@ -230,11 +231,16 @@ public class FusekiCmd {
                 Dataset ds = modDataset.createDataset() ;
                 //cmdLineDataset.dsg = ds.asDatasetGraph() ;
             }
+            
+            if ( cmdlineConfigPresent && getPositional().size() == 0 )
+                throw new CmdException("Missing service name") ;
+            if ( !cmdlineConfigPresent && getPositional().size() > 0 )
+                throw new CmdException("Service name given but no configuration argument to match") ;
 
             if ( cmdLineDataset != null ) {
                 if ( getPositional().size() > 1 )
                     throw new CmdException("Multiple dataset path names given") ;
-                if ( getPositional().size() != 0 ) {
+                if ( getPositional().size() == 1 ) {
                     cmdLineDataset.datasetPath = getPositionalArg(0) ;
                     if ( cmdLineDataset.datasetPath.length() > 0 && !cmdLineDataset.datasetPath.startsWith("/") )
                         throw new CmdException("Dataset path name must begin with a /: " + cmdLineDataset.datasetPath) ;
