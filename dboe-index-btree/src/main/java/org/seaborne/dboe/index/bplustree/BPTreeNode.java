@@ -282,7 +282,7 @@ public final class BPTreeNode extends BPTreePage
         } else {
             // Get the right id based on starting record.
             int idx = node.findSlot(fromRec) ;
-            idx = convert(idx) ;
+            idx = apply(idx) ;
             id = node.getPtrBuffer().get(idx) ;
         }
         if ( !node.isRoot() )
@@ -384,7 +384,7 @@ public final class BPTreeNode extends BPTreePage
     /** Find the next page to look at as we walk down the tree */
     private final BPTreePage findHere(Record rec) {
         int idx = findSlot(rec) ;
-        idx = convert(idx) ;
+        idx = apply(idx) ;
         // Find index, or insertion point (immediate higher slot) as (-i-1)
         // A key is the highest element of the records up to this point
         // so we search down at slot idx (between something smaller and
@@ -410,9 +410,9 @@ public final class BPTreeNode extends BPTreePage
         int idx = findSlot(record) ;
 
         if ( logging() )
-            log.debug(format("internalInsert: idx=%d (=>%d)", idx, convert(idx))) ;
+            log.debug(format("internalInsert: idx=%d (=>%d)", idx, apply(idx))) ;
 
-        idx = convert(idx) ;
+        idx = apply(idx) ;
 
         // [[Dev-RO]]
         BPTreePage page = getWrite(idx) ;
@@ -440,7 +440,7 @@ public final class BPTreeNode extends BPTreePage
         return r ;
     }
 
-    private static int convert(int idx) {
+    private static int apply(int idx) {
         if ( idx >= 0 )
             return idx ;
         return decodeIndex(idx) ;
@@ -670,7 +670,7 @@ public final class BPTreeNode extends BPTreePage
         int x = findSlot(rec) ;
 
         // If x is >= 0, may need to adjust this
-        int y = convert(x) ;
+        int y = apply(x) ;
         // [[Dev-RO]]
         BPTreePage page = getWrite(y) ;
 

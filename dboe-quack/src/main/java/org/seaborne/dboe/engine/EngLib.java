@@ -20,13 +20,12 @@ package org.seaborne.dboe.engine;
 import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.Set ;
+import java.util.function.Function ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Tuple ;
-
 import org.apache.jena.sparql.core.Var ;
 
 /** Library of functions for the generic join engine */
@@ -114,28 +113,25 @@ public class EngLib {
     public static <X> Iterator<Row<X>> convertIterTuple(Iterator<Tuple<X>> iter, 
                                                         final Tuple<Slot<X>> pattern, 
                                                         final RowBuilder<X> builder) {
-       Transform<Tuple<X>, Row<X>> transform = new Transform<Tuple<X>, Row<X>>(){
-           @Override
-           public Row<X> convert(Tuple<X> item) {
-               builder.reset() ;
-               for ( int i = 0 ; i < pattern.size() ; i++ ) {
-                   Slot<X> s = pattern.get(i) ;
-                   if ( s.isVar() ) {
-                       Var var = s.var ;
-                       X val = item.get(i) ;
-                       if ( builder.contains(var) ) {
-                           X valPrev = builder.get(var) ;
-                           if ( ! val.equals(valPrev) )
-                               return null ;
-                           else
-                               continue ;
-                       }
-                       builder.add(var, val);
-                   }
+       Function<Tuple<X>, Row<X>> transform = (item->{
+           builder.reset() ;
+           for ( int i = 0 ; i < pattern.size() ; i++ ) {
+               Slot<X> s = pattern.get(i) ;
+               if ( s.isVar() ) {
+                   Var var = s.var ;
+                   X val = item.get(i) ;
+                   if ( builder.contains(var) ) {
+                       X valPrev = builder.get(var) ;
+                       if ( ! val.equals(valPrev) )
+                           return null ;
+                       else
+                           continue ;
+                   }    
+                   builder.add(var, val);
                }
-               return builder.build()  ;
            }
-       } ; 
+           return builder.build()  ;
+       }) ;
        return Iter.removeNulls(Iter.map(iter, transform)) ;
    }
 

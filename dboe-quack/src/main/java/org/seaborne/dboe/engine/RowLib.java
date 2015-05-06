@@ -19,11 +19,10 @@ package org.seaborne.dboe.engine;
 
 import java.util.Iterator ;
 import java.util.Set ;
-
-import org.apache.jena.sparql.core.Var ;
+import java.util.function.Function ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
+import org.apache.jena.sparql.core.Var ;
 import org.seaborne.dboe.engine.row.* ;
 
 public class RowLib {
@@ -62,7 +61,7 @@ public class RowLib {
         return Iter.map(rows1, t) ;
     }
 
-    static class MergeRow<X> implements Transform<Row<X>, Row<X>> {
+    static class MergeRow<X> implements Function<Row<X>, Row<X>> {
         public final Row<X> row ;
         public final RowBuilder<X> builder = new RowBuilderBase<>() ;
         public MergeRow(Row<X> row) { 
@@ -70,7 +69,7 @@ public class RowLib {
         }
 
         @Override
-        public Row<X> convert(Row<X> item) {
+        public Row<X> apply(Row<X> item) {
             return mergeRows(item, row, builder) ;
         }
     }

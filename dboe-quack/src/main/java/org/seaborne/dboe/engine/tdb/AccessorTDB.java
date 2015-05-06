@@ -18,18 +18,17 @@
 package org.seaborne.dboe.engine.tdb;
 
 import java.util.Iterator ;
+import java.util.function.Function ;
 
-import org.apache.jena.atlas.iterator.Action ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.atlas.logging.Log ;
-import org.seaborne.dboe.engine.* ;
-import org.seaborne.dboe.engine.access.Accessor ;
-import org.seaborne.dboe.engine.row.RowBuilderBase ;
-
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.store.nodetable.NodeTable ;
+import org.seaborne.dboe.engine.* ;
+import org.seaborne.dboe.engine.access.Accessor ;
+import org.seaborne.dboe.engine.row.RowBuilderBase ;
 
 public class AccessorTDB implements Accessor<NodeId> {
     private final StorageTDB db ;
@@ -80,7 +79,7 @@ public class AccessorTDB implements Accessor<NodeId> {
 
         if ( unionMode ) {
             // See StageMatchTuple.makeStage
-            iter = Iter.operate(iter, quadsToAnyTriples) ;
+            iter = Iter.map(iter, quadsToAnyTriples) ;
             // If any slots were set, then the index would be ???G and we can use distinctAdjacent.
             // If all slots are unset, the index is probably GSPO (SPOG would be better in this one case). 
             // This is a safe, if potentially costly, choice. 
@@ -105,11 +104,8 @@ public class AccessorTDB implements Accessor<NodeId> {
     } 
 
     // -- Mutating "transform in place"
-    private static Action<Tuple<NodeId>> quadsToAnyTriples = new Action<Tuple<NodeId>>(){
-        @Override
-        public void apply(Tuple<NodeId> item)
-        { item.tuple()[0] = NodeId.NodeIdAny ; }
-    } ;
+    private static Function<Tuple<NodeId>, Tuple<NodeId>> quadsToAnyTriples = 
+        (item)->Tuple.createTuple(NodeId.NodeIdAny, item.get(1), item.get(2), item.get(3)) ;
 
     // ---- AccessRowList
     // See AccessOps and calls from StepPredicateObjectList

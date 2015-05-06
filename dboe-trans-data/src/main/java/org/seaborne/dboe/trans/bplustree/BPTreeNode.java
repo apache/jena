@@ -289,7 +289,7 @@ public final class BPTreeNode extends BPTreePage
             // If there is no match, it returns -(i+1) and we need to go down the tree at i.
             // Same effect - start at x1
             // TODO Optimization - get max record on min side once and for all if exact match.
-            x1 = convert(x1) ;
+            x1 = apply(x1) ;
         }
         
         int x2 = this.getCount() ;    // Highest place to look. Inclusive.   
@@ -298,7 +298,7 @@ public final class BPTreeNode extends BPTreePage
             // If there is no match, it returns -(i+1) and we need to go down the tree at i to get from last key to max (exclusive).
             // Same effect - start at x2 inclusive.
             x2 = findSlot(maxRec) ;
-            x2 = convert(x2) ;
+            x2 = apply(x2) ;
         }
         // Pages from pointer slots x1 to x2 (inc because while we exclude maxRec, 
         // keys are only a max of the subtree they mark out.
@@ -339,7 +339,7 @@ public final class BPTreeNode extends BPTreePage
 //        } else {
 //            // Get the right id based on starting record.
 //            int idx = node.findSlot(fromRec) ;
-//            idx = convert(idx) ;
+//            idx = apply(idx) ;
 //            id = node.getPtrBuffer().get(idx) ;
 //        }
 //        if ( !node.isRoot() )
@@ -485,7 +485,7 @@ public final class BPTreeNode extends BPTreePage
     /** Find the next page to look at as we walk down the tree */
     private final BPTreePage findHere(AccessPath path, Record rec) {
         int idx = findSlot(rec) ;
-        idx = convert(idx) ;
+        idx = apply(idx) ;
         // Find index, or insertion point (immediate higher slot) as (-i-1)
         // A key is the highest element of the records up to this point
         // so we search down at slot idx (between something smaller and
@@ -513,9 +513,9 @@ public final class BPTreeNode extends BPTreePage
         
 
         if ( logging(log) )
-            log(log, "internalInsert: idx=%d (=>%d)", idx, convert(idx)) ;
+            log(log, "internalInsert: idx=%d (=>%d)", idx, apply(idx)) ;
 
-        idx = convert(idx) ;
+        idx = apply(idx) ;
         BPTreePage page = get(idx) ;
         trackPath(path, this, idx, page) ;
 
@@ -761,7 +761,7 @@ public final class BPTreeNode extends BPTreePage
         internalCheckNode() ;
 
         int x = findSlot(rec) ;
-        int y = convert(x) ;
+        int y = apply(x) ;
         BPTreePage page = get(y) ;
         trackPath(path, this, y, page) ;
 
@@ -772,7 +772,7 @@ public final class BPTreeNode extends BPTreePage
             page.release(); // TODO But rebalance may have freed this?
             // Rebalance may have moved the record due to shuffling.  
             x = findSlot(rec) ;
-            y = convert(x) ;
+            y = apply(x) ;
             page = get(y) ;
             promote1(page, this, y) ;
             resetTrackPath(path, this, y, page) ;

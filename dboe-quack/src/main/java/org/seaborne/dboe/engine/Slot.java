@@ -17,7 +17,7 @@
 
 package org.seaborne.dboe.engine;
 
-import org.apache.jena.atlas.lib.Lib ;
+import java.util.Objects ;
 
 import org.apache.jena.sparql.core.Var ;
 
@@ -75,6 +75,6 @@ public final class Slot<X> {
             return false ;
         @SuppressWarnings("unchecked")
         Slot<X> other = (Slot<X>)obj ;
-        return Lib.equal(term, other.term) && Lib.equal(var, other.var) ;  
+        return Objects.equals(term, other.term) && Objects.equals(var, other.var) ;  
     }
 }

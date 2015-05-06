@@ -18,13 +18,10 @@
 package org.seaborne.dboe.engine.tdb;
 
 import java.util.Iterator ;
+import java.util.function.Predicate ;
 
-import org.apache.jena.atlas.iterator.Filter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.logging.Log ;
-import org.seaborne.dboe.engine.* ;
-import org.seaborne.dboe.engine.row.RowBuilderBase ;
-
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprException ;
@@ -32,21 +29,23 @@ import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.store.nodetable.NodeTable ;
+import org.seaborne.dboe.engine.* ;
+import org.seaborne.dboe.engine.row.RowBuilderBase ;
 
 /** Filter step for TDB (which delays Binding fetching until needed) */ 
 public class StepFilterTDB implements Step<NodeId> {
 
     private final ExprList exprs ;
-    private final Filter<Row<NodeId>> filter ;
+    private final Predicate<Row<NodeId>> filter ;
     private final NodeTable nodeTable ; 
     private final RowBuilder<NodeId> builder = new RowBuilderBase<>() ;
     
     public StepFilterTDB(ExprList expressions, final NodeTable nodeTable, final FunctionEnv funcEnv) {
         this.exprs = expressions ; 
         this.nodeTable = nodeTable ;
-        this.filter = new Filter<Row<NodeId>>() {
+        this.filter = new Predicate<Row<NodeId>>() {
             @Override
-            public boolean accept(Row<NodeId> row) {
+            public boolean test(Row<NodeId> row) {
                 Binding binding = new BindingRow(row, nodeTable) ;
                 for (Expr expr : exprs)
                     if ( ! accept(binding, expr) )

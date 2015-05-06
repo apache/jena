@@ -151,7 +151,7 @@ public class OpExecutorRowsMain extends OpExecutorBlockFilter {
         // Execute the plan.
         RowList<Node> identity = RowLib.identityRowList() ;
         RowList<Node> results = plan.execute(identity) ;
-        QueryIterator qIter = OpExecLib.convert(results, execCxt) ;
+        QueryIterator qIter = OpExecLib.apply(results, execCxt) ;
         return qIter ;
     }
 

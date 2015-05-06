@@ -25,7 +25,6 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorWithBuffer ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.buffer.PtrBuffer ;
@@ -140,20 +139,13 @@ public class BPlusTreeRewriter
         final RecordBufferPageMgr mgr = bpt.getRecordsMgr().getRecordBufferPageMgr() ;
         Iterator<RecordBufferPage> iter = new RecordBufferPageLinker(new RecordBufferPagePacker(records, mgr)) ;
 
-        Transform<RecordBufferPage, Pair<Integer, Record>> transform = new Transform<RecordBufferPage, Pair<Integer, Record>>()
-        {
-            @Override
-            public Pair<Integer, Record> convert(RecordBufferPage rbp)
-            {
-                mgr.put(rbp) ;
-                Record r = rbp.getRecordBuffer().getHigh() ;
-                r = bpt.getRecordFactory().createKeyOnly(r) ;
-                return new Pair<>(rbp.getId(), r) ;
-            }
-        } ;
         // Write and convert to split pairs.
-        Iterator<Pair<Integer, Record>> iter2 = Iter.map(iter, transform) ;
-
+        Iterator<Pair<Integer, Record>> iter2 = Iter.map(iter, rbp->{
+            mgr.put(rbp) ;
+            Record r = rbp.getRecordBuffer().getHigh() ;
+            r = bpt.getRecordFactory().createKeyOnly(r) ;
+            return new Pair<>(rbp.getId(), r) ;
+        }) ;
         
         if ( debug )
         {

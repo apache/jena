@@ -20,7 +20,7 @@ package dev;
 
 
 public class NOTES {
-    // ARQ :: extract Atlas.
+    // Streams, not iterators?
 
     // Recovery in after prepare.
     // Components to write directly to the Journal during prepare.

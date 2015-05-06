@@ -78,7 +78,7 @@ public class Slots<X> extends Tuple<Slot<X>> {
         Z[] converted = (Z[])new Object[N] ;
         for ( int i = 0 ; i < N ; i++ ) {
             Slot<X> x = super.tuple[i] ;
-            converted[i] = transform.convert(x) ;
+            converted[i] = transform.apply(x) ;
         }
         return Tuple.createTuple(converted) ;
     }
@@ -90,7 +90,7 @@ public class Slots<X> extends Tuple<Slot<X>> {
         Slot<Z>[] converted = (Slot<Z>[])new Object[N] ;
         for ( int i = 0 ; i < N ; i++ ) {
             Slot<X> x = super.tuple[i] ;
-            converted[i] = transform.convert(x) ;
+            converted[i] = transform.apply(x) ;
         }
         return new Slots<Z>(converted) ;
     }

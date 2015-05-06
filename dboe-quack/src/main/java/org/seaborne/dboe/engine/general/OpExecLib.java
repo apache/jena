@@ -164,7 +164,7 @@ public class OpExecLib {
     
     private static Transform<Row<Node>, Binding> rowToBinding = new Transform<Row<Node>, Binding>(){
         @Override
-        public Binding convert(Row<Node> row) {
+        public Binding apply(Row<Node> row) {
             return new BindingRowNode(row) ;
 //            BindingMap b = BindingFactory.create() ;
 //            for ( Var v : row.vars() ) {
@@ -175,7 +175,7 @@ public class OpExecLib {
         }
     } ;
     
-    public static QueryIterator convert(RowList<Node> results, ExecutionContext execCxt) {
+    public static QueryIterator apply(RowList<Node> results, ExecutionContext execCxt) {
         Iterator<Binding> bIter = Iter.map(results.iterator(), rowToBinding) ;
         return new QueryIterPlainWrapper(bIter, execCxt) ;
     }
@@ -228,7 +228,7 @@ public class OpExecLib {
 
     private static Transform<Quad, Tuple<Node>> quadToTuple = new Transform<Quad, Tuple<Node>>(){
         @Override
-        public Tuple<Node> convert(Quad quad) {
+        public Tuple<Node> apply(Quad quad) {
             Node[] n = new Node[3] ;
             n[0] = quad.getGraph() ;
             n[1] = quad.getSubject() ;
@@ -240,7 +240,7 @@ public class OpExecLib {
 
     private static Transform<Triple, Tuple<Slot<Node>>> tripleToTupleSlot = new Transform<Triple, Tuple<Slot<Node>>>(){
         @Override
-        public Tuple<Slot<Node>> convert(Triple triple) {
+        public Tuple<Slot<Node>> apply(Triple triple) {
             @SuppressWarnings("unchecked")
             Slot<Node>[] n = (Slot<Node>[])new Slot<?>[3] ;
             n[0] = nodeToSlot(triple.getSubject()) ;
@@ -252,7 +252,7 @@ public class OpExecLib {
 
     private static Transform<Triple, Tuple<Node>> tripleToTuple = new Transform<Triple, Tuple<Node>>(){
         @Override
-        public Tuple<Node> convert(Triple triple) {
+        public Tuple<Node> apply(Triple triple) {
             Node[] n = new Node[3] ;
             n[0] = triple.getSubject() ;
             n[1] = triple.getPredicate() ;
@@ -263,7 +263,7 @@ public class OpExecLib {
 
     private static Transform<Quad, Tuple<Slot<Node>>> quadToTupleSlot = new Transform<Quad, Tuple<Slot<Node>>>(){
         @Override
-        public Tuple<Slot<Node>> convert(Quad Quad) {
+        public Tuple<Slot<Node>> apply(Quad Quad) {
             @SuppressWarnings("unchecked")
             Slot<Node>[] n = (Slot<Node>[])new Slot<?>[4] ;
             n[0] = nodeToSlot(Quad.getGraph()) ;
@@ -276,7 +276,7 @@ public class OpExecLib {
 
     private static Transform<Tuple<Node>, Triple> tupleToTriple = new Transform<Tuple<Node>, Triple>(){
         @Override
-        public Triple convert(Tuple<Node> tuple) {
+        public Triple apply(Tuple<Node> tuple) {
             if ( tuple.size() != 3 )
                 throw new ARQInternalErrorException("Attmpt to convert a tuple of length "+tuple.size()+" to a triple") ;
             return Triple.create(tuple.get(0), tuple.get(1), tuple.get(2)) ; 
@@ -285,7 +285,7 @@ public class OpExecLib {
     
     private static Transform<Tuple<Node>, Quad> tupleToQuad = new Transform<Tuple<Node>, Quad>(){
         @Override
-        public Quad convert(Tuple<Node> tuple) {
+        public Quad apply(Tuple<Node> tuple) {
             if ( tuple.size() != 4 )
                 throw new ARQInternalErrorException("Attmpt to convert a tuple of length "+tuple.size()+" to a quad") ;
             return Quad.create(tuple.get(0), tuple.get(1), tuple.get(2), tuple.get(3)) ; 

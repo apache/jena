@@ -24,7 +24,6 @@ import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.PeekIterator ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Tuple ;
@@ -250,25 +249,21 @@ public class OpExecutorQuackTDB extends OpExecutorTDBBase
     /** Convert rows to bindings for a give parent, that may, or may not,
      *  have equivalent bindings of variables in the rows */ 
     private static Iterator<Binding> convertToBindings(Iterator<Row<NodeId>> iter, final Binding parent, final NodeTable nodeTable) {
-        Transform<Row<NodeId>, Binding> conv = new Transform<Row<NodeId>, Binding>() {
-            @Override
-            public Binding convert(Row<NodeId> row) {
-                if ( parent.isEmpty() )
-                    return new BindingRow(row, nodeTable) ;
-                
-                // Temporary fix.  Proper fix is to change BindingBase to allow multiple occurrences in a controlled way. 
-                BindingMap b = BindingFactory.create() ;
-                if ( ! parent.isEmpty() ) {
-                    for ( Iterator<Var> vars = parent.vars() ; vars.hasNext() ; ) {
-                        Var v = vars.next() ;
-                        if ( ! row.contains(v) )
-                            b.add(v, parent.get(v)) ;
-                    }
+        return Iter.map(iter, (row)-> {
+            if ( parent.isEmpty() )
+                return new BindingRow(row, nodeTable) ;
+            
+            // Temporary fix.  Proper fix is to change BindingBase to allow multiple occurrences in a controlled way. 
+            BindingMap b = BindingFactory.create() ;
+            if ( ! parent.isEmpty() ) {
+                for ( Iterator<Var> vars = parent.vars() ; vars.hasNext() ; ) {
+                    Var v = vars.next() ;
+                    if ( ! row.contains(v) )
+                        b.add(v, parent.get(v)) ;
                 }
-                return new BindingRow(b, row, nodeTable) ;
             }
-        } ;
-        return Iter.map(iter, conv) ;
+            return new BindingRow(b, row, nodeTable) ;
+        }) ;
     }
 
     private static void executePlanToNothing(PhysicalPlan<NodeId> plan) {

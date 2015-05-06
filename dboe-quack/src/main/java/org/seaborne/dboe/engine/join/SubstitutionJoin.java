@@ -68,7 +68,7 @@ public class SubstitutionJoin {
             Iterator<Row<X>> iter1 = accessor.accessRows(subst) ;
             Transform<Row<X>, Row<X>> addIncoming = new Transform<Row<X>, Row<X>>(){
                 @Override
-                public Row<X> convert(Row<X> item) {
+                public Row<X> apply(Row<X> item) {
                     Row<X> r = Join.merge(item, row, builder) ;
                     if ( r != null )
                         s_countResults ++ ;

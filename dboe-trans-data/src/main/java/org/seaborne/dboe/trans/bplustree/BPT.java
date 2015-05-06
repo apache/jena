@@ -88,7 +88,7 @@ public final class BPT {
     }
 
     /** Convert a find index return to the insert location in the array */ 
-    static int convert(int idx) {
+    static int apply(int idx) {
         if ( idx >= 0 )
             return idx ;
         return decodeIndex(idx) ;
