@@ -32,7 +32,6 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.ext.com.google.common.collect.HashMultimap;
 import org.apache.jena.ext.com.google.common.collect.Multimap;
-import org.apache.jena.ext.com.google.common.collect.Multimaps;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.* ;
 import org.apache.jena.query.text.EntityDefinition ;

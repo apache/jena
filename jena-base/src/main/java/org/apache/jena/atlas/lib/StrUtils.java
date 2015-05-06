@@ -18,15 +18,13 @@
 
 package org.apache.jena.atlas.lib;
 
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
+import static java.util.Arrays.stream ;
+import static java.util.stream.Collectors.joining ;
+import static java.util.stream.Collectors.toList ;
 
 import java.io.UnsupportedEncodingException ;
-import java.util.ArrayList ;
 import java.util.List ;
 import java.util.Map ;
-import java.util.stream.Collectors;
 
 
 public class StrUtils //extends StringUtils

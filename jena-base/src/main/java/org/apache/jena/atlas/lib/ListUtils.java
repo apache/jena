@@ -75,7 +75,7 @@ public class ListUtils
     /** Return a list of lists of all the elements of collection in every order
      *  Easy to run out of heap memory.
      *  
-     *  See {@link com.google.common.collect.Collections2#permutations(Collection<E>)}
+     *  See {@link org.apache.jena.ext.com.google.common.collect.Collections2#permutations}
      */  
     static public <T> List<List<T>> permute(List<T> c)
     {

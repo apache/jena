@@ -21,10 +21,8 @@ package org.apache.jena.atlas.iterator;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.IteratorArray ;
-import org.apache.jena.atlas.iterator.PeekIterator ;
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.ext.com.google.common.collect.Iterators ;
 import org.junit.Test ;
 
 public class TestIteratorPeek extends BaseTest
@@ -61,7 +59,7 @@ public class TestIteratorPeek extends BaseTest
     
     private static PeekIterator<String> create(String...a)
     { 
-        return new PeekIterator<>(IteratorArray.create(a)) ;
+        return new PeekIterator<>(Iterators.forArray(a)) ;
     }
     
     @Test public void peek_1()

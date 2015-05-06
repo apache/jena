@@ -24,7 +24,7 @@ import java.util.NoSuchElementException ;
 
 /** Iterator over a Java base array */
 /**
- * @deprecated
+ * @deprecated 
  * Prefer {@link Arrays#asList(Object...)} with {@link Iterable#iterator()} or
  * {@link Arrays#spliterator(Object[])} or {@link Arrays#stream(Object[])}
  */
