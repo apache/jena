@@ -37,7 +37,7 @@ public class LuceneUtil {
             return null;
 
         try {
-            Class className = analyzers.get(lang);
+            Class<?> className = analyzers.get(lang);
             if (className == null)
                 return null;
             Constructor constructor = className.getConstructor(Version.class);

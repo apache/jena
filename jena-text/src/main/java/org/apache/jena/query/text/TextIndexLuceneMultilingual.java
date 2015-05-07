@@ -22,31 +22,26 @@ import org.apache.jena.graph.Node;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.RAMDirectory;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class TextIndexLuceneMultiLingual implements TextIndex {
+public class TextIndexLuceneMultilingual implements TextIndex {
 
     Hashtable<String, TextIndex> indexes;
-    File indexDir;
     private final EntityDefinition docDef;
+    private final Directory        directory ;
 
-    public TextIndexLuceneMultiLingual(File directory, EntityDefinition def) {
-        docDef = def;
+    public TextIndexLuceneMultilingual(Directory directory, EntityDefinition def) {
+        this.directory = directory ;
+        this.docDef = def;
         indexes = new Hashtable<>();
 
-        try {
-            //default index created first. Localized index will be created on the fly.
-            indexDir = directory;
-            Directory dir = FSDirectory.open(indexDir);
-            TextIndex index = new TextIndexLucene(dir, def, null, null);
-            indexes.put("default", index);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //default index created first. Localized index will be created on the fly.
+        TextIndex index = new TextIndexLucene(directory, def, null, null);
+        indexes.put("default", index);
     }
 
     public Collection<TextIndex> getIndexes() {
@@ -63,9 +58,15 @@ public class TextIndexLuceneMultiLingual implements TextIndex {
             try {
                 Analyzer analyzer = LuceneUtil.createAnalyzer(lang, TextIndexLucene.VER);
                 if (analyzer != null) {
-                    File indexDirLang = new File(indexDir, lang);
-                    Directory dir = FSDirectory.open(indexDirLang);
-                    TextIndex index = new TextIndexLucene(dir, docDef, analyzer, null);
+                    Directory langDir;
+                    if (directory instanceof FSDirectory) {
+                        File dir = ((FSDirectory) directory).getDirectory();
+                        File indexDirLang = new File(dir, lang);
+                        langDir = FSDirectory.open(indexDirLang);
+                    }
+                    else
+                        langDir = new RAMDirectory();
+                    TextIndex index = new TextIndexLucene(langDir, docDef, analyzer, null);
                     indexes.put(lang, index);
                 }
                 else
