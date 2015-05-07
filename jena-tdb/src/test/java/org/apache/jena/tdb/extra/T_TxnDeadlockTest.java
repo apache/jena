@@ -81,13 +81,13 @@ public class T_TxnDeadlockTest {
                             DatasetGraphTxn txnGraph =
                                     storeConnection.begin(ReadWrite.WRITE);
                             txnGraph.add(new Quad(
-                                    NodeFactory.createURI("http://openjena.org/"
+                                    NodeFactory.createURI("http://jena-example.org/"
                                             + numberGenerator.nextInt()),
-                                    NodeFactory.createURI("http://openjena.org/"
+                                    NodeFactory.createURI("http://jena-example.org/"
                                             + numberGenerator.nextInt()),
-                                    NodeFactory.createURI("http://openjena.org/"
+                                    NodeFactory.createURI("http://jena-example.org/"
                                             + numberGenerator.nextInt()),
-                                    NodeFactory.createURI("http://openjena.org/"
+                                    NodeFactory.createURI("http://jena-example.org/"
                                             + numberGenerator.nextInt())));
                             txnGraph.commit();
                             txnGraph.end();

@@ -52,11 +52,7 @@ public class BulkLoader {
     /** Number of ticks per super tick */
     public static int       superTick             = 10 ;
 
-    // Events.
-    // private static String baseNameGeneral = "http://openjena.org/TDB/event#"
-    // ;
-
-    private static String   baseName              = "http://openjena.org/TDB/bulkload/event#" ;
+    private static String   baseName              = "http://jena.apache.org/TDB/bulkload/event#" ;
 
     public static EventType evStartBulkload       = new EventType(baseName + "start-bulkload") ;
     public static EventType evFinishBulkload      = new EventType(baseName + "finish-bulkload") ;
