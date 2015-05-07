@@ -19,13 +19,8 @@
 package tdb.tools ;
 
 import java.io.PrintStream ;
-import java.util.Arrays ;
 import java.util.Iterator ;
-import java.util.List ;
-
-import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.base.record.Record ;
@@ -33,10 +28,6 @@ import org.apache.jena.tdb.base.record.RecordFactory ;
 import org.apache.jena.tdb.index.IndexFactory ;
 import org.apache.jena.tdb.index.RangeIndex ;
 import org.apache.jena.tdb.index.bplustree.BPlusTree ;
-import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.store.tupletable.TupleIndex ;
-import org.apache.jena.tdb.store.tupletable.TupleIndexRecord ;
-import org.apache.jena.tdb.sys.Names ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import tdb.cmdline.ModLocation ;
 import arq.cmdline.CmdGeneral ;
@@ -76,21 +67,10 @@ public class dumpbpt extends CmdGeneral {
 
     @Override
     protected void exec() {
-        List<String> tripleIndexes = Arrays.asList(Names.tripleIndexes) ;
-        List<String> quadIndexes = Arrays.asList(Names.quadIndexes) ;
         Location loc = modLocation.getLocation() ;
 
         // The name is the order.
         for ( String indexName : super.getPositional() ) {
-            String primary ;
-            if ( indexName.length() == 3 ) {
-                primary = Names.primaryIndexTriples ;
-            } else if ( indexName.length() == 4 ) {
-                primary = Names.primaryIndexQuads ;
-            } else {
-                cmdError("Wrong length: " + indexName) ;
-                primary = null ;
-            }
 
             int keySubLen = SystemTDB.SizeOfNodeId ;
             int keyUnitLen = indexName.length() ;
@@ -101,21 +81,17 @@ public class dumpbpt extends CmdGeneral {
             RangeIndex rIndex = IndexFactory.buildRangeIndex(loc, indexName, rf) ;
             BPlusTree bpt = (BPlusTree)rIndex ;
 
-            if ( false ) {
-                System.out.println("---- Index structure") ;
-                bpt.dump() ;
-            }
-            if ( true ) {
-                System.out.println("---- Index contents") ;
-                Iterator<Record> iter = bpt.iterator() ;
-                if ( !iter.hasNext() )
-                    System.out.println("<<Empty>>") ;
+            
+            System.out.println("---- Index contents") ;
+            Iterator<Record> iter = bpt.iterator() ;
+            if ( !iter.hasNext() )
+                System.out.println("<<Empty>>") ;
 
-                for ( ; iter.hasNext() ; ) {
-                    Record r = iter.next() ;
-                    printRecord("", System.out, r, keyUnitLen) ;
-                }
+            for ( ; iter.hasNext() ; ) {
+                Record r = iter.next() ;
+                printRecord("", System.out, r, keyUnitLen) ;
             }
+            
 
             // Check.
             Iterator<Record> iterCheck = bpt.iterator() ;
@@ -133,23 +109,6 @@ public class dumpbpt extends CmdGeneral {
                     }
                 }
                 r1 = r2 ;
-            }
-
-            if ( false ) {
-                // Dump in tuple order.
-                TupleIndex tupleIndex = new TupleIndexRecord(primary.length(), new ColumnMap(primary, indexName), indexName,
-                                                             rIndex.getRecordFactory(), rIndex) ;
-                if ( true ) {
-                    System.out.println("---- Tuple contents") ;
-                    Iterator<Tuple<NodeId>> iter2 = tupleIndex.all() ;
-                    if ( !iter2.hasNext() )
-                        System.out.println("<<Empty>>") ;
-
-                    for ( ; iter2.hasNext() ; ) {
-                        Tuple<NodeId> row = iter2.next() ;
-                        System.out.println(row) ;
-                    }
-                }
             }
         }
     }

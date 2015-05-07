@@ -1513,13 +1513,6 @@ public final class BPTreeNode extends BPTreePage
         return BPlusTreeParams.logging(log) ;
     }
     
-    private void warning(String msg, Object... args)
-    {
-        msg = format(msg, args) ;
-        System.out.println("Warning: "+msg) ;
-        System.out.flush();
-    }
-    
     private void error(String msg, Object... args)
     {
         msg = format(msg, args) ;

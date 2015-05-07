@@ -81,8 +81,6 @@ public abstract class DataServiceDesc
             this.resource = resource ;
         }
 
-        public Resource getResource() { return resource ; }
-
         @Override
         public DataService build() {
             return Builder.buildDataService(resource) ;

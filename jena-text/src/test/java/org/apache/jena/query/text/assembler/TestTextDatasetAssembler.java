@@ -125,8 +125,6 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
 
     private static class CustomTextDocProducer implements TextDocProducer {
 
-        public CustomTextDocProducer(TextIndex textIndex) { }
-
         @Override
         public void start() { }
 

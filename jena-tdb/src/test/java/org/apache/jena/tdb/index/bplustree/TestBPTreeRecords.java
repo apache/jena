@@ -290,12 +290,6 @@ public class TestBPTreeRecords extends BaseTest
         }
     }
 
-    private static Record search(BPTreeRecords bpr, int x)
-    {
-        return search(bpr, RecordLib.intToRecord(x)) ;
-    }
-
-    
     private static Record search(BPTreeRecords bpr, Record r)
     {
         return bpr.internalSearch(r) ;
@@ -309,12 +303,6 @@ public class TestBPTreeRecords extends BaseTest
         }
     }
     
-    private static void insert(BPTreeRecords bpr, Record r)
-    {
-        bpr.internalInsert(r) ;
-    }
-    
-
     private static void delete(BPTreeRecords bpr, int ... values)
     {
         for ( int value : values )

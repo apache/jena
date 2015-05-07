@@ -17,7 +17,6 @@
  */
 package org.apache.jena.permissions.graph;
 
-import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.apache.jena.graph.* ;

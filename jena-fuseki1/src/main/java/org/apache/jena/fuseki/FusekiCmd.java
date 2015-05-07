@@ -21,11 +21,9 @@ package org.apache.jena.fuseki;
 import static org.apache.jena.fuseki.Fuseki.serverLog ;
 
 import java.io.File ;
-import java.io.InputStream ;
 import java.util.List ;
 import java.util.Objects;
 
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.LogCtl ;
@@ -44,7 +42,6 @@ import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.sys.Names ;
-import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.eclipse.jetty.server.Server ;
 import org.slf4j.Logger ;
 
@@ -184,10 +181,6 @@ public class FusekiCmd extends CmdARQ
     {
         super(argv) ;
         
-        if ( false )
-            // Consider ...
-            TransactionManager.QueueBatchSize =  TransactionManager.QueueBatchSize / 2 ;
-        
         getUsage().startCategory("Fuseki") ;
         addModule(modDataset) ;
         add(argMem,     "--mem",                "Create an in-memory, non-persistent dataset for the server") ;
@@ -271,8 +264,6 @@ public class FusekiCmd extends CmdARQ
             Lang language = RDFLanguages.filenameToLang(filename) ;
             if ( language == null )
                 throw new CmdException("Can't guess language for file: "+filename) ;
-            InputStream input = IO.openFile(filename) ; 
-            
             if ( RDFLanguages.isQuads(language) )
                 RDFDataMgr.read(dsg, filename) ;
             else

@@ -31,7 +31,6 @@ import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.rdf.model.ResourceFactory ;
 import org.apache.jena.sdb.sql.* ;
-import org.apache.jena.sparql.util.graph.GraphUtils ;
 import org.apache.jena.util.FileUtils ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,13 +77,6 @@ public class StoreConfig extends SDBConnectionHolder
     {
         return TableUtils.getTableNames(connection().getSqlConnection()) ;
     }
-    
-    private Resource getRoot()
-    {
-        Model model = getModel() ;
-        return GraphUtils.getResourceByType(model, ConfigVocab.typeConfig) ;
-    }
-    
     
     public void removeModel() { removeModel(defaultTag) ; }
     public void removeModel(String tag)
@@ -213,13 +205,6 @@ class TaggedString extends SDBConnectionHolder
         { throw new SDBExceptionSQL("NamedString.reset", ex) ; }
     }
 
-    private void init()
-    {
-        if ( initialized )
-            return ;
-        // TODO prepare statements
-    }
-    
     List<String> tags()
     {
         ResultSetJDBC rs = null ;

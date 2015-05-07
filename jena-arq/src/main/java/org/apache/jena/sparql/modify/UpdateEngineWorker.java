@@ -134,8 +134,6 @@ public class UpdateEngineWorker implements UpdateVisitor
             return ;
         if ( graphStore.containsGraph(g) )
         {
-            if ( ! alwaysSilent && ! update.isSilent() )
-                error("Graph store already contains graph : "+g) ;
             return ;
         }
         // In-memory specific 
@@ -389,15 +387,11 @@ public class UpdateEngineWorker implements UpdateVisitor
         // WITH
         // USING overrides WITH
         if ( dsg == null && withGraph != null ) {
-            if ( false ) 
-                // Ye Olde way - create a special dataset
-                dsg = processWith(update) ;
-            else
-                // Better, 
-                // Wrap WHERE clause in GRAPH <with_uri>
-                // and can remove DatasetGraphAltDefaultGraph, 
-                // or at least comment its implications.
-                elt = new ElementNamedGraph(withGraph, elt) ;
+            // Better, 
+			// Wrap WHERE clause in GRAPH <with_uri>
+			// and can remove DatasetGraphAltDefaultGraph, 
+			// or at least comment its implications.
+			elt = new ElementNamedGraph(withGraph, elt) ;
         }
 
         // WITH :
@@ -415,17 +409,6 @@ public class UpdateEngineWorker implements UpdateVisitor
         try
         {
             Iterator<Binding> bindings = evalBindings(query, dsg, inputBinding, context) ;
-            
-            if ( false )
-            {   
-//                System.out.println("=======================================") ;
-//                System.out.println(graphStore) ;
-                List<Binding> x = Iter.toList(bindings) ;
-                System.out.printf("====>> Bindings (%d)\n", x.size()) ;
-                Iter.print(System.out, x.iterator()) ;
-                System.out.println("====<<") ;
-                bindings = Iter.iter(x) ;
-            }
             
             db.addAll(bindings) ;
             Iter.close(bindings) ;

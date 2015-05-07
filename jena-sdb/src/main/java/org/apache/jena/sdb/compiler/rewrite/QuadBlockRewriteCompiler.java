@@ -41,8 +41,6 @@ public class QuadBlockRewriteCompiler implements QuadBlockCompiler
     public SqlNode compile(QuadBlock quads)
     {
         quads = qbr1.rewrite(request, quads) ;
-        if ( false )
-            quads = qbr2.rewrite(request, quads) ;
         return baseCompiler.compile(quads) ;
         
     }

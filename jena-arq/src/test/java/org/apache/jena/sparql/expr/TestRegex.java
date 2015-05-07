@@ -19,21 +19,14 @@
 package org.apache.jena.sparql.expr;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.expr.E_Regex ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.NodeValue ;
-import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 public class TestRegex extends BaseTest
 {
-    @BeforeClass
-    public static void beforeClass() {
-        if ( false )
-            ARQ.getContext().set(ARQ.regexImpl, ARQ.xercesRegex) ;
-    }
     
     @Test public void testRegex1() { regexTest("ABC", "ABC", null, true) ; }
     @Test public void testRegex2() { regexTest("ABC", "abc", null, false) ; }

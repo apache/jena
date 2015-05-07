@@ -305,13 +305,6 @@ public class TestAPI extends BaseTest
         return qExec ;
     }
 
-    private int queryAndCount(String queryString)
-    {
-        QueryExecution qExec = makeQExec(queryString) ;
-        return queryAndCount(qExec) ;
-    }
-
-    
     private int queryAndCount(QueryExecution qExec)
     {
         try {

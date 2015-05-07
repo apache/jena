@@ -96,12 +96,6 @@ public class FileRef
         id2name.put(idx, new FileRef(fn, idx)) ;
     }
     
-    private static void bTree(String name)
-    {
-        file(name+".idn") ;
-        file(name+".dat") ;
-    }
-
     /** Public - for testing */
     public static void file(String name)
     {

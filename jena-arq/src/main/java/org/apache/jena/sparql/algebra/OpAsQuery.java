@@ -626,15 +626,6 @@ public class OpAsQuery
         public void visit(OpTopN opTop)
         { throw new ARQNotImplemented("OpTopN") ; }
         
-        private Element lastElement()
-        {
-            ElementGroup g = currentGroup ;
-            if ( g == null || g.getElements().size() == 0 )
-                return null ;
-            int len = g.getElements().size() ;
-            return g.getElements().get(len-1) ;
-        }
-
         private void startSubGroup()
         {
             push(currentGroup) ;
@@ -663,12 +654,6 @@ public class OpAsQuery
             return currentGroup ;
         }
         
-        private ElementGroup peek()
-        {
-            if ( stack.size() == 0 )
-                return null ;
-            return stack.peek();
-        }
         private ElementGroup pop() { return stack.pop(); }
         private void push(ElementGroup el) { stack.push(el); }
         private boolean inTopLevel() { return stack.size() == 0; }

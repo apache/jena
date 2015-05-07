@@ -119,35 +119,6 @@ public class GraphSDB extends GraphBase implements Graph
         { log.warn("Failed to get prefixes: "+ex.getMessage()) ; return null ; }
     }
 
-    private Quad quad(Triple m)
-    {
-        Node s = m.getMatchSubject() ;
-        Var sVar = null ;
-        if ( s == null )
-        {
-            sVar = Var.alloc("s") ;
-            s = sVar ;
-        }
-        
-        Node p = m.getMatchPredicate() ;
-        Var pVar = null ;
-        if ( p == null )
-        {
-            pVar = Var.alloc("p") ;
-            p = pVar ;
-        }
-        
-        Node o = m.getMatchObject() ;
-        Var oVar = null ;
-        if ( o == null )
-        {
-            oVar = Var.alloc("o") ;
-            o = oVar ;
-        }
-        
-        return new Quad(graphNode, s, p ,o) ;
-    }
-
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Triple m)
     {

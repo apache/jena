@@ -114,8 +114,6 @@ public final class ExtHash implements Index
                    RecordFactory recordFactory, BlockMgr blockMgrHashBuckets)
     {
         this.dictionaryFile = dictionaryBackingFile ;
-        // Start bigger?
-        int dictionarySize = 1 ;
         dictionary = dictionaryFile.ensure(SystemTDB.SizeOfInt).asIntBuffer() ;
         this.recordFactory = recordFactory ; 
         
@@ -208,12 +206,7 @@ public final class ExtHash implements Index
         int x = trieKey(trieKey(key), bitLen) ;
         int id = dictionary.get(x) ;
         return id ;
-    }
-    
-    /** Size of the file, in bytes */
-    private static long filesize(int dictionarySize) { return 4L*dictionarySize ; }  
-
-    // =====================
+    }  
     
     private void resizeDictionary()
     {
@@ -245,8 +238,6 @@ public final class ExtHash implements Index
 
         if ( logging() )
         {
-            if ( false ) dump() ;
-            if ( false ) log(this) ; 
             log("<<<<Resize") ;
         }
         internalCheck() ;
@@ -452,7 +443,6 @@ public final class ExtHash implements Index
         {
             log("splitAndReorganise: idx=%d, id=%d, bitLen=%d, bucket.hashLength=%d",
                 dictionaryIdx, bucketId, bitLen, bucket.getTrieBitLen()) ;
-            if ( false ) dump() ;
         }
 
         if ( Checking )
@@ -518,7 +508,6 @@ public final class ExtHash implements Index
         if ( logging() )
         {
             log("Reorg complete") ;
-            if ( false ) dump() ;
         }
     }
     
@@ -556,8 +545,6 @@ public final class ExtHash implements Index
         RecordBuffer rBuff1 = bucket.getRecordBuffer() ;
         RecordBuffer rBuff2 = bucket2.getRecordBuffer() ;
         int idx1 = 0 ;  // Destination indexes into the above
-        int idx2 = 0 ;
-        
         for ( int i = 0 ; i < rBuff1.size() ; i++ )
         {
             Record r = rBuff1.get(i) ; 
@@ -578,7 +565,6 @@ public final class ExtHash implements Index
                 if ( logging() )
                     log("Allocate index %d to bucket2", i) ;
                 rBuff2.add(r) ;
-                idx2 ++ ;
             }
             else
                 error("Bad trie for allocation to split buckets") ;

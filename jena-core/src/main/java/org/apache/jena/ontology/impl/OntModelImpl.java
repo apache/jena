@@ -46,7 +46,6 @@ import org.apache.jena.reasoner.Derivation ;
 import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.reasoner.Reasoner ;
 import org.apache.jena.reasoner.ValidityReport ;
-import org.apache.jena.shared.ConfigException ;
 import org.apache.jena.util.iterator.* ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
@@ -2805,18 +2804,6 @@ public class OntModelImpl extends ModelCom implements OntModel
     // Internal implementation methods
     //////////////////////////////////
 
-
-    private static void initSyntaxCheckerClass() {
-        if (owlSyntaxCheckerClass == null ) {
-            try {
-              owlSyntaxCheckerClass = Class.forName(owlSyntaxCheckerClassName);
-              owlSyntaxCheckerClass.newInstance();
-            }
-            catch (Exception e){
-                throw new ConfigException("owlsyntax.jar must be on the classpath.",e);
-            }
-        }
-    }
 
     /**
      * <p>Helper method to the constructor, which interprets the spec and generates an appropriate

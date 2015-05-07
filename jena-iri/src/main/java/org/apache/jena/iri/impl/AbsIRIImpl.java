@@ -600,11 +600,6 @@ abstract public class AbsIRIImpl extends  IRI implements
         return path;
     }
 
-    static private String getLastSlash(String s) {
-        int ix = s.lastIndexOf('/', s.length() - 2);
-        return s.substring(0, ix + 1);
-    }
-
     private boolean equal(String s1, String s2) {
         return s1 == null ? s2 == null : s1.equals(s2);
     }

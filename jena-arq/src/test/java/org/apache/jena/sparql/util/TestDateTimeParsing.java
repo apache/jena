@@ -219,16 +219,6 @@ public class TestDateTimeParsing extends TestCase
         assertEquals(str, dt.toString()) ;
     }
     
-    private static void dateBad(String str)
-    {
-        try {
-            DateTimeStruct dt = DateTimeStruct.parseDateTime(str) ;
-            fail("No exception; "+str) ;
-        }
-        catch (DateTimeStruct.DateTimeParseException ex) {}
-    }
-    
-    
     private static void check(DateTimeStruct dt)
     {
         assertTrue(dt.neg == null || dt.neg.equals("-")) ;

@@ -66,7 +66,6 @@ public class FormatterSimpleSAP extends FormatterSimple
         reformatDataWorker() ;
     }
     
-    private void reformatPrefixesWorker() { reformatPrefixesWorker(false) ; }
     private void reformatPrefixesWorker(boolean loadPrefixes)
     {
         try { 

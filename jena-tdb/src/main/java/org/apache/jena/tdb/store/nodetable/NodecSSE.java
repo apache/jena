@@ -42,7 +42,6 @@ import org.apache.jena.tdb.lib.StringAbbrev ;
 
 public class NodecSSE implements Nodec
 {
-    private static boolean SafeChars = false ;
     // Characters in IRIs that are illegal and cause SSE problems, but we wish to keep.
     final private static char MarkerChar = '_' ;
     final private static char[] invalidIRIChars = { MarkerChar , ' ' } ; 
@@ -193,17 +192,6 @@ public class NodecSSE implements Nodec
         // DBPedia
         abbreviations.add(  "r",        "<http://dbpedia/resource/") ;
         abbreviations.add(  "p",        "<http://dbpedia/property/") ;
-    }
-    private String compress(String str)
-    {
-        if ( !compression || abbreviations == null ) return str ;
-        return abbreviations.abbreviate(str) ;
-    }
-
-    private String decompress(String x)
-    {
-        if ( !compression || abbreviations == null ) return x ;
-        return abbreviations.expand(x) ;
     }
 
 }

@@ -20,8 +20,6 @@ package org.apache.jena.n3;
 
 import java.io.*;
 import java.math.BigDecimal;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.*;
@@ -969,12 +967,5 @@ public class N3JenaWriterCommon implements RDFWriter
         if ( propName.startsWith(N3JenaWriter.propBase) )
             propName = propName.substring(N3JenaWriter.propBase.length()) ;
         return propName ;
-    }
-    
-    private boolean isOpaque(String uri)
-    {
-        try {
-            return new URI(uri).isOpaque() ;
-        } catch (URISyntaxException ex) { return true ; }
     }
 }

@@ -20,18 +20,12 @@ package org.apache.jena.tdb.extra ;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.sys.SystemTDB ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
-import org.apache.jena.tdb.transaction.Journal ;
-import org.apache.jena.tdb.transaction.JournalControl ;
-import org.apache.jena.tdb.transaction.NodeTableTrans ;
 
 public class T_QuadsObjectIsNull {
 //	static {
@@ -43,25 +37,6 @@ public class T_QuadsObjectIsNull {
 	static Location location = Location.create(DIR) ;
 
 	public static void main(String[] args) {
-
-	    if ( false )
-	    {
-    	    LogCtl.enable(SystemTDB.syslog.getName()) ;
-    	    LogCtl.enable(Journal.class) ;
-    	    LogCtl.enable(JournalControl.class) ;
-    	    LogCtl.enable(NodeTableTrans.class) ;
-	    }
-	    if ( false )
-	    {
-	        String journal = "DBX/journal.jrnl" ;
-	        if ( FileOps.exists(journal))
-	            JournalControl.print(journal) ;
-	    } 
-	    
-	    if ( false ) {
-	        FileOps.ensureDir(DIR) ;
-	        FileOps.clearDirectory(DIR) ;
-	    }
 	    one() ;
 	}
 	
@@ -93,15 +68,12 @@ public class T_QuadsObjectIsNull {
 	{
 	    Quad q1 = SSE.parseQuad("(<g1> <s1> <p1> '1')") ;
 	    Quad q2 = SSE.parseQuad("(<g2> <s2> <p2> '2')") ;
-        Quad q3 = SSE.parseQuad("(<g3> <s3> <p3> '3')") ;
-
         DatasetGraphTransaction dsg = (DatasetGraphTransaction)TDBFactory.createDatasetGraph(location);
         System.out.println("Start") ;
         dump(dsg) ;
         
         write(dsg, q1) ;
         write(dsg, q2) ;
-        //write(dsg, q3) ;
         System.out.println("Finish") ;
         dump(dsg) ;
 	}

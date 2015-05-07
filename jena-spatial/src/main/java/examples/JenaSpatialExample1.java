@@ -29,7 +29,6 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ResourceFactory ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
-import org.apache.jena.tdb.TDBFactory ;
 import org.apache.lucene.store.Directory ;
 import org.apache.lucene.store.FSDirectory ;
 import org.slf4j.Logger ;
@@ -47,10 +46,7 @@ public class JenaSpatialExample1 {
 	private static final String LUCENE_TDB_PATH = "target/test/TDB";
 	private static final File LUCENE_TDB_DIR = new File(LUCENE_TDB_PATH);
 	
-    private static final String  SOLR_DATA_PATH      = "src/test/resources/SolrHome/SolrARQCollection/data";
-    private static final File    SOLR_DATA_DIR       = new File(SOLR_DATA_PATH);
-
-	public static void main(String... argv) throws IOException {
+    public static void main(String... argv) throws IOException {
 		Dataset spatialDataset = initInMemoryDatasetWithLuceneSpatitalIndex(LUCENE_INDEX_DIR);
 		//Dataset spatialDataset = initTDBDatasetWithLuceneSpatitalIndex(indexDir, TDBDir);
 		//Dataset spatialDataset = createLuceneAssembler() ;
@@ -101,16 +97,7 @@ public class JenaSpatialExample1 {
 		return createDatasetByCode(indexDir);
     }
     
-    private static Dataset initTDBDatasetWithLuceneSpatitalIndex(File indexDir, File TDBDir) throws IOException{
-		SpatialQuery.init();
-		deleteOldFiles(indexDir);
-		deleteOldFiles(TDBDir);
-		indexDir.mkdirs();
-		TDBDir.mkdir();
-		return createDatasetByCode(indexDir, TDBDir);
-    }
-    
-	private static void deleteOldFiles(File indexDir) {
+    private static void deleteOldFiles(File indexDir) {
 		if (indexDir.exists())
 			emptyAndDeleteDirectory(indexDir);
 	}
@@ -118,12 +105,6 @@ public class JenaSpatialExample1 {
 	private static Dataset createDatasetByCode(File indexDir) throws IOException {
 		// Base data
 		Dataset ds1 = DatasetFactory.createMem();
-		return joinDataset(ds1, indexDir);
-	}
-	
-	private static Dataset createDatasetByCode(File indexDir, File TDBDir) throws IOException {
-		// Base data
-		Dataset ds1 = TDBFactory.createDataset(TDBDir.getAbsolutePath());
 		return joinDataset(ds1, indexDir);
 	}
 	

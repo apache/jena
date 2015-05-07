@@ -86,14 +86,6 @@ public class XMLOutputResultSet
         out.print(dfHead) ;
         out.println(">") ;
         
-        if ( false )
-        {
-            String link = "UNSET" ;
-            out.print("<link href=\"") ;
-            out.print(link) ;
-            out.println("\"/>") ;
-        }
-        
         for (String n : rs.getResultVars())
         {
             out.incIndent(INDENT) ;

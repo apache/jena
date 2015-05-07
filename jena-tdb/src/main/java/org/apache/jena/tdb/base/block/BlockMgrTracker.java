@@ -424,11 +424,6 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
         log.info(msg(string)) ;
     }
 
-    private void warn(String string)
-    {
-        log.warn(msg(string)) ;
-    }
-
     private void error(String string)
     {
         log.error(msg(string)) ;

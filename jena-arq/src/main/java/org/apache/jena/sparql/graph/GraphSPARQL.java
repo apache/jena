@@ -80,14 +80,6 @@ public class GraphSPARQL extends GraphBase implements Graph
         this.factory = factory ;
     }
     
-    private DatasetGraph toDSG(DatasetGraph dataset, Node graphNode)
-    {
-        Graph graph = ( graphNode == null ) ? dataset.getDefaultGraph() : dataset.getGraph(graphNode) ;
-        DatasetGraph dsGraph = DatasetGraphFactory.create(graph) ;
-        return dsGraph ;
-    }
-
-    
     /* We don't support value tests, hence handlesLiteralTyping is false */
     @Override
     public Capabilities getCapabilities()

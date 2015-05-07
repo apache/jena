@@ -22,7 +22,6 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.lucene.spatial.SpatialStrategy ;
 import org.apache.lucene.spatial.prefix.RecursivePrefixTreeStrategy ;
 import org.apache.lucene.spatial.prefix.tree.GeohashPrefixTree ;
@@ -160,11 +159,6 @@ public class SpatialIndexSolr implements SpatialIndex {
 	@Override
 	public EntityDefinition getDocDef() {
 		return docDef;
-	}
-
-	private Node entryToNode(String v) {
-		// TEMP
-		return NodeFactoryExtra.createLiteralNode(v, null, null);
 	}
 
 	public SolrServer getServer() {

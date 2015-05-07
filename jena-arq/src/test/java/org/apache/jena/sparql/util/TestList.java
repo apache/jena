@@ -179,8 +179,6 @@ public class TestList extends BaseTest
     }
 // --------
     
-    private static GNode gnode(Node n)  { return new GNode(Factory.createDefaultGraph(), n) ; }
-    
     private static GNode parse(String str)
     { 
         Model m = ModelFactory.createDefaultModel() ;

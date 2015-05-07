@@ -66,10 +66,6 @@ public class TestParameterizedSparqlString {
         return query.asQuery();
     }
 
-    private UpdateRequest testAsUpdate(ParameterizedSparqlString update) {
-        return update.asUpdate();
-    }
-
     @Test
     public void test_param_string_constructor_1() {
         // Test empty constructor

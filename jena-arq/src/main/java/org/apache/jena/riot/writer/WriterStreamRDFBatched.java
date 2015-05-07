@@ -70,12 +70,6 @@ abstract class WriterStreamRDFBatched extends WriterStreamRDFBase
 
     @Override
     protected final void print(Quad quad) {
-        if ( false ) {
-            // Merge to a triple stream.
-            triple(quad.asTriple()) ;
-            return ;
-        }
-
         Node g = quad.getGraph() ;
         Node s = quad.getSubject() ;
 

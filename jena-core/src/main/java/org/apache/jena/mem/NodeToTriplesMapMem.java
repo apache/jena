@@ -26,7 +26,6 @@ import java.util.function.Predicate;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.Triple.Field ;
-import org.apache.jena.shared.JenaException ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.NullIterator ;
 
@@ -97,7 +96,7 @@ public class NodeToTriplesMapMem extends NodeToTriplesMapBase
         // TODO fix the way this interacts (badly) with iteration and CMEs.
         @Override
         public void emptied()
-            { if (false) throw new JenaException( "BOOM" ); /* System.err.println( ">> OOPS" ); */ bunchMap.remove( key ); }
+            { bunchMap.remove( key ); }
         }
     
     /**

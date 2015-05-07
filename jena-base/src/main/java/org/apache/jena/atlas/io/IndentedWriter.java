@@ -61,8 +61,6 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     protected boolean flatMode = false ;
     private boolean flushOnNewline = false ;
     
-    private IndentedWriter() { this(System.out, false) ; }
-    
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
     
@@ -94,12 +92,6 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     {
         if ( str == null )
             str = "null" ;
-        if ( false )
-        {
-            // Don't check for embedded newlines.
-            write$(str) ;
-            return ;
-        }
         for ( int i = 0 ; i < str.length() ; i++ )
             printOneChar(str.charAt(i)) ;
     }

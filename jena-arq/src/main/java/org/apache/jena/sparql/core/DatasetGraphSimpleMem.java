@@ -44,8 +44,6 @@ public class DatasetGraphSimpleMem extends DatasetGraphCaching
     private static class MiniSet<T> implements Iterable<T>
     {
         final Collection<T> store ; 
-        MiniSet(Collection<T> store) { this.store = store ; }
-        
         MiniSet() { this.store = new ArrayList<>() ; }
         
         void add(T t)
@@ -64,10 +62,6 @@ public class DatasetGraphSimpleMem extends DatasetGraphCaching
         {
             return store.iterator() ;
         }
-        
-        boolean isEmpty() { return store.isEmpty() ; }
-        
-        int size() { return store.size() ; }
     }
     
     public DatasetGraphSimpleMem() {}

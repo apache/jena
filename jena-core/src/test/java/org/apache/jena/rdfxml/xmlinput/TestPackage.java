@@ -40,9 +40,4 @@ public class TestPackage extends TestSuite
         addTest( org.apache.jena.rdfxml.xmlinput.SAX2RDFTest.suite());
         addTest( org.apache.jena.rdfxml.xmlinput.StAX2ModelTest.suite());
     }
-    
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
-    }
 }

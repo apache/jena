@@ -57,12 +57,7 @@ public class WriterSSE
 
     private static SerializationContext sCxt(Prologue prologue)
     { 
-//        return new SerializationContext(prologue) ;
-        // Pragmatic.
-        if ( false && prologue.explicitlySetBaseURI() )
-            return new SerializationContext(prologue) ;
-        else
-            return new SerializationContext(prologue.getPrefixMapping()) ;
+    		return new SerializationContext(prologue.getPrefixMapping()) ;
     }
     
 }

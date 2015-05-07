@@ -207,24 +207,6 @@ public abstract class QueryIteratorBase
         }
     }
 
-    /** Cancel this iterator but allow it to continue servicing hasNext/next.
-     *  Wrong answers are possible (e.g. partial ORDER BY and LIMIT).
-     */
-    
-    private final void cancelAllowContinue()
-    {
-        // Call requestCancel() once.
-        synchronized (cancelLock)
-        {
-            if (!this.requestingCancel)
-            {
-                //this.abortIterator = true ;
-                this.requestingCancel = true;
-                this.requestCancel() ;
-            }
-        }
-    }
-
     /** close an iterator */
     protected static void performClose(QueryIterator iter)
     {

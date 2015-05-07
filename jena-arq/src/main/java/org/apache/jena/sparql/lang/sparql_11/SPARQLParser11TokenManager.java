@@ -18,12 +18,6 @@ public class SPARQLParser11TokenManager implements SPARQLParser11Constants
   public  java.io.PrintStream debugStream = System.out;
   /** Set debug output. */
   public  void setDebugStream(java.io.PrintStream ds) { debugStream = ds; }
-private int jjStopAtPos(int pos, int kind)
-{
-   jjmatchedKind = kind;
-   jjmatchedPos = pos;
-   return pos + 1;
-}
 private int jjMoveStringLiteralDfa0_0()
 {
    switch(curChar)

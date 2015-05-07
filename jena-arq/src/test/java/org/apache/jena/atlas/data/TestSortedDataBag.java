@@ -33,11 +33,9 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.NodeFactory ;
 import org.junit.Test ;
 import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryCancelledException ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.riot.system.SerializationFactoryFinder ;
 import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingComparator ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
@@ -210,18 +208,6 @@ public class TestSortedDataBag extends TestCase
             builder.append(LETTERS.charAt(random.nextInt(LETTERS.length())));
         }
         return builder.toString();
-    }
-    
-    private void getNextAndExpectException(QueryIterator iter) 
-    {
-        try{
-            iter.hasNext();
-            fail("Expected an exception here");
-        }catch(QueryCancelledException e){
-            // expected
-        }catch(Exception e){
-            fail("Unexpected exception");
-        }
     }
 
 }

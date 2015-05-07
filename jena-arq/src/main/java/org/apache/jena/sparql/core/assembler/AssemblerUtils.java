@@ -64,11 +64,6 @@ public class AssemblerUtils
         g.implementWith(DatasetNullAssembler.getType(), new DatasetNullAssembler()) ;
     }
     
-    private static void assemblerClass(AssemblerGroup g, Resource r, Assembler a)
-    {
-        g.implementWith(r, a) ;
-    }
-    
     public static Object build(String assemblerFile, String typeURI)
     {
         Resource type = ResourceFactory.createResource(typeURI) ;

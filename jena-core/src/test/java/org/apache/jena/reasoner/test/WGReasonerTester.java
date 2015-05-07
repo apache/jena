@@ -27,7 +27,6 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import junit.framework.TestCase ;
-import org.apache.jena.graph.Factory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.PropertyImpl ;
@@ -180,23 +179,6 @@ public class WGReasonerTester {
         
         result.read(in, BASE_URI + fname, langType);
         return result;
-    }
-    
-    /**
-     * Load the datafile given by the property name.
-     * @param test the test being processed
-     * @param predicate the property of the test giving the file name to load
-     * @return a graph containing the file contents or an empty graph if the property
-     * is not present
-     * @throws IOException if the property is present but the file can't be found
-     */
-    private Graph loadTestFile(Resource test, Property predicate) throws IOException {
-        if (test.hasProperty(predicate)) {
-            String fileName = test.getRequiredProperty(predicate).getObject().toString();
-            return loadFile(fileName).getGraph();
-        } else {
-            return Factory.createGraphMem();
-        }
     }
     
     /**

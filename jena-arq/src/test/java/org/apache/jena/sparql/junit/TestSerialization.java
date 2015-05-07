@@ -48,11 +48,7 @@ public class TestSerialization extends EarlTestCase
 //        setTest(testName, queryString) ;
 //    }
 
-    private void setTest(String testName, EarlReport earl, String _queryString)
-    {
-        super.setName(testName) ;
-        this.queryString = _queryString ;
-    }
+    
     
     // A serialization test is:
     //   Read query in.

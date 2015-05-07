@@ -27,9 +27,7 @@ import org.apache.jena.assembler.exceptions.AssemblerException ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.tdb.TDB ;
-import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.assembler.IndexAssembler ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -94,32 +92,6 @@ public class TDBGraphAssembler extends AssemblerBase implements Assembler
             ex.printStackTrace(System.err) ;
             throw ex ;
         }
-    }
-    
-    //@Unused
-    private void indexes(Resource root)
-    {
-        // ---- API ways
-
-        StmtIterator sIter = root.listProperties(pIndex) ;
-        while(sIter.hasNext())
-        {
-            RDFNode obj = sIter.nextStatement().getObject() ;
-            if ( obj.isLiteral() )
-            {
-                String desc = ((Literal)obj).getString() ;
-                System.out.printf("Index: %s\n", desc) ; System.out.flush();
-                continue ;
-            }
-            throw new TDBException("Wrong format for tdb:index: should be a string: found: "+NodeFmtLib.displayStr(obj)) ; 
-            //          Resource x = (Resource)obj ;
-            //          String desc = x.getProperty(pDescription).getString() ;
-            //          String file = x.getProperty(pFile).getString() ;
-            //          System.out.printf("Index: %s in file %s\n", desc, file) ; System.out.flush();
-        }
-
-        System.out.flush();
-        throw new TDBException("Custom indexes turned off") ; 
     }
 
 }

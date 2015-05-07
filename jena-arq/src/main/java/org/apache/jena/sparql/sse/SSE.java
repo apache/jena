@@ -337,14 +337,6 @@ public class SSE
         return item.getNode() ;
     }
 
-    private static String parseSymbol(Reader reader, PrefixMapping pmap)
-    {
-        Item item = parseTerm(reader, pmap) ;
-        if ( ! item.isSymbol() )
-            throw new SSEParseException("Not a symbol: "+item, item.getLine(), item.getColumn()) ;
-        return item.getSymbol() ;
-    }
-    
     public static Item parseItem(String str)
     {
         return parse(str, null) ;

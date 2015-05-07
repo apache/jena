@@ -79,16 +79,9 @@ public final class PeekReader extends Reader {
         // This is the best route to make a PeekReader because it avoids
         // chances of wrong charset for a Reader say.
         PeekReader pr ;
-        if ( true ) {
-            Reader r = IO.asUTF8(in) ;
-            // This adds reader-level buffering
-            pr = make(r) ;
-        } else {
-            // This is a bit slower - reason unknown.
-            InputStreamBuffered in2 = new InputStreamBuffered(in) ;
-            CharStream r = new InStreamUTF8(in2) ;
-            pr = new PeekReader(r) ;
-        }
+        Reader r = IO.asUTF8(in) ;
+		// This adds reader-level buffering
+		pr = make(r) ;
         // Skip BOM.
         int ch = pr.peekChar() ;
         if ( ch == Chars.BOM )

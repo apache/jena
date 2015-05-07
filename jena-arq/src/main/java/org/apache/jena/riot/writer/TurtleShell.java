@@ -159,33 +159,6 @@ public abstract class TurtleShell {
             //printDetails() ;
         }
 
-        // Debug
-        private void printDetails() {
-            printDetails("nestedObjects", nestedObjects) ;
-            //printDetails("nestedObjectsWritten", nestedObjectsWritten) ;
-            printDetails("freeBnodes", freeBnodes) ;
-
-            printDetails("lists", lists) ;
-            printDetails("freeLists", freeLists) ;
-            printDetails("nLinkedLists", nLinkedLists) ;
-            printDetails("listElts", listElts) ;
-        }
-
-        private void printDetails(String label, Map<Node, List<Node>> map) {
-            System.err.print("## ") ;
-            System.err.print(label) ;
-            System.err.print(" = ") ;
-            System.err.println(map) ;
-        }
-
-        private void printDetails(String label, Collection<Node> nodes) {
-            System.err.print("## ") ;
-            System.err.print(label) ;
-            System.err.print(" = ") ;
-            System.err.println(nodes) ;
-        }
-        // Debug
-
         private ShellGraph(Graph graph) {
             this(graph, null, null) ;
         }
@@ -204,17 +177,6 @@ public abstract class TurtleShell {
                 return RiotLib.triple1(dsg, s, p, o) ;
             else
                 return RiotLib.triple1(graph, s, p, o) ;
-        }
-
-        /** Get exactly one triple, or null for none or more than one. */
-        private Triple triple1(DatasetGraph dsg, Node s, Node p, Node o) {
-            Iterator<Quad> iter = dsg.find(Node.ANY, s, p, o) ;
-            if ( !iter.hasNext() )
-                return null ;
-            Quad q = iter.next() ;
-            if ( iter.hasNext() )
-                return null ;
-            return q.asTriple() ;
         }
 
         private long countTriples(Node s, Node p, Node o) {
@@ -240,18 +202,6 @@ public abstract class TurtleShell {
             }
         }
 
-        /** returns 0,1,2 (where 2 really means "more than 1") */
-        private int occursAsSubject(Node subj) {
-            if ( dsg != null ) {
-                Iterator<Quad> iter = dsg.find(Node.ANY, subj, Node.ANY, Node.ANY) ;
-                return count012(iter) ;
-            } else {
-                ExtendedIterator<Triple> iter = graph.find(subj, Node.ANY, Node.ANY) ;
-                try { return count012(iter) ; }
-                finally { iter.close() ; }
-            }
-        }
-        
         private int count012(Iterator<? > iter) {
             if ( !iter.hasNext() )
                 return 0 ;
@@ -567,13 +517,6 @@ public abstract class TurtleShell {
             return somethingWritten ;
         }
 
-        // Write triples, flat and simply.
-        // Reset the state variables so "isPretty" return false. 
-        private void writeTriples(Node subj, Iterator<Triple> iter) {
-            allowDeepPretty = false;
-            writeCluster(subj, Iter.toList(iter));
-        }
-
         // return true if did write something.
         private boolean writeBySubject(Iterator<Node> subjects) {
             boolean first = true ;
@@ -770,12 +713,8 @@ public abstract class TurtleShell {
             out.incIndent(2) ;
             writePredicateObjectList(x) ;
             out.decIndent(2) ;
-            if ( true ) {
-                println() ; // Newline for "]"
-                print("]") ;
-            } else { // Compact
-                print(" ]") ;
-            }
+            println() ; // Newline for "]"
+			print("]") ;
             out.setAbsoluteIndent(indent0) ;
         }
 

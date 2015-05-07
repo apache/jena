@@ -81,10 +81,6 @@ public class StreamRowTRDFPrinter implements VisitorStreamRowTRDF
             out.println() ;
     }
     
-    private void startRow() { }
-    
-    private void finishRow() { }
-    
     private void print(RDF_Term term) {
         out.print(term.toString()) ;
     }

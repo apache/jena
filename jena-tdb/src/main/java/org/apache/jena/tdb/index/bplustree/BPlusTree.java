@@ -253,11 +253,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
         rootNode.release() ;
     }
 
-    private void setRoot(BPTreeNode node)
-    {
-        //root = node ;
-    }
-
     /** Get the parameters describing this B+Tree */
     public BPlusTreeParams getParams()     { return bpTreeParams ; } 
 

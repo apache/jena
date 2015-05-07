@@ -190,32 +190,6 @@ public class UUID_V1_Gen implements UUIDFactory
         return generate(version, variant, timeHigh, timeMid, timeLow, clockSeq, node) ;
     }
     
-    // See LibUUID.toString(JenaUUID)
-    // The code here works on the specific fields and is kept for reference only.
-    private static String unparse(UUID_V1 uuid) {
-        int _variant = uuid.getVariant() ;
-        int _version = uuid.getVersion() ;
-
-        long timeHigh = uuid.getTimeHigh() ;
-        long timeMid = uuid.getTimeMid() ;
-        long timeLow = uuid.getTimeLow() ;
-
-        long node = uuid.getNode() ;
-        long clockSeq = uuid.getClockSequence() ;
-
-        StringBuffer sBuff = new StringBuffer() ;
-        JenaUUID.toHex(sBuff, timeLow, 4) ;
-        sBuff.append('-') ;
-        JenaUUID.toHex(sBuff, timeMid, 2) ;
-        sBuff.append('-') ;
-        JenaUUID.toHex(sBuff, _version << 12 | timeHigh, 2) ;
-        sBuff.append('-') ;
-        JenaUUID.toHex(sBuff, (long)_variant << 14 | clockSeq, 2) ;
-        sBuff.append('-') ;
-        JenaUUID.toHex(sBuff, node, 6) ;
-        return sBuff.toString() ;
-    }
-
     private UUID_V1 generate(long timestamp) {
         return generate(versionHere, variantHere, timestamp, clockSeq, node) ;
     }

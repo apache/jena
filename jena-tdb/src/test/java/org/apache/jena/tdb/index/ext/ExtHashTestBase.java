@@ -119,8 +119,6 @@ public class ExtHashTestBase
         {
             Record r = intToRecord(i) ;
             extHash.add(r) ;
-            
-            if ( false ) extHash.dump() ;
         }
         return extHash ;
     }

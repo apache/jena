@@ -24,7 +24,6 @@ import java.util.List ;
 import java.util.Objects;
 import java.util.Set ;
 
-import org.apache.jena.atlas.lib.CollectionUtils ;
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
@@ -89,10 +88,6 @@ public class TransformFilterPlacement extends TransformCopy {
         return noChangePlacement ;
     }
     
-    private boolean isNoChange(Placement placement) { 
-        return placement == noChangePlacement ;
-    }
-
     /** Apply filter placement to a BGP */
     public static Op transform(ExprList exprs, BasicPattern bgp) {
         Placement placement = placeBGP(exprs, bgp) ;
@@ -532,31 +527,6 @@ public class TransformFilterPlacement extends TransformCopy {
     }
     
     private Placement placeUnion(ExprList exprs, OpUnion input) {
-        if ( false )
-            // Safely but inefficiently do nothing.
-            return null ; //new Placement(input, exprs) ;
-        
-        if ( false ) {
-         // Push into both sides.
-            Op left = input.getLeft() ;
-            Placement pLeft = transform(exprs, left) ;
-            
-            Op right = input.getRight() ;
-            Placement pRight = transform(exprs, right) ;
-            
-            if ( pLeft != null && ! pLeft.unplaced.isEmpty() )
-                return noChangePlacement ;
-            if ( pRight != null && ! pRight.unplaced.isEmpty() )
-                return noChangePlacement ;
-
-            // Must be guarded by the above.
-            left = transformOpAlways(exprs, left) ;
-            right = transformOpAlways(exprs, right) ;
-            
-            Op op2 = OpUnion.create(left, right) ;
-            return result(op2, emptyList) ;
-        }
-        
         Op left = input.getLeft() ;
         Placement pLeft = transform(exprs, left) ;
         
@@ -626,7 +596,6 @@ public class TransformFilterPlacement extends TransformCopy {
         // 2 - expressions that are covered when the extend/assign has applied. [wrapping]
         // 3 - expressions that are not covered even at the outermost level. [unplaced]
         
-        List<Var> vars1 = input.getVarExprList().getVars() ;
         Op subOp = input.getSubOp() ;
         
         // Case 1 : Do as much inner placement as possible.
@@ -757,10 +726,6 @@ public class TransformFilterPlacement extends TransformCopy {
             }
         }
         return op ;
-    }
-
-    private static <T> boolean disjoint(Collection<T> collection, Collection<T> possibleElts) {
-        return CollectionUtils.disjoint(collection, possibleElts) ;
     }
 
     /** Place expressions around an Op */

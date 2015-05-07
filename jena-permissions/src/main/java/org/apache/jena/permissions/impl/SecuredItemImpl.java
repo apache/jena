@@ -131,7 +131,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 	// the maximum size of the cache
 	public static int MAX_CACHE = 100;
 	// the cache for this thread.
-	public static final ThreadLocal<LRUMap> CACHE = new ThreadLocal<LRUMap>();
+	public static final ThreadLocal<LRUMap<Object, Object>> CACHE = new ThreadLocal<LRUMap<Object,Object>>();
 	// the number of times this thread has recursively called the constructor.
 	public static final ThreadLocal<Integer> COUNT = new ThreadLocal<Integer>();
 	
@@ -207,7 +207,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 		final Integer i = SecuredItemImpl.COUNT.get();
 		if (i == null)
 		{
-			SecuredItemImpl.CACHE.set(new LRUMap(Math.max(
+			SecuredItemImpl.CACHE.set(new LRUMap<Object, Object>(Math.max(
 					SecuredItemImpl.MAX_CACHE, 100)));
 			SecuredItemImpl.COUNT.set( 1 );
 		}
@@ -302,7 +302,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 	 */
 	private Boolean cacheGet( final CacheKey key )
 	{
-		final LRUMap cache = SecuredItemImpl.CACHE.get();
+		final LRUMap<?, ?> cache = SecuredItemImpl.CACHE.get();
 		return (cache == null) ? null : (Boolean) cache.get(key);
 	}
 
@@ -313,7 +313,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 	 */
 	void cachePut( final CacheKey key, final boolean value )
 	{
-		final LRUMap cache = SecuredItemImpl.CACHE.get();
+		final LRUMap<Object, Object> cache = SecuredItemImpl.CACHE.get();
 		if (cache != null)
 		{
 			cache.put(key, value);

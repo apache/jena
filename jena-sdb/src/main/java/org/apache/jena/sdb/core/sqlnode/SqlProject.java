@@ -36,23 +36,6 @@ public class SqlProject extends SqlNodeBase1
     
     // ---- Factory methods
     
-    /** make sure this node is a projection */
-    
-    // This is not quite SqlSelectBlock.
-    /*public*/private static SqlNode project(SqlNode sqlNode)
-    {
-        return project(sqlNode, null) ;
-    }
-    
-    /** make sure this node is a projection and add a column */
-
-    /*public*/private static SqlNode project(SqlNode sqlNode, SqlColumn col, String colOutName)
-    {
-        SqlColumn asCol = new SqlColumn(null, colOutName) ; 
-        ColAlias colAlias = new ColAlias(col, asCol) ;
-        return SqlProject.project(sqlNode, colAlias) ;
-    }
-    
     /** make sure this node is a projection and add a column */
 
     /*public*/public static SqlNode project(SqlNode sqlNode, ColAlias col)

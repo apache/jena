@@ -102,31 +102,6 @@ public class CheckerIRI implements NodeChecker
     
     /** Process violations on an IRI
      *  Calls the errorhandler on all errors and warnings (as warning).
-     *  Assumes error handler throws exceptions on errors if needbe
-     *  @param iri  IRI to check
-     *  @param errorHandler The error handler to call on each warning or error.
-     *  @param allowRelativeIRIs Allow realtive URIs (discouraged)
-     */
-    private static void iriViolations(IRI iri, ErrorHandler errorHandler, boolean allowRelativeIRIs)
-    {
-        iriViolations(iri, errorHandler, allowRelativeIRIs, -1, -1) ;
-    }
-
-    /** Process violations on an IRI
-     *  Calls the errorhandler on all errors and warnings (as warning).
-     *  Assumes error handler throws exceptions on errors if needbe
-     *  @param iri  IRI to check
-     *  @param errorHandler The error handler to call on each warning or error.
-     *  @param allowRelativeIRIs Allow realtive URIs (discouraged)
-     */
-    private static void iriViolations(IRI iri, ErrorHandler errorHandler, boolean allowRelativeIRIs, long line, long col)
-    {
-        iriViolations(iri, errorHandler, allowRelativeIRIs, true, line, col) ;
-    }
-
-
-    /** Process violations on an IRI
-     *  Calls the errorhandler on all errors and warnings (as warning).
      *  Assumes error handler throws exceptions on errors if needbe 
      */
     public static void iriViolations(IRI iri, ErrorHandler errorHandler, 
@@ -141,15 +116,10 @@ public class CheckerIRI implements NodeChecker
         {
             Iterator<Violation> iter = iri.violations(includeIRIwarnings) ; 
             
-            boolean errorSeen = false ;
-            boolean warningSeen = false ;
-            
             // What to finally report.
             Violation vError = null ;
             Violation vWarning = null ;
-            Violation xvSub = null ;
-            
-            for ( ; iter.hasNext() ; )
+            while ( iter.hasNext() )
             {
                 Violation v = iter.next();
                 int code = v.getViolationCode() ;
@@ -170,20 +140,18 @@ public class CheckerIRI implements NodeChecker
                 // Remember first error and first warning.
                 if ( isError )
                 {
-                    errorSeen = true ;
                     if ( vError == null )
                         // Remember first error
                         vError = v ;
                 }
                 else
                 {
-                    warningSeen = true ;
                     if ( vWarning == null )
                         vWarning = v ;
                 }
                 
                 String msg = v.getShortMessage();
-                String iriStr = iri.toString();
+                iri.toString();
 
                 // Ideally, we might want to output all messages relating to this IRI
                 // then cause the error or continue.

@@ -94,11 +94,6 @@ public class AcceptList
         }
     }
     
-    private /*public*/ boolean accepts(MediaRange aItem)
-    {
-        return match(aItem) != null ;
-    }
-    
     private List<MediaRange> entries()
     {
         return Collections.unmodifiableList(ranges) ;

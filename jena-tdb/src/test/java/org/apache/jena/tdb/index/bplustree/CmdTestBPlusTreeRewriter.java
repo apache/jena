@@ -22,7 +22,6 @@ import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.RandomLib ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.tdb.base.record.RecordFactory ;
-import org.apache.jena.tdb.index.bplustree.BPlusTreeRewriter ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 
 public class CmdTestBPlusTreeRewriter
@@ -76,28 +75,15 @@ public class CmdTestBPlusTreeRewriter
         int[] orders = null ;
         int[] sizes =  null ; 
         
-        if ( false )
-        {
-            // Specific test case.
-            orders = new int[]{2} ;
-            sizes =  new int[]{20} ;
-            NumTest = sizes.length ;
-            SystemTDB.NullOut = true ;
-            debug = true ;
-            BPlusTreeRewriter.debug = true;
-        }   
-        else
-        {
-            orders = new int[NumTest] ;
-            sizes =  new int[NumTest] ;
-            for ( int i = 0 ; i < orders.length ; i++ )
-            {
-                int order = ( MinOrder == MaxOrder ) ? MinOrder :  MinOrder+RandomLib.random.nextInt(MaxOrder-MinOrder) ;
-                int size = ( MinSize == MaxSize ) ? MinSize :      MinSize+RandomLib.random.nextInt(MaxSize-MinSize) ;
-                orders[i] = order ;
-                sizes[i] = size ;
-            }
-        }
+        orders = new int[NumTest] ;
+		sizes =  new int[NumTest] ;
+		for ( int i = 0 ; i < orders.length ; i++ )
+		{
+		    int order = ( MinOrder == MaxOrder ) ? MinOrder :  MinOrder+RandomLib.random.nextInt(MaxOrder-MinOrder) ;
+		    int size = ( MinSize == MaxSize ) ? MinSize :      MinSize+RandomLib.random.nextInt(MaxSize-MinSize) ;
+		    orders[i] = order ;
+		    sizes[i] = size ;
+		}
 
         int numOnLine = 50 ;
         int testsPerTick = 500 ;

@@ -343,12 +343,6 @@ public class TestAdmin extends BaseTest {
         checkInTasks(x) ;
     }
 
-    private JsonValue getTask(String taskId) {
-        String url = urlRoot+"$/tasks/"+taskId ;
-        return httpGetJson(url) ;
-    }
-    
-
     static class JsonResponseHandler implements HttpResponseHandler {
 
         private JsonValue result = null ;

@@ -25,13 +25,10 @@ import java.text.DecimalFormatSymbols ;
 import java.text.NumberFormat ;
 import java.util.Locale ;
 
-import javax.xml.datatype.XMLGregorianCalendar ;
-
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.util.DateTimeStruct ;
 
@@ -65,25 +62,7 @@ class NormalizeValue
             if ( lexicalForm.indexOf('.') < 0 )
                 // No fractional seconds.
                 return node ;
-            
-            // Could use XMLGregorianCalendar but still need to canonicalize fractional seconds.
-            // Record for history. 
-            if ( false )
-            {
-                XMLGregorianCalendar xcal = NodeValue.xmlDatatypeFactory.newXMLGregorianCalendar(lexicalForm) ;
-                if ( xcal.getFractionalSecond() != null )
-                {
-                    if ( xcal.getFractionalSecond().compareTo(BigDecimal.ZERO) == 0 )
-                        xcal.setFractionalSecond(null) ;
-                    else
-                        // stripTrailingZeros does the right thing on fractional values. 
-                        xcal.setFractionalSecond(xcal.getFractionalSecond().stripTrailingZeros()) ;
-                }
-                String lex2 = xcal.toXMLFormat() ;
-                if ( lex2.equals(lexicalForm) )
-                    return node ;
-                return NodeFactory.createLiteral(lex2, datatype) ;
-            }
+
             // The only variablity for a valid date/dateTime/g* type is:
             //   Second part can have fractional seconds '.' s+ (if present) represents the fractional seconds;
             DateTimeStruct dts = DateTimeStruct.parseDateTime(lexicalForm) ;

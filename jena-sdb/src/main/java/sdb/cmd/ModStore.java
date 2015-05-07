@@ -209,24 +209,6 @@ public class ModStore extends ModBase
 
         //storeDesc.connDesc.initJDBC() ;
         
-        if ( false )
-        {
-            //System.out.println("URL       = " + storeDesc.connDesc.URL);
-            System.out.println("Type      = " + storeDesc.connDesc.getType());
-            System.out.println("Host      = " + storeDesc.connDesc.getHost());
-            System.out.println("Database  = " + storeDesc.connDesc.getName());
-            System.out.println("User      = " + storeDesc.connDesc.getUser());
-            System.out.println("Password  = " + storeDesc.connDesc.getPassword());
-//            if ( storeDesc.connDesc.getArgStr() != null )
-//                System.out.println("Args      = " + storeDesc.connDesc.getArgStr());
-                
-            System.out.println("Layout    = " + storeDesc.getLayout().getName()) ;
-            //System.out.println("Name      = " + argModelName);
-
-            SDBConnection.logSQLExceptions = true ;
-            SDBConnection.logSQLStatements = true ;
-        }
-
         if (cmdLine.contains(argDeclJdbcDriver))
         {
             String driverName = cmdLine.getArg(argDeclJdbcDriver).getValue();

@@ -345,18 +345,6 @@ class LexerScheme extends AbsLexer implements org.apache.jena.iri.ViolationCodes
 
     
   /**
-   * Closes the input stream.
-   */
-  private final void yyclose() throws java.io.IOException {
-    zzAtEOF = true;            /* indicate end of file */
-    zzEndRead = zzStartRead;  /* invalidate buffer    */
-
-    if (zzReader != null)
-      zzReader.close();
-  }
-
-
-  /**
    * Resets the scanner to read from a new input stream.
    * Does not close the old reader.
    *
@@ -379,44 +367,10 @@ class LexerScheme extends AbsLexer implements org.apache.jena.iri.ViolationCodes
 
 
   /**
-   * Returns the current lexical state.
-   */
-  private final int yystate() {
-    return zzLexicalState;
-  }
-
-
-  /**
-   * Enters a new lexical state
-   *
-   * @param newState the new lexical state
-   */
-  private final void yybegin(int newState) {
-    zzLexicalState = newState;
-  }
-
-
-  /**
    * Returns the text matched by the current regular expression.
    */
   @Override final String yytext() {
     return new String( zzBuffer, zzStartRead, zzMarkedPos-zzStartRead );
-  }
-
-
-  /**
-   * Returns the character at position <tt>pos</tt> from the 
-   * matched text. 
-   * 
-   * It is equivalent to yytext().charAt(pos), but faster
-   *
-   * @param pos the position of the character to fetch. 
-   *            A value from 0 to yylength()-1.
-   *
-   * @return the character at position pos
-   */
-  private final char yycharat(int pos) {
-    return zzBuffer[zzStartRead+pos];
   }
 
 

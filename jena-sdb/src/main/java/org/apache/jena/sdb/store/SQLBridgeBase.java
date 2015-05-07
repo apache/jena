@@ -33,7 +33,6 @@ import org.apache.jena.sdb.core.SDBRequest ;
 import org.apache.jena.sdb.core.sqlexpr.SqlColumn ;
 import org.apache.jena.sdb.core.sqlnode.ColAlias ;
 import org.apache.jena.sdb.core.sqlnode.SqlNode ;
-import org.apache.jena.sdb.shared.SDBInternalError ;
 import org.apache.jena.sdb.sql.RS ;
 import org.apache.jena.sdb.sql.ResultSetJDBC ;
 import org.apache.jena.sdb.sql.SDBExceptionSQL ;
@@ -101,13 +100,6 @@ public abstract class SQLBridgeBase implements SQLBridge
         return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
     }
 
-    private void setProjectVars(Collection<Var> projectVars)
-    {
-        if ( this.projectVars != null )
-            throw new SDBInternalError("SQLBridgeBase: Project vars already set") ;
-        this.projectVars = projectVars ;
-    }
-    
     protected SqlNode getSqlExprNode()          { return sqlNodeOriginal ; }
     @Override
     public    SqlNode getSqlNode()              { return sqlNode ; }

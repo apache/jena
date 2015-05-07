@@ -1158,8 +1158,6 @@ class LexerHost implements org.apache.jena.iri.ViolationCodes, org.apache.jena.i
   /* error codes */
   private static final int ZZ_UNKNOWN_ERROR = 0;
   private static final int ZZ_NO_MATCH = 1;
-  private static final int ZZ_PUSHBACK_2BIG = 2;
-
   /* error messages for the codes above */
   private static final String ZZ_ERROR_MSG[] = {
     "Unkown internal scanner error",
@@ -1220,28 +1218,8 @@ class LexerHost implements org.apache.jena.iri.ViolationCodes, org.apache.jena.i
       from input */
   private int zzEndRead;
 
-  /** number of newlines encountered up to the start of the matched text */
-  private int yyline;
-
-  /** the number of characters up to the start of the matched text */
-  private int yychar;
-
-  /**
-   * the number of characters from the last newline up to the start of the 
-   * matched text
-   */
-  private int yycolumn;
-
-  /** 
-   * zzAtBOL == true <=> the scanner is currently at the beginning of a line
-   */
-  private boolean zzAtBOL = true;
-
   /** zzAtEOF == true <=> the scanner is at the EOF */
   private boolean zzAtEOF;
-
-  /** denotes if the user-EOF-code has already been executed */
-  private boolean zzEOFDone;
 
   /* user code: */
     private Parser parser;
@@ -1396,18 +1374,6 @@ class LexerHost implements org.apache.jena.iri.ViolationCodes, org.apache.jena.i
 
     
   /**
-   * Closes the input stream.
-   */
-  private final void yyclose() throws java.io.IOException {
-    zzAtEOF = true;            /* indicate end of file */
-    zzEndRead = zzStartRead;  /* invalidate buffer    */
-
-    if (zzReader != null)
-      zzReader.close();
-  }
-
-
-  /**
    * Resets the scanner to read from a new input stream.
    * Does not close the old reader.
    *
@@ -1419,63 +1385,10 @@ class LexerHost implements org.apache.jena.iri.ViolationCodes, org.apache.jena.i
    */
   private final void yyreset(java.io.Reader reader) {
     zzReader = reader;
-    zzAtBOL  = true;
     zzAtEOF  = false;
-    zzEOFDone = false;
     zzEndRead = zzStartRead = 0;
     zzCurrentPos = zzMarkedPos = 0;
-    yyline = yychar = yycolumn = 0;
     zzLexicalState = YYINITIAL;
-  }
-
-
-  /**
-   * Returns the current lexical state.
-   */
-  private final int yystate() {
-    return zzLexicalState;
-  }
-
-
-  /**
-   * Enters a new lexical state
-   *
-   * @param newState the new lexical state
-   */
-  private final void yybegin(int newState) {
-    zzLexicalState = newState;
-  }
-
-
-  /**
-   * Returns the text matched by the current regular expression.
-   */
-  private final String yytext() {
-    return new String( zzBuffer, zzStartRead, zzMarkedPos-zzStartRead );
-  }
-
-
-  /**
-   * Returns the character at position <tt>pos</tt> from the 
-   * matched text. 
-   * 
-   * It is equivalent to yytext().charAt(pos), but faster
-   *
-   * @param pos the position of the character to fetch. 
-   *            A value from 0 to yylength()-1.
-   *
-   * @return the character at position pos
-   */
-  private final char yycharat(int pos) {
-    return zzBuffer[zzStartRead+pos];
-  }
-
-
-  /**
-   * Returns the length of the matched text region.
-   */
-  private final int yylength() {
-    return zzMarkedPos-zzStartRead;
   }
 
 
@@ -1507,22 +1420,6 @@ class LexerHost implements org.apache.jena.iri.ViolationCodes, org.apache.jena.i
 
 
   /**
-   * Pushes the specified amount of characters back into the input stream.
-   *
-   * They will be read again by then next call of the scanning method
-   *
-   * @param number  the number of characters to be read again.
-   *                This number must not be greater than yylength()!
-   */
-  private void yypushback(int number)  {
-    if ( number > yylength() )
-      zzScanError(ZZ_PUSHBACK_2BIG);
-
-    zzMarkedPos -= number;
-  }
-
-
-  /**
    * Resumes scanning until the next regular expression is matched,
    * the end of input is encountered or an I/O-Error occurs.
    *
@@ -1546,8 +1443,6 @@ class LexerHost implements org.apache.jena.iri.ViolationCodes, org.apache.jena.i
 
     while (true) {
       zzMarkedPosL = zzMarkedPos;
-
-      yychar+= zzMarkedPosL-zzStartRead;
 
       zzAction = -1;
 

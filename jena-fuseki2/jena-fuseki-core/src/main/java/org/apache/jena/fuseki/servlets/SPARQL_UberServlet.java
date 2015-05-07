@@ -22,8 +22,6 @@ import static java.lang.String.format ;
 import static org.apache.jena.riot.WebContent.contentTypeSPARQLQuery ;
 import static org.apache.jena.riot.WebContent.contentTypeSPARQLUpdate ;
 
-import java.util.List ;
-
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -116,17 +114,6 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     
     public SPARQL_UberServlet() { super(); }
 
-    private String getEPName(String dsname, List<String> endpoints) {
-        if (endpoints == null || endpoints.size() == 0) 
-            return null ;
-        String x = endpoints.get(0) ;
-        if ( ! dsname.endsWith("/") )
-            x = dsname+"/"+x ;
-        else
-            x = dsname+x ;
-        return x ;
-    }
-    
     // These calls should not happen because we hook in at executeAction
     @Override protected void validate(HttpAction action) { throw new FusekiException("Call to SPARQL_UberServlet.validate") ; }
     @Override protected void perform(HttpAction action)  { throw new FusekiException("Call to SPARQL_UberServlet.perform") ; }

@@ -228,12 +228,6 @@ public class TestIsoMatcher extends BaseTest
         testDSG$(s2, s1, iso) ;
     }
 
-    private void testQuads(String s1, String s2, boolean iso) {
-        //XXX
-//        testDSG$(s1, s2, iso) ;
-//        testDSG$(s2, s1, iso) ;
-    }
-
     private void testDSG$(String s1, String s2, boolean iso) {
         s1 = "(dataset "+s1+")" ;
         s2 = "(dataset "+s2+")" ;

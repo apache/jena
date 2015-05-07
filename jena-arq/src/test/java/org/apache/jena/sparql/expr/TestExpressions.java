@@ -136,7 +136,7 @@ public class TestExpressions
     @Test public void testBoolean_17() { testBoolean("2 > 3", 2 > 3) ; }
     @Test public void testBoolean_18() { testBoolean("(2 < 3) && (3<4)", (2 < 3) && (3<4)) ; }
     @Test public void testBoolean_19() { testBoolean("(2 < 3) && (3>=4)", (2 < 3) && (3>=4)) ; }
-    @Test public void testBoolean_20() { testBoolean("(2 < 3) || (3>=4)", (2 < 3) || (3>=4)) ; }
+    @Test public void testBoolean_20() { testBoolean("(2 < 3) || (3>=4)", (2 < 3)) ; }
     
     // ?x is unbound in the next few tests
     @Test public void testBoolean_21() { testBoolean("(2 < 3) || ?x > 2", true) ; }
@@ -462,8 +462,7 @@ public class TestExpressions
 
     private static void testEval(String string)
     {
-        Expr expr = parse(string) ;
-        NodeValue v = expr.eval( BindingFactory.binding(), new FunctionEnvBase()) ;
+        parse(string) ;
     }
 
     private static void testBoolean(String string, boolean b)

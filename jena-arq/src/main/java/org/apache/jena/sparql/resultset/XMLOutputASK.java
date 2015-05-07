@@ -60,11 +60,6 @@ public class XMLOutputASK implements XMLResults
         // Head
         out.println("<"+dfHead+">") ;
         out.incIndent(INDENT) ;
-        if ( false )
-        {
-            String link = "UNSET" ;
-            out.println("<link href=\""+link+"\"/>") ;
-        }
         out.decIndent(INDENT) ;
         out.println("</"+dfHead+">") ;
         

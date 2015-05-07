@@ -30,14 +30,12 @@ import org.apache.jena.fuseki.server.FusekiEnv ;
 import org.apache.jena.fuseki.server.FusekiServerListener ;
 import org.apache.jena.fuseki.server.ServerInitialConfig ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.sys.Names ;
-import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.slf4j.Logger ;
 import arq.cmd.ArgDecl ;
 import arq.cmd.CmdException ;
@@ -110,10 +108,6 @@ public class FusekiCmd {
 
         public FusekiCmdInner(String... argv) {
             super(argv) ;
-
-            if ( false )
-                // Consider ...
-                TransactionManager.QueueBatchSize = TransactionManager.QueueBatchSize / 2 ;
 
             getUsage().startCategory("Fuseki") ;
             addModule(modDataset) ;
@@ -227,9 +221,6 @@ public class FusekiCmd {
             // Otherwise
             if ( contains(assemblerDescDecl) ) {
                 log.info("Dataset from assembler") ;
-                // Need to add service details.
-                Dataset ds = modDataset.createDataset() ;
-                //cmdLineDataset.dsg = ds.asDatasetGraph() ;
             }
             
             if ( cmdlineConfigPresent && getPositional().size() == 0 )
@@ -319,13 +310,6 @@ public class FusekiCmd {
                     throw new CmdException(argGZip.getNames().get(0) + ": Not understood: " + getValue(argGZip)) ;
                 jettyServerConfig.enableCompression = super.hasValueOfTrue(argGZip) ;
             }
-        }
-
-        private static String sort_out_dir(String path) {
-            path.replace('\\', '/') ;
-            if ( !path.endsWith("/") )
-                path = path + "/" ;
-            return path ;
         }
 
         @Override

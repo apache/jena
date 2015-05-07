@@ -20,8 +20,6 @@ package org.apache.jena.sparql.sse.lang;
 
 import java.util.ArrayDeque ;
 import java.util.Deque ;
-import java.util.Iterator ;
-
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.Prologue ;
@@ -122,16 +120,6 @@ public class ParseHandlerResolver extends ParseHandlerForm
         state.push(prologue) ;
     }
 
-    private void dump()
-    {
-        Iterator<Prologue> iter = state.iterator() ;
-        for ( ; iter.hasNext() ; )
-        {
-            Prologue p = iter.next() ;
-            System.out.println("  Prologue: "+p.getBaseURI()) ;
-        }
-    }
-    
     @Override
     protected void finishForm(ItemList list)
     { 

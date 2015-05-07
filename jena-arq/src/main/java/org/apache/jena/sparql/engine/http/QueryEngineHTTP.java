@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.engine.http;
 
-import java.io.ByteArrayInputStream ;
 import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.Iterator ;
@@ -27,7 +26,6 @@ import java.util.Map ;
 import java.util.concurrent.TimeUnit ;
 
 import org.apache.http.client.HttpClient ;
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
 import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
 import org.apache.jena.graph.Triple ;
@@ -343,13 +341,6 @@ public class QueryEngineHTTP implements QueryExecution {
         HttpQuery httpQuery = makeHttpQuery();
         httpQuery.setAccept(selectContentType);
         InputStream in = httpQuery.exec();
-
-        if (false) {
-            byte b[] = IO.readWholeFile(in);
-            String str = new String(b);
-            System.out.println(str);
-            in = new ByteArrayInputStream(b);
-        }
 
         retainedConnection = in; // This will be closed on close()
         retainedClient = httpQuery.shouldShutdownClient() ? httpQuery.getClient() : null;
@@ -763,14 +754,9 @@ public class QueryEngineHTTP implements QueryExecution {
         return sBuff.toString() ;
     }
 
-    private static final String askContentTypeHeader = initAskContentTypes() ;
-
     public static String defaultAskHeader() {
         return selectContentTypeHeader ;
     }
-
-    // These happen to be the same.
-    private static String initAskContentTypes() { return initSelectContentTypes(); }
 
     private static final String constructContentTypeHeader = initConstructContentTypes() ;
 

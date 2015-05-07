@@ -23,7 +23,6 @@ import org.apache.jena.atlas.event.EventManager ;
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.util.StringUtils ;
 import org.slf4j.Logger ;
 
 public final class LoadMonitor
@@ -263,16 +262,6 @@ public final class LoadMonitor
     private static boolean tickPoint(long counter, long quantum)
     {
         return counter%quantum == 0 ;
-    }
-
-    private static String num(long v)
-    {
-        return StringUtils.str(v) ;
-    }
-    
-    private static String num(float value)
-    {
-        return StringUtils.str(value) ;
     }
 
 }

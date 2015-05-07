@@ -62,9 +62,6 @@ public class TestInferenceReification extends AbstractTestReifier
         TestUtil.assertIteratorLength( m.listReifiedStatements(), 1 );
     }
     
-    private Reasoner ruleBaseReasoner()
-        { return new FBRuleReasoner( Rule.parseRules( "" ) ); }
-    
     public void testConstructingModelDoesntForcePreparation()
         {
         Model m = makeInfModel( "", "" );

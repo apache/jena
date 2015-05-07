@@ -26,14 +26,12 @@ import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.graph.AbstractTestPrefixMapping2 ;
 import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.StoreConnection ;
-import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.setup.Build ;
 import org.apache.jena.tdb.store.DatasetPrefixesTDB ;
 import org.apache.jena.tdb.sys.DatasetControl ;
 import org.apache.jena.tdb.sys.DatasetControlMRSW ;
-import org.apache.jena.tdb.sys.SystemTDB ;
 import org.junit.* ;
 
 public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
@@ -117,11 +115,6 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
     
     @Test
     public void persistent3() {
-        // Test case from a report by Holger Knublauch
-        if ( false ) {
-            // TDB.getContext().set(SystemTDB.symFileMode, "mapped") ;
-            TDB.getContext().set(SystemTDB.symFileMode, "direct") ;
-        }
         String DB = ConfigTest.getCleanDir() ;
         {
             // Create new DB (assuming it's empty now)

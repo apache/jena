@@ -263,19 +263,6 @@ public class ObjectFileStorage implements ObjectFile
         if ( writeBuffer == null ) return ;
         if ( writeBuffer.position() == 0 ) return ;
 
-        if ( false )
-        {
-            String x = getLabel() ;
-            if ( x.contains("nodes") ) 
-            {
-                long x1 = filesize ;
-                long x2 = writeBuffer.position() ;
-                long x3 = x1 + x2 ;
-                System.out.printf("Flush(%s) : %d/0x%04X (%d/0x%04X) %d/0x%04X\n", getLabel(), x1, x1, x2, x2, x3, x3) ;
-            }
-        }
-        
-        long location = filesize ;
         writeBuffer.flip();
         int x = file.write(writeBuffer) ;
         filesize += x ;
@@ -445,13 +432,11 @@ public class ObjectFileStorage implements ObjectFile
     
     private class ObjectIterator implements Iterator<Pair<Long, ByteBuffer>>
     {
-        final private long start ;
         final private long finish ;
         private long current ;
 
         public ObjectIterator(long start, long finish)
         {
-            this.start = start ;
             this.finish = finish ;
             this.current = start ;
         }

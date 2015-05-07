@@ -87,14 +87,6 @@ public class VarFinder
             assignMentions = new HashSet<>() ;
         }
         
-        VarUsageVisitor(Set<Var> _defines, Set<Var> _optDefines, Set<Var> _filterMentions, Set<Var> _assignMentions)
-        {
-            defines = _defines ;
-            optDefines = _optDefines ;
-            filterMentions = _filterMentions ;
-            assignMentions = _assignMentions ;
-        }
-        
         @Override
         public void visit(OpQuadPattern quadPattern)
         {

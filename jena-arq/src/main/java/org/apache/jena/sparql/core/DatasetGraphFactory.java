@@ -18,10 +18,7 @@
 
 package org.apache.jena.sparql.core;
 
-import java.util.Iterator ;
-
 import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 
 public class DatasetGraphFactory
@@ -39,16 +36,6 @@ public class DatasetGraphFactory
 //        return dsg2 ;
     }
     
-    private static void copyOver(DatasetGraph dsgDest, DatasetGraph dsgSrc)
-    {
-        dsgDest.setDefaultGraph(dsgSrc.getDefaultGraph()) ;
-        for ( Iterator<Node> names = dsgSrc.listGraphNodes() ; names.hasNext() ; )
-        {
-            Node gn = names.next() ;
-            dsgDest.addGraph(gn, dsgSrc.getGraph(gn)) ;
-        }
-    }
-
     /**
      * Create a DatasetGraph starting with a single graph.
      * New graphs must be explicitly added.

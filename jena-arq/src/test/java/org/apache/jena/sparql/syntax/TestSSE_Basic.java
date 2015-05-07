@@ -321,16 +321,6 @@ public class TestSSE_Basic extends TestCase
         assertEquals(item.getList().get(1), item2) ;
     }
 
-    private void testList(String str, Item item1, Item item2, Item item3)
-    {
-        Item item = parse(str) ;
-        assertTrue(item.isList()) ;
-        assertEquals(3, item.getList().size()) ;
-        assertEquals(item.getList().get(0), item1) ;
-        assertEquals(item.getList().get(1), item2) ;
-        assertEquals(item.getList().get(2), item3) ;
-    }
-    
     private void testItem(String str, Item result)
     {
         Item item = parse(str) ;

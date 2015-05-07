@@ -267,15 +267,6 @@ public class SystemTDB
     
     // ----
     
-    private static int intValue(String prefix, String name, int defaultValue)
-    {
-        if ( ! prefix.endsWith(".") )
-            name = prefix+"."+name ;
-        else
-            name = prefix+name ;
-        return intValue(name, defaultValue) ;
-    }
-    
     private static int intValue(String name, int defaultValue)
     {
         if ( name == null ) return defaultValue ;

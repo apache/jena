@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.resultset;
 
 import java.util.Comparator ;
-import java.util.Iterator ;
 import java.util.List ;
 import java.util.SortedSet ;
 import java.util.TreeSet ;
@@ -28,14 +27,10 @@ import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.sparql.core.ResultBinding ;
-import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingComparator ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 
 
@@ -127,19 +122,6 @@ public class SortedResultSet implements ResultSet
     public void remove()
     {
         throw new UnsupportedOperationException(SortedResultSet.class.getName()+".remove") ;
-    }
-    
-    
-    private Binding copyToBinding(QuerySolution qs)
-    {
-        BindingMap b = BindingFactory.create() ;
-        for ( Iterator<String> iter = qs.varNames() ; iter.hasNext() ; )
-        {
-            String varName = iter.next() ;
-            RDFNode rn = qs.get(varName) ;
-            b.add(Var.alloc(varName), rn.asNode()) ;
-        }
-        return b ;
     }
 
 }

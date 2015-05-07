@@ -606,21 +606,7 @@ public class JSONInputIterator extends QueryIteratorBase {
 		return lookingAt(TokenType.STRING1) || lookingAt(TokenType.STRING2);
 	}
 
-    private Token checkValidForStringProperty(String property)
-    {
-    	Token t = null;
-    	if (lookingAt(TokenType.STRING1) || lookingAt(TokenType.STRING2))
-    	{
-    		t = nextToken();
-    	}
-    	else
-    	{
-    		exception(peekToken(), "JSON Values given for property " + property + " must be Strings") ;
-    	}
-    	return t;
-    }
-
-	private void checkColon()
+    private void checkColon()
 	{
 		if (!lookingAt(TokenType.COLON))
 		{

@@ -22,14 +22,10 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import java.io.IOException;
-import java.util.Iterator;
-
-import org.apache.jena.rdf.model.* ;
 import org.apache.jena.reasoner.* ;
 import org.apache.jena.reasoner.rulesys.* ;
 import org.apache.jena.reasoner.test.* ;
 import org.apache.jena.vocabulary.OWL ;
-import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,33 +96,5 @@ public class TestRDFSRules extends TestCase {
         assertTrue(r.supportsProperty(RDFS.subClassOf));        
         assertTrue(r.supportsProperty(RDFS.domain));        
         assertTrue( ! r.supportsProperty(OWL.allValuesFrom));        
-    }
-    
-    /**
-     * Time a trial list of results from an inf graph.
-     */
-    private static void doTiming(Reasoner r, Model tbox, Model data, String name, int loop) {
-        Resource C1 = ResourceFactory.createResource("http://www.hpl.hp.com/semweb/2003/eg#C1");
-        Resource C2 = ResourceFactory.createResource("http://www.hpl.hp.com/semweb/2003/eg#C2");
-        
-        long t1 = System.currentTimeMillis();
-        int count = 0;
-        for (int lp = 0; lp < loop; lp++) {
-            Model m = ModelFactory.createModelForGraph(r.bindSchema(tbox.getGraph()).bind(data.getGraph()));
-            count = 0;
-            for (Iterator<Statement> i = m.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
-        }
-        long t2 = System.currentTimeMillis();
-        long time10 = (t2-t1)*10/loop;
-        long time = time10/10;
-        long timeFraction = time10 - (time*10);
-        System.out.println(name + ": " + count +" results in " + time + "." + timeFraction +"ms");
-//        t1 = System.currentTimeMillis();
-//        for (int j = 0; j < 10; j++) {
-//            count = 0;
-//            for (Iterator i = m.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
-//        }
-//        t2 = System.currentTimeMillis();
-//        System.out.println(name + ": " + count + " results in " + (t2-t1)/10 +"ms");
     }    
 }

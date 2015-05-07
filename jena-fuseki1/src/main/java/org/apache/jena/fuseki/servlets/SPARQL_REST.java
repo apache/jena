@@ -165,11 +165,6 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         doCommon(request, response) ;
     }
     
-    private void maybeSetLastModified(HttpServletResponse resp, long lastModified) {
-        if (resp.containsHeader(HEADER_LASTMOD)) return ;
-        if (lastModified >= 0) resp.setDateHeader(HEADER_LASTMOD, lastModified);
-    }
-    
     @Override
     protected void perform(HttpAction action) {
         dispatch(action) ;

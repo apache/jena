@@ -172,14 +172,6 @@ public class SqlBuilder
         return new S_Or(c, expr) ;
     }
 
-    private static SqlExpr makeAnd(SqlExpr c, SqlExpr expr)
-    {
-        if ( c == null )
-            return expr ;
-       
-        return new S_And(c, expr) ;
-    }
-
     private static SqlNode extractRestrict(SqlNode sqlNode, SqlExprList conditions)
     {
         // SqlSelectBlocks as simple restrictions.

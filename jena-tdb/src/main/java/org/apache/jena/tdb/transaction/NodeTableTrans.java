@@ -21,16 +21,13 @@ package org.apache.jena.tdb.transaction;
 import static org.apache.jena.atlas.logging.FmtLog.warn ;
 import static org.apache.jena.atlas.logging.Log.warn ;
 
-import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.ByteBufferLib ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.objectfile.ObjectFile ;
-import org.apache.jena.tdb.base.record.Record ;
 import org.apache.jena.tdb.index.Index ;
 import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.store.nodetable.NodeTable ;
@@ -202,16 +199,12 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     {
         Iterator<Pair<NodeId, Node>> iter = nodeTableJournal.all() ;
         Pair<NodeId, Node> firstPair = null ;
-        Pair<NodeId, Node> lastPair = null ;
-        
-        for ( ; iter.hasNext() ; )
+        while ( iter.hasNext() )
         {
             Pair<NodeId, Node> x = iter.next() ;
             
             if ( firstPair == null )
                 firstPair = x ;
-            lastPair = x ;
-            
             NodeId nodeId = x.getLeft() ;
             Node node = x.getRight() ;
             debug("  append: %s -> %s", x, mapFromJournal(nodeId)) ;
@@ -242,40 +235,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         System.err.println("offset = "+allocOffset) ;
         System.err.println("journalStartOffset = "+journalObjFileStartOffset) ;
         System.err.println("journal = "+journalObjFile.getLabel()) ;
-        if ( true )
-            return ;
-        
-        System.err.println("nodeTableJournal >>>") ;
-        Iterator<Pair<NodeId, Node>> iter = nodeTableJournal.all() ;
-        for ( ; iter.hasNext() ; )
-        {
-            Pair<NodeId, Node> x = iter.next() ;
-            NodeId nodeId = x.getLeft() ;
-            Node node = x.getRight() ;
-            NodeId mapped = mapFromJournal(nodeId) ;
-            //debug("append: %s -> %s", x, mapFromJournal(nodeId)) ;
-            // This does the write.
-            NodeId nodeId2 = base.getAllocateNodeId(node) ;
-            System.err.println(x + "  mapped=" + mapped + " getAlloc="+nodeId2) ;
-        }
-        
-        System.err.println("journal >>>") ;
-        Iterator<Pair<Long, ByteBuffer>> iter1 = this.journalObjFile.all() ;
-        for ( ; iter1.hasNext() ; )
-        {
-            Pair<Long, ByteBuffer> p = iter1.next() ;
-            System.err.println(p.getLeft()+" : "+p.getRight()) ;
-            ByteBufferLib.print(System.err, p.getRight()) ;
-        }
-        
-        System.err.println("nodeIndex >>>") ;
-        Iterator<Record> iter2 = this.nodeIndex.iterator() ;
-        for ( ; iter2.hasNext() ; )
-        {
-            Record r = iter2.next() ;
-            System.err.println(r) ;
-        }
-        System.err.println("<<<<<<<<<<") ;
+        return ;
     }
     
     @Override
@@ -310,11 +270,10 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     private void writeNodeJournal()
     {
         long expected = base.allocOffset().getId() ;
-        long len = journalObjFile.length() ;
+        journalObjFile.length();
         if ( expected != allocOffset )
             warn(log, "Inconsistency: base.allocOffset() = "+expected+" : allocOffset = "+allocOffset) ;
         
-        long newbase = -1 ; 
         append() ;      // Calls all() which does a buffer flish.
         // Reset (in case we use this again)
         nodeIndex.clear() ;

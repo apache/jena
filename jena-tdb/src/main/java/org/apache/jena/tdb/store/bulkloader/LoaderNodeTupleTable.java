@@ -196,20 +196,5 @@ public class LoaderNodeTupleTable implements Closeable, Sync
 
         monitor.finishIndex(label) ;
     }
-
-
-    static private void sync(TupleIndex[] indexes)
-    {
-        for ( TupleIndex idx : indexes )
-        {
-            if ( idx != null )
-                idx.sync() ;
-        }
-    }
-   
-    private static boolean tickPoint(long counter, long quantum)
-    {
-        return counter%quantum == 0 ;
-    }
     
 }

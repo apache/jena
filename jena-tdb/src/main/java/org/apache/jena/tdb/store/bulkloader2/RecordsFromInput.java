@@ -20,7 +20,6 @@ package org.apache.jena.tdb.store.bulkloader2;
 
 import java.io.IOException ;
 import java.io.InputStream ;
-import java.io.PrintStream ;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
@@ -104,25 +103,6 @@ public class RecordsFromInput implements Iterator<Record>
         return true ;
     }
 
-    private static void printRecord(PrintStream out, Record r, int keyUnitLen)
-    {
-        int keySubLen = r.getKey().length/keyUnitLen ;
-        for ( int i = 0 ; i < keyUnitLen ; i++ )
-        {   
-            if ( i != 0 )
-                out.print(" ") ;
-            
-            // Print in chunks
-            int k = i*keySubLen ;
-            for ( int j = k ; j < k+keySubLen ; j++ )
-                out.printf("%02x", r.getKey()[j]) ;
-            
-//            long x = Bytes.getLong(r.getKey(), i*SystemTDB.SizeOfNodeId) ;
-//            System.out.printf("%016x", x) ;
-        }
-        out.println() ;
-    }
-    
     private int fill()
     {
         try {

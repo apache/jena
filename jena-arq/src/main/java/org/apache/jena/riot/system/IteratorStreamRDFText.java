@@ -134,8 +134,6 @@ public class IteratorStreamRDFText extends IteratorStreamRDF implements Iterator
                     return false ;
                 }
                 list = buildOneLine() ;
-                if ( false && log.isDebugEnabled() )
-                    log.debug("Tokens: " + list) ;
                 if ( list == null )
                     finished = true ;
                 return list != null ;

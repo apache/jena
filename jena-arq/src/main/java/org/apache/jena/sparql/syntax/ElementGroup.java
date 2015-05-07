@@ -73,7 +73,6 @@ public class ElementGroup extends Element
         return bgp ;
     }
     
-    private void setTop(Element el) { elements.set(elements.size()-1, el) ; }
     private Element top() { return elements.get(elements.size()-1) ; }
     
     public int mark() { return elements.size() ; }

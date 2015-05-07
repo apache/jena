@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.propertytable.PropertyTable;
 import org.apache.jena.propertytable.Row;
 
 
@@ -40,7 +39,6 @@ import org.apache.jena.sparql.engine.iterator.QueryIterRepeatApply ;
 import org.apache.jena.util.iterator.ClosableIterator ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.NiceIterator ;
-import org.apache.jena.util.iterator.WrappedIterator ;
 
 /**
  * If the triple size within a BasicePattern is greater than 1 (i.e. at least 2 triples), it's turned into a row querying.
@@ -68,8 +66,6 @@ public class QueryIterPropertyTableRow  extends QueryIterRepeatApply{
     static int countMapper = 0 ; 
     static class RowMapper extends QueryIter
     {   
-    	private PropertyTable table;
-    	
     	private BasicPattern pattern;
         private Binding binding ;
         private ClosableIterator<Row> graphIter ;
@@ -88,16 +84,8 @@ public class QueryIterPropertyTableRow  extends QueryIterRepeatApply{
             
             ExtendedIterator<Row> iter = graph.propertyTableBaseFind( new RowMatch( pattern2) );
             
-            if ( false )
-            {
-                // Materialize the results now. Debugging only.
-                List<Row> x = iter.toList() ;
-                this.graphIter = WrappedIterator.create(x.iterator()) ;
-                iter.close();
-            }
-            else
-                // Stream.
-                this.graphIter = iter ;
+            // Stream.
+			this.graphIter = iter ;
         }
 
         private static Node tripleNode(Node node)

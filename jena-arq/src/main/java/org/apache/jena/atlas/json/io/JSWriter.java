@@ -23,7 +23,6 @@ import static org.apache.jena.atlas.lib.Chars.CH_QUOTE2 ;
 import static org.apache.jena.atlas.lib.Chars.CH_ZERO ;
 
 import java.io.OutputStream ;
-import java.math.BigDecimal ;
 import java.util.ArrayDeque ;
 import java.util.Deque ;
 
@@ -304,10 +303,6 @@ public class JSWriter {
         out.print(Long.toString(integer)) ;
     }
 
-    private void value(BigDecimal number) {
-        out.print(number.toString()) ;
-    }
-
     // Caution - assumes "Number" outputs legal JSON format 
     private void value(Number number) {
         out.print(number.toString()) ;
@@ -328,18 +323,6 @@ public class JSWriter {
 
     private static boolean isA2ZN(int ch) {
         return range(ch, 'a', 'z') || range(ch, 'A', 'Z') || range(ch, '0', '9') ;
-    }
-
-    private static boolean isNumeric(int ch) {
-        return range(ch, '0', '9') ;
-    }
-
-    private static boolean isWhitespace(int ch) {
-        return ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '\f' ;
-    }
-
-    private static boolean isNewlineChar(int ch) {
-        return ch == '\r' || ch == '\n' ;
     }
 
     private static boolean range(int ch, char a, char b) {

@@ -58,7 +58,6 @@ public class FormatterSimpleHSQL extends FormatterSimple
         reformatDataWorker() ;
     }
     
-    private void reformatPrefixesWorker() { reformatPrefixesWorker(false) ; }
     private void reformatPrefixesWorker(boolean loadPrefixes)
     {
         try { // Assumed to be inside a transaction 

@@ -21,7 +21,6 @@ package org.apache.jena.sparql.algebra.optimize;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.algebra.* ;
-import org.apache.jena.sparql.algebra.op.OpLabel ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
@@ -132,14 +131,6 @@ public class Optimize implements Rewrite
                 context.set(ARQ.optFilterPlacement, context.get(filterPlacementOldName)) ;
         }
         
-        if ( false )
-        {
-            // Removal of "group of one" join (AKA SPARQL "simplification") 
-            // is done during algebra generation in AlgebraGenerator
-            op = apply("Simplify", new TransformSimplify(), op) ;
-            op = apply("Delabel", new TransformRemoveLabels(), op) ;
-        }
-
         // ** TransformScopeRename::
         // This is a requirement for the linearization execution that the default
         // ARQ query engine uses where possible.  
@@ -244,9 +235,6 @@ public class Optimize implements Rewrite
         if ( context.isTrueOrUndef(ARQ.optMergeExtends) )
             op = apply("Combine BIND/LET", new TransformExtendCombine(), op) ;
         
-        // Mark
-        if ( false )
-            op = OpLabel.create("Transformed", op) ;
         return op ;
     }
     

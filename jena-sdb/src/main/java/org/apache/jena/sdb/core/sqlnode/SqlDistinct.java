@@ -23,19 +23,6 @@ import org.apache.jena.sdb.shared.SDBInternalError ;
 // Not used - may be removed
 /*public*/ class SqlDistinct extends SqlNodeBase1
 {
-    private static SqlNode distinct(SqlNode sqlNode)
-    {
-        return null ;
-        //return SqlSelectBlock.distinct(sqlNode) ;
-        
-//        SqlDistinct p = null ;
-//        if ( sqlNode.isDistinct() )
-//            p = sqlNode.asDistinct() ;
-//        else
-//            p = new SqlDistinct(sqlNode) ;
-//        return p ;
-    }
-    
     private SqlDistinct(SqlNode sqlNode)
     {
         super(null, sqlNode) ;

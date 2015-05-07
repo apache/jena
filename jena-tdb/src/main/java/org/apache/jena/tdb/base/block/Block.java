@@ -18,11 +18,9 @@
 
 package org.apache.jena.tdb.base.block;
 
-import java.io.ByteArrayOutputStream ;
-import java.io.PrintStream ;
 import java.nio.ByteBuffer ;
 
-import org.apache.jena.atlas.lib.ByteBufferLib ;
+
 
 // import tx.base.BlockRef ;
 
@@ -111,16 +109,8 @@ public final class Block
     public String toString()
     {
         ByteBuffer bb = getByteBuffer() ;
-        if ( true )
-            // Short form.
-            return String.format("Block: %d (posn=%d, limit=%d, cap=%d)", id, bb.position(), bb.limit(), bb.capacity()) ;
-        // Long form - with some bytes from the ByteBuffer.
-        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        PrintStream x = new PrintStream(out) ;
-        ByteBufferLib.print(x, bb) ;
-        x.flush() ;
-        String str = out.toString() ;
-        return String.format("Block: %d %s", id, str) ;
+        // Short form.
+		return String.format("Block: %d (posn=%d, limit=%d, cap=%d)", id, bb.position(), bb.limit(), bb.capacity()) ;
     }
     
     /** Deep copy, including ByteBuffer contents into a HeapByteBuffer. */

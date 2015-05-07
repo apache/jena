@@ -226,13 +226,6 @@ public final class InStreamUTF8 extends Reader implements CharStream
         return x ;
     }
 
-    private static void p(int ch)
-    {
-        System.out.printf(" %02X", ch) ;
-        if ( ch == -1 )
-            System.out.println();
-    }
-    
     public static String decode(byte[] bytes)
     {
         try

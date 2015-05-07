@@ -97,13 +97,6 @@ public class BatchedStreamRDF implements StreamRDF
     @Override
     public void quad(Quad quad)
     {
-        if ( false )
-        {
-            // Merge to a triple stream.
-            triple(quad.asTriple()) ;
-            return ;
-        }
-        
         Node g = quad.getGraph() ;
         Node s = quad.getSubject() ;
         

@@ -18,7 +18,6 @@
 
 package org.apache.jena.tdb.base.page;
 
-import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.tdb.base.block.Block ;
 import org.apache.jena.tdb.base.block.BlockConverter ;
 import org.apache.jena.tdb.base.block.BlockMgr ;
@@ -89,11 +88,6 @@ public class PageBlockMgr<T extends Page>
     { 
         Block block = page.getBackingBlock() ;
         blockMgr.release(block) ;
-    }
-    
-    private void warn(String string)
-    {
-        Log.warn(this, string) ;
     }
     
     public void free(Page page)
