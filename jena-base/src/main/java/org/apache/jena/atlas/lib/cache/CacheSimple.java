@@ -18,15 +18,15 @@
 
 package org.apache.jena.atlas.lib.cache;
 
-import static java.util.Arrays.asList;
-
-import java.util.Arrays ;
 import java.util.Iterator ;
+import java.util.Map;
 import java.util.concurrent.Callable ;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Cache ;
+import org.apache.jena.atlas.logging.Log;
 
 
 /**
@@ -37,120 +37,81 @@ import org.apache.jena.atlas.lib.Cache ;
 
 public class CacheSimple<K,V> implements Cache<K,V>
 {
-    private final V[] values ; 
-    private final K[] keys ;
-    private final int size ;
-    private int currentSize = 0 ;
-    private BiConsumer<K,V> dropHandler = null ;
+	private Map<K,V> internalCache;
+	
+    /**
+     * NO OP unless set by {@link #setDropHandler(BiConsumer)}
+     */
+    private BiConsumer<K,V> dropHandler = (k, v) -> {}  ;
     
     public CacheSimple(int size)
     { 
-        @SuppressWarnings("unchecked")
-        V[] x =  (V[])new Object[size] ;
-        values = x ;
-        
-        @SuppressWarnings("unchecked")
-        K[]  z =  (K[])new Object[size] ;
-        keys = z ;
-        
-        this.size = size ;
+    		this.internalCache = new ConcurrentHashMap<>(size);
     }
     
-
     @Override
     public void clear()
     { 
-        Arrays.fill(values, null) ;
-        Arrays.fill(keys, null) ;
-        // drop handler
-        currentSize = 0 ;
+    		internalCache.clear();
     }
 
     @Override
     public boolean containsKey(K key)
     {
-        return getIfPresent(key) != null ;
+    		return internalCache.containsKey(key);
     }
 
-    // Return key index : -(index+1) if the key does not match
-    private final int index(K key)
-    { 
-        int x = (key.hashCode()&0x7fffffff) % size ;
-        if ( keys[x] != null && keys[x].equals(key) )
-            return x ; 
-        return -x-1 ;
-    }
-    
-    private final int decode(int x)
-    { 
-        if ( x >= 0 ) return x ;
-        return -x-1 ;
-    }
-    
     @Override
     public V getIfPresent(K key)
     {
-        int x = index(key) ;
-        if ( x < 0 )
-            return null ; 
-        return values[x] ;
+        return internalCache.get(key);
     }
 
-    @Override
-    public V getOrFill(K key, Callable<V> callable) {
-        return CacheOps.getOrFill(this, key, callable) ;
-    }
+	@Override
+	public V getOrFill(K key, Callable<V> callable) {
+		final Function<K, V> f = new Function<K, V>() {
+
+			@Override
+			public V apply(K dummy) {
+				try {
+					return callable.call();
+				} catch (Exception e) {
+					Log.warn(CacheSimple.class, "Execution exception filling cache", e) ;
+		            return null ;
+				}
+			}
+		};
+		return internalCache.computeIfAbsent(key, f);
+	}
 
     @Override
     public void put(K key, V thing)
     {
-        int x = index(key) ;
-        V old = null ;
-        if ( x < 0 )
-            // New.
-            x = decode(x) ;
-        else
-        {
-            // Drop the old K->V
-            old = values[x] ;
-            if ( dropHandler != null )
-                dropHandler.accept(keys[x], old) ;
-            currentSize-- ;
-        }
-        
-        values[x] = thing ;
-        if ( thing == null )
-            //put(,null) is a remove.
-            keys[x] = null ;
-        else {
-            keys[x] = key ;
-            currentSize++ ;
-        }
+        internalCache.put(key, thing);
     }
 
     @Override
     public void remove(K key)
     {
-        put(key, null) ;
+    		dropHandler.accept(key, internalCache.remove(key));
     }
 
     @Override
     public long size()
     {
-        return currentSize ;
+        return internalCache.size() ;
     }
 
     @Override
     public Iterator<K> keys()
     {
-        Iterator<K> iter = asList(keys).iterator() ;
-        return Iter.removeNulls(iter) ;
+        return internalCache.keySet().iterator();
     }
 
     @Override
     public boolean isEmpty()
     {
-        return currentSize == 0 ;
+        return internalCache.isEmpty() ;
     }
 
     /** Callback for entries when dropped from the cache */

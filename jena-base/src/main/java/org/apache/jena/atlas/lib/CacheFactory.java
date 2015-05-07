@@ -33,7 +33,7 @@ public class CacheFactory {
 
     /** Create a null cache */
     public static <Key, Value> Cache<Key, Value> createNullCache() {
-        return new Cache0<>() ;
+        return new CacheGuava<>(0) ;
     }
 
     /** Create a lightweight cache (e.g. slot replacement) */
@@ -43,7 +43,7 @@ public class CacheFactory {
 
     /** One slot cache */
     public static <Key, Value> Cache<Key, Value> createOneSlotCache() {
-        return new Cache1<>() ;
+        return new CacheGuava<>(1) ;
     }
 
     /**
@@ -53,8 +53,7 @@ public class CacheFactory {
      * @see Pool
      */
     public static <Obj> CacheSet<Obj> createCacheSet(int size) {
-        Cache<Obj, Object> c = createCache(size) ;
-        return new CacheSetImpl<Obj>(c) ;
+        return new CacheSetImpl<Obj>(size) ;
     }
 
     /** Add a synchronization wrapper to an existing set-cache */
