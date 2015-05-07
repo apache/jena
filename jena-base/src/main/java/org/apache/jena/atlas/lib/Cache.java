@@ -33,7 +33,7 @@ public interface Cache<Key, Value>
     public Value getIfPresent(Key key) ;
     
     /** Get from cache, of not present, call the {@code callable}
-     *  to try to fill the cache.
+     *  to try to fill the cache. This operation should be atomic.
      */
     public Value getOrFill(Key key, Callable<Value> callable) ;
 

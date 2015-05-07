@@ -179,7 +179,6 @@ public class LogCtl {
     
      , "## Everything", "log4j.rootLogger=INFO, jena.plainlevel",
      "log4j.logger.com.hp.hpl.jena=WARN",
-     "log4j.logger.org.openjena=WARN",
      "log4j.logger.org.apache.jena=WARN",
      "log4j.logger.org.apache.jena.tdb.loader=INFO"
     
@@ -195,7 +194,7 @@ public class LogCtl {
          // "handlers=java.util.logging.ConsoleHandler,org.apache.jena.atlas.logging.java.ConsoleHandlerStdout",
     
          // Atlas.
-         "handlers=org.openjena.atlas.logging.java.ConsoleHandlerStdout",
+         "handlers=org.apache.jena.atlas.logging.java.ConsoleHandlerStdout",
          "org.apache.atlas.jena.logging.java.ConsoleHandlerStdout.level=INFO",
          "java.util.logging.ConsoleHandler.formatter=atlas.logging.java.TextFormatter"
     ) ;
