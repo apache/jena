@@ -120,9 +120,6 @@ public class CmdNodeTableBuilder extends CmdGeneral
             datafiles = Arrays.asList("-") ;
         
         // ---- Checking.
-//        if ( false ) 
-//            SetupTDB.makeNodeTable(location, locationString, 0, outputFile, 0) ;
-
         for( String filename : datafiles)
         {
             Lang lang = RDFLanguages.filenameToLang(filename, RDFLanguages.NQUADS) ;

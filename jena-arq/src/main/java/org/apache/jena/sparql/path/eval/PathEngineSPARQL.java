@@ -115,8 +115,6 @@ public class PathEngineSPARQL extends PathEngine
 
     // TODO ?? switch to PathEngine1 for the sub-step as we only need uniques.
     private void ALP_1(boolean forwardMode, int stepCount, int maxStepCount, Node node, Path path, Collection<Node> visited) {
-        if ( false )
-            System.out.printf("ALP1 node=%s\n   visited=%s\n   output=%s\n", node, visited) ;
         if ( maxStepCount >= 0 && stepCount > maxStepCount )
             return ;
         if ( visited.contains(node) )
