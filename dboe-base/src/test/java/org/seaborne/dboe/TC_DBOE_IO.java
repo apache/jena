@@ -50,7 +50,7 @@ public class TC_DBOE_IO {
     {
         //org.apache.log4j.LogManager.resetConfiguration() ;
         //org.apache.log4j.PropertyConfigurator.configure("log4j.properties") ;
-        Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.WARN) ;
+        Logger.getLogger("org.apache.jena.tdb.info").setLevel(Level.WARN) ;
         //Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
     }
 
