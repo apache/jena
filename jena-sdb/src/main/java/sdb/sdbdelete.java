@@ -40,8 +40,6 @@ import sdb.cmd.CmdArgsDB;
  
 public class sdbdelete extends CmdArgsDB
 {
-    private static final String usage = "sdbdelete --sdb <SPEC> default | <IRI> ..." ;
-    
     private static ArgDecl argDeclConfirm  = new ArgDecl(false,  "confirm", "force") ;
     
     public static void main(String... argv)

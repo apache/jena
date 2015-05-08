@@ -35,9 +35,6 @@ import org.junit.AfterClass ;
  */
 public class TestMemDriverWithLogging extends AbstractJenaDriverTests {
 
-    private static ByteArrayOutputStream output;
-    private static PrintStream orig;
-
     @AfterClass public static void afterClassResetLogging() {
         // Unfortunately, this code "knows" how log4j was set up in testing
         // Thsi is fragile.

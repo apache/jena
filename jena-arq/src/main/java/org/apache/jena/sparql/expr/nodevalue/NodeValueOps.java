@@ -100,8 +100,6 @@ public class NodeValueOps
      * As per the Java (Xerces) implementation, it just work on durations.    
      */
     
-    // Until part of Jena datatypes.
-    private static final String dtXSDdateTimeStamp      = XSD+"#dateTimeStamp" ;
     private static final String dtXSDdayTimeDuration    = XSD+"#dayTimeDuration" ;
     private static final String dtXSDyearMonthDuration  = XSD+"#yearMonthDuration" ;
 

@@ -41,8 +41,6 @@ public class StoreDesc
     public SDBConnectionDesc connDesc   = null ;
     private DatabaseType dbType         = null ;
     private LayoutType layout           = null ;
-    private FeatureSet featureSet       = null ;
-    
     /** MySQL specific */
     public MySQLEngineType engineType   = null ;
     
@@ -75,7 +73,6 @@ public class StoreDesc
         this.dbType = dbType ;
         if ( featureSet == null )
             featureSet = new FeatureSet() ;
-        this.featureSet = featureSet ;
     }
     
     public LayoutType getLayout() { return layout ; }

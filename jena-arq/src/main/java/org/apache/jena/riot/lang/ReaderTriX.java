@@ -99,7 +99,6 @@ public class ReaderTriX implements ReaderRIOT {
     }
     
     private static String nsRDF = RDF.getURI() ;
-    private static String nsXSD = XSDDatatype.XSD ; // No "#"
     private static String nsXML0 = "http://www.w3.org/XML/1998/namespace" ;
     private static String rdfXMLLiteral = XMLLiteralType.theXMLLiteralType.getURI() ;
     

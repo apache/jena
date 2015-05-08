@@ -192,8 +192,6 @@ public class DatasetBuilderStd implements DatasetBuilder {
         }
     }
 
-    private static String DB_CONFIG_FILE = "tdb.cfg" ; 
-    
     // Main engine for building.
     // Called by DatasetBuilderTxn
     // XXX Rework - provide a cloning constructor (copies maps).

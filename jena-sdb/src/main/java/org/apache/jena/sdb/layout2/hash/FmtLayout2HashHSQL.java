@@ -34,8 +34,6 @@ import org.slf4j.LoggerFactory;
 public class FmtLayout2HashHSQL extends FmtLayout2
 {
     static private Logger log = LoggerFactory.getLogger(FmtLayout2HashHSQL.class) ;
-    private MySQLEngineType engineType ;
-    
     public FmtLayout2HashHSQL(SDBConnection connection)
     { 
         super(connection) ;

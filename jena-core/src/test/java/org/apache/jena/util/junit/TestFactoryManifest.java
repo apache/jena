@@ -29,8 +29,6 @@ import org.slf4j.LoggerFactory;
 public abstract class TestFactoryManifest implements ManifestItemHandler
 {
     private TestSuite currentTestSuite = null ;
-    private TestSuite testSuite = null ;
-    
     public TestFactoryManifest() {}
     
     public TestSuite process(String filename)

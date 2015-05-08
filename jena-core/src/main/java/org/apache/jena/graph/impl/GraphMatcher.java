@@ -722,7 +722,6 @@ public class GraphMatcher extends java.lang.Object {
     // algorithm is proceeding.
     private class Bucket {
         Set<AnonResource> anonRes = CollectionFactory.createHashedSet();
-        int hash[] = new int[MAX_HASH_DEPTH];
         boolean bind(Bucket singleton) {
             return bind(aMember(),singleton,singleton.aMember());
         }

@@ -177,8 +177,6 @@ class TaggedString extends SDBConnectionHolder
     static final String columnName       = "tag" ;
     static final String columnData       = "data" ;
     
-    private boolean initialized = false ;
-    
     TaggedString(SDBConnection sdb) { super(sdb) ; }    
 
     void reset()

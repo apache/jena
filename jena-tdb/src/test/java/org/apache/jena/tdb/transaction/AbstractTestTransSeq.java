@@ -49,8 +49,6 @@ public abstract class AbstractTestTransSeq extends BaseTest
     Quad q3 = SSE.parseQuad("(<g> <s> <p> '3-"+x+"')") ;
     Quad q4 = SSE.parseQuad("(<g> <s> <p> '4-"+x+"')") ;
    
-    private StoreConnection sConn ;
-
     protected abstract StoreConnection getStoreConnection() ;
 
     // Basics.

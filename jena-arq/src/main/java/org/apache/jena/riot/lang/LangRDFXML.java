@@ -154,14 +154,12 @@ public class LangRDFXML implements LangRIOT
     private static class HandlerSink extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler
     {
         private StreamRDF output ;
-        private ErrorHandler errHandler ;
         private CheckerLiterals checker ;
 
         HandlerSink(StreamRDF output, ErrorHandler errHandler)
         {
             super(new ErrorHandlerBridge(errHandler)) ;
             this.output = output ;
-            this.errHandler = errHandler ;
             this.checker = new CheckerLiterals(errHandler) ;
         }
         

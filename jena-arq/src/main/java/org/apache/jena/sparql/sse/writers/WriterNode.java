@@ -31,10 +31,6 @@ import org.apache.jena.sparql.util.FmtUtils ;
 
 public class WriterNode
 {
-    private static final int NL = WriterLib.NL ;
-    private static final int NoNL = WriterLib.NoNL ;
-    private static final int NoSP = WriterLib.NoSP ;
-    
     public static void output(IndentedWriter out, Triple triple, SerializationContext naming)
     {
         WriterLib.startOneLine(out, Tags.tagTriple) ;

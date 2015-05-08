@@ -33,8 +33,6 @@ import org.apache.jena.sparql.expr.* ;
  */
 public class ExprTransformConstantFold extends ExprTransformCopy {
 
-    private Binding b = null;
-    
     @Override
     public Expr transform(ExprFunction1 func, Expr expr1) {
         if (isFoldable(expr1)) {

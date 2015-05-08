@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory ;
 /** Print a logging message on every token */
 public class PrintTokenizer extends TokenizerWrapper
 {
-    static private int counter = 0 ;
     static private Logger log = LoggerFactory.getLogger("Token") ;
     private String label ;
     

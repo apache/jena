@@ -48,8 +48,6 @@ public final class BPTreeNode extends BPTreePage
     
     private Block block ;
     private int id ;
-    private short blockState = READ ;  
-    
     int parent ;
     int count ;             // Number of records.  Number of pointers is +1
     

@@ -33,10 +33,7 @@ public class Specification extends IRIExamples {
 
     private final String uri;
     private final String name;
-    private final String title;
     private final String section;
-    private final String rfc;
-    
     private final boolean isScheme;
     private final boolean isIri;
     
@@ -49,7 +46,6 @@ public class Specification extends IRIExamples {
             String title, 
             String section, String[] bad, String[] good) {
         super(bad,good);
-        this.rfc = rfc;
         if (type.equals("iri")) {
             isScheme = false;
             isIri = true;
@@ -67,7 +63,6 @@ public class Specification extends IRIExamples {
         this.uri = uri;
         this.name = name;
         this.section = section.equals("")?null:section;
-        this.title = title;
         if (all.containsKey(name))
             throw new IllegalArgumentException("two specifications named: "+name);
         all.put(name,this);

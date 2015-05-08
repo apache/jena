@@ -29,8 +29,6 @@ import org.apache.jena.atlas.AtlasException ;
 public final class InStreamASCII extends Reader implements CharStream
 {
     private InputStreamBuffered input ;
-    private long count = 0 ;
-
     public InStreamASCII(InputStream in)
     {
         if ( in instanceof InputStreamBuffered )
@@ -83,7 +81,6 @@ public final class InStreamASCII extends Reader implements CharStream
     @Override
     public int advance()
     {
-        count++ ;
         return input.advance() ;
     }
 }

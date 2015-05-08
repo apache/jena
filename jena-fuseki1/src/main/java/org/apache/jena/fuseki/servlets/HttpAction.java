@@ -57,8 +57,6 @@ public class HttpAction
     private Transactional transactional ;
     private boolean isTransactional;
     private DatasetGraph    activeDSG ;             // Set when inside begin/end.
-    private ReadWrite       activeMode ;            // Set when inside begin/end.
-    
     private boolean startTimeIsSet = false ;
     private boolean finishTimeIsSet = false ;
 
@@ -170,7 +168,6 @@ public class HttpAction
     }
 
     public void beginRead() {
-        activeMode = READ ;
         transactional.begin(READ) ;
         activeDSG = dsg ;
         dsRef.startTxn(READ) ;
@@ -178,14 +175,12 @@ public class HttpAction
 
     public void endRead() {
         dsRef.finishTxn(READ) ;
-        activeMode = null ;
         transactional.end() ;
         activeDSG = null ;
     }
 
     public void beginWrite() {
         transactional.begin(WRITE) ;
-        activeMode = WRITE ;
         activeDSG = dsg ;
         dsRef.startTxn(WRITE) ;
     }
@@ -209,8 +204,6 @@ public class HttpAction
 
     public void endWrite() {
         dsRef.finishTxn(WRITE) ;
-        activeMode = null ;
-
         if ( transactional.isInTransaction() ) {
             Log.warn(this, "Transaction still active in endWriter - no commit or abort seen (forced abort)") ;
             try {

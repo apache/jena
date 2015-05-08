@@ -57,7 +57,7 @@ public class JSONInputIterator extends QueryIteratorBase {
 	
 	private InputStream input;
 
-	private boolean isBooleanResults = false, boolResult = false, headerSeen = false;
+	private boolean isBooleanResults = false, headerSeen = false;
 	private Binding binding = null;
 	private TokenizerJSON tokens;
 	private PeekIterator<Token> peekIter;
@@ -394,11 +394,9 @@ public class JSONInputIterator extends QueryIteratorBase {
 			String keyword = t.getImage();
 			if (keyword.equals("true"))
 			{
-				boolResult = true;
 			}
 			else if (keyword.equals("false"))
 			{
-				boolResult = false;
 			}
 			else
 			{

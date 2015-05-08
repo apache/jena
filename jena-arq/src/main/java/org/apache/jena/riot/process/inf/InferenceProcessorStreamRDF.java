@@ -29,7 +29,6 @@ import org.apache.jena.sparql.core.Quad ;
  */
 public class InferenceProcessorStreamRDF extends StreamRDFWrapper
 {
-    private final InferenceSetupRDFS rdfsSetup ;
     private final InferenceProcessorRDFS rdfs ;
     private boolean isTriple = true ;
     private Node g ;
@@ -37,7 +36,6 @@ public class InferenceProcessorStreamRDF extends StreamRDFWrapper
     public InferenceProcessorStreamRDF(final StreamRDF output, InferenceSetupRDFS rdfsSetup)
     {
         super(output) ;
-        this.rdfsSetup = rdfsSetup ;
         this.rdfs = new InferenceProcessorRDFS(rdfsSetup)
         {
             @Override

@@ -41,7 +41,6 @@ public class RecordsFromInput implements Iterator<Record>
     private int len = -1 ;
     private int idx ;       // Where in buffer.
     private final int rowLength ;
-    private final int rowBlockSize ;
     private final RecordFactory recordFactory ;
     private final int itemsPerRow ;
     private final ColumnMap colMap ;
@@ -52,7 +51,6 @@ public class RecordsFromInput implements Iterator<Record>
         this.itemsPerRow = itemsPerRow ;
         this.colMap = colMap ;
         this.rowLength = itemsPerRow*16 + itemsPerRow ;   // Length in bytes of a row.
-        this.rowBlockSize = rowBlockSize ; 
         this.buffer = new byte[rowLength*rowBlockSize] ;
         this.idx = -1 ;
         this.recordFactory = new RecordFactory(itemsPerRow*SystemTDB.SizeOfNodeId, 0) ;

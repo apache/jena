@@ -62,8 +62,6 @@ public final class LoadMonitor
     private long lastTime = 0 ;
     private long currentStartTime = 0 ;       // Used for each index
     private long currentFinishTime = 0 ;
-    private long elapsedLastTime = 0 ;
-    
     private String itemsName ;
 
     public LoadMonitor(DatasetGraph dsg, Logger log, String itemsName,
@@ -110,7 +108,6 @@ public final class LoadMonitor
         print("-- Start %s data phase", itemsName) ;
         dataStartTime = timer.readTimer() ;
         currentStartTime = dataStartTime ;
-        elapsedLastTime = dataStartTime ;
         currentItems = 0 ;
         totalDataItems = 0 ;
         EventManager.send(dataset, new Event(BulkLoader.evStartDataBulkload, null)) ;
@@ -191,7 +188,6 @@ public final class LoadMonitor
         indexLabel = label ;
         currentItems = 0 ;
         totalIndexItems = 0 ;
-        elapsedLastTime = currentStartTime ;
         lastTime = 0 ;
     }
     

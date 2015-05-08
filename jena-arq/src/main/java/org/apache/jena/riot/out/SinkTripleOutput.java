@@ -39,10 +39,7 @@ public class SinkTripleOutput implements Sink<Triple>
 {
     // WriterStreamRDFTuples
 
-    private Prologue      prologue    = null ;
     private final AWriter out ;
-    private NodeToLabel   labelPolicy = null ;
-
     private NodeFormatter nodeFmt     = new NodeFormatterNT() ;
 
     public SinkTripleOutput(OutputStream outs, Prologue prologue, NodeToLabel labels) {
@@ -53,11 +50,9 @@ public class SinkTripleOutput implements Sink<Triple>
 
     // Need to do this later sometimes to sort out the plumbing.
     public void setPrologue(Prologue prologue) {
-        this.prologue = prologue ;
     }
 
     public void setLabelPolicy(NodeToLabel labels) {
-        this.labelPolicy = labels ;
     }
 
     @Override

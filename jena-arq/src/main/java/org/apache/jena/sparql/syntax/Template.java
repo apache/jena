@@ -66,7 +66,6 @@ public class Template
         }
     }
 
-    private int calcHashCode = -1 ;  
     @Override
     public int hashCode()
     { 

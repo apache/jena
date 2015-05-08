@@ -152,8 +152,6 @@ public abstract class NodeValue extends ExprNode
     
     public static final NodeValue nvEmptyString  = NodeValue.makeString("") ;
     
-    // Use "==" for equality.
-    private static final String strForUnNode = "node value nothing" ;
     public static final NodeValue nvNothing = NodeValue.makeNode(org.apache.jena.graph.NodeFactory.createAnon(new AnonId("node value nothing"))) ;
     
     public static final String xsdNamespace = XSD+"#" ; 
@@ -1018,9 +1016,6 @@ public abstract class NodeValue extends ExprNode
              
     }
 
-    // Jena code does not have these types (yet)
-    private static final String dtXSDprecisionDecimal   = XSD+"#precisionDecimal" ; 
-    
     // Returns null for unrecognized literal.
     private static NodeValue _setByValue(Node node) {
         if ( NodeUtils.hasLang(node) )

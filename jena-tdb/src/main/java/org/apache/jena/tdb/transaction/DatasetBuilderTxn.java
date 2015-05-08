@@ -48,14 +48,12 @@ public class DatasetBuilderTxn
 {
     // Ideally, don't make a DatasetGraphTDB to pass to new DatasetGraphTxn as it rips it apart.
     
-    // Context for the build.
-    private TransactionManager txnMgr ;
     private Map<FileRef, BlockMgr> blockMgrs ; 
     private Map<FileRef, NodeTable> nodeTables ;
     private Transaction txn ;
     private DatasetGraphTDB dsg ;
 
-    public DatasetBuilderTxn(TransactionManager txnMgr) { this.txnMgr = txnMgr ; }
+    public DatasetBuilderTxn(TransactionManager txnMgr) { }
     
     public DatasetGraphTxn build(Transaction transaction, ReadWrite mode, DatasetGraphTDB dsg) {
         this.blockMgrs = dsg.getConfig().blockMgrs ;

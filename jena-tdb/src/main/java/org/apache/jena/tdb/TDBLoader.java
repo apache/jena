@@ -146,7 +146,6 @@ public class TDBLoader
     
     private boolean showProgress = true ;
     private boolean generateStats = true ;
-    private Logger loaderLog  = TDB.logLoader ;
     private boolean checking ;
     
     // XXX Context control block

@@ -30,8 +30,6 @@ import org.apache.jena.sparql.util.Context ;
 
 public class DescribeHandlerRegistry
 {
-    static private DescribeHandlerRegistry globalRegistry = null ;
-    
     private List<DescribeHandlerFactory> registry = new ArrayList<>() ;
 
     private DescribeHandlerRegistry() { }

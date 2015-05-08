@@ -30,7 +30,6 @@ public class BufferChannelMem implements BufferChannel {
     // The "file pointer" is the position of this buffer. 
     private ByteBuffer    bytes ;                                                      
     private String        name ;
-    private static int    INIT_SIZE = 1024 ;
     private static int    INC_SIZE  = 1024 ;
 
     private final boolean TRACKING ;

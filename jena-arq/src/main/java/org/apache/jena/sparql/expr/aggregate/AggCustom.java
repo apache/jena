@@ -152,13 +152,11 @@ public class AggCustom extends AggregatorBase
     // ---- Accumulator
     private static class AccCustom implements Accumulator
     {
-        private int nBindings = 0 ;
-
         public AccCustom() { }
 
         @Override
         public void accumulate(Binding binding, FunctionEnv functionEnv)
-        { nBindings++ ; }
+        { }
 
         @Override
         public NodeValue getValue()

@@ -40,7 +40,6 @@ import org.apache.jena.sparql.core.Var ;
 public class BindingOutputStream implements Sink<Binding>
 {
     private final AWriter bw ;
-    private Binding lastBinding = null ;
     private List<Var> vars = null ;
     private PrefixMap pmap ;
     private NodeFormatter nodeFormatter ;

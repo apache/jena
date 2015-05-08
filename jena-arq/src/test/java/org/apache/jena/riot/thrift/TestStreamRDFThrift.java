@@ -45,8 +45,6 @@ import org.junit.Test ;
 
 public class TestStreamRDFThrift extends BaseTest {
 
-    private static final String DIR = TS_RDFThrift.TestingDir ;
-    
     @BeforeClass public static void beforeClassInit() { RIOT.init(); }
     
     static String gs = StrUtils.strjoinNL(

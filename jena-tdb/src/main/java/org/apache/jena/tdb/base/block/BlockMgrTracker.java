@@ -61,7 +61,6 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     }
     
     private int inRead = 0 ;
-    private int inIterator = 0 ;
     private boolean inUpdate = false ;
     private final Logger log ;
     private final String label ;

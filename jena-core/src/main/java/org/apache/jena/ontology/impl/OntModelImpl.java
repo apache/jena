@@ -76,9 +76,7 @@ public class OntModelImpl extends ModelCom implements OntModel
 
     static private Logger s_log = LoggerFactory.getLogger( OntModelImpl.class );
 
-    /** Found from {@link owlSyntaxCheckerClassName}, must implement
-     * {@link OWLSyntaxChecker}. */
-    static private Class<?> owlSyntaxCheckerClass;
+    
 
     // Instance variables
     //////////////////////////////////

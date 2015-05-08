@@ -25,7 +25,6 @@ import org.apache.jena.sparql.util.Context ;
 public class ExprBuild extends ExprVisitorBase 
 {
     private Context context ;
-    private OpEval opExec ;
     public ExprBuild(Context context)
     { 
         this.context = context ;

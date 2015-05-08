@@ -228,12 +228,6 @@ class LexerUserinfo extends AbsLexer implements org.apache.jena.iri.ViolationCod
   /** the number of characters up to the start of the matched text */
   private int yychar;
 
-  /**
-   * the number of characters from the last newline up to the start of the 
-   * matched text
-   */
-  private int yycolumn;
-
   /** 
    * zzAtBOL == true <=> the scanner is currently at the beginning of a line
    */
@@ -242,8 +236,7 @@ class LexerUserinfo extends AbsLexer implements org.apache.jena.iri.ViolationCod
   /** zzAtEOF == true <=> the scanner is at the EOF */
   private boolean zzAtEOF;
 
-  /** denotes if the user-EOF-code has already been executed */
-  private boolean zzEOFDone;
+  
 
   /* user code: */
     
@@ -370,10 +363,9 @@ class LexerUserinfo extends AbsLexer implements org.apache.jena.iri.ViolationCod
     zzReader = reader;
     zzAtBOL  = true;
     zzAtEOF  = false;
-    zzEOFDone = false;
     zzEndRead = zzStartRead = 0;
     zzCurrentPos = zzMarkedPos = 0;
-    yyline = yychar = yycolumn = 0;
+    yyline = yychar = 0;
     zzLexicalState = YYINITIAL;
   }
 

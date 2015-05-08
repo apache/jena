@@ -64,11 +64,6 @@ public final class StatsMatcher
     
     private static class Match
     {
-        double weight = NOMATCH ;
-        int exactMatches = 0 ;
-        int termMatches = 0 ;
-        int varMatches = 0 ;
-        int anyMatches = 0 ;
     }
 
     // General structure
@@ -421,13 +416,11 @@ public final class StatsMatcher
     {
         if ( isAny(item) )
         {
-            details.anyMatches ++ ;
             return true ;
         }
         
         if ( isAnyVar(item) ) 
         {
-            details.varMatches ++ ;
             return true ;
         }
 
@@ -438,7 +431,6 @@ public final class StatsMatcher
             {
                 if ( item.equals(TERM) )
                 {
-                    details.termMatches ++ ;
                     return true ;
                 }
                 // Does not match LITERAL, URI, BNODE and VAR/ANY were done above.
@@ -456,29 +448,24 @@ public final class StatsMatcher
         {
             if ( item.isNode() && item.getNode().equals(n) )
             {
-                details.exactMatches ++ ;
                 return true ;
             }
         
             if ( isAnyTerm(item) )
             {
-                details.termMatches ++ ;
                 return true ;
             }
             
             if ( isAnyURI(item) && n.isURI() )
             {
-                details.termMatches ++ ;
                 return true ;
             }
             if ( isAnyLiteral(item) && n.isLiteral() )
             {
-                details.termMatches ++ ;
                 return true ;
             }
             if ( isAnyBNode(item) && n.isBlank() )
             {
-                details.termMatches ++ ;
                 return true ;
             }
         }

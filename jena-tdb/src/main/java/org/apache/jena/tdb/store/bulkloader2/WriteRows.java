@@ -29,7 +29,6 @@ public class WriteRows
 {
     private OutputStream output ;
     boolean atStartOfRow = true ;
-    private int itemsPerRow ;
     private int rowBlock ;
     private byte[] b ;
     private int idx ;
@@ -39,7 +38,6 @@ public class WriteRows
     WriteRows (OutputStream output, int itemsPerRow, int rowBlock)
     {
         this.output = output ;
-        this.itemsPerRow = itemsPerRow ;
         this.rowLength = 16*itemsPerRow + itemsPerRow ;
         this.rowBlock = rowBlock ;
         this.b = new byte[rowLength*rowBlock] ;

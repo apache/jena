@@ -36,7 +36,6 @@ public class NodeFormatterTTL extends NodeFormatterNT
 {
     private final NodeToLabel nodeToLabel ;
     private final PrefixMap   prefixMap ;
-    private final String      baseIRI ;
     private final IRI         iriResolver ;
 
     public NodeFormatterTTL(String baseIRI, PrefixMap prefixMap) {
@@ -49,7 +48,6 @@ public class NodeFormatterTTL extends NodeFormatterNT
         if ( prefixMap == null )
             prefixMap = PrefixMapFactory.create() ;
         this.prefixMap = prefixMap ;
-        this.baseIRI = baseIRI ;
         this.iriResolver = 
             baseIRI != null ? IRIFactory.jenaImplementation().construct(baseIRI) : null ;
     }

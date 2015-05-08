@@ -39,8 +39,6 @@ import org.apache.thrift.protocol.TProtocol ;
  */ 
 public class StreamRDF2Thrift implements StreamRDF, AutoCloseable 
 {
-    // No REPEAT support.
-    private final OutputStream out ;
     private final TProtocol protocol ;
     private PrefixMap pmap = PrefixMapFactory.create() ;
     private final boolean encodeValues ;
@@ -50,7 +48,6 @@ public class StreamRDF2Thrift implements StreamRDF, AutoCloseable
 //    }
     
     public StreamRDF2Thrift(OutputStream out, boolean encodeValues) {
-        this.out = out ;
         this.protocol = TRDF.protocol(out) ;
         this.encodeValues = encodeValues ;
     }
@@ -60,7 +57,6 @@ public class StreamRDF2Thrift implements StreamRDF, AutoCloseable
 //    }
     
     public StreamRDF2Thrift(TProtocol out, boolean encodeValues) { 
-        this.out = null ;
         this.protocol = out ;
         this.pmap = PrefixMapFactory.create() ;
         this.encodeValues = encodeValues ;

@@ -38,7 +38,6 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
     private final NodeTupleTable nodeTupleTable ;
     private final Tuple<Node> patternTuple ;
 
-    private final ExecutionContext execCxt ;
     private boolean anyGraphs ;
     private Predicate<Tuple<NodeId>> filter ;
 
@@ -51,7 +50,6 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         this.filter = filter ;
         this.nodeTupleTable = nodeTupleTable ; 
         this.patternTuple = tuple ;
-        this.execCxt = execCxt ;
         this.anyGraphs = anyGraphs ; 
     }
 

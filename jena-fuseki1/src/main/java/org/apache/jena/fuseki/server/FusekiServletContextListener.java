@@ -22,10 +22,7 @@ import javax.servlet.ServletContextEvent ;
 import javax.servlet.ServletContextListener ;
 
 public class FusekiServletContextListener implements ServletContextListener {
-    // This could do the initialization. 
-    private final SPARQLServer sparqlServer ;
     public FusekiServletContextListener(SPARQLServer sparqlServer) {
-        this.sparqlServer = sparqlServer ;
     }
 
     @Override

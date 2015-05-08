@@ -48,8 +48,6 @@ public class Transaction
     
     // How this transaction ended.
     enum TxnOutcome { UNFINISHED, W_ABORTED, W_COMMITED, R_CLOSED, R_ABORTED, R_COMMITED }
-    private TxnOutcome outcome ;
-    
     private boolean changesPending ;
     
     public Transaction(DatasetGraphTDB dsg, ReadWrite mode, long id, String label, TransactionManager txnMgr) {
@@ -70,7 +68,6 @@ public class Transaction
         activedsg = null ;      // Don't know yet.
         this.iterators = null ; //new ArrayList<>() ;   // Debugging aid.
         state = TxnState.ACTIVE ;
-        outcome = TxnOutcome.UNFINISHED ;
         changesPending = (mode == ReadWrite.WRITE) ;
     }
 
@@ -98,8 +95,7 @@ public class Transaction
             // Enacting is left to the TransactionManager.
             switch(mode) {
                 case READ:
-                    outcome = TxnOutcome.R_COMMITED ;
-                    break ;
+				break ;
                 case WRITE:
                     if ( state != TxnState.ACTIVE )
                         throw new TDBTransactionException("Transaction has already committed or aborted") ;
@@ -137,8 +133,7 @@ public class Transaction
                             SystemTDB.errlog.warn("Exception during 'commit' : transaction status not known (but not a partial commit): ",ex) ;
                         throw new TDBTransactionException("Exception at commit point", ex) ;
                     }
-                    outcome = TxnOutcome.W_COMMITED ;
-                    break ;
+				break ;
             }
 
             state = TxnState.COMMITED ;
@@ -177,8 +172,7 @@ public class Transaction
             switch (mode) {
                 case READ :
                     state = TxnState.ABORTED ;
-                    outcome = TxnOutcome.R_ABORTED ;
-                    break ;
+				break ;
                 case WRITE :
                     if ( state != TxnState.ACTIVE )
                         throw new TDBTransactionException("Transaction has already committed or aborted") ;
@@ -199,8 +193,7 @@ public class Transaction
                         throw new TDBTransactionException("Exception during abort - transaction did abort", ex) ;
                     }
                     state = TxnState.ABORTED ;
-                    outcome = TxnOutcome.W_ABORTED ;
-                    // [TxTDB:TODO]
+				// [TxTDB:TODO]
                     // journal.truncate to last commit
                     // Not need currently as the journal is only written in
                     // prepare.
@@ -232,7 +225,6 @@ public class Transaction
                 case ACTIVE :
                     if ( mode == ReadWrite.READ ) {
                         commit() ;
-                        outcome = TxnOutcome.R_CLOSED ;
                     } else {
                         SystemTDB.errlog.warn("Transaction not commited or aborted: " + this) ;
                         abort() ;

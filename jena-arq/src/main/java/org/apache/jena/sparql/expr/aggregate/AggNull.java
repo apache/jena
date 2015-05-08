@@ -56,13 +56,11 @@ public class AggNull extends AggregatorBase
     // ---- Accumulator
     private static class AccNull implements Accumulator
     {
-        private int nBindings = 0 ;
-
         public AccNull() { }
 
         @Override
         public void accumulate(Binding binding, FunctionEnv functionEnv)
-        { nBindings++ ; }
+        { }
 
         @Override
         public NodeValue getValue()

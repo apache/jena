@@ -77,7 +77,6 @@ public enum CounterName {
     
     ;
     
-    private String name ;
-    private CounterName(String name) { this.name = name ; }
+    private CounterName(String name) { }
     
 }

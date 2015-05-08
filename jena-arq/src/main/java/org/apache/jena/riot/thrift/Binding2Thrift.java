@@ -37,12 +37,10 @@ import org.apache.thrift.transport.TIOStreamTransport ;
 public class Binding2Thrift implements AutoCloseable {
     private final RDF_DataTuple row = new RDF_DataTuple() ;
     private final Collection<Var> vars ;
-    private final OutputStream out ;
     private final TProtocol protocol ;
     private final boolean encodeValues ;
 
     public Binding2Thrift(OutputStream out, Collection<Var> vars, boolean encodeValues) { 
-        this.out = out ;
         this.vars = vars ; 
         TIOStreamTransport transport = new TIOStreamTransport(out) ;
         this.protocol = TRDF.protocol(transport) ;
@@ -69,7 +67,6 @@ public class Binding2Thrift implements AutoCloseable {
 
     public Binding2Thrift(TProtocol out, Collection<Var> vars, boolean encodeValues) { 
         this.vars = vars ; 
-        this.out = null ;
         this.protocol = out ;
         this.encodeValues = encodeValues ;
         varsRow() ;

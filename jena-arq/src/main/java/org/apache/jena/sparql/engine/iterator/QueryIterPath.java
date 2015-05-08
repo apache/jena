@@ -31,10 +31,6 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
 public class QueryIterPath extends QueryIterRepeatApply
 {
     private TriplePath triplePath ;
-    private Var varSubject = null ;
-    private Var varObject = null ;
-    
-
     public QueryIterPath(TriplePath triplePath, QueryIterator input, ExecutionContext context)
     {
         super(input, context) ;

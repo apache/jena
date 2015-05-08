@@ -682,11 +682,4 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 			relative(i, "http://www.example.org/A/B#", rData3);
 		}
 	}
-
-	private static String uris[] = { "http://www.example.org/a/b/c/d/",
-			"http://www.example.org/a/b/c/d/e/f/g/",
-			"http://www.example.org/a/b/C/D",
-			"http://www.example.org/A/B#foo/",
-			"http://www.example.org/a/b/c/d/X#bar", "http://example.com/A",
-			"http://www.example.org/a/b/c/d/z?x=a", };
 }

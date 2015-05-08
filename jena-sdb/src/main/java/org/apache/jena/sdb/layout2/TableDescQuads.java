@@ -32,8 +32,6 @@ public class TableDescQuads extends TableDesc
     private final String _subjectCol;
     private final String _predicateCol ;
     private final String _objectCol ;
-    private final String _tableName ;
-    
     public static String name() { return tableName ; }
 
     public TableDescQuads()
@@ -42,7 +40,6 @@ public class TableDescQuads extends TableDesc
     protected TableDescQuads(String tName, String gCol, String sCol, String pCol, String oCol)
     { 
         super(tName, gCol, sCol, pCol, oCol) ;
-        _tableName = tName ;
         _graphCol = gCol ;
         _subjectCol = sCol ;
         _predicateCol = pCol ;

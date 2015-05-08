@@ -73,7 +73,6 @@ public class QueryExecutionBase implements QueryExecution
     
     private final Object        lockTimeout = new Object() ;     // synchronization.  
     private static final long   TIMEOUT_UNSET = -1 ;
-    private static final long   TIMEOUT_INF = -2 ;
     private long                timeout1 = TIMEOUT_UNSET ;
     private long                timeout2 = TIMEOUT_UNSET ;
     private final AlarmClock    alarmClock = AlarmClock.get() ;
@@ -415,14 +414,11 @@ public class QueryExecutionBase implements QueryExecution
             super(qIter) ;
         }
         
-        long yieldCount = 0 ;
         boolean resetDone = false ;
         @Override
         protected Binding moveToNextBinding()
         { 
             Binding b = super.moveToNextBinding() ;
-            yieldCount++ ;
-            
             if ( ! resetDone )
             {
                 // Sync on calls of .abort.

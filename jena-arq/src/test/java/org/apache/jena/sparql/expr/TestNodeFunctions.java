@@ -33,9 +33,6 @@ import org.apache.jena.vocabulary.XSD ;
 import org.junit.Test ;
 
 public class TestNodeFunctions extends BaseTest {
-    private static final double accuracyExact = 0.0d ;
-    private static final double accuracyClose = 0.000001d ;
-
     @Test public void testSameTerm1() {
         Node n1 = NodeFactory.createLiteral("xyz") ;
         Node n2 = NodeFactory.createLiteral("xyz") ;
