@@ -284,7 +284,7 @@ public class ResourceFactory {
             LiteralLabel ll = null;
             if (value instanceof Calendar) {
                 Object valuec = new XSDDateTime( (Calendar) value);
-                ll = LiteralLabelFactory.create(valuec, "", XSDDatatype.XSDdateTime);
+                ll = LiteralLabelFactory.createByValue(valuec, "", XSDDatatype.XSDdateTime);
             } else {
                 ll =  LiteralLabelFactory.createTypedLiteral(value);
             }

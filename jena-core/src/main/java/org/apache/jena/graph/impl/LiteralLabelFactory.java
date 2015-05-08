@@ -75,9 +75,9 @@ public class LiteralLabelFactory
      * 
      * @param value the value of the literal
      * @param lang the optional language tag, only relevant for plain literals
-     * @param dtype the type of the literal, null for old style "plain" literals
+     * @param dtype the type of the literal, null for old style "plain" literals (which become xsd:string in RDF 1.1)
      */
-    public static LiteralLabel create(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
+    public static LiteralLabel createByValue(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
         dtype = fixDatatype(dtype, lang) ;
         return new LiteralLabelImpl(value, lang, dtype) ; 
     }
@@ -92,7 +92,7 @@ public class LiteralLabelFactory
      * Build a typed literal label from its value form using
      * whatever datatype is currently registered as the the default
      * representation for this java class. No language tag is supplied.
-     * A plain strign becomes an xsd:string.
+     * A plain string becomes an xsd:string.
      * @param value the literal value to encapsulate
      */
     public static LiteralLabel createTypedLiteral(Object value) {

@@ -692,7 +692,7 @@ implements Model, PrefixMapping, Lock
     @Override
     public Literal createTypedLiteral(Calendar cal) {
         Object value = new XSDDateTime(cal);
-        LiteralLabel ll = LiteralLabelFactory.create(value, "", XSDDatatype.XSDdateTime);
+        LiteralLabel ll = LiteralLabelFactory.createByValue(value, "", XSDDatatype.XSDdateTime);
         return new LiteralImpl(NodeFactory.createLiteral(ll), this);
 
     }
@@ -720,7 +720,7 @@ implements Model, PrefixMapping, Lock
      */
     @Override
     public Literal createTypedLiteral(Object value, RDFDatatype dtype) {
-        LiteralLabel ll = LiteralLabelFactory.create(value, "", dtype);
+        LiteralLabel ll = LiteralLabelFactory.createByValue(value, "", dtype);
         return new LiteralImpl( NodeFactory.createLiteral(ll), this );
     }
 
@@ -749,7 +749,7 @@ implements Model, PrefixMapping, Lock
     @Override
     public Literal createTypedLiteral(Object value, String typeURI) {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
-        LiteralLabel ll = LiteralLabelFactory.create(value, "", dt);
+        LiteralLabel ll = LiteralLabelFactory.createByValue(value, "", dt);
         return new LiteralImpl(NodeFactory.createLiteral(ll), this);
     }
 
