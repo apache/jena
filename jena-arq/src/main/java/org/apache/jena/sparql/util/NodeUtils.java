@@ -72,7 +72,7 @@ public class NodeUtils
         return true ;
     }
 
-    /** Get lexical for of anythign that looks like a string literal.
+    /** Get lexical for of anything that looks like a string literal.
      * Returns the string value of plain literal (simple literal
      * or lang string) or XSD string.
      */
