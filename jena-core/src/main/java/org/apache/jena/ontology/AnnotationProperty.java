@@ -21,11 +21,6 @@
 package org.apache.jena.ontology;
 
 
-// Imports
-///////////////
-import org.apache.jena.rdf.model.* ;
-
-
 /**
  * <p>
  * Interface that represents the category of annotation properties in an ontology
@@ -36,8 +31,7 @@ import org.apache.jena.rdf.model.* ;
  * have any annotation properties.
  * </p>
  */
-public interface AnnotationProperty
-    extends OntProperty, Property
+public interface AnnotationProperty extends OntProperty
 {
     // Constants
     //////////////////////////////////

@@ -30,7 +30,7 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  * triples and hides them from API queries so that consumers
  * of it are safe (but can use getRawGraph() to get back the unsafe graph.
  */
-public class SafeGraph extends WrappedGraph implements Graph {
+public class SafeGraph extends WrappedGraph {
 
     /** Wrap a graph to hide generalized triples */
     public SafeGraph(Graph base) {

@@ -163,8 +163,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     public TransactionHandler getTransactionHandler()
         { return new InfTransactionHandler( this ); }
 
-    public static class InfTransactionHandler
-        extends TransactionHandlerBase implements TransactionHandler
+    public static class InfTransactionHandler extends TransactionHandlerBase
         {
         protected final BaseInfGraph base;
 

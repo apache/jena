@@ -41,7 +41,7 @@ import org.apache.jena.reasoner.rulesys.* ;
     Thanks to Adam Cimarosti for provoking this code and providing an
     example implementation.
 */
-public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
+public class ReasonerFactoryAssembler extends AssemblerBase
     {
     @Override
     public Object open( Assembler a, Resource root, Mode irrelevant )

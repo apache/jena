@@ -27,7 +27,7 @@ import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.core.DatasetDescription ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 
-public class DatasetDescriptionAssembler extends AssemblerBase implements Assembler
+public class DatasetDescriptionAssembler extends AssemblerBase
 {
     public DatasetDescriptionAssembler()       {}
     

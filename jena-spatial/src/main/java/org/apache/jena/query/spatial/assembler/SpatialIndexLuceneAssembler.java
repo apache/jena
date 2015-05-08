@@ -50,7 +50,6 @@ public class SpatialIndexLuceneAssembler extends AssemblerBase
         .
     */
 
-    @SuppressWarnings("resource")
     @Override
     public SpatialIndex open(Assembler a, Resource root, Mode mode)
     {

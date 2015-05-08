@@ -23,13 +23,12 @@ import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.update.UpdateProcessor ;
 import org.apache.jena.update.UpdateRequest ;
 
 /**
  * UpdateProcess that send the request to a SPARQL endpoint by using POST of application/sparql-update.  
  */
-public class UpdateProcessRemote extends UpdateProcessRemoteBase implements UpdateProcessor
+public class UpdateProcessRemote extends UpdateProcessRemoteBase
 {    
     /**
      * Creates a new remote update processor that uses the application/sparql-update submission method

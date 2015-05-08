@@ -64,7 +64,6 @@ public class GraphEventManagerTest
 	}
 
 	@Test
-	@SuppressWarnings("deprecation")
 	public void notifyAddTest()
 	{
 		Object principal = securityEvaluator.getPrincipal();
@@ -84,8 +83,7 @@ public class GraphEventManagerTest
 
 	}
 
-	@SuppressWarnings("deprecation")
-    @Test
+	@Test
 	public void notifyDeleteTest()
 	{
 		Object principal = securityEvaluator.getPrincipal();

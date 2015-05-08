@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 public class PropertyImpl extends ResourceImpl implements Property
     {
 
-    @SuppressWarnings("hiding")
     final static public Implementation factory = new Implementation() 
         {
         @Override

@@ -50,13 +50,12 @@ public class MemGraphTest
 		this.securityEvaluator = securityEvaluator;
 	}
 
-	protected Graph createGraph() throws Exception
+	protected Graph createGraph()
 	{
 		return GraphFactory.createDefaultGraph();
 	}
 
-	@SuppressWarnings("deprecation")
-    @Before
+	@Before
 	public void setUp() throws Exception
 	{
 		baseGraph = createGraph();
@@ -72,7 +71,7 @@ public class MemGraphTest
 	}
 
 	@Test
-	public void testContainsNodes() throws Exception
+	public void testContainsNodes()
 	{
 		try
 		{
@@ -94,7 +93,7 @@ public class MemGraphTest
 	}
 
 	@Test
-	public void testContainsTriple() throws Exception
+	public void testContainsTriple()
 	{
 		try
 		{
@@ -144,7 +143,7 @@ public class MemGraphTest
 	}
 
 	@Test
-	public void testDependsOn() throws Exception
+	public void testDependsOn()
 	{
 		try
 		{
@@ -184,7 +183,7 @@ public class MemGraphTest
 	}
 
 	@Test
-	public void testFindNodes() throws Exception
+	public void testFindNodes()
 	{
 		try
 		{
@@ -208,7 +207,7 @@ public class MemGraphTest
 	}
 
 	@Test
-	public void testFindTriple() throws Exception
+	public void testFindTriple()
 	{
 		try
 		{
@@ -249,7 +248,7 @@ public class MemGraphTest
 	}
 
 	@Test
-	public void testIsIsomorphicWith() throws Exception
+	public void testIsIsomorphicWith()
 	{
 		try
 		{
@@ -289,7 +288,7 @@ public class MemGraphTest
 	}
 
 	@Test
-	public void testSize() throws Exception
+	public void testSize()
 	{
 		try
 		{

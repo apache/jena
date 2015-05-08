@@ -43,7 +43,6 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     protected RuleMode mode = HYBRID;
     
     /** Flag, if true we cache the closure of the pure rule set with its axioms */
-    @SuppressWarnings("hiding")
     protected static final boolean cachePreload = true;
     
     /** Flag, if true then subClass and subProperty lattices will be optimized using TGCs, only applicable to HYBRID reasoners */

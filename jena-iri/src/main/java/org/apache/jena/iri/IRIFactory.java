@@ -99,9 +99,7 @@ import org.apache.jena.iri.impl.IRIFactoryImpl ;
  *  have order dependencies.</p>
  */
 
-public class IRIFactory extends IRIFactoryImpl 
-  implements  
-  IRIFactoryI {
+public class IRIFactory extends IRIFactoryImpl {
     
     static {
         // call static initializers

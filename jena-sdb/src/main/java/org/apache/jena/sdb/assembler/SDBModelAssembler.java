@@ -28,7 +28,7 @@ import org.apache.jena.sdb.SDBFactory ;
 import org.apache.jena.sdb.StoreDesc ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 
-public class SDBModelAssembler extends AssemblerBase implements Assembler
+public class SDBModelAssembler extends AssemblerBase
 {
     DatasetStoreAssembler datasetAssem = new DatasetStoreAssembler() ;
     
@@ -54,8 +54,6 @@ public class SDBModelAssembler extends AssemblerBase implements Assembler
         if ( x == null )
             x = GraphUtils.getAsStringValue(root, AssemblerVocab.pNamedGraph2) ;
         
-        // No name - default model.
-        Graph g = null ;
         if ( x == null )
             return SDBFactory.connectDefaultModel(storeDesc) ;
         else

@@ -31,7 +31,7 @@ import org.apache.jena.util.iterator.* ;
 /**
     The dynamic intersection of two graphs L and R. <code>add()</code> affects both L and R, whereas <code>delete()</code> affects L only.
 */
-public class Intersection extends Dyadic implements Graph
+public class Intersection extends Dyadic
 	{
 	public Intersection( Graph L, Graph R )
 	    {

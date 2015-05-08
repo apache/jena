@@ -26,7 +26,7 @@ import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.util.CollectionFactory ;
 
 
-public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements PrefixMapping
+public class PolyadicPrefixMappingImpl extends PrefixMappingImpl
     {
     private Polyadic poly;
     private PrefixMapping pending = new PrefixMappingImpl();

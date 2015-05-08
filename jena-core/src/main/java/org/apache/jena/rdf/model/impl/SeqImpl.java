@@ -29,7 +29,6 @@ import org.apache.jena.vocabulary.RDF ;
 
 public class SeqImpl extends ContainerImpl implements Seq {
 
-    @SuppressWarnings("hiding")
     final static public Implementation factory = new Implementation() {
         @Override
         public boolean canWrap( Node n, EnhGraph eg )

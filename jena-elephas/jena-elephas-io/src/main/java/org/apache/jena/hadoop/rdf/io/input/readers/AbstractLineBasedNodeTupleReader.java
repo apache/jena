@@ -69,7 +69,7 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
     private boolean ignoreBadTuples = true;
 
     @Override
-    public final void initialize(InputSplit genericSplit, TaskAttemptContext context) throws IOException, InterruptedException {
+    public final void initialize(InputSplit genericSplit, TaskAttemptContext context) throws IOException {
         LOG.debug("initialize({}, {})", genericSplit, context);
 
         // Assuming file split
@@ -124,7 +124,7 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
         // This is to do with how line reader reads lines and how
         // NLineInputFormat will provide the split information to use
         if (skipFirstLine) {
-            start += in.readLine(new Text(), 0, (int) Math.min((long) Integer.MAX_VALUE, end - start));
+            start += in.readLine(new Text(), 0, (int) Math.min(Integer.MAX_VALUE, end - start));
         }
         this.pos = start;
     }
@@ -150,7 +150,7 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
     protected abstract T createInstance(TValue tuple);
 
     @Override
-    public final boolean nextKeyValue() throws IOException, InterruptedException {
+    public final boolean nextKeyValue() throws IOException {
         // Reuse key for efficiency
         if (key == null) {
             key = new LongWritable();
@@ -225,19 +225,19 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
     }
 
     @Override
-    public LongWritable getCurrentKey() throws IOException, InterruptedException {
+    public LongWritable getCurrentKey() {
         LOG.debug("getCurrentKey() --> {}", key);
         return key;
     }
 
     @Override
-    public T getCurrentValue() throws IOException, InterruptedException {
+    public T getCurrentValue() {
         LOG.debug("getCurrentValue() --> {}", tuple);
         return tuple;
     }
 
     @Override
-    public float getProgress() throws IOException, InterruptedException {
+    public float getProgress() {
         float progress = 0.0f;
         if (start != end) {
             if (end == Long.MAX_VALUE) {

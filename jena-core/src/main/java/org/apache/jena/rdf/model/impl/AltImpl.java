@@ -27,7 +27,6 @@ import org.apache.jena.vocabulary.RDF ;
  */
 public class AltImpl extends ContainerImpl implements Alt {
     
-    @SuppressWarnings("hiding")
     final static public Implementation factory = new Implementation() {
         @Override
         public boolean canWrap( Node n, EnhGraph eg )

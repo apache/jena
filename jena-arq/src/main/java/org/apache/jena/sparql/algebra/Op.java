@@ -18,12 +18,11 @@
 
 package org.apache.jena.sparql.algebra;
 
-import org.apache.jena.atlas.io.Printable ;
 import org.apache.jena.sparql.util.Named ;
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 import org.apache.jena.sparql.util.PrintSerializable ;
 
-public interface Op extends PrintSerializable, Printable, Named
+public interface Op extends PrintSerializable, Named
 {
     public void visit(OpVisitor opVisitor) ;
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap) ;

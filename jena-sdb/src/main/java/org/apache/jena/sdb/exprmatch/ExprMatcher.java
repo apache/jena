@@ -77,7 +77,7 @@ public class ExprMatcher
     }
 
     // Visit/walk the pattern
-    static class MatchVisitor extends ExprVisitorFunction implements ExprVisitor
+    static class MatchVisitor extends ExprVisitorFunction
     {
         private Expr       target ;
         private MapAction  aMap ;

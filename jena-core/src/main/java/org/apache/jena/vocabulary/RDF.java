@@ -77,7 +77,7 @@ public class RDF{
         The same items of vocabulary, but at the Node level, parked inside a
         nested class so that there's a simple way to refer to them.
     */
-    @SuppressWarnings("hiding") public static final class Nodes
+    public static final class Nodes
         {
         public static final Node Alt = RDF.Alt.asNode();
         public static final Node Bag = RDF.Bag.asNode();

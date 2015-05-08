@@ -58,7 +58,7 @@ public class RDFS {
     /**
         The RDFS vocabulary, expressed for the SPI layer in terms of .graph Nodes.
     */
-    @SuppressWarnings("hiding") public static class Nodes
+    public static class Nodes
         {
         public static final Node Class = RDFS.Class.asNode();
         public static final Node Datatype = RDFS.Datatype.asNode();

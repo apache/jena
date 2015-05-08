@@ -26,7 +26,7 @@ package org.apache.jena.iri.impl;
  * on 04/03/12 16:02 from the specification file
  * <tt>tmp.jflex</tt>
  */
-class LexerPath extends AbsLexer implements org.apache.jena.iri.ViolationCodes, org.apache.jena.iri.IRIComponents, Lexer {
+class LexerPath extends AbsLexer implements org.apache.jena.iri.IRIComponents, Lexer {
 
   /** This character denotes the end of file */
   private static final int YYEOF = -1;
@@ -227,17 +227,8 @@ class LexerPath extends AbsLexer implements org.apache.jena.iri.ViolationCodes, 
       from input */
   private int zzEndRead;
 
-  /** number of newlines encountered up to the start of the matched text */
-  private int yyline;
-
   /** the number of characters up to the start of the matched text */
   private int yychar;
-
-  /**
-   * the number of characters from the last newline up to the start of the 
-   * matched text
-   */
-  private int yycolumn;
 
   /** 
    * zzAtBOL == true <=> the scanner is currently at the beginning of a line
@@ -247,8 +238,7 @@ class LexerPath extends AbsLexer implements org.apache.jena.iri.ViolationCodes, 
   /** zzAtEOF == true <=> the scanner is at the EOF */
   private boolean zzAtEOF;
 
-  /** denotes if the user-EOF-code has already been executed */
-  private boolean zzEOFDone;
+  
 
   /* user code: */
     
@@ -375,10 +365,9 @@ class LexerPath extends AbsLexer implements org.apache.jena.iri.ViolationCodes, 
     zzReader = reader;
     zzAtBOL  = true;
     zzAtEOF  = false;
-    zzEOFDone = false;
     zzEndRead = zzStartRead = 0;
     zzCurrentPos = zzMarkedPos = 0;
-    yyline = yychar = yycolumn = 0;
+    yychar = 0;
     zzLexicalState = YYINITIAL;
   }
 

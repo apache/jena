@@ -31,7 +31,7 @@ import org.apache.jena.util.iterator.* ;
  * while this graph is in use.
  */
 
-public class Delta extends CompositionBase implements Graph
+public class Delta extends CompositionBase
 {
     private Graph base ;
     private Graph additions ;

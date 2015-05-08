@@ -19,13 +19,12 @@
 package org.apache.jena.riot.lang ;
 
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.Quad ;
 
 /**
  * Implementation of a producer class that sends Quads; must be connected to a {@code PipedRDFIterator<Quad>}. 
  */
-public class PipedQuadsStream extends PipedRDFStream<Quad> implements StreamRDF
+public class PipedQuadsStream extends PipedRDFStream<Quad>
 {
     /**
      * Creates a piped quads stream connected to the specified piped 

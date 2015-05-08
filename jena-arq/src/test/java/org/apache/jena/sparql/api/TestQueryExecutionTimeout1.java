@@ -91,7 +91,6 @@ public class TestQueryExecutionTimeout1 extends BaseTest
     public void timeout_03()
     {
         String qs = prefix + "SELECT * { ?s ?p ?o }" ;
-        @SuppressWarnings("resource")
         QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
         qExec.setTimeout(100, TimeUnit.MILLISECONDS) ;
         ResultSet rs = qExec.execSelect() ;

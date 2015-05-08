@@ -24,10 +24,8 @@ import java.util.List ;
 import org.apache.jena.graph.* ;
 import org.apache.jena.graph.impl.AllCapabilities ;
 import org.apache.jena.graph.impl.GraphBase ;
-import org.apache.jena.query.Query ;
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.Store ;
-import org.apache.jena.sdb.core.SDBRequest ;
 import org.apache.jena.sdb.engine.QueryEngineSDB ;
 import org.apache.jena.sdb.sql.SDBConnection ;
 import org.apache.jena.sdb.store.DatasetGraphSDB ;
@@ -49,7 +47,7 @@ import org.apache.jena.util.iterator.NiceIterator ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-public class GraphSDB extends GraphBase implements Graph
+public class GraphSDB extends GraphBase
 {
     private static Logger log = LoggerFactory.getLogger(GraphSDB.class) ;
 
@@ -122,9 +120,6 @@ public class GraphSDB extends GraphBase implements Graph
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Triple m)
     {
-        // Fake a query.
-        SDBRequest cxt = new SDBRequest(getStore(), new Query()) ;
-        
         // If null, create and remember a variable, else use the node.
         final Node s = (m.getMatchSubject()==null)   ? Var.alloc("s")   :  m.getMatchSubject() ;
         final Node p = (m.getMatchPredicate()==null) ? Var.alloc("p")   :  m.getMatchPredicate() ;
