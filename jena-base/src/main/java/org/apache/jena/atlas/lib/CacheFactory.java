@@ -43,7 +43,7 @@ public class CacheFactory {
 
     /** One slot cache */
     public static <Key, Value> Cache<Key, Value> createOneSlotCache() {
-        return new CacheGuava<>(1) ;
+        return new Cache1<>() ;
     }
 
     /**
