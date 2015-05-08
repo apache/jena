@@ -35,7 +35,7 @@ public class TestCopyInOutOfModel extends AbstractModelTestBase
 	}
 
 	@Override
-	public void setUp() throws Exception
+	public void setUp()
 	{
 		super.setUp();
 		S = ResourceFactory.createResource();

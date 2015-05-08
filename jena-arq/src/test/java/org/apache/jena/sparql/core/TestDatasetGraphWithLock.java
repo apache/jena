@@ -53,7 +53,7 @@ public class TestDatasetGraphWithLock extends AbstractTestDataset {
             Callable<Boolean> callable = new Callable<Boolean>() {
 
                 @Override
-                public Boolean call() throws Exception {
+                public Boolean call() {
                     dsg.begin(ReadWrite.READ);
 
                     // Hold the lock for a few seconds
@@ -89,7 +89,7 @@ public class TestDatasetGraphWithLock extends AbstractTestDataset {
             Callable<Boolean> callable = new Callable<Boolean>() {
 
                 @Override
-                public Boolean call() throws Exception {
+                public Boolean call() {
                     dsg.begin(ReadWrite.READ);
 
                     // Hold the lock for a few seconds

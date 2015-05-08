@@ -61,7 +61,7 @@ public class TestReifiedStatements extends AbstractModelTestBase
 	}
 
 	@Override
-	public void setUp() throws Exception
+	public void setUp()
 	{
 		model = createModel();
 		final Resource S2 = model.createResource(TestReifiedStatements.anchor

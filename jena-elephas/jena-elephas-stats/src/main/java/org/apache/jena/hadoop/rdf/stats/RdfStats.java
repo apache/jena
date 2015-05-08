@@ -127,9 +127,8 @@ public class RdfStats implements Tool {
      * 
      * @param args
      *            Arguments
-     * @throws Exception
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         try {
             // Run and exit with result code if no errors bubble up
             // Note that the exit code may still be a error code
@@ -163,7 +162,7 @@ public class RdfStats implements Tool {
     }
 
     @Override
-    public int run(String[] args) throws Exception {
+    public int run(String[] args) {
         try {
             if (args.length == 0) {
                 showUsage();

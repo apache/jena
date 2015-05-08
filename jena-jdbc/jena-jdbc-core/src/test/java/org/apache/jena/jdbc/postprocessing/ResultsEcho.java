@@ -18,7 +18,6 @@
 
 package org.apache.jena.jdbc.postprocessing;
 
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -36,7 +35,7 @@ import org.apache.jena.query.ResultSet ;
 public class ResultsEcho implements ResultsPostProcessor {
 
     @Override
-    public void initialize(Properties props) throws SQLException {
+    public void initialize(Properties props) {
         // No op
     }
 

@@ -19,7 +19,6 @@
 package org.apache.jena.rdfxml.xmlinput.impl;
 
 import org.apache.jena.rdf.model.RDFErrorHandler ;
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 /**
  * This class is not part of the API.
@@ -33,17 +32,17 @@ public class ARPSaxErrorHandler extends Object implements org.xml.sax.ErrorHandl
     }
     
     @Override
-    public void error(SAXParseException e) throws SAXException {
+    public void error(SAXParseException e) {
         errorHandler.error(e);
     }
     
     @Override
-    public void warning(SAXParseException e) throws SAXException {
+    public void warning(SAXParseException e) {
         errorHandler.warning(e);
     }
     
     @Override
-    public void fatalError(SAXParseException e) throws SAXException {
+    public void fatalError(SAXParseException e) {
         errorHandler.fatalError(e);
     }
 

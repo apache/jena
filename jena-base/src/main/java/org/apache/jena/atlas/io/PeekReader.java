@@ -165,12 +165,12 @@ public final class PeekReader extends Reader {
 
     // Reader operations
     @Override
-    public final void close() throws IOException {
+    public final void close() {
         source.closeStream() ;
     }
 
     @Override
-    public final int read() throws IOException {
+    public final int read() {
         if ( eof() )
             return EOF ;
         int x = readChar() ;
@@ -178,7 +178,7 @@ public final class PeekReader extends Reader {
     }
 
     @Override
-    public final int read(char[] cbuf, int off, int len) throws IOException {
+    public final int read(char[] cbuf, int off, int len) {
         if ( eof() )
             return EOF ;
         // Note - we need to preserve line count

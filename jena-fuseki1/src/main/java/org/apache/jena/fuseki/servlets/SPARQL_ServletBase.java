@@ -28,7 +28,6 @@ import java.util.Enumeration ;
 import java.util.Map ;
 import java.util.concurrent.atomic.AtomicLong ;
 
-import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -274,11 +273,10 @@ public abstract class SPARQL_ServletBase extends ServletBase
      * <p>Throws ServletException or IOException as per overloaded method signature.</p>
      * @param request HTTP request
      * @param response HTTP response
-     * @throws ServletException from overloaded method signature
      * @throws IOException from overloaded method signature
      */
     protected void doPatch(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException
+    throws IOException
     {
         response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "HTTP PATCH not supported");
     }

@@ -56,7 +56,7 @@ public final class InStreamASCII extends Reader implements CharStream
     { IO.close(input) ; }
 
     @Override
-    public int read(char[] cbuf, int off, int len) throws IOException
+    public int read(char[] cbuf, int off, int len)
     {
         for ( int i = off ; i < off+len ; i++ )
         {
@@ -75,7 +75,7 @@ public final class InStreamASCII extends Reader implements CharStream
     }
 
     @Override
-    public int read() throws IOException
+    public int read()
     { return advance() ; }
     
     @Override

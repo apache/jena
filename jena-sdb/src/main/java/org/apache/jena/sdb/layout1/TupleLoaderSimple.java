@@ -18,8 +18,6 @@
 
 package org.apache.jena.sdb.layout1;
 
-import java.sql.SQLException;
-
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sdb.core.sqlexpr.SqlConstant ;
 import org.apache.jena.sdb.sql.SDBConnection ;

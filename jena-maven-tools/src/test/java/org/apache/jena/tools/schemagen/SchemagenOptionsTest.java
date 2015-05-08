@@ -29,7 +29,6 @@ import java.util.List;
 import jena.schemagen.SchemagenOptions.OPT;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.rdf.model.ResourceFactory ;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -37,33 +36,6 @@ import org.junit.Test;
  */
 public class SchemagenOptionsTest
 {
-    /***********************************/
-    /* Constants                       */
-    /***********************************/
-
-    /***********************************/
-    /* Static variables                */
-    /***********************************/
-
-    /***********************************/
-    /* Instance variables              */
-    /***********************************/
-
-    /***********************************/
-    /* Constructors                    */
-    /***********************************/
-
-    /***********************************/
-    /* External signature methods      */
-    /***********************************/
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-        //
-    }
 
     /**
      * Test method for {@link SchemagenOptions#getParent()}.

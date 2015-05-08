@@ -93,7 +93,7 @@ public abstract class JenaPreparedStatement extends JenaStatement implements Pre
     }
 
     @Override
-    public void addBatch() throws SQLException {
+    public void addBatch() {
         this.addBatch(this.sparqlStr.toString());
     }
 

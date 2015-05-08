@@ -67,7 +67,7 @@ public class QueryTest extends EarlTestCase
     private boolean oldPlainGraphFlag  ;
     
     @Override
-    public void setUpTest() throws Exception
+    public void setUpTest()
     {
         super.setUpTest() ;
         // SPARQL and ARQ tests are done with no value matching (for query execution and results testing)
@@ -82,7 +82,7 @@ public class QueryTest extends EarlTestCase
     }
     
     @Override
-    public void tearDownTest() throws Exception
+    public void tearDownTest()
     {
         SystemARQ.UsePlainGraph = oldPlainGraphFlag ;
         CheckerLiterals.WarnOnBadLiterals = oldWarningFlag ;
@@ -184,7 +184,7 @@ public class QueryTest extends EarlTestCase
         }
     }
     
-    void runTestSelect(Query query, QueryExecution qe) throws Exception
+    void runTestSelect(Query query, QueryExecution qe)
     {
         // Do the query!
         ResultSetRewindable resultsActual = ResultSetFactory.makeRewindable(qe.execSelect()) ;
@@ -310,7 +310,7 @@ public class QueryTest extends EarlTestCase
         }
     }
     
-    void runTestConstruct(Query query, QueryExecution qe) throws Exception
+    void runTestConstruct(Query query, QueryExecution qe)
     {
         // Do the query!
         Model resultsActual = qe.execConstruct() ;
@@ -339,7 +339,7 @@ public class QueryTest extends EarlTestCase
         }
     }
     
-    void runTestDescribe(Query query, QueryExecution qe) throws Exception
+    void runTestDescribe(Query query, QueryExecution qe)
     {
         Model resultsActual = qe.execDescribe() ;
         compareGraphResults(resultsActual, query) ;

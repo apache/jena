@@ -54,7 +54,7 @@ public class TestIO_JenaReaders {
     }
 
     @Test
-    public void wireIntoJena() throws Exception {
+    public void wireIntoJena() {
         IO_JenaReaders.wireIntoJena();
         RDFReaderFImpl readerF = new RDFReaderFImpl();
         assertEquals(RDFReaderRIOT_Web.class,       readerF.getReader().getClass());
@@ -74,7 +74,7 @@ public class TestIO_JenaReaders {
     }
     
     @Test
-    public void resetJena() throws Exception {
+    public void resetJena() {
         IO_JenaReaders.wireIntoJena();
         IO_JenaReaders.resetJena();
         RDFReaderFImplExposingProtected readerF = new RDFReaderFImplExposingProtected();

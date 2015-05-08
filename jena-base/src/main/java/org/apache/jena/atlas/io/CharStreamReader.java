@@ -18,14 +18,13 @@
 
 package org.apache.jena.atlas.io;
 
-import java.io.IOException ;
 import java.io.Reader ;
 
 /** Machinary to add Reader functionality to a CharStream */
 public abstract class CharStreamReader extends Reader implements CharStream
 {
     @Override
-    public int read(char[] cbuf, int off, int len) throws IOException
+    public int read(char[] cbuf, int off, int len)
     {
         for ( int i = 0 ; i < len ; i++ )
         {
@@ -38,14 +37,14 @@ public abstract class CharStreamReader extends Reader implements CharStream
     }
 
     @Override
-    public int read() throws IOException
+    public int read()
     {
         return advance() ;
     }
 
     
     @Override
-    public void close() throws IOException
+    public void close()
     { closeStream() ; }
 
     @Override

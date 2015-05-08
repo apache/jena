@@ -47,7 +47,7 @@ public class SAX2RDFImpl extends XMLHandler {
 	 * @see org.xml.sax.ext.LexicalHandler#endCDATA()
 	 */
 	@Override
-    public void endCDATA() throws SAXException {
+    public void endCDATA() {
 		if (depth > 0)
 			super.endCDATA();
 
@@ -59,7 +59,7 @@ public class SAX2RDFImpl extends XMLHandler {
 	 * @see org.xml.sax.ext.LexicalHandler#endDTD()
 	 */
 	@Override
-    public void endDTD() throws SAXException {
+    public void endDTD() {
 		if (depth > 0)
 			super.endDTD();
 
@@ -71,7 +71,7 @@ public class SAX2RDFImpl extends XMLHandler {
 	 * @see org.xml.sax.ext.LexicalHandler#startCDATA()
 	 */
 	@Override
-    public void startCDATA() throws SAXException {
+    public void startCDATA() {
 		if (depth > 0)
 			super.startCDATA();
 
@@ -95,7 +95,7 @@ public class SAX2RDFImpl extends XMLHandler {
 	 * @see org.xml.sax.ext.LexicalHandler#endEntity(java.lang.String)
 	 */
 	@Override
-    public void endEntity(String name) throws SAXException {
+    public void endEntity(String name) {
 		if (depth > 0)
 			super.endEntity(name);
 
@@ -107,7 +107,7 @@ public class SAX2RDFImpl extends XMLHandler {
 	 * @see org.xml.sax.ext.LexicalHandler#startEntity(java.lang.String)
 	 */
 	@Override
-    public void startEntity(String name) throws SAXException {
+    public void startEntity(String name) {
 		if (depth > 0)
 			super.startEntity(name);
 
@@ -120,8 +120,7 @@ public class SAX2RDFImpl extends XMLHandler {
 	 *      java.lang.String, java.lang.String)
 	 */
 	@Override
-    public void startDTD(String name, String publicId, String systemId)
-			throws SAXException {
+    public void startDTD(String name, String publicId, String systemId) {
 		if (depth > 0)
 			super.startDTD(name, publicId, systemId);
 

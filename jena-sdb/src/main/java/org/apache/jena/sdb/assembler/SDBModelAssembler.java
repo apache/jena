@@ -21,7 +21,6 @@ package org.apache.jena.sdb.assembler;
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.Mode ;
 import org.apache.jena.assembler.assemblers.AssemblerBase ;
-import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sdb.SDBFactory ;

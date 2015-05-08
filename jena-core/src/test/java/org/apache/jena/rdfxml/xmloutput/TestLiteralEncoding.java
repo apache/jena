@@ -101,11 +101,11 @@ public class TestLiteralEncoding extends ModelTestBase
         m.createResource().addProperty(RDF.value, badString);
         Writer w = new Writer(){
 			@Override
-            public void close() throws IOException {}
+            public void close() {}
 			@Override
-            public void flush() throws IOException {}
+            public void flush() {}
 			@Override
-            public void write(char[] arg0, int arg1, int arg2) throws IOException {}
+            public void write(char[] arg0, int arg1, int arg2) {}
         };
         try 
             { 

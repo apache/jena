@@ -18,8 +18,6 @@
 
 package org.apache.jena.jdbc.mem;
 
-import java.io.ByteArrayOutputStream ;
-import java.io.PrintStream ;
 import java.net.URL ;
 
 import org.apache.jena.jdbc.AbstractJenaDriverTests ;

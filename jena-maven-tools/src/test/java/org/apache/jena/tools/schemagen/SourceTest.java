@@ -36,33 +36,6 @@ import org.junit.*;
  */
 public class SourceTest
 {
-    /***********************************/
-    /* Constants                       */
-    /***********************************/
-
-    /***********************************/
-    /* Static variables                */
-    /***********************************/
-
-    /***********************************/
-    /* Instance variables              */
-    /***********************************/
-
-    /***********************************/
-    /* Constructors                    */
-    /***********************************/
-
-    /***********************************/
-    /* External signature methods      */
-    /***********************************/
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-        //
-    }
 
     /**
      * Test method for {@link Source#setInput(java.lang.String)}.

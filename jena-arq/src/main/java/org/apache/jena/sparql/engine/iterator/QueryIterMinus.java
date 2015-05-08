@@ -18,10 +18,8 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import java.util.Map;
 import java.util.Set ;
 
-import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;

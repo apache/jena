@@ -107,7 +107,7 @@ public class TestRDFSReasoners extends ReasonerTestBase {
     /**
      * Build the working group tests for the given reasoner.
      */
-    private static void constructRDFWGtests(TestSuite suite, ReasonerFactory rf, Resource config) throws IOException {
+    private static void constructRDFWGtests(TestSuite suite, ReasonerFactory rf, Resource config) {
         WGReasonerTester tester = new WGReasonerTester("Manifest.rdf");
         for ( String test : tester.listTests() )
         {
@@ -193,7 +193,7 @@ public class TestRDFSReasoners extends ReasonerTestBase {
          * The test runner
          */
         @Override
-        public void runTest() throws IOException {
+        public void runTest() {
             tester.runTest(test, reasonerFactory, this, config);
         }
 

@@ -29,7 +29,6 @@ import java.util.Collection;
 
 import jena.schemagen.SchemagenOptions.OPT;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -61,19 +60,6 @@ public class SourceParameterTest
         }
 
         return params;
-    }
-
-
-    /***********************************/
-    /* Static variables                */
-    /***********************************/
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-        //
     }
 
     /***********************************/

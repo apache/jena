@@ -229,7 +229,7 @@ public class MemGraphTest
 	}
 
 	@Test
-	public void testGetPrefixMapping() throws Exception
+	public void testGetPrefixMapping()
 	{
 		SecuredPrefixMappingTest.runTests(securityEvaluator,
 				securedGraph.getPrefixMapping());

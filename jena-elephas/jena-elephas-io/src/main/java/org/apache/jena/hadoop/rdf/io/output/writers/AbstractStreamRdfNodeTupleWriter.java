@@ -43,15 +43,13 @@ public abstract class AbstractStreamRdfNodeTupleWriter<TKey, TTuple, TValue exte
 	}
 
 	@Override
-	public void close(TaskAttemptContext context) throws IOException,
-			InterruptedException {
+	public void close(TaskAttemptContext context) throws IOException {
 		this.stream.finish();
 		this.writer.close();
 	}
 
 	@Override
-	public void write(TKey key, TValue value) throws IOException,
-			InterruptedException {
+	public void write(TKey key, TValue value) {
 		this.sendOutput(key, value, this.stream);
 	}
 

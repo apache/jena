@@ -33,7 +33,6 @@ import org.apache.jena.rdfxml.xmlinput.impl.ARPResource ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
 import org.apache.jena.shared.wg.TestInputStreamFactory ;
 import org.junit.Assert ;
-import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 
 /**
@@ -213,7 +212,7 @@ class NTripleTestSuite extends WGTestSuite {
 		 * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
 		 */
 		@Override
-        public void error(SAXParseException exception) throws SAXException {
+        public void error(SAXParseException exception) {
 			hasErrors = true;
 			super.error(exception);
 
@@ -223,8 +222,7 @@ class NTripleTestSuite extends WGTestSuite {
 		 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
 		 */
 		@Override
-        public void fatalError(SAXParseException exception)
-			throws SAXException {
+        public void fatalError(SAXParseException exception) {
 			hasErrors = true;
 			super.fatalError(exception);
 

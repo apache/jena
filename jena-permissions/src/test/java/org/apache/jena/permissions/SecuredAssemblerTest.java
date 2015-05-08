@@ -48,7 +48,7 @@ public class SecuredAssemblerTest
 	}
 	
 	@Test
-	public void testCreation() throws Exception {
+	public void testCreation() {
 		
 		Resource r = model.createResource( "http://apache.org/jena/permissions/test#secModel");
 		Object o = assembler.open( r );
@@ -57,7 +57,7 @@ public class SecuredAssemblerTest
 	}
 
 	@Test
-	public void testCreationWithArgs() throws Exception {
+	public void testCreationWithArgs() {
 		
 		Resource r = model.createResource( "http://apache.org/jena/permissions/test#secModel2");
 		Object o = assembler.open( r );
@@ -66,7 +66,7 @@ public class SecuredAssemblerTest
 	}
 	
 	@Test
-	public void testSecurityEvaluatorWithStringArgs() throws Exception {
+	public void testSecurityEvaluatorWithStringArgs() {
 		
 		Resource r = model.createResource( "http://apache.org/jena/permissions/test#secEvaluator");
 		Object o = assembler.open( r );
@@ -75,7 +75,7 @@ public class SecuredAssemblerTest
 	}
 	
 	@Test
-	public void testSecurityEvaluatorWithModelArgs() throws Exception {
+	public void testSecurityEvaluatorWithModelArgs() {
 		
 		Resource r = model.createResource( "http://apache.org/jena/permissions/test#secEvaluator2");
 		Object o = assembler.open( r );

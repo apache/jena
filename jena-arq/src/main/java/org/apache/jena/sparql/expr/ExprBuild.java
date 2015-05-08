@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.engine.OpEval ;
 import org.apache.jena.sparql.util.Context ;
 
 /** Visitor class to run over expressions and initialise them */

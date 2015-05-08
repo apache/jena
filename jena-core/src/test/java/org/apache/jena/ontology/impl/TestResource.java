@@ -73,7 +73,7 @@ public class TestResource extends OntTestBase
         return new OntTestCase[] {
             new OntTestCase( "OntResource.sameAs", true, false, false ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     Profile prof = m.getProfile();
                     OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
                     OntResource b = m.getResource( NS + "b" ).as( OntResource.class );
@@ -102,7 +102,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.differentFrom", true, true, false ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     Profile prof = m.getProfile();
                     OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
                     OntResource b = m.getResource( NS + "b" ).as( OntResource.class );
@@ -131,7 +131,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.seeAlso", true, true, true ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     Profile prof = m.getProfile();
                     OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
                     OntResource b = m.getResource( NS + "b" ).as( OntResource.class );
@@ -160,7 +160,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.isDefinedBy", true, true, true ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     Profile prof = m.getProfile();
                     OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
                     OntResource b = m.getResource( NS + "b" ).as( OntResource.class );
@@ -189,7 +189,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.versionInfo", true, true, false ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     Profile prof = m.getProfile();
                     OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
 
@@ -216,7 +216,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.label.nolang", true, true, true ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     Profile prof = m.getProfile();
                     OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
 
@@ -243,7 +243,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.label.lang", true, true, true ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
 
                     a.addLabel( "good", "EN" );
@@ -278,7 +278,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.comment.nolang", true, true, true ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     Profile prof = m.getProfile();
                     OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
 
@@ -305,7 +305,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.comment.lang", true, true, true ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
 
                     a.addComment( "good", "EN" );
@@ -340,7 +340,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.type (no inference)", true, true, true ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     OntClass A = m.createClass( NS + "A" );
                     OntClass B = m.createClass( NS + "B" );
                     A.addSubClass( B );
@@ -376,7 +376,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.remove", true, true, true ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     OntClass A = m.createClass( NS + "A" );
                     OntClass B = m.createClass( NS + "B" );
                     OntClass C = m.createClass( NS + "C" );
@@ -399,7 +399,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.asClass", true, true, true ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     Resource r = m.createResource();
                     r.addProperty( RDF.type, m.getProfile().CLASS() );
                     OntResource or = r.as( OntResource.class );
@@ -515,7 +515,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.asProperty", true, true, true ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     Resource r = m.createResource();
                     r.addProperty( RDF.type, m.getProfile().PROPERTY() );
                     OntResource or = r.as( OntResource.class );
@@ -536,7 +536,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.asIndividual", true, true, true ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     Resource r = m.createResource();
                     Resource s = m.createResource();
                     s.addProperty( RDF.type, m.getProfile().CLASS() );
@@ -607,7 +607,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.isLanguageTerm", true, true, true ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     // class is defined (differently) in every profile
                     OntResource or = m.getProfile().CLASS().inModel(m).as( OntResource.class );
                     assertTrue( "should be a lang term", or.isOntLanguageTerm() );
@@ -618,7 +618,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.getOntModel", true, true, true ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     OntResource or = m.createOntResource( "http://foo/bar" );
                     OntModel m0 = or.getOntModel();
                     assertEquals( m, m0 );
@@ -626,7 +626,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.getPropertyValue - object prop", true, true, true ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     OntResource a = m.createOntResource( "http://foo/bar#a" );
                     Resource b = m.createResource( "http://foo/bar#b" );
                     OntProperty p = m.createOntProperty( "http://foo/bar#p" );
@@ -638,7 +638,7 @@ public class TestResource extends OntTestBase
             },
             new OntTestCase( "OntResource.getPropertyValue - missing prop", true, true, true ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     OntResource a = m.createOntResource( "http://foo/bar#a" );
                     Resource b = m.createResource( "http://foo/bar#b" );
                     OntProperty p = m.createOntProperty( "http://foo/bar#p" );

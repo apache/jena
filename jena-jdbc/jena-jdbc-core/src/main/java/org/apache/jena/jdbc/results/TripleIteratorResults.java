@@ -115,7 +115,7 @@ public class TripleIteratorResults extends StreamedResults<Triple> {
     }
 
     @Override
-    protected void closeStreamInternal() throws SQLException {
+    protected void closeStreamInternal() {
         if (this.triples != null) {
             if (this.triples instanceof Closeable) {
                 ((Closeable) this.triples).close();
@@ -125,7 +125,7 @@ public class TripleIteratorResults extends StreamedResults<Triple> {
     }
 
     @Override
-    public ResultSetMetaData getMetaData() throws SQLException {
+    public ResultSetMetaData getMetaData() {
         return metadata;
     }
 

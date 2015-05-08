@@ -126,7 +126,7 @@ public class SimpleVelocityServlet extends HttpServlet
         }
         
         @Override
-        public void init(RuntimeServices rs) throws Exception
+        public void init(RuntimeServices rs)
         { }
 
         @Override
