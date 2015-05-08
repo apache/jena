@@ -20,11 +20,8 @@ package org.apache.jena.query.text ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.QuadAction ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 public class TextDocProducerTriples implements TextDocProducer {
-    private static Logger          log     = LoggerFactory.getLogger(TextDocProducerTriples.class) ;
     private final EntityDefinition defn ;
     private final TextIndex        indexer ;
     

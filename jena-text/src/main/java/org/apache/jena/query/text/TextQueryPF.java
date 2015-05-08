@@ -36,7 +36,6 @@ import org.apache.jena.sparql.engine.iterator.QueryIterSlice ;
 import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionBase ;
-import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.IterLib ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
@@ -80,8 +79,6 @@ public class TextQueryPF extends PropertyFunctionBase {
 
     private static TextIndex chooseTextIndex(DatasetGraph dsg) {
         
-        Context c = dsg.getContext() ; 
-        
         Object obj = dsg.getContext().get(TextQuery.textIndex) ;
 
         if (obj != null) {
@@ -111,8 +108,6 @@ public class TextQueryPF extends PropertyFunctionBase {
             // Not a text dataset - no-op
             return IterLib.result(binding, execCxt) ;
         }
-
-        DatasetGraph dsg = execCxt.getDataset() ;
 
         argSubject = Substitute.substitute(argSubject, binding) ;
         argObject = Substitute.substitute(argObject, binding) ;
@@ -157,7 +152,6 @@ public class TextQueryPF extends PropertyFunctionBase {
             return IterLib.noResults(execCxt) ;
         }
 
-        String qs = match.getQueryString() ;
         List<Node> x = query(match.getQueryString(), -1, execCxt) ;
         if ( x == null || ! x.contains(s) )
             return IterLib.noResults(execCxt) ;

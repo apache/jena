@@ -32,8 +32,6 @@ import org.apache.lucene.search.IndexSearcher ;
 import org.apache.lucene.search.Query ;
 import org.apache.lucene.search.ScoreDoc ;
 import org.apache.lucene.store.Directory ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 import arq.cmd.ArgDecl ;
 import arq.cmd.CmdException ;
 import arq.cmdline.CmdARQ ;
@@ -42,8 +40,6 @@ import arq.cmdline.CmdARQ ;
  * Text index development tool - dump the index.
  */
 public class textindexdump extends CmdARQ {
-
-    private static Logger      log          = LoggerFactory.getLogger(textindexdump.class) ;
 
     public static final ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
     protected TextIndex        textIndex    = null ;
