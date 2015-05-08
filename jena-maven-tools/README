@@ -15,7 +15,7 @@ Changes
 
 Version 0.4
 
-  * Moved source code from org.openjena package tree to org.apache.jena
+  * Moved source code to org.apache.jena
   * Removed some obsolete project artefacts (e.g. src/site)
   * Added license headers to conform to Apache Software Foundation policy,
     and added a rat:check target to the pom file.

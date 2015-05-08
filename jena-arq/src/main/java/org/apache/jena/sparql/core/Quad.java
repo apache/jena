@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.core;
 
-import static org.apache.jena.atlas.lib.Lib.equal ;
+import java.util.Objects;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
@@ -138,7 +139,7 @@ public class Quad
     public boolean isUnionGraph()           { return isUnionGraph(graph) ; }
 
     /** Is it really a triple? */  
-    public boolean isTriple()               { return equal(graph, tripleInQuad) ; } 
+    public boolean isTriple()               { return Objects.equals(graph, tripleInQuad) ; } 
 
     /** Is this quad a legal data quad (legal data triple, IRI for graph) */   
     public boolean isLegalAsData()
@@ -190,7 +191,7 @@ public class Quad
             return false ;
         Quad quad = (Quad)other ;
         
-        if ( ! equal(graph, quad.graph) ) return false ;
+        if ( ! Objects.equals(graph, quad.graph) ) return false ;
         if ( ! subject.equals(quad.subject) ) return false ;
         if ( ! predicate.equals(quad.predicate) ) return false ;
         if ( ! object.equals(quad.object) ) return false ;

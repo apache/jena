@@ -61,11 +61,6 @@ public class ThresholdPolicyMemory<T> implements ThresholdPolicy<T> {
         return (size >= threshold) ;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.openjena.atlas.data.ThresholdPolicy#reset()
-     */
     @Override
     public void reset() {
         count = 0 ;

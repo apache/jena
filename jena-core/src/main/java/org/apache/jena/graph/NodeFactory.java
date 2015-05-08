@@ -126,12 +126,45 @@ public class NodeFactory {
         return createLiteral(LiteralLabelFactory.create(lex, dtype)) ;
     }
 
-    public static Node createUncachedLiteral(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
-        return new Node_Literal(LiteralLabelFactory.create(value, lang, dtype)) ;
+    /** Create a Node based on the value
+     * If the value is a string we
+     * assume this is inteded to be a lexical form after all.
+     * @param value
+     *          The value, mapped according to registered types. 
+     * @param dtype
+     *          RDF Datatype.
+     * @return Node
+     * @throws DatatypeFormatException
+     */
+    public static Node createLiteralByValue(Object value, RDFDatatype dtype) throws DatatypeFormatException {
+        return new Node_Literal(LiteralLabelFactory.createByValue(value, "", dtype)) ;
     }
 
+    /** Create a Node based on the value
+     * If the value is a string we
+     * assume this is inteded to be a lexical form after all.
+     * @param value
+     *          The value, mapped according to registered types. 
+     * @param lang
+     *          (optional) Language tag, if a string. 
+     * @param dtype
+     *          RDF Datatype.
+     * @return Node
+     * @throws DatatypeFormatException
+     */
+    public static Node createLiteralByValue(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
+        return new Node_Literal(LiteralLabelFactory.createByValue(value, lang, dtype)) ;
+    }
+
+    /** @deprecated To be removed: Use {@link #createLiteralByValue(Object, RDFDatatype)} */ 
+    @Deprecated
     public static Node createUncachedLiteral(Object value, RDFDatatype dtype) throws DatatypeFormatException {
-        return new Node_Literal(LiteralLabelFactory.create(value, "", dtype)) ;
+        return createLiteralByValue(value, dtype) ;
     }
 
+    /** @deprecated To be removed: Use {@link #createLiteralByValue(Object, String, RDFDatatype)} */ 
+    @Deprecated
+    public static Node createUncachedLiteral(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
+        return createLiteralByValue(value, lang, dtype) ;
+    }
 }

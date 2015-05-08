@@ -22,9 +22,9 @@ import static org.apache.jena.atlas.lib.StrUtils.strjoinNL ;
 
 import java.util.ArrayList ;
 import java.util.List ;
+import java.util.function.Function;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.Property ;
@@ -57,24 +57,9 @@ public class StoreList
             "}") ;
     
     // Not Java's finest hour ...
-    static Transform<Pair<String, String>, Pair<String, StoreDesc>> t1 = new  Transform<Pair<String, String>, Pair<String, StoreDesc>>()
-    {
-        @Override
-        public Pair<String, StoreDesc> convert(Pair<String, String> pair)
-        {
-            return new Pair<String, StoreDesc>(pair.car(), StoreDesc.read(pair.cdr())) ;
-        }
-    } ;
+    static Function<Pair<String, String>, Pair<String, StoreDesc>> t1 = p -> new Pair<String, StoreDesc>(p.car(), StoreDesc.read(p.cdr()));
 
-    static Transform<Pair<String, StoreDesc>, Pair<String, Store>> t2 = new Transform<Pair<String, StoreDesc>, Pair<String, Store>>()
-    {
-        @Override
-        public Pair<String, Store> convert(Pair<String, StoreDesc> pair)
-        {
-            Store store = testStore(pair.cdr()) ;
-            return new Pair<String, Store>(pair.car(), store) ;
-        }
-    } ;
+    static Function<Pair<String, StoreDesc>, Pair<String, Store>> t2 = p -> new Pair<String, Store>(p.car(), testStore(p.cdr()));
     
     public static Store testStore(StoreDesc desc)
     {

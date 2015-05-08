@@ -40,14 +40,14 @@ public class TestLiteralLabels extends GraphTestBase
 
     public void testHashCode()
     {
-        LiteralLabel ll = LiteralLabelFactory.create("test", "", null) ;
+        LiteralLabel ll = LiteralLabelFactory.createByValue("test", "", null) ;
         ll.hashCode() ;
     }
 
     public void testHashCode2()
     {
-        LiteralLabel ll1 = LiteralLabelFactory.create("test", "", null) ;
-        LiteralLabel ll2 = LiteralLabelFactory.create("test", "", null) ;
+        LiteralLabel ll1 = LiteralLabelFactory.createByValue("test", "", null) ;
+        LiteralLabel ll2 = LiteralLabelFactory.createByValue("test", "", null) ;
         assertEquals(ll1.hashCode(), ll2.hashCode()) ;
     }
 
@@ -89,8 +89,8 @@ public class TestLiteralLabels extends GraphTestBase
                 return false ;
             }
         } ;
-        LiteralLabel A = LiteralLabelFactory.create("17", "", d) ;
-        LiteralLabel B = LiteralLabelFactory.create("17", "", null) ;
+        LiteralLabel A = LiteralLabelFactory.createByValue("17", "", d) ;
+        LiteralLabel B = LiteralLabelFactory.createByValue("17", "", null) ;
         assertFalse(A.sameValueAs(B)) ;
     }
 

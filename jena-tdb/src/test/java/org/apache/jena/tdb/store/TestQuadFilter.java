@@ -18,7 +18,8 @@
 
 package org.apache.jena.tdb.store;
 
-import org.apache.jena.atlas.iterator.Filter ;
+import java.util.function.Predicate;
+
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.graph.NodeFactory ;
@@ -61,23 +62,12 @@ public class TestQuadFilter extends BaseTest
     }
     
     /** Create a filter to exclude the graph http://example/g2 */
-    private static Filter<Tuple<NodeId>> createFilter(Dataset ds)
+    private static Predicate<Tuple<NodeId>> createFilter(Dataset ds)
     {
         DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
         final NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
         final NodeId target = nodeTable.getNodeIdForNode(NodeFactory.createURI(graphToHide)) ;
-        Filter<Tuple<NodeId>> filter = new Filter<Tuple<NodeId>>() {
-            @Override
-            public boolean accept(Tuple<NodeId> item)
-            {
-                // Reverse the lookup as a demo
-                //Node n = nodeTable.getNodeForNodeId(target) ;
-                //System.err.println(item) ;
-                if ( item.size() == 4 && item.get(0).equals(target) )
-                    return false ;
-                return true ;
-            } } ;
-        return filter ;
+        return item -> !( item.size() == 4 && item.get(0).equals(target) );
     }            
 
     @Test public void quad_filter_1()   { test("SELECT * { GRAPH ?g { ?s ?p ?o } }", 1, 2) ; }
@@ -86,7 +76,7 @@ public class TestQuadFilter extends BaseTest
     
     private void test(String qs, int withFilter, int withoutFilter)
     {
-        Filter<Tuple<NodeId>> filter = createFilter(ds) ;
+        Predicate<Tuple<NodeId>> filter = createFilter(ds) ;
         
 //    private static void example(Dataset ds, Filter<Tuple<NodeId>> filter)
 //    {

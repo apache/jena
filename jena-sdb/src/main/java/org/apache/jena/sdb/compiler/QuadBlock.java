@@ -22,10 +22,10 @@ import static org.apache.jena.atlas.iterator.Iter.apply ;
 
 import java.util.ArrayList ;
 import java.util.List ;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.io.PrintUtils ;
-import org.apache.jena.atlas.iterator.Action ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.algebra.op.OpQuadPattern ;
@@ -167,10 +167,10 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
     { 
         final String sep = "\n" ;
 
-        final Action<Quad> strAction = new Action<Quad>() {
+        final Consumer<Quad> strAction = new Consumer<Quad>() {
             boolean first = true ; 
             @Override
-            public void apply(Quad quad)
+            public void accept(Quad quad)
             {
                 if ( ! first )
                     out.print(sep) ;

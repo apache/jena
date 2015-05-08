@@ -18,24 +18,26 @@
 
 package org.apache.jena.atlas.iterator;
 
+import java.util.function.Predicate;
+
 /**
  * Add a filter to a chain - the original filter is called after this new sub-filter.
  */
-public abstract class FilterStack<T> implements  Filter<T>
+public abstract class FilterStack<T> implements  Predicate<T>
 {
-    private final Filter<T> other ;
+    private final Predicate<T> other ;
     private final boolean subFilterLast ;
     
-    public FilterStack(Filter<T> other) { this(other, false) ; }
+    public FilterStack(Predicate<T> other) { this(other, false) ; }
     
-    public FilterStack(Filter<T> other, boolean callOldFilterFirst)
+    public FilterStack(Predicate<T> other, boolean callOldFilterFirst)
     {
         this.other = other ;
         this.subFilterLast = callOldFilterFirst ;
     }
    
     @Override
-    public final boolean accept(T item)
+    public final boolean test(T item)
     {
         if ( subFilterLast )
             return acceptAdditionaOther(item) ;
@@ -48,7 +50,7 @@ public abstract class FilterStack<T> implements  Filter<T>
         if ( ! acceptAdditional(item) )
             return false ;
         
-        if ( other != null && ! other.accept(item) )
+        if ( other != null && ! other.test(item) )
             return false ;
         
         return true ;
@@ -56,7 +58,7 @@ public abstract class FilterStack<T> implements  Filter<T>
 
     private boolean acceptOtherAdditional(T item)
     {
-        if ( other != null && ! other.accept(item) )
+        if ( other != null && ! other.test(item) )
             return false ;
         return acceptAdditional(item) ;
     }

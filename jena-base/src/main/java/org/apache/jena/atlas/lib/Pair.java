@@ -21,6 +21,8 @@ package org.apache.jena.atlas.lib;
 import static org.apache.jena.atlas.lib.Lib.hashCodeObject ;
 import static org.apache.jena.atlas.lib.StrUtils.str ;
 
+import java.util.Objects;
+
 public class Pair<A, B>
 {
     public static <L, R> Pair<L,R> create(L x, R y) { return new Pair<>(x,y) ; }
@@ -54,7 +56,7 @@ public class Pair<A, B>
         
         if( ! ( other instanceof Pair<?,?> ) ) return false ;
         Pair<?,?> p2 = (Pair<?,?>)other ;
-        return  Lib.equal(car(), p2.car()) && Lib.equal(cdr(), p2.cdr()) ;
+        return Objects.equals(car(), p2.car()) && Objects.equals(cdr(), p2.cdr()) ;
     }
     
     @Override 

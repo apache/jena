@@ -23,12 +23,12 @@ import java.io.FileOutputStream ;
 import java.io.OutputStream ;
 import java.util.Arrays ;
 import java.util.List ;
+import java.util.Objects;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.atlas.logging.ProgressLogger ;
 import org.apache.jena.graph.Node ;
@@ -50,6 +50,7 @@ import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.tdb.sys.Names ;
 import org.slf4j.Logger ;
+
 import tdb.cmdline.CmdTDB ;
 import arq.cmd.ArgDecl ;
 import arq.cmd.CmdException ;
@@ -107,7 +108,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         if ( dataFileQuads == null )
             dataFileQuads = location.getPath("quads", "tmp") ;
         
-        if ( Lib.equal(dataFileTriples, dataFileQuads) )
+        if ( Objects.equals(dataFileTriples, dataFileQuads) )
             cmdError("Triples and Quads work files are the same") ;
         
         if ( super.contains(argNoStats) )
@@ -119,9 +120,6 @@ public class CmdNodeTableBuilder extends CmdGeneral
             datafiles = Arrays.asList("-") ;
         
         // ---- Checking.
-//        if ( false ) 
-//            SetupTDB.makeNodeTable(location, locationString, 0, outputFile, 0) ;
-
         for( String filename : datafiles)
         {
             Lang lang = RDFLanguages.filenameToLang(filename, RDFLanguages.NQUADS) ;

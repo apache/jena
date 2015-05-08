@@ -117,8 +117,8 @@ public class TestNode extends GraphTestBase
         AnonId id = AnonId.create();
         LiteralLabel L2 = LiteralLabelFactory.create( id.toString(), "", false );
 
-        LiteralLabel LLang1 = LiteralLabelFactory.create( "xyz", "en", null) ;
-        LiteralLabel LLang2 = LiteralLabelFactory.create( "xyz", "EN", null) ;
+        LiteralLabel LLang1 = LiteralLabelFactory.createByValue( "xyz", "en", null) ;
+        LiteralLabel LLang2 = LiteralLabelFactory.createByValue( "xyz", "EN", null) ;
 
         String U2 = id.toString();
         String N2 = id.toString();

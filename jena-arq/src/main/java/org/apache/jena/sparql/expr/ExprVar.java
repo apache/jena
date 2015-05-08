@@ -25,7 +25,7 @@ import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.graph.NodeTransform ;
+import org.apache.jena.sparql.graph.NodeTransform;
 
 /** An expression that is a variable in an expression. */
  
@@ -77,7 +77,7 @@ public class ExprVar extends ExprNode
     @Override
     public Expr applyNodeTransform(NodeTransform transform)
     {
-        Node node = transform.convert(varNode) ;
+        Node node = transform.apply(varNode) ;
         if ( Var.isVar(node))
             return new ExprVar(Var.alloc(node)) ;
         return NodeValue.makeNode(node) ;

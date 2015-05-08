@@ -18,13 +18,14 @@
 
 package org.apache.jena.atlas.lib.cache;
 
+import static java.util.Arrays.asList;
+
 import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.concurrent.Callable ;
+import java.util.function.BiConsumer;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.IteratorArray ;
-import org.apache.jena.atlas.lib.ActionKeyValue ;
 import org.apache.jena.atlas.lib.Cache ;
 
 
@@ -40,7 +41,7 @@ public class CacheSimple<K,V> implements Cache<K,V>
     private final K[] keys ;
     private final int size ;
     private int currentSize = 0 ;
-    private ActionKeyValue<K,V> dropHandler = null ;
+    private BiConsumer<K,V> dropHandler = null ;
     
     public CacheSimple(int size)
     { 
@@ -113,7 +114,7 @@ public class CacheSimple<K,V> implements Cache<K,V>
             // Drop the old K->V
             old = values[x] ;
             if ( dropHandler != null )
-                dropHandler.apply(keys[x], old) ;
+                dropHandler.accept(keys[x], old) ;
             currentSize-- ;
         }
         
@@ -142,7 +143,7 @@ public class CacheSimple<K,V> implements Cache<K,V>
     @Override
     public Iterator<K> keys()
     {
-        Iterator<K> iter = IteratorArray.create(keys) ;
+        Iterator<K> iter = asList(keys).iterator() ;
         return Iter.removeNulls(iter) ;
     }
 
@@ -154,7 +155,7 @@ public class CacheSimple<K,V> implements Cache<K,V>
 
     /** Callback for entries when dropped from the cache */
     @Override
-    public void setDropHandler(ActionKeyValue<K,V> dropHandler)
+    public void setDropHandler(BiConsumer<K,V> dropHandler)
     {
         this.dropHandler = dropHandler ;
     }

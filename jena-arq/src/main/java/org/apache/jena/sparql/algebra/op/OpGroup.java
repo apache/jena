@@ -19,8 +19,8 @@
 package org.apache.jena.sparql.algebra.op;
 
 import java.util.List ;
+import java.util.Objects;
 
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVisitor ;
 import org.apache.jena.sparql.algebra.Transform ;
@@ -71,9 +71,9 @@ public class OpGroup extends Op1
     {
         if ( ! (other instanceof OpGroup) ) return false ;
         OpGroup opGroup = (OpGroup)other ;
-        if ( ! Lib.equal(groupVars, opGroup.groupVars) ) 
+        if ( ! Objects.equals(groupVars, opGroup.groupVars) ) 
             return false ;
-        if ( ! Lib.equal(aggregators, opGroup.aggregators) )
+        if ( ! Objects.equals(aggregators, opGroup.aggregators) )
             return false ;
             
         return getSubOp().equalTo(opGroup.getSubOp(), labelMap) ;

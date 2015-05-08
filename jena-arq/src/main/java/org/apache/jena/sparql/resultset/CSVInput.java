@@ -22,10 +22,10 @@ import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.function.Function;
 
 import org.apache.jena.atlas.csv.CSVParser ;
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.logging.FmtLog ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -69,10 +69,10 @@ public class CSVInput
         CSVParser parser = CSVParser.create(in) ;
         final List<Var> vars = vars(parser) ;
         List<String> varNames = Var.varNames(vars) ;
-        Transform<List<String>, Binding> transform = new Transform<List<String>, Binding>(){
+        Function<List<String>, Binding> transform = new Function<List<String>, Binding>(){
             private int count = 1 ;
             @Override
-            public Binding convert(List<String> row) {
+            public Binding apply(List<String> row) {
                 if ( row.size() != vars.size() )
                     FmtLog.warn(log, "Row %d: Length=%d: expected=%d", count, row.size(), vars.size()) ;
                 

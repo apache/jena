@@ -43,7 +43,7 @@ public class LangRDFJSON extends LangBase
 		super(tokenizer, profile, dest) ;
 		if (!(tokenizer instanceof TokenizerJSON))
 		{
-			throw new IllegalArgumentException("Tokenizer for the RDF/JSON parser must be an instance of org.openjena.atlas.json.io.parser.TokenizerJSON") ;
+			throw new IllegalArgumentException("Tokenizer for the RDF/JSON parser must be an instance of "+TokenizerJSON.class.getName()) ;
 		}
 	}
 

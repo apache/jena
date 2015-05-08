@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.algebra.op ;
 
-import org.apache.jena.atlas.lib.Lib ;
+import java.util.Objects;
+
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVisitor ;
 import org.apache.jena.sparql.algebra.Transform ;
@@ -112,7 +113,7 @@ public class OpExtend extends OpExtendAssign {
             return false ;
         OpExtend assign = (OpExtend)other ;
 
-        if ( !Lib.equal(assignments, assign.assignments) )
+        if ( !Objects.equals(assignments, assign.assignments) )
             return false ;
         return getSubOp().equalTo(assign.getSubOp(), labelMap) ;
     }

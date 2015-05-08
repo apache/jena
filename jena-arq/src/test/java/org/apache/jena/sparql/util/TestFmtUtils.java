@@ -101,31 +101,31 @@ public class TestFmtUtils
 
     @Test
     public void stringLiteral() throws Exception {
-        Node_Literal nl = (Node_Literal)NodeFactory.createUncachedLiteral("abc", "no", new XSDDatatype("string")) ;
+        Node_Literal nl = (Node_Literal)NodeFactory.createLiteral("abc", "no", new XSDDatatype("string")) ;
         assertEquals("\"abc\"@no", FmtUtils.stringForLiteral(nl, getContext())) ;
     }
 
     @Test
     public void integerLiteral() throws Exception {
-        Node_Literal nl = (Node_Literal)NodeFactory.createUncachedLiteral("2", new XSDDatatype("int")) ;
+        Node_Literal nl = (Node_Literal)NodeFactory.createLiteral("2", new XSDDatatype("int")) ;
         assertEquals("\"2\"^^<http://www.w3.org/2001/XMLSchema#int>", FmtUtils.stringForLiteral(nl, getContext())) ;
     }
 
     @Test
     public void doubleLiteral() throws Exception {
-        Node_Literal nl = (Node_Literal)NodeFactory.createUncachedLiteral("2.1e2", new XSDDatatype("double")) ;
+        Node_Literal nl = (Node_Literal)NodeFactory.createLiteral("2.1e2", new XSDDatatype("double")) ;
         assertEquals("2.1e2", FmtUtils.stringForLiteral(nl, getContext())) ;
     }
 
     @Test
     public void decimalLiteral() throws Exception {
-        Node_Literal nl = (Node_Literal)NodeFactory.createUncachedLiteral("2.4", new XSDDatatype("decimal")) ;
+        Node_Literal nl = (Node_Literal)NodeFactory.createLiteral("2.4", new XSDDatatype("decimal")) ;
         assertEquals("2.4", FmtUtils.stringForLiteral(nl, getContext())) ;
     }
 
     @Test
     public void booleanLiteral() throws Exception {
-        Node_Literal nl = (Node_Literal)NodeFactory.createUncachedLiteral("false", new XSDDatatype("boolean")) ;
+        Node_Literal nl = (Node_Literal)NodeFactory.createLiteral("false", new XSDDatatype("boolean")) ;
         assertEquals("false", FmtUtils.stringForLiteral(nl, getContext())) ;
     }
 

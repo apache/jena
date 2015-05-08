@@ -27,7 +27,6 @@ import static org.apache.jena.atlas.lib.Chars.CH_RBRACE ;
 import static org.apache.jena.atlas.lib.Chars.CH_RBRACKET ;
 import static org.apache.jena.atlas.lib.Chars.CH_RPAREN ;
 import static org.apache.jena.atlas.lib.Chars.CH_SEMICOLON ;
-import static org.apache.jena.atlas.lib.Lib.equal ;
 import static org.apache.jena.atlas.lib.Lib.hashCodeObject ;
 import static org.apache.jena.riot.tokens.TokenType.BNODE ;
 import static org.apache.jena.riot.tokens.TokenType.DECIMAL ;
@@ -41,6 +40,7 @@ import static org.apache.jena.riot.tokens.TokenType.VAR ;
 
 import java.util.ArrayList ;
 import java.util.List ;
+import java.util.Objects;
 
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.iterator.Iter ;
@@ -498,10 +498,10 @@ public final class Token
     {
         if ( ! ( other instanceof Token ) ) return false ;
         Token t = (Token)other ;
-        return  equal(tokenType, t.tokenType) &&
-                equal(tokenImage, t.tokenImage) &&
-                equal(tokenImage2, t.tokenImage2) &&
-                equal(cntrlCode, t.cntrlCode) ;
+        return  Objects.equals(tokenType, t.tokenType) &&
+        		Objects.equals(tokenImage, t.tokenImage) &&
+        		Objects.equals(tokenImage2, t.tokenImage2) &&
+        		Objects.equals(cntrlCode, t.cntrlCode) ;
     }
     
     public static Token tokenForChar(char character)

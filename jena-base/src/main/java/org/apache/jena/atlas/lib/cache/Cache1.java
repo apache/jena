@@ -19,17 +19,17 @@
 package org.apache.jena.atlas.lib.cache;
 
 import java.util.Iterator ;
+import java.util.Objects;
 import java.util.concurrent.Callable ;
+import java.util.function.BiConsumer;
 
 import org.apache.jena.atlas.iterator.SingletonIterator ;
-import org.apache.jena.atlas.lib.ActionKeyValue ;
 import org.apache.jena.atlas.lib.Cache ;
-import org.apache.jena.atlas.lib.Lib ;
 
 /** A one-slot cache.*/
 public class Cache1<K, V> implements Cache<K,V>
 {
-    private ActionKeyValue<K, V> dropHandler = null ;
+    private BiConsumer<K, V> dropHandler = null ;
     private K cacheKey ;
     private V cacheValue ;
     
@@ -85,7 +85,7 @@ public class Cache1<K, V> implements Cache<K,V>
     @Override
     public void put(K key, V thing)
     {
-        if ( Lib.equal(cacheKey, key) && Lib.equal(cacheValue, thing) )
+        if ( Objects.equals(cacheKey, key) && Objects.equals(cacheValue, thing) )
             // No change.
             return ;
 
@@ -107,7 +107,7 @@ public class Cache1<K, V> implements Cache<K,V>
     }
 
     @Override
-    public void setDropHandler(ActionKeyValue<K, V> dropHandler)
+    public void setDropHandler(BiConsumer<K, V> dropHandler)
     {
         this.dropHandler = dropHandler ;
     }
@@ -115,7 +115,7 @@ public class Cache1<K, V> implements Cache<K,V>
     private void notifyDrop(K key, V thing)
     {
         if ( dropHandler != null && key != null )
-            dropHandler.apply(key, thing) ;
+            dropHandler.accept(key, thing) ;
     }
     
     @Override

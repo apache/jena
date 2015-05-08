@@ -21,32 +21,28 @@ package org.apache.jena.atlas.lib.cache;
 import java.util.Iterator ;
 import java.util.concurrent.Callable ;
 import java.util.concurrent.ExecutionException ;
+import java.util.function.BiConsumer ;
 
-import org.apache.jena.atlas.lib.ActionKeyValue ;
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.logging.Log ;
-
 import org.apache.jena.ext.com.google.common.cache.CacheBuilder ;
 import org.apache.jena.ext.com.google.common.cache.RemovalListener ;
-import org.apache.jena.ext.com.google.common.cache.RemovalNotification ;
 
-/** Wrapper around com.google.common.cache */
+/** Wrapper around a shaded com.google.common.cache */
 final
 public class CacheGuava<K,V> implements Cache<K, V>
 {
-    private ActionKeyValue<K, V> dropHandler = null ;
-    /*private*/ org.apache.jena.ext.com.google.common.cache.Cache<K,V> cache ;
+    private BiConsumer<K, V> dropHandler = null ;
+    private org.apache.jena.ext.com.google.common.cache.Cache<K,V> cache ;
 
     public CacheGuava(int size)
     {
-        RemovalListener<K,V> drop = new RemovalListener<K, V>() {
-            @Override
-            public void onRemoval(RemovalNotification<K, V> notification) {
-                if ( dropHandler != null )
-                    dropHandler.apply(notification.getKey(),
-                                      notification.getValue()) ;
-            }
+        RemovalListener<K,V> drop = (notification)-> {
+            if ( dropHandler != null )
+                dropHandler.accept(notification.getKey(),
+                                   notification.getValue()) ;
         } ;
+            
         cache = CacheBuilder.newBuilder()
             .maximumSize(size)
             .removalListener(drop)
@@ -55,7 +51,6 @@ public class CacheGuava<K,V> implements Cache<K, V>
             .build() ;
     }
 
-    // Change the interface to be ...
     @Override
     public V getOrFill(K key, Callable<V> filler) {
         try {
@@ -112,7 +107,7 @@ public class CacheGuava<K,V> implements Cache<K, V>
     }
 
     @Override
-    public void setDropHandler(ActionKeyValue<K, V> dropHandler) {
+    public void setDropHandler(BiConsumer<K, V> dropHandler) {
         this.dropHandler = dropHandler ;
     }
 }

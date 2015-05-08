@@ -19,8 +19,8 @@
 package org.apache.jena.tdb.base.block;
 
 import java.util.Iterator ;
+import java.util.function.BiConsumer;
 
-import org.apache.jena.atlas.lib.ActionKeyValue ;
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
 import org.slf4j.Logger ;
@@ -67,9 +67,9 @@ public class BlockMgrCache extends BlockMgrSync
         else
         {
             writeCache = CacheFactory.createCache(writeSlots) ;
-            writeCache.setDropHandler(new ActionKeyValue<Long, Block>(){
+            writeCache.setDropHandler(new BiConsumer<Long, Block>(){
                 @Override
-                public void apply(Long id, Block block)
+                public void accept(Long id, Block block)
                 { 
                     // We're inside a synchronized operation at this point.
                     log("Cache spill: write block: %d", id) ;

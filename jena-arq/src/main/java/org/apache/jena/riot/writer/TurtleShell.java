@@ -38,7 +38,6 @@ import java.util.* ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.SetUtils ;
 import org.apache.jena.graph.Graph ;
@@ -299,14 +298,14 @@ public abstract class TurtleShell {
                 if ( ! isDefaultGraph(graphName) )
                     return false ;
             } else { 
-                if ( ! Lib.equal(gn, graphName) )
+                if ( ! Objects.equals(gn, graphName) )
                     // Not both same named graph
                     return false ;
             }
             // Check rest of iterator.
             for ( ; iter.hasNext() ; ) {
                 Quad q2 = iter.next() ;
-                if ( ! Lib.equal(gn, q2.getGraph()) )
+                if ( ! Objects.equals(gn, q2.getGraph()) )
                     return false ;    
             }
             return true ;

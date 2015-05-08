@@ -22,7 +22,6 @@ package org.apache.jena.tdb.solver.stats;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.apache.jena.atlas.lib.MapUtils ;
 import org.apache.jena.graph.Node ;
 
 /** Statistics collector, general purpose */
@@ -41,9 +40,9 @@ abstract class StatsCollectorBase<T>
     public void record(T g, T s, T p, T o)
     {
         count++ ;
-        MapUtils.increment(predicates, p) ;
+		predicates.put(p, predicates.getOrDefault(p, 0) + 1);
         if ( typeTrigger != null && typeTrigger.equals(p) )
-            MapUtils.increment(types, o) ;
+        		types.put(o, types.getOrDefault(o, 0) + 1);
     }
 
     protected abstract Map<Node, Integer> convert(Map<T, Integer> map) ;

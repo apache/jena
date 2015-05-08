@@ -22,9 +22,9 @@ import static org.apache.jena.tdb.lib.NodeLib.setHash ;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
+import java.util.function.Function;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.tdb.TDBException ;
@@ -214,37 +214,16 @@ public class NodeTableNative implements NodeTable
     @Override
     public Iterator<Pair<NodeId, Node>> all() { return all2() ; }
     
-    private Iterator<Pair<NodeId, Node>> all1()
-    
-    {
-        // Could be quicker by hoping down the objects files.
-        Iterator<Record> iter = nodeHashToId.iterator() ;
-
-        Transform<Record, Pair<NodeId, Node>> transform = new Transform<Record, Pair<NodeId, Node>>() {
-            @Override
-            public Pair<NodeId, Node> convert(Record item)
-            {
-                NodeId id = NodeId.create(item.getValue(), 0) ;
-                Node n = NodeLib.fetchDecode(id.getId(), getObjects()) ;
-                return new Pair<>(id, n) ;
-            }};
-        return Iter.map(iter, transform) ;
-    }
-
     private Iterator<Pair<NodeId, Node>> all2()
     {
         Iterator<Pair<Long, ByteBuffer>> objs = objects.all() ; 
         
-        Transform<Pair<Long, ByteBuffer>, Pair<NodeId, Node>> transform = new Transform<Pair<Long, ByteBuffer>, Pair<NodeId, Node>>() {
-            @Override
-            public Pair<NodeId, Node> convert(Pair<Long, ByteBuffer> item)
-            {
-                NodeId id = NodeId.create(item.car().longValue()) ;
-                ByteBuffer bb = item.cdr();
-                Node n = NodeLib.decode(bb) ;
-                return new Pair<>(id, n) ;
-            }
-        };
+		Function<Pair<Long, ByteBuffer>, Pair<NodeId, Node>> transform = item -> {
+			NodeId id = NodeId.create(item.car().longValue());
+			ByteBuffer bb = item.cdr();
+			Node n = NodeLib.decode(bb);
+			return new Pair<>(id, n);
+		};
         return Iter.map(objs, transform) ;
     }
 

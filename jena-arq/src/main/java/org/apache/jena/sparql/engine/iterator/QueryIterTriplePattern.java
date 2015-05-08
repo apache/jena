@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import java.util.List ;
-
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -31,9 +29,7 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.util.iterator.ClosableIterator ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.NiceIterator ;
-import org.apache.jena.util.iterator.WrappedIterator ;
 
 public class QueryIterTriplePattern extends QueryIterRepeatApply
 {
@@ -76,19 +72,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
             Node p2 = tripleNode(p) ;
             Node o2 = tripleNode(o) ;
             Graph graph = cxt.getActiveGraph() ;
-            
-            ExtendedIterator<Triple> iter = graph.find(s2, p2, o2) ;
-            
-            if ( false )
-            {
-                // Materialize the results now. Debugging only.
-                List<Triple> x = iter.toList() ;
-                this.graphIter = WrappedIterator.create(x.iterator()) ;
-                iter.close();
-            }
-            else
-                // Stream.
-                this.graphIter = iter ;
+            this.graphIter = graph.find(s2, p2, o2) ;
         }
 
         private static Node tripleNode(Node node)

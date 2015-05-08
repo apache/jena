@@ -25,8 +25,11 @@ import org.apache.jena.atlas.iterator.IteratorArray ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
+// Legacy - to be removed sometime.
+@SuppressWarnings("deprecation")
 public class TestIteratorArray extends BaseTest
 {
+    
     IteratorArray<String> create(String ... a)
     {
         return IteratorArray.create(a) ;

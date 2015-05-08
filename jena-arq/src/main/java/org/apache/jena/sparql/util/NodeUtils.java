@@ -21,6 +21,7 @@ package org.apache.jena.sparql.util;
 import java.util.Collection ;
 import java.util.HashSet ;
 import java.util.Iterator ;
+import java.util.Objects;
 import java.util.Set ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
@@ -44,7 +45,9 @@ import org.apache.jena.util.iterator.WrappedIterator ;
 public class NodeUtils
 {
     public interface EqualityTest {
-        boolean equal(Node n1, Node n2) ;
+        default boolean equal(Node n1, Node n2) {
+			return Objects.equals(n1, n2) ;
+		}
     }
 
     /** IRI to Node */ 
@@ -69,7 +72,7 @@ public class NodeUtils
         return true ;
     }
 
-    /** Get lexical for of anythign that looks like a string literal.
+    /** Get lexical for of anything that looks like a string literal.
      * Returns the string value of plain literal (simple literal
      * or lang string) or XSD string.
      */

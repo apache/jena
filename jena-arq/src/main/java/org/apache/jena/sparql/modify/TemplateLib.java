@@ -19,9 +19,10 @@
 package org.apache.jena.sparql.modify;
 
 import java.util.* ;
+import java.util.function.Function;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
+import org.apache.jena.ext.com.google.common.collect.Iterators;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
@@ -55,28 +56,22 @@ public class TemplateLib
         // The default graph has been set to something else.
         if ( dftGraph != null )
         {
-            Transform<Quad, Quad> nt = new Transform<Quad, Quad>() {
-                @Override
-                public Quad convert(Quad quad)
-                {
-                    if ( ! quad.isDefaultGraph() ) return quad ;
-                    
-                    return new Quad(dftGraph, quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
-                }
-            };
-            quads = Iter.map(quads, nt) ;
-        }
+			quads = Iter
+					.map(quads,
+							q -> (!q.isDefaultGraph()) ? q :
+							new Quad(dftGraph, q.getSubject(), q.getPredicate(), q.getObject()));
+		}
         return quads;
     }
     
     /** Substitute into triple patterns */
     public static Iterator<Triple> calcTriples(final List<Triple> triples, Iterator<Binding> bindings)
     {
-        return Iter.mapMany(bindings, new Transform<Binding, Iterator<Triple>>()
+        return Iterators.concat(Iter.map(bindings, new Function<Binding, Iterator<Triple>>()
         {
             Map<Node, Node> bNodeMap = new HashMap<>() ;
             @Override
-            public Iterator<Triple> convert(final Binding b)
+            public Iterator<Triple> apply(final Binding b)
             {
                 // Iteration is a new mapping of bnodes. 
                 bNodeMap.clear() ;
@@ -94,17 +89,17 @@ public class TemplateLib
                 }
                 return tripleList.iterator();
             }
-        });
+        }));
     }
     
     /** Substitute into quad patterns */
     public static Iterator<Quad> calcQuads(final List<Quad> quads, Iterator<Binding> bindings)
     {
-        return Iter.mapMany(bindings, new Transform<Binding, Iterator<Quad>>()
+        return Iterators.concat(Iter.map(bindings, new Function<Binding, Iterator<Quad>>()
         {
             Map<Node, Node> bNodeMap = new HashMap<>() ;
             @Override
-            public Iterator<Quad> convert(final Binding b)
+            public Iterator<Quad> apply(final Binding b)
             {
                 // Iteration is a new mapping of bnodes. 
                 bNodeMap.clear() ;
@@ -122,7 +117,7 @@ public class TemplateLib
                 }
                 return quadList.iterator();
             }
-        });
+        }));
     }
 
     /** Substitute into a quad, with rewriting of bNodes */ 

@@ -21,10 +21,10 @@ package org.apache.jena.atlas.lib ;
 import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.Objects;
+import java.util.function.Function;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.IteratorArray ;
-import org.apache.jena.atlas.iterator.Transform ;
 
 /** Tuple class - tuples are immutable and must be created initialized */
 public class Tuple<T> implements Iterable<T> {
@@ -38,9 +38,6 @@ public class Tuple<T> implements Iterable<T> {
     /**
      * Create a tuple from an array of elements. The array is not copied and
      * should not be modified after this call.
-     * <p>
-     * There is also a {@link TupleBuilder} which does create an idendent
-     * copy, in case that style is preferrable for creating tuples.
      */
     public static <X> Tuple<X> create(X[] elements) {
         return new Tuple<>(elements) ;
@@ -48,22 +45,13 @@ public class Tuple<T> implements Iterable<T> {
 
     // TupleLib??
     public static <T> Iterator<T> project(final int slot, Iterator<Tuple<T>> iter) {
-        Transform<Tuple<T>, T> projection = new Transform<Tuple<T>, T>() {
-            @Override
-            public T convert(Tuple<T> tuple) {
-                return tuple.get(slot) ;
-            }
-        } ;
-        return Iter.map(iter, projection) ;
+        return Iter.map(iter, t -> t.get(slot)) ;
     }
 
     public static <T> Iterator<Tuple<T>> prefix(final int prefixLength, Iterator<Tuple<T>> iter) {
-        Transform<Tuple<T>, Tuple<T>> sub = new Transform<Tuple<T>, Tuple<T>>() {
-            @Override
-            public Tuple<T> convert(Tuple<T> tuple) {
-                T[] x = ArrayUtils.copy(tuple.tuple, 0, prefixLength) ;
-                return Tuple.create(x) ;
-            }
+        Function<Tuple<T>, Tuple<T>> sub = t -> {
+                T[] x = ArrayUtils.copy(t.tuple, 0, prefixLength) ;
+                return Tuple.create(x) ;    
         } ;
         return Iter.map(iter, sub) ;
     }
@@ -100,7 +88,7 @@ public class Tuple<T> implements Iterable<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return IteratorArray.create(tuple) ;
+        return Arrays.asList(tuple).iterator() ;
     }
 
     /** Return a tuple with the column mapping applied */
@@ -140,7 +128,7 @@ public class Tuple<T> implements Iterable<T> {
         for ( int i = 0 ; i < tuple.length ; i++ ) {
             Object obj1 = tuple[i] ;
             Object obj2 = x.tuple[i] ;
-            if ( !Lib.equal(obj1, obj2) )
+            if ( !Objects.equals(obj1, obj2) )
                 return false ;
         }
         return true ;

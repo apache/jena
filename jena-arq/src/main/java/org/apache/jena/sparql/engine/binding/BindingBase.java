@@ -19,9 +19,9 @@
 package org.apache.jena.sparql.engine.binding;
 
 import java.util.Iterator ;
+import java.util.Objects;
 
 import org.apache.jena.atlas.iterator.IteratorConcat ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.util.FmtUtils ;
@@ -219,7 +219,7 @@ abstract public class BindingBase implements Binding
             Var var = iter1.next() ; 
             Node node1 = bind1.get(var) ;
             Node node2 = bind2.get(var) ;
-            if ( ! Lib.equal(node1, node2) )
+            if ( ! Objects.equals(node1, node2) )
                 return false ;
         }
         

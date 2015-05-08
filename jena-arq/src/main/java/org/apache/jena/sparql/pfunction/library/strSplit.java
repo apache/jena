@@ -22,7 +22,6 @@ import java.util.Arrays ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -61,13 +60,10 @@ public class strSplit extends PFuncSimpleAndList
         
         // StrUtils will also trim whitespace
         String[] tokens = StrUtils.split(s, regex);
-        Iterator<Binding> it = Iter.map(Arrays.asList(tokens).iterator(), new Transform<String,Binding>() {
-            @Override
-            public Binding convert(String item)
-            {
-                return BindingFactory.binding(binding, subjectVar, NodeFactory.createLiteral(item)) ;
-            }
-        });
+		Iterator<Binding> it = Iter.map(
+				Arrays.asList(tokens).iterator(),
+				item -> BindingFactory.binding(binding, subjectVar,
+						NodeFactory.createLiteral(item)));
         return new QueryIterPlainWrapper(it, execCxt);
     }
 

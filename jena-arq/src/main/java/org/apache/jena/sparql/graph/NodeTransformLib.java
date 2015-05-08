@@ -21,7 +21,7 @@ package org.apache.jena.sparql.graph;
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
-
+import java.util.Objects;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -37,7 +37,6 @@ import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
-import static org.apache.jena.atlas.lib.Lib.equal ;
 
 public class NodeTransformLib
 {
@@ -90,11 +89,11 @@ public class NodeTransformLib
         Node p = triple.getPredicate() ;
         Node o = triple.getObject() ;
         
-        Node s1 = nodeTransform.convert(s) ;
+        Node s1 = nodeTransform.apply(s) ;
         if ( s1 != s ) { change = true ; s = s1 ; }
-        Node p1 = nodeTransform.convert(p) ;
+        Node p1 = nodeTransform.apply(p) ;
         if ( p1 != p ) { change = true ; p = p1 ; }
-        Node o1 = nodeTransform.convert(o) ;
+        Node o1 = nodeTransform.apply(o) ;
         if ( o1 != o ) { change = true ; o = o1 ; }
     
         if ( ! change )
@@ -111,13 +110,13 @@ public class NodeTransformLib
         Node o = quad.getObject() ;
         Node g = quad.getGraph() ;
         
-        Node g1 = nodeTransform.convert(g) ;
+        Node g1 = nodeTransform.apply(g) ;
         if ( g1 != g ) { change = true ; g = g1 ; }
-        Node s1 = nodeTransform.convert(s) ;
+        Node s1 = nodeTransform.apply(s) ;
         if ( s1 != s ) { change = true ; s = s1 ; }
-        Node p1 = nodeTransform.convert(p) ;
+        Node p1 = nodeTransform.apply(p) ;
         if ( p1 != p ) { change = true ; p = p1 ; }
-        Node o1 = nodeTransform.convert(o) ;
+        Node o1 = nodeTransform.apply(o) ;
         if ( o1 != o ) { change = true ; o = o1 ; }
     
         if ( ! change )
@@ -142,7 +141,7 @@ public class NodeTransformLib
         BindingMap b2 = BindingFactory.create() ;
         List<Var> vars = Iter.toList(b.vars()) ;
         for ( Var v : vars ) {
-            Var v2 = (Var)transform.convert(v) ;
+            Var v2 = (Var)transform.apply(v) ;
             b2.add(v2, b.get(v));
         }
         return b2 ;
@@ -175,10 +174,10 @@ public class NodeTransformLib
         for ( Var v : varExprList.getVars() )
         {
             Expr expr = varExprList.getExpr(v) ;
-            Var v2 = (Var)nodeTransform.convert(v) ;
+            Var v2 = (Var)nodeTransform.apply(v) ;
             Expr expr2 = ( expr != null ) ? transform(nodeTransform, expr) : null ;
             
-            if ( ! equal(v, v2) || ! equal(expr, expr2) )
+            if ( ! Objects.equals(v, v2) || ! Objects.equals(expr, expr2) )
                 changed = true ;
             varExprList2.add(v2, expr2) ;
         }
@@ -193,9 +192,9 @@ public class NodeTransformLib
         boolean changed = false ;
         for ( Var v : varList )
         {
-            Var v2 = (Var)nodeTransform.convert(v) ;
+            Var v2 = (Var)nodeTransform.apply(v) ;
             varList2.add(v2) ;
-            if ( !equal(v, v2) )
+            if ( !Objects.equals(v, v2) )
                 changed = true ;
         }
         if ( ! changed )

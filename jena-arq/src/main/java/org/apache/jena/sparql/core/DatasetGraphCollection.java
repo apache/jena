@@ -19,10 +19,10 @@
 package org.apache.jena.sparql.core;
 
 import java.util.Iterator ;
+import java.util.Objects;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorConcat;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.shared.JenaException ;
@@ -100,7 +100,7 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
     
     protected Graph fetchGraph(Node gn)
     {
-        if ( Quad.isDefaultGraph(gn) || Lib.equal(gn,Quad.tripleInQuad)) // Not preferred style
+        if ( Quad.isDefaultGraph(gn) || Objects.equals(gn,Quad.tripleInQuad)) // Not preferred style
             return getDefaultGraph() ;
         else
             return getGraph(gn) ;

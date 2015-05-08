@@ -278,7 +278,7 @@ public class Functor implements ClauseEntry {
      * @param f the functor data structure to be wrapped in a node.
      */
     public static Node makeFunctorNode(Functor f) {
-        return NodeFactory.createUncachedLiteral(f, FunctorDatatype.theFunctorDatatype);
+        return NodeFactory.createLiteralByValue(f, FunctorDatatype.theFunctorDatatype);
     }
     
    /**
