@@ -20,8 +20,8 @@ package org.apache.jena.atlas.lib.cache;
 
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.IntStream.rangeClosed;
-import static org.junit.Assert.assertEquals;
 
+import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.atlas.lib.Cache;
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ import org.junit.Test;
  * @date 8 May 2015
  *
  */
-public class CacheSimpleTest {
+public class TestCacheSimple extends BaseTest {
 
 	@Test
 	public void testFixedSize() {
