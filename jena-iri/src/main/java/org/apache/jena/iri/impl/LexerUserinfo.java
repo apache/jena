@@ -26,7 +26,7 @@ package org.apache.jena.iri.impl;
  * on 04/03/12 16:02 from the specification file
  * <tt>tmp.jflex</tt>
  */
-class LexerUserinfo extends AbsLexer implements org.apache.jena.iri.ViolationCodes, org.apache.jena.iri.IRIComponents, Lexer {
+class LexerUserinfo extends AbsLexer implements org.apache.jena.iri.IRIComponents, Lexer {
 
   /** This character denotes the end of file */
   private static final int YYEOF = -1;
@@ -222,9 +222,6 @@ class LexerUserinfo extends AbsLexer implements org.apache.jena.iri.ViolationCod
       from input */
   private int zzEndRead;
 
-  /** number of newlines encountered up to the start of the matched text */
-  private int yyline;
-
   /** the number of characters up to the start of the matched text */
   private int yychar;
 
@@ -365,7 +362,7 @@ class LexerUserinfo extends AbsLexer implements org.apache.jena.iri.ViolationCod
     zzAtEOF  = false;
     zzEndRead = zzStartRead = 0;
     zzCurrentPos = zzMarkedPos = 0;
-    yyline = yychar = 0;
+    yychar = 0;
     zzLexicalState = YYINITIAL;
   }
 

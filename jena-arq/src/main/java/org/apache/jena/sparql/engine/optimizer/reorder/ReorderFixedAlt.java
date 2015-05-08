@@ -22,8 +22,6 @@ import static org.apache.jena.sparql.engine.optimizer.reorder.PatternElements.TE
 import static org.apache.jena.sparql.engine.optimizer.reorder.PatternElements.VAR ;
 import org.apache.jena.sparql.engine.optimizer.Pattern ;
 import org.apache.jena.sparql.engine.optimizer.StatsMatcher ;
-import org.apache.jena.sparql.graph.NodeConst ;
-import org.apache.jena.sparql.sse.Item ;
 
 /**
  * Alternative fixed reorder function. This corresponds to the algorithm prior
@@ -37,11 +35,6 @@ import org.apache.jena.sparql.sse.Item ;
 public class ReorderFixedAlt extends ReorderTransformationSubstitution
 {
     public ReorderFixedAlt() {}
-    
-    // Fixed scheme for when we have no stats.
-    // It chooses a triple pattern by order of preference.
-    
-    private static Item type = Item.createNode(NodeConst.nodeRDFType) ;
     
     /** The number of triples used for the base scale */
     public static int MultiTermSampleSize = 100 ; 

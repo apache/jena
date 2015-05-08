@@ -60,7 +60,6 @@ public class DataService { //implements DatasetMXBean {
 
     // DataService-level counters.
     private final CounterSet counters                   = new CounterSet() ;
-    private final AtomicLong    requestCounter          = new AtomicLong(0) ;   
     private final AtomicBoolean offlineInProgress       = new AtomicBoolean(false) ;
     private final AtomicBoolean acceptingRequests       = new AtomicBoolean(true) ;
 

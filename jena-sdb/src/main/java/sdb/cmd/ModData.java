@@ -18,9 +18,6 @@
 
 package sdb.cmd;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import arq.cmd.ArgDecl ;
 import arq.cmd.CmdArgModule ;
 import arq.cmdline.CmdGeneral ;
@@ -29,8 +26,6 @@ import arq.cmdline.ModBase;
 public class ModData extends ModBase
 {
     private ArgDecl argDeclLoad = new ArgDecl(ArgDecl.HasValue, "data", "load") ;
-    private List <String> filesToLoad = new ArrayList<String>() ;
-    
     public ModData() {}
     
     @Override
@@ -44,6 +39,6 @@ public class ModData extends ModBase
     @Override
     public void processArgs(CmdArgModule cmdLine)
     {
-        filesToLoad = cmdLine.getValues(argDeclLoad) ;
+        cmdLine.getValues(argDeclLoad);
     }
 }

@@ -18,7 +18,6 @@
 
 package org.apache.jena.riot.langsuite;
 
-import static org.apache.jena.riot.SysRIOT.fmtMessage ;
 import org.apache.jena.atlas.legacy.BaseTest2 ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
@@ -28,7 +27,6 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.sparql.junit.EarlReport ;
 
@@ -44,30 +42,6 @@ public class UnitTestBadSyntax extends LangTestCase
         this.lang = lang ;
     }
     
-    /** An error handler that throw exceptions on warnings and errors */ 
-    private static ErrorHandler errorHandlerTestStrict = new ErrorHandler()
-    {
-        /** report a warning  - do not carry on */
-        @Override
-        public void warning(String message, long line, long col)
-        { 
-            throw new RiotException(fmtMessage(message, line, col)) ;
-        }
-        
-        /** report an error - do not carry on */
-        @Override
-        public void error(String message, long line, long col)
-        { 
-            throw new RiotException(fmtMessage(message, line, col)) ;
-        }
-
-        @Override
-        public void fatal(String message, long line, long col)
-        {
-            throw new RiotException(fmtMessage(message, line, col)) ;
-        }
-    } ;
-
     @Override
     protected void _setUp()         { BaseTest2.setTestLogging(ErrorHandlerFactory.errorHandlerStrictNoLogging) ; }
 

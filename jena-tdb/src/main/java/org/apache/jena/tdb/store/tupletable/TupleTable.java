@@ -29,14 +29,10 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.sys.SystemTDB ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 /** A TupleTable is a set of TupleIndexes.  The first TupleIndex is the "primary" index and must exist */
 public class TupleTable implements Sync, Closeable
 {
-    private static Logger log = LoggerFactory.getLogger(TupleTable.class) ;
-    
     private final TupleIndex[] indexes ;
     private final TupleIndex   scanAllIndex ;   // Use this index if a complete scan is needed.
     private final int tupleLen ;

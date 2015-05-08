@@ -31,7 +31,6 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.iterator.QueryIterRoot ;
 import org.apache.jena.sparql.path.P_NegPropSet ;
 import org.apache.jena.sparql.path.Path ;
@@ -179,7 +178,6 @@ abstract public class PathEngine
         return graphFind(graph, s, p, o, context) ;
     }
 
-    private static Binding binding = BindingFactory.binding() ;
     private static Node RDFSmember = RDFS.Nodes.member ;
     private static Node ListMember = ListPFunction.nListMember ;
     

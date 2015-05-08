@@ -47,7 +47,6 @@ public class TestBPTreeRecords extends BaseTest
     static private int blockSize ;
     static private RecordFactory recordFactory ;
     
-    static private int bufSizeRecord ;
     static private BlockMgr blkMgrRecords  ;
     static private RecordBufferPageMgr recordBufferPageMgr  ;
     static private BPlusTree bPlusTree ;
@@ -66,7 +65,7 @@ public class TestBPTreeRecords extends BaseTest
         blockSize =  4*8 ;  // Which is 6 int records
         recordFactory = new RecordFactory(4, 0) ;
         
-        bufSizeRecord = RecordBufferPage.calcRecordSize(recordFactory, blockSize) ;
+        RecordBufferPage.calcRecordSize(recordFactory, blockSize);
         blkMgrRecords = BlockMgrFactory.createMem("BPTreeRecords", blockSize) ;
         recordBufferPageMgr = new RecordBufferPageMgr(recordFactory, blkMgrRecords) ;
         

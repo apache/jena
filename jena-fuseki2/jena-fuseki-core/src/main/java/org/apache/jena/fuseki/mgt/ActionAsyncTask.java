@@ -31,9 +31,6 @@ import org.apache.jena.fuseki.servlets.ServletOps ;
 /** Base helper class for creating async tasks on "items", based on POST  */ 
 public abstract class ActionAsyncTask extends ActionItem
 {
-    // ?? Better as a library (mixin) so can be used outside ActionItem
-    private static AsyncPool asyncPool = AsyncPool.get() ;
-    
     public ActionAsyncTask() { super() ; }
     
     @Override

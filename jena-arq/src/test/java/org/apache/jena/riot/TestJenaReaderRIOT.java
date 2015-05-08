@@ -29,7 +29,6 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.adapters.RDFReaderFactoryRIOT ;
-import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.util.FileUtils ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
@@ -41,8 +40,6 @@ public class TestJenaReaderRIOT extends BaseTest
 {
     private static final String directory = "testing/RIOT/Reader" ;
 
-    private static Context context = new Context() ;
-    
     @BeforeClass static public void beforeClass()
     { 
         RIOT.init() ;

@@ -130,12 +130,6 @@ public class ResultSetWriterRegistry {
         }
     } ;
 
-    private static ResultSetWriter writerNo = new ResultSetWriter() {
-        @Override public void write(OutputStream out, ResultSet resultSet, Context context) {}
-        @Override public void write(Writer out, ResultSet resultSet, Context context)       {}
-        @Override public void write(OutputStream out, boolean result, Context context) {}
-    } ;
-
     private static ResultSetWriter writerText = new ResultSetWriter() {
         @Override public void write(OutputStream out, ResultSet resultSet, Context context) {
             // Prefix mapp

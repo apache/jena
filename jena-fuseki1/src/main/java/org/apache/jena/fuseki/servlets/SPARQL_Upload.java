@@ -20,12 +20,10 @@ package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
 
-import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.PrintWriter ;
 import java.util.zip.GZIPInputStream ;
 
-import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -51,8 +49,6 @@ import org.apache.jena.web.HttpSC ;
 
 public class SPARQL_Upload extends SPARQL_ServletBase 
 {
-    private static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
-    
     public SPARQL_Upload() {
         super() ;
     }
@@ -60,7 +56,6 @@ public class SPARQL_Upload extends SPARQL_ServletBase
     // Methods to respond to.
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException
     {
         doCommon(request, response) ;
     }

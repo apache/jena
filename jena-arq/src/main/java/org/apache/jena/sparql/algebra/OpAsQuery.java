@@ -66,7 +66,6 @@ public class OpAsQuery
     {
         private Query query ;
         private Op op ;
-        private Element element = null ;
         private ElementGroup currentGroup = null ;
         private Deque<ElementGroup> stack = new ArrayDeque<>() ;
         private Collection<Var> projectVars = allocProjectVars();
@@ -380,7 +379,7 @@ public class OpAsQuery
             Element e = asElement(opFilter.getSubOp()) ;
             if ( currentGroup() != e )
                 currentGroup().addElement(e) ;
-            element = currentGroup() ;      // Was cleared by asElement. 
+            currentGroup();
             
             ExprList exprs = opFilter.getExprs() ;
             for ( Expr expr : exprs )

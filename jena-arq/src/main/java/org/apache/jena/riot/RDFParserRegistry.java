@@ -48,9 +48,6 @@ import org.apache.jena.sparql.util.Context ;
 
 public class RDFParserRegistry
 {
-    /** Map Jena I/O names to language */
-    private static Map<String, Lang> mapJenaNameToLang                 = DS.map() ;
-
     /** map language to a parser factory */ 
     private static Map<Lang, ReaderRIOTFactory> langToParserFactory  = DS.map() ;
     

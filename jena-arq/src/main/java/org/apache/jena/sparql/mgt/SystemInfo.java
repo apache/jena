@@ -24,14 +24,13 @@ import org.apache.jena.riot.system.IRIResolver ;
 
 public class SystemInfo implements SystemInfoMBean {
     private final String name ;
-    private final Node   iri ;
     private final String jmxPath ;
     private final String version ;
     private final String buildDate ;
 
     public SystemInfo(String name, String jmxPath, String version, String buildDate) {
         this.name = name ;
-        this.iri = createIRI(name) ;
+        createIRI(name);
         this.jmxPath = jmxPath ;
         this.version = version ;
         this.buildDate = buildDate ;

@@ -27,8 +27,6 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 /**
  * N-Triples.
@@ -37,8 +35,6 @@ import org.slf4j.LoggerFactory ;
  */
 public final class LangNTriples extends LangNTuple<Triple>
 {
-    private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
-    
     public LangNTriples(Tokenizer tokens,
                         ParserProfile profile,
                         StreamRDF dest)

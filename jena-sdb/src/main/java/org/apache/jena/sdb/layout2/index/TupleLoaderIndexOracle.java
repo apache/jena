@@ -21,12 +21,8 @@ package org.apache.jena.sdb.layout2.index;
 import org.apache.jena.sdb.layout2.TableDescNodes ;
 import org.apache.jena.sdb.sql.SDBConnection ;
 import org.apache.jena.sdb.store.TableDesc ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TupleLoaderIndexOracle extends TupleLoaderIndexBase {
-	
-	private static Logger log = LoggerFactory.getLogger(TupleLoaderIndexOracle.class);
 	
 	public TupleLoaderIndexOracle(SDBConnection connection, TableDesc tableDesc,
 			int chunkSize) {

@@ -21,16 +21,8 @@ package org.apache.jena.query.spatial.pfunction.library;
 import org.apache.jena.query.spatial.SpatialQuery;
 import org.apache.jena.query.spatial.pfunction.DirectionWithPointPFBase;
 import org.apache.jena.query.spatial.pfunction.SpatialMatch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class WestPF extends DirectionWithPointPFBase {
-
-	private static Logger log = LoggerFactory.getLogger(WestPF.class);
-
-	public WestPF() {
-		// TODO Auto-generated constructor stub
-	}
 
 	/** Deconstruct the node or list object argument and make a SpatialMatch */
     @Override

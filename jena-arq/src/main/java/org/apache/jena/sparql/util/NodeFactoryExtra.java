@@ -55,8 +55,6 @@ public class NodeFactoryExtra
         return parseNode(nodeString, prefixMappingDefault) ;
     }
 
-    private static PrefixMap pmapEmpty = PrefixMapFactory.create() ; 
-
     /** Parse a string into a node. 
      * <p>
      * Allows surrounding white space.

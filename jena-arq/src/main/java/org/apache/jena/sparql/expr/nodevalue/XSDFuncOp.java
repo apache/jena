@@ -1382,7 +1382,6 @@ public class XSDFuncOp
         return NodeValue.makeInteger((BigInteger)x) ;
     }
     
-    private static Duration zeroDuration = NodeValue.xmlDatatypeFactory.newDuration(0) ;
     private static Duration valueCanonicalDuration(NodeValue nv) {
         // Unclear.
         /* This semi-normalizes a duration value - the time part is normalized.

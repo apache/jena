@@ -290,8 +290,6 @@ public class SPARQLServer {
       */
     public static boolean       überServlet       = false ;
     
-    private static List<String> ListOfEmptyString = Arrays.asList("") ;
-
     private void configureOneDataset(ServletContextHandler context, DatasetRef dsDesc, boolean enableCompression) {
         String datasetPath = dsDesc.name ;
         if ( datasetPath.equals("/") )

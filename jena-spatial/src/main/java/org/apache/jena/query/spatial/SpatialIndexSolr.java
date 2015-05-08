@@ -22,10 +22,7 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.graph.Node ;
-import org.apache.lucene.spatial.SpatialStrategy ;
-import org.apache.lucene.spatial.prefix.RecursivePrefixTreeStrategy ;
 import org.apache.lucene.spatial.prefix.tree.GeohashPrefixTree ;
-import org.apache.lucene.spatial.prefix.tree.SpatialPrefixTree ;
 import org.apache.lucene.spatial.query.SpatialOperation ;
 import org.apache.solr.client.solrj.SolrQuery ;
 import org.apache.solr.client.solrj.SolrServer ;
@@ -43,28 +40,13 @@ public class SpatialIndexSolr implements SpatialIndex {
 	private static Logger log = LoggerFactory.getLogger(SpatialIndexSolr.class);
 	private final SolrServer solrServer;
 	private EntityDefinition docDef;
-	private SpatialPrefixTree grid;
-
-	/**
-	 * The Lucene spatial {@link SpatialStrategy} encapsulates an approach to
-	 * indexing and searching shapes, and providing distance values for them.
-	 * It's a simple API to unify different approaches. You might use more than
-	 * one strategy for a shape as each strategy has its strengths and
-	 * weaknesses.
-	 * <p />
-	 * Note that these are initialized with a field name.
-	 */
-	private SpatialStrategy strategy;
-
+	
 	public SpatialIndexSolr(SolrServer server, EntityDefinition def) {
 		this.solrServer = server;
 		this.docDef = def;
 
 		int maxLevels = 11;// results in sub-meter precision for geohash
-		// This can also be constructed from SpatialPrefixTreeFactory
-		grid = new GeohashPrefixTree(SpatialQuery.ctx, maxLevels);
-
-		this.strategy = new RecursivePrefixTreeStrategy(grid, def.getGeoField());
+		new GeohashPrefixTree(SpatialQuery.ctx, maxLevels);
 	}
 
 	@Override
