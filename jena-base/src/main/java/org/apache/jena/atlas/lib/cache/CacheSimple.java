@@ -18,17 +18,15 @@
 
 package org.apache.jena.atlas.lib.cache;
 
-import static java.util.Collections.synchronizedMap;
+import static java.util.Arrays.asList;
 
+import java.util.Arrays ;
 import java.util.Iterator ;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.concurrent.Callable ;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
+import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Cache ;
-import org.apache.jena.atlas.logging.Log;
 
 
 /**
@@ -39,86 +37,120 @@ import org.apache.jena.atlas.logging.Log;
 
 public class CacheSimple<K,V> implements Cache<K,V>
 {
-	private Map<K,V> internalCache;
-	
-    /**
-     * NO OP unless set by {@link #setDropHandler(BiConsumer)}
-     */
-    private BiConsumer<K,V> dropHandler = (k, v) -> {}  ;
+    private final V[] values ; 
+    private final K[] keys ;
+    private final int size ;
+    private int currentSize = 0 ;
+    private BiConsumer<K,V> dropHandler = null ;
     
-    public CacheSimple(int maxSize)
+    public CacheSimple(int size)
     { 
-		this.internalCache = synchronizedMap(new LinkedHashMap<K, V>(maxSize, 1, true) {
-					private static final long serialVersionUID = 1L;
-
-					@Override protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-						return size() > maxSize;
-					}
-				});
+        @SuppressWarnings("unchecked")
+        V[] x =  (V[])new Object[size] ;
+        values = x ;
+        
+        @SuppressWarnings("unchecked")
+        K[]  z =  (K[])new Object[size] ;
+        keys = z ;
+        
+        this.size = size ;
     }
     
+
     @Override
     public void clear()
     { 
-    		internalCache.clear();
+        Arrays.fill(values, null) ;
+        Arrays.fill(keys, null) ;
+        // drop handler
+        currentSize = 0 ;
     }
 
     @Override
     public boolean containsKey(K key)
     {
-    		return internalCache.containsKey(key);
+        return getIfPresent(key) != null ;
     }
 
+    // Return key index : -(index+1) if the key does not match
+    private final int index(K key)
+    { 
+        int x = (key.hashCode()&0x7fffffff) % size ;
+        if ( keys[x] != null && keys[x].equals(key) )
+            return x ; 
+        return -x-1 ;
+    }
+    
+    private final int decode(int x)
+    { 
+        if ( x >= 0 ) return x ;
+        return -x-1 ;
+    }
+    
     @Override
     public V getIfPresent(K key)
     {
-        return internalCache.get(key);
+        int x = index(key) ;
+        if ( x < 0 )
+            return null ; 
+        return values[x] ;
     }
 
-	@Override
-	public V getOrFill(K key, Callable<V> callable) {
-		final Function<K, V> f = new Function<K, V>() {
-
-			@Override public V apply(K dummy) {
-				try {
-					return callable.call();
-				} catch (Exception e) {
-					Log.warn(CacheSimple.class, "Execution exception filling cache", e) ;
-		            return null ;
-				}
-			}
-		};
-		return internalCache.computeIfAbsent(key, f);
-	}
+    @Override
+    public V getOrFill(K key, Callable<V> callable) {
+        return CacheOps.getOrFill(this, key, callable) ;
+    }
 
     @Override
     public void put(K key, V thing)
     {
-        internalCache.put(key, thing);
+        int x = index(key) ;
+        V old = null ;
+        if ( x < 0 )
+            // New.
+            x = decode(x) ;
+        else
+        {
+            // Drop the old K->V
+            old = values[x] ;
+            if ( dropHandler != null )
+                dropHandler.accept(keys[x], old) ;
+            currentSize-- ;
+        }
+        
+        values[x] = thing ;
+        if ( thing == null )
+            //put(,null) is a remove.
+            keys[x] = null ;
+        else {
+            keys[x] = key ;
+            currentSize++ ;
+        }
     }
 
     @Override
     public void remove(K key)
     {
-    		dropHandler.accept(key, internalCache.remove(key));
+        put(key, null) ;
     }
 
     @Override
     public long size()
     {
-        return internalCache.size() ;
+        return currentSize ;
     }
 
     @Override
     public Iterator<K> keys()
     {
-        return internalCache.keySet().iterator();
+        Iterator<K> iter = asList(keys).iterator() ;
+        return Iter.removeNulls(iter) ;
     }
 
     @Override
     public boolean isEmpty()
     {
-        return internalCache.isEmpty() ;
+        return currentSize == 0 ;
     }
 
     /** Callback for entries when dropped from the cache */

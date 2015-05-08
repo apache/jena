@@ -40,7 +40,7 @@ public class CacheSimpleTest {
 		final int maxSize = 5;
 		final int submittedEntries = 10;
 		final Cache<Integer, Object> testCache = new CacheSimple<>(maxSize);
-		rangeClosed(1, submittedEntries).boxed().collect(toMap(k -> k, v -> v))
+		rangeClosed(1, submittedEntries).boxed().collect(toMap(k -> k, v -> 1))
 				.forEach(testCache::put);
 		assertEquals("Test cache failed to maintain fixed size!", maxSize, testCache.size());
 	}
