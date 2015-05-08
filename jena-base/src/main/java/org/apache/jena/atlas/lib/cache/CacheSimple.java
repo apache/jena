@@ -18,10 +18,12 @@
 
 package org.apache.jena.atlas.lib.cache;
 
+import static java.util.Collections.synchronizedMap;
+
 import java.util.Iterator ;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Callable ;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -44,9 +46,15 @@ public class CacheSimple<K,V> implements Cache<K,V>
      */
     private BiConsumer<K,V> dropHandler = (k, v) -> {}  ;
     
-    public CacheSimple(int size)
+    public CacheSimple(int maxSize)
     { 
-    		this.internalCache = new ConcurrentHashMap<>(size);
+		this.internalCache = synchronizedMap(new LinkedHashMap<K, V>(maxSize, 1, true) {
+					private static final long serialVersionUID = 1L;
+
+					@Override protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+						return size() > maxSize;
+					}
+				});
     }
     
     @Override
@@ -71,8 +79,7 @@ public class CacheSimple<K,V> implements Cache<K,V>
 	public V getOrFill(K key, Callable<V> callable) {
 		final Function<K, V> f = new Function<K, V>() {
 
-			@Override
-			public V apply(K dummy) {
+			@Override public V apply(K dummy) {
 				try {
 					return callable.call();
 				} catch (Exception e) {
