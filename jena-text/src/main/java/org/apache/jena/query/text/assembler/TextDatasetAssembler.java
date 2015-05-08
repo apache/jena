@@ -36,11 +36,14 @@ import org.apache.jena.query.text.TextIndex ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.assembler.DatasetAssembler ;
 import org.apache.jena.sparql.util.Loader ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 
-public class TextDatasetAssembler extends AssemblerBase
+public class TextDatasetAssembler extends AssemblerBase implements Assembler
 {
+    private DatasetAssembler datasetAssembler = new DatasetAssembler() ;
+
     public static Resource getType() { return textDataset ; }
 
     /*

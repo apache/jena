@@ -53,6 +53,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
         .
     */
     
+    @SuppressWarnings("resource")
     @Override
     public TextIndex open(Assembler a, Resource root, Mode mode) {
         try {
