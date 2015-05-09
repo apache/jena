@@ -18,7 +18,6 @@
 
 package org.apache.jena.tdb.store;
 
-
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
