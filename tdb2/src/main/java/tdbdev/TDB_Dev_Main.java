@@ -22,12 +22,10 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.Transactional ;
-import org.seaborne.dboe.transaction.txn.Transaction ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.tdb2.setup.TDB2Builder ;
 

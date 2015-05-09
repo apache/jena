@@ -232,7 +232,7 @@ public class OpExecutorTDB1 extends OpExecutor
 
         gn = decideGraphNode(gn, execCxt) ;
         if ( gn == null )
-            return optimizeExecuteTriples(ds.getEffectiveDefaultGraph(), input, bgp, exprs, execCxt) ;
+            return optimizeExecuteTriples(ds.getDefaultGraphTDB(), input, bgp, exprs, execCxt) ;
         
         // ---- Execute quads+filters
         if ( bgp.size() >= 2 )
