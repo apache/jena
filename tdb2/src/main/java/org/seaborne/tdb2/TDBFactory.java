@@ -32,13 +32,20 @@ public class TDBFactory
     
     public static DatasetGraph createDatasetGraph(Location location) {
         StoreConnection sConn = StoreConnection.getCreate(location) ;
-        return sConn.getDatasetGraph() ; 
+        return sConn.getDatasetGraphTDB() ; 
     }
 
     public static Dataset createDataset(Location location) {
         DatasetGraph dsg = createDatasetGraph(location) ;
         return DatasetFactory.create(dsg) ;
     }
+
+    public static DatasetGraph createDatasetGraph(String location) {
+        return createDatasetGraph(Location.create(location)) ;
+    }
+
+    public static Dataset createDataset(String location) {
+        return createDataset(Location.create(location)) ;    }
 
     public static DatasetGraph createDatasetGraph() {
         return createDatasetGraph(Location.mem()) ;

@@ -42,7 +42,6 @@ import org.seaborne.tdb2.setup.StoreParamsBuilder.Item ;
  */
 public class StoreParams implements IndexParams, StoreParamsDynamic
 {
-    
     /* These are items you can change JVM to JVM */
     
     /*package*/ final Item<FileMode>           fileMode ;

@@ -29,7 +29,8 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.ConfigTest ;
 import org.seaborne.tdb2.TDB ;
 import org.seaborne.tdb2.TDBFactory ;
-import org.seaborne.tdb2.setup.Build ;
+import org.seaborne.tdb2.junit.BuildTestLib ;
+import org.seaborne.tdb2.setup.StoreParamsFactory ;
 import org.seaborne.tdb2.store.DatasetPrefixesTDB ;
 import org.seaborne.tdb2.sys.DatasetControl ;
 import org.seaborne.tdb2.sys.DatasetControlMRSW ;
@@ -58,7 +59,7 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
     }
     
     static DatasetPrefixesTDB createTesting(Location location, DatasetControl policy) {
-        return Build.makePrefixes(location, policy) ;
+        return BuildTestLib.makePrefixes(location, policy) ;
     }
 
     @Override

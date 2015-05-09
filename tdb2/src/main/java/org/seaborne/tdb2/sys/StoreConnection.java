@@ -116,7 +116,7 @@ public class StoreConnection
 
         // No transactions at this point (or we don't care and are clearing up
         // forcefully.)
-        sConn.getDatasetGraph().close() ;
+        sConn.getDatasetGraphTDB().close() ;
         sConn.isValid = false ;
         cache.remove(location) ;
 
@@ -143,12 +143,13 @@ public class StoreConnection
         return datasetGraph;
     }
     
+    /** return the base DatasetGraph (not transactional, if they are difefrent) */
     public DatasetGraphTDB getDatasetGraphTDB() {
-        return datasetGraph.getDatasetTDB() ;
+        return datasetGraph.getBaseDatasetGraph() ;
     }
     
     public Location getLocation() {
-        return datasetGraph.getDatasetTDB().getLocation() ;
+        return datasetGraph.getBaseDatasetGraph().getLocation() ;
     }
 }
   

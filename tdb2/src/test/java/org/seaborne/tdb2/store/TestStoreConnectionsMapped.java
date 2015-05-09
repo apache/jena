@@ -24,7 +24,7 @@ import org.seaborne.dboe.base.block.FileMode ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 import org.seaborne.tdb2.sys.TestOps ;
 
-public class TestStoreConnectionsMapped extends AbstractStoreConnections
+public class TestStoreConnectionsMapped extends TestTransactions
 {
     static FileMode mode ;   
 

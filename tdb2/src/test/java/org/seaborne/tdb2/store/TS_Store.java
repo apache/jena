@@ -40,6 +40,7 @@ import org.seaborne.tdb2.sys.TestOps ;
     , Test_SPARQL_TDB.class
     , TestConcurrentAccess.class
     , TestDynamicDatasetTDB.class
+    , TestTransactions.class
     , TestStoreConnectionsDirect.class
     , TestStoreConnectionsMapped.class
     , TestLocationLockStoreConnection.class

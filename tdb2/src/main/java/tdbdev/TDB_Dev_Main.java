@@ -73,7 +73,7 @@ public class TDB_Dev_Main {
         DatasetGraphTxn dsg = (DatasetGraphTxn)TDBFactory.createDatasetGraph(location) ;
         dsg.begin(ReadWrite.WRITE);
         
-        DatasetGraph dsgx = dsg.getDatasetTDB() ;
+        DatasetGraph dsgx = dsg.getBaseDatasetGraph() ;
         //RDFDataMgr.read(dsg, "D.ttl");
         Timer timer = new Timer() ;
         timer.startTimer();

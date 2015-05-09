@@ -18,9 +18,8 @@
 
 package org.seaborne.tdb2.store.nodetable;
 
-import org.apache.jena.sparql.sse.builders.BuilderOp.Build ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.tdb2.store.nodetable.NodeTable ;
+import org.seaborne.tdb2.junit.BuildTestLib ;
 import org.seaborne.tdb2.sys.Names ;
 
 public class TestNodeTable extends AbstractTestNodeTable
@@ -28,6 +27,6 @@ public class TestNodeTable extends AbstractTestNodeTable
     @Override
     protected NodeTable createEmptyNodeTable()
     {
-        return Build.makeNodeTable(Location.mem(), Names.indexNode2Id, 10, Names.indexId2Node, 10, 10) ;
+        return BuildTestLib.makeNodeTable(Location.mem(), Names.indexNode2Id, 10, Names.indexId2Node, 10, 10) ;
     }
 }

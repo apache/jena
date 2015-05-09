@@ -19,8 +19,7 @@
 package org.seaborne.tdb2.store.nodetable;
 
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.tdb2.setup.Build ;
-import org.seaborne.tdb2.store.nodetable.NodeTable ;
+import org.seaborne.tdb2.junit.BuildTestLib ;
 
 
 public class TestNodeTableStored extends AbstractTestNodeTable
@@ -28,6 +27,6 @@ public class TestNodeTableStored extends AbstractTestNodeTable
     @Override
     protected NodeTable createEmptyNodeTable()
     {
-        return Build.makeNodeTable(Location.mem()) ;
+        return BuildTestLib.makeNodeTable(Location.mem()) ;
     }
 }

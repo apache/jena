@@ -90,7 +90,7 @@ public class TestStoreParamsCreate extends BaseTest {
         StoreParams pLoc = StoreParamsCodec.read(loc) ;
         assertNull(pLoc) ;
         
-        StoreParams pDB = StoreConnection.getExisting(loc).getBaseDataset().getConfig().params ;
+        StoreParams pDB = StoreConnection.getExisting(loc).getDatasetGraphTDB().getConfig() ;
         assertNotNull(pDB) ;
         // Should be the default setup.
         assertTrue(StoreParams.sameValues(pDft, pDB)) ;
@@ -107,7 +107,7 @@ public class TestStoreParamsCreate extends BaseTest {
         //StoreParams pLoc = StoreParamsCodec.read(loc) ;
         //assertNotNull(pLoc) ;
         
-        StoreParams pDB = StoreConnection.getExisting(loc).getBaseDataset().getConfig().params ;
+        StoreParams pDB = StoreConnection.getExisting(loc).getDatasetGraphTDB().getConfig() ;
         assertNotNull(pDB) ;
         // Should be the default setup, modified by pApp for cache sizes.
         assertFalse(StoreParams.sameValues(pDft, pDB)) ;
@@ -132,7 +132,7 @@ public class TestStoreParamsCreate extends BaseTest {
         //StoreParams pLoc = StoreParamsCodec.read(loc) ;
         //assertNotNull(pLoc) ;
         
-        StoreParams pDB = StoreConnection.getExisting(loc).getBaseDataset().getConfig().params ;
+        StoreParams pDB = StoreConnection.getExisting(loc).getDatasetGraphTDB().getConfig() ;
         assertNotNull(pDB) ;
         // Should be the default setup, modified by pApp for cache sizes.
         assertFalse(StoreParams.sameValues(pApp, pDB)) ;
@@ -163,7 +163,7 @@ public class TestStoreParamsCreate extends BaseTest {
     // Dataset tests
 
     static StoreParams read(Location location) {
-        String fn = location.getPath(TDB_CONFIG_FILE) ;
+        String fn = location.getPath(StoreParamsConst.TDB_CONFIG_FILE) ;
         JsonObject obj = JSON.read(fn) ;
         return StoreParamsCodec.decode(obj) ;
     }
