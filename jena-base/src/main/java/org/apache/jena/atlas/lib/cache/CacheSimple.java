@@ -115,16 +115,18 @@ public class CacheSimple<K,V> implements Cache<K,V>
             old = values[x] ;
             if ( dropHandler != null )
                 dropHandler.accept(keys[x], old) ;
-            currentSize-- ;
+            if ( old != null )
+                currentSize-- ;
         }
         
+        // Already decremented if we are overwriting a full slot.
         values[x] = thing ;
-        if ( thing == null )
+        if ( thing == null ) {
             //put(,null) is a remove.
             keys[x] = null ;
-        else {
-            keys[x] = key ;
+        } else {
             currentSize++ ;
+            keys[x] = key ;
         }
     }
 
@@ -138,6 +140,11 @@ public class CacheSimple<K,V> implements Cache<K,V>
     public long size()
     {
         return currentSize ;
+//        long x = 0 ;
+//        for ( K key : keys )
+//            if ( key != null )
+//                x++ ;
+//        return x ;
     }
 
     @Override
