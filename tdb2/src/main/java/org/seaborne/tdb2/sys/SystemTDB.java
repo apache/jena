@@ -30,11 +30,11 @@ import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.tdb.store.NodeId ;
 import org.seaborne.dboe.base.block.FileMode ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.tdb2.TDB ;
 import org.seaborne.tdb2.TDBException ;
+import org.seaborne.tdb2.store.NodeId ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

@@ -27,9 +27,9 @@ import org.apache.jena.atlas.lib.CacheSet ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.tdb.store.NodeId ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.setup.StoreParams ;
+import org.seaborne.tdb2.store.NodeId ;
 
 /** Cache wrapper around a NodeTable.  
  * Assumes all access goes through this wrapper.

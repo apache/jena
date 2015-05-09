@@ -24,13 +24,13 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.tdb.store.Hash ;
-import org.apache.jena.tdb.store.NodeId ;
 import org.seaborne.dboe.base.objectfile.ObjectFile ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.lib.NodeLib ;
+import org.seaborne.tdb2.store.Hash ;
+import org.seaborne.tdb2.store.NodeId ;
 
 /** A concrete NodeTable based on native storage (string file and an index) */ 
 public abstract class NodeTableNative2 implements NodeTable

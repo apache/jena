@@ -34,11 +34,11 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.sparql.util.NodeUtils ;
-import org.apache.jena.tdb.store.Hash ;
-import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.store.NodeType ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.tdb2.TDBException ;
+import org.seaborne.tdb2.store.Hash ;
+import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.NodeType ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 
 public class NodeLib

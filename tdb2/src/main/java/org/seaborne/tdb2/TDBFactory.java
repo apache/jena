@@ -18,10 +18,11 @@
 
 package org.seaborne.tdb2;
 
-import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.tdb2.sys.StoreConnection ;
 
 
 /** Public factory for creating objects datasets backed by TDB storage */
@@ -29,14 +30,22 @@ public class TDBFactory
 {
     private TDBFactory() {} 
     
-
-    public static DatasetGraph createDatasetGraph(Location loc) {
-        throw new NotImplemented("TDBFactory·createDatasetGraph") ;
+    public static DatasetGraph createDatasetGraph(Location location) {
+        StoreConnection sConn = StoreConnection.getCreate(location) ;
+        return sConn.getDatasetGraph() ; 
     }
 
-
     public static Dataset createDataset(Location location) {
-        throw new NotImplemented("TDBFactory·createDatasetGraph") ;
+        DatasetGraph dsg = createDatasetGraph(location) ;
+        return DatasetFactory.create(dsg) ;
+    }
+
+    public static DatasetGraph createDatasetGraph() {
+        return createDatasetGraph(Location.mem()) ;
+    }
+
+    public static Dataset createDataset() {
+        return createDataset(Location.mem()) ;
     }
 
 }

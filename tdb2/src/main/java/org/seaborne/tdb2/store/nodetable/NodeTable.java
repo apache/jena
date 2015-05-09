@@ -24,7 +24,7 @@ import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.tdb.store.NodeId ;
+import org.seaborne.tdb2.store.NodeId ;
 
 /** Node table - conceptually a two way mapping of Node<->NodeId 
  *  where Nodes can be staored and a NodeId allocated

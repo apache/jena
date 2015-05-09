@@ -21,13 +21,13 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.dboe.transaction.Transactional ;
-import org.seaborne.dboe.transaction.txn.TransactionalBase ;
-import org.seaborne.tdb2.setup.TDB2Builder ;
+import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.store.DatasetGraphTxn ;
 
 public class TDB_Dev_Main {
     static { LogCtl.setLog4j(); }
@@ -37,26 +37,58 @@ public class TDB_Dev_Main {
         FileOps.ensureDir("DB"); 
         FileOps.clearDirectory("DB");
         Location location = Location.create("DB") ;
-        DatasetGraphTDB dsg = (DatasetGraphTDB)TDB2Builder.build(location) ;
         
-        Transactional trans = new TransactionalBase(dsg.getTxnCoord()) ;
-        trans.begin(ReadWrite.WRITE); 
+        
+        
+        //DatasetGraphTDB dsg = (DatasetGraphTDB)TDB2Builder.build(location) ;
+        
+        if ( false ) {
+            Dataset ds = TDBFactory.createDataset(location) ;
+            Timer timer = new Timer() ;
+            ds.begin(ReadWrite.WRITE); 
+            timer.startTimer();
+            // Speed comparison with direct
+            //DatasetGraph dsg = ((DatasetGraphTxn)ds.asDatasetGraph()).getDatasetTDB() ;
+                
+            RDFDataMgr.read(ds, "/home/afs/Datasets/BSBM/bsbm-250k.nt.gz");
+            ds.commit();
+            ds.end(); 
+            long time_ms = timer.endTimer() ;
+
+            ds.begin(ReadWrite.READ) ;
+
+
+            //RDFDataMgr.write(System.out,  dsg, Lang.TRIG) ;
+            long x = Iter.count(ds.asDatasetGraph().find()) ;
+            ds.end();
+            System.out.printf("Count = %,d\n", x) ;
+            double seconds = time_ms/1000.0 ; 
+
+            System.out.printf("Rate = %,.0f\n", x/seconds) ;
+            System.out.println("DONE") ;
+            System.exit(0) ;
+        }
+
+        
+        DatasetGraphTxn dsg = (DatasetGraphTxn)TDBFactory.createDatasetGraph(location) ;
+        dsg.begin(ReadWrite.WRITE);
+        
+        DatasetGraph dsgx = dsg.getDatasetTDB() ;
         //RDFDataMgr.read(dsg, "D.ttl");
         Timer timer = new Timer() ;
         timer.startTimer();
-        RDFDataMgr.read(dsg, "/home/afs/Datasets/BSBM/bsbm-5m.nt.gz") ;
+        RDFDataMgr.read(dsgx, "/home/afs/Datasets/BSBM/bsbm-5m.nt.gz") ;
+        dsg.commit();
+        dsg.end(); 
         long time_ms = timer.endTimer() ;
         
-        trans.commit();
-        trans.end(); 
-        
-        trans.begin(ReadWrite.READ) ;
+        dsg.begin(ReadWrite.READ) ;
         
         
         //RDFDataMgr.write(System.out,  dsg, Lang.TRIG) ;
         long x = Iter.count(dsg.find()) ;
-        trans.end();
-        System.out.println("Count = "+x) ;
+        dsg.end();
+        System.out.printf("Count = %,d\n", x) ;
         double seconds = time_ms/1000.0 ; 
         System.out.printf("Rate = %,.0f\n", x/seconds) ;
         System.out.println("DONE") ;

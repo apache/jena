@@ -21,16 +21,6 @@ import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
-import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.tdb.store.DatasetPrefixesTDB ;
-import org.apache.jena.tdb.store.QuadTable ;
-import org.apache.jena.tdb.store.TripleTable ;
-import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
-import org.apache.jena.tdb.store.nodetupletable.NodeTupleTableConcrete ;
-import org.apache.jena.tdb.store.tupletable.TupleIndex ;
-import org.apache.jena.tdb.store.tupletable.TupleIndexRecord ;
-import org.apache.jena.tdb.sys.DatasetControl ;
-import org.apache.jena.tdb.sys.DatasetControlMRSW ;
 import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.RecordFactory ;
@@ -39,12 +29,21 @@ import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.migrate.L ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
+import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
+import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.tdb2.TDBException ;
+import org.seaborne.tdb2.store.* ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.store.nodetable.NodeTableThrift ;
+import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
+import org.seaborne.tdb2.store.nodetupletable.NodeTupleTableConcrete ;
+import org.seaborne.tdb2.store.tupletable.TupleIndex ;
+import org.seaborne.tdb2.store.tupletable.TupleIndexRecord ;
+import org.seaborne.tdb2.sys.DatasetControl ;
+import org.seaborne.tdb2.sys.DatasetControlMRSW ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -65,29 +64,30 @@ public class TDB2Builder {
     private final StoreParams storeParams ;
     private static DatasetControl createPolicy() { return new DatasetControlMRSW() ; }
     
-    public static DatasetGraph build(Location location, StoreParams storeParams) {
+    public static DatasetGraphTxn build(Location location, StoreParams storeParams) {
         return new TDB2Builder(location, storeParams).build$() ;
     }
 
-    public DatasetGraphTDB build$() {
+    public DatasetGraphTxn build$() {
         // Migrate to StoreConnection.
         Journal journal = Journal.create(location) ;
         TransactionCoordinator txnCoord = new TransactionCoordinator(journal) ;
         // Reuse existing component ids.
         
-        String nodeTableName = "nodes" ;
-        NodeTable nodeTable = buildNodeTable(txnCoord, nextComponentId(nodeTableName), nodeTableName) ;
+        String nodeTableBaseName = "nodes" ;
+        NodeTable nodeTable = buildNodeTable(txnCoord, nextComponentId(nodeTableBaseName), nodeTableBaseName) ;
         
         TripleTable tripleTable = buildTripleTable(txnCoord, nodeTable, storeParams) ;
         QuadTable quadTable = buildQuadTable(txnCoord, nodeTable, storeParams) ;
         
-        
-        String nodeTablePrefixesName = "prefixes" ;
-        NodeTable nodeTablePrefixes = buildNodeTable(txnCoord, nextComponentId(nodeTablePrefixesName), nodeTablePrefixesName) ;
+        String nodeTablePrefixesBaseName = "prefixes" ;
+        NodeTable nodeTablePrefixes = buildNodeTable(txnCoord, nextComponentId(nodeTablePrefixesBaseName), nodeTablePrefixesBaseName) ;
         DatasetPrefixesTDB prefixes = buildPrefixTable(txnCoord, nodeTablePrefixes, storeParams) ;
         
-        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, txnCoord, ReorderLib.fixed(), location, storeParams) ;
-        return dsg ;
+        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, ReorderLib.fixed(), location, storeParams) ;
+        Transactional trans = new TransactionalBase(txnCoord) ;
+        DatasetGraphTxn dsgtxn = new DatasetGraphTxn(dsg, trans, txnCoord) ;
+        return dsgtxn ;
     }
 
     public TDB2Builder(Location location, StoreParams storeParams) {
@@ -194,7 +194,7 @@ public class TDB2Builder {
         RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
         Index index = buildRangeIndex(coord, cid, recordFactory, name) ;
         // Caching
-        return new NodeTableThrift(index, location.getPath(name)) ;
+        return new NodeTableThrift(index, location.getPath(name+"-data", "obj")) ;
     }
 
     private static void error(Logger log, String msg)

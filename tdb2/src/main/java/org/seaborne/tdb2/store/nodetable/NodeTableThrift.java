@@ -25,13 +25,13 @@ import org.apache.jena.riot.thrift.ThriftConvert ;
 import org.apache.jena.riot.thrift.wire.RDF_Term ;
 //import org.apache.jena.tdb.base.objectfile.ObjectFile ;
 //import org.apache.jena.tdb.index.Index ;
-import org.apache.jena.tdb.store.NodeId ;
 import org.apache.thrift.TException ;
 import org.apache.thrift.protocol.TProtocol ;
 import org.apache.thrift.transport.TSeekableFile ;
 import org.apache.thrift.transport.TSimpleFileTransport ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.tdb2.TDBException ;
+import org.seaborne.tdb2.store.NodeId ;
 
 public class NodeTableThrift extends NodeTableNative2 {
 

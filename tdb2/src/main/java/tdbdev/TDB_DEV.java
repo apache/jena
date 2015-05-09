@@ -19,9 +19,13 @@ package tdbdev;
 
 public class TDB_DEV {
     // Append-write-only, transactional byte file c.f. Object file.
-    // Transactional Object
+    // Sort out transactional Object
     // Component id management.
     // Journal and recovery.
+    
+    // Collapse DatasetGraphTDB and DatasetGraphTxn
+    
+    // Port TDB tests
     
 }
 
