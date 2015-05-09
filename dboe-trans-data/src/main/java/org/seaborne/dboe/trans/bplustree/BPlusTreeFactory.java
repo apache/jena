@@ -35,7 +35,8 @@ import org.seaborne.dboe.transaction.txn.ComponentId ;
 
 /** Make BPlusTrees - this code works in close association with the BPlusTree constructor */
 public class BPlusTreeFactory {
-
+    private BPlusTreeFactory() {}
+    
     /** Create the java structures to correspond to
      * the supplied block managers for the persistent storage.
      * Initialize the persistent storage to the empty B+Tree if it does not exist.
