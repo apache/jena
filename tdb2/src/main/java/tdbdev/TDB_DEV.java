@@ -19,7 +19,18 @@ package tdbdev;
 
 public class TDB_DEV {
     // ** Append-write-only, transactional byte file c.f. Object file.
+    
     // Ensure sync called.
+    
+    // Switch Lizard to TDB2 technology.
+    // Hunt down adapter and remove.
+
+    // NodeTableTRDF.
+    // (2) TIOStreamTransport with a append, recording output file.
+    // (3) Two transports, in and out.
+    // ** (2)
+    // Separate in and out.
+    //   Part of "BinaryFile" which flushes across in-out swaps.
     
     // Sort out transactional Object
     // Component id management.
@@ -33,10 +44,6 @@ public class TDB_DEV {
     
     // Tests
     
-    // Buffer writes 
-    //   Need a TFileTransport that buffers and fluishes on switch over.
-    //   Or around RandomAccessFiles
-    
     // Journal and recovery.
     
     // Collapse DatasetGraphTDB and DatasetGraphTxn
@@ -45,9 +52,5 @@ public class TDB_DEV {
     //   BuildTestLib
     //   TestTransactions
     //    Just need TestDataset?
-    
-    // NodeTableThrift ->
-    // NodeTableNative2+NodeTableTLZ
-    //   No ObjectFile.
 }
 
