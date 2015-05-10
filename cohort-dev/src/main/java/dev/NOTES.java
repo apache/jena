@@ -40,6 +40,8 @@ public class NOTES {
     // Also: TransactionCoordinator.begin -> Transaction.
     // TransactionCoordinator -> set of components
     
+    // ObjectFile - switch to Input/Output Streams? 
+    
     // TransactionalComponent
     
     // What about:
