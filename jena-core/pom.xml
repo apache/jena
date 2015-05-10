@@ -78,7 +78,7 @@
 	<dependency>
 		<groupId>org.xenei</groupId>
 		<artifactId>junit-contracts</artifactId>
-		<version>0.0.5</version>
+		<version>0.1.1</version>
 		<scope>test</scope>
 	</dependency>
 	

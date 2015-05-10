@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+
 import org.junit.After;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +54,6 @@ import org.apache.jena.testing_framework.ContractTemplate;
 import org.apache.jena.testing_framework.NodeCreateUtils;
 import org.apache.jena.util.iterator.ClosableIterator;
 import org.apache.jena.util.iterator.ExtendedIterator;
-import org.apache.jena.util.iterator.Map1;
 
 import static org.apache.jena.testing_framework.GraphHelper.*;
 
@@ -1452,10 +1453,10 @@ public class GraphContractTest<T extends Graph> extends
 	//
 
 	// used to find the object set from the returned set for literal testing
-	private static final Map1<Triple, Node> getObject = new Map1<Triple, Node>() {
+	private static final Function<Triple, Node> getObject = new Function<Triple, Node>() {
 		@Override
-		public Node map1(Triple o) {
-			return o.getObject();
+		public Node apply(Triple t) {
+			return t.getObject();
 		}
 	};
 
