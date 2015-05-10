@@ -72,7 +72,7 @@ public class TDB_Dev_Main {
             System.exit(0) ;
         }
 
-        String FILE = "/home/afs/Datasets/BSBM/bsbm-250k.nt.gz" ;
+        String FILE = "/home/afs/Datasets/BSBM/bsbm-1m.nt.gz" ;
         System.out.println("Load "+FILE) ;
         
         DatasetGraphTxn dsg = (DatasetGraphTxn)TDBFactory.createDatasetGraph(location) ;

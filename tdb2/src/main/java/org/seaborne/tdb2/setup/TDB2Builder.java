@@ -39,9 +39,7 @@ import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.* ;
-import org.seaborne.tdb2.store.nodetable.NodeTable ;
-import org.seaborne.tdb2.store.nodetable.NodeTableSSE ;
-import org.seaborne.tdb2.store.nodetable.NodeTableTRDF ;
+import org.seaborne.tdb2.store.nodetable.* ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTableConcrete ;
 import org.seaborne.tdb2.store.tupletable.TupleIndex ;
@@ -226,11 +224,18 @@ public class TDB2Builder {
     public NodeTable buildNodeTable(TransactionCoordinator coord, ComponentId cid, String name) {
         RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
         Index index = buildRangeIndex(coord, cid, recordFactory, name) ;
+        NodeTable nodeTable ;
         // Caching
         if ( false )
-            return new NodeTableSSE(index, location.getPath(name+"-data", "obj")) ;
+            nodeTable = new NodeTableSSE(index, location.getPath(name+"-data", "obj")) ;
         else
-            return new NodeTableTRDF(index, location.getPath(name+"-data", "obj")) ;
+            nodeTable = new NodeTableTRDF(index, location.getPath(name+"-data", "obj")) ;
+        nodeTable = NodeTableCache.create(nodeTable, 
+                                          storeParams.getNode2NodeIdCacheSize(),
+                                          storeParams.getNodeId2NodeCacheSize(),
+                                          storeParams.getNodeMissCacheSize()) ;
+        nodeTable = NodeTableInline.create(nodeTable) ;
+        return nodeTable ; 
     }
 
     private static void error(Logger log, String msg)
