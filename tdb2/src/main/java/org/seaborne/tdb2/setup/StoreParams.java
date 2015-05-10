@@ -45,6 +45,7 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
     /* These are items you can change JVM to JVM */
     
     /*package*/ final Item<FileMode>           fileMode ;
+    /*package*/ final Item<Integer>            blockSize ;
     /*package*/ final Item<Integer>            blockReadCacheSize ;
     /*package*/ final Item<Integer>            blockWriteCacheSize ;
     /*package*/ final Item<Integer>            Node2NodeIdCacheSize ;
@@ -58,18 +59,17 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
      * you'll need to use the index tools.  
      */
     
-    /*package*/ final Item<Integer>            blockSize ;
-    /*package*/ final Item<String>             indexNode2Id ;
-    /*package*/ final Item<String>             indexId2Node ;
+    /*package*/ final Item<String>             nodeTableBaseName ;
+    
     /*package*/ final Item<String>             primaryIndexTriples ;
     /*package*/ final Item<String[]>           tripleIndexes ;
+    
     /*package*/ final Item<String>             primaryIndexQuads ;
     /*package*/ final Item<String[]>           quadIndexes ;
+    
+    /*package*/ final Item<String>             prefixTableBaseName ;
     /*package*/ final Item<String>             primaryIndexPrefix ;
     /*package*/ final Item<String[]>           prefixIndexes ;
-    /*package*/ final Item<String>             indexPrefix ;
-    /*package*/ final Item<String>             prefixNode2Id ;
-    /*package*/ final Item<String>             prefixId2Node ;
 
     /** Build StoreParams, starting from system defaults.
      * 
@@ -87,11 +87,13 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
                             Item<Integer> blockReadCacheSize, Item<Integer> blockWriteCacheSize,
                             Item<Integer> node2NodeIdCacheSize, Item<Integer> nodeId2NodeCacheSize,
                             Item<Integer> nodeMissCacheSize,
-                            Item<String> indexNode2Id, Item<String> indexId2Node, 
+                            
+                            Item<String> nodeTableBaseName, 
                             Item<String> primaryIndexTriples, Item<String[]> tripleIndexes,
                             Item<String> primaryIndexQuads, Item<String[]> quadIndexes,
-                            Item<String> primaryIndexPrefix, Item<String[]> prefixIndexes,
-                            Item<String> indexPrefix, Item<String> prefixNode2Id, Item<String> prefixId2Node) {
+                            
+                            Item<String> prefixTableBasename,
+                            Item<String> primaryIndexPrefix, Item<String[]> prefixIndexes) {
         this.fileMode               = fileMode ;
         this.blockSize              = blockSize ;
         this.blockReadCacheSize     = blockReadCacheSize ;
@@ -100,18 +102,16 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
         this.NodeId2NodeCacheSize   = nodeId2NodeCacheSize ;
         this.NodeMissCacheSize      = nodeMissCacheSize ;
 
-        this.indexNode2Id           = indexNode2Id ;
-        this.indexId2Node           = indexId2Node ;
+        this.nodeTableBaseName      = nodeTableBaseName ;
+        
         this.primaryIndexTriples    = primaryIndexTriples ;
         this.tripleIndexes          = tripleIndexes ;
         this.primaryIndexQuads      = primaryIndexQuads ;
         this.quadIndexes            = quadIndexes ;
         this.primaryIndexPrefix     = primaryIndexPrefix ;
         this.prefixIndexes          = prefixIndexes ;
-        this.indexPrefix            = indexPrefix ;
-
-        this.prefixNode2Id          = prefixNode2Id ;
-        this.prefixId2Node          = prefixId2Node ;
+        
+        this.prefixTableBaseName         = prefixTableBasename ;
     }
     
     /** The system default settings. This is the normal set to use.
@@ -199,12 +199,12 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
         return NodeMissCacheSize.isSet ;
     }
 
-    public String getIndexNode2Id() {
-        return indexNode2Id.value ;
+    public String getNodeTableBaseName() {
+        return nodeTableBaseName.value ;
     }
-
-    public String getIndexId2Node() {
-        return indexId2Node.value ;
+    
+    public boolean isSetNodeTableBaseName() {
+        return nodeTableBaseName.isSet ;
     }
 
     public String getPrimaryIndexTriples() {
@@ -223,24 +223,22 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
         return quadIndexes.value ;
     }
 
+    public String getPrefixTableBaseName() {
+        return prefixTableBaseName.value ;
+    }
+    
+    public boolean isSetPrefixBaseName() {
+        return prefixTableBaseName.isSet ;
+    }
+
+
+    
     public String getPrimaryIndexPrefix() {
         return primaryIndexPrefix.value ;
     }
 
     public String[] getPrefixIndexes() {
         return prefixIndexes.value ;
-    }
-
-    public String getIndexPrefix() {
-        return indexPrefix.value ;
-    }
-
-    public String getPrefixNode2Id() {
-        return prefixNode2Id.value ;
-    }
-
-    public String getPrefixId2Node() {
-        return prefixId2Node.value ;
     }
 
     @Override
@@ -254,19 +252,16 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
         fmt(buff, "NodeId2NodeCacheSize", getNodeId2NodeCacheSize(), NodeId2NodeCacheSize.isSet) ;
         fmt(buff, "NodeMissCacheSize", getNodeMissCacheSize(), NodeMissCacheSize.isSet) ;
 
-        fmt(buff, "indexNode2Id", getIndexNode2Id(), indexNode2Id.isSet) ;
-        fmt(buff, "indexId2Node", getIndexId2Node(), indexId2Node.isSet) ;
+        fmt(buff, "nodeTableBaseName", getNodeTableBaseName(), nodeTableBaseName.isSet) ;
         fmt(buff, "primaryIndexTriples", getPrimaryIndexTriples(), primaryIndexTriples.isSet) ;
         fmt(buff, "tripleIndexes", getTripleIndexes(), tripleIndexes.isSet) ;
         fmt(buff, "primaryIndexQuads", getPrimaryIndexQuads(), primaryIndexQuads.isSet) ;
         fmt(buff, "quadIndexes", getQuadIndexes(), quadIndexes.isSet) ;
+        
+        fmt(buff, "prefixTableBaseName", getPrefixTableBaseName(), prefixTableBaseName.isSet) ;
         fmt(buff, "primaryIndexPrefix", getPrimaryIndexPrefix(), primaryIndexPrefix.isSet) ;
         fmt(buff, "prefixIndexes", getPrefixIndexes(), prefixIndexes.isSet) ;
-        fmt(buff, "indexPrefix", getIndexPrefix(), indexPrefix.isSet) ;
 
-        fmt(buff, "prefixNode2Id", getPrefixNode2Id(), prefixNode2Id.isSet) ;
-        fmt(buff, "prefixId2Node", getPrefixId2Node(), prefixId2Node.isSet) ;
-        
         return buff.toString() ;
     }
     
@@ -291,31 +286,6 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
         buff.append(String.format("%-20s   %s%s\n", name, dftStr, value)) ;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31 ;
-        int result = 1 ;
-        result = prime * result + ((Node2NodeIdCacheSize == null) ? 0 : Node2NodeIdCacheSize.hashCode()) ;
-        result = prime * result + ((NodeId2NodeCacheSize == null) ? 0 : NodeId2NodeCacheSize.hashCode()) ;
-        result = prime * result + ((NodeMissCacheSize == null) ? 0 : NodeMissCacheSize.hashCode()) ;
-        result = prime * result + ((blockReadCacheSize == null) ? 0 : blockReadCacheSize.hashCode()) ;
-        result = prime * result + ((blockSize == null) ? 0 : blockSize.hashCode()) ;
-        result = prime * result + ((blockWriteCacheSize == null) ? 0 : blockWriteCacheSize.hashCode()) ;
-        result = prime * result + ((fileMode == null) ? 0 : fileMode.hashCode()) ;
-        result = prime * result + ((indexId2Node == null) ? 0 : indexId2Node.hashCode()) ;
-        result = prime * result + ((indexNode2Id == null) ? 0 : indexNode2Id.hashCode()) ;
-        result = prime * result + ((indexPrefix == null) ? 0 : indexPrefix.hashCode()) ;
-        result = prime * result + ((prefixId2Node == null) ? 0 : prefixId2Node.hashCode()) ;
-        result = prime * result + ((prefixIndexes == null) ? 0 : prefixIndexes.hashCode()) ;
-        result = prime * result + ((prefixNode2Id == null) ? 0 : prefixNode2Id.hashCode()) ;
-        result = prime * result + ((primaryIndexPrefix == null) ? 0 : primaryIndexPrefix.hashCode()) ;
-        result = prime * result + ((primaryIndexQuads == null) ? 0 : primaryIndexQuads.hashCode()) ;
-        result = prime * result + ((primaryIndexTriples == null) ? 0 : primaryIndexTriples.hashCode()) ;
-        result = prime * result + ((quadIndexes == null) ? 0 : quadIndexes.hashCode()) ;
-        result = prime * result + ((tripleIndexes == null) ? 0 : tripleIndexes.hashCode()) ;
-        return result ;
-    }
-    
     /** Equality but ignore "isSet" */
     public static boolean sameValues(StoreParams params1, StoreParams params2) {
         if ( params1 == null && params2 == null )
@@ -325,6 +295,8 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
         if ( params2 == null )
             return false ;
         if ( !sameValues(params1.fileMode, params2.fileMode) )
+            return false ;
+        if ( !sameValues(params1.blockSize, params2.blockSize) )
             return false ;
         if ( !sameValues(params1.blockReadCacheSize, params2.blockReadCacheSize) )
             return false ;
@@ -336,11 +308,7 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
             return false ;
         if ( !sameValues(params1.NodeMissCacheSize, params2.NodeMissCacheSize) )
             return false ;
-        if ( !sameValues(params1.blockSize, params2.blockSize) )
-            return false ;
-        if ( !sameValues(params1.indexNode2Id, params2.indexNode2Id) )
-            return false ;
-        if ( !sameValues(params1.indexId2Node, params2.indexId2Node) )
+        if ( !sameValues(params1.nodeTableBaseName, params2.nodeTableBaseName) )
             return false ;
         if ( !sameValues(params1.primaryIndexTriples, params2.primaryIndexTriples) )
             return false ;
@@ -350,21 +318,39 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
             return false ;
         if ( !sameValues(params1.quadIndexes, params2.quadIndexes) )
             return false ;
+        if ( !sameValues(params1.prefixTableBaseName, params2.prefixTableBaseName) )
+            return false ;
         if ( !sameValues(params1.primaryIndexPrefix, params2.primaryIndexPrefix) )
             return false ;
         if ( !sameValues(params1.prefixIndexes, params2.prefixIndexes) )
-            return false ;
-        if ( !sameValues(params1.indexPrefix, params2.indexPrefix) )
-            return false ;
-        if ( !sameValues(params1.prefixNode2Id, params2.prefixNode2Id) )
-            return false ;
-        if ( !sameValues(params1.prefixId2Node, params2.prefixId2Node) )
             return false ;
         return true ;
     }
     
     private static <X> boolean sameValues(Item<X> item1, Item<X> item2) {
         return Objects.deepEquals(item1.value, item2.value) ; 
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31 ;
+        int result = 1 ;
+        result = prime * result + ((Node2NodeIdCacheSize == null) ? 0 : Node2NodeIdCacheSize.hashCode()) ;
+        result = prime * result + ((NodeId2NodeCacheSize == null) ? 0 : NodeId2NodeCacheSize.hashCode()) ;
+        result = prime * result + ((NodeMissCacheSize == null) ? 0 : NodeMissCacheSize.hashCode()) ;
+        result = prime * result + ((blockReadCacheSize == null) ? 0 : blockReadCacheSize.hashCode()) ;
+        result = prime * result + ((blockSize == null) ? 0 : blockSize.hashCode()) ;
+        result = prime * result + ((blockWriteCacheSize == null) ? 0 : blockWriteCacheSize.hashCode()) ;
+        result = prime * result + ((fileMode == null) ? 0 : fileMode.hashCode()) ;
+        result = prime * result + ((nodeTableBaseName == null) ? 0 : nodeTableBaseName.hashCode()) ;
+        result = prime * result + ((prefixTableBaseName == null) ? 0 : prefixTableBaseName.hashCode()) ;
+        result = prime * result + ((prefixIndexes == null) ? 0 : prefixIndexes.hashCode()) ;
+        result = prime * result + ((primaryIndexPrefix == null) ? 0 : primaryIndexPrefix.hashCode()) ;
+        result = prime * result + ((primaryIndexQuads == null) ? 0 : primaryIndexQuads.hashCode()) ;
+        result = prime * result + ((primaryIndexTriples == null) ? 0 : primaryIndexTriples.hashCode()) ;
+        result = prime * result + ((quadIndexes == null) ? 0 : quadIndexes.hashCode()) ;
+        result = prime * result + ((tripleIndexes == null) ? 0 : tripleIndexes.hashCode()) ;
+        return result ;
     }
 
     @Override
@@ -411,35 +397,20 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
                 return false ;
         } else if ( !fileMode.equals(other.fileMode) )
             return false ;
-        if ( indexId2Node == null ) {
-            if ( other.indexId2Node != null )
+        if ( nodeTableBaseName == null ) {
+            if ( other.nodeTableBaseName != null )
                 return false ;
-        } else if ( !indexId2Node.equals(other.indexId2Node) )
+        } else if ( !nodeTableBaseName.equals(other.nodeTableBaseName) )
             return false ;
-        if ( indexNode2Id == null ) {
-            if ( other.indexNode2Id != null )
+        if ( prefixTableBaseName == null ) {
+            if ( other.prefixTableBaseName != null )
                 return false ;
-        } else if ( !indexNode2Id.equals(other.indexNode2Id) )
-            return false ;
-        if ( indexPrefix == null ) {
-            if ( other.indexPrefix != null )
-                return false ;
-        } else if ( !indexPrefix.equals(other.indexPrefix) )
-            return false ;
-        if ( prefixId2Node == null ) {
-            if ( other.prefixId2Node != null )
-                return false ;
-        } else if ( !prefixId2Node.equals(other.prefixId2Node) )
+        } else if ( !prefixTableBaseName.equals(other.prefixTableBaseName) )
             return false ;
         if ( prefixIndexes == null ) {
             if ( other.prefixIndexes != null )
                 return false ;
         } else if ( !prefixIndexes.equals(other.prefixIndexes) )
-            return false ;
-        if ( prefixNode2Id == null ) {
-            if ( other.prefixNode2Id != null )
-                return false ;
-        } else if ( !prefixNode2Id.equals(other.prefixNode2Id) )
             return false ;
         if ( primaryIndexPrefix == null ) {
             if ( other.primaryIndexPrefix != null )
@@ -468,6 +439,5 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
             return false ;
         return true ;
     }
-
 }
 

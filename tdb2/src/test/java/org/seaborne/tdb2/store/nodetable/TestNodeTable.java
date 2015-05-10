@@ -27,6 +27,6 @@ public class TestNodeTable extends AbstractTestNodeTable
     @Override
     protected NodeTable createEmptyNodeTable()
     {
-        return BuildTestLib.makeNodeTable(Location.mem(), Names.indexNode2Id, 10, Names.indexId2Node, 10, 10) ;
+        return BuildTestLib.makeNodeTable(Location.mem(), Names.prefixTableBaseName, 10, 10, 10) ;
     }
 }

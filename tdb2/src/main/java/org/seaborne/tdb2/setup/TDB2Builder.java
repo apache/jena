@@ -17,6 +17,9 @@
 
 package org.seaborne.tdb2.setup;
 
+import java.io.File ;
+import java.io.FileFilter ;
+
 import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -37,7 +40,7 @@ import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.* ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
-import org.seaborne.tdb2.store.nodetable.NodeTableThrift ;
+import org.seaborne.tdb2.store.nodetable.NodeTableTRDF ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTableConcrete ;
 import org.seaborne.tdb2.store.tupletable.TupleIndex ;
@@ -64,24 +67,56 @@ public class TDB2Builder {
     private final StoreParams storeParams ;
     private static DatasetControl createPolicy() { return new DatasetControlMRSW() ; }
     
-    public static DatasetGraphTxn build(Location location, StoreParams storeParams) {
-        return new TDB2Builder(location, storeParams).build$() ;
+    public static DatasetGraphTxn build(Location location, StoreParams appParams) {
+        StoreParams locParams = StoreParamsCodec.read(location) ;
+        StoreParams dftParams = StoreParams.getDftStoreParams() ;
+        // This can write the chosen parameters if necessary (new database, appParams != null, locParams == null)
+        boolean newArea = isNewDatabaseArea(location) ;
+        if ( newArea ) {
+        }
+        StoreParams params = StoreParamsFactory.decideStoreParams(location, newArea, appParams, locParams, dftParams) ;
+        return new TDB2Builder(location, params).build() ;
     }
+    
+    /** Look at a directory and see if it is a new area */
+    private static boolean isNewDatabaseArea(Location location) {
+        if ( location.isMem() )
+            return true ;
+        File d = new File(location.getDirectoryPath()) ;
+        if ( !d.exists() )
+            return true ;
+        FileFilter ff = fileFilterNewDB ;
+        File[] entries = d.listFiles(ff) ;
+        return entries.length == 0 ;
+    }
+    
+    /** FileFilter
+     * Skips .., . and "tdb.cfg"
+     * 
+     */
+    static FileFilter fileFilterNewDB  = (pathname)->{
+        String fn = pathname.getName() ;
+        if ( fn.equals(".") || fn.equals("..") )
+            return false ;
+        if ( pathname.isDirectory() )
+            return true ;
+        if ( fn.equals(StoreParamsConst.TDB_CONFIG_FILE) )
+            return false ;
+        return true ;
+    } ;
 
-    public DatasetGraphTxn build$() {
+    private DatasetGraphTxn build() {
         // Migrate to StoreConnection.
         Journal journal = Journal.create(location) ;
         TransactionCoordinator txnCoord = new TransactionCoordinator(journal) ;
         // Reuse existing component ids.
         
-        String nodeTableBaseName = "nodes" ;
-        NodeTable nodeTable = buildNodeTable(txnCoord, nextComponentId(nodeTableBaseName), nodeTableBaseName) ;
+        NodeTable nodeTable = buildNodeTable(txnCoord, nextComponentId(storeParams.getNodeTableBaseName()), storeParams.getNodeTableBaseName()) ;
         
         TripleTable tripleTable = buildTripleTable(txnCoord, nodeTable, storeParams) ;
         QuadTable quadTable = buildQuadTable(txnCoord, nodeTable, storeParams) ;
         
-        String nodeTablePrefixesBaseName = "prefixes" ;
-        NodeTable nodeTablePrefixes = buildNodeTable(txnCoord, nextComponentId(nodeTablePrefixesBaseName), nodeTablePrefixesBaseName) ;
+        NodeTable nodeTablePrefixes = buildNodeTable(txnCoord, nextComponentId(storeParams.getPrefixTableBaseName()), storeParams.getPrefixTableBaseName()) ;
         DatasetPrefixesTDB prefixes = buildPrefixTable(txnCoord, nodeTablePrefixes, storeParams) ;
         
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, ReorderLib.fixed(), location, storeParams) ;
@@ -137,7 +172,7 @@ public class TDB2Builder {
 
 
     private DatasetPrefixesTDB buildPrefixTable(TransactionCoordinator txnCoord,
-                                                       NodeTable prefixNodes, StoreParams params) {
+                                                NodeTable prefixNodes, StoreParams params) {
         String primary = params.getPrimaryIndexPrefix() ;
         String[] indexes = params.getPrefixIndexes() ;
 
@@ -145,9 +180,6 @@ public class TDB2Builder {
                                                       primary, indexes, params) ;
         if ( prefixIndexes.length != 1 )
             error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
-
-        String pnNode2Id = params.getPrefixNode2Id() ;
-        String pnId2Node = params.getPrefixId2Node() ;
 
         // No cache - the prefix mapping is a cache
         //NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, pnId2Node, -1, -1, -1)  ;
@@ -194,7 +226,7 @@ public class TDB2Builder {
         RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
         Index index = buildRangeIndex(coord, cid, recordFactory, name) ;
         // Caching
-        return new NodeTableThrift(index, location.getPath(name+"-data", "obj")) ;
+        return new NodeTableTRDF(index, location.getPath(name+"-data", "obj")) ;
     }
 
     private static void error(Logger log, String msg)

@@ -17,8 +17,6 @@
 
 package org.seaborne.tdb2.store.nodetable;
 
-import java.io.* ;
-
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.thrift.TRDF ;
 import org.apache.jena.riot.thrift.ThriftConvert ;
@@ -27,20 +25,19 @@ import org.apache.jena.riot.thrift.wire.RDF_Term ;
 //import org.apache.jena.tdb.index.Index ;
 import org.apache.thrift.TException ;
 import org.apache.thrift.protocol.TProtocol ;
-import org.apache.thrift.transport.TSeekableFile ;
 import org.apache.thrift.transport.TSimpleFileTransport ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.NodeId ;
 
-public class NodeTableThrift extends NodeTableNative2 {
+public class NodeTableTRDF extends NodeTableNative2 {
 
     private TSimpleFileTransport file ;
     private final TProtocol protocol ;
     private long position ;
     //private final Index nodeToId ;
     
-    public NodeTableThrift(Index nodeToId, String objectFile)
+    public NodeTableTRDF(Index nodeToId, String objectFile)
     {
         super(nodeToId, null);
         try {
@@ -49,7 +46,7 @@ public class NodeTableThrift extends NodeTableNative2 {
             this.protocol = TRDF.protocol(file) ;
         }
         catch (TException ex) {
-            throw new TDBException("NodeTableThrift", ex) ;
+            throw new TDBException("NodeTableTRDF", ex) ;
         }
     }
     
@@ -79,49 +76,7 @@ public class NodeTableThrift extends NodeTableNative2 {
             return n ;
         }
         catch (TException ex) {
-            throw new TDBException("NodeTableThrift", ex) ;
+            throw new TDBException("NodeTableTRDF", ex) ;
         }
     }
- 
-
-    // Better?
-    static class ReadWriteFile implements TSeekableFile {
-        //public class TStandardFile implements TSeekableFile {
-
-        protected String path_ = null;
-        protected RandomAccessFile inputFile_ = null;
-
-        public ReadWriteFile(String path) throws IOException {
-            path_ = path;
-            inputFile_ = new RandomAccessFile(path_, "rw");
-        }
-
-        @Override
-        public InputStream getInputStream() throws IOException {
-            return new FileInputStream(inputFile_.getFD());
-        }
-
-        @Override
-        public OutputStream getOutputStream() throws IOException {
-            return new FileOutputStream(path_);
-        }
-
-        @Override
-        public void close() throws IOException {
-            if(inputFile_ != null) {
-                inputFile_.close();
-            }
-        }
-
-        @Override
-        public long length() throws IOException {
-            return inputFile_.length();
-        }
-
-        @Override
-        public void seek(long pos) throws IOException {
-            inputFile_.seek(pos);
-        }
-    }
-
-}
+ }

@@ -50,15 +50,12 @@ public class Names
     public static final String journalFileBase          = "journal" ;
     public static final String journalFile              = journalFileBase+"."+extJournal ;
     
-    public static final String indexId2Node             = "nodes" ;         // Node table
-    public static final String indexNode2Id             = "node2id";        // Node hash to id table
+    public static final String nodeTableBaseName             = "nodes" ;         // Node table
     
     //public static final String indexId2Node           = "id2node";        // Would be the Index for node(hash) to id  
 
     /** Prefixes file */
-    public static final String prefixId2Node            = "prefixes" ;      // Prefix node table 
-    public static final String prefixNode2Id            = "prefix2id";      // Prefix node table for index Node/hash->id
-    public static final String indexPrefix              = "prefixIdx";      // Prefix index name
+    public static final String prefixTableBaseName         = "prefixes" ;      // Prefix node table 
     
     /** Optimizer / stats */
     public static final String optStats                 = "stats.opt" ;

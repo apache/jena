@@ -55,11 +55,8 @@ public class StoreParamsConst {
     public static final String   fBlockSize            = "block_size" ;
     public static final int      blockSize             = SystemTDB.BlockSize ;
     
-    public static final String   fIndexNode2Id         = "index_node2id" ;
-    public static final String   indexNode2Id          = Names.indexNode2Id ;
-    
-    public static final String   fIndexId2Node         = "index_id2node" ;
-    public static final String   indexId2Node          = Names.indexId2Node ;
+    public static final String   fNodeTableBaseName    = "nodetable" ;
+    public static final String   nodeTableBaseName     = Names.nodeTableBaseName ;
     
     public static final String   fPrimaryIndexTriples  = "triple_index_primary" ;
     public static final String   primaryIndexTriples   = Names.primaryIndexTriples ;
@@ -73,20 +70,14 @@ public class StoreParamsConst {
     public static final String   fQuadIndexes          = "quad_indexes" ;
     public static final String[] quadIndexes           = Names.quadIndexes ;
     
+    public static final String   fPrefixTableBaseName  = "prefixtable" ;
+    public static final String   prefixTableBaseName   = Names.prefixTableBaseName ;
+   
     public static final String   fPrimaryIndexPrefix   = "prefix_index_primary" ;
     public static final String   primaryIndexPrefix    = Names.primaryIndexPrefix ;
     
     public static final String   fPrefixIndexes        = "prefix_indexes" ;
     public static final String[] prefixIndexes         = Names.prefixIndexes ;
-    
-    public static final String   fIndexPrefix          = "file_prefix_index" ;
-    public static final String   indexPrefix           = Names.indexPrefix ;
-    
-    public static final String   fPrefixNode2Id        = "file_prefix_nodeid" ;
-    public static final String   prefixNode2Id         = Names.prefixNode2Id ;
-    
-    public static final String   fPrefixId2Node        = "file_prefix_id2node" ;
-    public static final String   prefixId2Node         = Names.prefixId2Node ;
 
     // Must be after the constants above to get initialization order right
     // because StoreParamsBuilder uses these constants.

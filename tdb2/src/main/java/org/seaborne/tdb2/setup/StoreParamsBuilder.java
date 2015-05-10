@@ -78,10 +78,8 @@ public class StoreParamsBuilder {
 
     private Item<Integer>            blockSize             = new Item<>(StoreParamsConst.blockSize, false) ;
 
-    private Item<String>             indexNode2Id          = new Item<>(StoreParamsConst.indexNode2Id, false) ;
-
-    private Item<String>             indexId2Node          = new Item<>(StoreParamsConst.indexId2Node, false) ;
-
+    private Item<String>             nodeTableBaseName     = new Item<>(StoreParamsConst.nodeTableBaseName, false) ;
+    
     private Item<String>             primaryIndexTriples   = new Item<>(StoreParamsConst.primaryIndexTriples, false) ;
 
     private Item<String[]>           tripleIndexes         = new Item<>(StoreParamsConst.tripleIndexes, false) ;
@@ -90,15 +88,11 @@ public class StoreParamsBuilder {
 
     private Item<String[]>           quadIndexes           = new Item<>(StoreParamsConst.quadIndexes, false) ;
 
+    private Item<String>             prefixTableBaseName   = new Item<>(StoreParamsConst.prefixTableBaseName, false) ;
+    
     private Item<String>             primaryIndexPrefix    = new Item<>(StoreParamsConst.primaryIndexPrefix, false) ;
 
     private Item<String[]>           prefixIndexes         = new Item<>(StoreParamsConst.prefixIndexes, false) ;
-
-    private Item<String>             indexPrefix           = new Item<>(StoreParamsConst.indexPrefix, false) ;
-
-    private Item<String>             prefixNode2Id         = new Item<>(StoreParamsConst.prefixNode2Id, false) ;
-
-    private Item<String>             prefixId2Node         = new Item<>(StoreParamsConst.prefixId2Node, false) ;
     
     public static StoreParamsBuilder create() {
         return new StoreParamsBuilder() ;
@@ -152,8 +146,7 @@ public class StoreParamsBuilder {
         this.NodeId2NodeCacheSize   = other.NodeId2NodeCacheSize ; 
         this.NodeMissCacheSize      = other.NodeMissCacheSize ; 
 
-        this.indexNode2Id           = other.indexNode2Id ; 
-        this.indexId2Node           = other.indexId2Node ; 
+        this.nodeTableBaseName      = other.nodeTableBaseName ; 
         
         this.primaryIndexTriples    = other.primaryIndexTriples ; 
         this.tripleIndexes          = other.tripleIndexes ; 
@@ -161,22 +154,20 @@ public class StoreParamsBuilder {
         this.primaryIndexQuads      = other.primaryIndexQuads ; 
         this.quadIndexes            = other.quadIndexes ; 
 
+        this.prefixTableBaseName    = other.prefixTableBaseName ; 
         this.primaryIndexPrefix     = other.primaryIndexPrefix ; 
         this.prefixIndexes          = other.prefixIndexes ; 
-        this.indexPrefix            = other.indexPrefix ; 
-
-        this.prefixNode2Id          = other.prefixNode2Id ; 
-        this.prefixId2Node          = other.prefixId2Node ; 
     }
     
     public StoreParams build() {
         return new StoreParams(
                  fileMode, blockSize, blockReadCacheSize, blockWriteCacheSize, 
                  Node2NodeIdCacheSize, NodeId2NodeCacheSize, NodeMissCacheSize,
-                 indexNode2Id, indexId2Node, primaryIndexTriples, tripleIndexes,
-                 primaryIndexQuads, quadIndexes, primaryIndexPrefix,
-                 prefixIndexes, indexPrefix,
-                 prefixNode2Id, prefixId2Node) ;
+                 nodeTableBaseName,
+                 primaryIndexTriples, tripleIndexes,
+                 primaryIndexQuads, quadIndexes, 
+                 prefixTableBaseName, primaryIndexPrefix,
+                 prefixIndexes) ;
     }
     
     public FileMode getFileMode() {
@@ -242,36 +233,27 @@ public class StoreParamsBuilder {
        return this ;
    }
 
-    public String getIndexNode2Id() {
-        return indexNode2Id.value ;
-    }
-
-   public StoreParamsBuilder indexNode2Id(String indexNode2Id) {
-       this.indexNode2Id = new Item<>(indexNode2Id, true) ;
+   public String getNodeTableBaseName() {
+       return nodeTableBaseName.value ;
+   }
+   
+   public StoreParamsBuilder nodeTableBaseName(String nodeTableBaseName) {
+       this.nodeTableBaseName = new Item<>(nodeTableBaseName, true);
        return this ;
    }
-
-    public String getIndexId2Node() {
-        return indexId2Node.value ;
-    }
-
-   public StoreParamsBuilder indexId2Node(String indexId2Node) {
-       this.indexId2Node = new Item<>(indexId2Node, true) ;
-       return this ;
+   
+   public String getPrimaryIndexTriples() {
+       return primaryIndexTriples.value ;
    }
-
-    public String getPrimaryIndexTriples() {
-        return primaryIndexTriples.value ;
-    }
 
    public StoreParamsBuilder primaryIndexTriples(String primaryIndexTriples) {
        this.primaryIndexTriples = new Item<>(primaryIndexTriples, true) ;
        return this ;
    }
 
-    public String[] getTripleIndexes() {
-        return tripleIndexes.value ;
-    }
+   public String[] getTripleIndexes() {
+       return tripleIndexes.value ;
+   }
 
    public StoreParamsBuilder tripleIndexes(String[] tripleIndexes) {
        this.tripleIndexes = new Item<>(tripleIndexes, true) ;
@@ -296,7 +278,17 @@ public class StoreParamsBuilder {
        return this ;
    }
 
-    public String getPrimaryIndexPrefix() {
+
+   public String getPreifixTableBaseName() {
+       return prefixTableBaseName.value ;
+   }
+   
+   public StoreParamsBuilder prefixTableBaseName(String prefixTableBaseName) {
+       this.prefixTableBaseName = new Item<>(prefixTableBaseName, true) ;
+       return this ;
+   }
+   
+   public String getPrimaryIndexPrefix() {
         return primaryIndexPrefix.value ;
     }
 
@@ -311,33 +303,6 @@ public class StoreParamsBuilder {
 
    public StoreParamsBuilder prefixIndexes(String[] prefixIndexes) {
        this.prefixIndexes = new Item<>(prefixIndexes, true) ;
-       return this ;
-   }
-
-    public String getIndexPrefix() {
-        return indexPrefix.value ;
-    }
-
-   public StoreParamsBuilder indexPrefix(String indexPrefix) {
-       this.indexPrefix = new Item<>(indexPrefix, true) ;
-       return this ;
-   }
-
-    public String getPrefixNode2Id() {
-        return prefixNode2Id.value ;
-    }
-
-   public StoreParamsBuilder prefixNode2Id(String prefixNode2Id) {
-       this.prefixNode2Id = new Item<>(prefixNode2Id, true) ;
-       return this ;
-   }
-
-    public String getPrefixId2Node() {
-        return prefixId2Node.value ;
-    }
-
-   public StoreParamsBuilder prefixId2Node(String prefixId2Node) {
-       this.prefixId2Node = new Item<>(prefixId2Node, true) ;
        return this ;
    }
 }

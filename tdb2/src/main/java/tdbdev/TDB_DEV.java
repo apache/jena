@@ -18,9 +18,14 @@
 package tdbdev;
 
 public class TDB_DEV {
-    // Append-write-only, transactional byte file c.f. Object file.
+    // ** Append-write-only, transactional byte file c.f. Object file.
+    
     // Sort out transactional Object
     // Component id management.
+    //   Read from disk.
+    //   Fixed base id and component in set.
+    //   Simplify with "per journal" ids
+    //   Cponent id == UUID + integer
     // Journal and recovery.
     
     // Collapse DatasetGraphTDB and DatasetGraphTxn
@@ -28,6 +33,9 @@ public class TDB_DEV {
     // Port TDB tests
     //   BuildTestLib
     //   TestTransactions
+    //    Just need TestDataset?
     
+    // NodeTableThrift ->
+    // NodeTableX + 
 }
 

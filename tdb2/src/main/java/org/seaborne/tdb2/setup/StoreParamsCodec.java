@@ -78,17 +78,14 @@ public class StoreParamsCodec {
         encode(builder, key(fNode2NodeIdCacheSize),     params.getNode2NodeIdCacheSize()) ;
         encode(builder, key(fNodeId2NodeCacheSize),     params.getNodeId2NodeCacheSize()) ;
         encode(builder, key(fNodeMissCacheSize),        params.getNodeMissCacheSize()) ;
-        encode(builder, key(fIndexNode2Id),             params.getIndexNode2Id()) ;
-        encode(builder, key(fIndexId2Node),             params.getIndexId2Node()) ;
+        encode(builder, key(fNodeTableBaseName),        params.getNodeTableBaseName()) ;
         encode(builder, key(fPrimaryIndexTriples),      params.getPrimaryIndexTriples()) ;
         encode(builder, key(fTripleIndexes),            params.getTripleIndexes()) ;
         encode(builder, key(fPrimaryIndexQuads),        params.getPrimaryIndexQuads()) ;
         encode(builder, key(fQuadIndexes),              params.getQuadIndexes()) ;
+        encode(builder, key(fPrefixTableBaseName),      params.getPrefixTableBaseName()) ;
         encode(builder, key(fPrimaryIndexPrefix),       params.getPrimaryIndexPrefix()) ;
         encode(builder, key(fPrefixIndexes),            params.getPrefixIndexes()) ;
-        encode(builder, key(fIndexPrefix),              params.getIndexPrefix()) ;
-        encode(builder, key(fPrefixNode2Id),            params.getPrefixNode2Id()) ;
-        encode(builder, key(fPrefixId2Node),            params.getPrefixId2Node()) ;
         
         builder.finishObject("StoreParams") ;
         return (JsonObject)builder.build() ;
@@ -121,17 +118,17 @@ public class StoreParamsCodec {
                 case fNode2NodeIdCacheSize:    builder.node2NodeIdCacheSize(getInt(json, key)) ;            break ;
                 case fNodeId2NodeCacheSize:    builder.nodeId2NodeCacheSize(getInt(json, key)) ;            break ;
                 case fNodeMissCacheSize:       builder.nodeMissCacheSize(getInt(json, key)) ;               break ;
-                case fIndexNode2Id:            builder.indexNode2Id(getString(json, key)) ;                 break ;
-                case fIndexId2Node:            builder.indexId2Node(getString(json, key)) ;                 break ;
+                
+                case fNodeTableBaseName:       builder.nodeTableBaseName(getString(json, key)) ;            break ;
                 case fPrimaryIndexTriples:     builder.primaryIndexTriples(getString(json, key)) ;          break ;
                 case fTripleIndexes:           builder.tripleIndexes(getStringArray(json, key)) ;           break ;
                 case fPrimaryIndexQuads:       builder.primaryIndexQuads(getString(json, key)) ;            break ;
                 case fQuadIndexes:             builder.quadIndexes(getStringArray(json, key)) ;             break ;
+                
+                case fPrefixTableBaseName:     builder.prefixTableBaseName(getString(json, key)) ;          break ;
                 case fPrimaryIndexPrefix:      builder.primaryIndexPrefix(getString(json, key)) ;           break ;
                 case fPrefixIndexes:           builder.prefixIndexes(getStringArray(json, key)) ;           break ;
-                case fIndexPrefix:             builder.indexPrefix(getString(json, key)) ;                  break ;
-                case fPrefixNode2Id:           builder.prefixNode2Id(getString(json, key)) ;                break ;
-                case fPrefixId2Node:           builder.prefixId2Node(getString(json, key)) ;                break ;
+                
                 default:
                     throw new TDBException("StoreParams key no recognized: "+key) ;
             }

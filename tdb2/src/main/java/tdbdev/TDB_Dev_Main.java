@@ -43,6 +43,8 @@ public class TDB_Dev_Main {
         //DatasetGraphTDB dsg = (DatasetGraphTDB)TDB2Builder.build(location) ;
         
         if ( false ) {
+            String FILE = "/home/afs/Datasets/BSBM/bsbm-250k.nt.gz" ;
+            System.out.println("Load "+FILE) ;
             Dataset ds = TDBFactory.createDataset(location) ;
             Timer timer = new Timer() ;
             ds.begin(ReadWrite.WRITE); 
@@ -57,7 +59,6 @@ public class TDB_Dev_Main {
 
             ds.begin(ReadWrite.READ) ;
 
-
             //RDFDataMgr.write(System.out,  dsg, Lang.TRIG) ;
             long x = Iter.count(ds.asDatasetGraph().find()) ;
             ds.end();
@@ -69,6 +70,8 @@ public class TDB_Dev_Main {
             System.exit(0) ;
         }
 
+        String FILE = "/home/afs/Datasets/BSBM/bsbm-5m.nt.gz" ;
+        System.out.println("Load "+FILE) ;
         
         DatasetGraphTxn dsg = (DatasetGraphTxn)TDBFactory.createDatasetGraph(location) ;
         dsg.begin(ReadWrite.WRITE);
@@ -77,7 +80,7 @@ public class TDB_Dev_Main {
         //RDFDataMgr.read(dsg, "D.ttl");
         Timer timer = new Timer() ;
         timer.startTimer();
-        RDFDataMgr.read(dsgx, "/home/afs/Datasets/BSBM/bsbm-5m.nt.gz") ;
+        RDFDataMgr.read(dsgx, FILE) ;
         dsg.commit();
         dsg.end(); 
         long time_ms = timer.endTimer() ;

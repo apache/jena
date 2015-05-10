@@ -27,13 +27,17 @@ import org.seaborne.tdb2.store.DatasetPrefixesTDB ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.sys.DatasetControl ;
 
+/** Build things for non-transactional tests */
 public class BuildTestLib {
 
     public static RangeIndex buildRangeIndex(FileSet mem, RecordFactory factory, IndexParams indexParams) {
         throw new NotImplemented() ;
     }
 
-    public static NodeTable makeNodeTable(Location mem, String indexnode2id, int i, String indexid2node, int j, int k) {
+    public static NodeTable makeNodeTable(Location mem, String baseName, 
+                                          int cacheNodeId2NodeSize, 
+                                          int cacheNode2NodeIdSize,
+                                          int cacheMissSize) {
         throw new NotImplemented() ;
     }
 

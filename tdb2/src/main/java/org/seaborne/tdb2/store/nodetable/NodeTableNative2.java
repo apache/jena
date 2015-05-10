@@ -104,9 +104,10 @@ public abstract class NodeTableNative2 implements NodeTable
             return null ;
         if ( NodeId.isAny(id) )
             return null ;
-        
-        Node n = readNodeFromTable(id) ;
-        return n ;
+        synchronized (this) {
+            Node n = readNodeFromTable(id) ;
+            return n ;
+        }
     }
 
     // ----------------
@@ -162,13 +163,13 @@ public abstract class NodeTableNative2 implements NodeTable
     // -------- NodeId<->Node
     // Synchronization:
     //   write: in accessIndex
-    //   read: synchronized here.
+    //   read: in _retrieveNodeByNodeId
     // Only places for accessing the StringFile.
     
     abstract protected NodeId writeNodeToTable(Node node) ;
     abstract protected Node readNodeFromTable(NodeId id) ;
     
-//    private final 
+//    private final NodeId writeNodeToTable(Node node)
 //    {
 //        syncNeeded = true ;
 //        // Synchronized in accessIndex
