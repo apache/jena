@@ -15,14 +15,12 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.tdb2.store.nodetable;
+package org.seaborne.tdb2.store.nodetable ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.thrift.TRDF ;
 import org.apache.jena.riot.thrift.ThriftConvert ;
 import org.apache.jena.riot.thrift.wire.RDF_Term ;
-//import org.apache.jena.tdb.base.objectfile.ObjectFile ;
-//import org.apache.jena.tdb.index.Index ;
 import org.apache.thrift.TException ;
 import org.apache.thrift.protocol.TProtocol ;
 import org.apache.thrift.transport.TSimpleFileTransport ;
@@ -30,16 +28,27 @@ import org.seaborne.dboe.index.Index ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.NodeId ;
 
-public class NodeTableTRDF extends NodeTableNative2 {
-
-    private TSimpleFileTransport file ;
-    private final TProtocol protocol ;
-    private long position ;
-    //private final Index nodeToId ;
+public class NodeTableTRDF extends NodeTableNative {
+    // TFileTransport does not support writing.
+    // Write own, with length recording.
+    // TIOStreamTransport
     
-    public NodeTableTRDF(Index nodeToId, String objectFile)
-    {
-        super(nodeToId, null);
+    // (1) TSimpleFileTransport+ buffering on RandomAccessFile
+    // (2) TIOStreamTransport with a append, recording output file.
+    // (3) Two transports, in and out.
+    
+    // ** (2)
+    // Separate in and out.
+    //   Part of "BinaryFile" which flushes across in-out swaps.
+    
+    private TSimpleFileTransport file ;
+    private final TProtocol      protocol ;
+    private long                 position ;
+
+    // private final Index nodeToId ;
+
+    public NodeTableTRDF(Index nodeToId, String objectFile) {
+        super(nodeToId) ;
         try {
             file = new TSimpleFileTransport(objectFile, true, true, true) ;
             position = file.length() ;
@@ -49,15 +58,15 @@ public class NodeTableTRDF extends NodeTableNative2 {
             throw new TDBException("NodeTableTRDF", ex) ;
         }
     }
-    
+
     @Override
     protected NodeId writeNodeToTable(Node node) {
         RDF_Term term = ThriftConvert.convert(node, true) ;
         try {
             position = file.length() ;
-            file.seek(position); 
+            file.seek(position) ;
             NodeId nid = NodeId.create(position) ;
-            term.write(protocol);
+            term.write(protocol) ;
             return nid ;
         }
         catch (TException ex) {
@@ -69,9 +78,9 @@ public class NodeTableTRDF extends NodeTableNative2 {
     protected Node readNodeFromTable(NodeId id) {
         try {
             long x = id.getId() ;
-            file.seek(x);
+            file.seek(x) ;
             RDF_Term term = new RDF_Term() ;
-            term.read(protocol); 
+            term.read(protocol) ;
             Node n = ThriftConvert.convert(term) ;
             return n ;
         }
@@ -79,4 +88,24 @@ public class NodeTableTRDF extends NodeTableNative2 {
             throw new TDBException("NodeTableTRDF", ex) ;
         }
     }
- }
+
+    @Override
+    protected void syncSub() {
+        try {
+            file.flush() ;
+        }
+        catch (Exception ex) {
+            throw new TDBException("NodeTableTRDF", ex) ;
+        }
+    }
+
+    @Override
+    protected void closeSub() {
+        try {
+            file.close() ;
+        }
+        catch (Exception ex) {
+            throw new TDBException("NodeTableTRDF", ex) ;
+        }
+    }
+}

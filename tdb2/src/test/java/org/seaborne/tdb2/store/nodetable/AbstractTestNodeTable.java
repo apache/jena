@@ -22,9 +22,7 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.Test ;
-import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.NodeId ;
-import org.seaborne.tdb2.store.nodetable.NodeTable ;
 
 public abstract class AbstractTestNodeTable extends BaseTest
 {
@@ -62,18 +60,7 @@ public abstract class AbstractTestNodeTable extends BaseTest
         NodeId nodeId2 = nt.getNodeIdForNode(n) ;
         assertEquals(nodeId, nodeId2) ;
     }
-    
-    protected static void writeBadNode(NodeTable nt, Node badNode)
-    {
-        NodeId id1 = nt.allocOffset() ;
-        try {
-            NodeId nodeId = nt.getAllocateNodeId(badNode) ;
-            fail("Expected exception for bad node: "+badNode) ;
-        } catch (TDBException ex) { }
-        NodeId id2 = nt.allocOffset() ;
-        assertEquals(id1, id2) ;
-    }
-    
+
     @Test public void nodetable_01()    { testNode("<http://example/x>") ; }
     @Test public void nodetable_02()    { testNode("1") ; }
     @Test public void nodetable_03()    { testNode("_:x") ; }
@@ -81,26 +68,4 @@ public abstract class AbstractTestNodeTable extends BaseTest
     @Test public void nodetable_05()    { testNode("'x'@en") ; }
     @Test public void nodetable_06()    { testNode("'x'^^<http://example/dt>") ; }
     @Test public void nodetable_07()    { testNode("'نواف'") ; }
-    
-    static Node badNode1 = org.apache.jena.graph.NodeFactory.createLiteral("abc", "99bad") ;
-    
-    @Test public void nodetable_bad_01()    { testNodeBad(badNode1) ; }
-    @Test public void nodetable_bad_02()    
-    { 
-        NodeTable nt = createEmptyNodeTable() ;
-        writeNode(nt, "'x'") ;
-        NodeId id1 = nt.allocOffset() ;
-        writeBadNode(nt, badNode1) ; 
-        NodeId id2 = nt.allocOffset() ;
-        assertEquals(id1, id2) ;
-        writeNode(nt, "<http://example/x>") ;
-        
-    }
-
-    protected void testNodeBad(Node badNode)
-    {
-        NodeTable nt = createEmptyNodeTable() ;
-        writeBadNode(nt, badNode) ;
-    }
-
 }

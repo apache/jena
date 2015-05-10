@@ -51,9 +51,6 @@ public interface NodeTable extends Sync, Closeable
     /** Iterate over all nodes (not necessarily fast).  Does not include inlined NodeIds */
     public Iterator<Pair<NodeId, Node>> all() ;
     
-    /** The offset needed to predicate allocation difference between peristent tables - internal function */  
-    public NodeId allocOffset() ;
-    
     /** Anything there? */  
     public boolean isEmpty() ; 
 

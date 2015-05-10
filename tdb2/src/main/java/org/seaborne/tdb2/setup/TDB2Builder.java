@@ -40,6 +40,7 @@ import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.* ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
+import org.seaborne.tdb2.store.nodetable.NodeTableSSE ;
 import org.seaborne.tdb2.store.nodetable.NodeTableTRDF ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTableConcrete ;
@@ -226,7 +227,10 @@ public class TDB2Builder {
         RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
         Index index = buildRangeIndex(coord, cid, recordFactory, name) ;
         // Caching
-        return new NodeTableTRDF(index, location.getPath(name+"-data", "obj")) ;
+        if ( false )
+            return new NodeTableSSE(index, location.getPath(name+"-data", "obj")) ;
+        else
+            return new NodeTableTRDF(index, location.getPath(name+"-data", "obj")) ;
     }
 
     private static void error(Logger log, String msg)

@@ -21,13 +21,15 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.* ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.util.QueryExecUtils ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.tdb2.TDBFactory ;
 import org.seaborne.tdb2.store.DatasetGraphTxn ;
+
 
 public class TDB_Dev_Main {
     static { LogCtl.setLog4j(); }
@@ -70,7 +72,7 @@ public class TDB_Dev_Main {
             System.exit(0) ;
         }
 
-        String FILE = "/home/afs/Datasets/BSBM/bsbm-5m.nt.gz" ;
+        String FILE = "/home/afs/Datasets/BSBM/bsbm-250k.nt.gz" ;
         System.out.println("Load "+FILE) ;
         
         DatasetGraphTxn dsg = (DatasetGraphTxn)TDBFactory.createDatasetGraph(location) ;
@@ -87,15 +89,27 @@ public class TDB_Dev_Main {
         
         dsg.begin(ReadWrite.READ) ;
         
-        
         //RDFDataMgr.write(System.out,  dsg, Lang.TRIG) ;
         long x = Iter.count(dsg.find()) ;
         dsg.end();
         System.out.printf("Count = %,d\n", x) ;
         double seconds = time_ms/1000.0 ; 
         System.out.printf("Rate = %,.0f\n", x/seconds) ;
+        
+        Dataset ds = TDBFactory.createDataset(location) ;
+        String qs = "SELECT * { ?s ?p ?o } LIMIT 10" ;
+        Query q = QueryFactory.create(qs) ;
+        
+        Txn.executeRead(dsg.getTransactional(), ()->{
+            try ( QueryExecution qExec = QueryExecutionFactory.create(q, ds) ) {
+                QueryExecUtils.executeQuery(qExec);
+            }
+        }); 
+        
         System.out.println("DONE") ;
         System.exit(0) ;
+        
+        
         
 //        FileSet idxFs1 = new FileSet(location, "index") ;
 //        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;

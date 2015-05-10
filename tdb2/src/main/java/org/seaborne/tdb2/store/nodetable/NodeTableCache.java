@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.seaborne.tdb2.store.nodetable;
+package org.seaborne.tdb2.store.nodetable ;
 
 import java.util.Iterator ;
 
@@ -31,23 +31,25 @@ import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.store.NodeId ;
 
-/** Cache wrapper around a NodeTable.  
- * Assumes all access goes through this wrapper.
- * Read-cache - write caching is done via the object file used by the base NodeTable. 
- */ 
-public class NodeTableCache implements NodeTable
-{
+/**
+ * Cache wrapper around a NodeTable. Assumes all access goes through this
+ * wrapper. Read-cache - write caching is done via the object file used by the
+ * base NodeTable.
+ */
+public class NodeTableCache implements NodeTable {
     // These caches are updated together.
     // See synchronization in _retrieveNodeByNodeId and _idForNode
     // The cache is assumed to be single operation-thread-safe.
     private Cache<Node, NodeId> node2id_Cache = null ;
     private Cache<NodeId, Node> id2node_Cache = null ;
-    
-    // A small cache of "known unknowns" to speed up searching for impossible things.   
-    // Cache update needed on NodeTable changes because a node may become "known"
-    private CacheSet<Node> notPresent = null ;
-    private NodeTable baseTable ;
-    private Object lock = new Object() ;
+
+    // A small cache of "known unknowns" to speed up searching for impossible
+    // things.
+    // Cache update needed on NodeTable changes because a node may become
+    // "known"
+    private CacheSet<Node>      notPresent    = null ;
+    private NodeTable           baseTable ;
+    private Object              lock          = new Object() ;
 
     public static NodeTable create(NodeTable nodeTable, StoreParams params) {
         int nodeToIdCacheSize = params.getNode2NodeIdCacheSize() ;
@@ -74,21 +76,30 @@ public class NodeTableCache implements NodeTable
     }
 
     @Override
-    public final NodeTable wrapped() { return baseTable ; } 
-    
+    public final NodeTable wrapped() {
+        return baseTable ;
+    }
+
     /** Get the Node for this NodeId, or null if none */
     @Override
     public Node getNodeForNodeId(NodeId id) {
         return _retrieveNodeByNodeId(id) ;
     }
 
-    /** Find the NodeId for a node, or return NodeId.NodeDoesNotExist */ 
+    /** Find the NodeId for a node, or return NodeId.NodeDoesNotExist */
     @Override
-    public NodeId getNodeIdForNode(Node node)  { return _idForNode(node, false) ; }
+    public NodeId getNodeIdForNode(Node node) {
+        return _idForNode(node, false) ;
+    }
 
-    /** Find the NodeId for a node, allocating a new NodeId if the Node does not yet have a NodeId */ 
+    /**
+     * Find the NodeId for a node, allocating a new NodeId if the Node does not
+     * yet have a NodeId
+     */
     @Override
-    public NodeId getAllocateNodeId(Node node)  { return _idForNode(node, true) ; }
+    public NodeId getAllocateNodeId(Node node) {
+        return _idForNode(node, true) ;
+    }
 
     @Override
     public boolean containsNode(Node node) {
@@ -110,21 +121,21 @@ public class NodeTableCache implements NodeTable
         if ( NodeId.isAny(id) )
             return null ;
         // Try once outside the synchronized
-        // (Cache access is thread-safe) 
+        // (Cache access is thread-safe)
         Node n = cacheLookup(id) ;
         if ( n != null )
-            return n ; 
+            return n ;
 
         synchronized (lock) {
             // Lock to update two caches consisently.
             // Verify cache miss
             n = cacheLookup(id) ;
             if ( n != null )
-                return n ; 
+                return n ;
 
             if ( baseTable == null )
-                System.err.println(""+this) ;
-            
+                System.err.println("" + this) ;
+
             n = baseTable.getNodeForNodeId(id) ;
             cacheUpdate(n, id) ;
             return n ;
@@ -132,27 +143,26 @@ public class NodeTableCache implements NodeTable
     }
 
     // Node ==> NodeId
-    private NodeId _idForNode(Node node, boolean allocate)
-    {
+    private NodeId _idForNode(Node node, boolean allocate) {
         if ( node == Node.ANY )
             return NodeId.NodeIdAny ;
         // Try once outside the synchronized
-        // (Cache access is thread-safe.) 
+        // (Cache access is thread-safe.)
         NodeId nodeId = cacheLookup(node) ;
         if ( nodeId != null )
-            return nodeId ; 
+            return nodeId ;
         synchronized (lock) {
             // Update two caches inside synchronized.
             // Check stil valid.
             nodeId = cacheLookup(node) ;
             if ( nodeId != null )
-                return nodeId ; 
+                return nodeId ;
 
             if ( allocate )
                 nodeId = baseTable.getAllocateNodeId(node) ;
             else
                 nodeId = baseTable.getNodeIdForNode(node) ;
-            // Ensure caches have it.  Includes recording "no such node"
+            // Ensure caches have it. Includes recording "no such node"
             cacheUpdate(node, nodeId) ;
             return nodeId ;
         }
@@ -160,47 +170,51 @@ public class NodeTableCache implements NodeTable
 
     // ----------------
     // ---- Only places that the caches are touched
-    
-    /** Check caches to see if we can map a NodeId to a Node. Returns null on no cache entry. */ 
-    private Node cacheLookup(NodeId id)
-    {
-        if ( id2node_Cache == null ) return null ;
+
+    /**
+     * Check caches to see if we can map a NodeId to a Node. Returns null on no
+     * cache entry.
+     */
+    private Node cacheLookup(NodeId id) {
+        if ( id2node_Cache == null )
+            return null ;
         return id2node_Cache.getIfPresent(id) ;
     }
-    
-    /** Check caches to see if we can map a Node to a NodeId. Returns null on no cache entry. */ 
-    private NodeId cacheLookup(Node node)
-    {
+
+    /**
+     * Check caches to see if we can map a Node to a NodeId. Returns null on no
+     * cache entry.
+     */
+    private NodeId cacheLookup(Node node) {
         // Remember things known (currently) not to exist.
         // Does not matter if notPresent is being updated elsewhere.
-        if ( notPresent != null && notPresent.contains(node) ) 
+        if ( notPresent != null && notPresent.contains(node) )
             return null ;
         if ( node2id_Cache == null )
             return null ;
-        return node2id_Cache.getIfPresent(node) ; 
+        return node2id_Cache.getIfPresent(node) ;
     }
 
     /** Update the Node->NodeId caches */
-    private void cacheUpdate(Node node, NodeId id)
-    {
+    private void cacheUpdate(Node node, NodeId id) {
         if ( node == null )
             return ;
-        
+
         // synchronized is further out.
         // The "notPresent" cache is used to note whether a node
         // is known not to exist.
-        // This must be specially handled later if the node is added. 
+        // This must be specially handled later if the node is added.
         if ( NodeId.isDoesNotExist(id) ) {
-            if ( notPresent != null ) 
+            if ( notPresent != null )
                 notPresent.add(node) ;
             return ;
         }
-        
+
         if ( id == NodeId.NodeIdAny ) {
             Log.warn(this, "Attempt to cache NodeIdAny - ignored") ;
             return ;
         }
-        
+
         if ( node2id_Cache != null )
             node2id_Cache.put(node, id) ;
         if ( id2node_Cache != null )
@@ -209,19 +223,12 @@ public class NodeTableCache implements NodeTable
         if ( notPresent != null && notPresent.contains(node) )
             notPresent.remove(node) ;
     }
+
     // ----
 
     @Override
-    public NodeId allocOffset()
-    {
-        return baseTable.allocOffset() ;
-    }
-    
-    @Override
-    public boolean isEmpty()
-    {
-        synchronized (lock)
-        {
+    public boolean isEmpty() {
+        synchronized (lock) {
             if ( node2id_Cache != null )
                 return node2id_Cache.isEmpty() ;
             if ( id2node_Cache != null )
@@ -232,10 +239,10 @@ public class NodeTableCache implements NodeTable
     }
 
     @Override
-    public synchronized void close()
-    {
+    public synchronized void close() {
         if ( baseTable == null )
-            // Already closed (NodeTables can be shared so .close via two routes).
+            // Already closed (NodeTables can be shared so .close via two
+            // routes).
             return ;
 
         baseTable.close() ;
@@ -246,44 +253,43 @@ public class NodeTableCache implements NodeTable
     }
 
     @Override
-    public void sync() { baseTable.sync() ; }
-    
+    public void sync() {
+        baseTable.sync() ;
+    }
+
     @Override
-    public Iterator<Pair<NodeId, Node>> all()
-    {
+    public Iterator<Pair<NodeId, Node>> all() {
         if ( false )
             testForConsistency() ;
         return baseTable.all() ;
     }
-    
-    private void testForConsistency()
-    {
+
+    private void testForConsistency() {
         Iterator<Node> iter1 = Iter.toList(node2id_Cache.keys()).iterator() ;
-        
-        for ( ; iter1.hasNext() ; )
-        {
+
+        for ( ; iter1.hasNext() ; ) {
             Node n = iter1.next() ;
-            
-            NodeId nId = node2id_Cache.getIfPresent(n) ; 
+
+            NodeId nId = node2id_Cache.getIfPresent(n) ;
             if ( !id2node_Cache.containsKey(nId) )
-                throw new TDBException("Inconsistent: "+n+" => "+nId) ;
+                throw new TDBException("Inconsistent: " + n + " => " + nId) ;
             if ( notPresent.contains(n) )
-                throw new TDBException("Inconsistent: "+n+" in notPresent cache (1)") ;
+                throw new TDBException("Inconsistent: " + n + " in notPresent cache (1)") ;
         }
         Iterator<NodeId> iter2 = Iter.toList(id2node_Cache.keys()).iterator() ;
-        for ( ; iter2.hasNext() ; )
-        {
+        for ( ; iter2.hasNext() ; ) {
             NodeId nId = iter2.next() ;
-            Node n =  id2node_Cache.getIfPresent(nId) ; 
+            Node n = id2node_Cache.getIfPresent(nId) ;
             if ( !node2id_Cache.containsKey(n) )
-                throw new TDBException("Inconsistent: "+nId+" => "+n) ;
+                throw new TDBException("Inconsistent: " + nId + " => " + n) ;
             if ( notPresent.contains(n) )
-                throw new TDBException("Inconsistent: "+n+" in notPresent cache (2)") ;
+                throw new TDBException("Inconsistent: " + n + " in notPresent cache (2)") ;
         }
-        
-        
+
     }
-    
+
     @Override
-    public String toString() { return "Cache("+baseTable.toString()+")" ; }
+    public String toString() {
+        return "Cache(" + baseTable.toString() + ")" ;
+    }
 }

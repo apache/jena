@@ -17,14 +17,12 @@
  */
 
 package org.seaborne.tdb2.store.nodetable ;
-//package org.apache.jena.tdb.store.nodetable;
 
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Node ;
-import org.seaborne.dboe.base.objectfile.ObjectFile ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.tdb2.TDBException ;
@@ -33,31 +31,17 @@ import org.seaborne.tdb2.store.Hash ;
 import org.seaborne.tdb2.store.NodeId ;
 
 /** A concrete NodeTable based on native storage (string file and an index) */ 
-public abstract class NodeTableNative2 implements NodeTable
+public abstract class NodeTableNative implements NodeTable
 {
     // TODO Split into a general accessor (get and put (node,NodeId) pairs)
     // Abstracts the getAllocateNodeId requirements.
     
-    protected ObjectFile objects ;
     protected Index nodeHashToId ;        // hash -> int
     private boolean syncNeeded = false ;
     
-    // Delayed construction - must call init explicitly.
-    protected NodeTableNative2() {}
-    
-    // Combined into one constructor.
-    public NodeTableNative2(Index nodeToId, ObjectFile objectFile)
-    {
-        this() ;
-        init(nodeToId, objectFile) ;
-    }
-    
-    protected void init(Index nodeToId, ObjectFile objectFile)
-    {
+    public NodeTableNative(Index nodeToId) {
         this.nodeHashToId = nodeToId ;
-        this.objects = objectFile;
     }
-
     // ---- Public interface for Node <==> NodeId
 
     /** Get the Node for this NodeId, or null if none */
@@ -147,6 +131,7 @@ public abstract class NodeTableNative2 implements NodeTable
             if ( ! create )
                 return NodeId.NodeDoesNotExist ;
             // Write the node, which allocates an id for it.
+            syncNeeded = true ;
             NodeId id = writeNodeToTable(node) ;
 
             // Update the r record with the new id.
@@ -168,6 +153,8 @@ public abstract class NodeTableNative2 implements NodeTable
     
     abstract protected NodeId writeNodeToTable(Node node) ;
     abstract protected Node readNodeFromTable(NodeId id) ;
+    abstract protected void syncSub() ;
+    abstract protected void closeSub() ;
     
 //    private final NodeId writeNodeToTable(Node node)
 //    {
@@ -195,22 +182,12 @@ public abstract class NodeTableNative2 implements NodeTable
         // Close once.  This may be shared (e.g. triples table and quads table). 
         if ( nodeHashToId != null )
         {
-            nodeHashToId.close() ;
+            nodeHashToId.close() ; 
+            closeSub() ;
             nodeHashToId = null ;
-        }
-        if ( getObjects() != null )
-        {
-            getObjects().close() ;
-            objects = null ;
         }
     }
 
-    @Override
-    public NodeId allocOffset()
-    {
-        return NodeId.create(getObjects().length()) ;
-    }
-    
     // Not synchronized
     @Override
     public Iterator<Pair<NodeId, Node>> all() { return all2() ; }
@@ -225,26 +202,17 @@ public abstract class NodeTableNative2 implements NodeTable
     { 
         if ( syncNeeded )
         {
+            syncSub() ;
             if ( nodeHashToId != null )
                 nodeHashToId.sync() ;
-            if ( getObjects() != null )
-                getObjects().sync() ;
             syncNeeded = false ;
         }
     }
 
-    public ObjectFile getObjects()
-    {
-        return objects;
-    }
-    
-    @Override
-    public String toString() { return objects.getLabel() ; }
-
     @Override
     public boolean isEmpty()
     {
-        return getObjects().isEmpty() ;
+        return nodeHashToId.isEmpty() ;
     }
 
     @Override
