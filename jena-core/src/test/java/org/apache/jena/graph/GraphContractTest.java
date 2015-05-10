@@ -1453,10 +1453,17 @@ public class GraphContractTest<T extends Graph> extends
 	//
 
 	// used to find the object set from the returned set for literal testing
+<<<<<<< HEAD
 	private static final Function<Triple, Node> getObject = new Function<Triple, Node>() {
 		@Override
 		public Node apply(Triple t) {
 			return t.getObject();
+=======
+	private static final Map1<Triple, Node> getObject = new Map1<Triple, Node>() {
+		@Override
+		public Node map1(Triple o) {
+			return o.getObject();
+>>>>>>> 5bc9578fc31fe58017b80d1a15e41b593ee31074
 		}
 	};
 
