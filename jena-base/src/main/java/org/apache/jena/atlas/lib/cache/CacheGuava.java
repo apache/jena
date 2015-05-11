@@ -29,10 +29,11 @@ import org.apache.jena.ext.com.google.common.cache.CacheBuilder ;
 import org.apache.jena.ext.com.google.common.cache.RemovalListener ;
 
 /** Wrapper around a shaded com.google.common.cache */
-final
-public class CacheGuava<K,V> implements Cache<K, V>
+final public class CacheGuava<K,V> implements Cache<K, V>
+
 {
     private BiConsumer<K, V> dropHandler = null ;
+    
     private org.apache.jena.ext.com.google.common.cache.Cache<K,V> cache ;
 
     public CacheGuava(int size)
@@ -69,11 +70,10 @@ public class CacheGuava<K,V> implements Cache<K, V>
 
     @Override
     public void put(K key, V thing) {
-        if ( thing == null ) {
-            cache.invalidate(key); 
-            return ;
-        }
-        cache.put(key, thing) ;
+		if (thing == null)
+			cache.invalidate(key);
+		else
+			cache.put(key, thing);
     }
 
     @Override

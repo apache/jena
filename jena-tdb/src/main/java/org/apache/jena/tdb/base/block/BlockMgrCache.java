@@ -58,10 +58,7 @@ public class BlockMgrCache extends BlockMgrSync
     {
         super(blockMgr) ;
         // Caches are related so we can't use a Getter for cache management.
-        if ( readSlots < -1 )
-            readCache = CacheFactory.createNullCache() ;
-        else
-            readCache = CacheFactory.createCache(readSlots) ;
+        readCache = readSlots > 0 ? CacheFactory.createCache(readSlots) : null;
         if ( writeSlots <= 0 )
             writeCache = null ;
         else
@@ -97,14 +94,17 @@ public class BlockMgrCache extends BlockMgrSync
     synchronized
     public Block getRead(long id)
     {
+    		Block blk = null ;
         // A Block may be in the read cache or the write cache.
         // It can be just in the write cache because the read cache is finite.
-        Block blk = readCache.getIfPresent(id) ;
-        if ( blk != null )
-        {
-            cacheReadHits++ ;
-            log("Hit(r->r) : %d", id) ;
-            return blk ;
+        if (readCache != null) {
+        		blk = readCache.getIfPresent(id) ;
+	        if ( blk != null )
+	        {
+	            cacheReadHits++ ;
+	            log("Hit(r->r) : %d", id) ;
+	            return blk ;
+	        }
         }
         
         // A requested block may be in the other cache.
@@ -124,7 +124,8 @@ public class BlockMgrCache extends BlockMgrSync
         cacheMisses++ ;
         log("Miss/r: %d", id) ;
         blk = super.getRead(id) ;
-        readCache.put(id, blk) ;
+        if (readCache != null)
+        		readCache.put(id, blk) ;
         return blk ;
     }
     
@@ -155,7 +156,7 @@ public class BlockMgrCache extends BlockMgrSync
         // blk is null.
         // A requested block may be in the other cache. Promote it.
         
-        if ( readCache.containsKey(id) )
+        if ( readCache != null && readCache.containsKey(id) )
         {
             blk = readCache.getIfPresent(id) ;
             cacheReadHits++ ;
@@ -180,7 +181,8 @@ public class BlockMgrCache extends BlockMgrSync
     public Block promote(Block block)
     {
         Long id = block.getId() ;
-        readCache.remove(id) ;
+        if (readCache != null) 
+        		readCache.remove(id) ;
         Block block2 = super.promote(block) ;
         if ( writeCache != null )
             writeCache.put(id, block2) ;
@@ -204,7 +206,8 @@ public class BlockMgrCache extends BlockMgrSync
         super.overwrite(block) ;
         // Keep read cache up-to-date. 
         // Must at least expel the read block (which is not the overwrite block).
-        readCache.put(id, block) ;
+        if (readCache != null) 
+        		readCache.put(id, block) ;
     }
     
     private void writeCache(Block block)
@@ -212,7 +215,7 @@ public class BlockMgrCache extends BlockMgrSync
         Long id = block.getId() ;
         log("WriteCache : %d", id) ;
         // Should not be in the read cache due to a getWrite earlier.
-        if ( readCache.containsKey(id) )
+        if ( readCache != null && readCache.containsKey(id) )
             log.warn("write: Block in the read cache") ;
         if ( writeCache != null )
         {
@@ -227,7 +230,7 @@ public class BlockMgrCache extends BlockMgrSync
     {
         Long id = block.getId() ;
         log("Free  : %d", id) ;
-        if ( readCache.containsKey(id) )
+        if ( readCache != null && readCache.containsKey(id) )
         {
             log.warn("Freeing block from read cache") ;
             readCache.remove(id) ;
@@ -356,7 +359,7 @@ public class BlockMgrCache extends BlockMgrSync
 
         // Move it into the readCache because it's often read after writing
         // and the read cache is often larger.
-        readCache.put(id, block) ;
+        if ( readCache != null ) readCache.put(id, block) ;
     }
 
 

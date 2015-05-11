@@ -19,75 +19,64 @@
 package org.apache.jena.atlas.lib.cache ;
 
 import java.util.Iterator ;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheSet ;
+import org.apache.jena.ext.com.google.common.collect.EvictingQueue;
 
 /** Cache set */
 public class CacheSetImpl<T> implements CacheSet<T> {
-    // LinkHashSet does not have LRU support.
-    static Object    theOnlyValue = new Object() ;
-    Cache<T, Object> cacheMap     = null ;
+	
+	private EvictingQueue<T> internalCache;
+   
+	/**
+     * NO OP unless set by {@link #setDropHandler(Consumer)}
+     */
+	private Consumer<T> dropHandler = t -> {};
 
-    public CacheSetImpl(Cache<T, Object> cache) {
-        cacheMap = cache ;
+    public CacheSetImpl(int size) {
+        this.internalCache = EvictingQueue.create(size);
     }
 
     /** Callback for entries when dropped from the cache */
     @Override
     public void setDropHandler(Consumer<T> dropHandler) {
-        cacheMap.setDropHandler(new Wrapper<T>(dropHandler)) ;
+        this.dropHandler = dropHandler ;
     }
     
-    // From map action to set action.
-    static class Wrapper<T> implements BiConsumer<T, Object> {
-        Consumer<T> dropHandler ;
-
-        public Wrapper(Consumer<T> dropHandler) {
-            this.dropHandler = dropHandler ;
-        }
-
-        @Override
-        public void accept(T key, Object value) {
-            dropHandler.accept(key) ;
-        }
-
-    }
-
     @Override
     public void add(T e) {
-        cacheMap.put(e, theOnlyValue) ;
+    		internalCache.add(e) ;
     }
 
     @Override
     public void clear() {
-        cacheMap.clear() ;
+    		internalCache.clear() ;
     }
 
     @Override
     public boolean contains(T obj) {
-        return cacheMap.containsKey(obj) ;
+        return internalCache.contains(obj) ;
     }
 
     @Override
     public boolean isEmpty() {
-        return cacheMap.isEmpty() ;
+        return internalCache.isEmpty() ;
     }
 
     public Iterator<T> iterator() {
-        return cacheMap.keys() ;
+        return internalCache.iterator() ;
     }
 
     @Override
     public void remove(T obj) {
-        cacheMap.remove(obj) ;
+    		internalCache.remove(obj) ;
+    		dropHandler.accept(obj) ;
     }
 
     @Override
     public long size() {
-        return cacheMap.size() ;
+        return internalCache.size() ;
     }
 
 }
