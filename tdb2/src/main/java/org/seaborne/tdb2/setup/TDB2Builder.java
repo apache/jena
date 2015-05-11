@@ -40,9 +40,9 @@ import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.* ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
+import org.seaborne.tdb2.store.nodetable.NodeTableCache ;
 import org.seaborne.tdb2.store.nodetable.NodeTableInline ;
-import org.seaborne.tdb2.store.nodetable.NodeTableSSE ;
-import org.seaborne.tdb2.store.nodetable.NodeTableTRDF_Std ;
+import org.seaborne.tdb2.store.nodetable.NodeTableTRDF ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTableConcrete ;
 import org.seaborne.tdb2.store.tupletable.TupleIndex ;
@@ -227,18 +227,21 @@ public class TDB2Builder {
     public NodeTable buildNodeTable(TransactionCoordinator coord, ComponentId cid, String name) {
         RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
         Index index = buildRangeIndex(coord, cid, recordFactory, name) ;
-        NodeTable nodeTable ;
-        // Caching
-        if ( false )
-            nodeTable = new NodeTableSSE(index, location.getPath(name+"-data", "obj")) ;
-        else
-            // NodeTableTRDF_Std
-            // NodeTableTRDF - trying to be faster.
-            nodeTable = new NodeTableTRDF_Std(index, location.getPath(name+"-data", "obj")) ;
-//        nodeTable = NodeTableCache.create(nodeTable, 
-//                                          storeParams.getNode2NodeIdCacheSize(),
-//                                          storeParams.getNodeId2NodeCacheSize(),
-//                                          storeParams.getNodeMissCacheSize()) ;
+        
+        // Old SSE encoding for comparison. 
+        // Slightly slower to write (5%, SSD), probably slower to read. 
+        //NodeTable nodeTable = new NodeTableSSE(index, location.getPath(name+"-data", "obj")) ;
+        
+        // No write caching smarts. Slower to write (~10%, SSD).
+        //NodeTable nodeTable = new NodeTableTRDF_Direct(index, location.getPath(name+"-data", "obj")) ;
+        
+        // Normal implementation, with write caching.
+        NodeTable nodeTable = new NodeTableTRDF(index, location.getPath(name+"-data", "obj")) ;
+        
+        nodeTable = NodeTableCache.create(nodeTable, 
+                                          storeParams.getNode2NodeIdCacheSize(),
+                                          storeParams.getNodeId2NodeCacheSize(),
+                                          storeParams.getNodeMissCacheSize()) ;
         nodeTable = NodeTableInline.create(nodeTable) ;
         return nodeTable ; 
     }

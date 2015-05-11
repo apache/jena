@@ -26,7 +26,7 @@ import org.apache.thrift.transport.TTransportException ;
 import org.seaborne.dboe.DBOpEnvException ;
 
 /** A file transport that support random access read and
- *  buffered append write. 
+ *  buffered append write.s
  */
 public class TReadAppendFileTransport extends TTransport {
 
@@ -39,20 +39,10 @@ public class TReadAppendFileTransport extends TTransport {
     private RandomAccessFile file ;
     private long writePosn = -1 ;
     private long readPosn = -1 ;
+    private final String filename ;
     
     public TReadAppendFileTransport(String filename) {
-        // Ensure exists.
-        try {
-            file = new RandomAccessFile(filename, "rw") ;
-            readPosn = 0 ;
-            writePosn = file.length() ;
-            // Initially reading.
-            readMode = true ;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        
+        this.filename = filename ;
     }
     
     @Override
@@ -62,7 +52,14 @@ public class TReadAppendFileTransport extends TTransport {
 
     @Override
     public void open() throws TTransportException {
-        // From constructor.
+        try {
+            file = new RandomAccessFile(filename, "rw") ;
+            readPosn = 0 ;
+            writePosn = file.length() ;
+            // Initially reading.
+            readMode = true ;
+        } 
+        catch (IOException ex) { IO.exception(ex) ; }
     }
 
     @Override
@@ -86,8 +83,15 @@ public class TReadAppendFileTransport extends TTransport {
         return readPosn ;
     }
 
+    public long getFilePointer() {
+        try { return file.getFilePointer() ; }
+        catch (IOException e) { IO.exception(e); return -1L ; }
+    }
+    
     public void seek(long posn) {
-        try { 
+        try {
+            if ( ! readMode )
+                flush$() ;
             file.seek(posn) ;
             readPosn = posn ;
         }
@@ -118,6 +122,7 @@ public class TReadAppendFileTransport extends TTransport {
         checkOpen() ;
         setForReading() ;
         try { 
+            long z = file.getFilePointer() ;
             // Buffer?
             int x = file.read(buf, off, len) ;
             readPosn += x ;
@@ -171,7 +176,6 @@ public class TReadAppendFileTransport extends TTransport {
 
     private void setForReading() {
         if ( ! readMode ) {
-            System.err.println("Flip to reading") ;
             if ( pendingOutput )
                 flush$() ;
             try { file.seek(readPosn); }
@@ -182,7 +186,6 @@ public class TReadAppendFileTransport extends TTransport {
 
     private void setForWriting() {
         if ( readMode ) {
-            System.err.println("Flip to writing") ;
             readMode = false ;
             try { file.seek(writePosn); }
             catch (IOException e) { IO.exception(e); }

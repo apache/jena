@@ -17,6 +17,7 @@
 
 package org.seaborne.tdb2.store.nodetable ;
 
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.thrift.RiotThriftException ;
 import org.apache.jena.riot.thrift.TRDF ;
@@ -24,24 +25,14 @@ import org.apache.jena.riot.thrift.ThriftConvert ;
 import org.apache.jena.riot.thrift.wire.RDF_Term ;
 import org.apache.thrift.TException ;
 import org.apache.thrift.protocol.TProtocol ;
+import org.apache.thrift.transport.TTransport ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.NodeId ;
 
 public class NodeTableTRDF extends NodeTableNative {
-    // TFileTransport does not support writing.
-    // Write own, with length recording.
-    // TIOStreamTransport
-    
-    // (1) TSimpleFileTransport+ buffering on RandomAccessFile
-    // (2) TIOStreamTransport with a append, recording output file.
-    // (3) Two transports, in and out.
-    
-    // ** (2)
-    // Separate in and out.
-    //   Part of "BinaryFile" which flushes across in-out swaps.
-    
     private TReadAppendFileTransport file ;
+    private TTransport transport ;
     private final TProtocol      protocol ;
 
     // private final Index nodeToId ;
@@ -50,7 +41,13 @@ public class NodeTableTRDF extends NodeTableNative {
         super(nodeToId) ;
         try {
             file = new TReadAppendFileTransport(objectFile) ;
-            this.protocol = TRDF.protocol(file) ;
+            file.open(); 
+            
+            transport = file ;
+            // Does not seem to affect write speed.
+            //transport = new TFastFramedTransport(transport) ;
+            
+            this.protocol = TRDF.protocol(transport) ;
         }
         catch (Exception ex) {
             throw new TDBException("NodeTableTRDF", ex) ;
@@ -64,10 +61,11 @@ public class NodeTableTRDF extends NodeTableNative {
             long x = file.getWriteLocation() ;
             NodeId nid = NodeId.create(x) ;
             term.write(protocol) ;
+            transport.flush() ;
             return nid ;
         }
         catch (Exception ex) {
-            throw new TDBException("NodeTableThrift", ex) ;
+            throw new TDBException("NodeTableThrift/Write", ex) ;
         }
     }
 
@@ -82,31 +80,23 @@ public class NodeTableTRDF extends NodeTableNative {
             return n ;
         }
         catch (TException ex) {
-            throw new TDBException("NodeTableTRDF", ex) ;
+            throw new TDBException("NodeTableTRDF/Read", ex) ;
         }
         catch (RiotThriftException ex) {
-            System.err.println("NodeId = "+id) ;
+            Log.fatal(this, "Bad encoding: NodeId = "+id) ;
             throw ex ;
         }
     }
 
     @Override
     protected void syncSub() {
-        try {
-            file.flush() ;
-        }
-        catch (Exception ex) {
-            throw new TDBException("NodeTableTRDF", ex) ;
-        }
+        try { transport.flush(); }
+        catch (Exception ex) { throw new TDBException("NodeTableTRDF", ex) ; }
     }
 
     @Override
     protected void closeSub() {
-        try {
-            file.close() ;
-        }
-        catch (Exception ex) {
-            throw new TDBException("NodeTableTRDF", ex) ;
-        }
+        try { transport.close() ; }
+        catch (Exception ex) { throw new TDBException("NodeTableTRDF", ex) ; }
     }
 }

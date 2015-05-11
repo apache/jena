@@ -26,9 +26,9 @@ public class TDB_DEV {
     // Hunt down adapter and remove.
 
     // NodeTableTRDF.
-    //   Worth caching reads as well?  Lots of one bytereads but NT cache is main use on read.  
-
-    // NodeTableTRDF, NodeTableTRDF_Std. 
+    //    Worth caching reads as well?  Lots of one bytereads 
+    //    but NT cache reduces effect on read.
+    //    Framed helps reading? (No significant effect on writing).
     
     // Sort out transactional Object
     // Component id management.
