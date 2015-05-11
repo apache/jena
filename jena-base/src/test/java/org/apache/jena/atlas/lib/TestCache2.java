@@ -23,7 +23,6 @@ import java.util.concurrent.Callable ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
-import org.apache.jena.atlas.lib.cache.Cache1 ;
 import org.junit.Test ;
 
 // Non-parameterized tests
@@ -32,7 +31,7 @@ public class TestCache2 extends BaseTest
     // Cache1
     @Test public void cache_10()
     {
-        Cache<Integer, String> cache = new Cache1<>() ;
+        Cache<Integer, String> cache = CacheFactory.createOneSlotCache() ;
         String str = cache.getIfPresent(1) ;
         assertNull(str) ;
 
@@ -53,13 +52,9 @@ public class TestCache2 extends BaseTest
     
     
     
-    static Callable<String> getter(final Integer key) {
-        return new Callable<String>() {
-            @Override
-            public String call() {
-                return key.toString() ; }
-        } ;
-    }
+	static Callable<String> getter(final Integer key) {
+		return () -> key.toString();
+	}
 
     // Cache + getters
     @Test public void cacheGetter_1()

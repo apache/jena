@@ -16,43 +16,28 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.lib;
+package org.apache.jena.atlas.lib.cache;
 
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.IntStream.rangeClosed;
+import static org.junit.Assert.assertEquals;
 
-import org.apache.jena.atlas.lib.cache.TestCacheSimple;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.jena.atlas.lib.Cache;
+import org.junit.Test;
 
 /**
- * Tests for the Atlas lib package
- *
+ * Simple test to ensure that {@link CacheSimple} evidences the fixed-size
+ * behavior we desire.
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestAlg.class
-    , TestBitsLong.class
-    , TestBitsInt.class
-    , TestBytes.class
-    , TestHex.class
-    , TestListUtils.class
-    , TestSetUtils.class
-    , TestCache.class
-    , TestCache2.class
-    , TestColumnMap.class
-    , TestFileOps.class
-    , TestStrUtils.class
-    , TestXMLLib.class
-    , TestAlarmClock.class
-    , TestRefLong.class
-    , TestReverseComparator.class
-    , TestTrie.class
-    , TestFilenameProcessing.class
-    , TestNumberUtils.class
-    , TestDateTimeUtils.class
-    , TestCacheSimple.class
-} )
+public class CacheSimpleTest {
 
-public class TS_Lib
-{
-
+	@Test
+	public void testFixedSize() {
+		final int maxSize = 5;
+		final int submittedEntries = 10;
+		final Cache<Integer, Object> testCache = new CacheSimple<>(maxSize);
+		rangeClosed(1, submittedEntries).boxed().collect(toMap(k -> k, v -> 1))
+				.forEach(testCache::put);
+		assertEquals("Test cache failed to maintain fixed size!", maxSize, testCache.size());
+	}
 }
