@@ -29,11 +29,8 @@ import org.apache.jena.query.spatial.SpatialIndex;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 
-public class SpatialDatasetAssembler extends AssemblerBase implements Assembler
+public class SpatialDatasetAssembler extends AssemblerBase
 {
-//    private DatasetAssembler datasetAssembler = new DatasetAssembler() ;
-//    
-//    public static Resource getType() { return textDataset ; }
         
     /*
 <#spatial_dataset> rdf:type     spatial:SpatialDataset ;

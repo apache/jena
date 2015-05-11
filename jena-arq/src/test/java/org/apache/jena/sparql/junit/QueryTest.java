@@ -39,7 +39,6 @@ import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
-import org.apache.jena.sparql.resultset.RDFOutput ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.resultset.SPARQLResult ;
 import org.apache.jena.sparql.util.DatasetUtils ;
@@ -68,7 +67,7 @@ public class QueryTest extends EarlTestCase
     private boolean oldPlainGraphFlag  ;
     
     @Override
-    public void setUpTest() throws Exception
+    public void setUpTest()
     {
         super.setUpTest() ;
         // SPARQL and ARQ tests are done with no value matching (for query execution and results testing)
@@ -83,7 +82,7 @@ public class QueryTest extends EarlTestCase
     }
     
     @Override
-    public void tearDownTest() throws Exception
+    public void tearDownTest()
     {
         SystemARQ.UsePlainGraph = oldPlainGraphFlag ;
         CheckerLiterals.WarnOnBadLiterals = oldWarningFlag ;
@@ -185,7 +184,7 @@ public class QueryTest extends EarlTestCase
         }
     }
     
-    void runTestSelect(Query query, QueryExecution qe) throws Exception
+    void runTestSelect(Query query, QueryExecution qe)
     {
         // Do the query!
         ResultSetRewindable resultsActual = ResultSetFactory.makeRewindable(qe.execSelect()) ;
@@ -311,41 +310,7 @@ public class QueryTest extends EarlTestCase
         }
     }
     
-    // TEMPORARY
-    private boolean checkResultsByModel(Query query, Model expectedModel, ResultSetRewindable results)
-    {
-        // Fudge - can't cope with ordered results properly.  The output writer for ResultSets does nto add rs:index.
-        
-        results.reset() ;
-        Model actualModel = RDFOutput.encodeAsModel(results) ;
-        // Tidy the models.
-        // Very regretable.
-        
-        expectedModel.removeAll(null, RDF.type,  ResultSetGraphVocab.ResultSet) ;
-        expectedModel.removeAll(null, RDF.type,  ResultSetGraphVocab.ResultSolution) ;
-        expectedModel.removeAll(null, RDF.type,  ResultSetGraphVocab.ResultBinding) ;
-        expectedModel.removeAll(null, ResultSetGraphVocab.size,  (RDFNode)null) ;
-        expectedModel.removeAll(null, ResultSetGraphVocab.index,  (RDFNode)null) ;
-
-        actualModel.removeAll(null, RDF.type,  ResultSetGraphVocab.ResultSet) ;
-        actualModel.removeAll(null, RDF.type,  ResultSetGraphVocab.ResultSolution) ;
-        actualModel.removeAll(null, RDF.type,  ResultSetGraphVocab.ResultBinding) ;
-        actualModel.removeAll(null, ResultSetGraphVocab.size,  (RDFNode)null) ;
-        actualModel.removeAll(null, ResultSetGraphVocab.index,  (RDFNode)null) ;
-        
-        boolean b =  expectedModel.isIsomorphicWith(actualModel) ;
-        if ( !b )
-        {
-            System.out.println("---- Expected") ;
-            expectedModel.write(System.out, "TTL") ;
-            System.out.println("---- Actual") ;
-            actualModel.write(System.out, "TTL") ;
-            System.out.println("----");
-        }
-        return b ;
-    }
-
-   void runTestConstruct(Query query, QueryExecution qe) throws Exception
+    void runTestConstruct(Query query, QueryExecution qe)
     {
         // Do the query!
         Model resultsActual = qe.execConstruct() ;
@@ -374,7 +339,7 @@ public class QueryTest extends EarlTestCase
         }
     }
     
-    void runTestDescribe(Query query, QueryExecution qe) throws Exception
+    void runTestDescribe(Query query, QueryExecution qe)
     {
         Model resultsActual = qe.execDescribe() ;
         compareGraphResults(resultsActual, query) ;

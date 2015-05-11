@@ -19,7 +19,6 @@
 package org.apache.jena.sdb.store;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.io.Printable ;
 import org.apache.jena.atlas.io.PrintableBase ;
 import org.apache.jena.sparql.util.Named ;
 import org.apache.jena.sparql.util.Symbol ;
@@ -28,7 +27,7 @@ import org.slf4j.LoggerFactory ;
 
 /** A Feature is a name/value pair */
 
-public class Feature extends PrintableBase implements Named, Printable 
+public class Feature extends PrintableBase implements Named 
 {
     public static class Name extends Symbol
     {

@@ -249,7 +249,6 @@ class Journal implements Sync, Closeable
     /** Iterator of entries from current point in Journal, going forward. Must be JournalEntry aligned at start. */
     private class IteratorEntries extends IteratorSlotted<JournalEntry>
     {
-        JournalEntry slot = null ;
         final long endPoint ;
         long iterPosn ;
 

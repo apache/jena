@@ -290,14 +290,6 @@ public class FormatterElement extends FormatterBase
     @Override
     public void visit(ElementGroup el)
     {
-        if ( GROUP_UNNEST_ONE && el.getElements().size() == 1 )
-        {
-            // If this is an element of just one, we can remove the {} if it is a group.
-            Element e = el.getElements().get(0) ;
-            visitAsGroup(e) ;
-            return ;
-        }
-
         out.print("{") ;
         out.incIndent(INDENT) ;
         if ( GROUP_FIRST_ON_SAME_LINE )
@@ -511,7 +503,6 @@ public class FormatterElement extends FormatterBase
         
         boolean first = true ;             // Print newlines between blocks.
         
-        int indent = -1 ;
         for ( Triple t : triples )
         {
             if ( subj != null && t.getSubject().equals(subj) )

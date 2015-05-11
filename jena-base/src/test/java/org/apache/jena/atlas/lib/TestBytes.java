@@ -178,8 +178,6 @@ public class TestBytes extends BaseTest
     }
     
     static private final String asciiBase             = "abc" ;
-    static private final String latinBase             = "Àéíÿ" ;
-    static private final String latinExtraBase        = "ỹﬁﬂ" ;  // fi-ligature, fl-ligature
     static private final String greekBase             = "αβγ" ;
     static private final String hewbrewBase           = "אבג" ;
     static private final String arabicBase            = "ءآأ";

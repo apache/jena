@@ -18,8 +18,6 @@
 
 package org.apache.jena.riot.thrift;
 
-import java.util.Iterator ;
-
 import org.apache.jena.riot.system.* ;
 import org.apache.jena.riot.thrift.wire.RDF_StreamRow ;
 import org.apache.thrift.TException ;
@@ -29,7 +27,7 @@ import org.apache.thrift.transport.TTransportException ;
 /**
  *  Iterator over a Thrift-encoded RDF stream.
  */
-public class IteratorThriftRDF extends IteratorStreamRDF implements Iterator<StreamRowRDF> {
+public class IteratorThriftRDF extends IteratorStreamRDF {
 
     private final PrefixMap pmap = PrefixMapFactory.create() ;
     private final StreamRDFCollectOne collector = new StreamRDFCollectOne(pmap) ;
@@ -37,9 +35,7 @@ public class IteratorThriftRDF extends IteratorStreamRDF implements Iterator<Str
     
     private final RDF_StreamRow row = new RDF_StreamRow() ;
     private final TProtocol protocol ;
-    private StreamRDFCollectOne slot ;
-    private boolean finished = false ;
-
+    
     public IteratorThriftRDF(TProtocol protocol) {
         this.protocol = protocol ;
     }

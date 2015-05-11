@@ -30,7 +30,6 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBFactory ;
-import org.apache.jena.util.FileManager ;
 import org.junit.Test ;
 
 /** Tests of datasets, prefixes, special URIs etc (see also {@link org.apache.jena.sparql.graph.GraphsTests} */
@@ -40,11 +39,6 @@ public class TestDatasetTDB extends BaseTest
     private static Dataset create()
     {
         return TDBFactory.createDataset() ;
-    }
-    
-    private static void load(Model model, String file)
-    {
-        FileManager.get().readModel(model, file) ;
     }
     
     private static String base1 = "http://example/" ;

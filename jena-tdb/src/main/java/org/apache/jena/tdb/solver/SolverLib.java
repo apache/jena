@@ -37,7 +37,6 @@ import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.lib.NodeLib ;
@@ -47,14 +46,10 @@ import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.tdb.sys.TDBInternal ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 /** Utilities used within the TDB BGP solver : local TDB store */
 public class SolverLib
 {
-    private static Logger log = LoggerFactory.getLogger(SolverLib.class) ; 
-    
     /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, 
                                         QueryIterator input, Predicate<Tuple<NodeId>> filter,
@@ -130,15 +125,6 @@ public class SolverLib
             chain = makeAbortable(chain, killList) ; 
         }
         
-        // DEBUG POINT
-        if ( false )
-        {
-            if ( chain.hasNext())
-                chain = Iter.debug(chain) ;
-            else
-                System.out.println("No results") ;
-        }
-        
         // Timeout wrapper ****
         // QueryIterTDB gets called async.
         // Iter.abortable?
@@ -212,19 +198,7 @@ public class SolverLib
     }
 
     public static Binding convToBinding(BindingNodeId bindingNodeIds, NodeTable nodeTable) {
-        if ( true )
-            return new BindingTDB(bindingNodeIds, nodeTable) ;
-        else {
-            // Makes nodes immediately. Causing unnecessary NodeTable accesses
-            // (e.g. project)
-            BindingMap b = BindingFactory.create() ;
-            for (Var v : bindingNodeIds) {
-                NodeId id = bindingNodeIds.get(v) ;
-                Node n = nodeTable.getNodeForNodeId(id) ;
-                b.add(v, n) ;
-            }
-            return b ;
-        }
+        return new BindingTDB(bindingNodeIds, nodeTable) ;
     }
     
     // Transform : Binding ==> BindingNodeId

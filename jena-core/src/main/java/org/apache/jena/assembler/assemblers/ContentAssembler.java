@@ -28,7 +28,7 @@ import org.apache.jena.rdf.model.* ;
 import org.apache.jena.util.* ;
 import org.apache.jena.vocabulary.* ;
 
-public class ContentAssembler extends AssemblerBase implements Assembler
+public class ContentAssembler extends AssemblerBase
     {
     protected final FileManager defaultFileManager;
     

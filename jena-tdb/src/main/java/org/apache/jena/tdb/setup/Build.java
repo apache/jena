@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory ;
  */
 public class Build
 {
-    private static boolean VERBOSE = true ;
     private static Logger log = LoggerFactory.getLogger(Build.class) ;
     private static StoreParams params = StoreParams.getDftStoreParams() ;
     

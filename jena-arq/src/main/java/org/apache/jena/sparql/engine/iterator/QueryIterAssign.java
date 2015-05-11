@@ -21,7 +21,6 @@ package org.apache.jena.sparql.engine.iterator;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
@@ -37,8 +36,6 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
 public class QueryIterAssign extends QueryIterProcessBinding
 {
     private VarExprList exprs ;
-    private final boolean mustBeNewVar ;
-    
     public QueryIterAssign(QueryIterator input, Var var, Expr expr, ExecutionContext qCxt)
     {
         this(input, new VarExprList(var, expr) , qCxt, false) ;
@@ -52,7 +49,6 @@ public class QueryIterAssign extends QueryIterProcessBinding
         // Syntax checking of BIND should have assured this.
         super(input, qCxt) ;
         this.exprs = exprs ;
-        this.mustBeNewVar = mustBeNewVar ;
     }
     
     @Override
@@ -73,10 +69,6 @@ public class QueryIterAssign extends QueryIterProcessBinding
             // Check is already has a value; if so, must be sameValueAs
             if ( b.contains(v) )
             {
-                // Optimization may linearize to push a stream through an (extend).  
-                if ( false && mustBeNewVar )
-                    throw new QueryExecException("Already set: "+v) ;
-                
                 Node n2 = b.get(v) ;
                 if ( ! n2.sameValueAs(n) )
                     //throw new QueryExecException("Already set: "+v) ;

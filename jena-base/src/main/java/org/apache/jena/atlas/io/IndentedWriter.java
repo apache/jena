@@ -24,13 +24,12 @@ import java.io.OutputStream ;
 import java.io.Writer ;
 
 import org.apache.jena.atlas.RuntimeIOException ;
-import org.apache.jena.atlas.lib.Closeable ;
 
 /** A writer that records what the current indentation level is, and
  *  uses that to insert a prefix at each line. 
  *  It can also insert line numbers at the beginning of lines. */
 
-public class IndentedWriter extends AWriterBase implements AWriter, Closeable
+public class IndentedWriter extends AWriterBase
 {
     /** Stdout wrapped in an IndentedWriter - no line numbers */
     public static final IndentedWriter stdout = new IndentedWriter(System.out) ;
@@ -60,8 +59,6 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     
     protected boolean flatMode = false ;
     private boolean flushOnNewline = false ;
-    
-    private IndentedWriter() { this(System.out, false) ; }
     
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
@@ -94,12 +91,6 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     {
         if ( str == null )
             str = "null" ;
-        if ( false )
-        {
-            // Don't check for embedded newlines.
-            write$(str) ;
-            return ;
-        }
         for ( int i = 0 ; i < str.length() ; i++ )
             printOneChar(str.charAt(i)) ;
     }

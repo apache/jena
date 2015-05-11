@@ -116,8 +116,6 @@ public class TransactionManager
     // Delayes enacting transactions.
     private BlockingQueue<Transaction> queue = new LinkedBlockingDeque<>() ;
 
-    private Thread committerThread ;    // Later
-
     private DatasetGraphTDB baseDataset ;
     private Journal journal ;
     

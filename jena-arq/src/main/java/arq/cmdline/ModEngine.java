@@ -43,8 +43,6 @@ public class ModEngine extends ModBase
                                                        "removeengine"
                                                        ) ;
     
-    private boolean timing = false ;
-    
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {

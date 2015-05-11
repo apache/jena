@@ -35,9 +35,7 @@ import org.apache.jena.sparql.core.Quad ;
  */ 
 public class SinkQuadOutput implements Sink<Quad>
 {
-    private Prologue prologue = null ;
     private AWriter out ;
-    private NodeToLabel labelPolicy = null ;
     private NodeFormatter nodeFmt = new NodeFormatterNT() ;
 
     public SinkQuadOutput(OutputStream outs, Prologue prologue, NodeToLabel labels)
@@ -50,12 +48,10 @@ public class SinkQuadOutput implements Sink<Quad>
     // Need to do this later sometimes to sort out the plumbing.
     public void setPrologue(Prologue prologue)
     {
-        this.prologue = prologue ;
     }
     
     public void setLabelPolicy(NodeToLabel labels)
     {
-        this.labelPolicy = labels ;
     }
 
     @Override

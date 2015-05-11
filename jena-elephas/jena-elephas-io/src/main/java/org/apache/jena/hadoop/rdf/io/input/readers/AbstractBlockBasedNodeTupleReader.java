@@ -86,7 +86,7 @@ public abstract class AbstractBlockBasedNodeTupleReader<TValue, T extends Abstra
     private Throwable parserError = null;
 
     @Override
-    public void initialize(InputSplit genericSplit, TaskAttemptContext context) throws IOException, InterruptedException {
+    public void initialize(InputSplit genericSplit, TaskAttemptContext context) throws IOException {
         LOG.debug("initialize({}, {})", genericSplit, context);
 
         // Assuming file split
@@ -242,7 +242,7 @@ public abstract class AbstractBlockBasedNodeTupleReader<TValue, T extends Abstra
     protected abstract T createInstance(TValue tuple);
 
     @Override
-    public boolean nextKeyValue() throws IOException, InterruptedException {
+    public boolean nextKeyValue() throws IOException {
         // Reuse key for efficiency
         if (key == null) {
             key = new LongWritable();
@@ -308,17 +308,17 @@ public abstract class AbstractBlockBasedNodeTupleReader<TValue, T extends Abstra
     }
 
     @Override
-    public LongWritable getCurrentKey() throws IOException, InterruptedException {
+    public LongWritable getCurrentKey() {
         return this.key;
     }
 
     @Override
-    public T getCurrentValue() throws IOException, InterruptedException {
+    public T getCurrentValue() {
         return this.tuple;
     }
 
     @Override
-    public float getProgress() throws IOException, InterruptedException {
+    public float getProgress() {
         float progress = 0.0f;
         if (this.key == null) {
             // We've either not started or we've finished

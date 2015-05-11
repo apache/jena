@@ -117,11 +117,6 @@ public class AdapterFileManager extends org.apache.jena.util.FileManager
         instance = globalFileManager ;
     }
 
-    /** Create an uninitialized FileManager */
-    private AdapterFileManager() {
-        streamManager = new StreamManager() ;
-    }
-
     @Override
     public FileManager clone() {
         StreamManager sm = streamManager.clone() ;

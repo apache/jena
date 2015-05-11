@@ -166,8 +166,6 @@ public class TextIndexSolr implements TextIndex
                 // Null means "not stored" or "not present" 
                 if ( obj instanceof List<?> )
                 {
-                    @SuppressWarnings("unchecked")
-                    List<String> vals = (List<String>)obj ;
                     continue ;
                 }
 

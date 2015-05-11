@@ -28,7 +28,6 @@ import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsTriple ;
-import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 
@@ -143,23 +142,6 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder>
 	public ConstructBuilder setOffset(int offset) {
 		solutionModifier.setOffset(offset);
 		return this;
-	}
-
-	// convert a node to a string
-	private static String toString(Node node) {
-		if (node.isBlank()) {
-			return node.getBlankNodeLabel();
-		}
-		if (node.isLiteral()) {
-			return node.toString();
-		}
-		if (node.isURI()) {
-			return String.format("<%s>", node.getURI());
-		}
-		if (node.isVariable()) {
-			return String.format("?%s", node.getName());
-		}
-		return node.toString();
 	}
 
 	@Override

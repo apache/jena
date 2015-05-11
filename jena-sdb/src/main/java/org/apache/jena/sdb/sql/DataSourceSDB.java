@@ -39,13 +39,13 @@ public class DataSourceSDB implements DataSource
     }
     
     @Override
-    public Connection getConnection() throws SQLException
+    public Connection getConnection()
     {
         return getConnection(null, null) ;
     }
 
     @Override
-    public Connection getConnection(String username, String password) throws SQLException
+    public Connection getConnection(String username, String password)
     {
         // All the work!
         return SDBConnectionFactory.create(sdbConnDesc).getSqlConnection() ;
@@ -58,16 +58,16 @@ public class DataSourceSDB implements DataSource
     { throw new SQLFeatureNotSupportedException() ; }
     
     @Override
-    public PrintWriter getLogWriter() throws SQLException
+    public PrintWriter getLogWriter()
     { return printWriter ; }
 
     @Override
-    public void setLogWriter(PrintWriter out) throws SQLException
+    public void setLogWriter(PrintWriter out)
     { printWriter = out ; }
 
     
     @Override
-    public int getLoginTimeout() throws SQLException
+    public int getLoginTimeout()
     {
         // 0 means default to "system timeout"
         return 0 ;
@@ -75,13 +75,13 @@ public class DataSourceSDB implements DataSource
 
 
     @Override
-    public void setLoginTimeout(int seconds) throws SQLException
+    public void setLoginTimeout(int seconds)
     {
         // Ignore.  Efficiently.
     }
 
     @Override
-    public boolean isWrapperFor(Class<? > iface) throws SQLException
+    public boolean isWrapperFor(Class<? > iface)
     {
         // We do not wrap anything.
         return false ;

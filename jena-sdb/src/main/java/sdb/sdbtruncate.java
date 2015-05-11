@@ -40,8 +40,6 @@ public class sdbtruncate extends CmdArgsDB
         new sdbtruncate(argv).mainRun() ;
     }
 
-    private String dbToZap = null ;
-    
     protected sdbtruncate(String... args)
     {
         super(args);

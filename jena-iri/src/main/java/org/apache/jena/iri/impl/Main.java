@@ -116,29 +116,6 @@ public class Main {
         factory.useSpecificationIRI(true);
     }
 
-    private void uri() {
-        used("URI", 0);
-        factory.useSpecificationURI(true);
-
-    }
-
-    private void xml() {
-        used("XML - systemID", 0);
-        factory.useSpecificationXMLSystemID(true);
-
-    }
-
-    private void schema() {
-        used("XML Schema - anyURI", 0);
-        factory.useSpecificationXMLSchema(true);
-
-    }
-
-    private void xlink() {
-        used("XLink - href attribute", 0);
-        factory.useSpecificationXLink(true);
-    }
-
     /**
      * 
      * @param string
@@ -151,15 +128,6 @@ public class Main {
             specs = string;
         else
             specs = specs + ", " + string;
-
-    }
-
-    private void rdf() {
-        used("RDF URI Reference", 0);
-        factory.useSpecificationRDF(true);
-    }
-
-    private void f(String file) {
 
     }
 }

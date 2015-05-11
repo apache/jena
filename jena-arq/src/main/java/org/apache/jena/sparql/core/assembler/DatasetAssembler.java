@@ -35,7 +35,7 @@ import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 
-public class DatasetAssembler extends AssemblerBase implements Assembler {
+public class DatasetAssembler extends AssemblerBase {
     public static Resource getType() {
         return DatasetAssemblerVocab.tDataset ;
     }

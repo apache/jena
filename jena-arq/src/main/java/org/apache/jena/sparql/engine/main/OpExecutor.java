@@ -23,7 +23,6 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Set ;
 
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ARQ ;
@@ -37,7 +36,6 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.iterator.* ;
 import org.apache.jena.sparql.engine.main.iterator.* ;
 import org.apache.jena.sparql.expr.Expr ;
@@ -205,17 +203,6 @@ public class OpExecutor
         // Do by evaling for each input case, the left and right and concat'ing
         // the results.
 
-        if (false) {
-            // If needed, applies to OpDiff and OpLeftJoin as well.
-            List<Binding> a = all(input) ;
-            QueryIterator qIter1 = new QueryIterPlainWrapper(a.iterator(), execCxt) ;
-            QueryIterator qIter2 = new QueryIterPlainWrapper(a.iterator(), execCxt) ;
-
-            QueryIterator left = exec(opJoin.getLeft(), qIter1) ;
-            QueryIterator right = exec(opJoin.getRight(), qIter2) ;
-            QueryIterator qIter = new QueryIterJoin(left, right, execCxt) ;
-            return qIter ;
-        }
         QueryIterator left = exec(opJoin.getLeft(), input) ;
         QueryIterator right = exec(opJoin.getRight(), root()) ;
         QueryIterator qIter = new QueryIterJoin(left, right, execCxt) ;
@@ -313,10 +300,6 @@ public class OpExecutor
     // Quad form, "GRAPH ?g {}" Flip back to OpGraph.
     // Normally quad stores override this.
     protected QueryIterator execute(OpDatasetNames dsNames, QueryIterator input) {
-        if (false) {
-            OpGraph op = new OpGraph(dsNames.getGraphNode(), new OpBGP()) ;
-            return execute(op, input) ;
-        }
         throw new ARQNotImplemented("execute/OpDatasetNames") ;
     }
 
@@ -443,23 +426,5 @@ public class OpExecutor
 
     protected QueryIterator root() {
         return createRootQueryIterator(execCxt) ;
-    }
-
-    // Use this to debug evaluation
-    // Example:
-    // input = debug(input) ;
-    private QueryIterator debug(String marker, QueryIterator input) {
-        List<Binding> x = all(input) ;
-        for (Binding b : x) {
-            System.out.print(marker) ;
-            System.out.print(": ") ;
-            System.out.println(b) ;
-        }
-
-        return new QueryIterPlainWrapper(x.iterator(), execCxt) ;
-    }
-
-    private static List<Binding> all(QueryIterator input) {
-        return Iter.toList(input) ;
     }
 }

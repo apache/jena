@@ -23,7 +23,6 @@ import java.util.function.Function;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.graph.* ;
 import org.apache.jena.riot.other.GLib ;
@@ -40,7 +39,7 @@ import org.apache.jena.util.iterator.WrappedIterator ;
  * General operations for TDB graphs (free-standing graph, default graph and
  * named graphs)
  */
-public class GraphTDB extends GraphView implements Closeable, Sync {
+public class GraphTDB extends GraphView implements Closeable {
     private final TransactionHandler transactionHandler = new TransactionHandlerTDB(this) ;
 
     // Switch this to DatasetGraphTransaction

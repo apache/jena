@@ -18,7 +18,6 @@
 
 package riotcmd;
 
-import java.io.IOException ;
 import java.io.InputStream ;
 
 import org.apache.jena.atlas.AtlasException ;
@@ -72,10 +71,6 @@ public class utf8
             } catch (AtlasException ex)
             {
                 System.out.printf(label+"[line=%d, col=%d] %s\n", lineNum, colNum, ex.getMessage()) ;
-            }
-            catch (IOException ex)
-            {
-                ex.printStackTrace(System.err) ;
             }
             finally { IO.close(utf8) ; }
         }

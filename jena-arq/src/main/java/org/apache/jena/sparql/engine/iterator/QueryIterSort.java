@@ -27,7 +27,6 @@ import org.apache.jena.atlas.data.SortedDataBag ;
 import org.apache.jena.atlas.data.ThresholdPolicy ;
 import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
 import org.apache.jena.atlas.iterator.IteratorDelayedInitialization ;
-import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.query.QueryCancelledException ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.riot.system.SerializationFactoryFinder ;
@@ -71,7 +70,7 @@ public class QueryIterSort extends QueryIterPlainWrapper
         super.requestCancel() ;
     }
 
-    private class SortedBindingIterator extends IteratorDelayedInitialization<Binding> implements Closeable
+    private class SortedBindingIterator extends IteratorDelayedInitialization<Binding>
     {
         private final QueryIterator qIter;
         

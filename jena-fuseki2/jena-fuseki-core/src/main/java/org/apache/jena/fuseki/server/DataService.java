@@ -51,7 +51,6 @@ public class DataService { //implements DatasetMXBean {
         dummy.addEndpoint(OperationName.Query, DEF.ServiceQueryAlt) ;
     }
     
-    private final DataServiceDesc svcDesc ;
     private DatasetGraph dataset = null ;              // Only valid if active.
 
     private ListMultimap<OperationName, Endpoint> operations     = ArrayListMultimap.create() ;
@@ -61,12 +60,10 @@ public class DataService { //implements DatasetMXBean {
 
     // DataService-level counters.
     private final CounterSet counters                   = new CounterSet() ;
-    private final AtomicLong    requestCounter          = new AtomicLong(0) ;   
     private final AtomicBoolean offlineInProgress       = new AtomicBoolean(false) ;
     private final AtomicBoolean acceptingRequests       = new AtomicBoolean(true) ;
 
     public DataService(DataServiceDesc desc, DatasetGraph dataset) {
-        this.svcDesc = desc ;
         this.dataset = dataset ;
         counters.add(CounterName.Requests) ;
         counters.add(CounterName.RequestsGood) ;

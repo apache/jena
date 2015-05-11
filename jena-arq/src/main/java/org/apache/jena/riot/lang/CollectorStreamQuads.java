@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.Quad ;
 
 /**
@@ -30,7 +29,7 @@ import org.apache.jena.sparql.core.Quad ;
  * 
  * @see CollectorStreamBase
  */
-public class CollectorStreamQuads extends CollectorStreamBase<Quad>	implements StreamRDF {
+public class CollectorStreamQuads extends CollectorStreamBase<Quad> {
 	private List<Quad> quads = new ArrayList<>();
 
 	@Override

@@ -141,10 +141,7 @@ public class Explain {
         if ( explaining(InfoLevel.INFO, logExec, context) ) {
             // One line or indented multiline format
             IndentedLineBuffer iBuff = new IndentedLineBuffer() ;
-            if ( true )
-                iBuff.incIndent() ;
-            else
-                iBuff.setFlatMode(true) ;
+            iBuff.incIndent() ;
             query.serialize(iBuff) ;
             String x = iBuff.asString() ;
             _explain(logExec, message, x, true) ;

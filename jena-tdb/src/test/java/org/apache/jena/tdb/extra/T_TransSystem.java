@@ -40,7 +40,6 @@ import org.apache.jena.rdf.model.Statement ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.block.FileMode ;
@@ -67,15 +66,11 @@ public class T_TransSystem
      */
     
     static boolean MEM                  = true ;
-    static String location              = true ? "/mnt/ssd1/tmp/DB163" : ConfigTest.getTestingDirDB() ;     // Using an SSD here is very helpful
+    static String location              = "/mnt/ssd1/tmp/DB163" ;     // Using an SSD here is very helpful
     //static String location              = ConfigTest.getTestingDirDB() ;     // Using an SSD here is very helpful
     static final Location LOC           = MEM ? Location.mem() : Location.create(location) ;
     
     static { 
-        //SystemTDB.isWindows
-        if ( false )
-            SystemTDB.setFileMode(FileMode.direct) ;
-        
         if ( SystemTDB.isWindows && SystemTDB.fileMode() == FileMode.mapped )
             log.error("**** Running with file mapped mode on MS Windows - expected test failure") ;
         
@@ -156,9 +151,7 @@ public class T_TransSystem
         {
             clean() ;
 
-            execService = ( numThreadsInPool > 0 ) 
-                ? Executors.newFixedThreadPool(numThreadsInPool)
-                : Executors.newCachedThreadPool() ;
+            execService = Executors.newFixedThreadPool(numThreadsInPool) ;
             
             startTestIteration() ;         
             
@@ -218,13 +211,12 @@ public class T_TransSystem
 //                    if (x1 != x2) log.warn(format("READER: %s Change seen: %d/%d : id=%d: i=%d",
 //                                                  dsg.getTransaction().getLabel(), x1, x2, id, i)) ;
                     
-                    // Add in an abort. 
-                    long start = System.currentTimeMillis();
-                    int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
+                    System.currentTimeMillis();
+                    count("SELECT * { ?s ?p ?o }", dsg);
                     pause(maxpause) ;
 
-                    String qs1 = StrUtils.strjoinNL("PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>",
-                        "SELECT * { {FILTER(afn:wait(10))} UNION {?s ?p ?o }}") ;
+                    StrUtils.strjoinNL("PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>",
+                        "SELECT * { {FILTER(afn:wait(10))} UNION {?s ?p ?o }}");
                     String qs2 = StrUtils.strjoinNL("DESCRIBE ?s { ?s ?p ?o }") ;
                     try {
                         //countWithAbort(qs1, dsg, 5) ;
@@ -400,7 +392,6 @@ public class T_TransSystem
         DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
         dsg.add(q1) ;
         dsg.add(q2) ;
-        initCount = 2 ;
         dsg.commit() ;
         dsg.end() ;
     }
@@ -419,7 +410,6 @@ public class T_TransSystem
         }
     }
 
-    private StoreConnection sConn ;
     protected synchronized StoreConnection getStoreConnection()
     {
         
@@ -519,15 +509,11 @@ public class T_TransSystem
         @Override public void run() { try { callable.call() ; } catch (Exception ex) {} }
     }
     
-    private static int counter = 0 ;
     private <T> void submit(ExecutorService execService, Callable<T> proc, int numTasks, String label)
     {
         for ( int i = 0 ; i < numTasks ; i++ )
         {
             execService.submit(proc) ;
-//            counter++ ;
-//            Thread t = new Thread(new Callable2Runnable<T>(proc), label+counter) ;
-//            t.start();
         }
     }
 
@@ -557,9 +543,9 @@ public class T_TransSystem
     
     static Quad genQuad(int value)
     {
-        Node g1 = q.getGraph() ;
-        int n1 = (int)Math.round(Math.random()*10000) ;
-        int n2 = (int)Math.round(Math.random()*10000) ;
+        q.getGraph();
+        Math.round(Math.random()*10000);
+        Math.round(Math.random()*10000);
         
         Node g = Quad.defaultGraphNodeGenerated ; // urn:x-arq:DefaultGraphNode
         Node s = NodeFactory.createURI("S") ;
@@ -575,7 +561,6 @@ public class T_TransSystem
             return ;
         checkCol() ;
         print(label) ;
-        //print("["+dsg.getTransaction().getTxnId()+"]") ;
         colCount += label.length() ;
     }
 
@@ -666,9 +651,6 @@ public class T_TransSystem
 
     static Quad q4 = SSE.parseQuad("(_ <s> <p> <o4>)") ;
 
-    private static int initCount = -1 ;
-
-    //static final Location LOC = Location.create(ConfigTest.getTestingDirDB()) ;
     static final AtomicInteger gen = new AtomicInteger() ;
     
 }

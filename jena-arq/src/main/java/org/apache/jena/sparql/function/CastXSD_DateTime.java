@@ -25,7 +25,7 @@ import org.apache.jena.sparql.util.NodeUtils ;
 
 
 /** Cast DateTime */
-public class CastXSD_DateTime extends CastXSD implements FunctionFactory
+public class CastXSD_DateTime extends CastXSD
 {
     public CastXSD_DateTime(XSDDatatype dt)
     {

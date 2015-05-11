@@ -25,8 +25,6 @@ import org.apache.jena.atlas.legacy.TC_Atlas_ARQ ;
 import org.apache.jena.common.TC_Common ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.TC_Riot ;
-import org.apache.jena.sparql.engine.main.QueryEngineMain ;
-import org.apache.jena.sparql.engine.ref.QueryEngineRef ;
 import org.apache.jena.sparql.expr.E_Function ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.web.TS_Web ;
@@ -70,12 +68,6 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(TC_DAWG.suite()) ;
         //ts.addTest(TC_SPARQL11.suite()) ;
         
-        // Fiddle around with the config if necessary
-        if ( false )
-        {
-            QueryEngineMain.unregister() ;
-            QueryEngineRef.register() ;
-        }
         return ts ;
     }
 

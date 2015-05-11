@@ -62,7 +62,6 @@ public class FormatterSimpleH2 extends FormatterSimple
         reformatDataWorker() ;
     }
     
-    private void reformatPrefixesWorker() { reformatPrefixesWorker(false) ; }
     private void reformatPrefixesWorker(boolean loadPrefixes)
     {
         try { 

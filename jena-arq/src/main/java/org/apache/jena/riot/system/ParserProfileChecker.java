@@ -43,8 +43,6 @@ import org.apache.jena.sparql.util.FmtUtils ;
 public class ParserProfileChecker extends ParserProfileBase // implements
                                                             // ParserProfile
 {
-    private boolean checkLiterals = true ;
-
     public ParserProfileChecker(Prologue prologue, ErrorHandler errorHandler) {
         super(prologue, errorHandler) ;
     }

@@ -27,8 +27,6 @@ import org.apache.jena.riot.checker.* ;
 /** A checker validates RDF terms. */
 public final class Checker
 {
-    private boolean allowRelativeIRIs = false ;
-    private boolean warningsAreErrors = false ;
     private ErrorHandler handler ;
     
     private NodeChecker checkLiterals ;

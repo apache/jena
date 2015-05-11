@@ -22,7 +22,6 @@ import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.tdb.assembler.TS_TDBAssembler ;
 import org.apache.jena.tdb.base.TC_Base ;
-import org.apache.jena.tdb.base.block.FileMode ;
 import org.apache.jena.tdb.base.objectfile.TS_ObjectFile ;
 import org.apache.jena.tdb.graph.TS_Graph ;
 import org.apache.jena.tdb.index.TS_Index ;
@@ -67,10 +66,6 @@ import org.junit.runners.Suite ;
 
 public class TC_TDB
 {
-    static {
-        if ( false )
-            SystemTDB.setFileMode(FileMode.direct) ;
-    }
     static ReorderTransformation dftReorder = null ; 
         
     @BeforeClass static public void beforeClass()   

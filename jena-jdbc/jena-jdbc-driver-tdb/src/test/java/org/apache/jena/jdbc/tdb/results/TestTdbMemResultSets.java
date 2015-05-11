@@ -18,8 +18,6 @@
 
 package org.apache.jena.jdbc.tdb.results;
 
-import java.sql.SQLException;
-
 import org.apache.jena.jdbc.utils.TestUtils;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.tdb.StoreConnection ;
@@ -47,7 +45,7 @@ public class TestTdbMemResultSets extends AbstractTdbResultSetTests {
     }
     
     @Override
-    protected Dataset prepareDataset(Dataset ds) throws SQLException {
+    protected Dataset prepareDataset(Dataset ds) {
         if (currDataset != null) {
             currDataset.close();
         }

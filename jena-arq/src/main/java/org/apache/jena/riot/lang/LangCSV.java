@@ -43,7 +43,6 @@ public class LangCSV implements LangRIOT {
 
 	private InputStream input = null;
 	private Reader reader = null;
-	private String base;
 	private String filename;
 	private StreamRDF sink;
 	private ParserProfile profile; // Warning - we don't use all of this.
@@ -67,7 +66,6 @@ public class LangCSV implements LangRIOT {
 	public LangCSV(Reader reader, String base, String filename,
 			ErrorHandler errorHandler, StreamRDF sink) {
 		this.reader = reader;
-		this.base = base;
 		this.filename = filename;
 		this.sink = sink;
 		this.profile = RiotLib.profile(getLang(), base, errorHandler);
@@ -76,7 +74,6 @@ public class LangCSV implements LangRIOT {
 	public LangCSV(InputStream in, String base, String filename,
 			ErrorHandler errorHandler, StreamRDF sink) {
 		this.input = in;
-		this.base = base;
 		this.filename = filename;
 		this.sink = sink;
 		this.profile = RiotLib.profile(getLang(), base, errorHandler);

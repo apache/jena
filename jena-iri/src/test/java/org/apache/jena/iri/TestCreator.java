@@ -24,16 +24,11 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.IRIRelativize ;
-import org.apache.jena.iri.Violation ;
-import org.apache.jena.iri.impl.AbsIRIImpl ;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -121,41 +116,6 @@ final class TestCreator extends DefaultHandler implements IRIRelativize {
     {
     }
             
-    private void uris(Attributes att) {
-    }
-
-    private void uri(Attributes att) {
-        String absolute = att.getValue("absolute");
-        String base = att.getValue("base");
-        String relative = att.getValue("relative");
-        
-        doIt(absolute);
-        
-        if (base!=null) {
-            out.println("<Resolve>");
-            IRI b = doIt(base);
-            IRI r = doIt(relative);
-            out.println("<Result>");
-            IRI result = b.create(r);
-            doIt(result);
-            out.println("</Result>");
-            IRI rAgain =  b.relativize(
-                    result,
-                  RelativizeFlags  
-                    );
-            if (r.equals(rAgain)) {
-                out.println("<Relativize same='true'/>");
-            } else {
-                out.println("<Relativize>");
-                  doIt(rAgain);
-                out.println("</Relativize>");
-            }
-            
-           out.println("</Resolve>");
-        }
-    }
-
-
     static String methods[] =  {
         "getRawHost",
         "getRawPath",
@@ -180,69 +140,6 @@ final class TestCreator extends DefaultHandler implements IRIRelativize {
         "toASCIIString"
     };
 
-    private void doIt(IRI iri) {
-        if (iri==null)
-            return;
-        for ( String m : methods )
-        {
-            try
-            {
-                Object r = IRI.class.getDeclaredMethod( m, nullSign ).invoke( iri, new Object[]{ } );
-                if ( r == null )
-                {
-                    out.println( "<" + m +
-                                     " nullValue='true'/>" );
-                }
-                else
-                {
-                    out.println( "<" + m +
-                                     " value='" +
-                                     substituteStandardEntities( r.toString() ) + "'/>" );
-                }
-
-
-            }
-            catch ( IllegalArgumentException | NoSuchMethodException | IllegalAccessException | SecurityException e )
-            {
-                e.printStackTrace();
-            }
-            catch ( InvocationTargetException e )
-            {
-                Throwable t = e;
-                if ( t.getCause() != null )
-                {
-                    t = t.getCause();
-                }
-                String s = t.getMessage() != null ? t.getMessage() : t.toString();
-                out.println( "<" + m +
-                                 " exception='" +
-                                 substituteStandardEntities( s ) + "'/>" );
-            }
-
-        }
-
-        Iterator<Violation> it = ((AbsIRIImpl)iri).allViolations();
-        out.println("<violations>");
-        while (it.hasNext()) {
-            out.print("<violation>");
-            out.print((it.next()).codeName());
-            out.println("</violation>");
-                    
-        }
-        out.println("</violations>");
-    }
-
-    private IRI doIt(String iri) {
-        if (iri==null)
-            return null;
-        IRI rslt = 
-            factory.create(iri);
-//            empty.create(iri);
-        out.println("<IRI iri='"+substituteStandardEntities(iri)+"'>");
-        doIt(rslt);
-        out.println("</IRI>");
-        return rslt;
-    }
     // TODO set conformance level for this factory
     static IRIFactory factory = new IRIFactory();
     static {

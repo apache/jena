@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki.build ;
 
 import java.io.File ;
-import java.io.FilenameFilter ;
 import java.io.IOException ;
 import java.lang.reflect.Method ;
 import java.nio.file.DirectoryStream ;
@@ -57,17 +56,6 @@ public class FusekiConfig {
     static { Fuseki.init() ; }
     
     private static Logger log = Fuseki.configLog ;
-    
-    private static FilenameFilter visibleFiles = 
-        new FilenameFilter() {
-        @Override
-        public boolean accept(File dir, String name) {
-            if ( name.startsWith(".") )
-                return false ;
-            File f = new File(dir, name) ;
-            return f.isFile() ;
-        }
-    } ;
     
     /** Has side effects in server setup */
     public static List<DataAccessPoint> readConfigFile(String filename) {
@@ -210,7 +198,7 @@ public class FusekiConfig {
         // Files that are not hidden.
         DirectoryStream.Filter<Path> filter = new DirectoryStream.Filter<Path>() {
             @Override
-            public boolean accept(Path entry) throws IOException {
+            public boolean accept(Path entry) {
                 File f = entry.toFile() ;
                 return ! f.isHidden() && f.isFile() ;
             }

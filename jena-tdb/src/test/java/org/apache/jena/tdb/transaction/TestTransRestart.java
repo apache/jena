@@ -29,13 +29,11 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.StoreConnection ;
-import org.apache.jena.tdb.base.block.FileMode ;
 import org.apache.jena.tdb.base.file.FileFactory ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.base.objectfile.ObjectFile ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.sys.Names ;
-import org.apache.jena.tdb.sys.SystemTDB ;
 import org.apache.jena.tdb.sys.TDBMaker ;
 import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
 import org.junit.After ;
@@ -44,12 +42,7 @@ import org.junit.Test ;
 
 /** Test of re-attaching to a pre-existing database */  
 public class TestTransRestart extends BaseTest {
-    static { 
-        // Only if run directly, not in test suite.
-        if ( false )
-            SystemTDB.setFileMode(FileMode.direct) ; 
-    }
-    
+
     private String path = null ; 
     private Location location = null ;
     

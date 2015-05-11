@@ -48,7 +48,7 @@ public class StringFile implements Sync, Closeable
     { 
         str = compress(str) ;
         Block block = file.allocWrite(4*str.length()) ;
-        int len = Bytes.toByteBuffer(str, block.getByteBuffer()) ;
+        Bytes.toByteBuffer(str, block.getByteBuffer()) ;
         block.getByteBuffer().flip() ;
         file.completeWrite(block) ;
         return block.getId() ;
@@ -128,14 +128,12 @@ public class StringFile implements Sync, Closeable
     }
     private String compress(String str)
     {
-        if ( !compression || abbreviations == null ) return str ;
-        return abbreviations.abbreviate(str) ;
+        return str ;
     }
 
     private String decompress(String x)
     {
-        if ( !compression || abbreviations == null ) return x ;
-        return abbreviations.expand(x) ;
+        return x ;
     }
 
 }

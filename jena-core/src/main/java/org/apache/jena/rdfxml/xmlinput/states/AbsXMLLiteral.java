@@ -171,7 +171,7 @@ public abstract class AbsXMLLiteral extends Frame {
     }
 
     @Override
-    public void comment(char[] ch, int start, int length) throws SAXParseException {
+    public void comment(char[] ch, int start, int length) {
         append("<!--");
         append(ch,start,length);
         append("-->");

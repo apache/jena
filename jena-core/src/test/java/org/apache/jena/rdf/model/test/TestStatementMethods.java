@@ -58,7 +58,7 @@ public class TestStatementMethods extends AbstractModelTestBase
 	}
 
 	@Override
-	public void setUp() throws Exception
+	public void setUp()
 	{
 		super.setUp();
 		r = model.createResource();

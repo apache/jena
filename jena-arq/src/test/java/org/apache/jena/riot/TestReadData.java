@@ -26,11 +26,9 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.util.Context ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
@@ -42,8 +40,6 @@ public class TestReadData extends BaseTest
 {
     private static final String directory = "testing/RIOT/Reader" ;
 
-    private static Context context = new Context() ;
-    
     @BeforeClass static public void beforeClass()
     { 
         RIOT.init() ;
@@ -162,11 +158,6 @@ public class TestReadData extends BaseTest
         try(FileInputStream in1 = new FileInputStream(filename)) {
             RDFDataMgr.read(ds1, in1, null, lang) ;
         }
-    }
-    
-    private static Model loadModel(String uri)
-    {
-        return RDFDataMgr.loadModel(filename(uri)) ;
     }
 
 }

@@ -117,16 +117,6 @@ public class SyntaxVarScope
         
         // Check any variable in an expression is in scope (if GROUP BY) 
         checkExprVarUse(query) ;
-        
-        // Check GROUP BY AS 
-        // ENABLE
-        if ( false && query.hasGroupBy() )
-        {
-            VarExprList exprList2 = query.getGroupBy() ;
-            checkExprListAssignment(vars, exprList2) ;
-        // CHECK 
-        }
-        
     }
     
     private static void checkExprListAssignment(Collection<Var> vars, VarExprList exprList)
@@ -190,34 +180,6 @@ public class SyntaxVarScope
         // expr not null
         if ( scope.contains(var) ) 
             throw new QueryParseException("Variable used when already in-scope: "+var+" in "+fmtAssignment(expr, var), -1 , -1) ;
-
-        // test for impossible variables - bound() is a bit odd.
-        if ( false )
-        {
-            Set<Var> vars = expr.getVarsMentioned() ;
-            for ( Var v : vars )
-            {
-                if ( !scope.contains(v) )
-                    throw new QueryParseException("Variable used in expression is not in-scope: "+v+" in "+expr, -1 , -1) ;
-            }
-        }
-    }
-    
-    private static String fmtExprList(VarExprList exprList)
-    {
-        StringBuilder sb = new StringBuilder() ;
-        boolean first = true ;
-        for ( Var v : exprList.getVars() )
-        {
-            Expr e = exprList.getExpr( v );
-            if ( !first )
-            {
-                sb.append( " " );
-            }
-            first = false;
-            sb.append( "(" ).append( e ).append( " AS " ).append( v ).append( ")" );
-        }
-        return sb.toString() ;
     }
     
     private static String fmtAssignment(Expr expr, Var var)

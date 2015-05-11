@@ -60,7 +60,7 @@ public abstract class AbstractWholeFileQuadInputFormatTests extends AbstractNode
      */
     protected abstract Lang getRdfLanguage();
 
-    private void writeGoodTuples(OutputStream output, int num) throws IOException {
+    private void writeGoodTuples(OutputStream output, int num) {
         Dataset ds = DatasetFactory.createMem();
         Model m = ModelFactory.createDefaultModel();
         Resource currSubj = m.createResource("http://example.org/subjects/0");

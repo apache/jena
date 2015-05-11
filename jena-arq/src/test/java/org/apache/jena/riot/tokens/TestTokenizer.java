@@ -67,17 +67,6 @@ public class TestTokenizer extends BaseTest {
         return token ;
     }
 
-    private static Token tokenizeAndTestExact(String input, TokenType tokenType, String tokenImage1,
-                                              String tokenImage2, Token subToken1, Token subToken2) {
-        Token token = tokenFor(input) ;
-        assertEquals(tokenType, token.getType()) ;
-        assertEquals(tokenImage1, token.getImage()) ;
-        assertEquals(tokenImage2, token.getImage2()) ;
-        assertEquals(subToken1, token.getSubToken1()) ;
-        assertEquals(subToken2, token.getSubToken2()) ;
-        return token ;
-    }
-
     private static Tokenizer tokenizeAndTestFirst(String input, TokenType tokenType, String tokenImage) {
         return tokenizeAndTestFirst(input, tokenType, tokenImage, null) ;
     }

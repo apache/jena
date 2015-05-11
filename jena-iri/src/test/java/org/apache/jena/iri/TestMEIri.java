@@ -26,9 +26,7 @@ public class TestMEIri extends TestMoreExamples {
     static int count;
 
     public TestMEIri(Attributes att) {
-//        super(att.getValue("iri"),att); 
-        super(true? ( //"["+(++count)+"]" + 
-                att.getValue("iri").replaceAll("\n","\\\\n")) :( "iri"+(++count)),att);
+        super((att.getValue("iri").replaceAll("\n","\\\\n")),att);
     }
 
     @Override

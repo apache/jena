@@ -27,49 +27,6 @@ public class SqlRestrict extends SqlNodeBase1
 {
     private SqlExprList conditions = new SqlExprList() ;
     
-    private static SqlNode restrict(SqlNode sqlNode, SqlExpr condition)
-    {
-        // Consider just making a Restriction node
-        // and do moving into Joins as part of relational algrebra tree optimizations
-        // c.f. the Join creation code that also moving restrictions around.
-        
-        if ( sqlNode.isJoin() )
-        {
-            sqlNode.asJoin().addCondition(condition) ;
-            return sqlNode ;
-        }
-        
-        if ( sqlNode.isRestrict() )
-        {
-            // Already a restriction - add to the restrictions already in place
-            sqlNode.asRestrict().conditions.add(condition) ;
-            return sqlNode ;
-        }
-        
-        return new SqlRestrict(sqlNode.getAliasName(), sqlNode, condition) ;
-    }
-
-    private static SqlNode restrict(SqlNode sqlNode, SqlExprList restrictions)
-    {
-        if ( restrictions.size() == 0 )
-            return sqlNode ;
-        
-        if ( sqlNode.isJoin() )
-        {
-            sqlNode.asJoin().addConditions(restrictions);
-            return sqlNode ;
-        }
-        
-        if ( sqlNode.isRestrict() )
-        {
-            // Already a restriction - add to the restrictions already in place
-            sqlNode.asRestrict().conditions.addAll(restrictions) ;
-            return sqlNode ;
-        }
-        
-        return new SqlRestrict(sqlNode.getAliasName(), sqlNode, restrictions) ;
-    }
-
     private SqlRestrict(SqlNode sqlNode, SqlExpr condition)
     { 
         super(null, sqlNode) ;

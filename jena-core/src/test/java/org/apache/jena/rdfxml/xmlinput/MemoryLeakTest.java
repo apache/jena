@@ -18,7 +18,6 @@
 
 package org.apache.jena.rdfxml.xmlinput;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -63,7 +62,7 @@ public class MemoryLeakTest extends TestCase {
         PrintStream oldOut = System.out;
         try ( PrintStream out = new PrintStream(new OutputStream() {
                 @Override
-                public void write(int b) throws IOException {
+                public void write(int b) {
                 }
             });) {
             NTriple.mainEh(new String[] { "-b", "http://eg.org/", "-t", fileName }, null, null);

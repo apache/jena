@@ -22,7 +22,6 @@ import java.util.Iterator ;
 
 public class IteratorInteger implements Iterator<Long>
 {
-    private final long start ;
     private final long finish ;
     private long current ;
 
@@ -35,7 +34,6 @@ public class IteratorInteger implements Iterator<Long>
     /** [start, finish) */
     public IteratorInteger(long start, long finish)
     {
-        this.start = start ;
         this.finish = finish ;
         this.current = start ;
     }

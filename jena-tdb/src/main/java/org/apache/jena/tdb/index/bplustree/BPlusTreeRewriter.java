@@ -177,7 +177,6 @@ public class BPlusTreeRewriter
     
     private static class RebalenceDataEnd extends RebalenceBase
     {
-        private RecordBufferPageMgr mgr ;
         private BPlusTree bpt ;
 
         public RebalenceDataEnd(Iterator<Pair<Integer, Record>> iter, BPlusTree bpt)

@@ -97,7 +97,6 @@ public class TestUnionGraph extends BaseTest
         Op op = SSE.parseOp(pattern) ;
         if ( applyQuad )
             op = Algebra.toQuadForm(op) ;
-        Op op2 = Algebra.unionDefaultGraph(op) ;
         QueryIterator qIter = Algebra.exec(op, TestUnionGraph.dsg1) ;
         return Iter.toList(qIter) ;
     }

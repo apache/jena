@@ -17,9 +17,6 @@
  */
 package org.apache.jena.permissions.graph;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -32,15 +29,13 @@ public class TDBGraphTest extends MemGraphTest
 
 	private DatasetGraph dsGraph;
 
-	private File f;
-
 	public TDBGraphTest( final MockSecurityEvaluator securityEvaluator )
 	{
 		super(securityEvaluator);
 	}
 
 	@Override
-	protected Graph createGraph() throws IOException
+	protected Graph createGraph()
 	{
 		TDB.init();
 		dsGraph = TDBFactory.createDataset().asDatasetGraph();

@@ -44,7 +44,6 @@ import org.apache.thrift.transport.TTransportException ;
  */
 public class BinRDF {
     
-    private static int BUFSIZE_IN   = 128*1024 ;
     private static int BUFSIZE_OUT  = 128*1024 ;
 
     /** 

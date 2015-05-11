@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.rdfxml.xmlinput.states.FrameI ;
 
-public class TestEventList extends TestCase implements Test {
+public class TestEventList extends TestCase {
 
     final EventRecord record1, record2;
 

@@ -33,9 +33,7 @@ import org.apache.jena.riot.thrift.wire.RDF_Term ;
 import org.apache.jena.riot.thrift.wire.RDF_UNDEF ;
 import org.apache.thrift.TException ;
 import org.apache.thrift.protocol.TCompactProtocol ;
-import org.apache.thrift.protocol.TJSONProtocol ;
 import org.apache.thrift.protocol.TProtocol ;
-import org.apache.thrift.protocol.TTupleProtocol ;
 import org.apache.thrift.transport.TIOStreamTransport ;
 import org.apache.thrift.transport.TTransport ;
 
@@ -88,12 +86,7 @@ public class TRDF {
     }
 
     public static TProtocol protocol(TTransport transport) {
-        if ( true ) return new TCompactProtocol(transport) ;
-    
-        // Keep the warnings down.
-        if ( false ) return new TTupleProtocol(transport) ;
-        if ( false ) return new TJSONProtocol(transport) ;
-        throw new RiotThriftException("No protocol impl choosen") ;
+        return new TCompactProtocol(transport) ;
     }
 
     /** Flush a TProtocol; expections converted to {@link RiotException} */  

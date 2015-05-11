@@ -58,10 +58,6 @@ public class TestSetRules extends ModelTestBase
         static final String uri = "eg:mockURI";
         static final Reasoner reasoner = new GenericRuleReasoner( rules );
         
-        public void addRules( List<Rule> rules )
-            { assertEquals( TestSetRules.rules, rules );
-            done.add( "addRules" ); }
-    
         @Override
         public Reasoner create(Resource configuration)
             { done.add( "create" );

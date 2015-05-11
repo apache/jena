@@ -1673,38 +1673,5 @@ public class ParameterizedSparqlString implements PrefixMapping {
             }
         }
 
-        public boolean isInsideAltLiteral(int start, int stop) {
-            Pair<Integer, String> pair = this.findBefore(start);
-            if (pair == null)
-                return false;
-            if (pair.getRight().equals("'")) {
-                Integer nearestStop = this.stops.get(pair.getLeft());
-                if (nearestStop == null)
-                    return true; // Inside unterminated literal
-                return (nearestStop > stop); // May be inside a literal
-            } else {
-                // Not inside a literal
-                return false;
-            }
-        }
-
-        public boolean isBetweenLiterals(int start, int stop) {
-            Pair<Integer, String> pairBefore = this.findBefore(start);
-            if (pairBefore == null)
-                return false;
-            if (pairBefore.getRight().equals("\"")) {
-                Integer stopBefore = this.stops.get(pairBefore.getLeft());
-                if (stopBefore == null)
-                    return false; // Inside unterminated literal
-
-                // We occur after a literal, is there a subsequent literal?
-                Pair<Integer, String> pairAfter = this.findAfter(stop);
-                return pairAfter != null && pairAfter.getRight().equals("\"");
-            } else {
-                // Previous deliminator is not that of a literal
-                return false;
-            }
-        }
-
     }
 }

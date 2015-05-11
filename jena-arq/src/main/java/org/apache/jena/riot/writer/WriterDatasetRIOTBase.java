@@ -23,17 +23,11 @@ import java.io.Writer ;
 
 import org.apache.jena.riot.WriterDatasetRIOT ;
 import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
 
 public abstract class WriterDatasetRIOTBase implements WriterDatasetRIOT
 {
-    private static PrefixMap prefixMap(DatasetGraph dataset)
-    {
-        return PrefixMapFactory.create(dataset.getDefaultGraph().getPrefixMapping()) ;
-    }
-    
     @Override
     public abstract void write(Writer out, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context context) ;
     

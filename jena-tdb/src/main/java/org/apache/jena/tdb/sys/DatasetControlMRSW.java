@@ -31,7 +31,6 @@ import org.apache.jena.atlas.lib.Closeable ;
 /** A policy that checks, but does not enforce, single writer or multiple writer locking policy */ 
 public class DatasetControlMRSW implements DatasetControl
 {
-    private final boolean concurrencyChecking = true ;
     private final AtomicLong epoch = new AtomicLong(5) ;                // Update counters, used to check iterators. No need to start at 0.
     private final AtomicLong readCounter = new AtomicLong(0) ;
     private final AtomicLong writeCounter = new AtomicLong(0) ;

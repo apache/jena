@@ -120,7 +120,7 @@ public class QueryTestTDB extends EarlTestCase
     
     
     @Override
-    protected void runTestForReal() throws Throwable
+    protected void runTestForReal()
     {
         if ( skipThisTest )
         {

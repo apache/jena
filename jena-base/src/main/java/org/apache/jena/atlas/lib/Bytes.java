@@ -205,11 +205,6 @@ public class Bytes
                 (((long)b0 & 0xFF) <<  0) ;
     }
 
-    private static byte byte3(int x) { return (byte)(x >> 24); }
-    private static byte byte2(int x) { return (byte)(x >> 16); }
-    private static byte byte1(int x) { return (byte)(x >>  8); }
-    private static byte byte0(int x) { return (byte)(x >>  0); }
-
     /** Return the UTF-8 bytes for a string */
     public static byte[] string2bytes(String x) {
         try {

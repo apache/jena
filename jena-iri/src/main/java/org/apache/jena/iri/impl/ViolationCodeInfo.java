@@ -57,8 +57,7 @@ public class ViolationCodeInfo extends IRIExamples implements  ViolationCodes {
 
         final private int component;
         final private String definition;
-        final private String definitionHtml;
-		@Override
+        @Override
         public boolean applies(int slot, String scheme) {
 			if (component != -1 && component != slot)
 			   return false;
@@ -69,10 +68,6 @@ public class ViolationCodeInfo extends IRIExamples implements  ViolationCodes {
             super(name,uri);
             this.component = component;
             definition = defn;
-            // TODO: definitions of schemes etc.
-//            if (definition == null) 
-//            	System.err.println(name);
-            definitionHtml = defnHtml;
         }
 
         @Override
@@ -121,7 +116,6 @@ public class ViolationCodeInfo extends IRIExamples implements  ViolationCodes {
     final private String name;
     final private int code;
     final private String description;
-    final private String descriptionHtml;
     final private boolean unimplemented;
     final private InSpec specifications[];
     
@@ -138,7 +132,6 @@ public class ViolationCodeInfo extends IRIExamples implements  ViolationCodes {
         this.name = name;
         this.code = code;
         this.description = desc;
-        this.descriptionHtml = descHtml;
         this.unimplemented = unimplemented;
 //        this.badExamples = badExamples;
 //        this.goodExamples = goodExamples;
@@ -154,7 +147,6 @@ public class ViolationCodeInfo extends IRIExamples implements  ViolationCodes {
         this.name = name;
         this.code = code;
         this.description = name;
-        this.descriptionHtml = "<p>name</p>";
         this.unimplemented = !internal;
 //        this.badExamples = badExamples;
 //        this.goodExamples = goodExamples;

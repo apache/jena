@@ -23,7 +23,6 @@ import org.apache.jena.atlas.event.EventManager ;
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.util.StringUtils ;
 import org.slf4j.Logger ;
 
 public final class LoadMonitor
@@ -63,8 +62,6 @@ public final class LoadMonitor
     private long lastTime = 0 ;
     private long currentStartTime = 0 ;       // Used for each index
     private long currentFinishTime = 0 ;
-    private long elapsedLastTime = 0 ;
-    
     private String itemsName ;
 
     public LoadMonitor(DatasetGraph dsg, Logger log, String itemsName,
@@ -111,7 +108,6 @@ public final class LoadMonitor
         print("-- Start %s data phase", itemsName) ;
         dataStartTime = timer.readTimer() ;
         currentStartTime = dataStartTime ;
-        elapsedLastTime = dataStartTime ;
         currentItems = 0 ;
         totalDataItems = 0 ;
         EventManager.send(dataset, new Event(BulkLoader.evStartDataBulkload, null)) ;
@@ -192,7 +188,6 @@ public final class LoadMonitor
         indexLabel = label ;
         currentItems = 0 ;
         totalIndexItems = 0 ;
-        elapsedLastTime = currentStartTime ;
         lastTime = 0 ;
     }
     
@@ -263,16 +258,6 @@ public final class LoadMonitor
     private static boolean tickPoint(long counter, long quantum)
     {
         return counter%quantum == 0 ;
-    }
-
-    private static String num(long v)
-    {
-        return StringUtils.str(v) ;
-    }
-    
-    private static String num(float value)
-    {
-        return StringUtils.str(value) ;
     }
 
 }

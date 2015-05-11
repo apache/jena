@@ -31,7 +31,6 @@ import org.junit.Test ;
 public class TestTextIndexSolrAssembler extends AbstractTestTextAssembler {
 
     private static final String TESTBASE = "http://example.org/solrAssembler/";
-    private static final Resource EMBEDDED_SOLR_INDEX_SPEC;
     private static final Resource HTTP_SOLR_INDEX_SPEC;
     
 //    @Test public void testIndexUsesEmbeddedServer() throws IOException {
@@ -54,11 +53,10 @@ public class TestTextIndexSolrAssembler extends AbstractTestTextAssembler {
     
     static {
         TextAssembler.init();
-        EMBEDDED_SOLR_INDEX_SPEC = 
-                model.createResource(TESTBASE + "embeddedSolrIndexSpec")
-                     .addProperty(RDF.type, TextVocab.textIndexSolr)
-                     .addProperty(TextVocab.pServer, model.createResource("embedded:solr"))
-                     .addProperty(TextVocab.pEntityMap, SIMPLE_ENTITY_MAP_SPEC);            
+        model.createResource(TESTBASE + "embeddedSolrIndexSpec")
+		     .addProperty(RDF.type, TextVocab.textIndexSolr)
+		     .addProperty(TextVocab.pServer, model.createResource("embedded:solr"))
+		     .addProperty(TextVocab.pEntityMap, SIMPLE_ENTITY_MAP_SPEC);            
         HTTP_SOLR_INDEX_SPEC = 
                 model.createResource(TESTBASE + "httpSolrIndexSpec")
                      .addProperty(RDF.type, TextVocab.textIndexSolr)

@@ -88,10 +88,8 @@ public abstract class QueryCompiler2 extends QueryCompilerMain
     // Find variables that need to be returned. 
     private static class FilterOptimizer extends TransformCopy
     {
-        private final SDBRequest request ;
-
         public FilterOptimizer(SDBRequest request)
-        { this.request = request ; }
+        { }
 
         @Override
         public Op transform(OpFilter opFilter, Op op)

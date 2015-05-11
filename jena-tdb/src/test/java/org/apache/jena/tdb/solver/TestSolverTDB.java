@@ -20,14 +20,11 @@ package org.apache.jena.tdb.solver;
 
 
 import java.util.ArrayList ;
-import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
 import org.apache.jena.query.ResultSetFormatter ;
@@ -41,7 +38,6 @@ import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVars ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.tdb.ConfigTest ;
@@ -68,13 +64,6 @@ public class TestSolverTDB extends BaseTest
         
     }
             
-    static private void addAll(Graph srcGraph, Graph dstGraph)
-    {
-        Iterator<Triple> triples = srcGraph.find(Node.ANY, Node.ANY, Node.ANY) ;
-        triples.forEachRemaining(dstGraph::add) ;
-    }
-
-
     @Test public void solve_01()
     {
         ResultSet rs1 = exec("(bgp (:s :p :o))", graph) ;
@@ -159,13 +148,5 @@ public class TestSolverTDB extends BaseTest
         vars.addAll(OpVars.visibleVars(op)) ;
         QueryIterator qIter = Algebra.exec(op, graph) ;
         return ResultSetFactory.create(qIter, Var.varNames(vars)) ;
-    }
-    
-    private static List<Binding> toList(QueryIterator qIter)
-    {
-        List<Binding> x = new ArrayList<>() ;
-        for ( ; qIter.hasNext() ; )
-            x.add(qIter.nextBinding()) ;
-        return x ;
     }
 }

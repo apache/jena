@@ -186,7 +186,6 @@ public class XMLOutputTestBase extends ModelTestBase
         try(InputStream in = new FileInputStream(filename)) {
             m.read(in,base);
         }
-        @SuppressWarnings("resource")
         Writer sw;
         ByteArrayOutputStream bos = null;
         if (encoding == null)

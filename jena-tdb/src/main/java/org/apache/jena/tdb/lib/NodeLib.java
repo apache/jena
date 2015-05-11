@@ -50,10 +50,6 @@ public class NodeLib
 {
     private static Nodec nodec = new NodecSSE() ;
     
-    // Characters in IRIs that are illegal and cause SSE problems, but we wish to keep.
-    final private static char MarkerChar = '_' ;
-    final private static char[] invalidIRIChars = { MarkerChar , ' ' } ; 
-    
     public static long encodeStore(Node node, ObjectFile file)
     {
         // Buffer pool?

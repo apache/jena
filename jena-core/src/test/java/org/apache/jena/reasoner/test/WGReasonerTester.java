@@ -27,7 +27,8 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import junit.framework.TestCase ;
-import org.apache.jena.graph.Factory ;
+
+import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.PropertyImpl ;
@@ -132,7 +133,7 @@ public class WGReasonerTester {
      * tests - relative to baseDir
      * @param baseDir override default base directory for the tests and manifest
      */
-    public WGReasonerTester(String manifest, String baseDir) throws IOException {
+    public WGReasonerTester(String manifest, String baseDir) {
         this.baseDir = baseDir;
         testManifest = loadFile(manifest);
     }
@@ -142,7 +143,7 @@ public class WGReasonerTester {
      * @param manifest the name of the manifest file defining these
      * tests - relative to baseDir
      */
-    public WGReasonerTester(String manifest) throws IOException {
+    public WGReasonerTester(String manifest) {
         this(manifest, DEFAULT_BASE_DIR);
     }
     
@@ -152,7 +153,7 @@ public class WGReasonerTester {
      * @param file the file name, relative to baseDir
      * @return the loaded Model
      */
-    public Model loadFile(String file) throws IOException {
+    public Model loadFile(String file) {
         String langType = "RDF/XML";
         if (file.endsWith(".nt")) {
             langType = "N-TRIPLE";
@@ -169,34 +170,15 @@ public class WGReasonerTester {
          * Now use InputStream instead of Reader (general hygine).
          * Also treat http:.... as URL not local file.
          */
-        InputStream in;
-        if ( baseDir.startsWith("http:")) {
-        	in = new URL(baseDir+fname).openStream();
-        } else {
-        	in = new FileInputStream(baseDir + fname);
-        }
-        in = new BufferedInputStream(in);
-        
-        
-        result.read(in, BASE_URI + fname, langType);
-        return result;
-    }
-    
-    /**
-     * Load the datafile given by the property name.
-     * @param test the test being processed
-     * @param predicate the property of the test giving the file name to load
-     * @return a graph containing the file contents or an empty graph if the property
-     * is not present
-     * @throws IOException if the property is present but the file can't be found
-     */
-    private Graph loadTestFile(Resource test, Property predicate) throws IOException {
-        if (test.hasProperty(predicate)) {
-            String fileName = test.getRequiredProperty(predicate).getObject().toString();
-            return loadFile(fileName).getGraph();
-        } else {
-            return Factory.createGraphMem();
-        }
+		try {
+			InputStream in = baseDir.startsWith("http:") ? new URL(baseDir + fname).openStream()
+					: new FileInputStream(baseDir + fname);
+			in = new BufferedInputStream(in);
+			result.read(in, BASE_URI + fname, langType);
+			return result;
+		} catch (final IOException e) {
+			throw new RuntimeIOException(e);
+		}
     }
     
     /**
@@ -205,10 +187,9 @@ public class WGReasonerTester {
      * @param testcase the JUnit test case which is requesting this test
      * @param configuration optional configuration information
      * @return true if all the tests pass
-     * @throws IOException if one of the test files can't be found
      * @throws JenaException if the test can't be found or fails internally
      */
-    public boolean runTests(ReasonerFactory reasonerF, TestCase testcase, Resource configuration) throws IOException {
+    public boolean runTests(ReasonerFactory reasonerF, TestCase testcase, Resource configuration) {
         for ( String test : listTests() )
         {
             if ( !runTest( test, reasonerF, testcase, configuration ) )
@@ -250,10 +231,9 @@ public class WGReasonerTester {
      * @param testcase the JUnit test case which is requesting this test
      * @param configuration optional configuration information
      * @return true if the test passes
-     * @throws IOException if one of the test files can't be found
      * @throws JenaException if the test can't be found or fails internally
      */
-    public boolean runTest(String uri, ReasonerFactory reasonerF, TestCase testcase, Resource configuration) throws IOException {
+    public boolean runTest(String uri, ReasonerFactory reasonerF, TestCase testcase, Resource configuration) {
         return runTestDetailedResponse(uri,reasonerF,testcase,configuration) != FAIL;
     }
     static final public int FAIL = -1;
@@ -273,7 +253,7 @@ public class WGReasonerTester {
 		 */
     
 	
-	   public int runTestDetailedResponse(String uri, ReasonerFactory reasonerF, TestCase testcase, Resource configuration) throws IOException {
+	   public int runTestDetailedResponse(String uri, ReasonerFactory reasonerF, TestCase testcase, Resource configuration) {
     
         // Find the specification for the named test
         Resource test = testManifest.getResource(uri);

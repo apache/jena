@@ -52,7 +52,6 @@ import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.web.HttpNames ;
-import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.resultset.SPARQLResult ;
 import org.apache.jena.web.HttpSC ;
@@ -386,10 +385,6 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         out.setFlatMode(true) ;
         query.serialize(out) ;
         return out.asString() ;
-    }
-
-    private String getRemoteString(String queryURI) {
-        return HttpOp.execHttpGetString(queryURI) ;
     }
 
 }

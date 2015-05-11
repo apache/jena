@@ -149,11 +149,6 @@ final class PathEngine1 extends PathEngine
 
     @Override
     protected void doFixedLengthPath(Path pathStep, Node node, long fixedLength, Collection<Node> output) {
-        // Special for small?
-        // if ( fixedLength < 3 )
-        // {}
-        Collection<Node> visited = collector() ;
-
         if ( fixedLength == 0 ) {
             doZero(pathStep, node, output) ;
             return ;

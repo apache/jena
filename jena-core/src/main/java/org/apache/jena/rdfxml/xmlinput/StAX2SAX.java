@@ -185,18 +185,18 @@ public class StAX2SAX {
     
     final static LexicalHandler NO_LEXICAL_HANDLER = new LexicalHandler() {
         @Override
-        public void startDTD(String string, String string1, String string2) throws SAXException {}
+        public void startDTD(String string, String string1, String string2) {}
         @Override
-        public void endDTD() throws SAXException {}
+        public void endDTD() {}
         @Override
-        public void startEntity(String string) throws SAXException {}
+        public void startEntity(String string) {}
         @Override
-        public void endEntity(String string) throws SAXException {}
+        public void endEntity(String string) {}
         @Override
-        public void startCDATA() throws SAXException {}
+        public void startCDATA() {}
         @Override
-        public void endCDATA() throws SAXException {}
+        public void endCDATA() {}
         @Override
-        public void comment(char[] chars, int i, int i1) throws SAXException {}
+        public void comment(char[] chars, int i, int i1) {}
     };
 }

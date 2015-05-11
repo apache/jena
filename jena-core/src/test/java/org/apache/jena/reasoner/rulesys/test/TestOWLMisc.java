@@ -23,10 +23,6 @@ import java.util.Iterator ;
 
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.ontology.DatatypeProperty ;
 import org.apache.jena.ontology.OntDocumentManager ;
 import org.apache.jena.ontology.OntModel ;
 import org.apache.jena.ontology.OntModelSpec ;
@@ -91,27 +87,6 @@ public class TestOWLMisc extends TestCase  {
         assertTrue( inf.contains(l4, OWL.differentFrom, l3) );
     }
     
-    private void doTestDatatypeRangeValidation(RDFDatatype over12Type, OntModelSpec spec) {
-        String NS = "http://jena.hpl.hp.com/example#";
-        OntModel ont = ModelFactory.createOntologyModel(spec);
-        Resource over12 = ont.createResource( over12Type.getURI() );
-        DatatypeProperty hasValue = ont.createDatatypeProperty(NS + "hasValue");
-        hasValue.addRange( over12 );
-        
-        ont.createResource(NS + "a").addProperty(hasValue, "15", over12Type);
-        ont.createResource(NS + "b").addProperty(hasValue, "16", XSDDatatype.XSDinteger);
-        ont.createResource(NS + "c").addProperty(hasValue, "10", XSDDatatype.XSDinteger);
-        
-        ValidityReport validity = ont.validate();
-        assertTrue (! validity.isValid()); 
-        
-        // Check culprit reporting
-        ValidityReport.Report report = (validity.getReports().next());
-        Triple culprit = (Triple)report.getExtension();
-        assertEquals(culprit.getSubject().getURI(), NS + "c");
-        assertEquals(culprit.getPredicate(), hasValue.asNode());
-    }
-
     /**
      * Test reported problem with OWL property axioms.
      */

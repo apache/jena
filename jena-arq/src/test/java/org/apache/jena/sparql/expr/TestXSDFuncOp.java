@@ -32,8 +32,7 @@ public class TestXSDFuncOp extends BaseTest
 {
     private static final double accuracyExact_D = 0.0d ;
     private static final double accuracyExact_F = 0.0d ;
-    private static final double accuracyClose_D = 0.000001d ;
-    private static final double accuracyClose_F = 0.000001f ;
+    
     
     // These add tests also test that the right kind of operation was done.
     

@@ -71,16 +71,6 @@ public class WriterExpr
         out.print(")") ;
     }
     
-    private static void outputTail(IndentedWriter out, ExprList exprs, SerializationContext sCxt)
-    {
-        for ( int i = 0 ; i < exprs.size() ;  i++ )
-        {
-            out.print(" ") ;
-            output(out, exprs.get(i), sCxt) ;
-        }
-        out.print(")") ;
-    }
-    
     public static void output(IndentedWriter out, Expr expr, SerializationContext sCxt)
     {
         FmtExprPrefixVisitor fmt = new FmtExprPrefixVisitor(out, sCxt) ;
@@ -194,13 +184,5 @@ public class WriterExpr
 
         @Override
         public void finishVisit() { out.flush() ; }
-
-        private void endLine()
-        {
-            if ( ONELINE )
-                out.print(' ') ;
-            else
-                out.println() ;
-        }
     }
 }

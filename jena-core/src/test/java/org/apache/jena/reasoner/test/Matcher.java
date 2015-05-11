@@ -205,7 +205,6 @@ public class Matcher
     }
     
     private static class AllocatorAny implements Allocator {
-        int counter = 0 ; 
         @Override
         public Node allocate()
         { return Node.ANY ; }

@@ -182,8 +182,6 @@ public class BulkLoader {
         final private LoadMonitor          monitor2 ;
         final private LoaderNodeTupleTable loaderTriples ;
         final private LoaderNodeTupleTable loaderQuads ;
-        final private boolean              showProgress ;
-        private long                       count = 0 ;
         private StatsCollector             stats = null ;
         private final boolean collectStats ;
 
@@ -195,7 +193,6 @@ public class BulkLoader {
 
             loaderTriples = new LoaderNodeTupleTable(dsg.getTripleTable().getNodeTupleTable(), "triples", monitor1) ;
             loaderQuads = new LoaderNodeTupleTable(dsg.getQuadTable().getNodeTupleTable(), "quads", monitor2) ;
-            this.showProgress = showProgress ;
             this.collectStats = collectStats ;
         }
 
@@ -235,7 +232,6 @@ public class BulkLoader {
                 loaderTriples.load(s, p, o) ;
             else
                 loaderQuads.load(g, s, p, o) ;
-            count++ ;
             if ( stats != null )
                 stats.record(g, s, p, o) ;
         }
@@ -282,7 +278,6 @@ public class BulkLoader {
         final private LoadMonitor          monitor ;
         final private LoaderNodeTupleTable loaderTriples ;
         final private boolean              startedEmpty ;
-        private long                       count = 0 ;
         private StatsCollector             stats = null ;
         private final boolean              collectStats ;
 
@@ -321,7 +316,6 @@ public class BulkLoader {
             loaderTriples.load(s, p, o) ;
             if ( stats != null )
                 stats.record(null, s, p, o) ;
-            count++ ;
         }
 
         @Override

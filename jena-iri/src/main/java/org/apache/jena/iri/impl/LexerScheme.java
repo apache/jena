@@ -26,7 +26,7 @@ package org.apache.jena.iri.impl;
  * on 04/03/12 16:02 from the specification file
  * <tt>src/main/jflex/org/apache/jena/iri/impl/scheme.jflex</tt>
  */
-class LexerScheme extends AbsLexer implements org.apache.jena.iri.ViolationCodes, org.apache.jena.iri.IRIComponents, Lexer {
+class LexerScheme extends AbsLexer implements org.apache.jena.iri.IRIComponents, Lexer {
 
   /** This character denotes the end of file */
   private static final int YYEOF = -1;
@@ -209,17 +209,8 @@ class LexerScheme extends AbsLexer implements org.apache.jena.iri.ViolationCodes
       from input */
   private int zzEndRead;
 
-  /** number of newlines encountered up to the start of the matched text */
-  private int yyline;
-
   /** the number of characters up to the start of the matched text */
   private int yychar;
-
-  /**
-   * the number of characters from the last newline up to the start of the 
-   * matched text
-   */
-  private int yycolumn;
 
   /** 
    * zzAtBOL == true <=> the scanner is currently at the beginning of a line
@@ -229,8 +220,7 @@ class LexerScheme extends AbsLexer implements org.apache.jena.iri.ViolationCodes
   /** zzAtEOF == true <=> the scanner is at the EOF */
   private boolean zzAtEOF;
 
-  /** denotes if the user-EOF-code has already been executed */
-  private boolean zzEOFDone;
+  
 
   /* user code: */
     
@@ -345,18 +335,6 @@ class LexerScheme extends AbsLexer implements org.apache.jena.iri.ViolationCodes
 
     
   /**
-   * Closes the input stream.
-   */
-  private final void yyclose() throws java.io.IOException {
-    zzAtEOF = true;            /* indicate end of file */
-    zzEndRead = zzStartRead;  /* invalidate buffer    */
-
-    if (zzReader != null)
-      zzReader.close();
-  }
-
-
-  /**
    * Resets the scanner to read from a new input stream.
    * Does not close the old reader.
    *
@@ -370,29 +348,10 @@ class LexerScheme extends AbsLexer implements org.apache.jena.iri.ViolationCodes
     zzReader = reader;
     zzAtBOL  = true;
     zzAtEOF  = false;
-    zzEOFDone = false;
     zzEndRead = zzStartRead = 0;
     zzCurrentPos = zzMarkedPos = 0;
-    yyline = yychar = yycolumn = 0;
+    yychar = 0;
     zzLexicalState = YYINITIAL;
-  }
-
-
-  /**
-   * Returns the current lexical state.
-   */
-  private final int yystate() {
-    return zzLexicalState;
-  }
-
-
-  /**
-   * Enters a new lexical state
-   *
-   * @param newState the new lexical state
-   */
-  private final void yybegin(int newState) {
-    zzLexicalState = newState;
   }
 
 
@@ -401,22 +360,6 @@ class LexerScheme extends AbsLexer implements org.apache.jena.iri.ViolationCodes
    */
   @Override final String yytext() {
     return new String( zzBuffer, zzStartRead, zzMarkedPos-zzStartRead );
-  }
-
-
-  /**
-   * Returns the character at position <tt>pos</tt> from the 
-   * matched text. 
-   * 
-   * It is equivalent to yytext().charAt(pos), but faster
-   *
-   * @param pos the position of the character to fetch. 
-   *            A value from 0 to yylength()-1.
-   *
-   * @return the character at position pos
-   */
-  private final char yycharat(int pos) {
-    return zzBuffer[zzStartRead+pos];
   }
 
 

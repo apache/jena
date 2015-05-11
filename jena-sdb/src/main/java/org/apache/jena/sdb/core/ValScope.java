@@ -26,13 +26,7 @@ import org.apache.jena.sparql.core.Var ;
 
 public class ValScope
 {
-    // Need a value for a variable in a given type.
-    private Var var ;
-    private ValueSpace valType ;
-    
     public ValScope(Var var, ValueSpace valType)
     {
-        this.var = var ;
-        this.valType = valType ;
     }
 }

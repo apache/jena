@@ -20,8 +20,6 @@ package org.apache.jena.fuseki.mgt;
 
 import static org.apache.jena.fuseki.Fuseki.serverLog ;
 
-import java.util.List ;
-
 import javax.servlet.http.HttpServlet ;
 
 import org.apache.jena.fuseki.Fuseki ;
@@ -68,19 +66,6 @@ public class ManagementServer
 //      // Development : server control panel.
 //      addServlet(context, new ServerServlet(), "/server") ;
 //      addServlet(context, new ActionBackup(), "/backup") ;
-    }
-
-    // SHARE
-    private static void addServlet(ServletContextHandler context, String datasetPath, HttpServlet servlet, List<String> pathSpecs)
-    {
-        for ( String pathSpec : pathSpecs )
-        {
-            if ( pathSpec.endsWith("/") )
-                pathSpec = pathSpec.substring(0, pathSpec.length()-1) ;
-            if ( pathSpec.startsWith("/") )
-                pathSpec = pathSpec.substring(1, pathSpec.length()) ;
-            addServlet(context, servlet, datasetPath+"/"+pathSpec) ;
-        }
     }
 
     private static void addServlet(ServletContextHandler context, HttpServlet servlet, String pathSpec)

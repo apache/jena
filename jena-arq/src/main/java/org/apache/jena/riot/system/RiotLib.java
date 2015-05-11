@@ -137,9 +137,7 @@ public class RiotLib
      */
     public static ParserProfile profile(String baseIRI, boolean resolveIRIs, boolean checking, ErrorHandler handler)
     {
-        LabelToNode labelToNode = true
-            ? SyntaxLabels.createLabelToNode()
-            : LabelToNode.createUseLabelEncoded() ;
+        LabelToNode labelToNode = SyntaxLabels.createLabelToNode() ;
         
         Prologue prologue ;
         if ( resolveIRIs )

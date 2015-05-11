@@ -25,13 +25,11 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.base.record.Record ;
 import org.apache.jena.tdb.index.Index ;
-import org.apache.jena.tdb.index.RangeIndex ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.apache.jena.tdb.store.nodetable.NodeTableLib ;
 import org.apache.jena.tdb.store.tupletable.TupleIndex ;
-import org.apache.jena.tdb.store.tupletable.TupleIndexRecord ;
 
 /** Lowlevel utilities for working with TDB */
 
@@ -90,7 +88,6 @@ public class DebugTDB
         System.out.println(idxName) ;
         TupleIndex[] indexes1 = dsg.getTripleTable().getNodeTupleTable().getTupleTable().getIndexes() ;
         TupleIndex[] indexes2 = dsg.getQuadTable().getNodeTupleTable().getTupleTable().getIndexes() ;
-        TupleIndex idx = null ; 
         
         for ( TupleIndex i : indexes1 )
         {
@@ -113,17 +110,6 @@ public class DebugTDB
         {
             Tuple<NodeId> tuple = iter.next() ;
             System.out.println(tuple) ;
-        }
-        
-        if ( false )
-        {
-            // Dump raw
-            TupleIndexRecord tir = (TupleIndexRecord)idx ;
-            RangeIndex rIdx = tir.getRangeIndex() ;
-            for ( Record aRIdx : rIdx )
-            {
-                System.out.println( aRIdx );
-            }
         }
     }
 

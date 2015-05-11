@@ -36,7 +36,6 @@ public class sse extends CmdARQ_SSE
     protected final ArgDecl noResolveDecl   = new ArgDecl(ArgDecl.NoValue, "raw") ;
 
     private boolean         print       = true ;
-    private boolean         structural  = true ;
     private boolean         lineNumbers = false ;
 
     public static void main (String... argv)

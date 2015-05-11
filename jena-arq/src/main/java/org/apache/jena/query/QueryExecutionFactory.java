@@ -30,7 +30,6 @@ import org.apache.jena.sparql.engine.QueryExecutionBase ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingRoot ;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
-import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.util.Context ;
 
 /** Place to make QueryExecution objects from Query objects or a string. */
@@ -486,15 +485,6 @@ public class QueryExecutionFactory
     public static Plan createPlan(Query query, DatasetGraph dataset, Binding input)
     {
         return makePlan(query, dataset, input, null) ;
-    }
-
-    private static Query toQuery(Element pattern)
-    {
-        Query query = QueryFactory.make() ;
-        query.setQueryPattern(pattern) ;
-        query.setQuerySelectType() ;
-        query.setQueryResultStar(true) ;
-        return query ;
     }
 
     private static Plan makePlan(Query query, DatasetGraph dataset, Binding input, Context context)

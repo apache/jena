@@ -381,7 +381,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     	 	super(r);
     	 }
 	 @Override
-    protected void runTest() throws IOException {
+    protected void runTest() {
 	       int rslt = WGReasonerTester.FAIL;
 	       try {
                    JenaParameters.enableWhitespaceCheckingOfTypedLiterals = true;
@@ -449,7 +449,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 new InFactoryX(){
 
 					@Override
-                    public InputStream open() throws IOException {
+                    public InputStream open() {
 						return factory.open(uri);
 					}
                 }
@@ -460,7 +460,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             return null;
         }
         @Override
-        protected void runTest()  throws IOException {
+        protected void runTest() {
         	int rslt = WGReasonerTester.FAIL;
         	try {
         		reallyRunTest();
@@ -738,7 +738,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 new InFactoryX(){
 
 					@Override
-                    public InputStream open() throws IOException {
+                    public InputStream open() {
 						return factory.open(uri);
 					}
                 }

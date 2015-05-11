@@ -19,15 +19,11 @@
 package org.apache.jena.fuseki.mgt;
 
 import java.io.IOException ;
-import java.io.UnsupportedEncodingException ;
-
-import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 import javax.servlet.http.HttpSession ;
 
-import org.apache.commons.codec.binary.Base64 ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
@@ -54,68 +50,14 @@ public class ActionDataset extends HttpServlet
             return ;
         }
         
-        if ( true )
-        {
-            // Redirect to GET page.
-            response.setHeader(HttpNames.hLocation, PageNames.pageAfterLogin) ;
-            response.setStatus(HttpSC.SEE_OTHER_303) ;
-        }
-        else
-        {
-            // Welcome style - but HTML inline :-(
-            response.setContentType("text/html");
-            response.setStatus(HttpSC.OK_200) ;
-            ServletOutputStream out = response.getOutputStream() ;
-            out.print("<p>"+dataset+"("+known+")</p>") ;
-
-            for ( String name : DatasetRegistry.get().keys() ) {
-                out.print("<li>") ;
-                out.print(name) ;
-                out.println("</li>") ;
-            }
-            out.println("</ul>") ;
-            out.println("<p><a href=\"info\">Next</a></p>") ;
-        }
+        // Redirect to GET page.
+		response.setHeader(HttpNames.hLocation, PageNames.pageAfterLogin) ;
+		response.setStatus(HttpSC.SEE_OTHER_303) ;
         
 //        Cookie cookie = new Cookie("org.apache.jena.fuseki.session", dataset) ;
 //        // 24 hours.
 //        cookie.setMaxAge(24*60*60) ;
         
-    }
-    
-    /**
-     * This method returns true if the HttpServletRequest contains a valid
-     * authorisation header
-     * @param req The HttpServletRequest to test
-     * @return true if the Authorisation header is valid
-     */
-
-    private boolean authenticate(HttpServletRequest req)
-    {
-        String authhead=req.getHeader("Authorization");
-
-        if(authhead!=null)
-        {
-            byte[] up = Base64.decodeBase64(authhead.substring(6)) ;
-            // Decode the authorisation String
-            String usernpass ;
-            try
-            {
-                usernpass = new String(up, "ascii") ;
-            } catch (UnsupportedEncodingException e)
-            {
-                e.printStackTrace();
-                usernpass = null ;
-            }
-            // Split the username from the password
-            String user=usernpass.substring(0,usernpass.indexOf(":"));
-            String password=usernpass.substring(usernpass.indexOf(":")+1);
-
-            if (user.equals("user") && password.equals("pass"))
-                return true;
-        }
-
-        return false;
     }
 
 }

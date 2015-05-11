@@ -195,15 +195,7 @@ public class Closure
     }
 
 
-    private static String dbg_string(Collection<?> s)
-    {
-        String tmp = "" ;
-        for ( Object value : s )
-        {
-            tmp = tmp + " " + value.toString();
-        }
-        return tmp ;
-    }
+    
 
     // Defines the bNode closure
     

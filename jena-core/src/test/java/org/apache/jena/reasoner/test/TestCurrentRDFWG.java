@@ -18,8 +18,6 @@
 
 package org.apache.jena.reasoner.test;
 
-import java.io.IOException ;
-
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
 import org.apache.jena.rdf.model.Model ;
@@ -85,22 +83,16 @@ public class TestCurrentRDFWG extends ReasonerTestBase {
      */
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
-        try {
-            Resource config = newResource()
-            .addProperty(ReasonerVocabulary.PROPsetRDFSLevel, "full");
-            constructRDFWGtests(suite, RDFSRuleReasonerFactory.theInstance(), config);
-                        
-        } catch (IOException e) {
-            // failed to even built the test harness
-            logger.error("Failed to construct RDF WG test harness", e);
-        }
+        Resource config = newResource()
+		.addProperty(ReasonerVocabulary.PROPsetRDFSLevel, "full");
+		constructRDFWGtests(suite, RDFSRuleReasonerFactory.theInstance(), config);
         return suite;
     }  
         
     /**
      * Build the working group tests for the given reasoner.
      */
-    private static void constructRDFWGtests(TestSuite suite, ReasonerFactory rf, Resource config) throws IOException {
+    private static void constructRDFWGtests(TestSuite suite, ReasonerFactory rf, Resource config) {
         JenaParameters.enableWhitespaceCheckingOfTypedLiterals = true;
         WGReasonerTester tester = new WGReasonerTester("Manifest.rdf", TEST_DIR);
         for ( String test : tester.listTests() )
@@ -141,7 +133,7 @@ public class TestCurrentRDFWG extends ReasonerTestBase {
          * The test runner
          */
         @Override
-        public void runTest() throws IOException {
+        public void runTest() {
             boolean success = tester.runTest(test, reasonerFactory, this, config);
 //            Resource resultType = null;
 //             if (test.hasProperty(RDF.type, OWLTest.NegativeEntailmentTest) 

@@ -21,7 +21,6 @@ package org.apache.jena.tdb.store;
 
 import java.util.Iterator ;
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.graph.Graph ;
@@ -50,8 +49,7 @@ import org.apache.jena.update.GraphStore ;
  *  </ul>
  */
 final
-public class DatasetGraphTDB extends DatasetGraphCaching
-                             implements /*DatasetGraph,*/ Sync, Closeable, GraphStore, Session
+public class DatasetGraphTDB extends DatasetGraphCaching implements Sync, GraphStore, Session
 {
     private TripleTable tripleTable ;
     private QuadTable quadTable ;

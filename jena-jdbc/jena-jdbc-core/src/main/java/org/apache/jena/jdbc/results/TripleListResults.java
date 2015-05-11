@@ -85,24 +85,24 @@ public class TripleListResults extends MaterializedResults<Triple> {
     }
 
     @Override
-    protected boolean hasNext() throws SQLException {
+    protected boolean hasNext() {
         // No null check here because superclass will not call us after we are
         // closed and set to null
         return this.getRow() < this.triples.size();
     }
 
     @Override
-    protected Triple moveNext() throws SQLException {
+    protected Triple moveNext() {
         return this.triples.get(this.getRow());
     }
 
     @Override
-    protected boolean hasPrevious() throws SQLException {
+    protected boolean hasPrevious() {
         return this.getRow() > 1;
     }
 
     @Override
-    protected Triple movePrevious() throws SQLException {
+    protected Triple movePrevious() {
         return this.triples.get(this.getRow() - 1);
     }
 
@@ -112,14 +112,14 @@ public class TripleListResults extends MaterializedResults<Triple> {
     }
 
     @Override
-    protected void closeStreamInternal() throws SQLException {
+    protected void closeStreamInternal() {
         if (this.triples != null) {
             this.triples = null;
         }
     }
 
     @Override
-    public ResultSetMetaData getMetaData() throws SQLException {
+    public ResultSetMetaData getMetaData() {
         return metadata;
     }
 

@@ -18,6 +18,7 @@
 package org.apache.jena.permissions.model;
 
 import java.io.* ;
+import java.net.MalformedURLException;
 import java.net.URL ;
 import java.util.ArrayList ;
 import java.util.List ;
@@ -77,7 +78,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testAdd() throws Exception
+	public void testAdd()
 	{
 		final List<Statement> stmt = baseModel.listStatements().toList();
 		final Set<Action> createAndUpdate = SecurityEvaluator.Util
@@ -285,7 +286,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testAsRDFNode() throws Exception
+	public void testAsRDFNode()
 	{
 		securedModel.asRDFNode(NodeFactory.createURI("http://example.com/rdfNode"));
 	}
@@ -314,7 +315,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testContains() throws Exception
+	public void testContains()
 	{
 		final Statement stmt = baseModel.listStatements().next();
 		try
@@ -407,7 +408,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testContainsAll() throws Exception
+	public void testContainsAll()
 	{
 		try
 		{
@@ -446,7 +447,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testCreateAlt() throws Exception
+	public void testCreateAlt()
 	{
 		final Set<Action> CU = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Create, Action.Update });
@@ -487,7 +488,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testCreateBag() throws Exception
+	public void testCreateBag()
 	{
 		final Set<Action> CU = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Create, Action.Update });
@@ -528,7 +529,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testCreateList() throws Exception
+	public void testCreateList()
 	{
 		final Set<Action> CU = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Update, Action.Create });
@@ -600,14 +601,14 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testCreateLiteral() throws Exception
+	public void testCreateLiteral()
 	{
 		securedModel.createLiteral("foo");
 		securedModel.createLiteral("foo", false);
 	}
 
 	@Test
-	public void testCreateLiteralBoolean() throws Exception
+	public void testCreateLiteralBoolean()
 	{
 		final Set<Action> CU = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Create, Action.Update });
@@ -632,7 +633,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testCreateLiteralChar() throws Exception
+	public void testCreateLiteralChar()
 	{
 		final Set<Action> CU = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Create, Action.Update });
@@ -656,7 +657,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testCreateLiteralDouble() throws Exception
+	public void testCreateLiteralDouble()
 	{
 		final Set<Action> CU = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Create, Action.Update });
@@ -681,7 +682,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testCreateLiteralFloat() throws Exception
+	public void testCreateLiteralFloat()
 	{
 		final Set<Action> CU = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Create, Action.Update });
@@ -706,7 +707,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testCreateLiteralInt() throws Exception
+	public void testCreateLiteralInt()
 	{
 		final Set<Action> CU = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Create, Action.Update });
@@ -732,7 +733,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testCreateLiteralLong() throws Exception
+	public void testCreateLiteralLong()
 	{
 		final Set<Action> CU = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Create, Action.Update });
@@ -757,7 +758,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testCreateLiteralObject() throws Exception
+	public void testCreateLiteralObject() throws MalformedURLException
 	{
 		final Set<Action> CU = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Create, Action.Update });
@@ -783,7 +784,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testDifference() throws Exception
+	public void testDifference()
 	{
 		try
 		{
@@ -805,14 +806,14 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testEquals() throws Exception
+	public void testEquals()
 	{
 		securedModel.equals(baseModel);
 		baseModel.equals(securedModel);
 	}
 
 	@Test
-	public void testExpandPrefix() throws Exception
+	public void testExpandPrefix()
 	{
 		try
 		{
@@ -834,7 +835,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testGetAlt() throws Exception
+	public void testGetAlt()
 	{
 		final Resource a = baseModel
 				.createAlt("http://example.com/securedModel/alt");
@@ -967,7 +968,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testGetGraph() throws Exception
+	public void testGetGraph()
 	{
 		final Graph g = securedModel.getGraph();
 		Assert.assertTrue(g instanceof SecuredGraph);
@@ -1038,7 +1039,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testGetQNameFor() throws Exception
+	public void testGetQNameFor()
 	{
 		try
 		{
@@ -1144,13 +1145,13 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testIndependent() throws Exception
+	public void testIndependent()
 	{
 		Assert.assertFalse(securedModel.independent());
 	}
 
 	@Test
-	public void testIntersection() throws Exception
+	public void testIntersection()
 	{
 		try
 		{
@@ -1172,13 +1173,13 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testIsClosed() throws Exception
+	public void testIsClosed()
 	{
 		securedModel.isClosed();
 	}
 
 	@Test
-	public void testIsEmpty() throws Exception
+	public void testIsEmpty()
 	{
 		try
 		{
@@ -1263,7 +1264,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testListLiteralStatements() throws Exception
+	public void testListLiteralStatements()
 	{
 		try
 		{
@@ -1353,7 +1354,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testLock() throws Exception
+	public void testLock()
 	{
 		try
 		{
@@ -1375,13 +1376,13 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testPrefixMapping() throws Exception
+	public void testPrefixMapping()
 	{
 		SecuredPrefixMappingTest.runTests(securityEvaluator, securedModel);
 	}
 
 	@Test
-	public void testQuery() throws Exception
+	public void testQuery()
 	{
 		final Selector s = new SimpleSelector();
 		try
@@ -1416,7 +1417,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testReadEmpty() throws Exception
+	public void testReadEmpty()
 	{
 		final Set<Action> createAndUpdate = SecurityEvaluator.Util
 				.asSet(new Action[] { Action.Update, Action.Create });
@@ -1597,7 +1598,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testRemove() throws Exception
+	public void testRemove()
 	{
 		final Set<Action> DU = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Delete, Action.Update });
@@ -1731,7 +1732,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testRemoveAll() throws Exception
+	public void testRemoveAll()
 	{
 		final Set<Action> DU = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Delete, Action.Update });
@@ -1827,7 +1828,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testSize() throws Exception
+	public void testSize()
 	{
 		try
 		{
@@ -1849,7 +1850,7 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testUnion() throws Exception
+	public void testUnion()
 	{
 		try
 		{
@@ -1917,13 +1918,13 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testWrapAsResource() throws Exception
+	public void testWrapAsResource()
 	{
 		securedModel.wrapAsResource(NodeFactory.createURI("http://example.com/rdfNode"));
 	}
 
 	@Test
-	public void testWrite() throws Exception
+	public void testWrite()
 	{
 		final OutputStream out = new ByteArrayOutputStream();
 		final Writer writer = new CharArrayWriter();

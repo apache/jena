@@ -42,11 +42,6 @@ public class QueryIterSingleton extends QueryIterYieldN
         return new QueryIterSingleton(binding, execCxt) ;
     }
 
-    private QueryIterSingleton(Binding binding) // Not needed
-    {
-        this(binding, null) ;
-    }
-    
     protected QueryIterSingleton(Binding binding, ExecutionContext context)
     {
         super(1, binding, context) ;

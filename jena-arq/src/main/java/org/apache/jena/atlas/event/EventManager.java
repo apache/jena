@@ -128,9 +128,6 @@ public class EventManager
         }
     }
     
-    private void deliveryFailure(Object object, Event event)
-    {}
-    
     private Map<EventType, List<EventListener>> get(Object object)
     {
         if ( object == null )

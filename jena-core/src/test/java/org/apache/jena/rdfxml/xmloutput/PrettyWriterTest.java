@@ -159,7 +159,7 @@ public class PrettyWriterTest extends ModelTestBase {
 		try {
 			m0.write(new OutputStream() {
 				@Override
-                public void write(int b) throws IOException {
+                public void write(int b) {
 				}
 			}, "RDF/XML-ABBREV");
 

@@ -64,24 +64,6 @@ class BPlusTreeRewriterUtils
         return x.iterator() ;
     }
 
-    private static Iterator<Pair<Integer, Record>> printDataBlocks(Iterator<Pair<Integer, Record>> iter, RecordBufferPageMgr recordPageMgr)
-    {
-        divider() ;
-        List<Pair<Integer, Record>> x = Iter.toList(iter) ;
-        System.out.printf(">>Packed data blocks\n") ;
-        for (Pair<Integer, Record> pair : x )
-        {
-            System.out.printf("  %s\n",pair) ;
-            RecordBufferPage rbp = recordPageMgr.getRead(pair.car()) ;
-            //System.out.printf("RecordBufferPage[id=%d,link=%d] %d\n", rbp.getId(), rbp.getLink(), rbp.getCount() ) ;
-            System.out.println(rbp) ;
-            recordPageMgr.release(rbp) ;
-        }
-        System.out.printf("<<Packed data blocks\n") ;
-        System.out.printf("Blocks: %d\n", x.size()) ;
-        return x.iterator() ;
-    }
-
     static Iterator<Pair<Integer, Record>> printIndexBlocks(Iterator<Pair<Integer, Record>> iter2, BPTreeNodeMgr bptNodeMgr)
     {
         divider() ;

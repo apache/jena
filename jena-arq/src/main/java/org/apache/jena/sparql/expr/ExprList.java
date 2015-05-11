@@ -126,12 +126,6 @@ public class ExprList implements Iterable<Expr>
         return exprList2 ;
     }
 
-    private static ExprList splitConjunction(Expr expr) {
-        ExprList exprList = new ExprList() ;
-        split(exprList, expr) ;
-        return exprList ;
-    }
-
     private static void split(ExprList exprList, Expr expr) {
         // Explode &&-chain to exprlist.
         while (expr instanceof E_LogicalAnd) {

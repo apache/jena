@@ -22,7 +22,6 @@ import java.io.OutputStream ;
 import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -33,7 +32,7 @@ import org.apache.jena.sparql.util.FmtUtils ;
 /**
  * A class that print quads, SPARQL style (maybe good for Trig too?)
  */
-public class SinkQuadBracedOutput implements Sink<Quad>, Closeable
+public class SinkQuadBracedOutput implements Sink<Quad>
 {
     protected static final int           BLOCK_INDENT = 2 ;
 

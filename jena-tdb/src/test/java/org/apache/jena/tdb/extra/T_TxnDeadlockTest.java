@@ -33,15 +33,11 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
-import org.apache.jena.tdb.transaction.TransactionManager ;
 
 public class T_TxnDeadlockTest {
 
     static { 
-        LogCtl.setLog4j() ; 
-        //Log.enable("TDB") ;
-        if ( false ) LogCtl.enable(TransactionManager.class) ;
-        //Log.enable(LockMRSW.class) ;
+        LogCtl.setLog4j() ;
     }
     
     private static final int CONCURRENT_RANDOM_OPERATIONS = 1000;
@@ -121,10 +117,8 @@ public class T_TxnDeadlockTest {
         Iterator<Quad> result = txnGraph.find(
                 Node.ANY, Node.ANY, Node.ANY, Node.ANY);
         
-        long count = 0;
         while (result.hasNext()) {
             result.next();
-            count++;
         }
         
         txnGraph.end();

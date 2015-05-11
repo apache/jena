@@ -29,8 +29,6 @@ public class IO_Jena
     private static String      riotBase               = "http://jena.apache.org/riot/" ;
     private static String      streamManagerSymbolStr = riotBase + "streammanager" ;
     public static Symbol       streamManagerSymbol    = Symbol.create(streamManagerSymbolStr) ;
-    private static FileManager coreFileManager        = null ;
-
     public static void wireIntoJena() {
         FileManager.setGlobalFileManager(AdapterFileManager.get()) ;
         IO_JenaReaders.wireIntoJena() ;

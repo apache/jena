@@ -25,7 +25,7 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RandCache implements Cache, CacheControl {
+public class RandCache implements Cache {
     int size;
     int threshhold;
     boolean enabled = true;

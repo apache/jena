@@ -93,18 +93,12 @@ public class Backup
 
         OutputStream out = null ;
         try {
-            
-            if ( true ) {
-                // This seems to achive about the same as "gzip -6"
-                // It's not too expensive in elapsed time but it's not
-                // zero cost. GZip, large buffer.
-                out = new FileOutputStream(backupfile + ".gz") ;
-                out = new GZIPOutputStream(out, 8 * 1024) ;
-                out = new BufferedOutputStream(out) ;
-            } else {
-                out = new FileOutputStream(backupfile) ;
-                out = new BufferedOutputStream(out) ;
-            }
+            // This seems to achive about the same as "gzip -6"
+			// It's not too expensive in elapsed time but it's not
+			// zero cost. GZip, large buffer.
+			out = new FileOutputStream(backupfile + ".gz") ;
+			out = new GZIPOutputStream(out, 8 * 1024) ;
+			out = new BufferedOutputStream(out) ;
             RDFDataMgr.write(out, dsg, Lang.NQUADS) ;
             out.close() ;
             out = null ;

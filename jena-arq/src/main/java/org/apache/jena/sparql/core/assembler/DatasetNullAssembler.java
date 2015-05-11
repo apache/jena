@@ -30,7 +30,7 @@ import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.modify.GraphStoreNull ;
 import org.apache.jena.sparql.modify.GraphStoreNullTransactional ;
 
-public class DatasetNullAssembler extends AssemblerBase implements Assembler
+public class DatasetNullAssembler extends AssemblerBase
 {
     public static Resource getType() { return DatasetAssemblerVocab.tDatasetNull ; }
     

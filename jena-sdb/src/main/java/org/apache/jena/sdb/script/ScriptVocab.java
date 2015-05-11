@@ -19,7 +19,6 @@
 package org.apache.jena.sdb.script;
 
 import org.apache.jena.assembler.Assembler ;
-import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.rdf.model.ResourceFactory ;
 import org.apache.jena.sdb.assembler.AssemblerVocab ;
@@ -56,7 +55,4 @@ public class ScriptVocab
     
     private static Resource type(String namespace, String localName)
     { return ResourceFactory.createResource(namespace+localName) ; }
-
-    private static Property property(String namespace, String localName)
-    { return ResourceFactory.createProperty(namespace+localName) ; }
 }

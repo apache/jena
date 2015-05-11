@@ -146,8 +146,6 @@ public class sdbquery extends CmdArgsDB
                     if ( isVerbose() )
                         PrintSDB.print(((QueryExecutionBase)qExec).getPlan().getOp()) ;
                     
-                    if ( false )
-                        System.err.println("Execute query for loop "+(i+1)+" "+memStr()) ;
                     QueryExecUtils.executeQuery(query, qExec, modResults.getResultsFormat()) ;
                 }
             }

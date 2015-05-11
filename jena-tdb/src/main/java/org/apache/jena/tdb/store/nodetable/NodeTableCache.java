@@ -20,14 +20,12 @@ package org.apache.jena.tdb.store.nodetable;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.atlas.lib.CacheSet ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.setup.StoreParams ;
 import org.apache.jena.tdb.store.NodeId ;
 
@@ -251,37 +249,7 @@ public class NodeTableCache implements NodeTable
     @Override
     public Iterator<Pair<NodeId, Node>> all()
     {
-        if ( false )
-            testForConsistency() ;
         return baseTable.all() ;
-    }
-    
-    private void testForConsistency()
-    {
-        Iterator<Node> iter1 = Iter.toList(node2id_Cache.keys()).iterator() ;
-        
-        for ( ; iter1.hasNext() ; )
-        {
-            Node n = iter1.next() ;
-            
-            NodeId nId = node2id_Cache.getIfPresent(n) ; 
-            if ( !id2node_Cache.containsKey(nId) )
-                throw new TDBException("Inconsistent: "+n+" => "+nId) ;
-            if ( notPresent.contains(n) )
-                throw new TDBException("Inconsistent: "+n+" in notPresent cache (1)") ;
-        }
-        Iterator<NodeId> iter2 = Iter.toList(id2node_Cache.keys()).iterator() ;
-        for ( ; iter2.hasNext() ; )
-        {
-            NodeId nId = iter2.next() ;
-            Node n =  id2node_Cache.getIfPresent(nId) ; 
-            if ( !node2id_Cache.containsKey(n) )
-                throw new TDBException("Inconsistent: "+nId+" => "+n) ;
-            if ( notPresent.contains(n) )
-                throw new TDBException("Inconsistent: "+n+" in notPresent cache (2)") ;
-        }
-        
-        
     }
     
     @Override

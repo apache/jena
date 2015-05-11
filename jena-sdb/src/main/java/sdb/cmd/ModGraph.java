@@ -30,9 +30,6 @@ import arq.cmdline.ModBase;
 public class ModGraph extends ModBase
 {
     private static ArgDecl argDeclGraphName = new ArgDecl(true, "graph") ;
-    private static ArgDecl argDeclGraphDeafult = new ArgDecl(false, "default") ;
-
-    private Graph graph = null ;
     private String graphName = null ;
     
     public ModGraph() {}

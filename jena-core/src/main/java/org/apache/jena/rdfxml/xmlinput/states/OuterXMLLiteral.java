@@ -41,11 +41,7 @@ public class OuterXMLLiteral extends AbsXMLLiteral {
         ARPString xmlLiteral = new ARPString(this,rslt.toString(),parseType );
         if (taint.isTainted())
             xmlLiteral.taint();
-        ((WantsObjectFrameI)getParent()).theObject(
-                xmlLiteral
-                );
-
-        
+        ((WantsObjectFrameI)getParent()).theObject( xmlLiteral );
     }
 
 

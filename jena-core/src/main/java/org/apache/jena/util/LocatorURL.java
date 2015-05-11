@@ -135,14 +135,6 @@ public class LocatorURL implements Locator
         return false ;
     }
 
-    private boolean hasScheme(String uri, String scheme)
-    {
-        String actualScheme = getScheme(uri) ;
-        if ( actualScheme == null )
-            return false ;
-        return actualScheme.equalsIgnoreCase(scheme) ; 
-    }
-    
     // Not perfect - but we support Java 1.3 (as of August 2004)
     private String getScheme(String uri)
     {

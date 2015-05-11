@@ -66,12 +66,9 @@ public class PrefixMappingSDB extends PrefixMappingImpl
      */
     
     private SDBConnection connection = null ;
-    private String graphName ; 
-    
     public PrefixMappingSDB(String graphURI, SDBConnection sdb)
     {
         super() ;
-        graphName = graphURI ;
         connection = sdb  ;
         readPrefixMapping() ;
     }

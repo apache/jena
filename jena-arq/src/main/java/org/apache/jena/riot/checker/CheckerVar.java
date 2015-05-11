@@ -24,11 +24,8 @@ import org.apache.jena.sparql.core.Var ;
 
 public class CheckerVar implements NodeChecker
 {
-    private ErrorHandler handler ;
-
     public CheckerVar(ErrorHandler handler)
     {
-        this.handler = handler ;
     } 
     
     @Override

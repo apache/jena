@@ -97,29 +97,4 @@ public class TestUUID_JRE extends TestCase
         assertEquals(u1.getLeastSignificantBits(), u2.getLeastSignificantBits()) ;
         assertEquals(u1.toString(), u2.toString()) ;
     }
-
-    private void check(String uuidString)
-    {
-        JenaUUID uuid = JenaUUID.parse(uuidString) ;
-        // assertFalse(u.equals(JenaUUID.nil())) ;
-        String s2 = uuid.asString() ;
-
-        String s = uuidString ;
-        if (s.matches("[uU][rR][nN]:")) s = s.substring(4) ;
-        if (s.startsWith("[uU][uU][iI][dD]:")) s = s.substring(5) ;
-
-        assertTrue(uuidString.equalsIgnoreCase(s)) ;
-    }
-
-    private void check(JenaUUID uuid)
-    {
-        String s = uuid.asString() ;
-        if (uuid.isNil())
-        {
-            assertEquals(JenaUUID.strNil(), s) ;
-            return ;
-        }
-        JenaUUID uuid2 = JenaUUID.parse(s) ;
-        assertTrue(uuid2.equals(uuid)) ;
-    }
 }

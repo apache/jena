@@ -31,7 +31,6 @@ import org.apache.jena.tdb.setup.StoreParams ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class SystemState {
-    private static String SystemDatabaseLocation ;
     // Testing may reset this.
     public static Location location ; 
     

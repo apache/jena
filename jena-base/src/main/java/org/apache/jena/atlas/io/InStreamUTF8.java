@@ -113,7 +113,7 @@ public final class InStreamUTF8 extends Reader implements CharStream
     { IO.close(input) ; }
 
     @Override
-    public int read(char[] cbuf, int off, int len) throws IOException
+    public int read(char[] cbuf, int off, int len)
     {
         // Doing this on a block of bytes may be faster.
         for ( int i = off ; i < off+len ; i++ )
@@ -131,7 +131,7 @@ public final class InStreamUTF8 extends Reader implements CharStream
     }
 
     @Override
-    public final int read() throws IOException
+    public final int read()
     { 
         int ch = advance(input) ;
         //if ( ! Character.isDefined(ch) ) throw new AtlasException(String.format("Undefined codepoint: 0x%04X", ch)) ;
@@ -226,13 +226,6 @@ public final class InStreamUTF8 extends Reader implements CharStream
         return x ;
     }
 
-    private static void p(int ch)
-    {
-        System.out.printf(" %02X", ch) ;
-        if ( ch == -1 )
-            System.out.println();
-    }
-    
     public static String decode(byte[] bytes)
     {
         try

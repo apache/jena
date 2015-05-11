@@ -34,7 +34,6 @@ import org.apache.jena.sparql.syntax.Element ;
 public abstract class ExprFunctionOp extends ExprFunction
 {
     private final Op op ;
-    private Op opRun = null ;
     private final Element element ;
     
     protected ExprFunctionOp(String fName, Element el, Op op)

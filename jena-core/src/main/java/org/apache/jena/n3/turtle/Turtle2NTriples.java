@@ -19,9 +19,6 @@
 package org.apache.jena.n3.turtle;
 
 import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.util.Locale ;
-
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 
@@ -108,33 +105,6 @@ public class Turtle2NTriples implements TurtleEventHandler
     {  }
     
     static boolean applyUnicodeEscapes = true ;
-    
-    private static void writeString(String s, PrintWriter writer) {
-
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (c == '\\' || c == '"') {
-                writer.print('\\');
-                writer.print(c);
-            } else if (c == '\n') {
-                writer.print("\\n");
-            } else if (c == '\r') {
-                writer.print("\\r");
-            } else if (c == '\t') {
-                writer.print("\\t");
-            } else if (c >= 32 && c < 127) {
-                writer.print(c);
-            } else {
-                String hexstr = Integer.toHexString(c).toUpperCase(Locale.ENGLISH);
-                int pad = 4 - hexstr.length();
-                writer.print("\\u");
-                for (; pad > 0; pad--)
-                    writer.print("0");
-                writer.print(hexstr);
-            }
-        }
-    }
-    
     
     public  void outputEsc(String s)
     {

@@ -260,24 +260,12 @@ public abstract class HashCommon<Key>
                 }
             }
         }    
-    
-    void showkeys()
-        {
-        if (false)
-            {
-            System.err.print( ">> KEYS:" );
-            for (int i = 0; i < capacity; i += 1)
-                if (keys[i] != null) System.err.print( " " + initialIndexFor( keys[i] ) + "@" + i + "::" + keys[i] );
-            System.err.println();
-            }
-        }
 
     public ExtendedIterator<Key> keyIterator()
         { return keyIterator( NotifyEmpty.ignore ); }
     
     public ExtendedIterator<Key> keyIterator( final NotifyEmpty container )
         {
-        showkeys();
         final List<Key> movedKeys = new ArrayList<>();
         ExtendedIterator<Key> basic = new BasicKeyIterator( changes, container, movedKeys );
         ExtendedIterator<Key> leftovers = new MovedKeysIterator( changes, container, movedKeys );
@@ -372,7 +360,6 @@ public abstract class HashCommon<Key>
             if (moved != null) movedKeys.add( moved );
             if (size == 0) container.emptied();
             if (size < 0) throw new BrokenException( "BROKEN" );
-            showkeys();
             }
         }
     }

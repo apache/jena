@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sdb.core.SDBRequest ;
-import org.apache.jena.sdb.core.sqlexpr.SqlColumn ;
 import org.apache.jena.sdb.core.sqlexpr.SqlExprList ;
 import org.apache.jena.sdb.core.sqlnode.SqlNode ;
 import org.apache.jena.sdb.core.sqlnode.SqlTable ;
@@ -129,43 +128,15 @@ public class PatternTable extends TableDesc
             
             if ( ! Quad.isDefaultGraphGenerated(graphNode) )
                 log.error("Not the default graph in SqlStagePTable.build") ;
-            if ( false )
-                slotCompiler.processSlot(request, sqlTable, conditions, graphNode, subjColName) ;
             slotCompiler.processSlot(request, sqlTable, conditions, subject, subjColName) ;
 
             for ( Quad quad : tableQuads )
             {
                 String colName = cols.get(quad.getPredicate()) ;
-                SqlColumn col = new SqlColumn(sqlTable, colName) ;
                 Node obj = quad.getObject() ;
                 slotCompiler.processSlot(request, sqlTable, conditions, obj, colName) ;
             }
 
-            if ( false )
-            {
-                for ( Node pred : cols.keySet() )
-                {
-                    int idx = tableQuads.findFirst(graphNode, subject, pred, null) ;
-                    if ( idx < 0 )
-                    {
-                        // Liberal
-                        continue ;
-                        //log.error("Can't find quad in SqlStagePTable.build") ;
-                        //throw new SDBException("SqlStagePTable.build") ;
-                    }
-                    
-                    Quad q = tableQuads.remove(idx) ;
-                    
-                    String colName = cols.get(pred) ;
-                    SqlColumn col = new SqlColumn(sqlTable, colName) ;
-                    
-                    Node obj = q.getObject() ;
-    //                if ( Var.isVar(obj) )
-    //                    sqlTable.setIdColumnForVar(Var.alloc(obj), col) ;
-                    
-                    slotCompiler.processSlot(request, sqlTable, conditions, obj, colName) ;
-                }
-            }
             return SqlBuilder.restrict(request, sqlTable, conditions) ;
         }
         

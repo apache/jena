@@ -28,8 +28,6 @@ public class SpatialDocProducerTriples implements SpatialDocProducer {
 			.getLogger(SpatialDocProducerTriples.class);
 //	private final EntityDefinition defn;
 	private final SpatialIndex indexer;
-	private boolean started = false;
-	
 	private SpatialIndexContext context = null; 
 
 	public SpatialDocProducerTriples(SpatialIndex indexer) {
@@ -40,7 +38,6 @@ public class SpatialDocProducerTriples implements SpatialDocProducer {
 	@Override
 	public void start() {
 		indexer.startIndexing();
-		started = true;
 	}
 
 	@Override

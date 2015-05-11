@@ -31,10 +31,7 @@ import org.apache.jena.sparql.util.FmtUtils ;
 /** SSE Writer */
 public class WriterPath
 {
-    private static final int NL = WriterLib.NL ;
     private static final int NoNL = WriterLib.NoNL ;
-    private static final int NoSP = WriterLib.NoSP ;
-    
     public static void write(Path path, Prologue prologue)
     {
         output(IndentedWriter.stdout, path, new SerializationContext(prologue)) ;
@@ -82,8 +79,6 @@ public class WriterPath
     }
     
     private static final boolean multiline = false ;
-    private static final boolean maxBracket = false ;
-    
     private static void nl(IndentedWriter out)
     {
         nl(out, true) ;

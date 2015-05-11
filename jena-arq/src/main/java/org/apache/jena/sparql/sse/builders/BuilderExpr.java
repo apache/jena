@@ -73,11 +73,6 @@ public class BuilderExpr
         return buildExprListUntagged(list, 1) ;
     }
     
-    private static ExprList buildExprListUntagged(Item item)
-    {
-        return buildExprListUntagged(item.getList(), 0) ;
-    }
-
     private static ExprList buildExprListUntagged(ItemList list, int idx)
     {
         ExprList exprList = new ExprList() ;

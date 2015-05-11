@@ -20,10 +20,8 @@ package org.apache.jena.atlas.json.io.parser;
 
 import static org.apache.jena.atlas.lib.Chars.* ;
 
-import java.io.IOException ;
 import java.util.NoSuchElementException ;
 
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.json.JsonParseException ;
 import org.apache.jena.riot.tokens.Token ;
@@ -287,7 +285,6 @@ public class TokenizerJSON implements Tokenizer
     private String readWord(boolean leadingDigitAllowed)
     {
         sb.setLength(0) ;
-        int idx = 0 ;
         if ( ! leadingDigitAllowed )
         {
             int ch = reader.peekChar() ;
@@ -295,7 +292,7 @@ public class TokenizerJSON implements Tokenizer
                 return "" ;
         }
         
-        for ( ;; idx++ )
+        while ( true )
         {
             int ch = reader.peekChar() ;
             
@@ -466,81 +463,6 @@ public class TokenizerJSON implements Tokenizer
         return count ;
     }
     
-    private String langTag()
-    {
-        sb.setLength(0) ;
-        a2z(sb) ;
-        if ( sb.length() == 0 )
-            exception("Bad language tag") ;
-        for ( ;; )
-        {
-            int ch = reader.peekChar() ;
-            if ( ch == '-' )
-            {
-                reader.readChar() ;
-                sb.append('-') ;
-                int x = sb.length();
-                a2zN(sb) ;
-                if ( sb.length() == x )
-                    exception("Bad language tag") ;
-            }
-            else
-                break ;
-        }
-        return sb.toString();
-    }
-    
-    private void a2z(StringBuilder sb2)
-    {
-        for ( ;; )
-        {
-            int ch = reader.peekChar() ;
-            if ( isA2Z(ch) )
-            {
-                reader.readChar() ;
-                sb.append((char)ch) ;
-            }
-            else
-                return ;
-        }
-    }
-    
-    private void a2zN(StringBuilder sb2)
-    {
-        for ( ;; )
-        {
-            int ch = reader.peekChar() ;
-            if ( isA2ZN(ch) )
-            {
-                reader.readChar() ;
-                sb.append((char)ch) ;
-            }
-            else
-                return ;
-        }
-    }
-
-    // Blank node label: A-Z,a-z0-9 and '-'
-    private String blankNodeLabel()
-    {
-        sb.setLength(0) ;
-        boolean seen = false ;
-        for(;;)
-        {
-            int ch = reader.readChar() ;
-            if ( ch == EOF )
-                break ;
-            if ( ! isA2ZN(ch) && ch != '-' )
-                break ;
-            sb.append((char)ch) ;
-            seen = true ;
-        }
-        if ( ! seen )
-            exception("Blank node label missing") ;
-        return sb.toString() ; 
-    }
-
-    
     // Get characters between two markers.
     // strEscapes may be processed
     // endNL end of line as an ending is OK
@@ -634,25 +556,9 @@ public class TokenizerJSON implements Tokenizer
     @Override
     public void close()
     {
-        try { reader.close() ; }
-        catch (IOException ex) { IO.exception(ex) ; }
+        reader.close() ;
     }
 
-    private boolean isA2Z(int ch)
-    {
-        return range(ch, 'a', 'z') || range(ch, 'A', 'Z') ;
-    }
-
-    private boolean isA2ZN(int ch)
-    {
-        return range(ch, 'a', 'z') || range(ch, 'A', 'Z') || range(ch, '0', '9') ;
-    }
-
-    private boolean isNumeric(int ch)
-    {
-        return range(ch, '0', '9') ;
-    }
-    
     private static boolean isWhitespace(int ch)
     {
         return ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '\f' ;    
@@ -690,23 +596,6 @@ public class TokenizerJSON implements Tokenizer
         }
     }
     
-    
-    private final
-    int readUnicodeEscape()
-    {
-        int ch = reader.readChar() ;
-        if ( ch == EOF )
-            exception("Broken escape sequence") ;
-
-        switch (ch)
-        {
-            case 'u': return readUnicode4Escape(); 
-            case 'U': return readUnicode8Escape(); 
-            default:
-                exception(String.format("illegal escape sequence value: %c (0x%02X)", ch, ch));
-        }
-        return 0 ;
-    }
     
     private final
     int readUnicode4Escape() { return readUnicodeEscape(4) ; }
@@ -755,24 +644,6 @@ public class TokenizerJSON implements Tokenizer
     private static boolean range(int ch, char a, char b)
     {
         return ( ch >= a && ch <= b ) ;
-    }
-
-    private boolean expect(String str) {
-        for (int i = 0; i < str.length(); i++) {
-            char want = str.charAt(i);
-            if (reader.eof())
-            {
-                exception("End of input during expected string: "+str) ;
-                return false ;
-            }
-            int inChar = reader.readChar();
-            if (inChar != want) {
-                //System.err.println("N-triple reader error");
-                exception("expected \"" + str + "\"");
-                return false;
-            }
-        }
-        return true;
     }
 
     private void exception(String message)

@@ -55,8 +55,6 @@ public class BlockAccessMapped extends BlockAccessBase
     private int initialNumSegements = 1 ;
     private MappedByteBuffer[] segments = new MappedByteBuffer[initialNumSegements] ;  
     
-    // Unflushed segments.
-    private int segmentDirtyCount = 0 ;
     private boolean[] segmentDirty = new boolean[initialNumSegements] ; 
     
     public BlockAccessMapped(String filename, int blockSize)
@@ -69,8 +67,6 @@ public class BlockAccessMapped extends BlockAccessBase
         for ( int i = 0 ; i < initialNumSegements ; i++ )
             // Not strictly necessary - default value is false.
             segmentDirty[i] = false ;
-        segmentDirtyCount = 0 ;
-        
         if ( getLog().isDebugEnabled() )
             getLog().debug(format("Segment:%d  BlockSize=%d  blocksPerSegment=%d", SegmentSize, blockSize, blocksPerSegment)) ;
     }
@@ -247,7 +243,6 @@ public class BlockAccessMapped extends BlockAccessBase
                 // Can we "flush" them all at once?
                 segments[i].force() ;
                 segmentDirty[i] = false ;
-                segmentDirtyCount-- ;
             }
         }
     }
@@ -261,7 +256,6 @@ public class BlockAccessMapped extends BlockAccessBase
         // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4724038
        Arrays.fill(segments, null) ;
        Arrays.fill(segmentDirty, false) ;
-       segmentDirtyCount = 0 ;
     }
     
     @Override

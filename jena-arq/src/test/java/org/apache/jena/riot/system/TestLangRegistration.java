@@ -56,13 +56,11 @@ public class TestLangRegistration extends BaseTest
         x.add(new Object[] {name, lang, istriples , isquads }) ;
     }
 
-    private String name ;
     private Lang lang ;
     private boolean istriples ;
     private boolean isquads ;
 
     public TestLangRegistration(String name, Lang lang, boolean istriples, boolean isquads) {
-        this.name = name ;
         this.lang = lang ;
         this.istriples = istriples ;
         this.isquads = isquads ;

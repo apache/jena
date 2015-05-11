@@ -18,7 +18,6 @@
 
 package org.apache.jena.hadoop.rdf.io.output.writers;
 
-import java.io.IOException;
 import java.io.Writer;
 
 import org.apache.hadoop.io.NullWritable;
@@ -87,7 +86,7 @@ public abstract class AbstractNodeWriter<TValue> extends RecordWriter<NodeWritab
     }
 
     @Override
-    public final void write(NodeWritable key, TValue value) throws IOException, InterruptedException {
+    public final void write(NodeWritable key, TValue value) {
         this.writeKey(key);
         this.writer.write(this.getSeparator());
         this.writeValue(value);
@@ -166,7 +165,7 @@ public abstract class AbstractNodeWriter<TValue> extends RecordWriter<NodeWritab
     }
 
     @Override
-    public void close(TaskAttemptContext context) throws IOException, InterruptedException {
+    public void close(TaskAttemptContext context) {
         log.debug("close({})", context);
         writer.close();
     }

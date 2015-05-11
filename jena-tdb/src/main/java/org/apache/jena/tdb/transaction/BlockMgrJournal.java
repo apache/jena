@@ -336,15 +336,6 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         transaction.getJournal().write(JournalEntryType.Block, fileRef, blk) ;
     }
     
-    private void logState()
-    {
-        Log.info(this, "state: "+getLabel()) ;
-        Log.info(this, "  readBlocks:      "+readBlocks) ;
-        Log.info(this, "  writeBlocks:     "+writeBlocks) ;
-        Log.info(this, "  iteratorBlocks:  "+iteratorBlocks) ;
-        Log.info(this, "  freedBlocks:     "+freedBlocks) ;
-    }
-    
     @Override
     public void beginRead()             { checkIfClosed() ; blockMgr.beginRead() ; }
 

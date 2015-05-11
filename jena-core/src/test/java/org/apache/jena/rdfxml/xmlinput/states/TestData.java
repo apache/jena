@@ -310,8 +310,6 @@ public class TestData implements ARPErrorNumbers{
             return;
         localCount++;
         globalCount++;
-        if (localCount % 20000 == 0)
-            stats(f);
         if (!eventList.test(f)) {
             if (!shorterTestFails(f)) 
                 data.add(eventListName(f,null)+" $ " + testInfo(f));
@@ -381,14 +379,6 @@ public class TestData implements ARPErrorNumbers{
         }}
             );
 
-    void stats(Class< ? extends FrameI> f) {
-        if (false)
-        System.out.println(state2ShortName.get(f) + ":" + state2Name.get(f)
-                + ":" + getSimpleName(f) + "  " + localCount + "/"
-                + globalCount);
-
-    }
-
     void test1() throws IOException {
         Iterator<Class< ? extends FrameI>> it = state2Name.keySet().iterator();
         while (it.hasNext()) {
@@ -405,7 +395,6 @@ public class TestData implements ARPErrorNumbers{
                     expand( f );
                 }
             }
-            stats(f);
         }
         try ( FileWriter fw = new FileWriter(dataFile) ) {
             Iterator<String> it2 = data.iterator();

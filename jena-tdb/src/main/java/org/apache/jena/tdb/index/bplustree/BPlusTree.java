@@ -34,8 +34,6 @@ import org.apache.jena.tdb.base.recordbuffer.RecordBufferPage ;
 import org.apache.jena.tdb.base.recordbuffer.RecordBufferPageMgr ;
 import org.apache.jena.tdb.base.recordbuffer.RecordRangeIterator ;
 import org.apache.jena.tdb.index.RangeIndex ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 /** B-Tree converted to B+Tree
  * 
@@ -70,7 +68,7 @@ import org.slf4j.LoggerFactory ;
  * The root is always the same block.
  */
 
-public class BPlusTree implements Iterable<Record>, RangeIndex
+public class BPlusTree implements RangeIndex
 {
     /*
      * Insertion:
@@ -119,8 +117,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
      * B#Tree: A B+Tree where the operations try to swap nodes between immediate
      * sibling nodes instead of immediately splitting (like delete, only on insert).
      */ 
-    
-    private static Logger log = LoggerFactory.getLogger(BPlusTree.class) ;
     
     private int rootIdx = BPlusTreeParams.RootId ;
     ///*package*/ BPTreeNode root ;
@@ -251,11 +247,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
 //            log.warn("Root is not root!") ;
         
         rootNode.release() ;
-    }
-
-    private void setRoot(BPTreeNode node)
-    {
-        //root = node ;
     }
 
     /** Get the parameters describing this B+Tree */

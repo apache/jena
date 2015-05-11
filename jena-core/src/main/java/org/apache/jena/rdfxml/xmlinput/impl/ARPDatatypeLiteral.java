@@ -27,7 +27,7 @@ public class ARPDatatypeLiteral extends TaintImpl implements ALiteral {
     final private String datatype;
     final private String lexForm;
     
-    public ARPDatatypeLiteral(Frame f, String lexf,URIReference dt) throws SAXParseException{
+    public ARPDatatypeLiteral(Frame f, String lexf,URIReference dt) throws SAXParseException {
        
         f.checkString(this,lexf);
        datatype = dt.getURI();

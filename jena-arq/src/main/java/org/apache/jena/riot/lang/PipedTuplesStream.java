@@ -21,13 +21,12 @@ package org.apache.jena.riot.lang ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.Quad ;
 
 /**
  * Implementation of a producer class that sends @{code Tuple<Node>}; must be connected to a {@code PipedRDFIterator<Tuple<Node>}. 
  */
-public class PipedTuplesStream extends PipedRDFStream<Tuple<Node>> implements StreamRDF
+public class PipedTuplesStream extends PipedRDFStream<Tuple<Node>>
 {
     /**
      * Creates a piped tuples stream connected to the specified piped 

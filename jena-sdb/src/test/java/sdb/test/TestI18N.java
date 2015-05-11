@@ -90,24 +90,5 @@ public class TestI18N extends TestStringBase
         return x ;
     }
     
-    private static String longString(String base,  int len)
-    {
-        if ( base.length() == 0 )
-            return base ;
-        
-        StringBuilder value = new StringBuilder() ; 
-        for ( int i = 0 ; i < len ; i++ )
-        {
-            value.append(base) ;
-            if ( value.length() > len )
-                break ;
-        }
-        // Trim.
-        if ( value.length() > len )
-            value = value.delete(len, value.length()) ;
-        
-        return value.toString() ;
-    }
-    
 
 }

@@ -21,8 +21,6 @@ package org.apache.jena.riot.out;
 import java.text.CharacterIterator ;
 import java.text.StringCharacterIterator ;
 
-import org.apache.jena.riot.RiotException ;
-
 
 /** Validation of Turtle terms */
 public class TurtleValidate
@@ -56,21 +54,7 @@ public class TurtleValidate
         return checkNameTail(cIter) ;
     }
 
-  private static boolean checkValidPrefixName(String prefixedName)
-  {
-      // Split it to get the parts.
-      int i = prefixedName.indexOf(':') ;
-      if ( i < 0 )
-          throw new RiotException("Broken short form -- "+prefixedName) ;
-      String p = prefixedName.substring(0,i) ;
-      String x = prefixedName.substring(i+1) ; 
-      // Check legality
-      if ( checkValidPrefixedName(p, x) )
-          return true ;
-      return false ;
-  }
-    
-    protected static boolean checkValidNamePart(String s)
+  protected static boolean checkValidNamePart(String s)
     {
         if ( s.length() == 0 )
             return true; 

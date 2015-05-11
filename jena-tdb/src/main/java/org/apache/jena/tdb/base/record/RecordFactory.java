@@ -122,16 +122,6 @@ public class RecordFactory
         return create(key, value) ;
     }
     
-    private final void copyInto(byte[] dst, ByteBuffer src, int start, int length)
-    {
-        // Thread safe.
-        for ( int i = 0 ; i < length ; i++ )
-            dst[i] = src.get(start+i) ;
-        // Would otherwise be ...
-//        src.position(start) ;
-//        src.get(dst, 0, length) ;
-    }
-    
     public boolean hasValue()   { return valueLength > 0 ; }
 
     public int recordLength()   { return keyLength + valueLength ; }

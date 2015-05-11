@@ -49,8 +49,6 @@ class RecordRangeIterator implements Iterator<Record>, Closeable
     
     private final RecordBufferPageMgr pageMgr ;
     private final Record maxRec ;
-    private final Record minRec ;
-    
     private long countRecords = 0 ;
     private long countBlocks = 0 ;
 
@@ -58,7 +56,6 @@ class RecordRangeIterator implements Iterator<Record>, Closeable
     {
         currentIdx = 0 ;
         this.pageMgr = pageMgr;
-        this.minRec = fromRec ;
         this.maxRec = toRec ;
         
         if ( toRec != null && fromRec != null && Record.keyLE(toRec, fromRec) )

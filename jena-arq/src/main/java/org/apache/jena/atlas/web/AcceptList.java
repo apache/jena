@@ -94,18 +94,11 @@ public class AcceptList
         }
     }
     
-    private /*public*/ boolean accepts(MediaRange aItem)
-    {
-        return match(aItem) != null ;
-    }
-    
     private List<MediaRange> entries()
     {
         return Collections.unmodifiableList(ranges) ;
     }
 
-    private final static MediaRangeCompare comparator = new MediaRangeCompare() ;
-    
     /** Find and return a match for a specific MediaType. 
      * Returns the Accept header entry best matched or null.
      */
@@ -223,50 +216,5 @@ public class AcceptList
             ranges.add( mType );
         }
         return ranges ;
-    }
-    
-    private static class MediaRangeCompare implements Comparator<MediaRange>
-    {
-        @Override
-        public int compare(MediaRange mType1, MediaRange mType2)
-        {
-            int r = Double.compare(mType1.get_q(), mType2.get_q()) ;
-            
-            if ( r == 0 )
-                r = subCompare(mType1.getType(), mType2.getType()) ;
-            
-            if ( r == 0 )
-                r = subCompare(mType1.getSubType(), mType2.getSubType()) ;
-            
-//            if ( r == 0 )
-//            {
-//                // This reverses the input order so that the rightmost elements is the
-//                // greatest and hence is the first mentioned in the accept range.
-//                
-//                if ( mType1.posn < mType2.posn )
-//                    r = +1 ;
-//                if ( mType1.posn > mType2.posn )
-//                    r = -1 ;
-//            }
-            
-            // The most significant sorts to the first in a list.
-            r = -r ;
-            return r ;
-        }
-        
-        public int subCompare(String a, String b)
-        {
-            if ( a == null )
-                return 1 ;
-            if ( b == null )
-                return -1 ;
-            if ( a.equals("*") && b.equals("*") )
-                return 0 ;
-            if ( a.equals("*") )
-                return -1 ;
-            if ( b.equals("*") )
-                return 1 ;
-            return 0 ;
-        }
     }
 }

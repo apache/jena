@@ -31,7 +31,7 @@ public class SurpressedTest extends EarlTestCase
     }
 
     @Override
-    protected void runTestForReal() throws Throwable
+    protected void runTestForReal()
     {
         super.notTested() ;
         if ( verbose )

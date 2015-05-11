@@ -47,8 +47,6 @@ import sdb.cmd.ModGraph ;
  
 public class sdbload extends CmdArgsDB
 {
-    private static final String usage = "sdbload --sdb <SPEC> [--graph=IRI] file" ;
-    
     private static ModGraph modGraph = new ModGraph() ;
     private static ArgDecl argDeclTruncate = new ArgDecl(false, "truncate") ;
     private static ArgDecl argDeclReplace = new ArgDecl(false, "replace") ;

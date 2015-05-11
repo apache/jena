@@ -26,7 +26,6 @@ import static org.apache.jena.atlas.lib.SetUtils.intersection ;
 import java.util.List ;
 import java.util.Set ;
 
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sdb.core.AliasesSql ;
 import org.apache.jena.sdb.core.SDBRequest ;
@@ -73,21 +72,7 @@ public class TransformSDB extends TransformCopy
     @Override
     public Op transform(OpJoin opJoin, Op left, Op right)
     {
-        // TEMPORARY FIX
-        // Scoping problems.
-        if ( true )
-            return super.transform(opJoin, left, right) ;
-        
-        if ( ! SDB_QC.isOpSQL(left) || ! SDB_QC.isOpSQL(right) )
-            return super.transform(opJoin, left, right) ;
-        SqlNode sqlLeft = ((OpSQL)left).getSqlNode() ;
-        SqlNode sqlRight = ((OpSQL)right).getSqlNode() ;
-        
-        // This is wrong.  If right is more than single triple pattern,
-        // the generated SQL wil attempt to use NodeTable lookups from the
-        // LHS but they are out of scope.
-        
-        return new OpSQL(SqlBuilder.innerJoin(request, sqlLeft, sqlRight), opJoin, request) ;
+        return super.transform(opJoin, left, right) ;
     }
 
     @Override
@@ -114,12 +99,6 @@ public class TransformSDB extends TransformCopy
         // Find optional-on-left
         Set<ScopeEntry> scopes2 = toSet(filter(scopes.iterator(), ScopeEntry.OptionalFilter)) ;
         Set<Var> leftOptVars = toSet(map(scopes2.iterator(), ScopeEntry::getVar)) ;              // Vars from left optionals.
-        
-        if ( false )
-        {
-            Iter<ScopeEntry> iter = Iter.iter(scopes) ;
-            Set<Var> leftOptVars_ = iter.filter(ScopeEntry.OptionalFilter).map(ScopeEntry::getVar).toSet() ;
-        }
         
         // Find optional-on-right (easier - it's all variables) 
         Set<Var> rightOptVars = sqlRight.getIdScope().getVars() ;
@@ -303,9 +282,6 @@ public class TransformSDB extends TransformCopy
     @Override
     public Op transform(OpDatasetNames opDatasetNames)
     {
-        if ( false )
-            return super.transform(opDatasetNames) ;
-        
         // Basically, an implementation of "GRAPH ?g {}" 
         Node g  = opDatasetNames.getGraphNode() ;
         if ( ! Var.isVar(g) )

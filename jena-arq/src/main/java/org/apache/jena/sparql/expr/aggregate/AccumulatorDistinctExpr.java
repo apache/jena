@@ -33,7 +33,6 @@ abstract class AccumulatorDistinctExpr implements Accumulator
     // Better?? record a large hash. 
     private final Set<NodeValue> values = new HashSet<>() ;
     private long errorCount = 0 ; 
-    private long count = 0 ;
     private final Expr expr ;
     
     protected AccumulatorDistinctExpr(Expr expr)
@@ -50,7 +49,6 @@ abstract class AccumulatorDistinctExpr implements Accumulator
                 return ;
             values.add(nv) ;
             accumulateDistinct(nv, binding, functionEnv) ;
-            count++ ;
         } catch (ExprEvalException ex)
         {
             errorCount++ ;

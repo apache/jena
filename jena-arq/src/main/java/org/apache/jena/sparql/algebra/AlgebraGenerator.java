@@ -651,9 +651,6 @@ public class AlgebraGenerator
     
     protected static Op join(Op current, Op newOp)
     { 
-        if ( simplifyTooEarlyInAlgebraGeneration && applySimplification )
-            return OpJoin.createReduce(current, newOp) ;
-        
         return OpJoin.create(current, newOp) ;
     }
 

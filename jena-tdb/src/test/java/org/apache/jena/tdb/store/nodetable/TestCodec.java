@@ -37,7 +37,6 @@ import org.junit.runners.Parameterized.Parameters ;
 @RunWith(Parameterized.class)
 public class TestCodec extends BaseTest 
 {
-    static private final String asciiBase             = "abc" ;
     static private final String latinBase             = "Àéíÿ" ;
     static private final String latinExtraBase        = "ỹﬁﬂ" ;     // fi-ligature, fl-ligature
     static private final String greekBase             = "αβγ" ;

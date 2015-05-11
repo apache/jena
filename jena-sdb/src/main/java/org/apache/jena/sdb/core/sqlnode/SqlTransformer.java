@@ -71,27 +71,10 @@ public class SqlTransformer
             stack.push(n2.apply(transform, left, right)) ;
         }
 
-        public void visit(SqlProject sqlProject)
-        {
-            sqlProject.getSubNode().visit(this) ;
-            SqlNode s = stack.pop() ;
-            SqlNode p = transform.transform(sqlProject, s) ;
-            stack.push(p) ;
-        }
-
-        public void visit(SqlDistinct sqlDistinct)
-        { visit1(sqlDistinct) ; }
-
-        public void visit(SqlRestrict sqlRestrict)
-        { visit1(sqlRestrict) ; }
-        
         @Override
         public void visit(SqlTable sqlTable)
         { visit0(sqlTable) ; }
 
-        public void visit(SqlRename sqlRename)
-        { visit1(sqlRename) ; }
-        
         @Override
         public void visit(SqlJoinInner sqlJoin)
         { visit2(sqlJoin) ; }
@@ -107,9 +90,6 @@ public class SqlTransformer
         @Override
         public void visit(SqlCoalesce sqlCoalesce)
         { visit1(sqlCoalesce) ; }
-
-        public void visit(SqlSlice sqlSlice)
-        { visit1(sqlSlice) ; }
 
         @Override
         public void visit(SqlSelectBlock sqlSelectBlock)

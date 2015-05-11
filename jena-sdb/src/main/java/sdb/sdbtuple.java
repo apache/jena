@@ -48,8 +48,6 @@ public class sdbtuple extends CmdArgsDB
         
     }
     
-    private static ModTuple modTuple = new ModTuple() ;
-    
     // Commands
     private static ArgDecl  argDeclCmdPrint    = new ArgDecl(false, "print") ;
     private static ArgDecl  argDeclCmdLoad     = new ArgDecl(true,  "load") ;

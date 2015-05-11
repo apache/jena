@@ -555,37 +555,8 @@ public class TestResultSet extends BaseTest
         return rsw ;
     }
     
-    private ResultSet make(String var1, Node val1, String var2, Node val2 )
-    {
-        BindingMap b = BindingFactory.create() ;
-        
-        b.add(Var.alloc(var1), val1) ;
-        b.add(Var.alloc(var2), val2) ;
-        
-        List<String> vars = new ArrayList<>() ;
-        vars.add(var1) ;
-        vars.add(var2) ;
-        
-        QueryIterator qIter = QueryIterSingleton.create(b, null) ;
-        ResultSet rs = new ResultSetStream(vars, null, qIter) ;
-        return rs ; 
-    }
-
-    private ResultSetRewindable makeRewindable(String var1, Node val1, String var2, Node val2 )
-    {
-        ResultSet rs = make(var1, val1, var2, val2) ;
-        ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs) ;
-        return rsw ;
-    }
-    
     private ResultSetPeekable makePeekable(String var, Node val) {
         ResultSet rs = make(var, val);
-        ResultSetPeekable rsp = ResultSetFactory.makePeekable(rs);
-        return rsp;
-    }
-    
-    private ResultSetPeekable make2Peekable(String var1, Node val1, String var2, Node val2) {
-        ResultSet rs = make(var1, val1, var2, val2);
         ResultSetPeekable rsp = ResultSetFactory.makePeekable(rs);
         return rsp;
     }

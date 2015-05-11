@@ -185,7 +185,6 @@ public class CmdNodeTableBuilder extends CmdGeneral
 
     static class NodeTableBuilder implements BulkStreamRDF
     {
-        private DatasetGraphTDB dsg ;
         private NodeTable nodeTable ;
         private WriteRows writerTriples ;
         private WriteRows writerQuads ;
@@ -194,7 +193,6 @@ public class CmdNodeTableBuilder extends CmdGeneral
 
         NodeTableBuilder(DatasetGraphTDB dsg, ProgressLogger monitor, OutputStream outputTriples, OutputStream outputQuads, boolean collectStats)
         {
-            this.dsg = dsg ;
             this.monitor = monitor ;
             NodeTupleTable ntt = dsg.getTripleTable().getNodeTupleTable() ; 
             this.nodeTable = ntt.getNodeTable() ;

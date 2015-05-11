@@ -22,7 +22,6 @@ import java.io.OutputStream ;
 import java.io.Writer ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.datatypes.xsd.impl.XMLLiteralType ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.WriterDatasetRIOT ;
@@ -43,8 +42,6 @@ import org.apache.jena.sparql.util.Context ;
  * @see StreamWriterTriX
  */
 public class WriterTriX implements WriterDatasetRIOT, WriterGraphRIOT {
-    private static String rdfXMLLiteral = XMLLiteralType.theXMLLiteralType.getURI() ;
-
     // Common pattern.
     @Override
     public Lang getLang() {

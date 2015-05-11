@@ -64,7 +64,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		m.createResource("foo").addProperty(RDF.value, "bar");
 		m.write(new OutputStream() {
 			@Override
-            public void write(int b) throws IOException {
+            public void write(int b) {
 			}
 		}, lang);
 	}
@@ -81,7 +81,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 	 * j.0 defined (eg it was read in from a model we wrote out earlier) wants
 	 * to allocate a new j.* prefix and picked j.0, BOOM.
 	 */
-	public void SUPPRESSEDtestBrokenPrefixing() throws Exception {
+	public void SUPPRESSEDtestBrokenPrefixing() {
 		Model m = ModelFactory.createDefaultModel();
 		m.add(ModelTestBase.statement(m, "a http://bingle.bongle/booty#PP b"));
 		m.add(ModelTestBase.statement(m, "c http://dingle.dongle/dooty#PP d"));
@@ -682,11 +682,4 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 			relative(i, "http://www.example.org/A/B#", rData3);
 		}
 	}
-
-	private static String uris[] = { "http://www.example.org/a/b/c/d/",
-			"http://www.example.org/a/b/c/d/e/f/g/",
-			"http://www.example.org/a/b/C/D",
-			"http://www.example.org/A/B#foo/",
-			"http://www.example.org/a/b/c/d/X#bar", "http://example.com/A",
-			"http://www.example.org/a/b/c/d/z?x=a", };
 }

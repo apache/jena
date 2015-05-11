@@ -20,7 +20,6 @@ package org.apache.jena.tdb.setup ;
 
 import java.io.File ;
 import java.io.FileFilter ;
-import java.util.Collections ;
 import java.util.HashMap ;
 import java.util.Map ;
 
@@ -188,8 +187,6 @@ public class DatasetBuilderStd implements DatasetBuilder {
         }
     }
 
-    private static String DB_CONFIG_FILE = "tdb.cfg" ; 
-    
     // Main engine for building.
     // Called by DatasetBuilderTxn
     // XXX Rework - provide a cloning constructor (copies maps).
@@ -220,10 +217,6 @@ public class DatasetBuilderStd implements DatasetBuilder {
         return dsg ;
     }
     
-    private static <X,Y> Map<X,Y> freeze(Map<X,Y> map) {
-        return Collections.unmodifiableMap(new HashMap<>(map)) ;  
-    }
-
     protected DatasetControl createConcurrencyPolicy() {
         return new DatasetControlMRSW() ;
     }
@@ -344,16 +337,6 @@ public class DatasetBuilderStd implements DatasetBuilder {
         if ( log != null )
             log.error(msg) ;
         throw new TDBException(msg) ;
-    }
-
-    private static int parseInt(String str, String messageBase) {
-        try {
-            return Integer.parseInt(str) ;
-        }
-        catch (NumberFormatException ex) {
-            error(log, messageBase + ": " + str) ;
-            return -1 ;
-        }
     }
 
     /**

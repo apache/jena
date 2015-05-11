@@ -326,11 +326,6 @@ public class CmdLineArgs extends CommandLineBase {
         throw new CmdException("Unknown argument: "+argStr) ;
     }
     
-    private ArgDecl find(String a) {
-        a = ArgDecl.canonicalForm(a) ;
-        return argMap.get(a) ;
-    }
-
     @Override
     public String toString() {
         if ( !processedArgs )

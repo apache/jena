@@ -32,7 +32,7 @@ import org.apache.jena.sparql.util.graph.GraphUtils ;
 
 // EXPERIMENTAL - Move to ARQ?
 
-public class QueryCommandAssembler extends AssemblerBase implements Assembler
+public class QueryCommandAssembler extends AssemblerBase
 {
 
     @Override

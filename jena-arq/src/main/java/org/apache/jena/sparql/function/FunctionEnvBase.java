@@ -31,8 +31,6 @@ public class FunctionEnvBase implements FunctionEnv
     private Context context ;
     private Graph activeGraph ;
     private DatasetGraph dataset ;
-    private ExecutionContext execContext = null ;
-
     /** Create an execution environment suitable for testing functions and expressions */ 
     public static FunctionEnv createTest()
     {
@@ -46,7 +44,6 @@ public class FunctionEnvBase implements FunctionEnv
     public FunctionEnvBase(ExecutionContext execCxt)
     { 
         this(execCxt.getContext(), execCxt.getActiveGraph(), execCxt.getDataset()) ;
-        execContext = execCxt ;
     }
 
     public FunctionEnvBase(Context context, Graph activeGraph, DatasetGraph dataset)

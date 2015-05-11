@@ -62,13 +62,11 @@ public class TestFormatRegistration extends BaseTest
         x.add(new Object[] {name, format, istriples , isquads }) ;
     }
 
-    private String name ;
     private RDFFormat format ;
     private boolean istriples ;
     private boolean isquads ;
 
     public TestFormatRegistration(String name, RDFFormat format, boolean istriples, boolean isquads) {
-        this.name = name ;
         this.format = format ;
         this.istriples = istriples ;
         this.isquads = isquads ;

@@ -119,12 +119,9 @@ public class Rename
     {
         private final Map<Var, Var> aliases = new HashMap<>() ;
         private final Collection<Var> constants ;
-        private final String varPrefix ;
-        
         public RenameAnyVars(Collection<Var> constants, String varPrefix)
         {
             this.constants = constants ;
-            this.varPrefix = varPrefix ;
         }
         
         @Override

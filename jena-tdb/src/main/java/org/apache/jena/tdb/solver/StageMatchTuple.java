@@ -20,7 +20,6 @@ package org.apache.jena.tdb.solver;
 
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -39,7 +38,6 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
     private final NodeTupleTable nodeTupleTable ;
     private final Tuple<Node> patternTuple ;
 
-    private final ExecutionContext execCxt ;
     private boolean anyGraphs ;
     private Predicate<Tuple<NodeId>> filter ;
 
@@ -52,7 +50,6 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         this.filter = filter ;
         this.nodeTupleTable = nodeTupleTable ; 
         this.patternTuple = tuple ;
-        this.execCxt = execCxt ;
         this.anyGraphs = anyGraphs ; 
     }
 
@@ -137,21 +134,6 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         } ;
         
         return Iter.iter(iterMatches).map(binder).removeNulls() ;
-    }
-    
-    private static Iterator<Tuple<NodeId>> print(Iterator<Tuple<NodeId>> iter)
-    {
-        if ( ! iter.hasNext() )
-            System.err.println("<empty>") ;
-        else
-        {
-            List<Tuple<NodeId>> r = Iter.toList(iter) ;
-            String str = Iter.asString(r, "\n") ;
-            System.err.println(str) ;
-            // Reset iter
-            iter = Iter.iter(r) ;
-        }
-        return iter ;
     }
     
     private static boolean reject(BindingNodeId output , Var var, NodeId value)

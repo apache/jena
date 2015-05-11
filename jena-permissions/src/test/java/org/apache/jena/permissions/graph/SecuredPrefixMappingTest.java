@@ -17,6 +17,7 @@
  */
 package org.apache.jena.permissions.graph;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
@@ -40,7 +41,7 @@ import org.junit.runner.RunWith;
 public class SecuredPrefixMappingTest
 {
 	public static void runTests( final SecurityEvaluator securityEvaluator,
-			final PrefixMapping prefixMapping ) throws Exception
+			final PrefixMapping prefixMapping )
 	{
 		final PrefixMapping pm = prefixMapping;
 		Assert.assertNotNull("PrefixMapping may not be null", pm);
@@ -55,27 +56,27 @@ public class SecuredPrefixMappingTest
 			}
 		};
 		Method lockTest = null;
-		for (final Method m : pmTest.getClass().getMethods())
-		{
-			if (m.isAnnotationPresent(Test.class))
-			{
-				// lock test must come last
-				if (m.getName().equals("testLock"))
-				{
-					lockTest = m;
-				}
-				else
-				{
-					pmTest.setup();
-					m.invoke(pmTest);
-				}
+		try {
+			for (final Method m : pmTest.getClass().getMethods()) {
+				if (m.isAnnotationPresent(Test.class)) {
+					// lock test must come last
+					if (m.getName().equals("testLock")) {
+						lockTest = m;
+					} else {
+						pmTest.setup();
+						m.invoke(pmTest);
+					}
 
+				}
 			}
-		}
-		Assert.assertNotNull( "Did not find 'testLock' method", lockTest );		
-		pmTest.setup();
-		lockTest.invoke(pmTest);
+			Assert.assertNotNull("Did not find 'testLock' method", lockTest);
+			pmTest.setup();
 
+			lockTest.invoke(pmTest);
+		} catch (IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private final SecurityEvaluator securityEvaluator;

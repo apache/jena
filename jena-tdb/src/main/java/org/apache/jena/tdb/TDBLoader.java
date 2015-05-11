@@ -28,7 +28,6 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.store.GraphTDB ;
 import org.apache.jena.tdb.store.bulkloader.BulkLoader ;
-import org.slf4j.Logger ;
 
 /** Public interface to the loader functionality.
  * The bulk loader is not transactional. 
@@ -146,7 +145,6 @@ public class TDBLoader
     
     private boolean showProgress = true ;
     private boolean generateStats = true ;
-    private Logger loaderLog  = TDB.logLoader ;
     private boolean checking ;
     
     // XXX Context control block

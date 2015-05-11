@@ -55,7 +55,6 @@ public class SimpleVelocityServlet extends HttpServlet
     
     private String docbase ;
     private VelocityEngine velocity ;
-    private String functionsName = null ;
     private final Map<String, Object> datamodel ;
     
     public SimpleVelocityServlet(String base, Map<String, Object> datamodel)
@@ -127,7 +126,7 @@ public class SimpleVelocityServlet extends HttpServlet
         }
         
         @Override
-        public void init(RuntimeServices rs) throws Exception
+        public void init(RuntimeServices rs)
         { }
 
         @Override

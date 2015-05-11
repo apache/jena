@@ -29,10 +29,7 @@ import org.apache.jena.sparql.util.FmtUtils ;
 
 public class WriterBasePrefix
 {
-    private static final int NL = WriterLib.NL ;
     private static final int NoNL = WriterLib.NoNL ;
-    private static final int NoSP = WriterLib.NoSP ;
-
     public static interface Fmt { void format() ; }
     //public static Fmt fmt = new Fmt(){ public void format() {}} ;
 

@@ -1018,11 +1018,11 @@ public class TestTypedLiterals extends TestCase {
         checkSerialization("---12", XSDDatatype.XSDgDay);
     }
     
-    private static Date getDateFromPattern(String ts, String format, String timezoneid) throws Exception {
+    private static Date getDateFromPattern(String ts, String format, String timezoneid) {
         return getDateFromPattern(ts, new String[]{format}, TimeZone.getTimeZone(timezoneid));
     }
 
-    private static Date getDateFromPattern(String ts, String[] formats, TimeZone tz) throws Exception {
+    private static Date getDateFromPattern(String ts, String[] formats, TimeZone tz) {
         java.util.Date date = null;
         java.text.DateFormat sdf = java.text.DateFormat.getInstance();
         {

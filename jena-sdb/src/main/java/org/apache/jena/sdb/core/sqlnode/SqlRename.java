@@ -22,9 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.sdb.core.* ;
-import org.apache.jena.sdb.core.sqlexpr.SqlColumn ;
 import org.apache.jena.sdb.shared.SDBInternalError ;
-import org.apache.jena.sparql.core.Var ;
 
 /** SQL rename */
 //Not used - may be removed
@@ -37,19 +35,6 @@ import org.apache.jena.sparql.core.Var ;
     
     //---
 
-    private /*public*/ static SqlNode view(String alias, SqlNode sqlNode)
-    { 
-        // return SqlSelectBlock.view(sqlNode) ;
-        return null ;
-//        SqlTable table = new SqlTable(alias) ;
-//        Generator gen = Gensym.create("X") ;    // Column names.  Not global.
-//        
-//        SqlRename rename = new SqlRename(table, sqlNode) ;
-//        rename.merge(sqlNode.getIdScope(), rename.idScope, gen) ;
-//        rename.merge(sqlNode.getNodeScope(), rename.nodeScope, gen) ;
-//        return rename ;
-    }
-    
     private SqlRename(SqlTable here, SqlNode sqlNode)
     {
         super(here.getAliasName(), sqlNode) ;
@@ -66,28 +51,6 @@ import org.apache.jena.sparql.core.Var ;
         this.idScope = other.idScope ;
         this.nodeScope = other.nodeScope ;
         this.columns = new ArrayList<ColAlias>(other.columns) ;
-    }
-
-    // Map all vars in the scope to names in the rename.
-    private void merge(Scope scope, ScopeBase newScope, Generator gen)
-    {
-        String x = "" ;
-        String sep = "" ;
-
-        for ( ScopeEntry e : scope.findScopes() )
-        {
-            SqlColumn oldCol = e.getColumn() ;
-            Var v = e.getVar() ;
-            String colName = gen.next() ;
-            SqlColumn newCol = new SqlColumn(vTable, colName) ;
-            columns.add(new ColAlias(oldCol, newCol)) ;
-            newScope.setColumnForVar(v, newCol) ;
-            // Annotations
-            x = String.format("%s%s%s:(%s=>%s)", x, sep, v, oldCol, newCol) ;
-            sep = " " ;
-        }
-        if ( x.length() > 0 )
-            addNote(x) ;
     }
 
     @Override

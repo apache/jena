@@ -78,41 +78,17 @@ public class Transformer
     /** Transform an algebra expression except skip (leave alone) any OpService nodes */
     public static Op transformSkipService(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
-        // Skip SERVICE
-        if ( true )
-        {
-            // Simplest way but still walks the OpService subtree (and throws away the transformation).
-            Transform walker = new TransformSkipService(transform) ;
-            return Transformer.transform(walker, op, beforeVisitor, afterVisitor) ;
-        }
-        else
-        {
-            // Don't transform OpService and don't walk the sub-op 
-            ExprTransform exprTransform = new ExprTransformApplyTransform(transform, beforeVisitor, afterVisitor) ;
-            ApplyTransformVisitorServiceAsLeaf v = new ApplyTransformVisitorServiceAsLeaf(transform, exprTransform) ;
-            WalkerVisitorSkipService walker = new WalkerVisitorSkipService(v, beforeVisitor, afterVisitor) ;
-            OpWalker.walk(walker, op) ;
-            return v.result() ;
-        }
+        // Simplest way but still walks the OpService subtree (and throws away the transformation).
+		Transform walker = new TransformSkipService(transform) ;
+		return Transformer.transform(walker, op, beforeVisitor, afterVisitor) ;
     }
 
     /** Transform an algebra expression except skip (leave alone) any OpService nodes */
     public static Op transformSkipService(Transform transform, ExprTransform exprTransform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
-        // Skip SERVICE
-        if ( true )
-        {
-            // Simplest way but still walks the OpService subtree (and throws away the transformation).
-            Transform walker = new TransformSkipService(transform) ;
-            return Transformer.transform(walker, exprTransform, op, beforeVisitor, afterVisitor) ;
-        }
-        else
-        {
-            ApplyTransformVisitorServiceAsLeaf v = new ApplyTransformVisitorServiceAsLeaf(transform, exprTransform) ;
-            WalkerVisitorSkipService walker = new WalkerVisitorSkipService(v, beforeVisitor, afterVisitor) ;
-            OpWalker.walk(walker, op) ;
-            return v.result() ;
-        }
+        // Simplest way but still walks the OpService subtree (and throws away the transformation).
+		Transform walker = new TransformSkipService(transform) ;
+		return Transformer.transform(walker, exprTransform, op, beforeVisitor, afterVisitor) ;
     }
 
     // To allow subclassing this class, we use a singleton pattern 
@@ -310,7 +286,7 @@ public class Transformer
             for ( ExprAggregator agg : aggs )
             {
                 Aggregator aggregator = agg.getAggregator() ;
-                Var v = agg.getVar() ;
+                agg.getVar();
                 
                 // Variable associated with the aggregate
                 Expr eVar = agg.getAggVar() ;   // Not .getExprVar()
@@ -374,7 +350,7 @@ public class Transformer
             
             for ( Iterator<Op> iter = op.iterator() ; iter.hasNext() ; )
             {
-                Op sub = iter.next() ;
+                iter.next();
                 Op r = pop() ;
                 // Skip nulls.
                 if ( r != null )
@@ -391,7 +367,7 @@ public class Transformer
             Op subOp = null ;
             if ( opFilter.getSubOp() != null )
                 subOp = pop() ;
-            boolean changed = ( opFilter.getSubOp() != subOp ) ;
+            opFilter.getSubOp();
 
             ExprList ex = opFilter.getExprs() ;
             ExprList ex2 = process(ex, exprTransform) ;

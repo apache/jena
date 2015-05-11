@@ -20,18 +20,13 @@ package org.apache.jena.query.text ;
 
 import java.util.List ;
 
-import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.DatasetChangesBatched ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.QuadAction ;
-import org.apache.jena.sparql.util.FmtUtils ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 // Currently unused 
 // This would index multiple quads at a time from batched stream of changes (e.g. rdf-patch)
 public class TextDocProducerEntities extends DatasetChangesBatched implements TextDocProducer {
-    private static Logger          log     = LoggerFactory.getLogger(TextDocProducer.class) ;
     private final EntityDefinition defn ;
     private final TextIndex        indexer ;
     
@@ -68,45 +63,7 @@ public class TextDocProducerEntities extends DatasetChangesBatched implements Te
             return ;
         if ( batch.size() == 0 )
             return ;
-        if ( false ) {
-            // One document per entity - future possibility.
-            Quad q = batch.get(0) ;
-            Node g = q.getGraph() ;
-            Node s = q.getSubject() ;
-            docEntity(g, s, batch) ;
-            return ;
-        }
         docQuads(batch) ; // Does not need batching.
-    }
-
-    private void docEntity(Node g, Node s, List<Quad> batch) {
-        // One document per entity
-        String x = TextQueryFuncs.subjectToString(s) ;
-        String gx = TextQueryFuncs.graphNodeToString(g) ;
-        Entity entity = new Entity(x, gx) ;
-        String graphField = defn.getGraphField() ;
-        if ( defn.getGraphField() != null )
-            entity.put(graphField, gx) ;
-        
-        for ( Quad quad : batch ) {
-            Node p = quad.getPredicate() ;
-            String field = defn.getField(p) ;
-            if ( field == null )
-                continue ;
-            Node o = quad.getObject() ;
-            String val = null ;
-            if ( o.isURI() )
-                val = o.getURI() ;
-            else if ( o.isLiteral() )
-                val = o.getLiteralLexicalForm() ;
-            else {
-                log.warn("Not a literal value for mapped field-predicate: " + field + " :: "
-                         + FmtUtils.stringForString(field)) ;
-                continue ;
-            }
-            entity.put(field, val) ;
-        }
-        indexer.addEntity(entity) ;
     }
 
     private void docQuads(List<Quad> batch) {

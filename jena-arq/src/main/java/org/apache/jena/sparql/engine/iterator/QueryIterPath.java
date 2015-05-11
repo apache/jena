@@ -21,7 +21,6 @@ package org.apache.jena.sparql.engine.iterator;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.core.TriplePath ;
-import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -31,10 +30,6 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
 public class QueryIterPath extends QueryIterRepeatApply
 {
     private TriplePath triplePath ;
-    private Var varSubject = null ;
-    private Var varObject = null ;
-    
-
     public QueryIterPath(TriplePath triplePath, QueryIterator input, ExecutionContext context)
     {
         super(input, context) ;

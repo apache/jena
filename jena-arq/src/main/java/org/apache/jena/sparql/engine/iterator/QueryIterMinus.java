@@ -18,10 +18,8 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import java.util.Map;
 import java.util.Set ;
 
-import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
@@ -33,9 +31,7 @@ import org.apache.jena.sparql.engine.index.IndexTable ;
 public class QueryIterMinus extends QueryIter2
 {
 	private IndexTable tableRight;
-	private Map<Var, Integer> varColumns ;
-	private Set<Node[]> rightTable;
-    Binding slot = null ;
+	Binding slot = null ;
 
 	public QueryIterMinus(QueryIterator left, QueryIterator right, Set<Var> commonVars, ExecutionContext qCxt)
     {

@@ -20,8 +20,6 @@ package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
 
-import java.util.List ;
-
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -101,17 +99,6 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
     
     public SPARQL_UberServlet() { super(); }
 
-    private String getEPName(String dsname, List<String> endpoints)
-    {
-        if (endpoints == null || endpoints.size() == 0) return null ;
-        String x = endpoints.get(0) ;
-        if ( ! dsname.endsWith("/") )
-            x = dsname+"/"+x ;
-        else
-            x = dsname+x ;
-        return x ;
-    }
-    
     // These calls should not happen because we hook in at executeAction
     @Override protected void validate(HttpAction action) { throw new FusekiException("Call to SPARQL_UberServlet.validate") ; }
     @Override protected void perform(HttpAction action)  { throw new FusekiException("Call to SPARQL_UberServlet.perform") ; }
@@ -262,24 +249,6 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
         if ( service.endpoints.size() == 0 )
             errorMethodNotAllowed(action.request.getMethod()) ;
         servlet.executeLifecycle(action) ;
-    }
-
-    private void executeRequest(HttpAction action,SPARQL_ServletBase servlet)
-    {
-        servlet.executeLifecycle(action) ;
-//      // Forwarded dispatch.
-//      try
-//      {
-//          String target = getEPName(desc.name, endpointList) ;
-//          if ( target == null )
-//              errorMethodNotAllowed(request.getMethod()) ;
-//          // ** relative servlet forward
-//          request.getRequestDispatcher(target).forward(request, response) ;    
-        
-
-//          // ** absolute srvlet forward
-//          // getServletContext().getRequestDispatcher(target) ;
-//      } catch (Exception e) { errorOccurred(e) ; }        
     }
 
     protected static MediaType contentNegotationQuads(HttpAction action)

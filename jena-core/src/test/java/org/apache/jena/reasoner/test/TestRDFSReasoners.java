@@ -93,15 +93,6 @@ public class TestRDFSReasoners extends ReasonerTestBase {
     }  
     
     /**
-     * Build a single named query test
-     */
-    private static void constructSingleQuerytests(TestSuite suite, String manifest, String test, ReasonerFactory rf, Resource config) throws IOException {
-        ReasonerTester tester = new ReasonerTester(manifest);
-        Reasoner r = rf.create(config);
-        suite.addTest(new TestReasonerFromManifest(tester, test, r));
-    }
-    
-    /**
      * Build the query tests for the given reasoner.
      */
     private static void constructQuerytests(TestSuite suite, String manifest, ReasonerFactory rf, Resource config) throws IOException {
@@ -116,7 +107,7 @@ public class TestRDFSReasoners extends ReasonerTestBase {
     /**
      * Build the working group tests for the given reasoner.
      */
-    private static void constructRDFWGtests(TestSuite suite, ReasonerFactory rf, Resource config) throws IOException {
+    private static void constructRDFWGtests(TestSuite suite, ReasonerFactory rf, Resource config) {
         WGReasonerTester tester = new WGReasonerTester("Manifest.rdf");
         for ( String test : tester.listTests() )
         {
@@ -202,7 +193,7 @@ public class TestRDFSReasoners extends ReasonerTestBase {
          * The test runner
          */
         @Override
-        public void runTest() throws IOException {
+        public void runTest() {
             tester.runTest(test, reasonerFactory, this, config);
         }
 

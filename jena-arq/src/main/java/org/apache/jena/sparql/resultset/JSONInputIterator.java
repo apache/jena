@@ -57,7 +57,7 @@ public class JSONInputIterator extends QueryIteratorBase {
 	
 	private InputStream input;
 
-	private boolean isBooleanResults = false, boolResult = false, headerSeen = false;
+	private boolean isBooleanResults = false, headerSeen = false;
 	private Binding binding = null;
 	private TokenizerJSON tokens;
 	private PeekIterator<Token> peekIter;
@@ -394,11 +394,9 @@ public class JSONInputIterator extends QueryIteratorBase {
 			String keyword = t.getImage();
 			if (keyword.equals("true"))
 			{
-				boolResult = true;
 			}
 			else if (keyword.equals("false"))
 			{
-				boolResult = false;
 			}
 			else
 			{
@@ -606,21 +604,7 @@ public class JSONInputIterator extends QueryIteratorBase {
 		return lookingAt(TokenType.STRING1) || lookingAt(TokenType.STRING2);
 	}
 
-    private Token checkValidForStringProperty(String property)
-    {
-    	Token t = null;
-    	if (lookingAt(TokenType.STRING1) || lookingAt(TokenType.STRING2))
-    	{
-    		t = nextToken();
-    	}
-    	else
-    	{
-    		exception(peekToken(), "JSON Values given for property " + property + " must be Strings") ;
-    	}
-    	return t;
-    }
-
-	private void checkColon()
+    private void checkColon()
 	{
 		if (!lookingAt(TokenType.COLON))
 		{

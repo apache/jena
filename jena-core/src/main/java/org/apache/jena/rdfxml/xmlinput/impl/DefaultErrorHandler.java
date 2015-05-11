@@ -36,7 +36,7 @@ public class DefaultErrorHandler implements org.xml.sax.ErrorHandler {
     }
 
     @Override
-    public void error(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXException {
+    public void error(org.xml.sax.SAXParseException e) {
         System.err.println("Error: " + ParseException.formatMessage(e)); 
     }
     
@@ -47,7 +47,7 @@ public class DefaultErrorHandler implements org.xml.sax.ErrorHandler {
     }
     
     @Override
-    public void warning(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXException {
+    public void warning(org.xml.sax.SAXParseException e) {
         System.err.println("Warning: " + ParseException.formatMessage(e)); 
 //        e.printStackTrace();
         

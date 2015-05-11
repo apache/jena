@@ -55,25 +55,14 @@ public class DumpOps
         if ( nodeTupleTableTriples.getNodeTable() != nodeTupleTableQuads.getNodeTable() )
             throw new CmdException("Different node tables for triples and quads") ;
 
-        NodeTable nodeTable = nodeTupleTableTriples.getNodeTable() ;
         // V special.
         Set<NodeTable> dumpedNodeTables = new HashSet<>() ;
-
-
 
         if ( true )
         {
             System.out.print("## Node Table\n") ;
             dumpNodeTable(nodeTupleTableTriples.getNodeTable(), dumpedNodeTables) ;
             dumpNodeTable(nodeTupleTableQuads.getNodeTable(), dumpedNodeTables) ;
-        }
-
-        if ( false )
-        {
-            System.out.print("## Triple Table\n") ;
-            dumpNodeTupleTable(nodeTupleTableTriples.getTupleTable()) ;
-            System.out.print("## Quad Table\n") ;
-            dumpNodeTupleTable(nodeTupleTableQuads.getTupleTable()) ;
         }
 
         // Indexes.

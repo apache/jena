@@ -397,7 +397,6 @@ public class T_TransSystemMultiDatasets
     @AfterClass 
     public static void afterClass() {}
 
-    private StoreConnection sConn ;
     private static Random random = new Random(System.currentTimeMillis()) ;
 
     protected synchronized StoreConnection getStoreConnection()
@@ -544,8 +543,6 @@ public class T_TransSystemMultiDatasets
     static Quad q3 = SSE.parseQuad("(_ <s> <p> <o3>)") ;
 
     static Quad q4 = SSE.parseQuad("(_ <s> <p> <o4>)") ;
-
-    private static int initCount = -1 ;
 
     //static final Location LOC = Location.create(ConfigTest.getTestingDirDB()) ;
     static final AtomicInteger gen = new AtomicInteger() ;

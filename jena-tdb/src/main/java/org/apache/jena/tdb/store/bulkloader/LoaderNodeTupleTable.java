@@ -28,8 +28,6 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.tdb.store.tupletable.TupleIndex ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 /** 
  * Load into one NodeTupleTable (triples, quads, other) 
@@ -51,8 +49,6 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     private long count = 0 ;
     private String itemsName ;
     
-    static private Logger logLoad = LoggerFactory.getLogger("org.apache.jena.tdb.loader") ;
-
     public LoaderNodeTupleTable(NodeTupleTable nodeTupleTable, String itemsName, LoadMonitor monitor)
     {
         this.nodeTupleTable = nodeTupleTable ;
@@ -176,15 +172,11 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         
     }
     
-    private static Object lock = new Object() ;
-    
     static void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, String label, LoadMonitor monitor)
     {
         monitor.startIndex(label) ;
-        long counter = 0 ;
         for ( ; srcIter.hasNext() ; )
         {
-            counter++ ;
             Tuple<NodeId> tuple = srcIter.next();
             monitor.indexItem() ;
             for ( TupleIndex destIdx : destIndexes )
@@ -195,21 +187,6 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         }
 
         monitor.finishIndex(label) ;
-    }
-
-
-    static private void sync(TupleIndex[] indexes)
-    {
-        for ( TupleIndex idx : indexes )
-        {
-            if ( idx != null )
-                idx.sync() ;
-        }
-    }
-   
-    private static boolean tickPoint(long counter, long quantum)
-    {
-        return counter%quantum == 0 ;
     }
     
 }

@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 public class Env
 {
     private static Logger log = LoggerFactory.getLogger(Env.class) ;
-    private static final String SDBROOT = "SDBROOT" ; 
     public static String sysBase = null ;
     private static FileManager fileManager = null ; 
     

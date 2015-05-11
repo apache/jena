@@ -18,19 +18,14 @@
 
 package org.apache.jena.sdb.layout1;
 
-import java.sql.SQLException;
-
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sdb.core.sqlexpr.SqlConstant ;
 import org.apache.jena.sdb.sql.SDBConnection ;
 import org.apache.jena.sdb.store.TableDesc ;
 import org.apache.jena.sdb.store.TupleLoaderOne ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TupleLoaderSimple extends TupleLoaderOne
 {
-    private static Logger log = LoggerFactory.getLogger(TupleLoaderSimple.class);
     private EncoderDecoder codec ;
     
     public TupleLoaderSimple(SDBConnection connection, TableDesc tableDesc, EncoderDecoder codec)
@@ -40,13 +35,13 @@ public class TupleLoaderSimple extends TupleLoaderOne
     }
 
     @Override
-    public SqlConstant getRefForNode(Node node) throws SQLException
+    public SqlConstant getRefForNode(Node node)
     {
         return new SqlConstant(codec.encode(node)) ;
     }
 
     @Override
-    public SqlConstant insertNode(Node node) throws SQLException
+    public SqlConstant insertNode(Node node)
     {
         return new SqlConstant(codec.encode(node)) ;
     }

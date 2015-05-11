@@ -33,7 +33,6 @@ import org.apache.jena.rdfxml.xmlinput.impl.ARPResource ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
 import org.apache.jena.shared.wg.TestInputStreamFactory ;
 import org.junit.Assert ;
-import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 
 /**
@@ -69,7 +68,7 @@ class NTripleTestSuite extends WGTestSuite {
 	}
 	static class TestHandler
 		extends ARPSaxErrorHandler
-		implements ARPEventHandler, org.xml.sax.ErrorHandler {
+		implements ARPEventHandler {
 		TestHandler(RDFErrorHandler eh) {
 			this(eh, 0);
 		}
@@ -213,7 +212,7 @@ class NTripleTestSuite extends WGTestSuite {
 		 * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
 		 */
 		@Override
-        public void error(SAXParseException exception) throws SAXException {
+        public void error(SAXParseException exception) {
 			hasErrors = true;
 			super.error(exception);
 
@@ -223,8 +222,7 @@ class NTripleTestSuite extends WGTestSuite {
 		 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
 		 */
 		@Override
-        public void fatalError(SAXParseException exception)
-			throws SAXException {
+        public void fatalError(SAXParseException exception) {
 			hasErrors = true;
 			super.fatalError(exception);
 
@@ -251,7 +249,6 @@ class NTripleTestSuite extends WGTestSuite {
 		return loadRDFx(in, eh, base, true, 0);
 	}
 	
-    @SuppressWarnings("resource")
     static Model loadRDFx(
 		InFactoryX in,
 		RDFErrorHandler eh,
@@ -273,7 +270,7 @@ class NTripleTestSuite extends WGTestSuite {
 			out = new PrintStream(new OutputStream() {
 
 				@Override
-                public void write(int b) throws IOException {
+                public void write(int b) {
 				}
 			});
 			th = new TestHandler(eh, cnt);

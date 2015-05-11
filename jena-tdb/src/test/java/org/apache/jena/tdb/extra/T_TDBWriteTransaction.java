@@ -41,10 +41,7 @@ import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.base.block.FileMode ;
-import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.sys.SystemTDB ;
-import org.apache.jena.tdb.transaction.Journal ;
-import org.apache.jena.tdb.transaction.JournalControl ;
 import org.apache.jena.tdb.transaction.TransactionManager ;
 
 public class T_TDBWriteTransaction {
@@ -82,14 +79,6 @@ public class T_TDBWriteTransaction {
 
     static public void run(String location)
     {
-        if ( false )
-        {
-            Journal journal = Journal.create(Location.create(location)) ;
-            JournalControl.print(journal) ;
-            journal.close() ;
-        }
-        //String location = args[0]; // + "/" + UUID.randomUUID().toString();
-
 		//String baseGraphName = "com.ibm.test.graphNamePrefix.";   
 
 		long totalExecTime = 0L;

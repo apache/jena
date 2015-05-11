@@ -28,7 +28,6 @@ import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.tokens.Token ;
-import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.sparql.core.Quad ;
 
 /**
@@ -134,11 +133,6 @@ public class ParserProfileBase implements ParserProfile {
     /** Special token forms */
     @Override
     public Node createNodeFromToken(Node scope, Token token, long line, long col) {
-        // OFF - Don't produce Node.ANY by default.
-        if (false && token.getType() == TokenType.KEYWORD) {
-            if (Token.ImageANY.equals(token.getImage()))
-                return Node.ANY ;
-        }
         return null ;
     }
 

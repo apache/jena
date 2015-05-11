@@ -80,7 +80,6 @@ public class RDFDataMgr
     static Logger log = LoggerFactory.getLogger(RDFDataMgr.class) ;
     private static String riotBase = "http://jena.apache.org/riot/" ;
     
-	private static String StreamManagerSymbolStr = riotBase+"streamManager" ;
 	public static Symbol streamManagerSymbol = Symbol.create(riotBase+"streamManager") ;
 
     /** Read triples into a Model from the given location. 

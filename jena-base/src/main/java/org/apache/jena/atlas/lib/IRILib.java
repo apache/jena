@@ -38,12 +38,7 @@ public class IRILib
                     / "*" / "+" / "," / ";" / "="
      */
     
-    private static char uri_reserved[] = 
-    { '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
-      '=', '+', '$', ',', '/', '?', '%', '#', '[', ']' } ;
-
-    // No allowed in URIs
-    private static char uri_non_chars[] = { '<', '>', '{', '}', '|', '\\', '`', '^', ' ',  '\n', '\r', '\t', '£' } ;
+    
     
     // RFC 2396
     //private static char uri_unwise[]    = { '{' , '}', '|', '\\', '^', '[', ']', '`' } ;

@@ -37,7 +37,7 @@ import org.xml.sax.SAXParseException ;
  * Builtin data type to represent XMLLiteral (i.e. items created
  * by use of <code>rdf:parsetype='literal'</code>.
  */
-public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
+public class XMLLiteralType extends BaseDatatype {
     /** Singleton instance */
     // Include the string for the RDF namespace, not use RDF.getURI(), to avoid an initializer circularity
     public static final RDFDatatype theXMLLiteralType = new XMLLiteralType("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral");

@@ -61,7 +61,6 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     }
     
     private int inRead = 0 ;
-    private int inIterator = 0 ;
     private boolean inUpdate = false ;
     private final Logger log ;
     private final String label ;
@@ -422,11 +421,6 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     private void info(String string)
     {
         log.info(msg(string)) ;
-    }
-
-    private void warn(String string)
-    {
-        log.warn(msg(string)) ;
     }
 
     private void error(String string)

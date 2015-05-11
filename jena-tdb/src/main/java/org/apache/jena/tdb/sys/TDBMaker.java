@@ -18,9 +18,7 @@
 
 package org.apache.jena.tdb.sys;
 
-import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.tdb.StoreConnection ;
-import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.setup.DatasetBuilderStd ;
 import org.apache.jena.tdb.setup.StoreParams ;
@@ -90,29 +88,6 @@ public class TDBMaker
         public DatasetGraphTDB createDatasetGraph(Location location, StoreParams params)
         {
             return DatasetBuilderStd.create(location, params) ;
-        }
-    }
-    
-    /** Make by creating the normal, transactional one and finding the base */ 
-    private static class _BuilderBase implements DatasetGraphMakerTDB
-    {
-        @Override
-        public DatasetGraphTDB createDatasetGraph(Location location, StoreParams params)
-        {
-            if ( params != null )
-                System.err.println("StoreParams != null : ignored at the moment") ;
-            DatasetGraph dsg = TDBFactory.createDatasetGraph(location) ; // , params) ;
-            return TDBInternal.getBaseDatasetGraphTDB(dsg) ;
-        }
-    }
-    
-    /** The StoreConnection-cached base DatasetGraphTDB.*/ 
-    private static class BuilderStoreConnectionBase implements DatasetGraphMakerTDB
-    {
-        @Override
-        public DatasetGraphTDB createDatasetGraph(Location location, StoreParams params)
-        {
-            return StoreConnection.make(location, params).getBaseDataset() ;
         }
     }
     

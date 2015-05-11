@@ -203,7 +203,6 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      * Signal dependents that we have new results.
      */
     public void notifyResults() {
-        LPBRuleEngine engine = interpreter.getEngine();
         for ( ConsumerChoicePointFrame cons : consumingCPs )
         {
             cons.setReady();
@@ -271,9 +270,6 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
         // Early termination check, close a singleton as soon as we have the ans
         if (isSingleton && results.size() == 1) {
             setComplete();
-        }
-        if (LPBRuleEngine.CYCLES_BETWEEN_COMPLETION_CHECK == 0) {
-            checkForCompletions();
         }
     }
     

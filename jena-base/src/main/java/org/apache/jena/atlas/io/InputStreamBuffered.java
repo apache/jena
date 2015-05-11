@@ -37,8 +37,6 @@ public final class InputStreamBuffered extends InputStream
     private byte[] buffer ;
     private int buffLen = 0 ;
     private int idx = 0 ;
-    private long count = 0 ;
-    
     public InputStreamBuffered(InputStream input)
     {
         this(input, DFT_BUFSIZE) ;
@@ -59,7 +57,7 @@ public final class InputStreamBuffered extends InputStream
 //    }
     
     @Override
-    public int read() throws IOException
+    public int read()
     {
         return advance() ;
     }
@@ -82,7 +80,6 @@ public final class InputStreamBuffered extends InputStream
             byte ch = buffer[idx] ;
             // Advance the lookahead character
             idx++ ;
-            count++ ;
             return ch & 0xFF ;
         }  
         else

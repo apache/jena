@@ -23,7 +23,6 @@ import static org.apache.jena.sdb.sql.SQLUtils.sqlStr ;
 import java.sql.SQLException;
 
 import org.apache.jena.sdb.layout2.* ;
-import org.apache.jena.sdb.sql.MySQLEngineType ;
 import org.apache.jena.sdb.sql.SDBConnection ;
 import org.apache.jena.sdb.sql.SDBExceptionSQL ;
 import org.apache.jena.sdb.sql.TableUtils ;
@@ -34,8 +33,6 @@ import org.slf4j.LoggerFactory;
 public class FmtLayout2HashHSQL extends FmtLayout2
 {
     static private Logger log = LoggerFactory.getLogger(FmtLayout2HashHSQL.class) ;
-    private MySQLEngineType engineType ;
-    
     public FmtLayout2HashHSQL(SDBConnection connection)
     { 
         super(connection) ;

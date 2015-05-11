@@ -290,8 +290,6 @@ public class SPARQLServer {
       */
     public static boolean       überServlet       = false ;
     
-    private static List<String> ListOfEmptyString = Arrays.asList("") ;
-
     private void configureOneDataset(ServletContextHandler context, DatasetRef dsDesc, boolean enableCompression) {
         String datasetPath = dsDesc.name ;
         if ( datasetPath.equals("/") )
@@ -447,14 +445,6 @@ public class SPARQLServer {
             context.addFilter(GzipFilter.class, pathSpec, EnumSet.allOf(DispatcherType.class)) ;
     }
 
-    private void addJMX() {
-        DatasetRegistry registry = DatasetRegistry.get() ;
-        for (String ds : registry.keys()) {
-            DatasetRef dsRef = registry.get(ds) ;
-            addJMX(dsRef) ;
-        }
-    }
-
     private void addJMX(DatasetRef dsRef) {
         String x = dsRef.name ;
         // if ( x.startsWith("/") )
@@ -470,14 +460,6 @@ public class SPARQLServer {
         DatasetRegistry registry = DatasetRegistry.get() ;
         for (String ds : registry.keys()) {
             DatasetRef ref = registry.get(ds) ;
-        }
-    }
-
-    private void removeJMX(DatasetRef dsRef) {
-        String x = dsRef.getName() ;
-        ARQMgt.unregister(Fuseki.PATH + ".dataset:name=" + x) ;
-        for (ServiceRef sRef : dsRef.getServiceRefs()) {
-            ARQMgt.unregister(Fuseki.PATH + ".dataset:name=" + x + "/" + sRef.name) ;
         }
     }
 }

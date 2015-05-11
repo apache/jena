@@ -48,8 +48,6 @@ public class MetaFile implements Sync, Closeable
     private Properties properties = null ;
     private String label = null ;
     private boolean changed = false ;
-    private boolean closed = false ;
-    
     /** Create a MetaFile
      *  
      * @param label     Convenience label.
@@ -349,7 +347,6 @@ public class MetaFile implements Sync, Closeable
     public void close()
     {
         flush() ;
-        closed = true ;
         metaFilename = null ;
         properties = null ;
 

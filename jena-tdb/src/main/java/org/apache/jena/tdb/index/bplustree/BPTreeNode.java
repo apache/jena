@@ -48,8 +48,6 @@ public final class BPTreeNode extends BPTreePage
     
     private Block block ;
     private int id ;
-    private short blockState = READ ;  
-    
     int parent ;
     int count ;             // Number of records.  Number of pointers is +1
     
@@ -1511,13 +1509,6 @@ public final class BPTreeNode extends BPTreePage
     private static boolean logging()
     {
         return BPlusTreeParams.logging(log) ;
-    }
-    
-    private void warning(String msg, Object... args)
-    {
-        msg = format(msg, args) ;
-        System.out.println("Warning: "+msg) ;
-        System.out.flush();
     }
     
     private void error(String msg, Object... args)

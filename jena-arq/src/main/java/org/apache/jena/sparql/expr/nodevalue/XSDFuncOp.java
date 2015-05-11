@@ -923,14 +923,6 @@ public class XSDFuncOp
 //        return x ;
 //    }
     
-    private static NodeValue fixupDateOrDateTime(NodeValue nv) {
-        if ( nv.isDateTime() )
-            return fixupDateTime(nv);
-        if ( nv.isDate() )
-            return fixupDate(nv);
-        throw new ARQInternalErrorException("Attempt to fixupDateOrDateTime on "+nv);
-    }
-    
     private static NodeValue fixupDateTime(NodeValue nv) {
         DateTimeStruct dts = DateTimeStruct.parseDateTime(nv.asNode().getLiteralLexicalForm()) ;
         if ( dts.timezone != null )
@@ -1390,7 +1382,6 @@ public class XSDFuncOp
         return NodeValue.makeInteger((BigInteger)x) ;
     }
     
-    private static Duration zeroDuration = NodeValue.xmlDatatypeFactory.newDuration(0) ;
     private static Duration valueCanonicalDuration(NodeValue nv) {
         // Unclear.
         /* This semi-normalizes a duration value - the time part is normalized.
