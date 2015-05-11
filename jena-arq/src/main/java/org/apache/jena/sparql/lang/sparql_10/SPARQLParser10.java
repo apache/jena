@@ -33,7 +33,7 @@ import org.apache.jena.sparql.syntax.* ;
 
 //This is javacc generated code
 @SuppressWarnings("all")
-public class SPARQLParser10 extends SPARQLParser10Base {
+public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10Constants {
     boolean allowAggregatesInExpressions = false ;
 
   final public void QueryUnit() throws ParseException {

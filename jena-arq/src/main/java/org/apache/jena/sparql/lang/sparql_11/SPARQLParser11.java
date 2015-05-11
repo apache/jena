@@ -11,7 +11,7 @@ import org.apache.jena.update.* ;
 import org.apache.jena.sparql.modify.request.* ;
 
 @SuppressWarnings("all")
-public class SPARQLParser11 extends SPARQLParser11Base {
+public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11Constants {
     boolean allowAggregatesInExpressions = false ;
 
   final public void QueryUnit() throws ParseException {
