@@ -56,7 +56,7 @@ public class TextIndexLuceneMultilingual implements TextIndex {
         if (!indexes.containsKey(lang)) {
             //dynamic creation of localized index
             try {
-                Analyzer analyzer = LuceneUtil.createAnalyzer(lang, TextIndexLucene.VER);
+                Analyzer analyzer = LuceneUtil.createAnalyzer(lang);
                 if (analyzer != null) {
                     Directory langDir;
                     if (directory instanceof FSDirectory) {

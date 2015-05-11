@@ -31,7 +31,9 @@ import org.junit.Test;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestDatasetWithTextIndex {
     
@@ -108,5 +110,76 @@ public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestData
                 "}"
                 );
         doTestSearch(turtle, queryString, new HashSet<String>());
+    }
+
+    @Test
+    public void testRetrievingEnglishLocalizedResource(){
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testEnglishLocalizedResource>",
+                "  rdfs:label 'He offered me a gift'@en",
+                ".",
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testGermanLocalizedResource>",
+                "  rdfs:label 'Er schluckte gift'@de",
+                "."
+        );
+        // the localized analyzer should use localized lucene index facilities (stop words, stemming...)
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:label 'gift' 'lang:en' 10 ) .",
+                "}"
+        );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testEnglishLocalizedResource")) ;
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
+
+    @Test
+    public void testRetrievingGermanLocalizedResource(){
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testEnglishLocalizedResource>",
+                "  rdfs:label 'He offered me a gift'@en",
+                ".",
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testGermanLocalizedResource>",
+                "  rdfs:label 'Er schluckte gift'@de",
+                "."
+        );
+        // the localized analyzer should use localized lucene index facilities (stop words, stemming...)
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:label 'gift' 'lang:de' 10 ) .",
+                "}"
+        );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testGermanLocalizedResource")) ;
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
+
+    @Test
+    public void testEnglishStemming(){
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testEnglishStemming>",
+                "  rdfs:label 'I met some engineers'@en",
+                "."
+        );
+        // the localized analyzer should use localized lucene index facilities (stop words, stemming...)
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:label 'engineering' 'lang:en' 10 ) .",
+                "}"
+        );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testEnglishStemming")) ;
+        doTestSearch(turtle, queryString, expectedURIs);
     }
 }

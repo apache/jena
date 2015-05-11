@@ -86,9 +86,9 @@ public class TestDatasetWithLocalizedAnalyzer extends AbstractTestDatasetWithTex
                     "    text:map (",
                     "         [ text:field \"label\" ; ",
                     "           text:predicate rdfs:label ;",
-                    "           text:analyzer [ " +
-                    "               a text:LocalizedAnalyzer ;" +
-                    "               text:language \"en\" " +
+                    "           text:analyzer [ ",
+                    "               a text:LocalizedAnalyzer ;",
+                    "               text:language \"en\" ",
                     "           ]",
                     "         ]",
                     "         [ text:field \"label\" ; text:predicate rdfs:label ]",
