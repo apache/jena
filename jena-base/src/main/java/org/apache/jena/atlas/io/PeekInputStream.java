@@ -134,7 +134,7 @@ public final class PeekInputStream extends InputStream
     }
 
     @Override
-    public final int read() throws IOException
+    public final int read()
     {
         if ( eof() )
             return EOF ;
@@ -143,7 +143,7 @@ public final class PeekInputStream extends InputStream
     }
     
     @Override
-    public final int read(byte[] buf, int off, int len) throws IOException
+    public final int read(byte[] buf, int off, int len)
     {
         if ( eof() )
             return EOF ;
@@ -192,10 +192,8 @@ public final class PeekInputStream extends InputStream
 
     private final void advanceAndSet() 
     {
-        try {
-            int ch = source.read() ;
-            setCurrByte(ch) ;
-        } catch (IOException ex) { IO.exception(ex) ; }
+        int ch = source.read() ;
+		setCurrByte(ch) ;
     }
     
     

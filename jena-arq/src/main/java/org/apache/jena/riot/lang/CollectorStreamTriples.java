@@ -23,14 +23,13 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.system.StreamRDF;
 
 /**
  * Collector stream for triples.
  * 
  * @see CollectorStreamBase
  */
-public class CollectorStreamTriples extends CollectorStreamBase<Triple> implements StreamRDF {
+public class CollectorStreamTriples extends CollectorStreamBase<Triple> {
 	private List<Triple> triples = new ArrayList<>();
 
 	@Override

@@ -21,7 +21,7 @@ package org.apache.jena.util.iterator;
 /**
  * A ClosableIterator that contains only one element
  */
-public class SingletonIterator<T> extends NiceIterator<T> implements ExtendedIterator<T> {
+public class SingletonIterator<T> extends NiceIterator<T> {
     
     /** The single value to be returned */
     private T item;

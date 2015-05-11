@@ -26,7 +26,7 @@ import java.util.*;
     for X from the base iterator.
 */
 
-public class MapFilterIterator<T,X> extends NiceIterator<X> implements ExtendedIterator<X>
+public class MapFilterIterator<T,X> extends NiceIterator<X>
     {
     MapFilter<T,X> f;
     X current;

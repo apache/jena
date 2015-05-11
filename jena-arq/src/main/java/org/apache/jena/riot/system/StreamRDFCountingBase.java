@@ -23,7 +23,7 @@ import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.sparql.core.Quad ;
 
 /** Wrap another StreamRDF and provide counts of items */
-public class StreamRDFCountingBase extends StreamRDFWrapper implements StreamRDF, StreamRDFCounting {
+public class StreamRDFCountingBase extends StreamRDFWrapper implements StreamRDFCounting {
     private long countTriples  = 0 ;
     private long countQuads    = 0 ;
     private long countBase     = 0 ;

@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory ;
  *  It enables the full Jena API to be used with data only accessible
  *  via a Dataset. */
 
-public class GraphSPARQL extends GraphBase implements Graph
+public class GraphSPARQL extends GraphBase
 {
     private static Logger log = LoggerFactory.getLogger(GraphSPARQL.class) ;
 

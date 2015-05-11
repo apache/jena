@@ -25,7 +25,7 @@ import org.apache.jena.util.iterator.* ;
     Class representing the dynamic set difference L - R of two graphs. This is updatable;
     the updates are written through to one or other of the base graphs.
 */
-public class Difference extends Dyadic implements Graph 
+public class Difference extends Dyadic 
 	{
     /**
         Initialise a graph representing the difference L - R.

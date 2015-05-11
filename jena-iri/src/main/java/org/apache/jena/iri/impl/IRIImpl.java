@@ -19,12 +19,10 @@
 package org.apache.jena.iri.impl;
 
 
-import org.apache.jena.iri.IRIComponents ;
 import org.apache.jena.iri.IRIFactory ;
 
 public class IRIImpl 
-  extends AbsIRIImpl
-implements IRIComponents {
+  extends AbsIRIImpl {
 
     final IRIFactoryImpl factory;
     final String original;

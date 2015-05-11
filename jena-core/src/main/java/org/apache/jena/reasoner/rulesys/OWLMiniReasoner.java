@@ -33,7 +33,7 @@ import org.apache.jena.reasoner.* ;
  * <li>omits inheritance of range implications for XSD datatype ranges</li>
  * </UL>
  */
-public class OWLMiniReasoner extends GenericRuleReasoner implements Reasoner {
+public class OWLMiniReasoner extends GenericRuleReasoner {
 
     /** The location of the OWL rule definitions on the class path */
     protected static final String MINI_RULE_FILE = "etc/owl-fb-mini.rules";

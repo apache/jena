@@ -109,7 +109,7 @@ public class TestConcurrencyParallel extends AbstractModelTestBase
 
 	// Example operations
 
-	public void testParallel() throws Throwable
+	public void testParallel()
 	{
 
 		final Thread threads[] = new Thread[threadTotal];

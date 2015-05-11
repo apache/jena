@@ -18,13 +18,11 @@
 
 package org.apache.jena.rdfxml.xmlinput.states;
 
-import org.apache.jena.rdfxml.xmlinput.ARPErrorNumbers ;
 import org.apache.jena.rdfxml.xmlinput.impl.* ;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
-public abstract class Frame extends ParserSupport implements Names, FrameI,
-        ARPErrorNumbers {
+public abstract class Frame extends ParserSupport implements FrameI {
     final FrameI parent;
 
     protected boolean nonWhiteMsgGiven = false;
@@ -62,8 +60,7 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
     }
 
     @Override
-    public void comment(char[] ch, int start, int length)
-            throws SAXParseException {
+    public void comment(char[] ch, int start, int length) {
         // generally ignore
     }
 
@@ -73,8 +70,7 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
     /**
      * endElement is called on the state of the frame created by the matching
      * startElement.
-     * 
-     * @throws SAXParseException
+     * @throws SAXParseException 
      * 
      */
     @Override

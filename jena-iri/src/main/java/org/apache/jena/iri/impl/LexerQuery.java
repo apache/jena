@@ -26,7 +26,7 @@ package org.apache.jena.iri.impl;
  * on 04/03/12 16:02 from the specification file
  * <tt>tmp.jflex</tt>
  */
-class LexerQuery extends AbsLexer implements org.apache.jena.iri.ViolationCodes, org.apache.jena.iri.IRIComponents, Lexer {
+class LexerQuery extends AbsLexer implements org.apache.jena.iri.IRIComponents, Lexer {
 
   /** This character denotes the end of file */
   private static final int YYEOF = -1;

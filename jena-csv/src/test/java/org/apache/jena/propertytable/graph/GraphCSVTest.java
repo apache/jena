@@ -40,7 +40,7 @@ public class GraphCSVTest extends Assert {
 	}
 	
 	@Test
-	public void testGraphCSV() throws Exception {
+	public void testGraphCSV() {
 		//String file = "src/test/resources/HEFCE_organogram_senior_data_31032011.csv";test.csv
 		String file = "src/test/resources/test.csv";
 		
@@ -62,7 +62,7 @@ public class GraphCSVTest extends Assert {
 	}
 	
 	@Test 
-	public void stageGeneratorTest() throws Exception{
+	public void stageGeneratorTest(){
 		wireIntoExecution();
 		testGraphCSV();
 	}

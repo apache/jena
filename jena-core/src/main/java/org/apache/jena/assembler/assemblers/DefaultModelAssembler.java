@@ -21,7 +21,7 @@ package org.apache.jena.assembler.assemblers;
 import org.apache.jena.assembler.* ;
 import org.apache.jena.rdf.model.* ;
 
-public class DefaultModelAssembler extends ModelAssembler implements Assembler
+public class DefaultModelAssembler extends ModelAssembler
     {
     @Override
     public Object open( Assembler a, Resource root, Mode mode )

@@ -12,26 +12,15 @@ import org.apache.thrift.scheme.StandardScheme;
 
 import org.apache.thrift.scheme.TupleScheme;
 import org.apache.thrift.protocol.TTupleProtocol;
-import org.apache.thrift.protocol.TProtocolException;
-import org.apache.thrift.EncodingUtils;
-import org.apache.thrift.TException;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.EnumMap;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.EnumSet;
 import java.util.Collections;
 import java.util.BitSet;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("all")
-public class RDF_Quad implements org.apache.thrift.TBase<RDF_Quad, RDF_Quad._Fields>, java.io.Serializable, Cloneable {
+public class RDF_Quad implements org.apache.thrift.TBase<RDF_Quad, RDF_Quad._Fields>, Cloneable {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("RDF_Quad");
 
   private static final org.apache.thrift.protocol.TField S_FIELD_DESC = new org.apache.thrift.protocol.TField("S", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -411,7 +400,7 @@ public class RDF_Quad implements org.apache.thrift.TBase<RDF_Quad, RDF_Quad._Fie
     }
 
     int lastComparison = 0;
-    RDF_Quad typedOther = (RDF_Quad)other;
+    RDF_Quad typedOther = other;
 
     lastComparison = Boolean.valueOf(isSetS()).compareTo(typedOther.isSetS());
     if (lastComparison != 0) {
@@ -532,7 +521,7 @@ public class RDF_Quad implements org.apache.thrift.TBase<RDF_Quad, RDF_Quad._Fie
     }
   }
 
-  private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+  private void readObject(java.io.ObjectInputStream in) throws java.io.IOException {
     try {
       read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
     } catch (org.apache.thrift.TException te) {

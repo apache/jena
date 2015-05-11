@@ -12,26 +12,14 @@ import org.apache.thrift.scheme.StandardScheme;
 
 import org.apache.thrift.scheme.TupleScheme;
 import org.apache.thrift.protocol.TTupleProtocol;
-import org.apache.thrift.protocol.TProtocolException;
-import org.apache.thrift.EncodingUtils;
-import org.apache.thrift.TException;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.EnumMap;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.EnumSet;
 import java.util.Collections;
-import java.util.BitSet;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("all")
-public class RDF_ANY implements org.apache.thrift.TBase<RDF_ANY, RDF_ANY._Fields>, java.io.Serializable, Cloneable {
+public class RDF_ANY implements org.apache.thrift.TBase<RDF_ANY, RDF_ANY._Fields>, Cloneable {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("RDF_ANY");
 
 
@@ -170,7 +158,7 @@ public class RDF_ANY implements org.apache.thrift.TBase<RDF_ANY, RDF_ANY._Fields
     }
 
     int lastComparison = 0;
-    RDF_ANY typedOther = (RDF_ANY)other;
+    RDF_ANY typedOther = other;
 
     return 0;
   }
@@ -196,7 +184,7 @@ public class RDF_ANY implements org.apache.thrift.TBase<RDF_ANY, RDF_ANY._Fields
     return sb.toString();
   }
 
-  public void validate() throws org.apache.thrift.TException {
+  public void validate() {
     // check for required fields
     // check for sub-struct validity
   }
@@ -209,7 +197,7 @@ public class RDF_ANY implements org.apache.thrift.TBase<RDF_ANY, RDF_ANY._Fields
     }
   }
 
-  private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+  private void readObject(java.io.ObjectInputStream in) throws java.io.IOException {
     try {
       read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
     } catch (org.apache.thrift.TException te) {
@@ -265,12 +253,12 @@ public class RDF_ANY implements org.apache.thrift.TBase<RDF_ANY, RDF_ANY._Fields
   private static class RDF_ANYTupleScheme extends TupleScheme<RDF_ANY> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, RDF_ANY struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, RDF_ANY struct) {
       TTupleProtocol oprot = (TTupleProtocol) prot;
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, RDF_ANY struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, RDF_ANY struct) {
       TTupleProtocol iprot = (TTupleProtocol) prot;
     }
   }

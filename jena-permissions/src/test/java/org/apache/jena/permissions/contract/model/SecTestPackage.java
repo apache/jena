@@ -17,8 +17,6 @@
  */
 package org.apache.jena.permissions.contract.model;
 
-import java.lang.reflect.InvocationTargetException;
-
 import junit.framework.TestSuite;
 
 import org.apache.jena.atlas.web.TypedInputStream;
@@ -41,12 +39,12 @@ import org.apache.jena.util.FileUtils ;
 //@RunWith(ModelTestSuite.class)
 public class SecTestPackage extends AbstractTestPackage
 {
-	static public TestSuite suite() throws SecurityException, IllegalArgumentException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException
+	static public TestSuite suite() throws SecurityException, IllegalArgumentException
 	{
 		return new SecTestPackage();
 	}
 	
-	public SecTestPackage() throws SecurityException, IllegalArgumentException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException
+	public SecTestPackage() throws SecurityException, IllegalArgumentException
 	{
 		super("SecuredModel", new PlainModelFactory() );
 		// register a jar reader here

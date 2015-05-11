@@ -29,7 +29,7 @@ import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.rdf.model.StmtIterator ;
 
-public class UnionModelAssembler extends ModelAssembler implements Assembler
+public class UnionModelAssembler extends ModelAssembler
     {
     
     @Override

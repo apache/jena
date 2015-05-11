@@ -37,7 +37,7 @@ import org.apache.jena.reasoner.* ;
  * There is some experimental support for the cheaper class restriction handlingly which
  * should not be relied on at this point.
  */
-public class OWLMicroReasoner extends GenericRuleReasoner implements Reasoner {
+public class OWLMicroReasoner extends GenericRuleReasoner {
 
     /** The location of the OWL rule definitions on the class path */
     protected static final String MICRO_RULE_FILE = "etc/owl-fb-micro.rules";

@@ -453,7 +453,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 	        });
 	        a.getHandlers().setErrorHandler(new ErrorHandler(){
 	            @Override
-	            public void error(SAXParseException exception) throws SAXException {
+	            public void error(SAXParseException exception) {
 	                throw new RuntimeException("Unexpected error", exception);
 	            }
 	            @Override
@@ -461,7 +461,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 	                throw exception;  
 	            }
 	            @Override
-	            public void warning(SAXParseException exception) throws SAXException {
+	            public void warning(SAXParseException exception) {
 	                throw new RuntimeException("Unexpected warning", exception);
 	            }});
 	        try {

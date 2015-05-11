@@ -27,7 +27,7 @@ import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.* ;
 import org.apache.jena.vocabulary.RDF ;
 
-public abstract class ModelAssembler extends AssemblerBase implements Assembler
+public abstract class ModelAssembler extends AssemblerBase
     {    
     protected abstract Model openEmptyModel( Assembler a, Resource root, Mode mode );
     

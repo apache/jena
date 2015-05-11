@@ -53,8 +53,8 @@ public class Iter<T> implements Iterator<T> {
 
     @SuppressWarnings("rawtypes")
     private static final Iterator iter0 = new NullIterator() ;
-    @SuppressWarnings({"unchecked", "cast"})
-    public static <T> Iterator<T> nullIterator() { return (NullIterator<T>)iter0 ; }
+    @SuppressWarnings({"unchecked"})
+    public static <T> Iterator<T> nullIterator() { return iter0 ; }
 
 //    public static <T> Iterator<T> nullIterator() {
 //        return new NullIterator<T>() ;

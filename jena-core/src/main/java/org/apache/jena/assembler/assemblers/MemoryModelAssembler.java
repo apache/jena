@@ -26,7 +26,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.Resource ;
 
-public class MemoryModelAssembler extends ModelAssembler implements Assembler
+public class MemoryModelAssembler extends ModelAssembler
     {
     @Override
     public Object open( Assembler a, Resource root, Mode mode )

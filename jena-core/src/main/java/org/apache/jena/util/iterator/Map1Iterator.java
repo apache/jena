@@ -26,7 +26,7 @@ import java.util.function.Function;
     delivering them; supports remove if the underlying iterator does.
 */
 
-public class Map1Iterator<From, To> extends NiceIterator<To> implements ClosableIterator<To>
+public class Map1Iterator<From, To> extends NiceIterator<To>
     {
 	private Function<From, To> map;
 	private Iterator<From> base;
