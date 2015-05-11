@@ -31,6 +31,8 @@ public class CacheSetImpl<T> implements CacheSet<T> {
     Cache<T, Object> cacheMap     = null ;
 
     public CacheSetImpl(Cache<T, Object> cache) {
+        // Use the characteristics of the cache used 
+        // e.g. the cache size and the eviction policy 
         cacheMap = cache ;
     }
 
