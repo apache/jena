@@ -24,9 +24,6 @@ import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.clauses.ConstructClause;
-import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
-import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
-import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -221,8 +218,7 @@ public class WhereHandler implements Handler {
 	 * @param subQuery The sub query to convert
 	 * @return THe converted element.
 	 */
-	@SuppressWarnings("cast")
-    private ElementSubQuery makeSubQuery(SelectBuilder subQuery) {
+	private ElementSubQuery makeSubQuery(SelectBuilder subQuery) {
 		Query q = new Query();
 		PrologHandler ph = new PrologHandler(query);
 		ph.addAll(subQuery.getPrologHandler());
@@ -237,22 +233,12 @@ public class WhereHandler implements Handler {
 			ch.addAll(((ConstructClause<?>) subQuery).getConstructHandler());
 
 		}
-		if (subQuery instanceof DatasetClause) {
-			DatasetHandler dh = new DatasetHandler(q);
-			dh.addAll(((DatasetClause<?>) subQuery).getDatasetHandler());
-
-		}
-		if (subQuery instanceof SolutionModifierClause) {
-			SolutionModifierHandler smh = new SolutionModifierHandler(q);
-			smh.addAll(((SolutionModifierClause<?>) subQuery)
-					.getSolutionModifierHandler());
-
-		}
-		if (subQuery instanceof WhereClause) {
-			WhereHandler wh = new WhereHandler(q);
-			wh.addAll(((WhereClause<?>) subQuery).getWhereHandler());
-
-		}
+		DatasetHandler dh = new DatasetHandler(q);
+		dh.addAll( subQuery.getDatasetHandler() );
+		SolutionModifierHandler smh = new SolutionModifierHandler(q);
+		smh.addAll( subQuery.getSolutionModifierHandler() );
+		WhereHandler wh = new WhereHandler(q);
+		wh.addAll( subQuery.getWhereHandler() );
 		return new ElementSubQuery(q);
 
 	}

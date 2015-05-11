@@ -25,7 +25,6 @@ import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
 
-import javax.servlet.ServletException ;
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
@@ -90,7 +89,7 @@ public class ActionDatasets extends ActionContainerItem {
     }
     
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
         doCommon(request, response);
     }
     

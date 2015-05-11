@@ -20,12 +20,10 @@ package org.apache.jena.fuseki.servlets;
 
 import static org.apache.jena.fuseki.HttpNames.* ;
 
-import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.Enumeration ;
 import java.util.Locale ;
 
-import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -160,7 +158,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     { super() ; }
 
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void service(HttpServletRequest request, HttpServletResponse response) {
         // Direct all verbs to our common framework.
         doCommon(request, response) ;
     }

@@ -24,7 +24,6 @@ import java.io.IOException ;
 import java.util.Enumeration ;
 import java.util.Map ;
 
-import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -187,8 +186,7 @@ public abstract class ActionBase extends ServletBase
       return name ; 
   }
 
-    @SuppressWarnings("unused") // ServletException
-    protected void doPatch(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPatch(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "HTTP PATCH not supported");
     }
     

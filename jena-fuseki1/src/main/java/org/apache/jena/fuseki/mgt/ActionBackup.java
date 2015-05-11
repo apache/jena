@@ -96,7 +96,7 @@ public class ActionBackup extends ServletBase
         try {
             final Callable<Boolean> task = new Callable<Boolean>() {
                 @Override
-                public Boolean call() throws Exception
+                public Boolean call()
                 {
                     log.info(format("[%d] Start backup %s to '%s'", action.id, ds, filename)) ;
                     action.beginRead() ;
