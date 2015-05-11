@@ -78,8 +78,6 @@ public class HttpQuery extends Params {
     private HttpClient client;
     private boolean requireClientShutdown = true;
 
-    // static final String ENC_UTF8 = "UTF-8" ;
-
     /**
      * Create a execution object for a whole model GET
      * 
