@@ -272,7 +272,7 @@ public class XSDDatatype extends BaseDatatype {
         try {
             ValidationContext context = new ValidationState();
             ValidatedInfo resultInfo = new ValidatedInfo();
-            Object result = typeDeclaration.validate(lexicalForm, context, resultInfo);
+            typeDeclaration.validate(lexicalForm, context, resultInfo);
             return convertValidatedDataValue(resultInfo);
         } catch (InvalidDatatypeValueException e) {
             throw new DatatypeFormatException(lexicalForm, this, "during parse -" + e);

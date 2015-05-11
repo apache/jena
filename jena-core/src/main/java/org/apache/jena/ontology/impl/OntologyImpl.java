@@ -50,7 +50,6 @@ public class OntologyImpl
     /**
      * A factory for generating Ontology facets from nodes in enhanced graphs.
      */
-    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override
         public EnhNode wrap( Node n, EnhGraph eg ) {

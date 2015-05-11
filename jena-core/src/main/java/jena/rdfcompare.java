@@ -20,9 +20,6 @@ package jena;
 
 import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
 
-import java.net.URL;
-import java.io.FileInputStream;
-
 import org.apache.jena.rdf.model.* ;
 
 /** A program which read two RDF models and determines if they are the same.
@@ -108,11 +105,6 @@ public class rdfcompare extends java.lang.Object {
     
     protected static void read(Model model, String in, String lang) 
       throws java.io.FileNotFoundException {
-        try {
-            URL url = new URL(in);
-            model.read(in, lang);
-        } catch (java.net.MalformedURLException e) {
-            model.read(new FileInputStream(in), "", lang);
-        }
+        model.read(in, lang);
     }
 }

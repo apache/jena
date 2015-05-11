@@ -239,7 +239,6 @@ public final class InStreamUTF8 extends Reader implements CharStream
         {
             char[] chars = new char[bytes.length] ;
             InputStream in = new ByteArrayInputStream(bytes) ;
-            StringBuilder buff = new StringBuilder() ;
             Reader r = new InStreamUTF8(in) ;
             int len ;
             len = r.read(chars) ;

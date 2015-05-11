@@ -47,7 +47,6 @@ public class Remove extends BaseBuiltin {
      */
     @Override
     public void headAction(Node[] args, int length, RuleContext context) {
-        boolean ok = false;
         for (int i = 0; i < length; i++) {
             Node clauseN = getArg(i, args, context);
             if (Util.isNumeric(clauseN)) {
