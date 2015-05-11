@@ -26,11 +26,9 @@ public class TDB_DEV {
     // Hunt down adapter and remove.
 
     // NodeTableTRDF.
-    // (2) TIOStreamTransport with a append, recording output file.
-    // (3) Two transports, in and out.
-    // ** (2)
-    // Separate in and out.
-    //   Part of "BinaryFile" which flushes across in-out swaps.
+    //   Worth caching reads as well?  Lots of one bytereads but NT cache is main use on read.  
+
+    // NodeTableTRDF, NodeTableTRDF_Std. 
     
     // Sort out transactional Object
     // Component id management.

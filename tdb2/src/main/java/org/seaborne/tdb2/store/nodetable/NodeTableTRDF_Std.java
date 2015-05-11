@@ -18,17 +18,17 @@
 package org.seaborne.tdb2.store.nodetable ;
 
 import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.thrift.RiotThriftException ;
 import org.apache.jena.riot.thrift.TRDF ;
 import org.apache.jena.riot.thrift.ThriftConvert ;
 import org.apache.jena.riot.thrift.wire.RDF_Term ;
 import org.apache.thrift.TException ;
 import org.apache.thrift.protocol.TProtocol ;
+import org.apache.thrift.transport.TSimpleFileTransport ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.NodeId ;
 
-public class NodeTableTRDF extends NodeTableNative {
+public class NodeTableTRDF_Std extends NodeTableNative {
     // TFileTransport does not support writing.
     // Write own, with length recording.
     // TIOStreamTransport
@@ -41,18 +41,20 @@ public class NodeTableTRDF extends NodeTableNative {
     // Separate in and out.
     //   Part of "BinaryFile" which flushes across in-out swaps.
     
-    private TReadAppendFileTransport file ;
+    private TSimpleFileTransport file ;
     private final TProtocol      protocol ;
+    private long                 position ;
 
     // private final Index nodeToId ;
 
-    public NodeTableTRDF(Index nodeToId, String objectFile) {
+    public NodeTableTRDF_Std(Index nodeToId, String objectFile) {
         super(nodeToId) ;
         try {
-            file = new TReadAppendFileTransport(objectFile) ;
+            file = new TSimpleFileTransport(objectFile, true, true, true) ;
+            position = file.length() ;
             this.protocol = TRDF.protocol(file) ;
         }
-        catch (Exception ex) {
+        catch (TException ex) {
             throw new TDBException("NodeTableTRDF", ex) ;
         }
     }
@@ -61,12 +63,13 @@ public class NodeTableTRDF extends NodeTableNative {
     protected NodeId writeNodeToTable(Node node) {
         RDF_Term term = ThriftConvert.convert(node, true) ;
         try {
-            long x = file.getWriteLocation() ;
-            NodeId nid = NodeId.create(x) ;
+            position = file.length() ;
+            file.seek(position) ;
+            NodeId nid = NodeId.create(position) ;
             term.write(protocol) ;
             return nid ;
         }
-        catch (Exception ex) {
+        catch (TException ex) {
             throw new TDBException("NodeTableThrift", ex) ;
         }
     }
@@ -83,10 +86,6 @@ public class NodeTableTRDF extends NodeTableNative {
         }
         catch (TException ex) {
             throw new TDBException("NodeTableTRDF", ex) ;
-        }
-        catch (RiotThriftException ex) {
-            System.err.println("NodeId = "+id) ;
-            throw ex ;
         }
     }
 

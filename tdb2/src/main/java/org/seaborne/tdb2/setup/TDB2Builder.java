@@ -39,7 +39,10 @@ import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.* ;
-import org.seaborne.tdb2.store.nodetable.* ;
+import org.seaborne.tdb2.store.nodetable.NodeTable ;
+import org.seaborne.tdb2.store.nodetable.NodeTableInline ;
+import org.seaborne.tdb2.store.nodetable.NodeTableSSE ;
+import org.seaborne.tdb2.store.nodetable.NodeTableTRDF_Std ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTableConcrete ;
 import org.seaborne.tdb2.store.tupletable.TupleIndex ;
@@ -229,11 +232,13 @@ public class TDB2Builder {
         if ( false )
             nodeTable = new NodeTableSSE(index, location.getPath(name+"-data", "obj")) ;
         else
-            nodeTable = new NodeTableTRDF(index, location.getPath(name+"-data", "obj")) ;
-        nodeTable = NodeTableCache.create(nodeTable, 
-                                          storeParams.getNode2NodeIdCacheSize(),
-                                          storeParams.getNodeId2NodeCacheSize(),
-                                          storeParams.getNodeMissCacheSize()) ;
+            // NodeTableTRDF_Std
+            // NodeTableTRDF - trying to be faster.
+            nodeTable = new NodeTableTRDF_Std(index, location.getPath(name+"-data", "obj")) ;
+//        nodeTable = NodeTableCache.create(nodeTable, 
+//                                          storeParams.getNode2NodeIdCacheSize(),
+//                                          storeParams.getNodeId2NodeCacheSize(),
+//                                          storeParams.getNodeMissCacheSize()) ;
         nodeTable = NodeTableInline.create(nodeTable) ;
         return nodeTable ; 
     }
