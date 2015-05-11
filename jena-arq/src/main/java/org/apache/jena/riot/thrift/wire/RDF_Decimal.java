@@ -12,15 +12,26 @@ import org.apache.thrift.scheme.StandardScheme;
 
 import org.apache.thrift.scheme.TupleScheme;
 import org.apache.thrift.protocol.TTupleProtocol;
+import org.apache.thrift.protocol.TProtocolException;
 import org.apache.thrift.EncodingUtils;
+import org.apache.thrift.TException;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.EnumMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.EnumSet;
 import java.util.Collections;
+import java.util.BitSet;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("all")
-public class RDF_Decimal implements org.apache.thrift.TBase<RDF_Decimal, RDF_Decimal._Fields>, Cloneable {
+public class RDF_Decimal implements org.apache.thrift.TBase<RDF_Decimal, RDF_Decimal._Fields>, java.io.Serializable, Cloneable {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("RDF_Decimal");
 
   private static final org.apache.thrift.protocol.TField VALUE_FIELD_DESC = new org.apache.thrift.protocol.TField("value", org.apache.thrift.protocol.TType.I64, (short)1);
@@ -285,7 +296,7 @@ public class RDF_Decimal implements org.apache.thrift.TBase<RDF_Decimal, RDF_Dec
     }
 
     int lastComparison = 0;
-    RDF_Decimal typedOther = other;
+    RDF_Decimal typedOther = (RDF_Decimal)other;
 
     lastComparison = Boolean.valueOf(isSetValue()).compareTo(typedOther.isSetValue());
     if (lastComparison != 0) {
@@ -338,7 +349,7 @@ public class RDF_Decimal implements org.apache.thrift.TBase<RDF_Decimal, RDF_Dec
     return sb.toString();
   }
 
-  public void validate() {
+  public void validate() throws org.apache.thrift.TException {
     // check for required fields
     // alas, we cannot check 'value' because it's a primitive and you chose the non-beans generator.
     // alas, we cannot check 'scale' because it's a primitive and you chose the non-beans generator.
@@ -353,7 +364,7 @@ public class RDF_Decimal implements org.apache.thrift.TBase<RDF_Decimal, RDF_Dec
     }
   }
 
-  private void readObject(java.io.ObjectInputStream in) throws java.io.IOException {
+  private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
     try {
       // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
       __isset_bitfield = 0;

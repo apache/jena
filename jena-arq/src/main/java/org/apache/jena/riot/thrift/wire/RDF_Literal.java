@@ -12,15 +12,26 @@ import org.apache.thrift.scheme.StandardScheme;
 
 import org.apache.thrift.scheme.TupleScheme;
 import org.apache.thrift.protocol.TTupleProtocol;
+import org.apache.thrift.protocol.TProtocolException;
+import org.apache.thrift.EncodingUtils;
+import org.apache.thrift.TException;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.EnumMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.EnumSet;
 import java.util.Collections;
 import java.util.BitSet;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("all")
-public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Literal._Fields>, Cloneable {
+public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Literal._Fields>, java.io.Serializable, Cloneable {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("RDF_Literal");
 
   private static final org.apache.thrift.protocol.TField LEX_FIELD_DESC = new org.apache.thrift.protocol.TField("lex", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -396,7 +407,7 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
     }
 
     int lastComparison = 0;
-    RDF_Literal typedOther = other;
+    RDF_Literal typedOther = (RDF_Literal)other;
 
     lastComparison = Boolean.valueOf(isSetLex()).compareTo(typedOther.isSetLex());
     if (lastComparison != 0) {
@@ -518,7 +529,7 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
     }
   }
 
-  private void readObject(java.io.ObjectInputStream in) throws java.io.IOException {
+  private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
     try {
       read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
     } catch (org.apache.thrift.TException te) {
