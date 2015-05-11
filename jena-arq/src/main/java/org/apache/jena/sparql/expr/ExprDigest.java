@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.expr;
 
+import java.nio.charset.StandardCharsets ;
 import java.security.MessageDigest ;
 import java.security.NoSuchAlgorithmException ;
 
@@ -110,7 +111,7 @@ public abstract class ExprDigest extends ExprFunction1
         try { 
             MessageDigest digest = getDigest() ;
             String x = n.getLiteralLexicalForm() ;
-            byte b[] = x.getBytes("UTF-8") ;
+            byte b[] = x.getBytes(StandardCharsets.UTF_8) ;
             byte d[] = digest.digest(b) ;
             String y = Bytes.asHexLC(d) ;
             NodeValue result = NodeValue.makeString(y) ;

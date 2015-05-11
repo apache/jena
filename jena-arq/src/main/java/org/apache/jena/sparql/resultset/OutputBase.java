@@ -19,11 +19,9 @@
 package org.apache.jena.sparql.resultset;
 
 import java.io.ByteArrayOutputStream ;
-import java.io.UnsupportedEncodingException ;
+import java.nio.charset.StandardCharsets ;
 
-import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ResultSet ;
-
 
 public abstract class OutputBase implements OutputFormatter
 {
@@ -32,23 +30,13 @@ public abstract class OutputBase implements OutputFormatter
     {
         ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
         format(arr, resultSet) ;
-        try { return new String(arr.toByteArray(), "UTF-8") ; }
-        catch (UnsupportedEncodingException e)
-        {
-            Log.warn(this, "UnsupportedEncodingException") ;
-            return null ;
-        }
+        return new String(arr.toByteArray(), StandardCharsets.UTF_8) ;
     }
 
     public String asString(boolean booleanResult)
     {
         ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
         format(arr, booleanResult) ;
-        try { return new String(arr.toByteArray(), "UTF-8") ; }
-        catch (UnsupportedEncodingException e)
-        {
-            Log.warn(this, "UnsupportedEncodingException") ;
-            return null ;
-        }
+        return new String(arr.toByteArray(), StandardCharsets.UTF_8) ;
     }
 }
