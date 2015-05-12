@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.base.file;
+package org.seaborne.dboe.index.ext;
 
 import java.nio.ByteBuffer;
 

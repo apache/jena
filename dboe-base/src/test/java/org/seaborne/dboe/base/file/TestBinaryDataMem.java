@@ -1,4 +1,4 @@
-/*
+/**
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
@@ -17,31 +17,15 @@
 
 package org.seaborne.dboe.base.file;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.seaborne.dboe.base.file.BinaryDataFile ;
+import org.seaborne.dboe.base.file.BinaryDataFileMem ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestMetaFile.class
-    , TestLocationLock.class
-    
-    , TestChannelMem.class
-    , TestChannelFile.class
-    
-    , TestBlockAccessMem.class
-    , TestBlockAccessByteArray.class
-    , TestBlockAccessDirect.class
-    , TestBlockAccessMapped.class
-    
-    , TestBinaryDataMem.class
-    , TestBinaryDataFileWriteBufferedMem.class
-    , TestBinaryDataRAFInitial.class
-    , TestBinaryDataRAF.class
-    , TestBinaryDataFileWriteBufferedFile.class
-})
+public class TestBinaryDataMem extends AbstractTestBinaryDataFile {
 
+    @Override
+    protected BinaryDataFile createBinaryDataFile() {
+        return new BinaryDataFileMem() ;
+    }
 
-public class TS_File
-{
-    public static String FILE = "target/test-read-append-file" ;
 }
+

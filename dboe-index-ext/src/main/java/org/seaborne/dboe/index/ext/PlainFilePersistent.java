@@ -15,13 +15,14 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.base.file ;
+package org.seaborne.dboe.index.ext ;
 
 import java.io.IOException ;
 import java.nio.ByteBuffer ;
 import java.nio.channels.FileChannel ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.sys.FileLib ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;

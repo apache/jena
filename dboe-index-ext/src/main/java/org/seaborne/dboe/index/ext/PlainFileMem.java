@@ -15,33 +15,40 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.base.file;
+package org.seaborne.dboe.index.ext;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestMetaFile.class
-    , TestLocationLock.class
-    
-    , TestChannelMem.class
-    , TestChannelFile.class
-    
-    , TestBlockAccessMem.class
-    , TestBlockAccessByteArray.class
-    , TestBlockAccessDirect.class
-    , TestBlockAccessMapped.class
-    
-    , TestBinaryDataMem.class
-    , TestBinaryDataFileWriteBufferedMem.class
-    , TestBinaryDataRAFInitial.class
-    , TestBinaryDataRAF.class
-    , TestBinaryDataFileWriteBufferedFile.class
-})
+import java.nio.ByteBuffer;
 
 
-public class TS_File
+public class PlainFileMem extends PlainFile
 {
-    public static String FILE = "target/test-read-append-file" ;
+    public PlainFileMem()
+    {
+        super() ;
+        byteBuffer = ByteBuffer.allocate(0) ;
+        ensure(0) ;
+    }
+
+    @Override
+    protected ByteBuffer allocateBuffer(long size)
+    {
+        filesize = size ;
+        ByteBuffer bb = ByteBuffer.allocate((int)size) ;
+        // If copy-over
+        if ( true )
+        {
+            bb.put(byteBuffer) ;
+            bb.position(0) ;
+        }
+        return bb ;
+    }
+
+    @Override
+    public void close()
+    {}
+
+    @Override
+    public void sync()
+    {}
+    
 }

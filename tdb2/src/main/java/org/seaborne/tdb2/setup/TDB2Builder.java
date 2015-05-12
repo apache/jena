@@ -24,8 +24,7 @@ import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
-import org.seaborne.dboe.base.file.FileSet ;
-import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.base.file.* ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.dboe.index.RangeIndex ;
@@ -225,19 +224,7 @@ public class TDB2Builder {
     }
     
     public NodeTable buildNodeTable(TransactionCoordinator coord, ComponentId cid, String name) {
-        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
-        Index index = buildRangeIndex(coord, cid, recordFactory, name) ;
-        
-        // Old SSE encoding for comparison. 
-        // Slightly slower to write (5%, SSD), probably slower to read. 
-        //NodeTable nodeTable = new NodeTableSSE(index, location.getPath(name+"-data", "obj")) ;
-        
-        // No write caching smarts. Slower to write (~10%, SSD).
-        //NodeTable nodeTable = new NodeTableTRDF_Direct(index, location.getPath(name+"-data", "obj")) ;
-        
-        // Normal implementation, with write caching.
-        NodeTable nodeTable = new NodeTableTRDF(index, location.getPath(name+"-data", "obj")) ;
-        
+        NodeTable nodeTable = buildBaseNodeTable(coord, cid, name) ;
         nodeTable = NodeTableCache.create(nodeTable, 
                                           storeParams.getNode2NodeIdCacheSize(),
                                           storeParams.getNodeId2NodeCacheSize(),
@@ -246,6 +233,22 @@ public class TDB2Builder {
         return nodeTable ; 
     }
 
+    private NodeTable buildBaseNodeTable(TransactionCoordinator coord, ComponentId cid, String name) {
+        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
+        Index index = buildRangeIndex(coord, cid, recordFactory, name) ;
+        String filename = location.getPath(name+"-data", "obj") ;
+        BinaryDataFile diskFile = new BinaryDataFileRandomAccess(filename) ;
+        diskFile = new BinaryDataFileWriteBuffered(diskFile) ;
+        return new NodeTableTRDF(index, diskFile) ;
+
+        // Old SSE encoding for comparison. 
+        // Slightly slower to write (5%, SSD), probably slower to read. 
+        //NodeTable nodeTable = new NodeTableSSE(index, filename) ;
+        
+        // Old No write caching smarts. Slower to write (~10%, SSD).
+        //NodeTable nodeTable = new NodeTableTRDF_Direct(index, filename) ;
+    }
+    
     private static void error(Logger log, String msg)
     {
         if ( log != null )

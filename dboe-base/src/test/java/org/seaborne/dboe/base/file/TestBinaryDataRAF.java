@@ -1,4 +1,4 @@
-/*
+/**
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
@@ -17,38 +17,15 @@
 
 package org.seaborne.dboe.base.file;
 
-import java.nio.ByteBuffer;
+import org.seaborne.dboe.base.file.BinaryDataFile ;
+import org.seaborne.dboe.base.file.BinaryDataFileRandomAccess ;
 
+public class TestBinaryDataRAF extends AbstractTestBinaryDataFile {
+    public static String FILE = TS_File.FILE ;
 
-public class PlainFileMem extends PlainFile
-{
-    public PlainFileMem()
-    {
-        super() ;
-        byteBuffer = ByteBuffer.allocate(0) ;
-        ensure(0) ;
+    @Override
+    protected BinaryDataFile createBinaryDataFile() {
+        return new BinaryDataFileRandomAccess(FILE) ;
     }
-
-    @Override
-    protected ByteBuffer allocateBuffer(long size)
-    {
-        filesize = size ;
-        ByteBuffer bb = ByteBuffer.allocate((int)size) ;
-        // If copy-over
-        if ( true )
-        {
-            bb.put(byteBuffer) ;
-            bb.position(0) ;
-        }
-        return bb ;
-    }
-
-    @Override
-    public void close()
-    {}
-
-    @Override
-    public void sync()
-    {}
-    
 }
+

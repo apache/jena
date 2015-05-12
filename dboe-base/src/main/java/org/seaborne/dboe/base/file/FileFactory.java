@@ -42,14 +42,6 @@ public class FileFactory {
         return new ObjectFileStorage(file) ;
     }
 
-    public static PlainFile createPlainFileDisk(String filename) {
-        return new PlainFilePersistent(filename) ;
-    }
-
-    public static PlainFile createPlainFileMem() {
-        return new PlainFileMem() ;
-    }
-
     public static BufferChannel createBufferChannel(FileSet fileset, String ext) {
         String x = fileset.filename(ext) ;
         if ( fileset.isMem() )
