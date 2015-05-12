@@ -22,7 +22,6 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
-import org.seaborne.dboe.base.file.PlainFileMem ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.dboe.index.ext.ExtHash ;

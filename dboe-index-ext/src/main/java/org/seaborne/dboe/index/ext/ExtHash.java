@@ -35,8 +35,6 @@ import org.seaborne.dboe.base.StorageException ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.buffer.RecordBuffer ;
-import org.seaborne.dboe.base.file.PlainFile ;
-import org.seaborne.dboe.base.file.PlainFileMem ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.Index ;
