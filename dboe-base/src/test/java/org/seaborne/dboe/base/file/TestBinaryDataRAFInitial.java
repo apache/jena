@@ -15,19 +15,20 @@
  *  information regarding copyright ownership.
  */
 
-package tdbdev.binarydatafile;
+package org.seaborne.dboe.base.file;
 
 import org.apache.jena.atlas.RuntimeIOException ;
 import org.junit.Test ;
+import org.seaborne.dboe.base.file.BinaryDataFileRandomAccess ;
 import static org.junit.Assert.* ;
 
 // Additional tests that do not want the @Before/@After of  TestReadAppendFile(AbstractTestBinaryDataFile)
 public class TestBinaryDataRAFInitial  {
-    public static String FILE = TS_BinaryDataFile.FILE ;
-    private BinaryDataFileRAF file ;
+    public static String FILE = TS_File.FILE ;
+    private BinaryDataFileRandomAccess file ;
 
     @Test public void open_01() { 
-        file = new BinaryDataFileRAF(FILE) ;
+        file = new BinaryDataFileRandomAccess(FILE) ;
         assertFalse(file.isOpen()) ;
         file.open();
         assertTrue(file.isOpen()) ;
@@ -37,7 +38,7 @@ public class TestBinaryDataRAFInitial  {
     
     @Test (expected=RuntimeIOException.class)
     public void open_02() { 
-        file = new BinaryDataFileRAF(FILE) ;
+        file = new BinaryDataFileRandomAccess(FILE) ;
         file.open();
         file.close() ;
         file.sync(); 
@@ -45,7 +46,7 @@ public class TestBinaryDataRAFInitial  {
     
     @Test (expected=RuntimeIOException.class)
     public void open_03() { 
-        file = new BinaryDataFileRAF(FILE) ;
+        file = new BinaryDataFileRandomAccess(FILE) ;
         file.open();
         file.close() ;
         file.truncate(0); 

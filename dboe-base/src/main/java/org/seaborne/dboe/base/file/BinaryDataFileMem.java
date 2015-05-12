@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package tdbdev.binarydatafile;
+package org.seaborne.dboe.base.file;
 
 import org.apache.jena.atlas.RuntimeIOException ;
 

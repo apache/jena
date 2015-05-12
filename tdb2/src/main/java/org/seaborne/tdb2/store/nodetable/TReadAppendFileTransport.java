@@ -18,7 +18,7 @@
 package org.seaborne.tdb2.store.nodetable;
 
 import org.apache.thrift.transport.TTransport ;
-import tdbdev.binarydatafile.BinaryDataFile ;
+import org.seaborne.dboe.base.file.BinaryDataFile ;
 
 /** A file transport that support random access read and
  *  buffered append write.

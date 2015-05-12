@@ -35,15 +35,15 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
 import org.apache.thrift.protocol.TProtocol ;
+import org.seaborne.dboe.base.file.BinaryDataFile ;
+import org.seaborne.dboe.base.file.BinaryDataFileRandomAccess ;
+import org.seaborne.dboe.base.file.BinaryDataFileWriteBuffered ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.tdb2.TDBFactory ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
 import org.seaborne.tdb2.store.DatasetGraphTxn ;
 import org.seaborne.tdb2.store.nodetable.TReadAppendFileTransport ;
-import tdbdev.binarydatafile.BinaryDataFile ;
-import tdbdev.binarydatafile.BinaryDataFileRAF ;
-import tdbdev.binarydatafile.BinaryDataFileWriteBuffered ;
 
 
 public class TDB_Dev_Main {
@@ -57,7 +57,7 @@ public class TDB_Dev_Main {
         String filename = "data" ;
         FileOps.delete(filename); 
         
-        BinaryDataFile binfile = new BinaryDataFileRAF(filename) ;
+        BinaryDataFile binfile = new BinaryDataFileRandomAccess(filename) ;
         
         binfile = new BinaryDataFileWriteBuffered(binfile) ;
         binfile.open();
@@ -78,7 +78,7 @@ public class TDB_Dev_Main {
             term.write(proto);
         }
         
-        binfile = new BinaryDataFileRAF(filename) ;
+        binfile = new BinaryDataFileRandomAccess(filename) ;
         binfile = new BinaryDataFileWriteBuffered(binfile) ;
         binfile.open();
 
@@ -97,7 +97,7 @@ public class TDB_Dev_Main {
         
         System.exit (1) ;
         
-        binfile = new BinaryDataFileRAF(filename) ;
+        binfile = new BinaryDataFileRandomAccess(filename) ;
         binfile = new BinaryDataFileWriteBuffered(binfile) ;
         binfile.open();
 

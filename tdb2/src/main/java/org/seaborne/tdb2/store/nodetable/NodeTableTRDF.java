@@ -26,10 +26,10 @@ import org.apache.jena.riot.thrift.wire.RDF_Term ;
 import org.apache.thrift.TException ;
 import org.apache.thrift.protocol.TProtocol ;
 import org.apache.thrift.transport.TTransport ;
+import org.seaborne.dboe.base.file.BinaryDataFile ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.NodeId ;
-import tdbdev.binarydatafile.BinaryDataFile ;
 
 /** NodeTable using Thrist for the I/O and storage. */
 

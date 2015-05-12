@@ -24,8 +24,7 @@ import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
-import org.seaborne.dboe.base.file.FileSet ;
-import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.base.file.* ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.dboe.index.RangeIndex ;
@@ -52,9 +51,6 @@ import org.seaborne.tdb2.sys.DatasetControlMRSW ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-import tdbdev.binarydatafile.BinaryDataFile ;
-import tdbdev.binarydatafile.BinaryDataFileRAF ;
-import tdbdev.binarydatafile.BinaryDataFileWriteBuffered ;
 
 public class TDB2Builder {
     private static Logger log = LoggerFactory.getLogger(TDB2Builder.class) ;
@@ -241,7 +237,7 @@ public class TDB2Builder {
         RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
         Index index = buildRangeIndex(coord, cid, recordFactory, name) ;
         String filename = location.getPath(name+"-data", "obj") ;
-        BinaryDataFile diskFile = new BinaryDataFileRAF(filename) ;
+        BinaryDataFile diskFile = new BinaryDataFileRandomAccess(filename) ;
         diskFile = new BinaryDataFileWriteBuffered(diskFile) ;
         return new NodeTableTRDF(index, diskFile) ;
 

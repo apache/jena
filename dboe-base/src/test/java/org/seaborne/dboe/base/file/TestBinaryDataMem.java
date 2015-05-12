@@ -15,7 +15,10 @@
  *  information regarding copyright ownership.
  */
 
-package tdbdev.binarydatafile;
+package org.seaborne.dboe.base.file;
+
+import org.seaborne.dboe.base.file.BinaryDataFile ;
+import org.seaborne.dboe.base.file.BinaryDataFileMem ;
 
 public class TestBinaryDataMem extends AbstractTestBinaryDataFile {
 

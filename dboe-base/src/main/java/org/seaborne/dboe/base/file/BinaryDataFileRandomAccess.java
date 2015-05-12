@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package tdbdev.binarydatafile;
+package org.seaborne.dboe.base.file;
 
 import java.io.IOException ;
 import java.io.RandomAccessFile ;
@@ -28,7 +28,7 @@ import org.apache.jena.atlas.io.IO ;
  *  
  *  @see BinaryDataFileWriteBuffered
  */
-public class BinaryDataFileRAF implements BinaryDataFile {
+public class BinaryDataFileRandomAccess implements BinaryDataFile {
 
     protected RandomAccessFile file ;
     protected boolean readMode ;
@@ -36,7 +36,7 @@ public class BinaryDataFileRAF implements BinaryDataFile {
     protected long writePosition ;
     private final String filename ;
     
-    public BinaryDataFileRAF(String filename) {
+    public BinaryDataFileRandomAccess(String filename) {
        this.filename = filename ;
     }
     

@@ -23,15 +23,25 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestMetaFile.class
+    , TestLocationLock.class
+    
     , TestChannelMem.class
     , TestChannelFile.class
+    
     , TestBlockAccessMem.class
     , TestBlockAccessByteArray.class
     , TestBlockAccessDirect.class
     , TestBlockAccessMapped.class
-    , TestLocationLock.class
+    
+    , TestBinaryDataMem.class
+    , TestBinaryDataFileWriteBufferedMem.class
+    , TestBinaryDataRAFInitial.class
+    , TestBinaryDataRAF.class
+    , TestBinaryDataFileWriteBufferedFile.class
 })
 
 
 public class TS_File
-{}
+{
+    public static String FILE = "target/test-read-append-file" ;
+}

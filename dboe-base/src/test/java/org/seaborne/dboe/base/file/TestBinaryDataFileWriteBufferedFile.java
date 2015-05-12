@@ -15,17 +15,20 @@
  *  information regarding copyright ownership.
  */
 
-package tdbdev.binarydatafile;
+package org.seaborne.dboe.base.file;
 
 import org.apache.jena.atlas.lib.FileOps ;
+import org.seaborne.dboe.base.file.BinaryDataFile ;
+import org.seaborne.dboe.base.file.BinaryDataFileRandomAccess ;
+import org.seaborne.dboe.base.file.BinaryDataFileWriteBuffered ;
 
 public class TestBinaryDataFileWriteBufferedFile extends AbstractTestBinaryDataFile {
-    public static String FILE = TS_BinaryDataFile.FILE ;
+    public static String FILE = TS_File.FILE ;
 
     @Override
     protected BinaryDataFile createBinaryDataFile() {
         FileOps.delete(FILE);
-        BinaryDataFileRAF file = new BinaryDataFileRAF(FILE) ;
+        BinaryDataFileRandomAccess file = new BinaryDataFileRandomAccess(FILE) ;
         return new BinaryDataFileWriteBuffered(file) ;
     }
 }

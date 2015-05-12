@@ -15,20 +15,17 @@
  *  information regarding copyright ownership.
  */
 
-package tdbdev.binarydatafile;
+package org.seaborne.dboe.base.file;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.seaborne.dboe.base.file.BinaryDataFile ;
+import org.seaborne.dboe.base.file.BinaryDataFileRandomAccess ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestBinaryDataMem.class
-    , TestBinaryDataFileWriteBufferedMem.class
-    , TestBinaryDataRAFInitial.class
-    , TestBinaryDataRAF.class
-    , TestBinaryDataFileWriteBufferedFile.class
-})
+public class TestBinaryDataRAF extends AbstractTestBinaryDataFile {
+    public static String FILE = TS_File.FILE ;
 
-public class TS_BinaryDataFile { 
-    public static String FILE = "target/test-read-append-file" ;
+    @Override
+    protected BinaryDataFile createBinaryDataFile() {
+        return new BinaryDataFileRandomAccess(FILE) ;
+    }
 }
+

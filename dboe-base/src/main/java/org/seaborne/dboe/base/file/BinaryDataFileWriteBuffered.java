@@ -15,11 +15,11 @@
  *  information regarding copyright ownership.
  */
 
-package tdbdev.binarydatafile;
+package org.seaborne.dboe.base.file;
 
 import org.apache.jena.atlas.RuntimeIOException ;
 
-/** Implementation of {@link BinaryDataFile} adding write buffering to {@link BinaryDataFileRAF}
+/** Implementation of {@link BinaryDataFile} adding write buffering to {@link BinaryDataFileRandomAccess}
  *  Adds write buffering.
  *  Note: No read buffering provided.
  */

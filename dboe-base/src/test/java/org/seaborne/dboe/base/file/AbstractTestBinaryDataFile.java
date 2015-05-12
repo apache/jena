@@ -15,12 +15,13 @@
  *  information regarding copyright ownership.
  */
 
-package tdbdev.binarydatafile;
+package org.seaborne.dboe.base.file;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
+import org.seaborne.dboe.base.file.BinaryDataFile ;
 import static org.junit.Assert.* ;
 
 public abstract class AbstractTestBinaryDataFile {

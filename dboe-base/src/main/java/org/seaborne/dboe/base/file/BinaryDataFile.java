@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package tdbdev.binarydatafile;
+package org.seaborne.dboe.base.file;
 
 import java.io.RandomAccessFile ;
 
