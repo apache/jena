@@ -15,31 +15,41 @@
  *  information regarding copyright ownership.
  */
 
-package tdbdev;
+package tdbdev.binarydatafile;
+
+import java.io.RandomAccessFile ;
 
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.seaborne.dboe.base.objectfile.ObjectFile ;
 
-/** An append-only binary file
+/** An append-only, read anywhere, binary file.
+ *  
  * 
  * An {@link ObjectFile} is a series of length+binary records.
  * A {@link BinaryDataFile} does not record the length and assumes the
- * entires are selef defining.
+ * entires are self-defining.
  * 
- *  @see ObjectFile 
+ *  @see ObjectFile
+ *  @see ReadAppendFile 
+ *  @see RandomAccessFile
  */
 public interface BinaryDataFile extends Closeable, Sync {
 
+    /** Open the file */
+    public void open() ;
+    
+    /** Is it open */ 
+    public boolean isOpen() ;
+    
     /** Read into a byte array, returning the number of bytes read. 
      * 
-     * @param location  Byte offset for startof reading. 
      * @param b byte array
      * 
      * @return The number of bytes read
      */
-    public default int read(long location, byte b[]) {
-        return read(location, b, 0, b.length);
+    public default int read(byte b[]) {
+        return read(b, 0, b.length);
     }
 
     /** Read into a byte array, returning the number of bytes read.
@@ -50,7 +60,7 @@ public interface BinaryDataFile extends Closeable, Sync {
      * @return The number of bytes read
      */
  
-    public int read(long location, byte b[], int start, int length) ;
+    public int read(byte b[], int start, int length) ;
 
     /** Write bytes - bytes are always written to the end of the file */ 
     public default void write(byte b[]) {
@@ -59,6 +69,24 @@ public interface BinaryDataFile extends Closeable, Sync {
     
     /** Write bytes - bytes are always written to the end of the file */ 
     public void write(byte b[], int start, int length) ;
+    
+    /** Get the read position */
+    public long position() ;
+
+    /** Set the read position. 
+     * <p>
+     * If &lt; 0, then set to zero.
+     * <p> If beyond the current length of the file, keep as provided, 
+     * a write may extend the file before the next read. 
+     * 
+     * @param posn The new position.
+     */
+    public void position(long posn) ;
+
+    /** 
+     * Return the length of the file (including any buffered writes) 
+     */
+    public long length() ;
 
     /** Truncate the file */ 
     public void truncate(long length) ; 

@@ -26,7 +26,7 @@ import org.apache.thrift.transport.TTransportException ;
 import org.seaborne.dboe.DBOpEnvException ;
 
 /** A file transport that support random access read and
- *  buffered append write.s
+ *  buffered append write.
  */
 public class TReadAppendFileTransport extends TTransport {
 
