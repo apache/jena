@@ -52,6 +52,9 @@ import org.seaborne.tdb2.sys.DatasetControlMRSW ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+import tdbdev.binarydatafile.BinaryDataFile ;
+import tdbdev.binarydatafile.BinaryDataFileRAF ;
+import tdbdev.binarydatafile.BinaryDataFileWriteBuffered ;
 
 public class TDB2Builder {
     private static Logger log = LoggerFactory.getLogger(TDB2Builder.class) ;
@@ -225,19 +228,7 @@ public class TDB2Builder {
     }
     
     public NodeTable buildNodeTable(TransactionCoordinator coord, ComponentId cid, String name) {
-        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
-        Index index = buildRangeIndex(coord, cid, recordFactory, name) ;
-        
-        // Old SSE encoding for comparison. 
-        // Slightly slower to write (5%, SSD), probably slower to read. 
-        //NodeTable nodeTable = new NodeTableSSE(index, location.getPath(name+"-data", "obj")) ;
-        
-        // No write caching smarts. Slower to write (~10%, SSD).
-        //NodeTable nodeTable = new NodeTableTRDF_Direct(index, location.getPath(name+"-data", "obj")) ;
-        
-        // Normal implementation, with write caching.
-        NodeTable nodeTable = new NodeTableTRDF(index, location.getPath(name+"-data", "obj")) ;
-        
+        NodeTable nodeTable = buildBaseNodeTable(coord, cid, name) ;
         nodeTable = NodeTableCache.create(nodeTable, 
                                           storeParams.getNode2NodeIdCacheSize(),
                                           storeParams.getNodeId2NodeCacheSize(),
@@ -246,6 +237,22 @@ public class TDB2Builder {
         return nodeTable ; 
     }
 
+    private NodeTable buildBaseNodeTable(TransactionCoordinator coord, ComponentId cid, String name) {
+        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
+        Index index = buildRangeIndex(coord, cid, recordFactory, name) ;
+        String filename = location.getPath(name+"-data", "obj") ;
+        BinaryDataFile diskFile = new BinaryDataFileRAF(filename) ;
+        diskFile = new BinaryDataFileWriteBuffered(diskFile) ;
+        return new NodeTableTRDF(index, diskFile) ;
+
+        // Old SSE encoding for comparison. 
+        // Slightly slower to write (5%, SSD), probably slower to read. 
+        //NodeTable nodeTable = new NodeTableSSE(index, filename) ;
+        
+        // Old No write caching smarts. Slower to write (~10%, SSD).
+        //NodeTable nodeTable = new NodeTableTRDF_Direct(index, filename) ;
+    }
+    
     private static void error(Logger log, String msg)
     {
         if ( log != null )

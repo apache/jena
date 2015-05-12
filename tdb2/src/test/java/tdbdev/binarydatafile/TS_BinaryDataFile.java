@@ -23,14 +23,12 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestBinaryDataMem.class
+    , TestBinaryDataFileWriteBufferedMem.class
     , TestBinaryDataRAFInitial.class
-    , TestReadAppendFile.class // This is erplaced by the below
-    , TestBinaryDataFileWriteBuffered.class
     , TestBinaryDataRAF.class
+    , TestBinaryDataFileWriteBufferedFile.class
 })
-
 
 public class TS_BinaryDataFile { 
     public static String FILE = "target/test-read-append-file" ;
 }
-

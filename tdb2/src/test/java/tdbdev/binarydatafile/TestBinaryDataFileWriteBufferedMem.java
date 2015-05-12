@@ -17,15 +17,10 @@
 
 package tdbdev.binarydatafile;
 
-import org.apache.jena.atlas.lib.FileOps ;
-
-public class TestBinaryDataFileWriteBuffered extends AbstractTestBinaryDataFile {
-    public static String FILE = TS_BinaryDataFile.FILE ;
-
+public class TestBinaryDataFileWriteBufferedMem extends AbstractTestBinaryDataFile {
     @Override
     protected BinaryDataFile createBinaryDataFile() {
-        FileOps.delete(FILE);
-        BinaryDataFileRAF file = new BinaryDataFileRAF(FILE) ;
+        BinaryDataFileMem file = new BinaryDataFileMem() ;
         return new BinaryDataFileWriteBuffered(file) ;
     }
 }

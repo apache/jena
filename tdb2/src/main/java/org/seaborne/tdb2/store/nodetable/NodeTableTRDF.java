@@ -29,24 +29,24 @@ import org.apache.thrift.transport.TTransport ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.NodeId ;
+import tdbdev.binarydatafile.BinaryDataFile ;
+
+/** NodeTable using Thrist for the I/O and storage. */
 
 public class NodeTableTRDF extends NodeTableNative {
-    private TReadAppendFileTransport file ;
+    // Write buffering is done in the underlying BinaryDataFile
+    BinaryDataFile diskFile ;
     private TTransport transport ;
-    private final TProtocol      protocol ;
+    private final TProtocol protocol ;
 
-    // private final Index nodeToId ;
-
-    public NodeTableTRDF(Index nodeToId, String objectFile) {
+    public NodeTableTRDF(Index nodeToId, BinaryDataFile objectFile) {
         super(nodeToId) ;
         try {
-            file = new TReadAppendFileTransport(objectFile) ;
-            file.open(); 
-            
-            transport = file ;
+            this.diskFile = objectFile ;
+            transport = new TReadAppendFileTransport(diskFile) ;
+            transport.open(); 
             // Does not seem to affect write speed.
             //transport = new TFastFramedTransport(transport) ;
-            
             this.protocol = TRDF.protocol(transport) ;
         }
         catch (Exception ex) {
@@ -58,10 +58,10 @@ public class NodeTableTRDF extends NodeTableNative {
     protected NodeId writeNodeToTable(Node node) {
         RDF_Term term = ThriftConvert.convert(node, true) ;
         try {
-            long x = file.getWriteLocation() ;
+            long x = diskFile.length() ;
             NodeId nid = NodeId.create(x) ;
             term.write(protocol) ;
-            transport.flush() ;
+            //transport.flush() ;
             return nid ;
         }
         catch (Exception ex) {
@@ -73,7 +73,7 @@ public class NodeTableTRDF extends NodeTableNative {
     protected Node readNodeFromTable(NodeId id) {
         try {
             long x = id.getId() ;
-            file.seek(x) ;
+            diskFile.position(x) ;
             RDF_Term term = new RDF_Term() ;
             term.read(protocol) ;
             Node n = ThriftConvert.convert(term) ;

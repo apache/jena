@@ -22,6 +22,10 @@ public class TDB_DEV {
     
     // Ensure sync called.
     
+    // Test sof BinaryDataFile
+    //   Read into buffer area.
+    //   Trincate into buffer area.
+    
     // Switch Lizard to TDB2 technology.
     // Hunt down adapter and remove.
 

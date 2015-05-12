@@ -19,13 +19,14 @@ package tdbdev.binarydatafile;
 
 import org.apache.jena.atlas.lib.FileOps ;
 
-public class TestReadAppendFile extends AbstractTestBinaryDataFile {
+public class TestBinaryDataFileWriteBufferedFile extends AbstractTestBinaryDataFile {
     public static String FILE = TS_BinaryDataFile.FILE ;
 
     @Override
     protected BinaryDataFile createBinaryDataFile() {
         FileOps.delete(FILE);
-        return new ReadAppendFile(FILE) ;
+        BinaryDataFileRAF file = new BinaryDataFileRAF(FILE) ;
+        return new BinaryDataFileWriteBuffered(file) ;
     }
 }
 

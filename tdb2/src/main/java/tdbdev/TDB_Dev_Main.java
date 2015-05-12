@@ -38,8 +38,12 @@ import org.apache.thrift.protocol.TProtocol ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.store.DatasetGraphTDB ;
 import org.seaborne.tdb2.store.DatasetGraphTxn ;
 import org.seaborne.tdb2.store.nodetable.TReadAppendFileTransport ;
+import tdbdev.binarydatafile.BinaryDataFile ;
+import tdbdev.binarydatafile.BinaryDataFileRAF ;
+import tdbdev.binarydatafile.BinaryDataFileWriteBuffered ;
 
 
 public class TDB_Dev_Main {
@@ -53,7 +57,12 @@ public class TDB_Dev_Main {
         String filename = "data" ;
         FileOps.delete(filename); 
         
-        try ( TReadAppendFileTransport file = new TReadAppendFileTransport(filename) ) {
+        BinaryDataFile binfile = new BinaryDataFileRAF(filename) ;
+        
+        binfile = new BinaryDataFileWriteBuffered(binfile) ;
+        binfile.open();
+        
+        try ( TReadAppendFileTransport file = new TReadAppendFileTransport(binfile) ) {
             TProtocol proto = TRDF.protocol(file) ;
             Node node = SSE.parseNode("<http://example/>") ;
             RDF_Term term = ThriftConvert.convert(node, true) ;
@@ -69,19 +78,31 @@ public class TDB_Dev_Main {
             term.write(proto);
         }
         
-        try ( TReadAppendFileTransport file = new TReadAppendFileTransport(filename) ) {
-            file.seek(0);
+        binfile = new BinaryDataFileRAF(filename) ;
+        binfile = new BinaryDataFileWriteBuffered(binfile) ;
+        binfile.open();
+
+        
+        try ( TReadAppendFileTransport file = new TReadAppendFileTransport(binfile) ) {
+            file.position(0);
             TProtocol proto = TRDF.protocol(file) ;
             RDF_Term term = new RDF_Term() ;
             term.read(proto);
             Node n = ThriftConvert.convert(term) ;
             System.out.println("n = "+n) ;
+            term.read(proto);
+            n = ThriftConvert.convert(term) ;
+            System.out.println("n = "+n) ;
         }
         
         System.exit (1) ;
         
+        binfile = new BinaryDataFileRAF(filename) ;
+        binfile = new BinaryDataFileWriteBuffered(binfile) ;
+        binfile.open();
+
         byte[] bytes = Bytes.string2bytes("Some text : "+new Date()+"\n") ; 
-        try ( TReadAppendFileTransport file = new TReadAppendFileTransport(filename) ) {
+        try ( TReadAppendFileTransport file = new TReadAppendFileTransport(binfile) ) {
             details(file) ;
             System.out.println("truncate") ;
             file.truncate(41) ;
@@ -96,7 +117,7 @@ public class TDB_Dev_Main {
 //            details(file) ;
 
             System.out.println("seek") ;
-            file.seek(41);
+            binfile.position(41);
             details(file) ;
 
             byte[] bytes2 = new byte[bytes.length*2] ;
@@ -107,62 +128,47 @@ public class TDB_Dev_Main {
     }
     
     private static void details(TReadAppendFileTransport file) {
-        System.out.println("Len = "+file.getFileLength()) ;
-        System.out.println("W   = "+file.getWriteLocation()) ;
-        System.out.println("R   = "+file.getReadLocation()) ;
+        System.out.println("Len = "+file.getBinaryDataFile().length()) ;
+        System.out.println("W   = "+file.getBinaryDataFile().length()) ;
+        System.out.println("R   = "+file.getBinaryDataFile().position()) ;
     }
     
     public static void main1(String[] args) {
-        FileOps.ensureDir("DB"); 
-        FileOps.clearDirectory("DB");
+        boolean fresh = true ;
         Location location = Location.create("DB") ;
+        String FILE = "/home/afs/Datasets/BSBM/bsbm-250k.nt.gz" ;
         
-        
-        
-        //DatasetGraphTDB dsg = (DatasetGraphTDB)TDB2Builder.build(location) ;
-        
-        if ( false ) {
-            String FILE = "/home/afs/Datasets/BSBM/bsbm-250k.nt.gz" ;
-            System.out.println("Load "+FILE) ;
-            Dataset ds = TDBFactory.createDataset(location) ;
-            Timer timer = new Timer() ;
-            ds.begin(ReadWrite.WRITE); 
-            timer.startTimer();
-            // Speed comparison with direct
-            //DatasetGraph dsg = ((DatasetGraphTxn)ds.asDatasetGraph()).getDatasetTDB() ;
-                
-            RDFDataMgr.read(ds, FILE);
-            ds.commit();
-            ds.end(); 
-            long time_ms = timer.endTimer() ;
-
-            ds.begin(ReadWrite.READ) ;
-
-            //RDFDataMgr.write(System.out,  dsg, Lang.TRIG) ;
-            long x = Iter.count(ds.asDatasetGraph().find()) ;
-            ds.end();
-            System.out.printf("Count = %,d\n", x) ;
-            double seconds = time_ms/1000.0 ; 
-
-            System.out.printf("Rate = %,.0f\n", x/seconds) ;
-            System.out.println("DONE") ;
-            System.exit(0) ;
+        if ( fresh )
+        {
+            FileOps.ensureDir("DB"); 
+            FileOps.clearDirectory("DB");
         }
-
-        String FILE = "/home/afs/Datasets/BSBM/bsbm-1m.nt.gz" ;
-        System.out.println("Load "+FILE) ;
         
+        long time_ms = -1 ;
         DatasetGraphTxn dsg = (DatasetGraphTxn)TDBFactory.createDatasetGraph(location) ;
-        dsg.begin(ReadWrite.WRITE);
-        
-        DatasetGraph dsgx = dsg.getBaseDatasetGraph() ;
-        //RDFDataMgr.read(dsg, "D.ttl");
-        Timer timer = new Timer() ;
-        timer.startTimer();
-        RDFDataMgr.read(dsgx, FILE) ;
-        dsg.commit();
-        dsg.end(); 
-        long time_ms = timer.endTimer() ;
+
+        if ( fresh ) {
+            
+            System.out.println("Load "+FILE) ;
+            
+            dsg.begin(ReadWrite.WRITE);
+            DatasetGraph dsgx = dsg.getBaseDatasetGraph() ;
+            //RDFDataMgr.read(dsg, "D.ttl");
+            Timer timer = new Timer() ;
+            timer.startTimer();
+            RDFDataMgr.read(dsgx, FILE) ;
+
+            //Temporary fakery!
+            DatasetGraphTDB dsgtdb = (DatasetGraphTDB)dsgx ;
+            dsgtdb.sync();
+            
+            dsg.commit();
+            dsg.end(); 
+            
+            
+            time_ms = timer.endTimer() ;
+            
+        }
         
         dsg.begin(ReadWrite.READ) ;
         
@@ -170,8 +176,10 @@ public class TDB_Dev_Main {
         long x = Iter.count(dsg.find()) ;
         dsg.end();
         System.out.printf("Count = %,d\n", x) ;
-        double seconds = time_ms/1000.0 ; 
-        System.out.printf("Rate = %,.0f\n", x/seconds) ;
+        if ( time_ms > 0 ) {
+            double seconds = time_ms/1000.0 ; 
+            System.out.printf("Rate = %,.0f\n", x/seconds) ;
+        }
         
         Dataset ds = TDBFactory.createDataset(location) ;
         String qs = "SELECT * { ?s ?p ?o } LIMIT 10" ;

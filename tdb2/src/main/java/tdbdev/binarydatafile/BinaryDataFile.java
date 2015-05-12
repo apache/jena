@@ -31,7 +31,6 @@ import org.seaborne.dboe.base.objectfile.ObjectFile ;
  * entires are self-defining.
  * 
  *  @see ObjectFile
- *  @see ReadAppendFile 
  *  @see RandomAccessFile
  */
 public interface BinaryDataFile extends Closeable, Sync {
