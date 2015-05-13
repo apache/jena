@@ -452,9 +452,6 @@ public class FormatterElement extends FormatterBase
         out.incIndent(INDENT) ;
         Query q = el.getQuery() ;
         
-        // JENA-939 : factory.create calls "new NodeToLabelMapBNode("b", false)", i.e. a new mapping
-        // which looses the history and so reuses labels. 
-        
         // Serialize with respect to the existing context
         QuerySerializerFactory factory = SerializerRegistry.get().getQuerySerializerFactory(Syntax.syntaxARQ);
         QueryVisitor serializer = factory.create(Syntax.syntaxARQ, context, out);
