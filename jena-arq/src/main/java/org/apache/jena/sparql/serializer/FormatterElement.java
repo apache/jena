@@ -27,8 +27,6 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryVisitor ;
-import org.apache.jena.query.Syntax ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.core.PathBlock ;
 import org.apache.jena.sparql.core.TriplePath ;
@@ -452,9 +450,19 @@ public class FormatterElement extends FormatterBase
         out.incIndent(INDENT) ;
         Query q = el.getQuery() ;
         
-        // Serialize with respect to the outer context prologue.
-        QuerySerializerFactory factory = SerializerRegistry.get().getQuerySerializerFactory(Syntax.syntaxARQ);
-        QueryVisitor serializer = factory.create(Syntax.syntaxARQ, context.getPrologue() , out);
+        // JENA-939 : factory.create calls "new NodeToLabelMapBNode("b", false)", i.e. a new mapping
+        // which looses the history and so reuses labels. 
+        
+//        // Serialize with respect to the outer context prologue.
+//        QuerySerializerFactory factory = SerializerRegistry.get().getQuerySerializerFactory(Syntax.syntaxARQ);
+//        QueryVisitor serializer = factory.create(Syntax.syntaxARQ, context.getPrologue() , out);
+//        q.visit(serializer);
+        
+        // For the query pattern, use the same context
+        QuerySerializer serializer = new QuerySerializer(out, 
+                                                         new FormatterElement(out, context),
+                                                         new FmtExprSPARQL(out, context),
+                                                         null);
         q.visit(serializer);
         
         out.decIndent(INDENT) ;
