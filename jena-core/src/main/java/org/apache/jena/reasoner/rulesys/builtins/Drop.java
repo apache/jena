@@ -55,7 +55,6 @@ public class Drop  extends BaseBuiltin  {
      */
     @Override
     public void headAction(Node[] args, int length, RuleContext context) {
-        boolean ok = false;
         InfGraph inf = context.getGraph();
         Graph raw = inf.getRawGraph();
         Graph deductions = inf.getDeductionsGraph();

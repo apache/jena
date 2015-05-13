@@ -80,8 +80,6 @@ public class Chars
     private static Pool<CharsetDecoder> decoders = PoolSync.create(new PoolBase<CharsetDecoder>()) ;
 
     static {
-        ThreadLocal<CharsetEncoder> t ;
-        
         // Fill the pool.
         for ( int i = 0 ; i < PoolSize ; i++ )
         {

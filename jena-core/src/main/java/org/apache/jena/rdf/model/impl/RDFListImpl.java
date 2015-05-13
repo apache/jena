@@ -56,7 +56,6 @@ public class RDFListImpl
     /**
      * A factory for generating RDFList facets from nodes in enhanced graphs.
      */
-    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override public EnhNode wrap( Node n, EnhGraph eg ) { 
             if (canWrap( n, eg )) {

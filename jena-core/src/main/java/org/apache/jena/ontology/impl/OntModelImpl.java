@@ -2338,12 +2338,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     @Override
     public int countSubModels() {
-        int count = 0;
-        for ( Graph graph1 : getSubGraphs() )
-        {
-            count++;
-        }
-        return count;
+        return getSubGraphs().size();
     }
 
     /**
