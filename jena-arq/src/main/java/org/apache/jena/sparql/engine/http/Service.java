@@ -232,7 +232,6 @@ public class Service {
         // configure the query object.
         httpQuery.merge(QueryEngineHTTP.getServiceParams(uri, context));
         httpQuery.addParam(HttpParams.pQuery, query.toString());
-        httpQuery.setAccept(WebContent.contentTypeResultsXML);
         httpQuery.setAllowGZip(context.isTrueOrUndef(queryGzip));
         httpQuery.setAllowDeflate(context.isTrueOrUndef(queryDeflate));
 
