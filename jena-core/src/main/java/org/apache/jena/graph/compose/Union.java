@@ -31,7 +31,7 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
     @see MultiUnion
 */
 
-public class Union extends Dyadic implements Graph 
+public class Union extends Dyadic 
 	{
 	public Union( Graph L, Graph R )
 		{ super( L, R ); }

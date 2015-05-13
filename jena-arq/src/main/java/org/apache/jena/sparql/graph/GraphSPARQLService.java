@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.graph;
 
-import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.GraphBase ;
@@ -33,7 +32,7 @@ import org.slf4j.LoggerFactory ;
 /** This class provides the Jena Graph interface to a remote SPARQL endpoint.
  *  Efficiency not guaranteed. */
 
-public class GraphSPARQLService extends GraphBase implements Graph
+public class GraphSPARQLService extends GraphBase
 {
     private static Logger log = LoggerFactory.getLogger(GraphSPARQLService.class) ;
 

@@ -46,8 +46,7 @@ import org.apache.jena.vocabulary.RDF ;
  *    model implemenations can be derived.</P>
  */
 
-public class ModelCom extends EnhGraph
-implements Model, PrefixMapping, Lock
+public class ModelCom extends EnhGraph implements Model
 {
 
     private static final RDFReaderF readerFactory = new RDFReaderFImpl();

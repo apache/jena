@@ -17,14 +17,12 @@
  */
 package org.apache.jena.permissions.graph;
 
-import java.util.Arrays;
 import java.util.Set;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphEventManager ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.CollectionGraph ;
 import org.apache.jena.permissions.Factory;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;

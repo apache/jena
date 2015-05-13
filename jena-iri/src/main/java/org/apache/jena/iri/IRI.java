@@ -56,7 +56,7 @@ import org.apache.jena.iri.impl.Main ;
  * of a different appropriately configured {@link IRIFactory}.
  * </p>
  */
-abstract public class IRI  extends AbsIRIFactoryImpl implements IRIFactoryI, IRIRelativize {
+abstract public class IRI  extends AbsIRIFactoryImpl implements IRIRelativize {
 
     /**
      * Advanced usage only:

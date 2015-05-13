@@ -102,7 +102,7 @@ import org.apache.jena.rdf.model.* ;
  * </p>
  * 
  */
-public class SecurityEvaluatorAssembler extends AssemblerBase implements Assembler, AssemblerConstants {
+public class SecurityEvaluatorAssembler extends AssemblerBase implements AssemblerConstants {
 	// initialization and registration is performed by SecuredAssembler
     
 	@Override

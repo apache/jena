@@ -84,7 +84,7 @@ public class TestSeqMethods extends AbstractContainerMethods
 	}
 
 	@Override
-	public void setUp() throws Exception
+	public void setUp()
 	{
 		super.setUp();
 		aLitTestObj = new LitTestObj(12345);

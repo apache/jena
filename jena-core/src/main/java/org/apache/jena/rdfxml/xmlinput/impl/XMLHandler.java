@@ -152,8 +152,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
 
     @Override
-    public void comment(char[] ch, int start, int length)
-            throws SAXParseException {
+    public void comment(char[] ch, int start, int length) throws SAXParseException {
         frame.comment(ch, start, length);
     }
 

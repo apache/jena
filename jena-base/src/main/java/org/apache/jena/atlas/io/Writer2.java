@@ -22,11 +22,9 @@ import java.io.BufferedWriter ;
 import java.io.IOException ;
 import java.io.Writer ;
 
-import org.apache.jena.atlas.lib.Closeable ;
-
 /** A Writer, without the checked exceptions. */
 
-public class Writer2 extends AWriterBase implements AWriter, Closeable
+public class Writer2 extends AWriterBase
 {
     protected final Writer writer ;
 

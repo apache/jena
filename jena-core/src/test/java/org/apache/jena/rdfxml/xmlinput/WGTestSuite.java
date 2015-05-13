@@ -32,7 +32,9 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.xml.sax.SAXException;
+import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.rdf.model.* ;
@@ -381,7 +383,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     	 	super(r);
     	 }
 	 @Override
-    protected void runTest() throws IOException {
+    protected void runTest() {
 	       int rslt = WGReasonerTester.FAIL;
 	       try {
                    JenaParameters.enableWhitespaceCheckingOfTypedLiterals = true;
@@ -389,7 +391,9 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                          .addProperty(ReasonerVocabulary.PROPsetRDFSLevel, "full");
 	            rslt = wgReasoner.runTestDetailedResponse(testID.getURI(),
 	            RDFSRuleReasonerFactory.theInstance(),this,config);
-                }  finally {
+                } catch (IOException e) {
+					throw new RuntimeIOException(e);
+				}  finally {
                     logResult(testID,rslt);
 	        }
 			// assertTrue(rslt>=0);
@@ -449,7 +453,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 new InFactoryX(){
 
 					@Override
-                    public InputStream open() throws IOException {
+                    public InputStream open() {
 						return factory.open(uri);
 					}
                 }
@@ -460,7 +464,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             return null;
         }
         @Override
-        protected void runTest()  throws IOException {
+        protected void runTest() {
         	int rslt = WGReasonerTester.FAIL;
         	try {
         		reallyRunTest();
@@ -738,7 +742,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 new InFactoryX(){
 
 					@Override
-                    public InputStream open() throws IOException {
+                    public InputStream open() {
 						return factory.open(uri);
 					}
                 }

@@ -24,7 +24,7 @@ import org.apache.jena.assembler.* ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.reasoner.rulesys.Rule ;
 
-public class RuleSetAssembler extends AssemblerBase implements Assembler
+public class RuleSetAssembler extends AssemblerBase
     {
     @Override public Object open( Assembler a, Resource root, Mode irrelevant )
         { 

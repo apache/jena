@@ -20,10 +20,8 @@ package org.apache.jena.atlas.json.io.parser;
 
 import static org.apache.jena.atlas.lib.Chars.* ;
 
-import java.io.IOException ;
 import java.util.NoSuchElementException ;
 
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.json.JsonParseException ;
 import org.apache.jena.riot.tokens.Token ;
@@ -634,8 +632,7 @@ public class TokenizerJSON implements Tokenizer
     @Override
     public void close()
     {
-        try { reader.close() ; }
-        catch (IOException ex) { IO.exception(ex) ; }
+        reader.close() ;
     }
 
     private boolean isA2Z(int ch)

@@ -154,27 +154,27 @@ public final class BufferingWriter extends Writer {
     }
 
     @Override
-    public void write(char[] cbuf, int off, int len) throws IOException {
+    public void write(char[] cbuf, int off, int len) {
         output(cbuf, off, len) ;
     }
 
     @Override
-    public void write(char[] cbuf) throws IOException {
+    public void write(char[] cbuf) {
         write(cbuf, 0, cbuf.length) ;
     }
 
     @Override
-    public void write(String string, int off, int len) throws IOException {
+    public void write(String string, int off, int len) {
         output(string, off, len) ;
     }
 
     @Override
-    public void write(String string) throws IOException {
+    public void write(String string) {
         output(string, 0, string.length()) ;
     }
 
     @Override
-    public void write(int ch) throws IOException {
+    public void write(int ch) {
         output((char)ch) ;
     }
 }

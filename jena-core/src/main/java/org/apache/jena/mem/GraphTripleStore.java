@@ -20,7 +20,6 @@ package org.apache.jena.mem;
 
 import org.apache.jena.graph.* ;
 import org.apache.jena.graph.Triple.* ;
-import org.apache.jena.graph.impl.TripleStore ;
 
 /**
     GraphTripleStore - the underlying triple-indexed triple store for GraphMem et al,
@@ -29,7 +28,7 @@ import org.apache.jena.graph.impl.TripleStore ;
 
 */
 
-public class GraphTripleStore extends GraphTripleStoreBase implements TripleStore
+public class GraphTripleStore extends GraphTripleStoreBase
     {   
     public GraphTripleStore( Graph parent )
         { 

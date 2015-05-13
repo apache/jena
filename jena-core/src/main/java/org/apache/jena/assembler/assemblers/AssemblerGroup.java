@@ -25,7 +25,7 @@ import org.apache.jena.assembler.exceptions.* ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.vocabulary.RDFS ;
 
-public abstract class AssemblerGroup extends AssemblerBase implements Assembler
+public abstract class AssemblerGroup extends AssemblerBase
     {    
     public abstract AssemblerGroup implementWith( Resource type, Assembler a );
 

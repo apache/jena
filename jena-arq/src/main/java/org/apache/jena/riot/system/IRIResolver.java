@@ -343,7 +343,7 @@ public abstract class IRIResolver
                 return iriFactory.create(uriStr) ;
             Callable<IRI> filler = new Callable<IRI>() {
                 @Override
-                public IRI call() throws Exception {
+                public IRI call() {
                     return iriFactory.create(uriStr) ;
                 }
             } ;
@@ -434,7 +434,7 @@ public abstract class IRIResolver
                 return iriFactory.create(relURI) ;
             Callable<IRI> filler = new Callable<IRI>() {
                 @Override
-                public IRI call() throws Exception {
+                public IRI call() {
                     return base.create(relURI) ;
                 }
             } ;

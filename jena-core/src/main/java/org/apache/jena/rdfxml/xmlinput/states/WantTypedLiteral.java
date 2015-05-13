@@ -24,7 +24,7 @@ import org.apache.jena.rdfxml.xmlinput.impl.URIReference ;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
-public class WantTypedLiteral extends AbsWantLiteralValueOrDescription implements FrameI {
+public class WantTypedLiteral extends AbsWantLiteralValueOrDescription {
 
     final URIReference dtURI;
     public WantTypedLiteral(WantsObjectFrameI p, String datatypeURI, AbsXMLContext ap)

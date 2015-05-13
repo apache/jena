@@ -252,8 +252,8 @@ public class SecuredModelDetailTest {
 			// a message is only available to sender or recipient
 			if (r.hasProperty( RDF.type, msgType ))
 			{
-				return r.hasProperty( pTo, ((Principal)principal).getName() ) ||
-						r.hasProperty( pFrom, ((Principal)principal).getName());
+				return r.hasProperty( pTo, principal.getName() ) ||
+						r.hasProperty( pFrom, principal.getName());
 			}
 			return true;	
 		}

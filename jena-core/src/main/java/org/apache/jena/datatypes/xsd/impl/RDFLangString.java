@@ -28,7 +28,7 @@ import org.apache.jena.graph.impl.LiteralLabel ;
  * This is not rdf:plainLiteral!
  */
 
-public class RDFLangString extends BaseDatatype implements RDFDatatype {
+public class RDFLangString extends BaseDatatype {
     /** Singleton instance */
     // Include the string for the RDF namespace, not use RDF.getURI(), to avoid an initializer circularity
     public static final RDFDatatype rdfLangString = new RDFLangString("http://www.w3.org/1999/02/22-rdf-syntax-ns#langString");

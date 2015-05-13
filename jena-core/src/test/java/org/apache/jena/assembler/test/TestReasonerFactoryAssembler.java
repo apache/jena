@@ -82,7 +82,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
             { return null; }
         }
 
-    public static class MockFactory extends MockBase implements ReasonerFactory
+    public static class MockFactory extends MockBase
         {
         public static final MockFactory instance = new MockFactory();
 

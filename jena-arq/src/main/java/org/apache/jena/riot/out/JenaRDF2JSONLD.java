@@ -28,7 +28,6 @@ import org.apache.jena.riot.system.SyntaxLabels ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 
-import com.github.jsonldjava.core.JsonLdError ;
 import com.github.jsonldjava.core.RDFDataset ;
 
 /** Convert from JSON-LD syntax to JSON-LD internal representation of a dataset, using Jena Quads/Nodes etc */
@@ -36,7 +35,7 @@ class JenaRDF2JSONLD implements com.github.jsonldjava.core.RDFParser {
     NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
 
     @Override
-    public RDFDataset parse(Object object) throws JsonLdError {
+    public RDFDataset parse(Object object) {
         RDFDataset result = new RDFDataset() ;
         if ( object instanceof DatasetGraph )
         {

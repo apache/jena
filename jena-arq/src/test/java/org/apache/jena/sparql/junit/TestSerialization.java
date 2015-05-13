@@ -61,7 +61,7 @@ public class TestSerialization extends EarlTestCase
     //   Are they equal?
     
     @Override
-    protected void runTestForReal() throws Throwable
+    protected void runTestForReal()
     {
         Query query = null ;
         if ( queryString == null )

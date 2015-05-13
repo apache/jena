@@ -35,7 +35,7 @@ import org.apache.jena.shared.NotFoundException ;
     unless the root is ja:SPOO for some constant SPOO of OntModelSpec,
     in which case the defaults are taken from there.
 */
-public class OntModelSpecAssembler extends AssemblerBase implements Assembler
+public class OntModelSpecAssembler extends AssemblerBase
     {
     private static final OntModelSpec DEFAULT = OntModelSpec.OWL_MEM_RDFS_INF;
 

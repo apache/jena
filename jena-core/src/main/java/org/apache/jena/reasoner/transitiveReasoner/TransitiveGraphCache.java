@@ -92,7 +92,7 @@ public class TransitiveGraphCache implements Finder {
      * Inner class used to walk backward links of the graph.
      * <p> The triples are dynamically allocated which is costly. 
      */
-    static class GraphWalker extends NiceIterator<Triple> implements ExtendedIterator<Triple> {
+    static class GraphWalker extends NiceIterator<Triple> {
         
         /** Indicate if this is a shallow or deep walk */
         boolean isDeep;
@@ -215,7 +215,7 @@ public class TransitiveGraphCache implements Finder {
     /**
      * Inner class used to do a complete walk over the graph
      */
-    private static class FullGraphWalker extends NiceIterator<Triple> implements ExtendedIterator<Triple> {
+    private static class FullGraphWalker extends NiceIterator<Triple> {
 
         /** Flag whether we are walking over the closed or direct relations */
         boolean closed;

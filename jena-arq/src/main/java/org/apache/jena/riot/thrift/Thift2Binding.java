@@ -20,7 +20,6 @@ package org.apache.jena.riot.thrift;
 
 import java.io.InputStream ;
 import java.util.ArrayList ;
-import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.IteratorSlotted ;
@@ -39,7 +38,7 @@ import org.apache.thrift.transport.TIOStreamTransport ;
 import org.apache.thrift.transport.TTransportException ;
 
 /** Converted from SPARQL result set encoded in Thrift to Bindings */
-public class Thift2Binding extends IteratorSlotted<Binding> implements Iterator<Binding> {
+public class Thift2Binding extends IteratorSlotted<Binding> {
 
     private List<Var> vars = new ArrayList<>() ;
     private List<String> varNames = new ArrayList<>() ;

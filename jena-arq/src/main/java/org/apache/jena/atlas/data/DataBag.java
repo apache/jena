@@ -20,7 +20,6 @@ package org.apache.jena.atlas.data;
 
 import java.util.Iterator;
 
-import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sink ;
 
 /**
@@ -52,7 +51,7 @@ import org.apache.jena.atlas.lib.Sink ;
  * Inspired by Apache Pig
  * @see <a href="http://svn.apache.org/repos/asf/pig/tags/release-0.9.0/src/org/apache/pig/data/DataBag.java">DataBag from Apache Pig</a>
  */
-public interface DataBag<T> extends Sink<T>, Iterable<T>, Closeable
+public interface DataBag<T> extends Sink<T>, Iterable<T>
 {
     /**
      * Get the number of elements in the bag, both in memory and on disk.
