@@ -151,13 +151,6 @@ public abstract class AbsXMLContext implements ARPErrorNumbers {
                 // if (irie.getViolationCode() ==
                 // ViolationCodes.REQUIRED_COMPONENT_MISSING)
                 String msg = irie.getShortMessage();
-                String uri = rslt.toString();
-//                if (msg.endsWith(uri)) {
-//                    msg = msg.substring(0, msg.length() - uri.length()) + "<"
-//                            + uri + ">";
-//                } else {
-//                    msg = "<" + uri + "> " + msg;
-//                }
                 if (irie.getViolationCode() == ViolationCodes.REQUIRED_COMPONENT_MISSING
                         && irie.getComponent() == IRIComponents.SCHEME) {
                     if (!forErrors.allowRelativeURIs())

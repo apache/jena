@@ -26,6 +26,7 @@ import org.apache.jena.rdf.model.* ;
  */
 public class BagImpl extends ContainerImpl implements Bag {
     
+    @SuppressWarnings("hiding")
     final static public Implementation factory = new Implementation() {
         @Override
         public boolean canWrap( Node n, EnhGraph eg )
