@@ -221,7 +221,7 @@ public class TextIndexLucene implements TextIndex {
             Map<String, Object> map = entity.getMap();
             String property = map.keySet().iterator().next();
             String value = (String)map.get(property);
-            String key = entity.getGraph() + "-" + entity.getId() + "-" + value + "-" + entity.getLanguage();
+            String key = entity.getGraph() + "-" + entity.getId() + "-" + property + "-" + value + "-" + entity.getLanguage();
             Term uid = new Term("uid", DigestUtils.shaHex(key));
 
             indexWriter.deleteDocuments(uid);
@@ -245,7 +245,7 @@ public class TextIndexLucene implements TextIndex {
         for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
             Field field = new Field(e.getKey(), (String)e.getValue(), ftText) ;
             doc.add(field) ;
-            String key = entity.getGraph() + "-" + entity.getId() + "-" + e.getValue() + "-" + entity.getLanguage();
+            String key = entity.getGraph() + "-" + entity.getId() + "-" + e.getKey() + "-" + e.getValue() + "-" + entity.getLanguage();
             field = new Field("uid", DigestUtils.shaHex(key), StringField.TYPE_STORED ) ;
             doc.add(field) ;
         }
