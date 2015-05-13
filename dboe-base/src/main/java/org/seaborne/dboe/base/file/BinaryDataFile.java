@@ -82,13 +82,14 @@ public interface BinaryDataFile extends Closeable, Sync {
      */
     public void position(long posn) ;
 
-    /** 
-     * Return the length of the file (including any buffered writes) 
-     */
+    /** Return the length of the file (including any buffered writes) */
     public long length() ;
 
     /** Truncate the file */ 
     public void truncate(long length) ; 
+
+    /** Return whether this is an empty file or not */ 
+    public default boolean isEmpty() { return length() == 0 ; } 
 
     @Override
     public void sync() ;
