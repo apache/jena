@@ -27,8 +27,8 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryVisitor ;
-import org.apache.jena.query.Syntax ;
+import org.apache.jena.query.QueryVisitor;
+import org.apache.jena.query.Syntax;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.core.PathBlock ;
 import org.apache.jena.sparql.core.TriplePath ;
@@ -452,9 +452,9 @@ public class FormatterElement extends FormatterBase
         out.incIndent(INDENT) ;
         Query q = el.getQuery() ;
         
-        // Serialize with respect to the outer context prologue.
+        // Serialize with respect to the existing context
         QuerySerializerFactory factory = SerializerRegistry.get().getQuerySerializerFactory(Syntax.syntaxARQ);
-        QueryVisitor serializer = factory.create(Syntax.syntaxARQ, context.getPrologue() , out);
+        QueryVisitor serializer = factory.create(Syntax.syntaxARQ, context, out);
         q.visit(serializer);
         
         out.decIndent(INDENT) ;

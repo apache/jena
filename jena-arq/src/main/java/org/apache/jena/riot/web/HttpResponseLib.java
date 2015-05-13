@@ -20,6 +20,7 @@ package org.apache.jena.riot.web;
 
 import java.io.IOException ;
 import java.io.InputStream ;
+import java.nio.charset.StandardCharsets ;
 import java.util.HashMap ;
 import java.util.Map ;
 
@@ -83,7 +84,7 @@ public class HttpResponseLib
                     int l ;
                     byte buffer[] = new byte[1024] ;
                     while ((l = in.read(buffer)) != -1) {
-                        System.out.print(new String(buffer, 0, l, "UTF-8")) ;
+                        System.out.print(new String(buffer, 0, l, StandardCharsets.UTF_8)) ;
                     }
                 }
             } catch (IOException ex)

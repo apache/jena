@@ -19,6 +19,7 @@
 package org.apache.jena.atlas.lib;
 
 
+import org.apache.jena.atlas.lib.cache.TestCacheSimple;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
@@ -48,6 +49,7 @@ import org.junit.runners.Suite ;
     , TestFilenameProcessing.class
     , TestNumberUtils.class
     , TestDateTimeUtils.class
+    , TestCacheSimple.class
 } )
 
 public class TS_Lib

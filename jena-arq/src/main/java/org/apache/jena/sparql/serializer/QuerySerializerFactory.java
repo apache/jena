@@ -19,9 +19,9 @@
 package org.apache.jena.sparql.serializer;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.query.QueryVisitor ;
-import org.apache.jena.query.Syntax ;
-import org.apache.jena.sparql.core.Prologue ;
+import org.apache.jena.query.QueryVisitor;
+import org.apache.jena.query.Syntax;
+import org.apache.jena.sparql.core.Prologue;
 
 /**
  * Interface for query serializer factories, these may be registered with the
@@ -38,6 +38,29 @@ public interface QuerySerializerFactory {
 
     /**
      * Return a serializer for the given syntax
+     * 
+     * @param syntax
+     *            Syntax
+     * @param prologue
+     *            Prologue
+     * @param writer
+     *            Writer
+     * @return Serializer
      */
     public QueryVisitor create(Syntax syntax, Prologue prologue, IndentedWriter writer);
+
+    /**
+     * Returns a serializer for the given syntax using an existing serialization
+     * context, this method should only be called for serializing sub-queries
+     * where the outer context must be honoured
+     * 
+     * @param syntax
+     *            Syntax
+     * @param context
+     *            Serialization Context
+     * @param writer
+     *            Writer
+     * @return Serializer
+     */
+    public QueryVisitor create(Syntax syntax, SerializationContext context, IndentedWriter writer);
 }

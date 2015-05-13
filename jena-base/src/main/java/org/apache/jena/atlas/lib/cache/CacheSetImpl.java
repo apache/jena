@@ -27,11 +27,12 @@ import org.apache.jena.atlas.lib.CacheSet ;
 
 /** Cache set */
 public class CacheSetImpl<T> implements CacheSet<T> {
-    // LinkHashSet does not have LRU support.
     static Object    theOnlyValue = new Object() ;
     Cache<T, Object> cacheMap     = null ;
 
     public CacheSetImpl(Cache<T, Object> cache) {
+        // Use the characteristics of the cache used 
+        // e.g. the cache size and the eviction policy 
         cacheMap = cache ;
     }
 

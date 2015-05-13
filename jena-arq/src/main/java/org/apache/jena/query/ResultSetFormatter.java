@@ -21,6 +21,7 @@ package org.apache.jena.query;
 import java.io.ByteArrayOutputStream ;
 import java.io.OutputStream ;
 import java.io.UnsupportedEncodingException ;
+import java.nio.charset.StandardCharsets ;
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
@@ -189,12 +190,7 @@ public class ResultSetFormatter {
     {
         ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
         out(arr, qresults) ;
-        try { return new String(arr.toByteArray(), "UTF-8") ; }
-        catch (UnsupportedEncodingException e)
-        {
-            Log.warn(ResultSetFormatter.class, "UnsupportedEncodingException") ;
-            return null ;
-        }
+        return new String(arr.toByteArray(), StandardCharsets.UTF_8) ;
     }
 
     /** Return a string that has the result set serialized as a text table

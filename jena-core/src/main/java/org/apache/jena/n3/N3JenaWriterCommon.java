@@ -235,18 +235,6 @@ public class N3JenaWriterCommon implements RDFWriter
         prefixMap = model.getNsPrefixMap() ;
         bNodesMap = new HashMap<>() ;
 
-        // PrefixMapping (to Jena 2.5.7 at least)
-        // is specialized to XML-isms and Turle prefixed names aren't quite qnames. 
-        // Build temporary maps of acceptable prefixes and URIs. 
-        
-        // If no base defined for the model, but one given to writer,
-        // then use this.
-        String base2 = prefixMap.get("") ;
-        
-// BaseURI - <#>        
-//        if ( base2 == null && baseURIrefHash != null )
-//            prefixMap.put("", baseURIrefHash) ;
-
         for ( Iterator<Entry<String, String>> iter = prefixMap.entrySet().iterator() ; iter.hasNext() ; )
         {
             Entry<String, String> e = iter.next() ;
@@ -563,7 +551,7 @@ public class N3JenaWriterCommon implements RDFWriter
                     // Turtle - N3 does not allow .3 +.3 or -.3
                     // See if parsable.
                     try {
-                        BigDecimal d = new BigDecimal(s) ;
+                        new BigDecimal(s);
                         return s ;
                     } catch (NumberFormatException nfe) {}
                 }
@@ -625,8 +613,7 @@ public class N3JenaWriterCommon implements RDFWriter
     
     protected String formatURI(String uriStr)
     {
-		String matchURI = "" ;
-		String matchPrefix = null ;
+		
 
 // BaseURI - <#>		
 //        if ( doAbbreviatedBaseURIref && uriStr.equals(baseURIref) )

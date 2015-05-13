@@ -246,7 +246,6 @@ public class LPRuleStore extends RuleStore {
             for ( Iterator<Map.Entry<Node, List<RuleClauseCode>>> k = predicateMap.entrySet().iterator(); k.hasNext(); )
             {
                 Map.Entry<Node, List<RuleClauseCode>> ent = k.next();
-                Node pred = ent.getKey();
                 List<RuleClauseCode> predicateCode = ent.getValue();
                 predicateCode.addAll( wildRulesForPredicate );
             }

@@ -16,27 +16,28 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.resultset;
+package org.apache.jena.atlas.lib.cache;
 
-import java.io.ByteArrayOutputStream ;
-import java.nio.charset.StandardCharsets ;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.IntStream.rangeClosed;
+import static org.junit.Assert.assertEquals;
 
-import org.apache.jena.query.ResultSet ;
+import org.apache.jena.atlas.lib.Cache;
+import org.junit.Test;
 
-public abstract class OutputBase implements OutputFormatter
-{
-    @Override
-    public String asString(ResultSet resultSet)
-    {
-        ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
-        format(arr, resultSet) ;
-        return new String(arr.toByteArray(), StandardCharsets.UTF_8) ;
-    }
+/**
+ * Simple test to ensure that {@link CacheSimple} evidences the fixed-size
+ * behavior we desire.
+ */
+public class CacheSimpleTest {
 
-    public String asString(boolean booleanResult)
-    {
-        ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
-        format(arr, booleanResult) ;
-        return new String(arr.toByteArray(), StandardCharsets.UTF_8) ;
-    }
+	@Test
+	public void testFixedSize() {
+		final int maxSize = 5;
+		final int submittedEntries = 10;
+		final Cache<Integer, Object> testCache = new CacheSimple<>(maxSize);
+		rangeClosed(1, submittedEntries).boxed().collect(toMap(k -> k, v -> 1))
+				.forEach(testCache::put);
+		assertEquals("Test cache failed to maintain fixed size!", maxSize, testCache.size());
+	}
 }

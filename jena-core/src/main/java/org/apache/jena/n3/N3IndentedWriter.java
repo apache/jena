@@ -81,7 +81,6 @@ public class N3IndentedWriter
 	
 	public void padTo() throws IOException
 	{
-		StringBuilder sBuff = new StringBuilder() ;
 		for ( int i = 0 ; i < currentIndent ; i++ )
 			writer.write(' ') ;
 		column = column + currentIndent ;

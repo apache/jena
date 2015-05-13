@@ -28,7 +28,6 @@ import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
-import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpAsQuery ;
@@ -232,7 +231,6 @@ public class Service {
         // configure the query object.
         httpQuery.merge(QueryEngineHTTP.getServiceParams(uri, context));
         httpQuery.addParam(HttpParams.pQuery, query.toString());
-        httpQuery.setAccept(WebContent.contentTypeResultsXML);
         httpQuery.setAllowGZip(context.isTrueOrUndef(queryGzip));
         httpQuery.setAllowDeflate(context.isTrueOrUndef(queryDeflate));
 
