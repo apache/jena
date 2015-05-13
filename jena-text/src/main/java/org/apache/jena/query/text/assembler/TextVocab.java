@@ -36,6 +36,8 @@ public class TextVocab
     public static final Resource textIndex          = Vocab.resource(NS, "TextIndex") ;
     public static final Resource textIndexSolr      = Vocab.resource(NS, "TextIndexSolr") ;
     public static final Resource textIndexLucene    = Vocab.resource(NS, "TextIndexLucene") ;
+    public static final Resource textIndexLuceneMultilingual    = Vocab.resource(NS, "TextIndexLuceneMultilingual") ;
+    public static final Property pLanguage          = Vocab.property(NS, "language") ;
     public static final Property pServer            = Vocab.property(NS, "server") ;            // Solr
     public static final Property pDirectory         = Vocab.property(NS, "directory") ;         // Lucene
     public static final Property pQueryAnalyzer     = Vocab.property(NS, "queryAnalyzer") ;
@@ -57,6 +59,7 @@ public class TextVocab
     public static final Resource simpleAnalyzer     = Vocab.resource(NS, "SimpleAnalyzer");
     public static final Resource keywordAnalyzer    = Vocab.resource(NS, "KeywordAnalyzer");
     public static final Resource lowerCaseKeywordAnalyzer    = Vocab.resource(NS, "LowerCaseKeywordAnalyzer");
+    public static final Resource localizedAnalyzer    = Vocab.resource(NS, "LocalizedAnalyzer");
 
 }
 

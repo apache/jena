@@ -85,12 +85,24 @@ public class TextIndexLucene implements TextIndex {
 
     /**
      * Constructs a new TextIndexLucene.
-     * 
+     *
      * @param directory The Lucene Directory for the index
      * @param def The EntityDefinition that defines how entities are stored in the index
      * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
      */
     public TextIndexLucene(Directory directory, EntityDefinition def, Analyzer queryAnalyzer) {
+        this(directory, def, null, queryAnalyzer);
+    }
+
+    /**
+     * Constructs a new TextIndexLucene.
+     * 
+     * @param directory The Lucene Directory for the index
+     * @param def The EntityDefinition that defines how entities are stored in the index
+     * @param analyzer The analyzer to be used to index literals. If null, then the standard analyzer will be used.
+     * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
+     */
+    public TextIndexLucene(Directory directory, EntityDefinition def, Analyzer analyzer, Analyzer queryAnalyzer) {
         this.directory = directory ;
         this.docDef = def ;
 
@@ -102,14 +114,15 @@ public class TextIndexLucene implements TextIndex {
             analyzerPerField.put(def.getGraphField(), new KeywordAnalyzer()) ;
 
         for (String field : def.fields()) {
-            Analyzer analyzer = def.getAnalyzer(field);
-            if (analyzer != null) {
-                analyzerPerField.put(field, analyzer);
+            Analyzer _analyzer = def.getAnalyzer(field);
+            if (_analyzer != null) {
+                analyzerPerField.put(field, _analyzer);
             }
         }
 
-        this.analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(VER), analyzerPerField) ;
-        this.queryAnalyzer = (null != queryAnalyzer) ? queryAnalyzer : analyzer ;
+        this.analyzer = new PerFieldAnalyzerWrapper(
+                (null != analyzer) ? analyzer : new StandardAnalyzer(VER), analyzerPerField) ;
+        this.queryAnalyzer = (null != queryAnalyzer) ? queryAnalyzer : this.analyzer ;
 
         openIndexWriter();
     }
@@ -194,8 +207,15 @@ public class TextIndexLucene implements TextIndex {
             log.debug("Update entity: " + entity) ;
         try {
             Document doc = doc(entity);
+            Analyzer analyzer = null;
+            if (isMultilingual())
+                analyzer = LuceneUtil.getLocalizedAnalyzer(entity.getLanguage());
             Term term = new Term(docDef.getEntityField(), entity.getId());
-            indexWriter.updateDocument(term, doc);
+
+            if (analyzer != null)
+                indexWriter.updateDocument(term, doc, analyzer) ;
+            else //use the default one
+                indexWriter.updateDocument(term, doc);
         } catch (IOException e) {
             throw new TextIndexException(e) ;
         }
@@ -207,7 +227,14 @@ public class TextIndexLucene implements TextIndex {
             log.debug("Add entity: " + entity) ;
         try {
             Document doc = doc(entity) ;
-            indexWriter.addDocument(doc) ;
+            Analyzer analyzer = null;
+            if (isMultilingual())
+                analyzer = LuceneUtil.getLocalizedAnalyzer(entity.getLanguage());
+
+            if (analyzer != null)
+                indexWriter.addDocument(doc, analyzer) ;
+            else //use the default one
+                indexWriter.addDocument(doc) ;
         }
         catch (IOException e) {
             throw new TextIndexException(e) ;
@@ -228,6 +255,13 @@ public class TextIndexLucene implements TextIndex {
         for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
             Field field = new Field(e.getKey(), (String)e.getValue(), ftText) ;
             doc.add(field) ;
+            if (isMultilingual()) {
+                String lang =  entity.getLanguage();
+                if (lang == null || "".equals(lang))
+                    lang = "undef";
+                field = new Field("lang", lang, StringField.TYPE_STORED ) ;
+                doc.add(field) ;
+            }
         }
         return doc ;
     }
@@ -305,7 +339,14 @@ public class TextIndexLucene implements TextIndex {
 
     private List<Node> query$(IndexReader indexReader, String qs, int limit) throws ParseException, IOException {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
-        Query query = parseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
+        Analyzer qAnalyzer = queryAnalyzer;
+        if (isMultilingual()) {//index and query analyzer must be the same
+            String lang = qs.substring( qs.lastIndexOf(":") + 1);
+            if (!"undef".equals(lang))
+                qAnalyzer = LuceneUtil.getLocalizedAnalyzer(lang);
+        }
+
+        Query query = parseQuery(qs, docDef.getPrimaryField(), qAnalyzer) ;
         if ( limit <= 0 )
             limit = MAX_N ;
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
@@ -327,6 +368,11 @@ public class TextIndexLucene implements TextIndex {
     @Override
     public EntityDefinition getDocDef() {
         return docDef ;
+    }
+
+    @Override
+    public boolean isMultilingual() {
+        return false;
     }
 
     private Node entryToNode(String v) {
