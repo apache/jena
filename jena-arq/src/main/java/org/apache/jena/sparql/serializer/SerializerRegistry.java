@@ -22,13 +22,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.query.QueryVisitor ;
-import org.apache.jena.query.Syntax ;
+import org.apache.jena.query.QueryVisitor;
+import org.apache.jena.query.Syntax;
 import org.apache.jena.riot.system.IRIResolver;
-import org.apache.jena.sparql.core.Prologue ;
-import org.apache.jena.sparql.modify.request.UpdateSerializer ;
-import org.apache.jena.sparql.modify.request.UpdateWriter ;
-import org.apache.jena.sparql.util.NodeToLabelMapBNode ;
+import org.apache.jena.sparql.core.Prologue;
+import org.apache.jena.sparql.modify.request.UpdateSerializer;
+import org.apache.jena.sparql.modify.request.UpdateWriter;
+import org.apache.jena.sparql.util.NodeToLabelMapBNode;
 
 /**
  * Provides a registry of serializers for queries and updates
@@ -72,6 +72,12 @@ public class SerializerRegistry {
 
                 return new QuerySerializer(writer, new FormatterElement(writer, cxt1), new FmtExprSPARQL(writer, cxt1),
                         new FmtTemplate(writer, cxt2));
+            }
+
+            @Override
+            public QueryVisitor create(Syntax syntax, SerializationContext context, IndentedWriter writer) {
+                return new QuerySerializer(writer, new FormatterElement(writer, context), new FmtExprSPARQL(writer,
+                        context), new FmtTemplate(writer, context));
             }
 
             @Override
