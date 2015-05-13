@@ -134,42 +134,44 @@ public class TDB_Dev_Main {
     }
     
     public static void main1(String[] args) {
-        boolean fresh = true ;
+        boolean fresh = false ;
         Location location = Location.create("DB") ;
-        String FILE = "/home/afs/Datasets/BSBM/bsbm-250k.nt.gz" ;
+        String FILE = "/home/afs/Datasets/BSBM/bsbm-25m.nt.gz" ;
         
-        if ( fresh )
-        {
-            FileOps.ensureDir("DB"); 
-            FileOps.clearDirectory("DB");
+        if ( ! fresh ) {
+            String x = "<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType15>" ;
+            String qs = "SELECT * { VALUES ?s {"+x+"} ?s ?p ?o }" ;
+            query(location, qs);
+            System.out.println("DONE") ;
+            System.exit(0) ;
         }
+        
+        
+        FileOps.ensureDir("DB"); 
+        FileOps.clearDirectory("DB");
         
         long time_ms = -1 ;
         DatasetGraphTxn dsg = (DatasetGraphTxn)TDBFactory.createDatasetGraph(location) ;
 
-        if ( fresh ) {
-            
-            System.out.println("Load "+FILE) ;
-            
-            dsg.begin(ReadWrite.WRITE);
-            DatasetGraph dsgx = dsg.getBaseDatasetGraph() ;
-            //RDFDataMgr.read(dsg, "D.ttl");
-            Timer timer = new Timer() ;
-            timer.startTimer();
-            RDFDataMgr.read(dsgx, FILE) ;
+        System.out.println("Load "+FILE) ;
 
-            //Temporary fakery!
-            DatasetGraphTDB dsgtdb = (DatasetGraphTDB)dsgx ;
-            dsgtdb.sync();
+        dsg.begin(ReadWrite.WRITE);
+        DatasetGraph dsgx = dsg.getBaseDatasetGraph() ;
+        //RDFDataMgr.read(dsg, "D.ttl");
+        Timer timer = new Timer() ;
+        timer.startTimer();
+        RDFDataMgr.read(dsgx, FILE) ;
+
+        //Temporary fakery!
+        DatasetGraphTDB dsgtdb = (DatasetGraphTDB)dsgx ;
+        dsgtdb.sync();
+
+        dsg.commit();
+        dsg.end(); 
+
+
+        time_ms = timer.endTimer() ;
             
-            dsg.commit();
-            dsg.end(); 
-            
-            
-            time_ms = timer.endTimer() ;
-            
-        }
-        
         dsg.begin(ReadWrite.READ) ;
         
         //RDFDataMgr.write(System.out,  dsg, Lang.TRIG) ;
@@ -193,7 +195,19 @@ public class TDB_Dev_Main {
         
         System.out.println("DONE") ;
         System.exit(0) ;
+    }
+    
+    public static void query(Location location, String queryString) {
+        String x = "<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType2>" ;
+        DatasetGraphTxn dsg = (DatasetGraphTxn)TDBFactory.createDatasetGraph(location) ;
+        Dataset ds = TDBFactory.createDataset(location) ;
+        Query q = QueryFactory.create(queryString) ;
         
+        Txn.executeRead(dsg.getTransactional(), ()->{
+            try ( QueryExecution qExec = QueryExecutionFactory.create(q, ds) ) {
+                QueryExecUtils.executeQuery(qExec);
+            }
+        }); 
         
         
 //        FileSet idxFs1 = new FileSet(location, "index") ;

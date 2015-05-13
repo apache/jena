@@ -22,6 +22,9 @@ package dev;
 public class NOTES {
     // Streams, not iterators?
 
+    // For all Trans*, do we need to record both Redo and Undo actions in the
+    // journal during prepare? And then recovery is either "forward" or "backward".
+    
     // Recovery in after prepare.
     // Components to write directly to the Journal during prepare.
     

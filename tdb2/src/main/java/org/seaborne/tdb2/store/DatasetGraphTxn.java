@@ -17,17 +17,15 @@
 
 package org.seaborne.tdb2.store;
 
-import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphTrackActive ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.update.GraphStore ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 
 /** Transaction representation of a TDB database */ 
-public class DatasetGraphTxn extends DatasetGraphTrackActive implements GraphStore { 
+public class DatasetGraphTxn extends DatasetGraphTrackActive { 
 
     private final DatasetGraphTDB dsg ;
     private final Transactional dboe ;
@@ -86,16 +84,4 @@ public class DatasetGraphTxn extends DatasetGraphTrackActive implements GraphSto
     public TransactionCoordinator getCoordinator() {
         return transCoord ;
     }
-
-    @Override
-    public Dataset toDataset() {
-        return null ;
-    }
-
-    @Override
-    public void startRequest() {}
-
-    @Override
-    public void finishRequest() {}
-
 }

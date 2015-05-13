@@ -18,13 +18,13 @@
 
 package org.seaborne.tdb2.modify;
 
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.modify.UpdateEngine ;
 import org.apache.jena.sparql.modify.UpdateEngineFactory ;
 import org.apache.jena.sparql.modify.UpdateEngineMain ;
 import org.apache.jena.sparql.modify.UpdateEngineRegistry ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.update.GraphStore ;
 import org.seaborne.tdb2.store.DatasetGraphTxn ;
 
 public class UpdateEngineTDB extends UpdateEngineMain
@@ -38,15 +38,13 @@ public class UpdateEngineTDB extends UpdateEngineMain
         return new UpdateEngineFactory()
         {
             @Override
-            public boolean accept(GraphStore graphStore, Context context)
-            {
-                return (graphStore instanceof DatasetGraphTxn) ;
+            public boolean accept(DatasetGraph dataset, Context context) {
+                return (dataset instanceof DatasetGraphTxn) ;
             }
             
             @Override
-            public UpdateEngine create(GraphStore graphStore, Binding inputBinding, Context context)
-            {
-                return new UpdateEngineTDB((DatasetGraphTxn)graphStore, inputBinding, context);
+            public UpdateEngine create(DatasetGraph dataset, Binding inputBinding, Context context) {
+                return new UpdateEngineTDB((DatasetGraphTxn)dataset, inputBinding, context);
             }
         } ;
     }

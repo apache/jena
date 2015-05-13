@@ -21,20 +21,14 @@ public class TDB_DEV {
     // ** Append-write-only, transactional byte file c.f. Object file.
     
     // Ensure sync called.
-    
-    // Test sof BinaryDataFile
-    //   Read into buffer area.
-    //   Trincate into buffer area.
+    // BinaryDataFile
+    //   .isEmpty
     
     // Switch Lizard to TDB2 technology.
     // Hunt down adapter and remove.
 
-    // NodeTableTRDF.
-    //    Worth caching reads as well?  Lots of one bytereads 
-    //    but NT cache reduces effect on read.
-    //    Framed helps reading? (No significant effect on writing).
-    
     // Sort out transactional Object
+    // Transactional wiring.
     // Component id management.
     //   Read from disk.
     //   Fixed base id and component in set.
