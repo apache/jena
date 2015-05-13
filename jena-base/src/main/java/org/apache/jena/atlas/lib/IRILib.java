@@ -228,7 +228,6 @@ public class IRILib
     }
 
     public static boolean containsNonASCII(String string){
-        boolean clean = true ;
         for ( int i = 0 ; i < string.length() ; i++ )
         {
             char ch = string.charAt(i) ;
