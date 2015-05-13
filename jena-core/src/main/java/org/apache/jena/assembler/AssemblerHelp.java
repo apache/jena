@@ -18,15 +18,26 @@
 
 package org.apache.jena.assembler;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Constructor ;
+import java.lang.reflect.Method ;
+import java.util.ArrayList ;
+import java.util.HashSet ;
+import java.util.List ;
+import java.util.Set ;
 
 import org.apache.jena.assembler.assemblers.AssemblerGroup ;
-import org.apache.jena.assembler.exceptions.* ;
+import org.apache.jena.assembler.exceptions.AmbiguousSpecificTypeException ;
+import org.apache.jena.atlas.lib.CacheFactory ;
+import org.apache.jena.atlas.lib.CacheSet ;
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.shared.* ;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.shared.BadDescriptionMultipleRootsException ;
+import org.apache.jena.shared.BadDescriptionNoRootException ;
+import org.apache.jena.shared.JenaException ;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.RDFS ;
 
 /**
     AssemblerHelp provides utility methods used by, and useful for working with,
@@ -137,12 +148,20 @@ public class AssemblerHelp
         return loaded;
         }
     
+    /** Small cache to suppress some repeat warnings */ 
+    static CacheSet<String> warningsMap = CacheFactory.createCacheSet(10) ;  
+    
     private static Class<?> loadClassNamedBy( Statement s )
     {
         String x = getString( s ) ;
         // Jena2 -> Jena3 transition 
-        if ( x.startsWith("com.hp.hpl.jena") )
-            x = x.replaceFirst("com.hp.hpl.jena", "org.apache.jena") ;
+        if ( x.startsWith("com.hp.hpl.jena") ) {
+            String x1 = x.replaceFirst("com.hp.hpl.jena", "org.apache.jena") ;
+            if ( ! warningsMap.contains(x) )
+                Log.warn(AssemblerHelp.class, "ja:loadClass: Migration to Jena3: Converting "+x+" to "+x1) ;
+            warningsMap.add(x);
+            x = x1 ;
+        }
         try { return Class.forName(x); }
         catch (Exception e) { throw new JenaException( e ); }
     }
