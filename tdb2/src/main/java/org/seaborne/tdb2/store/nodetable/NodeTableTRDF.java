@@ -25,7 +25,6 @@ import org.apache.jena.riot.thrift.ThriftConvert ;
 import org.apache.jena.riot.thrift.wire.RDF_Term ;
 import org.apache.thrift.TException ;
 import org.apache.thrift.protocol.TProtocol ;
-import org.apache.thrift.transport.TTransport ;
 import org.seaborne.dboe.base.file.BinaryDataFile ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.tdb2.TDBException ;
@@ -36,7 +35,7 @@ import org.seaborne.tdb2.store.NodeId ;
 public class NodeTableTRDF extends NodeTableNative {
     // Write buffering is done in the underlying BinaryDataFile
     BinaryDataFile diskFile ;
-    private TTransport transport ;
+    private TReadAppendFileTransport transport ;
     private final TProtocol protocol ;
 
     public NodeTableTRDF(Index nodeToId, BinaryDataFile objectFile) {
@@ -73,7 +72,7 @@ public class NodeTableTRDF extends NodeTableNative {
     protected Node readNodeFromTable(NodeId id) {
         try {
             long x = id.getId() ;
-            diskFile.position(x) ;
+            transport.readPosition(x) ;
             RDF_Term term = new RDF_Term() ;
             term.read(protocol) ;
             Node n = ThriftConvert.convert(term) ;

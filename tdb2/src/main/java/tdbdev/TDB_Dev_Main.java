@@ -84,7 +84,7 @@ public class TDB_Dev_Main {
 
         
         try ( TReadAppendFileTransport file = new TReadAppendFileTransport(binfile) ) {
-            file.position(0);
+            file.readPosition(0);
             TProtocol proto = TRDF.protocol(file) ;
             RDF_Term term = new RDF_Term() ;
             term.read(proto);
@@ -117,7 +117,7 @@ public class TDB_Dev_Main {
 //            details(file) ;
 
             System.out.println("seek") ;
-            binfile.position(41);
+            file.readPosition(41);
             details(file) ;
 
             byte[] bytes2 = new byte[bytes.length*2] ;
@@ -130,7 +130,7 @@ public class TDB_Dev_Main {
     private static void details(TReadAppendFileTransport file) {
         System.out.println("Len = "+file.getBinaryDataFile().length()) ;
         System.out.println("W   = "+file.getBinaryDataFile().length()) ;
-        System.out.println("R   = "+file.getBinaryDataFile().position()) ;
+        System.out.println("R   = "+file.readPosition()) ;
     }
     
     public static void main1(String[] args) {

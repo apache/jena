@@ -17,6 +17,7 @@
 
 package org.seaborne.dboe.base.file;
 
+import org.apache.jena.atlas.lib.FileOps ;
 import org.seaborne.dboe.base.file.BinaryDataFile ;
 import org.seaborne.dboe.base.file.BinaryDataFileRandomAccess ;
 
@@ -25,6 +26,7 @@ public class TestBinaryDataRAF extends AbstractTestBinaryDataFile {
 
     @Override
     protected BinaryDataFile createBinaryDataFile() {
+        FileOps.delete(FILE);
         return new BinaryDataFileRandomAccess(FILE) ;
     }
 }

@@ -24,7 +24,9 @@ import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.atlas.io.IO ;
 
 /** Implementation of {@link BinaryDataFile} using {@link RandomAccessFile}.
- *  Note: no buffering of reads or writes provided.
+ *  
+ * <li>No buffering of reads or writes provided.
+ * <li>Not thread-safe.
  *  
  *  @see BinaryDataFileWriteBuffered
  */
@@ -59,9 +61,10 @@ public class BinaryDataFileRandomAccess implements BinaryDataFile {
     }
     
     @Override
-    public int read(byte[] b, int start, int length) {
+    public int read(long posn, byte[] b, int start, int length) {
         checkOpen() ;
         switchToReadMode() ;
+        seek(posn) ;
         try {
             int x = file.read(b, start, length) ;
             readPosition += x ;
@@ -71,36 +74,21 @@ public class BinaryDataFileRandomAccess implements BinaryDataFile {
     }
 
     @Override
-    public void write(byte[] b, int start, int length) {
+    public long write(byte[] b, int start, int length) {
         checkOpen() ;
         switchToWriteMode() ;
+        long x = writePosition ;
         try { 
             file.write(b, start, length) ; 
             writePosition += length ;
         }
         catch (IOException ex) { IO.exception(ex) ; }
+        return x ;
     }
 
-    @Override
-    public long position() {
-        checkOpen() ;
-        return readPosition ; 
-    }
-
-    @Override
-    public void position(long posn) {
-        checkOpen() ;
-        readPosition = posn ;
-        if ( readPosition < 0 )
-            readPosition = 0 ;
-        if ( readMode )
-            // Write mode - do nothing at the moment, happens in switchToReadMode later.
-            seek(readPosition) ;
-    }
-
+    
     // Move the RandomAccess file pointer.
     private void seek(long posn) {
-        checkOpen() ;
         try { file.seek(posn) ; }
         catch (IOException ex) { IO.exception(ex) ; }
     }

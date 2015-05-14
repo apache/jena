@@ -27,6 +27,8 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestTransIndexMem.class
     , TestTransBlob.class
     , TestTransBlobPersistent.class
+    , TestTransBinaryDataFileGeneral.class
+    , TestTransBinaryDataFile.class
 })
 
 public class TS_TransData { }

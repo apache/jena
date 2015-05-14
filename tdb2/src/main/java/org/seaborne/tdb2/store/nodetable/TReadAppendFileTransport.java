@@ -27,6 +27,7 @@ import org.seaborne.dboe.base.file.BinaryDataFile ;
  */
 public class TReadAppendFileTransport extends TTransport {
     private BinaryDataFile file ;
+    private long readPosn = -1 ;
     
     public TReadAppendFileTransport(BinaryDataFile file) {
         this.file = file ;
@@ -47,71 +48,23 @@ public class TReadAppendFileTransport extends TTransport {
         file.close() ; 
     }
     
-    public void position(long posn) {
-        file.position(posn); 
-    }
-
-    public long position() {
-        return file.position(); 
-    }
-
     public void truncate(long posn) {
         file.truncate(posn); 
     }
 
     public BinaryDataFile getBinaryDataFile() { return file ; }
 
-    //
-//    public long getWriteLocation() {
-//        return file.
-//    }
-//
-//    public long getFileLength() {
-//        try { return file.length()+bufferLength ; }
-//        catch (IOException e) { IO.exception(e); return -1 ; }
-//    }
-//
-//    public long getReadLocation() {
-//        return readPosn ;
-//    }
-//
-//    public long getFilePointer() {
-//        try { return file.getFilePointer() ; }
-//        catch (IOException e) { IO.exception(e); return -1L ; }
-//    }
-//    
-//    public void seek(long posn) {
-//        try {
-//            if ( ! readMode )
-//                flush$() ;
-//            file.seek(posn) ;
-//            readPosn = posn ;
-//        }
-//        catch (IOException ex) { IO.exception(ex) ; }
-//    }
-//    
-//    public void truncate(long posn) {
-//        if ( readMode )
-//            // Avoid seek if already writing.
-//            setForWriting() ;
-//        else if ( pendingOutput )
-//            flush$() ;
-//        // Now write mode.
-//        try { file.getChannel().truncate(posn) ; }
-//        catch (IOException ex) { IO.exception(ex); } 
-//        readPosn = Math.min(readPosn,  posn) ;
-//        if ( writePosn > posn ) {
-//            writePosn = posn ;
-//            //Need the seek?
-//            // Yes.
-//            try { file.seek(posn) ; }
-//            catch (IOException ex) { IO.exception(ex) ; }
-//        }
-//    }
+    public long readPosition() {
+        return readPosn ;
+    }
 
+    public void readPosition(long posn) {
+        readPosn = posn ;
+    }
+    
     @Override
     public int read(byte[] buf, int off, int len) {
-        return file.read(buf, off, len) ;
+        return file.read(readPosn, buf, off, len) ;
     }
 
     @Override

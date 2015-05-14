@@ -18,15 +18,18 @@
 package org.seaborne.dboe.base.file;
 
 import org.apache.jena.atlas.RuntimeIOException ;
+import org.apache.jena.atlas.io.IO ;
 
-/** Implementation of {@link BinaryDataFile} in memory for testing.
+/** Implementation of {@link BinaryDataFile} in memory for testing
+ * and development use. Raw performance is not an objective.
+ * 
+ * <li>This implementation is thread-safe. 
  */
 public class BinaryDataFileMem implements BinaryDataFile {
 
     private int INC = 1024 ;
     private byte[] buffer = null ;
     private boolean readMode ;
-    private int readPosition ;
     private int writePosition ;
     
     private void ensureBuffer(int len) {
@@ -40,56 +43,59 @@ public class BinaryDataFileMem implements BinaryDataFile {
     public BinaryDataFileMem() { }
     
     @Override
+    synchronized
     public void open() {
         if ( buffer != null )
             throw new RuntimeIOException("Already open") ;
         buffer = new byte[INC] ; 
         writePosition = 0 ;
-        readPosition = 0 ;
         readMode = true ;
     }
 
     @Override
+    synchronized
     public boolean isOpen() {
         return buffer != null ;
     }
     
     @Override
-    public int read(byte[] b, int start, int length) {
+    synchronized
+    public int read(long posn, byte[] b, int start, int length) {
         checkOpen() ;
         switchToReadMode() ;
-        int x = Math.min(length, writePosition-readPosition) ;
-        if ( readPosition >= writePosition )
+        if ( posn >= writePosition ) 
             return -1 ;
-        System.arraycopy(buffer, readPosition, b, start, x) ;
-        readPosition += x ;
+        checkRead(posn) ;
+        checkStart(start) ;
+        int x = Math.min(writePosition-start, length) ;
+        System.arraycopy(buffer, (int)posn, b, start, x) ;
         return x ;
     }
 
+    private void checkRead(long posn) {
+        if ( posn < 0 )
+            IO.exception(String. format("Position out of bounds: %d in [0,%d)", posn, writePosition)) ;
+    }
+
+    private void checkStart(long start) {
+        if ( start < 0 )
+            IO.exception(String. format("Start point out of bounds: %d in [0,%d)", start, writePosition)) ;
+    }
+
     @Override
-    public void write(byte[] b, int start, int length) {
+    synchronized
+    public long write(byte[] b, int start, int length) {
         checkOpen() ;
         switchToWriteMode() ;
         ensureBuffer(length);
         System.arraycopy(b, start, buffer, writePosition, length) ;
+        long x = writePosition ; 
         writePosition += length ;
+        return x ; 
     }
 
     @Override
-    public long position() {
-        checkOpen() ;
-        return readPosition ; 
-    }
-
-    @Override
-    public void position(long posn) {
-        checkOpen() ;
-        readPosition = (int)posn ;
-        if ( readPosition < 0 )
-            readPosition = 0 ;
-    }
-
-    @Override
+    synchronized
     public void truncate(long length) {
         checkOpen() ;
         switchToWriteMode() ;
@@ -97,11 +103,13 @@ public class BinaryDataFileMem implements BinaryDataFile {
     }
 
     @Override
+    synchronized
     public void sync() {
         checkOpen() ;
     }
 
     @Override
+    synchronized
     public void close() {
         if ( ! isOpen() )
             return ;
@@ -109,6 +117,7 @@ public class BinaryDataFileMem implements BinaryDataFile {
     }
 
     @Override
+    synchronized
     public long length() {
         return writePosition ;
     }

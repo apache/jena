@@ -19,13 +19,16 @@ package org.seaborne.dboe.base.file;
 
 import org.apache.jena.atlas.RuntimeIOException ;
 
-/** Implementation of {@link BinaryDataFile} adding write buffering to {@link BinaryDataFileRandomAccess}
- *  Adds write buffering.
- *  Note: No read buffering provided.
+/** Implementation of {@link BinaryDataFile} adding write buffering to another 
+ * {@link BinaryDataFile} file such as a {@link BinaryDataFileRandomAccess}.
+ *  <li>Thread-safe.
+ *  <li>No read buffering provided.
+ *  <li>The write buffer is flushed when switching to read.
  */
 
 public class BinaryDataFileWriteBuffered implements BinaryDataFile {
     private static final int SIZE = 128*1024 ;
+    private final Object sync = new Object() ; 
     private byte[] buffer ;
     private int bufferLength ;
     private boolean pendingOutput ;
@@ -42,63 +45,74 @@ public class BinaryDataFileWriteBuffered implements BinaryDataFile {
     
     @Override
     public void open() {
-        other.open() ;
-        bufferLength = 0 ;
-        pendingOutput = false ;
+        synchronized(sync) {
+            other.open() ;
+            bufferLength = 0 ;
+            pendingOutput = false ;
+        }
     }
 
     @Override
     public void close() {
-        if ( ! isOpen() )
-            return ;
-        writeBuffer();
-        other.close() ;
-    }
+        synchronized(sync) {
+
+            if ( ! isOpen() )
+                return ;
+            writeBuffer();
+            other.close() ;
+        }
+    }    
 
     @Override
     public boolean isOpen() {
-        return other.isOpen() ;
-    }
-
-    @Override
-    public long position() {
-        return other.position() ;
-    }
-
-    @Override
-    public void position(long posn) {
-        other.position(posn) ;
-    }
+        synchronized(sync) {
+            return other.isOpen() ;
+        }
+    }    
 
     @Override
     public long length() {
-        return other.length()+bufferLength ;
-    }
-    
+        synchronized(sync) {
+            return other.length()+bufferLength ;
+        }
+    }    
+
     @Override
     public void truncate(long posn) {
-        checkOpen() ;
-        if ( pendingOutput && posn >= other.length() )
-            writeBuffer() ;
-        other.truncate(posn) ;
-    }
+
+        synchronized(sync) {
+
+            checkOpen() ;
+            if ( pendingOutput && posn >= other.length() )
+                writeBuffer() ;
+            other.truncate(posn) ;
+        }
+    }    
 
     private void checkOpen() {
-        if ( ! other.isOpen() )
-            throw new RuntimeIOException("Not open") ;
-    }
+        synchronized(sync) {
+            if ( ! other.isOpen() )
+                throw new RuntimeIOException("Not open") ;
+        }
+    }    
 
     @Override
-    public int read(byte[] b, int start, int length) {
-        checkOpen() ;
-        switchToReadMode() ;
-        return other.read(b, start, length) ;
-    }
-    
+    public int read(long posn, byte[] b, int start, int length) {
+        synchronized(sync) {
+            // Overlap with buffered area
+            // We flush the write buffer for a read so no need to check.
+            checkOpen() ;
+            switchToReadMode() ;
+            return other.read(posn, b, start, length) ;
+        }
+    }    
+
     @Override
-    public void write(byte[] buf, int off, int len) {
-        checkOpen() ;
-        switchToWriteMode() ;
+    public long write(byte[] buf, int off, int len) {
+        synchronized(sync) {
+            checkOpen() ;
+            switchToWriteMode() ;
+            long x = length() ;
         
 //        if ( false ) {
 //            // No buffering
@@ -107,38 +121,45 @@ public class BinaryDataFileWriteBuffered implements BinaryDataFile {
 //            bufferLength = 0 ;
 //            return ;
 //        }
-        
-        // No room.
-        if ( bufferLength + len >= SIZE )
-            writeBuffer() ;
 
-        if ( bufferLength + len < SIZE ) {
-            // Room to buffer
-            System.arraycopy(buf, off, buffer, bufferLength, len);
-            bufferLength += len ;
-            pendingOutput = true ;
-            return ;
-        } 
-        // Larger than tehbuffer space.  Write directly.
-        other.write(buf, off, len) ;
-    }
-    
+            // No room.
+            if ( bufferLength + len >= SIZE )
+                writeBuffer() ;
+
+            if ( bufferLength + len < SIZE ) {
+                // Room to buffer
+                System.arraycopy(buf, off, buffer, bufferLength, len);
+                bufferLength += len ;
+                pendingOutput = true ;
+                return x ;
+            } 
+            // Larger than tehbuffer space.  Write directly.
+            other.write(buf, off, len) ;
+            return x ;
+        }
+    }    
+
     @Override
     public void sync()  {
-        writeBuffer() ;
-        other.sync(); 
-    }
-    
+        synchronized(sync) {
+            writeBuffer() ;
+            other.sync(); 
+        }
+    }    
     private void writeBuffer() {
-        if ( pendingOutput ) {
+        synchronized(sync) {
+            if ( pendingOutput ) {
                 other.write(buffer, 0, bufferLength) ;
                 bufferLength = 0 ;
+            }
         }
     }
-    
+
+    // Inside synchronization
     protected void switchToWriteMode() {
     }
-    
+
+    // Inside synchronization
     protected void switchToReadMode() {
         writeBuffer() ;
     }

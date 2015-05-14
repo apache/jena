@@ -57,25 +57,22 @@ public abstract class AbstractTestBinaryDataFile {
     }
     
     @Test public void writeread_01() { 
-        assertEquals(0, file.position()) ;
         assertEquals(0, file.length()) ;
     }
     
     @Test public void writeread_02() { 
-        assertEquals(0, file.position()) ;
         assertEquals(0, file.length()) ;
         file.write(data);
-        assertEquals(0, file.position()) ;
         assertNotEquals(0, file.length()) ;
         assertEquals(data.length, file.length()) ;        
     }
     
     @Test public void writeread_03() { 
-        file.write(data);
+        long x = file.write(data);
         byte[] data2 = new byte[data.length+100] ;
-        int x1 = file.read(data2) ;
+        int x1 = file.read(x, data2) ;
         assertEquals(data.length, x1) ;
-        int x2 = file.read(data2) ;
+        int x2 = file.read(data.length, data2) ;
         assertEquals(-1, x2) ;
     }
 

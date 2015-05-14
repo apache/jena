@@ -22,7 +22,7 @@ import org.junit.Test ;
 import org.seaborne.dboe.base.file.BinaryDataFileRandomAccess ;
 import static org.junit.Assert.* ;
 
-// Additional tests that do not want the @Before/@After of  TestReadAppendFile(AbstractTestBinaryDataFile)
+// Additional tests that do not want the @Before/@After of AbstractTestBinaryDataFile
 public class TestBinaryDataRAFInitial  {
     public static String FILE = TS_File.FILE ;
     private BinaryDataFileRandomAccess file ;

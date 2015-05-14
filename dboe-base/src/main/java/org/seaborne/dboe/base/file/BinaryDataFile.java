@@ -38,50 +38,45 @@ public interface BinaryDataFile extends Closeable, Sync {
     /** Open the file */
     public void open() ;
     
-    /** Is it open */ 
+    /** Is it open? */ 
     public boolean isOpen() ;
     
     /** Read into a byte array, returning the number of bytes read. 
+     * Reads are at an absolute position and a read is atomic/thread-safe.
      * 
+     * @param posn Location of the read operation.
      * @param b byte array
      * 
      * @return The number of bytes read
      */
-    public default int read(byte b[]) {
-        return read(b, 0, b.length);
+    public default int read(long posn, byte b[]) {
+        return read(posn, b, 0, b.length);
     }
 
     /** Read into a byte array, returning the number of bytes read.
+     * Reads are at an absolute position and a read is atomic/thread-safe.
      * 
+     * @param posn Location of the read operation.
      * @param b
      * @param start of bytesarray to read into
      * @param length Maximum number of bytes to read. 
      * @return The number of bytes read
      */
  
-    public int read(byte b[], int start, int length) ;
+    public int read(long posn, byte b[], int start, int length) ;
 
-    /** Write bytes - bytes are always written to the end of the file */ 
-    public default void write(byte b[]) {
-        write(b, 0, b.length) ;
+    /** Write bytes - bytes are always written to the end of the file.
+     * Return the location where the write started.
+     */ 
+    public default long write(byte b[]) {
+        return write(b, 0, b.length) ;
     }
     
-    /** Write bytes - bytes are always written to the end of the file */ 
-    public void write(byte b[], int start, int length) ;
+    /** Write bytes - bytes are always written to the end of the file.
+     * Return the location where the write started.
+     */ 
+    public long write(byte b[], int start, int length) ;
     
-    /** Get the read position */
-    public long position() ;
-
-    /** Set the read position. 
-     * <p>
-     * If &lt; 0, then set to zero.
-     * <p> If beyond the current length of the file, keep as provided, 
-     * a write may extend the file before the next read. 
-     * 
-     * @param posn The new position.
-     */
-    public void position(long posn) ;
-
     /** Return the length of the file (including any buffered writes) */
     public long length() ;
 
