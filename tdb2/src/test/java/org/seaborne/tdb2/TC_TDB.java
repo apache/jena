@@ -47,6 +47,7 @@ import org.seaborne.tdb2.sys.TS_Sys ;
 @Suite.SuiteClasses( {
     // TDB
     TS_LibTDB.class
+    , TS_ObjectFile.class
     , TS_NodeTable.class
     , TS_TupleTable.class
     , TS_TDBSetup.class
@@ -56,7 +57,6 @@ import org.seaborne.tdb2.sys.TS_Sys ;
     , TS_Graph.class
     , TS_Factory.class
     , TS_TDBAssembler.class
-    , TS_ObjectFile.class
 } )
 
 public class TC_TDB

@@ -50,6 +50,16 @@
       <scope>test</scope>
     </dependency>
 
+
+    <dependency>
+      <groupId>org.seaborne.mantis</groupId>
+      <artifactId>dboe-base</artifactId>
+      <version>0.0.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    
   </dependencies>
 
 </project>

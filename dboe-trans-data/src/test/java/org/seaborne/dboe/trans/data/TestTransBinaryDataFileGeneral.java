@@ -45,9 +45,11 @@ public class TestTransBinaryDataFileGeneral extends AbstractTestBinaryDataFile {
     
     @Override
     protected void releaseBinaryDataFile(BinaryDataFile file) {
-        transactional.commit() ;
-        transactional.end() ;
-        file.close() ;
+        if ( file.isOpen() ) {
+            transactional.commit() ;
+            transactional.end() ;
+            baseBinData.close() ;
+        }
     }
 }
 

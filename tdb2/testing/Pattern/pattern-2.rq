@@ -1,0 +1,8 @@
+PREFIX :  <http://example/OTHER>
+
+SELECT * 
+{ 
+    # Test shared variables
+    ?x1 :p1 ?z .
+    ?x2 :p1 ?z .
+}

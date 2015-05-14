@@ -23,10 +23,6 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestObjectFileMem.class
-    , TestObjectFileDisk.class
-    , TestObjectFileBuffering.class
-    , TestStringFileMem.class 
-    , TestStringFileDisk.class
 })
 
 public class TS_ObjectFile

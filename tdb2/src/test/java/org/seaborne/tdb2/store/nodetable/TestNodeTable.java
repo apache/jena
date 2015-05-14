@@ -20,13 +20,20 @@ package org.seaborne.tdb2.store.nodetable;
 
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.junit.BuildTestLib ;
-import org.seaborne.tdb2.sys.Names ;
+import org.seaborne.tdb2.setup.StoreParams ;
+import org.seaborne.tdb2.setup.StoreParamsBuilder ;
 
 public class TestNodeTable extends AbstractTestNodeTable
 {
     @Override
     protected NodeTable createEmptyNodeTable()
     {
-        return BuildTestLib.makeNodeTable(Location.mem(), Names.prefixTableBaseName, 10, 10, 10) ;
+        StoreParams params = 
+            StoreParamsBuilder.create()
+                .nodeId2NodeCacheSize(10)
+                .node2NodeIdCacheSize(10)
+                .nodeMissCacheSize(10).build() ;
+
+        return BuildTestLib.makeNodeTable(Location.mem(), "test", params) ;
     }
 }

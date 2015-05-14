@@ -21,28 +21,38 @@ import org.apache.jena.atlas.lib.NotImplemented ;
 import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.RecordFactory ;
+import org.seaborne.dboe.index.Index ;
 import org.seaborne.dboe.index.IndexParams ;
 import org.seaborne.dboe.index.RangeIndex ;
+import org.seaborne.dboe.trans.bplustree.BPlusTree ;
+import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
+import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.store.DatasetPrefixesTDB ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
+import org.seaborne.tdb2.store.nodetable.NodeTableCache ;
+import org.seaborne.tdb2.store.nodetable.NodeTableInline ;
+import org.seaborne.tdb2.store.nodetable.NodeTableTRDF ;
 import org.seaborne.tdb2.sys.DatasetControl ;
+import org.seaborne.tdb2.sys.SystemTDB ;
 
 /** Build things for non-transactional tests */
 public class BuildTestLib {
 
     public static RangeIndex buildRangeIndex(FileSet mem, RecordFactory factory, IndexParams indexParams) {
-        throw new NotImplemented() ;
+        BPlusTree bpt = BPlusTreeFactory.makeMem(5, factory.keyLength(), factory.valueLength()) ;
+        bpt.nonTransactional() ;
+        return bpt ; 
     }
 
-    public static NodeTable makeNodeTable(Location mem, String baseName, 
-                                          int cacheNodeId2NodeSize, 
-                                          int cacheNode2NodeIdSize,
-                                          int cacheMissSize) {
-        throw new NotImplemented() ;
-    }
-
-    public static NodeTable makeNodeTable(Location mem) {
-        throw new NotImplemented() ;
+    public static NodeTable makeNodeTable(Location mem, String baseName, StoreParams params) {
+        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
+        FileSet fs = new FileSet(mem, baseName) ;
+                
+        Index index = buildRangeIndex(fs, recordFactory, params) ;
+        NodeTable nt = new NodeTableTRDF(index, null) ;
+        nt = NodeTableCache.create(nt, params) ;
+        nt = NodeTableInline.create(nt) ;
+        return nt ;
     }
 
     public static DatasetPrefixesTDB makePrefixes(Location location, DatasetControl policy) {
