@@ -206,19 +206,16 @@ public class TextIndexLucene implements TextIndex {
         if ( log.isDebugEnabled() )
             log.debug("Update entity: " + entity) ;
         try {
-            Document doc = doc(entity);
-            Analyzer analyzer = null;
-            if (isMultilingual())
-                analyzer = LuceneUtil.getLocalizedAnalyzer(entity.getLanguage());
-            Term term = new Term(docDef.getEntityField(), entity.getId());
-
-            if (analyzer != null)
-                indexWriter.updateDocument(term, doc, analyzer) ;
-            else //use the default one
-                indexWriter.updateDocument(term, doc);
+            updateDocument(entity);
         } catch (IOException e) {
             throw new TextIndexException(e) ;
         }
+    }
+
+    protected void updateDocument(Entity entity) throws IOException {
+        Document doc = doc(entity);
+        Term term = new Term(docDef.getEntityField(), entity.getId());
+        indexWriter.updateDocument(term, doc);
     }
 
     @Override
@@ -226,22 +223,19 @@ public class TextIndexLucene implements TextIndex {
         if ( log.isDebugEnabled() )
             log.debug("Add entity: " + entity) ;
         try {
-            Document doc = doc(entity) ;
-            Analyzer analyzer = null;
-            if (isMultilingual())
-                analyzer = LuceneUtil.getLocalizedAnalyzer(entity.getLanguage());
-
-            if (analyzer != null)
-                indexWriter.addDocument(doc, analyzer) ;
-            else //use the default one
-                indexWriter.addDocument(doc) ;
+            addDocument(entity);
         }
         catch (IOException e) {
             throw new TextIndexException(e) ;
         }
     }
 
-    private Document doc(Entity entity) {
+    protected void addDocument(Entity entity) throws IOException {
+        Document doc = doc(entity) ;
+        indexWriter.addDocument(doc) ;
+    }
+
+    protected Document doc(Entity entity) {
         Document doc = new Document() ;
         Field entField = new Field(docDef.getEntityField(), entity.getId(), ftIRI) ;
         doc.add(entField) ;
@@ -252,18 +246,18 @@ public class TextIndexLucene implements TextIndex {
             doc.add(gField) ;
         }
 
-        for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
-            Field field = new Field(e.getKey(), (String)e.getValue(), ftText) ;
-            doc.add(field) ;
-            if (isMultilingual()) {
-                String lang =  entity.getLanguage();
-                if (lang == null || "".equals(lang))
-                    lang = "undef";
-                field = new Field("lang", lang, StringField.TYPE_STORED ) ;
-                doc.add(field) ;
-            }
-        }
+        for ( Field field : buildContentFields(entity) )
+            doc.add(field);
+
         return doc ;
+    }
+
+    protected List<Field> buildContentFields(Entity entity) {
+        List<Field> list = new ArrayList<>();
+        for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
+            list.add( new Field(e.getKey(), (String) e.getValue(), ftText) );
+        }
+        return list;
     }
 
     @Override
@@ -289,10 +283,14 @@ public class TextIndexLucene implements TextIndex {
         return query ;
     }
 
+    protected Query preParseQuery(String queryString, String primaryField, Analyzer analyzer) throws ParseException {
+        return parseQuery(queryString, primaryField, analyzer);
+    }
+
     private List<Map<String, Node>> get$(IndexReader indexReader, String uri) throws ParseException, IOException {
         String escaped = QueryParserBase.escape(uri) ;
         String qs = docDef.getEntityField() + ":" + escaped ;
-        Query query = parseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
+        Query query = preParseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
         ScoreDoc[] sDocs = indexSearcher.search(query, 1).scoreDocs ;
         List<Map<String, Node>> records = new ArrayList<Map<String, Node>>() ;
@@ -339,14 +337,7 @@ public class TextIndexLucene implements TextIndex {
 
     private List<Node> query$(IndexReader indexReader, String qs, int limit) throws ParseException, IOException {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
-        Analyzer qAnalyzer = queryAnalyzer;
-        if (isMultilingual()) {//index and query analyzer must be the same
-            String lang = qs.substring( qs.lastIndexOf(":") + 1);
-            if (!"undef".equals(lang))
-                qAnalyzer = LuceneUtil.getLocalizedAnalyzer(lang);
-        }
-
-        Query query = parseQuery(qs, docDef.getPrimaryField(), qAnalyzer) ;
+        Query query = preParseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
         if ( limit <= 0 )
             limit = MAX_N ;
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
@@ -368,11 +359,6 @@ public class TextIndexLucene implements TextIndex {
     @Override
     public EntityDefinition getDocDef() {
         return docDef ;
-    }
-
-    @Override
-    public boolean isMultilingual() {
-        return false;
     }
 
     private Node entryToNode(String v) {

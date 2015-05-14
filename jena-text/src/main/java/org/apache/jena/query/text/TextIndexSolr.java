@@ -231,11 +231,6 @@ public class TextIndexSolr implements TextIndex
         return docDef ;
     }
 
-    @Override
-    public boolean isMultilingual() {
-        return false;
-    }
-
     private Node entryToNode(String v)
     {
         // TEMP

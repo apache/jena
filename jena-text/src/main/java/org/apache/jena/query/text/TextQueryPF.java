@@ -74,11 +74,9 @@ public class TextQueryPF extends PropertyFunctionBase {
         if (argObject.isList()) {
             //extract of extra lang arg if present and if is usable (multilingual index).
             //arg is removed from the list to avoid conflict with order and args length
-            if (server.isMultilingual()) {
-                langArg = extractArg("lang", argObject);
-                if (langArg == null)
-                    langArg = "undef";
-            }
+            langArg = extractArg("lang", argObject);
+            if (langArg == null && server instanceof TextIndexLuceneMultilingual)
+                langArg = "undef";
 
             List<Node> list = argObject.getArgList() ;
             if (list.size() == 0)

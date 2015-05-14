@@ -51,7 +51,4 @@ public interface TextIndex extends Closeable //, Transactional
     List<Node> query(String qs) ;
 
     EntityDefinition getDocDef() ;
-
-    //localization
-    boolean isMultilingual() ;
 }
