@@ -27,7 +27,6 @@ import java.io.IOException ;
 import java.io.InputStream ;
 
 import org.apache.jena.atlas.AtlasException ;
-import org.apache.jena.atlas.RuntimeIOException ;
 
 /** Parsing-centric input stream.
  *  @see PeekReader
@@ -177,7 +176,7 @@ public final class PeekInputStream extends InputStream
             //throw new JenaException("Pushback buffer overflow") ;
         }
         if ( b == EOF || b == UNSET )
-            throw new RuntimeIOException("Illegal byte to push back: "+b) ;
+            IO.exception("Illegal byte to push back: "+b) ;
         
         idxPushback++ ;
         pushbackBytes[idxPushback] = (byte)b ;
