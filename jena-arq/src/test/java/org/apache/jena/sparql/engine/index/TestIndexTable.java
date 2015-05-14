@@ -142,7 +142,7 @@ public class TestIndexTable {
 	}
 	
 	@Test
-	public void testLinearIndexTableData() throws Exception
+	public void testLinearIndexTableData()
 	{
 		// test twice with different internal mappings
 		testTableData(IndexFactory.createIndex(order1, partData())) ;
@@ -160,7 +160,7 @@ public class TestIndexTable {
 		testTableData(new LinearIndex(order2, partData(), emptyKeys, emptyMapping)) ;
 	}
 	
-	private void testTableData(IndexTable index) throws Exception
+	private void testTableData(IndexTable index)
 	{
 		// positive test for matching
 		for ( Binding b: fData )

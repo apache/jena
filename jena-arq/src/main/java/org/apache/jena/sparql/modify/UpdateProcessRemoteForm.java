@@ -25,7 +25,6 @@ import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.engine.http.HttpParams ;
 import org.apache.jena.sparql.engine.http.Params ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.update.UpdateProcessor ;
 import org.apache.jena.update.UpdateRequest ;
 
 /**
@@ -33,7 +32,7 @@ import org.apache.jena.update.UpdateRequest ;
  * form and POST Use of application/sparql-update via @link{UpdateProcessRemote}
  * is preferred.
  */
-public class UpdateProcessRemoteForm extends UpdateProcessRemoteBase implements UpdateProcessor {
+public class UpdateProcessRemoteForm extends UpdateProcessRemoteBase {
 
     /**
      * Creates a new remote update processor that uses the form URL encoded

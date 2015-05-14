@@ -100,18 +100,18 @@ public abstract class EarlTestCase extends TestCase
 
     // Increase visibility.
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp() {
         setUpTest() ;
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown() {
         tearDownTest() ;
     }
 
     // Decouple from JUnit3.
-    public void setUpTest()    throws Exception {}
-    public void tearDownTest() throws Exception {}
+    public void setUpTest() {}
+    public void tearDownTest() {}
 
     protected void success()
     {

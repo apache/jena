@@ -55,7 +55,7 @@ public class SyntaxUpdateTest extends EarlTestCase
     
     
     @Override
-    protected void runTestForReal() throws Throwable
+    protected void runTestForReal()
     {
         try {
             if ( updateString == null )
