@@ -19,12 +19,10 @@ package org.seaborne.dboe.base.buffer;
 
 import java.nio.ByteBuffer ;
 
-import org.junit.Assert ;
 import org.junit.AfterClass ;
+import org.junit.Assert ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.seaborne.dboe.base.buffer.BufferException ;
-import org.seaborne.dboe.base.buffer.PtrBuffer ;
 import org.seaborne.dboe.sys.SystemIndex ;
 
 public class TestPtrBuffer extends Assert

@@ -23,7 +23,6 @@ import java.util.Map ;
 import java.util.Set ;
 import java.util.concurrent.ConcurrentHashMap ;
 
-import org.apache.jena.sparql.core.DatasetGraph ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.file.LocationLock ;
 import org.seaborne.tdb2.TDBException ;
@@ -114,8 +113,9 @@ public class StoreConnection
         //    if (!force && sConn.transactionManager.activeTransactions()) 
         //        throw new TDBTransactionException("Can't expel: Active transactions for location: " + location) ;
 
-        // No transactions at this point (or we don't care and are clearing up
-        // forcefully.)
+        // No transactions at this point (or we don't care and are
+        // clearing up forcefully.)
+        sConn.getDatasetGraph().getCoordinator().shutdown(); 
         sConn.getDatasetGraphTDB().close() ;
         sConn.isValid = false ;
         cache.remove(location) ;
@@ -139,7 +139,7 @@ public class StoreConnection
         datasetGraph = dsg ;
     }
 
-    public DatasetGraph getDatasetGraph() {
+    public DatasetGraphTxn getDatasetGraph() {
         return datasetGraph;
     }
     

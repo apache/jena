@@ -15,27 +15,17 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.base;
+package org.seaborne.dboe.base.buffer;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.seaborne.dboe.base.block.TS_Block ;
-import org.seaborne.dboe.base.buffer.TS_Buffer ;
-import org.seaborne.dboe.base.file.TS_File ;
-import org.seaborne.dboe.base.objectfile.TS_ObjectFile ;
-import org.seaborne.dboe.base.record.TS_Record ;
-import org.seaborne.dboe.base.recordfile.TS_RecordFile ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-      TS_Block.class
-    , TS_File.class
-    , TS_Buffer.class
-    , TS_Record.class
-    , TS_RecordFile.class
-    , TS_ObjectFile.class
+    TestRecordBuffer.class
+    , TestPtrBuffer.class
 })
 
 
-public class TC_Base
+public class TS_Buffer
 {}

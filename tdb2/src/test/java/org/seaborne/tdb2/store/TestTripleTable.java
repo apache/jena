@@ -23,6 +23,7 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.log4j.Level ;
 import org.apache.log4j.Logger ;
@@ -72,8 +73,6 @@ public class TestTripleTable extends BaseTest
     static Node n4 = NodeFactoryExtra.parseNode("<http://example/n4>") ;
     static Node n5 = NodeFactoryExtra.parseNode("<http://example/n5>") ;
     static Node n6 = NodeFactoryExtra.parseNode("<http://example/n6>") ;
-    
-    
     
     @Test public void createTripleTable1()
     { 
@@ -126,7 +125,9 @@ public class TestTripleTable extends BaseTest
     
     private TripleTable createTripleTableMem()
     {
-        DatasetGraphTDB ds = ((DatasetGraphTxn)TDB2Builder.build(Location.mem())).getBaseDatasetGraph() ;
+        DatasetGraphTxn dsx = (DatasetGraphTxn)TDB2Builder.build(Location.mem()) ;
+        dsx.begin(ReadWrite.WRITE);
+        DatasetGraphTDB ds = dsx.getBaseDatasetGraph() ;
         return ds.getTripleTable() ;
     }
 }

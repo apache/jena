@@ -22,8 +22,25 @@ import org.seaborne.dboe.base.objectfile.ObjectFileStorage ;
 import org.seaborne.dboe.base.objectfile.StringFile ;
 
 public class FileFactory {
+    
+    public static BinaryDataFile createBinaryDataFile(FileSet fileset, String ext) {
+        String x = fileset.filename(ext) ;
+        if ( fileset.isMem() ) {
+            return new BinaryDataFileMem() ;
+        } else {
+            BinaryDataFile bdf = new BinaryDataFileRandomAccess(x) ;
+            bdf = new BinaryDataFileWriteBuffered(bdf) ;
+            return bdf ;
+        }
+    }
+
+    public static BinaryDataFile createBinaryDataFile() {
+        return new BinaryDataFileMem() ;
+    }
+
     // TODO More use of fileset.
     // Prune use elsewhere e.g BlockMgrFactory.
+    
     public static StringFile createStringFileDisk(String filename) {
         return new StringFile(createObjectFileDisk(filename)) ;
     }

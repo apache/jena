@@ -47,7 +47,6 @@ import org.seaborne.tdb2.sys.TS_Sys ;
 @Suite.SuiteClasses( {
     // TDB
     TS_LibTDB.class
-    , TS_ObjectFile.class
     , TS_NodeTable.class
     , TS_TupleTable.class
     , TS_TDBSetup.class

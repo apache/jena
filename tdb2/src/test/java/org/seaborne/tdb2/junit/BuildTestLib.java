@@ -18,8 +18,7 @@
 package org.seaborne.tdb2.junit;
 
 import org.apache.jena.atlas.lib.NotImplemented ;
-import org.seaborne.dboe.base.file.FileSet ;
-import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.base.file.* ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.dboe.index.IndexParams ;
@@ -44,12 +43,13 @@ public class BuildTestLib {
         return bpt ; 
     }
 
-    public static NodeTable makeNodeTable(Location mem, String baseName, StoreParams params) {
+    public static NodeTable makeNodeTable(Location mem, String basename, StoreParams params) {
         RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
-        FileSet fs = new FileSet(mem, baseName) ;
+        FileSet fs = new FileSet(mem, basename) ;
                 
         Index index = buildRangeIndex(fs, recordFactory, params) ;
-        NodeTable nt = new NodeTableTRDF(index, null) ;
+        BinaryDataFile bdf = createBinaryDataFile(mem, basename+"-data") ;
+        NodeTable nt = new NodeTableTRDF(index, bdf) ;
         nt = NodeTableCache.create(nt, params) ;
         nt = NodeTableInline.create(nt) ;
         return nt ;
@@ -57,6 +57,14 @@ public class BuildTestLib {
 
     public static DatasetPrefixesTDB makePrefixes(Location location, DatasetControl policy) {
         throw new NotImplemented() ;
+    }
+    
+    /** Create a non-thread-safe BinaryDataFile*/ 
+    public static BinaryDataFile createBinaryDataFile(Location loc, String name) {
+        if ( loc.isMem() )
+            return new BinaryDataFileMem() ;
+        String filename = loc.getPath(name) ;
+        return new BinaryDataFileRandomAccess(filename) ;
     }
 
 }

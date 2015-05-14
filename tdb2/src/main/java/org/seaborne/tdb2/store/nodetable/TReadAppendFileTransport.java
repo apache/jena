@@ -17,6 +17,8 @@
 
 package org.seaborne.tdb2.store.nodetable;
 
+import java.util.Objects ;
+
 import org.apache.thrift.transport.TTransport ;
 import org.seaborne.dboe.base.file.BinaryDataFile ;
 
@@ -30,6 +32,7 @@ public class TReadAppendFileTransport extends TTransport {
     private long readPosn = -1 ;
     
     public TReadAppendFileTransport(BinaryDataFile file) {
+        Objects.requireNonNull(file) ;
         this.file = file ;
     }
     

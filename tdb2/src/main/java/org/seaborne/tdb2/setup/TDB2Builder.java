@@ -236,10 +236,9 @@ public class TDB2Builder {
     private NodeTable buildBaseNodeTable(TransactionCoordinator coord, ComponentId cid, String name) {
         RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
         Index index = buildRangeIndex(coord, cid, recordFactory, name) ;
-        String filename = location.getPath(name+"-data", "obj") ;
-        BinaryDataFile diskFile = new BinaryDataFileRandomAccess(filename) ;
-        diskFile = new BinaryDataFileWriteBuffered(diskFile) ;
-        return new NodeTableTRDF(index, diskFile) ;
+        FileSet fs = new FileSet(location, name+"-data") ; 
+        BinaryDataFile binFile = FileFactory.createBinaryDataFile(fs, "obj") ;
+        return new NodeTableTRDF(index, binFile) ;
 
         // Old SSE encoding for comparison. 
         // Slightly slower to write (5%, SSD), probably slower to read. 
