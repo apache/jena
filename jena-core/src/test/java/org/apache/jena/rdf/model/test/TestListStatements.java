@@ -35,7 +35,7 @@ public class TestListStatements
 	private static Property p;
 
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception
+	public static void setUpBeforeClass()
 	{
 		TestListStatements.m = ModelFactory.createDefaultModel();
 		final Resource s = TestListStatements.m
@@ -58,7 +58,7 @@ public class TestListStatements
 	}
 
 	@AfterClass
-	public static void tearDownAfterClass() throws Exception
+	public static void tearDownAfterClass()
 	{
 		TestListStatements.m = null;
 		TestListStatements.s = null;

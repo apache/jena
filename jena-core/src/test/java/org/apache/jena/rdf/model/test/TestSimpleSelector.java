@@ -34,7 +34,7 @@ public class TestSimpleSelector extends AbstractModelTestBase
 	}
 
 	@Override
-	public void setUp() throws Exception
+	public void setUp()
 	{
 		super.setUp();
 		model.createResource().addProperty(RDF.type, RDFS.Resource)

@@ -143,7 +143,7 @@ public class TestListSubjects extends AbstractModelTestBase
 	// }
 
 	@Override
-	public void setUp() throws Exception
+	public void setUp()
 	{
 		super.setUp();
 		fillModel();

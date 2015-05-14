@@ -66,7 +66,7 @@ public class TestAllDifferent
         return new OntTestCase[] {
             new OntTestCase( "AllDifferent.distinctMembers", true, true, false ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     Profile prof = m.getProfile();
                     AllDifferent a = m.createAllDifferent();
                     OntResource b = m.getResource( NS + "b" ).as( OntResource.class );

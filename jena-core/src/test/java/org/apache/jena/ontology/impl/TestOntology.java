@@ -68,7 +68,7 @@ public class TestOntology
         return new OntTestCase[] {
             new OntTestCase( "Ontology.imports", true, true, false ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     Profile prof = m.getProfile();
                     Ontology x = m.createOntology( NS + "x" );
                     Ontology y = m.createOntology( NS + "y" );
@@ -94,7 +94,7 @@ public class TestOntology
             },
             new OntTestCase( "Ontology.backwardCompatibleWith", true, true, false ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     Profile prof = m.getProfile();
                     Ontology x = m.createOntology( NS + "x" );
                     Ontology y = m.createOntology( NS + "y" );
@@ -120,7 +120,7 @@ public class TestOntology
             },
             new OntTestCase( "Ontology.priorVersion", true, true, false ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     Profile prof = m.getProfile();
                     Ontology x = m.createOntology( NS + "x" );
                     Ontology y = m.createOntology( NS + "y" );
@@ -146,7 +146,7 @@ public class TestOntology
             },
             new OntTestCase( "Ontology.incompatibleWith", true, true, false ) {
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     Profile prof = m.getProfile();
                     Ontology x = m.createOntology( NS + "x" );
                     Ontology y = m.createOntology( NS + "y" );

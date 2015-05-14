@@ -37,7 +37,7 @@ public class TestLiteralsInModel extends AbstractModelTestBase
 	}
 
 	@Override
-	public void setUp() throws Exception
+	public void setUp()
 	{
 		super.setUp();
 		X = ModelHelper.resource("X");

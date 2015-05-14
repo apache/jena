@@ -46,7 +46,7 @@ public class TestResourceMethods extends AbstractModelTestBase
 	}
 
 	@Override
-	public void setUp() throws Exception
+	public void setUp()
 	{
 		super.setUp();
 		tvLiteral = model.createLiteral("test 12 string 2");
