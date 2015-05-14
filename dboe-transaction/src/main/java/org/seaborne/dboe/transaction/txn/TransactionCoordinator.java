@@ -221,6 +221,7 @@ public class TransactionCoordinator {
         components.forEach((id, c) -> c.shutdown()) ;
         shutdownHooks.forEach((h)-> h.shutdown()) ;
         lock = null ;
+        journal.close(); 
     }
 
     private void checkNotShutdown() {
