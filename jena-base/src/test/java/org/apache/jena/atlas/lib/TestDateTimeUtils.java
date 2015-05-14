@@ -29,7 +29,7 @@ import org.junit.Test;
 public class TestDateTimeUtils {
 
 	@Test
-	public void testCalendarToXSDDateTimeString_1() throws Exception {
+	public void testCalendarToXSDDateTimeString_1() {
 		Calendar cal = createCalendar(1984, Calendar.MARCH, 22, 14, 32, 1, 0, "Z") ;
 		assertEquals("1984-03-22T14:32:01+00:00", DateTimeUtils.calendarToXSDDateTimeString(cal));
 		cal.setTimeZone(TimeZone.getTimeZone("MST"));
@@ -37,7 +37,7 @@ public class TestDateTimeUtils {
 	}
 
     @Test
-    public void testCalendarToXSDDateTimeString_2() throws Exception {
+    public void testCalendarToXSDDateTimeString_2() {
         Calendar cal = createCalendar(1984, Calendar.MARCH, 22, 14, 32, 1, 50, "Z") ;
         assertEquals("1984-03-22T14:32:01.050+00:00", DateTimeUtils.calendarToXSDDateTimeString(cal));
         cal.setTimeZone(TimeZone.getTimeZone("MST"));
@@ -46,7 +46,7 @@ public class TestDateTimeUtils {
 
 
     @Test
-	public void testCalendarToXSDDateString() throws Exception {
+	public void testCalendarToXSDDateString() {
 		Calendar cal = createCalendar(1984, Calendar.MARCH, 22, 23, 59, 1, 0, "Z");
 		cal.setTimeZone(TimeZone.getTimeZone("Z")) ;
 		assertEquals("1984-03-22+00:00", DateTimeUtils.calendarToXSDDateString(cal));
@@ -55,7 +55,7 @@ public class TestDateTimeUtils {
 	}
     
     @Test
-	public void testCalendarToXSDTimeString_1() throws Exception {
+	public void testCalendarToXSDTimeString_1() {
 		Calendar cal = createCalendar(1984, Calendar.MARCH, 22, 14, 32, 1, 0, "GMT+01:00");
 		assertEquals("14:32:01+01:00", DateTimeUtils.calendarToXSDTimeString(cal));
 		// Different timezone - moves the cal point-in-time.
@@ -64,7 +64,7 @@ public class TestDateTimeUtils {
 	}
 	
     @Test
-    public void testCalendarToXSDTimeString_2() throws Exception {
+    public void testCalendarToXSDTimeString_2() {
         Calendar cal = createCalendar(1984, Calendar.MARCH, 22, 14, 32, 1, 500, "GMT+01:00");
         assertEquals("14:32:01.500+01:00", DateTimeUtils.calendarToXSDTimeString(cal));
         // Different timezone - moves the cal point-in-time.
