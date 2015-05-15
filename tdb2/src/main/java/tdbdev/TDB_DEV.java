@@ -24,6 +24,11 @@ public class TDB_DEV {
     //   Better name.
     //   Enable AdpaterTransactionalDBOEToJena
     
+    // Assembling TDB backed graphs for general use.
+    
+    // GraphPrefixesProjection -- implement PrefixMapping
+    // GraphPrefixesProjectionTDB
+    
     // Union graph not working?
     
     // Test
