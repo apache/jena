@@ -27,7 +27,6 @@ import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.seaborne.dboe.base.block.FileMode ;
-import org.seaborne.dboe.base.objectfile.TS_ObjectFile ;
 import org.seaborne.tdb2.assembler.TS_TDBAssembler ;
 import org.seaborne.tdb2.graph.TS_Graph ;
 import org.seaborne.tdb2.lib.TS_LibTDB ;

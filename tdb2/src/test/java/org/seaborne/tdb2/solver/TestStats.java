@@ -26,18 +26,18 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.junit.TL ;
 import org.seaborne.tdb2.solver.stats.StatsCollectorNodeId ;
 import org.seaborne.tdb2.solver.stats.StatsResults ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
+import org.seaborne.tdb2.store.DatasetGraphTxn ;
 import org.seaborne.tdb2.store.NodeId ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
-import org.seaborne.tdb2.sys.TDBInternal ;
 
 public class TestStats extends BaseTest
 {
-    static DatasetGraphTDB dsg      = TDBInternal.getBaseDatasetGraphTDB(TDBFactory.createDatasetGraph()) ;
+    static DatasetGraphTDB dsg      = ((DatasetGraphTxn)TL.createTestDatasetGraphMem()).getBaseDatasetGraph() ;
     static NodeTupleTable quads     = dsg.getQuadTable().getNodeTupleTable() ;
     static NodeTupleTable triples   = dsg.getTripleTable().getNodeTupleTable() ;
     static NodeTable nt             = quads.getNodeTable() ;

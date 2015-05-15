@@ -22,13 +22,13 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.AbstractTestGraphOverDataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.junit.TL ;
 
 /** This is the view-graph test suite run over a TDB DatasetGraph to check compatibility */
 public class TestGraphOverDatasetTDB extends AbstractTestGraphOverDataset
 {
     @Override
-    protected DatasetGraph createBaseDSG() { return TDBFactory.createDatasetGraph() ; }
+    protected DatasetGraph createBaseDSG() { return TL.createTestDatasetGraphMem() ; }
     
     @Override
     protected Graph makeNamedGraph(DatasetGraph dsg, Node gn)

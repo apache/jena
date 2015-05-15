@@ -22,14 +22,14 @@ import org.apache.jena.query.DatasetAccessorFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.web.AbstractTestDatasetGraphAccessor ;
 import org.apache.jena.web.DatasetGraphAccessor ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.junit.TL ;
 
 public class TestDatasetGraphAccessorTDB extends AbstractTestDatasetGraphAccessor
 {
     @Override
     protected DatasetGraphAccessor getDatasetUpdater()
     {
-        DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
+        DatasetGraph dsg = TL.createTestDatasetGraphMem() ;
         return DatasetAccessorFactory.make(dsg) ;
     }
 }

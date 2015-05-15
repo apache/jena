@@ -18,17 +18,13 @@
 
 package org.seaborne.tdb2.graph;
 
-import org.junit.After ;
-import org.junit.Before ;
+import org.apache.jena.query.Dataset ;
+import org.seaborne.tdb2.junit.TL ;
 
 public class TestGraphsTDB1 extends AbstractTestGraphsTDB
 {
-    // Non-transactional.
-    @Before public void before() 
-    {
-    }
-
-    @After public void after() 
-    {
+    @Override
+    protected Dataset createDataset() {
+        return TL.createTestDatasetMem() ;
     }
 }

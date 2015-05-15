@@ -20,6 +20,12 @@ package tdbdev;
 public class TDB_DEV {
     // ** Append-write-only, transactional byte file c.f. Object file.
     
+    // TDBLib
+    //   Better name.
+    //   Enable AdpaterTransactionalDBOEToJena
+    
+    // Union graph not working?
+    
     // Test
     // Centralize making a in-memory, non-transactional, datasetTDB for unit tests.
     // TestFactoryTDB.createRawDatasetGraphTDB() ;

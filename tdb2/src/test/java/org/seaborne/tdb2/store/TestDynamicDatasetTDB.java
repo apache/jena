@@ -21,18 +21,22 @@ package org.seaborne.tdb2.store;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.AbstractTestDynamicDataset ;
 import org.seaborne.tdb2.TDB ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.junit.TL ;
 
 public class TestDynamicDatasetTDB extends AbstractTestDynamicDataset
 {
     @Override
     protected Dataset createDataset()
     {
-        return TDBFactory.createDataset() ;
+        return TL.createTestDatasetMem() ;
     }
     
+    @Override
+    protected void releaseDataset(Dataset ds) { TL.releaseDataset(ds); }
+
     protected void startDynamicAndUnionTest()    { TDB.getContext().setTrue(TDB.symUnionDefaultGraph) ; }
 
     protected void finishDynamicAndUnionTest()   { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; }
+
 }
 

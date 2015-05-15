@@ -23,6 +23,7 @@ import java.util.Map ;
 import java.util.Set ;
 import java.util.concurrent.ConcurrentHashMap ;
 
+import org.seaborne.dboe.base.file.ChannelManager ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.file.LocationLock ;
 import org.seaborne.tdb2.TDBException ;
@@ -96,6 +97,7 @@ public class StoreConnection
         for (Location loc : x)
             expel(loc, true) ;
         cache.clear() ;
+        ChannelManager.reset(); 
     }
 
     /** Stop managing a location. There should be no transactions running. */

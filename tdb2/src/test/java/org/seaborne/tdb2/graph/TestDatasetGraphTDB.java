@@ -21,13 +21,13 @@ package org.seaborne.tdb2.graph;
 import org.apache.jena.sparql.core.AbstractDatasetGraphTests ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.junit.Test ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.junit.TL ;
 
 // Quad tests
 public class TestDatasetGraphTDB extends AbstractDatasetGraphTests
 {
     @Override
-    protected DatasetGraph emptyDataset() { return TDBFactory.createDatasetGraph() ; }
+    protected DatasetGraph emptyDataset() { return TL.createTestDatasetGraphMem() ; }
 
     @Override
     // Empty graph tests: N/A

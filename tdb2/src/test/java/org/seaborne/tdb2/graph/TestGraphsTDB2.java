@@ -18,19 +18,35 @@
 
 package org.seaborne.tdb2.graph;
 
+import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite ;
 import org.junit.After ;
 import org.junit.Before ;
+import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.lib.TDBLib ;
 
 public class TestGraphsTDB2 extends AbstractTestGraphsTDB
 {
-    @Before public void before() 
-    {
+    // Transactional.
+    @Before
+    public void before() {
         getDataset().begin(ReadWrite.READ) ;
     }
 
-    @After public void after() 
-    {
+    @After
+    public void after() {
         getDataset().end() ;
+    }
+
+    @Override
+    protected void fillDataset(Dataset dataset) {
+        TDBLib.executeWrite(dataset, ()->{
+            super.fillDataset(dataset) ;
+        });
+    }
+    
+    @Override
+    protected Dataset createDataset() {
+        return TDBFactory.createDataset() ;
     }
 }

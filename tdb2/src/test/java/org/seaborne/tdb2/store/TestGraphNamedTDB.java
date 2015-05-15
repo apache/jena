@@ -20,21 +20,35 @@ package org.seaborne.tdb2.store;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.graph.AbstractTestGraph2 ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.junit.After ;
+import org.junit.Before ;
+import org.seaborne.tdb2.junit.TL ;
 
 /** Programmatic tests on persistent graph */
 public class TestGraphNamedTDB extends AbstractTestGraph2
 {
-    Node graphNode = NodeFactoryExtra.parseNode("<http://example/namedGraph>") ;
+    static Node graphNode = NodeFactoryExtra.parseNode("<http://example/namedGraph>") ;
+    private Dataset dataset ;
+    private Graph   graph ;
+
+    @Before
+    public void before() {
+        dataset = TL.createTestDataset() ;
+        graph = dataset.asDatasetGraph().getGraph(graphNode) ;
+    }
+
+    @After
+    public void after() {
+        TL.releaseDataset(dataset) ;
+    }
 
     @Override
-    protected Graph emptyGraph()
-    {
-        DatasetGraph dataset = TDBFactory.createDatasetGraph() ;
-        return dataset.getGraph(graphNode) ;
+    protected Graph emptyGraph() {
+        graph.clear() ;
+        return graph ;
     }
     
     @Override

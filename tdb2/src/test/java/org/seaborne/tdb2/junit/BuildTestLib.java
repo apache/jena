@@ -17,7 +17,7 @@
 
 package org.seaborne.tdb2.junit;
 
-import org.apache.jena.atlas.lib.NotImplemented ;
+import org.apache.jena.query.ReadWrite ;
 import org.seaborne.dboe.base.file.* ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.Index ;
@@ -26,15 +26,19 @@ import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
 import org.seaborne.tdb2.setup.StoreParams ;
+import org.seaborne.tdb2.setup.TDB2Builder ;
+import org.seaborne.tdb2.store.DatasetGraphTDB ;
+import org.seaborne.tdb2.store.DatasetGraphTxn ;
 import org.seaborne.tdb2.store.DatasetPrefixesTDB ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.store.nodetable.NodeTableCache ;
 import org.seaborne.tdb2.store.nodetable.NodeTableInline ;
 import org.seaborne.tdb2.store.nodetable.NodeTableTRDF ;
-import org.seaborne.tdb2.sys.DatasetControl ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 
-/** Build things for non-transactional tests */
+/** Build things for non-transactional tests.
+ * Sometimes, create a daatset and find the relevant part. 
+ */
 public class BuildTestLib {
 
     public static RangeIndex buildRangeIndex(FileSet mem, RecordFactory factory, IndexParams indexParams) {
@@ -55,8 +59,11 @@ public class BuildTestLib {
         return nt ;
     }
 
-    public static DatasetPrefixesTDB makePrefixes(Location location, DatasetControl policy) {
-        throw new NotImplemented() ;
+    public static DatasetPrefixesTDB makePrefixes(Location location) {
+        DatasetGraphTxn dsx = (DatasetGraphTxn)TDB2Builder.build(location) ;
+        dsx.begin(ReadWrite.WRITE);
+        DatasetGraphTDB ds = dsx.getBaseDatasetGraph() ;
+        return ds.getPrefixes() ; 
     }
     
     /** Create a non-thread-safe BinaryDataFile*/ 

@@ -28,17 +28,27 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
+import org.junit.After ;
+import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.tdb2.TDB ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.junit.TL ;
 
 /** Tests of datasets, prefixes, special URIs etc (see also {@link org.apache.jena.sparql.graph.GraphsTests} */
 public class TestDatasetTDB extends BaseTest
 {
+    private Dataset dataset ;
     
-    private static Dataset create()
-    {
-        return TDBFactory.createDataset() ;
+    @Before public void before() {
+        dataset = TL.createTestDataset() ;
+    }
+    
+    @After public void after() {
+        TL.releaseDataset(dataset);
+    }
+    
+    private Dataset dataset() {
+        return dataset ;
     }
     
     private static void load(Model model, String file)
@@ -76,7 +86,7 @@ public class TestDatasetTDB extends BaseTest
 
     @Test public void prefix1()
     {
-        Dataset ds = create() ;
+        Dataset ds = dataset() ;
         Model m = ds.getDefaultModel() ;
         load1(m) ;
         String x = m.expandPrefix(":x") ;
@@ -85,7 +95,7 @@ public class TestDatasetTDB extends BaseTest
     
     @Test public void prefix2()
     {
-        Dataset ds = create() ;
+        Dataset ds = dataset() ;
         Model m = ds.getDefaultModel() ;
         load1(m) ;
         Model m2 = ds.getNamedModel("http://example/graph/") ;
@@ -95,7 +105,7 @@ public class TestDatasetTDB extends BaseTest
     
     @Test public void query1()
     {
-        Dataset ds = create() ;
+        Dataset ds = dataset() ;
         Model m = ds.getDefaultModel() ;
         load1(m) ;
         
@@ -108,7 +118,7 @@ public class TestDatasetTDB extends BaseTest
     
     @Test public void query2()
     {
-        Dataset ds = create() ;
+        Dataset ds = dataset() ;
         Model m = ds.getDefaultModel() ;
         load1(m) ;
         
@@ -124,7 +134,7 @@ public class TestDatasetTDB extends BaseTest
     
     @Test public void special1()
     {
-        Dataset ds = create() ;
+        Dataset ds = dataset() ;
         Model m = ds.getDefaultModel() ;
         load1(m) ;
         
@@ -137,7 +147,7 @@ public class TestDatasetTDB extends BaseTest
     
     @Test public void special2()
     {
-        Dataset ds = create() ;
+        Dataset ds = dataset() ;
 
         load1(ds.getDefaultModel()) ;
         load2(ds.getNamedModel("http://example/graph1")) ;
@@ -156,7 +166,7 @@ public class TestDatasetTDB extends BaseTest
     
     @Test public void special3()
     {
-        Dataset ds = create() ;
+        Dataset ds = dataset() ;
 
         load1(ds.getDefaultModel()) ;
         load2(ds.getNamedModel("http://example/graph1")) ;
@@ -187,7 +197,7 @@ public class TestDatasetTDB extends BaseTest
 
     @Test public void special4()
     {
-        Dataset ds = create() ;
+        Dataset ds = dataset() ;
 
         load1(ds.getDefaultModel()) ;
         load2(ds.getNamedModel("http://example/graph1")) ;
@@ -228,7 +238,7 @@ public class TestDatasetTDB extends BaseTest
     
     @Test public void special5()
     {
-        Dataset ds = create() ;
+        Dataset ds = dataset() ;
 
         //load1(ds.getDefaultModel()) ;
         load1(ds.getNamedModel("http://example/graph1")) ;  // Same triples, different graph
@@ -241,7 +251,7 @@ public class TestDatasetTDB extends BaseTest
     // Put a model into a general dataset and use it.
     @Test public void generalDataset1()
     {
-        Dataset ds = create() ;
+        Dataset ds = dataset() ;
         load1(ds.getDefaultModel()) ;
         load2(ds.getNamedModel("http://example/graph1")) ;
         load3(ds.getNamedModel("http://example/graph2")) ;
@@ -260,7 +270,7 @@ public class TestDatasetTDB extends BaseTest
     
     @Test public void generalDataset2()
     {
-        Dataset ds = create() ;
+        Dataset ds = dataset() ;
         load1(ds.getDefaultModel()) ;
         load2(ds.getNamedModel("http://example/graph1")) ;
         load3(ds.getNamedModel("http://example/graph2")) ;
@@ -289,7 +299,7 @@ public class TestDatasetTDB extends BaseTest
     
     @Test public void generalDataset3()
     {
-        Dataset ds = create() ;
+        Dataset ds = dataset() ;
         load1(ds.getDefaultModel()) ;
         load2(ds.getNamedModel("http://example/graph1")) ;
         load3(ds.getNamedModel("http://example/graph2")) ;

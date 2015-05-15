@@ -26,10 +26,10 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Ignore ;
 import org.junit.Test ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.junit.TL ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 
-public class AbstractTestGraphsTDB extends GraphsTests
+public abstract class AbstractTestGraphsTDB extends GraphsTests
 {
     private static ReorderTransformation reorder  ;
     
@@ -41,12 +41,6 @@ public class AbstractTestGraphsTDB extends GraphsTests
     
     @AfterClass public static void afterClass() {  SystemTDB.defaultReorderTransform = reorder ; }
 
-    @Override
-    protected Dataset createDataset()
-    {
-        return TDBFactory.createDataset() ;
-    }
-    
     // These don't pass ... not quite clear if the test is right.  Investigate.
     
     @Override

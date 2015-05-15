@@ -28,12 +28,8 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.query.ResultSetFactory ;
-import org.apache.jena.query.ResultSetFormatter ;
-import org.apache.jena.query.ResultSetRewindable ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.query.* ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.algebra.Algebra ;
@@ -44,28 +40,32 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.util.FileManager ;
+import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.seaborne.tdb2.ConfigTest ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.junit.TL ;
 
 public class TestSolverTDB extends BaseTest
 {
     static String graphData = null ;
     static Graph graph = null ;
+    static Dataset dataset = null ;
     static PrefixMapping pmap = null ;
 
     @BeforeClass static public void beforeClass()
     { 
+        dataset = TL.createTestDatasetMem() ;
         graphData = ConfigTest.getTestingDataRoot()+"/Data/solver-data.ttl" ;
-        graph = TDBFactory.createDatasetGraph().getDefaultGraph() ;
-        Model m = ModelFactory.createModelForGraph(graph) ;
-        FileManager.get().readModel(m, graphData) ;
-
+        RDFDataMgr.read(dataset, graphData) ;
+        graph = dataset.asDatasetGraph().getDefaultGraph() ;
         pmap = new PrefixMappingImpl() ;
         pmap.setNsPrefix("", "http://example/") ;
-        
+    }
+    
+    
+    @AfterClass static public void afterClass() {
+        TL.releaseDataset(dataset);
     }
             
     static private void addAll(Graph srcGraph, Graph dstGraph)

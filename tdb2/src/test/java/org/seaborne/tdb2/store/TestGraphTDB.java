@@ -18,62 +18,33 @@
 
 package org.seaborne.tdb2.store;
 
-import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Graph ;
+import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.graph.AbstractTestGraph2 ;
 import org.junit.After ;
-import org.junit.AfterClass ;
 import org.junit.Before ;
-import org.junit.BeforeClass ;
-import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.tdb2.ConfigTest ;
-import org.seaborne.tdb2.junit.GraphLocation ;
-import org.seaborne.tdb2.sys.StoreConnection ;
+import org.seaborne.tdb2.junit.TL ;
 
 /** Programmatic tests on persistent graph */
 public class TestGraphTDB extends AbstractTestGraph2
 {
-    static GraphLocation graphLocation = null ;
-    
-    @BeforeClass public static void beforeClass()
-    {
-        StoreConnection.reset() ;
-        graphLocation = new GraphLocation(Location.create(ConfigTest.getCleanDir())) ;
-        graphLocation.release() ;
-        graphLocation.clearDirectory() ;
-        graphLocation.createGraph() ;
-        graph = graphLocation.getGraph() ;
+    private Dataset dataset ;
+    private Graph   graph ;
+
+    @Before
+    public void before() {
+        dataset = TL.createTestDataset() ;
+        graph = dataset.getDefaultModel().getGraph() ;
     }
-    // ----------
-    
-    @AfterClass public static void afterClass()
-    { 
-        graphLocation.release() ;
-        graphLocation.clearDirectory() ;
-        ConfigTest.deleteTestingDirDB() ;
+
+    @After
+    public void after() {
+        TL.releaseDataset(dataset) ;
     }
-    
-    static Graph graph = null ;
-    @Before public void before()
-    { 
-        try {
-            graph.clear() ;
-        } catch (Exception ex)
-        {
-            Log.warn(this, "before() : "+ex.getMessage(), ex) ;
-            // Problem - reset.
-            beforeClass() ;
-        }
-        
-    }
-            
-    @After public void after()   
-    { 
-    }
-    
+
     @Override
-    protected Graph emptyGraph()
-    {
+    protected Graph emptyGraph() {
+        graph.clear() ;
         return graph ;
     }
     

@@ -38,7 +38,6 @@ import org.seaborne.tdb2.sys.TestOps ;
     // The script suite
     , TestSuiteGraphTDB.class
     , Test_SPARQL_TDB.class
-    , TestConcurrentAccess.class
     , TestDynamicDatasetTDB.class
     , TestTransactions.class
     , TestStoreConnectionsDirect.class
