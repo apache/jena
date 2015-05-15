@@ -23,13 +23,14 @@ import java.util.Iterator ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.sparql.util.Context ;
 
 /** Query is over a Dataset, a collection of named graphs
  *  and a background graph (also called the default
  *  graph or unnamed graph). */
 
-public interface Dataset // extends Transactional
+public interface Dataset extends Transactional
 {
     // Rather than pull in the internal "Tranactional" interface, we duplicate it here. 
     /** Get the default graph as a Jena Model */
@@ -70,18 +71,23 @@ public interface Dataset // extends Transactional
     public boolean supportsTransactions() ;
     
     /** Start either a READ or WRITE transaction */ 
+    @Override
     public void begin(ReadWrite readWrite) ;
     
     /** Commit a transaction - finish the transaction and make any changes permanent (if a "write" transaction) */  
+    @Override
     public void commit() ;
     
     /** Abort a transaction - finish the transaction and undo any changes (if a "write" transaction) */  
+    @Override
     public void abort() ;
 
     /** Say whether a transaction is active */ 
+    @Override
     public boolean isInTransaction() ;
     
     /** Finish the transaction - if a write transaction and commit() has not been called, then abort */  
+    @Override
     public void end() ;
     
     /** Get the dataset in graph form */
