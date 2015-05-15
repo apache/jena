@@ -19,7 +19,6 @@
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
 tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
-tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 
 <#dataset> rdf:type      tdb:DatasetTDB ;
     tdb:location "--mem--" ;

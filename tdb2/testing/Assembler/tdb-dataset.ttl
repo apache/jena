@@ -17,10 +17,6 @@
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
-## Not for this test.
-## tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
-## tdb:GraphTDB    rdfs:subClassOf  ja:Model .
-
 <#dataset> rdf:type      tdb:DatasetTDB ;
     # Do at least one the long way.
     tdb:location "target/tdb-testing/DB" ;
