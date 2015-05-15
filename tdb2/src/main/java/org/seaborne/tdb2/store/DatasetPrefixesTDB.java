@@ -101,23 +101,17 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     @Override
     public synchronized Map<String, String> readPrefixMap(String graphName) {
         Map<String, String> map = new HashMap<>() ;
-        // One class of problem from mangled databases
-        // (non-transactional, not shutdown cleanly)
-        // ends up with NPE access the node table from
-        // prefix index. As prefixes are "nice extras", we
-        // keep calm and carry on in th eface of exceptions.
-        
         Node g = NodeFactory.createURI(graphName) ;
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, null) ;
-        for ( ; iter.hasNext() ; )
-        {
+        for ( ; iter.hasNext() ; ) {
             try {
-                Tuple<Node> t = iter.next();
+                Tuple<Node> t = iter.next() ;
                 String prefix = t.get(1).getLiteralLexicalForm() ;
                 String uri = t.get(2).getURI() ;
                 map.put(prefix, uri) ;
-            } catch (Exception ex) { 
-                Log.warn(this, "Mangled prefix map: graph name="+graphName, ex) ;
+            }
+            catch (Exception ex) {
+                Log.warn(this, "Mangled prefix map: graph name=" + graphName, ex) ;
             }
         }
         Iter.close(iter) ;

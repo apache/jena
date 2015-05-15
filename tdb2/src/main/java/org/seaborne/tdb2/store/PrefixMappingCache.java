@@ -138,7 +138,7 @@ public class PrefixMappingCache implements PrefixMapping {
         String ns = uri.substring(0, split), local = uri.substring(split) ;
         if ( local.equals("") )
             return null ;
-        String prefix = getNsURIPrefix(uri) ;
+        String prefix = getNsURIPrefix(ns) ;
         return prefix == null ? null : prefix + ":" + local ;
     }
     
