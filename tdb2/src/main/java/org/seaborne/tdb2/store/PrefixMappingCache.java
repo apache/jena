@@ -18,40 +18,59 @@
 package org.seaborne.tdb2.store;
 
 import java.util.Map ;
-import java.util.Map.Entry ;
 import java.util.Optional ;
+import java.util.Map.Entry ;
 
+import org.apache.jena.atlas.lib.Cache ;
+import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.sparql.core.DatasetPrefixStorage ;
 
-public class GraphPrefixesProjectionTDB implements PrefixMapping {
-    // Despite the name "TDB" this is general replacement for
-    // PrefixMapping over DatasetPrefixStorage.
-    private String graphName ;
-    private DatasetPrefixStorage prefixes ; 
+// Non-transactional cache.
+public class PrefixMappingCache implements PrefixMapping {
 
-    public GraphPrefixesProjectionTDB(String graphName, DatasetPrefixStorage prefixes)
-    { 
-        this.graphName = graphName ;
-        this.prefixes = prefixes ;
+    private final PrefixMapping other ;
+    private Cache<String, String> prefixToUri = CacheFactory.createCache(100) ;
+    private Cache<String, String> uriToPrefix = CacheFactory.createCache(100) ;
+
+    public PrefixMappingCache(PrefixMapping other) {
+        this.other = other ;
+    }
+    
+    private void add(String prefix, String uri) {
+        prefixToUri.put(prefix, uri) ; 
+        uriToPrefix.put(uri, prefix);
+    }
+    
+    private void remove(String prefix, String uri) {
+        prefixToUri.remove(prefix) ; 
+        uriToPrefix.remove(uri);
+    }
+
+    private void clear() {
+        prefixToUri.clear() ; 
+        uriToPrefix.clear() ;
     }
 
     @Override
     public PrefixMapping setNsPrefix(String prefix, String uri) {
-        prefixes.insertPrefix(graphName, prefix, uri); 
+        other.setNsPrefix(prefix, uri) ;
+        add(prefix, uri);
         return this ;
     }
 
     @Override
     public PrefixMapping removeNsPrefix(String prefix) {
-        prefixes.removeFromPrefixMap(graphName, prefix);
+        String uri = getNsPrefixURI(prefix) ;
+        if ( uri != null )
+            remove(prefix, uri);
+        other.removeNsPrefix(prefix) ;
         return this ;
     }
 
     @Override
-    public PrefixMapping setNsPrefixes(PrefixMapping other) {
-        setNsPrefixes(other.getNsPrefixMap()) ;
+    public PrefixMapping setNsPrefixes(PrefixMapping pmap) {
+        setNsPrefixes(pmap.getNsPrefixMap()) ;
         return this ;
     }
 
@@ -64,32 +83,41 @@ public class GraphPrefixesProjectionTDB implements PrefixMapping {
     }
 
     @Override
-    public PrefixMapping withDefaultMappings(PrefixMapping other) {
-        other.getNsPrefixMap().entrySet().forEach(entry->{
-            String prefix = entry.getKey() ;
-            String uri = entry.getValue();
-            if (getNsPrefixURI( prefix ) == null && getNsURIPrefix( uri ) == null)
-                setNsPrefix( prefix, uri );
-        }) ;
+    public PrefixMapping withDefaultMappings(PrefixMapping map) {
+        other.withDefaultMappings(map) ;
+        clear() ;
         return this ;
     }
 
     @Override
     public String getNsPrefixURI(String prefix) {
-        return prefixes.readPrefix(graphName, prefix) ;
+        String x = prefixToUri.getIfPresent(prefix) ;
+        if ( x == null ) {
+            x = other.getNsPrefixURI(prefix) ;
+            if ( x != null )
+                prefixToUri.put(prefix, x); 
+        }
+        return x ;
     }
 
     @Override
     public String getNsURIPrefix(String uri) {
-        return prefixes.readByURI(graphName, uri) ;
+        String x = uriToPrefix.getIfPresent(uri) ;
+        if ( x == null ) {
+            x = other.getNsURIPrefix(uri) ;
+            if ( x != null )
+                uriToPrefix.put(uri, x); 
+        }
+        return x ;
     }
 
     @Override
     public Map<String, String> getNsPrefixMap() {
-        return prefixes.readPrefixMap(graphName) ;
+        return other.getNsPrefixMap() ;
     }
 
     // From PrefixMappingImpl
+    // Libraryize?
     @Override
     public String expandPrefix(String prefixed) {
         {
@@ -98,7 +126,7 @@ public class GraphPrefixesProjectionTDB implements PrefixMapping {
                 return prefixed ;
             else {
                 String prefix = prefixed.substring(0, colon) ;
-                String uri = prefixes.readPrefix(graphName, prefix) ;
+                String uri = getNsPrefixURI(prefix) ;
                 return uri == null ? prefixed : uri + prefixed.substring(colon + 1) ;
             }
         }
@@ -110,7 +138,7 @@ public class GraphPrefixesProjectionTDB implements PrefixMapping {
         String ns = uri.substring(0, split), local = uri.substring(split) ;
         if ( local.equals("") )
             return null ;
-        String prefix = prefixes.readByURI(graphName, uri) ;
+        String prefix = getNsURIPrefix(uri) ;
         return prefix == null ? null : prefix + ":" + local ;
     }
     
@@ -122,8 +150,7 @@ public class GraphPrefixesProjectionTDB implements PrefixMapping {
         return e.get().getKey() + ":" + uri.substring((e.get().getValue()).length()) ;
     }
 
-    private Optional<Entry<String, String>> findMapping( String uri, boolean partial )
-    {
+    private Optional<Entry<String, String>> findMapping( String uri, boolean partial ) {
         return getNsPrefixMap().entrySet().stream().sequential().filter(e->{
             String ss = e.getValue();
             if (uri.startsWith( ss ) && (partial || ss.length() == uri.length())) 
@@ -131,15 +158,15 @@ public class GraphPrefixesProjectionTDB implements PrefixMapping {
             return false ;
         }).findFirst() ;
     }    
-    
-    @Override
-    public PrefixMapping lock() {
-        return this ;
-    }
 
     @Override
     public boolean samePrefixMappingAs(PrefixMapping other) {
-        return this.getNsPrefixMap().equals(other.getNsPrefixMap()) ;
+        return other.samePrefixMappingAs(other) ;
+    }
+
+    @Override
+    public PrefixMapping lock() {
+        return this ;
     }
 
 }

@@ -27,7 +27,6 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.DatasetPrefixStorage ;
-import org.apache.jena.sparql.graph.GraphPrefixesProjection ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
 
@@ -160,10 +159,8 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     /** Return a PrefixMapping for a named graph */
     @Override
     public PrefixMapping getPrefixMapping(String graphName) {
-        PrefixMapping pm = new GraphPrefixesProjection(graphName, this) ;
-        // Force into cache.
-        // See JENA-81
-        pm.getNsPrefixMap() ;
+        PrefixMapping pm = new GraphPrefixesProjectionTDB(graphName, this) ;
+        pm = new PrefixMappingCache(pm) ;
         return pm ;
     }
     
