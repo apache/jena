@@ -33,6 +33,7 @@ import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.resultset.SPARQLResult ;
 import org.apache.jena.util.FileManager ;
 import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.lib.TDBLib ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -81,13 +82,14 @@ public class QueryTestTDB extends EarlTestCase
     
     boolean oldValueUsePlainGraph = SystemARQ.UsePlainGraph ;
     
-    @Override public void setUpTest()
-    {
+    @Override public void setUpTest() {
         dataset = TDBFactory.createDataset() ;
+        TDBLib.executeWrite(dataset, ()->{
+            setupData() ;
+        }) ;
         // Make sure a plain, no sameValueAs graph is used.
         oldValueUsePlainGraph = SystemARQ.UsePlainGraph ;
         SystemARQ.UsePlainGraph = true ;
-        setupData() ;
     }
     
     @Override public void tearDownTest()
@@ -133,43 +135,48 @@ public class QueryTestTDB extends EarlTestCase
         
         // ---- First, get the expected results by executing in-memory or from a results file.
         
-        ResultSetRewindable rs1 = null ;
-        String expectedLabel = "" ;
+        ResultSetRewindable rs1$ = null ;
+        String expectedLabel$ = "" ;
         if ( results != null )
         {
-            rs1 = ResultSetFactory.makeRewindable(results.getResultSet()) ;
-            expectedLabel = "Results file" ;
+            rs1$ = ResultSetFactory.makeRewindable(results.getResultSet()) ;
+            expectedLabel$ = "Results file" ;
         }
         else
         {
             QueryEngineFactory f = QueryEngineRef.getFactory() ;
             try(QueryExecution qExec1 = new QueryExecutionBase(query, ds, null, f)) {
-                rs1 = ResultSetFactory.makeRewindable(qExec1.execSelect()) ;
+                rs1$ = ResultSetFactory.makeRewindable(qExec1.execSelect()) ;
             }
-            expectedLabel = "Standard engine" ;
+            expectedLabel$ = "Standard engine" ;
         }
-        
+        // Effectively final.
+        ResultSetRewindable rs1 = rs1$ ;
+        String expectedLabel = expectedLabel$ ;
         // ---- Second, execute in persistent graph
 
         Dataset ds2 = dataset ; //DatasetFactory.create(model) ;
-        QueryExecution qExec2 = QueryExecutionFactory.create(query, ds2) ;
-        ResultSet rs = qExec2.execSelect() ;
-        ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(rs) ;
-        
-        // See if the same.
-        boolean b = ResultSetCompare.equalsByValue(rs1, rs2) ;
-        if ( !b )
-        {
-            rs1.reset() ;
-            rs2.reset() ;
-            System.out.println("------------------- "+this.getName());
-            System.out.printf("**** Expected (%s)", expectedLabel) ;
-            ResultSetFormatter.out(System.out, rs1) ; 
-            System.out.println("**** Got (TDB)") ;
-            ResultSetFormatter.out(System.out, rs2) ;
-        }
-        
-        assertTrue("Results sets not the same", b) ; 
+        TDBLib.executeRead(ds2, ()->{
+            try(QueryExecution qExec2 = QueryExecutionFactory.create(query, ds2)) {
+                ResultSet rs = qExec2.execSelect() ;
+                ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(rs) ;
+
+                // See if the same.
+                boolean b = ResultSetCompare.equalsByValue(rs1, rs2) ;
+                if ( !b )
+                {
+                    rs1.reset() ;
+                    rs2.reset() ;
+                    System.out.println("------------------- "+this.getName());
+                    System.out.printf("**** Expected (%s)", expectedLabel) ;
+                    ResultSetFormatter.out(System.out, rs1) ; 
+                    System.out.println("**** Got (TDB)") ;
+                    ResultSetFormatter.out(System.out, rs2) ;
+                }
+
+                assertTrue("Results sets not the same", b) ;
+            }
+        }) ;
     }
 
     private static void load(Model model, String fn)

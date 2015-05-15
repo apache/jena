@@ -18,7 +18,6 @@
 
 package org.seaborne.tdb2.graph;
 
-import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.sparql.graph.GraphsTests ;
@@ -26,7 +25,6 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Ignore ;
 import org.junit.Test ;
-import org.seaborne.tdb2.junit.TL ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 
 public abstract class AbstractTestGraphsTDB extends GraphsTests
