@@ -21,13 +21,10 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.Tuple ;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.tdb.store.NodeId ;
-
 /** Low access to data where the pattern constrains the results 
  * by constants (fixed terms) or wildcard.  The wildcard may be {@code null} or
- * some token for "any" depending on the generic type 
- * (e.g. {@link Node#ANY}, {@link NodeId#NodeIdAny}).
+ * some token for "any" depending on the generic type. 
+ * (e.g. {@code Node.ANY}, {@code NodeId.NodeIdAny}).
  * The resulting iterator of tuples may not be the same width
  * as the pattern (i.e. see the implementation for details).
  */

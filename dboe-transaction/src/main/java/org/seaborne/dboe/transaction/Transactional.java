@@ -19,13 +19,19 @@ package org.seaborne.dboe.transaction;
 
 import org.apache.jena.query.ReadWrite ;
 
-/** Interface that encapulsated begin/abort|commit/close.
+/** Interface that encapsulates the  begin/abort|commit/end operations.
  * <p>The read lifcycle is:
  * <pre> begin(READ) ... end()</pre>
+ * <p>{@code commit} and {@code abort} are allowed. 
  * <p>The write lifcycle is:
- * <pre> begin(WRITE) ... abort() or commit() [end() is optional but preferred]</pre>
- *
- * Code might look like:
+ * <pre> begin(WRITE) ... abort() or commit()</pre>
+ * <p>{@code end()} is optional but preferred.
+ * <p>
+ * Helper code is available {@link Txn} so, for example:
+ * <pre>Txn.executeRead(dataset, ()-> { ... sparql query ... });</pre> 
+ * <pre>Txn.executeWrite(dataset, ()-> { ... sparql update ... });</pre>
+ * <p>
+ * Directly called, code might look like:
  * <pre>
  *     Transactional object = ...
  *     object.begin(ReadWrite.READ) ;
@@ -38,11 +44,11 @@ import org.apache.jena.query.ReadWrite ;
  *     Transactional object = ...
  *     object.begin(ReadWrite.WRITE) ;
  *     try {
- *       ... actions inside a write transaction ...
- *     object.commit() ;
+ *        ... actions inside a write transaction ...
+ *        object.commit() ;
  *     } finally {
- *     // This causes an abort if {@code commit} has not been called.
- *     object.end() ;
+ *        // This causes an abort if {@code commit} has not been called.
+ *        object.end() ;
  *     }
  * </pre>
  * Exceptions will not be thrown.
