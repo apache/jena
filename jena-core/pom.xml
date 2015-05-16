@@ -60,7 +60,14 @@
 		<dependency>
 			<groupId>org.xenei</groupId>
 			<artifactId>junit-contracts</artifactId>
-			<version>0.0.5</version>
+			<version>0.1.1</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.xenei</groupId>
+			<artifactId>contract-test-maven-plugin</artifactId>
+			<version>0.1.1</version>
 			<scope>test</scope>
 		</dependency>
 		
@@ -185,6 +192,47 @@
 					<execution>
 						<goals>
 							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.xenei</groupId>
+				<artifactId>contract-test-maven-plugin</artifactId>
+				<configuration>
+					<packages>
+						<package>org.apache.jena.assembler</package>
+						<package>org.apache.jena.datatypes</package>
+						<package>org.apache.jena.enhanced</package>
+						<package>org.apache.jena.graph</package>
+						<package>org.apache.jena.mem</package>
+						<package>org.apache.jena.n3</package>
+						<package>org.apache.jena.ontology</package>
+						<package>org.apache.jena.rdf</package>
+						<package>org.apache.jena.rdfxml</package>
+						<package>org.apache.jena.reasoner</package>
+						<package>org.apache.jena.shared</package>
+						<package>org.apache.jena.util</package>
+						<package>org.apache.jena.vocabulary</package>
+					</packages>
+					<unimplemented>
+						<report>true</report>
+      					<failOnError>false</failOnError>
+					</unimplemented>
+					<untested>
+						<report>true</report>
+      					<failOnError>false</failOnError>
+					</untested>
+					<errors>
+						<report>true</report>
+      					<failOnError>false</failOnError>
+					</errors>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>contract-test</goal>
 						</goals>
 					</execution>
 				</executions>
