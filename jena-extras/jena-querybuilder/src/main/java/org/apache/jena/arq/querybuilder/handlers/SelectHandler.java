@@ -17,14 +17,19 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Query ;
+import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.lang.sparql_11.ParseException;
+import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11;
 
 /**
  * A Select clause handler.
@@ -73,7 +78,7 @@ public class SelectHandler implements Handler {
 
 	/**
 	 * Add a variable to the select.
-	 * If the variable is the variables are set to star.
+	 * If the variable is <code>null</code> the variables are set to star.
 	 * @param var The variable to add.
 	 */
 	public void addVar(Var var) {
@@ -85,6 +90,38 @@ public class SelectHandler implements Handler {
 		}
 	}
 
+	/** Add an Expression as variable to the select.
+	 * If the variable is the variables are set to star.
+	 * @param expression The expression as a string.
+	 * @param var The variable to add.
+	 * @throws ParseException 
+	 */
+	public void addVar(String expression, Var var) throws ParseException {
+		SPARQLParser11 parser = new SPARQLParser11(new ByteArrayInputStream(
+				expression.getBytes()));
+		Prologue prologue = new Prologue( query.getPrefixMapping() );
+		parser.setPrologue(prologue);
+		addVar( parser.Expression(), var );
+	}
+	
+	/**
+	 * Add an Expression as variable to the select.
+	 * @param expr The expresson to add.
+	 * @param var The variable to add.
+	 */
+	public void addVar(Expr expr, Var var) {
+		if (expr ==null)
+		{
+			throw new IllegalArgumentException( "expr may not be null");
+		}
+		if (var == null)
+		{
+			throw new IllegalArgumentException( "var may not be null");
+		}
+			query.setQueryResultStar(false);
+			query.addResultVar(var, expr);
+	}
+	
 	/**
 	 * Get the list of variables from the query.
 	 * @return The list of variables in the query.
