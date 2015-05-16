@@ -28,12 +28,10 @@ import org.apache.jena.assembler.Mode ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.util.Symbol ;
-import tdb.cmdline.CmdTDB ;
 
 public class SettingAssembler //extends DatasetAssembler
 {
-    static { CmdTDB.init() ; }
-    
+    public SettingAssembler() {}
     /* 
      *  :setting [ :name tdbsym:name ; :value "SPO.idx" ]
      */
