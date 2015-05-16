@@ -26,6 +26,8 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.update.* ;
 import org.apache.jena.vocabulary.OWL ;
@@ -37,11 +39,11 @@ import org.junit.Test ;
 public class TestUpdateOperations extends BaseTest
 {
     private static final String DIR = "testing/Update" ;
-    private GraphStore graphStore() { return GraphStoreFactory.create() ; }
+    private DatasetGraph graphStore() { return DatasetGraphFactory.createMem() ; }
     private Node gName = SSE.parseNode("<http://example/g>") ;
     
     @Test public void load1() {
-        GraphStore gs = graphStore() ;
+        DatasetGraph gs = graphStore() ;
         UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nt>") ;
         UpdateAction.execute(req, gs) ;
         assertEquals(1, gs.getDefaultGraph().size()) ;
@@ -49,7 +51,7 @@ public class TestUpdateOperations extends BaseTest
     }
 
     @Test public void load2() {
-        GraphStore gs = graphStore() ;
+        DatasetGraph gs = graphStore() ;
         UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nt> INTO GRAPH <"+gName.getURI()+">") ;
         UpdateAction.execute(req, gs) ;
     }
@@ -57,7 +59,7 @@ public class TestUpdateOperations extends BaseTest
     // Quad loading
 
     @Test public void load3() {
-        GraphStore gs = graphStore() ;
+        DatasetGraph gs = graphStore() ;
         UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nq>") ;
         UpdateAction.execute(req, gs) ;
         assertEquals(0, gs.getDefaultGraph().size()) ;
@@ -68,13 +70,13 @@ public class TestUpdateOperations extends BaseTest
     // Bad: loading quads into a named graph
     @Test(expected=UpdateException.class)
     public void load4() {
-        GraphStore gs = graphStore() ;
+        DatasetGraph gs = graphStore() ;
         UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nq> INTO GRAPH <"+gName.getURI()+">") ;
         UpdateAction.execute(req, gs) ;
     }
 
     @Test public void load5() {
-        GraphStore gs = graphStore() ;
+        DatasetGraph gs = graphStore() ;
         UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D.nq> INTO GRAPH <"+gName.getURI()+">") ;
         UpdateAction.execute(req, gs) ;
         assertEquals(0, Iter.count(gs.find())) ;
@@ -86,9 +88,8 @@ public class TestUpdateOperations extends BaseTest
         anon.addProperty(RDF.type, OWL.Thing);
         assertEquals(1, m.size());
         
-        GraphStore gs = GraphStoreFactory.create(m);
         UpdateRequest req = UpdateFactory.create("INSERT { ?s ?p ?o } WHERE { ?o ?p ?s }");
-        UpdateAction.execute(req, gs);
+        UpdateAction.execute(req, m);
         
         assertEquals(2, m.size());
         assertEquals(1, m.listStatements(anon, null, (RDFNode)null).toList().size());

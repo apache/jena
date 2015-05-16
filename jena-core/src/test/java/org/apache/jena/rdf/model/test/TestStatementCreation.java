@@ -41,7 +41,7 @@ public class TestStatementCreation extends AbstractModelTestBase
 	}
 
 	@Override
-	public void setUp() throws Exception
+	public void setUp()
 	{
 		super.setUp();
 		r = model.createResource(TestStatementCreation.subjURI);
@@ -49,7 +49,7 @@ public class TestStatementCreation extends AbstractModelTestBase
 	}
 
 	@Override
-	public void tearDown() throws Exception
+	public void tearDown()
 	{
 		r = null;
 		p = null;

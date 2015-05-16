@@ -26,22 +26,27 @@ import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.modify.GraphStoreBasic ;
 
 /** Operations to create a GraphStore
+ * @deprecated Use a {@link DatasetGraph} directly.  many operations also accept a {@link Dataset}.
  */
+@Deprecated 
 public class GraphStoreFactory
 {
     /** Create an empty GraphStore with an empty default graph (in-memory) */
+    @Deprecated
     public static GraphStore create() { return new GraphStoreBasic(DatasetGraphFactory.createMem()) ; }
     
     /** Create a GraphStore from a Model
      * @param model
      * @return GraphStore
      */
+    @Deprecated
     public static GraphStore create(Model model) { return create(model.getGraph()) ; }
 
     /** Create a GraphStore from a Graph
      * @param graph
      * @return GraphStore
      */
+    @Deprecated
     public static GraphStore create(Graph graph) { return new GraphStoreBasic(DatasetGraphFactory.create(graph)) ; }
 
     /** Create a GraphStore from a dataset so that updates apply to the graphs in the dataset.
@@ -51,6 +56,7 @@ public class GraphStoreFactory
      *  @param dataset
      *  @throws UpdateException
      */
+    @Deprecated
     public static GraphStore create(Dataset dataset)
     { 
         return create(dataset.asDatasetGraph()) ;
@@ -60,6 +66,7 @@ public class GraphStoreFactory
      *  @param datasetGraph
      *  @throws UpdateException
      */
+    @Deprecated
     public static GraphStore create(DatasetGraph datasetGraph)
     { 
         if ( datasetGraph instanceof GraphStore )

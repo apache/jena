@@ -21,8 +21,6 @@ package tdb;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.transaction.TransactionManager ;
 import tdb.cmdline.CmdTDB ;
-import tdb.cmdline.ModTDBGraphStore ;
-import arq.cmdline.ModGraphStore ;
 
 public class tdbupdate extends arq.update
 {
@@ -35,7 +33,7 @@ public class tdbupdate extends arq.update
         new tdbupdate(argv).mainRun() ;
     }
     
-    public tdbupdate(String[] argv)
+    public tdbupdate(String[] argv) 
     {
         super(argv) ;
         // Because this inherits from an ARQ command
@@ -44,16 +42,7 @@ public class tdbupdate extends arq.update
     }
 
     @Override
-    protected void processModulesAndArgs()
-    {
+    protected void processModulesAndArgs() {
         super.processModulesAndArgs() ;
     }
-    
-    @Override
-    protected ModGraphStore setModGraphStore()
-    {
-        return new ModTDBGraphStore();
-    }
-    
-    
 }

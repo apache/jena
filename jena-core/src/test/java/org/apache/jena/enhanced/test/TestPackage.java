@@ -290,23 +290,7 @@ public class TestPackage extends GraphTestBase  {
         });                
         assertTrue("Model cache test",nodes[0].asProperty().anObject()==nodes[2]);
     }
-    private  void cache(String title, Personality<RDFNode> p) {
-        Graph g = Factory.createGraphMem();
-        TestModel model =  new TestModelImpl(g,p);
-        // create some data
-        graphAdd( g, "a b a;" );
-        
-        // get the same node in two different ways.
-        assertTrue("Caching is on",model.aSubject().asObject()==model.anObject());
-        
-        ((TestModelImpl)model).getNodeCacheControl().setEnabled(false);
-        
-
-    	// get the same node in two different ways; if there isn't any caching
-    	// then we reconstruct the node.
-        assertFalse("Caching is off",model.aSubject()==model.anObject());
-        
-    }
+    
     public static void testSplitBasic() {
        basic("Split: ",split);
     }
@@ -319,25 +303,14 @@ public class TestPackage extends GraphTestBase  {
     public  void testComboFollow() {
      follow("Combo: ",combo);
     }
-    
-    public  void testSplitCache() {
-        cache("Split: ",split);
-    }
-    public  void testComboCache() {
-     cache("Combo: ",combo);
-    }
-    
+
     public static void testBitOfBothBasic() {
        basic("bob: ",bitOfBoth);
     }
     public  void testBitOfBothFollow() {
        follow("bob: ",bitOfBoth);
     }
-    
-    public  void testBitOfBothCache() {
-        cache("bob: ",bitOfBoth);
-    }
-    
+
     public static void testBitOfBothSurprise() {
     	// bitOfBoth is a surprising personality ...
     	// we can have two different java objects implementing the same interface.

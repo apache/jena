@@ -20,20 +20,16 @@ package org.apache.jena.sparql.core;
 
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
-import org.junit.After ;
-import org.junit.Before ;
 
 public class TestDynamicDatasetMem extends AbstractTestDynamicDataset
 {
-
-    @Before public void before1() {}
-    @After public void after1() {}
-    
     @Override
     protected Dataset createDataset()
     {
         return DatasetFactory.createMem() ;
     }
+    @Override
+    protected void releaseDataset(Dataset ds) {}
 
 }
 

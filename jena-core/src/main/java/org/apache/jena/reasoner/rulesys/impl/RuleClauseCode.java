@@ -494,7 +494,6 @@ public class RuleClauseCode {
          * @param goal the triple pattern to be called
          */
         void emitBody(TriplePattern goal, LPRuleStore store) {
-            int argi = 0;
             emitBodyPut(goal.getSubject(), 0, false);
             emitBodyPut(goal.getPredicate(), 1, false);
             emitBodyPut(goal.getObject(), 2, false);
@@ -675,7 +674,6 @@ public class RuleClauseCode {
                 Node_RuleVariable var = null;
                 boolean inFirst = false;
                 boolean inLaterBody = false;
-                boolean inBuiltin = false;
                 for ( Iterator<TermIndex> oi = occurrences.iterator(); oi.hasNext(); )
                 {
                     TermIndex occurence = oi.next();
@@ -691,7 +689,6 @@ public class RuleClauseCode {
                     }
                     if ( termNumber > 0 && rule.getBodyElement( termNumber - 1 ) instanceof Functor )
                     {
-                        inBuiltin = true;
                     }
                 }
                 // Don't think we need to protected builtin's any more, so ignore that test
@@ -804,6 +801,7 @@ public class RuleClauseCode {
     /**
      * Debug support - not unit testing.
      */
+    // TODO document the derivation of these strings and their intended use?
     public static void main(String[] args) {
         try {
             LPRuleStore store = new LPRuleStore();

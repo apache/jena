@@ -149,7 +149,7 @@ public abstract class AbstractModelTestBase extends TestCase
 	 * sets the model instance variable
 	 */
 	@Override
-	public void setUp() throws Exception
+	public void setUp()
 	{
 		model = createModel();
 	}
@@ -158,7 +158,7 @@ public abstract class AbstractModelTestBase extends TestCase
 	 * Closes the model instance variable and shuts it down.
 	 */
 	@Override
-	public void tearDown() throws Exception
+	public void tearDown()
 	{
 		model.close();
 		model = null;

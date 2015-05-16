@@ -31,6 +31,9 @@ public class TestDynamicDatasetTDB extends AbstractTestDynamicDataset
         return TDBFactory.createDataset() ;
     }
     
+    @Override
+    protected void releaseDataset(Dataset ds) {}
+    
     protected void startDynamicAndUnionTest()    { TDB.getContext().setTrue(TDB.symUnionDefaultGraph) ; }
 
     protected void finishDynamicAndUnionTest()   { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; }

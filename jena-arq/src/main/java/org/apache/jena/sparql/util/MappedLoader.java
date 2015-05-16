@@ -34,7 +34,9 @@ public class MappedLoader {
     static {
         // ARQ library
         uriMap.put(ARQConstants.ARQFunctionLibraryURI, ARQConstants.ARQFunctionLibrary);
+        uriMap.put(ARQConstants.ARQFunctionLibraryURI_Jena2, ARQConstants.ARQFunctionLibrary);
         uriMap.put(ARQConstants.ARQPropertyFunctionLibraryURI, ARQConstants.ARQPropertyFunctionLibrary);
+        uriMap.put(ARQConstants.ARQPropertyFunctionLibraryURI_Jena2, ARQConstants.ARQPropertyFunctionLibrary);
         uriMap.put(ARQConstants.ARQProcedureLibraryURI, ARQConstants.ARQProcedureLibrary);
 
         // Old name, new name

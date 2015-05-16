@@ -72,7 +72,7 @@ public class TestIndividual
             new OntTestCase( "Individual.sameAs", true, false, false ) {
                 /** Note: 6/Nov/2003 - updated to use sameAs not sameIndividualAs, following changes to OWL spec */
                 @Override
-                public void ontTest( OntModel m ) throws Exception {
+                public void ontTest( OntModel m ) {
                     Profile prof = m.getProfile();
                     OntClass A = m.createClass( NS + "A" );
                     Individual x = m.createIndividual( A );
@@ -101,7 +101,7 @@ public class TestIndividual
 
             new OntTestCase( "Individual.hasOntClass", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     OntClass A = m.createClass( NS + "A" );
                     OntClass B = m.createClass( NS + "B" );
                     Individual x = m.createIndividual( A );
@@ -113,7 +113,7 @@ public class TestIndividual
 
             new OntTestCase( "Individual.hasOntClass direct", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     OntClass A = m.createClass( NS + "A" );
                     OntClass B = m.createClass( NS + "B" );
                     A.addSubClass( B );
@@ -132,7 +132,7 @@ public class TestIndividual
 
             new OntTestCase( "Individual.hasOntClass string", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     OntClass A = m.createClass( NS + "A" );
 
                     Individual x = m.createIndividual( A );
@@ -143,7 +143,7 @@ public class TestIndividual
 
             new OntTestCase( "Individual.getOntClass", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     OntClass A = m.createClass( NS + "A" );
                     Individual x = m.createIndividual( A );
 
@@ -153,7 +153,7 @@ public class TestIndividual
 
             new OntTestCase( "Individual.getOntClass direct", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     OntClass A = m.createClass( NS + "A" );
                     OntClass B = m.createClass( NS + "B" );
                     A.addSubClass( B );
@@ -168,7 +168,7 @@ public class TestIndividual
 
             new OntTestCase( "Individual.listOntClasses", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     OntClass A = m.createClass( NS + "A" );
                     OntClass B = m.createClass( NS + "B" );
                     A.addSubClass( B );
@@ -187,7 +187,7 @@ public class TestIndividual
 
             new OntTestCase( "Individual.listOntClasses direct", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     OntClass A = m.createClass( NS + "A" );
                     OntClass B = m.createClass( NS + "B" );
                     A.addSubClass( B );
@@ -206,7 +206,7 @@ public class TestIndividual
 
             new OntTestCase( "Individual.addOntClass", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     OntClass A = m.createClass( NS + "A" );
                     OntClass B = m.createClass( NS + "B" );
                     A.addSubClass( B );
@@ -228,7 +228,7 @@ public class TestIndividual
 
             new OntTestCase( "Individual.setOntClass", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     OntClass A = m.createClass( NS + "A" );
                     OntClass B = m.createClass( NS + "B" );
                     A.addSubClass( B );
@@ -250,7 +250,7 @@ public class TestIndividual
 
             new OntTestCase( "Individual.removeOntClass", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     OntClass A = m.createClass( NS + "A" );
                     OntClass B = m.createClass( NS + "B" );
 
@@ -272,7 +272,7 @@ public class TestIndividual
 
             new OntTestCase( "Individual.canAs", true, true, false ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     OntClass A = m.createClass( NS + "A" );
                     Resource r = m.createResource( NS + "r" );
                     Resource s = m.createResource( NS + "s" );
@@ -290,7 +290,7 @@ public class TestIndividual
             /** Test case for SF bug 945436 - a xml:lang='' in the dataset causes string index exception in getLabel() */
             new OntTestCase( "Individual.canAs", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     String SOURCE=
                         "<?xml version='1.0'?>" +
                         "<!DOCTYPE owl [" +
@@ -318,7 +318,7 @@ public class TestIndividual
 
             new OntTestCase( "OntResource.isIndividual 1", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     OntModel defModel = ModelFactory.createOntologyModel();
                     OntClass c = defModel.createClass( "http://example.com/test#A" );
                     Individual i = c.createIndividual();
@@ -328,7 +328,7 @@ public class TestIndividual
             /** User report of builtin classes showing up as individuals */
             new OntTestCase( "OntResource.isIndividual 1", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     String NS = "http://jena.hpl.hp.com/example#";
                     m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
 
@@ -343,7 +343,7 @@ public class TestIndividual
 
             new OntTestCase( "OntResource.isIndividual 1", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     String NS = "http://jena.hpl.hp.com/example#";
                     m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF);
 
@@ -359,7 +359,7 @@ public class TestIndividual
             /** Edge case - suppose we imagine that user has materialised results of offline inference */
             new OntTestCase( "OntResource.isIndividual 1", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     String NS = "http://jena.hpl.hp.com/example#";
                     m = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 
@@ -375,7 +375,7 @@ public class TestIndividual
 
             new OntTestCase( "OntResource.isIndividual 1", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     String NS = "http://jena.hpl.hp.com/example#";
                     m = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 
@@ -391,7 +391,7 @@ public class TestIndividual
 
             new OntTestCase( "OntResource.isIndividual 1", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     String NS = "http://jena.hpl.hp.com/example#";
                     m = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM);
 
@@ -408,7 +408,7 @@ public class TestIndividual
             /** But we do allow punning */
             new OntTestCase( "OntResource.isIndividual 1", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     String NS = "http://jena.hpl.hp.com/example#";
                     m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
 
@@ -423,7 +423,7 @@ public class TestIndividual
 
             new OntTestCase( "OntResource.isIndividual 1", true, true, true ) {
                 @Override
-                protected void ontTest( OntModel m ) throws Exception {
+                protected void ontTest( OntModel m ) {
                     String NS = "http://jena.hpl.hp.com/example#";
                     m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF);
 

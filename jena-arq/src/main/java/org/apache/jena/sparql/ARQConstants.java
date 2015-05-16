@@ -61,13 +61,18 @@ public class ARQConstants
     public static final String javaClassURIScheme = "java:" ;
     
     /** The ARQ function library URI space */
-    public static final String ARQFunctionLibraryURI = "http://jena.hpl.hp.com/ARQ/function#" ;
+    public static final String ARQFunctionLibraryURI = "http://jena.apache.org/ARQ/function#" ;
+    /** The ARQ function library URI space - old Jena2 name */
+    public static final String ARQFunctionLibraryURI_Jena2 = "http://jena.hpl.hp.com/ARQ/function#" ;
     
     /** The ARQ property function library URI space */
-    public static final String ARQPropertyFunctionLibraryURI = "http://jena.hpl.hp.com/ARQ/property#" ;
+    public static final String ARQPropertyFunctionLibraryURI = "http://jena.apache.org/ARQ/property#" ;
+    
+    /** The ARQ property function library URI space - old Jena2 name */
+    public static final String ARQPropertyFunctionLibraryURI_Jena2 = "http://jena.hpl.hp.com/ARQ/property#" ;
     
     /** The ARQ procedure library URI space */
-    public static final String ARQProcedureLibraryURI = "http://jena.hpl.hp.com/ARQ/procedure#" ;
+    public static final String ARQProcedureLibraryURI = "http://jena.apache.org/ARQ/procedure#" ;
     
     /** The ARQ function library */
     public static final String ARQFunctionLibrary = javaClassURIScheme+"org.apache.jena.sparql.function.library." ;

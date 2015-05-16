@@ -18,9 +18,10 @@
 
 package org.apache.jena.enhanced;
 
+import org.apache.jena.atlas.lib.Cache;
+import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.graph.* ;
 import org.apache.jena.rdf.model.RDFNode ;
-import org.apache.jena.util.cache.* ;
 
 /**
    TODO: remove the polymorphic aspect of EnhGraphs.
@@ -41,11 +42,10 @@ public class EnhGraph
     /** The graph that this enhanced graph is wrapping */
     protected Graph graph;
     
-    /** Counter that helps to ensure that caches are kept distinct */
-    static private int cnt = 0;
-
     /** Cache of enhanced nodes that have been created */
-    protected Cache enhNodes = CacheManager.createCache( CacheManager.ENHNODECACHE, "EnhGraph-" + cnt++, 1000 );
+    // TODO The cache size of 1000 seems to be a "magic number". Perhaps this could be explained
+    // or parameterized?
+    protected Cache<Node, RDFNode> enhNodes = CacheFactory.createCache(1000);
     
     /** The unique personality that is bound to this polymorphic instace */
     private Personality<RDFNode> personality;
@@ -130,7 +130,7 @@ public class EnhGraph
     public <X extends RDFNode> X getNodeAs( Node n, Class<X> interf ) 
         {
          // We use a cache to avoid reconstructing the same Node too many times.
-        EnhNode eh = (EnhNode) enhNodes.get( n );
+        EnhNode eh = (EnhNode) enhNodes.getIfPresent( n );
         if (eh == null)
             {           
             // not in the cache, so build a new one
@@ -143,18 +143,10 @@ public class EnhGraph
         }
     
     /**
-     * Answer the cache controlle for this graph
-     * @return A cache controller object
-     */
-    public CacheControl getNodeCacheControl() {
-         return enhNodes;
-    }
-    
-    /**
      * Set the cache controller object for this graph
      * @param cc The cache controller
      */
-    public void setNodeCache(Cache cc) {
+    public void setNodeCache(Cache<Node, RDFNode> cc) {
          enhNodes = cc;
     }
      

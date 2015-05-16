@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.modify;
 
-import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraphWrapper ;
 import org.apache.jena.update.GraphStore ;
 
@@ -31,17 +30,5 @@ public class GraphStoreWrapper extends DatasetGraphWrapper implements GraphStore
         super(graphStore) ;
         this.graphStore = graphStore ;
     } 
-    
-    @Override
-    public Dataset toDataset()
-    { return graphStore.toDataset() ; }
-
-    @Override
-    public void startRequest()
-    { graphStore.startRequest() ; }
-
-    @Override
-    public void finishRequest()
-    { graphStore.finishRequest() ; }
 }
 

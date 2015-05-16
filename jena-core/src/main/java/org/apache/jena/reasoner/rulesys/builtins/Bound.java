@@ -47,7 +47,6 @@ public class Bound extends BaseBuiltin  {
      */
     @Override
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
-        BindingEnvironment env = context.getEnv();
         for (int i = 0; i < length; i++) {
             if (getArg(i, args, context) instanceof Node_RuleVariable) return false;
         }

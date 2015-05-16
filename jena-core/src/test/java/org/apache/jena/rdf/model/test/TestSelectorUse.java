@@ -53,7 +53,7 @@ public class TestSelectorUse extends AbstractModelTestBase
 	}
 
 	@Override
-	public void setUp() throws Exception
+	public void setUp()
 	{
 		super.setUp();
 		final Literal tvLitObjs[] = {

@@ -214,8 +214,8 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
 
 // Non-recursive for Turtle long PropertyList tests
   final public void ObjectList(Node s, Node p) throws ParseException {
-                                   Node o ;
-    Object(s, p);
+    
+	Object(s, p);
     label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -557,7 +557,8 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
   }
 
   final public Node RDFLiteral() throws ParseException {
-                      Token t ; String lex = null ;
+    
+	String lex = null ;
     lex = String();
     String lang = null ; String dt = null ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {

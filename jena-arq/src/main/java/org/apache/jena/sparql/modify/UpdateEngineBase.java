@@ -24,21 +24,20 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.apache.jena.update.GraphStore ;
 
 public abstract class UpdateEngineBase implements UpdateEngine
 {
-    protected final GraphStore graphStore ;
+    protected final DatasetGraph datasetGraph ;
     protected final Binding inputBinding;
     protected final Context context ;
 
-    public UpdateEngineBase(GraphStore graphStore,
+    public UpdateEngineBase(DatasetGraph datasetGraph,
                             Binding inputBinding,
                             Context context)
     {
-        this.graphStore = graphStore ;
+        this.datasetGraph = datasetGraph ;
         this.inputBinding = inputBinding ;
-        this.context = setupContext(context, graphStore) ;
+        this.context = setupContext(context, datasetGraph) ;
     }
     
     private static Context setupContext(Context context, DatasetGraph dataset)

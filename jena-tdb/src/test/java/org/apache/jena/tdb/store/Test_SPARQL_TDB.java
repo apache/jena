@@ -224,8 +224,7 @@ public class Test_SPARQL_TDB extends BaseTest
     private void update(Dataset dataset, String string)
     {
         UpdateRequest req = UpdateFactory.create(string) ;
-        GraphStore gs = GraphStoreFactory.create(dataset) ;
-        UpdateProcessor proc = UpdateExecutionFactory.create(req, gs) ;
+        UpdateProcessor proc = UpdateExecutionFactory.create(req, dataset.asDatasetGraph()) ;
         proc.execute() ;
     }
 }

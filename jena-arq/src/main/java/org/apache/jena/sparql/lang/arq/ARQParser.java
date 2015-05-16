@@ -11,7 +11,7 @@ import org.apache.jena.update.* ;
 import org.apache.jena.sparql.modify.request.* ;
 
 @SuppressWarnings("all")
-public class ARQParser extends ARQParserBase implements ARQParserConstants {
+public class ARQParser extends ARQParserBase {
     boolean allowAggregatesInExpressions = false ;
 
   final public void QueryUnit() throws ParseException {

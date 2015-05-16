@@ -18,25 +18,25 @@
 
 package org.apache.jena.sparql.modify;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList ;
+import java.util.List ;
+import java.util.Map ;
 
-import org.apache.http.protocol.HttpContext;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
-import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
-import org.apache.jena.riot.web.HttpOp;
+import org.apache.http.protocol.HttpContext ;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
+import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
+import org.apache.jena.riot.web.HttpOp ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.http.HttpParams ;
 import org.apache.jena.sparql.engine.http.Params ;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
 import org.apache.jena.sparql.engine.http.Service ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.update.GraphStore ;
 import org.apache.jena.update.UpdateProcessor ;
 import org.apache.jena.update.UpdateRequest ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 /**
  * Abstract base class for update processors that perform remote updates over
@@ -122,7 +122,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
     }
 
     @Override
-    public GraphStore getGraphStore() {
+    public DatasetGraph getDatasetGraph() {
         return null;
     }
 

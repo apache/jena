@@ -18,15 +18,14 @@
 
 package org.apache.jena.sparql.modify;
 
-import org.apache.jena.update.GraphStore ;
-import org.apache.jena.update.GraphStoreFactory ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
 
 public class TestUpdateGraphMem extends AbstractTestUpdateGraph
 {
     @Override
-    protected GraphStore getEmptyGraphStore()
+    protected DatasetGraph getEmptyDatasetGraph()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
-        return gStore ;
+        return DatasetGraphFactory.createMem() ;
     }
 }

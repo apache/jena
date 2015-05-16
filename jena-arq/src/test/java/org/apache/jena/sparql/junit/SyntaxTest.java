@@ -57,7 +57,7 @@ public class SyntaxTest extends EarlTestCase
     
     
     @Override
-    protected void runTestForReal() throws Throwable
+    protected void runTestForReal()
     {
         try {
             if ( queryString == null )

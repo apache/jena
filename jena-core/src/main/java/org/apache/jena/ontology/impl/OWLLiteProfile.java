@@ -128,8 +128,6 @@ public class OWLLiteProfile
                 @Override
                 public boolean doCheck( Node n, EnhGraph eg ) {
                     Graph g = eg.asGraph();
-                    Node rdfTypeNode = RDF.type.asNode();
-
                     return hasType( n, eg, new Resource[] {OWL.Class, OWL.Restriction, RDFS.Class, RDFS.Datatype} ) ||
                            // These are common cases that we should support
                            n.equals( OWL.Thing.asNode() ) ||

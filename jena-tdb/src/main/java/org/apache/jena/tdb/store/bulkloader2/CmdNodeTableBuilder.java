@@ -23,7 +23,7 @@ import java.io.FileOutputStream ;
 import java.io.OutputStream ;
 import java.util.Arrays ;
 import java.util.List ;
-import java.util.Objects;
+import java.util.Objects ;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
@@ -34,8 +34,8 @@ import org.apache.jena.atlas.logging.ProgressLogger ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -50,7 +50,6 @@ import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.tdb.sys.Names ;
 import org.slf4j.Logger ;
-
 import tdb.cmdline.CmdTDB ;
 import arq.cmd.ArgDecl ;
 import arq.cmd.CmdException ;
@@ -157,11 +156,10 @@ public class CmdNodeTableBuilder extends CmdGeneral
         NodeTableBuilder sink = new NodeTableBuilder(dsg, monitor, outputTriples, outputQuads, collectStats) ; 
         monitor.start() ;
         sink.startBulk() ;
-        for( String filename : datafiles)
-        {
+        for( String filename : datafiles) {
             if ( datafiles.size() > 0 )
                 cmdLog.info("Load: "+filename+" -- "+DateTimeUtils.nowAsString()) ;
-            RiotReader.parse(filename, sink) ;
+            RDFDataMgr.parse(sink, filename) ;
         }
         sink.finishBulk() ;
         IO.close(outputTriples) ;

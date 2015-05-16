@@ -189,7 +189,7 @@ public class SDBFactory
      * @param store
      * @return GraphStore
      */
-    public static GraphStore connectGraphStore(Store store)
+    public static DatasetGraphSDB connectGraphStore(Store store)
     {
         return new DatasetGraphSDB(store, SDB.getContext().copy()) ; 
     }

@@ -19,9 +19,9 @@
 package org.apache.jena.sparql.modify;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.update.GraphStore ;
 import org.apache.jena.update.UpdateProcessor ;
 import org.apache.jena.update.UpdateRequest ;
 
@@ -31,28 +31,27 @@ import org.apache.jena.update.UpdateRequest ;
 public class UpdateProcessorBase implements UpdateProcessor
 {
     protected final UpdateRequest request ;
-    protected final GraphStore graphStore ;
+    protected final DatasetGraph datasetGraph ;
     protected final Binding inputBinding;
     protected final UpdateEngineFactory factory ;
     protected final Context context ;
 
     public UpdateProcessorBase(UpdateRequest request, 
-                               GraphStore graphStore, 
+                               DatasetGraph datasetGraph, 
                                Binding inputBinding,
                                Context context, 
                                UpdateEngineFactory factory)
     {
         this.request = request ;
-        this.graphStore = graphStore ;
+        this.datasetGraph = datasetGraph ;
         this.inputBinding = inputBinding;
-        this.context = Context.setupContext(context, graphStore) ;
+        this.context = Context.setupContext(context, datasetGraph) ;
         this.factory = factory ;
     }
 
     @Override
-    public void execute()
-    {
-        UpdateEngine uProc = factory.create(graphStore, inputBinding, context);
+    public void execute() {
+        UpdateEngine uProc = factory.create(datasetGraph, inputBinding, context);
         uProc.startRequest();
         
         try {
@@ -64,14 +63,12 @@ public class UpdateProcessorBase implements UpdateProcessor
     }
 
     @Override
-    public GraphStore getGraphStore()
-    {
-        return graphStore ;
+    public DatasetGraph getDatasetGraph() {
+        return datasetGraph ;
     }
 
     @Override
-    public Context getContext()
-    {
+    public Context getContext() {
         return context ;
     }
 }

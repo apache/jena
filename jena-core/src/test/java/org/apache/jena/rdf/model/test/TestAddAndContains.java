@@ -40,7 +40,7 @@ public class TestAddAndContains extends AbstractModelTestBase
 	}
 
 	@Override
-	public void setUp() throws Exception
+	public void setUp()
 	{
 		super.setUp();
 		S = model.createResource("http://nowhere.man/subject");
@@ -48,7 +48,7 @@ public class TestAddAndContains extends AbstractModelTestBase
 	}
 
 	@Override
-	public void tearDown() throws Exception
+	public void tearDown()
 	{
 		S = null;
 		P = null;

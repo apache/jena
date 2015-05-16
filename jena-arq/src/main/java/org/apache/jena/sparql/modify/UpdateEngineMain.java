@@ -18,10 +18,10 @@
 
 package org.apache.jena.sparql.modify;
 
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.modify.request.UpdateVisitor ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.update.GraphStore ;
 
 /**
  * Default implementation of an update engine
@@ -33,26 +33,20 @@ public class UpdateEngineMain extends UpdateEngineBase
 {
     /**
      * Creates a new Update Engine
-     * @param graphStore Graph Store the updates operate over
+     * @param datasetGraph DatasetGraph the updates operate over
      * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
      * @param context Execution Context
      */
-    public UpdateEngineMain(GraphStore graphStore, Binding inputBinding, Context context)
+    public UpdateEngineMain(DatasetGraph datasetGraph, Binding inputBinding, Context context)
     {
-        super(graphStore, inputBinding, context) ;
+        super(datasetGraph, inputBinding, context) ;
     }
 
     @Override
-    public void startRequest()
-    {
-        graphStore.startRequest();
-    }
+    public void startRequest() {}
     
     @Override
-    public void finishRequest()
-    {
-        graphStore.finishRequest();
-    }
+    public void finishRequest() {}
     
     private UpdateSink updateSink = null ;
     
@@ -74,21 +68,20 @@ public class UpdateEngineMain extends UpdateEngineBase
      * @return The update visitor to be used to apply the updates
      */
     protected UpdateVisitor prepareWorker() {
-        return new UpdateEngineWorker(graphStore, inputBinding, context) ;
+        return new UpdateEngineWorker(datasetGraph, inputBinding, context) ;
     }
     
     private static UpdateEngineFactory factory = new UpdateEngineFactory()
     {
         @Override
-        public boolean accept(GraphStore graphStore, Context context)
-        {
+        public boolean accept(DatasetGraph datasetGraph, Context context) {
             return true ;
         }
-        
+
         @Override
-        public UpdateEngine create(GraphStore graphStore, Binding inputBinding, Context context)
-        {
-            return new UpdateEngineMain(graphStore, inputBinding, context);
+        public UpdateEngine create(DatasetGraph datasetGraph, Binding inputBinding,
+                                   Context context) {
+            return new UpdateEngineMain(datasetGraph, inputBinding, context) ;
         }
     } ;
 

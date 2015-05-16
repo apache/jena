@@ -72,11 +72,11 @@ public class CacheSimple<K,V> implements Cache<K,V>
         return getIfPresent(key) != null ;
     }
 
-    // Return key index : -(index+1) if the key does not match
+    // Return key index : -(index+1) if the key slot is empty.
     private final int index(K key)
     { 
         int x = (key.hashCode()&0x7fffffff) % size ;
-        if ( keys[x] != null && keys[x].equals(key) )
+        if ( keys[x] != null )
             return x ; 
         return -x-1 ;
     }
@@ -104,19 +104,17 @@ public class CacheSimple<K,V> implements Cache<K,V>
     @Override
     public void put(K key, V thing)
     {
-        int x = index(key) ;
-        V old = null ;
-        if ( x < 0 )
-            // New.
-            x = decode(x) ;
-        else
-        {
-            // Drop the old K->V
-            old = values[x] ;
+        int x = index(key) ; 
+        x = decode(x) ;
+        V old = values[x] ;
+        // Drop the old K->V
+        if ( old != null ) {
+            if ( old.equals(thing) )
+                // Replace like-with-like.
+                return ;
             if ( dropHandler != null )
                 dropHandler.accept(keys[x], old) ;
-            if ( old != null )
-                currentSize-- ;
+            currentSize-- ;
         }
         
         // Already decremented if we are overwriting a full slot.

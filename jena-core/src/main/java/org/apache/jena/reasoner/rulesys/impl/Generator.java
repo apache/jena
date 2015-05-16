@@ -203,7 +203,6 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      * Signal dependents that we have new results.
      */
     public void notifyResults() {
-        LPBRuleEngine engine = interpreter.getEngine();
         for ( ConsumerChoicePointFrame cons : consumingCPs )
         {
             cons.setReady();

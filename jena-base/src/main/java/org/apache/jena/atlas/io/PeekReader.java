@@ -24,7 +24,6 @@ import static org.apache.jena.atlas.io.IO.UNSET ;
 import java.io.* ;
 
 import org.apache.jena.atlas.AtlasException ;
-import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.atlas.lib.Chars ;
 
 /**
@@ -220,7 +219,7 @@ public final class PeekReader extends Reader {
             // throw new JenaException("Pushback buffer overflow") ;
         }
         if ( ch == EOF || ch == UNSET )
-            throw new RuntimeIOException("Illegal character to push back: " + ch) ;
+            IO.exception("Illegal character to push back: " + ch) ;
 
         idxPushback++ ;
         pushbackChars[idxPushback] = (char)ch ;
