@@ -40,6 +40,7 @@ import org.seaborne.tdb2.TDB ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.migrate.A2 ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
+import org.seaborne.tdb2.store.DatasetGraphTxn ;
 
 // This exists to intercept the query execution setup.
 //  e.g choose the transformation optimizations
@@ -144,6 +145,7 @@ public class QueryEngineTDB extends QueryEngineMain
         
         private static boolean isHandledByTDB(DatasetGraph dataset)
         {
+            if (dataset instanceof DatasetGraphTxn) return true ;
             if (dataset instanceof DatasetGraphTDB) return true ;
             //if (dataset instanceof DatasetGraphTransaction ) return true ;
             return false ;
@@ -151,9 +153,8 @@ public class QueryEngineTDB extends QueryEngineMain
         
         protected DatasetGraphTDB dsgToQuery(DatasetGraph dataset)
         {
+            if (dataset instanceof DatasetGraphTxn) return ((DatasetGraphTxn)dataset).getBaseDatasetGraph() ;
             if (dataset instanceof DatasetGraphTDB) return (DatasetGraphTDB)dataset ;
-//            if (dataset instanceof DatasetGraphTransaction) 
-//                return ((DatasetGraphTransaction)dataset).getDatasetGraphToQuery() ;
             throw new TDBException("Internal inconsistency: trying to execute query on unrecognized kind of DatasetGraph: "+Lib.className(dataset)) ;
         }
         

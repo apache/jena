@@ -20,14 +20,19 @@ package tdbdev;
 public class TDB_DEV {
     // ** Append-write-only, transactional byte file c.f. Object file.
     
+    // Quack clean
+    //  
+    //   DatasetGraph.exec(op)
+    //     Interface ExecuteOp + generic registration.
+    
+    // Merge:
+    // public class DatasetGraphTxn extends DatasetGraphTrackActive
+    // public class DatasetGraphTDB extends DatasetGraphCaching
+    //    implements /*DatasetGraph,*/ Sync, Closeable
+    
     // TDBLib
-    //   Better name.
     //   Enable AdpaterTransactionalDBOEToJena
-    
-    // Assembling TDB backed graphs for general use.
-    
-    // GraphPrefixesProjection -- implement PrefixMapping
-    // GraphPrefixesProjectionTDB
+    // TL => ?
     
     // Union graph not working?
     
@@ -45,7 +50,6 @@ public class TDB_DEV {
     // Sort out transactional Object
     // Transactional wiring.
     // Component id management.
-    //   Read from disk.
     //   Fixed base id and component in set.
     //   Simplify with "per journal" ids
     //   Component id == UUID + integer
