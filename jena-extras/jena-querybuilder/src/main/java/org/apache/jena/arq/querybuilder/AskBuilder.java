@@ -27,6 +27,7 @@ import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsTriple ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 
 /**
@@ -158,7 +159,18 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder> implements
 		whereHandler.addGraph(makeNode(graph), subQuery.getWhereHandler());
 		return this;
 	}
+	
+	@Override
+	public AskBuilder addBind(Expr expression, Object var) {
+		whereHandler.addBind( expression, makeVar(var) );
+		return this;
+	}
 
+	@Override
+	public AskBuilder addBind(String expression, Object var) throws ParseException {
+		whereHandler.addBind( expression, makeVar(var) );
+		return this;
+	}
 	@Override
 	public AskBuilder addOrderBy(String orderBy) {
 		solutionModifier.addOrderBy(orderBy);

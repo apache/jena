@@ -17,19 +17,16 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Query ;
-import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
-import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11;
 
 /**
  * A Select clause handler.
@@ -97,11 +94,7 @@ public class SelectHandler implements Handler {
 	 * @throws ParseException 
 	 */
 	public void addVar(String expression, Var var) throws ParseException {
-		SPARQLParser11 parser = new SPARQLParser11(new ByteArrayInputStream(
-				expression.getBytes()));
-		Prologue prologue = new Prologue( query.getPrefixMapping() );
-		parser.setPrologue(prologue);
-		addVar( parser.Expression(), var );
+		addVar( Utils.parseExpression(query, expression), var );
 	}
 	
 	/**

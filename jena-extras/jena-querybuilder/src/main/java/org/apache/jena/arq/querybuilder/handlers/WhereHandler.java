@@ -285,7 +285,32 @@ public class WhereHandler implements Handler {
 		getClause().addElement(
 				new ElementNamedGraph(graph, subQuery.getElement()));
 	}
+	
+	/**
+	 * Add a binding to the where clause.
+	 * @param expr The expression to bind.
+	 * @param var The variable to bind it to.
+	 */
+	public void addBind( Expr expr, Var var )
+	{
+		getClause().addElement(
+				new ElementBind(var,expr)
+				);
+	}
 
+	/**
+	 * Add a binding to the where clause.
+	 * @param expr The expression to bind.
+	 * @param var The variable to bind it to.
+	 * @throws ParseException 
+	 */
+	public void addBind( String expression, Var var ) throws ParseException
+	{
+		getClause().addElement(
+				new ElementBind(var, Utils.parseExpression(query, expression))
+				);
+	}
+	
 	@Override
 	public void setVars(Map<Var, Node> values) {
 		if (values.isEmpty()) {
@@ -304,4 +329,5 @@ public class WhereHandler implements Handler {
 	public void build() {
 		// no special operations required.
 	}
+	
 }

@@ -17,7 +17,6 @@
  */
 package org.apache.jena.arq.querybuilder;
 
-import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,12 +32,9 @@ import org.apache.jena.graph.FrontsNode ;
 import org.apache.jena.graph.FrontsTriple ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
-import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11;
-import org.apache.jena.sparql.syntax.ElementFilter;
 
 /**
  * Build a select query.
@@ -111,6 +107,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder>
 	 * @param expression The expression string to add.
 	 * @throws ParseException If the expression can not be parsed.
 	 */
+	@Override
 	public SelectBuilder addVar(String expression, Object var) throws ParseException {
 		selectHandler.addVar( expression, makeVar(var) );
 		return this;
@@ -295,8 +292,19 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder>
 	}
 
 	@Override
+	public SelectBuilder addBind(Expr expression, Object var) {
+		whereHandler.addBind( expression, makeVar(var) );
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addBind(String expression, Object var) throws ParseException {
+		whereHandler.addBind( expression, makeVar(var) );
+		return this;
+	}
+
+	@Override
 	public SelectHandler getSelectHandler() {
 		return selectHandler;
 	}
-
 }

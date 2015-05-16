@@ -46,6 +46,7 @@ public abstract class AbstractRegexpBasedTest {
 	protected static final String LIMIT = "LIMIT" + SPACE;
 	protected static final String OFFSET = "OFFSET" + SPACE;
 	protected static final String OPTIONAL = "OPTIONAL" + SPACE;
+	protected static final String BIND = "BIND";
 
 	protected final String quote(String s) {
 		return String.format("%s%s%s", QUOTE, s, QUOTE);
