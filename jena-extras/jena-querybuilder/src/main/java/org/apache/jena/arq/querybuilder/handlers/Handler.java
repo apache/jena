@@ -17,17 +17,10 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import java.io.ByteArrayInputStream;
 import java.util.Map;
 
 import org.apache.jena.graph.Node ;
-import org.apache.jena.query.Query;
-import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
-import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11;
-import org.apache.jena.sparql.util.ExprUtils;
 
 /**
  * The base interface for handlers.
@@ -47,15 +40,4 @@ public interface Handler {
 	 */
 	public void build();
 	
-//	public static class Utils {
-//		public static Expr parseExpression( Query query, String expression ) throws ParseException
-//		{
-//			ExprUtils.parse(s)
-//			SPARQLParser11 parser = new SPARQLParser11(new ByteArrayInputStream(
-//					expression.getBytes()));
-//			Prologue prologue = new Prologue( query.getPrefixMapping() );
-//			parser.setPrologue(prologue);
-//			return parser.Expression();
-//		}
-//	}
 }
