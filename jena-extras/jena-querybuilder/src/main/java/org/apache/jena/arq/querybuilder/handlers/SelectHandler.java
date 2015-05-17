@@ -26,7 +26,7 @@ import org.apache.jena.query.Query ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
+import org.apache.jena.sparql.util.ExprUtils;
 
 /**
  * A Select clause handler.
@@ -91,10 +91,9 @@ public class SelectHandler implements Handler {
 	 * If the variable is the variables are set to star.
 	 * @param expression The expression as a string.
 	 * @param var The variable to add.
-	 * @throws ParseException 
 	 */
-	public void addVar(String expression, Var var) throws ParseException {
-		addVar( Utils.parseExpression(query, expression), var );
+	public void addVar(String expression, Var var)  {
+		addVar( ExprUtils.parse( query, expression, true ), var );
 	}
 	
 	/**

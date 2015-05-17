@@ -27,6 +27,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11;
+import org.apache.jena.sparql.util.ExprUtils;
 
 /**
  * The base interface for handlers.
@@ -46,14 +47,15 @@ public interface Handler {
 	 */
 	public void build();
 	
-	public static class Utils {
-		public static Expr parseExpression( Query query, String expression ) throws ParseException
-		{
-			SPARQLParser11 parser = new SPARQLParser11(new ByteArrayInputStream(
-					expression.getBytes()));
-			Prologue prologue = new Prologue( query.getPrefixMapping() );
-			parser.setPrologue(prologue);
-			return parser.Expression();
-		}
-	}
+//	public static class Utils {
+//		public static Expr parseExpression( Query query, String expression ) throws ParseException
+//		{
+//			ExprUtils.parse(s)
+//			SPARQLParser11 parser = new SPARQLParser11(new ByteArrayInputStream(
+//					expression.getBytes()));
+//			Prologue prologue = new Prologue( query.getPrefixMapping() );
+//			parser.setPrologue(prologue);
+//			return parser.Expression();
+//		}
+//	}
 }
