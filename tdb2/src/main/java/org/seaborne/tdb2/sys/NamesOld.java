@@ -19,7 +19,7 @@
 package org.seaborne.tdb2.sys;
 
 /** Names of things in TDB */
-public class Names
+public class NamesOld
 {
     public static final String primaryIndexTriples      = "SPO" ; 
     public static final String[] tripleIndexes          = { primaryIndexTriples, "POS", "OSP" } ;
@@ -43,9 +43,8 @@ public class Names
 
     public static final String datasetConfig            = "config-tdb" ;        // name of the TDB configuration file.
 
-    
     /** Node file */
-    public static final String extNodeData              = "dat" ;           // Extension of node files
+    public static final String objNodeData              = "obj" ;           // Extension of node files
     public static final String extJournal               = "jrnl" ;          // Extension of node files.
     public static final String journalFileBase          = "journal" ;
     public static final String journalFile              = journalFileBase+"."+extJournal ;

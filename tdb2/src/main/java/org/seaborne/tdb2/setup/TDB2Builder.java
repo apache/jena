@@ -30,6 +30,7 @@ import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.migrate.L ;
+import org.seaborne.dboe.sys.Names ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
 import org.seaborne.dboe.trans.data.TransBinaryDataFile ;
@@ -243,7 +244,7 @@ public class TDB2Builder {
         Index index = buildRangeIndex(coord, cid, recordFactory, name) ;
         FileSet fs = new FileSet(location, name+"-data") ; 
         
-        BinaryDataFile binFile = FileFactory.createBinaryDataFile(fs, "obj") ;
+        BinaryDataFile binFile = FileFactory.createBinaryDataFile(fs, Names.objNodeData) ;
         BufferChannel pState = FileFactory.createBufferChannel(fs, "bdf") ;
         // ComponentId mgt.
         TransBinaryDataFile transBinFile = new TransBinaryDataFile(binFile, pState, ++componentCounter) ;

@@ -41,12 +41,12 @@ public class Names
     public static final String[] prefixIndexes          = { primaryIndexPrefix } ;
     
     /* B+Trees - nodes file and records file */
-    public static final String bptExtRoot               = "bpt" ; //extState?
-    public static final String bptExtTree               = "idn" ;
-    public static final String bptExtRecords            = "dat" ;
+    public static final String bptState                 = "bpt" ;
+    public static final String bptTree                  = "idn" ;
+    public static final String bptRecords               = "dat" ;
 
-    /* BTrees - single file per tree */
-    public static final String btExt                    = "idx" ;
+//    /* BTrees - single file per tree */
+//    public static final String btExt                    = "idx" ;
     
     /* ExtHash - dictionary file*/
     public static final String extHashExt               = "exh" ;
@@ -55,16 +55,12 @@ public class Names
     public static final String datasetConfig            = "config-tdb" ;        // name of the TDB configuration file.
 
     /* Node files */
-    public static final String extNodeData              = "dat" ;           // Extension of node files
-    public static final String indexId2Node             = "nodes" ;         // Node table
-    public static final String indexNode2Id             = "node2id";        // Node hash to id table
-    
-    //public static final String indexId2Node           = "id2node";        // Would be the Index for node(hash) to id  
+    public static final String nodeDataState            = "bdf" ;           // Node state
+    public static final String objNodeData              = "obj" ;
+    public static final String nodeTableBaseName        = "nodes" ;         // Node table
 
     /** Prefixes file */
-    public static final String prefixId2Node            = "prefixes" ;      // Prefix node table 
-    public static final String prefixNode2Id            = "prefix2id";      // Prefix node table for index Node/hash->id
-    public static final String indexPrefix              = "prefixIdx";      // Prefix index name
+    public static final String prefixTableBaseName      = "prefixes" ;      // Prefix node table 
     
     /** Optimizer / stats */
     public static final String optStats                 = "stats.opt" ;

@@ -18,13 +18,12 @@
 package tdbdev;
 
 public class TDB_DEV {
-    // ** Append-write-only, transactional byte file c.f. Object file.
+    // ComponentId management.
     
-    // Quack clean
-    // TRDF - RDF1.1 mode - no xsd:string.
+    // Names.* "obj", "-data", "bdf state file.
     
-    // NodeTableTRDF - need synchronized?
-    //  
+    // Quack clean / split into general and TDB
+    
     // DatasetGraph.exec(op)
     //   Interface ExecuteOp + generic registration.
     // DatasetGraph.getBaseDatasetGraph
@@ -34,25 +33,11 @@ public class TDB_DEV {
     // public class DatasetGraphTDB extends DatasetGraphCaching
     //    implements /*DatasetGraph,*/ Sync, Closeable
     
-    // TDBLib
-    //   Enable AdpaterTransactionalDBOEToJena
     // TL => ?
     
-    // Union graph not working?
-    
-    // Test
-    // Centralize making a in-memory, non-transactional, datasetTDB for unit tests.
-    // TestFactoryTDB.createRawDatasetGraphTDB() ;
-    
-    // Ensure sync called.
-    // BinaryDataFile
-    //   .isEmpty
-    
     // Switch Lizard to TDB2 technology.
-    // Hunt down adapter and remove.
+    //   Hunt down adapters and remove.
 
-    // Sort out transactional Object
-    // Transactional wiring.
     // Component id management.
     //   Fixed base id and component in set.
     //   Simplify with "per journal" ids
@@ -61,15 +46,5 @@ public class TDB_DEV {
     // Fixed table of component offset.
     //   The return of FileRef!
     
-    // Tests
-    
     // Journal and recovery.
-    
-    // Collapse DatasetGraphTDB and DatasetGraphTxn
-    
-    // Port TDB tests
-    //   BuildTestLib
-    //   TestTransactions
-    //    Just need TestDataset?
 }
-

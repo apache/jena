@@ -75,9 +75,9 @@ public class RangeIndexBuilderBPTree implements RangeIndexBuilder
         }
 
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
-        BufferChannel bptState = FileFactory.createBufferChannel(fileset, Names.bptExtRoot) ;
-        BlockMgr blkMgrNodes = blockMgrBuilderNodes.buildBlockMgr(fileset, Names.bptExtTree, indexParams) ;
-        BlockMgr blkMgrRecords = blockMgrBuilderRecords.buildBlockMgr(fileset, Names.bptExtRecords, indexParams) ;
+        BufferChannel bptState = FileFactory.createBufferChannel(fileset, Names.bptState) ;
+        BlockMgr blkMgrNodes = blockMgrBuilderNodes.buildBlockMgr(fileset, Names.bptTree, indexParams) ;
+        BlockMgr blkMgrRecords = blockMgrBuilderRecords.buildBlockMgr(fileset, Names.bptRecords, indexParams) ;
         return BPlusTreeFactory.create(cid, params, bptState, blkMgrNodes, blkMgrRecords) ;
     }
 }

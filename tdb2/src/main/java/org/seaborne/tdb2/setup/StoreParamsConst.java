@@ -19,7 +19,7 @@
 package org.seaborne.tdb2.setup;
 
 import org.seaborne.dboe.base.block.FileMode ;
-import org.seaborne.tdb2.sys.Names ;
+import org.seaborne.dboe.sys.Names ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 
 public class StoreParamsConst {
@@ -56,7 +56,7 @@ public class StoreParamsConst {
     public static final int      blockSize             = SystemTDB.BlockSize ;
     
     public static final String   fNodeTableBaseName    = "nodetable" ;
-    public static final String   nodeTableBaseName     = Names.nodeTableBaseName ;
+    public static final String   nodeTableBaseName     = Names.nodeDataState ;
     
     public static final String   fPrimaryIndexTriples  = "triple_index_primary" ;
     public static final String   primaryIndexTriples   = Names.primaryIndexTriples ;

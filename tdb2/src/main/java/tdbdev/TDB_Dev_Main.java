@@ -144,7 +144,7 @@ public class TDB_Dev_Main {
         FileOps.ensureDir("DB"); 
         FileOps.clearDirectory("DB");
         Dataset ds = TDBFactory.createDataset(location) ;
-        String FILE = "/home/afs/Datasets/BSBM/bsbm-50k.nt.gz" ;
+        String FILE = "/home/afs/Datasets/BSBM/bsbm-25m.nt.gz" ;
         
         long time_ms = -1 ;
 
@@ -162,7 +162,7 @@ public class TDB_Dev_Main {
         System.out.printf("Count = %,d\n", x) ;
         if ( time_ms > 0 ) {
             double seconds = time_ms/1000.0 ; 
-            System.out.printf("Rate = %,.0f\n", x/seconds) ;
+            System.out.printf("Rate = %,.0f TPS\n", x/seconds) ;
         }
         
         String qs = "SELECT * { ?s ?p ?o } LIMIT 10" ;
