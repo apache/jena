@@ -28,35 +28,28 @@ public abstract class AbstractTestNodeTable extends BaseTest
 {
     protected abstract NodeTable createEmptyNodeTable() ;
     
-    static protected final Node n1 = NodeFactoryExtra.parseNode("<http://example/x>") ;
-    static protected final Node n2 = NodeFactoryExtra.parseNode("1") ;
-    
-    protected void testNode(String str)
-    {
+    protected void testNode(String str) {
         testNode(NodeFactoryExtra.parseNode(str)) ;
     }
-    
-    protected void testNode(Node n)
-    {
+
+    protected void testNode(Node n) {
         NodeTable nt = createEmptyNodeTable() ;
         writeNode(nt, n) ;
     }
-    
-    protected static void writeNode(NodeTable nt, String str)
-    {
+
+    protected static void writeNode(NodeTable nt, String str) {
         writeNode(nt, NodeFactoryExtra.parseNode(str)) ;
     }
     
-    protected static void writeNode(NodeTable nt, Node n)
-    {
+    protected static void writeNode(NodeTable nt, Node n) {
         NodeId nodeId = nt.getAllocateNodeId(n) ;
         assertNotNull(nodeId) ;
         assertNotEquals(NodeId.NodeDoesNotExist, nodeId) ;
         assertNotEquals(NodeId.NodeIdAny, nodeId) ;
-        
+
         Node n2 = nt.getNodeForNodeId(nodeId) ;
         assertEquals(n, n2) ;
-        
+
         NodeId nodeId2 = nt.getNodeIdForNode(n) ;
         assertEquals(nodeId, nodeId2) ;
     }

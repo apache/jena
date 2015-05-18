@@ -28,7 +28,6 @@ import org.seaborne.tdb2.setup.StoreParamsBuilder ;
 
 public class TestNodeTableStored extends AbstractTestNodeTable
 {
-    
     static String base = ConfigTest.getTestingDir() ;
     static Location location = Location.create(base+"/nodetable-test") ;
     
@@ -42,6 +41,6 @@ public class TestNodeTableStored extends AbstractTestNodeTable
                 .nodeId2NodeCacheSize(10)
                 .node2NodeIdCacheSize(10)
                 .nodeMissCacheSize(10).build() ;
-        return BuildTestLib.makeNodeTable(Location.mem(), "test", params) ;
+        return BuildTestLib.makeNodeTable(location, "test", params) ;
     }
 }

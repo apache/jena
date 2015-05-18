@@ -31,7 +31,6 @@ import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.thrift.TRDF ;
 import org.apache.jena.riot.thrift.ThriftConvert ;
 import org.apache.jena.riot.thrift.wire.RDF_Term ;
-import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
 import org.apache.thrift.protocol.TProtocol ;
@@ -41,7 +40,6 @@ import org.seaborne.dboe.base.file.BinaryDataFileWriteBuffered ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.tdb2.TDBFactory ;
-import org.seaborne.tdb2.store.DatasetGraphTDB ;
 import org.seaborne.tdb2.store.DatasetGraphTxn ;
 import org.seaborne.tdb2.store.nodetable.TReadAppendFileTransport ;
 
@@ -134,9 +132,8 @@ public class TDB_Dev_Main {
     }
     
     public static void main1(String[] args) {
-        boolean fresh = false ;
+        boolean fresh = true ;
         Location location = Location.create("DB") ;
-        String FILE = "/home/afs/Datasets/BSBM/bsbm-25m.nt.gz" ;
         
         if ( ! fresh ) {
             String x = "<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType15>" ;
@@ -146,9 +143,10 @@ public class TDB_Dev_Main {
             System.exit(0) ;
         }
         
-        
         FileOps.ensureDir("DB"); 
         FileOps.clearDirectory("DB");
+        
+        String FILE = "/home/afs/Datasets/BSBM/bsbm-25m.nt.gz" ;
         
         long time_ms = -1 ;
         DatasetGraphTxn dsg = (DatasetGraphTxn)TDBFactory.createDatasetGraph(location) ;
@@ -156,23 +154,28 @@ public class TDB_Dev_Main {
         System.out.println("Load "+FILE) ;
 
         dsg.begin(ReadWrite.WRITE);
-        DatasetGraph dsgx = dsg.getBaseDatasetGraph() ;
+        // ???? 
+        //DatasetGraph dsgx = dsg.getBaseDatasetGraph() ;
         //RDFDataMgr.read(dsg, "D.ttl");
         Timer timer = new Timer() ;
         timer.startTimer();
-        RDFDataMgr.read(dsgx, FILE) ;
+        RDFDataMgr.read(dsg, FILE) ;
 
-        //Temporary fakery!
-        DatasetGraphTDB dsgtdb = (DatasetGraphTDB)dsgx ;
-        dsgtdb.sync();
+//        //Temporary fakery!
+//        DatasetGraphTDB dsgtdb = (DatasetGraphTDB)dsgx ;
+//        // XXX ***************************************************************************
+//        dsgtdb.sync();
 
         dsg.commit();
         dsg.end(); 
 
 
         time_ms = timer.endTimer() ;
-            
+        System.out.println("Load finish: "+Timer.timeStr(time_ms)+"s") ;    
+        
+        
         dsg.begin(ReadWrite.READ) ;
+        System.out.println("Read start") ;    
         
         //RDFDataMgr.write(System.out,  dsg, Lang.TRIG) ;
         long x = Iter.count(dsg.find()) ;
@@ -208,28 +211,6 @@ public class TDB_Dev_Main {
                 QueryExecUtils.executeQuery(qExec);
             }
         }); 
-        
-        
-//        FileSet idxFs1 = new FileSet(location, "index") ;
-//        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
-//        ComponentId cid = ComponentId.allocLocal() ;
-//        RangeIndex rIdx = null ; //BPlusTreeFactory.makeBPlusTree(
-//
-//        BPlusTree x =(BPlusTree)rIdx ;
-//        // XXX !!!!!
-//        Log.warn(TDB_Dev_Main.class, "Ad-hoc memory journal");  
-//        Journal journal = Journal.create(Location.mem()) ; 
-//        Transactional trans = new TransactionalBase(journal, x) ;
-//        trans.begin(ReadWrite.WRITE);
-//        NodeTable nt = new NodeTableThrift(rIdx, location.getPath("data")) ;
-//        Node n1 = SSE.parseNode("<http://example/>") ;
-//        Node n2 = SSE.parseNode("<http://example/other>") ;
-//        NodeId nid1 = nt.getAllocateNodeId(n1) ;
-//        NodeId nid2 = nt.getAllocateNodeId(n2) ;
-//        System.out.printf("nid1 = %s\n", nid1) ;
-//        System.out.printf("nid2 = %s\n", nid2) ;
-//        trans.commit();
-//        System.exit(0) ;
     }
 
 }

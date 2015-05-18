@@ -44,8 +44,6 @@ public class NodeTableTRDF extends NodeTableNative {
             this.diskFile = objectFile ;
             transport = new TReadAppendFileTransport(diskFile) ;
             transport.open(); 
-            // Does not seem to affect write speed.
-            //transport = new TFastFramedTransport(transport) ;
             this.protocol = TRDF.protocol(transport) ;
         }
         catch (Exception ex) {
@@ -70,6 +68,7 @@ public class NodeTableTRDF extends NodeTableNative {
 
     @Override
     protected Node readNodeFromTable(NodeId id) {
+        // XXX Synchronized needed?
         try {
             long x = id.getId() ;
             transport.readPosition(x) ;

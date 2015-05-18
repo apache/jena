@@ -145,10 +145,12 @@ public class BinaryDataFileWriteBuffered implements BinaryDataFile {
             writeBuffer() ;
             other.sync(); 
         }
-    }    
+    }
+    
     private void writeBuffer() {
         synchronized(sync) {
             if ( pendingOutput ) {
+                pendingOutput = false ;
                 other.write(buffer, 0, bufferLength) ;
                 bufferLength = 0 ;
             }

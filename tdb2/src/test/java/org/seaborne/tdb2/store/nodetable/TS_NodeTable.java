@@ -23,7 +23,9 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestNodeTableStored.class
+    TestNodeTableBase.class
+    , TestNodeTableStoredBase.class
+    , TestNodeTableStored.class
     , TestNodeTable.class
 })
 public class TS_NodeTable

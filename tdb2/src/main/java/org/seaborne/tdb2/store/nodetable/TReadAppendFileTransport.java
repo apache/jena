@@ -67,7 +67,9 @@ public class TReadAppendFileTransport extends TTransport {
     
     @Override
     public int read(byte[] buf, int off, int len) {
-        return file.read(readPosn, buf, off, len) ;
+        int x = file.read(readPosn, buf, off, len) ;
+        readPosn += x ;
+        return x ;
     }
 
     @Override

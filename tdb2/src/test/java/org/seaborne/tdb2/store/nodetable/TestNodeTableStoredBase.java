@@ -18,21 +18,30 @@
 
 package org.seaborne.tdb2.store.nodetable;
 
+import org.apache.jena.atlas.lib.FileOps ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.tdb2.ConfigTest ;
 import org.seaborne.tdb2.junit.BuildTestLib ;
 import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.setup.StoreParamsBuilder ;
 
-public class TestNodeTable extends AbstractTestNodeTable
+
+public class TestNodeTableStoredBase extends AbstractTestNodeTable
 {
+    
+    static String base = ConfigTest.getTestingDir() ;
+    static Location location = Location.create(base+"/nodetable-test") ;
+    
     @Override
     protected NodeTable createEmptyNodeTable()
     {
+        FileOps.ensureDir(location.getDirectoryPath());
+        FileOps.clearDirectory(location.getDirectoryPath());
         StoreParams params = 
             StoreParamsBuilder.create()
-                .nodeId2NodeCacheSize(10)
-                .node2NodeIdCacheSize(10)
-                .nodeMissCacheSize(10).build() ;
-        return BuildTestLib.makeNodeTable(Location.mem(), "test", params) ;
+                .nodeId2NodeCacheSize(-1)
+                .node2NodeIdCacheSize(-1)
+                .nodeMissCacheSize(-1).build() ;
+        return BuildTestLib.makeNodeTableBase(location, "test", params) ;
     }
 }

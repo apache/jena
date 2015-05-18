@@ -97,7 +97,7 @@ public class TDB2Builder {
     }
     
     /** FileFilter
-     * Skips .., . and "tdb.cfg"
+     * Skips "..", "." and "tdb.cfg"
      * 
      */
     static FileFilter fileFilterNewDB  = (pathname)->{
@@ -177,7 +177,6 @@ public class TDB2Builder {
         return tripleTable ;
     }
 
-
     private DatasetPrefixesTDB buildPrefixTable(TransactionCoordinator txnCoord,
                                                 NodeTable prefixNodes, StoreParams params) {
         String primary = params.getPrimaryIndexPrefix() ;
@@ -231,14 +230,16 @@ public class TDB2Builder {
     
     public NodeTable buildNodeTable(TransactionCoordinator coord, ComponentId cid, String name) {
         NodeTable nodeTable = buildBaseNodeTable(coord, cid, name) ;
-        nodeTable = NodeTableCache.create(nodeTable, 
-                                          storeParams.getNode2NodeIdCacheSize(),
-                                          storeParams.getNodeId2NodeCacheSize(),
-                                          storeParams.getNodeMissCacheSize()) ;
-        nodeTable = NodeTableInline.create(nodeTable) ;
+        nodeTable = stackNodeTable(nodeTable, storeParams) ;
         return nodeTable ; 
     }
 
+    public static NodeTable stackNodeTable(NodeTable nodeTable, StoreParams storeParams) {
+        nodeTable = NodeTableCache.create(nodeTable, storeParams) ;
+        nodeTable = NodeTableInline.create(nodeTable) ;
+        return nodeTable ; 
+    }
+    
     private NodeTable buildBaseNodeTable(TransactionCoordinator coord, ComponentId cid, String name) {
         RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
         Index index = buildRangeIndex(coord, cid, recordFactory, name) ;

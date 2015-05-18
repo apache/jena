@@ -128,16 +128,14 @@ public class BinaryDataFileRandomAccess implements BinaryDataFile {
     }
     
     protected void switchToReadMode() {
-        if ( ! readMode ) {
-            seek(readPosition);
+        if ( ! readMode )
             readMode = true ;
-        }
     }
 
     protected void switchToWriteMode() {
         if ( readMode ) {
-            seek(writePosition);
             readMode = false ;
+            seek(writePosition);
         }
     }
 

@@ -47,15 +47,20 @@ public class BuildTestLib {
         return bpt ; 
     }
 
-    public static NodeTable makeNodeTable(Location mem, String basename, StoreParams params) {
-        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
-        FileSet fs = new FileSet(mem, basename) ;
-                
-        Index index = buildRangeIndex(fs, recordFactory, params) ;
-        BinaryDataFile bdf = createBinaryDataFile(mem, basename+"-data") ;
-        NodeTable nt = new NodeTableTRDF(index, bdf) ;
+    public static NodeTable makeNodeTable(Location location, String basename, StoreParams params) {
+        NodeTable nt = makeNodeTableBase(location, basename, params) ;
         nt = NodeTableCache.create(nt, params) ;
         nt = NodeTableInline.create(nt) ;
+        return nt ;
+    }
+    
+    public static NodeTable makeNodeTableBase(Location location, String basename, StoreParams params) {
+        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
+        FileSet fs = new FileSet(location, basename) ;
+                
+        Index index = buildRangeIndex(fs, recordFactory, params) ;
+        BinaryDataFile bdf = createBinaryDataFile(location, basename+"-data") ;
+        NodeTable nt = new NodeTableTRDF(index, bdf) ;
         return nt ;
     }
 

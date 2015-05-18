@@ -21,9 +21,13 @@ public class TDB_DEV {
     // ** Append-write-only, transactional byte file c.f. Object file.
     
     // Quack clean
+    // TRDF - RDF1.1 mode - no xsd:string.
+    
+    // NodeTableTRDF - need synchronized?
     //  
-    //   DatasetGraph.exec(op)
-    //     Interface ExecuteOp + generic registration.
+    // DatasetGraph.exec(op)
+    //   Interface ExecuteOp + generic registration.
+    // DatasetGraph.getBaseDatasetGraph
     
     // Merge:
     // public class DatasetGraphTxn extends DatasetGraphTrackActive

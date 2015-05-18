@@ -23,16 +23,18 @@ import org.seaborne.tdb2.junit.BuildTestLib ;
 import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.setup.StoreParamsBuilder ;
 
-public class TestNodeTable extends AbstractTestNodeTable
+public class TestNodeTableBase extends AbstractTestNodeTable
 {
     @Override
     protected NodeTable createEmptyNodeTable()
     {
         StoreParams params = 
             StoreParamsBuilder.create()
-                .nodeId2NodeCacheSize(10)
-                .node2NodeIdCacheSize(10)
-                .nodeMissCacheSize(10).build() ;
-        return BuildTestLib.makeNodeTable(Location.mem(), "test", params) ;
+                .nodeId2NodeCacheSize(-1)
+                .node2NodeIdCacheSize(-1)
+                .nodeMissCacheSize(-1).build() ;
+
+        // No cache, no inlining.
+        return BuildTestLib.makeNodeTableBase(Location.mem(), "test", params) ;
     }
 }
