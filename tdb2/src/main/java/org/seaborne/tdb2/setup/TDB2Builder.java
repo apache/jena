@@ -244,8 +244,8 @@ public class TDB2Builder {
         Index index = buildRangeIndex(coord, cid, recordFactory, name) ;
         FileSet fs = new FileSet(location, name+"-data") ; 
         
-        BinaryDataFile binFile = FileFactory.createBinaryDataFile(fs, Names.objNodeData) ;
-        BufferChannel pState = FileFactory.createBufferChannel(fs, "bdf") ;
+        BinaryDataFile binFile = FileFactory.createBinaryDataFile(fs, Names.extObjNodeData) ;
+        BufferChannel pState = FileFactory.createBufferChannel(fs, Names.extBdfState) ;
         // ComponentId mgt.
         TransBinaryDataFile transBinFile = new TransBinaryDataFile(binFile, pState, ++componentCounter) ;
         coord.add(transBinFile) ;

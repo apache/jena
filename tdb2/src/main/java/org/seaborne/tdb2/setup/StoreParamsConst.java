@@ -56,7 +56,7 @@ public class StoreParamsConst {
     public static final int      blockSize             = SystemTDB.BlockSize ;
     
     public static final String   fNodeTableBaseName    = "nodetable" ;
-    public static final String   nodeTableBaseName     = Names.nodeDataState ;
+    public static final String   nodeTableBaseName     = Names.nodeTableBaseName ;
     
     public static final String   fPrimaryIndexTriples  = "triple_index_primary" ;
     public static final String   primaryIndexTriples   = Names.primaryIndexTriples ;

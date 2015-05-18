@@ -41,9 +41,9 @@ public class Names
     public static final String[] prefixIndexes          = { primaryIndexPrefix } ;
     
     /* B+Trees - nodes file and records file */
-    public static final String bptState                 = "bpt" ;
-    public static final String bptTree                  = "idn" ;
-    public static final String bptRecords               = "dat" ;
+    public static final String extBptState              = "bpt" ;
+    public static final String extBptTree               = "idn" ;
+    public static final String extBptRecords            = "dat" ;
 
 //    /* BTrees - single file per tree */
 //    public static final String btExt                    = "idx" ;
@@ -55,8 +55,8 @@ public class Names
     public static final String datasetConfig            = "config-tdb" ;        // name of the TDB configuration file.
 
     /* Node files */
-    public static final String nodeDataState            = "bdf" ;           // Node state
-    public static final String objNodeData              = "obj" ;
+    public static final String extBdfState              = "bdf" ;           // Node state
+    public static final String extObjNodeData           = "obj" ;
     public static final String nodeTableBaseName        = "nodes" ;         // Node table
 
     /** Prefixes file */

@@ -155,8 +155,8 @@ public class SetupBPTreeIndex {
         }
     
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
-        BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptTree, blockSize, readCacheSize, writeCacheSize) ;
-        BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptRecords, blockSize, readCacheSize, writeCacheSize) ;
+        BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.extBptTree, blockSize, readCacheSize, writeCacheSize) ;
+        BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.extBptRecords, blockSize, readCacheSize, writeCacheSize) ;
         return BPlusTreeFactory.create(params, blkMgrNodes, blkMgrRecords) ;
     }
 

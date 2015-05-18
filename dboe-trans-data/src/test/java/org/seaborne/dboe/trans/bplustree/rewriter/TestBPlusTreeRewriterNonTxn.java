@@ -81,11 +81,11 @@ public class TestBPlusTreeRewriterNonTxn extends Assert
 
         FileSet destination = FileSet.mem() ;
         // ---- Rewrite
-        BufferChannel rootState = FileFactory.createBufferChannel(destination, Names.bptState) ;
+        BufferChannel rootState = FileFactory.createBufferChannel(destination, Names.extBptState) ;
         // Write leaves to ...
-        BlockMgr blkMgr1 = BlockMgrFactory.create(destination, Names.bptTree, bptParams.getCalcBlockSize(), 10, 10) ;
+        BlockMgr blkMgr1 = BlockMgrFactory.create(destination, Names.extBptTree, bptParams.getCalcBlockSize(), 10, 10) ;
         // Write nodes to ...
-        BlockMgr blkMgr2 = BlockMgrFactory.create(destination, Names.bptTree, bptParams.getCalcBlockSize(), 10, 10) ;
+        BlockMgr blkMgr2 = BlockMgrFactory.create(destination, Names.extBptTree, bptParams.getCalcBlockSize(), 10, 10) ;
         
         BPlusTree bpt2 = BPlusTreeRewriter.packIntoBPlusTree(originaldata.iterator(), bptParams, recordFactory,
                                                              rootState, blkMgr1, blkMgr2) ;

@@ -144,7 +144,7 @@ public class TDB_Dev_Main {
         FileOps.ensureDir("DB"); 
         FileOps.clearDirectory("DB");
         Dataset ds = TDBFactory.createDataset(location) ;
-        String FILE = "/home/afs/Datasets/BSBM/bsbm-25m.nt.gz" ;
+        String FILE = "/home/afs/Datasets/BSBM/bsbm-50k.nt.gz" ;
         
         long time_ms = -1 ;
 

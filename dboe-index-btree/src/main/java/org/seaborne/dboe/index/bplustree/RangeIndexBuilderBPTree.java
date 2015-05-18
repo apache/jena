@@ -68,8 +68,8 @@ public class RangeIndexBuilderBPTree implements RangeIndexBuilder
 
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
         
-        BlockMgr blkMgrNodes = blockMgrBuilderNodes.buildBlockMgr(fileset, Names.bptTree, indexParams) ;
-        BlockMgr blkMgrRecords = blockMgrBuilderRecords.buildBlockMgr(fileset, Names.bptRecords, indexParams) ;
+        BlockMgr blkMgrNodes = blockMgrBuilderNodes.buildBlockMgr(fileset, Names.extBptTree, indexParams) ;
+        BlockMgr blkMgrRecords = blockMgrBuilderRecords.buildBlockMgr(fileset, Names.extBptRecords, indexParams) ;
         return BPlusTreeFactory.create(params, blkMgrNodes, blkMgrRecords) ;
     }
 }
