@@ -23,9 +23,11 @@ import static org.apache.jena.riot.thrift.TRDF.ANY ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
 
+import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.datatypes.xsd.impl.RDFLangString ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
@@ -250,6 +252,12 @@ public class ThriftConvert
             
             // General encoding.
             RDF_Literal literal = new RDF_Literal(lex) ;
+            if ( JenaRuntime.isRDF11 ) {
+                if ( node.getLiteralDatatype().equals(XSDDatatype.XSDstring) || 
+                     node.getLiteralDatatype().equals(RDFLangString.rdfLangString) )
+                    dt = null ;
+            }
+            
             if ( dt != null ) {
                 RDF_PrefixName dtPrefixName = contract(dt, pmap) ;
                 if ( dtPrefixName != null )
