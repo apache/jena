@@ -25,16 +25,14 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.main.QC ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
-import org.seaborne.dboe.base.file.BinaryDataFile ;
-import org.seaborne.dboe.base.file.FileFactory ;
-import org.seaborne.dboe.base.file.FileSet ;
-import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.base.file.* ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.migrate.L ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
+import org.seaborne.dboe.trans.data.TransBinaryDataFile ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
@@ -244,7 +242,12 @@ public class TDB2Builder {
         RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
         Index index = buildRangeIndex(coord, cid, recordFactory, name) ;
         FileSet fs = new FileSet(location, name+"-data") ; 
+        
         BinaryDataFile binFile = FileFactory.createBinaryDataFile(fs, "obj") ;
+        BufferChannel pState = FileFactory.createBufferChannel(fs, "bdf") ;
+        // ComponentId mgt.
+        TransBinaryDataFile transBinFile = new TransBinaryDataFile(binFile, pState, ++componentCounter) ;
+        coord.add(transBinFile) ;
         return new NodeTableTRDF(index, binFile) ;
 
         // Old SSE encoding for comparison. 

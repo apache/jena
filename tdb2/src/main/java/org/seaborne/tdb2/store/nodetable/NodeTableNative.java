@@ -156,24 +156,6 @@ public abstract class NodeTableNative implements NodeTable
     abstract protected void syncSub() ;
     abstract protected void closeSub() ;
     
-//    private final NodeId writeNodeToTable(Node node)
-//    {
-//        syncNeeded = true ;
-//        // Synchronized in accessIndex
-//        long x = NodeLib.encodeStore(node, getObjects()) ;
-//        return NodeId.create(x);
-//    }
-//    
-//
-//    private final Node readNodeFromTable(NodeId id)
-//    {
-//        synchronized (this) // Pair to accessIndex
-//        {
-//            if ( id.getId() >= getObjects().length() )
-//                return null ;
-//            return NodeLib.fetchDecode(id.getId(), getObjects()) ;
-//        }
-//    }
     // -------- NodeId<->Node
 
     @Override

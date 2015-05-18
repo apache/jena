@@ -38,17 +38,15 @@ import org.seaborne.dboe.base.file.BinaryDataFile ;
 import org.seaborne.dboe.base.file.BinaryDataFileRandomAccess ;
 import org.seaborne.dboe.base.file.BinaryDataFileWriteBuffered ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.tdb2.TDBFactory ;
-import org.seaborne.tdb2.store.DatasetGraphTxn ;
+import org.seaborne.tdb2.lib.TDBTxn ;
 import org.seaborne.tdb2.store.nodetable.TReadAppendFileTransport ;
-
 
 public class TDB_Dev_Main {
     static { LogCtl.setLog4j(); }
     
     public static void main(String[] args) throws Exception {
-        main1(args) ;
+        load() ;
     }
     
     public static void main2(String[] args) throws Exception {
@@ -131,82 +129,51 @@ public class TDB_Dev_Main {
         System.out.println("R   = "+file.readPosition()) ;
     }
     
-    public static void main1(String[] args) {
-        boolean fresh = true ;
+    public static void query() {
         Location location = Location.create("DB") ;
-        
-        if ( ! fresh ) {
-            String x = "<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType15>" ;
-            String qs = "SELECT * { VALUES ?s {"+x+"} ?s ?p ?o }" ;
-            query(location, qs);
-            System.out.println("DONE") ;
-            System.exit(0) ;
-        }
-        
+        String x = "<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType15>" ;
+        String qs = "SELECT * { VALUES ?s {"+x+"} ?s ?p ?o }" ;
+        Dataset ds = TDBFactory.createDataset(location) ;
+        query(ds, qs) ;
+        System.out.println("DONE") ;
+        System.exit(0) ;
+    }        
+    
+    public static void load() {
+        Location location = Location.create("DB") ;
         FileOps.ensureDir("DB"); 
         FileOps.clearDirectory("DB");
-        
-        String FILE = "/home/afs/Datasets/BSBM/bsbm-25m.nt.gz" ;
+        Dataset ds = TDBFactory.createDataset(location) ;
+        String FILE = "/home/afs/Datasets/BSBM/bsbm-50k.nt.gz" ;
         
         long time_ms = -1 ;
-        DatasetGraphTxn dsg = (DatasetGraphTxn)TDBFactory.createDatasetGraph(location) ;
 
         System.out.println("Load "+FILE) ;
 
-        dsg.begin(ReadWrite.WRITE);
-        // ???? 
-        //DatasetGraph dsgx = dsg.getBaseDatasetGraph() ;
-        //RDFDataMgr.read(dsg, "D.ttl");
         Timer timer = new Timer() ;
         timer.startTimer();
-        RDFDataMgr.read(dsg, FILE) ;
-
-//        //Temporary fakery!
-//        DatasetGraphTDB dsgtdb = (DatasetGraphTDB)dsgx ;
-//        // XXX ***************************************************************************
-//        dsgtdb.sync();
-
-        dsg.commit();
-        dsg.end(); 
-
-
+        TDBTxn.executeWrite(ds, ()->RDFDataMgr.read(ds, FILE)) ;
         time_ms = timer.endTimer() ;
         System.out.println("Load finish: "+Timer.timeStr(time_ms)+"s") ;    
-        
-        
-        dsg.begin(ReadWrite.READ) ;
-        System.out.println("Read start") ;    
-        
-        //RDFDataMgr.write(System.out,  dsg, Lang.TRIG) ;
-        long x = Iter.count(dsg.find()) ;
-        dsg.end();
+        long x = TDBTxn.executeReadReturn(ds, () -> {
+            System.out.println("Read start") ;
+            return Iter.count(ds.asDatasetGraph().find()) ;
+        }) ;
         System.out.printf("Count = %,d\n", x) ;
         if ( time_ms > 0 ) {
             double seconds = time_ms/1000.0 ; 
             System.out.printf("Rate = %,.0f\n", x/seconds) ;
         }
         
-        Dataset ds = TDBFactory.createDataset(location) ;
         String qs = "SELECT * { ?s ?p ?o } LIMIT 10" ;
-        Query q = QueryFactory.create(qs) ;
-        
-        Txn.executeRead(dsg.getTransactional(), ()->{
-            try ( QueryExecution qExec = QueryExecutionFactory.create(q, ds) ) {
-                QueryExecUtils.executeQuery(qExec);
-            }
-        }); 
-        
+        query(ds, qs) ;
         System.out.println("DONE") ;
         System.exit(0) ;
     }
     
-    public static void query(Location location, String queryString) {
-        String x = "<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType2>" ;
-        DatasetGraphTxn dsg = (DatasetGraphTxn)TDBFactory.createDatasetGraph(location) ;
-        Dataset ds = TDBFactory.createDataset(location) ;
+    public static void query(Dataset ds, String queryString) {
         Query q = QueryFactory.create(queryString) ;
-        
-        Txn.executeRead(dsg.getTransactional(), ()->{
+        TDBTxn.executeRead(ds, ()->{
             try ( QueryExecution qExec = QueryExecutionFactory.create(q, ds) ) {
                 QueryExecUtils.executeQuery(qExec);
             }

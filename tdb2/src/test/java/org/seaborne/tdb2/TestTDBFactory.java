@@ -27,7 +27,7 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.tdb2.lib.TDBLib ;
+import org.seaborne.tdb2.lib.TDBTxn ;
 import org.seaborne.tdb2.store.DatasetGraphTxn ;
 import org.seaborne.tdb2.sys.StoreConnection ;
 
@@ -54,10 +54,10 @@ public class TestTDBFactory extends BaseTest
         StoreConnection.reset() ;
         DatasetGraph dg1 = TDBFactory.createDatasetGraph(Location.mem("FOO")) ;
         DatasetGraph dg2 = TDBFactory.createDatasetGraph(Location.mem("FOO")) ;
-        TDBLib.executeWrite(dg1, ()->{
+        TDBTxn.executeWrite(dg1, ()->{
             dg1.add(quad1) ;    
         }) ;
-        TDBLib.executeRead(dg2, ()->{
+        TDBTxn.executeRead(dg2, ()->{
             assertTrue(dg2.contains(quad1)) ;
         }) ;
     }
@@ -68,10 +68,10 @@ public class TestTDBFactory extends BaseTest
         // The unnamed location is unique each time.
         DatasetGraph dg1 = TDBFactory.createDatasetGraph(Location.mem()) ;
         DatasetGraph dg2 = TDBFactory.createDatasetGraph(Location.mem()) ;
-        TDBLib.executeWrite(dg1, ()->{
+        TDBTxn.executeWrite(dg1, ()->{
             dg1.add(quad1) ;    
         }) ;
-        TDBLib.executeRead(dg2, ()->{
+        TDBTxn.executeRead(dg2, ()->{
             assertFalse(dg2.contains(quad1)) ;
         }) ;
     }

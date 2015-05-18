@@ -43,7 +43,8 @@ public class NodeTableTRDF extends NodeTableNative {
         try {
             this.diskFile = objectFile ;
             transport = new TReadAppendFileTransport(diskFile) ;
-            transport.open(); 
+            if ( ! transport.isOpen() )
+                transport.open(); 
             this.protocol = TRDF.protocol(transport) ;
         }
         catch (Exception ex) {

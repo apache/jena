@@ -20,16 +20,14 @@ package org.seaborne.tdb2.lib;
 import java.util.function.Supplier ;
 
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.seaborne.dboe.transaction.ThreadTxn ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.tdb2.store.DatasetGraphTxn ;
 
-public class TDBLib {
-    // Adapters from old world to new world.
-    
+public class TDBTxn {
+    // Long term - replace with Txn when Dataset and DatasetGraph have same Transactional  
     /** Execute the Runnable in a read transaction. 
      * @see Txn#executeRead
      */
@@ -126,39 +124,12 @@ public class TDBLib {
         // adapter across "Transactional"
         DatasetGraphTxn dsgtxn = (DatasetGraphTxn)ds.asDatasetGraph() ;
         return dsgtxn.getTransactional() ;
-        
-        //return new AdapterTransactionalJenaToDBOE(ds) ;
     }
 
     private static Transactional transactional(DatasetGraph dsg) {
         // adapter across "Transactional"
         DatasetGraphTxn dsgtxn = (DatasetGraphTxn)dsg ;
         return dsgtxn.getTransactional() ;
-        
-        //return new AdapterTransactionalJenaToDBOE(ds) ;
-    }
-
-    private static class AdpaterTransactionalDBOEToJena implements org.apache.jena.sparql.core.Transactional {
-        private final Transactional transactional ;
-        AdpaterTransactionalDBOEToJena(Transactional transactional) {
-            this.transactional = transactional ;
-        }
-        @Override
-        public void begin(ReadWrite readWrite) { transactional.begin(readWrite); }
-    
-        @Override
-        public void commit() { transactional.commit(); }
-    
-        @Override
-        public void abort() { transactional.abort(); }
-    
-        @Override
-        public void end() {}
-        @Override
-        public boolean isInTransaction() {
-            throw new UnsupportedOperationException("isInTransaction") ;
-        }
-        
     }
 }
 
