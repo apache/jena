@@ -31,7 +31,6 @@ import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
 import org.seaborne.dboe.engine.Quack2 ;
 import org.seaborne.dboe.engine.tdb.OpExecutorQuackTDB ;
-
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.algebra.optimize.Optimize ;
 import org.apache.jena.sparql.algebra.optimize.Optimize.RewriterFactory ;
@@ -40,9 +39,10 @@ import org.apache.jena.sparql.engine.main.QC ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
-import org.apache.jena.tdb.TDBFactory ;
-import org.apache.jena.tdb.solver.OpExecutorTDB1 ;
-import org.apache.jena.tdb.sys.SystemTDB ;
+import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.lib.TDBTxn ;
+import org.seaborne.tdb2.solver.OpExecutorTDB1 ;
+import org.seaborne.tdb2.sys.SystemTDB ;
 
 @RunWith(Parameterized.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -149,43 +149,45 @@ public class TestPatterns extends Assert
     
     private void test(String fn) {
         Dataset dataset2 = TDBFactory.createDataset() ;
-        RDFDataMgr.read(dataset2, DIR+"/data-bgp.ttl") ;
-        if ( factory != null )
-            QC.setFactory(dataset2.getContext(), factory) ;
+        TDBTxn.executeWrite(dataset2, ()->{
+            RDFDataMgr.read(dataset2, DIR+"/data-bgp.ttl") ;
+            if ( factory != null )
+                QC.setFactory(dataset2.getContext(), factory) ;
 
-        Query query = QueryFactory.read(DIR+"/"+fn) ;
-        PrintStream out = System.out ;
-        
-        ResultSetRewindable rs1 ;
-        ResultSetRewindable rs2 ;
-        try {
-            rs1 = qexec(query, dataset1) ;
-            rs2 = qexec(query, dataset2) ;
-        } catch (RuntimeException ex) {
-            out.println("*** Failure: "+fn) ;
-            out.println(query) ;
-            out.flush() ;
-            throw ex ;
-        }
-        boolean b = ResultSetCompare.equalsByTerm(rs1, rs2) ;
-        
-        //int count = ResultSetFormatter.consume(rs1) ; 
-        
-        if ( !b ) {
-            
-            out.println("---- Test") ;
-            out.println(query) ;
-            RDFDataMgr.write(out, dataset2, Lang.TRIG);
-            out.println("-- Expected") ;
-            rs1.reset();
-            ResultSetFormatter.out(out, rs1, query) ;
-            out.println("-- Actual") ;
-            rs2.reset();
-            ResultSetFormatter.out(out, rs2, query) ;
-            out.println("Results not equal") ;
-        }
-        assertTrue("Result Sets do not compare equals by term" ,b) ;
-        //assertNotEquals("Bad test - zero results", 0, count) ;
+            Query query = QueryFactory.read(DIR+"/"+fn) ;
+            PrintStream out = System.out ;
+
+            ResultSetRewindable rs1 ;
+            ResultSetRewindable rs2 ;
+            try {
+                rs1 = qexec(query, dataset1) ;
+                rs2 = qexec(query, dataset2) ;
+            } catch (RuntimeException ex) {
+                out.println("*** Failure: "+fn) ;
+                out.println(query) ;
+                out.flush() ;
+                throw ex ;
+            }
+            boolean b = ResultSetCompare.equalsByTerm(rs1, rs2) ;
+
+            //int count = ResultSetFormatter.consume(rs1) ; 
+
+            if ( !b ) {
+
+                out.println("---- Test") ;
+                out.println(query) ;
+                RDFDataMgr.write(out, dataset2, Lang.TRIG);
+                out.println("-- Expected") ;
+                rs1.reset();
+                ResultSetFormatter.out(out, rs1, query) ;
+                out.println("-- Actual") ;
+                rs2.reset();
+                ResultSetFormatter.out(out, rs2, query) ;
+                out.println("Results not equal") ;
+            }
+            assertTrue("Result Sets do not compare equals by term" ,b) ;
+            //assertNotEquals("Bad test - zero results", 0, count) ;
+        }) ;
     }
     
     private static ResultSetRewindable qexec(Query query, Dataset ds) {

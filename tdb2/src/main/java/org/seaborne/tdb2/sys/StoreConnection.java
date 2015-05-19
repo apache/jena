@@ -44,6 +44,10 @@ public class StoreConnection
         return make(location, StoreParams.getDftStoreParams()) ;
     }
 
+    public synchronized static boolean isSetup(Location location) {
+        return cache.containsKey(location) ;
+    }
+
     public synchronized static StoreConnection getExisting(Location location) {
         StoreConnection sConn = cache.get(location) ;
         return sConn ;
@@ -87,7 +91,6 @@ public class StoreConnection
     public static StoreConnection make(Location location) {
         return make(location, null) ;
     }
-
 
     /** Stop managing all locations. Use with great care. */
     public static synchronized void reset()

@@ -17,18 +17,18 @@
 
 package quack ;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
-import arq.cmdline.CmdARQ ;
-
+import org.apache.commons.lang3.NotImplementedException ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.RIOT ;
-import org.apache.jena.tdb.TDB ;
-import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.store.tupletable.TupleIndex ;
+import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.tdb2.TDB ;
+import org.seaborne.tdb2.store.tupletable.TupleIndex ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+import arq.cmd.ArgDecl ;
+import arq.cmd.CmdException ;
+import arq.cmdline.CmdARQ ;
 
 /**
  * Dump a TDB index.
@@ -40,7 +40,6 @@ public class tdbindexdump extends CmdARQ {
     static final ArgDecl argLocation = new ArgDecl(true, "loc", "location") ;
 
     static public void main(String... argv) {
-        TDB.setOptimizerWarningFlag(false) ;
         new tdbindexdump(argv).mainRun() ;
     }
 
@@ -83,20 +82,21 @@ public class tdbindexdump extends CmdARQ {
 
     @Override
     protected void exec() {   
-        //FmtLog.info(log, "dump %s", idx);
-
-        int N = idx.getIndexName().length() ;
-        String primaryIndex = IndexLib.choosePrimary(idx) ;
-
-        if ( ! idx.exists() )
-            throw new CmdException("No such index: "+idx) ;
-        
-        TupleIndex tupleIndex = IndexLib.connect(idx, primaryIndex) ;
-
-        IndexLib.dumpTupleIndex(tupleIndex) ;
-//        System.out.println() ;
-//        TupleIndexRecord tupleIndexRecord = (TupleIndexRecord)tupleIndex ;
-//        IndexLib.dumpRangeIndex(tupleIndexRecord.getRangeIndex()) ;
+            throw new NotImplementedException(cmdName) ;
+//        //FmtLog.info(log, "dump %s", idx);
+//
+//        int N = idx.getIndexName().length() ;
+//        String primaryIndex = IndexLib.choosePrimary(idx) ;
+//
+//        if ( ! idx.exists() )
+//            throw new CmdException("No such index: "+idx) ;
+//        
+//        TupleIndex tupleIndex = IndexLib.connect(idx, primaryIndex) ;
+//
+//        IndexLib.dumpTupleIndex(tupleIndex) ;
+////        System.out.println() ;
+////        TupleIndexRecord tupleIndexRecord = (TupleIndexRecord)tupleIndex ;
+////        IndexLib.dumpRangeIndex(tupleIndexRecord.getRangeIndex()) ;
     }
 
     private static TupleIndex find(TupleIndex[] indexes, String srcIndex) {

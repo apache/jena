@@ -24,8 +24,8 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.store.nodetable.NodeTable ;
+import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.access.Accessor ;
 import org.seaborne.dboe.engine.row.RowBuilderBase ;
@@ -35,9 +35,10 @@ public class AccessorTDB implements Accessor<NodeId> {
 
     /** Create a Accessor */ 
     public static AccessorTDB create(StorageTDB db) {
-        //AccessorTDB accessor = new AccessorTDB(db) ;
-        AccessorTDB accessor = new AccessorParallel(db) ;
-        accessor = new AccessorTDBDebug("AccessorTDB.", accessor) ; 
+        AccessorTDB accessor = new AccessorTDB(db) ;
+        // Problems with transactions.
+        // AccessorTDB accessor = new AccessorParallel(db) ;
+        accessor = new AccessorTDBDebug("AccessorTDB", accessor) ; 
         return accessor ;
     }
 

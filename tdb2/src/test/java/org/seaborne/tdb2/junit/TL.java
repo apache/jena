@@ -20,13 +20,12 @@ package org.seaborne.tdb2.junit;
 import java.util.function.Consumer ;
 
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.ConfigTest ;
 import org.seaborne.tdb2.TDBFactory ;
-import org.seaborne.tdb2.store.DatasetGraphTxn ;
 import org.seaborne.tdb2.sys.StoreConnection ;
+import org.seaborne.tdb2.sys.SystemTDB ;
 
 /** Execute a test with a fresh dataset in a write transaction */
 public class TL {
@@ -65,21 +64,21 @@ public class TL {
         Location location = cleanLocation() ;
         Dataset dataset = TDBFactory.createDataset(location) ;
         // Non-transactional tests
-        dataset.begin(ReadWrite.WRITE);
+        dataset = SystemTDB.setNonTransactional(dataset) ;
         return dataset ;
     }
     
     public static Dataset createTestDatasetMem() {
         Dataset dataset = TDBFactory.createDataset() ;
         // Non-transactional tests
-        dataset.begin(ReadWrite.WRITE);
+        dataset = SystemTDB.setNonTransactional(dataset) ;
         return dataset ;
     }
 
     public static DatasetGraph createTestDatasetGraphMem() {
         DatasetGraph dataset = TDBFactory.createDatasetGraph() ;
         // Non-transactional tests
-        ((DatasetGraphTxn)dataset).begin(ReadWrite.WRITE);
+        dataset = SystemTDB.setNonTransactional(dataset) ;
         return dataset ;
     }
 }

@@ -18,8 +18,7 @@
 package dev.binding;
 
 import java.util.Iterator ;
-
-import org.apache.jena.atlas.lib.Lib ;
+import java.util.Objects ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
@@ -42,7 +41,7 @@ public class BindingLib {
             Var var = iter1.next() ; 
             Node node1 = bind1.get(var) ;
             Node node2 = bind2.get(var) ;
-            if ( ! Lib.equal(node1, node2) )
+            if ( ! Objects.equals(node1, node2) )
                 return false ;
         }
         

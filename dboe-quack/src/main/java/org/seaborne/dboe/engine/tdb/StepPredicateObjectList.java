@@ -31,7 +31,7 @@ import org.seaborne.dboe.engine.row.RowBuilderBase ;
 
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.util.FmtUtils ;
-import org.apache.jena.tdb.store.NodeId ;
+import org.seaborne.tdb2.store.NodeId ;
 
 /** Get a number of predicate-objects, all with the same subject (the same variable or the same term) . */
 public class StepPredicateObjectList implements Step<NodeId> {

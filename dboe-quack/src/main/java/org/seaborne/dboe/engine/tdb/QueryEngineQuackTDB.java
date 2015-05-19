@@ -25,8 +25,8 @@ import org.apache.jena.sparql.engine.QueryEngineRegistry ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.tdb.solver.QueryEngineTDB ;
-import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.seaborne.tdb2.solver.QueryEngineTDB ;
+import org.seaborne.tdb2.store.DatasetGraphTDB ;
 
 /**
  * Quack query engine - convenient to have quack specific

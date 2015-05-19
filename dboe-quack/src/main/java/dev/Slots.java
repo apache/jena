@@ -17,7 +17,8 @@
 
 package dev;
 
-import org.apache.jena.atlas.iterator.Transform ;
+import java.util.function.Function ;
+
 import org.apache.jena.atlas.lib.Tuple ;
 import org.seaborne.dboe.engine.Row ;
 import org.seaborne.dboe.engine.Slot ;
@@ -72,7 +73,7 @@ public class Slots<X> extends Tuple<Slot<X>> {
        }
     
     /** apply a tranformation to the tuple pattern */
-    public <Z> Tuple<Z> mapToTuple(Transform<Slot<X>,Z> transform) {
+    public <Z> Tuple<Z> mapToTuple(Function<Slot<X>,Z> transform) {
         final int N = size() ;
         @SuppressWarnings("unchecked")
         Z[] converted = (Z[])new Object[N] ;
@@ -84,7 +85,7 @@ public class Slots<X> extends Tuple<Slot<X>> {
     }
 
     /** apply a tranformation to the tuple pattern */
-    public <Z> Slots<Z> map(Transform<Slot<X>,Slot<Z>> transform) {
+    public <Z> Slots<Z> map(Function<Slot<X>,Slot<Z>> transform) {
         final int N = size() ;
         @SuppressWarnings("unchecked")
         Slot<Z>[] converted = (Slot<Z>[])new Object[N] ;

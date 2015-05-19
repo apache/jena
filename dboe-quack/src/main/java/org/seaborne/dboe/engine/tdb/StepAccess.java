@@ -25,7 +25,7 @@ import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.access.AccessRows ;
 
 import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.tdb.store.NodeId ;
+import org.seaborne.tdb2.store.NodeId ;
 
 class StepAccess implements Step<NodeId> {
     private final AccessRows<NodeId> accessor ;

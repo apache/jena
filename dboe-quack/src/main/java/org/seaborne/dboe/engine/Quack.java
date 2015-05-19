@@ -17,20 +17,10 @@
 
 package org.seaborne.dboe.engine;
 
-import static org.apache.jena.tdb.sys.Names.primaryIndexQuads ;
-import static org.apache.jena.tdb.sys.Names.primaryIndexTriples ;
-
 import java.util.Arrays ;
 
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.seaborne.dboe.engine.explain.Explain2 ;
-import org.seaborne.dboe.engine.explain.ExplainCategory ;
-import org.seaborne.dboe.engine.tdb.OpExecutorQuackTDB ;
-import org.seaborne.dboe.engine.tdb.PlannerSubstitution ;
-import org.seaborne.dboe.engine.tdb.QueryEngineQuackTDB ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
-
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
@@ -41,14 +31,20 @@ import org.apache.jena.sparql.mgt.Explain.InfoLevel ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.tdb.TDB ;
-import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.setup.DatasetBuilderStd ;
-import org.apache.jena.tdb.setup.StoreParams ;
-import org.apache.jena.tdb.solver.QueryEngineTDB ;
-import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.tdb.sys.FileRef ;
-import org.apache.jena.tdb.sys.Names ;
+import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.engine.explain.Explain2 ;
+import org.seaborne.dboe.engine.explain.ExplainCategory ;
+import org.seaborne.dboe.engine.tdb.OpExecutorQuackTDB ;
+import org.seaborne.dboe.engine.tdb.PlannerSubstitution ;
+import org.seaborne.dboe.engine.tdb.QueryEngineQuackTDB ;
+import org.seaborne.dboe.sys.Names ;
+import org.seaborne.tdb2.TDB ;
+import org.seaborne.tdb2.setup.StoreParams ;
+import org.seaborne.tdb2.solver.QueryEngineTDB ;
+import org.seaborne.tdb2.store.DatasetGraphTxn ;
+import org.seaborne.tdb2.sys.StoreConnection ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 public class Quack {
     /**
@@ -124,9 +120,6 @@ public class Quack {
     }
     
     public static void rewire() {
-        // Reset dataset building global defaults!
-        FileRef.register("PSO.idn") ;
-        FileRef.register("PSO.dat") ;
     }
     
     public static void explain(boolean state) {
@@ -166,20 +159,6 @@ public class Quack {
     }
     
     public static void hardRewire() {
-        // TODO Need to set the constants 
-//        SystemParams sParams = SystemParams.getStdSystemParams() ;
-//        sParams.tripleIndexes = new String[] { primaryIndexTriples, "POS", "PSO", "OSP" } ;
-//        sParams.quadIndexes = new String[] { primaryIndexQuads, "GPOS", "GPSO", "GOSP", 
-//            "POSG", "PSOG", "OSPG", "SPOG"} ;
-        //SystemParams.setDefault(...) ;
-        
-        // Final :-(
-//        Names.tripleIndexes = new String[] { primaryIndexTriples, "POS", "PSO", "OSP" } ;
-//        Names.quadIndexes = new String[] { primaryIndexQuads, "GPOS", "GPSO", "GOSP", 
-//                        "POSG", "PSOG", "OSPG", "SPOG"} ;
-        FileRef.register("PSO.idn") ;
-        FileRef.register("PSO.dat") ;
-        
         // Replace OSP - until a global default SystemParams is ready. 
         Names.tripleIndexes[2] = "PSO" ;
     }
@@ -197,16 +176,18 @@ public class Quack {
     }
     
     public static DatasetGraph createDatasetGraph(Location location, OpExecutorFactory executorFactory) {
-        LogCtl.setError(FileRef.class) ;
         StoreParams sParams = StoreParams.builder()
             // Test to see if POS exists but PSO does not.
-            .tripleIndexes(new String[] { primaryIndexTriples, "POS", "PSO", "OSP" })
+            .tripleIndexes(new String[] { Names.primaryIndexTriples, "POS", "PSO", "OSP" })
             //{ primaryIndexQuads, "GPOS", "GOSP", "POSG", "OSPG", "SPOG"} ;
-            .quadIndexes(new String[] { primaryIndexQuads, "GPOS", "GPSO", "GOSP", 
-            "POSG", "PSOG", "OSPG", "SPOG"})
+            .quadIndexes(new String[] { Names.primaryIndexQuads, 
+                "GPOS", "GPSO", "GOSP", "POSG", "PSOG", "OSPG", "SPOG"})
             .build() ;
-        DatasetGraphTDB dsg = DatasetBuilderStd.stdBuilder().build(location, sParams) ;
-        QC.setFactory(dsg.getContext(), executorFactory) ;
-        return dsg ;
+        DatasetGraphTxn dsgx = StoreConnection.make(location, sParams).getDatasetGraph() ;
+        StoreParams sParams2 = dsgx.getBaseDatasetGraph().getConfig() ;
+        if ( ! sParams.equals(sParams2) )
+            Log.warn(Quack.class, "Location already set up differently");
+        QC.setFactory(dsgx.getContext(), executorFactory) ;
+        return dsgx ;
     }
 }

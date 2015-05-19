@@ -19,14 +19,10 @@ package org.seaborne.dboe.engine.general;
 
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.function.Function ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.Tuple ;
-import org.seaborne.dboe.engine.Row ;
-import org.seaborne.dboe.engine.RowList ;
-import org.seaborne.dboe.engine.Slot ;
-
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -42,6 +38,9 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.iterator.* ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
+import org.seaborne.dboe.engine.Row ;
+import org.seaborne.dboe.engine.RowList ;
+import org.seaborne.dboe.engine.Slot ;
 
 /** Helper functions related to OpExecutor implementation */ 
 public class OpExecLib {
@@ -162,7 +161,7 @@ public class OpExecLib {
         return QueryIterBlockTriples.create(input, bgp, execCxt) ;
     }
     
-    private static Transform<Row<Node>, Binding> rowToBinding = new Transform<Row<Node>, Binding>(){
+    private static Function<Row<Node>, Binding> rowToBinding = new Function<Row<Node>, Binding>(){
         @Override
         public Binding apply(Row<Node> row) {
             return new BindingRowNode(row) ;
@@ -226,7 +225,7 @@ public class OpExecLib {
             return Slot.createTermSlot(n) ;
     }
 
-    private static Transform<Quad, Tuple<Node>> quadToTuple = new Transform<Quad, Tuple<Node>>(){
+    private static Function<Quad, Tuple<Node>> quadToTuple = new Function<Quad, Tuple<Node>>(){
         @Override
         public Tuple<Node> apply(Quad quad) {
             Node[] n = new Node[3] ;
@@ -238,7 +237,7 @@ public class OpExecLib {
         }
     } ;
 
-    private static Transform<Triple, Tuple<Slot<Node>>> tripleToTupleSlot = new Transform<Triple, Tuple<Slot<Node>>>(){
+    private static Function<Triple, Tuple<Slot<Node>>> tripleToTupleSlot = new Function<Triple, Tuple<Slot<Node>>>(){
         @Override
         public Tuple<Slot<Node>> apply(Triple triple) {
             @SuppressWarnings("unchecked")
@@ -250,7 +249,7 @@ public class OpExecLib {
         }
     } ;
 
-    private static Transform<Triple, Tuple<Node>> tripleToTuple = new Transform<Triple, Tuple<Node>>(){
+    private static Function<Triple, Tuple<Node>> tripleToTuple = new Function<Triple, Tuple<Node>>(){
         @Override
         public Tuple<Node> apply(Triple triple) {
             Node[] n = new Node[3] ;
@@ -261,7 +260,7 @@ public class OpExecLib {
         }
     } ;
 
-    private static Transform<Quad, Tuple<Slot<Node>>> quadToTupleSlot = new Transform<Quad, Tuple<Slot<Node>>>(){
+    private static Function<Quad, Tuple<Slot<Node>>> quadToTupleSlot = new Function<Quad, Tuple<Slot<Node>>>(){
         @Override
         public Tuple<Slot<Node>> apply(Quad Quad) {
             @SuppressWarnings("unchecked")
@@ -274,7 +273,7 @@ public class OpExecLib {
         }
     } ;
 
-    private static Transform<Tuple<Node>, Triple> tupleToTriple = new Transform<Tuple<Node>, Triple>(){
+    private static Function<Tuple<Node>, Triple> tupleToTriple = new Function<Tuple<Node>, Triple>(){
         @Override
         public Triple apply(Tuple<Node> tuple) {
             if ( tuple.size() != 3 )
@@ -283,7 +282,7 @@ public class OpExecLib {
         }
     } ;
     
-    private static Transform<Tuple<Node>, Quad> tupleToQuad = new Transform<Tuple<Node>, Quad>(){
+    private static Function<Tuple<Node>, Quad> tupleToQuad = new Function<Tuple<Node>, Quad>(){
         @Override
         public Quad apply(Tuple<Node> tuple) {
             if ( tuple.size() != 4 )

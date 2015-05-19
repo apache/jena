@@ -26,7 +26,7 @@ import org.seaborne.dboe.engine.Quack ;
 
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
-import org.apache.jena.tdb.sys.SystemTDB ;
+import org.seaborne.tdb2.sys.SystemTDB ;
 
 @RunWith(Suite.class)
 @SuiteClasses( {

@@ -25,7 +25,6 @@ import java.util.Map.Entry ;
 
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.SetUtils ;
-
 import org.apache.jena.sparql.algebra.* ;
 import org.apache.jena.sparql.algebra.op.* ;
 import org.apache.jena.sparql.core.BasicPattern ;
@@ -74,10 +73,10 @@ public class VarScope {
             if ( !(other instanceof OpScope) )
                 return false ;
             OpScope opScope = (OpScope)other ;
-            if ( !Lib.equal(getObject(), opScope.getObject()) )
+            if ( !Objects.equals(getObject(), opScope.getObject()) )
                 return false ;
 
-            return Lib.equal(getSubOp(), opScope.getSubOp()) ;
+            return Objects.equals(getSubOp(), opScope.getSubOp()) ;
         }
 
         @Override

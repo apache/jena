@@ -28,8 +28,8 @@ import org.seaborne.dboe.engine.join.RowOrder ;
 import org.seaborne.dboe.engine.row.RowBuilderBase ;
 
 import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.store.tupletable.TupleIndex ;
+import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.tupletable.TupleIndex ;
 
 class StepMergeJoin implements Step<NodeId>
 {

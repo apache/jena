@@ -19,19 +19,18 @@ package org.seaborne.dboe.engine;
 
 import java.util.Collection ;
 import java.util.List ;
+import java.util.Objects ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.seaborne.dboe.engine.row.RowBuilderBase ;
-import org.seaborne.dboe.engine.row.RowListBuilderBase ;
-
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.ItemList ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderLib ;
+import org.seaborne.dboe.engine.row.RowBuilderBase ;
+import org.seaborne.dboe.engine.row.RowListBuilderBase ;
 
 public class QJT // Quack Join Test
 {
@@ -71,7 +70,7 @@ public class QJT // Quack Join Test
         for ( Var v : vars1 ) {
             X x1 = row1.get(v) ;
             X x2 = row2.get(v) ;
-            if ( ! Lib.equal(x1, x2) )
+            if ( ! Objects.equals(x1, x2) )
                 return false ;
         }
         return true ;

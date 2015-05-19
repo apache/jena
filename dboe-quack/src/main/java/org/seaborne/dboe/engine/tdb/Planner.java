@@ -23,7 +23,7 @@ import org.apache.jena.atlas.lib.Tuple ;
 import org.seaborne.dboe.engine.PhysicalPlan ;
 import org.seaborne.dboe.engine.Slot ;
 
-import org.apache.jena.tdb.store.NodeId ;
+import org.seaborne.tdb2.store.NodeId ;
 
 public interface Planner
 {

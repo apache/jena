@@ -21,8 +21,8 @@ import java.io.File ;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
 
-import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.sys.Names ;
+import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.sys.Names ;
 
 /** Index name, as location and index name within location */ 
 public class IndexRef {
@@ -93,8 +93,8 @@ public class IndexRef {
     }
 
     public boolean exists() {
-        return location.exists(filename, Names.bptExtTree) &&
-               location.exists(filename, Names.bptExtRecords) ;
+        return location.exists(filename, Names.extBptTree) &&
+               location.exists(filename, Names.extBptRecords) ;
     }
 
     @Override

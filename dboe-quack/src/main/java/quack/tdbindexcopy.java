@@ -19,21 +19,17 @@ package quack ;
 
 import java.util.Objects ;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
-import arq.cmdline.CmdARQ ;
-
-import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.logging.FmtLog ;
+import org.apache.commons.lang3.NotImplementedException ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.RIOT ;
-import org.apache.jena.tdb.TDB ;
-import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.store.tupletable.TupleIndex ;
-import org.apache.jena.tdb.sys.Names ;
+import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.tdb2.TDB ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+import arq.cmd.ArgDecl ;
+import arq.cmd.CmdException ;
+import arq.cmdline.CmdARQ ;
 
 /**
  * Copy a TDB index.
@@ -49,7 +45,7 @@ public class tdbindexcopy extends CmdARQ {
     static final ArgDecl argLocation = new ArgDecl(true, "loc", "location") ;
     
     static public void main(String... argv) {
-        TDB.setOptimizerWarningFlag(false) ;
+        //TDB.setOptimizerWarningFlag(false) ;
         new tdbindexcopy(argv).mainRun() ;
     }
 
@@ -104,32 +100,33 @@ public class tdbindexcopy extends CmdARQ {
     
     @Override
     protected void exec() {
-        if ( idx1 == null || idx2 == null )
-            throw new CmdException("Null index: "+idx1+", "+idx2) ;
-
-        FmtLog.info(log, "copy %s -> %s", idx1, idx2);
-
-        String srcIndexName = idx1.getIndexName() ;
-        String destIndexName = idx2.getIndexName() ;
-        
-        int N = idx1.getIndexName().length() ;
-        String primaryIndexName ;
-
-        if ( N == 3 )
-            primaryIndexName = Names.primaryIndexTriples ;
-        else if ( N == 4 )         
-            primaryIndexName = Names.primaryIndexQuads ;
-        else
-            throw new InternalErrorException("Index length") ;
-        
-        srcIndexName = srcIndexName.toUpperCase() ;
-        destIndexName = destIndexName.toUpperCase() ;
-        
-        Location location1 = idx1.getLocation() ;
-        Location location2 = idx2.getLocation() ;
-
-        TupleIndex srcIndex = IndexLib.connect(location1, primaryIndexName, srcIndexName) ;
-        TupleIndex destIndex = IndexLib.connect(location2, primaryIndexName, destIndexName) ;
-        IndexLib.copyIndex(log, srcIndex, destIndex) ;
+        throw new NotImplementedException(cmdName) ;
+//        if ( idx1 == null || idx2 == null )
+//            throw new CmdException("Null index: "+idx1+", "+idx2) ;
+//
+//        FmtLog.info(log, "copy %s -> %s", idx1, idx2);
+//
+//        String srcIndexName = idx1.getIndexName() ;
+//        String destIndexName = idx2.getIndexName() ;
+//        
+//        int N = idx1.getIndexName().length() ;
+//        String primaryIndexName ;
+//
+//        if ( N == 3 )
+//            primaryIndexName = Names.primaryIndexTriples ;
+//        else if ( N == 4 )         
+//            primaryIndexName = Names.primaryIndexQuads ;
+//        else
+//            throw new InternalErrorException("Index length") ;
+//        
+//        srcIndexName = srcIndexName.toUpperCase() ;
+//        destIndexName = destIndexName.toUpperCase() ;
+//        
+//        Location location1 = idx1.getLocation() ;
+//        Location location2 = idx2.getLocation() ;
+//
+//        TupleIndex srcIndex = IndexLib.connect(location1, primaryIndexName, srcIndexName) ;
+//        TupleIndex destIndex = IndexLib.connect(location2, primaryIndexName, destIndexName) ;
+//        IndexLib.copyIndex(log, srcIndex, destIndex) ;
     }
 }

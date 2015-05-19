@@ -19,17 +19,16 @@ package org.seaborne.dboe.engine.join;
 
 import java.util.Iterator ;
 import java.util.Set ;
+import java.util.function.Function ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.RepeatApplyIterator ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.atlas.logging.FmtLog ;
+import org.apache.jena.sparql.core.Var ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.access.AccessRows ;
-
-import org.apache.jena.sparql.core.Var ;
 
 /** Index join done by substituting for variables */
 public class SubstitutionJoin {
@@ -66,14 +65,11 @@ public class SubstitutionJoin {
             s_countLHS ++ ;
             Tuple<Slot<X>> subst = EngLib.substitute(pattern, row) ;
             Iterator<Row<X>> iter1 = accessor.accessRows(subst) ;
-            Transform<Row<X>, Row<X>> addIncoming = new Transform<Row<X>, Row<X>>(){
-                @Override
-                public Row<X> apply(Row<X> item) {
-                    Row<X> r = Join.merge(item, row, builder) ;
-                    if ( r != null )
-                        s_countResults ++ ;
-                    return r ;
-                }
+            Function<Row<X>, Row<X>> addIncoming = (item) -> {
+                Row<X> r = Join.merge(item, row, builder) ;
+                if ( r != null )
+                    s_countResults ++ ;
+                return r ;
             } ;
             Iterator<Row<X>> iter2 = Iter.map(iter1, addIncoming) ;
             return iter2 ;

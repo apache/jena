@@ -26,8 +26,8 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.tdb.store.GraphTDB ;
+import org.seaborne.tdb2.store.DatasetGraphTDB ;
+import org.seaborne.tdb2.store.GraphTDB ;
 
 /** Framework for writing an OpExecutor for TDB based on OpExecutorBlockFilter. */
 public abstract class OpExecutorTDBBase extends OpExecutorBlockFilter

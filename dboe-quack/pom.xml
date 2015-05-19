@@ -31,19 +31,22 @@
     <artifactId>dboe-parent</artifactId>
     <version>0.0.0-SNAPSHOT</version>
     <relativePath>../dboe-parent</relativePath>
-  </parent> 
+  </parent>
 
   <dependencies>
 
     <dependency>
       <groupId>org.seaborne.mantis</groupId>
-      <artifactId>dboe-base</artifactId>
+      <artifactId>tdb2</artifactId>
       <version>0.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-tdb</artifactId>
+      <groupId>org.seaborne.mantis</groupId>
+      <artifactId>tdb2</artifactId>
+      <version>0.0.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -59,14 +62,30 @@
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    
+    <!--
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb</artifactId>
+      <version>${ver.jena}</version>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
+      <version>${ver.jena}</version>
     </dependency>
-
+    -->
+    
   </dependencies>
 
   <build>

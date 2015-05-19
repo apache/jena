@@ -29,7 +29,7 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.tdb.store.NodeId ;
+import org.seaborne.tdb2.store.NodeId ;
 
 /** Given a {@code List<Tuple<Slot<NodeId>>>} (a basic graph pattern or quad pattern),
  *  generate a physical plan.  Assumes input is in the "best" order.

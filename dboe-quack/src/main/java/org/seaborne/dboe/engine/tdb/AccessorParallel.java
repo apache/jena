@@ -30,7 +30,7 @@ import org.seaborne.dboe.engine.explain.Explain2 ;
 import org.seaborne.dboe.engine.row.RowBase ;
 
 import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.tdb.store.NodeId ;
+import org.seaborne.tdb2.store.NodeId ;
 
 public class AccessorParallel extends AccessorTDB {
 

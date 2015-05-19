@@ -27,8 +27,8 @@ import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprException ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.store.nodetable.NodeTable ;
+import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.row.RowBuilderBase ;
 

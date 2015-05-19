@@ -18,40 +18,26 @@
 package dev;
 
 import java.io.PrintStream ;
-import java.util.List ;
 
-import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.query.* ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.seaborne.dboe.engine.* ;
-import org.seaborne.dboe.engine.general.OpExecutorRowsMain ;
-import org.seaborne.dboe.engine.general.OpExecutorStageMain ;
-import org.seaborne.dboe.engine.general.QueryEngineMain2 ;
-import org.seaborne.dboe.engine.tdb.* ;
-import quack.IndexRef ;
-
-import org.apache.jena.graph.Node ;
-import org.apache.jena.query.* ;
 import org.apache.jena.sparql.algebra.optimize.Optimize ;
 import org.apache.jena.sparql.algebra.optimize.Optimize.RewriterFactory ;
-import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
 import org.apache.jena.sparql.engine.main.QC ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
-import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
-import org.apache.jena.tdb.TDBFactory ;
-import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.setup.DatasetBuilder ;
-import org.apache.jena.tdb.setup.DatasetBuilderStd ;
-import org.apache.jena.tdb.setup.StoreParams ;
-import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.sys.FileRef ;
-import org.apache.jena.tdb.sys.SystemTDB ;
+import org.seaborne.dboe.engine.Quack ;
+import org.seaborne.dboe.engine.general.OpExecutorRowsMain ;
+import org.seaborne.dboe.engine.general.OpExecutorStageMain ;
+import org.seaborne.dboe.engine.general.QueryEngineMain2 ;
+import org.seaborne.dboe.engine.tdb.OpExecutorQuackTDB ;
+import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.sys.SystemTDB ;
 
 public class MainQuack {
     static { LogCtl.setLog4j() ; }
@@ -59,34 +45,34 @@ public class MainQuack {
     static String TDIR2 = "testing/BasicPatterns" ;
 
     public static void main(String... args) {
-        System.out.printf("%s\n", IndexRef.parse("DB[SPO]")) ;
-        System.out.printf("%s\n", IndexRef.parse("[SPO]")) ;
-        System.exit(0) ;
-        
-        
-        Quack.init() ;
-        QuackPredObj.init() ;
-        Quack.setOpExecutorFactory(OpExecutorQuackTDB.factorySubstitute) ;
-        
-        
-        DatasetGraphTDB dsgtdb = build(Location.mem()) ;
-        AccessorTDB accessor = AccessorTDB.create(new StorageTDB(dsgtdb)) ; 
-        Planner planner = new PlannerPredObjList(accessor) ;
-        BasicPattern bgp = SSE.parseBGP("(bgp (?s :q ?v) (?s :p 123))") ;
-        
-        Node p = SSE.parseNode(":p") ;
-        Node q = SSE.parseNode(":q") ;
-        
-        accessor.getNodeTable().getAllocateNodeId(p) ;
-        accessor.getNodeTable().getAllocateNodeId(q) ;
-        
-        List<Tuple<Slot<NodeId>>> tuples = ELibTDB.convertTriples(bgp.getList(), accessor.getNodeTable()) ;
-        PhysicalPlan<NodeId> plan = planner.generatePlan(tuples) ;
-        RowList<NodeId> input = RowLib.identityRowList()  ;
-        plan.execute(input) ;
-        
-        System.out.println(plan) ;
-        System.exit(0) ;
+//        System.out.printf("%s\n", IndexRef.parse("DB[SPO]")) ;
+//        System.out.printf("%s\n", IndexRef.parse("[SPO]")) ;
+//        System.exit(0) ;
+//        
+//        
+//        Quack.init() ;
+//        QuackPredObj.init() ;
+//        Quack.setOpExecutorFactory(OpExecutorQuackTDB.factorySubstitute) ;
+//        
+//        
+//        DatasetGraphTDB dsgtdb = build(Location.mem()) ;
+//        AccessorTDB accessor = AccessorTDB.create(new StorageTDB(dsgtdb)) ; 
+//        Planner planner = new PlannerPredObjList(accessor) ;
+//        BasicPattern bgp = SSE.parseBGP("(bgp (?s :q ?v) (?s :p 123))") ;
+//        
+//        Node p = SSE.parseNode(":p") ;
+//        Node q = SSE.parseNode(":q") ;
+//        
+//        accessor.getNodeTable().getAllocateNodeId(p) ;
+//        accessor.getNodeTable().getAllocateNodeId(q) ;
+//        
+//        List<Tuple<Slot<NodeId>>> tuples = ELibTDB.convertTriples(bgp.getList(), accessor.getNodeTable()) ;
+//        PhysicalPlan<NodeId> plan = planner.generatePlan(tuples) ;
+//        RowList<NodeId> input = RowLib.identityRowList()  ;
+//        plan.execute(input) ;
+//        
+//        System.out.println(plan) ;
+//        System.exit(0) ;
     }
     
     public static void mainNodeId(String datafile, String queryFile) {
@@ -148,30 +134,25 @@ public class MainQuack {
         QueryExecUtils.executeQuery(query, qExec);
     }
 
-    private static DatasetGraphTDB build(Location loc) {
-        String[] indexes = { "SOP", "POS", "PSO", "OSP" } ;
-        return build(loc, indexes) ;
-    }
-    
-    private static DatasetGraphTDB build(Location loc, String[] indexes) {
-        for ( String x : indexes ) { 
-            FileRef.register(x+".idn") ;
-            FileRef.register(x+".dat") ;
-        }
-        
-        StoreParams params = StoreParams.builder()
-            .tripleIndexes(indexes)
-            .node2NodeIdCacheSize(100)
-            .nodeId2NodeCacheSize(100)
-            .nodeMissCacheSize(100)
-            .build() ;
-            
-        DatasetBuilder builder = DatasetBuilderStd.stdBuilder() ;
-        DatasetGraphTDB dsg = builder.build(loc, StoreParams.getDftStoreParams()) ;
-        
-        QC.setFactory(dsg.getContext(), OpExecutorQuackTDB.factoryPredicateObject) ;
-        return dsg ; 
-    }
+//    private static DatasetGraphTDB build(Location loc) {
+//        String[] indexes = { "SOP", "POS", "PSO", "OSP" } ;
+//        return build(loc, indexes) ;
+//    }
+//    
+//    private static DatasetGraphTDB build(Location loc, String[] indexes) {
+//        StoreParams params = StoreParams.builder()
+//            .tripleIndexes(indexes)
+//            .node2NodeIdCacheSize(100)
+//            .nodeId2NodeCacheSize(100)
+//            .nodeMissCacheSize(100)
+//            .build() ;
+//            
+//        DatasetBuilder builder = DatasetBuilderStd.stdBuilder() ;
+//        DatasetGraphTDB dsg = builder.build(loc, StoreParams.getDftStoreParams()) ;
+//        
+//        QC.setFactory(dsg.getContext(), OpExecutorQuackTDB.factoryPredicateObject) ;
+//        return dsg ; 
+//    }
 
     // Unset any optimization.
     private static RewriterFactory rewriterFactory = null ;

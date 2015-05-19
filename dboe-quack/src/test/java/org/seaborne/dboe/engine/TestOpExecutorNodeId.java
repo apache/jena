@@ -24,10 +24,10 @@ import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
 import org.seaborne.dboe.engine.tdb.OpExecutorQuackTDB ;
-
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
-import org.apache.jena.tdb.TDBFactory ;
+import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.sys.SystemTDB ;
 
 @RunWith(Parameterized.class)
 public class TestOpExecutorNodeId extends AbstractTestOpExecutor
@@ -48,6 +48,8 @@ public class TestOpExecutorNodeId extends AbstractTestOpExecutor
 
     @Override
     protected Dataset createDataset() {
-        return TDBFactory.createDataset() ;
+        Dataset ds = TDBFactory.createDataset() ;
+        ds = SystemTDB.setNonTransactional(ds) ;
+        return ds ;
     }
 }

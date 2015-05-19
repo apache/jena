@@ -23,8 +23,8 @@ import org.apache.jena.atlas.lib.Tuple ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.explain.Explain2 ;
 
-import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.store.nodetable.NodeTable ;
+import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.nodetable.NodeTable ;
 
 /** Debugging wrapper for an AccessorTDB */
 public class AccessorTDBDebug extends AccessorTDB {

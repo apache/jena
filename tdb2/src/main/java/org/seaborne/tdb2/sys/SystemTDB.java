@@ -27,6 +27,9 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.PropertyUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ARQ ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.sparql.util.Symbol ;
@@ -34,6 +37,7 @@ import org.seaborne.dboe.base.block.FileMode ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.tdb2.TDB ;
 import org.seaborne.tdb2.TDBException ;
+import org.seaborne.tdb2.store.DatasetGraphTxn ;
 import org.seaborne.tdb2.store.NodeId ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -403,4 +407,22 @@ public class SystemTDB
         }
         throw new TDBException("Unrecognized file mode (not one of 'default', 'direct' or 'mapped': "+x) ;
     }
+
+    public static Dataset setNonTransactional(Dataset dataset) {
+        if ( dataset.isInTransaction() )
+            return dataset ;    // And hope it's a write transaction.
+        dataset.begin(ReadWrite.WRITE);
+        //Or wrap DatasetGraphTDB?
+        return dataset ;
+    }
+    
+    public static DatasetGraph setNonTransactional(DatasetGraph dataset) {
+        DatasetGraphTxn dsgx = (DatasetGraphTxn)dataset ;
+        if ( dsgx.isInTransaction() )
+            return dataset ;
+        dsgx.begin(ReadWrite.WRITE);
+        //Or wrap DatasetGraphTDB?
+        return dataset ;
+    }
+
 }

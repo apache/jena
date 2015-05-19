@@ -20,14 +20,8 @@ package org.seaborne.dboe.engine.tdb;
 import java.io.PrintStream ;
 import java.util.List ;
 
-import org.junit.Assert ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
-import org.seaborne.dboe.engine.Quack ;
-import org.seaborne.dboe.engine.tdb.OpExecutorQuackTDB ;
-
 import org.apache.jena.query.* ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVars ;
@@ -39,9 +33,14 @@ import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
 import org.apache.jena.sparql.engine.main.QC ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.tdb.TDBFactory ;
-import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.sys.Names ;
+import org.junit.Assert ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
+import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.engine.Quack ;
+import org.seaborne.dboe.sys.Names ;
+import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.sys.SystemTDB ;
 
 /** Basic testing of OpExecutorQuackTDB, mainly to make sure its called. 
  *  More complete testing happens when the full TDB test suite is run with this engine.
@@ -58,6 +57,8 @@ public class TestEngine extends Assert {
         Names.tripleIndexes[2] = "PSO" ;
         try { 
             Dataset ds = TDBFactory.createDataset(loc) ;
+            SystemTDB.setNonTransactional(ds) ;
+            
             if ( datafile != null )
                 RDFDataMgr.read(ds, DIR+"/"+datafile) ;
             QC.setFactory(ds.getContext(), OpExecutorQuackTDB.factoryPredicateObject) ;

@@ -19,70 +19,13 @@ package org.seaborne.dboe.engine;
 
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-
-import org.apache.jena.tdb.TS_Factory ;
-import org.apache.jena.tdb.base.TC_Base ;
-import org.apache.jena.tdb.base.objectfile.TS_ObjectFile ;
-import org.apache.jena.tdb.index.TS_Index ;
-import org.apache.jena.tdb.lib.TS_LibTDB ;
-import org.apache.jena.tdb.solver.TS_SolverTDB ;
-import org.apache.jena.tdb.store.* ;
-import org.apache.jena.tdb.store.nodetable.TS_NodeTable ;
-import org.apache.jena.tdb.sys.TS_Sys ;
-import org.apache.jena.tdb.transaction.* ;
+import org.seaborne.tdb2.solver.TS_SolverTDB ;
 
 /** TDB tests run directly here as appropriate */
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    // else selection from TC_TDB - remove the slow (disk related) ones
-    // because we are testing a query engine.
-    TC_Base.class
-    , TS_LibTDB.class
-    , TS_NodeTable.class
-    , TS_Index.class
-    //, TS_Store.class  SLOW // Includes dynamic datasets and unionDefaultGraph  
-    , TestNodeId.class
-    //, TestTripleTable.class
-    //, TestGraphTDB.class
-    //, TestGraphNamedTDB.class
-    //, TestDatasetTDBPersist.class
-    , TestDatasetTDB.class
-    //, TestLoader.class
-    
-    
-    
-    // The script suite
-//    , TestSuiteGraphTDB.class
-    , Test_SPARQL_TDB.class
-    , TestConcurrentAccess.class
-    , TestDynamicDatasetTDB.class
-    //, TestStoreConnectionsDirect.class
-    //, TestStoreConnectionsMapped.class
-    // End TS_Store
-    
-    , TS_SolverTDB.class
-    , TS_Sys.class
-    //, TS_Graph.class
-    , TS_Factory.class
-    //, TS_TDBAssembler.class
-    //, TS_TransactionTDB.class  SLOW // Includes unionDefaultGraph  
-    ,  TestJournal.class
-    , TestTransIterator.class
-    , TestObjectFileTransMem.class
-    , TestObjectFileTransStorage.class
-    , TestNodeTableTransMem.class
-    , TestNodeTableTransDisk.class
-    , TestTransMem.class
-    //, TestTransDiskDirect.class
-    //, TestTransDiskMapped.class
-    //, TestTransRestart.class
-    //, TestTransactionTDB.class
-    , TestTransactionUnionGraph.class
-    // End TS_TransactionTDB
-    
-    // 
-    , TS_ObjectFile.class
+    TS_SolverTDB.class
 } )
 public class TS_AsTDB
 {

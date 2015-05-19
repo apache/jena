@@ -66,6 +66,7 @@
 	<scope>test</scope>
       </dependency>
 
+      <!--
       <dependency>
 	<groupId>org.apache.jena</groupId>
 	<artifactId>jena-tdb</artifactId>
@@ -79,7 +80,8 @@
 	<classifier>tests</classifier>
 	<scope>test</scope>
       </dependency>
-
+      -->
+      
       <dependency>
 	<groupId>junit</groupId>
 	<artifactId>junit</artifactId>

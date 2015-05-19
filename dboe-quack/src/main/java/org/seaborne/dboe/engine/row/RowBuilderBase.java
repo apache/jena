@@ -17,10 +17,10 @@
 
 package org.seaborne.dboe.engine.row ;
 
-import org.apache.jena.sparql.core.Var ;
+import java.util.Objects ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.sparql.core.Var ;
 import org.seaborne.dboe.engine.Row ;
 import org.seaborne.dboe.engine.RowBuilder ;
 
@@ -77,7 +77,7 @@ public class RowBuilderBase<X> implements RowBuilder<X>
                 if ( CHECK ) {
                     X val = row.get(var) ;
                     X newVal = other.get(var) ;
-                    if ( ! Lib.equal(newVal, val))
+                    if ( ! Objects.equals(newVal, val))
                         throw new InternalErrorException("Incompatible: "+var+ " already present ("+val+","+newVal+")") ;
                 }  
                  // No check - silently discard.
