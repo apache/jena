@@ -17,6 +17,8 @@
 
 package org.seaborne.tdb2.store;
 
+import java.util.concurrent.atomic.AtomicLong ;
+
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphTrackActive ;
@@ -26,7 +28,7 @@ import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 
 /** Transaction representation of a TDB database */ 
 public class DatasetGraphTxn extends DatasetGraphTrackActive { 
-
+    private AtomicLong txnCounter = new AtomicLong(0) ;
     private final DatasetGraphTDB dsg ;
     private final Transactional dboe ;
     private final TransactionCoordinator transCoord ;

@@ -17,7 +17,9 @@
 
 package org.seaborne.dboe.base.block ;
 
+import java.util.ArrayList ;
 import java.util.Iterator ;
+import java.util.List ;
 
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
@@ -78,6 +80,27 @@ public class BlockMgrCache extends BlockMgrSync {
         }
     }
 
+    @Override
+    synchronized public void resetAlloc(long boundary) {
+        // On abort, need to clear the caches of inaccesible blocks.
+        // An abort is rare (?). We do very carefully. 
+        // Could (probably) delete in the loop or use Iteator.remove on keys().
+        // (Check the Cache contract)
+        List<Long> removals = new ArrayList<>() ;
+        readCache.keys().forEachRemaining((x)->{
+            if ( x >= boundary )
+                removals.add(x) ; 
+        }) ;
+        removals.forEach(readCache::remove) ;
+        removals.clear() ;
+        writeCache.keys().forEachRemaining((x)->{
+            if ( x >= boundary )
+                removals.add(x) ; 
+        }) ;
+        removals.forEach(writeCache::remove) ;
+        super.resetAlloc(boundary); 
+    }
+    
     @Override
     synchronized public Block getRead(long id) {
         // A Block may be in the read cache or the write cache.
@@ -299,5 +322,4 @@ public class BlockMgrCache extends BlockMgrSync {
         // and the read cache is often larger.
         readCache.put(id, block) ;
     }
-
 }

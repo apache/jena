@@ -40,7 +40,7 @@ public class TestDatasetTDB extends BaseTest
     private Dataset dataset ;
     
     @Before public void before() {
-        dataset = TL.createTestDataset() ;
+        dataset = TL.createTestDatasetMem() ;
     }
     
     @After public void after() {

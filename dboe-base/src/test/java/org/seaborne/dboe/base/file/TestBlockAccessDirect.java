@@ -19,13 +19,13 @@ package org.seaborne.dboe.base.file;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.AfterClass ;
-import org.seaborne.dboe.ConfigTest ;
+import org.seaborne.dboe.ConfigTestDBOE ;
 import org.seaborne.dboe.base.file.BlockAccess ;
 import org.seaborne.dboe.base.file.BlockAccessDirect ;
 
 public class TestBlockAccessDirect extends AbstractTestBlockAccessFixedSize
 {
-    static String filename = ConfigTest.getTestingDir()+"/test-file-access-direct" ;
+    static String filename = ConfigTestDBOE.getTestingDir()+"/test-file-access-direct" ;
     
     static final int BlockSize = 50 ;
     public TestBlockAccessDirect()

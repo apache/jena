@@ -25,7 +25,7 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.seaborne.tdb2.junit.TL ;
 
-/** Programmatic tests on persistent graph */
+/** Programmatic tests on graphs */
 public class TestGraphTDB extends AbstractTestGraph2
 {
     private Dataset dataset ;
@@ -33,7 +33,7 @@ public class TestGraphTDB extends AbstractTestGraph2
 
     @Before
     public void before() {
-        dataset = TL.createTestDataset() ;
+        dataset = TL.createTestDatasetMem() ;
         graph = dataset.getDefaultModel().getGraph() ;
     }
 

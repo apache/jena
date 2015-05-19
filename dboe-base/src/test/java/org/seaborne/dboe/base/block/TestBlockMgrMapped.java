@@ -22,7 +22,7 @@ import org.apache.jena.atlas.logging.LogCtl ;
 import org.junit.After ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
-import org.seaborne.dboe.ConfigTest ;
+import org.seaborne.dboe.ConfigTestDBOE ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrFileAccess ;
 import org.seaborne.dboe.base.file.BlockAccess ;
@@ -34,7 +34,7 @@ public class TestBlockMgrMapped extends AbstractTestBlockMgr
     
     static { if ( logging ) LogCtl.setLog4j() ; }
     
-    static final String filename = ConfigTest.getTestingDir()+"/block-mgr" ;
+    static final String filename = ConfigTestDBOE.getTestingDir()+"/block-mgr" ;
     
     // Windows is iffy about deleting memory mapped files.
     

@@ -19,7 +19,7 @@ package org.seaborne.dboe.base.objectfile;
 
 import static org.apache.jena.atlas.lib.FileOps.clearDirectory ;
 import org.apache.jena.atlas.lib.FileOps ;
-import org.seaborne.dboe.ConfigTest ;
+import org.seaborne.dboe.ConfigTestDBOE ;
 import org.seaborne.dboe.base.file.FileFactory ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.objectfile.StringFile ;
@@ -31,7 +31,7 @@ public class TestStringFileDisk extends AbstractTestStringFile
     @Override
     protected StringFile createStringFile()
     {
-        String dir = ConfigTest.getTestingDir() ;
+        String dir = ConfigTestDBOE.getTestingDir() ;
       clearDirectory(dir) ;
       Location loc = Location.create(dir) ;
       fn = loc.getPath("xyz", "node") ;

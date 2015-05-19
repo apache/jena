@@ -21,10 +21,13 @@ package org.seaborne.tdb2.store;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.seaborne.dboe.base.block.FileMode ;
+import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.tdb2.ConfigTest ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 import org.seaborne.tdb2.sys.TestOps ;
 
-public class TestStoreConnectionsMapped extends TestTransactions
+/** Slow tests - complete cleaning of disk areas each time */
+public class TestStoreConnectionsMapped extends AbstractTestStoreConnectionBasics
 {
     static FileMode mode ;   
 
@@ -40,5 +43,9 @@ public class TestStoreConnectionsMapped extends TestTransactions
     {
         TestOps.setFileMode(mode) ;
     }
-}
 
+    @Override
+    protected Location getLocation() {
+        return Location.create(ConfigTest.getCleanDir()) ;
+    }
+}

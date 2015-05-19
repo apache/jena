@@ -49,7 +49,7 @@ import org.seaborne.tdb2.sys.TS_Sys ;
     , TS_NodeTable.class
     , TS_TupleTable.class
     , TS_TDBSetup.class
-    , TS_Store.class        // The main storage implementation.  Slow tests.
+    , TS_Store.class
     , TS_SolverTDB.class
     , TS_Sys.class
     , TS_Graph.class

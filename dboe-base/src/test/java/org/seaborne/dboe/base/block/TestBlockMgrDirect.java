@@ -20,7 +20,7 @@ package org.seaborne.dboe.base.block;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.seaborne.dboe.ConfigTest ;
+import org.seaborne.dboe.ConfigTestDBOE ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.block.BlockMgrFileAccess ;
@@ -29,7 +29,7 @@ import org.seaborne.dboe.base.file.BlockAccessDirect ;
 
 public class TestBlockMgrDirect extends AbstractTestBlockMgr
 {
-    static final String filename = ConfigTest.getTestingDir()+"/block-mgr" ;
+    static final String filename = ConfigTestDBOE.getTestingDir()+"/block-mgr" ;
     
     @BeforeClass static public void remove1() { FileOps.delete(filename) ; } 
     @AfterClass  static public void remove2() { FileOps.delete(filename) ; }

@@ -23,7 +23,7 @@ import org.junit.Assert ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
-import org.seaborne.dboe.ConfigTest ;
+import org.seaborne.dboe.ConfigTestDBOE ;
 import org.seaborne.dboe.base.file.MetaFile ;
 import org.seaborne.dboe.sys.Names ;
 
@@ -34,8 +34,8 @@ public class TestMetaFile extends Assert
     
     @Before public void before()
     {
-        testfile = ConfigTest.getTestingDir()+"/file" ;
-        testfileMeta = ConfigTest.getTestingDir()+"/file."+Names.extMeta ;
+        testfile = ConfigTestDBOE.getTestingDir()+"/file" ;
+        testfileMeta = ConfigTestDBOE.getTestingDir()+"/file."+Names.extMeta ;
         File f = new File(testfileMeta) ;
         f.delete() ;
     }

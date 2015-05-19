@@ -56,6 +56,12 @@ import org.seaborne.tdb2.sys.SystemTDB ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+/** Build TDB2 databases.
+ * <p>
+ * <b>Do not call these operations directly - use StoreConnection.</b>
+ * <p>
+ * These are public solely for testing and development purposes.
+ */
 public class TDB2Builder {
     private static Logger log = LoggerFactory.getLogger(TDB2Builder.class) ;
     

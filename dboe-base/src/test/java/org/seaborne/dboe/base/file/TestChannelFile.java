@@ -19,13 +19,13 @@ package org.seaborne.dboe.base.file;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.AfterClass ;
-import org.seaborne.dboe.ConfigTest ;
+import org.seaborne.dboe.ConfigTestDBOE ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.file.BufferChannelFile ;
 
 public class TestChannelFile extends AbstractTestChannel
 {
-    static String filename = ConfigTest.getTestingDir()+"/test-storage" ;
+    static String filename = ConfigTestDBOE.getTestingDir()+"/test-storage" ;
 
     @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
     

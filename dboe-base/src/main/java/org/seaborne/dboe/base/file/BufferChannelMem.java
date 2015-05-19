@@ -204,7 +204,8 @@ public class BufferChannelMem implements BufferChannel {
 
     @Override
     synchronized public void close() {
-        checkIfClosed() ;
+        if ( bytes == null )
+            return ;
         bytes = null ;
     }
 

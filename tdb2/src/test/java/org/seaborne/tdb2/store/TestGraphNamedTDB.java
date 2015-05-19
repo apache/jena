@@ -36,7 +36,7 @@ public class TestGraphNamedTDB extends AbstractTestGraph2
 
     @Before
     public void before() {
-        dataset = TL.createTestDataset() ;
+        dataset = TL.createTestDatasetMem() ;
         graph = dataset.asDatasetGraph().getGraph(graphNode) ;
     }
 

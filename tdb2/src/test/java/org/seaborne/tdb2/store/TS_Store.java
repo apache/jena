@@ -39,9 +39,10 @@ import org.seaborne.tdb2.sys.TestOps ;
     , TestSuiteGraphTDB.class
     , Test_SPARQL_TDB.class
     , TestDynamicDatasetTDB.class
-    , TestTransactions.class
+    , TestStoreConnectionsMem.class
     , TestStoreConnectionsDirect.class
     , TestStoreConnectionsMapped.class
+    , TestTransactions.class
     , TestLocationLockStoreConnection.class
 } )
 public class TS_Store

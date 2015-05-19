@@ -19,7 +19,7 @@ package org.seaborne.dboe.base.objectfile;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.AfterClass ;
-import org.seaborne.dboe.ConfigTest ;
+import org.seaborne.dboe.ConfigTestDBOE ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.file.BufferChannelFile ;
 import org.seaborne.dboe.base.objectfile.ObjectFile ;
@@ -27,7 +27,7 @@ import org.seaborne.dboe.base.objectfile.ObjectFileStorage ;
 
 public class TestObjectFileDisk extends AbstractTestObjectFile
 {
-    static String filename = ConfigTest.getTestingDir()+"/test-objectfile" ;
+    static String filename = ConfigTestDBOE.getTestingDir()+"/test-objectfile" ;
 
     @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
     
