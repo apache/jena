@@ -18,7 +18,6 @@
 
 package org.apache.jena.hadoop.rdf.io.output.writers;
 
-import java.io.IOException;
 import java.io.Writer;
 
 import org.apache.hadoop.mapreduce.RecordWriter;
@@ -93,7 +92,7 @@ public abstract class AbstractLineBasedNodeTupleWriter<TKey, TValue, T extends A
     }
 
     @Override
-    public void write(TKey key, T value) throws IOException, InterruptedException {
+    public void write(TKey key, T value) {
         log.debug("write({}={})", key, value);
 
         Node[] ns = this.getNodes(value);
@@ -144,7 +143,7 @@ public abstract class AbstractLineBasedNodeTupleWriter<TKey, TValue, T extends A
     }
 
     @Override
-    public void close(TaskAttemptContext context) throws IOException, InterruptedException {
+    public void close(TaskAttemptContext context) {
         log.debug("close({})", context);
         writer.close();
     }

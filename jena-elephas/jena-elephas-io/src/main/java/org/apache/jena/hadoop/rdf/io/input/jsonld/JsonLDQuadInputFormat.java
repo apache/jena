@@ -18,8 +18,6 @@
 
 package org.apache.jena.hadoop.rdf.io.input.jsonld;
 
-import java.io.IOException;
-
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
@@ -31,8 +29,7 @@ import org.apache.jena.hadoop.rdf.types.QuadWritable;
 public class JsonLDQuadInputFormat extends AbstractWholeFileInputFormat<LongWritable, QuadWritable> {
 
     @Override
-    public RecordReader<LongWritable, QuadWritable> createRecordReader(InputSplit split, TaskAttemptContext context)
-            throws IOException, InterruptedException {
+    public RecordReader<LongWritable, QuadWritable> createRecordReader(InputSplit split, TaskAttemptContext context) {
         return new JsonLDQuadReader();
     }
 

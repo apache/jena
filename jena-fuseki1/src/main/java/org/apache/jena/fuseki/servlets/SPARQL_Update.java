@@ -34,7 +34,6 @@ import java.util.Collection ;
 import java.util.Enumeration ;
 import java.util.List ;
 
-import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -68,14 +67,13 @@ public class SPARQL_Update extends SPARQL_Protocol
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException
+    throws IOException
     {
         response.sendError(HttpSC.BAD_REQUEST_400, "Attempt to perform SPARQL update by GET.  Use POST") ;
     }
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException
     {
         doCommon(request, response) ;
     }
