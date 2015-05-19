@@ -20,7 +20,6 @@ package org.apache.jena.query.spatial;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,7 +33,6 @@ import com.spatial4j.core.context.SpatialContextFactory;
 /**
  * Definition of a "document"
  */
-@SuppressWarnings("unused")
 public class EntityDefinition {
 
 	private final String entityField;

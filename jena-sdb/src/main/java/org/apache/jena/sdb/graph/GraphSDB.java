@@ -49,7 +49,7 @@ import org.apache.jena.util.iterator.NiceIterator ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-public class GraphSDB extends GraphBase implements Graph
+public class GraphSDB extends GraphBase
 {
     private static Logger log = LoggerFactory.getLogger(GraphSDB.class) ;
 

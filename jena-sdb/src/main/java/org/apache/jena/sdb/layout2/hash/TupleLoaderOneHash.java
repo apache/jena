@@ -51,7 +51,7 @@ public class TupleLoaderOneHash extends TupleLoaderOne
     
     
     @Override
-    public SqlConstant getRefForNode(Node node) throws SQLException 
+    public SqlConstant getRefForNode(Node node) 
     {
         return new SqlConstant(NodeLayout2.hash(node)) ;
     }

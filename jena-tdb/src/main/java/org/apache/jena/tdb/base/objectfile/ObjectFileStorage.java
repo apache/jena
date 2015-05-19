@@ -407,7 +407,7 @@ public class ObjectFileStorage implements ObjectFile
         
     }
 
-    private class BufferIterator extends IteratorSlotted<Pair<Long, ByteBuffer>> implements Iterator<Pair<Long, ByteBuffer>>
+    private class BufferIterator extends IteratorSlotted<Pair<Long, ByteBuffer>>
     {
         private ByteBuffer buffer ;
         private int posn ;
