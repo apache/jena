@@ -39,7 +39,7 @@ public abstract class DatasetMetadata extends JenaMetadata {
     }
 
     @Override
-    public boolean supportsTransactionIsolationLevel(int level) throws SQLException {
+    public boolean supportsTransactionIsolationLevel(int level) {
         // Dataset connections can support None or Serializable transactions
         switch (level) {
         case Connection.TRANSACTION_NONE:
@@ -52,7 +52,7 @@ public abstract class DatasetMetadata extends JenaMetadata {
     }
 
     @Override
-    public boolean supportsTransactions() throws SQLException {
+    public boolean supportsTransactions() {
         // Transactions are only supported if the underlying dataset supports them
         return ((DatasetConnection)this.getConnection()).getJenaDataset().supportsTransactions();
     }

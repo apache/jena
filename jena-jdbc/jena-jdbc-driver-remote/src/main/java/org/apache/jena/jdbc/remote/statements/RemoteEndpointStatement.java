@@ -151,7 +151,7 @@ public class RemoteEndpointStatement extends JenaStatement {
     }
 
     @Override
-    protected boolean hasActiveTransaction() throws SQLException {
+    protected boolean hasActiveTransaction() {
         // Remote endpoints don't support transactions so can't ever have an
         // active transaction
         return false;

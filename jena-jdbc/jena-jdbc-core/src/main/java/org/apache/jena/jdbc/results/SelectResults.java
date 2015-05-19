@@ -88,7 +88,7 @@ public class SelectResults extends StreamedResults<Binding> {
     }
 
     @Override
-    public void closeStreamInternal() throws SQLException {
+    public void closeStreamInternal() {
         if (this.innerResults != null) {
             if (this.innerResults instanceof Closeable) {
                 ((Closeable) this.innerResults).close();
@@ -133,7 +133,7 @@ public class SelectResults extends StreamedResults<Binding> {
     }
 
     @Override
-    public ResultSetMetaData getMetaData() throws SQLException {
+    public ResultSetMetaData getMetaData() {
         return this.metadata;
     }
 

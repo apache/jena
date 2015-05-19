@@ -405,10 +405,9 @@ public abstract class AbstractJenaConnectionTests {
      * Tests use of prepared statements
      * 
      * @throws SQLException
-     * @throws MalformedURLException
      */
     @Test
-    public void connection_prepared_statement_select_02() throws SQLException, MalformedURLException {
+    public void connection_prepared_statement_select_02() throws SQLException {
         // Prepare a dataset
         Dataset ds = DatasetFactory.createMem();
         ds.asDatasetGraph().add(
@@ -454,10 +453,9 @@ public abstract class AbstractJenaConnectionTests {
      * Tests use of prepared statements
      * 
      * @throws SQLException
-     * @throws MalformedURLException
      */
     @Test
-    public void connection_prepared_statement_select_03() throws SQLException, MalformedURLException {
+    public void connection_prepared_statement_select_03() throws SQLException {
         // Prepare a dataset
         Dataset ds = DatasetFactory.createMem();
         ds.asDatasetGraph().add(

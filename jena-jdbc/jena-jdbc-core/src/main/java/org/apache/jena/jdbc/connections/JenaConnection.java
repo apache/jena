@@ -27,7 +27,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLRecoverableException;
@@ -448,7 +447,7 @@ public abstract class JenaConnection implements Connection {
     }
 
     @Override
-    public void clearWarnings() throws SQLException {
+    public void clearWarnings() {
         this.warnings = null;
     }
 
@@ -568,27 +567,27 @@ public abstract class JenaConnection implements Connection {
     }
 
     @Override
-    public boolean getAutoCommit() throws SQLException {
+    public boolean getAutoCommit() {
         return this.autoCommit;
     }
 
     @Override
-    public String getCatalog() throws SQLException {
+    public String getCatalog() {
         return JenaMetadata.DEFAULT_CATALOG;
     }
 
     @Override
-    public Properties getClientInfo() throws SQLException {
+    public Properties getClientInfo() {
         return this.clientInfo;
     }
 
     @Override
-    public String getClientInfo(String name) throws SQLException {
+    public String getClientInfo(String name) {
         return this.clientInfo.getProperty(name);
     }
 
     @Override
-    public int getHoldability() throws SQLException {
+    public int getHoldability() {
         return this.holdability;
     }
 
@@ -596,7 +595,7 @@ public abstract class JenaConnection implements Connection {
     public abstract DatabaseMetaData getMetaData() throws SQLException;
 
     @Override
-    public int getTransactionIsolation() throws SQLException {
+    public int getTransactionIsolation() {
         return this.isolationLevel;
     }
 
@@ -606,7 +605,7 @@ public abstract class JenaConnection implements Connection {
     }
 
     @Override
-    public SQLWarning getWarnings() throws SQLException {
+    public SQLWarning getWarnings() {
         return this.warnings;
     }
 
@@ -739,7 +738,7 @@ public abstract class JenaConnection implements Connection {
     }
 
     @Override
-    public void setAutoCommit(boolean autoCommit) throws SQLException {
+    public void setAutoCommit(boolean autoCommit) {
         this.autoCommit = autoCommit;
     }
 
@@ -749,12 +748,12 @@ public abstract class JenaConnection implements Connection {
     }
 
     @Override
-    public void setClientInfo(Properties properties) throws SQLClientInfoException {
+    public void setClientInfo(Properties properties) {
         this.clientInfo = properties;
     }
 
     @Override
-    public void setClientInfo(String name, String value) throws SQLClientInfoException {
+    public void setClientInfo(String name, String value) {
         this.clientInfo.put(name, value);
     }
 

@@ -18,7 +18,6 @@
 
 package org.apache.jena.jdbc.preprocessing;
 
-import java.sql.SQLException;
 import java.util.Properties;
 
 import org.apache.jena.query.Query ;
@@ -49,17 +48,17 @@ public class Echo implements CommandPreProcessor {
     }
 
     @Override
-    public String preProcessCommandText(String text) throws SQLException {
+    public String preProcessCommandText(String text) {
         return text;
     }
 
     @Override
-    public Query preProcessQuery(Query q) throws SQLException {
+    public Query preProcessQuery(Query q) {
         return q;
     }
 
     @Override
-    public UpdateRequest preProcessUpdate(UpdateRequest u) throws SQLException {
+    public UpdateRequest preProcessUpdate(UpdateRequest u) {
         return u;
     }
 
