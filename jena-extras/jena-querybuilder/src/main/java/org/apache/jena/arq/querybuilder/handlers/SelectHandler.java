@@ -131,18 +131,11 @@ public class SelectHandler implements Handler {
 		setReduced(selectHandler.query.isReduced());
 		setDistinct(selectHandler.query.isDistinct());
 		query.setQueryResultStar(selectHandler.query.isQueryResultStar());
-
-		try {
-			Field f = Query.class.getDeclaredField("projectVars");
-			f.setAccessible(true);
-			VarExprList projectVars = (VarExprList) f.get(selectHandler.query);
-			f.set(query, new VarExprList(projectVars));
-		} catch (NoSuchFieldException e) {
-			throw new IllegalStateException(e);
-		} catch (SecurityException e) {
-			throw new IllegalStateException(e);
-		} catch (IllegalAccessException e) {
-			throw new IllegalStateException(e);
+		VarExprList shProjectVars = selectHandler.query.getProject();
+		VarExprList qProjectVars = query.getProject();
+		for (Var var : shProjectVars.getVars())
+		{
+			qProjectVars.add( var, shProjectVars.getExpr(var));
 		}
 	}
 
