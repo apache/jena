@@ -98,4 +98,7 @@ public class NodeTableTRDF extends NodeTableNative {
         try { transport.close() ; }
         catch (Exception ex) { throw new TDBException("NodeTableTRDF", ex) ; }
     }
+
+    public Index getIndex()             { return nodeHashToId ; }
+    public BinaryDataFile getData()     { return diskFile ; }
 }

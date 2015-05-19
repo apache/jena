@@ -44,7 +44,7 @@ public interface TransactionalSystem extends Transactional {
     /** Suspend this transaction, detaching from the current thread.
      * A new transaction on this thread can performed but the detached
      * transaction still exists and if it is a write transaction
-     * it can stil block other write transactions.
+     * it can still block other write transactions.
      */
     public TransactionCoordinatorState detach() ;
     
