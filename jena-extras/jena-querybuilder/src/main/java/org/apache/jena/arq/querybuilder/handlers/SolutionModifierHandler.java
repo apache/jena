@@ -248,17 +248,7 @@ public class SolutionModifierHandler implements Handler {
 			}
 		}
 
-		try {
-			Field f = Query.class.getDeclaredField("groupVars");
-			f.setAccessible(true);
-			f.set(query, groupBy);
-		} catch (NoSuchFieldException e) {
-			throw new IllegalStateException(e);
-		} catch (SecurityException e) {
-			throw new IllegalStateException(e);
-		} catch (IllegalAccessException e) {
-			throw new IllegalStateException(e);
-		}
+		query.setGroupBy( groupBy );
 
 	}
 

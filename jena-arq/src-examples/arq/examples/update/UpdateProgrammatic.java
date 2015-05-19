@@ -18,6 +18,8 @@
 
 package arq.examples.update;
 
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.modify.request.Target ;
@@ -37,7 +39,7 @@ public class UpdateProgrammatic
 {
     public static void main(String []args)
     {
-        GraphStore graphStore = GraphStoreFactory.create() ;
+        Dataset graphStore = DatasetFactory.createMem() ;
         
         UpdateRequest request = UpdateFactory.create() ;
         

@@ -18,7 +18,6 @@
 
 package org.apache.jena.web ;
 
-import java.io.IOException ;
 import java.io.OutputStream ;
 
 import org.apache.http.HttpEntity ;
@@ -239,7 +238,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
         final RDFFormat syntax = getOutboundSyntax() ;
         ContentProducer producer = new ContentProducer() {
             @Override
-            public void writeTo(OutputStream out) throws IOException {
+            public void writeTo(OutputStream out) {
                 RDFDataMgr.write(out, graph, syntax) ;
             }
         } ;

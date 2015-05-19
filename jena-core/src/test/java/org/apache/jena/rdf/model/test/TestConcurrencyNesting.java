@@ -105,7 +105,7 @@ public class TestConcurrencyNesting extends AbstractModelTestBase
 		workingModels[TestConcurrencyNesting.MODEL2].close();
 	}
 
-	public void testNesting() throws Throwable
+	public void testNesting()
 	{
 		boolean gotException = false;
 		try

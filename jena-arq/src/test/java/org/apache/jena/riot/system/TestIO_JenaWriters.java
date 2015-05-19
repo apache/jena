@@ -62,7 +62,7 @@ public class TestIO_JenaWriters {
     }
 
     @Test
-    public void testWireIntoJena() throws Exception {
+    public void testWireIntoJena() {
         IO_JenaWriters.wireIntoJena();
         RDFWriterFImpl writerF = new RDFWriterFImpl();
         assertEquals(Basic.class, writerF.getWriter().getClass());
@@ -88,7 +88,7 @@ public class TestIO_JenaWriters {
     }
     
     @Test
-    public void testResetJena() throws Exception {
+    public void testResetJena() {
         IO_JenaWriters.wireIntoJena();
         IO_JenaWriters.resetJena();
         RDFWriterFImplExposingProtected writerF = new RDFWriterFImplExposingProtected();

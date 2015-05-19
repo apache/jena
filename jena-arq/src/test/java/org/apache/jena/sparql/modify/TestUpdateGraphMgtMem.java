@@ -16,17 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.modify;
+package org.apache.jena.sparql.modify ;
 
-import org.apache.jena.update.GraphStore ;
-import org.apache.jena.update.GraphStoreFactory ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
 
-public class TestUpdateGraphMgtMem extends AbstractTestUpdateGraphMgt
-{
+public class TestUpdateGraphMgtMem extends AbstractTestUpdateGraphMgt {
     @Override
-    protected GraphStore getEmptyGraphStore()
-    {
-        GraphStore gStore = GraphStoreFactory.create() ;
-        return gStore ;
+    protected DatasetGraph getEmptyDatasetGraph() {
+        return DatasetGraphFactory.createMem() ;
     }
 }

@@ -23,7 +23,6 @@ import java.io.IOException ;
 import java.io.OutputStream ;
 import java.io.Writer ;
 
-import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.atlas.lib.Closeable ;
 
 /** A writer that records what the current indentation level is, and
@@ -60,8 +59,6 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     
     protected boolean flatMode = false ;
     private boolean flushOnNewline = false ;
-    
-    private IndentedWriter() { this(System.out, false) ; }
     
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
@@ -168,10 +165,10 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     }
 
     private void write$(char ch) 
-    { try { out.write(ch) ; } catch (IOException ex) { throw new RuntimeIOException(ex) ; } }
+    { try { out.write(ch) ; } catch (IOException ex) { IO.exception(ex); } }
     
     private void write$(String s) 
-    { try { out.write(s) ; } catch (IOException ex) { throw new RuntimeIOException(ex) ; } }
+    { try { out.write(s) ; } catch (IOException ex) { IO.exception(ex); } }
     
     public void newline()
     {

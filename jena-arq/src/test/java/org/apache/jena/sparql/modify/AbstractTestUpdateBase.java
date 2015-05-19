@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.modify;
+package org.apache.jena.sparql.modify ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Graph ;
@@ -24,48 +24,40 @@ import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.ARQTestSuite ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.graph.GraphFactory ;
-import org.apache.jena.update.GraphStore ;
 import org.apache.jena.update.UpdateAction ;
 
-public abstract class AbstractTestUpdateBase extends BaseTest
-{
-    protected abstract GraphStore getEmptyGraphStore() ; 
-    
-    protected void defaultGraphData(GraphStore gStore, Graph data)
-    {
+public abstract class AbstractTestUpdateBase extends BaseTest {
+    protected abstract DatasetGraph getEmptyDatasetGraph() ;
+
+    protected void defaultGraphData(DatasetGraph gStore, Graph data) {
         Graph g = gStore.getDefaultGraph() ;
         g.clear() ;
         GraphUtil.addInto(g, data) ;
     }
-    
-    protected void namedGraphData(GraphStore gStore, Node uri, Graph data)
-    {
+
+    protected void namedGraphData(DatasetGraph gStore, Node uri, Graph data) {
         Graph g = gStore.getGraph(uri) ;
-        if ( g == null )
-        {
+        if ( g == null ) {
             gStore.addGraph(uri, GraphFactory.createJenaDefaultGraph()) ;
             g = gStore.getGraph(uri) ;
-        }
-        else
+        } else
             g.clear() ;
-        GraphUtil.addInto(g,data) ;
+        GraphUtil.addInto(g, data) ;
     }
-    
+
     protected static final String FileBase = ARQTestSuite.testDirUpdate ;
-    
-    protected static void script(GraphStore gStore, String filename)
-    {
-        UpdateAction.readExecute(FileBase+"/"+filename, gStore) ;
+
+    protected static void script(DatasetGraph gStore, String filename) {
+        UpdateAction.readExecute(FileBase + "/" + filename, gStore) ;
     }
-    
-    protected static boolean graphEmpty(Graph graph)
-    {
-        return graph.isEmpty() ; 
+
+    protected static boolean graphEmpty(Graph graph) {
+        return graph.isEmpty() ;
     }
-    
-    protected static boolean graphContains(Graph graph, Triple triple)
-    {
-        return graph.contains(triple) ; 
+
+    protected static boolean graphContains(Graph graph, Triple triple) {
+        return graph.contains(triple) ;
     }
 }

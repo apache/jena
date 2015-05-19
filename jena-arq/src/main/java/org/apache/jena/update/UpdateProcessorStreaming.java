@@ -18,6 +18,7 @@
 
 package org.apache.jena.update;
 
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.modify.UpdateSink ;
 import org.apache.jena.sparql.util.Context ;
 
@@ -36,8 +37,14 @@ public interface UpdateProcessorStreaming
      * The dataset against which the query will execute.
      * May be null, implying the there isn't a local GraphStore target for this UpdateProcessor.
      */
-    public GraphStore getGraphStore() ;
+    public DatasetGraph getDatasetGraph() ;
     
+    /** @deprecated Use {@link #getDatasetGraph()} */
+    @Deprecated
+    public default DatasetGraph getGraphStore() {
+        return getDatasetGraph() ;
+    }
+
     /** Start the request, call before putting updates into the Sink */
     public void startRequest() ;
     

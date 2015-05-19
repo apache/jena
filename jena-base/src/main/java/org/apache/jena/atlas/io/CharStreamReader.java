@@ -16,37 +16,34 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.io;
+package org.apache.jena.atlas.io ;
 
 import java.io.IOException ;
 import java.io.Reader ;
 
 /** Machinary to add Reader functionality to a CharStream */
-public abstract class CharStreamReader extends Reader implements CharStream
-{
+public abstract class CharStreamReader extends Reader implements CharStream {
+    
     @Override
-    public int read(char[] cbuf, int off, int len) throws IOException
-    {
-        for ( int i = 0 ; i < len ; i++ )
-        {
+    public int read(char[] cbuf, int off, int len) throws IOException {
+        for ( int i = 0 ; i < len ; i++ ) {
             int x = advance() ;
             if ( x == -1 )
-                return (i==0)? -1 : i ;
+                return (i == 0) ? -1 : i ;
             cbuf[i] = (char)x ;
         }
         return len ;
     }
 
     @Override
-    public int read() throws IOException
-    {
+    public int read() throws IOException {
         return advance() ;
     }
 
-    
     @Override
-    public void close() throws IOException
-    { closeStream() ; }
+    public void close() throws IOException {
+        closeStream() ;
+    }
 
     @Override
     public abstract int advance() ;

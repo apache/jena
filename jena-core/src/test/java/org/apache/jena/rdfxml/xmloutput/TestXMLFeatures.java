@@ -64,7 +64,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		m.createResource("foo").addProperty(RDF.value, "bar");
 		m.write(new OutputStream() {
 			@Override
-            public void write(int b) throws IOException {
+            public void write(int b) {
 			}
 		}, lang);
 	}
@@ -81,7 +81,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 	 * j.0 defined (eg it was read in from a model we wrote out earlier) wants
 	 * to allocate a new j.* prefix and picked j.0, BOOM.
 	 */
-	public void SUPPRESSEDtestBrokenPrefixing() throws Exception {
+	public void SUPPRESSEDtestBrokenPrefixing() {
 		Model m = ModelFactory.createDefaultModel();
 		m.add(ModelTestBase.statement(m, "a http://bingle.bongle/booty#PP b"));
 		m.add(ModelTestBase.statement(m, "c http://dingle.dongle/dooty#PP d"));

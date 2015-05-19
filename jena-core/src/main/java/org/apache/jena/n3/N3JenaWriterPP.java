@@ -212,7 +212,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 			// Corrupt graph!
 			throw new JenaException("N3: found object with no arcs!") ;
 
-		Statement s = pointsToIter.nextStatement() ;
+		pointsToIter.nextStatement() ;
                
 		if ( pointsToIter.hasNext() )
             return false ;
@@ -393,10 +393,6 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
                 complex.add(obj) ;
         }
         sIter.close() ;
-        // DEBUG
-        int simpleSize = simple.size() ;
-        int complexSize = complex.size() ;
-        
         // Write property/simple objects
         
         if ( simple.size() > 0 )
@@ -467,9 +463,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
             String padSp = null ;
             
             // Can we fit teh start of teh complex object on this line?
-            
-            // DEBUG variable.
-            int tmp = propStr.length() ;
+
             // Complex objects - do not allow property to be long and alignment to be lost
             if ((propStr.length()+minGap) <= propertyCol)
             {

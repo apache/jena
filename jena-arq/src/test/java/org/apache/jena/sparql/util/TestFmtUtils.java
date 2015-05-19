@@ -87,7 +87,7 @@ public class TestFmtUtils
     }
 
     @Test
-    public void stringForObject_misc_versions() throws Exception {
+    public void stringForObject_misc_versions() {
         assertEquals("<<null>>", FmtUtils.stringForObject(null)) ;
         assertEquals("<n1>", FmtUtils.stringForObject(new LiteralImpl(aNode(), null))) ;
         assertEquals("<nzz1>", FmtUtils.stringForObject(new ResourceImpl(NodeFactory.createURI("nzz1"), null))) ;
@@ -130,7 +130,7 @@ public class TestFmtUtils
     }
 
     @Test
-    public void stringForRDFNode_resource() throws Exception {
+    public void stringForRDFNode_resource() {
         final ResourceImpl rdfNod = new ResourceImpl(aUriRemappableNode(), null) ;
         assertEquals("zz:abs", stringForRDFNode(rdfNod, getContext())) ;
     }
@@ -160,7 +160,7 @@ public class TestFmtUtils
     }
 
     @Test
-    public void testStringForURI() throws Exception {
+    public void testStringForURI() {
         final String s = FmtUtils.stringForURI("zz:ü_fe-zz") ;
         assertEquals("<zz:ü_fe-zz>", s) ;
 

@@ -18,9 +18,11 @@
 
 package org.apache.jena.update;
 
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
 import org.apache.jena.query.ARQ ;
+import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.QuerySolution ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingUtils ;
 import org.apache.jena.sparql.modify.* ;
@@ -29,200 +31,247 @@ import org.apache.jena.sparql.util.Context ;
 /** Create UpdateProcessors (one-time executions of a SPARQL Update request) */
 public class UpdateExecutionFactory
 {
-
-    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
      * @param update
-     * @param graphStore
+     * @param dataset
      * @return UpdateProcessor or null
      */
-    public static UpdateProcessor create(Update update, GraphStore graphStore)
+    public static UpdateProcessor create(Update update, Dataset dataset)
     {
-        return create(new UpdateRequest(update), graphStore, (Binding)null) ;
+        return create(new UpdateRequest(update), dataset) ;
     }
     
-    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
      * @param update
-     * @param graphStore
-     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @param datasetGraph
      * @return UpdateProcessor or null
      */
-    public static UpdateProcessor create(Update update, GraphStore graphStore, QuerySolution inputBinding)
+    public static UpdateProcessor create(Update update, DatasetGraph datasetGraph)
     {
-        return create(update, graphStore, BindingUtils.asBinding(inputBinding)) ;
+        return create(new UpdateRequest(update), datasetGraph) ;
     }
 
-    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
      * @param update
-     * @param graphStore
+     * @param dataset
      * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
      * @return UpdateProcessor or null
      */
-    public static UpdateProcessor create(Update update, GraphStore graphStore, Binding inputBinding)
+    public static UpdateProcessor create(Update update, Dataset dataset, QuerySolution inputBinding)
     {
-        return create(new UpdateRequest(update), graphStore, inputBinding) ;
+        return create(update, dataset.asDatasetGraph(), BindingUtils.asBinding(inputBinding)) ;
     }
 
-
-    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param updateRequest
-     * @param graphStore
-     * @return UpdateProcessor or null
-     */
-    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore)
-    {        
-        return make(updateRequest, graphStore, null, null) ;
-    }
-    
-    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param updateRequest
-     * @param graphStore
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
+     * @param update
+     * @param datasetGraph
      * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
      * @return UpdateProcessor or null
      */
-    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, QuerySolution inputBinding)
-    {        
-        return create(updateRequest, graphStore, BindingUtils.asBinding(inputBinding)) ;
-    }
-    
-    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param updateRequest
-     * @param graphStore
-     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
-     * @return UpdateProcessor or null
-     */
-    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, Binding inputBinding)
-    {        
-        return make(updateRequest, graphStore, inputBinding, null) ;
-    }
-    
-    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param graphStore
-     * @return UpdateProcessor or null
-     */
-    public static UpdateProcessorStreaming createStreaming(GraphStore graphStore)
-    {        
-        return makeStreaming(graphStore, null, null) ;
-    }
-    
-    
-    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param graphStore
-     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
-     * @return UpdateProcessor or null
-     */
-    public static UpdateProcessorStreaming createStreaming(GraphStore graphStore, QuerySolution inputBinding)
-    {        
-        return createStreaming(graphStore, BindingUtils.asBinding(inputBinding)) ;
+    public static UpdateProcessor create(Update update, DatasetGraph datasetGraph, Binding inputBinding)
+    {
+        return create(new UpdateRequest(update), datasetGraph, inputBinding) ;
     }
 
-    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param graphStore
-     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
+     * @param updateRequest
+     * @param dataset
      * @return UpdateProcessor or null
      */
-    public static UpdateProcessorStreaming createStreaming(GraphStore graphStore, Binding inputBinding)
+    public static UpdateProcessor create(UpdateRequest updateRequest, Dataset dataset)
     {        
-        return makeStreaming(graphStore, inputBinding, null) ;
+        return make(updateRequest, dataset.asDatasetGraph(), null, null) ;
     }
     
-    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param graphStore
-     * @param context  (null means use merge of global and graph store context))
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
+     * @param updateRequest
+     * @param datasetGraph
      * @return UpdateProcessor or null
      */
-    public static UpdateProcessorStreaming createStreaming(GraphStore graphStore, Context context)
+    public static UpdateProcessor create(UpdateRequest updateRequest, DatasetGraph datasetGraph)
     {        
-        return makeStreaming(graphStore, null, context) ;
-    }
-    
-    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param graphStore
-     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
-     * @param context  (null means use merge of global and graph store context))
-     * @return UpdateProcessor or null
-     */
-    public static UpdateProcessorStreaming createStreaming(GraphStore graphStore, QuerySolution inputBinding, Context context)
-    {        
-        return createStreaming(graphStore, BindingUtils.asBinding(inputBinding), context) ;
-    }
-    
-    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param graphStore
-     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
-     * @param context  (null means use merge of global and graph store context))
-     * @return UpdateProcessor or null
-     */
-    public static UpdateProcessorStreaming createStreaming(GraphStore graphStore, Binding inputBinding, Context context)
-    {        
-        return makeStreaming(graphStore, inputBinding, context) ;
+        return make(updateRequest, datasetGraph, null, null) ;
     }
 
-    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
      * @param updateRequest
-     * @param graphStore
-     * @param context  (null means use merge of global and graph store context))
+     * @param dataset
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
      * @return UpdateProcessor or null
      */
-    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, Context context)
+    public static UpdateProcessor create(UpdateRequest updateRequest, Dataset dataset, QuerySolution inputBinding)
     {        
-        return make(updateRequest, graphStore, null, context) ;
+        return create(updateRequest, dataset.asDatasetGraph(), BindingUtils.asBinding(inputBinding)) ;
     }
     
-    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
      * @param updateRequest
-     * @param graphStore
+     * @param datasetGraph
      * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
-     * @param context  (null means use merge of global and graph store context))
      * @return UpdateProcessor or null
      */
-    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, QuerySolution inputBinding, Context context)
+    public static UpdateProcessor create(UpdateRequest updateRequest, DatasetGraph datasetGraph, Binding inputBinding)
     {        
-        return create(updateRequest, graphStore, BindingUtils.asBinding(inputBinding), context) ;
+        return make(updateRequest, datasetGraph, inputBinding, null) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
+     * @param dataset
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessorStreaming createStreaming(Dataset dataset)
+    {        
+        return makeStreaming(dataset.asDatasetGraph(), null, null) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
+     * @param datasetGraph
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph)
+    {        
+        return makeStreaming(datasetGraph, null, null) ;
     }
 
-    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param updateRequest
-     * @param graphStore
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
+     * @param dataset
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessorStreaming createStreaming(Dataset dataset, QuerySolution inputBinding)
+    {        
+        return createStreaming(dataset.asDatasetGraph(), BindingUtils.asBinding(inputBinding)) ;
+    }
+
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
+     * @param datasetGraph
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph, Binding inputBinding)
+    {        
+        return makeStreaming(datasetGraph, inputBinding, null) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
+     * @param dataset
+     * @param context  (null means use merge of global and graph store context))
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessorStreaming createStreaming(Dataset dataset, Context context)
+    {        
+        return makeStreaming(dataset.asDatasetGraph(), null, context) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
+     * @param datasetGraph
+     * @param context  (null means use merge of global and graph store context))
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph, Context context)
+    {        
+        return makeStreaming(datasetGraph, null, context) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
+     * @param dataset
      * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
      * @param context  (null means use merge of global and graph store context))
      * @return UpdateProcessor or null
      */
-    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, Binding inputBinding, Context context)
+    public static UpdateProcessorStreaming createStreaming(Dataset dataset, QuerySolution inputBinding, Context context)
     {        
-        return make(updateRequest, graphStore, inputBinding, context) ;
+        return createStreaming(dataset.asDatasetGraph(), BindingUtils.asBinding(inputBinding), context) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
+     * @param datasetGraph
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @param context  (null means use merge of global and graph store context))
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph, Binding inputBinding, Context context)
+    {        
+        return makeStreaming(datasetGraph, inputBinding, context) ;
+    }
+
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
+     * @param updateRequest
+     * @param dataset
+     * @param context  (null means use merge of global and graph store context))
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessor create(UpdateRequest updateRequest, Dataset dataset, Context context)
+    {        
+        return make(updateRequest, dataset.asDatasetGraph(), null, context) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
+     * @param updateRequest
+     * @param datasetGraph
+     * @param context  (null means use merge of global and graph store context))
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessor create(UpdateRequest updateRequest, DatasetGraph datasetGraph, Context context)
+    {        
+        return make(updateRequest, datasetGraph, null, context) ;
+    }
+
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
+     * @param updateRequest
+     * @param dataset
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @param context  (null means use merge of global and graph store context))
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessor create(UpdateRequest updateRequest, Dataset dataset, QuerySolution inputBinding, Context context)
+    {        
+        return create(updateRequest, dataset.asDatasetGraph(), BindingUtils.asBinding(inputBinding), context) ;
+    }
+
+    /** Create an UpdateProcessor appropriate to the datasetGraph, or null if no available factory to make an UpdateProcessor 
+     * @param updateRequest
+     * @param datasetGraph
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @param context  (null means use merge of global and graph store context))
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessor create(UpdateRequest updateRequest, DatasetGraph datasetGraph, Binding inputBinding, Context context)
+    {        
+        return make(updateRequest, datasetGraph, inputBinding, context) ;
     }
 
     // Everything comes through one of these two make methods
-    private static UpdateProcessor make(UpdateRequest updateRequest, GraphStore graphStore, Binding inputBinding, Context context)
+    private static UpdateProcessor make(UpdateRequest updateRequest, DatasetGraph datasetGraph, Binding inputBinding, Context context)
     {
         if ( context == null )
         {
             context = ARQ.getContext().copy();
-            context.putAll(graphStore.getContext()) ;
+            context.putAll(datasetGraph.getContext()) ;
         }
         
-        UpdateEngineFactory f = UpdateEngineRegistry.get().find(graphStore, context) ;
+        UpdateEngineFactory f = UpdateEngineRegistry.get().find(datasetGraph, context) ;
         if ( f == null )
             return null ;
         
-        UpdateProcessorBase uProc = new UpdateProcessorBase(updateRequest, graphStore, inputBinding, context, f) ;
+        UpdateProcessorBase uProc = new UpdateProcessorBase(updateRequest, datasetGraph, inputBinding, context, f) ;
         return uProc ;
     }
     
     // Everything comes through one of these two make methods
-    private static UpdateProcessorStreaming makeStreaming(GraphStore graphStore, Binding inputBinding, Context context)
+    private static UpdateProcessorStreaming makeStreaming(DatasetGraph datasetGraph, Binding inputBinding, Context context)
     {
         if ( context == null )
         {
             context = ARQ.getContext().copy();
-            context.putAll(graphStore.getContext()) ;
+            context.putAll(datasetGraph.getContext()) ;
         }
         
-        UpdateEngineFactory f = UpdateEngineRegistry.get().find(graphStore, context) ;
+        UpdateEngineFactory f = UpdateEngineRegistry.get().find(datasetGraph, context) ;
         if ( f == null )
             return null ;
         
-        UpdateProcessorStreamingBase uProc = new UpdateProcessorStreamingBase(graphStore, inputBinding, context, f) ;
+        UpdateProcessorStreamingBase uProc = new UpdateProcessorStreamingBase(datasetGraph, inputBinding, context, f) ;
         return uProc;
     }
     

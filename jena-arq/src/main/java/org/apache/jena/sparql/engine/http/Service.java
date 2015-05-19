@@ -28,7 +28,6 @@ import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
-import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpAsQuery ;

@@ -99,7 +99,7 @@ public class TestConcurrency  extends TestSuite
         }
 
         @Override
-        protected void runTest() throws Throwable
+        protected void runTest()
         {
             boolean gotException = false ;
             try {
@@ -140,7 +140,7 @@ public class TestConcurrency  extends TestSuite
         }
         
         @Override
-        protected void runTest() throws Throwable
+        protected void runTest()
         {
             Model model = ModelFactory.createDefaultModel() ;
             Thread threads[] = new Thread[threadTotal] ;

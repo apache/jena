@@ -40,10 +40,8 @@ public class IO
      * If the filename ends in .gz, wrap in  GZIPInputStream  
      */
     static public InputStream openFile(String filename) {
-        try {
-           return openFileEx(filename) ;
-        }
-        catch (Exception ex) { throw new RuntimeIOException(ex) ; }
+        try { return openFileEx(filename) ; }
+        catch (IOException ex) { IO.exception(ex); return null ; }
     }
     
     /** Open an input stream to a file; do not mask IOExceptions. 
@@ -208,10 +206,17 @@ public class IO
         try { resource.close();  } catch (Exception ex) { }
     }
 
+    /** Throw a RuntimeIOException - this function is guaraentted not to return normally */
+    public static void exception(String message) {
+        throw new RuntimeIOException(message) ;
+    }
+
+    /** Throw a RuntimeIOException - this function is guaraentted not to return normally */
     public static void exception(IOException ex) {
         throw new RuntimeIOException(ex) ;
     }
 
+    /** Throw a RuntimeIOException - this function is guaraentted not to return normally */
     public static void exception(String msg, IOException ex) {
         throw new RuntimeIOException(msg, ex) ;
     }

@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql.modify;
 
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.update.GraphStore ;
 import org.apache.jena.update.UpdateProcessorStreaming ;
 
 /** Class to hold the general state of a update request execution.
@@ -28,46 +28,40 @@ import org.apache.jena.update.UpdateProcessorStreaming ;
  */
 public class UpdateProcessorStreamingBase implements UpdateProcessorStreaming
 {
-    protected final GraphStore graphStore ;
+    protected final DatasetGraph datasetGraph ;
     protected final Context context ;
     
     protected final UpdateEngine proc;
 
-    public UpdateProcessorStreamingBase(GraphStore graphStore, Binding inputBinding, Context context, UpdateEngineFactory factory)
+    public UpdateProcessorStreamingBase(DatasetGraph datasetGraph, Binding inputBinding, Context context, UpdateEngineFactory factory)
     {
-        this.graphStore = graphStore ;
-        this.context = Context.setupContext(context, graphStore) ;
-        
-        proc = factory.create(graphStore, inputBinding, context) ;
+        this.datasetGraph = datasetGraph ;
+        this.context = Context.setupContext(context, datasetGraph) ;
+        proc = factory.create(datasetGraph, inputBinding, context) ;
     }
     
     @Override
-    public void startRequest()
-    {
-        proc.startRequest();
-    }
-    
-    @Override
-    public void finishRequest()
-    {
-        proc.finishRequest();
-    }
-    
-    @Override
-    public UpdateSink getUpdateSink()
-    {
-        return proc.getUpdateSink();
+    public void startRequest() {
+        proc.startRequest() ;
     }
 
     @Override
-    public GraphStore getGraphStore()
-    {
-        return graphStore ;
+    public void finishRequest() {
+        proc.finishRequest() ;
     }
-    
+
     @Override
-    public Context getContext()
-    {
+    public UpdateSink getUpdateSink() {
+        return proc.getUpdateSink() ;
+    }
+
+    @Override
+    public DatasetGraph getDatasetGraph() {
+        return datasetGraph ;
+    }
+
+    @Override
+    public Context getContext() {
         return context ;
     }
 }

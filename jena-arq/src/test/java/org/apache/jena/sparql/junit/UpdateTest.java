@@ -81,7 +81,7 @@ public class UpdateTest extends EarlTestCase
     
     private boolean oldWarningFlag  ;
     @Override
-    public void setUpTest() throws Exception
+    public void setUpTest()
     {
         super.setUpTest() ;
         // Turn parser warnings off for the test data. 
@@ -92,7 +92,7 @@ public class UpdateTest extends EarlTestCase
     }
     
     @Override
-    public void tearDownTest() throws Exception
+    public void tearDownTest()
     {
 //        if ( resetNeeded )
 //            ARQ.setFalse(ARQ.strictGraph) ;
@@ -103,7 +103,7 @@ public class UpdateTest extends EarlTestCase
     }
     
     @Override
-    protected void runTestForReal() throws Throwable
+    protected void runTestForReal()
     {
         try {
             UpdateRequest request = UpdateFactory.read(updateFile, Syntax.syntaxSPARQL_11) ;

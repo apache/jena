@@ -42,7 +42,7 @@ public abstract class AbstractContainerMethods extends AbstractModelTestBase
 	protected abstract Resource getContainerType();
 
 	@Override
-	public void setUp() throws Exception
+	public void setUp()
 	{
 		super.setUp();
 		resource = model.createResource();

@@ -33,6 +33,7 @@ import org.apache.jena.graph.FrontsTriple ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 
 /**
@@ -101,6 +102,23 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder>
 		return this;
 	}
 
+	/**
+	 * Add an expression string as a filter.
+	 * @param expression The expression string to add.
+	 * @throws ParseException If the expression can not be parsed.
+	 */
+	@Override
+	public SelectBuilder addVar(String expression, Object var) throws ParseException {
+		selectHandler.addVar( expression, makeVar(var) );
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addVar(Expr expr, Object var) {
+		selectHandler.addVar(expr, makeVar(var));
+		return this;
+	}
+	
 	@Override
 	public List<Var> getVars() {
 		return selectHandler.getVars();
@@ -274,8 +292,19 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder>
 	}
 
 	@Override
+	public SelectBuilder addBind(Expr expression, Object var) {
+		whereHandler.addBind( expression, makeVar(var) );
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addBind(String expression, Object var) throws ParseException {
+		whereHandler.addBind( expression, makeVar(var) );
+		return this;
+	}
+
+	@Override
 	public SelectHandler getSelectHandler() {
 		return selectHandler;
 	}
-
 }

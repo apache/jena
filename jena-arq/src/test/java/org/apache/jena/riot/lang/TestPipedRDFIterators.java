@@ -93,7 +93,7 @@ public class TestPipedRDFIterators {
         Callable<Integer> consumeTriples = new Callable<Integer>() {
 
             @Override
-            public Integer call() throws Exception {
+            public Integer call() {
                 int count = 0;
                 while (it.hasNext()) {
                     it.next();
@@ -238,7 +238,7 @@ public class TestPipedRDFIterators {
         Callable<Integer> consumeQuads = new Callable<Integer>() {
 
             @Override
-            public Integer call() throws Exception {
+            public Integer call() {
                 int count = 0;
                 while (it.hasNext()) {
                     it.next();
@@ -408,7 +408,7 @@ public class TestPipedRDFIterators {
         Callable<Integer> consumeTriples = new Callable<Integer>() {
 
             @Override
-            public Integer call() throws Exception {
+            public Integer call() {
                 int count = 0;
                 while (it.hasNext()) {
                     it.next();

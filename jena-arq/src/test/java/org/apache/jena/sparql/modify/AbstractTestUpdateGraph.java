@@ -37,7 +37,6 @@ import org.apache.jena.sparql.modify.request.* ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.apache.jena.update.GraphStore ;
 import org.apache.jena.update.UpdateAction ;
 import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateProcessor ;
@@ -59,7 +58,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     
     @Test public void testInsertData1()
     {
-		GraphStore gStore = getEmptyGraphStore() ;
+		DatasetGraph gStore = getEmptyDatasetGraph() ;
 		defaultGraphData(gStore, graph1) ;
 		QuadDataAcc acc = new QuadDataAcc() ;
 		acc.addTriple(triple2) ;
@@ -74,7 +73,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
 
     @Test public void testDeleteData1()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         defaultGraphData(gStore, graph1) ;
         QuadDataAcc acc = new QuadDataAcc() ;
         acc.addTriple(triple2) ;
@@ -89,7 +88,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
 
     @Test public void testDeleteData2()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         defaultGraphData(gStore, graph1) ;
         QuadDataAcc acc = new QuadDataAcc() ;
         acc.addTriple(triple1) ;
@@ -103,7 +102,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     
     @Test public void testInsert1()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         UpdateModify insert = new UpdateModify() ;
         UpdateAction.execute(insert, gStore) ;
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
@@ -111,7 +110,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     
     @Test public void testInsert2()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         UpdateModify insert = new UpdateModify() ;
         insert.getInsertAcc().addTriple(triple1) ;
         UpdateAction.execute(insert, gStore) ;
@@ -120,7 +119,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     
     @Test public void testInsert3()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         gStore.addGraph(graphIRI, Factory.createDefaultGraph()) ;
         UpdateModify insert = new UpdateModify() ;
         insert.getInsertAcc().addQuad(new Quad(graphIRI, triple1)) ;
@@ -130,7 +129,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
 
     @Test public void testInsert4()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         defaultGraphData(gStore, graph1) ;
         UpdateModify insert = new UpdateModify() ;
         insert.getInsertAcc().addTriple(SSE.parseTriple("(?s <http://example/p> 1066)")) ;
@@ -142,7 +141,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     
     @Test public void testDelete1()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         QuadAcc acc = new QuadAcc() ;
         UpdateDeleteWhere delete = new UpdateDeleteWhere(acc) ;
         UpdateAction.execute(delete, gStore) ;
@@ -151,7 +150,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     
     @Test public void testDelete2()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         defaultGraphData(gStore, graph1) ;
         QuadAcc acc = new QuadAcc() ;
         UpdateDeleteWhere delete = new UpdateDeleteWhere(acc) ;
@@ -162,7 +161,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     
     @Test public void testDelete3()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         defaultGraphData(gStore, graph1) ;
         QuadDataAcc acc = new QuadDataAcc() ;
         UpdateDataDelete delete = new UpdateDataDelete(acc) ;
@@ -174,7 +173,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     
     @Test public void testDelete4()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         namedGraphData(gStore, graphIRI, data1()) ;
         
         QuadDataAcc acc = new QuadDataAcc() ;
@@ -188,7 +187,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     
     @Test public void testDelete5()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         defaultGraphData(gStore, data2()) ;
         namedGraphData(gStore, graphIRI, data1()) ;
         
@@ -204,7 +203,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
 
     @Test public void testModify1()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         defaultGraphData(gStore, data2()) ;
         namedGraphData(gStore, graphIRI, Factory.createDefaultGraph()) ;
         
@@ -226,7 +225,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
         // Use blank nodes (will expose any problems in serialization when spill occurs)
         Triple t =  new Triple(org.apache.jena.graph.NodeFactory.createAnon(),p,o2);
         
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         // Set the threshold to in order to force spill to disk
         gStore.getContext().set(ARQ.spillToDiskThreshold, 0L) ;
         
@@ -249,7 +248,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     
     @Test public void testModifyInitialBindings()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         defaultGraphData(gStore, data12()) ;
         namedGraphData(gStore, graphIRI, Factory.createDefaultGraph()) ;
         
@@ -276,7 +275,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
         Triple t =  new Triple(org.apache.jena.graph.NodeFactory.createAnon(),p,o2);
         Triple t2 = new Triple(org.apache.jena.graph.NodeFactory.createAnon(),p,o1);
         
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         // Set the threshold to in order to force spill to disk
         gStore.getContext().set(ARQ.spillToDiskThreshold, 0L) ;
         
@@ -297,14 +296,14 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     
     @Test public void testUpdateScript1()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         script(gStore, "update-1.ru") ;
         assertTrue(graphContains(gStore.getDefaultGraph(), new Triple(s,p,NodeFactoryExtra.parseNode("123")))) ;
     }
     
     @Test public void testUpdateScript2()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         script(gStore, "update-2.ru") ;
         assertTrue(graphContains(gStore.getGraph(org.apache.jena.graph.NodeFactory.createURI("http://example/g1")),
                                  new Triple(s,p,NodeFactoryExtra.parseNode("123")))) ;
@@ -313,7 +312,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
 
     @Test public void testUpdateScript3()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         script(gStore, "update-3.ru") ;
         assertTrue(graphEmpty(gStore.getGraph(org.apache.jena.graph.NodeFactory.createURI("http://example/g1")))) ;
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
@@ -321,7 +320,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
 
     @Test public void testUpdateScript4()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         script(gStore, "data-1.ru") ;
         assertTrue(graphContains(gStore.getDefaultGraph(),
                                  new Triple(s,p,NodeFactoryExtra.parseNode("123")))) ;
@@ -329,7 +328,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     
     @Test public void testUpdateScript5()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         script(gStore, "data-2.ru") ;
         
         
@@ -343,7 +342,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     
     @Test public void testUpdateScript6()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         script(gStore, "data-3.ru") ;
         assertTrue(graphContains(gStore.getGraph(graphIRI),
                                  new Triple(s,p,NodeFactoryExtra.parseNode("123")))) ;
@@ -351,7 +350,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     
     @Test public void testUpdateScript7()
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         script(gStore, "data-4.ru") ;
         assertTrue(graphContains(gStore.getDefaultGraph(),
                                  new Triple(s,p,NodeFactoryExtra.parseNode("123")))) ;
@@ -366,7 +365,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
 
     private void testBad(String file, int expectedSize)
     {
-        GraphStore gStore = getEmptyGraphStore() ;
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
         script(gStore, file) ;
         assertEquals(expectedSize, countQuads(gStore)) ;
     }

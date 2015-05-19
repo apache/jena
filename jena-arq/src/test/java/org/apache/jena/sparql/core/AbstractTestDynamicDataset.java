@@ -30,9 +30,12 @@ import org.junit.Test ;
 public abstract class AbstractTestDynamicDataset extends BaseTest
 {
     protected abstract Dataset createDataset() ;
+    protected abstract void releaseDataset(Dataset ds) ;
     Dataset  dataset ;
     
-    @After public void after() {}
+    @After public void after() {
+        releaseDataset(dataset) ; 
+    }
 
     @Before public void before()
     {

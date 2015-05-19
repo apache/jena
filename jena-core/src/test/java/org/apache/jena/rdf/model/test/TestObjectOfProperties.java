@@ -120,7 +120,7 @@ public class TestObjectOfProperties extends AbstractModelTestBase
 	}
 
 	@Override
-	public void setUp() throws Exception
+	public void setUp()
 	{
 		super.setUp();
 		// tvLitObj = { model.createTypedLiteral(new LitTestObjF()),

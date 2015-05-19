@@ -17,7 +17,6 @@
  */
 package org.apache.jena.arq.querybuilder;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -263,17 +262,24 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 */
 	public final Query build() {
 		Query q = new Query();
-		try {
-			Field f = Query.class.getDeclaredField("queryType");
-			f.setAccessible(true);
-			f.set(q, query.getQueryType());
-		} catch (NoSuchFieldException e) {
-			throw new IllegalStateException(e.getMessage(), e);
-		} catch (SecurityException e) {
-			throw new IllegalStateException(e.getMessage(), e);
-		} catch (IllegalAccessException e) {
-			throw new IllegalStateException(e.getMessage(), e);
+		switch (query.getQueryType())
+		{
+		case Query.QueryTypeAsk:
+			q.setQueryAskType();
+			break;
+		case Query.QueryTypeConstruct:
+			q.setQueryConstructType();
+			break;
+		case Query.QueryTypeDescribe:
+			q.setQueryDescribeType();
+			break;
+		case Query.QueryTypeSelect:
+			q.setQuerySelectType();
+			break;
+		default:
+			throw new IllegalStateException( "Internal query is not a known type: "+q.getQueryType());			
 		}
+		
 		Stack<Handler> handlerStack = new Stack<Handler>();
 		PrologHandler ph = new PrologHandler(q);
 		handlerStack.push(ph);

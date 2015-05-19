@@ -242,7 +242,7 @@ public class IsomorphicTests extends AbstractModelTestBase
 	}
 
 	@Override
-	public void setUp() throws Exception
+	public void setUp()
 	{
 		super.setUp();
 		random = new Random();
@@ -250,7 +250,7 @@ public class IsomorphicTests extends AbstractModelTestBase
 	}
 
 	@Override
-	public void tearDown() throws Exception
+	public void tearDown()
 	{
 		model.close();
 		super.tearDown();

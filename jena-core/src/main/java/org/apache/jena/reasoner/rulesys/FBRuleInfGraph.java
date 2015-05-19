@@ -652,7 +652,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     @Override
     public void performDelete(Triple t) {
         version++;
-        boolean removeIsFromBase = fdata.getGraph().contains(t);
+        //boolean removeIsFromBase = fdata.getGraph().contains(t);
         fdata.getGraph().delete(t);
         if (useTGCCaching) {
             if (transitiveEngine.delete(t)) {
@@ -740,12 +740,10 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         for (Iterator<Triple> i = findFull(pattern); i.hasNext(); ) {
             Triple t = i.next();
             Node rNode = t.getObject();
-            boolean foundReport = false;
             if (rNode.isLiteral()) {
                 Object rVal = rNode.getLiteralValue();
                 if (rVal instanceof Functor) {
                     Functor rFunc = (Functor)rVal;
-                    foundReport = true;
                     StringBuffer description = new StringBuffer();
                     String nature = rFunc.getName();
                     String type = rFunc.getArgs()[0].toString();

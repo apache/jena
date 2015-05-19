@@ -74,7 +74,7 @@ public class PrefixMappingImpl implements PrefixMapping
     public PrefixMapping removeNsPrefix( String prefix )
         {
         checkUnlocked();
-        String uri = prefixToURI.remove( prefix );
+        prefixToURI.remove( prefix );
         regenerateReverseMapping();
         return this;
         }

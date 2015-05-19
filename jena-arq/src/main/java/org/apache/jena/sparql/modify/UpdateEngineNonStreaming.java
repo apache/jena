@@ -18,10 +18,10 @@
 
 package org.apache.jena.sparql.modify;
 
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.modify.request.UpdateVisitor ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.update.GraphStore ;
 import org.apache.jena.update.Update ;
 import org.apache.jena.update.UpdateRequest ;
 
@@ -39,13 +39,13 @@ public class UpdateEngineNonStreaming extends UpdateEngineMain
     
     /**
      * Creates a new Update Engine
-     * @param graphStore Graph Store the updates operate over
+     * @param datasetGraph Store the updates operate over
      * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
      * @param context Execution Context
      */
-    public UpdateEngineNonStreaming(GraphStore graphStore, Binding inputBinding, Context context)
+    public UpdateEngineNonStreaming(DatasetGraph datasetGraph, Binding inputBinding, Context context)
     {
-        super(graphStore, inputBinding, context) ;
+        super(datasetGraph, inputBinding, context) ;
         accRequests = new UpdateRequest();
         updateSink = new UpdateRequestSink(accRequests)
         {
@@ -60,16 +60,10 @@ public class UpdateEngineNonStreaming extends UpdateEngineMain
     }
 
     @Override
-    public void startRequest()
-    {
-        graphStore.startRequest() ;
-    }
+    public void startRequest()  {}
     
     @Override
-    public void finishRequest()
-    {
-        graphStore.finishRequest();
-    }
+    public void finishRequest() {}
     
     /**
      * Returns an {@link UpdateSink} that adds all update operations into an internal {@link UpdateRequest} object.
@@ -90,18 +84,16 @@ public class UpdateEngineNonStreaming extends UpdateEngineMain
         }
     }
     
-    private static UpdateEngineFactory factory = new UpdateEngineFactory()
-    {
+    private static UpdateEngineFactory factory = new UpdateEngineFactory() {
         @Override
-        public boolean accept(GraphStore graphStore, Context context)
-        {
+        public boolean accept(DatasetGraph datasetGraph, Context context) {
             return true ;
         }
-        
+
         @Override
-        public UpdateEngine create(GraphStore graphStore, Binding inputBinding, Context context)
-        {
-            return new UpdateEngineNonStreaming(graphStore, inputBinding, context);
+        public UpdateEngine create(DatasetGraph datasetGraph, Binding inputBinding,
+                                   Context context) {
+            return new UpdateEngineNonStreaming(datasetGraph, inputBinding, context) ;
         }
     } ;
 

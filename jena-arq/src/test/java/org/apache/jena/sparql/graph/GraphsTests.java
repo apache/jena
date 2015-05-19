@@ -50,25 +50,28 @@ public abstract class GraphsTests extends BaseTest
         if ( dataset == null )
         {
             dataset = createDataset() ;
-            // Load default model.
-            // Load graph 1
-            // Load graph 2.
-            dataset.getDefaultModel().getGraph().add(SSE.parseTriple("(<x> <p> 'Default graph')")) ;
-            
-            Model m1 = dataset.getNamedModel(graph1) ;
-            m1.getGraph().add(SSE.parseTriple("(<x> <p> 'Graph 1')")) ;
-            m1.getGraph().add(SSE.parseTriple("(<x> <p> 'ZZZ')")) ;
-            
-            Model m2 = dataset.getNamedModel(graph2) ;
-            m2.getGraph().add(SSE.parseTriple("(<x> <p> 'Graph 2')")) ;
-            m2.getGraph().add(SSE.parseTriple("(<x> <p> 'ZZZ')")) ;
-            
-            calcUnion.add(m1) ;
-            calcUnion.add(m2) ;
+            fillDataset(dataset) ;
         }
         return dataset ;
     }
     
+    protected void fillDataset(Dataset dataset) {
+        // Load default model.
+        // Load graph 1
+        // Load graph 2.
+        dataset.getDefaultModel().getGraph().add(SSE.parseTriple("(<x> <p> 'Default graph')")) ;
+        
+        Model m1 = dataset.getNamedModel(graph1) ;
+        m1.getGraph().add(SSE.parseTriple("(<x> <p> 'Graph 1')")) ;
+        m1.getGraph().add(SSE.parseTriple("(<x> <p> 'ZZZ')")) ;
+        
+        Model m2 = dataset.getNamedModel(graph2) ;
+        m2.getGraph().add(SSE.parseTriple("(<x> <p> 'Graph 2')")) ;
+        m2.getGraph().add(SSE.parseTriple("(<x> <p> 'ZZZ')")) ;
+        calcUnion.add(m1) ;
+        calcUnion.add(m2) ;
+    }
+
     String queryString =  "SELECT * {?s ?p ?o}" ;
     
     @Test public void graph1() 

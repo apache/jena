@@ -18,7 +18,6 @@
 
 package org.apache.jena.update;
 
-import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 
 /** A collection of graphs that an update can be applied to.
@@ -26,13 +25,13 @@ import org.apache.jena.sparql.core.DatasetGraph ;
  *  a SPARQL dataset. */
 public interface GraphStore extends DatasetGraph
 {
-    /** Convert to a dataset (for query) */
-    public Dataset toDataset() ;
-
-    /** Signal start of a request being executed */ 
-    public void startRequest() ;
-    /** Signal end of a request being executed */ 
-    public void finishRequest() ;
+//    /** Convert to a dataset (for query) */
+//    public Dataset toDataset() ;
+//
+//    /** Signal start of a request being executed */ 
+//    public void startRequest() ;
+//    /** Signal end of a request being executed */ 
+//    public void finishRequest() ;
     
 //    public void sync() ;
 //    public void close() ;

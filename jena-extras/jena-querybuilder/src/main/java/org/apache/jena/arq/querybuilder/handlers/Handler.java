@@ -39,4 +39,5 @@ public interface Handler {
 	 * the build completes.  The adjustments are made after setVars() has been called.
 	 */
 	public void build();
+	
 }

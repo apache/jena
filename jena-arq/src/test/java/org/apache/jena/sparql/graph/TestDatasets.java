@@ -18,15 +18,19 @@
 
 package org.apache.jena.sparql.graph;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
 import org.apache.jena.query.* ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DynamicDatasets ;
-import org.apache.jena.update.* ;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.jena.update.UpdateExecutionFactory ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateProcessor ;
+import org.apache.jena.update.UpdateRequest ;
+import org.junit.Assert ;
+import org.junit.Before ;
+import org.junit.Test ;
 
 public class TestDatasets {
 		
@@ -37,12 +41,12 @@ public class TestDatasets {
 									   + "}";
 
 	private Dataset ds;
-	private GraphStore gs;
+	private DatasetGraph gs;
 	
 	@Before
 	public void setup() {
 		this.ds = DatasetFactory.createMem();
-		this.gs = GraphStoreFactory.create(this.ds);
+		this.gs = ds.asDatasetGraph() ;
 		
 		UpdateRequest up = UpdateFactory.create(TestDatasets.data);
 		UpdateProcessor processor = UpdateExecutionFactory.create(up, this.gs);

@@ -21,9 +21,9 @@ package org.apache.jena.sparql.modify;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.graph.* ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.graph.Factory ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.DatasetGraphQuad ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.update.GraphStore ;
@@ -67,18 +67,4 @@ public class GraphStoreNull extends DatasetGraphQuad implements GraphStore
     {
         return Factory.empty() ;
     }
-
-    @Override
-    public Dataset toDataset()
-    {
-        return DatasetFactory.create(this);
-    }
-
-    @Override
-    public void startRequest()
-    { }
-
-    @Override
-    public void finishRequest()
-    { }
 }
