@@ -51,7 +51,7 @@ public class LocalhostFilter extends AuthorizationFilter403 {
     private static String LOCALHOST_IpV4 =  "127.0.0.1" ;   // Strictly, 127.*.*.*
     
     @Override
-    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
+    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
         String remoteAddr = request.getRemoteAddr() ;
         if ( LOCALHOST_IpV6.equals(remoteAddr) || LOCALHOST_IpV4.equals(remoteAddr) )
             return true ;

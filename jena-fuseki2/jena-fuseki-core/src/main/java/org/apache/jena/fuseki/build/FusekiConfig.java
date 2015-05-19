@@ -210,7 +210,7 @@ public class FusekiConfig {
         // Files that are not hidden.
         DirectoryStream.Filter<Path> filter = new DirectoryStream.Filter<Path>() {
             @Override
-            public boolean accept(Path entry) throws IOException {
+            public boolean accept(Path entry) {
                 File f = entry.toFile() ;
                 return ! f.isHidden() && f.isFile() ;
             }
