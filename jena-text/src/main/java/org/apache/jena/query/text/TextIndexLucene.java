@@ -87,42 +87,29 @@ public class TextIndexLucene implements TextIndex {
      * Constructs a new TextIndexLucene.
      *
      * @param directory The Lucene Directory for the index
-     * @param def The EntityDefinition that defines how entities are stored in the index
-     * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
+     * @param config The config definition for the index instantiation.
      */
-    public TextIndexLucene(Directory directory, EntityDefinition def, Analyzer queryAnalyzer) {
-        this(directory, def, null, queryAnalyzer);
-    }
-
-    /**
-     * Constructs a new TextIndexLucene.
-     * 
-     * @param directory The Lucene Directory for the index
-     * @param def The EntityDefinition that defines how entities are stored in the index
-     * @param analyzer The analyzer to be used to index literals. If null, then the standard analyzer will be used.
-     * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
-     */
-    public TextIndexLucene(Directory directory, EntityDefinition def, Analyzer analyzer, Analyzer queryAnalyzer) {
+    public TextIndexLucene(Directory directory, TextIndexConfig config) {
         this.directory = directory ;
-        this.docDef = def ;
+        this.docDef = config.getEntDef() ;
 
         // create the analyzer as a wrapper that uses KeywordAnalyzer for
         // entity and graph fields and StandardAnalyzer for all other
         Map<String, Analyzer> analyzerPerField = new HashMap<>() ;
-        analyzerPerField.put(def.getEntityField(), new KeywordAnalyzer()) ;
-        if ( def.getGraphField() != null )
-            analyzerPerField.put(def.getGraphField(), new KeywordAnalyzer()) ;
+        analyzerPerField.put(docDef.getEntityField(), new KeywordAnalyzer()) ;
+        if ( docDef.getGraphField() != null )
+            analyzerPerField.put(docDef.getGraphField(), new KeywordAnalyzer()) ;
 
-        for (String field : def.fields()) {
-            Analyzer _analyzer = def.getAnalyzer(field);
+        for (String field : docDef.fields()) {
+            Analyzer _analyzer = docDef.getAnalyzer(field);
             if (_analyzer != null) {
                 analyzerPerField.put(field, _analyzer);
             }
         }
 
         this.analyzer = new PerFieldAnalyzerWrapper(
-                (null != analyzer) ? analyzer : new StandardAnalyzer(VER), analyzerPerField) ;
-        this.queryAnalyzer = (null != queryAnalyzer) ? queryAnalyzer : this.analyzer ;
+                (null != config.getAnalyzer()) ? config.getAnalyzer() : new StandardAnalyzer(VER), analyzerPerField) ;
+        this.queryAnalyzer = (null != config.getQueryAnalyzer()) ? config.getQueryAnalyzer() : this.analyzer ;
 
         openIndexWriter();
     }
@@ -246,18 +233,17 @@ public class TextIndexLucene implements TextIndex {
             doc.add(gField) ;
         }
 
-        for ( Field field : buildContentFields(entity) )
-            doc.add(field);
+        String langField = docDef.getLangField() ;
 
-        return doc ;
-    }
-
-    protected List<Field> buildContentFields(Entity entity) {
-        List<Field> list = new ArrayList<>();
         for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
-            list.add( new Field(e.getKey(), (String) e.getValue(), ftText) );
+            doc.add( new Field(e.getKey(), (String) e.getValue(), ftText) );
+            if (langField != null) {
+                String lang = entity.getLanguage();
+                if (lang != null && !"".equals(lang))
+                    doc.add(new Field(docDef.getLangField(), lang, StringField.TYPE_STORED));
+            }
         }
-        return list;
+        return doc ;
     }
 
     @Override

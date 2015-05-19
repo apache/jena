@@ -16,14 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text;
+package org.apache.jena.query.text.analyzer;
 
+import org.apache.jena.query.text.TextIndexLucene;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.util.Version;
 import java.lang.reflect.Constructor;
 import java.util.Hashtable;
 
-public class LuceneUtil {
+public class Util {
 
     private static Hashtable<String, Class> analyzersClasses; //mapping between ISO2-letter language and lucene existing analyzersClasses
     private static Hashtable<String, Analyzer> cache = new Hashtable<>(); //to avoid unnecessary multi instantiation

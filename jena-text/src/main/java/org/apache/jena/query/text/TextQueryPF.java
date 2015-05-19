@@ -72,11 +72,9 @@ public class TextQueryPF extends PropertyFunctionBase {
             throw new QueryBuildException("Subject is not a single node: " + argSubject) ;
 
         if (argObject.isList()) {
-            //extract of extra lang arg if present and if is usable (multilingual index).
+            //extract of extra lang arg if present and if is usable.
             //arg is removed from the list to avoid conflict with order and args length
             langArg = extractArg("lang", argObject);
-            if (langArg == null && server instanceof TextIndexLuceneMultilingual)
-                langArg = "undef";
 
             List<Node> list = argObject.getArgList() ;
             if (list.size() == 0)
@@ -210,10 +208,14 @@ public class TextQueryPF extends PropertyFunctionBase {
             }
         }
 
-        //for multilingual index
-        if (langArg != null) {
-            String qs2 = "lang:" + langArg;
-            queryString = "(" + queryString + ") AND " + qs2 ;
+        //for language-based search extension
+        if (server.getDocDef().getLangField() != null) {
+            String field = server.getDocDef().getLangField();
+            if (langArg != null) {
+                String qs2 = !"none".equals(langArg)?
+                        field + ":" + langArg : "-" + field + ":*";
+                queryString = "(" + queryString + ") AND " + qs2;
+            }
         }
 
         Explain.explain(execCxt.getContext(), "Text query: "+queryString) ;

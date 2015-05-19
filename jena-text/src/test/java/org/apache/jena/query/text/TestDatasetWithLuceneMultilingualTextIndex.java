@@ -57,7 +57,7 @@ public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestData
                     "",
                     "[] ja:loadClass    \"org.apache.jena.query.text.TextQuery\" .",
                     "text:TextDataset      rdfs:subClassOf   ja:RDFDataset .",
-                    "text:TextIndexLuceneMultilingual  rdfs:subClassOf   text:TextIndex .",
+                    "text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .",
 
                     ":" + SPEC_ROOT_LOCAL,
                     "    a              text:TextDataset ;",
@@ -74,8 +74,9 @@ public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestData
                     ".",
                     "",
                     ":indexLucene",
-                    "    a text:TextIndexLuceneMultilingual ;",
+                    "    a text:TextIndexLucene ;",
                     "    text:directory \"mem\" ;",
+                    "    text:multilingualSupport true ;",
                     "    text:entityMap :entMap ;",
                     "    .",
                     "",
@@ -83,6 +84,7 @@ public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestData
                     "    a text:EntityMap ;",
                     "    text:entityField      \"uri\" ;",
                     "    text:defaultField     \"label\" ;",
+                    "    text:langField        \"lang\" ;",
                     "    text:map (",
                     "         [ text:field \"label\" ; text:predicate rdfs:label ]",
                     "         [ text:field \"comment\" ; text:predicate rdfs:comment ]",
@@ -113,7 +115,7 @@ public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestData
                 QUERY_PROLOG,
                 "SELECT ?s",
                 "WHERE {",
-                "    ?s text:query ( rdfs:label \"book\" \"lang:en\"  10 ) .",
+                "    ?s text:query ( rdfs:label 'book' 'lang:en'  10 ) .",
                 "}"
                 );
         doTestSearch(turtle, queryString, new HashSet<String>());
@@ -131,7 +133,6 @@ public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestData
                 "  rdfs:label 'Er schluckte gift'@de",
                 "."
         );
-        // the localized analyzer should use localized lucene index facilities (stop words, stemming...)
         String queryString = StrUtils.strjoinNL(
                 QUERY_PROLOG,
                 "SELECT ?s",
@@ -156,7 +157,6 @@ public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestData
                 "  rdfs:label 'Er schluckte gift'@de",
                 "."
         );
-        // the localized analyzer should use localized lucene index facilities (stop words, stemming...)
         String queryString = StrUtils.strjoinNL(
                 QUERY_PROLOG,
                 "SELECT ?s",
@@ -177,7 +177,6 @@ public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestData
                 "  rdfs:label 'I met some engineers'@en",
                 "."
         );
-        // the localized analyzer should use localized lucene index facilities (stop words, stemming...)
         String queryString = StrUtils.strjoinNL(
                 QUERY_PROLOG,
                 "SELECT ?s",
@@ -187,6 +186,29 @@ public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestData
         );
         Set<String> expectedURIs = new HashSet<>() ;
         expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testEnglishStemming")) ;
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
+
+    @Test
+    public void testRetrievingUnlocalizedResource(){
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testLocalizedResource>",
+                "  rdfs:label 'A localized text'@en",
+                ".",
+                "<" + RESOURCE_BASE + "testUnlocalizedResource>",
+                "  rdfs:label 'An unlocalized text'",
+                "."
+        );
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:label 'text' 'lang:none' 10 ) .",
+                "}"
+        );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testUnlocalizedResource")) ;
         doTestSearch(turtle, queryString, expectedURIs);
     }
 
