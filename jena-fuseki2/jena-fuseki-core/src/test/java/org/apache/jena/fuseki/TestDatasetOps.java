@@ -22,7 +22,6 @@ import static org.apache.jena.fuseki.ServerTest.serviceQuery ;
 import static org.apache.jena.fuseki.ServerTest.serviceREST ;
 import static org.apache.jena.fuseki.ServerTest.urlDataset ;
 
-import java.io.IOException ;
 import java.io.OutputStream ;
 
 import org.apache.http.HttpEntity ;
@@ -62,7 +61,7 @@ public class TestDatasetOps extends AbstractFusekiTest
         final RDFFormat syntax = RDFFormat.NQUADS ;
         ContentProducer producer = new ContentProducer() {
             @Override
-            public void writeTo(OutputStream out) throws IOException {
+            public void writeTo(OutputStream out) {
                 RDFDataMgr.write(out, dsg, syntax) ;
             }
         } ;
