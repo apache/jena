@@ -29,6 +29,7 @@ import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Before;
@@ -303,4 +304,25 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				+ ".+" + CLOSE_CURLY, query.toString());
 	}
 
+	@Test
+	public void testBindStringVar() throws ParseException {
+		Var v = Var.alloc("foo");
+		handler.addBind("rand()", v);
+
+		assertContainsRegex(
+				OPEN_CURLY + BIND + OPEN_PAREN + "rand\\(\\)" + SPACE + "AS"
+						+ SPACE + var("foo") + CLOSE_PAREN + CLOSE_CURLY,
+				query.toString());
+	}
+
+	@Test
+	public void testBindExprVar() throws ParseException {
+		Var v = Var.alloc("foo");
+		handler.addBind(new E_Random(), v);
+
+		assertContainsRegex(
+				OPEN_CURLY + BIND + OPEN_PAREN + "rand\\(\\)" + SPACE + "AS"
+						+ SPACE + var("foo") + CLOSE_PAREN + CLOSE_CURLY,
+				query.toString());
+	}
 }

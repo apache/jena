@@ -22,6 +22,7 @@ import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsTriple ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 
 /**
@@ -142,7 +143,26 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * @return This builder for chaining.
 	 */
 	public T addGraph(Object graph, SelectBuilder subQuery);
+	
+	/**
+	 * Add a bind statement to the query
+	 * * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rGraphGraphPattern.
+	 * @param expression The expression to bind to the var.
+	 * @param var The variable to bind to.
+	 * @return This builder for chaining.
+	 */
+	public T addBind( Expr expression, Object var);
 
+	/**
+	 * Add a bind statement to the query
+	 * * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rGraphGraphPattern.
+	 * @param expression The expression to bind to the var.
+	 * @param var The variable to bind to.
+	 * @return This builder for chaining.
+	 * @throws ParseException 
+	 */
+	public T addBind( String expression, Object var) throws ParseException;
+	
 	/**
 	 * Get the Where handler for this clause.
 	 * @return The WhereHandler used by this clause.

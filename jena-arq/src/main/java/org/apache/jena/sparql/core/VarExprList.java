@@ -39,7 +39,7 @@ public class VarExprList
     
     public VarExprList(List<Var> vars)
     {
-        this.vars = vars ;
+        this.vars = new ArrayList<>(vars) ;
         this.exprs = new HashMap<>() ;
     }
     
@@ -124,6 +124,16 @@ public class VarExprList
         }
     }
 
+    public void remove(Var var) { 
+        vars.remove(var) ;
+        exprs.remove(var) ;
+    }
+
+    public void clear() { 
+        vars.clear();
+        exprs.clear();
+    }
+    
     public int size() { return vars.size() ; }
     public boolean isEmpty() { return vars.isEmpty() ; } 
     

@@ -18,9 +18,13 @@
 package org.apache.jena.arq.querybuilder.handlers;
 
 import static org.junit.Assert.*;
+
 import org.apache.jena.query.Query ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
+import org.apache.jena.sparql.expr.E_Random;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,6 +56,27 @@ public class SelectHandlerTest extends AbstractHandlerTest {
 		assertTrue(query.isQueryResultStar());
 	}
 
+	@Test
+	public void testAddStringVar() throws ParseException {
+		Var v = Var.alloc("foo");
+		handler.addVar("rand()", v);
+		VarExprList expr = query.getProject();;
+		assertEquals(1, expr.size());
+		Expr e = expr.getExpr( Var.alloc( "foo" ));
+		assertNotNull( "expression should not be null", e );
+		assertTrue( "Should be an E_Random", e instanceof E_Random);
+	}
+	
+	public void testAddExprVar() throws ParseException {
+		Var v = Var.alloc("foo");
+		handler.addVar(new E_Random(), v);
+		VarExprList expr = query.getProject();;
+		assertEquals(1, expr.size());
+		Expr e = expr.getExpr( Var.alloc( "foo" ));
+		assertNotNull( "expression should not be null", e );
+		assertTrue( "Should be an E_Random", e instanceof E_Random);
+	}
+	
 	@Test
 	public void testAddVarAfterAsterisk() {
 		handler.addVar(null);
