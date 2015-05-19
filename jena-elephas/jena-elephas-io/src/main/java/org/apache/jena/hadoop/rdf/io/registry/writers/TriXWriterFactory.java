@@ -17,7 +17,6 @@
  */
 package org.apache.jena.hadoop.rdf.io.registry.writers;
 
-import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
@@ -39,8 +38,7 @@ public class TriXWriterFactory extends AbstractQuadsOnlyWriterFactory {
     }
 
     @Override
-    public <TKey> RecordWriter<TKey, QuadWritable> createQuadWriter(Writer writer, Configuration config)
-            throws IOException {
+    public <TKey> RecordWriter<TKey, QuadWritable> createQuadWriter(Writer writer, Configuration config) {
         return new StreamRdfQuadWriter<>(new StreamWriterTriX(new WriterOutputStream(writer, Charset.forName("utf-8"))), writer);
     }
 

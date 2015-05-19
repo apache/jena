@@ -17,7 +17,6 @@
  */
 package org.apache.jena.hadoop.rdf.io.registry.writers;
 
-import java.io.IOException;
 import java.io.Writer;
 
 import org.apache.hadoop.conf.Configuration;
@@ -37,8 +36,7 @@ public class TurtleWriterFactory extends AbstractTriplesOnlyWriterFactory {
     }
 
     @Override
-    public <TKey> RecordWriter<TKey, TripleWritable> createTripleWriter(Writer writer, Configuration config)
-            throws IOException {
+    public <TKey> RecordWriter<TKey, TripleWritable> createTripleWriter(Writer writer, Configuration config) {
         return new StreamRdfTripleWriter<>(new WriterStreamRDFBlocks(writer), writer);
     }
 
