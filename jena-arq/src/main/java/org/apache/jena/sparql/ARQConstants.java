@@ -62,13 +62,20 @@ public class ARQConstants
     
     /** The ARQ function library URI space */
     public static final String ARQFunctionLibraryURI = "http://jena.apache.org/ARQ/function#" ;
-    /** The ARQ function library URI space - old Jena2 name */
+    
+    /** The ARQ function library URI space - old Jena2 name
+     * @deprecated Use #ARQFunctionLibraryURI 
+     */
+    @Deprecated
     public static final String ARQFunctionLibraryURI_Jena2 = "http://jena.hpl.hp.com/ARQ/function#" ;
     
     /** The ARQ property function library URI space */
     public static final String ARQPropertyFunctionLibraryURI = "http://jena.apache.org/ARQ/property#" ;
     
-    /** The ARQ property function library URI space - old Jena2 name */
+    /** The ARQ property function library URI space - old Jena2 name
+     * @deprecated Use #ARQFunctionLibraryURI 
+     */
+    @Deprecated
     public static final String ARQPropertyFunctionLibraryURI_Jena2 = "http://jena.hpl.hp.com/ARQ/property#" ;
     
     /** The ARQ procedure library URI space */

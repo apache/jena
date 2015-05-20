@@ -110,27 +110,27 @@ public class TestPathPF extends BaseTest
     
 
     @Test public void path_pf_10() {
-        Path path = SSE.parsePath("(prefix ((list: <http://jena.hpl.hp.com/ARQ/list#>)) (seq :p (link list:member)))") ;
+        Path path = SSE.parsePath("(prefix ((list: <http://jena.apache.org/ARQ/list#>)) (seq :p (link list:member)))") ;
         eval(graph2, s1, path, "1", "2", "3", "4", "5") ;
     }
     
     @Test public void path_pf_11() {
-        Path path = SSE.parsePath("(prefix ((list: <http://jena.hpl.hp.com/ARQ/list#>)) (seq :p (link list:member)))") ;
+        Path path = SSE.parsePath("(prefix ((list: <http://jena.apache.org/ARQ/list#>)) (seq :p (link list:member)))") ;
         eval(graph2, s2, path, new Node[] {}) ;
     }
 
     @Test public void path_pf_12() {
-        Path path = SSE.parsePath("(prefix ((list: <http://jena.hpl.hp.com/ARQ/list#>)) (seq :p (link list:member)))") ;
+        Path path = SSE.parsePath("(prefix ((list: <http://jena.apache.org/ARQ/list#>)) (seq :p (link list:member)))") ;
         eval(graph2, s3, path, "8", "9") ;
     }
 
     @Test public void path_pf_13() {
-        Path path = SSE.parsePath("(prefix ((list: <http://jena.hpl.hp.com/ARQ/list#>)) (seq :p (link list:member)))") ;
+        Path path = SSE.parsePath("(prefix ((list: <http://jena.apache.org/ARQ/list#>)) (seq :p (link list:member)))") ;
         evalReverse(graph2, NodeConst.nodeOne, path, s1) ;
     }
 
     @Test public void path_pf_14() {
-        Path path = SSE.parsePath("(prefix ((list: <http://jena.hpl.hp.com/ARQ/list#>)) (seq :p (link list:member)))") ;
+        Path path = SSE.parsePath("(prefix ((list: <http://jena.apache.org/ARQ/list#>)) (seq :p (link list:member)))") ;
         evalReverse(graph2, NodeConst.nodeNil, path) ;
     }
 
