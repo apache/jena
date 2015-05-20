@@ -94,26 +94,23 @@ public class ActionBackup extends ServletBase
         FileOps.ensureDir(BackupArea) ;
         
         try {
-            final Callable<Boolean> task = new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception
+            final Callable<Boolean> task = () -> {
+                log.info(format("[%d] Start backup %s to '%s'", action.id, ds, filename)) ;
+                action.beginRead() ;
+                try {
+                    backup(action.getActiveDSG(), filename) ;
+                    log.info(format("[%d] Finish backup %s to '%s'", action.id, ds, filename)) ;
+                }
+                catch ( RuntimeException ex )
                 {
-                    log.info(format("[%d] Start backup %s to '%s'", action.id, ds, filename)) ;
-                    action.beginRead() ;
-                    try {
-                        backup(action.getActiveDSG(), filename) ;
-                        log.info(format("[%d] Finish backup %s to '%s'", action.id, ds, filename)) ;
-                    }
-                    catch ( RuntimeException ex )
-                    {
-                        log.info(format("[%d] Exception during backup: ", action.id, ex.getMessage()), ex) ;
-                        return Boolean.FALSE ;
-                    }
-                    finally {
-                        action.endRead() ;
-                    }
-                    return Boolean.TRUE ;
-                }} ;
+                    log.info(format("[%d] Exception during backup: ", action.id, ex.getMessage()), ex) ;
+                    return Boolean.FALSE ;
+                }
+                finally {
+                    action.endRead() ;
+                }
+                return Boolean.TRUE ;
+            } ;
             
             log.info(format("[%d] Schedule backup %s to '%s'", action.id, ds, filename)) ;                
             backupService.submit(task) ;
