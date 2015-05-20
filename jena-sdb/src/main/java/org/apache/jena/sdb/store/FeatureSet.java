@@ -23,13 +23,12 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.io.Printable ;
 import org.apache.jena.atlas.io.PrintableBase ;
 import org.apache.jena.atlas.iterator.Iter ;
 
 /** A set of features (order retained */
 
-public class FeatureSet extends PrintableBase implements Printable, Iterable<Feature>
+public class FeatureSet extends PrintableBase implements Iterable<Feature>
 {
     List <Feature> features = new ArrayList<Feature>() ;
     
