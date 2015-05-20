@@ -1,5 +1,5 @@
 PREFIX :        <http://example/>
-PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
+PREFIX apf:     <http://jena.apache.org/ARQ/property#>
 
 SELECT ?x
 {
