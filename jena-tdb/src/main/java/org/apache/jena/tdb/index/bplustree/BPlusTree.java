@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory ;
  * The root is always the same block.
  */
 
-public class BPlusTree implements Iterable<Record>, RangeIndex
+public class BPlusTree implements RangeIndex
 {
     /*
      * Insertion:

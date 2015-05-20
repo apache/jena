@@ -29,7 +29,7 @@ import org.apache.jena.vocabulary.RDF ;
 
 //EXPERIMENTAL - Move to ARQ?
 
-public class ScriptAssembler extends AssemblerBase implements Assembler
+public class ScriptAssembler extends AssemblerBase
 {
     // A script is a number of command descriptions (CmdDesc)
     

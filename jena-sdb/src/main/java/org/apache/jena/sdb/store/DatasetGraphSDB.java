@@ -20,7 +20,6 @@ package org.apache.jena.sdb.store;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sdb.Store ;
@@ -28,14 +27,12 @@ import org.apache.jena.sdb.graph.GraphSDB ;
 import org.apache.jena.sdb.util.StoreUtils ;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.shared.LockMRSW ;
-import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphCaching ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.update.GraphStore ;
 
-public class DatasetGraphSDB extends DatasetGraphCaching
-    implements DatasetGraph, Closeable, GraphStore 
+public class DatasetGraphSDB extends DatasetGraphCaching implements GraphStore 
 {
     private final Store store ;
     private Lock lock = new LockMRSW() ;

@@ -29,7 +29,7 @@ import org.apache.jena.sdb.sql.SDBConnectionDesc ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 import org.apache.jena.vocabulary.RDFS ;
 
-public class SDBConnectionDescAssembler extends AssemblerBase implements Assembler
+public class SDBConnectionDescAssembler extends AssemblerBase
 {
 
     @Override

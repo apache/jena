@@ -30,7 +30,7 @@ import org.apache.jena.sdb.assembler.CommandAssemblerException ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 import org.apache.jena.vocabulary.RDF ;
 
-public class CmdDescAssembler extends AssemblerBase implements Assembler
+public class CmdDescAssembler extends AssemblerBase
 {
     
     /* This SPARQL query will process arguments 

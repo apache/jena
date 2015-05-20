@@ -36,7 +36,7 @@ import org.apache.jena.sparql.util.graph.GraphUtils ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StoreDescAssembler extends AssemblerBase implements Assembler
+public class StoreDescAssembler extends AssemblerBase
 {
     static { SDB.init() ; }
     

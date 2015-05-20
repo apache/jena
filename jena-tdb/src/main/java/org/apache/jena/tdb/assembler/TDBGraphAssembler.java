@@ -34,7 +34,7 @@ import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.assembler.IndexAssembler ;
 import org.apache.jena.tdb.base.file.Location ;
 
-public class TDBGraphAssembler extends AssemblerBase implements Assembler
+public class TDBGraphAssembler extends AssemblerBase
 {
     static IndexAssembler indexAssembler = null ; 
     

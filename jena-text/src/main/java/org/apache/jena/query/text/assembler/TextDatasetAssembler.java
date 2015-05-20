@@ -40,7 +40,7 @@ import org.apache.jena.sparql.core.assembler.DatasetAssembler ;
 import org.apache.jena.sparql.util.Loader ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 
-public class TextDatasetAssembler extends AssemblerBase implements Assembler
+public class TextDatasetAssembler extends AssemblerBase
 {
     private DatasetAssembler datasetAssembler = new DatasetAssembler() ;
 

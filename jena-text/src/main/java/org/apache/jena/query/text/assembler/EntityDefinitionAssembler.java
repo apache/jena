@@ -40,7 +40,7 @@ import org.apache.jena.rdf.model.* ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.lucene.analysis.Analyzer;
 
-public class EntityDefinitionAssembler extends AssemblerBase implements Assembler
+public class EntityDefinitionAssembler extends AssemblerBase
 {
     /*
 <#entMap> a text:EntityMap ;

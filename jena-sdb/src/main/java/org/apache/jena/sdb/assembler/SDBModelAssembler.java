@@ -28,7 +28,7 @@ import org.apache.jena.sdb.SDBFactory ;
 import org.apache.jena.sdb.StoreDesc ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 
-public class SDBModelAssembler extends AssemblerBase implements Assembler
+public class SDBModelAssembler extends AssemblerBase
 {
     DatasetStoreAssembler datasetAssem = new DatasetStoreAssembler() ;
     

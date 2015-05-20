@@ -29,7 +29,7 @@ import org.apache.jena.sparql.util.graph.GraphUtils ;
 import org.apache.jena.util.FileManager ;
 
 
-public class QueryAssembler extends AssemblerBase implements Assembler
+public class QueryAssembler extends AssemblerBase
 {
     @Override
     public Object open(Assembler a, Resource cmd, Mode mode)

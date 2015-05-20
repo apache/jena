@@ -34,7 +34,7 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.util.PrintSerializable ;
 import org.apache.jena.sparql.util.QueryOutputUtils ;
 
-public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintSerializable
+public class QuadBlock extends ArrayList<Quad> implements PrintSerializable
 {
     // Pre-dates QuadPattern
     Node graphNode ;
