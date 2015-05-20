@@ -49,9 +49,9 @@ public class LibTestSPARQL
              "PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>",
              "PREFIX qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#>",
              "PREFIX dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#>",
-             "PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>",
-             "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>",
-             "PREFIX list:    <http://jena.hpl.hp.com/ARQ/list#>") ;
+             "PREFIX apf:     <http://jena.apache.org/ARQ/property#>",
+             "PREFIX afn:     <http://jena.apache.org/ARQ/function#>",
+             "PREFIX list:    <http://jena.apache.org/ARQ/list#>") ;
 
     // qt:data and qt:graphData - multiple.
     private final static String testsQueryString =
