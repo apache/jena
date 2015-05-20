@@ -78,8 +78,10 @@
     <module>dboe-transaction</module>
     <module>dboe-index</module>
     <module>dboe-index-test</module>
-    <module>dboe-index-ext</module>        <!-- Non-transactional external hash table -->
-    <module>dboe-index-btree</module>
+    <!-- Non-transactional
+    <module>archive/dboe-index-ext</module>
+    <module>archive/dboe-index-btree</module>
+    -->
     <module>dboe-quack</module>
     <module>dboe-trans-data</module>
     <module>tdb2</module>
