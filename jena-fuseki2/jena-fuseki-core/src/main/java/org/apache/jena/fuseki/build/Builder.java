@@ -38,7 +38,6 @@ import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.FmtUtils ;
-import org.apache.jena.tdb.TDB ;
 import org.apache.jena.vocabulary.RDF ;
 import org.slf4j.Logger ;
 public class Builder
@@ -74,7 +73,6 @@ public class Builder
             throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
         Dataset ds = (Dataset)Assembler.general.open(datasetDesc) ;
         // In case the assembler included ja:contents
-        TDB.sync(ds) ;
         DataService dataService = new DataService(null, ds.asDatasetGraph()) ;
         addServiceEP(dataService, OperationName.Query,  svc,    "fu:serviceQuery") ;
         addServiceEP(dataService, OperationName.Update, svc,    "fu:serviceUpdate") ;
