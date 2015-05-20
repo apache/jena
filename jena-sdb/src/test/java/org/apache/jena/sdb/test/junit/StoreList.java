@@ -49,7 +49,7 @@ public class StoreList
              "PREFIX sdb:      <http://jena.hpl.hp.com/2007/sdb#>" ,
              "PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" ,
              "PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>" ,
-             "PREFIX list:     <http://jena.hpl.hp.com/ARQ/list#>" ,
+             "PREFIX list:     <http://jena.apache.org/ARQ/list#>" ,
              "SELECT ?desc ?label" ,
              "{ [] rdf:type sdb:StoreList ;" ,
              "     sdb:list ?l ." ,

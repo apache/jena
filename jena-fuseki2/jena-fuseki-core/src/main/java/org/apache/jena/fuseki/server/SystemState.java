@@ -98,10 +98,10 @@ public class SystemState {
          "PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>",
          "PREFIX tdb:     <http://jena.hpl.hp.com/2008/tdb#>",
          "PREFIX sdb:     <http://jena.hpl.hp.com/20087/sdb#>",
-         "PREFIX list:    <http://jena.hpl.hp.com/ARQ/list#>",
+         "PREFIX list:    <http://jena.apache.org/ARQ/list#>",
          "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>",
-         "PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>",
-         "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>",
+         "PREFIX apf:     <http://jena.apache.org/ARQ/property#>",
+         "PREFIX afn:     <http://jena.apache.org/ARQ/function#>",
          "") ;
 }
 

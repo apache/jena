@@ -138,7 +138,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddFilterWithNamespace() throws ParseException {
-		query.setPrefix("afn", "http://jena.hpl.hp.com/ARQ/function#");
+		query.setPrefix("afn", "http://jena.apache.org/ARQ/function#");
 		handler.addFilter("afn:namespace(?one) = 'foo'");
 
 		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE

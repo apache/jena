@@ -28,7 +28,7 @@ import org.apache.jena.sparql.function.library.leviathan.LeviathanConstants ;
 @SuppressWarnings("deprecation")
 public class MappedLoader {
     // Map string => string of prefixes
-    // e.g. http://jena.hpl.hp.com/ARQ/property# =>
+    // e.g. http://jena.apache.org/ARQ/property# =>
     // java:com.hp.hpl.jena.sparql.pfunction.
 
     static Map<String, String> uriMap = new HashMap<>();

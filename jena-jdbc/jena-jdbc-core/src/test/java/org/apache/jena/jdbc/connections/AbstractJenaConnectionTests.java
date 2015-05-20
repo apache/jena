@@ -739,7 +739,7 @@ public abstract class AbstractJenaConnectionTests {
         try {
             ResultSet rset = stmt.executeQuery("CONSTRUCT { ?s ?p ?o } WHERE { "
                     + (this.usesNamedGraphAsDefault() ? "GRAPH <" + this.getDefaultGraphName() + "> {" : "")
-                    + " FILTER(<http://jena.hpl.hp.com/ARQ/function#wait>(1500)) " + (this.usesNamedGraphAsDefault() ? "}" : "") + "}");
+                    + " FILTER(<http://jena.apache.org/ARQ/function#wait>(1500)) " + (this.usesNamedGraphAsDefault() ? "}" : "") + "}");
 
             // Note that we have to start iterating otherwise the query doesn't
             // get executed and the timeout will never apply
@@ -778,7 +778,7 @@ public abstract class AbstractJenaConnectionTests {
         try {
             ResultSet rset = stmt.executeQuery("CONSTRUCT { ?s ?p ?o } WHERE { "
                     + (this.usesNamedGraphAsDefault() ? "GRAPH <" + this.getDefaultGraphName() + "> {" : "")
-                    + " FILTER(<http://jena.hpl.hp.com/ARQ/function#wait>(1500)) " + (this.usesNamedGraphAsDefault() ? "}" : "") + "}");
+                    + " FILTER(<http://jena.apache.org/ARQ/function#wait>(1500)) " + (this.usesNamedGraphAsDefault() ? "}" : "") + "}");
 
             // Note that we have to start iterating otherwise the query doesn't
             // get executed and the timeout will never apply

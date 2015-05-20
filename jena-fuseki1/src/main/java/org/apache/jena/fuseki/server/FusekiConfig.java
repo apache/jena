@@ -63,11 +63,11 @@ public class FusekiConfig
     "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
     "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
     "PREFIX tdb:    <http://jena.hpl.hp.com/2008/tdb#>",
-    "PREFIX list:   <http://jena.hpl.hp.com/ARQ/list#>",
-    "PREFIX list:   <http://jena.hpl.hp.com/ARQ/list#>",
+    "PREFIX list:   <http://jena.apache.org/ARQ/list#>",
+    "PREFIX list:   <http://jena.apache.org/ARQ/list#>",
     "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>",
-    "PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>", 
-    "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>" ,
+    "PREFIX apf:     <http://jena.apache.org/ARQ/property#>", 
+    "PREFIX afn:     <http://jena.apache.org/ARQ/function#>" ,
     "") ;
     
     public static ServerConfig defaultConfiguration(String datasetPath, DatasetGraph dsg, boolean allowUpdate, boolean listenLocal)

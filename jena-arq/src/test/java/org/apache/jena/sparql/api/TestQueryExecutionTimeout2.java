@@ -34,7 +34,7 @@ public class TestQueryExecutionTimeout2
 
     static private String prefix = 
         "PREFIX f:       <http://example/ns#>\n"+
-            "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>\n" ;
+            "PREFIX afn:     <http://jena.apache.org/ARQ/function#>\n" ;
     static Graph                g   = SSE.parseGraph("(graph " +
         "(<s> <p> 1)" +
         " (<s> <p> 2)" +

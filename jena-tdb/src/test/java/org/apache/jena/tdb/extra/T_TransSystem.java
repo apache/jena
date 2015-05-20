@@ -223,7 +223,7 @@ public class T_TransSystem
                     int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
                     pause(maxpause) ;
 
-                    String qs1 = StrUtils.strjoinNL("PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>",
+                    String qs1 = StrUtils.strjoinNL("PREFIX afn:     <http://jena.apache.org/ARQ/function#>",
                         "SELECT * { {FILTER(afn:wait(10))} UNION {?s ?p ?o }}") ;
                     String qs2 = StrUtils.strjoinNL("DESCRIBE ?s { ?s ?p ?o }") ;
                     try {

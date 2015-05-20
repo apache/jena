@@ -55,7 +55,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
     @Override
     public EntityDefinition open(Assembler a, Resource root, Mode mode)
     {
-        String prologue = "PREFIX : <"+NS+">   PREFIX list: <http://jena.hpl.hp.com/ARQ/list#> " ;
+        String prologue = "PREFIX : <"+NS+">   PREFIX list: <http://jena.apache.org/ARQ/list#> " ;
         Model model = root.getModel() ;
 
         String qs1 = StrUtils.strjoinNL(prologue,

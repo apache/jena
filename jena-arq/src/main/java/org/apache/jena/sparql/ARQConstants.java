@@ -191,7 +191,7 @@ public class ARQConstants
     public static final String allocSSENamedVars        = allocVarMarker ;              // ParseHandlerPlain - SSE token "?."
     
     /** Marker for system symbols */
-    public static final String systemVarNS = "http://jena.hpl.hp.com/ARQ/system#" ;
+    public static final String systemVarNS = "http://jena.apache.org/ARQ/system#" ;
     
     /** Context key for the query for the current query execution 
      * (may be null if was not created from a query string )
