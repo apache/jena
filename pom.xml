@@ -78,7 +78,7 @@
     <module>dboe-transaction</module>
     <module>dboe-index</module>
     <module>dboe-index-test</module>
-    <!-- Non-transactional
+    <!-- Non-transactional, archived.
     <module>archive/dboe-index-ext</module>
     <module>archive/dboe-index-btree</module>
     -->
