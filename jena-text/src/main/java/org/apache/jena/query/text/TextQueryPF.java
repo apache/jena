@@ -18,6 +18,7 @@
 
 package org.apache.jena.query.text ;
 
+import java.util.Iterator;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
@@ -68,7 +69,15 @@ public class TextQueryPF extends PropertyFunctionBase {
         if (!argSubject.isNode())
             throw new QueryBuildException("Subject is not a single node: " + argSubject) ;
 
+        //extra lang arg for possible multilingual index
+        String lang = null;
+
         if (argObject.isList()) {
+            //extract of extra lang arg if present.
+            //For the moment, arg is removed from the list to avoid conflict with order and args length
+            //but should be managed with others args
+            lang = extractArg("lang", argObject);
+
             List<Node> list = argObject.getArgList() ;
             if (list.size() == 0)
                 throw new QueryBuildException("Zero-length argument list") ;
@@ -76,6 +85,15 @@ public class TextQueryPF extends PropertyFunctionBase {
             if (list.size() > 4)
                 throw new QueryBuildException("Too many arguments in list : " + list) ;
         }
+
+        // If retrieved index is an instance of TextIndexLuceneMultilingual,
+        // we need to switch with the right localized index.
+        // The pattern is :
+        // ?uri text:query (property 'string' ['lang:language'] [limit])
+        // ex : ?uri text:query (rdfs:label 'book' 'lang:en')
+        // note: default index is the unlocalized index (if lang arg is not present).
+        if (server instanceof TextIndexLuceneMultilingual)
+            server = ((TextIndexLuceneMultilingual)server).getIndex(lang);
     }
 
     private static TextIndex chooseTextIndex(DatasetGraph dsg) {
@@ -98,6 +116,26 @@ public class TextQueryPF extends PropertyFunctionBase {
         }
         Log.warn(TextQueryPF.class, "Failed to find the text index : tried context and as a text-enabled dataset") ;
         return null ;
+    }
+
+    private String extractArg(String prefix, PropFuncArg argObject) {
+        String value = null;
+        int pos = 0;
+        for (Iterator it = argObject.getArgList().iterator(); it.hasNext(); ) {
+            Node node = (Node)it.next();
+            if (node.isLiteral()) {
+                String arg = node.getLiteral().toString();
+                if (arg.startsWith(prefix + ":")) {
+                    value = arg.split(":")[1];
+                    break;
+                }
+            }
+            pos++;
+        }
+        if (value != null)
+            argObject.getArgList().remove(pos);
+
+        return value;
     }
 
     @Override

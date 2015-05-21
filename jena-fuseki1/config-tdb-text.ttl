@@ -46,6 +46,7 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 text:TextDataset      rdfs:subClassOf   ja:RDFDataset .
 #text:TextIndexSolr    rdfs:subClassOf   text:TextIndex .
 text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .
+#text:TextIndexLuceneMultilingual rdfs:subClassOf   text:TextIndex .
 
 ## ---------------------------------------------------------------
 

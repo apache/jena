@@ -85,12 +85,24 @@ public class TextIndexLucene implements TextIndex {
 
     /**
      * Constructs a new TextIndexLucene.
-     * 
+     *
      * @param directory The Lucene Directory for the index
      * @param def The EntityDefinition that defines how entities are stored in the index
      * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
      */
     public TextIndexLucene(Directory directory, EntityDefinition def, Analyzer queryAnalyzer) {
+        this(directory, def, null, queryAnalyzer);
+    }
+
+    /**
+     * Constructs a new TextIndexLucene.
+     * 
+     * @param directory The Lucene Directory for the index
+     * @param def The EntityDefinition that defines how entities are stored in the index
+     * @param analyzer The analyzer to be used to index literals. If null, then the standard analyzer will be used.
+     * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
+     */
+    public TextIndexLucene(Directory directory, EntityDefinition def, Analyzer analyzer, Analyzer queryAnalyzer) {
         this.directory = directory ;
         this.docDef = def ;
 
@@ -102,14 +114,15 @@ public class TextIndexLucene implements TextIndex {
             analyzerPerField.put(def.getGraphField(), new KeywordAnalyzer()) ;
 
         for (String field : def.fields()) {
-            Analyzer analyzer = def.getAnalyzer(field);
-            if (analyzer != null) {
-                analyzerPerField.put(field, analyzer);
+            Analyzer _analyzer = def.getAnalyzer(field);
+            if (_analyzer != null) {
+                analyzerPerField.put(field, _analyzer);
             }
         }
 
-        this.analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(VER), analyzerPerField) ;
-        this.queryAnalyzer = (null != queryAnalyzer) ? queryAnalyzer : analyzer ;
+        this.analyzer = new PerFieldAnalyzerWrapper(
+                (null != analyzer) ? analyzer : new StandardAnalyzer(VER), analyzerPerField) ;
+        this.queryAnalyzer = (null != queryAnalyzer) ? queryAnalyzer : this.analyzer ;
 
         openIndexWriter();
     }

@@ -28,6 +28,8 @@ import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.store.Directory ;
 import org.apache.solr.client.solrj.SolrServer ;
 
+import java.io.File;
+
 public class TextDatasetFactory
 {
     static { TextQuery.init(); }
@@ -83,32 +85,100 @@ public class TextDatasetFactory
         
         return dsgt ;
     }
-    
+
+    /**
+     * Create a Lucene TextIndex
+     *
+     * @param directory The Lucene Directory for the index
+     * @param def The EntityDefinition that defines how entities are stored in the index
+     * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
+     */
+    public static TextIndex createLuceneIndex(Directory directory, EntityDefinition def, Analyzer queryAnalyzer)
+    {
+        TextIndex index = new TextIndexLucene(directory, def, queryAnalyzer) ;
+        return index ;
+    }
+
     /**
      * Create a Lucene TextIndex
      * 
      * @param directory The Lucene Directory for the index
      * @param def The EntityDefinition that defines how entities are stored in the index
+     * @param analyzer The analyzer to be used to index literals. If null, then the standard analyzer will be used.
      * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
      */ 
-    public static TextIndex createLuceneIndex(Directory directory, EntityDefinition def, Analyzer queryAnalyzer)
+    public static TextIndex createLuceneIndex(Directory directory, EntityDefinition def, Analyzer analyzer, Analyzer queryAnalyzer)
     {
-        TextIndex index = new TextIndexLucene(directory, def, queryAnalyzer) ;
+        TextIndex index = new TextIndexLucene(directory, def, analyzer, queryAnalyzer) ;
         return index ; 
     }
 
-    /** 
+    /**
+     * Create a multilingual Lucene TextIndex
+     *
+     * @param directory The Lucene Directory for the index
+     * @param def The EntityDefinition that defines how entities are stored in the index
+     */
+    public static TextIndex createLuceneIndexMultilingual(Directory directory, EntityDefinition def)
+    {
+        TextIndex index = new TextIndexLuceneMultilingual(directory, def) ;
+        return index ;
+    }
+
+    /**
+     * Create a text-indexed dataset, using Lucene
+     *
+     * @param base the base Dataset
+     * @param directory The Lucene Directory for the index
+     * @param def The EntityDefinition that defines how entities are stored in the index
+     * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
+     */
+    public static Dataset createLucene(Dataset base, Directory directory, EntityDefinition def, Analyzer queryAnalyzer)
+    {
+        TextIndex index = createLuceneIndex(directory, def, queryAnalyzer) ;
+        return create(base, index, true) ;
+    }
+
+    /**
      * Create a text-indexed dataset, using Lucene
      * 
      * @param base the base Dataset
      * @param directory The Lucene Directory for the index
      * @param def The EntityDefinition that defines how entities are stored in the index
+     * @param analyzer The analyzer to be used to index literals. If null, then the standard analyzer will be used.
      * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
      */ 
-    public static Dataset createLucene(Dataset base, Directory directory, EntityDefinition def, Analyzer queryAnalyzer)
+    public static Dataset createLucene(Dataset base, Directory directory, EntityDefinition def, Analyzer analyzer, Analyzer queryAnalyzer)
+    {
+        TextIndex index = createLuceneIndex(directory, def, analyzer, queryAnalyzer) ;
+        return create(base, index, true) ; 
+    }
+
+    /**
+     * Create a multilingual text-indexed dataset, using Lucene
+     *
+     * @param base the base Dataset
+     * @param directory The Lucene Directory for the index
+     * @param def The EntityDefinition that defines how entities are stored in the index
+     */
+    public static Dataset createLuceneMultilingual(Dataset base, Directory directory, EntityDefinition def)
+    {
+        TextIndex index = createLuceneIndexMultilingual(directory, def) ;
+        return create(base, index, true) ;
+    }
+
+    /**
+     * Create a text-indexed dataset, using Lucene
+     *
+     * @param base the base DatasetGraph
+     * @param directory The Lucene Directory for the index
+     * @param def The EntityDefinition that defines how entities are stored in the index
+     * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
+     */
+    public static DatasetGraph createLucene(DatasetGraph base, Directory directory, EntityDefinition def, Analyzer queryAnalyzer)
     {
         TextIndex index = createLuceneIndex(directory, def, queryAnalyzer) ;
-        return create(base, index, true) ; 
+        return create(base, index, true) ;
     }
 
     /**
@@ -117,15 +187,30 @@ public class TextDatasetFactory
      * @param base the base DatasetGraph
      * @param directory The Lucene Directory for the index
      * @param def The EntityDefinition that defines how entities are stored in the index
+     * @param analyzer The analyzer to be used to index literals. If null, then the standard analyzer will be used.
      * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
      */ 
-    public static DatasetGraph createLucene(DatasetGraph base, Directory directory, EntityDefinition def, Analyzer queryAnalyzer)
+    public static DatasetGraph createLucene(DatasetGraph base, Directory directory, EntityDefinition def, Analyzer analyzer, Analyzer queryAnalyzer)
     {
-        TextIndex index = createLuceneIndex(directory, def, queryAnalyzer) ;
+        TextIndex index = createLuceneIndex(directory, def, analyzer, queryAnalyzer) ;
         return create(base, index, true) ; 
     }
 
-    /** Create a Solr TextIndex */ 
+    /**
+     * Create a multilingual text-indexed dataset, using Lucene
+     *
+     * @param base the base DatasetGraph
+     * @param directory The Lucene Directory for the index
+     * @param def The EntityDefinition that defines how entities are stored in the index
+     */
+    public static DatasetGraph createLuceneMultilingual(DatasetGraph base, Directory directory, EntityDefinition def)
+    {
+        TextIndex index = createLuceneIndexMultilingual(directory, def) ;
+        return create(base, index, true) ;
+    }
+
+
+    /** Create a Solr TextIndex */
     public static TextIndex createSolrIndex(SolrServer server, EntityDefinition entMap)
     {
         TextIndex index = new TextIndexSolr(server, entMap) ;
