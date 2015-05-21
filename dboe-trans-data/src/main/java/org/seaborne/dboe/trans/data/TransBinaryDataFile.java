@@ -26,7 +26,6 @@ import org.apache.jena.query.ReadWrite ;
 import org.seaborne.dboe.base.file.BinaryDataFile ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.objectfile.ObjectFile ;
-import org.seaborne.dboe.migrate.L ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.StateMgrData ;
 import org.seaborne.dboe.transaction.txn.TransactionalComponentLifecycle ;
@@ -81,26 +80,16 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
     /** Create a transactional BinaryDataFile over a base implementation.
      *  The base file must provide thread-safe operation.   
      */
-    public TransBinaryDataFile(BinaryDataFile binFile, BufferChannel bufferChannel, int id) {
+    public TransBinaryDataFile(BinaryDataFile binFile, BufferChannel bufferChannel, ComponentId cid) {
         super() ;
         stateMgr = new FileState(bufferChannel, 0L, 0L) ;
+        this.componentId = cid ;
         this.binFile = binFile ;
         if ( ! binFile.isOpen() )
             binFile.open();
-        // These may be updated by recovery. Start by
+        // Internal state may be updated by recovery. Start by
         // setting to the "clean start" settings.
-        
         committedLength = new AtomicLong(binFile.length()) ;
-        
-        // Common code
-        byte[] bytes = L.uuidAsBytes(baseUuidStr) ;
-        // Set half word
-        byte lo = (byte)(id&0xFF) ;
-        byte hi = (byte)((id >> 8) &0xFF) ;
-        bytes[bytes.length-2] = lo ;
-        bytes[bytes.length-1] = hi ;
-        // Common code
-        componentId = new ComponentId("Trans-TransBinaryDataFile"+id, bytes) ;
     }
     
     @Override

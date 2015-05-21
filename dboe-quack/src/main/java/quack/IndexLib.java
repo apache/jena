@@ -17,40 +17,51 @@
 
 package quack;
 
+import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.atlas.lib.NotImplemented ;
+import org.apache.jena.atlas.logging.FmtLog ;
+import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.sys.Names ;
+import org.seaborne.dboe.transaction.txn.journal.Journal ;
+import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.tupletable.TupleIndex ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-/** Operations related to indexes - non-transactional*/
+/** Operations related to indexes - non-transactional */
 public class IndexLib {
     
     static Logger log = LoggerFactory.getLogger(IndexLib.class) ;
 
-//    public static TupleIndex connect(Location location, String primaryIndexName, String indexOrder) {
-//        FmtLog.debug(log, "connect(%s, %s, %s)\n", location, primaryIndexName, indexOrder) ;
-//        return connect$(location, primaryIndexName, indexOrder, indexOrder) ;
-//    }
+    /** Choose the usual (system default) primary name */ 
+    public static String choosePrimary(IndexRef idx) {
+        int N = idx.getIndexName().length() ;
+        if ( N == 3 )
+            return Names.primaryIndexTriples ;
+        else if ( N == 4 )         
+            return Names.primaryIndexQuads ;
+        else
+            throw new InternalErrorException("Index length") ;
+    }
+
+    public static TupleIndex connect(Location location, String primaryIndexName, String indexOrder) {
+        FmtLog.debug(log, "connect(%s, %s, %s)\n", location, primaryIndexName, indexOrder) ;
+        return connect$(location, primaryIndexName, indexOrder, indexOrder) ;
+    }
+
+    public static TupleIndex connect(IndexRef indexRef, String primaryIndexName) {
+        FmtLog.debug(log, "connect(%s, %s)\n", indexRef, primaryIndexName) ;
+        return connect$(indexRef.getLocation(), primaryIndexName, indexRef.getIndexName(), indexRef.getBaseFileName()) ;
+    }
+
+    private static TupleIndex connect$(Location location, String primaryIndexName, String indexOrder, String indexName) {
+        int recordLength = NodeId.SIZE * primaryIndexName.length() ;
+        Journal journal = Journal.create(location) ;
+        throw new NotImplemented("IndexLib.connect$") ;
+        
+        //return SetupTDB.makeTupleIndex(location, primaryIndexName, indexOrder, indexName, recordLength) ;
+    }
 //
-//    public static TupleIndex connect(IndexRef indexRef, String primaryIndexName) {
-//        FmtLog.debug(log, "connect(%s, %s)\n", indexRef, primaryIndexName) ;
-//        return connect$(indexRef.getLocation(), primaryIndexName, indexRef.getIndexName(), indexRef.getBaseFileName()) ;
-//    }
-//
-//    private static TupleIndex connect$(Location location, String primaryIndexName, String indexOrder, String indexName) {
-//        int recordLength = NodeId.SIZE * primaryIndexName.length() ;
-//        return SetupTDB.makeTupleIndex(location, primaryIndexName, indexOrder, indexName, recordLength) ;
-//    }
-//
-//    /** Choose the usual (system default) primary name */ 
-//    public static String choosePrimary(IndexRef idx) {
-//        int N = idx.getIndexName().length() ;
-//        if ( N == 3 )
-//            return Names.primaryIndexTriples ;
-//        else if ( N == 4 )         
-//            return Names.primaryIndexQuads ;
-//        else
-//            throw new InternalErrorException("Index length") ;
-//    }
-//    
 //    public static void dumpRangeIndex(RangeIndex rIndex) {
 //        Iterator<Record> rIter = rIndex.iterator() ;
 //        for (; rIter.hasNext();) {

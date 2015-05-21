@@ -37,9 +37,13 @@ public class TDB_Dev_Main {
     static { LogCtl.setLog4j(); }
     
     public static void main(String[] args) throws Exception {
-        
-        
-        
+        {
+        Location location = Location.mem() ;
+//        FileOps.ensureDir("DB"); 
+//        FileOps.clearDirectory("DB");
+        Dataset ds = TDBFactory.createDataset(location) ;
+        System.exit(0) ;
+        }
 //        //AbstractTestStoreConnectionBasics.store_05/mem
 //        
         long x = System.currentTimeMillis() ;

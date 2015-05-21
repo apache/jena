@@ -122,12 +122,12 @@ public class TDB2Builder {
         TransactionCoordinator txnCoord = new TransactionCoordinator(journal) ;
         // Reuse existing component ids.
         
-        NodeTable nodeTable = buildNodeTable(txnCoord, nextComponentId(storeParams.getNodeTableBaseName()), storeParams.getNodeTableBaseName()) ;
+        NodeTable nodeTable = buildNodeTable(txnCoord, storeParams.getNodeTableBaseName()) ;
         
         TripleTable tripleTable = buildTripleTable(txnCoord, nodeTable, storeParams) ;
         QuadTable quadTable = buildQuadTable(txnCoord, nodeTable, storeParams) ;
         
-        NodeTable nodeTablePrefixes = buildNodeTable(txnCoord, nextComponentId(storeParams.getPrefixTableBaseName()), storeParams.getPrefixTableBaseName()) ;
+        NodeTable nodeTablePrefixes = buildNodeTable(txnCoord, storeParams.getPrefixTableBaseName()) ;
         DatasetPrefixesTDB prefixes = buildPrefixTable(txnCoord, nodeTablePrefixes, storeParams) ;
         
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, ReorderLib.fixed(), location, storeParams) ;
@@ -144,8 +144,25 @@ public class TDB2Builder {
         this.storeParams = storeParams ;
     }
     
-    private ComponentId nextComponentId(String label) {
-        return ComponentId.alloc(tdbComponentId, label, componentCounter++) ;
+    /* nextComponentId unit names:
+    nodes
+    nodes-data
+    SPO
+    POS
+    OSP
+    GSPO
+    GPOS
+    GOSP
+    POSG
+    OSPG
+    SPOG
+    prefixes
+    prefixes-data
+    GPU
+    */
+    private ComponentId nextComponentId(String unit) {
+        //System.out.println("nextComponentId: "+unit) ;
+        return ComponentId.alloc(tdbComponentId, unit, componentCounter++) ;
     }
 
     private TripleTable buildTripleTable(TransactionCoordinator txnCoord, NodeTable nodeTable, StoreParams params)
@@ -209,32 +226,32 @@ public class TDB2Builder {
         TupleIndex indexes[] = new TupleIndex[indexNames.length] ;
         for (int i = 0 ; i < indexes.length ; i++) {
             String indexName = indexNames[i] ;
-            ComponentId cid = nextComponentId(indexName) ;
-            indexes[i] = buildTupleIndex(txnCoord, cid, primary, indexNames[i]) ;
+            indexes[i] = buildTupleIndex(txnCoord, primary, indexName) ;
         }
         return indexes ;
     }
 
-    public TupleIndex buildTupleIndex(TransactionCoordinator txnMgr, ComponentId cid, String primary, String index) {
+    public TupleIndex buildTupleIndex(TransactionCoordinator txnMgr, String primary, String index) {
         //Library-ize.
         ColumnMap cmap = new ColumnMap(primary, index) ;
         RecordFactory rf = new RecordFactory(SystemTDB.SizeOfNodeId * cmap.length(), 0) ;
-        RangeIndex rIdx = buildRangeIndex(txnMgr, cid, rf, index) ;
+        RangeIndex rIdx = buildRangeIndex(txnMgr, rf, index) ;
         TupleIndex tIdx = new TupleIndexRecord(primary.length(), cmap, index, rf, rIdx) ;
         return tIdx ;
     }
     
-    public RangeIndex buildRangeIndex(TransactionCoordinator coord, ComponentId cid,
+    public RangeIndex buildRangeIndex(TransactionCoordinator coord, 
                                       RecordFactory recordFactory,
                                       String name) {
         FileSet fs = new FileSet(location, name) ;
+        ComponentId cid = nextComponentId(name) ; 
         BPlusTree bpt = BPlusTreeFactory.createBPTree(cid, fs, recordFactory) ;
         coord.add(bpt) ;
         return bpt ;
     }
     
-    public NodeTable buildNodeTable(TransactionCoordinator coord, ComponentId cid, String name) {
-        NodeTable nodeTable = buildBaseNodeTable(coord, cid, name) ;
+    public NodeTable buildNodeTable(TransactionCoordinator coord, String name) {
+        NodeTable nodeTable = buildBaseNodeTable(coord, name) ;
         nodeTable = stackNodeTable(nodeTable, storeParams) ;
         return nodeTable ; 
     }
@@ -245,15 +262,17 @@ public class TDB2Builder {
         return nodeTable ; 
     }
     
-    private NodeTable buildBaseNodeTable(TransactionCoordinator coord, ComponentId cid, String name) {
+    private NodeTable buildBaseNodeTable(TransactionCoordinator coord, String name) {
         RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
-        Index index = buildRangeIndex(coord, cid, recordFactory, name) ;
-        FileSet fs = new FileSet(location, name+"-data") ; 
+        Index index = buildRangeIndex(coord, recordFactory, name) ;
+        String dataname = name+"-data" ;
+        FileSet fs = new FileSet(location, dataname) ; 
         
         BinaryDataFile binFile = FileFactory.createBinaryDataFile(fs, Names.extObjNodeData) ;
         BufferChannel pState = FileFactory.createBufferChannel(fs, Names.extBdfState) ;
+        ComponentId cid = nextComponentId(dataname) ;
         // ComponentId mgt.
-        TransBinaryDataFile transBinFile = new TransBinaryDataFile(binFile, pState, ++componentCounter) ;
+        TransBinaryDataFile transBinFile = new TransBinaryDataFile(binFile, pState, cid) ;
         coord.add(transBinFile) ;
         return new NodeTableTRDF(index, binFile) ;
 

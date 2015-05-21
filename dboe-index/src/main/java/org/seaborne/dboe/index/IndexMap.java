@@ -26,6 +26,7 @@ import org.apache.jena.atlas.lib.Bytes ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 
+/** A simple implementation of {@link Index} for testing */
 public class IndexMap implements Index
 {
     private final Map<ByteArray, ByteArray> index = new HashMap<>() ;

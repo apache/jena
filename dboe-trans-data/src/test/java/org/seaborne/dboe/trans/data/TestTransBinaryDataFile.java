@@ -27,6 +27,7 @@ import org.seaborne.dboe.base.file.* ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.Txn ;
+import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 public class TestTransBinaryDataFile extends Assert {
@@ -36,10 +37,12 @@ public class TestTransBinaryDataFile extends Assert {
     private Transactional transactional ;
     
     @Before public void before() {
+        // XXX Builder.
         journal = Journal.create(Location.mem()) ;
         baseBinData = new BinaryDataFileMem() ;
         BufferChannel chan = FileFactory.createBufferChannelMem() ;
-        transBinData = new TransBinaryDataFile(baseBinData, chan, 9) ;
+        ComponentId cid = ComponentId.allocLocal() ;
+        transBinData = new TransBinaryDataFile(baseBinData, chan, cid) ;
         transBinData.open();
         transactional = TransactionalFactory.create(journal, transBinData) ;    
     }
