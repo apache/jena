@@ -163,7 +163,7 @@ class Journal implements Sync, Closeable
         header.putInt(len) ;
         header.putInt(0) ; // Set CRC to zero
         header.putInt(type.id) ;
-        header.put(componentId.bytes()) ;
+        header.put(componentId.getBytes()) ;
         header.flip() ;
         // Need to put CRC in before writing.
 
@@ -239,7 +239,7 @@ class Journal implements Sync, Closeable
         int entryType = header.getInt() ;
         byte[] bytes = new byte[ComponentId.SIZE] ;
         header.get(bytes) ;
-        ComponentId component = new ComponentId(null, bytes) ;
+        ComponentId component = ComponentId.create(null, bytes) ;
 
         Adler32 adler = new Adler32() ;
         adler.update(header.array()) ;

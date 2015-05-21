@@ -37,7 +37,7 @@ public class TestTransBinaryDataFileGeneral extends AbstractTestBinaryDataFile {
         baseBinData = new BinaryDataFileMem() ;
         BufferChannel chan = FileFactory.createBufferChannelMem() ;
         ComponentId cid = ComponentId.allocLocal() ;
-        transBinData = new TransBinaryDataFile(baseBinData, chan, cid) ;
+        transBinData = new TransBinaryDataFile(baseBinData, cid, chan) ;
         transBinData.open();
         transactional = TransactionalFactory.create(journal, transBinData) ;
         //Non-transactional usage of a disposed file. 

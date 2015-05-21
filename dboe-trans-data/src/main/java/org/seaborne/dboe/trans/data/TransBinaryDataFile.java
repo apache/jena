@@ -33,7 +33,7 @@ import org.seaborne.dboe.transaction.txn.TxnId ;
 
 /** Transactional {@link ObjectFile}.
  *  An object file is append-only and allows only one writer at a time.
- *  As a result, all reader, see the file up to the last commit point at the time 
+ *  All readers see the file up to the last commit point at the time 
  *  they started.  The sole writer sees more of the file.
  */
 
@@ -47,10 +47,6 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
      */
     
     private final FileState stateMgr ;
-    
-    // Space for 0xFFFF = (64k)  
-    private static final String baseUuidStr = "867458e6-f8c8-11e4-b702-3417eb9b0000" ; 
-    private final ComponentId componentId ;
 
     // The current committed position and he limit as seen by readers.
     // This is also the abort point.
@@ -80,21 +76,15 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
     /** Create a transactional BinaryDataFile over a base implementation.
      *  The base file must provide thread-safe operation.   
      */
-    public TransBinaryDataFile(BinaryDataFile binFile, BufferChannel bufferChannel, ComponentId cid) {
-        super() ;
+    public TransBinaryDataFile(BinaryDataFile binFile, ComponentId cid, BufferChannel bufferChannel) {
+        super(cid) ;
         stateMgr = new FileState(bufferChannel, 0L, 0L) ;
-        this.componentId = cid ;
         this.binFile = binFile ;
         if ( ! binFile.isOpen() )
             binFile.open();
         // Internal state may be updated by recovery. Start by
         // setting to the "clean start" settings.
         committedLength = new AtomicLong(binFile.length()) ;
-    }
-    
-    @Override
-    public ComponentId getComponentId() {
-        return componentId ;
     }
     
     private boolean recoveryAction = false ; 

@@ -28,13 +28,15 @@ import org.apache.jena.query.ReadWrite ;
 
 /** Implementation of the component interface for {@link TransactionalComponent}.
  *  Useful for in-memory transactions that do not provide durability or abort (undo). 
- *  When retro fitting to other systems, that maybe the best that can be done. 
+ *  When retro fitting to other systems, that may be the best that can be done. 
  */
 public class TransactionalMRSW extends TransactionalComponentLifecycle<Object> {
     // MRSW implementation of TransactionMVCC
     private ReadWriteLock lock = new ReentrantReadWriteLock() ;
     
-    @Override public ComponentId getComponentId()     { return ComponentIds.idTxnMRSW ; }
+    public TransactionalMRSW(ComponentId componentId) {
+        super(componentId) ;
+    }
 
     // ---- Recovery phase
     @Override

@@ -21,14 +21,15 @@ import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 import java.util.concurrent.atomic.AtomicLong ;
 
-import org.apache.jena.query.ReadWrite ;
-
 import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.query.ReadWrite ;
 import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.objectfile.ObjectFile ;
-import org.seaborne.dboe.migrate.L ;
-import org.seaborne.dboe.transaction.txn.* ;
+import org.seaborne.dboe.transaction.txn.ComponentId ;
+import org.seaborne.dboe.transaction.txn.StateMgrData ;
+import org.seaborne.dboe.transaction.txn.TransactionalComponentLifecycle ;
+import org.seaborne.dboe.transaction.txn.TxnId ;
 
 /** Transactional {@link ObjectFile}.
  *  An object file is append-only and allows only one writer at a time.
@@ -50,12 +51,6 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
      */
     
     private final ObjectFileState stateMgr ;
-    
-    // Space for 0xFFFF = (64k)  
-    private static final String baseUuidStr = "95e0f729-ad29-48b2-bd70-e37386630000" ; 
-    
-    //General machinery?
-    private final ComponentId componentId ;
 
     // The current committed position.
     // This is also the abort point.
@@ -89,8 +84,8 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
 
     private final ObjectFile objFile ;
     
-    public TransObjectFile(ObjectFile objFile, BufferChannel bufferChannel, int id) {
-        super() ;
+    public TransObjectFile(ObjectFile objFile, ComponentId cid, BufferChannel bufferChannel) {
+        super(cid) ;
         stateMgr = new ObjectFileState(bufferChannel, 0L, 0L) ;
         this.objFile = objFile ;
         
@@ -99,21 +94,6 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
         
         length   = new AtomicLong(objFile.length()) ;
         position = new AtomicLong(objFile.position()) ;
-        
-        // Common code
-        byte[] bytes = L.uuidAsBytes(baseUuidStr) ;
-        // Set half word
-        byte lo = (byte)(id&0xFF) ;
-        byte hi = (byte)((id >> 8) &0xFF) ;
-        bytes[bytes.length-2] = lo ;
-        bytes[bytes.length-1] = hi ;
-        // Common code
-        componentId = new ComponentId("Trans-TransObjectFile"+id, bytes) ;
-    }
-    
-    @Override
-    public ComponentId getComponentId() {
-        return componentId ;
     }
     
     private boolean recoveryAction = false ; 
@@ -123,8 +103,6 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
         recoveryAction = false ;
     }
     
-    // XXX StateMgr length , position.to give naming 
-
     @Override
     public void recover(ByteBuffer ref) {
         stateMgr.setState(ref);

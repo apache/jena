@@ -28,17 +28,14 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.TransInteger ;
 import org.seaborne.dboe.transaction.TransMonitor ;
 import org.seaborne.dboe.transaction.Transactional ;
-import org.seaborne.dboe.transaction.txn.TransactionalComponentWrapper ;
-import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
-import org.seaborne.dboe.transaction.txn.TransactionalBase ;
-import org.seaborne.dboe.transaction.txn.TransactionalComponent ;
+import org.seaborne.dboe.transaction.txn.* ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 public abstract class AbstractTestTxn {
     protected TransactionCoordinator txnMgr ;
     protected TransInteger counter1 = new TransInteger(0) ; 
     protected TransInteger counter2 = new TransInteger(0) ;
-    protected TransMonitor monitor  = new TransMonitor() ;
+    protected TransMonitor monitor  = new TransMonitor(ComponentId.allocLocal()) ;
     protected Transactional unit ;
     
     @Before public void setup() {

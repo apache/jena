@@ -20,12 +20,10 @@ package org.seaborne.dboe.trans.data;
 import java.nio.ByteBuffer ;
 import java.util.concurrent.atomic.AtomicReference ;
 
-import org.apache.jena.query.ReadWrite ;
-
 import org.apache.jena.atlas.RuntimeIOException ;
+import org.apache.jena.query.ReadWrite ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
-import org.seaborne.dboe.transaction.txn.ComponentIds ;
 import org.seaborne.dboe.transaction.txn.TransactionalComponentLifecycle ;
 import org.seaborne.dboe.transaction.txn.TxnId ;
 
@@ -36,14 +34,13 @@ import org.seaborne.dboe.transaction.txn.TxnId ;
  */
 public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobState> {
 
-    public static ComponentId baseTransBlob = ComponentIds.idBlobBase ; 
-    
     // The last commited state.
     // Immutable ByteBuffer.
     // This must be replaced, not updated, by any writer committer
    
     private final AtomicReference<ByteBuffer> blobRef = new AtomicReference<>() ;
-    
+    private final BufferChannel file ;
+
     static class BlobState {
         ByteBuffer $txnBlob ;
         BlobState(ByteBuffer bb) {
@@ -54,12 +51,9 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
         }
         ByteBuffer getByteBuffer() { return $txnBlob ; } 
     }
-
-    private final BufferChannel file ;
-    private final ComponentId componentId ;
     
     public TransBlob(ComponentId cid, BufferChannel file) {
-        this.componentId = cid ; 
+        super(cid) ;
         this.file = file ;
         read() ;
     }
@@ -94,11 +88,6 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
         if ( isActiveTxn() )
             return getDataState().getByteBuffer() ;
         return blobRef.get() ;
-    }
-
-    @Override
-    public ComponentId getComponentId() {
-        return componentId ;
     }
 
     private boolean recoveryChange = false ; 
@@ -154,7 +143,7 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
     protected void _shutdown() {}
     
     @Override
-    public String toString()    { return componentId.label() ; } 
+    public String toString()    { return getComponentId().label() ; } 
 
 }
 

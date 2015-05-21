@@ -159,21 +159,21 @@ public class BPlusTreeFactory {
 
     /**
      * Create the in-memory structures to correspond to the supplied block
-     * managers for the persistent storage. Does not inityalize the B+Tree - it
+     * managers for the persistent storage. Does not initalize the B+Tree - it
      * assumes the block managers correspond to an existing B+Tree.
      */
-    private static BPlusTree attach(ComponentId id, BPlusTreeParams params,
+    private static BPlusTree attach(ComponentId cid, BPlusTreeParams params,
                                     boolean isReset,
                                     BufferChannel rootData, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords) {
         // Creating and initializing the BPlusTree object is a two stage process.
 
         // * Create the Java object so it can be in other structures
         //   but it is not fully initialized yet.
-        //     Create datastructures being careful not to use the object
-        //   Ensure formatted
+        // * Create datastructures being careful not to use the object
+        // * Ensure formatted
         // * Initialize.
-        BPlusTree bpt = new BPlusTree(id, params) ; 
         
+        BPlusTree bpt = new BPlusTree(cid, params) ; 
         BPTStateMgr stateMgr = new BPTStateMgr(rootData) ;
         blkMgrNodes.resetAlloc(stateMgr.getNodeBlocksLimit());
         blkMgrRecords.resetAlloc(stateMgr.getRecordsBlocksLimit());

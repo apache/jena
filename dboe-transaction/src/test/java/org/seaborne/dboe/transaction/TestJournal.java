@@ -32,6 +32,7 @@ import java.util.List ;
 import org.apache.jena.atlas.lib.ByteBufferLib ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.ComponentIds ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.dboe.transaction.txn.journal.JournalEntry ;
@@ -103,7 +104,7 @@ public class TestJournal {
         ByteBuffer bb = ByteBuffer.allocateDirect(100) ;
         ByteBufferLib.fill(bb, (byte)0XA5);
         Journal jrnl = Journal.create(Location.mem()) ;
-        JournalEntry e = new JournalEntry(JournalEntryType.REDO, ComponentIds.idTxnCounter, bb) ;
+        JournalEntry e = new JournalEntry(JournalEntryType.REDO, ComponentId.allocLocal(), bb) ;
         jrnl.writeJournal(e) ;
         jrnl.sync() ;
         JournalEntry e2 = jrnl.readJournal(0) ;
@@ -114,7 +115,7 @@ public class TestJournal {
         ByteBuffer bb = ByteBuffer.allocateDirect(100) ;
         ByteBufferLib.fill(bb, (byte)0XA5);
         Journal jrnl = Journal.create(Location.mem()) ;
-        JournalEntry e = new JournalEntry(JournalEntryType.REDO, ComponentIds.idTxnCounter, bb) ;
+        JournalEntry e = new JournalEntry(JournalEntryType.REDO, ComponentId.allocLocal(), bb) ;
         
         jrnl.writeJournal(JournalEntry.COMMIT) ;
         long locn = jrnl.position() ;

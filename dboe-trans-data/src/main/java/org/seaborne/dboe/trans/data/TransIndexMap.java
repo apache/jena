@@ -34,14 +34,13 @@ public class TransIndexMap extends TransactionalMRSW implements Index
     private final Map<ByteArray, ByteArray> index = new HashMap<>() ;
     private final RecordFactory recordFactory ;
     
-    public TransIndexMap(RecordFactory recordFactory)
-    {
+    public TransIndexMap(RecordFactory recordFactory) {
+        super(null) ;
         this.recordFactory = recordFactory ;
     }
-    
+
     @Override
-    public Record find(Record record)
-    {
+    public Record find(Record record) {
         ByteArray k = wrap(record.getKey()) ;
         ByteArray v = index.get(k) ;
         if ( v == null )
@@ -50,19 +49,17 @@ public class TransIndexMap extends TransactionalMRSW implements Index
     }
 
     @Override
-    public boolean contains(Record record)
-    {
+    public boolean contains(Record record) {
         Record r = find(record) ;
         if ( r == null )
             return false ;
-        if ( ! recordFactory.hasValue() )
+        if ( !recordFactory.hasValue() )
             return true ;
         return Bytes.compare(record.getValue(), r.getValue()) == 0 ;
     }
 
     @Override
-    public boolean insert(Record record)
-    {
+    public boolean insert(Record record) {
         Record r = find(record) ;
         if ( r != null && r.equals(record) )
             return false ;
@@ -71,8 +68,7 @@ public class TransIndexMap extends TransactionalMRSW implements Index
     }
 
     @Override
-    public boolean delete(Record record)
-    {
+    public boolean delete(Record record) {
         ByteArray x = index.remove(wrap(record.getKey())) ;
         if ( x == null )
             return false ;
@@ -80,57 +76,44 @@ public class TransIndexMap extends TransactionalMRSW implements Index
     }
 
     @Override
-    public Iterator<Record> iterator()
-    {
+    public Iterator<Record> iterator() {
         return new Iterator<Record>() {
-            
             Iterator<Map.Entry<ByteArray, ByteArray>> iter = index.entrySet().iterator() ;
             
             @Override
-            public boolean hasNext()
-            {
+            public boolean hasNext() {
                 return iter.hasNext() ;
             }
 
             @Override
-            public Record next()
-            {
+            public Record next() {
                 Map.Entry<ByteArray, ByteArray> e = iter.next() ;
-                return record(e.getKey(), e.getValue()) ; 
+                return record(e.getKey(), e.getValue()) ;
             }
-
-            @Override
-            public void remove()
-            { throw new UnsupportedOperationException() ;}
         } ; 
         
     }
 
     @Override
-    public RecordFactory getRecordFactory()
-    {
+    public RecordFactory getRecordFactory() {
         return recordFactory ;
     }
 
     @Override
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return index.isEmpty() ;
     }
 
     @Override
-    public void clear()
-    {
+    public void clear() {
         index.clear() ;
     }
 
     @Override
-    public void check()
-    {}
+    public void check() {}
 
     @Override
-    public long size()
-    {
+    public long size() {
         return index.size() ;
     }
 

@@ -22,14 +22,14 @@ import java.nio.ByteBuffer ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.Log ;
-import org.seaborne.dboe.migrate.L ;
-import org.seaborne.dboe.transaction.txn.* ;
-
 import org.apache.jena.query.ReadWrite ;
+import org.seaborne.dboe.migrate.L ;
+import org.seaborne.dboe.transaction.txn.ComponentId ;
+import org.seaborne.dboe.transaction.txn.TransactionalComponentLifecycle ;
+import org.seaborne.dboe.transaction.txn.TxnId ;
 
 /** A transaction component with an integer supporting MR+SW (=one writer AND many readers).
  * @see TransactionalInteger
@@ -38,7 +38,6 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
 
     private final AtomicLong value = new AtomicLong(-1712) ;
     private final String filename ;
-    private final ComponentId componentId ;
     
     /** Per transaction state - and per thread safe because we subclass 
      * TransactionalComponentLifecycle
@@ -55,22 +54,18 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
     
     /** In-memory, non persistent, transactional integer */
     public TransInteger(long v) {
-        this(null, counter++) ;
+        this(null, ComponentId.allocLocal()) ;
         value.set(v) ;
     }
 
     /** Persistent, transactional integer. The persistent state is held in
      *  filename.  When first initialized, the value is 0L. 
      * @param filename  Persistent state
-     * @param id        Component id
+     * @param cid        Component id
      */
-    public TransInteger(String filename, int id) {
+    public TransInteger(String filename, ComponentId cid) {
+        super(cid) ;
         this.filename = filename ;
-        // Common code
-        byte[] bytes = ComponentIds.idTxnCounter.bytes().clone() ;
-        Bytes.setInt(id, bytes, ComponentId.SIZE-4) ;
-        componentId = new ComponentId("TransInteger-"+id, bytes) ;
-        // Common code
         // Set the value now for "fast read" transactions.
         readLocation() ;
     }
@@ -126,8 +121,6 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
         catch (IOException ex) {}
         catch (NumberFormatException ex) {}
     }
-
-    @Override public ComponentId getComponentId()     { return componentId ; }
     
     private boolean recoveryAction = false ; 
     
@@ -234,7 +227,7 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
     
     @Override
     public String toString() {
-        return String.valueOf(componentId) ; 
+        return String.valueOf(super.getComponentId()) ; 
     }
 }
 

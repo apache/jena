@@ -27,11 +27,11 @@ import org.apache.jena.query.ReadWrite ;
  * are not stateful across restarts.
  */
 public class TransactionalComponentBase<X> extends TransactionalComponentLifecycle<X> {
-    @Override
-    public ComponentId getComponentId() {
-        return ComponentIds.idNull ;
+    
+    public TransactionalComponentBase(ComponentId id) {
+        super(id) ;
     }
-
+    
     @Override
     public void startRecovery() {}
 

@@ -17,9 +17,10 @@
 
 package tdbdev;
 
-import java.util.* ;
+import java.util.HashMap ;
+import java.util.Map ;
+import java.util.UUID ;
 
-import org.seaborne.dboe.migrate.L ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -76,11 +77,9 @@ public class ComponentIdMgr {
     // Name to index mapping. 
     static Map<String, String> mapper = new HashMap<>() ;
     private final UUID base ;
-    private final ComponentId baseComponentId ;
     
     public ComponentIdMgr(UUID base) {
         this.base = base ;
-        this.baseComponentId = ComponentId.create("base", L.uuidAsBytes(base)) ;
     }
     
     public ComponentId getComponentId(String name) {
@@ -90,7 +89,7 @@ public class ComponentIdMgr {
             log.error("ComponentId for '"+name+"' has already been allocated") ;
             return allocated.get(name) ;
         }
-        ComponentId cid = ComponentId.alloc(baseComponentId, name, names.get(name)) ;
+        ComponentId cid = ComponentId.alloc(name, base, names.get(name)) ;
         allocated.put(name, cid) ;
         return cid ;
     }

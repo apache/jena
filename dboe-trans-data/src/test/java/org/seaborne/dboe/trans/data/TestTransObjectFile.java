@@ -32,6 +32,7 @@ import org.seaborne.dboe.base.objectfile.ObjectFile ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.Txn ;
+import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.dboe.transaction.txn.journal.JournalEntry ;
@@ -47,7 +48,8 @@ public class TestTransObjectFile extends Assert {
         journal = Journal.create(Location.mem()) ;
         baseObjectFile = FileFactory.createObjectFileMem("ObjectFile") ;
         BufferChannel chan = FileFactory.createBufferChannelMem() ;
-        transObjectFile = new TransObjectFile(baseObjectFile, chan, 9) ;
+        ComponentId cid = ComponentId.allocLocal() ;
+        transObjectFile = new TransObjectFile(baseObjectFile, cid, chan) ;
         transactional = TransactionalFactory.create(journal, transObjectFile) ;    
     }
 

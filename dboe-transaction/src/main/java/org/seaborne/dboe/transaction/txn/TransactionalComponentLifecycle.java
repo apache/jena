@@ -47,10 +47,18 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     // Allows stuff for thread switching.
     private ThreadLocal<Transaction> threadTxn = new ThreadLocal<>() ;
     private ThreadLocal<X> componentState = new ThreadLocal<>() ;
+    private final ComponentId componentId ;
     
-    protected TransactionalComponentLifecycle() { }
+    protected TransactionalComponentLifecycle(ComponentId componentId) {
+        this.componentId = componentId ;
+    }
     
-//    
+    @Override
+    public ComponentId getComponentId() {
+        return componentId ;
+    }
+
+    //    
 //    // Very dangerous!
 //    protected void setForThread(Transaction txn, X state) {
 //        threadTxn.set(txn);

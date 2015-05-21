@@ -129,15 +129,13 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     private final BPlusTreeParams bpTreeParams ;
     private Mode mode = Mode.TRANSACTIONAL ;
     private BptTxnState nonTxnState = null ; 
-
-    private final ComponentId componentId ;
     
     // Construction is a two stage process
     //    1/ Create the object, uninitialized
     //      (Setup data structures, without referring to any BPlusTree methods)
     //    2/ initialize
     /*package*/ BPlusTree(ComponentId componentId, BPlusTreeParams bpTreeParams) {
-        this.componentId = componentId ;
+        super(componentId) ;
         this.rootIdx = -99 ;
         this.bpTreeParams = bpTreeParams ;
         this.nodeManager = null ;
@@ -145,6 +143,9 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     }
 
     /*package*/ void init(BPTStateMgr stateManager, BPTreeNodeMgr  nodeManager, BPTreeRecordsMgr recordsMgr) {
+        // Second part of creating.
+        // Some of these point to the BPlusTree object so we create te BPlusTree as 
+        // absic structure then initialize fully here.
         this.rootIdx = stateManager.getRoot() ;
         this.stateManager = stateManager ;
         this.nodeManager = nodeManager ;
@@ -488,11 +489,6 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         }
     }
     
-    @Override
-    public ComponentId getComponentId() {
-        return componentId ;
-    }
-
     @Override
     public void startRecovery() {}
 

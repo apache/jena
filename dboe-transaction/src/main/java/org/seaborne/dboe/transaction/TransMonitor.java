@@ -34,13 +34,17 @@ import org.seaborne.dboe.transaction.txn.* ;
 public class TransMonitor implements TransactionalComponent {
     
     /** Counters, in initialization order */
-    private List<Pair<String, AtomicLong>> counters = new ArrayList<>() ; 
+    private List<Pair<String, AtomicLong>> counters = new ArrayList<>() ;
+    private final ComponentId componentId ;
+    
     private AtomicLong allocCounter(String string) {
         AtomicLong counter = new AtomicLong(0) ;
         counters.add(Pair.create(string, counter)) ;
         return counter ;
     }
-    public TransMonitor() { }
+    public TransMonitor(ComponentId cid) { 
+        this.componentId = cid ;
+    }
     
     /** Reset all counters to zero */
     public void reset() {
@@ -73,7 +77,7 @@ public class TransMonitor implements TransactionalComponent {
     @Override
     public ComponentId getComponentId() {
         counterGetComponentId.incrementAndGet() ;
-        return ComponentIds.idMonitor ;
+        return componentId ;
     }
 
     public AtomicLong counterStartRecovery = allocCounter("startRecovery") ;

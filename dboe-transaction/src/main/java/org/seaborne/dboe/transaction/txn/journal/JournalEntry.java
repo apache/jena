@@ -78,7 +78,7 @@ public class JournalEntry
             if ( label != null )
                 sbuff.append(label) ;
             sbuff.append(" [..") ;
-            int z = Bytes.getInt(entry.componentId.bytes(), entry.componentId.bytes().length-4) ;
+            int z = Bytes.getInt(entry.componentId.getBytes(), entry.componentId.getBytes().length-4) ;
             sbuff.append(Integer.toHexString(z)) ;
             sbuff.append("]") ;
         }

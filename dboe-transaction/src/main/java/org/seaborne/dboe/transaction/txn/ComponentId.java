@@ -21,42 +21,49 @@ import java.util.Arrays ;
 import java.util.UUID ;
 
 import org.apache.jena.atlas.lib.Bytes ;
-import org.seaborne.dboe.migrate.L ;
-import org.seaborne.dboe.sys.SystemBase ;
 
-/** 
- * An class to represent a component identifier.
- * Avoid bland byte[] in interfaces. 
+/** A {@code ComponentId} consists of two parts: a globally unique context 
+ * (roughly - the domain where the {@code ComponentId} is valid)
+ * and an id within the context.
+ * Context is often a single coordinator but can be, for example,
+ * a distributed transaction coordinator.    
  */
+
 public class ComponentId {
-    public static final int SIZE = 16 ;
+    // Fixed size. 
+    public static final int SIZE = 4 ;
+    private final UUID coordinatorId ;
     private final byte[] bytes ;
+    // Just a helper for development.  Not persisted in the journal.
     private final String displayName ;
     
     /** Create a new ComponentId from the given bytes.
      * The bytes are <em>not</em> copied. 
      * The caller must not modify them after this call.
      * The static method {@link #create(String, byte[])}
-     * does copy and is preferred.
+     * does the copy.
      */
-    public ComponentId(String label, byte[] bytes) {
-        // Ultra safe - 
-        //bytes = Arrays.copyOf(bytes, bytes.length) ;
+    private ComponentId(String label, UUID coordinatorId, byte[] bytes) {
+        this.coordinatorId = coordinatorId ;
+        if ( label == null )
+            label = "" ;
         if ( bytes.length > SIZE )
-            throw new IllegalArgumentException("Bytes for ComponentId too long") ;
+            throw new IllegalArgumentException("Bytes for ComponentId too long "+bytes.length+" > "+SIZE) ;
         if ( bytes.length < SIZE )
+            // Make safe.
             bytes = Arrays.copyOf(bytes, SIZE) ;
         this.bytes = bytes ;
         this.displayName = label ;
     }
     
-    public byte[] bytes() { return bytes ; }
+    public byte[] getBytes() { return bytes ; }
+    
+    public UUID getBaseId() { return coordinatorId ; }
     
     public String label() { return displayName ; }
     
     @Override
     public String toString() { return displayName+"["+Bytes.asHex(bytes)+"]" ; }
-
     
     @Override
     public int hashCode() {
@@ -81,39 +88,35 @@ public class ComponentId {
     }
 
     /** Create a ComponentId from the given bytes */
-    public static ComponentId create(String label, byte[] bytes) {
+    public static ComponentId create(UUID coordinatorBase, byte[] bytes) {
         bytes = Arrays.copyOf(bytes, bytes.length) ;
-        return new ComponentId(label, bytes) ;
+        return new ComponentId(null, coordinatorBase, bytes) ;
     }
     
     /** Given a base componentId, create a derived (different) one.
      * This is deterministically done based on  baseComponentId and index.
-     * The label is just for display purposes; the index is appended.
+     * The label is just for display purposes.
      */ 
-    public static ComponentId alloc(ComponentId baseComponentId, String label, int index) {
-        //private static ComponentId alloc(byte[] bytes, ComponentId baseComponentId, String label, int index) {
-        if (label == null )
-            label = baseComponentId.label() ;
-        if (label == null )
-            label = "Base" ;
-        return create(baseComponentId.bytes(), label, index) ;
+    public static ComponentId alloc(String label, UUID coordinatorBase, int index) {
+        byte[] bytes = Bytes.intToBytes(index) ;
+        return new ComponentId(label, coordinatorBase, bytes) ;
     }
     
-    private static ComponentId create(byte[] bytes, String label, int index) {
-        bytes = Arrays.copyOf(bytes, bytes.length) ;
-        int x = Bytes.getInt(bytes, bytes.length-SystemBase.SizeOfInt) ;
-        x = x ^ index ;
-        Bytes.setInt(x, bytes, bytes.length - SystemBase.SizeOfInt) ;
-        ComponentId cid = new ComponentId(label+"-"+index, bytes) ;
-        return cid ;
-    }
+//    private static ComponentId create(byte[] bytes, String label, int index) {
+//        bytes = Arrays.copyOf(bytes, bytes.length) ;
+//        int x = Bytes.getInt(bytes, bytes.length-SystemBase.SizeOfInt) ;
+//        x = x ^ index ;
+//        Bytes.setInt(x, bytes, bytes.length - SystemBase.SizeOfInt) ;
+//        ComponentId cid = new ComponentId(label+"-"+index, bytes) ;
+//        return cid ;
+//    }
     
     static int counter = 0 ;
     /** Return a fresh ComponentId (not preserved across JVM runs) */ 
     public static ComponentId allocLocal() {
         counter++ ;
         UUID uuid = UUID.randomUUID() ;
-        return create(L.uuidAsBytes(uuid), "Local", counter) ;
+        return alloc("Local-"+counter, uuid, counter) ;
     }
 
 }
