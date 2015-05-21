@@ -17,8 +17,6 @@
  */
 package org.apache.jena.hadoop.rdf.io.registry.readers;
 
-import java.io.IOException;
-
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.jena.hadoop.rdf.io.input.readers.jsonld.JsonLDQuadReader;
@@ -37,12 +35,12 @@ public class JsonLDReaderFactory extends AbstractReaderFactory {
     }
 
     @Override
-    public RecordReader<LongWritable, QuadWritable> createQuadReader() throws IOException {
+    public RecordReader<LongWritable, QuadWritable> createQuadReader() {
         return new JsonLDQuadReader();
     }
 
     @Override
-    public RecordReader<LongWritable, TripleWritable> createTripleReader() throws IOException {
+    public RecordReader<LongWritable, TripleWritable> createTripleReader() {
         return new JsonLDTripleReader();
     }
 
