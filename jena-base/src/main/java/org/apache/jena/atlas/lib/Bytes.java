@@ -88,7 +88,7 @@ public class Bytes
      * @see Integer#SIZE
      */
     public static byte[] intToBytes(int v) {
-        byte[] bytes = new byte[Integer.SIZE] ;
+        byte[] bytes = new byte[Integer.BYTES] ;
         setInt(v, bytes); 
         return bytes ;
     }
@@ -99,7 +99,7 @@ public class Bytes
      * @see Long#SIZE
      */
     public static byte[] longToBytes(long v) {
-        byte[] bytes = new byte[Long.SIZE] ;
+        byte[] bytes = new byte[Long.BYTES] ;
         setLong(v, bytes); 
         return bytes ;
     }

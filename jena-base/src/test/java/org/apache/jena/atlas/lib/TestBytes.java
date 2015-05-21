@@ -28,7 +28,7 @@ public class TestBytes extends BaseTest
 {
     @Test public void intToBytes1() {
         byte[] b = Bytes.intToBytes(0xF1020304) ;
-        assertEquals(Integer.SIZE, b.length) ;
+        assertEquals(Integer.BYTES, b.length) ;
         assertEquals(0xF1, b[0]&0xFF) ;
         assertEquals(0x02, b[1]) ;
         assertEquals(0x03, b[2]) ;
@@ -37,7 +37,7 @@ public class TestBytes extends BaseTest
     
     @Test public void longToBytes1() {
         byte[] b = Bytes.longToBytes(0xF506070801020304L) ;
-        assertEquals(Long.SIZE, b.length) ;
+        assertEquals(Long.BYTES, b.length) ;
         assertEquals(0xF5, b[0]&0xFF) ;
         assertEquals(0x06, b[1]) ;
         assertEquals(0x07, b[2]) ;
