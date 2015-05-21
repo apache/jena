@@ -37,7 +37,7 @@
     <arq.version>3.0.0-SNAPSHOT</arq.version>
     <junit.version>4.11</junit.version>
     <mrunit.version>1.0.0</mrunit.version>
-    <airline.version>0.9.1</airline.version>
+    <airline.version>0.9.2</airline.version>
   </properties>
 
 	<!-- Profiles to allow building for different Hadoop versions -->
