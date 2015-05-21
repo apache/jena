@@ -352,11 +352,10 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * Basic tuples input test
      * 
      * @throws IOException
-     * @throws ClassNotFoundException
      * @throws InterruptedException
      */
     @Test
-    public final void single_input_01() throws IOException, InterruptedException, ClassNotFoundException {
+    public final void single_input_01() throws IOException, InterruptedException {
         testSingleInput(empty, this.canSplitInputs() ? 0 : 1, EMPTY_SIZE);
     }
 
@@ -368,7 +367,7 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * @throws InterruptedException
      */
     @Test
-    public final void single_input_02() throws IOException, InterruptedException, ClassNotFoundException {
+    public final void single_input_02() throws IOException, InterruptedException {
         testSingleInput(small, 1, SMALL_SIZE);
     }
 
@@ -380,7 +379,7 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * @throws InterruptedException
      */
     @Test
-    public final void single_input_03() throws IOException, InterruptedException, ClassNotFoundException {
+    public final void single_input_03() throws IOException, InterruptedException {
         testSingleInput(large, 1, LARGE_SIZE);
     }
 
@@ -392,7 +391,7 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * @throws InterruptedException
      */
     @Test
-    public final void single_input_04() throws IOException, InterruptedException, ClassNotFoundException {
+    public final void single_input_04() throws IOException, InterruptedException {
         testSingleInput(bad, 1, 0);
     }
 
@@ -404,7 +403,7 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * @throws InterruptedException
      */
     @Test
-    public final void single_input_05() throws IOException, InterruptedException, ClassNotFoundException {
+    public final void single_input_05() throws IOException, InterruptedException {
         testSingleInput(mixed, 1, MIXED_SIZE / 2);
     }
 
@@ -483,11 +482,10 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * tuples test with multiple inputs
      * 
      * @throws IOException
-     * @throws ClassNotFoundException
      * @throws InterruptedException
      */
     @Test
-    public final void multiple_inputs_01() throws IOException, InterruptedException, ClassNotFoundException {
+    public final void multiple_inputs_01() throws IOException, InterruptedException {
         testMultipleInputs(new File[] { empty, small, large }, this.canSplitInputs() ? 2 : 3, EMPTY_SIZE + SMALL_SIZE
                 + LARGE_SIZE);
     }
@@ -500,7 +498,7 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * @throws InterruptedException
      */
     @Test
-    public final void multiple_inputs_02() throws IOException, InterruptedException, ClassNotFoundException {
+    public final void multiple_inputs_02() throws IOException, InterruptedException {
         testMultipleInputs(new File[] { folder.getRoot() }, this.canSplitInputs() ? 4 : 5, EMPTY_SIZE + SMALL_SIZE
                 + LARGE_SIZE + (MIXED_SIZE / 2));
     }
@@ -542,9 +540,8 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * @param split
      *            Input split
      * @return True if a valid split, false otherwise
-     * @throws IOException
      */
-    protected boolean isValidSplit(InputSplit split, Configuration config) throws IOException {
+    protected boolean isValidSplit(InputSplit split, Configuration config) {
         return split instanceof FileSplit;
     }
 
@@ -565,7 +562,7 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * @throws ClassNotFoundException
      */
     @Test
-    public final void split_input_01() throws IOException, InterruptedException, ClassNotFoundException {
+    public final void split_input_01() throws IOException, InterruptedException {
         Assume.assumeTrue(this.canSplitInputs());
 
         Configuration config = this.prepareConfiguration();
@@ -582,7 +579,7 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * @throws ClassNotFoundException
      */
     @Test
-    public final void split_input_02() throws IOException, InterruptedException, ClassNotFoundException {
+    public final void split_input_02() throws IOException, InterruptedException {
         Assume.assumeTrue(this.canSplitInputs());
 
         Configuration config = this.prepareConfiguration();
@@ -600,7 +597,7 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * @throws ClassNotFoundException
      */
     @Test
-    public final void split_input_03() throws IOException, InterruptedException, ClassNotFoundException {
+    public final void split_input_03() throws IOException, InterruptedException {
         Assume.assumeTrue(this.canSplitInputs());
 
         Configuration config = this.prepareConfiguration();

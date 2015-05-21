@@ -52,7 +52,6 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.hadoop.rdf.io.RdfIOConstants;
 import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 import org.apache.jena.riot.system.ParserProfile;
-import org.apache.log4j.BasicConfigurator;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.BeforeClass;
@@ -63,7 +62,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Test case that embodies the scenario described in JENA-820
  */
-@SuppressWarnings("unused")
 public abstract class AbstractBlankNodeTests<T, TValue extends AbstractNodeTupleWritable<T>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBlankNodeTests.class);

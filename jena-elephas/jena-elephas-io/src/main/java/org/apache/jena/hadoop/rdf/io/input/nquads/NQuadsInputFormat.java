@@ -18,8 +18,6 @@
 
 package org.apache.jena.hadoop.rdf.io.input.nquads;
 
-import java.io.IOException;
-
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
@@ -38,8 +36,7 @@ import org.apache.jena.hadoop.rdf.types.QuadWritable;
 public class NQuadsInputFormat extends AbstractNLineFileInputFormat<LongWritable, QuadWritable> {
 
     @Override
-    public RecordReader<LongWritable, QuadWritable> createRecordReader(InputSplit arg0, TaskAttemptContext arg1)
-            throws IOException, InterruptedException {
+    public RecordReader<LongWritable, QuadWritable> createRecordReader(InputSplit arg0, TaskAttemptContext arg1) {
         return new NQuadsReader();
     }
 

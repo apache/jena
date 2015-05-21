@@ -17,7 +17,6 @@
  */
 package org.apache.jena.hadoop.rdf.io.registry.writers;
 
-import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
@@ -41,15 +40,13 @@ public class ThriftWriterFactory extends AbstractWriterFactory {
     }
 
     @Override
-    public <TKey> RecordWriter<TKey, QuadWritable> createQuadWriter(Writer writer, Configuration config)
-            throws IOException {
+    public <TKey> RecordWriter<TKey, QuadWritable> createQuadWriter(Writer writer, Configuration config) {
         return new StreamRdfQuadWriter<TKey>(new StreamRDF2Thrift(new WriterOutputStream(writer, Charset.forName("utf-8")),
                 false), writer);
     }
 
     @Override
-    public <TKey> RecordWriter<TKey, TripleWritable> createTripleWriter(Writer writer, Configuration config)
-            throws IOException {
+    public <TKey> RecordWriter<TKey, TripleWritable> createTripleWriter(Writer writer, Configuration config) {
         return new StreamRdfTripleWriter<TKey>(new StreamRDF2Thrift(new WriterOutputStream(writer, Charset.forName("utf-8")),
                 false), writer);
     }
