@@ -19,6 +19,7 @@ package org.seaborne.tdb2.setup;
 
 import java.io.File ;
 import java.io.FileFilter ;
+import java.util.UUID ;
 
 import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.StrUtils ;
@@ -29,7 +30,6 @@ import org.seaborne.dboe.base.file.* ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.dboe.index.RangeIndex ;
-import org.seaborne.dboe.migrate.L ;
 import org.seaborne.dboe.sys.Names ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
@@ -72,10 +72,14 @@ public class TDB2Builder {
     // Recover from existing.
     // Align component ids from existing.
     
+    private static int builderCounter = 1 ;
+    
     private final ComponentId tdbComponentId ;
     private int componentCounter = 1 ;
     private final Location location ;
     private final StoreParams storeParams ;
+
+    private final UUID uuid ;
     private static DatasetControl createPolicy() { return new DatasetControlMRSW() ; }
     
     public static DatasetGraphTxn build(Location location, StoreParams appParams) {
@@ -138,8 +142,10 @@ public class TDB2Builder {
     }
 
     public TDB2Builder(Location location, StoreParams storeParams) {
-        this.tdbComponentId = ComponentId.create("TDB", L.uuidAsBytes("6096e8da-f654-11e4-89bd-3417eb9beefa")) ;
-        this.componentCounter = 1 ;
+        builderCounter++ ;
+        this.uuid = UUID.randomUUID() ;
+        this.tdbComponentId = ComponentId.alloc("TDB", uuid, builderCounter) ;
+        this.componentCounter = builderCounter*1000 ;
         this.location = location ;
         this.storeParams = storeParams ;
     }
@@ -162,7 +168,7 @@ public class TDB2Builder {
     */
     private ComponentId nextComponentId(String unit) {
         //System.out.println("nextComponentId: "+unit) ;
-        return ComponentId.alloc(tdbComponentId, unit, componentCounter++) ;
+        return ComponentId.alloc(unit, uuid, componentCounter++) ;
     }
 
     private TripleTable buildTripleTable(TransactionCoordinator txnCoord, NodeTable nodeTable, StoreParams params)
@@ -272,7 +278,7 @@ public class TDB2Builder {
         BufferChannel pState = FileFactory.createBufferChannel(fs, Names.extBdfState) ;
         ComponentId cid = nextComponentId(dataname) ;
         // ComponentId mgt.
-        TransBinaryDataFile transBinFile = new TransBinaryDataFile(binFile, pState, cid) ;
+        TransBinaryDataFile transBinFile = new TransBinaryDataFile(binFile, cid, pState) ;
         coord.add(transBinFile) ;
         return new NodeTableTRDF(index, binFile) ;
 
