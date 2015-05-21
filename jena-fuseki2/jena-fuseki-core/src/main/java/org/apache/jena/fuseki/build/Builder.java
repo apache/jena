@@ -73,7 +73,7 @@ public class Builder
             throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
         Dataset ds = (Dataset)Assembler.general.open(datasetDesc) ;
         // In case the assembler included ja:contents
-        DataService dataService = new DataService(null, ds.asDatasetGraph()) ;
+        DataService dataService = new DataService(ds.asDatasetGraph()) ;
         addServiceEP(dataService, OperationName.Query,  svc,    "fu:serviceQuery") ;
         addServiceEP(dataService, OperationName.Update, svc,    "fu:serviceUpdate") ;
         addServiceEP(dataService, OperationName.Upload, svc,    "fu:serviceUpload") ;
@@ -99,7 +99,7 @@ public class Builder
     
     /** Build a DataService starting at Resource svc */
     public static DataService buildDataService(DatasetGraph dsg, boolean allowUpdate) {
-        DataService dataService = new DataService(null, dsg) ;
+        DataService dataService = new DataService(dsg) ;
         addServiceEP(dataService, OperationName.Query, "query") ;
         addServiceEP(dataService, OperationName.Query, "sparql") ;
         if ( ! allowUpdate ) {
