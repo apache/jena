@@ -82,6 +82,28 @@ public class Bytes
         '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' ,
         '9' , 'a' , 'b' , 'c' , 'd' , 'e' , 'f' };
 
+    /** Put an int value into an allocated byte array. 
+     * @param v
+     * @returns byte[] array 
+     * @see Integer#SIZE
+     */
+    public static byte[] intToBytes(int v) {
+        byte[] bytes = new byte[Integer.SIZE] ;
+        setInt(v, bytes); 
+        return bytes ;
+    }
+    
+    /** Put a long value into an allocated byte array. 
+     * @param v
+     * @returns byte[] array 
+     * @see Long#SIZE
+     */
+    public static byte[] longToBytes(long v) {
+        byte[] bytes = new byte[Long.SIZE] ;
+        setLong(v, bytes); 
+        return bytes ;
+    }
+    
     /** Get an int from a byte array (network order)
      * @param b Byte Array
      */
