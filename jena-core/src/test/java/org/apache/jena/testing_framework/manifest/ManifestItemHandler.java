@@ -16,24 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.graph.impl;
+package org.apache.jena.testing_framework.manifest;
 
-import java.util.HashSet;
+import java.util.List;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.CollectionGraph ;
-import org.apache.jena.graph.test.AbstractTestGraph ;
+import org.junit.runner.Runner;
+import org.junit.runners.model.InitializationError;
 
-public class TestCollectionGraph extends AbstractTestGraph {
-	 
-	public TestCollectionGraph(String name) {
-		super(name);
-	}
+public interface ManifestItemHandler {
+	/**
+	 * Handle an item in a manifest
+	 * 
+	 * @throws InitializationError
+	 */
+	public void processManifestItem(ManifestItem item);
 
-	@Override
-	public Graph getGraph() {
-		return new CollectionGraph( new HashSet<Triple>() );
-	}
-
+	public void setTestRunnerList(List<Runner> runners);
 }

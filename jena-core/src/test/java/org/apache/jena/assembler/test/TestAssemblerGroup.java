@@ -18,9 +18,11 @@
 
 package org.apache.jena.assembler.test;
 
+import java.util.Map;
+
 import org.apache.jena.assembler.* ;
 import org.apache.jena.assembler.assemblers.* ;
-import org.apache.jena.assembler.assemblers.AssemblerGroup.ExpandingAssemblerGroup ;
+import org.apache.jena.assembler.assemblers.AssemblerGroup.ExpandingAssemblerGroup;
 import org.apache.jena.assembler.exceptions.* ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.mem.GraphMemBase ;
@@ -66,7 +68,9 @@ public class TestAssemblerGroup extends AssemblerTestBase
     
     public static class Trivial
         {
-        static { loaded = true; }
+        static { 
+        	loaded = true;
+        }
         }
     
     public void testLoadsClasses()
