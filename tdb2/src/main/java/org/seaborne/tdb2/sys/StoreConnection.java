@@ -27,8 +27,8 @@ import org.seaborne.dboe.base.file.ChannelManager ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.file.LocationLock ;
 import org.seaborne.tdb2.TDBException ;
+import org.seaborne.tdb2.setup.TDBBuilder ;
 import org.seaborne.tdb2.setup.StoreParams ;
-import org.seaborne.tdb2.setup.TDB2Builder ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
 import org.seaborne.tdb2.store.DatasetGraphTxn ;
 
@@ -61,7 +61,7 @@ public class StoreConnection
         if ( sConn == null ) {
             // Recovery happens when TransactionCoordinator.start is called
             // during the building of the DatasetGraphTxn.
-            DatasetGraphTxn dsg = TDB2Builder.build(location, params) ;
+            DatasetGraphTxn dsg = TDBBuilder.build(location, params) ;
             if (SystemTDB.DiskLocationMultiJvmUsagePrevention)
             {
                 // Obtain the lock ASAP but we do need an initialized database,

@@ -95,8 +95,10 @@ public class NodeTableTRDF extends NodeTableNative {
 
     @Override
     protected void closeSub() {
-        try { transport.close() ; }
-        catch (Exception ex) { throw new TDBException("NodeTableTRDF", ex) ; }
+        if ( transport.isOpen() ) {
+            try { transport.close() ; }
+            catch (Exception ex) { throw new TDBException("NodeTableTRDF", ex) ; }
+        }
     }
 
     public Index getIndex()             { return nodeHashToId ; }

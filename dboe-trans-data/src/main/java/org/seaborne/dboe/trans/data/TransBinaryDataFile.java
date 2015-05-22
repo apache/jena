@@ -211,7 +211,6 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
 
     @Override
     public void close() {
-        super.checkTxn();
         binFile.close() ;
     }
 

@@ -29,7 +29,7 @@ import org.apache.log4j.Level ;
 import org.apache.log4j.Logger ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.tdb2.setup.TDB2Builder ;
+import org.seaborne.tdb2.setup.TDBBuilder ;
 
 public class TestTripleTable extends BaseTest
 {
@@ -125,7 +125,7 @@ public class TestTripleTable extends BaseTest
     
     private TripleTable createTripleTableMem()
     {
-        DatasetGraphTxn dsx = (DatasetGraphTxn)TDB2Builder.build(Location.mem()) ;
+        DatasetGraphTxn dsx = (DatasetGraphTxn)TDBBuilder.build(Location.mem()) ;
         dsx.begin(ReadWrite.WRITE);
         DatasetGraphTDB ds = dsx.getBaseDatasetGraph() ;
         return ds.getTripleTable() ;

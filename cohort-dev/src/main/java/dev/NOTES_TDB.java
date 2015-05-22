@@ -18,9 +18,12 @@
 package dev;
 
 public class NOTES_TDB {
+    // Bring in Builder2 from Lizard + a state object (to include fresh ComponentIdMgr)
+    //  replaces TDB2Builder.
+    
     // ComponentId management.
     // lizard.ComponentIdMgr
-    // Componentid - no need for UUID?
+    // ComponentId - no need for UUID?
     
     // Load monitoring : StreamRDFMonitor
 
