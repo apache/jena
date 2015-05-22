@@ -277,8 +277,6 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         startUpdateBlkMgr() ;
         BPTreeNode root = getRootWrite() ;
         Record r = BPTreeNode.insert(root, record) ;
-        if ( BPT.CheckingTree )
-            root.checkNodeDeep() ;
         releaseRootWrite(root) ;
         finishUpdateBlkMgr() ;
         return r ;
@@ -293,8 +291,6 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         startUpdateBlkMgr() ;
         BPTreeNode root = getRootWrite() ;
         Record r = BPTreeNode.delete(root, record) ;
-        if ( BPT.CheckingTree )
-            root.checkNodeDeep() ;
         releaseRootWrite(root) ;
         finishUpdateBlkMgr() ;
         return r ;

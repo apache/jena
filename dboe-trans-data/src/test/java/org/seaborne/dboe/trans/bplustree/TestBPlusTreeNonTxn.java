@@ -47,11 +47,6 @@ public class TestBPlusTreeNonTxn extends AbstractTestRangeIndex {
     @BeforeClass
     static public void beforeClass() {
         BPT.CheckingNode = true ;
-        // This is more a debugging aid for working on one failure.
-        // Very slow in testing - especially test_clear_07 where the tree is quite large.
-        // Hence leave as "false"
-        BPT.CheckingTree = false ;
-        
         originalNullOut = SystemIndex.getNullOut() ;
         SystemIndex.setNullOut(true) ;
     }

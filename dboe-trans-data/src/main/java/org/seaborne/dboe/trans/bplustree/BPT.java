@@ -39,9 +39,6 @@ public final class BPT {
     public static boolean promoteDuplicateRecords   = false ;
     public static boolean promoteDuplicateNodes     = false ;
 
-    // Global settings
-    // Check on exit of B+Tree modifiying operations
-    public static boolean CheckingTree = SystemIndex.Checking ;         
     // Check within BPTreeNode
     public static boolean CheckingNode = false ;                      
     // Check on exit of B+Tree modifiying operations
@@ -50,7 +47,6 @@ public final class BPT {
 
     /** Enable detailed internal consistency checking */
     public static void checking(boolean onOrOff) {
-        // CheckingTree = true ;
         CheckingNode = onOrOff ;
     }
 

@@ -737,9 +737,7 @@ public final class BPTreeNode extends BPTreePage
         right.release() ;
         root.write() ;
 
-        if ( BPT.CheckingTree )
-            root.checkNodeDeep() ;
-        else if ( BPT.CheckingNode ) {
+        if ( BPT.CheckingNode ) {
             root.internalCheckNode() ;
             left.internalCheckNode() ;
             right.internalCheckNode() ;
@@ -1318,9 +1316,10 @@ public final class BPTreeNode extends BPTreePage
     }
 
     private final void internalCheckNodeDeep() {
-        if ( !BPT.CheckingTree )
-            return ;
-        checkNodeDeep() ;
+        // This distrubes trackign operations and blocks.
+        // Hooks left but switch off.
+        if ( false )
+            checkNodeDeep() ;
     }
 
     @Override
@@ -1392,26 +1391,24 @@ public final class BPTreeNode extends BPTreePage
         for ( ; i < count + 1 ; i++ ) {
             if ( ptrs.get(i) < 0 )
                 BPT.error("Node: %d: Invalid child pointer @%d :: %s", id, i, this) ;
-
-            // This does Block IO so disturbs tracking.
-            if ( BPT.CheckingTree && isLeaf ) {
-                int ptr = ptrs.get(i) ;
-                BPTreeRecords records = bpTree.getRecordsMgr().getRead(ptr) ;
-                int rid = records.getId() ;
-                if ( rid != ptrs.get(i) )
-                    BPT.error("Records: Block @%d has a different id: %d :: %s", rid, i, this) ;
-                int link = records.getLink() ;
-                // Don't check if -1 which does not exist.
-                if ( link != -1 && i != count ) {
-                    BPTreeRecords page = bpTree.getRecordsMgr().getRead(ptrs.get(i)) ;
-                    int rid2 = page.getLink() ;
-                    if ( link != rid2 )
-                        BPT.error("Records: Link not to next block @%d/@%d has a different id: %d :: %s", rid, rid2, i, records) ;
-                    bpTree.getRecordsMgr().release(page) ;
-                }
-                records.release() ;
-            }
-
+//            // This does Block IO so disturbs tracking.
+//            if ( BPT.CheckingTree && isLeaf ) {
+//                int ptr = ptrs.get(i) ;
+//                BPTreeRecords records = bpTree.getRecordsMgr().getRead(ptr) ;
+//                int rid = records.getId() ;
+//                if ( rid != ptrs.get(i) )
+//                    BPT.error("Records: Block @%d has a different id: %d :: %s", rid, i, this) ;
+//                int link = records.getLink() ;
+//                // Don't check if -1 which does not exist.
+//                if ( link != -1 && i != count ) {
+//                    BPTreeRecords page = bpTree.getRecordsMgr().getRead(ptrs.get(i)) ;
+//                    int rid2 = page.getLink() ;
+//                    if ( link != rid2 )
+//                        BPT.error("Records: Link not to next block @%d/@%d has a different id: %d :: %s", rid, rid2, i, records) ;
+//                    bpTree.getRecordsMgr().release(page) ;
+//                }
+//                records.release() ;
+//            }
         }
 
         // Check empty is empty
