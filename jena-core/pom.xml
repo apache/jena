@@ -83,6 +83,14 @@
 			<artifactId>jena-base</artifactId>
 			<version>3.0.0-SNAPSHOT</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-base</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
