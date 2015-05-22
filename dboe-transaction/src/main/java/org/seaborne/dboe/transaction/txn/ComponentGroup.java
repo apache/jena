@@ -38,6 +38,7 @@ public class ComponentGroup {
     }
     
     /*package*/ void add(TransactionalComponent component) {
+        //Log.info(this, "add("+component.getComponentId()+")") ;
         if ( component.getComponentId() == null )
             Log.warn(this,  "Null component id - likely to be overwritten: "+component) ;
             

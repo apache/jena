@@ -19,6 +19,7 @@ package tdbdev;
 
 public class TDB_DEV {
     // ComponentId management.
+    // Componentid - no need for UUID?
     
     // Names.* "obj", "-data", "bdf state file.
     

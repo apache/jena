@@ -17,16 +17,34 @@
 
 package org.seaborne.dboe.transaction;
 
+import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.TransactionalComponent ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
+/** Helper operations for creating a {@link Transactional}.
+ * The oepration capture some common patterns.
+ */
 public class TransactionalFactory {
 
+    public static Transactional create(Location location, TransactionalComponent ... elements) {
+        TransactionCoordinator coord = new TransactionCoordinator(location) ;
+        return create(coord, elements) ;
+    }
+
     public static Transactional create(Journal journal, TransactionalComponent ... elements) {
-        TransactionalBase t = new TransactionalBase(journal, elements) ;
-        t.start() ;
-        return t ;
+        TransactionCoordinator coord = new TransactionCoordinator(journal) ;
+        return create(coord, elements) ;
+    }
+
+    private static Transactional create(TransactionCoordinator coord, TransactionalComponent[] elements) {
+        for ( TransactionalComponent tc : elements ) {
+            coord.add(tc) ;
+        }
+        TransactionalBase base = new TransactionalBase(coord) ;
+        coord.start() ;
+        return base ;
     }
 
 }

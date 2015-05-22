@@ -123,11 +123,11 @@ public class TestTransObjectFile extends Assert {
         // Recovery.
         //transObjectFile.recover(bb);
         TransactionalBase transBase = (TransactionalBase)TransactionalFactory.create(journal, transObjectFile) ;
-        transBase.getTxnMgr().recovery();
         ByteBuffer bb1 = Txn.executeReadReturn(transBase, ()->transObjectFile.read(x3)) ;
         String s1 = Bytes.fromByteBuffer(bb1) ;
         assertEquals(str2, s1);
         // Woot!
+        transBase.getTxnMgr().shutdown();
     }
 }
 

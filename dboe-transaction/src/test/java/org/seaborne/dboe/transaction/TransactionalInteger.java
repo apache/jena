@@ -17,8 +17,8 @@
 
 package org.seaborne.dboe.transaction;
 
+import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
-import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 /** 
  * A Transactional (unit of begin/commit) of a single integer component.
@@ -28,14 +28,10 @@ import org.seaborne.dboe.transaction.txn.journal.Journal ;
 public class TransactionalInteger extends TransactionalBase {
     final private TransInteger integer ;
 
-    public TransactionalInteger(Journal journal) {
-        this(journal, 0L) ;
-    }
-
-    public TransactionalInteger(Journal journal, long v) {
-        super(journal) ;
+    public TransactionalInteger(TransactionCoordinator coord, long v) {
+        super(coord) ;
         integer = new TransInteger(v) ;
-        super.txnMgr.add(integer) ;
+        coord.add(integer) ;
     }
 
     public void inc() {

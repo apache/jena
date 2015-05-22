@@ -59,12 +59,13 @@ public class StoreConnection
     public synchronized static StoreConnection make(Location location, StoreParams params) {
         StoreConnection sConn = cache.get(location) ;
         if ( sConn == null ) {
+            // Recovery happens when TransactionCoordinator.start is called
+            // during the building of the DatasetGraphTxn.
             DatasetGraphTxn dsg = TDB2Builder.build(location, params) ;
-            sConn = new StoreConnection(dsg) ;
-
             if (SystemTDB.DiskLocationMultiJvmUsagePrevention)
             {
-                // Obtain the lock ASAP
+                // Obtain the lock ASAP but we do need an initialized database,
+                // so an empty directory is actually empty. Hence, after building.
                 LocationLock lock = location.getLock();
                 if (lock.canLock()) {
                     if (!lock.canObtain()) 
@@ -79,8 +80,7 @@ public class StoreConnection
                     }
                 }
             }
-            // XXX Recovery
-            //sConn.forceRecoverFromJournal() ;
+            sConn = new StoreConnection(dsg) ;
             if (!location.isMemUnique())
                 cache.put(location, sConn) ;
         }

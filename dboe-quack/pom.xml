@@ -63,13 +63,6 @@
       <scope>test</scope>
     </dependency>
     
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    
     <!--
     <dependency>
       <groupId>org.apache.jena</groupId>

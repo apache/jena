@@ -18,13 +18,10 @@
 package org.seaborne.dboe.transaction.txn;
 
 import java.util.Objects ;
-import java.util.concurrent.atomic.AtomicInteger ;
 
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ReadWrite ;
 import org.seaborne.dboe.transaction.txn.Transaction.TxnState ;
-import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 /**
  * Framework for implementing a Transactional.
@@ -32,22 +29,12 @@ import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 public class TransactionalBase implements TransactionalSystem {
     // Help debugging by generating names for Transactionals.  Remove sometime.
-    static AtomicInteger counter = new AtomicInteger() ;
     private final String label ; 
-    protected boolean hasStarted = false ;
     protected boolean isShutdown = false ; 
     protected final TransactionCoordinator txnMgr ;
     
     // Per thread transaction.
     private final ThreadLocal<Transaction> theTxn = new ThreadLocal<Transaction>() ;
-    
-    public TransactionalBase(Journal journal, TransactionalComponent ... elements) {
-        int i = counter.incrementAndGet() ;
-        this.txnMgr = new TransactionCoordinator(journal) ;
-        this.label = Lib.className(this)+"("+i+")" ;
-        for ( TransactionalComponent elt : elements )
-            this.txnMgr.add(elt) ;
-    }
     
     public TransactionalBase(String label, TransactionCoordinator txnMgr) {
         this.label = label ;
@@ -157,10 +144,10 @@ public class TransactionalBase implements TransactionalSystem {
 
     final 
     public boolean isInTransaction() {
-        return theTxn.get() != null ;
+        return isAttached() ;
     }
     
-    /** Get the transaction, checkign there is one */  
+    /** Get the transaction, checking there is one */  
     private Transaction getValidTransaction() {
         Transaction txn = theTxn.get() ;
         if ( txn == null )
@@ -168,14 +155,20 @@ public class TransactionalBase implements TransactionalSystem {
         return txn ;
     }
 
-    public void start() {
-        hasStarted = true ;
-        txnMgr.recovery() ; 
+    private boolean isAttached() {
+        checkRunning() ;
+        // tricky - touching theTxn causes it to initialize.
+        Transaction txn = theTxn.get() ;
+        if ( txn != null )
+            return true ;
+        theTxn.remove() ;
+        return false ;
     }
 
     private void checkRunning() {
 //        if ( ! hasStarted )
 //            throw new TransactionException("Not started") ;
+        
         if ( isShutdown )
             throw new TransactionException("Shutdown") ;
     }

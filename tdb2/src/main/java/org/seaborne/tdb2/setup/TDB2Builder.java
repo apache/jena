@@ -138,6 +138,7 @@ public class TDB2Builder {
         Transactional trans = new TransactionalBase(txnCoord) ;
         DatasetGraphTxn dsgtxn = new DatasetGraphTxn(dsg, trans, txnCoord) ;
         QC.setFactory(dsgtxn.getContext(), OpExecutorTDB1.OpExecFactoryTDB) ;
+        txnCoord.start() ;
         return dsgtxn ;
     }
 
@@ -166,6 +167,7 @@ public class TDB2Builder {
     prefixes-data
     GPU
     */
+    // XXX ComponentIdMgr
     private ComponentId nextComponentId(String unit) {
         //System.out.println("nextComponentId: "+unit) ;
         return ComponentId.alloc(unit, uuid, componentCounter++) ;

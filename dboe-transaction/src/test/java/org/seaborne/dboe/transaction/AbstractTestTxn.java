@@ -44,6 +44,7 @@ public abstract class AbstractTestTxn {
             (counter1, new TransactionalComponentWrapper(counter2), monitor) ;
         txnMgr = new TransactionCoordinator(jrnl, cg) ;
         unit = new TransactionalBase(txnMgr) ;
+        txnMgr.start() ;
     }
     
     @After public void clearup() {

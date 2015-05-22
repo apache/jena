@@ -23,16 +23,21 @@ import org.junit.Assert ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.dboe.transaction.txn.journal.Journal ;
+import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 
+/** Unusual ways to do things.
+ *  Rather than a TransactionalComponent,   
+ *  TransactionalInteger 
+ */
 public class TestTxnLib2 extends Assert {
     // With setup/teardown / not from AbstractTestTxn
     private final long InitValue = 7 ;  
     TransactionalInteger integer ; 
     
     @Before public void setup() {
-        Journal jrnl = Journal.create(Location.mem()) ;
-        integer = new TransactionalInteger(jrnl, InitValue) ;
+        TransactionCoordinator coord = new TransactionCoordinator(Location.mem()) ;
+        integer = new TransactionalInteger(coord, InitValue) ;
+        coord.start() ;
     }
     
     @After public void clearup() {

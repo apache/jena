@@ -18,7 +18,6 @@
 package org.seaborne.dboe.trans.bplustree;
 
 import org.apache.jena.query.ReadWrite ;
-
 import org.junit.Assert ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
@@ -28,7 +27,6 @@ import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.dboe.transaction.txn.TransactionalComponent ;
-import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 /** Tests of B+Tree and transactions */ 
 public class TestBPlusTreeTxn extends Assert {
@@ -38,9 +36,11 @@ public class TestBPlusTreeTxn extends Assert {
     }
     
     static Transactional transactional(TransactionalComponent ... components) {
-        Journal journal = Journal.create(Location.mem()) ;
-        Transactional holder = TransactionalFactory.create(journal, components) ;
-        return holder ;
+        return transactional(Location.mem(), components) ;
+    }
+    
+    static Transactional transactional(Location location, TransactionalComponent ... components) {
+        return TransactionalFactory.create(location, components) ;
     }
     
     // Commit

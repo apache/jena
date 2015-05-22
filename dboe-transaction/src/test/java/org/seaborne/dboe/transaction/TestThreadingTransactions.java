@@ -19,21 +19,26 @@ package org.seaborne.dboe.transaction;
 
 import java.util.concurrent.Semaphore ;
 
+import org.apache.jena.query.ReadWrite ;
+import org.junit.After ;
 import org.junit.Assert ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.dboe.transaction.txn.journal.Journal ;
-
-import org.apache.jena.query.ReadWrite ;
+import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 
 public class TestThreadingTransactions {
     static final long InitValue = 3 ;
     private TransactionalInteger transInt ; 
     
     @Before public void init() {
-        Journal journal = Journal.create(Location.mem()) ;
-        transInt = new TransactionalInteger(journal, InitValue) ;
+        TransactionCoordinator coord = new TransactionCoordinator(Location.mem()) ;
+        transInt = new TransactionalInteger(coord, InitValue) ;
+        coord.start();
+    }
+
+    @After public void after() {
+        transInt.getTxnMgr().shutdown();
     }
 
     // Read synchronously in a transaction.

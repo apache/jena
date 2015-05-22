@@ -28,8 +28,8 @@ import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.jena.query.ReadWrite ;
-
 import org.apache.jena.atlas.logging.Log ;
+import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.sys.SystemBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.dboe.transaction.txn.journal.JournalEntry ;
@@ -53,6 +53,8 @@ public class TransactionCoordinator {
     private static Logger log = SystemBase.syslog ;
     
     private final Journal journal ;
+    private boolean coordinatorStarted = false ;
+
     private final ComponentGroup components = new ComponentGroup() ;
     //List<TransactionalComponent> elements ;
     private List<ShutdownHook> shutdownHooks ;
@@ -65,13 +67,18 @@ public class TransactionCoordinator {
     public interface ShutdownHook { void shutdown() ; }
 
     // Coordinator wide lock object.
-    private Object lock = new Object() ; 
+    private Object lock = new Object() ;
+
+    /** Create a TransactionCoordinator, initially with no associated {@link TransactionalComponent}s */ 
+    public TransactionCoordinator(Location location) {
+        this(Journal.create(location)) ;
+    }
     
     /** Create a TransactionCoordinator, initially with no associated {@link TransactionalComponent}s */ 
     public TransactionCoordinator(Journal journal) {
         this(journal, null , new ArrayList<>()) ;
     }
-    
+
     /** Create a TransactionCoordinator, initially with {@link TransactionalComponent} in the ComponentGroup */
     public TransactionCoordinator(Journal journal, List<TransactionalComponent> components) {
         this(journal, components , new ArrayList<>()) ;
@@ -99,14 +106,51 @@ public class TransactionCoordinator {
      * This must be setup before recovery is attempted. 
      */
     public TransactionCoordinator add(TransactionalComponent elt) {
-        checkNotShutdown() ;
+        checkSetup() ;
         synchronized(lock) {
             components.add(elt) ;
         }
         return this ;
     }
 
-    public void recovery() {
+    /** 
+     * Remove a {@link TransactionalComponent}.
+     * @see #add 
+     */
+    public TransactionCoordinator remove(TransactionalComponent elt) {
+        checkSetup() ;
+        synchronized(lock) {
+            components.remove(elt.getComponentId()) ;
+        }
+        return this ;
+    }
+
+    /**
+     * Add a shutdown hook. Shutdown is not guaranteed to be called
+     * and hence hooks may not get called.
+     */
+    public void add(TransactionCoordinator.ShutdownHook hook) {
+        checkSetup() ;
+        synchronized(lock) {
+            shutdownHooks.add(hook) ;
+        }
+    }
+
+    /** Remove a shutdown hook */
+    public void remove(TransactionCoordinator.ShutdownHook hook) {
+        checkSetup() ;
+        synchronized(lock) {
+            shutdownHooks.remove(hook) ;
+        }
+    }
+    
+    public void start() {
+        checkSetup() ;
+        recovery() ;
+        coordinatorStarted = true ;
+    }
+
+    private /*public*/ void recovery() {
         
         Iterator<JournalEntry> iter = journal.entries() ;
         if ( ! iter.hasNext() ) {
@@ -135,12 +179,12 @@ public class TransactionCoordinator {
                     break ;
             }
         }) ;
-
+    
         components.forEachComponent(c -> c.finishRecovery()) ;
         journal.reset() ;
         log.info("Journal recovery end") ;
     }
-    
+
     private void recover(List<JournalEntry> entries) {
         entries.forEach(e -> {
             if ( e.getType() == UNDO ) {
@@ -159,37 +203,6 @@ public class TransactionCoordinator {
         }) ;
     }
 
-    /** 
-     * Remove a {@link TransactionalComponent}.
-     * @see #add 
-     */
-    public TransactionCoordinator remove(TransactionalComponent elt) {
-        checkNotShutdown() ;
-        synchronized(lock) {
-            components.remove(elt.getComponentId()) ;
-        }
-        return this ;
-    }
-
-    /**
-     * Add a shutdown hook. Shutdown is not guaranteed to be called
-     * and hence hooks may not get called.
-     */
-    public void add(TransactionCoordinator.ShutdownHook hook) {
-        checkNotShutdown() ;
-        synchronized(lock) {
-            shutdownHooks.add(hook) ;
-        }
-    }
-
-    /** Remove a shutdown hook */
-    public void remove(TransactionCoordinator.ShutdownHook hook) {
-        checkNotShutdown() ;
-        synchronized(lock) {
-            shutdownHooks.remove(hook) ;
-        }
-    }
-    
     public void setTxnIdGenerator(TxnIdGenerator generator) {
         this.txnIdGenerator = generator ;
     }
@@ -218,12 +231,28 @@ public class TransactionCoordinator {
     }
 
     public void shutdown() {
+        if ( lock == null )
+            return ;
         components.forEach((id, c) -> c.shutdown()) ;
         shutdownHooks.forEach((h)-> h.shutdown()) ;
         lock = null ;
         journal.close(); 
     }
 
+    // Are we in the initialization phase?
+    private void checkSetup() {
+        if ( coordinatorStarted )
+            throw new TransactionException("TransactionCoordinator has already been started") ;
+    }
+
+    // Are we up and ruuning?
+    private void checkActive() {
+        if ( ! coordinatorStarted )
+            throw new TransactionException("TransactionCoordinator has not been started") ;
+        checkNotShutdown();
+    }
+
+    // Check not wrapped up
     private void checkNotShutdown() {
         if ( lock == null )
             throw new TransactionException("TransactionCoordinator has been shutdown") ;
@@ -242,7 +271,7 @@ public class TransactionCoordinator {
      */
     public Transaction begin(ReadWrite readWrite, boolean canBlock) {
         Objects.nonNull(readWrite) ;
-        checkNotShutdown() ;
+        checkActive() ;
         
         // Readers never block.
         if ( readWrite == WRITE )

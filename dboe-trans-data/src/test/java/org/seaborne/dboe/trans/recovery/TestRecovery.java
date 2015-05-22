@@ -73,18 +73,17 @@ public class TestRecovery extends Assert {
             journal.close(); 
         }
         
-        Journal journal = Journal.create(Location.create(DIR)) ;
-        TransactionCoordinator coord = new TransactionCoordinator(journal) ;
+        TransactionCoordinator coord = new TransactionCoordinator(Location.create(DIR)) ;
         BufferChannel chan = BufferChannelFile.create(DATA) ;
         TransBlob tBlob = new TransBlob(cid, chan) ;
         coord.add(tBlob) ;
-        coord.recovery();
+        coord.start();
         
         ByteBuffer blob = tBlob.getBlob() ;
         assertNotNull(blob); 
         String s = L.byteBufferToString(blob) ;
         assertEquals(str,s) ;
-        journal.close() ;
+        coord.shutdown();
     }
 
     @Test public void recoverBlobFile_2() throws Exception {
@@ -108,7 +107,7 @@ public class TestRecovery extends Assert {
         TransBlob tBlob2 = new TransBlob(cid2, chan) ;
 
         TransactionCoordinator coord = new TransactionCoordinator(journal, Arrays.asList(tBlob1, tBlob2)) ;
-        coord.recovery();
+        coord.start();
         
         ByteBuffer blob1 = tBlob1.getBlob() ;
         assertNotNull(blob1); 
@@ -121,9 +120,7 @@ public class TestRecovery extends Assert {
         assertEquals(str2,s2) ;
 
         assertNotEquals(str1,str2) ;
-        journal.close() ;
-
+        coord.shutdown();
     }
-
 }
 
