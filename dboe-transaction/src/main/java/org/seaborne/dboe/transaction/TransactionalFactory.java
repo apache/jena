@@ -21,30 +21,38 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.TransactionalComponent ;
+import org.seaborne.dboe.transaction.txn.TransactionalSystem ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 /** Helper operations for creating a {@link Transactional}.
- * The oepration capture some common patterns.
+ * The operations capture some common patterns.
  */
 public class TransactionalFactory {
 
-    public static Transactional create(Location location, TransactionalComponent ... elements) {
+    /** Create, and start, management of a number of {@linkTransactionalComponent}s */ 
+    public static Transactional createTransactional(Location location, TransactionalComponent ... elements) {
         TransactionCoordinator coord = new TransactionCoordinator(location) ;
-        return create(coord, elements) ;
+        return createTransactional(coord, elements) ;
     }
 
-    public static Transactional create(Journal journal, TransactionalComponent ... elements) {
+    /** Create, and start, management of a number of {@linkTransactionalComponent}s */ 
+    public static Transactional createTransactional(Journal journal, TransactionalComponent ... elements) {
         TransactionCoordinator coord = new TransactionCoordinator(journal) ;
-        return create(coord, elements) ;
+        return createTransactional(coord, elements) ;
     }
 
-    private static Transactional create(TransactionCoordinator coord, TransactionalComponent[] elements) {
+    private static Transactional createTransactional(TransactionCoordinator coord, TransactionalComponent[] elements) {
         for ( TransactionalComponent tc : elements ) {
             coord.add(tc) ;
         }
         TransactionalBase base = new TransactionalBase(coord) ;
         coord.start() ;
         return base ;
+    }
+    
+    /** Create, but do not start, a {@link TransactionalSystem} from a {@link TransactionCoordinator} */
+    public static TransactionalSystem createTransactionalSystem(TransactionCoordinator coord) {
+        return new TransactionalBase(coord) ;
     }
 
 }

@@ -49,7 +49,7 @@ public class TestTransBlob extends Assert {
         BufferChannel chan = BufferChannelMem.create("TestTransBlob") ;
         ComponentId cid = ComponentId.allocLocal() ;
         transBlob = new TransBlob(cid, chan) ;
-        transactional = TransactionalFactory.create(journal, transBlob) ;    
+        transactional = TransactionalFactory.createTransactional(journal, transBlob) ;    
     }
 
     @After public void after() { }

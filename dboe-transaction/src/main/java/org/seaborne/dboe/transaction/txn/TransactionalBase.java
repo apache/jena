@@ -28,7 +28,7 @@ import org.seaborne.dboe.transaction.txn.Transaction.TxnState ;
  */
 
 public class TransactionalBase implements TransactionalSystem {
-    // Help debugging by generating names for Transactionals.  Remove sometime.
+    // Help debugging by generating names for Transactionals.
     private final String label ; 
     protected boolean isShutdown = false ; 
     protected final TransactionCoordinator txnMgr ;
@@ -45,6 +45,7 @@ public class TransactionalBase implements TransactionalSystem {
         this(null, txnMgr) ;
     }
 
+    @Override
     public TransactionCoordinator getTxnMgr() {
         return txnMgr ;
     }

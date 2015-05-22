@@ -39,7 +39,7 @@ public class TestTransBinaryDataFileGeneral extends AbstractTestBinaryDataFile {
         ComponentId cid = ComponentId.allocLocal() ;
         transBinData = new TransBinaryDataFile(baseBinData, cid, chan) ;
         transBinData.open();
-        transactional = TransactionalFactory.create(journal, transBinData) ;
+        transactional = TransactionalFactory.createTransactional(journal, transBinData) ;
         //Non-transactional usage of a disposed file. 
         transactional.begin(ReadWrite.WRITE) ;
         return transBinData ; 

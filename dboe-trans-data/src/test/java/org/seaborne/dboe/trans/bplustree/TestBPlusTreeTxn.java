@@ -40,7 +40,7 @@ public class TestBPlusTreeTxn extends Assert {
     }
     
     static Transactional transactional(Location location, TransactionalComponent ... components) {
-        return TransactionalFactory.create(location, components) ;
+        return TransactionalFactory.createTransactional(location, components) ;
     }
     
     // Commit

@@ -25,6 +25,7 @@ import org.seaborne.dboe.transaction.Transactional ;
  *  Normally, the implementation of {@link #commit} is split up.
  */
 public interface TransactionalSystem extends Transactional {
+    
     @Override
     public default void commit() {
         commitPrepare() ;
@@ -54,5 +55,8 @@ public interface TransactionalSystem extends Transactional {
      * only one thread can have a transaction attached at a time. 
      */
     public void attach(TransactionCoordinatorState coordinatorState) ;
+
+    /** Get the associated {@link TransactionCoordinator} */
+    public TransactionCoordinator getTxnMgr() ; 
 }
 

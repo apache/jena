@@ -53,7 +53,7 @@ public class TestTransBlobPersistent extends Assert {
         BufferChannel chan = BufferChannelFile.create(DATA) ;
         ComponentId cid = ComponentId.allocLocal() ;
         TransBlob transBlob = new TransBlob(cid, chan) ;
-        Transactional transactional = TransactionalFactory.create(journal, transBlob) ;   
+        Transactional transactional = TransactionalFactory.createTransactional(journal, transBlob) ;   
         String str = "Hello" ; 
 
         TestTransBlob.write(transactional, transBlob, str) ;
@@ -73,7 +73,7 @@ public class TestTransBlobPersistent extends Assert {
             BufferChannel chan = BufferChannelFile.create(DATA) ;
             ComponentId cid = ComponentId.allocLocal() ;
             TransBlob transBlob = new TransBlob(cid, chan) ;
-            Transactional transactional = TransactionalFactory.create(journal, transBlob) ;   
+            Transactional transactional = TransactionalFactory.createTransactional(journal, transBlob) ;   
             TestTransBlob.write(transactional, transBlob, str) ;
             chan.close();
             journal.close(); 
@@ -84,7 +84,7 @@ public class TestTransBlobPersistent extends Assert {
             BufferChannel chan = BufferChannelFile.create(DATA) ;
             ComponentId cid = ComponentId.allocLocal() ;
             TransBlob transBlob = new TransBlob(cid, chan) ;
-            Transactional transactional = TransactionalFactory.create(journal, transBlob) ;   
+            Transactional transactional = TransactionalFactory.createTransactional(journal, transBlob) ;   
             String s = TestTransBlob.read(transactional, transBlob) ;
             assertEquals(str, s); 
         }

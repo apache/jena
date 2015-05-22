@@ -50,7 +50,7 @@ public class TestTransObjectFile extends Assert {
         BufferChannel chan = FileFactory.createBufferChannelMem() ;
         ComponentId cid = ComponentId.allocLocal() ;
         transObjectFile = new TransObjectFile(baseObjectFile, cid, chan) ;
-        transactional = TransactionalFactory.create(journal, transObjectFile) ;    
+        transactional = TransactionalFactory.createTransactional(journal, transObjectFile) ;    
     }
 
     @After public void after() { }
@@ -122,7 +122,7 @@ public class TestTransObjectFile extends Assert {
         journal.writeJournal(JournalEntry.COMMIT) ;
         // Recovery.
         //transObjectFile.recover(bb);
-        TransactionalBase transBase = (TransactionalBase)TransactionalFactory.create(journal, transObjectFile) ;
+        TransactionalBase transBase = (TransactionalBase)TransactionalFactory.createTransactional(journal, transObjectFile) ;
         ByteBuffer bb1 = Txn.executeReadReturn(transBase, ()->transObjectFile.read(x3)) ;
         String s1 = Bytes.fromByteBuffer(bb1) ;
         assertEquals(str2, s1);

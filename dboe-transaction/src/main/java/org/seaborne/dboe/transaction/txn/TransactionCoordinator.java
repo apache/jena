@@ -37,17 +37,18 @@ import org.slf4j.Logger ;
 
 /**
  * One TransactionCoordinator per group of TransactionalComponents.
- * TransactionalComponent can no tbe shared across TransactionCoordinators.
+ * TransactionalComponent can not be shared across TransactionCoordinators.
  * <p>
  * This is a general engine although tested and most used for multiple-reader
- * and single-writer (MR+SW). TransactionalComponentLifecycle provide the
+ * and single-writer (MR+SW). TransactionalComponentLifecycle provided the
  * per-threadstyle.
  * <p>
  * Contrast to MRSW: multiple-reader or single-writer
  * 
  * @see Transaction
  * @see TransactionalComponent
- **/
+ * @see TransactionalSystem
+ */
 final
 public class TransactionCoordinator {
     private static Logger log = SystemBase.syslog ;

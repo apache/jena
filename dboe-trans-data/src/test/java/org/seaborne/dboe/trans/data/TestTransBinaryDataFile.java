@@ -44,7 +44,7 @@ public class TestTransBinaryDataFile extends Assert {
         ComponentId cid = ComponentId.allocLocal() ;
         transBinData = new TransBinaryDataFile(baseBinData, cid, chan) ;
         transBinData.open();
-        transactional = TransactionalFactory.create(journal, transBinData) ;    
+        transactional = TransactionalFactory.createTransactional(journal, transBinData) ;    
     }
 
     @After public void after() { }
