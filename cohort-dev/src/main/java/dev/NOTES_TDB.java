@@ -15,13 +15,16 @@
  *  information regarding copyright ownership.
  */
 
-package tdbdev;
+package dev;
 
-public class TDB_DEV {
+public class NOTES_TDB {
     // ComponentId management.
+    // lizard.ComponentIdMgr
     // Componentid - no need for UUID?
     
-    // Names.* "obj", "-data", "bdf state file.
+    // Load monitoring : StreamRDFMonitor
+
+    // NodeTableCache + abort -> clean out?
     
     // Quack clean / split into general and TDB
     
@@ -29,23 +32,16 @@ public class TDB_DEV {
     //   Interface ExecuteOp + generic registration.
     // DatasetGraph.getBaseDatasetGraph
     
-    // Merge:
-    // public class DatasetGraphTxn extends DatasetGraphTrackActive
-    // public class DatasetGraphTDB extends DatasetGraphCaching
-    //    implements /*DatasetGraph,*/ Sync, Closeable
-    
     // TL => ?
     
-    // Switch Lizard to TDB2 technology.
-    //   Hunt down adapters and remove.
-
-    // Component id management.
-    //   Fixed base id and component in set.
-    //   Simplify with "per journal" ids
-    //   Component id == UUID + integer
     
-    // Fixed table of component offset.
-    //   The return of FileRef!
+    // BuildContext
+    //   Location,
+    //   Coordinator
+    //   StoreParams
+    //   UUID
+    // ==> to Mantis, TDB2 etc
+    // tdbdev.ComponentIdMgr
     
-    // Journal and recovery.
+    
 }

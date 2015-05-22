@@ -73,7 +73,6 @@ public class TDB_Dev_Main {
         
         //load() ;
     }
-    
 
     private static void details(TReadAppendFileTransport file) {
         System.out.println("Len = "+file.getBinaryDataFile().length()) ;

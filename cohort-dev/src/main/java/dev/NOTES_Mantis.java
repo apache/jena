@@ -19,13 +19,15 @@ package dev;
 
 
 
-public class NOTES {
+public class NOTES_Mantis {
     // Streams, not iterators?
 
     // For all Trans*, do we need to record both Redo and Undo actions in the
     // journal during prepare? And then recovery is either "forward" or "backward".
+    // Recovery: recover(Redo/undo, data);
+    // Prepare: journal.writeREDO, journal.writeUNDO
+    // Journal for components: only  writeREDO, writeUNDO
     
-    // Recovery in after prepare.
     // Components to write directly to the Journal during prepare.
     
     // Split READ and WRITE internally to be two different lifecycles.
@@ -36,24 +38,7 @@ public class NOTES {
     
     // Document
     
-    // Transactional -> TransactionalSystem -> TransactionalBase -> theTxn (ThreadLocal)
-    //   This is the transaction-per-thread point
-    // Transaction -> TransactionCoordinator.
-    
-    // Also: TransactionCoordinator.begin -> Transaction.
-    // TransactionCoordinator -> set of components
-    
-    // ObjectFile - switch to Input/Output Streams? 
-    
-    // TransactionalComponent
-    
-    // What about:
-    // Index<K,R> c.f. Map<K,V>
-    // Index<R>
-    
-    // Systematic tests involving recovery: e.g. TransObjectFile.
     // Pseudo fake a crash.
-
     // Clean journal interface.
 
     // Transaction.TxnState - rename?
@@ -73,9 +58,6 @@ public class NOTES {
     // StateMgr = mgr and state.  Split concepts.
     // RangeIndexBuilderBPTree and BPlusTreeFactory. Sort out BPlusTreeFactory.
     
-    // Transactional tests on BPTrees
-    //   AbstractTestTxnRangeIndex from TestBPlusTreeTxn
-    
     // Fast clear (new tree).  Fast clear for dft graph.
     
     // BPTreeRangeIterator
@@ -85,32 +67,15 @@ public class NOTES {
     // Ideal: ("v3")
     //   Per operation mgt struct - collects pages touched etc.
     
-    // Just reset the free block chain per transaction.
-    // Us
-    
+    // Free block chain and transactions.
 
-    // Remove CheckingTree - broken.
-
-    // Delete BlockMgrSync - used by BlockMgrCache
-    
-    // TransObjectFile should do the on-disk state thing.
-    
     // == Base 
-    // Move LocationLock next to StoreConnection.
-    
-    // == Quack 
-    // Quack is just the join(->rel op) library.
-    // Move TDB-isms to tdb2.
     
     // == Transactions
     
     // Delayed write back by leaving stuff in the journal.
     //   Avoids needing to sync the BPTs (leave to natural file caching)
     //   Avoids need to flush the new root to disk.
-    
-    // Recovery: recover(Redo/undo, data);
-    // Prepare: journal.writeREDO, journal.writeUNDO
-    // Journal for components: only  writeREDO, writeUNDO
     
     // Promotable transactions:
     //    Two counters, writer leading and trailing edge.
