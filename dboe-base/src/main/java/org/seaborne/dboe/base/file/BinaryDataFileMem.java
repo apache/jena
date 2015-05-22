@@ -19,6 +19,7 @@ package org.seaborne.dboe.base.file;
 
 import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.logging.FmtLog ;
 
 /** Implementation of {@link BinaryDataFile} in memory for testing
  * and development use. Raw performance is not an objective.
@@ -27,14 +28,17 @@ import org.apache.jena.atlas.io.IO ;
  */
 public class BinaryDataFileMem implements BinaryDataFile {
 
-    private int INC = 1024 ;
+    private int INC = 4*1024 ;
     private byte[] buffer = null ;
     private boolean readMode ;
     private int writePosition ;
     
     private void ensureBuffer(int len) {
         if ( writePosition+len > buffer.length ) {
-            byte[] buffer2 = new byte[buffer.length+INC] ;
+            int newLength = buffer.length ;
+            while ( newLength < (writePosition+len+INC) )
+                newLength += INC ;
+            byte[] buffer2 = new byte[newLength] ;
             System.arraycopy(buffer, 0, buffer2, 0, writePosition) ;
             buffer = buffer2 ;
         }
@@ -88,7 +92,16 @@ public class BinaryDataFileMem implements BinaryDataFile {
         checkOpen() ;
         switchToWriteMode() ;
         ensureBuffer(length);
-        System.arraycopy(b, start, buffer, writePosition, length) ;
+        
+        try {
+            System.arraycopy(b, start, buffer, writePosition, length) ;
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            // Should not happen, but ...
+            FmtLog.error(BinaryDataFileMem.class,
+                         "Bad arraycopy(src[%d], %d, dest[%d], $d, %d)",
+                         b.length, start, buffer.length, writePosition, length) ;
+        }
+        
         long x = writePosition ; 
         writePosition += length ;
         return x ; 
