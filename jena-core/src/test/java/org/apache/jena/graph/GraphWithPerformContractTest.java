@@ -30,7 +30,6 @@ import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractTest;
 
 import org.apache.jena.graph.impl.GraphWithPerform;
-import org.apache.jena.testing_framework.ContractTemplate;
 
 import org.xenei.junit.contract.IProducer;
 
@@ -40,8 +39,10 @@ import org.xenei.junit.contract.IProducer;
  * non-notifying versions of add and delete.
  */
 @Contract(GraphWithPerform.class)
-public class GraphWithPerformContractTest<T extends GraphWithPerform> extends
-		ContractTemplate<IProducer<T>> {
+public class GraphWithPerformContractTest<T extends GraphWithPerform> {
+
+	private IProducer<T> producer;
+
 	// Recording listener for tests
 	protected RecordingGraphListener GL = new RecordingGraphListener();
 
@@ -50,18 +51,18 @@ public class GraphWithPerformContractTest<T extends GraphWithPerform> extends
 
 	@Contract.Inject
 	public void setGraphWithPerformContractTestProducer(IProducer<T> producer) {
-		super.setProducer(producer);
+		this.producer = producer;
 	}
 
 	@After
 	public final void afterGraphWithPerformContractTest() {
-		getProducer().cleanUp();
+		producer.cleanUp();
 	}
 
 	@ContractTest
 	public void testPerformAdd_Triple() {
-		GraphWithPerform g = (GraphWithPerform) graphWith(getProducer()
-				.newInstance(), "S P O; S2 P2 O2");
+		GraphWithPerform g = (GraphWithPerform) graphWith(
+				producer.newInstance(), "S P O; S2 P2 O2");
 		g.getEventManager().register(GL);
 		txnBegin(g);
 		g.performAdd(triple("S3 P3 O3"));
@@ -72,8 +73,8 @@ public class GraphWithPerformContractTest<T extends GraphWithPerform> extends
 
 	@ContractTest
 	public void testPerformDelete_Triple() {
-		GraphWithPerform g = (GraphWithPerform) graphWith(getProducer()
-				.newInstance(), "S P O; S2 P2 O2");
+		GraphWithPerform g = (GraphWithPerform) graphWith(
+				producer.newInstance(), "S P O; S2 P2 O2");
 		g.getEventManager().register(GL);
 		txnBegin(g);
 		g.performDelete(triple("S2 P2 O2"));

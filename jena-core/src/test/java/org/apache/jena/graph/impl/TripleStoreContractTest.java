@@ -27,7 +27,6 @@ import static org.junit.Assert.*;
 
 import static org.apache.jena.testing_framework.GraphHelper.*;
 import org.apache.jena.graph.impl.TripleStore;
-import org.apache.jena.testing_framework.ContractTemplate;
 
 import org.xenei.junit.contract.IProducer;
 
@@ -36,10 +35,11 @@ import org.xenei.junit.contract.IProducer;
  */
 
 @Contract(TripleStore.class)
-public class TripleStoreContractTest<T extends TripleStore> extends
-		ContractTemplate<IProducer<T>> {
+public class TripleStoreContractTest<T extends TripleStore> {
 
 	protected TripleStore store;
+	
+	private IProducer<T> producer;
 
 	public TripleStoreContractTest() {
 	}
@@ -49,17 +49,17 @@ public class TripleStoreContractTest<T extends TripleStore> extends
 	 */
 	@Contract.Inject
 	public final void setTripleStoreContractTestProducer(IProducer<T> producer) {
-		super.setProducer(producer);
+		this.producer = producer;
 	}
 
 	@Before
 	public final void beforeAbstractTripleStoreTest() {
-		store = getProducer().newInstance();
+		store = producer.newInstance();
 	}
 
 	@After
 	public final void afterAbstractTripleStoreTest() {
-		getProducer().cleanUp();
+		producer.cleanUp();
 	}
 
 	@ContractTest

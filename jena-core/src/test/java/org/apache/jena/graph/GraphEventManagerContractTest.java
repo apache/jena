@@ -33,7 +33,6 @@ import static org.junit.Assert.*;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphEventManager;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.testing_framework.ContractTemplate;
 import org.apache.jena.testing_framework.GraphHelper;
 import org.xenei.junit.contract.IProducer;
 import org.apache.jena.testing_framework.NodeCreateUtils;
@@ -49,11 +48,12 @@ import static org.apache.jena.testing_framework.GraphHelper.*;
  */
 
 @Contract(GraphEventManager.class)
-public class GraphEventManagerContractTest<T extends GraphEventManager> extends
-		ContractTemplate<IProducer<T>> {
+public class GraphEventManagerContractTest<T extends GraphEventManager> {
 
 	protected static final Triple[] tripleArray = tripleArray("S P O; Foo R B; X Q Y");
 
+	private IProducer<T> producer;
+	
 	// the graph that is used as the source of the events.
 	private Graph mockGraph;
 	// The event manager we are working with.
@@ -65,18 +65,18 @@ public class GraphEventManagerContractTest<T extends GraphEventManager> extends
 	@Contract.Inject
 	public final void setGraphEventManagerContractTestProducer(
 			IProducer<T> producer) {
-		super.setProducer(producer);
+		this.producer= producer;
 	}
 
 	@After
 	public final void afterGraphEventManagerContractTest() {
-		getProducer().cleanUp();
+		producer.cleanUp();
 	}
 
 	@Before
 	public final void beforeGraphEventManagerContractTest() {
 		mockGraph = Mockito.mock(Graph.class);
-		gem = getProducer().newInstance();
+		gem = producer.newInstance();
 		L = new RecordingGraphListener();
 	}
 
