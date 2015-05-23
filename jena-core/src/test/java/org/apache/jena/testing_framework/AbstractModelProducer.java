@@ -72,9 +72,10 @@ public abstract class AbstractModelProducer<T extends Model> implements
 	 *            The graph that is closed
 	 */
 	protected void afterClose(T g) {
-	};
+	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	final public void cleanUp() {
 		for (Model m : modelList) {
 			if (!m.isClosed()) {

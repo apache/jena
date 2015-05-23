@@ -18,15 +18,19 @@
 
 package org.apache.jena.assembler.test;
 
-import java.util.Map;
-
-import org.apache.jena.assembler.* ;
-import org.apache.jena.assembler.assemblers.* ;
-import org.apache.jena.assembler.assemblers.AssemblerGroup.ExpandingAssemblerGroup;
-import org.apache.jena.assembler.exceptions.* ;
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.JA ;
+import org.apache.jena.assembler.Mode ;
+import org.apache.jena.assembler.assemblers.AssemblerBase ;
+import org.apache.jena.assembler.assemblers.AssemblerGroup ;
+import org.apache.jena.assembler.assemblers.AssemblerGroup.ExpandingAssemblerGroup ;
+import org.apache.jena.assembler.assemblers.InfModelAssembler ;
+import org.apache.jena.assembler.exceptions.NoSpecificTypeException ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.mem.GraphMemBase ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.InfModel ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.vocabulary.RDFS ;
 
 public class TestAssemblerGroup extends AssemblerTestBase

@@ -18,16 +18,13 @@
 
 package org.apache.jena.testing_framework.manifest;
 
-import java.util.List;
+import java.util.List ;
 
-import org.junit.runner.Runner;
-import org.junit.runners.model.InitializationError;
+import org.junit.runner.Runner ;
 
 public interface ManifestItemHandler {
 	/**
 	 * Handle an item in a manifest
-	 * 
-	 * @throws InitializationError
 	 */
 	public void processManifestItem(ManifestItem item);
 

@@ -39,14 +39,14 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
 
 /**
- * Foo basis for Jena test cases which provides assertFalse and assertDiffer.
+ * Basis for Jena test cases which provides assertFalse and assertDiffer.
  * Often the logic of the names is clearer than using a negation.
  */
 public class TestUtils {
 	// do not instantiate
 	protected TestUtils() {
 		throw new UnsupportedOperationException("Do not instantiate TestUtils");
-	};
+	}
 
 	/**
 	 * assert that the two objects must be unequal according to .equals().

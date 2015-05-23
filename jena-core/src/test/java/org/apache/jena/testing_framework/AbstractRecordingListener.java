@@ -184,7 +184,7 @@ public class AbstractRecordingListener {
 	public final Iterator<Object> from(Object start) {
 		Iterator<Object> iter = history.iterator();
 		while (iter.hasNext() && !iter.next().equals(start))
-			; // loop
+		{}
 		return iter;
 	}
 }

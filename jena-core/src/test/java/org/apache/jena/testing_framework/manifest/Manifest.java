@@ -18,26 +18,26 @@
 
 package org.apache.jena.testing_framework.manifest;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.apache.jena.n3.IRIResolver;
-import org.apache.jena.rdf.model.*;
-import org.apache.jena.util.FileManager;
-import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.RDFS;
-import org.apache.jena.vocabulary.TestManifest;
-import org.apache.jena.vocabulary.TestManifestX;
+import org.apache.jena.n3.IRIResolver ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.util.FileManager ;
+import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.RDFS ;
+import org.apache.jena.vocabulary.TestManifest ;
+import org.apache.jena.vocabulary.TestManifestX ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 /**
  * A test manifest for a single manifest file.
  */
 
+@SuppressWarnings("deprecation")
 public class Manifest {
 	// This class does not know about JUnit.
 	private static Logger log = LoggerFactory.getLogger(Manifest.class);
@@ -47,7 +47,7 @@ public class Manifest {
 	private List<String> includedFiles = new ArrayList<String>();
 	private Resource manifestRes = null;
 
-	public Manifest(String fn) {
+    public Manifest(String fn) {
 		log.debug("Manifest = " + fn);
 		filename = IRIResolver.resolveGlobal(fn);
 		log.debug("         = " + filename);

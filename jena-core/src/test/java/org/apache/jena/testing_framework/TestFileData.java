@@ -321,11 +321,11 @@ public class TestFileData {
 			throws IOException {
 		File f = File.createTempFile("tfd", extension);
 		f.deleteOnExit();
-		FileOutputStream fos = new FileOutputStream(f);
-		// fos.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes());
-		// fos.write(System.getProperty("line.separator").getBytes());
-		fos.write(data.getBytes());
-		fos.close();
+		try (FileOutputStream fos = new FileOutputStream(f); ) {
+		    // fos.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes());
+		    // fos.write(System.getProperty("line.separator").getBytes());
+		    fos.write(data.getBytes());
+		}
 		return f.toURI().toURL().toExternalForm();
 	}
 

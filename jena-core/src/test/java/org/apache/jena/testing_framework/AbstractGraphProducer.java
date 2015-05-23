@@ -66,7 +66,7 @@ public abstract class AbstractGraphProducer<T extends Graph> implements
 	 *            The graph that is closed
 	 */
 	protected void afterClose(Graph g) {
-	};
+	}
 
 	@Override
 	final public void cleanUp() {
@@ -86,7 +86,7 @@ public abstract class AbstractGraphProducer<T extends Graph> implements
 	 * 
 	 * @param g
 	 *            The graph we are looking for.
-	 * @return
+	 * @return   Graph[]
 	 */
 	public abstract Graph[] getDependsOn(Graph g);
 
@@ -97,7 +97,8 @@ public abstract class AbstractGraphProducer<T extends Graph> implements
 	 * 
 	 * @param g
 	 *            The graph we are looking for.
-	 * @return
+	 * @return   
+	 *            Graph[]
 	 */
 	public abstract Graph[] getNotDependsOn(Graph g);
 

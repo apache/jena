@@ -48,7 +48,7 @@ public abstract class AbstractInfModelProducer<T extends InfModel> extends
 	/**
 	 * Returns the model that was used in the reasoner.bind() call.
 	 * 
-	 * @return
+	 * @return Model
 	 */
 	abstract public Model getBoundModel();
 

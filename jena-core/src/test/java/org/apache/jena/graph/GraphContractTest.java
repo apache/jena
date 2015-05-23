@@ -1213,11 +1213,11 @@ public class GraphContractTest<T extends Graph> extends
 	/**
 	 * testIsomorphism from file data
 	 * 
-	 * @throws FileNotFoundException
+	 * @throws URISyntaxException
+	 * @throws MalformedURLException 
 	 */
 	@ContractTest
-	public void testIsomorphismFile() throws URISyntaxException,
-			MalformedURLException {
+	public void testIsomorphismFile() throws URISyntaxException, MalformedURLException {
 		testIsomorphismXMLFile(1, true);
 		testIsomorphismXMLFile(2, true);
 		testIsomorphismXMLFile(3, true);
@@ -1229,28 +1229,22 @@ public class GraphContractTest<T extends Graph> extends
 
 	}
 
-	private void testIsomorphismNTripleFile(int i, boolean result)
-			throws URISyntaxException, MalformedURLException {
+	private void testIsomorphismNTripleFile(int i, boolean result) {
 		testIsomorphismFile(i, "N-TRIPLE", "nt", result);
 	}
 
-	private void testIsomorphismXMLFile(int i, boolean result)
-			throws URISyntaxException, MalformedURLException {
+	private void testIsomorphismXMLFile(int i, boolean result) {
 		testIsomorphismFile(i, "RDF/XML", "rdf", result);
-
 	}
 
-	private InputStream getInputStream(int n, int n2, String suffix)
-			throws URISyntaxException, MalformedURLException {
+	private InputStream getInputStream(int n, int n2, String suffix) {
 		String urlStr = String.format("regression/testModelEquals/%s-%s.%s", n,
 				n2, suffix);
 		return GraphContractTest.class.getClassLoader().getResourceAsStream(
 				urlStr);
 	}
 
-	private void testIsomorphismFile(int n, String lang, String suffix,
-			boolean result) throws URISyntaxException, MalformedURLException {
-
+	private void testIsomorphismFile(int n, String lang, String suffix, boolean result) {
 		Graph g1 = getProducer().newInstance();
 		Graph g2 = getProducer().newInstance();
 		Model m1 = ModelFactory.createModelForGraph(g1);

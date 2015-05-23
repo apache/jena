@@ -140,8 +140,6 @@ public class ModelHelper extends GraphHelper {
 	/**
 	 * Create an array of Statements parsed from a semi-separated string.
 	 * 
-	 * @param lockModel
-	 *            a model to serve as a statement factory
 	 * @param facts
 	 *            a sequence of semicolon-separated "S P O" facts
 	 * @return a Statement[] of the (S P O) statements from the string
@@ -214,7 +212,7 @@ public class ModelHelper extends GraphHelper {
 	 * does all insertions in a transaction.
 	 * 
 	 * @param facts
-	 * @return
+	 * @return Model
 	 */
 	public static Model memModel(String facts) {
 		Model model = ModelFactory.createMemModelMaker().createFreshModel();
@@ -248,11 +246,7 @@ public class ModelHelper extends GraphHelper {
 	 * Creates a model with extended prefixes and initialises it with statements
 	 * parsed from the statement iterator.
 	 * 
-	 * does all insertions in a transaction.
-	 * 
-	 * @param facts
-	 *            a string in semicolon-separated "S P O" format
-	 * @return a model containing those facts
+	 * Does all insertions in a transaction.
 	 */
 	public static Model modelWithStatements(
 			IProducer<? extends Model> producer, final StmtIterator it) {
@@ -283,8 +277,6 @@ public class ModelHelper extends GraphHelper {
 	 *            the model value that is expected
 	 * @param got
 	 *            the model value to check
-	 * @exception if
-	 *                the models are not isomorphic
 	 */
 	public static void assertIsoModels(String title, Model wanted, Model got) {
 		if (wanted.isIsomorphicWith(got) == false) {
