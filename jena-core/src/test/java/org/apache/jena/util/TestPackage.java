@@ -40,10 +40,11 @@ public class TestPackage extends TestSuite {
         addTest( "TestHashUtils",         TestCollectionFactory.suite() );
         addTest( "TestLocationMapper",    TestLocationMapper.suite() ) ;
         addTest( "TestFileManager",       TestFileManager.suite()) ;
-        addTest( "TestMonitors",       TestMonitors.suite()) ;
-        addTest( "TestPrintUtil",       TestPrintUtil.suite()) ;
+        addTest( "TestMonitors",          TestMonitors.suite()) ;
+        addTest( "TestPrintUtil",         TestPrintUtil.suite()) ;
         addTest( TestIteratorCollection.suite() );
-        addTest( "TestUtil",            TestUtil.suite()) ;
+        addTest( "TestSplitIRI_XML",      TestSplitIRI_XML.suite()) ;
+        addTest( "TestSplitIRI_TTL",      TestSplitIRI_TTL.suite()) ;
         addTestSuite( TestLocators.class );
         addTestSuite( TestOneToManyMap.class );
     }
