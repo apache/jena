@@ -25,29 +25,24 @@ import org.apache.jena.sparql.util.NodeIsomorphismMap ;
  * (graph level version) with a query pattern.
  * Unused in parser. */
 
-public class ElementDataset extends Element
+public class ElementDataset extends Element1
 {
     // Can keep either form - but not both.
     // Helps because models have prefixes.
     private DatasetGraph dataset = null ;
-    private Element element = null ;
     
     public ElementDataset(DatasetGraph data, Element patternElement)
     {
+        super(patternElement) ;
         this.dataset = data ;
-        this.element = patternElement ;
     }
     
     public DatasetGraph getDataset() { return dataset ; }
-    public void setDataset(DatasetGraph ds) { dataset = ds ; }
-    
-    public Element getPatternElement() { return element ; }
-    public void setPatternElement(Element elt) { element = elt ; }
     
     @Override
     public int hashCode()
     { 
-        int x = getPatternElement().hashCode() ;
+        int x = getElement().hashCode() ;
         if ( getDataset() != null )
             x ^= getDataset().hashCode() ;
         return x ;
@@ -61,7 +56,7 @@ public class ElementDataset extends Element
             return false ;
         ElementDataset blk = (ElementDataset)el2 ;
         
-        if ( ! element.equalTo(blk.getPatternElement(), isoMap) )
+        if ( ! getElement().equalTo(blk.getElement(), isoMap) )
             return false ;
         
         // Dataset both null

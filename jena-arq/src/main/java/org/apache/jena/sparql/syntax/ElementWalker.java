@@ -143,8 +143,8 @@ public class ElementWalker
         public void visit(ElementDataset el)
         {
             before(el) ;
-            if ( el.getPatternElement() != null )
-                el.getPatternElement().visit(this) ;
+            if ( el.getElement() != null )
+                el.getElement().visit(this) ;
             proc.visit(el) ;
             after(el) ;
         }
