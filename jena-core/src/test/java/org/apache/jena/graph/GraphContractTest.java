@@ -18,72 +18,85 @@
 
 package org.apache.jena.graph;
 
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
+import static org.apache.jena.testing_framework.GraphHelper.assertContainsAll ;
+import static org.apache.jena.testing_framework.GraphHelper.assertIsomorphic ;
+import static org.apache.jena.testing_framework.GraphHelper.assertOmitsAll ;
+import static org.apache.jena.testing_framework.GraphHelper.graphAddTxn ;
+import static org.apache.jena.testing_framework.GraphHelper.graphWith ;
+import static org.apache.jena.testing_framework.GraphHelper.iteratorToSet ;
+import static org.apache.jena.testing_framework.GraphHelper.memGraph ;
+import static org.apache.jena.testing_framework.GraphHelper.node ;
+import static org.apache.jena.testing_framework.GraphHelper.nodeSet ;
+import static org.apache.jena.testing_framework.GraphHelper.triple ;
+import static org.apache.jena.testing_framework.GraphHelper.tripleArray ;
+import static org.apache.jena.testing_framework.GraphHelper.tripleSet ;
+import static org.apache.jena.testing_framework.GraphHelper.txnBegin ;
+import static org.apache.jena.testing_framework.GraphHelper.txnCommit ;
+import static org.apache.jena.testing_framework.GraphHelper.txnRollback ;
+import static org.apache.jena.testing_framework.TestUtils.assertDiffer ;
+import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertFalse ;
+import static org.junit.Assert.assertNotEquals ;
+import static org.junit.Assert.assertNotNull ;
+import static org.junit.Assert.assertSame ;
+import static org.junit.Assert.assertTrue ;
+import static org.junit.Assert.fail ;
 
-import org.junit.After;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xenei.junit.contract.Contract;
-import org.xenei.junit.contract.ContractTest;
+import java.io.InputStream ;
+import java.net.MalformedURLException ;
+import java.net.URISyntaxException ;
+import java.util.Arrays ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Set ;
+import java.util.function.Function ;
 
-import static org.junit.Assert.*;
-
-import org.apache.jena.graph.Capabilities;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.GraphStatisticsHandler;
-import org.apache.jena.graph.GraphUtil;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.impl.LiteralLabelFactory;
-import org.apache.jena.mem.TrackingTripleIterator;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.impl.ReifierStd;
-import org.apache.jena.shared.ClosedException;
-import org.apache.jena.shared.DeleteDeniedException;
-import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.testing_framework.AbstractGraphProducer;
-import org.apache.jena.testing_framework.ContractTemplate;
-import org.apache.jena.testing_framework.NodeCreateUtils;
-import org.apache.jena.util.iterator.ClosableIterator;
-import org.apache.jena.util.iterator.ExtendedIterator;
-
-import static org.apache.jena.testing_framework.GraphHelper.*;
+import org.apache.jena.graph.impl.LiteralLabelFactory ;
+import org.apache.jena.mem.TrackingTripleIterator ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.impl.ReifierStd ;
+import org.apache.jena.shared.ClosedException ;
+import org.apache.jena.shared.DeleteDeniedException ;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.testing_framework.AbstractGraphProducer ;
+import org.apache.jena.testing_framework.NodeCreateUtils ;
+import org.apache.jena.util.iterator.ClosableIterator ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.junit.After ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+import org.xenei.junit.contract.Contract ;
+import org.xenei.junit.contract.ContractTest ;
 
 /**
  * Graph contract test.
  */
 @Contract(Graph.class)
-public class GraphContractTest<T extends Graph> extends
-		ContractTemplate<AbstractGraphProducer<T>> {
+public class GraphContractTest<T extends Graph>  {
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(GraphContractTest.class);
 
+	private AbstractGraphProducer<T> producer;
+	
 	protected RecordingGraphListener GL = new RecordingGraphListener();
 
 	@Contract.Inject
 	public final void setGraphContractTestProducer(
 			AbstractGraphProducer<T> graphProducer) {
-		super.setProducer(graphProducer);
+		producer = graphProducer;
 	}
 
 	@After
 	public final void afterGraphContractTest() {
-		getProducer().cleanUp();
+		producer.cleanUp();
 		GL.clear();
 	}
 
 	@ContractTest
 	public void testAdd_Triple() {
-		Graph graph = getProducer().newInstance();
+		Graph graph = producer.newInstance();
 		graph.getEventManager().register(GL);
 		txnBegin(graph);
 		graph.add(triple("S P O"));
@@ -130,7 +143,7 @@ public class GraphContractTest<T extends Graph> extends
 	 */
 	@ContractTest
 	public void testClear() {
-		Graph graph = getProducer().newInstance();
+		Graph graph = producer.newInstance();
 		Graph base = copy(graph);
 
 		graph.getEventManager().register(GL);
@@ -142,7 +155,7 @@ public class GraphContractTest<T extends Graph> extends
 		GL.clear();
 
 		// test after adding
-		graph = graphWith(getProducer().newInstance(),
+		graph = graphWith(producer.newInstance(),
 				"S P O; S e:ff 27; _1 P P3; S4 P4 'en'");
 		graph.getEventManager().register(GL);
 		txnBegin(graph);
@@ -163,7 +176,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testClose() {
-		Graph graph = graphWith(getProducer().newInstance(),
+		Graph graph = graphWith(producer.newInstance(),
 				"S P O; S P2 O2; S3 P P3");
 		graph.getEventManager().register(GL);
 		assertFalse("Graph was constructed closed", graph.isClosed());
@@ -298,7 +311,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testContains_Node_Node_Node() {
-		Graph graph = graphWith(getProducer().newInstance(),
+		Graph graph = graphWith(producer.newInstance(),
 				"S P O; S2 P2 O2; S3 P3 O3");
 
 		assertTrue(graph.contains(node("S"), node("P"), node("O")));
@@ -314,7 +327,7 @@ public class GraphContractTest<T extends Graph> extends
 	@ContractTest
 	public void testContains_Node_Node_Node_RepeatedSubjectDoesNotConceal() {
 
-		Graph g = graphWith(getProducer().newInstance(), "s P o; s Q r");
+		Graph g = graphWith(producer.newInstance(), "s P o; s Q r");
 		Node s = node("s");
 		Node P = node("P");
 		Node o = node("o");
@@ -333,9 +346,9 @@ public class GraphContractTest<T extends Graph> extends
 	public void testContains_Node_Node_Node_ByValue() {
 		Node x = node("x");
 		Node P = node("P");
-		if (getProducer().newInstance().getCapabilities()
+		if (producer.newInstance().getCapabilities()
 				.handlesLiteralTyping()) {
-			Graph g1 = graphWith(getProducer().newInstance(),
+			Graph g1 = graphWith(producer.newInstance(),
 					"x P '1'xsd:integer");
 			assertTrue(
 					String.format(
@@ -343,11 +356,11 @@ public class GraphContractTest<T extends Graph> extends
 							g1.getClass()), g1.contains(x, P,
 							node("'01'xsd:int")));
 			//
-			Graph g2 = graphWith(getProducer().newInstance(), "x P '1'xsd:int");
+			Graph g2 = graphWith(producer.newInstance(), "x P '1'xsd:int");
 			assertTrue("Literal equality with '1'xsd:integer failed",
 					g2.contains(x, P, node("'1'xsd:integer")));
 			//
-			Graph g3 = graphWith(getProducer().newInstance(),
+			Graph g3 = graphWith(producer.newInstance(),
 					"x P '123'xsd:string");
 			assertTrue("Literal equality with '123' failed",
 					g3.contains(x, P, node("'123'")));
@@ -367,7 +380,7 @@ public class GraphContractTest<T extends Graph> extends
 		Node x = node("x");
 		Node S = node("S");
 
-		Graph g = graphWith(getProducer().newInstance(),
+		Graph g = graphWith(producer.newInstance(),
 				"s P o; _x _R _y; x S 0");
 		assertTrue("Graph should have contained s P o", g.contains(s, P, o));
 		assertTrue("Graph should have contained _x _R _y",
@@ -390,7 +403,7 @@ public class GraphContractTest<T extends Graph> extends
 		Node y = node("y");
 		Node a = node("a");
 		Node b = node("b");
-		Graph g = graphWith(getProducer().newInstance(), "x R y; a P b");
+		Graph g = graphWith(producer.newInstance(), "x R y; a P b");
 		assertTrue(g.contains(Node.ANY, R, y));
 		assertTrue(g.contains(x, Node.ANY, y));
 		assertTrue(g.contains(x, R, Node.ANY));
@@ -409,7 +422,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testContains_Triple() {
-		Graph graph = graphWith(getProducer().newInstance(),
+		Graph graph = graphWith(producer.newInstance(),
 				"S P O; S2 P2 O2; S3 P3 O3");
 
 		assertTrue(graph.contains(triple("S P O")));
@@ -426,7 +439,7 @@ public class GraphContractTest<T extends Graph> extends
 	@ContractTest
 	public void testContains_Triple_RepeatedSubjectDoesNotConceal() {
 
-		Graph g = graphWith(getProducer().newInstance(), "s P o; s Q r");
+		Graph g = graphWith(producer.newInstance(), "s P o; s Q r");
 		assertTrue(g.contains(triple("s P o")));
 		assertTrue(g.contains(triple("s Q r")));
 		assertTrue(g.contains(triple("?? P o")));
@@ -438,9 +451,9 @@ public class GraphContractTest<T extends Graph> extends
 	@ContractTest
 	public void testContains_Triple_ByValue() {
 
-		if (getProducer().newInstance().getCapabilities()
+		if (producer.newInstance().getCapabilities()
 				.handlesLiteralTyping()) {
-			Graph g1 = graphWith(getProducer().newInstance(),
+			Graph g1 = graphWith(producer.newInstance(),
 					"x P '1'xsd:integer");
 			assertTrue(
 					String.format(
@@ -448,11 +461,11 @@ public class GraphContractTest<T extends Graph> extends
 							g1.getClass()),
 					g1.contains(triple("x P '01'xsd:int")));
 			//
-			Graph g2 = graphWith(getProducer().newInstance(), "x P '1'xsd:int");
+			Graph g2 = graphWith(producer.newInstance(), "x P '1'xsd:int");
 			assertTrue("did not find x P '1'xsd:integer",
 					g2.contains(triple("x P '1'xsd:integer")));
 			//
-			Graph g3 = graphWith(getProducer().newInstance(),
+			Graph g3 = graphWith(producer.newInstance(),
 					"x P '123'xsd:string");
 			assertTrue("did not find x P '123'xsd:string",
 					g3.contains(triple("x P '123'")));
@@ -461,7 +474,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testContains_Triple_Concrete() {
-		Graph g = graphWith(getProducer().newInstance(),
+		Graph g = graphWith(producer.newInstance(),
 				"s P o; _x _R _y; x S 0");
 		assertTrue(g.contains(triple("s P o")));
 		assertTrue(g.contains(triple("_x _R _y")));
@@ -476,7 +489,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testContains_Triple_Fluid() {
-		Graph g = graphWith(getProducer().newInstance(), "x R y; a P b");
+		Graph g = graphWith(producer.newInstance(), "x R y; a P b");
 		assertTrue(g.contains(triple("?? R y")));
 		assertTrue(g.contains(triple("x ?? y")));
 		assertTrue(g.contains(triple("x R ??")));
@@ -498,9 +511,9 @@ public class GraphContractTest<T extends Graph> extends
 	 */
 	@ContractTest
 	public void testDelete_Triple() {
-		Graph graph = graphWith(getProducer().newInstance(),
+		Graph graph = graphWith(producer.newInstance(),
 				"S P O; S2 P2 O2; S3 P3 O3");
-		Graph base = getProducer().newInstance();
+		Graph base = producer.newInstance();
 		graph.getEventManager().register(GL);
 		txnBegin(graph);
 		graph.delete(triple("S P O"));
@@ -533,7 +546,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testDelete_Triple_FromNothing() {
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 		g.getEventManager().register(GL);
 		txnBegin(g);
 		g.delete(triple("quint rdf:subject S"));
@@ -543,8 +556,8 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testDependsOn() {
-		Graph g = getProducer().newInstance();
-		Graph[] depGraphs = getProducer().getDependsOn(g);
+		Graph g = producer.newInstance();
+		Graph[] depGraphs = producer.getDependsOn(g);
 		if (depGraphs != null) {
 			for (Graph dg : depGraphs) {
 				assertTrue(
@@ -552,7 +565,7 @@ public class GraphContractTest<T extends Graph> extends
 						g.dependsOn(dg));
 			}
 		}
-		depGraphs = getProducer().getNotDependsOn(g);
+		depGraphs = producer.getNotDependsOn(g);
 		if (depGraphs != null) {
 			for (Graph dg : depGraphs) {
 				assertFalse(String.format("Graph %s should not depend upon %s",
@@ -563,7 +576,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testFind_Node_Node_Node() {
-		Graph graph = graphWith(getProducer().newInstance(),
+		Graph graph = graphWith(producer.newInstance(),
 				"S P O; S2 P2 O2; S3 P3 O3");
 		List<Triple> s = graph.find(Node.ANY, Node.ANY, Node.ANY).toList();
 		assertEquals(3, s.size());
@@ -607,7 +620,7 @@ public class GraphContractTest<T extends Graph> extends
 		Node x = node("x");
 		Node y = node("y");
 		Node z = node("z");
-		Graph g = graphWith(getProducer().newInstance(), "x y z ");
+		Graph g = graphWith(producer.newInstance(), "x y z ");
 		Set<Triple> expect = tripleSet("x y z");
 		assertEquals(expect, g.find(Node.ANY, y, z).toSet());
 		assertEquals(expect, g.find(x, Node.ANY, z).toSet());
@@ -616,7 +629,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testFind_Node_Node_Node_ProgrammaticValues() {
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 		if (g.getCapabilities().handlesLiteralTyping()) {
 			Node ab = NodeFactory.createLiteral(LiteralLabelFactory
 					.createTypedLiteral(new Byte((byte) 42)));
@@ -657,7 +670,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testFind_Node_Node_Node_MatchLanguagedLiteralCaseInsensitive() {
-		Graph m = graphWith(getProducer().newInstance(), "a p 'chat'en");
+		Graph m = graphWith(producer.newInstance(), "a p 'chat'en");
 		if (m.getCapabilities().handlesLiteralTyping()) {
 			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
 			assertDiffer(chaten, chatEN);
@@ -670,7 +683,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testFind_Node_Node_Node_NoMatchAgainstUnlanguagesLiteral() {
-		Graph m = graphWith(getProducer().newInstance(),
+		Graph m = graphWith(producer.newInstance(),
 				"a p 'chat'en; a p 'chat'");
 		if (m.getCapabilities().handlesLiteralTyping()) {
 			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
@@ -684,7 +697,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testFind_Triple() {
-		Graph graph = graphWith(getProducer().newInstance(),
+		Graph graph = graphWith(producer.newInstance(),
 				"S P O; S2 P2 O2; S3 P3 O3");
 		List<Triple> s = graph.find(Triple.ANY).toList();
 		assertEquals(3, s.size());
@@ -724,7 +737,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testFind_Triple_ByFluidTriple() {
-		Graph g = graphWith(getProducer().newInstance(), "x y z ");
+		Graph g = graphWith(producer.newInstance(), "x y z ");
 		Set<Triple> expect = tripleSet("x y z");
 		assertEquals(expect, g.find(triple("?? y z")).toSet());
 		assertEquals(expect, g.find(triple("x ?? z")).toSet());
@@ -733,7 +746,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testFind_Triple_ProgrammaticValues() {
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 		if (g.getCapabilities().handlesLiteralTyping()) {
 			Node ab = NodeFactory.createLiteral(LiteralLabelFactory
 					.createTypedLiteral(new Byte((byte) 42)));
@@ -774,7 +787,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testFind_Triple_MatchLanguagedLiteralCaseInsensitive() {
-		Graph m = graphWith(getProducer().newInstance(), "a p 'chat'en");
+		Graph m = graphWith(producer.newInstance(), "a p 'chat'en");
 		//if (m.getCapabilities().handlesLiteralTyping()) {
 			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
 			assertDiffer(chaten, chatEN);
@@ -789,7 +802,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testFind_Triple_NoMatchAgainstUnlanguagesLiteral() {
-		Graph m = graphWith(getProducer().newInstance(),
+		Graph m = graphWith(producer.newInstance(),
 				"a p 'chat'en; a p 'chat'");
 		//if (m.getCapabilities().handlesLiteralTyping()) {
 			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
@@ -805,7 +818,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testGetCapabilities() {
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 		Capabilities c = g.getCapabilities();
 		assertNotNull("Capabilities are not returned", c);
 		try {
@@ -842,13 +855,13 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testGetEventManager() {
-		assertNotNull("Must return an EventManager", getProducer()
+		assertNotNull("Must return an EventManager", producer
 				.newInstance().getEventManager());
 	}
 
 	@ContractTest
 	public void testGetPrefixMapping() {
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 		PrefixMapping pm = g.getPrefixMapping();
 		assertNotNull("Must return prefix mapping", pm);
 		assertSame("getPrefixMapping must always return the same object", pm,
@@ -866,7 +879,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testGetStatisticsHandler() {
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 		GraphStatisticsHandler sh = g.getStatisticsHandler();
 		if (sh != null) {
 			assertSame(
@@ -877,14 +890,14 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testGetTransactionHandler() {
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 		assertNotNull("Must return a Transaction handler",
 				g.getTransactionHandler());
 	}
 
 	@ContractTest
 	public void testIsClosed() {
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 		assertFalse("Graph created in closed state", g.isClosed());
 		g.close();
 		assertTrue("Graph does not report closed state after close called",
@@ -893,7 +906,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testIsEmpty() {
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 		if (!g.isEmpty()) {
 			LOG.warn(String.format(
 					"Graph type %s can not be empty (Empty test skipped)",
@@ -916,12 +929,12 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testIsIsomorphicWith_Graph() {
-		Graph graph = getProducer().newInstance();
+		Graph graph = producer.newInstance();
 		Graph g2 = memGraph();
 		assertTrue("Empty graphs should be isomorphic",
 				graph.isIsomorphicWith(g2));
 
-		graph = graphWith(getProducer().newInstance(),
+		graph = graphWith(producer.newInstance(),
 				"S P O; S2 P2 O2; S3 P3 O3");
 		g2 = graphWith("S3 P3 O3; S2 P2 O2; S P O");
 		assertTrue("Should be isomorphic", graph.isIsomorphicWith(g2));
@@ -946,7 +959,7 @@ public class GraphContractTest<T extends Graph> extends
 	}
 
 	private Graph copy(Graph g) {
-		Graph result = getProducer().newInstance();
+		Graph result = producer.newInstance();
 		txnBegin(result);
 		GraphUtil.addInto(result, g);
 		txnCommit(result);
@@ -970,7 +983,7 @@ public class GraphContractTest<T extends Graph> extends
 	public void testRemove_Node_Node_Node() {
 		for (int i = 0; i < cases.length; i += 1)
 			for (int j = 0; j < 3; j += 1) {
-				Graph content = getProducer().newInstance();
+				Graph content = producer.newInstance();
 
 				Graph baseContent = copy(content);
 				graphAddTxn(content, cases[i][0]);
@@ -1018,7 +1031,7 @@ public class GraphContractTest<T extends Graph> extends
 	}
 
 	private void testRemove(String findRemove, String findCheck) {
-		Graph g = graphWith(getProducer().newInstance(), "S P O");
+		Graph g = graphWith(producer.newInstance(), "S P O");
 		ExtendedIterator<Triple> it = g.find(NodeCreateUtils
 				.createTriple(findRemove));
 		try {
@@ -1041,7 +1054,7 @@ public class GraphContractTest<T extends Graph> extends
 	 */
 	@ContractTest
 	public void testFindAndContains() {
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 		Node r = NodeCreateUtils.create("r"), s = NodeCreateUtils.create("s"), p = NodeCreateUtils
 				.create("P");
 		txnBegin(g);
@@ -1063,7 +1076,7 @@ public class GraphContractTest<T extends Graph> extends
 	@ContractTest
 	public void testAGraph() {
 		String title = this.getClass().getName();
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 		int baseSize = g.size();
 		graphAddTxn(g, "x R y; p S q; a T b");
 		/* */
@@ -1114,7 +1127,7 @@ public class GraphContractTest<T extends Graph> extends
 	// @ContractTest
 	// public void testHasTransactions()
 	// {
-	// Graph g = getProducer().newInstance();
+	// Graph g = producer.newInstance();
 	// TransactionHandler th = g.getTransactionHandler();
 	// th.transactionsSupported();
 	// try { th.begin(); } catch (UnsupportedOperationException x) {}
@@ -1131,7 +1144,7 @@ public class GraphContractTest<T extends Graph> extends
 	//
 	// @ContractTest
 	// public void testExecuteInTransactionCatchesThrowable()
-	// {Graph g = getProducer().newInstance();
+	// {Graph g = producer.newInstance();
 	// TransactionHandler th = g.getTransactionHandler();
 	// if (th.transactionsSupported())
 	// {
@@ -1145,7 +1158,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testAddWithReificationPreamble() {
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 		txnBegin(g);
 		xSPO(g);
 		txnCommit(g);
@@ -1170,7 +1183,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void failingTestDoubleRemoveAll() {
-		final Graph g = getProducer().newInstance();
+		final Graph g = producer.newInstance();
 		if (g.getCapabilities().iteratorRemoveAllowed()) {
 			try {
 				graphAddTxn(g, "c S d; e:ff GGG hhhh; _i J 27; Ell Em 'en'");
@@ -1245,8 +1258,8 @@ public class GraphContractTest<T extends Graph> extends
 	}
 
 	private void testIsomorphismFile(int n, String lang, String suffix, boolean result) {
-		Graph g1 = getProducer().newInstance();
-		Graph g2 = getProducer().newInstance();
+		Graph g1 = producer.newInstance();
+		Graph g2 = producer.newInstance();
 		Model m1 = ModelFactory.createModelForGraph(g1);
 		Model m2 = ModelFactory.createModelForGraph(g2);
 
@@ -1265,7 +1278,7 @@ public class GraphContractTest<T extends Graph> extends
 	}
 
 	protected Graph getClosed() {
-		Graph result = getProducer().newInstance();
+		Graph result = producer.newInstance();
 		result.close();
 		return result;
 	}
@@ -1273,7 +1286,7 @@ public class GraphContractTest<T extends Graph> extends
 	// @ContractTest
 	// public void testTransactionCommit()
 	// {
-	// Graph g = getProducer().newInstance();
+	// Graph g = producer.newInstance();
 	// if (g.getTransactionHandler().transactionsSupported())
 	// {
 	// Graph initial = graphWithTxn( "initial hasValue 42; also hasURI hello" );
@@ -1299,7 +1312,7 @@ public class GraphContractTest<T extends Graph> extends
 	// @ContractTest
 	// public void testTransactionAbort()
 	// {
-	// Graph g = getProducer().newInstance();
+	// Graph g = producer.newInstance();
 	// if (g.getTransactionHandler().transactionsSupported())
 	// {
 	// Graph initial = graphWithTxn( "initial hasValue 42; also hasURI hello" );
@@ -1317,12 +1330,12 @@ public class GraphContractTest<T extends Graph> extends
 	// @ContractTest
 	// public void testTransactionCommitThenAbort()
 	// {
-	// Graph g = getProducer().newInstance();
+	// Graph g = producer.newInstance();
 	// if (g.getTransactionHandler().transactionsSupported())
 	// {
 	// Graph initial = graphWithTxn( "Foo pings B; B pings C" );
 	// Graph extra = graphWithTxn( "C pingedBy B; fileGraph rdf:type Graph" );
-	// //Graph g = getProducer().newInstance();
+	// //Graph g = producer.newInstance();
 	// //File foo = FileUtils.tempFileName( "fileGraph", ".nt" );
 	// //Graph g = new FileGraph( foo, true, true );
 	// g.getTransactionHandler().begin();
@@ -1346,12 +1359,12 @@ public class GraphContractTest<T extends Graph> extends
 	 */
 	@ContractTest
 	public void testPartialUpdate() {
-		Graph source = graphWith(getProducer().newInstance(), "a R b; b S e");
-		Graph dest = graphWith(getProducer().newInstance(), "b R d");
+		Graph source = graphWith(producer.newInstance(), "a R b; b S e");
+		Graph dest = graphWith(producer.newInstance(), "b R d");
 		GraphExtract e = new GraphExtract(TripleBoundary.stopNowhere);
 		e.extractInto(dest, node("a"), source);
 		assertIsomorphic(
-				graphWith(getProducer().newInstance(), "a R b; b S e; b R d"),
+				graphWith(producer.newInstance(), "a R b; b S e; b R d"),
 				dest);
 	}
 
@@ -1361,7 +1374,7 @@ public class GraphContractTest<T extends Graph> extends
 	 */
 	@ContractTest
 	public void testIterator_Remove() {
-		Graph graph = graphWith(getProducer().newInstance(), "a R b; b S e");
+		Graph graph = graphWith(producer.newInstance(), "a R b; b S e");
 		if (graph.getCapabilities().iteratorRemoveAllowed()) {
 			try {
 				graph.getEventManager().register(GL);
@@ -1383,11 +1396,11 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testTransactionHandler_Commit() {
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 		if (g.getTransactionHandler().transactionsSupported()) {
-			Graph initial = graphWith(getProducer().newInstance(),
+			Graph initial = graphWith(producer.newInstance(),
 					"initial hasValue 42; also hasURI hello");
-			Graph extra = graphWith(getProducer().newInstance(),
+			Graph extra = graphWith(producer.newInstance(),
 					"extra hasValue 17; also hasURI world");
 
 			GraphUtil.addInto(g, initial);
@@ -1407,11 +1420,11 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testTransactionHandler_Abort() {
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 		if (g.getTransactionHandler().transactionsSupported()) {
-			Graph initial = graphWith(getProducer().newInstance(),
+			Graph initial = graphWith(producer.newInstance(),
 					"initial hasValue 42; also hasURI hello");
-			Graph extra = graphWith(getProducer().newInstance(),
+			Graph extra = graphWith(producer.newInstance(),
 					"extra hasValue 17; also hasURI world");
 			GraphUtil.addInto(g, initial);
 			g.getTransactionHandler().begin();
@@ -1423,11 +1436,11 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testTransactionHandler_CommitThenAbort() {
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 		if (g.getTransactionHandler().transactionsSupported()) {
-			Graph initial = graphWith(getProducer().newInstance(),
+			Graph initial = graphWith(producer.newInstance(),
 					"Foo pings B; B pings C");
-			Graph extra = graphWith(getProducer().newInstance(),
+			Graph extra = graphWith(producer.newInstance(),
 					"C pingedBy B; fileGraph rdf:type Graph");
 			g.getTransactionHandler().begin();
 			GraphUtil.addInto(g, initial);
@@ -1458,7 +1471,7 @@ public class GraphContractTest<T extends Graph> extends
 	private void testLiteralTypingBasedFind(final String data, final int size,
 			final String search, final String results, boolean reqLitType) {
 
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 
 		if (!reqLitType || g.getCapabilities().handlesLiteralTyping()) {
 			graphWith(g, data);
@@ -1526,7 +1539,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testQuadRemove() {
-		Graph g = getProducer().newInstance();
+		Graph g = producer.newInstance();
 		assertEquals(0, g.size());
 		Triple s = triple("x rdf:subject s");
 		Triple p = triple("x rdf:predicate p");
@@ -1550,7 +1563,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testSizeAfterRemove() {
-		Graph g = graphWith(getProducer().newInstance(), "x p y");
+		Graph g = graphWith(producer.newInstance(), "x p y");
 		if (g.getCapabilities().iteratorRemoveAllowed()) {
 			try {
 				ExtendedIterator<Triple> it = g.find(triple("x ?? ??"));
@@ -1565,7 +1578,7 @@ public class GraphContractTest<T extends Graph> extends
 	@ContractTest
 	public void testSingletonStatisticsWithSingleTriple() {
 
-		Graph g = graphWith(getProducer().newInstance(), "a P b");
+		Graph g = graphWith(producer.newInstance(), "a P b");
 		GraphStatisticsHandler h = g.getStatisticsHandler();
 		if (h != null) {
 			assertEquals(1L, h.getStatistic(node("a"), Node.ANY, Node.ANY));
@@ -1582,7 +1595,7 @@ public class GraphContractTest<T extends Graph> extends
 	@ContractTest
 	public void testSingletonStatisticsWithSeveralTriples() {
 
-		Graph g = graphWith(getProducer().newInstance(),
+		Graph g = graphWith(producer.newInstance(),
 				"a P b; a P c; a Q b; x S y");
 		GraphStatisticsHandler h = g.getStatisticsHandler();
 		if (h != null) {
@@ -1603,7 +1616,7 @@ public class GraphContractTest<T extends Graph> extends
 	@ContractTest
 	public void testDoubletonStatisticsWithTriples() {
 
-		Graph g = graphWith(getProducer().newInstance(),
+		Graph g = graphWith(producer.newInstance(),
 				"a P b; a P c; a Q b; x S y");
 		GraphStatisticsHandler h = g.getStatisticsHandler();
 		if (h != null) {
@@ -1624,7 +1637,7 @@ public class GraphContractTest<T extends Graph> extends
 	}
 
 	private void testStatsWithAllVariables(String triples) {
-		Graph g = graphWith(getProducer().newInstance(), triples);
+		Graph g = graphWith(producer.newInstance(), triples);
 		GraphStatisticsHandler h = g.getStatisticsHandler();
 		if (h != null) {
 			assertEquals(g.size(), h.getStatistic(Node.ANY, Node.ANY, Node.ANY));
@@ -1638,7 +1651,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	private void testStatsWithConcreteTriple(int expect, String triple,
 			String graph) {
-		Graph g = graphWith(getProducer().newInstance(), graph);
+		Graph g = graphWith(producer.newInstance(), graph);
 		GraphStatisticsHandler h = g.getStatisticsHandler();
 		if (h != null) {
 			Triple t = triple(triple);
@@ -1651,7 +1664,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testBrokenIndexes() {
-		Graph g = graphWith(getProducer().newInstance(), "x R y; x S z");
+		Graph g = graphWith(producer.newInstance(), "x R y; x S z");
 		if (g.getCapabilities().iteratorRemoveAllowed()) {
 			try {
 				ExtendedIterator<Triple> it = g.find(Node.ANY, Node.ANY,
@@ -1669,7 +1682,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testBrokenSubject() {
-		Graph g = graphWith(getProducer().newInstance(), "x brokenSubject y");
+		Graph g = graphWith(producer.newInstance(), "x brokenSubject y");
 		if (g.getCapabilities().iteratorRemoveAllowed()) {
 			try {
 				ExtendedIterator<Triple> it = g.find(node("x"), Node.ANY,
@@ -1684,7 +1697,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testBrokenPredicate() {
-		Graph g = graphWith(getProducer().newInstance(), "x brokenPredicate y");
+		Graph g = graphWith(producer.newInstance(), "x brokenPredicate y");
 		if (g.getCapabilities().iteratorRemoveAllowed()) {
 			try {
 				ExtendedIterator<Triple> it = g.find(Node.ANY,
@@ -1699,7 +1712,7 @@ public class GraphContractTest<T extends Graph> extends
 
 	@ContractTest
 	public void testBrokenObject() {
-		Graph g = graphWith(getProducer().newInstance(), "x brokenObject y");
+		Graph g = graphWith(producer.newInstance(), "x brokenObject y");
 		if (g.getCapabilities().iteratorRemoveAllowed()) {
 			try {
 				ExtendedIterator<Triple> it = g.find(Node.ANY, Node.ANY,
