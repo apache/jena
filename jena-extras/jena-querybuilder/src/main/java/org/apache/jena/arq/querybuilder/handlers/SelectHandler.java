@@ -17,16 +17,15 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
+import java.util.List ;
+import java.util.Map ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
-import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.util.ExprUtils;
+import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.util.ExprUtils ;
 
 /**
  * A Select clause handler.

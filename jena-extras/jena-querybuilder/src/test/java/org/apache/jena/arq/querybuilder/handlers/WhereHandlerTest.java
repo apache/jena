@@ -316,7 +316,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	}
 
 	@Test
-	public void testBindExprVar() throws ParseException {
+	public void testBindExprVar() {
 		Var v = Var.alloc("foo");
 		handler.addBind(new E_Random(), v);
 

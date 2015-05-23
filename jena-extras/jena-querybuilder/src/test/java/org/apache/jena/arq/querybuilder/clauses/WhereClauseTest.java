@@ -274,7 +274,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	}
 
 	@ContractTest
-	public void testBindExprVar() throws ParseException {
+	public void testBindExprVar() {
 		Var v = Var.alloc("foo");
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause

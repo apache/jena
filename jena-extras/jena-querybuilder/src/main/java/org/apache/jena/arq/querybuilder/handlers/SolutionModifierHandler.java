@@ -17,12 +17,11 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import java.io.ByteArrayInputStream;
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
+import java.io.ByteArrayInputStream ;
+import java.util.List ;
+import java.util.Map ;
 
-import org.apache.jena.arq.querybuilder.rewriters.ExprRewriter;
+import org.apache.jena.arq.querybuilder.rewriters.ExprRewriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.SortCondition ;

@@ -17,16 +17,16 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Map ;
 
-import org.apache.jena.arq.querybuilder.SelectBuilder;
-import org.apache.jena.arq.querybuilder.clauses.ConstructClause;
-import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
-import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
-import org.apache.jena.arq.querybuilder.clauses.WhereClause;
-import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
+import org.apache.jena.arq.querybuilder.SelectBuilder ;
+import org.apache.jena.arq.querybuilder.clauses.ConstructClause ;
+import org.apache.jena.arq.querybuilder.clauses.DatasetClause ;
+import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause ;
+import org.apache.jena.arq.querybuilder.clauses.WhereClause ;
+import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.Query ;
@@ -34,7 +34,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 import org.apache.jena.sparql.syntax.* ;
-import org.apache.jena.sparql.util.ExprUtils;
+import org.apache.jena.sparql.util.ExprUtils ;
 
 /**
  * The where handler
@@ -293,7 +293,7 @@ public class WhereHandler implements Handler {
 
 	/**
 	 * Add a binding to the where clause.
-	 * @param expr The expression to bind.
+	 * @param expression The expression to bind.
 	 * @param var The variable to bind it to.
 	 * @throws ParseException 
 	 */
