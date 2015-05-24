@@ -151,7 +151,6 @@ public class FusekiLogging
              "## Most things", 
              "log4j.rootLogger=INFO, jena.plainstdout",
              "log4j.logger.com.hp.hpl.jena=WARN",
-             "log4j.logger.org.openjena=WARN",
              "log4j.logger.org.apache.jena=WARN",
 
              "# Fuseki System logs.",

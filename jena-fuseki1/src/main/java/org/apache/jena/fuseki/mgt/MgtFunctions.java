@@ -29,12 +29,11 @@ import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.server.ServiceRef ;
-
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Prologue ;
-import com.hp.hpl.jena.sparql.serializer.PrologueSerializer ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Prologue ;
+import org.apache.jena.sparql.serializer.PrologueSerializer ;
+import org.apache.jena.tdb.store.DatasetGraphTDB ;
 
 /** Avoid code in JSPs */
 public class MgtFunctions
@@ -71,7 +70,7 @@ public class MgtFunctions
     /** Return lists of datasets */ 
     public static List<String> datasets(HttpServletRequest request)
     {
-        return Iter.toList(DatasetRegistry.get().keys()) ;
+        return Iter.toList(DatasetRegistry.get().keys().iterator()) ;
     }
 
     /** Return name of */  

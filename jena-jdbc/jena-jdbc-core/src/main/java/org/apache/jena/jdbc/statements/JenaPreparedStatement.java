@@ -43,17 +43,16 @@ import java.sql.Types;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.iri.IRI;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.statements.metadata.JenaParameterMetadata;
 import org.apache.jena.jdbc.utils.JdbcNodeUtils;
-
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.query.ParameterizedSparqlString;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
+import org.apache.jena.query.ParameterizedSparqlString ;
+import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
 /**
  * Abstract Jena JDBC implementation of a prepared statement

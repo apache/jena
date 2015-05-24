@@ -24,14 +24,13 @@ import java.util.List ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.fuseki.migrate.GraphLoadUtils ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.RiotException ;
-
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetDescription ;
+import org.apache.jena.sparql.core.DatasetDescription ;
 
 public class SPARQL_QueryGeneral extends SPARQL_Query
 {

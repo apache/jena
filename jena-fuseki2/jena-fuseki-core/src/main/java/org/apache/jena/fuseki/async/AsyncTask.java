@@ -22,8 +22,7 @@ import static java.lang.String.format ;
 
 import java.util.concurrent.Callable ;
 
-import com.hp.hpl.jena.sparql.util.Utils ;
-
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
@@ -74,7 +73,7 @@ public class AsyncTask implements Callable<Object>
         }
             
         Fuseki.serverLog.info(format("[Task %s] starts : %s",taskId, displayName)) ;
-        startPoint = Utils.nowAsXSDDateTimeString() ;
+        startPoint = DateTimeUtils.nowAsXSDDateTimeString() ;
     }
     
     public void finish() {
@@ -83,7 +82,7 @@ public class AsyncTask implements Callable<Object>
             Log.warn(Fuseki.serverLog, msg) ;
             throw new InternalErrorException("Finish has already been called ["+getTaskId()+"]") ; 
         }
-        finishPoint = Utils.nowAsXSDDateTimeString() ;
+        finishPoint = DateTimeUtils.nowAsXSDDateTimeString() ;
         Fuseki.serverLog.info(format("[Task %s] finishes : %s",taskId, displayName)) ;
     }
     

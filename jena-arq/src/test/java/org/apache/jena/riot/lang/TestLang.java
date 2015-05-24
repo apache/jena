@@ -25,10 +25,9 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebContent ;
+import org.apache.jena.util.FileUtils ;
 import org.junit.Assert ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.util.FileUtils ;
 
 public class TestLang extends BaseTest
 {

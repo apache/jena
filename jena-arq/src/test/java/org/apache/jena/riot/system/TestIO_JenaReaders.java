@@ -24,6 +24,7 @@ import java.util.LinkedHashMap ;
 import java.util.Map ;
 import java.util.Properties ;
 
+import org.apache.jena.rdf.model.impl.RDFReaderFImpl ;
 import org.apache.jena.riot.IO_Jena ;
 import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_NT ;
 import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_RDFJSON ;
@@ -34,8 +35,6 @@ import org.apache.jena.riot.adapters.* ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
 
 public class TestIO_JenaReaders {
     @BeforeClass public static void beforeClass() { } 
@@ -55,7 +54,7 @@ public class TestIO_JenaReaders {
     }
 
     @Test
-    public void wireIntoJena() throws Exception {
+    public void wireIntoJena() {
         IO_JenaReaders.wireIntoJena();
         RDFReaderFImpl readerF = new RDFReaderFImpl();
         assertEquals(RDFReaderRIOT_Web.class,       readerF.getReader().getClass());
@@ -75,7 +74,7 @@ public class TestIO_JenaReaders {
     }
     
     @Test
-    public void resetJena() throws Exception {
+    public void resetJena() {
         IO_JenaReaders.wireIntoJena();
         IO_JenaReaders.resetJena();
         RDFReaderFImplExposingProtected readerF = new RDFReaderFImplExposingProtected();

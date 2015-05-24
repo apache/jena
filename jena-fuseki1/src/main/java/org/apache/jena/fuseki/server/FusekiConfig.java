@@ -23,41 +23,25 @@ import java.util.ArrayList ;
 import java.util.Arrays ;
 import java.util.List ;
 
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.JA ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.DatasetGraphReadOnly ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.util.FileManager ;
+import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.RDFS ;
 import org.slf4j.Logger ;
-
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.assembler.JA ;
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.QuerySolutionMap ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
-import com.hp.hpl.jena.rdf.model.Literal ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.rdf.model.ResIterator ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.rdf.model.Statement ;
-import com.hp.hpl.jena.rdf.model.StmtIterator ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphReadOnly ;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.util.FileManager ;
-import com.hp.hpl.jena.vocabulary.RDF ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class FusekiConfig
 {
@@ -79,11 +63,11 @@ public class FusekiConfig
     "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
     "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
     "PREFIX tdb:    <http://jena.hpl.hp.com/2008/tdb#>",
-    "PREFIX list:   <http://jena.hpl.hp.com/ARQ/list#>",
-    "PREFIX list:   <http://jena.hpl.hp.com/ARQ/list#>",
+    "PREFIX list:   <http://jena.apache.org/ARQ/list#>",
+    "PREFIX list:   <http://jena.apache.org/ARQ/list#>",
     "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>",
-    "PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>", 
-    "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>" ,
+    "PREFIX apf:     <http://jena.apache.org/ARQ/property#>", 
+    "PREFIX afn:     <http://jena.apache.org/ARQ/function#>" ,
     "") ;
     
     public static ServerConfig defaultConfiguration(String datasetPath, DatasetGraph dsg, boolean allowUpdate, boolean listenLocal)

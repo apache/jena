@@ -21,15 +21,14 @@ package sdb;
 import java.sql.SQLException;
 import java.util.List;
 
+import arq.cmd.ArgDecl ;
+import arq.cmd.TerminationException ;
+import org.apache.jena.sdb.SDB ;
+import org.apache.jena.sdb.sql.RS ;
+import org.apache.jena.sdb.sql.ResultSetJDBC ;
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.util.FileManager ;
 import sdb.cmd.CmdArgsDB;
-import arq.cmd.TerminationException;
-import arq.cmdline.ArgDecl;
-
-import com.hp.hpl.jena.sdb.SDB ;
-import com.hp.hpl.jena.sdb.sql.RS;
-import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.util.FileManager;
 
 public class sdbsql extends CmdArgsDB
 {
@@ -51,7 +50,7 @@ public class sdbsql extends CmdArgsDB
     }
     
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary()  { return getCommandName()+" --sdb <SPEC> SQLSTRING | --file=FILE"; }

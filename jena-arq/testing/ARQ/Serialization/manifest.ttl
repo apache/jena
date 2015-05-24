@@ -1,18 +1,3 @@
-#  Licensed to the Apache Software Foundation (ASF) under one or more
-#  contributor license agreements.  See the NOTICE file distributed with
-#  this work for additional information regarding copyright ownership.
-#  The ASF licenses this file to You under the Apache License, Version 2.0
-#  (the "License"); you may not use this file except in compliance with
-#  the License.  You may obtain a copy of the License at
-# 
-#       http://www.apache.org/licenses/LICENSE-2.0
-# 
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
-
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
 @prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
@@ -20,7 +5,7 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:comment "Serialization tests" ;
+    rdfs:comment "Serialization tests Serialization" ;
     mf:entries
     ( 
       [  mf:name    "syn-01.rq" ;
@@ -199,14 +184,6 @@
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-form-describe02.rq> ; 
       ]
-      [  mf:name    "syntax-form-select-01.rq" ;
-         rdf:type   mfx:TestSerialization ;
-         mf:action  <syntax-form-select-01.rq> ; 
-      ]
-      [  mf:name    "syntax-form-select-02.rq" ;
-         rdf:type   mfx:TestSerialization ;
-         mf:action  <syntax-form-select-02.rq> ; 
-      ]
       [  mf:name    "syntax-forms-01.rq" ;
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-forms-01.rq> ; 
@@ -214,6 +191,14 @@
       [  mf:name    "syntax-forms-02.rq" ;
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-forms-02.rq> ; 
+      ]
+      [  mf:name    "syntax-form-select-01.rq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-form-select-01.rq> ; 
+      ]
+      [  mf:name    "syntax-form-select-02.rq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-form-select-02.rq> ; 
       ]
       [  mf:name    "syntax-function-01.rq" ;
          rdf:type   mfx:TestSerialization ;
@@ -471,7 +456,6 @@
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-order-09.rq> ; 
       ]
-
       [  mf:name    "syntax-pat-01.rq" ;
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-pat-01.rq> ; 
@@ -572,6 +556,22 @@
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-struct-14.rq> ; 
       ]
+      [  mf:name    "syntax-subselect-01.rq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-subselect-01.rq> ; 
+      ]
+      [  mf:name    "syntax-subselect-02.rq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-subselect-02.rq> ; 
+      ]
+      [  mf:name    "syntax-subselect-03.rq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-subselect-03.rq> ; 
+      ]
+      [  mf:name    "syntax-subselect-04.rq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-subselect-04.rq> ; 
+      ]
       [  mf:name    "syntax-union-01.rq" ;
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-union-01.rq> ; 
@@ -580,25 +580,13 @@
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-union-02.rq> ; 
       ]
-      [  mf:name    "syntax-select-expr-01.arq" ;
+      [  mf:name    "syntax-assign-01.arq" ;
          rdf:type   mfx:TestSerialization ;
-         mf:action  <syntax-select-expr-01.arq> ; 
+         mf:action  <syntax-assign-01.arq> ; 
       ]
-      [  mf:name    "syntax-select-expr-02.arq" ;
+      [  mf:name    "syntax-assign-02.arq" ;
          rdf:type   mfx:TestSerialization ;
-         mf:action  <syntax-select-expr-02.arq> ; 
-      ]
-      [  mf:name    "syntax-select-expr-03.arq" ;
-         rdf:type   mfx:TestSerialization ;
-         mf:action  <syntax-select-expr-03.arq> ; 
-      ]
-      [  mf:name    "syntax-group-01.arq" ;
-         rdf:type   mfx:TestSerialization ;
-         mf:action  <syntax-group-01.arq> ; 
-      ]
-      [  mf:name    "syntax-group-02.arq" ;
-         rdf:type   mfx:TestSerialization ;
-         mf:action  <syntax-group-01.arq> ; 
+         mf:action  <syntax-assign-02.arq> ; 
       ]
       [  mf:name    "syntax-count-01.arq" ;
          rdf:type   mfx:TestSerialization ;
@@ -616,36 +604,44 @@
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-count-04.arq> ; 
       ]
-
+      [  mf:name    "syntax-group-01.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-group-01.arq> ; 
+      ]
+      [  mf:name    "syntax-group-02.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-group-02.arq> ; 
+      ]
+      [  mf:name    "syntax-select-expr-01.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-select-expr-01.arq> ; 
+      ]
+      [  mf:name    "syntax-select-expr-02.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-select-expr-02.arq> ; 
+      ]
+      [  mf:name    "syntax-select-expr-03.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-select-expr-03.arq> ; 
+      ]
       [  mf:name    "syntax-service-01.arq" ;
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-service-01.arq> ; 
       ]
-
-      [  mf:name    "syntax-subselect-01.arq" ;
+      [  mf:name    "syntax-subselect-10.arq" ;
          rdf:type   mfx:TestSerialization ;
-         mf:action  <syntax-subselect-01.arq> ; 
+         mf:action  <syntax-subselect-10.arq> ; 
       ]
-      [  mf:name    "syntax-subselect-02.arq" ;
+      [  mf:name    "syntax-subselect-11.arq" ;
          rdf:type   mfx:TestSerialization ;
-         mf:action  <syntax-subselect-02.arq> ; 
+         mf:action  <syntax-subselect-11.arq> ; 
       ]
-      [  mf:name    "syntax-subselect-03.arq" ;
+      [  mf:name    "syntax-subselect-12.arq" ;
          rdf:type   mfx:TestSerialization ;
-         mf:action  <syntax-subselect-03.arq> ; 
+         mf:action  <syntax-subselect-12.arq> ; 
       ]
-      [  mf:name    "syntax-subselect-04.arq" ;
+      [  mf:name    "syntax-subselect-13.arq" ;
          rdf:type   mfx:TestSerialization ;
-         mf:action  <syntax-subselect-04.arq> ; 
+         mf:action  <syntax-subselect-13.arq> ; 
       ]
-
-      [  mf:name    "syntax-assign-01.arq" ;
-         rdf:type   mfx:TestSerialization ;
-         mf:action  <syntax-assign-01.arq> ; 
-      ]
-      [  mf:name    "syntax-assign-02.arq" ;
-         rdf:type   mfx:TestSerialization ;
-         mf:action  <syntax-assign-02.arq> ; 
-      ]
-
     ) .

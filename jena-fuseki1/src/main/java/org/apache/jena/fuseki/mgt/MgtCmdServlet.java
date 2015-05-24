@@ -30,16 +30,15 @@ import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.Jena ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServiceRef ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.tdb.TDB ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
-
-import com.hp.hpl.jena.Jena ;
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.tdb.TDB ;
 
 /** Control functions for a Fuskei server */
 

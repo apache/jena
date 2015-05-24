@@ -20,13 +20,12 @@ package org.apache.jena.hadoop.rdf.io.input.readers.ntriples;
 
 import java.util.Iterator;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.io.input.readers.AbstractLineBasedTripleReader;
 import org.apache.jena.riot.lang.LangNTriples;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.tokens.Tokenizer;
 import org.apache.jena.riot.tokens.TokenizerFactory;
-
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * A record reader for NTriples

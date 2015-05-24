@@ -18,10 +18,9 @@
 
 package org.apache.jena.query.spatial;
 
+import org.apache.jena.graph.Node ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.graph.Node;
 
 public class SpatialPredicatePairValue {
 

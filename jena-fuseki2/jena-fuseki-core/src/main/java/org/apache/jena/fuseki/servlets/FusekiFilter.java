@@ -37,7 +37,7 @@ public class FusekiFilter implements Filter {
     private static SPARQL_UberServlet überServlet = new SPARQL_UberServlet.AccessByConfig() ;
     
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
 //        log.info("Filter: ["+Utils.className(this)+"] ServletContextName = "+filterConfig.getServletContext().getServletContextName()) ;
 //        log.info("Filter: ["+Utils.className(this)+"] ContextPath        = "+filterConfig.getServletContext().getContextPath()) ;
     }

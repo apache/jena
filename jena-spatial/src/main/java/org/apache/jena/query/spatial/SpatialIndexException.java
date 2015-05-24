@@ -18,7 +18,7 @@
 
 package org.apache.jena.query.spatial;
 
-import com.hp.hpl.jena.query.QueryExecException;
+import org.apache.jena.query.QueryExecException ;
 
 public class SpatialIndexException extends QueryExecException 
 {

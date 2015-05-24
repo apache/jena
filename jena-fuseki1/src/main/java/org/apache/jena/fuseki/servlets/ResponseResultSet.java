@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.apache.jena.atlas.lib.Lib.equal ;
 import static org.apache.jena.fuseki.servlets.ServletBase.errorBadRequest ;
 import static org.apache.jena.fuseki.servlets.ServletBase.errorOccurred ;
 import static org.apache.jena.fuseki.servlets.ServletBase.log ;
@@ -27,6 +26,7 @@ import static org.apache.jena.fuseki.servlets.ServletBase.log ;
 import java.io.IOException ;
 import java.util.HashMap ;
 import java.util.Map ;
+import java.util.Objects;
 
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
@@ -38,17 +38,16 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
+import org.apache.jena.query.QueryCancelledException ;
+import org.apache.jena.query.ResultSet ;
+import org.apache.jena.query.ResultSetFormatter ;
 import org.apache.jena.riot.ResultSetMgr ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.resultset.ResultSetLang ;
+import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.query.QueryCancelledException ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.sparql.core.Prologue ;
 
 /** This is the content negotiation for each kind of SPARQL query result */ 
 public class ResponseResultSet
@@ -130,7 +129,7 @@ public class ResponseResultSet
              
         // Stylesheet - change to application/xml.
         final String stylesheetURL = ResponseOps.paramStylesheet(request) ;
-        if ( stylesheetURL != null && equal(serializationType,WebContent.contentTypeResultsXML) )
+        if ( stylesheetURL != null && Objects.equals(serializationType,WebContent.contentTypeResultsXML) )
             contentType = WebContent.contentTypeXML ;
         
         // Force to text/plain?
@@ -140,17 +139,17 @@ public class ResponseResultSet
 
         // Better : dispatch on MediaType
         // Fuseki2 uses the SPARQL parser/write registry.
-        if ( equal(serializationType, WebContent.contentTypeResultsXML) )
+        if ( Objects.equals(serializationType, WebContent.contentTypeResultsXML) )
             sparqlXMLOutput(action, contentType, resultSet, stylesheetURL, booleanResult) ;
-        else if ( equal(serializationType, WebContent.contentTypeResultsJSON) )
+        else if ( Objects.equals(serializationType, WebContent.contentTypeResultsJSON) )
             jsonOutput(action, contentType, resultSet, booleanResult) ;
-        else if ( equal(serializationType, WebContent.contentTypeTextPlain) )
+        else if ( Objects.equals(serializationType, WebContent.contentTypeTextPlain) )
             textOutput(action, contentType, resultSet, qPrologue, booleanResult) ;
-        else if ( equal(serializationType, WebContent.contentTypeTextCSV) ) 
+        else if ( Objects.equals(serializationType, WebContent.contentTypeTextCSV) ) 
             csvOutput(action, contentType, resultSet, booleanResult) ;
-        else if (equal(serializationType, WebContent.contentTypeTextTSV) )
+        else if (Objects.equals(serializationType, WebContent.contentTypeTextTSV) )
             tsvOutput(action, contentType, resultSet, booleanResult) ;
-        else if (equal(serializationType, WebContent.contentTypeResultsThrift) )
+        else if (Objects.equals(serializationType, WebContent.contentTypeResultsThrift) )
             thriftOutput(action, contentType, resultSet, booleanResult) ;
         else
             errorBadRequest("Can't determine output serialization: "+serializationType) ;

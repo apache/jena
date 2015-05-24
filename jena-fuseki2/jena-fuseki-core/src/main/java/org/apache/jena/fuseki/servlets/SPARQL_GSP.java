@@ -22,13 +22,12 @@ import java.util.Enumeration ;
 
 import javax.servlet.http.HttpServletRequest ;
 
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.riot.system.IRIResolver ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 
 public abstract class SPARQL_GSP extends ActionREST
 {

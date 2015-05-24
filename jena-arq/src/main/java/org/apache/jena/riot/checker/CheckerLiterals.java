@@ -21,22 +21,21 @@ package org.apache.jena.riot.checker ;
 import java.util.Objects ;
 import java.util.regex.Pattern ;
 
+import org.apache.jena.JenaRuntime ;
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.datatypes.xsd.impl.XSDAbstractDateTimeType ;
+import org.apache.jena.datatypes.xsd.impl.XSDBaseNumericType ;
+import org.apache.jena.datatypes.xsd.impl.XSDDouble ;
+import org.apache.jena.datatypes.xsd.impl.XSDFloat ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.xerces.impl.dv.InvalidDatatypeValueException ;
 import org.apache.xerces.impl.dv.ValidatedInfo ;
 import org.apache.xerces.impl.dv.ValidationContext ;
 import org.apache.xerces.impl.dv.XSSimpleType ;
 import org.apache.xerces.impl.validation.ValidationState ;
-
-import com.hp.hpl.jena.JenaRuntime ;
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType ;
-import com.hp.hpl.jena.datatypes.xsd.impl.XSDBaseNumericType ;
-import com.hp.hpl.jena.datatypes.xsd.impl.XSDDouble ;
-import com.hp.hpl.jena.datatypes.xsd.impl.XSDFloat ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.graph.NodeConst ;
 
 public class CheckerLiterals implements NodeChecker {
     // A flag to enable the test suite to read bad data.

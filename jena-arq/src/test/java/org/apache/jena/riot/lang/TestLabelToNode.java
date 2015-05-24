@@ -22,14 +22,13 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.system.SyntaxLabels ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
 
 @RunWith(Parameterized.class)
 public class TestLabelToNode extends BaseTest

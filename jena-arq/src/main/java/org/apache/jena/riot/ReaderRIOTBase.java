@@ -22,8 +22,7 @@ import java.io.InputStream ;
 
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.system.StreamRDF ;
-
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Context ;
 
 public abstract class ReaderRIOTBase implements ReaderRIOT
 {

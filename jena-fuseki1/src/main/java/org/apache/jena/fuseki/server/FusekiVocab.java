@@ -20,11 +20,10 @@ package org.apache.jena.fuseki.server;
 
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.rdf.model.Property ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.ResourceFactory ;
 import org.apache.jena.riot.system.IRIResolver ;
-
-import com.hp.hpl.jena.rdf.model.Property ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.rdf.model.ResourceFactory ;
 
 public class FusekiVocab
 {

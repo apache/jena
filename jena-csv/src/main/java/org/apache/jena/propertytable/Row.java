@@ -20,9 +20,9 @@ package org.apache.jena.propertytable;
 
 import java.util.Collection;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /**
  * Each Row of the PropertyTable has an unique rowKey Node of the subject (or s for short).

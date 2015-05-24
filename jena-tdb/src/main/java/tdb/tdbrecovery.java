@@ -18,11 +18,10 @@
 
 package tdb;
 
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.tdb.transaction.JournalControl ;
 import tdb.cmdline.CmdTDB ;
-
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.transaction.JournalControl ;
 
 public class tdbrecovery extends CmdTDB
 {

@@ -18,11 +18,11 @@
 
 package sdb.examples;
 
-import com.hp.hpl.jena.query.*;
+import org.apache.jena.query.*;
 
-import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.store.DatasetStore;
+import org.apache.jena.sdb.SDBFactory;
+import org.apache.jena.sdb.Store;
+import org.apache.jena.sdb.store.DatasetStore;
 
 /** Example of the usual way to connect store and issue a query.
  *  A description of the connection and store is read from file "sdb.ttl".

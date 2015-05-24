@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.checker;
 
-import com.hp.hpl.jena.graph.Node ;
+import org.apache.jena.graph.Node ;
 
 public class NodeCheckerNull implements NodeChecker
 {

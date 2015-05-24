@@ -18,7 +18,7 @@
 
 package org.apache.jena.query.spatial;
 
-import com.hp.hpl.jena.graph.Node;
+import org.apache.jena.graph.Node ;
 
 public class SpatialPredicatePair {
 

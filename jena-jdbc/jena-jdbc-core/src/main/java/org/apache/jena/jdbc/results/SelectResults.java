@@ -24,16 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.jdbc.results.metadata.SelectResultsMetadata;
 import org.apache.jena.jdbc.statements.JenaStatement;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.QueryCancelledException;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.resultset.ResultSetPeekable;
+import org.apache.jena.query.QueryCancelledException ;
+import org.apache.jena.query.QueryExecution ;
+import org.apache.jena.query.ResultSetFactory ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.resultset.ResultSetPeekable ;
 
 /**
  * Represents SPARQL SELECT results
@@ -83,7 +82,7 @@ public class SelectResults extends StreamedResults<Binding> {
      * @throws SQLException
      *             Thrown if the arguments are invalid
      */
-    public SelectResults(JenaStatement statement, QueryExecution qe, com.hp.hpl.jena.query.ResultSet results, boolean commit)
+    public SelectResults(JenaStatement statement, QueryExecution qe, org.apache.jena.query.ResultSet results, boolean commit)
             throws SQLException {
         this(statement, qe, ResultSetFactory.makePeekable(results), commit);
     }

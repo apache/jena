@@ -19,12 +19,11 @@
 package org.apache.jena.query.text;
 
 import org.apache.jena.atlas.logging.Log ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.rdf.model.AnonId ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.FmtUtils ;
 
 /** Functions relating to text query */
 public class TextQueryFuncs {

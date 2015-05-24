@@ -22,9 +22,8 @@ import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
 
 /**
  * Servlet for operations directly on a dataset - REST(ish) behaviour on the

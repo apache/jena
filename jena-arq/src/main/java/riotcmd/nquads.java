@@ -18,11 +18,10 @@
 
 package riotcmd;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Run the N-Quads parser - and produce N-Quads */
 public class nquads extends CmdLangParse
@@ -40,7 +39,7 @@ public class nquads extends CmdLangParse
     @Override
     protected String getCommandName()
     {
-        return Utils.classShortName(nquads.class) ;
+        return Lib.classShortName(nquads.class) ;
     }
     
     @Override

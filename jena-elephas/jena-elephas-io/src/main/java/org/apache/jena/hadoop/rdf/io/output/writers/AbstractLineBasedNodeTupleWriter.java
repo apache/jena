@@ -18,20 +18,18 @@
 
 package org.apache.jena.hadoop.rdf.io.output.writers;
 
-import java.io.IOException;
 import java.io.Writer;
 
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.io.Writer2;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterNT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.graph.Node;
 
 /**
  * An abstract implementation of a record writer that writes records to a line
@@ -94,7 +92,7 @@ public abstract class AbstractLineBasedNodeTupleWriter<TKey, TValue, T extends A
     }
 
     @Override
-    public void write(TKey key, T value) throws IOException, InterruptedException {
+    public void write(TKey key, T value) {
         log.debug("write({}={})", key, value);
 
         Node[] ns = this.getNodes(value);
@@ -145,7 +143,7 @@ public abstract class AbstractLineBasedNodeTupleWriter<TKey, TValue, T extends A
     }
 
     @Override
-    public void close(TaskAttemptContext context) throws IOException, InterruptedException {
+    public void close(TaskAttemptContext context) {
         log.debug("close({})", context);
         writer.close();
     }

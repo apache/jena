@@ -18,15 +18,13 @@
 
 package org.apache.jena.query.text.assembler;
 
+import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.query.text.TextIndexLucene ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.analysis.core.KeywordAnalyzer ;
 import org.apache.lucene.store.RAMDirectory ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
-
 import static org.junit.Assert.* ;
 
 public class TestTextIndexLuceneAssembler extends AbstractTestTextAssembler {

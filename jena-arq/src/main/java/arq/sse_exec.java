@@ -18,11 +18,10 @@
 
 package arq;
 
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.sparql.sse.Item ;
+import org.apache.jena.sparql.sse.builders.BuilderExec ;
 import arq.cmdline.CmdARQ_SSE ;
-
-import com.hp.hpl.jena.sparql.sse.Item ;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderExec ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class sse_exec extends CmdARQ_SSE
 {
@@ -38,7 +37,7 @@ public class sse_exec extends CmdARQ_SSE
     }
     
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary() { return getCommandName()+" [--file<file> | string]" ; }

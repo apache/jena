@@ -21,10 +21,11 @@ package org.apache.jena.hadoop.rdf.types;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableUtils;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.util.NodeUtils;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.util.NodeUtils ;
 
 /**
  * A abstract general purpose writable where the actual class represented is

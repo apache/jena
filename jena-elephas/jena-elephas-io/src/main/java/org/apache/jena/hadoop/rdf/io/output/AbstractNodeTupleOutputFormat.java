@@ -55,7 +55,7 @@ public abstract class AbstractNodeTupleOutputFormat<TKey, TValue, T extends Abst
     private static final Logger LOG = LoggerFactory.getLogger(AbstractNodeTupleOutputFormat.class);
 
     @Override
-    public RecordWriter<TKey, T> getRecordWriter(TaskAttemptContext context) throws IOException, InterruptedException {
+    public RecordWriter<TKey, T> getRecordWriter(TaskAttemptContext context) throws IOException {
         Configuration config = context.getConfiguration();
         boolean isCompressed = getCompressOutput(context);
         CompressionCodec codec = null;
@@ -65,7 +65,7 @@ public abstract class AbstractNodeTupleOutputFormat<TKey, TValue, T extends Abst
         if (isCompressed) {
             // Add compression extension if applicable
             Class<? extends CompressionCodec> codecClass = getOutputCompressorClass(context, GzipCodec.class);
-            codec = (CompressionCodec) ReflectionUtils.newInstance(codecClass, config);
+            codec = ReflectionUtils.newInstance(codecClass, config);
             extension += codec.getDefaultExtension();
         }
         Path file = getDefaultWorkFile(context, extension);

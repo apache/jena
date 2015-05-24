@@ -20,17 +20,18 @@ package org.apache.jena.fuseki.servlets;
 
 import static org.apache.jena.fuseki.HttpNames.* ;
 
-import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.Enumeration ;
 import java.util.Locale ;
 
-import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.server.CounterName ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.ReaderRIOT ;
@@ -39,13 +40,9 @@ import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 public abstract class SPARQL_REST extends SPARQL_ServletBase
 {
@@ -161,7 +158,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     { super() ; }
 
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void service(HttpServletRequest request, HttpServletResponse response) {
         // Direct all verbs to our common framework.
         doCommon(request, response) ;
     }

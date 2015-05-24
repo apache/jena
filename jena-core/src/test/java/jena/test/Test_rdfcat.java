@@ -22,11 +22,9 @@ import java.io.*;
 import java.util.*;
 
 import jena.rdfcat;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-
 import junit.framework.TestCase;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 
 public class Test_rdfcat extends TestCase
 {

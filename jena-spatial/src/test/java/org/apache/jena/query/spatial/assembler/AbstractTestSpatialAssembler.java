@@ -18,12 +18,12 @@
 
 package org.apache.jena.query.spatial.assembler;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.tdb.assembler.VocabTDB;
-import com.hp.hpl.jena.vocabulary.RDF;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.tdb.assembler.VocabTDB ;
+import org.apache.jena.vocabulary.RDF ;
 
 public abstract class AbstractTestSpatialAssembler {
 	protected static final Model model = ModelFactory.createDefaultModel();

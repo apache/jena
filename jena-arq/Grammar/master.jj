@@ -80,18 +80,18 @@ PARSER_BEGIN(CLASS)
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.PACKAGE ;
+package org.apache.jena.sparql.PACKAGE ;
 
-import com.hp.hpl.jena.graph.* ;
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.syntax.* ;
-import com.hp.hpl.jena.sparql.expr.* ;
-import com.hp.hpl.jena.sparql.path.* ;
-import com.hp.hpl.jena.sparql.expr.aggregate.* ;
+import org.apache.jena.graph.* ;
+import org.apache.jena.query.* ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.syntax.* ;
+import org.apache.jena.sparql.expr.* ;
+import org.apache.jena.sparql.path.* ;
+import org.apache.jena.sparql.expr.aggregate.* ;
 #ifdef  UPDATE
-import com.hp.hpl.jena.update.* ;
-import com.hp.hpl.jena.sparql.modify.request.* ;
+import org.apache.jena.update.* ;
+import org.apache.jena.sparql.modify.request.* ;
 #endif
 
 public class CLASS extends PARSERBASE
@@ -192,7 +192,7 @@ void SelectClause() : {  Var v ; Expr expr ; Node n ; }
     (
       v = Var()                     { getQuery().addResultVar(v) ; }
     | 
-#if ARQ
+#ifdef ARQ
       // Expressions without ()
       ( LOOKAHEAD(2)
         expr = BuiltInCall()        { getQuery().addResultVar((Var)null, expr) ; }
@@ -688,7 +688,13 @@ void Quads(QuadAccSink acc) : { }
 
 void QuadsNotTriples(QuadAccSink acc) : {Node gn ; Node prev = acc.getGraph() ; }
 {
-    <GRAPH> gn = VarOrIri()
+    <GRAPH>
+#ifdef SPARQL_11   
+       gn = VarOrIri()
+#endif
+#ifdef ARQ
+       gn = VarOrBlankNodeOrIri()
+#endif
     { setAccGraph(acc, gn) ; }
     <LBRACE> 
     (TriplesTemplate(acc))?
@@ -1115,7 +1121,7 @@ void PropertyListNotEmpty(Node s, TripleCollector acc) :
 Node Verb() : { Node p ;}
 {
 // Blank nodes as predicates
-//   ( p = VarOrBlankNodeOriri() | <KW_A> { p = nRDFtype ; } )
+//   ( p = VarOrBlankNodeOrIri() | <KW_A> { p = nRDFtype ; } )
   ( p = VarOrIri() | <KW_A> { p = nRDFtype ; } )
   { return p ; }
 }
@@ -1512,10 +1518,17 @@ Node VarOrTerm() : {Node n = null ; }
   { return n ; }
 }
 
-// Property (if no bNodes) + DESCRIBE
+// e.g. Property (if no bNodes) + DESCRIBE
 Node VarOrIri() : {Node n = null ; String iri ; }
 {
   ( n = Var() | iri = iri() { n = createNode(iri) ; } )
+  { return n ; }
+}
+
+// e.g. INSERT DATA { GRAPH ... }
+Node VarOrBlankNodeOrIri() : {Node n = null ; String iri ; }
+{
+  ( n = Var() | n = BlankNode() | iri = iri() { n = createNode(iri) ; } )
   { return n ; }
 }
 

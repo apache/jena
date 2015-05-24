@@ -21,8 +21,8 @@ package arq;
 import java.io.InputStream ;
 import java.io.OutputStream ;
 
-import com.hp.hpl.jena.sparql.engine.binding.BindingInputStream ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingOutputStream ;
+import org.apache.jena.sparql.engine.binding.BindingInputStream ;
+import org.apache.jena.sparql.engine.binding.BindingOutputStream ;
 
 /** Simple command for testing bindings */
 public class bindings

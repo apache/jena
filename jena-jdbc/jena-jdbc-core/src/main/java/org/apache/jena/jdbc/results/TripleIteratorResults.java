@@ -24,13 +24,12 @@ import java.util.Iterator;
 
 import org.apache.jena.atlas.iterator.PeekIterator;
 import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.jdbc.results.metadata.TripleResultsMetadata;
 import org.apache.jena.jdbc.statements.JenaStatement;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.QueryCancelledException;
-import com.hp.hpl.jena.query.QueryExecution;
+import org.apache.jena.query.QueryCancelledException ;
+import org.apache.jena.query.QueryExecution ;
 
 /**
  * Represents results of a CONSTRUCT/DESCRIBE query where the results are

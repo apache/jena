@@ -18,9 +18,8 @@
 
 package org.apache.jena.hadoop.rdf.mapreduce.filter;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
-
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * Abstract mapper implementation for filtering triples

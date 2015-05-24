@@ -20,16 +20,15 @@ package org.apache.jena.query.text ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.store.Directory ;
 import org.apache.lucene.store.RAMDirectory ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
 
 /** Test the examples of building a test dataset */
 public class TestBuildTextDataset extends BaseTest

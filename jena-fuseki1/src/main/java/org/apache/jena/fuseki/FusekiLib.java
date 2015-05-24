@@ -23,20 +23,19 @@ import java.util.Iterator ;
 import javax.servlet.http.HttpServletRequest ;
 
 import org.apache.commons.lang.StringUtils ;
-import org.apache.jena.atlas.lib.MultiMap ;
-import org.apache.jena.atlas.lib.MultiMapToList ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
+import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.fuseki.servlets.HttpAction ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.Convert ;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.Convert ;
 
 public class FusekiLib {
     /** Get the content type of an action or return the default.
@@ -88,8 +87,8 @@ public class FusekiLib {
     }
 
     /** Parse the query string - do not process the body even for a form */
-    public static MultiMap<String, String> parseQueryString(HttpServletRequest req) {
-        MultiMap<String, String> map = MultiMapToList.create() ;
+    public static Multimap<String, String> parseQueryString(HttpServletRequest req) {
+        Multimap<String, String> map = ArrayListMultimap.create() ;
 
         // Don't use ServletRequest.getParameter or getParamterNames
         // as that reads form data. This code parses just the query string.

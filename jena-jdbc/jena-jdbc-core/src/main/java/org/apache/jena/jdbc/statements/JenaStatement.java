@@ -38,17 +38,12 @@ import org.apache.jena.jdbc.results.MaterializedSelectResults;
 import org.apache.jena.jdbc.results.SelectResults;
 import org.apache.jena.jdbc.results.TripleIteratorResults;
 import org.apache.jena.jdbc.results.TripleListResults;
+import org.apache.jena.query.* ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateProcessor ;
+import org.apache.jena.update.UpdateRequest ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ReadWrite;
-import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateProcessor;
-import com.hp.hpl.jena.update.UpdateRequest;
 
 /**
  * Abstract Jena JDBC implementation of a statement that only permits read

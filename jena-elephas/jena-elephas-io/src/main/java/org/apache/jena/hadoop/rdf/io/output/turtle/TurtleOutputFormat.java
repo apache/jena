@@ -22,13 +22,12 @@ import java.io.Writer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.io.output.AbstractStreamRdfNodeTupleOutputFormat;
 import org.apache.jena.hadoop.rdf.io.output.writers.StreamRdfTripleWriter;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.writer.WriterStreamRDFBlocks;
-
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * Turtle output format

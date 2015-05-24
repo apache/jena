@@ -18,7 +18,10 @@
 
 package arq.cmdline;
 
-import com.hp.hpl.jena.sparql.util.Timer ;
+import arq.cmd.ArgDecl ;
+import arq.cmd.ArgModuleGeneral ;
+import arq.cmd.CmdArgModule ;
+import org.apache.jena.atlas.lib.Timer ;
 
 
 public class ModTime implements ArgModuleGeneral

@@ -23,7 +23,7 @@
   <artifactId>jena-parent</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>13-SNAPSHOT</version>
+  <version>14-SNAPSHOT</version>
   <name>Apache Jena - Parent</name>
 
   <parent>
@@ -47,9 +47,9 @@
   </organization>
 
   <properties>
-    <ver.slf4j>1.7.6</ver.slf4j>
+    <ver.slf4j>1.7.9</ver.slf4j>
     <ver.log4j>1.2.17</ver.log4j>
-    <ver.junit>4.11</ver.junit>
+    <ver.junit>4.12</ver.junit>
     <ver.xerces>2.11.0</ver.xerces>
 
     <ver.jsonldjava>0.5.1</ver.jsonldjava>
@@ -63,7 +63,7 @@
     <ver.solr>4.6.1</ver.solr>
     <ver.spatial4j>0.4</ver.spatial4j>
 
-    <jdk.version>1.7</jdk.version>
+    <jdk.version>1.8</jdk.version>
     <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -341,7 +341,7 @@
             <configuration combine.self="override">
               <rules>
                 <requireJavaVersion>
-                  <version>1.7.0</version>
+                  <version>1.8.0</version>
                 </requireJavaVersion>
                 <requirePluginVersions>
                   <message>Best practice is to always define plugin versions!</message>
@@ -482,9 +482,7 @@
           </configuration>
         </plugin>
 
-        <!-- Avoid the warning from m2e: 
-	     "maven-remote-resources-plugin (goal "process") is ignored by m2e." 
-	-->
+        <!-- Avoid the warnings and errors from m2e -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
@@ -493,8 +491,8 @@
             <lifecycleMappingMetadata>
               <pluginExecutions>
                 <pluginExecution>
-                  <!-- 
-		    Warning: 
+                  <!--
+		    Warning:
 		    "maven-remote-resources-plugin (goal "process") is ignored by m2e." 
 		  -->
                   <pluginExecutionFilter>
@@ -510,13 +508,34 @@
                   </action>
                 </pluginExecution>
                 <pluginExecution>
-                  <!-- Warning: "maven-enforcer-plugin (goal "enforce") is ignored by m2e." -->
+                  <!-- 
+		    Warning:
+		    "maven-enforcer-plugin (goal "enforce") is ignored by m2e." 
+		  -->
                   <pluginExecutionFilter>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-remote-resources-plugin</artifactId>
                     <versionRange>[1.0.0,)</versionRange>
                     <goals>
                       <goal>process</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+
+		<pluginExecution>
+                  <!--
+		    Error:
+		    Plugin execution not covered by lifecycle configuration
+		  -->
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.rat</groupId>
+                    <artifactId>apache-rat-plugin</artifactId>
+                    <versionRange>[0.11,)</versionRange>
+                    <goals>
+                      <goal>check</goal>
                     </goals>
                   </pluginExecutionFilter>
                   <action>
@@ -665,6 +684,12 @@
           <version>2.5.3</version>
           <extensions>true</extensions>
         </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+
 
       </plugins>
     </pluginManagement>
@@ -678,7 +703,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>2.17</version>
+        <version>2.18.1</version>
         <configuration>
           <outputDirectory>${project.basedir}/target/surefire-reports-html</outputDirectory>
         </configuration>
@@ -687,7 +712,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.5.1</version>
+        <version>2.7</version>
         <configuration>
           <instrumentation>
             <ignores>
@@ -700,19 +725,19 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.7</version>
+        <version>2.15</version>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
-        <version>2.3</version>
+        <version>2.5</version>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>2.5</version>
+        <version>3.4</version>
         <configuration>
           <linkXref>true</linkXref>
           <sourceEncoding>utf-8</sourceEncoding>
@@ -723,7 +748,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.0.1</version>
       </plugin>
 
     </plugins>

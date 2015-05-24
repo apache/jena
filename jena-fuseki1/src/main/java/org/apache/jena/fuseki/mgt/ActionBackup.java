@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.FusekiException ;
@@ -40,10 +41,8 @@ import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletBase ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.web.HttpSC ;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class ActionBackup extends ServletBase
 {
@@ -90,31 +89,28 @@ public class ActionBackup extends ServletBase
         String dsName = action.dsRef.name ;
         final String ds = dsName.startsWith("/")? dsName : "/"+dsName ;
         
-        String timestamp = Utils.nowAsString("yyyy-MM-dd_HH-mm-ss") ;
+        String timestamp = DateTimeUtils.nowAsString("yyyy-MM-dd_HH-mm-ss") ;
         final String filename = BackupArea + ds + "_" + timestamp ;
         FileOps.ensureDir(BackupArea) ;
         
         try {
-            final Callable<Boolean> task = new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception
+            final Callable<Boolean> task = () -> {
+                log.info(format("[%d] Start backup %s to '%s'", action.id, ds, filename)) ;
+                action.beginRead() ;
+                try {
+                    backup(action.getActiveDSG(), filename) ;
+                    log.info(format("[%d] Finish backup %s to '%s'", action.id, ds, filename)) ;
+                }
+                catch ( RuntimeException ex )
                 {
-                    log.info(format("[%d] Start backup %s to '%s'", action.id, ds, filename)) ;
-                    action.beginRead() ;
-                    try {
-                        backup(action.getActiveDSG(), filename) ;
-                        log.info(format("[%d] Finish backup %s to '%s'", action.id, ds, filename)) ;
-                    }
-                    catch ( RuntimeException ex )
-                    {
-                        log.info(format("[%d] Exception during backup: ", action.id, ex.getMessage()), ex) ;
-                        return Boolean.FALSE ;
-                    }
-                    finally {
-                        action.endRead() ;
-                    }
-                    return Boolean.TRUE ;
-                }} ;
+                    log.info(format("[%d] Exception during backup: ", action.id, ex.getMessage()), ex) ;
+                    return Boolean.FALSE ;
+                }
+                finally {
+                    action.endRead() ;
+                }
+                return Boolean.TRUE ;
+            } ;
             
             log.info(format("[%d] Schedule backup %s to '%s'", action.id, ds, filename)) ;                
             backupService.submit(task) ;

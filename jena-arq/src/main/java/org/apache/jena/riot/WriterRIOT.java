@@ -22,8 +22,7 @@ import java.io.OutputStream ;
 import java.io.Writer ;
 
 import org.apache.jena.riot.system.PrefixMap ;
-
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Context ;
 
 /*public*/ interface WriterRIOT
 {

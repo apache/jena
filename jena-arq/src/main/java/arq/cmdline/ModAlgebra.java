@@ -18,9 +18,12 @@
 
 package arq.cmdline;
 
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.util.FileManager ;
+import arq.cmd.ArgDecl ;
+import arq.cmd.ArgModuleGeneral ;
+import arq.cmd.CmdArgModule ;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.util.FileManager ;
 
 public class ModAlgebra implements ArgModuleGeneral
 {

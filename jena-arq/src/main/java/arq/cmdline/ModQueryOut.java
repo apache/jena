@@ -19,11 +19,13 @@
 package arq.cmdline;
 
 
+import arq.cmd.ArgDecl ;
+import arq.cmd.ArgModuleGeneral ;
+import arq.cmd.CmdArgModule ;
 import org.apache.jena.atlas.io.IndentedWriter ;
-
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.sparql.util.QueryOutputUtils ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.query.Syntax ;
+import org.apache.jena.sparql.util.QueryOutputUtils ;
 
 public class ModQueryOut implements ArgModuleGeneral
 {

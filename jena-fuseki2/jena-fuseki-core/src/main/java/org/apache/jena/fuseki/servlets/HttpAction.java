@@ -18,8 +18,8 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import static com.hp.hpl.jena.query.ReadWrite.READ ;
-import static com.hp.hpl.jena.query.ReadWrite.WRITE ;
+import static org.apache.jena.query.ReadWrite.READ ;
+import static org.apache.jena.query.ReadWrite.WRITE ;
 
 import java.util.HashMap ;
 import java.util.Map ;
@@ -31,14 +31,13 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.server.* ;
+import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.SystemARQ ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphWithLock ;
+import org.apache.jena.sparql.core.DatasetGraphWrapper ;
+import org.apache.jena.sparql.core.Transactional ;
 import org.slf4j.Logger ;
-
-import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphWithLock ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
-import com.hp.hpl.jena.sparql.core.Transactional ;
 
 /**
  * HTTP action that represents the user request lifecycle. Its state is handled in the

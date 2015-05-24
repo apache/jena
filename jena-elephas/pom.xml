@@ -11,13 +11,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jena-elephas</artifactId>
-  <version>0.9.1-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>13-SNAPSHOT</version>
+    <version>14-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 
@@ -34,10 +34,10 @@
   <!-- Properties common across all profiles -->
   <properties>
     <plugin.compiler.version>2.6.0</plugin.compiler.version>
-    <arq.version>2.13.1-SNAPSHOT</arq.version>
+    <arq.version>3.0.0-SNAPSHOT</arq.version>
     <junit.version>4.11</junit.version>
     <mrunit.version>1.0.0</mrunit.version>
-    <airline.version>0.9.1</airline.version>
+    <airline.version>0.9.2</airline.version>
   </properties>
 
 	<!-- Profiles to allow building for different Hadoop versions -->

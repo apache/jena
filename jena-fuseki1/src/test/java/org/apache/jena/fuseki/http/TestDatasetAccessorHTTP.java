@@ -22,17 +22,16 @@ import static org.apache.jena.fuseki.ServerTest.* ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.fuseki.ServerTest ;
+import org.apache.jena.query.DatasetAccessor ;
+import org.apache.jena.query.DatasetAccessorFactory ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.web.HttpSC ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.query.DatasetAccessor ;
-import com.hp.hpl.jena.query.DatasetAccessorFactory ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 
 public class TestDatasetAccessorHTTP extends BaseTest 

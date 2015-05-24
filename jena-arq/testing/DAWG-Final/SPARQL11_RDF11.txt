@@ -3,9 +3,7 @@ RDF 1.1 makes
 
 The following changes are needed to the DAWG test suite:
 
-
-
-Changes due to SPARQL 1.1
+Changes already make due to SPARQL 1.1
 SPARQL 1.1:
   18. => 18.0
 
@@ -13,3 +11,8 @@ syntax-sparql1/syntax-lit-08.rq
 basic/term-6.rq
 basic/term-7.rq
 basic/data-4.ttl
+
+Change these for RDF 1.1:
+
+./distinct/distinct-all_RDF_11.srx
+./distinct/distinct-str_RDF_11.srx

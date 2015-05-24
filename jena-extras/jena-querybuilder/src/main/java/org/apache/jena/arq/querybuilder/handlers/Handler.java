@@ -19,8 +19,8 @@ package org.apache.jena.arq.querybuilder.handlers;
 
 import java.util.Map;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Var;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.Var ;
 
 /**
  * The base interface for handlers.
@@ -39,4 +39,5 @@ public interface Handler {
 	 * the build completes.  The adjustments are made after setVars() has been called.
 	 */
 	public void build();
+	
 }

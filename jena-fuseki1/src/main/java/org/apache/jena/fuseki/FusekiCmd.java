@@ -23,35 +23,35 @@ import static org.apache.jena.fuseki.Fuseki.serverLog ;
 import java.io.File ;
 import java.io.InputStream ;
 import java.util.List ;
+import java.util.Objects;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.fuseki.mgt.ManagementServer ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.SysRIOT ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb.sys.Names ;
+import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.eclipse.jetty.server.Server ;
 import org.slf4j.Logger ;
+
+import arq.cmd.ArgDecl ;
 import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModDatasetAssembler ;
-
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 public class FusekiCmd extends CmdARQ
 {
@@ -71,7 +71,6 @@ public class FusekiCmd extends CmdARQ
           , "## Everything"
           , "log4j.rootLogger=INFO, jena.plain"
           , "log4j.logger.com.hp.hpl.jena=WARN"
-          , "log4j.logger.org.openjena=WARN"
           , "log4j.logger.org.apache.jena=WARN"
           
           , "# Server log."
@@ -290,7 +289,7 @@ public class FusekiCmd extends CmdARQ
         {
             String dir = getValue(argTDB) ;
             
-            if ( Lib.equal(dir, Names.memName) ) {
+            if ( Objects.equals(dir, Names.memName) ) {
                 log.info("TDB dataset: in-memory") ;
             } else {
                 if ( ! FileOps.exists(dir) )

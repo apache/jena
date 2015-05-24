@@ -21,9 +21,9 @@ package org.apache.jena.riot.adapters;
 import java.io.InputStream;
 import java.io.Reader;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
-import com.hp.hpl.jena.rdf.model.RDFReader;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.RDFErrorHandler ;
+import org.apache.jena.rdf.model.RDFReader ;
 
 public class RDFReaderRIOT_CSV implements RDFReader{
 

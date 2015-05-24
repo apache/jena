@@ -20,22 +20,17 @@ package org.apache.jena.fuseki;
 
 import static org.apache.jena.fuseki.ServerTest.* ;
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.query.* ;
 import org.apache.jena.riot.WebContent ;
+import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
+import org.apache.jena.sparql.util.Convert ;
+import org.apache.jena.update.UpdateExecutionFactory ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateProcessor ;
+import org.apache.jena.update.UpdateRequest ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP ;
-import com.hp.hpl.jena.sparql.util.Convert ;
-import com.hp.hpl.jena.update.UpdateExecutionFactory ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateProcessor ;
-import com.hp.hpl.jena.update.UpdateRequest ;
-// Generally poke the server using Jena APIs
-// SPARQL Query
-// SPARQL Update
-//   GSP is done in TestDatasetAccessorHTTP
 
 public class TestSPARQLProtocol extends BaseTest
 {

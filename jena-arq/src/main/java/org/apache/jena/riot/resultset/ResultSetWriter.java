@@ -21,8 +21,8 @@ package org.apache.jena.riot.resultset;
 import java.io.OutputStream ;
 import java.io.Writer ;
 
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.query.ResultSet ;
+import org.apache.jena.sparql.util.Context ;
 
 public interface ResultSetWriter {
     /** Write the ResultSet to the OutputStream */

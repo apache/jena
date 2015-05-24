@@ -25,12 +25,11 @@ import java.util.HashSet ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.rdf.model.Model ;
 
 /**
  * This abstract class defines tests of the graph-specific indexing.

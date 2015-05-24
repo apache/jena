@@ -23,11 +23,10 @@ import java.io.Writer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.io.output.AbstractNodeTupleOutputFormat;
 import org.apache.jena.hadoop.rdf.io.output.writers.rdfxml.RdfXmlWriter;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
-
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * RDF/XML output format

@@ -21,14 +21,14 @@
   <artifactId>jena-fuseki1</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - Fuseki1</name>
-  <version>1.1.3-SNAPSHOT</version>
+  <version>1.3.0-SNAPSHOT</version>
   <description>Fuseki is a SPARQL 1.1 Server</description>
   <url>http://jena.apache.org/</url>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>13-SNAPSHOT</version>
+    <version>14-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
@@ -77,13 +77,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.13.1-SNAPSHOT</version>
+      <version>3.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.13.1-SNAPSHOT</version>
+      <version>3.0.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -91,28 +91,29 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.13.1-SNAPSHOT</version>
+      <version>3.0.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-base</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>1.1.3-SNAPSHOT</version>
+      <version>3.0.0-SNAPSHOT</version>
     </dependency>
-
-    <!--
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>sdb</artifactId>
-      <version>${ver.sdb}</version>
-      <optional>true</optional>
-    </dependency>
-    -->
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
-      <version>1.1.3-SNAPSHOT</version>
+      <version>3.0.0-SNAPSHOT</version>
       <exclusions>
         <!-- 
 	  Get this via commons-fileupload and also via jena-text/sol4j
@@ -129,7 +130,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-spatial</artifactId>
-      <version>1.1.3-SNAPSHOT</version>
+      <version>3.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -289,7 +290,6 @@
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-shade-plugin</artifactId>
-	<version>2.1</version>
 	<configuration>
 	  <shadedArtifactAttached>true</shadedArtifactAttached>
 	  <shadedClassifierName>server</shadedClassifierName>

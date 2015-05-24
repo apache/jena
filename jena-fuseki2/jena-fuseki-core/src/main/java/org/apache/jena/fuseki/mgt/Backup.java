@@ -24,18 +24,17 @@ import java.util.Set ;
 import java.util.zip.GZIPOutputStream ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.server.FusekiServer ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-
-import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Transactional ;
-import com.hp.hpl.jena.sparql.core.TransactionalNull ;
-import com.hp.hpl.jena.sparql.util.Utils ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Transactional ;
+import org.apache.jena.sparql.core.TransactionalNull ;
 
 /** Perform a backup */ 
 public class Backup
@@ -51,7 +50,7 @@ public class Backup
             ds = ds.replace("/",  "_") ;
         }
 
-        String timestamp = Utils.nowAsString("yyyy-MM-dd_HH-mm-ss") ;
+        String timestamp = DateTimeUtils.nowAsString("yyyy-MM-dd_HH-mm-ss") ;
         String filename = ds + "_" + timestamp ;
         filename = FusekiServer.dirBackups.resolve(filename).toString() ;
         return filename ;

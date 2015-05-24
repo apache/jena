@@ -21,11 +21,10 @@ package riotcmd;
 import java.io.InputStream ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.thrift.BinRDF ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Dump an rdf-thrift file to show structure */ 
 public class dumpthrift {
@@ -38,7 +37,7 @@ public class dumpthrift {
         }
         
         if ( args.length != 1 ) {
-            System.err.println("Usage: "+Utils.classShortName(dumpthrift.class)+" FILE") ;
+            System.err.println("Usage: "+Lib.classShortName(dumpthrift.class)+" FILE") ;
             System.exit(2) ;
         }
         

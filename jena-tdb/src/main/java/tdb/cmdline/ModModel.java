@@ -18,13 +18,12 @@
 
 package tdb.cmdline;
 
-import arq.cmdline.ArgDecl ;
-import arq.cmdline.ArgModuleGeneral ;
-import arq.cmdline.CmdArgModule ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.util.FileManager ;
+import arq.cmd.ArgDecl ;
+import arq.cmd.ArgModuleGeneral ;
+import arq.cmd.CmdArgModule ;
 import arq.cmdline.CmdGeneral ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.util.FileManager ;
 
 /** Name a model */
 public class ModModel implements ArgModuleGeneral

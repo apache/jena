@@ -19,8 +19,7 @@
 package org.apache.jena.hadoop.rdf.mapreduce.group;
 
 import org.apache.jena.hadoop.rdf.types.NodeWritable;
-
-import com.hp.hpl.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * A mapper which assists in grouping quads by predicate by reassigning their keys

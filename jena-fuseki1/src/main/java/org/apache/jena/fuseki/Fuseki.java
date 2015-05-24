@@ -19,28 +19,27 @@
 package org.apache.jena.fuseki;
 
 import org.apache.jena.fuseki.server.SPARQLServer ;
+import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.system.stream.LocatorFTP ;
 import org.apache.jena.riot.system.stream.LocatorHTTP ;
 import org.apache.jena.riot.system.stream.StreamManager ;
+import org.apache.jena.sparql.SystemARQ ;
+import org.apache.jena.sparql.lib.Metadata ;
+import org.apache.jena.sparql.mgt.SystemInfo ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.MappingRegistry ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.lib.Metadata ;
-import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.MappingRegistry ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 /**
  * <p>The main class enabling us to:</p> 
  * <ol>
  * <li>create instances of a Fuseki server e.g.
  * the ARQ, RIOT and TDB server stack</li>
- * <li>get server global {@link com.hp.hpl.jena.sparql.util.Context} e.g. 
+ * <li>get server global {@link org.apache.jena.sparql.util.Context} e.g. 
  * named values used to pass implementation-specific parameters across 
  * general interfaces.</li>
  * <li>get the {@link org.apache.jena.fuseki.server.SPARQLServer} instance.</li>
@@ -152,8 +151,8 @@ public class Fuseki
     }
   
     /**
-     * Get server global {@link com.hp.hpl.jena.sparql.util.Context}.
-     * @return {@link com.hp.hpl.jena.query.ARQ#getContext()}
+     * Get server global {@link org.apache.jena.sparql.util.Context}.
+     * @return {@link org.apache.jena.query.ARQ#getContext()}
      */
     public static Context getContext()
     {

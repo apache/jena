@@ -22,17 +22,16 @@ import java.math.BigDecimal ;
 import java.sql.* ;
 import java.util.Calendar ;
 
+import org.apache.jena.datatypes.TypeMapper ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.jdbc.results.metadata.columns.ColumnInfo ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.Assert ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.datatypes.TypeMapper ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 /**
  * Tests for the various helper methods of {@link JdbcCompatibility}

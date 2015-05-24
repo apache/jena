@@ -17,32 +17,24 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import java.io.ByteArrayInputStream;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Map ;
 
-import org.apache.jena.arq.querybuilder.SelectBuilder;
-import org.apache.jena.arq.querybuilder.clauses.ConstructClause;
-import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
-import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
-import org.apache.jena.arq.querybuilder.clauses.WhereClause;
-import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException;
-import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11;
-import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.ElementFilter;
-import com.hp.hpl.jena.sparql.syntax.ElementGroup;
-import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
-import com.hp.hpl.jena.sparql.syntax.ElementOptional;
-import com.hp.hpl.jena.sparql.syntax.ElementSubQuery;
-import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
-import com.hp.hpl.jena.sparql.syntax.ElementUnion;
+import org.apache.jena.arq.querybuilder.SelectBuilder ;
+import org.apache.jena.arq.querybuilder.clauses.ConstructClause ;
+import org.apache.jena.arq.querybuilder.clauses.DatasetClause ;
+import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause ;
+import org.apache.jena.arq.querybuilder.clauses.WhereClause ;
+import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.lang.sparql_11.ParseException ;
+import org.apache.jena.sparql.syntax.* ;
+import org.apache.jena.sparql.util.ExprUtils ;
 
 /**
  * The where handler
@@ -198,10 +190,7 @@ public class WhereHandler implements Handler {
 	 * @throws ParseException If the expression can not be parsed.
 	 */
 	public void addFilter(String expression) throws ParseException {
-		String filterClause = "FILTER( " + expression + ")";
-		SPARQLParser11 parser = new SPARQLParser11(new ByteArrayInputStream(
-				filterClause.getBytes()));
-		getClause().addElement(parser.Filter());
+		getClause().addElement( new ElementFilter( ExprUtils.parse( query, expression, true ) ) );
 	}
 
 	/**
@@ -225,7 +214,8 @@ public class WhereHandler implements Handler {
 	 * @param subQuery The sub query to convert
 	 * @return THe converted element.
 	 */
-	private ElementSubQuery makeSubQuery(SelectBuilder subQuery) {
+	@SuppressWarnings("cast")
+    private ElementSubQuery makeSubQuery(SelectBuilder subQuery) {
 		Query q = new Query();
 		PrologHandler ph = new PrologHandler(query);
 		ph.addAll(subQuery.getPrologHandler());
@@ -288,7 +278,32 @@ public class WhereHandler implements Handler {
 		getClause().addElement(
 				new ElementNamedGraph(graph, subQuery.getElement()));
 	}
+	
+	/**
+	 * Add a binding to the where clause.
+	 * @param expr The expression to bind.
+	 * @param var The variable to bind it to.
+	 */
+	public void addBind( Expr expr, Var var )
+	{
+		getClause().addElement(
+				new ElementBind(var,expr)
+				);
+	}
 
+	/**
+	 * Add a binding to the where clause.
+	 * @param expression The expression to bind.
+	 * @param var The variable to bind it to.
+	 * @throws ParseException 
+	 */
+	public void addBind( String expression, Var var ) throws ParseException
+	{
+		getClause().addElement(
+				new ElementBind(var, ExprUtils.parse( query, expression, true ))
+				);
+	}
+	
 	@Override
 	public void setVars(Map<Var, Node> values) {
 		if (values.isEmpty()) {
@@ -307,4 +322,5 @@ public class WhereHandler implements Handler {
 	public void build() {
 		// no special operations required.
 	}
+	
 }

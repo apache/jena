@@ -18,10 +18,9 @@
 
 package sdb;
 
+import org.apache.jena.atlas.lib.Lib ;
 import sdb.cmd.ModDatasetStore;
 import arq.cmdline.ModDataset;
-
-import com.hp.hpl.jena.sparql.util.Utils;
 
 public class query extends arq.query
 {
@@ -44,7 +43,7 @@ public class query extends arq.query
     }
     
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary() { return getCommandName()+" --sdb=FILE --query=<query>" ; }

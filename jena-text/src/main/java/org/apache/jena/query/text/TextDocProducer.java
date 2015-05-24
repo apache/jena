@@ -18,7 +18,7 @@
 
 package org.apache.jena.query.text;
 
-import com.hp.hpl.jena.sparql.core.DatasetChanges ;
+import org.apache.jena.sparql.core.DatasetChanges ;
 
 /**
  * Responsible for monitoring changes on a dataset and updating the TextIndex appropriately.

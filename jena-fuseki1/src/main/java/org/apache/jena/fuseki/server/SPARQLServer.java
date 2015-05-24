@@ -27,6 +27,7 @@ import java.util.* ;
 import javax.servlet.DispatcherType ;
 import javax.servlet.http.HttpServlet ;
 
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
@@ -40,6 +41,7 @@ import org.apache.jena.fuseki.validation.IRIValidator ;
 import org.apache.jena.fuseki.validation.QueryValidator ;
 import org.apache.jena.fuseki.validation.UpdateValidator ;
 import org.apache.jena.riot.WebContent ;
+import org.apache.jena.sparql.mgt.ARQMgt ;
 import org.eclipse.jetty.http.MimeTypes ;
 import org.eclipse.jetty.security.* ;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
@@ -52,9 +54,6 @@ import org.eclipse.jetty.servlet.ServletHolder ;
 import org.eclipse.jetty.servlets.GzipFilter ;
 import org.eclipse.jetty.util.security.Constraint ;
 import org.eclipse.jetty.xml.XmlConfiguration ;
-
-import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /**
  * SPARQLServer is the Jena server instance which wraps/utilizes 
@@ -106,7 +105,7 @@ public class SPARQLServer {
      * Initialize the {@link SPARQLServer} instance.
      */
     public void start() {
-        String now = Utils.nowAsString() ;
+        String now = DateTimeUtils.nowAsString() ;
         serverLog.info(format("%s %s %s", Fuseki.NAME, Fuseki.VERSION, Fuseki.BUILD_DATE)) ;
         // This does not get set usefully for Jetty as we use it.
         // String jettyVersion = org.eclipse.jetty.server.Server.getVersion() ;
@@ -133,7 +132,7 @@ public class SPARQLServer {
      * Stop the {@link SPARQLServer} instance.
      */
     public void stop() {
-        String now = Utils.nowAsString() ;
+        String now = DateTimeUtils.nowAsString() ;
         serverLog.info(format("Stopped %s on port %d", now, server.getConnectors()[0].getPort())) ;
         try {
             server.stop() ;

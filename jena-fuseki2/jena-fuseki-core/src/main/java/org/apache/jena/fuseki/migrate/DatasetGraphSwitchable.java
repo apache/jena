@@ -21,9 +21,8 @@ package org.apache.jena.fuseki.migrate;
 import java.util.concurrent.atomic.AtomicReference ;
 
 import org.apache.jena.fuseki.FusekiException ;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphWrapper ;
 
 public class DatasetGraphSwitchable extends DatasetGraphWrapper {
     // **** Associated query engine factory - QueryEngineFactoryWrapper

@@ -18,9 +18,8 @@
 
 package sdb;
 
-import com.hp.hpl.jena.sparql.util.Utils;
-
-import arq.cmdline.CmdMain;
+import arq.cmd.CmdMain ;
+import org.apache.jena.atlas.lib.Lib ;
 
 /** Convenience ways to execute commands (import static) */
 public class SDBCmd
@@ -50,7 +49,7 @@ public class SDBCmd
         int code = cmd.mainRun(false, false) ;
         if ( code != 0 && exitOnError )
         {
-            System.err.println("Exit: command: "+Utils.className(cmd)) ;
+            System.err.println("Exit: command: "+Lib.className(cmd)) ;
             System.exit(code) ;
         }
         return code ;

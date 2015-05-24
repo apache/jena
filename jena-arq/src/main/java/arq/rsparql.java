@@ -18,19 +18,18 @@
 
 package arq;
 
+import org.apache.jena.query.Query ;
+import org.apache.jena.query.QueryExecution ;
+import org.apache.jena.query.QueryExecutionFactory ;
+import org.apache.jena.query.Syntax ;
+import org.apache.jena.sparql.engine.http.HttpQuery ;
+import org.apache.jena.sparql.engine.http.QueryExceptionHTTP ;
+import org.apache.jena.sparql.util.QueryExecUtils ;
 import arq.cmd.CmdException ;
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModQueryIn ;
 import arq.cmdline.ModRemote ;
 import arq.cmdline.ModResultsOut ;
-
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.sparql.engine.http.HttpQuery ;
-import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP ;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 
 public class rsparql extends CmdARQ
 {

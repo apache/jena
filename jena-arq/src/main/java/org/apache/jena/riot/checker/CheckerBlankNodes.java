@@ -18,9 +18,8 @@
 
 package org.apache.jena.riot.checker;
 
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.system.ErrorHandler ;
-
-import com.hp.hpl.jena.graph.Node ;
 
 public class CheckerBlankNodes implements NodeChecker
 {

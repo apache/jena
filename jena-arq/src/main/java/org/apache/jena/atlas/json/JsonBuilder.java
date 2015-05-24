@@ -21,8 +21,8 @@ package org.apache.jena.atlas.json ;
 import java.math.BigDecimal ;
 import java.util.ArrayDeque ;
 import java.util.Deque ;
+import java.util.Objects;
 
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
 
 /* Builder pattern for JSON.
@@ -90,7 +90,7 @@ public class JsonBuilder {
         if ( stack.isEmpty() )
             builtValue = value ;
         String startMarker = markers.pop(); 
-        if ( ! Lib.equal(startMarker, finishMarker) )
+        if ( ! Objects.equals(startMarker, finishMarker) )
             throw new JsonException("JSON build error : start/finish alignment error: start="+startMarker+"  finish="+finishMarker) ;
         return this ;
     }

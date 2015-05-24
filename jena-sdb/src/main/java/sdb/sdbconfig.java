@@ -20,15 +20,12 @@ package sdb;
 
 import java.util.List;
 
-import arq.cmd.CmdException;
-
+import arq.cmd.CmdException ;
+import org.apache.jena.sdb.SDB ;
+import org.apache.jena.sdb.Store ;
+import org.apache.jena.atlas.lib.Lib ;
 import sdb.cmd.CmdArgsDB;
 import sdb.cmd.ModConfig;
-
-import com.hp.hpl.jena.sparql.util.Utils;
-
-import com.hp.hpl.jena.sdb.SDB ;
-import com.hp.hpl.jena.sdb.Store;
 
 /** Configure an SDB database.  Destroys all existing data permanently. */ 
 
@@ -49,10 +46,10 @@ public class sdbconfig extends CmdArgsDB
     }
 
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
-    protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> <NAME>" ; }
+    protected String getSummary()  { return Lib.className(this)+" --sdb <SPEC> <NAME>" ; }
 
     @Override
     protected void processModulesAndArgs()

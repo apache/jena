@@ -20,21 +20,21 @@ package org.apache.jena.riot.lang;
 
 import java.io.ByteArrayInputStream ;
 import java.nio.charset.Charset ;
+import java.nio.charset.StandardCharsets ;
 import java.util.concurrent.* ;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.AfterClass ;
 import org.junit.Assert ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 /**
  * Tests for the {@link PipedRDFIterator} implementation
@@ -80,8 +80,8 @@ public class TestPipedRDFIterators {
                 out.start();
                 // Generate triples
                 for (int i = 1; i <= generateSize; i++) {
-                    Triple t = new Triple(com.hp.hpl.jena.graph.NodeFactory.createAnon(),
-                            com.hp.hpl.jena.graph.NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
+                    Triple t = new Triple(org.apache.jena.graph.NodeFactory.createAnon(),
+                            org.apache.jena.graph.NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
                     out.triple(t);
                 }
                 out.finish();
@@ -93,7 +93,7 @@ public class TestPipedRDFIterators {
         Callable<Integer> consumeTriples = new Callable<Integer>() {
 
             @Override
-            public Integer call() throws Exception {
+            public Integer call() {
                 int count = 0;
                 while (it.hasNext()) {
                     it.next();
@@ -224,9 +224,9 @@ public class TestPipedRDFIterators {
                 out.start();
                 // Generate quads
                 for (int i = 1; i <= generateSize; i++) {
-                    Quad q = new Quad(com.hp.hpl.jena.graph.NodeFactory.createURI("http://graph"),
-                            com.hp.hpl.jena.graph.NodeFactory.createAnon(),
-                            com.hp.hpl.jena.graph.NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
+                    Quad q = new Quad(org.apache.jena.graph.NodeFactory.createURI("http://graph"),
+                            org.apache.jena.graph.NodeFactory.createAnon(),
+                            org.apache.jena.graph.NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
                     out.quad(q);
                 }
                 out.finish();
@@ -238,7 +238,7 @@ public class TestPipedRDFIterators {
         Callable<Integer> consumeQuads = new Callable<Integer>() {
 
             @Override
-            public Integer call() throws Exception {
+            public Integer call() {
                 int count = 0;
                 while (it.hasNext()) {
                     it.next();
@@ -393,7 +393,7 @@ public class TestPipedRDFIterators {
 
             @Override
             public void run() {
-                Charset utf8 = Charset.forName("utf8");
+                Charset utf8 = StandardCharsets.UTF_8 ;
                 ByteArrayInputStream input = new ByteArrayInputStream(data.getBytes(utf8));
                 try {
                     RDFDataMgr.parse(out, input, null, RDFLanguages.TURTLE, null);
@@ -408,7 +408,7 @@ public class TestPipedRDFIterators {
         Callable<Integer> consumeTriples = new Callable<Integer>() {
 
             @Override
-            public Integer call() throws Exception {
+            public Integer call() {
                 int count = 0;
                 while (it.hasNext()) {
                     it.next();
@@ -490,9 +490,9 @@ public class TestPipedRDFIterators {
             @Override
             public void run() {
                 out.start();
-                out.triple(Triple.create(com.hp.hpl.jena.graph.NodeFactory.createURI("urn:s"),
-                        com.hp.hpl.jena.graph.NodeFactory.createURI("urn:p"),
-                        com.hp.hpl.jena.graph.NodeFactory.createURI("urn:o")));
+                out.triple(Triple.create(org.apache.jena.graph.NodeFactory.createURI("urn:s"),
+                        org.apache.jena.graph.NodeFactory.createURI("urn:p"),
+                        org.apache.jena.graph.NodeFactory.createURI("urn:o")));
                 throw new RuntimeException("die!");
             }
         });
@@ -531,9 +531,9 @@ public class TestPipedRDFIterators {
             @Override
             public void run() {
                 out.start();
-                out.triple(Triple.create(com.hp.hpl.jena.graph.NodeFactory.createURI("urn:s"),
-                        com.hp.hpl.jena.graph.NodeFactory.createURI("urn:p"),
-                        com.hp.hpl.jena.graph.NodeFactory.createURI("urn:o")));
+                out.triple(Triple.create(org.apache.jena.graph.NodeFactory.createURI("urn:s"),
+                        org.apache.jena.graph.NodeFactory.createURI("urn:p"),
+                        org.apache.jena.graph.NodeFactory.createURI("urn:o")));
                 throw new RuntimeException("die!");
             }
         };

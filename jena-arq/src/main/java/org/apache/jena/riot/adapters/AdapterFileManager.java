@@ -21,17 +21,16 @@ package org.apache.jena.riot.adapters;
 import java.io.InputStream ;
 import java.util.Iterator ;
 
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.stream.* ;
+import org.apache.jena.util.FileManager ;
+import org.apache.jena.util.FileUtils ;
+import org.apache.jena.util.TypedStream ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.util.FileManager ;
-import com.hp.hpl.jena.util.FileUtils ;
-import com.hp.hpl.jena.util.TypedStream ;
 
 /** FileManager
  * 
@@ -71,7 +70,7 @@ import com.hp.hpl.jena.util.TypedStream ;
  * @see FileUtils
  */
  
-public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
+public class AdapterFileManager extends org.apache.jena.util.FileManager
 {
     // This is a legacy class -  it provides  FileManager calls onto the RIOT equivalents.  
     // The different aspects are now split out 
@@ -156,31 +155,31 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
 
     /** Set the location mapping */
     @Override
-    public void setLocationMapper(com.hp.hpl.jena.util.LocationMapper mapper) {
+    public void setLocationMapper(org.apache.jena.util.LocationMapper mapper) {
         streamManager.setLocationMapper(AdapterLib.copyConvert(mapper)) ;
     }
 
     /** Get the location mapping */
     @Override
-    public com.hp.hpl.jena.util.LocationMapper getLocationMapper() {
+    public org.apache.jena.util.LocationMapper getLocationMapper() {
         return new AdapterLocationMapper(streamManager.getLocationMapper()) ;
     }
 
     /** Return an iterator over all the handlers */
     @Override
-    public Iterator<com.hp.hpl.jena.util.Locator> locators() {
+    public Iterator<org.apache.jena.util.Locator> locators() {
         throw new UnsupportedOperationException() ;
     }
 
     /** Remove a locator */
     @Override
-    public void remove(com.hp.hpl.jena.util.Locator loc) {
+    public void remove(org.apache.jena.util.Locator loc) {
         throw new UnsupportedOperationException() ;
     }
 
     /** Add a locator to the end of the locators list */
     @Override
-    public void addLocator(com.hp.hpl.jena.util.Locator oldloc) {
+    public void addLocator(org.apache.jena.util.Locator oldloc) {
         Locator loc = AdapterLib.convert(oldloc) ;
         log.debug("Add location: " + loc.getName()) ;
         streamManager.addLocator(loc) ;

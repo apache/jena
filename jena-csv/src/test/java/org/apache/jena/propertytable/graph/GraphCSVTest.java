@@ -20,15 +20,14 @@ package org.apache.jena.propertytable.graph;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.propertytable.lang.CSV2RDF ;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.sparql.engine.main.StageBuilder ;
+import org.apache.jena.sparql.engine.main.StageGenerator ;
 import org.junit.Assert ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
-import com.hp.hpl.jena.sparql.engine.main.StageGenerator ;
 
 /**
  * Tests related to GraphCSV with some real world data.
@@ -41,7 +40,7 @@ public class GraphCSVTest extends Assert {
 	}
 	
 	@Test
-	public void testGraphCSV() throws Exception {
+	public void testGraphCSV() {
 		//String file = "src/test/resources/HEFCE_organogram_senior_data_31032011.csv";test.csv
 		String file = "src/test/resources/test.csv";
 		
@@ -63,7 +62,7 @@ public class GraphCSVTest extends Assert {
 	}
 	
 	@Test 
-	public void stageGeneratorTest() throws Exception{
+	public void stageGeneratorTest(){
 		wireIntoExecution();
 		testGraphCSV();
 	}

@@ -18,7 +18,8 @@
 
 package arq.cmdline;
 
-import com.hp.hpl.jena.query.Dataset ;
+import arq.cmd.CmdArgModule ;
+import org.apache.jena.query.Dataset ;
 
 /** Add assembler to a general dataset description */
 public class ModDatasetGeneralAssembler extends ModDatasetGeneral

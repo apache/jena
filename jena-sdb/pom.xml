@@ -21,12 +21,12 @@
   <artifactId>jena-sdb</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - SDB (SQL based triple store)</name>
-  <version>1.5.3-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>13-SNAPSHOT</version>
+    <version>14-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
@@ -39,33 +39,35 @@
   </properties>
 
   <dependencies>
+
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-core</artifactId>
-      <version>2.13.1-SNAPSHOT</version>
+      <artifactId>jena-arq</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Need the tests as well -->
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-core</artifactId>
+      <artifactId>jena-arq</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
       <classifier>tests</classifier>
-      <version>2.13.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
-      <version>2.13.1-SNAPSHOT</version>
+      <artifactId>jena-core</artifactId>
+      <classifier>tests</classifier>
+      <version>3.0.0-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
 
-    <!-- Need the tests as well -->
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
-      <version>2.13.1-SNAPSHOT</version>
+      <artifactId>jena-base</artifactId>
       <classifier>tests</classifier>
+      <version>3.0.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -99,7 +101,7 @@
   <build>
     <resources>
       <resource>
-        <targetPath>com/hp/hpl/jena/sdb/</targetPath>
+        <targetPath>org/apache/jena/sdb/</targetPath>
         <filtering>true</filtering>
         <directory>src/main/resources</directory>
       </resource>
@@ -119,7 +121,7 @@
             <!-- Requires HSQL and Apache Derbey to be set in 
                  store-list.ttl and store-list-simple.ttl
             -->
-            <include>com/hp/hpl/jena/sdb/test/SDBTestAll.java</include>
+            <include>org/apache/jena/sdb/test/SDBTestAll.java</include>
           </includes>
         </configuration>
       </plugin>

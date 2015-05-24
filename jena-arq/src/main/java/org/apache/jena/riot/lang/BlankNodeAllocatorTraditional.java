@@ -21,8 +21,8 @@ package org.apache.jena.riot.lang;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 
 /** Allocate blank ndoes according to the traditional policy (up to jena 2.10.0)
  *  This allocator has arbitrary sized state. 

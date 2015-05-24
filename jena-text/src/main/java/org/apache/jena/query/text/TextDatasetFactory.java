@@ -18,16 +18,15 @@
 
 package org.apache.jena.query.text;
 
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.query.text.assembler.TextVocab ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.sparql.util.Context ;
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.store.Directory ;
 import org.apache.solr.client.solrj.SolrServer ;
-
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
-import com.hp.hpl.jena.sparql.util.Context ;
 
 public class TextDatasetFactory
 {

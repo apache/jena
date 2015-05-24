@@ -18,14 +18,13 @@
 
 package org.apache.jena.query.text;
 
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.store.Directory ;
 import org.apache.lucene.store.RAMDirectory ;
 import org.junit.After ;
 import org.junit.Before ;
-
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
 
 
 /**

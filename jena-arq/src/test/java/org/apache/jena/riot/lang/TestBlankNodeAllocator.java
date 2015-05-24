@@ -22,12 +22,11 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.graph.Node ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
-
-import com.hp.hpl.jena.graph.Node ;
 
 @RunWith(Parameterized.class)
 public class TestBlankNodeAllocator extends BaseTest

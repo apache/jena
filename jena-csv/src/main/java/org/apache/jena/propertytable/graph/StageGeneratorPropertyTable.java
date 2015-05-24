@@ -19,11 +19,11 @@
 package org.apache.jena.propertytable.graph;
 
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.main.StageGenerator ;
 
 /**
  *  The extension of StageGenerator for querying a Row.

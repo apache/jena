@@ -4,6 +4,6 @@
 
 <properties version="1.0">
   <comment>SDB System Properties</comment>
-  <entry key="com.hp.hpl.jena.sdb.version">${project.version}</entry>
-  <entry key="com.hp.hpl.jena.sdb.build.datetime">${build.time.xsd}</entry>
+  <entry key="org.apache.jena.sdb.version">${project.version}</entry>
+  <entry key="org.apache.jena.sdb.build.datetime">${build.time.xsd}</entry>
 </properties>

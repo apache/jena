@@ -20,22 +20,20 @@ package org.apache.jena.riot.system;
 
 import java.io.OutputStream ;
 import java.io.Writer ;
-import java.util.Iterator ;
 
 import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.writer.WriterStreamRDFPlain ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.shared.JenaException ;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Quad ;
 
 /** Various Common StreamRDF setups */
 public class StreamRDFLib
@@ -71,18 +69,6 @@ public class StreamRDFLib
     public static StreamRDF graph(Graph graph)               { return new ParserOutputGraph(graph) ; }
     
     public static StreamRDF dataset(DatasetGraph dataset)    { return new ParserOutputDataset(dataset) ; }
-    
-    /** Set triples to a StreamRDF - does not call .start/.finish 
-     * @deprecated Use {@link StreamOps#sendTriplesToStream} instead*/ 
-    @Deprecated
-    public static void triplesToStream(StreamRDF dest, Iterator<Triple> iter)
-    { StreamOps.sendTriplesToStream(iter, dest) ; }
-
-    /** Set quads to a StreamRDF - does not call .start/.finish 
-     * @deprecated Use {@link StreamOps#sendQuadsToStream} instead*/
-    @Deprecated
-    public static void quadsToStream(StreamRDF dest, Iterator<Quad> iter)
-    { StreamOps.sendQuadsToStream(iter, dest) ; }
     
     /** 
      * Output to a sink; prefix and base handled only within the parser.

@@ -74,7 +74,6 @@
 	<include>templates/*</include>
         <include>README*</include>
         <include>DEPENDENCIES*</include>
-        <include>ReleaseNotes.txt</include>
       </includes>
     </fileSet>
 
@@ -82,7 +81,6 @@
       <outputDirectory></outputDirectory>
       <includes>
         <include>log4j.properties</include>
-	<!--<include>examples/**</include>-->
         <include>fuseki</include>
         <include>fuseki-server</include>
         <include>fuseki-server.bat</include>

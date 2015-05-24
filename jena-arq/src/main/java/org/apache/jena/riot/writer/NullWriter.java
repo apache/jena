@@ -26,9 +26,8 @@ import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.WriterDatasetRIOT ;
 import org.apache.jena.riot.WriterDatasetRIOTFactory ;
 import org.apache.jena.riot.system.PrefixMap ;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.util.Context ;
 
 /** Null writer for datasets - can be used for RDF graphs via the adapter in from RiotWriterLib */ 
 public class NullWriter implements WriterDatasetRIOT

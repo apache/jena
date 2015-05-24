@@ -21,11 +21,10 @@ package org.apache.jena.jdbc.remote.results;
 import org.apache.http.client.HttpClient;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.jdbc.results.AbstractResultSetTests;
+import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.web.HttpOp;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-
-import com.hp.hpl.jena.query.ARQ;
 
 /**
  * Abstract tests for remote endpoint connection result sets

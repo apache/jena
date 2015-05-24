@@ -21,17 +21,16 @@ package org.apache.jena.riot.thrift;
 import java.io.OutputStream ;
 
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.thrift.wire.* ;
+import org.apache.jena.sparql.core.Quad ;
 import org.apache.thrift.TException ;
 import org.apache.thrift.protocol.TProtocol ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Encode StreamRDF in Thrift.
  *  Usually used via {@link BinRDF} functions. 

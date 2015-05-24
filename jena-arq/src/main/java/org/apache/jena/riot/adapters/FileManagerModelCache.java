@@ -20,8 +20,7 @@ package org.apache.jena.riot.adapters;
 
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Model ;
 
 // Legacy support.
 class FileManagerModelCache {
@@ -56,7 +55,7 @@ class FileManagerModelCache {
     { 
         if ( ! isCachingModels() )
             return null; 
-        return modelCache.get(filenameOrURI) ;
+        return modelCache.getIfPresent(filenameOrURI) ;
     }
     
     public boolean hasCachedModel(String filenameOrURI)

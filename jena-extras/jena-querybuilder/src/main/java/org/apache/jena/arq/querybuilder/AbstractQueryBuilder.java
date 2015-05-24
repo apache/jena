@@ -17,7 +17,6 @@
  */
 package org.apache.jena.arq.querybuilder;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -35,19 +34,18 @@ import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
 import org.apache.jena.arq.querybuilder.handlers.SelectHandler;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
+import org.apache.jena.graph.FrontsNode ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.impl.LiteralLabelFactory ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.system.PrefixMapFactory;
-
-import com.hp.hpl.jena.graph.FrontsNode;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.ExprVar;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
+import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.expr.ExprVar ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
 /**
  * Base class for all QueryBuilders.
@@ -264,17 +262,24 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 */
 	public final Query build() {
 		Query q = new Query();
-		try {
-			Field f = Query.class.getDeclaredField("queryType");
-			f.setAccessible(true);
-			f.set(q, query.getQueryType());
-		} catch (NoSuchFieldException e) {
-			throw new IllegalStateException(e.getMessage(), e);
-		} catch (SecurityException e) {
-			throw new IllegalStateException(e.getMessage(), e);
-		} catch (IllegalAccessException e) {
-			throw new IllegalStateException(e.getMessage(), e);
+		switch (query.getQueryType())
+		{
+		case Query.QueryTypeAsk:
+			q.setQueryAskType();
+			break;
+		case Query.QueryTypeConstruct:
+			q.setQueryConstructType();
+			break;
+		case Query.QueryTypeDescribe:
+			q.setQueryDescribeType();
+			break;
+		case Query.QueryTypeSelect:
+			q.setQuerySelectType();
+			break;
+		default:
+			throw new IllegalStateException( "Internal query is not a known type: "+q.getQueryType());			
 		}
+		
 		Stack<Handler> handlerStack = new Stack<Handler>();
 		PrologHandler ph = new PrologHandler(q);
 		handlerStack.push(ph);

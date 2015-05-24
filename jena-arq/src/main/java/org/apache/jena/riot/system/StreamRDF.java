@@ -18,8 +18,8 @@
 
 package org.apache.jena.riot.system;
 
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.core.Quad ;
 
 /** The interface for the output of RDF, such as the RIOT parsers.
  *  The parser event model is that items are emitted for signficant events.

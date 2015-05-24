@@ -20,14 +20,13 @@ package org.apache.jena.query.text ;
 
 import java.util.List ;
 
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.DatasetChangesBatched ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.QuadAction ;
+import org.apache.jena.sparql.util.FmtUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.DatasetChangesBatched ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.core.QuadAction ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 // Currently unused 
 // This would index multiple quads at a time from batched stream of changes (e.g. rdf-patch)

@@ -21,9 +21,9 @@ package org.apache.jena.jdbc.results;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
-import org.apache.jena.jdbc.statements.JenaStatement;
 
-import com.hp.hpl.jena.query.QueryExecution;
+import org.apache.jena.jdbc.statements.JenaStatement;
+import org.apache.jena.query.QueryExecution ;
 
 /**
  * Represents a set of streamed results backed by some {@link QueryExecution},

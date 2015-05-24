@@ -20,16 +20,14 @@ package org.apache.jena.query.spatial.assembler;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.spatial.SpatialIndexLucene;
 import org.apache.jena.query.spatial.SpatialQuery;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.tdb.assembler.AssemblerTDB ;
+import org.apache.jena.vocabulary.RDF ;
 import org.junit.Test;
-
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.tdb.assembler.AssemblerTDB;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * Test the spatial dataset assembler.

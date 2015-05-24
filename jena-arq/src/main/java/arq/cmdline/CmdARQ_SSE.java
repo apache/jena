@@ -18,7 +18,7 @@
 
 package arq.cmdline;
 
-import com.hp.hpl.jena.sparql.sse.Item ;
+import org.apache.jena.sparql.sse.Item ;
 
 /** Root of read an SSE file and do something */
 public abstract class CmdARQ_SSE extends CmdARQ

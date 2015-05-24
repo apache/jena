@@ -28,6 +28,7 @@ import java.util.* ;
 
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.NotImplemented ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.StreamRowRDF ;
@@ -36,8 +37,6 @@ import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.graph.Node ;
 
 /** Testing/development convenience.
  *  Iterator of StreamRowRDF (always a tuple) for an input stream of tokenized RDT terms.

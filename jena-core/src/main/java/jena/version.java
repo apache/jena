@@ -20,8 +20,9 @@ package jena;
 
 import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
 
-import com.hp.hpl.jena.Jena;
 import java.lang.reflect.*;
+
+import org.apache.jena.Jena ;
 
 /**
  * jena.version

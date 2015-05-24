@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-elephas</artifactId>
-    <version>0.9.1-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>jena-elephas-io</artifactId>
   <name>Apache Jena - Elephas - I/O</name>

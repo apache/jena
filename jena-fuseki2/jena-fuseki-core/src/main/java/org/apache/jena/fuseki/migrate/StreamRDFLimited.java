@@ -18,12 +18,11 @@
 
 package org.apache.jena.fuseki.migrate ;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFWrapper ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * Limit triples/quads and stop passing through after a limit is reached.

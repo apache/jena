@@ -20,16 +20,15 @@ package sdb.cmd;
 
 import java.util.List;
 
-import arq.cmdline.CmdGeneral;
+import org.apache.jena.Jena ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.sdb.SDB ;
+import org.apache.jena.sdb.Store ;
+import org.apache.jena.sdb.StoreDesc ;
+import org.apache.jena.sdb.assembler.AssemblerVocab ;
+import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModSymbol;
 import arq.cmdline.ModTime;
-
-import com.hp.hpl.jena.Jena;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 
 public abstract class CmdArgsDB extends CmdGeneral
 {

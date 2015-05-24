@@ -30,7 +30,7 @@ function grammar
 ##     NAME="$(echo $N | tr '[:lower:]' '[:upper:]')"
 ##     DIR1="$(echo $N | tr '[:upper:]' '[:lower:]')"
     
-    DIR="../src/main/java/com/hp/hpl/jena/sparql/lang/$PKG"
+    DIR="../src/main/java/org/apache/jena/sparql/lang/$PKG"
 
     (cd "$DIR" ; rm -f TokenMgrError.java ParseException.java Token.java JavaCharStream.java )
 

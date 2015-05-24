@@ -20,6 +20,7 @@ package org.apache.jena.riot.web;
 
 import java.io.IOException ;
 import java.io.InputStream ;
+import java.nio.charset.StandardCharsets ;
 import java.util.HashMap ;
 import java.util.Map ;
 
@@ -27,18 +28,17 @@ import org.apache.http.HttpEntity ;
 import org.apache.http.HttpResponse ;
 import org.apache.http.util.EntityUtils ;
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.query.ResultSet ;
+import org.apache.jena.query.ResultSetFactory ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
-import com.hp.hpl.jena.sparql.graph.GraphFactory ;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
+import org.apache.jena.sparql.graph.GraphFactory ;
+import org.apache.jena.sparql.resultset.ResultsFormat ;
 
 /** A collection of handlers for response handling.
  * @see HttpOp
@@ -84,7 +84,7 @@ public class HttpResponseLib
                     int l ;
                     byte buffer[] = new byte[1024] ;
                     while ((l = in.read(buffer)) != -1) {
-                        System.out.print(new String(buffer, 0, l, "UTF-8")) ;
+                        System.out.print(new String(buffer, 0, l, StandardCharsets.UTF_8)) ;
                     }
                 }
             } catch (IOException ex)

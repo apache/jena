@@ -19,11 +19,11 @@
 package org.apache.jena.web;
 
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.query.DatasetAccessor ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.query.DatasetAccessor ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 
 /** Adapter between Dataset/Model level and DatasetGraph/Graph level */ 
 public class DatasetAdapter implements DatasetAccessor

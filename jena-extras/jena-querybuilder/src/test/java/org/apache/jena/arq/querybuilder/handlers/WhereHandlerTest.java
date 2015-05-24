@@ -22,18 +22,18 @@ import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.LiteralLabelFactory;
+import org.apache.jena.query.Query;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.expr.E_Random;
+import org.apache.jena.sparql.lang.sparql_11.ParseException;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 public class WhereHandlerTest extends AbstractHandlerTest {
 
@@ -137,6 +137,17 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	}
 
 	@Test
+	public void testAddFilterWithNamespace() throws ParseException {
+		query.setPrefix("afn", "http://jena.apache.org/ARQ/function#");
+		handler.addFilter("afn:namespace(?one) = 'foo'");
+
+		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE
+				+ OPEN_PAREN + "afn:namespace" + OPEN_PAREN + var("one")
+				+ CLOSE_PAREN + OPT_SPACE + EQ + OPT_SPACE + QUOTE + "foo"
+				+ QUOTE + CLOSE_PAREN + CLOSE_CURLY, query.toString());
+	}
+
+	@Test
 	public void testAddFilterVarOnly() throws ParseException {
 		handler.addFilter("?one");
 
@@ -230,8 +241,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				+ var("v") + CLOSE_PAREN + CLOSE_CURLY, query.toString());
 		Map<Var, Node> values = new HashMap<Var, Node>();
 
-		values.put(Var.alloc("v"),
-				NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10)));
+		values.put(Var.alloc("v"), NodeFactory
+				.createLiteral(LiteralLabelFactory.createTypedLiteral(10)));
 		handler.setVars(values);
 		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE
 				+ OPEN_PAREN + var("one") + OPT_SPACE + LT + OPT_SPACE
@@ -293,4 +304,25 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				+ ".+" + CLOSE_CURLY, query.toString());
 	}
 
+	@Test
+	public void testBindStringVar() throws ParseException {
+		Var v = Var.alloc("foo");
+		handler.addBind("rand()", v);
+
+		assertContainsRegex(
+				OPEN_CURLY + BIND + OPEN_PAREN + "rand\\(\\)" + SPACE + "AS"
+						+ SPACE + var("foo") + CLOSE_PAREN + CLOSE_CURLY,
+				query.toString());
+	}
+
+	@Test
+	public void testBindExprVar() {
+		Var v = Var.alloc("foo");
+		handler.addBind(new E_Random(), v);
+
+		assertContainsRegex(
+				OPEN_CURLY + BIND + OPEN_PAREN + "rand\\(\\)" + SPACE + "AS"
+						+ SPACE + var("foo") + CLOSE_PAREN + CLOSE_CURLY,
+				query.toString());
+	}
 }

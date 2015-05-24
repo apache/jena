@@ -1,4 +1,4 @@
-PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
+PREFIX apf:     <http://jena.apache.org/ARQ/property#>
 PREFIX :           <http://example.org/>
 
 SELECT ?z

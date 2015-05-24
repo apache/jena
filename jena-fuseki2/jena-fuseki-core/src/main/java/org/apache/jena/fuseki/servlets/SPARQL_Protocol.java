@@ -24,16 +24,15 @@ import static org.apache.jena.riot.web.HttpNames.paramNamedGraphURI ;
 import java.util.Arrays ;
 import java.util.Collections ;
 import java.util.List ;
+import java.util.function.Predicate;
 
 import javax.servlet.http.HttpServletRequest ;
 
-import org.apache.jena.atlas.iterator.Filter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Lib ;
-
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryParseException ;
-import com.hp.hpl.jena.sparql.core.DatasetDescription ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.query.QueryParseException ;
+import org.apache.jena.sparql.core.DatasetDescription ;
 
 /** Support for the SPARQL protocol (SPARQL Query, SPARQL Update)
  */
@@ -80,13 +79,7 @@ public  abstract class SPARQL_Protocol extends ActionSPARQL
         return Iter.iter(list).filter(acceptNonEmpty).toList() ;
     }
     
-    private static Filter<String> acceptNonEmpty = new Filter<String>(){ 
-        @Override
-        public boolean accept(String item)
-        {
-            return item != null && item.length() != 0 ;
-        }
-    } ;
+    private static Predicate<String> acceptNonEmpty = item -> item != null && !item.isEmpty();
     
     protected static int countParamOccurences(HttpServletRequest request, String param)
     {

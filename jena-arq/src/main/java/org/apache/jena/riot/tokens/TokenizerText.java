@@ -26,10 +26,10 @@ import java.util.NoSuchElementException ;
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.PeekReader ;
+import org.apache.jena.atlas.lib.Chars ;
 import org.apache.jena.riot.RiotParseException ;
 import org.apache.jena.riot.system.RiotChars ;
-
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.ARQInternalErrorException ;
 
 /** Tokenizer for all sorts of things RDF-ish */
 
@@ -38,7 +38,7 @@ public final class TokenizerText implements Tokenizer
     // TODO Remove CNTL and make SYMBOLS
     // Drop through to final general symbol/keyword reader, including <=, != 
     // Care with <=
-    // STRING, not STIRNG1/2, LONG_STRING1,2
+    // STRING, not STRING1/2, LONG_STRING1/2
     // Policy driven for CURIES?
     
     // Various allow/deny options (via checker?)
@@ -206,7 +206,7 @@ public final class TokenizerText implements Tokenizer
                 }
             } else {
                 // Single quote character.
-                token.setImage(readString(ch, ch, true)) ;
+                token.setImage(readString(ch, ch)) ;
                 // Single quoted string.
                 token.setType((ch == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2) ;
             }
@@ -426,53 +426,68 @@ public final class TokenizerText implements Tokenizer
         return token ;
     }
 
-    private static final boolean VeryVeryLax = false ;
     
+    private static final boolean VeryVeryLaxIRI = false ;
+    
+    // [8]  IRIREF  ::= '<' ([^#x00-#x20<>"{}|^`\] | UCHAR)* '>'
     private String readIRI() {
         stringBuilder.setLength(0) ;
         for (;;) {
             int ch = reader.readChar() ;
-            if ( ch == EOF ) {
-                exception("Broken IRI: " + stringBuilder.toString()) ;
+            switch(ch) {
+                case EOF:
+                    exception("Broken IRI (End of file)") ;
+                case NL:
+                    exception("Broken IRI (newline): %s", stringBuilder.toString()) ;
+                case CR:
+                    exception("Broken IRI (CR): %s", stringBuilder.toString()) ;
+                case CH_GT:
+                    // Done!
+                    return stringBuilder.toString() ;
+                case CH_RSLASH:
+                    if ( VeryVeryLaxIRI )
+                        // Includes unicode escapes and also \n etc 
+                        ch = readLiteralEscape() ;
+                    else
+                        // NORMAL
+                        ch = readUnicodeEscape() ;
+                    // Don't check legality of ch (strict syntax at this point).
+                    // That does not mean it is a good idea to bypass checking.
+                    // Bad characters will lead to trouble elsewhere.
+                    break ;
+                case CH_LT:
+                    // Probably a corrupt file so not a warning.
+                    exception("Bad character in IRI (bad character: '<'): <%s<...>", stringBuilder.toString()) ;
+                case TAB:
+                    exception("Bad character in IRI (Tab character): <%s[tab]...>", stringBuilder.toString()) ;
+                case SPC:
+                    warning("Bad character in IRI (space): <%s[space]...>", stringBuilder.toString()) ;
+                case '{': case '}': case '"': case '|': case '^': case '`' :
+                    if ( ! VeryVeryLaxIRI )
+                        warning("Illegal character in IRI (codepoint 0x%02X, '%c'): <%s[%c]...>", ch, (char)ch, stringBuilder.toString(), (char)ch) ;
+                default:
+                    if ( ch <= 0x19 )
+                        warning("Illegal character in IRI (control char 0x%02X): %s", ch, stringBuilder.toString()) ;
             }
-
-            if ( ch == '\n' )
-                exception("Broken IRI (newline): " + stringBuilder.toString()) ;
-
-            if ( ch == CH_GT ) {
-                return stringBuilder.toString() ;
-            }
-
-            if ( ch == '\\' ) {
-                if ( VeryVeryLax )
-                    ch = readCharEscapeAnyURI() ;
-                else
-                    // NORMAL
-                    ch = readUnicodeEscape() ;
-                // Drop through.
-            }
-            // Ban certain very bad characters
-            if ( !VeryVeryLax && ch == '<' )
-                exception("Broken IRI (bad character: '%c'): %s", ch, stringBuilder.toString()) ;
             insertCodepoint(stringBuilder, ch) ;
         }
     }
     
-    private final
-    int readCharEscapeAnyURI() {
-        int c = reader.readChar();
-        if ( c==EOF )
-            exception("Escape sequence not completed") ;
-
-        switch (c) {
+    // Read a unicode escape : does not allow \\ bypass
+    private final int readUnicodeEscape() {
+        int ch = reader.readChar() ;
+        if ( ch == EOF )
+            exception("Broken escape sequence") ;
+    
+        switch (ch) {
             case 'u': return readUnicode4Escape(); 
             case 'U': return readUnicode8Escape(); 
             default:
-                // Anything \X
-                return c ;
+                exception("Illegal unicode escape sequence value: \\%c (0x%02X)", ch, ch);
         }
+        return 0 ;
     }
-    
+
     private void readPrefixedNameOrKeyword(Token token) {
         long posn = reader.getPosition() ;
         String prefixPart = readPrefixPart() ; // Prefix part or keyword
@@ -635,8 +650,7 @@ public final class TokenizerText implements Tokenizer
     
     // Get characters between two markers.
     // strEscapes may be processed
-    // endNL end of line as an ending is OK
-    private String readString(int startCh, int endCh, boolean strEscapes) {
+    private String readString(int startCh, int endCh) {
         long y = getLine() ;
         long x = getColumn() ;
         stringBuilder.setLength(0) ;
@@ -654,14 +668,11 @@ public final class TokenizerText implements Tokenizer
                 exception("Broken token (newline): " + stringBuilder.toString(), y, x) ;
 
             if ( ch == endCh ) {
-                // sb.append(((char)ch)) ;
                 return stringBuilder.toString() ;
             }
 
-            if ( ch == CH_RSLASH ) {
-                ch = strEscapes ? readLiteralEscape() : readUnicodeEscape() ;
-                // Drop through.
-            }
+            if ( ch == CH_RSLASH )
+                ch = readLiteralEscape() ;
             insertCodepoint(stringBuilder, ch) ;
         }
     }
@@ -729,7 +740,7 @@ public final class TokenizerText implements Tokenizer
         for (;; idx++) {
             int ch = reader.peekChar() ;
 
-            if ( isAlphaNumeric(ch) || charInArray(ch, extraChars) ) {
+            if ( isAlphaNumeric(ch) || Chars.charInArray(ch, extraChars) ) {
                 reader.readChar() ;
                 stringBuilder.append((char)ch) ;
                 continue ;
@@ -1111,7 +1122,7 @@ public final class TokenizerText implements Tokenizer
             case 'u':   return readUnicode4Escape();
             case 'U':   return readUnicode8Escape();
             default:
-                exception("illegal escape sequence value: %c (0x%02X)", c, c);
+                exception("Illegal escape sequence value: %c (0x%02X)", c, c);
                 return 0 ;
         }
     }
@@ -1137,29 +1148,13 @@ public final class TokenizerText implements Tokenizer
         }
     }
     
-    
-    private final int readUnicodeEscape() {
-        int ch = reader.readChar() ;
-        if ( ch == EOF )
-            exception("Broken escape sequence") ;
-
-        switch (ch) {
-            case '\\':  return '\\' ;
-            case 'u': return readUnicode4Escape(); 
-            case 'U': return readUnicode8Escape(); 
-            default:
-                exception("illegal escape sequence value: %c (0x%02X)", ch, ch);
-        }
-        return 0 ;
-    }
-    
     private final
     int readUnicode4Escape() { return readHexSequence(4) ; }
     
     private final int readUnicode8Escape() {
         int ch8 = readHexSequence(8) ;
         if ( ch8 > Character.MAX_CODE_POINT )
-            exception("illegal code point in \\U sequence value: 0x%08X", ch8) ;
+            exception("Illegal code point in \\U sequence value: 0x%08X", ch8) ;
         return ch8 ;
     }
 
@@ -1193,16 +1188,21 @@ public final class TokenizerText implements Tokenizer
                 exception("End of input during expected string: " + str) ;
                 return false ;
             }
-            int inChar = reader.readChar() ;
+            int inChar = reader.peekChar() ;
             if ( inChar != want ) {
                 // System.err.println("N-triple reader error");
                 exception("expected \"" + str + "\"") ;
                 return false ;
             }
+            reader.readChar() ;
         }
         return true ;
     }
 
+    private void warning(String message, Object... args) {
+        exception(message, args); 
+    }
+    
     private void exception(String message, Object... args) {
         exception$(message, reader.getLineNum(), reader.getColNum(), args) ;
     }

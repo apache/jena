@@ -20,9 +20,9 @@ package org.apache.jena.hadoop.rdf.mapreduce.transform;
 
 import java.io.IOException;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.Quad;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * A mapper which converts triples to quads where all triples are placed in the

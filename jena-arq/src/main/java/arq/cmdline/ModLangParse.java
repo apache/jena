@@ -18,15 +18,14 @@
 
 package arq.cmdline;
 
+import arq.cmd.* ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.IRIResolver ;
-import arq.cmd.CmdException ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.util.FileManager ;
+import org.apache.jena.util.FileManager ;
 
 public class ModLangParse implements ArgModuleGeneral
 {

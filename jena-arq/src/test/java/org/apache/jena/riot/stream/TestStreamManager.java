@@ -23,18 +23,17 @@ import java.io.File ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RiotNotFoundException ;
 import org.apache.jena.riot.system.stream.LocatorFile ;
 import org.apache.jena.riot.system.stream.LocatorHTTP ;
 import org.apache.jena.riot.system.stream.StreamManager ;
+import org.apache.jena.sparql.util.Context ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.util.Context ;
 
 public class TestStreamManager extends BaseTest
 {

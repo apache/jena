@@ -18,24 +18,23 @@
 
 package org.apache.jena.propertytable.graph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.HashMap ;
+import java.util.List ;
 
-import org.apache.jena.atlas.io.IndentedWriter;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIter1;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.Utils;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.iterator.QueryIter1 ;
+import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.sparql.util.FmtUtils ;
 
 /**
  * Split the incoming BasicPattern by subjects, (i.e. it becomes multiple sub BasicPatterns grouped by the same subjects.
@@ -106,7 +105,7 @@ public class QueryIterPropertyTable extends QueryIter1 {
 
 	@Override
 	protected void details(IndentedWriter out, SerializationContext sCxt) {
-		out.print(Utils.className(this));
+		out.print(Lib.className(this));
 		out.println();
 		out.incIndent();
 		FmtUtils.formatPattern(out, pattern, sCxt);
