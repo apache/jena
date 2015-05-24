@@ -311,7 +311,6 @@ public class ActionDatasets extends ActionContainerItem {
             if ( q != null ) {
                 Node gn = q.getGraph() ;
                 //action.log.info("SHUTDOWN NEEDED"); // To ensure it goes away?
-                system.removeNamedModel(gn.getURI());
                 systemDSG.deleteAny(gn, null, null, null) ;
             }
             systemDSG.commit() ;
