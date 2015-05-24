@@ -18,15 +18,8 @@
 package dev;
 
 public class NOTES_TDB {
-    // Bring in Builder2 from Lizard + a state object (to include fresh ComponentIdMgr)
-    //  replaces TDB2Builder.
+    // NodeTableCache and aborts.
     
-    // ComponentId management.
-    // lizard.ComponentIdMgr
-    // ComponentId - no need for UUID?
-    
-    // Load monitoring : StreamRDFMonitor
-
     // NodeTableCache + abort -> clean out?
     
     // Quack clean / split into general and TDB
@@ -34,17 +27,4 @@ public class NOTES_TDB {
     // DatasetGraph.exec(op)
     //   Interface ExecuteOp + generic registration.
     // DatasetGraph.getBaseDatasetGraph
-    
-    // TL => ?
-    
-    
-    // BuildContext
-    //   Location,
-    //   Coordinator
-    //   StoreParams
-    //   UUID
-    // ==> to Mantis, TDB2 etc
-    // tdbdev.ComponentIdMgr
-    
-    
 }

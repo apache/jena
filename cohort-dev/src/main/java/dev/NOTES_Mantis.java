@@ -17,8 +17,6 @@
 
 package dev;
 
-
-
 public class NOTES_Mantis {
     // Streams, not iterators?
 
@@ -38,9 +36,6 @@ public class NOTES_Mantis {
     
     // Document
     
-    // Pseudo fake a crash.
-    // Clean journal interface.
-
     // Transaction.TxnState - rename?
     
     // Insert/delete -> return null?
