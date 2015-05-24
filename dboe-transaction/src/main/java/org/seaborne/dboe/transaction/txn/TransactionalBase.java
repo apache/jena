@@ -143,9 +143,23 @@ public class TransactionalBase implements TransactionalSystem {
         _end() ;
     }
 
+    /**
+     * Return the Read/write state (or null when not in a transaction)
+     */
+    final
+    public ReadWrite getState() {
+        checkRunning() ;
+        // tricky - touching theTxn causes it to initialize.
+        Transaction txn = theTxn.get() ;
+        if ( txn != null )
+            return txn.getMode() ;
+        theTxn.remove() ;
+        return null ; 
+    }
+    
     final 
-    public boolean isInTransaction() {
-        return isAttached() ;
+    private /*public*/ boolean isInTransaction() {
+        return getState() != null ;
     }
     
     /** Get the transaction, checking there is one */  
@@ -154,16 +168,6 @@ public class TransactionalBase implements TransactionalSystem {
         if ( txn == null )
             throw new TransactionException("Not in a transaction") ;
         return txn ;
-    }
-
-    private boolean isAttached() {
-        checkRunning() ;
-        // tricky - touching theTxn causes it to initialize.
-        Transaction txn = theTxn.get() ;
-        if ( txn != null )
-            return true ;
-        theTxn.remove() ;
-        return false ;
     }
 
     private void checkRunning() {
