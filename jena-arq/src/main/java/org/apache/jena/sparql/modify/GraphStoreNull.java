@@ -31,8 +31,11 @@ import org.apache.jena.update.GraphStore ;
 /**
  * A black hole for Quads, add as many as you want and it will forget them all.  Useful for testing.
  */
+@SuppressWarnings("deprecation")
 public class GraphStoreNull extends DatasetGraphQuad implements GraphStore
 {
+    public GraphStoreNull() {}
+    
     @Override
     public Iterator<Quad> find(Node g, Node s, Node p, Node o)
     {
