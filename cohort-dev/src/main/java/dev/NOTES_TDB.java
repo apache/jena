@@ -19,10 +19,9 @@ package dev;
 
 import java.util.Iterator ;
 
-import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.DatasetGraphTriplesQuads ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.Quad ;
 
 
@@ -31,18 +30,9 @@ public class NOTES_TDB {
     // ** NodeTableCache and aborts.
     // NodeTableCache + abort -> clean out?
     // Abort notification.
+    // Or NodeTableCache part of the transaction. 
     
-    // ** DatasetGraphTDB extends TransactionalBase / drop DatasetGraphCaching 
-    //   Look to use default methods in the DatasetGraph stack
-    //   Or very basic interface for DatasetGraphTDB (not a datasetGraph!) 
-    //     Interface StorageRDF - Triples and Quads, minimal. Plug-in. Prefixes?
-    //     and wrap to add DatasetGraph-ness 
-    // 1/ Transaction state changes notification API (TripleTable, QuadTable, Prefixes -> NodeTables) 
-    //   --> delete DatasetGraphTrackActive long term.
-    // 2/ addGraph, removeGraph -> default methods (more default methods? DatasetGraphBaseFind
-    // 3/ implements Jena Transactional (!!)  
-    
-    // Move the DSG hierarchy from Jena? as "experimental"?
+    // Transaction state changes notification API (TripleTable, QuadTable, Prefixes -> NodeTables) 
     
     // DatasetGraphTDB has begin/commit/abort/end --> Not used?
     
@@ -68,54 +58,9 @@ interface StorageRDF {
     Iterator<Quad> find(Node g, Node s, Node p, Node o) ;
 }
 
-class Foo extends DatasetGraphTriplesQuads {
-
-    @Override
-    public Iterator<Node> listGraphNodes() {
-        return null ;
-    }
-
-    @Override
-    protected void addToDftGraph(Node s, Node p, Node o) {}
-
-    @Override
-    protected void addToNamedGraph(Node g, Node s, Node p, Node o) {}
-
-    @Override
-    protected void deleteFromDftGraph(Node s, Node p, Node o) {}
-
-    @Override
-    protected void deleteFromNamedGraph(Node g, Node s, Node p, Node o) {}
-
-    @Override
-    protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
-        return null ;
-    }
-
-    @Override
-    protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
-        return null ;
-    }
-
-    @Override
-    protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o) {
-        return null ;
-    }
-
-    @Override
-    public Graph getDefaultGraph() {
-        return null ;
-    }
-
-    @Override
-    public Graph getGraph(Node graphNode) {
-        return null ;
-    }
-
-    @Override
-    public void addGraph(Node graphName, Graph graph) {}
-
-    @Override
-    public void removeGraph(Node graphName) {}
-    
+interface TxnEvent {
+    void beginEvent(ReadWrite mode) ;
+    void commitEvent() ;
+    void abortEvent() ;
+    void endEvent() ;
 }
