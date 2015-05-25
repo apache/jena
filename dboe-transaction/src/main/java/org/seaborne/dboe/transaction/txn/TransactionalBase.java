@@ -146,6 +146,7 @@ public class TransactionalBase implements TransactionalSystem {
     /**
      * Return the Read/write state (or null when not in a transaction)
      */
+    @Override
     final
     public ReadWrite getState() {
         checkRunning() ;
@@ -155,11 +156,6 @@ public class TransactionalBase implements TransactionalSystem {
             return txn.getMode() ;
         theTxn.remove() ;
         return null ; 
-    }
-    
-    final 
-    private /*public*/ boolean isInTransaction() {
-        return getState() != null ;
     }
     
     /** Get the transaction, checking there is one */  

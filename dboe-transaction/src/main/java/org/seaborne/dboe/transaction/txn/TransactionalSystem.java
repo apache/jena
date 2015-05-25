@@ -17,6 +17,7 @@
 
 package org.seaborne.dboe.transaction.txn;
 
+import org.apache.jena.query.ReadWrite ;
 import org.seaborne.dboe.transaction.Transactional ;
 
 /** Implementation side of a {@link Transactional}.
@@ -58,5 +59,12 @@ public interface TransactionalSystem extends Transactional {
 
     /** Get the associated {@link TransactionCoordinator} */
     public TransactionCoordinator getTxnMgr() ; 
+    
+    /**  Return the Read/Write state from the point of view of the caller.
+     * Return null when not in a transaction.
+     */
+    public ReadWrite getState() ;
+    
+    public default boolean isInTransaction() { return getState() != null ; }  
 }
 
