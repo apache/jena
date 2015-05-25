@@ -111,7 +111,7 @@ public class TestBuildTextDataset extends BaseTest
 
         // Define the index mapping
         EntityDefinition entDef = new EntityDefinition("uri", "text");
-        entDef.setPrimaryPredicate(RDFS.label.asNode());
+        entDef.setPrimaryPredicate(RDFS.label);
 
         // Lucene, in memory.
         Directory dir = new RAMDirectory() ;

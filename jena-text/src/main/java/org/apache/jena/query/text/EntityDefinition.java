@@ -33,17 +33,16 @@ import org.apache.lucene.analysis.Analyzer ;
  * Definition of a "document"
  */
 public class EntityDefinition {
-    private final Map<Node, String>      predicateToField = new HashMap<>() ;
-    private final Map<String, Analyzer>    fieldToAnalyzer  = new HashMap<>();
+    private final Map<Node, String>          predicateToField = new HashMap<>() ;
+    private final Map<String, Analyzer>      fieldToAnalyzer  = new HashMap<>() ;
     private final ListMultimap<String, Node> fieldToPredicate = ArrayListMultimap.create() ;
-    private final Collection<String>     fields           = Collections.unmodifiableCollection(fieldToPredicate.keys()) ;
+    private final Collection<String>         fields           = Collections.unmodifiableCollection(fieldToPredicate.keys()) ;
     // private final Collection<String> fields =
     // Collections.unmodifiableCollection(fieldToPredicate.keySet()) ;
-    private final String                 entityField ;
-    private final String                 primaryField ;
-    private String                 graphField ;
-    private String                 langField ;
-    //private final Node                   primaryPredicate ;
+    private final String                     entityField ;
+    private final String                     primaryField ;
+    private String                           graphField = null ;
+    private String                           langField ;
 
     /**
      * @param entityField
@@ -56,6 +55,61 @@ public class EntityDefinition {
         this.primaryField = primaryField ;
     }
 
+    /**
+     * @param entityField
+     *            The entity being indexed (e.g. it's URI).
+     * @param primaryField
+     *            The primary/default field to search
+     * @param graphField
+     *            The field that stores graph URI, or null
+     */
+    public EntityDefinition(String entityField, String primaryField, String graphField) {
+        this(entityField, primaryField) ;
+        setGraphField(graphField);
+    }
+
+    /**
+     * @param entityField
+     *            The entity being indexed (e.g. it's URI).
+     * @param primaryField
+     *            The primary/default field to search
+     * @param primaryPredicate
+     *            The property associated with the primary/default field
+     */
+    public EntityDefinition(String entityField, String primaryField, Resource primaryPredicate) {
+        this(entityField, primaryField) ;
+        setPrimaryPredicate(primaryPredicate);
+    }
+
+    /**
+     * @param entityField
+     *            The entity being indexed (e.g. it's URI).
+     * @param primaryField
+     *            The primary/default field to search
+     * @param primaryPredicate
+     *            The property associated with the primary/default field
+     */
+    public EntityDefinition(String entityField, String primaryField, Node primaryPredicate) {
+        this(entityField, primaryField) ;
+        setPrimaryPredicate(primaryPredicate);
+    }
+
+    /**
+     * @param entityField
+     *            The entity being indexed (e.g. it's URI).
+     * @param primaryField
+     *            The primary/default field to search
+     * @param graphField
+     *            The field that stores graph URI, or null
+     * @param primaryPredicate
+     *            The property associated with the primary/default field
+     */
+    public EntityDefinition(String entityField, String primaryField, String graphField, Node primaryPredicate) {
+        this(entityField, primaryField) ;
+        setGraphField(graphField);
+        setPrimaryPredicate(primaryPredicate) ;
+    }
+    
     public String getEntityField() {
         return entityField ;
     }

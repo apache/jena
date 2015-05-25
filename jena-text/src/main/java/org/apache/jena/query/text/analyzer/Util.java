@@ -26,7 +26,7 @@ import java.util.Hashtable;
 
 public class Util {
 
-    private static Hashtable<String, Class> analyzersClasses; //mapping between ISO2-letter language and lucene existing analyzersClasses
+    private static Hashtable<String, Class<?>> analyzersClasses; //mapping between ISO2-letter language and lucene existing analyzersClasses
     private static Hashtable<String, Analyzer> cache = new Hashtable<>(); //to avoid unnecessary multi instantiation
 
     static {
@@ -48,7 +48,7 @@ public class Util {
             Class<?> className = analyzersClasses.get(lang);
             if (className == null)
                 return null;
-            Constructor constructor = className.getConstructor(Version.class);
+            Constructor<?> constructor = className.getConstructor(Version.class);
             Analyzer analyzer = (Analyzer)constructor.newInstance(ver);
             cache.put(lang, analyzer);
             return analyzer;

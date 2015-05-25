@@ -18,7 +18,6 @@
 
 package org.apache.jena.query.text ;
 
-import java.util.Iterator;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
@@ -110,8 +109,7 @@ public class TextQueryPF extends PropertyFunctionBase {
     private String extractArg(String prefix, PropFuncArg argObject) {
         String value = null;
         int pos = 0;
-        for (Iterator it = argObject.getArgList().iterator(); it.hasNext(); ) {
-            Node node = (Node)it.next();
+        for (Node node : argObject.getArgList()) {
             if (node.isLiteral()) {
                 String arg = node.getLiteral().toString();
                 if (arg.startsWith(prefix + ":")) {
