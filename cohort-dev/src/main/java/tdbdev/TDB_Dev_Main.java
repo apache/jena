@@ -29,7 +29,7 @@ import org.apache.jena.sparql.util.QueryExecUtils ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.TDBFactory ;
 import org.seaborne.tdb2.lib.TDBTxn ;
-import org.seaborne.tdb2.store.DatasetGraphTxn ;
+import org.seaborne.tdb2.store.DatasetGraphTDB ;
 import org.seaborne.tdb2.store.nodetable.TReadAppendFileTransport ;
 import org.seaborne.tdb2.sys.StoreConnection ;
 
@@ -57,7 +57,7 @@ public class TDB_Dev_Main {
         Location location = Location.mem("foobar") ; 
         StoreConnection sConn = StoreConnection.make(location) ;
         
-        DatasetGraphTxn dsg = sConn.getDatasetGraph() ;
+        DatasetGraphTDB dsg = sConn.getDatasetGraphTDB() ;
         TDBTxn.executeWrite(dsg, ()->{
             dsg.add(q1) ;
         }) ;
