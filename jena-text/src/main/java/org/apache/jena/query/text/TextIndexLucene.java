@@ -288,12 +288,12 @@ public class TextIndexLucene implements TextIndex {
     }
 
     @Override
-    public List<Node> query(String qs) {
+    public List<TextHit> query(String qs) {
         return query(qs, MAX_N) ;
     }
 
     @Override
-    public List<Node> query(String qs, int limit) {
+    public List<TextHit> query(String qs, int limit) {
         //** score
         try (IndexReader indexReader = DirectoryReader.open(directory)) {
             return query$(indexReader, qs, limit) ;
@@ -303,14 +303,14 @@ public class TextIndexLucene implements TextIndex {
         }
     }
 
-    private List<Node> query$(IndexReader indexReader, String qs, int limit) throws ParseException, IOException {
+    private List<TextHit> query$(IndexReader indexReader, String qs, int limit) throws ParseException, IOException {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
         Query query = parseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
         if ( limit <= 0 )
             limit = MAX_N ;
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
 
-        List<Node> results = new ArrayList<>() ;
+        List<TextHit> results = new ArrayList<>() ;
 
         // Align and DRY with Solr.
         for ( ScoreDoc sd : sDocs ) {
@@ -318,7 +318,8 @@ public class TextIndexLucene implements TextIndex {
             String[] values = doc.getValues(docDef.getEntityField()) ;
             for ( String v : values ) {
                 Node n = TextQueryFuncs.stringToNode(v) ;
-                results.add(n) ;
+                TextHit hit = new TextHit(n, sd.score);
+                results.add(hit) ;
             }
         }
         return results ;

@@ -18,37 +18,24 @@
 
 package org.apache.jena.query.text ;
 
-import java.util.List ;
-import java.util.Map ;
-
-import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.graph.Node ;
 
-/** TextIndex abstraction */ 
-public interface TextIndex extends Closeable //, Transactional 
+/** Class representing a single hit from a jena-text index */ 
+public class TextHit
 {
-    // Transactional operations
-    void prepareCommit() ;
-    void commit() ;
-    void rollback() ;
-    
-    
-    // Update operations
-    void addEntity(Entity entity) ;
-    void updateEntity(Entity entity) ;
-    
-    
-    // read operations
-    /** Get all entries for uri */
-    Map<String, Node> get(String uri) ;
+    private Node node;
+    private float score;
 
-    //** score
-    // Need to have more complex results.
+    public TextHit(Node node, float score) {
+        this.node = node;
+        this.score = score;
+    }
     
-    /** Access the index - limit if -1 for as many as possible */ 
-    List<TextHit> query(String qs, int limit) ;
+    public Node getNode() {
+        return this.node;
+    }
     
-    List<TextHit> query(String qs) ;
-
-    EntityDefinition getDocDef() ;
+    public float getScore() {
+        return this.score;
+    }
 }
