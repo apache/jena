@@ -125,9 +125,9 @@ public class TestTripleTable extends BaseTest
     
     private TripleTable createTripleTableMem()
     {
-        DatasetGraphTxn dsx = (DatasetGraphTxn)TDBBuilder.build(Location.mem()) ;
+        DatasetGraphTxn dsx = TDBBuilder.build(Location.mem()) ;
         dsx.begin(ReadWrite.WRITE);
-        DatasetGraphTDB ds = dsx.getBaseDatasetGraph() ;
+        DatasetGraphTDB ds = (DatasetGraphTDB)dsx ;
         return ds.getTripleTable() ;
     }
 }

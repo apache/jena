@@ -421,7 +421,6 @@ public class SystemTDB
         if ( dsgx.isInTransaction() )
             return dataset ;
         dsgx.begin(ReadWrite.WRITE);
-        //Or wrap DatasetGraphTDB?
         return dataset ;
     }
 

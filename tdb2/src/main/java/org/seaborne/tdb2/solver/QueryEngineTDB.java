@@ -153,8 +153,8 @@ public class QueryEngineTDB extends QueryEngineMain
         
         protected DatasetGraphTDB dsgToQuery(DatasetGraph dataset)
         {
-            if (dataset instanceof DatasetGraphTxn) return ((DatasetGraphTxn)dataset).getBaseDatasetGraph() ;
-            if (dataset instanceof DatasetGraphTDB) return (DatasetGraphTDB)dataset ;
+            if (dataset instanceof DatasetGraphTDB) 
+                return (DatasetGraphTDB)dataset ;
             throw new TDBException("Internal inconsistency: trying to execute query on unrecognized kind of DatasetGraph: "+Lib.className(dataset)) ;
         }
         

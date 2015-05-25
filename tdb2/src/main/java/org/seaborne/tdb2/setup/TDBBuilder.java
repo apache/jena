@@ -23,7 +23,6 @@ import java.util.UUID ;
 
 import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.main.QC ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.seaborne.dboe.DBOpEnvException ;
@@ -35,16 +34,12 @@ import org.seaborne.dboe.sys.Names ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
 import org.seaborne.dboe.trans.data.TransBinaryDataFile ;
-import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
+import org.seaborne.dboe.transaction.txn.TransactionalSystem ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.tdb2.TDBException ;
-import org.seaborne.tdb2.setup.StoreParams ;
-import org.seaborne.tdb2.setup.StoreParamsCodec ;
-import org.seaborne.tdb2.setup.StoreParamsConst ;
-import org.seaborne.tdb2.setup.StoreParamsFactory ;
 import org.seaborne.tdb2.solver.OpExecutorTDB1 ;
 import org.seaborne.tdb2.store.* ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
@@ -71,7 +66,7 @@ import org.slf4j.LoggerFactory ;
 public class TDBBuilder {
     private Logger log = LoggerFactory.getLogger(TDBBuilder.class) ;
     
-    public static DatasetGraph build(Location location) {
+    public static DatasetGraphTxn build(Location location) {
         return build(location, StoreParams.getDftStoreParams()) ;
     }
 
@@ -95,12 +90,13 @@ public class TDBBuilder {
         NodeTable nodeTablePrefixes = buildNodeTable(params.getPrefixTableBaseName()) ;
         DatasetPrefixesTDB prefixes = buildPrefixTable(nodeTablePrefixes) ;
         
-        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, ReorderLib.fixed(), location, params) ;
-        Transactional trans = new TransactionalBase(txnCoord) ;
-        DatasetGraphTxn dsgtxn = new DatasetGraphTxn(dsg, trans, txnCoord) ;
-        QC.setFactory(dsgtxn.getContext(), OpExecutorTDB1.OpExecFactoryTDB) ;
+        TransactionalSystem trans = new TransactionalBase(txnCoord) ;
+        DatasetGraphTxn dsg = new DatasetGraphTDB(trans, 
+                                                  tripleTable, quadTable, prefixes, 
+                                                  ReorderLib.fixed(), location, params) ;
+        QC.setFactory(dsg.getContext(), OpExecutorTDB1.OpExecFactoryTDB) ;
         txnCoord.start() ;
-        return dsgtxn ;
+        return dsg ;
     }
 
     public static TransactionCoordinator buildTransactionCoordinator(Location location) {

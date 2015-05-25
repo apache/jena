@@ -30,14 +30,13 @@ import org.seaborne.tdb2.junit.TL ;
 import org.seaborne.tdb2.solver.stats.StatsCollectorNodeId ;
 import org.seaborne.tdb2.solver.stats.StatsResults ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
-import org.seaborne.tdb2.store.DatasetGraphTxn ;
 import org.seaborne.tdb2.store.NodeId ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
 
 public class TestStats extends BaseTest
 {
-    static DatasetGraphTDB dsg      = ((DatasetGraphTxn)TL.createTestDatasetGraphMem()).getBaseDatasetGraph() ;
+    static DatasetGraphTDB dsg      = ((DatasetGraphTDB)TL.createTestDatasetGraphMem()) ;
     static NodeTupleTable quads     = dsg.getQuadTable().getNodeTupleTable() ;
     static NodeTupleTable triples   = dsg.getTripleTable().getNodeTupleTable() ;
     static NodeTable nt             = quads.getNodeTable() ;

@@ -28,7 +28,6 @@ import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.lib.TDBTxn ;
-import org.seaborne.tdb2.store.DatasetGraphTxn ;
 import org.seaborne.tdb2.sys.StoreConnection ;
 
 public class TestTDBFactory extends BaseTest
@@ -81,11 +80,7 @@ public class TestTDBFactory extends BaseTest
         StoreConnection.reset() ;
         DatasetGraph dg1 = StoreConnection.make(DIR).getDatasetGraph() ;
         DatasetGraph dg2 = StoreConnection.make(DIR).getDatasetGraph() ;
-        
-        DatasetGraph dgBase1 = ((DatasetGraphTxn)dg1).getBaseDatasetGraph() ;
-        DatasetGraph dgBase2 = ((DatasetGraphTxn)dg2).getBaseDatasetGraph() ;
-        
-        assertSame(dgBase1, dgBase2) ;
+        assertSame(dg1, dg2) ;
     }
     
     @Test public void testStoreConnectionTxn2()
@@ -95,10 +90,7 @@ public class TestTDBFactory extends BaseTest
         DatasetGraph dg1 = StoreConnection.make(Location.mem("FOO")).getDatasetGraph() ;
         DatasetGraph dg2 = StoreConnection.make(Location.mem("FOO")).getDatasetGraph() ;
         
-        DatasetGraph dgBase1 = ((DatasetGraphTxn)dg1).getBaseDatasetGraph() ;
-        DatasetGraph dgBase2 = ((DatasetGraphTxn)dg2).getBaseDatasetGraph() ;
-        
-        assertSame(dgBase1, dgBase2) ;
+        assertSame(dg1, dg2) ;
     }
     
     @Test public void testStoreConnectionTxn3()
@@ -108,10 +100,7 @@ public class TestTDBFactory extends BaseTest
         DatasetGraph dg1 = StoreConnection.make(Location.mem()).getDatasetGraph() ;
         DatasetGraph dg2 = StoreConnection.make(Location.mem()).getDatasetGraph() ;
         
-        DatasetGraph dgBase1 = ((DatasetGraphTxn)dg1).getBaseDatasetGraph() ;
-        DatasetGraph dgBase2 = ((DatasetGraphTxn)dg2).getBaseDatasetGraph() ;
-        
-        assertNotSame(dgBase1, dgBase2) ;
+        assertNotSame(dg1, dg2) ;
     }
 
 }

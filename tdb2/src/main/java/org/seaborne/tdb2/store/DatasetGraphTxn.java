@@ -17,73 +17,11 @@
 
 package org.seaborne.tdb2.store;
 
-import java.util.concurrent.atomic.AtomicLong ;
-
-import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphTrackActive ;
-import org.apache.jena.sparql.util.Context ;
 import org.seaborne.dboe.transaction.Transactional ;
-import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 
-/** Transaction representation of a TDB database */ 
-public class DatasetGraphTxn extends DatasetGraphTrackActive { 
-    private AtomicLong txnCounter = new AtomicLong(0) ;
-    private final DatasetGraphTDB dsg ;
-    private final Transactional dboe ;
-    private final TransactionCoordinator transCoord ;
-    
-    @Override
-    protected DatasetGraph get() { return dsg ; } 
-    
-    public DatasetGraphTxn(DatasetGraphTDB dsg, Transactional dboe, TransactionCoordinator transCoord) {
-        this.dsg = dsg ;
-        this.dboe = dboe ;
-        this.transCoord = transCoord ;
-    }
-    
-    @Override
-    public Context getContext() {
-        return dsg.getContext()  ;
-    }
-
-    @Override
-    protected void checkActive() {}
-
-    @Override
-    protected void checkNotActive() {}
-
-    @Override
-    public boolean isInTransaction() {
-        return false ;
-    }
-
-    @Override
-    protected void _begin(ReadWrite readWrite) {
-        dboe.begin(readWrite) ;
-    }
-
-    @Override
-    protected void _commit() { dboe.commit(); }
-
-    @Override
-    protected void _abort() { dboe.abort(); }
-
-    @Override
-    protected void _end() { dboe.end(); }
-
-    @Override
-    protected void _close() {}
-
-    public DatasetGraphTDB getBaseDatasetGraph() {
-        return dsg ;
-    }
-
-    public Transactional getTransactional() {
-        return dboe ;
-    }
-    
-    public TransactionCoordinator getCoordinator() {
-        return transCoord ;
-    }
+/** Transaction representation of a DatasetGraph */ 
+public interface DatasetGraphTxn extends DatasetGraph, Transactional, org.apache.jena.sparql.core.Transactional {
+    // Combines org.seaborne.dboe.transaction.Transactional and org.apache.jena.sparql.core.Transactional.
+    //public DatasetGraphTDB getBaseDatasetGraph() ;
 }

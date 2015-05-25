@@ -120,16 +120,21 @@ public class TDBTxn {
         return Txn.threadTxnWriteAbort(transactional(ds), action) ;
     }
 
+    // Adapters for "Transactional". So as to use Txn operations, we need to get from
+    // Dataset (and standard Jena) to Mantis/DBOE Transactional. 
+    // DatasetGraphTxn combines standard Jena and Mantis/DBOE Transactional. 
+    
     private static Transactional transactional(Dataset ds) {
-        // adapter across "Transactional"
+        // DatasetGraphTxn combines standard Jenas and Mantis/DBOE Transactional. 
         DatasetGraphTxn dsgtxn = (DatasetGraphTxn)ds.asDatasetGraph() ;
-        return dsgtxn.getTransactional() ;
+        return dsgtxn ;
     }
 
     private static Transactional transactional(DatasetGraph dsg) {
         // adapter across "Transactional"
+        // DatasetGraphTxn combines standard Jenas and Mantis/DBOE Transactional. 
         DatasetGraphTxn dsgtxn = (DatasetGraphTxn)dsg ;
-        return dsgtxn.getTransactional() ;
+        return dsgtxn ;
     }
 }
 

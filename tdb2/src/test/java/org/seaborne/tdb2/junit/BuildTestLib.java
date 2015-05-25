@@ -25,10 +25,9 @@ import org.seaborne.dboe.index.IndexParams ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
-import org.seaborne.tdb2.setup.TDBBuilder ;
 import org.seaborne.tdb2.setup.StoreParams ;
+import org.seaborne.tdb2.setup.TDBBuilder ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
-import org.seaborne.tdb2.store.DatasetGraphTxn ;
 import org.seaborne.tdb2.store.DatasetPrefixesTDB ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.store.nodetable.NodeTableCache ;
@@ -65,9 +64,8 @@ public class BuildTestLib {
     }
 
     public static DatasetPrefixesTDB makePrefixes(Location location) {
-        DatasetGraphTxn dsx = (DatasetGraphTxn)TDBBuilder.build(location) ;
-        dsx.begin(ReadWrite.WRITE);
-        DatasetGraphTDB ds = dsx.getBaseDatasetGraph() ;
+        DatasetGraphTDB ds = (DatasetGraphTDB)TDBBuilder.build(location) ;
+        ds.begin(ReadWrite.WRITE);
         return ds.getPrefixes() ; 
     }
     

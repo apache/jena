@@ -23,14 +23,14 @@ import java.util.Map ;
 import java.util.Set ;
 import java.util.concurrent.ConcurrentHashMap ;
 
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.seaborne.dboe.base.file.ChannelManager ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.file.LocationLock ;
 import org.seaborne.tdb2.TDBException ;
-import org.seaborne.tdb2.setup.TDBBuilder ;
 import org.seaborne.tdb2.setup.StoreParams ;
+import org.seaborne.tdb2.setup.TDBBuilder ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
-import org.seaborne.tdb2.store.DatasetGraphTxn ;
 
 
 /** A StoreConnection is the reference to the underlying storage.
@@ -61,7 +61,7 @@ public class StoreConnection
         if ( sConn == null ) {
             // Recovery happens when TransactionCoordinator.start is called
             // during the building of the DatasetGraphTxn.
-            DatasetGraphTxn dsg = TDBBuilder.build(location, params) ;
+            DatasetGraphTDB dsg = (DatasetGraphTDB)TDBBuilder.build(location, params) ;
             if (SystemTDB.DiskLocationMultiJvmUsagePrevention)
             {
                 // Obtain the lock ASAP but we do need an initialized database,
@@ -123,7 +123,7 @@ public class StoreConnection
 //        try { sConn.getDatasetGraph().getCoordinator().shutdown(); } catch (Throwable th ) {} 
 //        try { sConn.getDatasetGraphTDB().close() ; } catch (Throwable th ) {}
         
-        sConn.getDatasetGraph().getCoordinator().shutdown();
+        sConn.getDatasetGraphTDB().getTxnSystem().getTxnMgr().shutdown();
         sConn.getDatasetGraphTDB().close() ;
         
         sConn.isValid = false ;
@@ -139,26 +139,28 @@ public class StoreConnection
         }
     }
 
-    private final DatasetGraphTxn    datasetGraph ;
-    private boolean                  isValid = true ;
-    private volatile boolean         haveUsedInTransaction = false ;
+    private final DatasetGraphTDB   datasetGraph ;
+    private final Location          location ;
+    private boolean                 isValid = true ;
+    private volatile boolean        haveUsedInTransaction = false ;
 
-    private StoreConnection(DatasetGraphTxn dsg)
+    private StoreConnection(DatasetGraphTDB dsg)
     {
         datasetGraph = dsg ;
+        location = dsg.getLocation() ;
     }
 
-    public DatasetGraphTxn getDatasetGraph() {
+    public DatasetGraph getDatasetGraph() {
         return datasetGraph;
     }
-    
-    /** return the base DatasetGraph (not transactional, if they are difefrent) */
+
     public DatasetGraphTDB getDatasetGraphTDB() {
-        return datasetGraph.getBaseDatasetGraph() ;
+        return datasetGraph;
     }
+
     
     public Location getLocation() {
-        return datasetGraph.getBaseDatasetGraph().getLocation() ;
+        return location ;
     }
 }
 

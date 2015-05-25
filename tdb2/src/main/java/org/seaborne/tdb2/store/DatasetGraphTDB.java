@@ -27,10 +27,12 @@ import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraphCaching ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.transaction.txn.TransactionalSystem ;
 import org.seaborne.tdb2.lib.NodeLib ;
 import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
@@ -38,11 +40,12 @@ import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
 /** This is the class that provides creates a dataset over the storage via
  *  TripleTable, QuadTable and prefixes.
  *  This is the coordination of the storage.
- *  @see DatasetGraphTxn for the Tarsnaction form.
+ *  @see DatasetGraphTxn for the Transaction form.
  */
 final
 public class DatasetGraphTDB extends DatasetGraphCaching
-                             implements /*DatasetGraph,*/ Sync, Closeable
+                             implements DatasetGraphTxn, /*Old world*/ 
+                             /*DatasetGraph,*/ Sync, Closeable
 {
     private TripleTable tripleTable ;
     private QuadTable quadTable ;
@@ -53,14 +56,17 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     
     private GraphTDB defaultGraphTDB ;
     private boolean closed = false ;
+    private final TransactionalSystem txnSystem ;
 
-    public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes, 
-                           ReorderTransformation transform, Location location, StoreParams config) {
+    public DatasetGraphTDB(TransactionalSystem txnSystem, 
+                           TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes,
+                           ReorderTransformation transform, Location location, StoreParams params) {
+        this.txnSystem = txnSystem ;
         this.tripleTable = tripleTable ;
         this.quadTable = quadTable ;
         this.prefixes = prefixes ;
         this.transform = transform ;
-        this.config = config ;
+        this.config = params ;
         this.location = location ;
         this.defaultGraphTDB = getDefaultGraphTDB() ;
     }
@@ -119,6 +125,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         tripleTable = null ;
         quadTable = null ;
         prefixes = null ;
+        txnSystem.getTxnMgr().shutdown(); 
     }
     
     @Override
@@ -152,7 +159,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     @Override
     protected Graph _createNamedGraph(Node graphNode)
     { return new GraphTDB(this, graphNode) ; }
-
 
     public StoreParams getConfig()                          { return config ; }
     
@@ -247,5 +253,34 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     @Override
     public void setDefaultGraph(Graph g) { 
         throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
+    }
+
+    @Override
+    public boolean isInTransaction() {
+        return txnSystem.isInTransaction() ;
+    }
+
+    @Override
+    public void begin(ReadWrite readWrite) {
+        txnSystem.begin(readWrite) ;
+    }
+
+    @Override
+    public void commit() {
+        txnSystem.commit() ;
+    }
+
+    @Override
+    public void abort() {
+        txnSystem.abort() ;
+    }
+
+    @Override
+    public void end() {
+        txnSystem.end() ;
+    }
+
+    public TransactionalSystem getTxnSystem() {
+        return txnSystem ;
     }
 }
