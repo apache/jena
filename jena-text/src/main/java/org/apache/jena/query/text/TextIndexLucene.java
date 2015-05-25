@@ -85,31 +85,31 @@ public class TextIndexLucene implements TextIndex {
 
     /**
      * Constructs a new TextIndexLucene.
-     * 
+     *
      * @param directory The Lucene Directory for the index
-     * @param def The EntityDefinition that defines how entities are stored in the index
-     * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
+     * @param config The config definition for the index instantiation.
      */
-    public TextIndexLucene(Directory directory, EntityDefinition def, Analyzer queryAnalyzer) {
+    public TextIndexLucene(Directory directory, TextIndexConfig config) {
         this.directory = directory ;
-        this.docDef = def ;
+        this.docDef = config.getEntDef() ;
 
         // create the analyzer as a wrapper that uses KeywordAnalyzer for
         // entity and graph fields and StandardAnalyzer for all other
         Map<String, Analyzer> analyzerPerField = new HashMap<>() ;
-        analyzerPerField.put(def.getEntityField(), new KeywordAnalyzer()) ;
-        if ( def.getGraphField() != null )
-            analyzerPerField.put(def.getGraphField(), new KeywordAnalyzer()) ;
+        analyzerPerField.put(docDef.getEntityField(), new KeywordAnalyzer()) ;
+        if ( docDef.getGraphField() != null )
+            analyzerPerField.put(docDef.getGraphField(), new KeywordAnalyzer()) ;
 
-        for (String field : def.fields()) {
-            Analyzer analyzer = def.getAnalyzer(field);
-            if (analyzer != null) {
-                analyzerPerField.put(field, analyzer);
+        for (String field : docDef.fields()) {
+            Analyzer _analyzer = docDef.getAnalyzer(field);
+            if (_analyzer != null) {
+                analyzerPerField.put(field, _analyzer);
             }
         }
 
-        this.analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(VER), analyzerPerField) ;
-        this.queryAnalyzer = (null != queryAnalyzer) ? queryAnalyzer : analyzer ;
+        this.analyzer = new PerFieldAnalyzerWrapper(
+                (null != config.getAnalyzer()) ? config.getAnalyzer() : new StandardAnalyzer(VER), analyzerPerField) ;
+        this.queryAnalyzer = (null != config.getQueryAnalyzer()) ? config.getQueryAnalyzer() : this.analyzer ;
 
         openIndexWriter();
     }
@@ -193,12 +193,16 @@ public class TextIndexLucene implements TextIndex {
         if ( log.isDebugEnabled() )
             log.debug("Update entity: " + entity) ;
         try {
-            Document doc = doc(entity);
-            Term term = new Term(docDef.getEntityField(), entity.getId());
-            indexWriter.updateDocument(term, doc);
+            updateDocument(entity);
         } catch (IOException e) {
             throw new TextIndexException(e) ;
         }
+    }
+
+    protected void updateDocument(Entity entity) throws IOException {
+        Document doc = doc(entity);
+        Term term = new Term(docDef.getEntityField(), entity.getId());
+        indexWriter.updateDocument(term, doc);
     }
 
     @Override
@@ -206,15 +210,19 @@ public class TextIndexLucene implements TextIndex {
         if ( log.isDebugEnabled() )
             log.debug("Add entity: " + entity) ;
         try {
-            Document doc = doc(entity) ;
-            indexWriter.addDocument(doc) ;
+            addDocument(entity);
         }
         catch (IOException e) {
             throw new TextIndexException(e) ;
         }
     }
 
-    private Document doc(Entity entity) {
+    protected void addDocument(Entity entity) throws IOException {
+        Document doc = doc(entity) ;
+        indexWriter.addDocument(doc) ;
+    }
+
+    protected Document doc(Entity entity) {
         Document doc = new Document() ;
         Field entField = new Field(docDef.getEntityField(), entity.getId(), ftIRI) ;
         doc.add(entField) ;
@@ -225,9 +233,15 @@ public class TextIndexLucene implements TextIndex {
             doc.add(gField) ;
         }
 
+        String langField = docDef.getLangField() ;
+
         for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
-            Field field = new Field(e.getKey(), (String)e.getValue(), ftText) ;
-            doc.add(field) ;
+            doc.add( new Field(e.getKey(), (String) e.getValue(), ftText) );
+            if (langField != null) {
+                String lang = entity.getLanguage();
+                if (lang != null && !"".equals(lang))
+                    doc.add(new Field(docDef.getLangField(), lang, StringField.TYPE_STORED));
+            }
         }
         return doc ;
     }
@@ -255,10 +269,14 @@ public class TextIndexLucene implements TextIndex {
         return query ;
     }
 
+    protected Query preParseQuery(String queryString, String primaryField, Analyzer analyzer) throws ParseException {
+        return parseQuery(queryString, primaryField, analyzer);
+    }
+
     private List<Map<String, Node>> get$(IndexReader indexReader, String uri) throws ParseException, IOException {
         String escaped = QueryParserBase.escape(uri) ;
         String qs = docDef.getEntityField() + ":" + escaped ;
-        Query query = parseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
+        Query query = preParseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
         ScoreDoc[] sDocs = indexSearcher.search(query, 1).scoreDocs ;
         List<Map<String, Node>> records = new ArrayList<Map<String, Node>>() ;
@@ -305,7 +323,7 @@ public class TextIndexLucene implements TextIndex {
 
     private List<Node> query$(IndexReader indexReader, String qs, int limit) throws ParseException, IOException {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
-        Query query = parseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
+        Query query = preParseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
         if ( limit <= 0 )
             limit = MAX_N ;
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;

@@ -41,7 +41,8 @@ public class EntityDefinition {
     // Collections.unmodifiableCollection(fieldToPredicate.keySet()) ;
     private final String                 entityField ;
     private final String                 primaryField ;
-    private final String                 graphField ;
+    private String                 graphField ;
+    private String                 langField ;
     //private final Node                   primaryPredicate ;
 
     /**
@@ -51,65 +52,20 @@ public class EntityDefinition {
      *            The primary/default field to search
      */
     public EntityDefinition(String entityField, String primaryField) {
-        this(entityField, primaryField, (String)null) ;
-    }
-
-    /**
-     * @param entityField
-     *            The entity being indexed (e.g. it's URI).
-     * @param primaryField
-     *            The primary/default field to search
-     * @param graphField
-     *            The field that stores graph URI, or null
-     */
-    public EntityDefinition(String entityField, String primaryField, String graphField) {
         this.entityField = entityField ;
         this.primaryField = primaryField ;
-        this.graphField = graphField ;
     }
-
-    /**
-     * @param entityField
-     *            The entity being indexed (e.g. it's URI).
-     * @param primaryField
-     *            The primary/default field to search
-     * @param primaryPredicate
-     *            The property associated with the primary/default field
-     */
-    public EntityDefinition(String entityField, String primaryField, Resource primaryPredicate) {
-        this(entityField, primaryField, null, primaryPredicate.asNode()) ;
-    }
-
-    /**
-     * @param entityField
-     *            The entity being indexed (e.g. it's URI).
-     * @param primaryField
-     *            The primary/default field to search
-     * @param primaryPredicate
-     *            The property associated with the primary/default field
-     */
-    public EntityDefinition(String entityField, String primaryField, Node primaryPredicate) {
-        this(entityField, primaryField, null, primaryPredicate) ;
-    }
-
-    /**
-     * @param entityField
-     *            The entity being indexed (e.g. it's URI).
-     * @param primaryField
-     *            The primary/default field to search
-     * @param graphField
-     *            The field that stores graph URI, or null
-     * @param primaryPredicate
-     *            The property associated with the primary/default field
-     */
-    public EntityDefinition(String entityField, String primaryField, String graphField, Node primaryPredicate) {
-        this(entityField, primaryField, graphField) ;
-        set(primaryField, primaryPredicate) ;
-    }
-
 
     public String getEntityField() {
         return entityField ;
+    }
+
+    public void setPrimaryPredicate(Resource primaryPredicate) {
+        setPrimaryPredicate(primaryPredicate.asNode());
+    }
+
+    public void setPrimaryPredicate(Node primaryPredicate) {
+        set(primaryField, primaryPredicate) ;
     }
 
     public void set(String field, Node predicate) {
@@ -147,6 +103,18 @@ public class EntityDefinition {
 
     public String getGraphField() {
         return graphField ;
+    }
+
+    public void setGraphField(String graphField) {
+        this.graphField = graphField;
+    }
+
+    public String getLangField() {
+        return langField;
+    }
+
+    public void setLangField(String langField) {
+        this.langField = langField;
     }
 
     public Collection<String> fields() {
