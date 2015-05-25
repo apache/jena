@@ -285,7 +285,7 @@ public abstract class CmdLangParse extends CmdGeneral
     }
     
     
-    /** Create a streaming outoput sink if possible */
+    /** Create a streaming output sink if possible */
     protected StreamRDF createStreamSink() {
         if ( modLangParse.toBitBucket() )
             return StreamRDFLib.sinkNull() ;

@@ -177,8 +177,8 @@ public class FormatterElement extends FormatterBase
 //            out.decIndent(INDENT) ;
 //            out.newline() ;
 //        }
-        if ( el.getPatternElement() != null )
-            visitAsGroup(el.getPatternElement()) ;
+        if ( el.getElement() != null )
+            visitAsGroup(el.getElement()) ;
     }
 
     @Override

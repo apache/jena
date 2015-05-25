@@ -22,10 +22,10 @@ import junit.framework.JUnit4TestAdapter;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.junit.Test;
 import static org.junit.Assert.*;
-public class TestUtil
+public class TestSplitIRI_XML
 {
      public static junit.framework.Test suite() {
-         return new JUnit4TestAdapter(TestUtil.class) ;
+         return new JUnit4TestAdapter(TestSplitIRI_XML.class) ;
      }
     
     // Intermediate : JUnit 3 and JUnit 4.

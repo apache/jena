@@ -16,24 +16,36 @@
  * limitations under the License.
  */
 
-package org.apache.jena.graph.impl;
+package org.apache.jena.mem;
 
-import java.util.HashSet;
+import org.junit.runner.RunWith;
+import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractImpl;
+import org.xenei.junit.contract.ContractSuite;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.CollectionGraph ;
-import org.apache.jena.graph.test.AbstractTestGraph ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.mem.GraphTripleStore;
+import org.xenei.junit.contract.IProducer;
 
-public class TestCollectionGraph extends AbstractTestGraph {
-	 
-	public TestCollectionGraph(String name) {
-		super(name);
+@RunWith(ContractSuite.class)
+@ContractImpl(GraphTripleStore.class)
+public class GraphTripleStoreMem_CS {
+
+	private IProducer<GraphTripleStoreMem> producer = new IProducer<GraphTripleStoreMem>() {
+
+		@Override
+		public GraphTripleStoreMem newInstance() {
+			return new GraphTripleStoreMem(Graph.emptyGraph);
+		}
+
+		@Override
+		public void cleanUp() {
+		}
+
+	};
+
+	@Contract.Inject
+	public IProducer<GraphTripleStoreMem> getTripleStore() {
+		return producer;
 	}
-
-	@Override
-	public Graph getGraph() {
-		return new CollectionGraph( new HashSet<Triple>() );
-	}
-
 }

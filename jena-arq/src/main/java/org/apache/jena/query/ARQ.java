@@ -92,7 +92,7 @@ public class ARQ
     public static final String arqIRI = "http://jena.hpl.hp.com/#arq" ;
 
     /** Root of ARQ-defined parameter names */  
-    public static final String arqParamNS = "http://jena.hpl.hp.com/ARQ#" ;
+    public static final String arqParamNS = "http://jena.apache.org/ARQ#" ;
     
     /** Prefix for ARQ-defined parameter names */  
     public static final String arqSymbolPrefix = "arq" ;
@@ -113,7 +113,7 @@ public class ARQ
     /** Enable built-in property functions - also called "magic properties".
      * These are properties in triple patterns that need
      * calculation, not matching.  See ARQ documentation for more details.
-     * rdfs:member and http://jena.hpl.hp.com/ARQ/list#member are provided.
+     * rdfs:member and http://jena.apache.org/ARQ/list#member are provided.
      */
 
     public static final Symbol enablePropertyFunctions =

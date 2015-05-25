@@ -36,9 +36,11 @@ public class AbstractTestDatasetWithLuceneGraphTextIndex extends AbstractTestDat
     public void init() {
         Dataset ds1 = TDBFactory.createDataset() ;
         Directory dir = new RAMDirectory() ;
-        EntityDefinition eDef = new EntityDefinition("iri", "text", "graph", RDFS.label.asNode()) ;
+        EntityDefinition eDef = new EntityDefinition("iri", "text");
+        eDef.setGraphField("graph");
+        eDef.setPrimaryPredicate(RDFS.label);
         eDef.set("comment", RDFS.comment.asNode()) ; // some tests require indexing rdfs:comment
-        TextIndex tidx = new TextIndexLucene(dir, eDef, null) ;
+        TextIndex tidx = new TextIndexLucene(dir, new TextIndexConfig(eDef)) ;
         dataset = TextDatasetFactory.create(ds1, tidx) ;
     }
 

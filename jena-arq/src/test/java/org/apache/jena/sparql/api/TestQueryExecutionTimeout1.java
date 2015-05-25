@@ -56,7 +56,7 @@ public class TestQueryExecutionTimeout1 extends BaseTest
 
     static private String prefix = 
         "PREFIX f:       <http://example/ns#>\n"+
-        "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>\n" ;
+        "PREFIX afn:     <http://jena.apache.org/ARQ/function#>\n" ;
 
     // Numbers all a bit iffy and can result in test failures
     // on a heavily loaded CI system.

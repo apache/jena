@@ -118,7 +118,7 @@ public class RecursiveElementVisitor implements ElementVisitor
     public final void visit(ElementDataset el)
     {
         startElement(el) ;
-        el.getPatternElement().visit(this) ;
+        el.getElement().visit(this) ;
         endElement(el) ;
     }
 

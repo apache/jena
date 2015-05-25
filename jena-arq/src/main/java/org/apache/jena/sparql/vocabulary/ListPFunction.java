@@ -33,7 +33,10 @@ public class ListPFunction {
     private static Model m_model = ModelFactory.createDefaultModel();
     
     /** <p>The namespace of the vocabulary as a string</p> */
-    public static final String NS = "http://jena.hpl.hp.com/ARQ/list#";
+    public static final String NS = "http://jena.apache.org/ARQ/list#";
+    
+    /** <p>The namespace of the vocabulary as a string</p> (Jena2 name) */
+    public static final String NSJ2 = "http://jena.hpl.hp.com/ARQ/list#";
     
     /** <p>The namespace of the vocabulary as a string</p>
      *  @see #NS */
@@ -42,32 +45,66 @@ public class ListPFunction {
     /** <p>The namespace of the vocabulary as a resource</p> */
     public static final Resource NAMESPACE = m_model.createResource( NS );
     
-    /** @deprecated : list:length preferred */
-    @Deprecated
-    public static final Property listLength = m_model.createProperty( "http://jena.hpl.hp.com/ARQ/list#listLength" );
-    
     /** <p>Length relationship of a list [subject] to a length [object]</p> */
-    public static final Property length = m_model.createProperty( "http://jena.hpl.hp.com/ARQ/list#length" );
-    
-    /** @deprecated : list:index preferred */
+    public static final Property length = m_model.createProperty( NS+"length" );
+
+    /** <p>Length relationship of a list [subject] to a length [object]</p> (jena2 name - deprecated)
+     * @deprecated
+     */
     @Deprecated
-    public static final Property listIndex = m_model.createProperty( "http://jena.hpl.hp.com/ARQ/list#listIndex" );
+    public static final Property lengthJ2 = m_model.createProperty( NSJ2+"length" );
     
     /** <p>Index relationship of a list [subject] to a query list (index member)</p> */
-    public static final Property index = m_model.createProperty( "http://jena.hpl.hp.com/ARQ/list#index" );
-    
-    /** @deprecated : list:member preferred */
+    public static final Property index = m_model.createProperty( NS+"index" );
+
+    /** <p>Index relationship of a list [subject] to a query list (index member)</p> 
+     *  (jena2 name - deprecated)
+     * @deprecated
+     */
     @Deprecated
-    public static final Property listMember = m_model.createProperty( "http://jena.hpl.hp.com/ARQ/list#listMember" );
+    public static final Property indexJ2 = m_model.createProperty( NSJ2+"index" );
     
     /** <p>Membership relationship of a list [subject] to a member [object] c.f. rdfs:member</p> */
-    public static final Property member = m_model.createProperty( "http://jena.hpl.hp.com/ARQ/list#member" );
+    public static final Property member = m_model.createProperty( NS+"member" );
 
+    /** <p>Membership relationship of a list [subject] to a member [object] c.f. rdfs:member</p>
+     * (jena2 name - deprecated)
+     * @deprecated
+     */
+    @Deprecated
+    public static final Property memberJ2 = m_model.createProperty( NSJ2+"member" );
+
+    // ---- Some very old names.
+    /** @deprecated : list:index preferred */
+    @Deprecated
+    public static final Property listIndex = m_model.createProperty( NSJ2+"listIndex" );
+
+    /** @deprecated : list:length preferred */
+    @Deprecated
+    public static final Property listLength = m_model.createProperty( NSJ2+"listLength" );
+
+    /** @deprecated : list:member preferred */
+    @Deprecated
+    public static final Property listMember = m_model.createProperty( NSJ2+"listMember" );
+    // ---- 
+
+    /** list:member as a node */
+    @Deprecated
+    public static final Node nListMemberJ2 = memberJ2.asNode() ;
+    
     /** list:member as a node */
     public static final Node nListMember = member.asNode() ;
     
     /** list:length as a node */
+    @Deprecated
+    public static final Node nListLengthJ2 = lengthJ2.asNode() ;
+    
+    /** list:length as a node */
     public static final Node nListLength = length.asNode() ;
+    
+    /** list:index as a node */
+    @Deprecated
+    public static final Node nListIndexJ2 = memberJ2.asNode() ;
     
     /** list:index as a node */
     public static final Node nListIndex = member.asNode() ;

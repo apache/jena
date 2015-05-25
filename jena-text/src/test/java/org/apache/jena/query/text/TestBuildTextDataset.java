@@ -110,13 +110,14 @@ public class TestBuildTextDataset extends BaseTest
         Dataset ds1 = DatasetFactory.createMem() ;
 
         // Define the index mapping
-        EntityDefinition entDef = new EntityDefinition("uri", "text", RDFS.label.asNode()) ;
+        EntityDefinition entDef = new EntityDefinition("uri", "text");
+        entDef.setPrimaryPredicate(RDFS.label);
 
         // Lucene, in memory.
         Directory dir = new RAMDirectory() ;
 
         // Join together into a dataset
-        Dataset ds = TextDatasetFactory.createLucene(ds1, dir, entDef, null) ;
+        Dataset ds = TextDatasetFactory.createLucene(ds1, dir, new TextIndexConfig(entDef)) ;
 
         return ds ;
     }

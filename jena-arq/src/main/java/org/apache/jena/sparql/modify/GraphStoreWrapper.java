@@ -21,6 +21,7 @@ package org.apache.jena.sparql.modify;
 import org.apache.jena.sparql.core.DatasetGraphWrapper ;
 import org.apache.jena.update.GraphStore ;
 
+@SuppressWarnings("deprecation")
 public class GraphStoreWrapper extends DatasetGraphWrapper implements GraphStore
 {
     protected final GraphStore graphStore ;

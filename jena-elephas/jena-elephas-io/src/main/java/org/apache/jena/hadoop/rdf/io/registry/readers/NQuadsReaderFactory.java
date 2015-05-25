@@ -17,8 +17,6 @@
  */
 package org.apache.jena.hadoop.rdf.io.registry.readers;
 
-import java.io.IOException;
-
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.jena.hadoop.rdf.io.input.readers.nquads.WholeFileNQuadsReader;
@@ -35,7 +33,7 @@ public class NQuadsReaderFactory extends AbstractQuadsOnlyReaderFactory {
     }
 
     @Override
-    public RecordReader<LongWritable, QuadWritable> createQuadReader() throws IOException {
+    public RecordReader<LongWritable, QuadWritable> createQuadReader() {
         return new WholeFileNQuadsReader();
     }
 

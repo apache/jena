@@ -62,13 +62,20 @@ public class ARQConstants
     
     /** The ARQ function library URI space */
     public static final String ARQFunctionLibraryURI = "http://jena.apache.org/ARQ/function#" ;
-    /** The ARQ function library URI space - old Jena2 name */
+    
+    /** The ARQ function library URI space - old Jena2 name
+     * @deprecated Use #ARQFunctionLibraryURI 
+     */
+    @Deprecated
     public static final String ARQFunctionLibraryURI_Jena2 = "http://jena.hpl.hp.com/ARQ/function#" ;
     
     /** The ARQ property function library URI space */
     public static final String ARQPropertyFunctionLibraryURI = "http://jena.apache.org/ARQ/property#" ;
     
-    /** The ARQ property function library URI space - old Jena2 name */
+    /** The ARQ property function library URI space - old Jena2 name
+     * @deprecated Use #ARQFunctionLibraryURI 
+     */
+    @Deprecated
     public static final String ARQPropertyFunctionLibraryURI_Jena2 = "http://jena.hpl.hp.com/ARQ/property#" ;
     
     /** The ARQ procedure library URI space */
@@ -184,7 +191,7 @@ public class ARQConstants
     public static final String allocSSENamedVars        = allocVarMarker ;              // ParseHandlerPlain - SSE token "?."
     
     /** Marker for system symbols */
-    public static final String systemVarNS = "http://jena.hpl.hp.com/ARQ/system#" ;
+    public static final String systemVarNS = "http://jena.apache.org/ARQ/system#" ;
     
     /** Context key for the query for the current query execution 
      * (may be null if was not created from a query string )

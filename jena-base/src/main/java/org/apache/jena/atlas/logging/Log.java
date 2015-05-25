@@ -18,6 +18,8 @@
 
 package org.apache.jena.atlas.logging ;
 
+import org.apache.jena.atlas.lib.CacheFactory ;
+import org.apache.jena.atlas.lib.CacheSet ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -112,5 +114,14 @@ public class Log {
 
     static private Logger log(String loggerName) {
         return LoggerFactory.getLogger(loggerName) ;
+    }
+
+    private static CacheSet<Object> warningsDone = CacheFactory.createCacheSet(100) ;
+    /** Generate a warning, once(ish) */
+    public static void warnOnce(Class<?> cls, String message, Object key) {
+        if ( ! warningsDone.contains(key) ) {
+            Log.warn(cls, message) ;
+            warningsDone.add(key); 
+        }
     }
 }

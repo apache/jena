@@ -66,7 +66,7 @@ public abstract class NodeFormatterBase implements NodeFormatter
             // RDF 1.0, simple literal.
             formatLitString(w, lex) ;
         } else if ( JenaRuntime.isRDF11 && dt.equals(XSDDatatype.XSDstring) ) {
-            // RDF 1.1, xsd:string - outptu as short string.
+            // RDF 1.1, xsd:string - output as short string.
             formatLitString(w, lex) ;
         } else {
             // Datatype, no language tag, not short string.

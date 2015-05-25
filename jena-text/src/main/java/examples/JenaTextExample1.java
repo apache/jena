@@ -23,6 +23,7 @@ import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.* ;
 import org.apache.jena.query.text.EntityDefinition ;
 import org.apache.jena.query.text.TextDatasetFactory ;
+import org.apache.jena.query.text.TextIndexConfig;
 import org.apache.jena.query.text.TextQuery ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
@@ -58,13 +59,14 @@ public class JenaTextExample1
         Dataset ds1 = DatasetFactory.createMem() ; 
 
         // Define the index mapping 
-        EntityDefinition entDef = new EntityDefinition("uri", "text", RDFS.label.asNode()) ;
+        EntityDefinition entDef = new EntityDefinition("uri", "text");
+        entDef.setPrimaryPredicate(RDFS.label.asNode());
 
         // Lucene, in memory.
         Directory dir =  new RAMDirectory();
         
         // Join together into a dataset
-        Dataset ds = TextDatasetFactory.createLucene(ds1, dir, entDef, null) ;
+        Dataset ds = TextDatasetFactory.createLucene(ds1, dir, new TextIndexConfig(entDef)) ;
         
         return ds ;
     }

@@ -48,7 +48,9 @@ public class TestLuceneWithMultipleThreads
     private static final EntityDefinition entDef;
     
     static {
-        entDef = new EntityDefinition("uri", "label", "graph", RDFS.label.asNode());
+        entDef = new EntityDefinition("uri", "label");
+        entDef.setGraphField("graph");
+        entDef.setPrimaryPredicate(RDFS.label);
         StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_46);
         entDef.setAnalyzer("label", analyzer);
     }
@@ -56,7 +58,7 @@ public class TestLuceneWithMultipleThreads
     @Test
     public void testReadInMiddleOfWrite() throws InterruptedException, ExecutionException
     {
-        final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(new GraphStoreNullTransactional(), new RAMDirectory(), entDef, null);
+        final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(new GraphStoreNullTransactional(), new RAMDirectory(), new TextIndexConfig(entDef));
         final Dataset ds = DatasetFactory.create(dsg);
         final ExecutorService execService = Executors.newSingleThreadExecutor();
         final Future<?> f = execService.submit(new Runnable()
@@ -112,7 +114,7 @@ public class TestLuceneWithMultipleThreads
     @Test
     public void testWriteInMiddleOfRead() throws InterruptedException, ExecutionException
     {
-        final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(new GraphStoreNullTransactional(), new RAMDirectory(), entDef, null);
+        final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(new GraphStoreNullTransactional(), new RAMDirectory(), new TextIndexConfig(entDef));
         final int numReads = 10;
         final Dataset ds = DatasetFactory.create(dsg);
         final ExecutorService execService = Executors.newFixedThreadPool(10);
@@ -180,7 +182,7 @@ public class TestLuceneWithMultipleThreads
     @Test
     public void testIsolation() throws InterruptedException, ExecutionException {
         
-        final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(DatasetGraphFactory.createMem(), new RAMDirectory(), entDef, null);
+        final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(DatasetGraphFactory.createMem(), new RAMDirectory(), new TextIndexConfig(entDef));
         
         final int numReaders = 2;
         final List<Future<?>> futures = new ArrayList<Future<?>>(numReaders);

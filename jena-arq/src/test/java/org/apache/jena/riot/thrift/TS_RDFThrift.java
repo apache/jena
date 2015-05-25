@@ -33,6 +33,5 @@ import org.junit.runners.Suite ;
 
 public class TS_RDFThrift {
     public static final String TestingDir = "testing/RIOT/RDF-Thrift" ;
-
 }
 

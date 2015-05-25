@@ -117,6 +117,10 @@ public class PropertyFunctionRegistry
     /** Lookup by URI */
     public PropertyFunctionFactory get(String uri)
     {
+        String mappedUri = MappedLoader.mapDynamicURI(uri) ;
+        if ( mappedUri != null )
+            uri = mappedUri ; 
+        
         PropertyFunctionFactory ext = registry.get(uri) ;
         if ( ext != null )
             return ext ;
@@ -128,7 +132,7 @@ public class PropertyFunctionRegistry
         if ( extClass == null )
             return null ;
         // Register it
-        put(uri, extClass) ;
+        put(mappedUri, extClass) ;
         attemptedLoads.add(uri) ;
         // Call again to get it.
         return registry.get(uri) ;
@@ -148,6 +152,9 @@ public class PropertyFunctionRegistry
         put(ListPFunction.member.getURI() , org.apache.jena.sparql.pfunction.library.listMember.class) ;
         put(ListPFunction.index.getURI() , org.apache.jena.sparql.pfunction.library.listIndex.class) ;
         put(ListPFunction.length.getURI() , org.apache.jena.sparql.pfunction.library.listLength.class) ;
+        put(ListPFunction.memberJ2.getURI() , org.apache.jena.sparql.pfunction.library.listMember.class) ;
+        put(ListPFunction.indexJ2.getURI() , org.apache.jena.sparql.pfunction.library.listIndex.class) ;
+        put(ListPFunction.lengthJ2.getURI() , org.apache.jena.sparql.pfunction.library.listLength.class) ;
 
         // (Very) old forms
         put(ListPFunction.listMember.getURI() , org.apache.jena.sparql.pfunction.library.listMember.class) ;

@@ -17,26 +17,24 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import java.io.ByteArrayInputStream;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Map ;
 
-import org.apache.jena.arq.querybuilder.SelectBuilder;
-import org.apache.jena.arq.querybuilder.clauses.ConstructClause;
-import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
-import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
-import org.apache.jena.arq.querybuilder.clauses.WhereClause;
-import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
+import org.apache.jena.arq.querybuilder.SelectBuilder ;
+import org.apache.jena.arq.querybuilder.clauses.ConstructClause ;
+import org.apache.jena.arq.querybuilder.clauses.DatasetClause ;
+import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause ;
+import org.apache.jena.arq.querybuilder.clauses.WhereClause ;
+import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.Query ;
-import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
-import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import org.apache.jena.sparql.syntax.* ;
+import org.apache.jena.sparql.util.ExprUtils ;
 
 /**
  * The where handler
@@ -192,12 +190,7 @@ public class WhereHandler implements Handler {
 	 * @throws ParseException If the expression can not be parsed.
 	 */
 	public void addFilter(String expression) throws ParseException {
-		String filterClause = "FILTER( " + expression + ")";
-		SPARQLParser11 parser = new SPARQLParser11(new ByteArrayInputStream(
-				filterClause.getBytes()));
-		Prologue prologue = new Prologue( query.getPrefixMapping() );
-		parser.setPrologue(prologue);
-		getClause().addElement(parser.Filter());
+		getClause().addElement( new ElementFilter( ExprUtils.parse( query, expression, true ) ) );
 	}
 
 	/**
@@ -300,14 +293,14 @@ public class WhereHandler implements Handler {
 
 	/**
 	 * Add a binding to the where clause.
-	 * @param expr The expression to bind.
+	 * @param expression The expression to bind.
 	 * @param var The variable to bind it to.
 	 * @throws ParseException 
 	 */
 	public void addBind( String expression, Var var ) throws ParseException
 	{
 		getClause().addElement(
-				new ElementBind(var, Utils.parseExpression(query, expression))
+				new ElementBind(var, ExprUtils.parse( query, expression, true ))
 				);
 	}
 	

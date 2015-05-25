@@ -27,8 +27,6 @@ import java.util.Set ;
 
 import org.apache.jena.assembler.assemblers.AssemblerGroup ;
 import org.apache.jena.assembler.exceptions.AmbiguousSpecificTypeException ;
-import org.apache.jena.atlas.lib.CacheFactory ;
-import org.apache.jena.atlas.lib.CacheSet ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.rdf.model.* ;
@@ -148,18 +146,13 @@ public class AssemblerHelp
         return loaded;
         }
     
-    /** Small cache to suppress some repeat warnings */ 
-    static CacheSet<String> warningsMap = CacheFactory.createCacheSet(10) ;  
-    
     private static Class<?> loadClassNamedBy( Statement s )
     {
         String x = getString( s ) ;
         // Jena2 -> Jena3 transition 
         if ( x.startsWith("com.hp.hpl.jena") ) {
             String x1 = x.replaceFirst("com.hp.hpl.jena", "org.apache.jena") ;
-            if ( ! warningsMap.contains(x) )
-                Log.warn(AssemblerHelp.class, "ja:loadClass: Migration to Jena3: Converting "+x+" to "+x1) ;
-            warningsMap.add(x);
+            Log.warnOnce(AssemblerHelp.class, "ja:loadClass: Migration to Jena3: Converting "+x+" to "+x1, x) ;
             x = x1 ;
         }
         try { return Class.forName(x); }

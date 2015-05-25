@@ -29,7 +29,6 @@ import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.build.DataServiceDesc ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
@@ -38,24 +37,21 @@ import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class DataService { //implements DatasetMXBean {
-    // XXX Add a "null model assembler".
-    
     public static DataService serviceOnlyDataService() {
         return dummy ; 
     }
     
-    public static DataService dummy = new DataService(null, null) ;
+    public static DataService dummy = new DataService(null) ;
     static {
         dummy.dataset = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
         dummy.addEndpoint(OperationName.Query, DEF.ServiceQuery) ;
         dummy.addEndpoint(OperationName.Query, DEF.ServiceQueryAlt) ;
     }
     
-    private final DataServiceDesc svcDesc ;
     private DatasetGraph dataset = null ;              // Only valid if active.
 
-    private ListMultimap<OperationName, Endpoint> operations     = ArrayListMultimap.create() ;
-    private Map<String, Endpoint> endpoints                        = new HashMap<>() ;
+    private ListMultimap<OperationName, Endpoint> operations    = ArrayListMultimap.create() ;
+    private Map<String, Endpoint> endpoints                     = new HashMap<>() ;
     
     private volatile DatasetStatus state = UNINITIALIZED ;
 
@@ -65,8 +61,7 @@ public class DataService { //implements DatasetMXBean {
     private final AtomicBoolean offlineInProgress       = new AtomicBoolean(false) ;
     private final AtomicBoolean acceptingRequests       = new AtomicBoolean(true) ;
 
-    public DataService(DataServiceDesc desc, DatasetGraph dataset) {
-        this.svcDesc = desc ;
+    public DataService(DatasetGraph dataset) {
         this.dataset = dataset ;
         counters.add(CounterName.Requests) ;
         counters.add(CounterName.RequestsGood) ;
@@ -98,7 +93,7 @@ public class DataService { //implements DatasetMXBean {
      *  @see #getOperation(OperationName) to ge the endpoint list
      */
     public Collection<OperationName> getOperations() {
-        return operations.keys() ;
+        return operations.keySet() ;
     }
 
     //@Override

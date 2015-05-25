@@ -146,8 +146,8 @@ public class ElementRewriter extends AbstractRewriter<Element> implements
 	@Override
 	public void visit(ElementDataset el) {
 		Element pattern = null;
-		if (el.getPatternElement() != null) {
-			el.getPatternElement().visit(this);
+		if (el.getElement() != null) {
+			el.getElement().visit(this);
 			pattern = getResult();
 		}
 		push(new ElementDataset(el.getDataset(), pattern));

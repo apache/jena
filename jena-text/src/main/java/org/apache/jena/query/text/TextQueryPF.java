@@ -62,6 +62,8 @@ public class TextQueryPF extends PropertyFunctionBase {
 
     public TextQueryPF() {}
 
+    private String langArg = null;
+
     @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
         super.build(argSubject, predicate, argObject, execCxt) ;
@@ -74,6 +76,10 @@ public class TextQueryPF extends PropertyFunctionBase {
             throw new QueryBuildException("Subject has "+argSubject.getArgList().size()+" elements, not 2: "+argSubject);
 
         if (argObject.isList()) {
+            //extract of extra lang arg if present and if is usable.
+            //arg is removed from the list to avoid conflict with order and args length
+            langArg = extractArg("lang", argObject);
+
             List<Node> list = argObject.getArgList() ;
             if (list.size() == 0)
                 throw new QueryBuildException("Zero-length argument list") ;
@@ -103,6 +109,25 @@ public class TextQueryPF extends PropertyFunctionBase {
         }
         Log.warn(TextQueryPF.class, "Failed to find the text index : tried context and as a text-enabled dataset") ;
         return null ;
+    }
+
+    private String extractArg(String prefix, PropFuncArg argObject) {
+        String value = null;
+        int pos = 0;
+        for (Node node : argObject.getArgList()) {
+            if (node.isLiteral()) {
+                String arg = node.getLiteral().toString();
+                if (arg.startsWith(prefix + ":")) {
+                    value = arg.split(":")[1];
+                    break;
+                }
+            }
+            pos++;
+        }
+        if (value != null)
+            argObject.getArgList().remove(pos);
+
+        return value;
     }
 
     @Override
@@ -208,8 +233,18 @@ public class TextQueryPF extends PropertyFunctionBase {
                 String qs2 = server.getDocDef().getGraphField() + ":" + escaped ;
                 queryString = "(" + queryString + ") AND " + qs2 ;
             }
-        } 
-    
+        }
+
+        //for language-based search extension
+        if (server.getDocDef().getLangField() != null) {
+            String field = server.getDocDef().getLangField();
+            if (langArg != null) {
+                String qs2 = !"none".equals(langArg)?
+                        field + ":" + langArg : "-" + field + ":*";
+                queryString = "(" + queryString + ") AND " + qs2;
+            }
+        }
+
         Explain.explain(execCxt.getContext(), "Text query: "+queryString) ;
         if ( log.isDebugEnabled())
             log.debug("Text query: {} ({})", queryString,limit) ;

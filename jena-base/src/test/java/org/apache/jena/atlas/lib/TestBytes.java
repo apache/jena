@@ -26,6 +26,28 @@ import org.junit.Test ;
 
 public class TestBytes extends BaseTest
 {
+    @Test public void intToBytes1() {
+        byte[] b = Bytes.intToBytes(0xF1020304) ;
+        assertEquals(Integer.BYTES, b.length) ;
+        assertEquals(0xF1, b[0]&0xFF) ;
+        assertEquals(0x02, b[1]) ;
+        assertEquals(0x03, b[2]) ;
+        assertEquals(0x04, b[3]) ;
+    }
+    
+    @Test public void longToBytes1() {
+        byte[] b = Bytes.longToBytes(0xF506070801020304L) ;
+        assertEquals(Long.BYTES, b.length) ;
+        assertEquals(0xF5, b[0]&0xFF) ;
+        assertEquals(0x06, b[1]) ;
+        assertEquals(0x07, b[2]) ;
+        assertEquals(0x08, b[3]) ;
+        assertEquals(0x01, b[4]) ;
+        assertEquals(0x02, b[5]) ;
+        assertEquals(0x03, b[6]) ;
+        assertEquals(0x04, b[7]) ;
+    }
+
     @Test public void packInt1()
     {
         byte[] b = new byte[4] ;

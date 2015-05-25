@@ -24,7 +24,6 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,20 +56,20 @@ public class SelectHandlerTest extends AbstractHandlerTest {
 	}
 
 	@Test
-	public void testAddStringVar() throws ParseException {
+	public void testAddStringVar() {
 		Var v = Var.alloc("foo");
 		handler.addVar("rand()", v);
-		VarExprList expr = query.getProject();;
+		VarExprList expr = query.getProject();
 		assertEquals(1, expr.size());
 		Expr e = expr.getExpr( Var.alloc( "foo" ));
 		assertNotNull( "expression should not be null", e );
 		assertTrue( "Should be an E_Random", e instanceof E_Random);
 	}
 	
-	public void testAddExprVar() throws ParseException {
+	public void testAddExprVar() {
 		Var v = Var.alloc("foo");
 		handler.addVar(new E_Random(), v);
-		VarExprList expr = query.getProject();;
+		VarExprList expr = query.getProject();
 		assertEquals(1, expr.size());
 		Expr e = expr.getExpr( Var.alloc( "foo" ));
 		assertNotNull( "expression should not be null", e );

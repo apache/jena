@@ -38,8 +38,9 @@ public class TestTextTDB extends BaseTest
     private static Dataset create() {
         Dataset ds1 = TDBFactory.createDataset() ;
         Directory dir = new RAMDirectory() ;
-        EntityDefinition eDef = new EntityDefinition("iri", "text", RDFS.label) ;
-        TextIndex tidx = new TextIndexLucene(dir, eDef, null) ;
+        EntityDefinition eDef = new EntityDefinition("iri", "text");
+        eDef.setPrimaryPredicate(RDFS.label);
+        TextIndex tidx = new TextIndexLucene(dir, new TextIndexConfig(eDef)) ;
         Dataset ds = TextDatasetFactory.create(ds1, tidx) ;
         return ds ;
     }

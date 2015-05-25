@@ -18,15 +18,17 @@
 
 package org.apache.jena.sparql.util;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashMap ;
+import java.util.Map ;
 
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.function.library.leviathan.LeviathanConstants ;
 
+@SuppressWarnings("deprecation")
 public class MappedLoader {
     // Map string => string of prefixes
-    // e.g. http://jena.hpl.hp.com/ARQ/property# =>
+    // e.g. http://jena.apache.org/ARQ/property# =>
     // java:com.hp.hpl.jena.sparql.pfunction.
 
     static Map<String, String> uriMap = new HashMap<>();
@@ -38,19 +40,17 @@ public class MappedLoader {
         uriMap.put(ARQConstants.ARQPropertyFunctionLibraryURI, ARQConstants.ARQPropertyFunctionLibrary);
         uriMap.put(ARQConstants.ARQPropertyFunctionLibraryURI_Jena2, ARQConstants.ARQPropertyFunctionLibrary);
         uriMap.put(ARQConstants.ARQProcedureLibraryURI, ARQConstants.ARQProcedureLibrary);
-
         // Old name, new name
-        uriMap.put("java:com.hp.hpl.jena.query.function.library.", "java:com.hp.hpl.jena.sparql.function.library.");
-
-        uriMap.put("java:com.hp.hpl.jena.query.pfunction.library.", "java:com.hp.hpl.jena.sparql.pfunction.library.");
+        uriMap.put("java:com.hp.hpl.jena.query.function.library.",  "java:org.apache.jena.sparql.function.library.");
+        uriMap.put("java:com.hp.hpl.jena.query.pfunction.library.", "java:org.apache.jena.sparql.pfunction.library.");
 
         // Leviathan library
         uriMap.put(LeviathanConstants.LeviathanFunctionLibraryURI, LeviathanConstants.LeviathanFunctionLibrary);
     }
 
     public static boolean isPossibleDynamicURI(String uri, Class<?> expectedClass) {
-        uri = mapDynamicURI(uri);
-        if (uri == null)
+        String mappedUri = mapDynamicURI(uri);
+        if (mappedUri == null)
             return false;
         // Need to force the load to check everything.
         // Callers (who are expectedClass sensitive) should have
@@ -59,6 +59,10 @@ public class MappedLoader {
     }
 
     public static String mapDynamicURI(String uri) {
+        // Jena2 -> Jena3 transition
+        if ( uri.startsWith("http://jena.hpl.hp.com/ARQ") )
+            Log.warnOnce(MappedLoader.class, "Loading function or property function with old style 'jena.hpl.hp.com' used - preferred style is to use 'jena.apache.org': "+uri, uri) ;  
+        
         Map.Entry<String, String> e = find(uri);
         if (e == null) {
             if (uri.startsWith(ARQConstants.javaClassURIScheme))
@@ -86,11 +90,10 @@ public class MappedLoader {
     }
 
     public static Class<?> loadClass(String uri, Class<?> expectedClass) {
-        uri = mapDynamicURI(uri);
-        if (uri == null)
+        String mappedUri = mapDynamicURI(uri);
+        if (mappedUri == null)
             return null;
-
-        return Loader.loadClass(uri, expectedClass);
+        return Loader.loadClass(mappedUri, expectedClass);
     }
 
 }

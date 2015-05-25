@@ -18,8 +18,6 @@
 
 package org.apache.jena.sdb.layout1;
 
-import java.sql.SQLException;
-
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sdb.core.sqlexpr.SqlConstant ;
 import org.apache.jena.sdb.sql.SDBConnection ;
@@ -40,13 +38,13 @@ public class TupleLoaderSimple extends TupleLoaderOne
     }
 
     @Override
-    public SqlConstant getRefForNode(Node node) throws SQLException
+    public SqlConstant getRefForNode(Node node)
     {
         return new SqlConstant(codec.encode(node)) ;
     }
 
     @Override
-    public SqlConstant insertNode(Node node) throws SQLException
+    public SqlConstant insertNode(Node node)
     {
         return new SqlConstant(codec.encode(node)) ;
     }
