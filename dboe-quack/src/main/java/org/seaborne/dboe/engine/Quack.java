@@ -41,7 +41,7 @@ import org.seaborne.dboe.sys.Names ;
 import org.seaborne.tdb2.TDB ;
 import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.solver.QueryEngineTDB ;
-import org.seaborne.tdb2.store.DatasetGraphTxn ;
+import org.seaborne.tdb2.store.DatasetGraphTDB ;
 import org.seaborne.tdb2.sys.StoreConnection ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -183,11 +183,11 @@ public class Quack {
             .quadIndexes(new String[] { Names.primaryIndexQuads, 
                 "GPOS", "GPSO", "GOSP", "POSG", "PSOG", "OSPG", "SPOG"})
             .build() ;
-        DatasetGraphTxn dsgx = StoreConnection.make(location, sParams).getDatasetGraph() ;
-        StoreParams sParams2 = dsgx.getBaseDatasetGraph().getConfig() ;
+        DatasetGraphTDB dsg = StoreConnection.make(location, sParams).getDatasetGraphTDB() ;
+        StoreParams sParams2 = dsg.getConfig() ;
         if ( ! sParams.equals(sParams2) )
             Log.warn(Quack.class, "Location already set up differently");
-        QC.setFactory(dsgx.getContext(), executorFactory) ;
-        return dsgx ;
+        QC.setFactory(dsg.getContext(), executorFactory) ;
+        return dsg ;
     }
 }

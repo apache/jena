@@ -31,7 +31,6 @@ import org.apache.jena.sparql.util.Context ;
 import org.seaborne.dboe.engine.Quack ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
-import org.seaborne.tdb2.store.DatasetGraphTxn ;
 
 public class QueryEngineFactoryQuackTDB implements QueryEngineFactory
 {
@@ -76,15 +75,12 @@ public class QueryEngineFactoryQuackTDB implements QueryEngineFactory
     private static boolean isHandledByTDB(DatasetGraph dataset)
     {
         if (dataset instanceof DatasetGraphTDB) return true ;
-        if (dataset instanceof DatasetGraphTxn ) return true ;
         return false ;
     }
     
     protected DatasetGraphTDB dsgToQuery(DatasetGraph dataset)
     {
         if (dataset instanceof DatasetGraphTDB) return (DatasetGraphTDB)dataset ;
-        if (dataset instanceof DatasetGraphTxn) 
-            return ((DatasetGraphTxn)dataset).getBaseDatasetGraph() ;
         throw new TDBException("Internal inconsistency: trying to execute query on unrecognized kind of DatasetGraph: "+Lib.className(dataset)) ;
     }
 }
