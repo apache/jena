@@ -185,10 +185,6 @@ public class TextQueryPF extends PropertyFunctionBase {
         Var sVar = Var.alloc(s) ;
         Var scoreVar = (score==null) ? null : Var.alloc(score) ;
         List<TextHit> r = query(match.getQueryString(), match.getLimit(), execCxt) ;
-        // Make distinct. Note interaction with limit is imperfect
-/*        r = Iter.iter(r).distinct().toList() ;
-        QueryIterator qIter = new QueryIterExtendByVar(binding, v, r.iterator(), execCxt) ;
-*/
         Function<TextHit,Binding> converter = new TextHitConverter(binding, sVar, scoreVar);
         Iterator<Binding> bIter = new Map1Iterator<TextHit, Binding>(converter, r.iterator());
         QueryIterator qIter = new QueryIterPlainWrapper(bIter, execCxt);
