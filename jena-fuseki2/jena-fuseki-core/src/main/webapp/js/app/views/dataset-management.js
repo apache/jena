@@ -10,7 +10,7 @@ define(
       initialize: function(){
         _.bindAll( this, "onRemoveDataset", "onConfirmAction",
                          "onDatasetRemoveSuccess", "onDatasetRemoveFail",
-                         "onTaskStatus", "onTaskFailed" );
+                         "onTaskStatus", "onTaskFailed", "cleanup" );
 
         this.listenTo( this.model, "change", this.onModelChange, this );
 
@@ -38,10 +38,16 @@ define(
       templateHelpers: {
       },
 
+      cleanup: function() {
+        this.undelegateEvents();
+      },
+
 
       /** If the model changes, update the summary */
       onModelChange: function( event ) {
-        this.render();
+         console.log("done!!");
+         this.cleanup();
+         this.render();
       },
 
       /** User has requested a dataset be removed */
@@ -66,6 +72,7 @@ define(
 
       /** Show a generic modal confirmation */
       showConfirmationModal: function( msg, dsId, eventId ) {
+        console.log("Show--" + eventId);
         this.ui.actionConfirmModal
                .find( ".modal-body p" )
                .html( msg );
@@ -78,6 +85,7 @@ define(
         this.clearFeedback();
         this.ui.actionConfirmModal.modal( 'show' );
       },
+     
 
       /** Generic response to confirming the current modal dialogue */
       onConfirmAction: function( e ) {
@@ -86,7 +94,10 @@ define(
         var dsId = elem.data( "ds-id" );
         var eventId = elem.data( "event-id" );
 
-        this.ui.actionConfirmModal.modal( 'hide' );
+        //this.ui.actionConfirmModal.modal( 'hide' );
+        $('.modal.in').modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
         _.delay( function() {
           fui.vent.trigger( eventId, dsId );
         }, 100 );
@@ -95,6 +106,7 @@ define(
       /** User has confirmed that the dataset can be deleted */
       onConfirmRemoveDataset: function( dsId ) {
         var self = this;
+        console.log("Delete ds: " + dsId)
 
         fui.models
            .fusekiServer
@@ -106,6 +118,7 @@ define(
 
       /** Callback after successfully removing a dataset */
       onDatasetRemoveSuccess: function( data, dsId ) {
+        console.log("del ok  "  + dsId );
         this.model.loadServerDescription();
       },
 
