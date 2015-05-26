@@ -19,7 +19,6 @@ package tdbdev;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.atlas.logging.ProgressLogger ;
 import org.apache.jena.query.* ;
@@ -55,18 +54,12 @@ public class TDB_Dev_Main {
         FileOps.ensureDir("DB"); 
         FileOps.clearDirectory("DB");
         Dataset ds = TDBFactory.createDataset(location) ;
-        String FILE = "/home/afs/Datasets/BSBM/bsbm-1m.nt.gz" ;
+        String FILE = "/home/afs/Datasets/BSBM/bsbm-5m.nt.gz" ;
         
-        long time_ms = -1 ;
-
         System.out.println("Load "+FILE) ;
-
-        Timer timer = new Timer() ;
-        timer.startTimer();
-        
         StreamRDF s1 = StreamRDFLib.dataset(ds.asDatasetGraph()) ;
         ProgressLogger plog = new ProgressLogger(LoggerFactory.getLogger("LOAD"), 
-                                                 "Triples", 50000, 10) ;
+                                                 "Triples", 100000, 10) ;
         StreamRDFMonitor s2 = new StreamRDFMonitor(s1, plog) ;
         // Ensure transaction overheads acccounted for
         StreamRDFMerge s3 = new StreamRDFMerge(s2) ;
@@ -77,20 +70,11 @@ public class TDB_Dev_Main {
             RDFDataMgr.parse(s3, FILE) ;
         }) ;
         s3.finish();
-        
-        
-        time_ms = timer.endTimer() ;
-        System.out.println("Load finish: "+Timer.timeStr(time_ms)+"s") ;    
         long x = TDBTxn.executeReadReturn(ds, () -> {
             System.out.println("Read start") ;
             return Iter.count(ds.asDatasetGraph().find()) ;
         }) ;
         System.out.printf("Count = %,d\n", x) ;
-        if ( time_ms > 0 ) {
-            double seconds = time_ms/1000.0 ; 
-            System.out.printf("Rate = %,.0f TPS\n", x/seconds) ;
-        }
-        
         String qs = "SELECT * { ?s ?p ?o } LIMIT 10" ;
         query(ds, qs) ;
         System.out.println("DONE") ;
