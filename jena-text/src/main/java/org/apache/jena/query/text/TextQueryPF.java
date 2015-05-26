@@ -75,6 +75,9 @@ public class TextQueryPF extends PropertyFunctionBase {
             //arg is removed from the list to avoid conflict with order and args length
             langArg = extractArg("lang", argObject);
 
+            if (langArg != null && server.getDocDef().getLangField() == null)
+                log.warn("lang argument is ignored if langField not set in the index configuration");
+                
             List<Node> list = argObject.getArgList() ;
             if (list.size() == 0)
                 throw new QueryBuildException("Zero-length argument list") ;
