@@ -39,9 +39,11 @@ define(
       },
 
       cleanup: function() {
+        this.unbind();
         this.undelegateEvents();
+        this.model.unbind( 'change', this.onModelChange, this ); 
+        fui.vent.unbind( 'action.delete.confirm', this.onConfirmRemoveDataset, this );
       },
-
 
       /** If the model changes, update the summary */
       onModelChange: function( event ) {
