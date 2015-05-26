@@ -27,7 +27,6 @@ import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.update.GraphStore ;
 
 /**
  * Transactional DatasetGraph that allows one active transaction. For multiple
@@ -35,7 +34,7 @@ import org.apache.jena.update.GraphStore ;
  * analogous to a "connection" in JDBC.
  */
 
-public class DatasetGraphTransaction extends DatasetGraphTrackActive implements GraphStore, Sync {
+public class DatasetGraphTransaction extends DatasetGraphTrackActive implements Sync {
     /*
      * Initially, the app can use this DatasetGraph non-transactionally. But as
      * soon as it starts a transaction, the dataset can only be used inside

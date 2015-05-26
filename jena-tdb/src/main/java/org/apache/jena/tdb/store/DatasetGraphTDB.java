@@ -36,7 +36,6 @@ import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.tdb.sys.Session ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
-import org.apache.jena.update.GraphStore ;
 
 /** This is the class that creates a dataset over the storage via
  *  TripleTable, QuadTable and prefixes. These may be transactional.
@@ -49,7 +48,7 @@ import org.apache.jena.update.GraphStore ;
  */
 final
 public class DatasetGraphTDB extends DatasetGraphCaching
-                             implements /*DatasetGraph,*/ Sync, Closeable, GraphStore, Session
+                             implements /*DatasetGraph,*/ Sync, Closeable, Session
 {
     private TripleTable tripleTable ;
     private QuadTable quadTable ;

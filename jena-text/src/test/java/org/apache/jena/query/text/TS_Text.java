@@ -30,6 +30,8 @@ import org.junit.runners.Suite.SuiteClasses ;
 @SuiteClasses({
     TestBuildTextDataset.class
     , TestDatasetWithLuceneTextIndex.class
+    , TestDatasetWithLuceneMultilingualTextIndex.class
+    , TestDatasetWithLuceneTextIndexWithLangField.class
     , TestDatasetWithLuceneGraphTextIndex.class
     
     // Embedded solr not supported 
@@ -45,6 +47,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestDatasetWithKeywordAnalyzer.class
     , TestDatasetWithLowerCaseKeywordAnalyzer.class
     , TestLuceneWithMultipleThreads.class
+    , TestDatasetWithLocalizedAnalyzer.class
 })
 
 public class TS_Text

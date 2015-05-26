@@ -29,6 +29,8 @@ public class GraphStoreNullTransactional extends GraphStoreNull implements Trans
 {
     private final Transactional transaction = new TransactionalNull() ;
 
+    public GraphStoreNullTransactional() {}
+    
     @Override
     public void begin(ReadWrite readWrite)
     {

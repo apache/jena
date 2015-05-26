@@ -66,6 +66,9 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
                                         "  OPTIONAL {" ,
                                         "    ?eMap :graphField ?graphField" ,
                                         "  }",
+                                        "  OPTIONAL {" ,
+                                        "    ?eMap :langField ?langField" ,
+                                        "  }",
             "}") ;
         ParameterizedSparqlString pss = new ParameterizedSparqlString(qs1) ;
         pss.setIri("eMap", root.getURI()) ;
@@ -87,6 +90,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
         QuerySolution qsol1 = results.get(0) ;
         String entityField = qsol1.getLiteral("entityField").getLexicalForm() ;
         String graphField = qsol1.contains("graphField") ? qsol1.getLiteral("graphField").getLexicalForm() : null;
+        String langField = qsol1.contains("langField") ? qsol1.getLiteral("langField").getLexicalForm() : null;
         String defaultField = qsol1.contains("dftField") ? qsol1.getLiteral("dftField").getLexicalForm() : null ;
 
         Multimap<String, Node> mapDefs = HashMultimap.create() ; 
@@ -155,7 +159,9 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
                 throw new TextIndexException("No definition of primary field '"+defaultField+"'") ;
         }
 
-        EntityDefinition docDef = new EntityDefinition(entityField, defaultField, graphField) ;
+        EntityDefinition docDef = new EntityDefinition(entityField, defaultField);
+        docDef.setGraphField(graphField);
+        docDef.setLangField(langField);
         for ( String f : mapDefs.keys() ) {
             for ( Node p : mapDefs.get(f)) 
                 docDef.set(f, p) ;

@@ -32,10 +32,9 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphCaching ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.update.GraphStore ;
 
 public class DatasetGraphSDB extends DatasetGraphCaching
-    implements DatasetGraph, Closeable, GraphStore 
+    implements DatasetGraph, Closeable 
 {
     private final Store store ;
     private Lock lock = new LockMRSW() ;

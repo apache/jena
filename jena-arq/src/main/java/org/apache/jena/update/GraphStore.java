@@ -23,16 +23,6 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 /** A collection of graphs that an update can be applied to.
  *  The collection is one unnamed graph and zero or more named graphs, like
  *  a SPARQL dataset. */
+@Deprecated
 public interface GraphStore extends DatasetGraph
-{
-//    /** Convert to a dataset (for query) */
-//    public Dataset toDataset() ;
-//
-//    /** Signal start of a request being executed */ 
-//    public void startRequest() ;
-//    /** Signal end of a request being executed */ 
-//    public void finishRequest() ;
-    
-//    public void sync() ;
-//    public void close() ;
-}
+{ }

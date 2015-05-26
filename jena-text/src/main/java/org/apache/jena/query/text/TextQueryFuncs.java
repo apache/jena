@@ -46,6 +46,12 @@ public class TextQueryFuncs {
         return nodeToString(g) ;
     }
 
+    /** retrieve language (if exists) if object is literal */
+    public static String getLiteralLanguage(Node o) {
+        String lang = o.getLiteral().language();
+        return lang;
+    }
+
     private static String nodeToString(Node n) {
         return (n.isURI() ) ? n.getURI() : "_:" + n.getBlankNodeLabel() ;
     }
@@ -77,7 +83,8 @@ public class TextQueryFuncs {
     
         String x = TextQueryFuncs.subjectToString(s) ;
         String graphText = TextQueryFuncs.graphNodeToString(g) ;
-        Entity entity = new Entity(x, graphText) ;
+        String language = TextQueryFuncs.getLiteralLanguage(o) ;
+        Entity entity = new Entity(x, graphText, language) ;
         String graphField = defn.getGraphField() ;
         if ( defn.getGraphField() != null )
             entity.put(graphField, graphText) ;

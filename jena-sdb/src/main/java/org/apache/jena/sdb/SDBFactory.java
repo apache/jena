@@ -18,7 +18,7 @@
 
 package org.apache.jena.sdb;
 
-import java.sql.Connection;
+import java.sql.Connection ;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -33,6 +33,8 @@ import org.apache.jena.sdb.sql.SDBConnectionFactory ;
 import org.apache.jena.sdb.store.DatasetGraphSDB ;
 import org.apache.jena.sdb.store.DatasetStore ;
 import org.apache.jena.sdb.store.StoreFactory ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.modify.GraphStoreBasic ;
 import org.apache.jena.update.GraphStore ;
 
 /** Various operations to create or connect objects to do with SDB:
@@ -40,6 +42,7 @@ import org.apache.jena.update.GraphStore ;
  *  Convenience calls.
  */
 
+@SuppressWarnings("deprecation")
 public class SDBFactory
 {
     // ---- Connections
@@ -185,20 +188,42 @@ public class SDBFactory
     // ---- GraphStore
     
     /**
+     * Connect to the store as a DatasetGraph
+     * @param store
+     * @return DatasetGraph
+     */
+    public static DatasetGraph connectDatasetGraph(Store store)
+    { return new DatasetGraphSDB(store, SDB.getContext().copy()) ; }
+
+    // ---- GraphStore
+    
+    /**
      * Connect to the store as a GraphStore
      * @param store
      * @return GraphStore
+     * @deprecated Use connectDatasetGraph(Store)
      */
-    public static DatasetGraphSDB connectGraphStore(Store store)
+    @Deprecated
+    public static GraphStore connectGraphStore(Store store)
     {
-        return new DatasetGraphSDB(store, SDB.getContext().copy()) ; 
+        return new GraphStoreBasic(connectDatasetGraph(store)) ;
     }
 
     /**
      * Connect to the store as a GraphStore.
      * @param desc Store description
-     * @return GraphStore
+     * @return DatasetGraph
      */
+    public static DatasetGraph connectDatasetGraph(StoreDesc desc)
+    { return connectDatasetGraph(connectStore(desc)) ; }
+
+    /**
+     * Connect to the store as a GraphStore.
+     * @param desc Store description
+     * @return GraphStore
+     * @deprecated Use connectDataset(StoreDesc) or connectDatasetGraph(StoreDesc)
+     */
+    @Deprecated
     public static GraphStore connectGraphStore(StoreDesc desc)
     { return connectGraphStore(connectStore(desc)) ; }
 
@@ -208,6 +233,17 @@ public class SDBFactory
      * @param desc              Store description object
      * @return GraphStore
      */
+    public static DatasetGraph connectDatasetGraph(SDBConnection sdbConnection, StoreDesc desc)
+    { return connectDatasetGraph(connectStore(sdbConnection, desc)) ; }
+    
+    /**
+     * Connect to the store as a GraphStore, using existing SDBConnection and a store description.
+     * @param sdbConnection     SDB connection
+     * @param desc              Store description object
+     * @return GraphStore
+     * @deprecated Use connectDatasetGraph(SDBConnection, StoreDesc) 
+     */
+    @Deprecated
     public static GraphStore connectGraphStore(SDBConnection sdbConnection, StoreDesc desc)
     { return connectGraphStore(connectStore(sdbConnection, desc)) ; }
     
@@ -215,19 +251,42 @@ public class SDBFactory
      * Connect to the store as a GraphStore, using existing JDBC connection and a store description.
      * @param jdbcConnection    JDBC connection
      * @param desc              Store description object
-     * @return GraphStore
+     * @return DatasetGraph
      */
+    public static DatasetGraph connectDatasetGraph(Connection jdbcConnection, StoreDesc desc)
+    { return connectDatasetGraph(connectStore(jdbcConnection, desc)) ; }
+    
+    /**
+     * Connect to the store as a GraphStore, using existing JDBC connection and a store description.
+     * @param jdbcConnection    JDBC connection
+     * @param desc              Store description object
+     * @return GraphStore
+     * @deprected Use connectDatasetGraph(Connection, StoreDesc)
+     */
+    @Deprecated
     public static GraphStore connectGraphStore(Connection jdbcConnection, StoreDesc desc)
     { return connectGraphStore(connectStore(jdbcConnection, desc)) ; }
-    
+
     /**
      * Connect to the store as a GraphStore, based on a Store assembler file.
      * @param configFile
      * @return GraphStore
      */
+    public static DatasetGraph connectDatasetGraph(String configFile)
+    { return connectDatasetGraph(connectStore(configFile)) ; }
+
+    /**
+     * Connect to the store as a GraphStore, based on a Store assembler file.
+     * @param configFile
+     * @return GraphStore
+     * @deprecated use connectDatasetGraph(String)
+     */
+    @Deprecated
     public static GraphStore connectGraphStore(String configFile)
     { return connectGraphStore(connectStore(configFile)) ; }
     
+    
+
     // ---- Graph
     
     /**

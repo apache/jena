@@ -25,13 +25,18 @@ public class Entity
 {
     private final String id ;
     private final String graph ;
+    private final String language ;
     private final Map<String, Object> map = new HashMap<>() ;
 
     public Entity(String entityId, String entityGraph) {
-        this.id = entityId ;
-        this.graph = entityGraph;
+        this(entityId, entityGraph, null);
     }
 
+    public Entity(String entityId, String entityGraph, String lang) {
+        this.id = entityId ;
+        this.graph = entityGraph;
+        this.language = lang;
+    }
     /** @deprecated Use {@linkplain #Entity(String, String)} */
     @Deprecated
     public Entity(String entityId)          { this(entityId, null) ; }
@@ -39,6 +44,8 @@ public class Entity
     public String getId()                   { return id ; }
 
     public String getGraph()                { return graph ; }
+
+    public String getLanguage()                { return language ; }
 
     public void put(String key, Object value)
     { map.put(key, value) ; }
