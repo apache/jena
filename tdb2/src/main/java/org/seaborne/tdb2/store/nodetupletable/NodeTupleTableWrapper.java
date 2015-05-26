@@ -31,25 +31,23 @@ public class NodeTupleTableWrapper implements NodeTupleTable
 {
     protected NodeTupleTable nodeTupleTable ;
 
-    public NodeTupleTableWrapper(NodeTupleTable ntt)
-    { 
+    public NodeTupleTableWrapper(NodeTupleTable ntt) { 
         setNodeTupleTable(ntt) ;
     }
     
-    protected NodeTupleTable setNodeTupleTable(NodeTupleTable ntt)
-    {
+    protected NodeTupleTable setNodeTupleTable(NodeTupleTable ntt) {
         NodeTupleTable old = nodeTupleTable ;
         nodeTupleTable = ntt ;
         return old ;
     }
      
     @Override
-    public boolean addRow(Node... nodes)
-    { return nodeTupleTable.addRow(nodes) ; }
+    public void addRow(Node... nodes)
+    { nodeTupleTable.addRow(nodes) ; }
 
     @Override
-    public boolean deleteRow(Node... nodes)
-    { return nodeTupleTable.deleteRow(nodes) ; }
+    public void deleteRow(Node... nodes)
+    { nodeTupleTable.deleteRow(nodes) ; }
 
     @Override
     public Iterator<Tuple<Node>> find(Node... nodes)

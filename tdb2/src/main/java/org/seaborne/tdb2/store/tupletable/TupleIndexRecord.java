@@ -53,20 +53,18 @@ public class TupleIndexRecord extends TupleIndexBase
             throw new TDBException(format("Mismatch: TupleIndex of length %d is not comparative with a factory for key length %d", N, factory.keyLength())) ;
     }
     
-    /** Insert a tuple - return true if it was really added, false if it was a duplicate */
+    /** Insert a tuple */
     @Override
-    protected boolean performAdd(Tuple<NodeId> tuple) 
-    { 
+    protected void performAdd(Tuple<NodeId> tuple) { 
         Record r = TupleLib.record(factory, tuple, colMap) ;
-        return index.insert(r) ;
+        index.insert(r) ;
     }
     
-    /** Delete a tuple - return true if it was deleted, false if it didn't exist */
+    /** Delete a tuple */
     @Override
-    protected boolean performDelete(Tuple<NodeId> tuple) 
-    { 
+    protected void performDelete(Tuple<NodeId> tuple) { 
         Record r = TupleLib.record(factory, tuple, colMap) ;
-        return index.delete(r) ;
+        index.delete(r) ;
     }
     
     /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any.
@@ -74,29 +72,24 @@ public class TupleIndexRecord extends TupleIndexBase
      */
     
     @Override
-    protected Iterator<Tuple<NodeId>> performFind(Tuple<NodeId> pattern)
-    {
+    protected Iterator<Tuple<NodeId>> performFind(Tuple<NodeId> pattern) {
         return findOrScan(pattern) ;
     }
 
     // Package visibility for testing.
-    final Iterator<Tuple<NodeId>> findOrScan(Tuple<NodeId> pattern)
-    {
+    final Iterator<Tuple<NodeId>> findOrScan(Tuple<NodeId> pattern) {
         return findWorker(pattern, true, true) ;
     }
     
-    final Iterator<Tuple<NodeId>> findOrPartialScan(Tuple<NodeId> pattern)
-    {
+    final Iterator<Tuple<NodeId>> findOrPartialScan(Tuple<NodeId> pattern) {
         return findWorker(pattern, true, false) ;
     }
 
-    final Iterator<Tuple<NodeId>> findByIndex(Tuple<NodeId> pattern)
-    {
+    final Iterator<Tuple<NodeId>> findByIndex(Tuple<NodeId> pattern) {
         return findWorker(pattern, false, false) ;
     }
     
-    private Iterator<Tuple<NodeId>> findWorker(Tuple<NodeId> patternNaturalOrder, boolean partialScanAllowed, boolean fullScanAllowed)
-    {
+    private Iterator<Tuple<NodeId>> findWorker(Tuple<NodeId> patternNaturalOrder, boolean partialScanAllowed, boolean fullScanAllowed) {
         if ( Check )
         {
             if ( tupleLength != patternNaturalOrder.size() )
@@ -116,11 +109,9 @@ public class TupleIndexRecord extends TupleIndexBase
         Record maxRec = factory.createKeyOnly() ;
         
         // Set the prefixes.
-        for ( int i = 0 ; i < pattern.size() ; i++ )
-        {
+        for ( int i = 0 ; i < pattern.size() ; i++ ) {
             NodeId X = pattern.get(i) ;
-            if ( NodeId.isAny(X) )
-            {
+            if ( NodeId.isAny(X) ) {
                 X = null ;
                 // No longer seting leading key slots.
                 leading = false ;
@@ -128,8 +119,7 @@ public class TupleIndexRecord extends TupleIndexBase
             }
 
             numSlots++ ;
-            if ( leading )
-            {
+            if ( leading ) {
                 leadingIdx = i ;
                 Bytes.setLong(X.getId(), minRec.getKey(), i*SizeOfNodeId) ;
                 Bytes.setLong(X.getId(), maxRec.getKey(), i*SizeOfNodeId) ;
@@ -137,8 +127,7 @@ public class TupleIndexRecord extends TupleIndexBase
         }
         
         // Is it a simple existence test?
-        if ( numSlots == pattern.size() )
-        {
+        if ( numSlots == pattern.size() ) {
             if ( index.contains(minRec) )
                 return new SingletonIterator<>(pattern) ;
             else
@@ -147,16 +136,13 @@ public class TupleIndexRecord extends TupleIndexBase
         
         Iterator<Record> iter = null ;
         
-        if ( leadingIdx < 0 )
-        {
+        if ( leadingIdx < 0 ) {
             if ( ! fullScanAllowed )
                 return null ;
             //System.out.println("Full scan") ;
             // Full scan necessary
             iter = index.iterator() ;
-        }
-        else 
-        {
+        } else {
             // Adjust the maxRec.
             NodeId X = pattern.get(leadingIdx) ;
             // Set the max Record to the leading NodeIds, +1.
@@ -167,8 +153,7 @@ public class TupleIndexRecord extends TupleIndexBase
         
         Iterator<Tuple<NodeId>> tuples = Iter.map(iter, item -> TupleLib.tuple(item, colMap)) ;
         
-        if ( leadingIdx < numSlots-1 )
-        {
+        if ( leadingIdx < numSlots-1 ) {
             if ( ! partialScanAllowed )
                 return null ;
             // Didn't match all defined slots in request.  
@@ -187,58 +172,50 @@ public class TupleIndexRecord extends TupleIndexBase
         return Iter.map(iter, item -> TupleLib.tuple(item, colMap)) ;
     }
     
-    private Iterator<Tuple<NodeId>> scan(Iterator<Tuple<NodeId>> iter,
-                                         final Tuple<NodeId> pattern)
-    {
-        Predicate<Tuple<NodeId>> filter = new Predicate<Tuple<NodeId>>()
-        {
-            @Override
-            public boolean test(Tuple<NodeId> item)
-            {
-                // Check on pattern and item (both in natural order)
-                for ( int i = 0 ; i < tupleLength ; i++ )
-                {
-                    NodeId n = pattern.get(i) ;
-                    // The pattern must be null/Any or match the tuple being tested.
-                    if ( ! NodeId.isAny(n) )
-                        if ( ! item.get(i).equals(n) ) 
-                            return false ;
-                }
-                return true ;
+    private Iterator<Tuple<NodeId>> scan(Iterator<Tuple<NodeId>> iter, Tuple<NodeId> pattern) {
+        Predicate<Tuple<NodeId>> filter = (item) -> {
+            // Check on pattern and item (both in natural order)
+            for ( int i = 0 ; i < tupleLength ; i++ ) {
+                NodeId n = pattern.get(i) ;
+                // The pattern must be null/Any or match the tuple being tested.
+                if ( ! NodeId.isAny(n) )
+                    if ( ! item.get(i).equals(n) ) 
+                        return false ;
             }
+            return true ;
         } ;
         
         return Iter.filter(iter, filter) ;
     }
     
     @Override
-    public void close()
-    {
-        index.close();
+    public void close() {
+        index.close() ;
     }
-    
-    @Override
-    public void sync()      { index.sync() ; }
 
-    public final RangeIndex getRangeIndex()                 { return index ; } 
+    @Override
+    public void sync() {
+        index.sync() ;
+    }
+
+    public final RangeIndex getRangeIndex() {
+        return index ;
+    }
 
     //protected final RecordFactory getRecordFactory()        { return factory ; }
     
     @Override
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return index.isEmpty() ;
     }
-    
+
     @Override
-    public void clear()
-    {
+    public void clear() {
         index.clear() ;
     }
-    
+
     @Override
-    public long size()
-    {
+    public long size() {
         return index.size() ;
     }
 }

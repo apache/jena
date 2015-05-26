@@ -42,26 +42,26 @@ public class TripleTable extends TableBase {
         // table = new NodeTupleTableConcrete(3, indexes, nodeTable, policy) ;
     }
 
-    public boolean add(Triple triple) {
-        return add(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+    public void add(Triple triple) {
+        add(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
 
-    public boolean add(Node s, Node p, Node o) {
-        return table.addRow(s, p, o) ;
-    }
-
-    /**
-     * Delete a triple - return true if it was deleted, false if it didn't exist
-     */
-    public boolean delete(Triple triple) {
-        return delete(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+    public void add(Node s, Node p, Node o) {
+        table.addRow(s, p, o) ;
     }
 
     /**
      * Delete a triple - return true if it was deleted, false if it didn't exist
      */
-    public boolean delete(Node s, Node p, Node o) {
-        return table.deleteRow(s, p, o) ;
+    public void delete(Triple triple) {
+        delete(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+    }
+
+    /**
+     * Delete a triple - return true if it was deleted, false if it didn't exist
+     */
+    public void delete(Node s, Node p, Node o) {
+        table.deleteRow(s, p, o) ;
     }
 
     /** Find matching triples */

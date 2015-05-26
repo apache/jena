@@ -30,7 +30,12 @@ public class NOTES_TDB {
     // ** NodeTableCache and aborts.
     // NodeTableCache + abort -> clean out?
     // Abort notification.
-    // Or NodeTableCache part of the transaction. 
+    // Or NodeTableCache part of the transaction.
+    
+    
+    // TxnEvent or actually a TransactionComponent
+    //   TC - a lot of baggage.
+    //   TxnEvet - separate part of the Transaction coordinator?
     
     // Transaction state changes notification API (TripleTable, QuadTable, Prefixes -> NodeTables) 
     
@@ -58,9 +63,17 @@ interface StorageRDF {
     Iterator<Quad> find(Node g, Node s, Node p, Node o) ;
 }
 
+// Like Transactional(System) except not part of the transaction.  Called after  
 interface TxnEvent {
-    void beginEvent(ReadWrite mode) ;
-    void commitEvent() ;
-    void abortEvent() ;
-    void endEvent() ;
+    default void startBegin(ReadWrite mode) {}
+    default void finishBegin(ReadWrite mode) {}
+
+    default void startCommit()  {}
+    default void finishCommit() {}
+
+    default void startAbort()   {}
+    default void finishAbort()  {}
+
+    default void startEnd()     {}
+    default void finishEnd()    {}
 }

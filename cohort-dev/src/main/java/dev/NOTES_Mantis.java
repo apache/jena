@@ -21,7 +21,7 @@ public class NOTES_Mantis {
     // Streams, not iterators?
     // Reduce overheads
     //  Record if change zero cost abort/commit.
-    //  Shared state files / less synsc's.
+    //  Shared state files / less sync's.
     
 
     // For all Trans*, do we need to record both Redo and Undo actions in the

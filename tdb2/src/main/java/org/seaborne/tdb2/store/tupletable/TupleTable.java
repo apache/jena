@@ -82,95 +82,39 @@ public class TupleTable implements Sync, Closeable
         return indexes[0] ;
     }
 
-    /** Insert a tuple - return true if it was really added, false if it was a duplicate */
-    public boolean add(Tuple<NodeId> t) 
-    { 
+    /** Insert a tuple */
+    public void add(Tuple<NodeId> t) {
+        // A "contains test" could be used to avoid needing to hit all
+        // the indexes when the triple is already present.
         if ( tupleLen != t.size() )
             throw new TDBException(format("Mismatch: inserting tuple of length %d into a table of tuples of length %d", t.size(), tupleLen)) ;
-
-        for ( int i = 0 ; i < indexes.length ; i++ )
-        {
+        for ( int i = 0 ; i < indexes.length ; i++ ) {
             if ( indexes[i] == null ) continue ;
-            
-            if ( ! indexes[i].add(t) )
-            {
-                if ( i == 0 )
-                {
-                    duplicate(t) ;
-                    return false ;
-                }
-                unexpectedDuplicate(t, i) ;
-                throw new TDBException(format("Secondary index duplicate: %s -> %s",indexes[i].getMapping(), t)) ;
-            }
+            indexes[i].add(t) ;
             syncNeeded = true ;
         }
-        return true ;
     }
 
-    protected void duplicate(Tuple<NodeId> t)
-    { }
-    
-    protected void unexpectedDuplicate(Tuple<NodeId> t, int i)
-    { 
-//        System.err.printf("Duplicate on secondary index: %s\n",t) ;
-//        for ( TupleIndex index : indexes )
-//        {
-//            if ( index.find(t) != null )
-//                System.err.printf("%s: Present\n",index.getLabel()) ;
-//            else
-//                System.err.printf("%s: Absent\n",index.getLabel()) ;
-//        }
-//        
-//        try {
-//            OutputStream f = new FileOutputStream("LOG") ;
-//            IndentedWriter w = new IndentedWriter(f) ;
-//            ( (BPlusTree) ((TupleIndexRecord)indexes[i]).getRangeIndex() ).dump(w) ;
-//            w.flush() ;
-//            f.flush() ;
-//            f.close() ;
-//        } catch ( IOException ex ) {}
-    }
-
-    /** Delete a tuple - return true if it was deleted, false if it didn't exist */
-    public boolean delete( Tuple<NodeId> t ) 
-    { 
+    /** Delete a tuple */
+    public void delete( Tuple<NodeId> t ) { 
         if ( tupleLen != t.size() )
             throw new TDBException(format("Mismatch: deleting tuple of length %d from a table of tuples of length %d", t.size(), tupleLen)) ;
 
-        boolean rc = false ;
-        for ( TupleIndex indexe : indexes )
-        {
-            if ( indexe == null )
-            {
+        for ( TupleIndex index : indexes ) {
+            if ( index == null )
                 continue;
-            }
-            // Use return boolean
-            rc = indexe.delete( t );
-            if ( rc )
-            {
-                syncNeeded = true;
-            }
+            index.delete( t );
         }
-        return rc ;
-
     }
 
     /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any */
-    public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern)
-    {
-//        for ( NodeId n : pattern.tuple() )
-//        {
-//            if ( n == null )
-//                log.warn("find(Tuple<NodeId> pattern): Null found: "+pattern) ;
-//        }
-        
+    public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern) {
         if ( tupleLen != pattern.size() )
             throw new TDBException(format("Mismatch: finding tuple of length %d in a table of tuples of length %d", pattern.size(), tupleLen)) ;
         
         int numSlots = 0 ;
         // Canonical form. 
-        for ( int i = 0 ; i < tupleLen ; i++ )
-        {
+        for ( int i = 0 ; i < tupleLen ; i++ ) {
             NodeId x = pattern.get(i) ;
             if ( ! NodeId.isAny(x) )
                 numSlots++ ;
@@ -181,13 +125,10 @@ public class TupleTable implements Sync, Closeable
         
         int indexNumSlots = 0 ;
         TupleIndex index = null ;
-        for ( TupleIndex idx : indexes )
-        {
-            if ( idx != null )
-            {
+        for ( TupleIndex idx : indexes ) {
+            if ( idx != null ) {
                 int w = idx.weight( pattern );
-                if ( w > indexNumSlots )
-                {
+                if ( w > indexNumSlots ) {
                     indexNumSlots = w;
                     index = idx;
                 }
@@ -201,33 +142,17 @@ public class TupleTable implements Sync, Closeable
     }
     
     @Override
-    final public void close()
-    {
-        for ( TupleIndex idx : indexes )
-        {
+    final public void close() {
+        for ( TupleIndex idx : indexes ) {
             if ( idx != null )
                 idx.close();
         }
     }
     
-//    public void dumpIndexes()
-//    {
-//        for ( TupleIndex idx : indexes )
-//        {
-//            if ( idx != null )
-//                ;
-//                //idx.dump();
-//        }
-//        
-//    }
-    
     @Override
-    public void sync()
-    {
-        if ( syncNeeded )
-        {
-            for ( TupleIndex idx : indexes )
-            {
+    public void sync() {
+        if ( syncNeeded ) {
+            for ( TupleIndex idx : indexes ) {
                 if ( idx != null )
                     idx.sync() ;
             }
@@ -237,18 +162,15 @@ public class TupleTable implements Sync, Closeable
 
     public boolean isEmpty()        { return indexes[0].isEmpty() ; }
     
-    public void clear()
-    {
-        for ( TupleIndex idx : indexes )
-        {
+    public void clear() {
+        for ( TupleIndex idx : indexes ) {
             if ( idx != null )
                 idx.clear() ;
         }
         syncNeeded = true ;
     }
     
-    public long size()
-    {
+    public long size() {
         return indexes[0].size() ;
     }
     
@@ -261,11 +183,10 @@ public class TupleTable implements Sync, Closeable
     /** Get the width of tuples in indexes in this table */
     public int getTupleLen()                            { return tupleLen ; }
 
-    /** Set index - for code that maipulates internal structures directly - use with care */ 
-    public void setTupleIndex(int i, TupleIndex index)
-    {
+    /** Set index - for code that manipulates internal structures directly - use with care */ 
+    public void setTupleIndex(int i, TupleIndex index) {
         if ( index != null && index.getTupleLength() != tupleLen )
-            throw new TDBException("Incompatible index: "+index.getMapping()) ;
+            throw new TDBException("Incompatible index: " + index.getMapping()) ;
         indexes[i] = index ;
     }
 

@@ -32,13 +32,13 @@ public class TupleIndexWrapper implements TupleIndex
     public TupleIndexWrapper(TupleIndex index) { this.index = index ; }
 
     @Override
-    public boolean add(Tuple<NodeId> tuple) {
-        return index.add(tuple) ;
+    public void add(Tuple<NodeId> tuple) {
+        index.add(tuple) ;
     }
 
     @Override
-    public boolean delete(Tuple<NodeId> tuple) {
-        return index.delete(tuple) ;
+    public void delete(Tuple<NodeId> tuple) {
+        index.delete(tuple) ;
     }
 
     @Override

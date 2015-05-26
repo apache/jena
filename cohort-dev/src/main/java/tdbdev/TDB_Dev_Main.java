@@ -21,65 +21,25 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.atlas.logging.ProgressLogger ;
 import org.apache.jena.query.* ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.TDBFactory ;
 import org.seaborne.tdb2.lib.TDBTxn ;
-import org.seaborne.tdb2.store.DatasetGraphTDB ;
-import org.seaborne.tdb2.store.nodetable.TReadAppendFileTransport ;
-import org.seaborne.tdb2.sys.StoreConnection ;
+import org.slf4j.LoggerFactory ;
 
 public class TDB_Dev_Main {
     static { LogCtl.setLog4j(); }
     
     public static void main(String[] args) throws Exception {
-        {
-        Location location = Location.mem() ;
-//        FileOps.ensureDir("DB"); 
-//        FileOps.clearDirectory("DB");
-        Dataset ds = TDBFactory.createDataset(location) ;
-        System.exit(0) ;
-        }
-//        //AbstractTestStoreConnectionBasics.store_05/mem
-//        
-        long x = System.currentTimeMillis() ;
-        
-        Quad q  = SSE.parseQuad("(<g> <s> <p> '000-"+x+"') ") ;
-        Quad q1 = SSE.parseQuad("(<g> <s> <p> '111-"+x+"')") ;
-        Quad q2 = SSE.parseQuad("(<g> <s> <p> '222-"+x+"')") ;
-        Quad q3 = SSE.parseQuad("(<g> <s> <p> '333-"+x+"')") ;
-        Quad q4 = SSE.parseQuad("(<g> <s> <p> '444-"+x+"')") ;
-        
-        Location location = Location.mem("foobar") ; 
-        StoreConnection sConn = StoreConnection.make(location) ;
-        
-        DatasetGraphTDB dsg = sConn.getDatasetGraphTDB() ;
-        TDBTxn.executeWrite(dsg, ()->{
-            dsg.add(q1) ;
-        }) ;
-        
-        dsg.begin(ReadWrite.WRITE);
-        dsg.add(q2) ;
-        dsg.abort() ;
-        dsg.end() ;
-                
-        StoreConnection.expel(location, true);
-        
-        System.out.println("DONE(abort)") ;
-        
-        //load() ;
+        load() ;
+        query() ;
     }
 
-    private static void details(TReadAppendFileTransport file) {
-        System.out.println("Len = "+file.getBinaryDataFile().length()) ;
-        System.out.println("W   = "+file.getBinaryDataFile().length()) ;
-        System.out.println("R   = "+file.readPosition()) ;
-    }
-    
     public static void query() {
         Location location = Location.create("DB") ;
         String x = "<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType15>" ;
@@ -95,7 +55,7 @@ public class TDB_Dev_Main {
         FileOps.ensureDir("DB"); 
         FileOps.clearDirectory("DB");
         Dataset ds = TDBFactory.createDataset(location) ;
-        String FILE = "/home/afs/Datasets/BSBM/bsbm-50k.nt.gz" ;
+        String FILE = "/home/afs/Datasets/BSBM/bsbm-1m.nt.gz" ;
         
         long time_ms = -1 ;
 
@@ -103,7 +63,22 @@ public class TDB_Dev_Main {
 
         Timer timer = new Timer() ;
         timer.startTimer();
-        TDBTxn.executeWrite(ds, ()->RDFDataMgr.read(ds, FILE)) ;
+        
+        StreamRDF s1 = StreamRDFLib.dataset(ds.asDatasetGraph()) ;
+        ProgressLogger plog = new ProgressLogger(LoggerFactory.getLogger("LOAD"), 
+                                                 "Triples", 50000, 10) ;
+        StreamRDFMonitor s2 = new StreamRDFMonitor(s1, plog) ;
+        // Ensure transaction overheads acccounted for
+        StreamRDFMerge s3 = new StreamRDFMerge(s2) ;
+        s3.start();
+        
+        // Unwrap a layer of start/finish.
+        TDBTxn.executeWrite(ds, () -> {
+            RDFDataMgr.parse(s3, FILE) ;
+        }) ;
+        s3.finish();
+        
+        
         time_ms = timer.endTimer() ;
         System.out.println("Load finish: "+Timer.timeStr(time_ms)+"s") ;    
         long x = TDBTxn.executeReadReturn(ds, () -> {

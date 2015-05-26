@@ -30,24 +30,15 @@ public class TableBase implements Sync, Closeable
 {
     final protected NodeTupleTable table ;
     
-    protected TableBase(int N, TupleIndex[] indexes, NodeTable nodeTable, DatasetControl policy)
-    {
+    protected TableBase(int N, TupleIndex[] indexes, NodeTable nodeTable, DatasetControl policy) {
         table = new NodeTupleTableConcrete(N, indexes, nodeTable, policy) ;
     }
 
     public NodeTupleTable getNodeTupleTable()   { return table ; }
     public DatasetControl getPolicy()           { return table.getPolicy() ; }
     
-//  /** Clear - including the associated node tuple table */
-//  public void clear()
-//  { 
-//      table.getTupleTable().clear() ;
-//      table.getNodeTable().clear() ;
-//  }
-
     @Override
-    public void sync()
-    { 
+    public void sync() {
         table.sync() ;
     }
 

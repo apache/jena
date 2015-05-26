@@ -31,9 +31,9 @@ import org.seaborne.tdb2.sys.DatasetControl ;
 
 public interface NodeTupleTable extends Sync, Closeable
 {
-    public boolean addRow(Node... nodes) ;
+    public void addRow(Node... nodes) ;
 
-    public boolean deleteRow(Node... nodes) ;
+    public void deleteRow(Node... nodes) ;
 
     /** Find by node. */
     public Iterator<Tuple<Node>> find(Node... nodes) ;

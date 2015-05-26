@@ -74,25 +74,24 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     { return dsPolicy ; }
     
     @Override
-    public boolean addRow(Node... nodes)
+    public void addRow(Node... nodes)
     {
-        try
-        {
+        try  {
             startWrite() ;
             NodeId n[] = new NodeId[nodes.length] ;
             for (int i = 0; i < nodes.length; i++)
                 n[i] = nodeTable.getAllocateNodeId(nodes[i]) ;
 
             Tuple<NodeId> t = Tuple.create(n) ;
-            return tupleTable.add(t) ;
-        } finally
+            tupleTable.add(t) ;
+        } finally 
         {
             finishWrite() ;
         }
     }
 
     @Override
-    public boolean deleteRow(Node... nodes)
+    public void deleteRow(Node... nodes)
     {
         try
         {
@@ -101,12 +100,12 @@ public class NodeTupleTableConcrete implements NodeTupleTable
             for (int i = 0; i < nodes.length; i++)
             {
                 NodeId id = idForNode(nodes[i]) ;
-                if (NodeId.isDoesNotExist(id)) return false ;
+                if (NodeId.isDoesNotExist(id)) return ;
                 n[i] = id ;
             }
 
             Tuple<NodeId> t = Tuple.create(n) ;
-            return tupleTable.delete(t) ;
+            tupleTable.delete(t) ;
         } finally
         {
             finishWrite() ;
