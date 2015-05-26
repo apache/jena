@@ -35,7 +35,7 @@ require 'ostruct'
 #  Follow redirects => 301:  puts response["location"] # All headers are lowercase?
 
 SOH_NAME="SOH"
-SOH_VERSION="0.0.0"
+SOH_VERSION="0.0.1"
 
 $proxy = ENV['http_proxy'] ? URI.parse(ENV['http_proxy']) : OpenStruct.new  
 
@@ -43,6 +43,7 @@ $proxy = ENV['http_proxy'] ? URI.parse(ENV['http_proxy']) : OpenStruct.new
 
 # Names
 $mtTurtle           = 'text/turtle;charset=utf-8'
+$mtJsonLD           = 'application/ld+json'
 $mtRDF              = 'application/rdf+xml'
 $mtText             = 'text/plain'
 $mtNQuads           = 'text/n-quads'
@@ -60,6 +61,7 @@ $mtSparqlQuery      = "application/sparql-query" ;
 # Global media type table.
 $fileMediaTypes = {}
 $fileMediaTypes['ttl']   = $mtTurtle
+$fileMediaTypes['jsonld']   = $mtJsonLD
 $fileMediaTypes['n3']    = 'text/n3; charset=utf-8'
 $fileMediaTypes['nt']    = $mtText
 $fileMediaTypes['rdf']   = $mtRDF
