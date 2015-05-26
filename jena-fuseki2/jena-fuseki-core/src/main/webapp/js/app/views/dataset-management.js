@@ -45,7 +45,6 @@ define(
 
       /** If the model changes, update the summary */
       onModelChange: function( event ) {
-         console.log("done!!");
          this.cleanup();
          this.render();
       },
@@ -72,7 +71,6 @@ define(
 
       /** Show a generic modal confirmation */
       showConfirmationModal: function( msg, dsId, eventId ) {
-        console.log("Show--" + eventId);
         this.ui.actionConfirmModal
                .find( ".modal-body p" )
                .html( msg );
@@ -85,7 +83,6 @@ define(
         this.clearFeedback();
         this.ui.actionConfirmModal.modal( 'show' );
       },
-     
 
       /** Generic response to confirming the current modal dialogue */
       onConfirmAction: function( e ) {
@@ -106,7 +103,6 @@ define(
       /** User has confirmed that the dataset can be deleted */
       onConfirmRemoveDataset: function( dsId ) {
         var self = this;
-        console.log("Delete ds: " + dsId)
 
         fui.models
            .fusekiServer
@@ -118,7 +114,6 @@ define(
 
       /** Callback after successfully removing a dataset */
       onDatasetRemoveSuccess: function( data, dsId ) {
-        console.log("del ok  "  + dsId );
         this.model.loadServerDescription();
       },
 
