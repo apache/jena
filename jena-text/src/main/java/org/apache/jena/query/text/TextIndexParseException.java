@@ -23,10 +23,18 @@ import org.apache.jena.query.QueryParseException ;
 
 public class TextIndexParseException extends QueryParseException 
 {
-    public TextIndexParseException() { super(-1,-1) ; }
-    public TextIndexParseException(Throwable cause) { super(cause,-1,-1) ; }
-    public TextIndexParseException(String msg) { super(msg,-1,-1) ; }
-    public TextIndexParseException(String msg, Throwable cause) { super(msg, cause,-1,-1) ; }
+//    public TextIndexParseException(String textQuery) { super(message(textQuery, null),-1,-1) ; }
+//    public TextIndexParseException(String textQuery, Throwable cause) { super(message(textQuery,null), cause,-1,-1) ; }
+    public TextIndexParseException(String textQuery, String msg) { super(message(textQuery,msg),-1,-1) ; }
+    public TextIndexParseException(String textQuery, String msg, Throwable cause) { super(message(textQuery,msg), cause,-1,-1) ; }
+
+    private static String message(String textQuery, String errorMessage) {
+        // No need to include the textQuery as Lucene puts it in.
+        String msg = ( errorMessage == null )
+            ? "Text search parse error: text query '"+textQuery+"'"
+            : "Text search parse error:\n"+errorMessage ;
+        return msg ;
+    }
 
 }
 
