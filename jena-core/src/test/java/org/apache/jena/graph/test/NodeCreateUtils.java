@@ -98,7 +98,7 @@ public class NodeCreateUtils
             ;
         }
 
-    public static String unEscape( String spelling )
+    private static String unEscape( String spelling )
         {
         if (spelling.indexOf( '\\' ) < 0) return spelling;
         StringBuilder result = new StringBuilder( spelling.length() );
@@ -115,7 +115,7 @@ public class NodeCreateUtils
         return result.toString();
         }
     
-    public static char unEscape( char ch )
+    private static char unEscape( char ch )
         {
         switch (ch)
         	{
