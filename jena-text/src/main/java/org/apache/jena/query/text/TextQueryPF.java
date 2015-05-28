@@ -52,7 +52,7 @@ public class TextQueryPF extends PropertyFunctionBase {
      * Look for "//** score" in TextQueryPF, TextIndexLucene and TextIndexSolr
      */
 
-    private TextIndex     server        = null ;
+    private TextIndex     textIndex        = null ;
     private boolean       warningIssued = false ;
 
     public TextQueryPF() {}
@@ -65,25 +65,27 @@ public class TextQueryPF extends PropertyFunctionBase {
         //** score
         // Subject possibilities become ?foo or (?foo ?score) 
         DatasetGraph dsg = execCxt.getDataset() ;
-        server = chooseTextIndex(dsg) ;
-
+        textIndex = chooseTextIndex(dsg) ;
         if (!argSubject.isNode())
             throw new QueryBuildException("Subject is not a single node: " + argSubject) ;
 
         if (argObject.isList()) {
-            //extract of extra lang arg if present and if is usable.
-            //arg is removed from the list to avoid conflict with order and args length
-            langArg = extractArg("lang", argObject);
-
-            if (langArg != null && server.getDocDef().getLangField() == null)
-                log.warn("lang argument is ignored if langField not set in the index configuration");
-                
             List<Node> list = argObject.getArgList() ;
+
             if (list.size() == 0)
                 throw new QueryBuildException("Zero-length argument list") ;
 
             if (list.size() > 4)
                 throw new QueryBuildException("Too many arguments in list : " + list) ;
+            
+            
+            //extract of extra lang arg if present and if is usable.
+            //arg is removed from the list to avoid conflict with order and args length
+            langArg = extractArg("lang", list);
+
+            if (langArg != null && textIndex.getDocDef().getLangField() == null)
+                log.warn("lang argument is ignored if langField not set in the index configuration");
+            
         }
     }
 
@@ -109,10 +111,10 @@ public class TextQueryPF extends PropertyFunctionBase {
         return null ;
     }
 
-    private String extractArg(String prefix, PropFuncArg argObject) {
+    private String extractArg(String prefix, List<Node> objArgs) {
         String value = null;
         int pos = 0;
-        for (Node node : argObject.getArgList()) {
+        for (Node node : objArgs) {
             if (node.isLiteral()) {
                 String arg = node.getLiteral().toString();
                 if (arg.startsWith(prefix + ":")) {
@@ -123,7 +125,7 @@ public class TextQueryPF extends PropertyFunctionBase {
             pos++;
         }
         if (value != null)
-            argObject.getArgList().remove(pos);
+            objArgs.remove(pos);
 
         return value;
     }
@@ -131,7 +133,7 @@ public class TextQueryPF extends PropertyFunctionBase {
     @Override
     public QueryIterator exec(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject,
                               ExecutionContext execCxt) {
-        if (server == null) {
+        if (textIndex == null) {
             if (!warningIssued) {
                 Log.warn(getClass(), "No text index - no text search performed") ;
                 warningIssued = true ;
@@ -154,7 +156,7 @@ public class TextQueryPF extends PropertyFunctionBase {
             // Does not match
             return IterLib.noResults(execCxt) ;
 
-        StrMatch match = objectToStruct(argObject) ;
+        StrMatch match = objectToStruct(argObject, true) ;
         if (match == null) {
             // can't match
             return IterLib.noResults(execCxt) ;
@@ -195,7 +197,7 @@ public class TextQueryPF extends PropertyFunctionBase {
 
     private List<Node> query(String queryString, int limit, ExecutionContext execCxt) {
         // use the graph information in the text index if possible
-        if (server.getDocDef().getGraphField() != null
+        if (textIndex.getDocDef().getGraphField() != null
             && execCxt.getActiveGraph() instanceof GraphView) {
             GraphView activeGraph = (GraphView)execCxt.getActiveGraph() ;
             if (!Quad.isUnionGraph(activeGraph.getGraphName())) {
@@ -204,14 +206,14 @@ public class TextQueryPF extends PropertyFunctionBase {
                     ? TextQueryFuncs.graphNodeToString(activeGraph.getGraphName())
                     : Quad.defaultGraphNodeGenerated.getURI() ;
                 String escaped = QueryParserBase.escape(uri) ;
-                String qs2 = server.getDocDef().getGraphField() + ":" + escaped ;
+                String qs2 = textIndex.getDocDef().getGraphField() + ":" + escaped ;
                 queryString = "(" + queryString + ") AND " + qs2 ;
             }
         }
 
         //for language-based search extension
-        if (server.getDocDef().getLangField() != null) {
-            String field = server.getDocDef().getLangField();
+        if (textIndex.getDocDef().getLangField() != null) {
+            String field = textIndex.getDocDef().getLangField();
             if (langArg != null) {
                 String qs2 = !"none".equals(langArg)?
                         field + ":" + langArg : "-" + field + ":*";
@@ -222,16 +224,20 @@ public class TextQueryPF extends PropertyFunctionBase {
         Explain.explain(execCxt.getContext(), "Text query: "+queryString) ;
         if ( log.isDebugEnabled())
             log.debug("Text query: {} ({})", queryString,limit) ;
-        return server.query(queryString, limit) ;
+        return textIndex.query(queryString, limit) ;
     }
     
-    /** Deconstruct the node or list object argument and make a StrMatch */
-    private StrMatch objectToStruct(PropFuncArg argObject) {
-        EntityDefinition docDef = server.getDocDef() ;
+    /** Deconstruct the node or list object argument and make a StrMatch 
+     * The 'executionTime' flag indciates whether this is for a build time
+     * static check, or for runtime execution.
+     */
+    private StrMatch objectToStruct(PropFuncArg argObject, boolean executionTime) {
+        EntityDefinition docDef = textIndex.getDocDef() ;
         if (argObject.isNode()) {
             Node o = argObject.getArg() ;
             if (!o.isLiteral()) {
-                log.warn("Object to text query is not a literal") ;
+                if ( executionTime )
+                    log.warn("Object to text query is not a literal") ;
                 return null ;
             }
 
@@ -250,7 +256,7 @@ public class TextQueryPF extends PropertyFunctionBase {
             throw new TextIndexException("Change in object list size") ;
 
         Node predicate = null ;
-        String field = null ;       // Do not prepend the feild name - rely on default field
+        String field = null ;       // Do not prepend the field name - rely on default field
         int idx = 0 ;
         Node x = list.get(0) ;
         // Property?
@@ -258,7 +264,7 @@ public class TextQueryPF extends PropertyFunctionBase {
             predicate = x ;
             idx++ ;
             if (idx >= list.size())
-                throw new TextIndexException("Property specificied but no query string : " + list) ;
+                throw new TextIndexException("Property specificed but no query string : " + list) ;
             x = list.get(idx) ;
             field = docDef.getField(predicate) ;
             if (field == null) {
@@ -269,9 +275,11 @@ public class TextQueryPF extends PropertyFunctionBase {
 
         // String!
         if (!x.isLiteral()) {
-            log.warn("Text query string is not a literal " + list) ;
+            if ( executionTime )
+                log.warn("Text query string is not a literal " + list) ;
             return null ;
         }
+        
         if (x.getLiteralDatatype() != null && !x.getLiteralDatatype().equals(XSDDatatype.XSDstring)) {
             log.warn("Text query is not a string " + list) ;
             return null ;
@@ -286,6 +294,12 @@ public class TextQueryPF extends PropertyFunctionBase {
             // Limit?
             x = list.get(idx) ;
             idx++ ;
+            if ( ! x.isLiteral() ) {
+                if ( executionTime )
+                    log.warn("Text query limit is not an integer " + x) ;
+                return null ;
+            }
+            
             int v = NodeFactoryExtra.nodeToInt(x) ;
             limit = (v < 0) ? -1 : v ;
         }
