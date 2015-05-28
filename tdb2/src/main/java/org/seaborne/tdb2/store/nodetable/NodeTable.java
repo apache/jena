@@ -57,5 +57,14 @@ public interface NodeTable extends Sync, Closeable
     /** Return a NodeTable if this instance wraps another, else return null */  
     public NodeTable wrapped() ; 
 
+    /** Return the base NodeTable, the end of the wrapped chain */  
+    default public NodeTable baseNodeTable() {
+        NodeTable nt = this ;
+        NodeTable nt2 = null ;
+        while ( (nt2 = nt.wrapped()) != null ) {
+            nt = nt2 ;
+        }
+        return nt ;
+    }
     
 }

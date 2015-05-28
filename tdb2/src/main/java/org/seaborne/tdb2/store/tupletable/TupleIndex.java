@@ -66,4 +66,16 @@ public interface TupleIndex extends Sync, Closeable
     
     /** Clear the index */
     public void clear() ;
+    
+    /** Return a TupleIndex if this instance wraps another, else return null */  
+    public TupleIndex wrapped() ; 
+    
+    default public TupleIndex baseTupleIndex() {
+        TupleIndex index = this ;
+        TupleIndex index2 = null ;
+        while( (index2 = index.wrapped()) != null ) {
+            index = index2 ;
+        }
+        return index ;
+    }
 }

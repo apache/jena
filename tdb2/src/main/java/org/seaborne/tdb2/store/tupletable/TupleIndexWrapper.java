@@ -30,6 +30,11 @@ public class TupleIndexWrapper implements TupleIndex
     protected final TupleIndex index ;
 
     public TupleIndexWrapper(TupleIndex index) { this.index = index ; }
+    
+    @Override
+    public final TupleIndex wrapped() {
+        return index ;
+    }
 
     @Override
     public void add(Tuple<NodeId> tuple) {
