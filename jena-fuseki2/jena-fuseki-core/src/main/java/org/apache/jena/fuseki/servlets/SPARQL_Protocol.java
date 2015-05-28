@@ -24,14 +24,14 @@ import static org.apache.jena.riot.web.HttpNames.paramNamedGraphURI ;
 import java.util.Arrays ;
 import java.util.Collections ;
 import java.util.List ;
-import java.util.function.Predicate;
+import java.util.function.Predicate ;
 
 import javax.servlet.http.HttpServletRequest ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryParseException ;
+import org.apache.jena.query.QueryException ;
 import org.apache.jena.sparql.core.DatasetDescription ;
 
 /** Support for the SPARQL protocol (SPARQL Query, SPARQL Update)
@@ -40,9 +40,8 @@ public  abstract class SPARQL_Protocol extends ActionSPARQL
 {
     protected SPARQL_Protocol() { super() ; }
 
-    protected static String messageForQPE(QueryParseException ex)
-    {
-        if ( ex.getMessage() != null )
+    protected static String messageForQueryException(QueryException ex)
+    { if ( ex.getMessage() != null )
             return ex.getMessage() ;
         if ( ex.getCause() != null )
             return Lib.classShortName(ex.getCause().getClass()) ;
