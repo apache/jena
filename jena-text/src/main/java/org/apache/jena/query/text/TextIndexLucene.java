@@ -27,6 +27,7 @@ import java.util.Map.Entry ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.query.QueryBuildException ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.analysis.core.KeywordAnalyzer ;
@@ -268,7 +269,7 @@ public class TextIndexLucene implements TextIndex {
         Query query = queryParser.parse(queryString) ;
         return query ;
     }
-
+    
     protected Query preParseQuery(String queryString, String primaryField, Analyzer analyzer) throws ParseException {
         return parseQuery(queryString, primaryField, analyzer);
     }
@@ -315,7 +316,10 @@ public class TextIndexLucene implements TextIndex {
         //** score
         try (IndexReader indexReader = DirectoryReader.open(directory)) {
             return query$(indexReader, qs, limit) ;
-        } 
+        }
+        catch (ParseException ex) {
+            throw new QueryBuildException(ex.getMessage()) ;
+        }
         catch (Exception ex) {
             throw new TextIndexException(ex) ;
         }
