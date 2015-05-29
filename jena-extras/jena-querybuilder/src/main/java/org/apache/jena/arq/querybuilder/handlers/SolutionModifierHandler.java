@@ -247,8 +247,8 @@ public class SolutionModifierHandler implements Handler {
 			}
 		}
 
-		query.setGroupBy( groupBy );
-
+		query.getGroupBy().clear();
+		query.getGroupBy().addAll(groupBy); 
 	}
 
 	@Override

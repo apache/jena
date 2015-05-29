@@ -484,23 +484,6 @@ public class Query extends Prologue implements Cloneable, Printable
     
     public VarExprList getGroupBy()      { return groupVars ; }
     
-    /**
-     * Set the group by list.
-     * If groupVars is null the list is reset to an empty list.
-     * @param groupVars The variables to group the query by.
-     */
-    public void setGroupBy( VarExprList groupVars )
-    {
-    	if (groupVars == null)
-    	{
-    		this.groupVars = new VarExprList();
-    	}
-    	else
-    	{
-    		this.groupVars = groupVars;
-    	}
-    }
-    
     public List<Expr> getHavingExprs()    { return havingExprs ; }
     
     public void addGroupBy(String varName)
