@@ -30,12 +30,11 @@ import org.seaborne.tdb2.lib.NodeLib ;
 import org.seaborne.tdb2.store.Hash ;
 import org.seaborne.tdb2.store.NodeId ;
 
-/** A concrete NodeTable based on native storage (string file and an index) */ 
+/** A fraemwork for a NodeTable based on native storage (string file and an index).
+ * This class manages the index, and delegates the node storage.
+ */ 
 public abstract class NodeTableNative implements NodeTable
 {
-    // TODO Split into a general accessor (get and put (node,NodeId) pairs)
-    // Abstracts the getAllocateNodeId requirements.
-    
     protected Index nodeHashToId ;        // hash -> int
     private boolean syncNeeded = false ;
     
@@ -71,6 +70,16 @@ public abstract class NodeTableNative implements NodeTable
         return x == null ;
     }
 
+//    @Override
+//    public List<NodeId> bulkNodeToNodeId(List<Node> nodes, boolean withAllocation) {
+//        return NodeTable.super.bulkNodeToNodeId(nodes, withAllocation) ;
+//    }
+//
+//    @Override
+//    public List<Node> bulkNodeIdToNode(List<NodeId> nodeIds) {
+//        return NodeTable.super.bulkNodeIdToNode(nodeIds) ;
+//    }
+    
     // ---- The worker functions
     // Synchronization:
     // accessIndex and readNodeFromTable

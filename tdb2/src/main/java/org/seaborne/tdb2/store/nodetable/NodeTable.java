@@ -18,7 +18,9 @@
 
 package org.seaborne.tdb2.store.nodetable;
 
+import java.util.ArrayList ;
 import java.util.Iterator ;
+import java.util.List ;
 
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Pair ;
@@ -47,6 +49,35 @@ public interface NodeTable extends Sync, Closeable
 
     /** Test whether the node table contains an entry for node */
     public boolean containsNodeId(NodeId nodeId) ;
+    
+    /** Bulk mapping from {@code Node} to {@code NodeId}, with allocation
+     * if the {@code withAllocation} is true.
+     * The returned list aligns with the input list.
+     */
+    // ?? Return a map?
+    // ?? Pass in an array for results.
+    default public List<NodeId> bulkNodeToNodeId(List<Node> nodes, boolean withAllocation) {
+        List<NodeId> nodeIds = new ArrayList<>(nodes.size()) ;
+        for ( Node node : nodes ) {
+            NodeId nid = withAllocation ? this.getAllocateNodeId(node) : this.getNodeIdForNode(node) ;
+            nodeIds.add(nid) ;
+        }
+        return nodeIds ;
+    }
+    
+    /** Bulk mapping from {@code NodeId} to {@code Node} */ 
+    default public List<Node> bulkNodeIdToNode(List<NodeId> nodeIds) {
+        List<Node> nodes = new ArrayList<>(nodeIds.size()) ;
+        for ( NodeId nodeId : nodeIds ) {
+            Node n = this.getNodeForNodeId(nodeId) ;
+            nodes.add(n) ;
+        }
+        return nodes ;
+    }
+    
+    /** Bulk lookup
+    public List<NodeId> getAllocateNodeIdBulk(List<Node> nodes) ;
+    
 
     /** Iterate over all nodes (not necessarily fast).  Does not include inlined NodeIds */
     public Iterator<Pair<NodeId, Node>> all() ;

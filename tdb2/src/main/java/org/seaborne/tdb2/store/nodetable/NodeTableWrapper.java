@@ -19,6 +19,7 @@
 package org.seaborne.tdb2.store.nodetable ;
 
 import java.util.Iterator ;
+import java.util.List ;
 
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Node ;
@@ -59,6 +60,16 @@ public class NodeTableWrapper implements NodeTable {
     @Override
     public boolean containsNodeId(NodeId nodeId) {
         return nodeTable.containsNodeId(nodeId) ;
+    }
+
+    @Override
+    public List<NodeId> bulkNodeToNodeId(List<Node> nodes, boolean withAllocation) {
+        return nodeTable.bulkNodeToNodeId(nodes, withAllocation) ;
+    }
+
+    @Override
+    public List<Node> bulkNodeIdToNode(List<NodeId> nodeIds) {
+        return nodeTable.bulkNodeIdToNode(nodeIds) ;
     }
 
     @Override

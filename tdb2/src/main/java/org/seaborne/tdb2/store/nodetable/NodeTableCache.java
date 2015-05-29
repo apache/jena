@@ -49,7 +49,7 @@ public class NodeTableCache implements NodeTable {
     // "known"
     private CacheSet<Node>      notPresent    = null ;
     private NodeTable           baseTable ;
-    private Object              lock          = new Object() ;
+    private final Object        lock          = new Object() ;
 
     public static NodeTable create(NodeTable nodeTable, StoreParams params) {
         int nodeToIdCacheSize = params.getNode2NodeIdCacheSize() ;
@@ -74,6 +74,26 @@ public class NodeTableCache implements NodeTable {
         if ( nodeMissesCacheSize > 0 )
             notPresent = CacheFactory.createCacheSet(nodeMissesCacheSize) ;
     }
+
+    // ---- Cache access, no going to underlying table.
+    
+    public Node getNodeForNodeIdCache(NodeId id) {
+        return id2node_Cache.getIfPresent(id) ;
+    }
+    
+    public NodeId getNodeIdForNodeCache(Node node) {
+        return node2id_Cache.getIfPresent(node) ;
+    }
+
+    public boolean isCachedNodeId(NodeId id) {
+        return getNodeForNodeIdCache(id) != null ;
+    }
+    
+    public boolean isCachedNode(Node node) {
+        return getNodeIdForNodeCache(node) != null ;
+    }
+
+    // ---- Cache access
 
     @Override
     public final NodeTable wrapped() {
@@ -112,6 +132,17 @@ public class NodeTableCache implements NodeTable {
         Node x = getNodeForNodeId(nodeId) ;
         return x == null ;
     }
+    
+    // If LRU cache is larger than the bulk unit, all allocated nodes are in the cache.   
+//    @Override
+//    public List<NodeId> bulkNodeToNodeId(List<Node> nodes, boolean withAllocation) {
+//        return NodeTable.super.bulkNodeToNodeId(nodes, withAllocation) ;
+//    }
+//
+//    @Override
+//    public List<Node> bulkNodeIdToNode(List<NodeId> nodeIds) {
+//        return NodeTable.super.bulkNodeIdToNode(nodeIds) ;
+//    }
 
     // ---- The worker functions
     // NodeId ==> Node
