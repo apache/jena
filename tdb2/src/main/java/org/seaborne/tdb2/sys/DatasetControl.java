@@ -20,6 +20,8 @@ package org.seaborne.tdb2.sys;
 
 import java.util.Iterator ;
 
+// Used in NodeTupleTables.
+
 /** A DatasetControl is an encapsulation of what to do on reads and writes.
  *  In addition, iterators returned can be tied back to the original request
  *  to check they are still valid.  

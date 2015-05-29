@@ -43,13 +43,10 @@ public class LockMRSWLite implements Lock
         // because we know whether the actiev thread (us) is a read or write
         // operation, then a valid leaveCriticalSection can only be read or
         // write.
-        if ( readLockRequested )
-        {
+        if ( readLockRequested ) {
             mrswLock.readLock().lock() ;
             count++ ;
-        }
-        else
-        {
+        } else {
             mrswLock.writeLock().lock() ;
             count = -1 ;
         }
@@ -58,22 +55,16 @@ public class LockMRSWLite implements Lock
     @Override
     public synchronized void leaveCriticalSection()
     {
-        //mrswLock.readLock().tryLock() ;
-        
         if ( count == 0 )
             throw new JenaException("Bad lock release - don't appear to be in a critical section") ;
-        
-        if ( count < 0 )
-        {
+
+        if ( count < 0 ) {
             mrswLock.writeLock().unlock() ;
             count = 0 ;
             return ;
-        }
-        else
-        {
+        } else {
             mrswLock.readLock().unlock() ;
             count-- ;
         }
     }
-
 }

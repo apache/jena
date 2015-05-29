@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-package org.seaborne.tdb2.sys;
+package org.seaborne.tdb2.sys ;
 
 import java.util.Iterator ;
 
-public class DatasetControlMutable implements DatasetControl 
-{
+/** A DatasetControl tat is an indirection to another and can be changed */  
+public class DatasetControlMutable implements DatasetControl {
     private DatasetControl other ;
     
     public DatasetControlMutable(DatasetControl control) { set(control) ; } 
@@ -29,32 +29,27 @@ public class DatasetControlMutable implements DatasetControl
     public void set(DatasetControl newOther) { other = newOther ; }
     
     @Override
-    public void startUpdate()
-    {
+    public void startUpdate() {
         other.startUpdate() ;
     }
 
     @Override
-    public void finishUpdate()
-    {
+    public void finishUpdate() {
         other.finishUpdate() ;
     }
 
     @Override
-    public void startRead()
-    {
+    public void startRead() {
         other.startRead() ;
     }
 
     @Override
-    public void finishRead()
-    {
+    public void finishRead() {
         other.finishUpdate() ;
     }
 
     @Override
-    public <T> Iterator<T> iteratorControl(Iterator<T> iter)
-    {
+    public <T> Iterator<T> iteratorControl(Iterator<T> iter) {
         return other.iteratorControl(iter) ;
     }
 }
