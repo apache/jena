@@ -55,7 +55,6 @@ public class BinaryDataFileWriteBuffered implements BinaryDataFile {
     @Override
     public void close() {
         synchronized(sync) {
-
             if ( ! isOpen() )
                 return ;
             writeBuffer();
@@ -79,9 +78,7 @@ public class BinaryDataFileWriteBuffered implements BinaryDataFile {
 
     @Override
     public void truncate(long posn) {
-
         synchronized(sync) {
-
             checkOpen() ;
             if ( pendingOutput && posn >= other.length() )
                 writeBuffer() ;
@@ -90,10 +87,8 @@ public class BinaryDataFileWriteBuffered implements BinaryDataFile {
     }    
 
     private void checkOpen() {
-        synchronized(sync) {
-            if ( ! other.isOpen() )
-                throw new RuntimeIOException("Not open") ;
-        }
+        if ( ! other.isOpen() )
+            throw new RuntimeIOException("Not open") ;
     }    
 
     @Override
@@ -133,7 +128,7 @@ public class BinaryDataFileWriteBuffered implements BinaryDataFile {
                 pendingOutput = true ;
                 return x ;
             } 
-            // Larger than tehbuffer space.  Write directly.
+            // Larger than the buffer space.  Write directly.
             other.write(buf, off, len) ;
             return x ;
         }
@@ -148,12 +143,10 @@ public class BinaryDataFileWriteBuffered implements BinaryDataFile {
     }
     
     private void writeBuffer() {
-        synchronized(sync) {
-            if ( pendingOutput ) {
-                pendingOutput = false ;
-                other.write(buffer, 0, bufferLength) ;
-                bufferLength = 0 ;
-            }
+        if ( pendingOutput ) {
+            pendingOutput = false ;
+            other.write(buffer, 0, bufferLength) ;
+            bufferLength = 0 ;
         }
     }
 
