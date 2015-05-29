@@ -82,9 +82,7 @@ public class Location {
         location.lock = new LocationLock(location);
     }
 
-    /** @deprecated Use{@link  Location#create(String)} */
-    @Deprecated
-    public Location(String rootname) {
+    private Location(String rootname) {
         super() ;
         if ( rootname.equals(Names.memName) ) {
             memInit(this, null) ;
