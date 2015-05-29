@@ -35,7 +35,7 @@ require 'ostruct'
 #  Follow redirects => 301:  puts response["location"] # All headers are lowercase?
 
 SOH_NAME="SOH"
-SOH_VERSION="0.0.0"
+SOH_VERSION="0.0.2"
 
 $proxy = ENV['http_proxy'] ? URI.parse(ENV['http_proxy']) : OpenStruct.new  
 

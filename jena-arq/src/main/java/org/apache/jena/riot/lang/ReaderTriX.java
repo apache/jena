@@ -36,7 +36,6 @@ import javax.xml.stream.* ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.datatypes.xsd.impl.XMLLiteralType ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
@@ -101,7 +100,7 @@ public class ReaderTriX implements ReaderRIOT {
     private static String nsRDF = RDF.getURI() ;
     private static String nsXSD = XSDDatatype.XSD ; // No "#"
     private static String nsXML0 = "http://www.w3.org/XML/1998/namespace" ;
-    private static String rdfXMLLiteral = XMLLiteralType.theXMLLiteralType.getURI() ;
+    private static String rdfXMLLiteral = RDF.xmlLiteral.getURI() ;
     
     enum State { OUTER, TRIX, GRAPH, TRIPLE }
     

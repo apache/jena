@@ -51,6 +51,7 @@ import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.query.QueryBuildException ;
 import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.query.Syntax ;
 import org.apache.jena.riot.system.IRIResolver ;
@@ -210,7 +211,7 @@ public class SPARQL_Update extends SPARQL_Protocol
                 req = UpdateFactory.read(usingList, input, UpdateParseBase, Syntax.syntaxARQ);
             }
             catch (UpdateException ex) { ServletOps.errorBadRequest(ex.getMessage()) ; return ; }
-            catch (QueryParseException ex) { ServletOps.errorBadRequest(messageForQPE(ex)) ; return ; }
+            catch (QueryParseException ex) { ServletOps.errorBadRequest(messageForQueryException(ex)) ; return ; }
         }
         
         action.beginWrite() ;
@@ -224,10 +225,10 @@ public class SPARQL_Update extends SPARQL_Protocol
             action.abort() ;
             incCounter(action.getEndpoint().getCounters(), UpdateExecErrors) ;
             ServletOps.errorOccurred(ex.getMessage()) ;
-        } catch (QueryParseException ex) {
+        } catch (QueryParseException|QueryBuildException ex) {
             action.abort() ;
             // Counter inc'ed further out.
-            ServletOps.errorBadRequest(messageForQPE(ex)) ;
+            ServletOps.errorBadRequest(messageForQueryException(ex)) ;
         } catch (Throwable ex) {
             if ( ! ( ex instanceof ActionErrorException ) )
             {

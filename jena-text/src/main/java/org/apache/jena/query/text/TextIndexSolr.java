@@ -47,71 +47,69 @@ public class TextIndexSolr implements TextIndex
     private final EntityDefinition docDef ;
     private static final int MAX_N    = 10000 ;
 
-    public TextIndexSolr(SolrServer server, EntityDefinition def)
-    {
+    public TextIndexSolr(SolrServer server, EntityDefinition def) {
         this.solrServer = server ;
         this.docDef = def ;
     }
 
     @Override
     public void updateEntity(Entity entity) {
-        throw new RuntimeException("TextIndexSolr.updateEntity not implemented.");
+        throw new RuntimeException("TextIndexSolr.updateEntity not implemented.") ;
     }
 
     @Override
-    public void prepareCommit() { }
+    public void prepareCommit() {}
 
     @Override
     public void commit() {
         try {
-            solrServer.commit();
+            solrServer.commit() ;
         }
         catch (SolrServerException e) {
-            throw new TextIndexException(e);
+            throw new TextIndexException(e) ;
         }
         catch (IOException e) {
-            throw new TextIndexException(e);
+            throw new TextIndexException(e) ;
         }
     }
 
     @Override
     public void rollback() {
         try {
-            solrServer.rollback();
+            solrServer.rollback() ;
         }
         catch (SolrServerException e) {
-            throw new TextIndexException(e);
+            throw new TextIndexException(e) ;
         }
         catch (IOException e) {
-            throw new TextIndexException(e);
+            throw new TextIndexException(e) ;
         }
     }
 
     @Override
-    public void close()
-    { 
-        if ( solrServer != null ) 
+    public void close() {
+        if ( solrServer != null )
             solrServer.shutdown() ;
     }
 
     @Override
-    public void addEntity(Entity entity)
-    {
-        //log.info("Add entity: "+entity) ;
+    public void addEntity(Entity entity) {
+        // log.info("Add entity: "+entity) ;
         try {
             SolrInputDocument doc = solrDoc(entity) ;
             solrServer.add(doc) ;
-        } catch (Exception e) { exception(e) ; }
+        }
+        catch (Exception e) {
+            exception(e) ;
+        }
     }
 
-    private SolrInputDocument solrDoc(Entity entity)
-    {
+    private SolrInputDocument solrDoc(Entity entity) {
         SolrInputDocument doc = new SolrInputDocument() ;
         doc.addField(docDef.getEntityField(), entity.getId()) ;
 
         String graphField = docDef.getGraphField() ;
-        if ( graphField != null )
-        {
+        if ( graphField != null ) {
             doc.addField(graphField, entity.getGraph()) ;
         }
 
@@ -119,53 +117,50 @@ public class TextIndexSolr implements TextIndex
         // otherwise, if we have multiple fields, each successive
         // addition will replace the previous one and we are left
         // with only the last field indexed.
-        // see http://stackoverflow.com/questions/12183798/solrj-api-for-partial-document-update
-        // and https://svn.apache.org/repos/asf/lucene/dev/trunk/solr/solrj/src/test/org/apache/solr/client/solrj/SolrExampleTests.java
-        HashMap<String,Object> map = new HashMap<>();
+        // see
+        // http://stackoverflow.com/questions/12183798/solrj-api-for-partial-document-update
+        // and
+        // https://svn.apache.org/repos/asf/lucene/dev/trunk/solr/solrj/src/test/org/apache/solr/client/solrj/SolrExampleTests.java
+        HashMap<String, Object> map = new HashMap<>() ;
         for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
-            map.put("add", e.getValue());
+            map.put("add", e.getValue()) ;
             doc.addField(e.getKey(), map) ;
         }
         return doc ;
     }
 
     @Override
-    public Map<String, Node> get(String uri)
-    {
+    public Map<String, Node> get(String uri) {
         String escaped = ClientUtils.escapeQueryChars(uri) ;
-        String qs = docDef.getEntityField()+":"+escaped ; 
-        SolrDocumentList solrResults = solrQuery(qs,1) ;
+        String qs = docDef.getEntityField() + ":" + escaped ;
+        SolrDocumentList solrResults = solrQuery(qs, 1) ;
 
         List<Map<String, Node>> records = process(solrResults) ;
         if ( records.size() == 0 )
             return null ;
         if ( records.size() > 1 )
-            log.warn("Multiple docs for one URI: "+uri) ;
+            log.warn("Multiple docs for one URI: " + uri) ;
         return records.get(0) ;
     }
 
-    private List<Map<String, Node>> process(SolrDocumentList solrResults)
-    {
+    private List<Map<String, Node>> process(SolrDocumentList solrResults) {
         List<Map<String, Node>> records = new ArrayList<>() ;
 
-        for ( SolrDocument sd : solrResults )
-        {
+        for ( SolrDocument sd : solrResults ) {
             Map<String, Node> record = new HashMap<>() ;
             String uriStr = (String)sd.getFieldValue(docDef.getEntityField()) ;
             Node entity = NodeFactory.createURI(uriStr) ;
             record.put(docDef.getEntityField(), entity) ;
 
-            for ( String f : docDef.fields() )
-            {
-                //log.info("Field: "+f) ;
+            for ( String f : docDef.fields() ) {
+                // log.info("Field: "+f) ;
                 Object obj = sd.getFieldValue(f) ;
-                //log.info("Value: "+obj) ;
+                // log.info("Value: "+obj) ;
                 if ( obj == null )
                     continue ;
                 // Multivalued -> array.
-                // Null means "not stored" or "not present" 
-                if ( obj instanceof List<?> )
-                {
+                // Null means "not stored" or "not present"
+                if ( obj instanceof List<? > ) {
                     @SuppressWarnings("unchecked")
                     List<String> vals = (List<String>)obj ;
                     continue ;
@@ -176,7 +171,7 @@ public class TextIndexSolr implements TextIndex
                 record.put(f, n) ;
             }
 
-            //log.info("Entity: "+uriStr) ;
+            // log.info("Entity: "+uriStr) ;
             records.add(record) ;
         }
         return records ;
@@ -186,15 +181,13 @@ public class TextIndexSolr implements TextIndex
     public List<TextHit> query(String qs) { return query(qs, 0) ; } 
 
     @Override
-    public List<TextHit> query(String qs, int limit)
-    {
+    public List<TextHit> query(String qs, int limit) {
         SolrDocumentList solrResults = solrQuery(qs, limit) ;
         List<TextHit> results = new ArrayList<>() ;
 
-        for ( SolrDocument sd : solrResults )
-        {
+        for ( SolrDocument sd : solrResults ) {
             String str = (String)sd.getFieldValue(docDef.getEntityField()) ;
-            //log.info("Entity: "+uriStr) ;
+            // log.info("Entity: "+uriStr) ;
             Node n = TextQueryFuncs.stringToNode(str) ;
             Float score = (Float) sd.getFirstValue("score");
             TextHit hit = new TextHit(n, score.floatValue());
@@ -204,42 +197,44 @@ public class TextIndexSolr implements TextIndex
         if ( limit > 0 && results.size() > limit )
             results = results.subList(0, limit) ;
 
-        return results ; 
+        return results ;
     }
 
-    private SolrDocumentList solrQuery(String qs, int limit)
-    {
+    private SolrDocumentList solrQuery(String qs, int limit) {
         SolrQuery sq = new SolrQuery(qs) ;
         sq.setIncludeScore(true) ;
         if ( limit > 0 )
             sq.setRows(limit) ;
-        else 
-            sq.setRows(MAX_N) ;   // The Solr default is 10.
+        else
+            sq.setRows(MAX_N) ; // The Solr default is 10.
         try {
             // Set default field.
             sq.add(CommonParams.DF, docDef.getPrimaryField()) ;
-            QueryResponse rsp = solrServer.query( sq ) ;
-            SolrDocumentList docs = rsp.getResults();
+            QueryResponse rsp = solrServer.query(sq) ;
+            SolrDocumentList docs = rsp.getResults() ;
             return docs ;
-        } catch (SolrServerException e) { exception(e) ; return null ; }
+        }
+        catch (SolrServerException e) {
+            exception(e) ;
+            return null ;
+        }
     }
 
     @Override
-    public EntityDefinition getDocDef()
-    {
+    public EntityDefinition getDocDef() {
         return docDef ;
     }
 
-    private Node entryToNode(String v)
-    {
+    private Node entryToNode(String v) {
         // TEMP
         return NodeFactoryExtra.createLiteralNode(v, null, null) ;
     }
 
-    public SolrServer getServer() { return solrServer ; }
+    public SolrServer getServer() {
+        return solrServer ;
+    }
 
-    private static Void exception(Exception ex)
-    {
+    private static Void exception(Exception ex) {
         throw new TextIndexException(ex) ;
     }
 }

@@ -239,7 +239,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         } catch (ActionErrorException ex) {
             throw ex ;
         } catch (QueryParseException ex) {
-            ServletOps.errorBadRequest("Parse error: \n" + queryString + "\n\r" + messageForQPE(ex)) ;
+            ServletOps.errorBadRequest("Parse error: \n" + queryString + "\n\r" + messageForQueryException(ex)) ;
         }
         // Should not happen.
         catch (QueryException ex) {
@@ -255,7 +255,12 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                 // Deals with exceptions itself.
                 sendResults(action, result, query.getPrologue()) ;
             }
-        } catch (QueryCancelledException ex) {
+        } 
+        catch (QueryParseException ex) {
+            // Late stage static error (e.g. bad fixed Lucene query string). 
+            ServletOps.errorBadRequest("Query parse error: \n" + queryString + "\n\r" + messageForQueryException(ex)) ;
+        }
+        catch (QueryCancelledException ex) {
             // Additional counter information.
             incCounter(action.getEndpoint().getCounters(), QueryTimeouts) ;
             throw ex ;

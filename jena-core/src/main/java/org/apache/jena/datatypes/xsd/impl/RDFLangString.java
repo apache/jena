@@ -23,7 +23,7 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.impl.LiteralLabel ;
 
 /** rdf:langString.
- * This covers the unusual case of "foo"^^"rdf:langString"
+ * This covers the unusual case of "foo"^^rdf:langString
  * When there is a language tag, there is a lexcial form but it is in two parts lex@lang
  * This is not rdf:plainLiteral!
  */

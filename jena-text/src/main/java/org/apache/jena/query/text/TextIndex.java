@@ -45,7 +45,9 @@ public interface TextIndex extends Closeable //, Transactional
     //** score
     // Need to have more complex results.
     
-    /** Access the index - limit if -1 for as many as possible */ 
+    /** Access the index - limit if -1 for as many as possible 
+     * Throw QueryParseException for syntax errors in the query string.
+     */ 
     List<TextHit> query(String qs, int limit) ;
     
     List<TextHit> query(String qs) ;
