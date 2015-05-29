@@ -17,9 +17,11 @@
 
 package org.seaborne.dboe.base.file;
 
+import java.util.ArrayList ;
+import java.util.List ;
+
 import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.logging.FmtLog ;
 
 /** Implementation of {@link BinaryDataFile} in memory for testing
  * and development use. Raw performance is not an objective.
@@ -28,20 +30,71 @@ import org.apache.jena.atlas.logging.FmtLog ;
  */
 public class BinaryDataFileMem implements BinaryDataFile {
 
-    private int INC = 4*1024 ;
-    private byte[] buffer = null ;
+    private static int CHUNK = 1024*1024 ;
     private boolean readMode ;
-    private int writePosition ;
     
-    private void ensureBuffer(int len) {
-        if ( writePosition+len > buffer.length ) {
-            int newLength = buffer.length ;
-            while ( newLength < (writePosition+len+INC) )
-                newLength += INC ;
-            byte[] buffer2 = new byte[newLength] ;
-            System.arraycopy(buffer, 0, buffer2, 0, writePosition) ;
-            buffer = buffer2 ;
+    // The file pointer and marker of the allocated end point.
+    private int endSegment = 0 ; 
+    private int endOffset = 0 ;
+    private long fileEnd = 0 ;
+    
+    private List<byte[]> storage = null ;
+    
+    private static int getSegment(long posn) { return (int)(posn / CHUNK) ; } 
+    private static int getOffset(long posn) { return (int) (posn % CHUNK) ; }
+    
+    // Like system.arrayCopy except in/out of List<byte[]> 
+    private void arrayCopyIn(byte[] src, final int srcStart, List<byte[]> dest, final long destStart, final int length) {
+        // Check destPos <= file length 
+        if ( length == 0 )
+            return ;
+        int len = length ;
+        int srcPosn = srcStart ;
+        int seg = getSegment(destStart) ;
+        int offset = getOffset(destStart) ;
+        while( len > 0 ) {
+            int z = Math.min(len, CHUNK-offset) ;
+            // Beyond end of file?
+            if ( seg >= dest.size() ) {
+                allocate(dest) ;
+            }
+            System.arraycopy(src, srcPosn, dest.get(seg), offset, z);
+            srcPosn += z ;
+            len -= z ;
+            seg += 1 ;
+            offset += z ;
+            offset %= CHUNK ;
         }
+        seg -= 1 ;
+        if ( seg == dest.size()-1 ) {
+            endSegment = seg ;
+            endOffset = offset ;
+        }
+        fileEnd = Math.max(fileEnd, destStart+length) ;
+    }
+                                        
+    private void arrayCopyOut(List<byte[]> src, final long srcStart, byte[] dest, final int destStart, final int length) {
+        // Check srcPos <= file length
+    
+        int len = length ;
+        len = Math.min(len, (int)(fileEnd-srcStart)) ;
+        int dstPosn = destStart ;
+        int seg = getSegment(srcStart) ;
+        int offset = getOffset(srcStart) ;
+        while( len > 0 ) {
+            int z = Math.min(len, CHUNK-offset) ;
+            System.arraycopy(src.get(seg), offset, dest, dstPosn, z);
+            dstPosn += z ;
+            len -= z ;
+            seg += 1 ;
+            offset += z ;
+            offset %= CHUNK ;
+        }
+    }
+                         
+    private static void allocate(List<byte[]> space) {
+        byte[] buffer = new byte[CHUNK] ;
+        space.add(buffer) ;
     }
     
     public BinaryDataFileMem() { }
@@ -49,17 +102,16 @@ public class BinaryDataFileMem implements BinaryDataFile {
     @Override
     synchronized
     public void open() {
-        if ( buffer != null )
+        if ( storage != null )
             throw new RuntimeIOException("Already open") ;
-        buffer = new byte[INC] ; 
-        writePosition = 0 ;
+        storage = new ArrayList<>(1000) ;
         readMode = true ;
     }
 
     @Override
     synchronized
     public boolean isOpen() {
-        return buffer != null ;
+        return storage != null ;
     }
     
     @Override
@@ -67,23 +119,28 @@ public class BinaryDataFileMem implements BinaryDataFile {
     public int read(long posn, byte[] b, int start, int length) {
         checkOpen() ;
         switchToReadMode() ;
-        if ( posn >= writePosition ) 
+        if ( posn >= fileEnd ) 
             return -1 ;
         checkRead(posn) ;
         checkStart(start) ;
-        int x = Math.min(writePosition-start, length) ;
-        System.arraycopy(buffer, (int)posn, b, start, x) ;
-        return x ;
+        
+        int len = length ;
+        
+        if ( posn+length > fileEnd )
+            len = (int)(fileEnd-posn) ;
+        
+        arrayCopyOut(storage, posn, b, start, len) ;
+        return len ;
     }
 
     private void checkRead(long posn) {
         if ( posn < 0 )
-            IO.exception(String. format("Position out of bounds: %d in [0,%d)", posn, writePosition)) ;
+            IO.exception(String.format("Position out of bounds: %d in [0,%d)", posn, fileEnd)) ;
     }
 
     private void checkStart(long start) {
         if ( start < 0 )
-            IO.exception(String. format("Start point out of bounds: %d in [0,%d)", start, writePosition)) ;
+            IO.exception(String.format("Start point out of bounds: %d in [0,%d)", start, fileEnd)) ;
     }
 
     @Override
@@ -91,28 +148,27 @@ public class BinaryDataFileMem implements BinaryDataFile {
     public long write(byte[] b, int start, int length) {
         checkOpen() ;
         switchToWriteMode() ;
-        ensureBuffer(length);
-        
-        try {
-            System.arraycopy(b, start, buffer, writePosition, length) ;
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            // Should not happen, but ...
-            FmtLog.error(BinaryDataFileMem.class,
-                         "Bad arraycopy(src[%d], %d, dest[%d], $d, %d)",
-                         b.length, start, buffer.length, writePosition, length) ;
-        }
-        
-        long x = writePosition ; 
-        writePosition += length ;
+        long x = fileEnd ;
+        arrayCopyIn(b, start, storage, fileEnd, length) ;   // append.
+//        try {
+//            System.arraycopy(b, start, buffer, writePosition, length) ;
+//        } catch (ArrayIndexOutOfBoundsException ex) {
+//            // Should not happen, but ...
+//            FmtLog.error(BinaryDataFileMem.class,
+//                         "Bad arraycopy(src[%d], %d, dest[%d], $d, %d)",
+//                         b.length, start, buffer.length, writePosition, length) ;
+//        }
         return x ; 
     }
 
     @Override
     synchronized
     public void truncate(long length) {
+        if ( length < 0 )
+            IO.exception(String.format("truncate: bad length : %d", length)) ;
         checkOpen() ;
         switchToWriteMode() ;
-        writePosition = (int)length ;
+        fileEnd = Math.max(fileEnd, length) ;
     }
 
     @Override
@@ -126,13 +182,13 @@ public class BinaryDataFileMem implements BinaryDataFile {
     public void close() {
         if ( ! isOpen() )
             return ;
-        buffer = null ;
+        storage = null ;
     }
 
     @Override
     synchronized
     public long length() {
-        return writePosition ;
+        return fileEnd ;
     }
     
     private void switchToReadMode() {
