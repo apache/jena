@@ -201,11 +201,13 @@ public class NodeId
         XSDDatatype.XSDboolean
     } ;
 
-    /** Return true if this node has a datatype that look sliek it is inlineable.
+    /** Return true if this node has a datatype that look like it is inlineable.
      * The node may still be out of range (e.g. very large integer).
      * Only inline(Node)->NodeId can determine that. 
      */
     public static boolean hasInlineDatatype(Node node) {
+        if ( ! node.isLiteral() )
+            return false ;
         RDFDatatype dtn = node.getLiteralDatatype() ;
         for ( RDFDatatype dt : datatypes )
             if ( dt.equals(dtn) ) return true ;
