@@ -33,11 +33,11 @@ import org.apache.jena.atlas.lib.Sync ;
  * own abstraction enables us to implement memory-backed versions.
  * 
  * @see BlockAccess
- * @see FileChannel
+ * @see java.nio.channels.FileChannel
  */
 public interface BufferChannel extends Sync, Closeable
 {
-    // Like FileChannel except
+    // Like java.nio.channels.FileChannel except
     //   Allows implementation by non-files e.g. a memory backed storage.
     //   Runtime exceptions.
     // This is a simple, low level "file = array of bytes" interface"

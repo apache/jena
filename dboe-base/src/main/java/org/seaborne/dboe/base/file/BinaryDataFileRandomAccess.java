@@ -31,7 +31,8 @@ import org.apache.jena.atlas.io.IO ;
  *  @see BinaryDataFileWriteBuffered
  */
 public class BinaryDataFileRandomAccess implements BinaryDataFile {
-
+    // On OpenJDK, RandomAccessFile and FileChannelImpl both
+    // dive into native code.
     protected RandomAccessFile file ;
     protected boolean readMode ;
     protected long readPosition ;

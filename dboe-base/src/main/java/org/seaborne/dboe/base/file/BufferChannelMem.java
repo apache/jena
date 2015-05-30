@@ -24,6 +24,7 @@ import org.seaborne.dboe.base.StorageException ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+// XXX Merge/replace with SegmentedByteBuffer which has more predicable performance. 
 public class BufferChannelMem implements BufferChannel {
     private static Logger log       = LoggerFactory.getLogger(BufferChannelMem.class) ;
     // The "file pointer" is the position of this buffer. 

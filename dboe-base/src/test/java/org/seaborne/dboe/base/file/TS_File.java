@@ -24,7 +24,7 @@ import org.junit.runners.Suite ;
 @Suite.SuiteClasses( {
     TestMetaFile.class
     , TestLocationLock.class
-    
+    , TestSegmentedMemBuffer.class
     , TestChannelMem.class
     , TestChannelFile.class
     
