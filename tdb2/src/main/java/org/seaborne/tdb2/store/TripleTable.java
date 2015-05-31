@@ -42,23 +42,29 @@ public class TripleTable extends TableBase {
         // table = new NodeTupleTableConcrete(3, indexes, nodeTable, policy) ;
     }
 
+    /*
+     * Add triple
+     */
     public void add(Triple triple) {
         add(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
 
+    /*
+     * Add triple
+     */
     public void add(Node s, Node p, Node o) {
         table.addRow(s, p, o) ;
     }
 
     /**
-     * Delete a triple - return true if it was deleted, false if it didn't exist
+     * Delete a triple
      */
     public void delete(Triple triple) {
         delete(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
 
     /**
-     * Delete a triple - return true if it was deleted, false if it didn't exist
+     * Delete a triple
      */
     public void delete(Node s, Node p, Node o) {
         table.deleteRow(s, p, o) ;

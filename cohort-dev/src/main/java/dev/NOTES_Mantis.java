@@ -18,13 +18,12 @@
 package dev;
 
 public class NOTES_Mantis {
-    // Streams, not iterators?
+    // NodeCache and abort
+    
     // Reduce overheads
     //  Record if change zero cost abort/commit.
     //  Shared state files / less sync's.
     
-    // Use SegmentedMemBuffer in BufferChannelMem
-
     // For all Trans*, do we need to record both Redo and Undo actions in the
     // journal during prepare? And then recovery is either "forward" or "backward".
     // Recovery: recover(Redo/undo, data);

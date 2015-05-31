@@ -21,6 +21,7 @@ package org.seaborne.tdb2.store.tupletable;
 import static java.lang.String.format ;
 
 import java.util.Iterator ;
+import java.util.List ;
 
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
@@ -95,7 +96,13 @@ public class TupleTable implements Sync, Closeable
         }
     }
 
-    /** Delete a tuple */
+    /** Insert a tuple */
+    public void addAll(List<Tuple<NodeId>> t) {
+        // XXX Temporary !
+        t.forEach(this::add) ;
+    }
+
+        /** Delete a tuple */
     public void delete( Tuple<NodeId> t ) { 
         if ( tupleLen != t.size() )
             throw new TDBException(format("Mismatch: deleting tuple of length %d from a table of tuples of length %d", t.size(), tupleLen)) ;
