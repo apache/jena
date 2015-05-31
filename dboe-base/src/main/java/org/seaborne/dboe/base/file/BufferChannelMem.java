@@ -20,6 +20,7 @@ package org.seaborne.dboe.base.file ;
 import java.nio.ByteBuffer ;
 
 import org.apache.jena.atlas.lib.ByteBufferLib ;
+import org.apache.jena.atlas.logging.FmtLog ;
 import org.seaborne.dboe.base.StorageException ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -86,7 +87,7 @@ public class BufferChannelMem implements BufferChannel {
     synchronized public int read(ByteBuffer buffer) {
         checkIfClosed() ;
         if ( TRACKING )
-            log("read<<[" + buffer.capacity() + "]") ;
+            log("read<<%s", ByteBufferLib.details(buffer));
 
         int x = bytes.position() ;
 
@@ -107,7 +108,7 @@ public class BufferChannelMem implements BufferChannel {
     synchronized public int read(ByteBuffer buffer, long loc) {
         checkIfClosed() ;
         if ( TRACKING )
-            log("read<<@" + loc) ;
+            log("read<<@%d", loc) ;
         if ( loc < 0 || loc > bytes.limit() )
             throw new StorageException("Out of range(" + name + "[read]): " + loc + " [0," + bytes.limit() + ")") ;
         if ( loc == bytes.limit() )
@@ -117,7 +118,7 @@ public class BufferChannelMem implements BufferChannel {
         int len = read(buffer) ;
         bytes.position(x) ;
         if ( TRACKING )
-            log("read>>@" + loc) ;
+            log("read>>@%d",loc) ;
         return len ;
     }
 
@@ -125,7 +126,7 @@ public class BufferChannelMem implements BufferChannel {
     synchronized public int write(ByteBuffer buffer) {
         checkIfClosed() ;
         if ( TRACKING )
-            log("write<<[" + buffer.capacity() + "]") ;
+            log("write<<%s", ByteBufferLib.details(buffer));
         int len = buffer.limit() - buffer.position() ;
         int posn = bytes.position() ;
 
@@ -159,7 +160,7 @@ public class BufferChannelMem implements BufferChannel {
     synchronized public int write(ByteBuffer buffer, long loc) {
         checkIfClosed() ;
         if ( TRACKING )
-            log("write<<@" + loc) ;
+            log("write<<@%d", loc) ;
         if ( loc < 0 || loc > bytes.limit() )
             // Can write at loc = bytes()
             throw new StorageException("Out of range(" + name + "[write]): " + loc + " [0," + bytes.limit() + ")") ;
@@ -168,13 +169,15 @@ public class BufferChannelMem implements BufferChannel {
         int len = write(buffer) ;
         bytes.position(x) ;
         if ( TRACKING )
-            log("write>>@" + loc) ;
+            log("write>>@%d", loc) ;
         return len ;
     }
 
     @Override
     synchronized public void truncate(long size) {
         checkIfClosed() ;
+        if ( TRACKING )
+            log("truncate(%d)", size) ;
         int x = (int)size ;
         if ( x < 0 )
             throw new StorageException("Out of range: " + size) ;
@@ -230,10 +233,8 @@ public class BufferChannelMem implements BufferChannel {
         return null ;
     }
 
-    private void log(String op) {
-        if ( TRACKING ) {
-            String msg = op + " [" + name + "] " + ByteBufferLib.details(bytes) ;
-            log.debug(msg) ;
-        }
+    private void log(String fmt, Object... args) {
+        if ( TRACKING )
+            FmtLog.debug(log, fmt, args); 
     }
 }

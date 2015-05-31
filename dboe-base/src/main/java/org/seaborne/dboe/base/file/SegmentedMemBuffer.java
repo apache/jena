@@ -22,6 +22,10 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.ByteBufferLib ;
+import org.apache.jena.atlas.logging.FmtLog ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 /** A segmented, expanding buffer of bytes.
  *  This class does not copy the underlying bytes when the file grows.
@@ -31,16 +35,17 @@ import org.apache.jena.atlas.io.IO ;
  *  as they go from small to large. 
  */
 public class SegmentedMemBuffer {
+    private static Logger log = LoggerFactory.getLogger(SegmentedMemBuffer.class) ;
+    
     // See java.nio.channels.FileChannel
     private static int DFT_CHUNK = 1024*1024 ;
     private static int DFT_SEGMENTS = 1000 ;
     private final int CHUNK ;
     // The file pointer and marker of the allocated end point.
-    private int endSegment = 0 ;
-    private int endOffset = 0 ;
-    private long fileEnd = 0 ;
+    private long dataLength = 0 ;
     private List<byte[]> space = null ;
     private boolean isOpen ;
+    private final boolean TRACKING = false ;
 
     public SegmentedMemBuffer() { this(DFT_CHUNK) ; }
     
@@ -63,59 +68,81 @@ public class SegmentedMemBuffer {
     }
     
     public int read(long posn, ByteBuffer bb) {
+        if ( TRACKING )
+            log("read<<%s", ByteBufferLib.details(bb));
         checkOpen() ;
         checkPosition(posn) ;
         int len = bb.remaining() ;
-        if ( posn+fileEnd > fileEnd )
-            len = (int)(fileEnd-posn) ;
+        if ( posn+dataLength > dataLength )
+            len = (int)(dataLength-posn) ;
         arrayCopyOut(space, posn, bb);
         return len ;
     }
 
     public int read(long posn, byte[] b) {
-        return read(posn, b, 0, b.length) ; 
+        if ( TRACKING )
+            log("read<<[%d]", b.length) ;
+        return read$(posn, b, 0, b.length) ; 
     }
     
     public int read(long posn, byte[] b, int start, int length) {
+        if ( TRACKING )
+            log("read<<[%d],%s,%s", b.length, start, length) ;
+        return read$(posn, b, start, length) ;
+    }
+    
+    private int read$(long posn, byte[] b, int start, int length) {
         checkOpen() ;
-        if ( posn >= fileEnd ) 
+        if ( posn >= dataLength ) 
             return -1 ;
         checkPosition(posn) ;
         if ( length == 0 )
             return 0 ;
         checkByteArray(b, start, length) ;
         int len = length ;
-        if ( posn+length > fileEnd )
-            len = (int)(fileEnd-posn) ;
+        if ( posn+length > dataLength )
+            len = (int)(dataLength-posn) ;
         arrayCopyOut(space, posn, b, start, len) ;
         return len ;
     }
 
     public void write(long posn, ByteBuffer bb ) {
+        if ( TRACKING )
+            log("read<<%s", ByteBufferLib.details(bb));
         checkOpen() ;
-        if ( posn != fileEnd )
+        if ( posn != dataLength )
             checkPosition(posn) ;
         arrayCopyIn(bb, space, posn) ;
     }
 
     public void write(long posn, byte[] b ) {
-        write(posn, b, 0, b.length) ; 
+        if ( TRACKING )
+            log("read<<[%d]", b.length) ;
+        write$(posn, b, 0, b.length) ; 
     }
 
     public void write(long posn, byte[] b, int start, int length) {
+        if ( TRACKING )
+            log("read<<[%d],%d,%d", b.length, start, length) ;
+        write$(posn, b, start, length);
+    }
+    
+    private void write$(long posn, byte[] b, int start, int length) {
         checkOpen() ;
         checkPosition(posn) ;
         if ( length == 0 )
             return ;
         checkByteArray(b,start,length) ;
-        arrayCopyIn(b, start, space, fileEnd, length) ;
+        arrayCopyIn(b, start, space, dataLength, length) ;
     }
 
     public void truncate(long length) {
+        if ( TRACKING )
+            log("truncate(%d)", length) ;
         if ( length < 0 )
             IO.exception(String.format("truncate: bad length : %d", length)) ;
         checkOpen() ;
-        fileEnd = Math.min(fileEnd, length) ;
+        dataLength = Math.min(dataLength, length) ;
         // clear above?
     }
 
@@ -132,7 +159,7 @@ public class SegmentedMemBuffer {
     }
 
     public long length() {
-        return fileEnd ;
+        return dataLength ;
     }
 
     private void checkOpen() {
@@ -142,8 +169,8 @@ public class SegmentedMemBuffer {
 
     private void checkPosition(long posn) {
         // Allows posn to be exactly the byte beyond the end  
-        if ( posn < 0 || posn > fileEnd )
-            IO.exception(String.format("Position out of bounds: %d in [0,%d]", posn, fileEnd)) ;
+        if ( posn < 0 || posn > dataLength )
+            IO.exception(String.format("Position out of bounds: %d in [0,%d]", posn, dataLength)) ;
     }
 
     private void checkByteArray(byte[] b, int start, int length) {
@@ -179,17 +206,12 @@ public class SegmentedMemBuffer {
             offset += z ;
             offset %= CHUNK ;
         }
-        seg -= 1 ;
-        if ( seg == dest.size()-1 ) {
-            endSegment = seg ;
-            endOffset = offset ;
-        }
-        fileEnd = Math.max(fileEnd, destStart+length) ;
+        dataLength = Math.max(dataLength, destStart+length) ;
     }
 
     private void arrayCopyOut(List<byte[]> src, final long srcStart, byte[] dest, final int destStart, final int length) {
         int len = length ;
-        len = Math.min(len, (int)(fileEnd-srcStart)) ;
+        len = Math.min(len, (int)(dataLength-srcStart)) ;
         int dstPosn = destStart ;
         int seg = getSegment(srcStart) ;
         int offset = getOffset(srcStart) ;
@@ -227,17 +249,12 @@ public class SegmentedMemBuffer {
             offset += z ;
             offset %= CHUNK ;
         }
-        seg -= 1 ;
-        if ( seg == dest.size()-1 ) {
-            endSegment = seg ;
-            endOffset = offset ;
-        }
-        fileEnd = Math.max(fileEnd, destStart+length) ;
+        dataLength = Math.max(dataLength, destStart+length) ;
     }
 
     private void arrayCopyOut(List<byte[]> src, long srcStart, ByteBuffer bb) {
         int len = bb.remaining() ;
-        len = Math.min(len, (int)(fileEnd-srcStart)) ;
+        len = Math.min(len, (int)(dataLength-srcStart)) ;
         int dstPosn = bb.position() ;
         int seg = getSegment(srcStart) ;
         int offset = getOffset(srcStart) ;
@@ -252,5 +269,11 @@ public class SegmentedMemBuffer {
             offset %= CHUNK ;
         }
     }
+    
+    private void log(String fmt, Object... args) {
+        if ( TRACKING )
+            FmtLog.debug(log, fmt, args); 
+    }
+
 }
 
