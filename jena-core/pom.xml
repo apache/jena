@@ -60,14 +60,14 @@
 		<dependency>
 			<groupId>org.xenei</groupId>
 			<artifactId>junit-contracts</artifactId>
-			<version>0.1.2</version>
+			<version>0.1.1</version>
 			<scope>test</scope>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.xenei</groupId>
 			<artifactId>contract-test-maven-plugin</artifactId>
-			<version>0.1.2</version>
+			<version>0.1.1</version>
 			<scope>test</scope>
 		</dependency>
 		
@@ -213,7 +213,7 @@
 			<plugin>
 				<groupId>org.xenei</groupId>
 				<artifactId>contract-test-maven-plugin</artifactId>
-				<version>0.1.2</version>
+				<version>0.1.1</version>
 				<configuration>
 					<packages>
 						<package>org.apache.jena.assembler</package>
