@@ -197,7 +197,7 @@ public class FusekiConfig {
     
     /** Read service descriptions in the given directory */ 
     public static List<DataAccessPoint> readConfigurationDirectory(String dir) {
-         Path pDir = Paths.get(dir).normalize() ;
+        Path pDir = Paths.get(dir).normalize() ;
         File dirFile = pDir.toFile() ;
         if ( ! dirFile.exists() ) {
             log.warn("Not found: directory for assembler files for services: '"+dir+"'") ;
