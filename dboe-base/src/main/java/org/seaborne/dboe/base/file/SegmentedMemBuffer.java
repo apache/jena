@@ -81,6 +81,8 @@ public class SegmentedMemBuffer {
         if ( posn >= fileEnd ) 
             return -1 ;
         checkPosition(posn) ;
+        if ( length == 0 )
+            return 0 ;
         checkByteArray(b, start, length) ;
         int len = length ;
         if ( posn+length > fileEnd )
@@ -103,6 +105,8 @@ public class SegmentedMemBuffer {
     public void write(long posn, byte[] b, int start, int length) {
         checkOpen() ;
         checkPosition(posn) ;
+        if ( length == 0 )
+            return ;
         checkByteArray(b,start,length) ;
         arrayCopyIn(b, start, space, fileEnd, length) ;
     }
@@ -145,6 +149,8 @@ public class SegmentedMemBuffer {
     private void checkByteArray(byte[] b, int start, int length) {
         if ( start < 0 || start >= b.length )
             IO.exception(String.format("Start point out of bounds of byte array: %d in [0,%d)", start, b.length)) ;
+        if ( length < 0 || start+length > b.length )
+            IO.exception(String.format("Start/length out of bounds of byte array: %d/%d in [0,%d)", start, length, b.length)) ;
     }
     
     private int getSegment(long posn) { return (int)(posn / CHUNK) ; }
