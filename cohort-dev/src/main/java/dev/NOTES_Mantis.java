@@ -23,6 +23,7 @@ public class NOTES_Mantis {
     //  Record if change zero cost abort/commit.
     //  Shared state files / less sync's.
     
+    // Use SegmentedMemBuffer in BufferChannelMem
 
     // For all Trans*, do we need to record both Redo and Undo actions in the
     // journal during prepare? And then recovery is either "forward" or "backward".

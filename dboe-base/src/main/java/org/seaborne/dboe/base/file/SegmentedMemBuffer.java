@@ -17,6 +17,7 @@
  
 package org.seaborne.dboe.base.file;
 
+import java.nio.ByteBuffer ;
 import java.util.ArrayList ;
 import java.util.List ;
 
@@ -61,23 +62,38 @@ public class SegmentedMemBuffer {
         return space != null ;
     }
     
+    public int read(long posn, ByteBuffer bb) {
+        checkOpen() ;
+        checkPosition(posn) ;
+        int len = bb.remaining() ;
+        if ( posn+fileEnd > fileEnd )
+            len = (int)(fileEnd-posn) ;
+        arrayCopyOut(space, posn, bb);
+        return len ;
+    }
+
     public int read(long posn, byte[] b) {
         return read(posn, b, 0, b.length) ; 
     }
     
     public int read(long posn, byte[] b, int start, int length) {
         checkOpen() ;
-        long x = fileEnd ;
         if ( posn >= fileEnd ) 
             return -1 ;
-        checkRead(posn) ;
-        checkStart(start) ;
-        
+        checkPosition(posn) ;
+        checkByteArray(b, start, length) ;
         int len = length ;
-        if ( posn+length > x )
-            len = (int)(x-posn) ;
+        if ( posn+length > fileEnd )
+            len = (int)(fileEnd-posn) ;
         arrayCopyOut(space, posn, b, start, len) ;
         return len ;
+    }
+
+    public void write(long posn, ByteBuffer bb ) {
+        checkOpen() ;
+        if ( posn != fileEnd )
+            checkPosition(posn) ;
+        arrayCopyIn(bb, space, posn) ;
     }
 
     public void write(long posn, byte[] b ) {
@@ -86,7 +102,9 @@ public class SegmentedMemBuffer {
 
     public void write(long posn, byte[] b, int start, int length) {
         checkOpen() ;
-        arrayCopyIn(b, start, space, fileEnd, length) ;   // append.
+        checkPosition(posn) ;
+        checkByteArray(b,start,length) ;
+        arrayCopyIn(b, start, space, fileEnd, length) ;
     }
 
     public void truncate(long length) {
@@ -118,23 +136,23 @@ public class SegmentedMemBuffer {
             IO.exception("Not open") ;
     }
 
-    private void checkRead(long posn) {
-        if ( posn < 0 )
-            IO.exception(String.format("Position out of bounds: %d in [0,%d)", posn, fileEnd)) ;
+    private void checkPosition(long posn) {
+        // Allows posn to be exactly the byte beyond the end  
+        if ( posn < 0 || posn > fileEnd )
+            IO.exception(String.format("Position out of bounds: %d in [0,%d]", posn, fileEnd)) ;
     }
 
-    private void checkStart(long start) {
-        if ( start < 0 )
-            IO.exception(String.format("Start point out of bounds: %d in [0,%d)", start, fileEnd)) ;
+    private void checkByteArray(byte[] b, int start, int length) {
+        if ( start < 0 || start >= b.length )
+            IO.exception(String.format("Start point out of bounds of byte array: %d in [0,%d)", start, b.length)) ;
     }
     
     private int getSegment(long posn) { return (int)(posn / CHUNK) ; }
 
     private int getOffset(long posn) { return (int) (posn % CHUNK) ; }
 
-    // Like system.arrayCopy except in/out of List<byte[]> 
+    // c.f. System.arrayCopy 
     private void arrayCopyIn(byte[] src, final int srcStart, List<byte[]> dest, final long destStart, final int length) {
-        // Check destPos <= file length 
         if ( length == 0 )
             return ;
         int len = length ;
@@ -164,8 +182,6 @@ public class SegmentedMemBuffer {
     }
 
     private void arrayCopyOut(List<byte[]> src, final long srcStart, byte[] dest, final int destStart, final int length) {
-        // Check srcPos <= file length
-    
         int len = length ;
         len = Math.min(len, (int)(fileEnd-srcStart)) ;
         int dstPosn = destStart ;
@@ -174,6 +190,55 @@ public class SegmentedMemBuffer {
         while( len > 0 ) {
             int z = Math.min(len, CHUNK-offset) ;
             System.arraycopy(src.get(seg), offset, dest, dstPosn, z);
+            dstPosn += z ;
+            len -= z ;
+            seg += 1 ;
+            offset += z ;
+            offset %= CHUNK ;
+        }
+    }
+
+    private void arrayCopyIn(ByteBuffer bb, List<byte[]> dest, long destStart) {
+        if ( bb.remaining() == 0 )
+            return ;
+        int length = bb.remaining() ;
+        int len = bb.remaining() ;
+        int srcPosn = bb.position() ;
+        int seg = getSegment(destStart) ;
+        int offset = getOffset(destStart) ;
+        while( len > 0 ) {
+            int z = Math.min(len, CHUNK-offset) ;
+            // Beyond end of file?
+            if ( seg >= dest.size() ) {
+                byte[] buffer = new byte[CHUNK] ;
+                space.add(buffer) ;
+            }
+            byte[] bytes = dest.get(seg) ;
+            bb.get(bytes, offset, z) ;
+            srcPosn += z ;
+            len -= z ;
+            seg += 1 ;
+            offset += z ;
+            offset %= CHUNK ;
+        }
+        seg -= 1 ;
+        if ( seg == dest.size()-1 ) {
+            endSegment = seg ;
+            endOffset = offset ;
+        }
+        fileEnd = Math.max(fileEnd, destStart+length) ;
+    }
+
+    private void arrayCopyOut(List<byte[]> src, long srcStart, ByteBuffer bb) {
+        int len = bb.remaining() ;
+        len = Math.min(len, (int)(fileEnd-srcStart)) ;
+        int dstPosn = bb.position() ;
+        int seg = getSegment(srcStart) ;
+        int offset = getOffset(srcStart) ;
+        while( len > 0 ) {
+            int z = Math.min(len, CHUNK-offset) ;
+            byte[] bytes = src.get(seg) ;
+            bb.put(bytes, offset, z) ;
             dstPosn += z ;
             len -= z ;
             seg += 1 ;
