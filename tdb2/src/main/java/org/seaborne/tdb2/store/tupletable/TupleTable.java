@@ -96,13 +96,17 @@ public class TupleTable implements Sync, Closeable
         }
     }
 
-    /** Insert a tuple */
+    /** Insert tuples */
     public void addAll(List<Tuple<NodeId>> t) {
-        // XXX Temporary !
-        t.forEach(this::add) ;
+        // Parallel.
+        for ( int i = 0 ; i < indexes.length ; i++ ) {
+            if ( indexes[i] == null ) continue ;
+            indexes[i].addAll(t) ;
+            syncNeeded = true ;
+        }
     }
 
-        /** Delete a tuple */
+    /** Delete a tuple */
     public void delete( Tuple<NodeId> t ) { 
         if ( tupleLen != t.size() )
             throw new TDBException(format("Mismatch: deleting tuple of length %d from a table of tuples of length %d", t.size(), tupleLen)) ;
@@ -113,6 +117,18 @@ public class TupleTable implements Sync, Closeable
             index.delete( t );
         }
     }
+    
+    /** Insert tuples */
+    public void deleteAll(List<Tuple<NodeId>> t) {
+        // Parallel.
+        for ( int i = 0 ; i < indexes.length ; i++ ) {
+            if ( indexes[i] == null ) continue ;
+            indexes[i].deleteAll(t) ;
+            syncNeeded = true ;
+        }
+    }
+
+
 
     /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any */
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern) {

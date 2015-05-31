@@ -49,7 +49,7 @@ public abstract class TupleIndexBase implements TupleIndex
     /** Add tuple worker: Tuple passed in unmapped (untouched) order */
     protected abstract void performAdd(Tuple<NodeId> tuple) ;
     
-    /** Delete tuple worker: Tuple passed in unmaped (untouched) order */
+    /** Delete tuple worker: Tuple passed in unmapped (untouched) order */
     protected abstract void performDelete(Tuple<NodeId> tuple) ;
     
     /** Find tuples worker: Tuple passed in unmaped (untouched) order */
@@ -108,7 +108,7 @@ public abstract class TupleIndexBase implements TupleIndex
     }
     
     @Override
-    public final String getMapping()          { return colMap.getLabel() ; }
+    public final String getMapping()        { return colMap.getLabel() ; }
 
     @Override
     public final String getName()           { return name ; }

@@ -21,6 +21,7 @@ package org.seaborne.tdb2.store.tupletable;
 import static java.lang.String.format ;
 import static org.seaborne.tdb2.sys.SystemTDB.SizeOfNodeId ;
 
+import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.function.Predicate ;
 
@@ -60,11 +61,23 @@ public class TupleIndexRecord extends TupleIndexBase
         index.insert(r) ;
     }
     
+    /** Insert tuples */
+    @Override
+    public void addAll(Collection<Tuple<NodeId>> tuples) {
+        tuples.stream().forEach(this::add);
+    }
+    
     /** Delete a tuple */
     @Override
     protected void performDelete(Tuple<NodeId> tuple) { 
         Record r = TupleLib.record(factory, tuple, colMap) ;
         index.delete(r) ;
+    }
+    
+    /** Delete tuples */
+    @Override
+    public void deleteAll(Collection<Tuple<NodeId>> tuples) {
+        tuples.stream().forEach(this::delete);
     }
     
     /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any.

@@ -18,6 +18,7 @@
 
 package org.seaborne.tdb2.store.tupletable;
 
+import java.util.Collection ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.ColumnMap ;
@@ -42,8 +43,18 @@ public class TupleIndexWrapper implements TupleIndex
     }
 
     @Override
+    public void addAll(Collection<Tuple<NodeId>> tuples) {
+        index.addAll(tuples) ;
+    }
+
+    @Override
     public void delete(Tuple<NodeId> tuple) {
         index.delete(tuple) ;
+    }
+
+    @Override
+    public void deleteAll(Collection<Tuple<NodeId>> tuples) {
+        index.deleteAll(tuples);
     }
 
     @Override
