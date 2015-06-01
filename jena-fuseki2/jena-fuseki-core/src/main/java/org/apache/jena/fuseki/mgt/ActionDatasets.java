@@ -304,7 +304,7 @@ public class ActionDatasets extends ActionContainerItem {
             
             // Name to graph
             // Statically configured databases aren't in the system database.
-            Quad q = getOne(systemDSG, null, null, pServiceName.asNode(), null) ;
+            Quad q = getOne(systemDSG, null, null, pServiceName.asNode(), null, name) ;
 //            if ( q == null )
 //                ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
             if ( q != null ) {
@@ -352,13 +352,17 @@ public class ActionDatasets extends ActionContainerItem {
     
     // ---- Auxilary functions
 
-    private static Quad getOne(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
+    private static Quad getOne(DatasetGraph dsg, Node g, Node s, Node p, Node o, String name) {
         Iterator<Quad> iter = dsg.findNG(g, s, p, o) ;
-        if ( ! iter.hasNext() )
-            return null ;
-        Quad q = iter.next() ;
-        if ( iter.hasNext() )
-            return null ;
+        
+        Quad q = null ;
+        while (iter.hasNext()) {
+        	Quad quad=iter.next();
+            if(name.equals("/" + quad.getObject().getLiteralLexicalForm())){
+            	q = quad;
+            	break;
+            }
+        }
         return q ;
     }
     
