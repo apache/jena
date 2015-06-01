@@ -57,7 +57,7 @@ public class MemConnection extends DatasetConnection {
     }
 
     @Override
-    public DatabaseMetaData getMetaData() throws SQLException {
+    public DatabaseMetaData getMetaData() {
         return this.metadata;
     }
 }

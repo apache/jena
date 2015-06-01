@@ -28,8 +28,8 @@ import org.apache.jena.fuseki.servlets.HttpAction ;
 
 public class Async
 {
-    public static AsyncTask asyncTask(AsyncPool asyncPool, String displayName, DataService dataService, Runnable task) {
-        AsyncTask asyncTask = asyncPool.submit(task, displayName, dataService) ;
+    public static AsyncTask asyncTask(AsyncPool asyncPool, String displayName, DataService dataService, Runnable task, long requestId) {
+        AsyncTask asyncTask = asyncPool.submit(task, displayName, dataService, requestId) ;
         return asyncTask ;
     }
     
@@ -37,6 +37,8 @@ public class Async
         JsonBuilder builder = new JsonBuilder() ;
         builder.startObject("outer") ;
         builder.key(JsonConst.taskId).value(asyncTask.getTaskId()) ;
+        if ( asyncTask.getOriginatingRequestId() > 0 )
+            builder.key(JsonConst.taskRequestId).value(asyncTask.getOriginatingRequestId()) ;
         builder.finishObject("outer") ;
         return builder.build() ;
     }
@@ -51,18 +53,9 @@ public class Async
     }
 
     public static AsyncTask execASyncTask(HttpAction action, AsyncPool asyncPool, String displayName, Runnable runnable) {
-        AsyncTask atask = Async.asyncTask(asyncPool, "backup", action.getDataService(), runnable) ;
+        AsyncTask atask = Async.asyncTask(asyncPool, "backup", action.getDataService(), runnable, action.id) ;
         Async.setLocationHeader(action, atask); 
         return atask ;
     }
-    
-    // Combined does not work very well - e.g sleep does not set Location.
-//        public static AsyncTask execASyncTask(HttpAction action, AsyncPool asyncPool, String displayName, Runnable task) {
-//        AsyncTask atask = Async.asyncTask(asyncPool, displayName, action.getDataService(), task) ;
-//        Async.setLocationHeader(action, atask);
-//        JsonValue v = Async.asJson(atask) ;
-//        ServletOps.sendJsonReponse(action, v);
-//        return atask ;
-//    }
 }
 
