@@ -22,6 +22,7 @@ import java.io.IOException ;
 import java.util.* ;
 import java.util.Map.Entry ;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
@@ -211,6 +212,26 @@ public class TextIndexLucene implements TextIndex {
         indexWriter.addDocument(doc) ;
     }
 
+    @Override
+    public void deleteEntity(Entity entity) {
+        if (docDef.getUidField() == null)
+            return;
+
+        if ( log.isDebugEnabled() )
+            log.debug("Delete entity: "+entity) ;
+        try {
+            Map<String, Object> map = entity.getMap();
+            String property = map.keySet().iterator().next();
+            String value = (String)map.get(property);
+            String key = entity.getGraph() + "-" + entity.getId() + "-" + property + "-" + value + "-" + entity.getLanguage();
+            Term uid = new Term(docDef.getUidField(), DigestUtils.sha256Hex(key));
+            indexWriter.deleteDocuments(uid);
+
+        } catch (Exception e) {
+            throw new TextIndexException(e) ;
+        }
+    }
+
     protected Document doc(Entity entity) {
         Document doc = new Document() ;
         Field entField = new Field(docDef.getEntityField(), entity.getId(), ftIRI) ;
@@ -223,13 +244,18 @@ public class TextIndexLucene implements TextIndex {
         }
 
         String langField = docDef.getLangField() ;
+        String uidField = docDef.getUidField() ;
 
         for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
             doc.add( new Field(e.getKey(), (String) e.getValue(), ftText) );
             if (langField != null) {
                 String lang = entity.getLanguage();
                 if (lang != null && !"".equals(lang))
-                    doc.add(new Field(docDef.getLangField(), lang, StringField.TYPE_STORED));
+                    doc.add(new Field(langField, lang, StringField.TYPE_STORED));
+            }
+            if (uidField != null) {
+                String key = entity.getGraph() + "-" + entity.getId() + "-" + e.getKey() + "-" + e.getValue() + "-" + entity.getLanguage();
+                doc.add(new Field(uidField, DigestUtils.sha256Hex(key), StringField.TYPE_STORED));
             }
         }
         return doc ;

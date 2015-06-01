@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TestDatasetWithLuceneTextIndexWithLangField extends AbstractTestDatasetWithTextIndexBase {
+public class TestDatasetWithLuceneTextIndexWithUidField extends AbstractTestDatasetWithTextIndexBase {
     
     private static final String SPEC_BASE = "http://example.org/spec#";
     private static final String SPEC_ROOT_LOCAL = "lucene_text_dataset";
@@ -77,7 +77,7 @@ public class TestDatasetWithLuceneTextIndexWithLangField extends AbstractTestDat
                     "    a text:EntityMap ;",
                     "    text:entityField      \"uri\" ;",
                     "    text:defaultField     \"label\" ;",
-                    "    text:langField        \"language\" ;",
+                    "    text:uidField         \"uuid\" ;",
                     "    text:map (",
                     "         [ text:field \"label\" ; text:predicate rdfs:label ]",
                     "         [ text:field \"comment\" ; text:predicate rdfs:comment ]",
@@ -101,26 +101,29 @@ public class TestDatasetWithLuceneTextIndexWithLangField extends AbstractTestDat
     }
     
     @Test
-    public void testLiteralLanguageSearch(){
+    public void testDeleteTriple(){
         final String turtle = StrUtils.strjoinNL(
                 TURTLE_PROLOG,
-                "<" + RESOURCE_BASE + "ParisInEnglish>",
-                "  rdfs:label 'Paris, capital of France'@en",
-                ".",
-                TURTLE_PROLOG,
-                "<" + RESOURCE_BASE + "ParisInFrench>",
-                "  rdfs:label 'Paris, capitale de la France'@fr",
+                "<" + RESOURCE_BASE + "myResource>",
+                "  rdfs:label 'My first resource'",
                 "."
         );
+        loadData(turtle);
+        String updateString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "DELETE DATA { ",
+                "    <" + RESOURCE_BASE + "myResource> rdfs:label 'My first resource'",
+                "}"
+        );
+        doUpdate(updateString);
+
         String queryString = StrUtils.strjoinNL(
                 QUERY_PROLOG,
                 "SELECT ?s",
                 "WHERE {",
-                "    ?s text:query ( rdfs:label 'paris' 'lang:en' 10 ) .",
+                "    ?s text:query ( rdfs:label 'first' ) .",
                 "}"
         );
-        Set<String> expectedURIs = new HashSet<>() ;
-        expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/ParisInEnglish")) ;
-        doTestSearch(turtle, queryString, expectedURIs);
+        doTestNoResult(dataset, "", queryString);
     }
 }
