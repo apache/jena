@@ -55,20 +55,18 @@ public class TestRemoteEndpointResultsWithResultSetTypes extends AbstractRemoteE
     
     /**
      * Clean up after each test by resetting the Fuseki instance
-     * @throws InterruptedException 
      */
     @After
-    public void cleanupTest() throws InterruptedException {
+    public void cleanupTest() {
         ServerTest.resetServer();
     }
     
     /**
      * Clean up after tests by de-allocating the Fuseki instance
      * @throws SQLException 
-     * @throws InterruptedException 
      */
     @AfterClass
-    public static void cleanup() throws SQLException, InterruptedException {
+    public static void cleanup() throws SQLException {
         
         // Sleep attempts to avoid a intermittent timing issue on the build server that can result in hung builds
         

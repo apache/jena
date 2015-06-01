@@ -67,7 +67,7 @@ public class JenaParameterMetadata implements ParameterMetaData {
     }
 
     @Override
-    public int getParameterCount() throws SQLException {
+    public int getParameterCount() {
         return this.paramCount;
     }
 

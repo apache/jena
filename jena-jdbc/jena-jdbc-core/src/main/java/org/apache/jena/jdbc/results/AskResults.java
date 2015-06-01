@@ -75,11 +75,11 @@ public class AskResults extends JenaResultSet {
         }
     }
 
-    public void afterLast() throws SQLException {
+    public void afterLast() {
         this.currRow = 2;
     }
 
-    public void beforeFirst() throws SQLException {
+    public void beforeFirst() {
         this.currRow = 0;
     }
 
@@ -103,19 +103,19 @@ public class AskResults extends JenaResultSet {
         return true;
     }
 
-    public int getFetchDirection() throws SQLException {
+    public int getFetchDirection() {
         return ResultSet.FETCH_FORWARD;
     }
 
-    public int getFetchSize() throws SQLException {
+    public int getFetchSize() {
         return 1;
     }
 
-    public int getRow() throws SQLException {
+    public int getRow() {
         return this.currRow;
     }
 
-    public int getType() throws SQLException {
+    public int getType() {
         return ResultSet.TYPE_SCROLL_INSENSITIVE;
     }
 
@@ -129,7 +129,7 @@ public class AskResults extends JenaResultSet {
         return this.currRow == 0;
     }
 
-    public boolean isClosed() throws SQLException {
+    public boolean isClosed() {
         return this.closed;
     }
 
@@ -183,7 +183,7 @@ public class AskResults extends JenaResultSet {
     }
 
     @Override
-    public ResultSetMetaData getMetaData() throws SQLException {
+    public ResultSetMetaData getMetaData() {
         return this.metadata;
     }
 

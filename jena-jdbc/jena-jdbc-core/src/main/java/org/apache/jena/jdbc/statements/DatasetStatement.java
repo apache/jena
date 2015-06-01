@@ -135,7 +135,7 @@ public class DatasetStatement extends JenaStatement {
     }
 
     @Override
-    protected boolean hasActiveTransaction() throws SQLException {
+    protected boolean hasActiveTransaction() {
         return this.dsConn.getJenaDataset().isInTransaction();
     }
 

@@ -113,7 +113,7 @@ public class TestRemoteEndpointConnectionWithGraphUris extends AbstractRemoteEnd
     }
 
     @Override
-    protected String getDefaultGraphName() throws SQLException {
+    protected String getDefaultGraphName() {
         return DEFAULT_GRAPH_URI;
     }
 

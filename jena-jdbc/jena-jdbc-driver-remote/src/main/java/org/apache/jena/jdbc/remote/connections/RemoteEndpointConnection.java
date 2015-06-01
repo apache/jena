@@ -197,7 +197,7 @@ public class RemoteEndpointConnection extends JenaConnection {
     }
 
     @Override
-    protected void closeInternal() throws SQLException {
+    protected void closeInternal() {
         this.closed = true;
     }
 
@@ -230,17 +230,17 @@ public class RemoteEndpointConnection extends JenaConnection {
     }
 
     @Override
-    public boolean isClosed() throws SQLException {
+    public boolean isClosed() {
         return this.closed;
     }
 
     @Override
-    public boolean isReadOnly() throws SQLException {
+    public boolean isReadOnly() {
         return this.readonly;
     }
 
     @Override
-    public boolean isValid(int timeout) throws SQLException {
+    public boolean isValid(int timeout) {
         return !this.isClosed();
     }
 
@@ -258,17 +258,17 @@ public class RemoteEndpointConnection extends JenaConnection {
     }
 
     @Override
-    public DatabaseMetaData getMetaData() throws SQLException {
+    public DatabaseMetaData getMetaData() {
         return this.metadata;
     }
 
     @Override
-    protected void commitInternal() throws SQLException {
+    protected void commitInternal() {
         // No-op
     }
 
     @Override
-    protected void rollbackInternal() throws SQLException {
+    protected void rollbackInternal() {
         // No-op
     }
 
