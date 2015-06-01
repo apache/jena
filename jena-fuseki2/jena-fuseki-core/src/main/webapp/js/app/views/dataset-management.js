@@ -10,7 +10,7 @@ define(
       initialize: function(){
         _.bindAll( this, "onRemoveDataset", "onConfirmAction",
                          "onDatasetRemoveSuccess", "onDatasetRemoveFail",
-                         "onTaskStatus", "onTaskFailed" );
+                         "onTaskStatus", "onTaskFailed", "cleanup" );
 
         this.listenTo( this.model, "change", this.onModelChange, this );
 
@@ -38,10 +38,17 @@ define(
       templateHelpers: {
       },
 
+      cleanup: function() {
+        this.unbind();
+        this.undelegateEvents();
+        this.model.unbind( 'change', this.onModelChange, this ); 
+        fui.vent.unbind( 'action.delete.confirm', this.onConfirmRemoveDataset, this );
+      },
 
       /** If the model changes, update the summary */
       onModelChange: function( event ) {
-        this.render();
+         this.cleanup();
+         this.render();
       },
 
       /** User has requested a dataset be removed */
@@ -86,7 +93,10 @@ define(
         var dsId = elem.data( "ds-id" );
         var eventId = elem.data( "event-id" );
 
-        this.ui.actionConfirmModal.modal( 'hide' );
+        //this.ui.actionConfirmModal.modal( 'hide' );
+        $('.modal.in').modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
         _.delay( function() {
           fui.vent.trigger( eventId, dsId );
         }, 100 );

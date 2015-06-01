@@ -302,9 +302,11 @@ public class ActionDatasets extends ActionContainerItem {
             // Make it invisible to the outside.
             DataAccessPointRegistry.get().remove(name) ;
             
-            // Name to graph
-            // Statically configured databases aren't in the system database.
-            Quad q = getOne(systemDSG, null, null, pServiceName.asNode(), null) ;
+            // Find graph associated with this dataset name.
+            // (Statically configured databases aren't in the system database.)
+            
+            Node n = NodeFactory.createLiteral(DataAccessPoint.canonical(name)) ;
+            Quad q = getOne(systemDSG, null, null, pServiceName.asNode(), n) ;
 //            if ( q == null )
 //                ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
             if ( q != null ) {
@@ -350,7 +352,7 @@ public class ActionDatasets extends ActionContainerItem {
         }
     }
     
-    // ---- Auxilary functions
+    // ---- Auxiliary functions
 
     private static Quad getOne(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
         Iterator<Quad> iter = dsg.findNG(g, s, p, o) ;
