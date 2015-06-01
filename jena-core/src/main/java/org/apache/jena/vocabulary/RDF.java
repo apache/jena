@@ -32,7 +32,10 @@ import org.apache.jena.rdf.model.ResourceFactory ;
 
 public class RDF{
 
-    protected static final String uri ="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+	/**
+	 * The namespace of the vocabulary as a string
+	 */
+	public static final String uri ="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
     /** returns the URI for this schema
         @return the URI for this schema

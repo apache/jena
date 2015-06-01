@@ -26,12 +26,16 @@ import org.apache.jena.rdf.model.ResourceFactory ;
  * Defines Jena resources corresponding to the URIs for 
  * the XSD primitive datatypes which are known to Jena. 
  */
-public class XSD {    
+public class XSD {  
+	/**
+	 * The namespace of the vocabulary as a string
+	 */
+	public static final String NS = XSDDatatype.XSD + "#";
     /**
      * The RDF-friendly version of the XSD namespace
      * with trailing # character.
      */
-    public static String getURI() { return XSDDatatype.XSD + "#"; }
+    public static String getURI() { return NS; }
     
     /** Resource URI for xsd:float */
     public static Resource xfloat;

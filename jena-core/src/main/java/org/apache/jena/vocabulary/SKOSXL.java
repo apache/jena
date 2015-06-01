@@ -35,7 +35,7 @@ public class SKOSXL {
 	/**
 	 * The namespace of the SKOS-XL vocabulary as a string
 	 */
-	protected static final String uri = "http://www.w3.org/2008/05/skos-xl#";
+	public static final String uri = "http://www.w3.org/2008/05/skos-xl#";
 	/**
 	 * Returns the namespace of the SKOS-XL schema as a string
 	 * @return the namespace of the SKOS-XL schema

@@ -30,8 +30,10 @@ import org.apache.jena.rdf.model.impl.ResourceImpl ;
  * behaviour concerning these rules.
  */
 public class RDFSyntax {
-protected static final String uri =
-    "http://www.w3.org/TR/rdf-syntax-grammar#";
+	/**
+	 * The namespace of the vocabulary as a string
+	 */
+	public static final String uri ="http://www.w3.org/TR/rdf-syntax-grammar#";
     static public String getURI() {
         return uri;
     }

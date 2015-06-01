@@ -36,7 +36,7 @@ public class SKOS {
 	/**
 	 * The namespace of the SKOS vocabulary as a string
 	 */
-	protected static final String uri = "http://www.w3.org/2004/02/skos/core#";
+	public static final String uri = "http://www.w3.org/2004/02/skos/core#";
 	/**
 	 * Returns the namespace of the SKOS schema as a string
 	 * @return the namespace of the SKOS schema
