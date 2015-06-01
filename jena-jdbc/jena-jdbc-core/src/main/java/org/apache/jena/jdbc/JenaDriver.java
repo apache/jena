@@ -266,7 +266,7 @@ public abstract class JenaDriver implements Driver {
     }
 
     @Override
-    public boolean acceptsURL(String url) throws SQLException {
+    public boolean acceptsURL(String url) {
         if (url.startsWith(DRIVER_PREFIX + this.implPrefix)) {
             return true;
         } else {
@@ -812,7 +812,7 @@ public abstract class JenaDriver implements Driver {
      * @param props
      *            Properties
      */
-    protected void modifyProperties(Properties props) throws SQLException {
+    protected void modifyProperties(Properties props) {
         // Default implementation does nothing
     }
 
