@@ -2151,11 +2151,10 @@ public abstract class AbstractJenaStatementTests {
      * function correctly
      * 
      * @throws SQLException
-     * @throws MalformedURLException
      * @throws URISyntaxException
      */
     @Test
-    public void prepared_statement_setters_13() throws SQLException, MalformedURLException, URISyntaxException {
+    public void prepared_statement_setters_13() throws SQLException, URISyntaxException {
         JenaConnection conn = this.getConnection();
         JenaPreparedStatement stmt = (JenaPreparedStatement) conn.prepareStatement("SELECT * WHERE { ?s ?p ? }");
 
@@ -3421,11 +3420,10 @@ public abstract class AbstractJenaStatementTests {
      * function correctly
      * 
      * @throws SQLException
-     * @throws MalformedURLException
      * @throws URISyntaxException
      */
     @Test
-    public void prepared_statement_setters_78() throws SQLException, MalformedURLException, URISyntaxException {
+    public void prepared_statement_setters_78() throws SQLException, URISyntaxException {
         JenaConnection conn = this.getConnection();
         JenaPreparedStatement stmt = (JenaPreparedStatement) conn.prepareStatement("SELECT * WHERE { ?s ?p ? }");
 
@@ -3442,10 +3440,9 @@ public abstract class AbstractJenaStatementTests {
      * function correctly
      * 
      * @throws SQLException
-     * @throws MalformedURLException
      */
     @Test
-    public void prepared_statement_setters_79() throws SQLException, MalformedURLException {
+    public void prepared_statement_setters_79() throws SQLException {
         JenaConnection conn = this.getConnection();
         JenaPreparedStatement stmt = (JenaPreparedStatement) conn.prepareStatement("SELECT * WHERE { ?s ?p ? }");
 
@@ -3464,10 +3461,9 @@ public abstract class AbstractJenaStatementTests {
      * function correctly
      * 
      * @throws SQLException
-     * @throws MalformedURLException
      */
     @Test
-    public void prepared_statement_setters_80() throws SQLException, MalformedURLException {
+    public void prepared_statement_setters_80() throws SQLException {
         JenaConnection conn = this.getConnection();
         JenaPreparedStatement stmt = (JenaPreparedStatement) conn.prepareStatement("SELECT * WHERE { ?s ?p ? }");
 
@@ -3487,10 +3483,9 @@ public abstract class AbstractJenaStatementTests {
      * function correctly
      * 
      * @throws SQLException
-     * @throws MalformedURLException
      */
     @Test
-    public void prepared_statement_setters_81() throws SQLException, MalformedURLException {
+    public void prepared_statement_setters_81() throws SQLException {
         JenaConnection conn = this.getConnection();
         JenaPreparedStatement stmt = (JenaPreparedStatement) conn.prepareStatement("SELECT * WHERE { ?s ?p ? }");
 

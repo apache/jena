@@ -24,6 +24,8 @@ import java.util.concurrent.TimeUnit ;
 
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.query.ARQ ;
+import org.apache.jena.query.spatial.SpatialQuery ;
+import org.apache.jena.query.text.TextQuery ;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.system.stream.LocatorFTP ;
 import org.apache.jena.riot.system.stream.LocatorHTTP ;
@@ -201,7 +203,16 @@ public class Fuseki {
         SystemInfo sysInfo = new SystemInfo(FusekiIRI, PATH, VERSION, BUILD_DATE) ;
         SystemARQ.registerSubSystem(sysInfo) ;
         RIOT.init() ;
+        
         TDB.init() ;
+        // Initialize anyway (e.g. not to rely on assembler magic).
+        try { 
+            TextQuery.init() ;
+            SpatialQuery.init() ;
+        } catch ( Exception ex ) {
+            // In case jars are missing.
+        }
+        
         MappingRegistry.addPrefixMapping("fuseki", FusekiSymbolIRI) ;
 
         TDB.setOptimizerWarningFlag(false) ;

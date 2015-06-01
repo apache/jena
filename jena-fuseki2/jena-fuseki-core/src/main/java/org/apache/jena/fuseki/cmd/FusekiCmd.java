@@ -159,7 +159,7 @@ public class FusekiCmd {
             Logger log = Fuseki.serverLog ;
 
             if ( contains(argFusekiConfig) )
-                cmdLineDataset.fusekiConfigFile = getValue(argFusekiConfig) ;
+                cmdLineDataset.fusekiCmdLineConfigFile = getValue(argFusekiConfig) ;
 
             ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
 
@@ -176,7 +176,7 @@ public class FusekiCmd {
             if ( contains(argMemTDB) )
                 x++ ;
 
-            if ( cmdLineDataset.fusekiConfigFile != null ) {
+            if ( cmdLineDataset.fusekiCmdLineConfigFile != null ) {
                 if ( x >= 1 )
                     throw new CmdException("Dataset specified on the command line but a configuration file also given.") ;
             } else {
@@ -190,7 +190,7 @@ public class FusekiCmd {
             if ( contains(argMem) ) {
                 log.info("Dataset: in-memory") ;
                 cmdLineDataset = new ServerInitialConfig() ;
-                cmdLineDataset.templateFile = Template.templateMemFN ; 
+                cmdLineDataset.argTemplateFile = Template.templateMemFN ; 
             }
 
             if ( contains(argFile) ) {
@@ -213,13 +213,13 @@ public class FusekiCmd {
             if ( contains(argMemTDB) ) {
                 //log.info("TDB dataset: in-memory") ;
                 cmdLineDataset = new ServerInitialConfig() ;
-                cmdLineDataset.templateFile = Template.templateTDBMemFN ;
+                cmdLineDataset.argTemplateFile = Template.templateTDBMemFN ;
                 cmdLineDataset.params.put(Template.DIR, Names.memName) ;
             }
 
             if ( contains(argTDB) ) {
                 cmdLineDataset = new ServerInitialConfig() ;
-                cmdLineDataset.templateFile = Template.templateTDBDirFN ;
+                cmdLineDataset.argTemplateFile = Template.templateTDBDirFN ;
                 String dir = getValue(argTDB) ;
                 cmdLineDataset.params.put(Template.DIR, dir) ;
             }

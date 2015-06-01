@@ -82,7 +82,7 @@ public abstract class QueryExecutionResults extends JenaResultSet {
     protected abstract void closeInternal() throws SQLException;
 
     @Override
-    public final boolean isClosed() throws SQLException {
+    public final boolean isClosed() {
         return this.qe == null;
     }
     

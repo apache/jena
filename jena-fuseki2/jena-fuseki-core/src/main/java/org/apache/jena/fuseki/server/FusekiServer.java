@@ -25,14 +25,9 @@ import java.io.StringReader ;
 import java.nio.file.Files ;
 import java.nio.file.Path ;
 import java.nio.file.StandardCopyOption ;
-import java.util.ArrayList ;
-import java.util.HashMap ;
-import java.util.List ;
-import java.util.Map ;
-import java.util.Objects;
+import java.util.* ;
 
 import arq.cmd.CmdException ;
-
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.FileOps ;
@@ -242,19 +237,19 @@ public class FusekiServer
         if ( params == null )
             return datasets ;
 
-        if ( params.fusekiConfigFile != null ) {
-            if ( FileOps.exists(params.fusekiConfigFile ) ) {
-                Fuseki.configLog.info("Configuration file: " + params.fusekiConfigFile) ;
-                List<DataAccessPoint> cmdLineDatasets = FusekiConfig.readConfigFile(params.fusekiConfigFile) ;
-                datasets.addAll(cmdLineDatasets) ;
-            } else {
-                Fuseki.configLog.info("Configuration file '" + params.fusekiConfigFile+"' does not exist") ;
-            }
-        } else if ( params.dsg != null ) {
+        if ( params.fusekiCmdLineConfigFile != null ) {
+            List<DataAccessPoint> confDatasets = processConfigFile(params.fusekiCmdLineConfigFile) ;
+            datasets.addAll(confDatasets) ;
+        }
+        else if ( params.fusekiServerConfigFile != null ) {
+            List<DataAccessPoint> confDatasets = processConfigFile(params.fusekiServerConfigFile) ;
+            datasets.addAll(confDatasets) ;
+        }
+        else if ( params.dsg != null ) {
             DataAccessPoint dap = defaultConfiguration(params.datasetPath, params.dsg, params.allowUpdate) ;
             datasets.add(dap) ;
-        } else if ( params.templateFile != null ) {
-            Fuseki.configLog.info("Template file: " + params.templateFile) ;
+        } else if ( params.argTemplateFile != null ) {
+            Fuseki.configLog.info("Template file: " + params.argTemplateFile) ;
             String dir = params.params.get(Template.DIR) ;
             if ( dir != null ) {
                 if ( Objects.equals(dir, Names.memName) ) {
@@ -265,11 +260,20 @@ public class FusekiServer
                     Fuseki.configLog.info("TDB dataset: directory=" + dir) ;
                 }
             }
-            DataAccessPoint dap = configFromTemplate(params.templateFile, params.datasetPath, params.params) ;
+            DataAccessPoint dap = configFromTemplate(params.argTemplateFile, params.datasetPath, params.params) ;
             datasets.add(dap) ;
         }
         // No datasets is valid.
         return datasets ;
+    }
+    
+    private static List<DataAccessPoint> processConfigFile(String configFilename) {
+        if ( ! FileOps.exists(configFilename) ) {
+            Fuseki.configLog.warn("Configuration file '" + configFilename+"' does not exist") ;
+            return Collections.emptyList(); 
+        }
+        Fuseki.configLog.info("Configuration file: " + configFilename) ;
+        return FusekiConfig.readConfigFile(configFilename) ;
     }
     
     private static DataAccessPoint configFromTemplate(String templateFile, 
