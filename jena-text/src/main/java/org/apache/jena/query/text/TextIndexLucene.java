@@ -272,7 +272,6 @@ public class TextIndexLucene implements TextIndex {
 
         // Align and DRY with Solr.
         for ( ScoreDoc sd : sDocs ) {
-            //** score :: sd.score
             Document doc = indexSearcher.doc(sd.doc) ;
             String[] x = doc.getValues(docDef.getEntityField()) ;
             if ( x.length != 1 ) {}
@@ -301,7 +300,6 @@ public class TextIndexLucene implements TextIndex {
 
     @Override
     public List<TextHit> query(String qs, int limit) {
-        //** score
         try (IndexReader indexReader = DirectoryReader.open(directory)) {
             return query$(indexReader, qs, limit) ;
         }
