@@ -23,6 +23,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.jena.atlas.lib.StrUtils;
@@ -73,7 +75,6 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
         dataset.begin(ReadWrite.READ);
         try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
             ResultSet results = qexec.execSelect() ;
-            
             assertEquals(label, expectedNumResults > 0, results.hasNext());
             int count;
             for (count=0; results.hasNext(); count++) {
@@ -86,4 +87,36 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
             dataset.end() ;
         }        
     }
+    
+    protected Map<String,Float> doTestSearchWithScores(String turtle, String queryString, Set<String> expectedEntityURIs) {
+        Model model = dataset.getDefaultModel();
+        Reader reader = new StringReader(turtle);
+        dataset.begin(ReadWrite.WRITE);
+        model.read(reader, "", "TURTLE");
+        dataset.commit();
+        
+        Map<String,Float> scores = new HashMap<>();
+
+        Query query = QueryFactory.create(queryString) ;
+        dataset.begin(ReadWrite.READ);
+        try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
+            ResultSet results = qexec.execSelect() ;
+            
+            assertEquals(expectedEntityURIs.size() > 0, results.hasNext());
+            int count;
+            for (count=0; results.hasNext(); count++) {
+                QuerySolution soln = results.nextSolution();
+                String entityUri = soln.getResource("s").getURI();
+                assertTrue(expectedEntityURIs.contains(entityUri));
+                float score = soln.getLiteral("score").getFloat();
+                scores.put(entityUri, score);
+            }
+            assertEquals(expectedEntityURIs.size(), count);
+        }
+        finally {
+            dataset.end() ;
+        }
+        return scores;
+    }
+    
 }

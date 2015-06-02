@@ -178,20 +178,20 @@ public class TextIndexSolr implements TextIndex
     }
 
     @Override
-    public List<Node> query(String qs) { return query(qs, 0) ; } 
+    public List<TextHit> query(String qs) { return query(qs, 0) ; } 
 
     @Override
-    public List<Node> query(String qs, int limit) {
+    public List<TextHit> query(String qs, int limit) {
         SolrDocumentList solrResults = solrQuery(qs, limit) ;
-        List<Node> results = new ArrayList<>() ;
+        List<TextHit> results = new ArrayList<>() ;
 
         for ( SolrDocument sd : solrResults ) {
-            // ** score
-            // 'score' field.
             String str = (String)sd.getFieldValue(docDef.getEntityField()) ;
             // log.info("Entity: "+uriStr) ;
             Node n = TextQueryFuncs.stringToNode(str) ;
-            results.add(n) ;
+            Float score = (Float) sd.getFirstValue("score");
+            TextHit hit = new TextHit(n, score.floatValue());
+            results.add(hit) ;
         }
 
         if ( limit > 0 && results.size() > limit )
@@ -202,8 +202,7 @@ public class TextIndexSolr implements TextIndex
 
     private SolrDocumentList solrQuery(String qs, int limit) {
         SolrQuery sq = new SolrQuery(qs) ;
-        // ** score
-        // sq.setIncludeScore(true) ;
+        sq.setIncludeScore(true) ;
         if ( limit > 0 )
             sq.setRows(limit) ;
         else

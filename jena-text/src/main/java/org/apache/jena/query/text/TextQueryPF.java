@@ -18,20 +18,22 @@
 
 package org.apache.jena.query.text ;
 
+import java.util.Iterator ;
 import java.util.List ;
+import java.util.function.Function ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.QueryBuildException ;
+import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.iterator.QueryIterExtendByVar ;
+import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.engine.iterator.QueryIterSlice ;
 import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
@@ -47,9 +49,7 @@ import org.slf4j.LoggerFactory ;
 public class TextQueryPF extends PropertyFunctionBase {
     private static Logger log = LoggerFactory.getLogger(TextQueryPF.class) ;
     /*
-     * ?uri :queryPF (property? "string" limit? score?) 
-     * (?uri ?score) not implemented
-     * Look for "//** score" in TextQueryPF, TextIndexLucene and TextIndexSolr
+     * (?uri ?score) :queryPF (property? "string" limit? score?) 
      */
 
     private TextIndex     textIndex        = null ;
@@ -62,12 +62,11 @@ public class TextQueryPF extends PropertyFunctionBase {
     @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
         super.build(argSubject, predicate, argObject, execCxt) ;
-        //** score
-        // Subject possibilities become ?foo or (?foo ?score) 
         DatasetGraph dsg = execCxt.getDataset() ;
         textIndex = chooseTextIndex(dsg) ;
-        if (!argSubject.isNode())
-            throw new QueryBuildException("Subject is not a single node: " + argSubject) ;
+
+        if (argSubject.isList() && argSubject.getArgListSize() != 2)
+            throw new QueryBuildException("Subject has "+argSubject.getArgList().size()+" elements, not 2: "+argSubject);
 
         if (argObject.isList()) {
             List<Node> list = argObject.getArgList() ;
@@ -146,11 +145,20 @@ public class TextQueryPF extends PropertyFunctionBase {
 
         argSubject = Substitute.substitute(argSubject, binding) ;
         argObject = Substitute.substitute(argObject, binding) ;
+        
+        Node s = null;
+        Node score = null;
 
-        if (!argSubject.isNode())
-            throw new InternalErrorException("Subject is not a node (it was earlier!)") ;
-
-        Node s = argSubject.getArg() ;
+        if (argSubject.isList()) {
+            // Length checked in build()
+            s = argSubject.getArg(0);
+            score = argSubject.getArg(1);
+            
+            if (!score.isVariable())
+                throw new QueryExecException("Hit score is not a variable: "+argSubject) ;
+        } else {
+            s = argSubject.getArg() ;
+        }
 
         if (s.isLiteral())
             // Does not match
@@ -165,37 +173,48 @@ public class TextQueryPF extends PropertyFunctionBase {
         // ----
 
         QueryIterator qIter = (Var.isVar(s)) 
-            ? variableSubject(binding, s, match, execCxt) 
-            : concreteSubject(binding, s, match, execCxt) ;
+            ? variableSubject(binding, s, score, match, execCxt) 
+            : concreteSubject(binding, s, score, match, execCxt) ;
         if (match.getLimit() >= 0)
             qIter = new QueryIterSlice(qIter, 0, match.getLimit(), execCxt) ;
         return qIter ;
     }
 
-    private QueryIterator variableSubject(Binding binding, Node s, StrMatch match, ExecutionContext execCxt) {
-        Var v = Var.alloc(s) ;
-        List<Node> r = query(match.getQueryString(), match.getLimit(), execCxt) ;
-        // Make distinct. Note interaction with limit is imperfect
-        r = Iter.iter(r).distinct().toList() ;
-        QueryIterator qIter = new QueryIterExtendByVar(binding, v, r.iterator(), execCxt) ;
+    private QueryIterator variableSubject(Binding binding, Node s, Node score, StrMatch match, ExecutionContext execCxt) {
+        Var sVar = Var.alloc(s) ;
+        Var scoreVar = (score==null) ? null : Var.alloc(score) ;
+        List<TextHit> r = query(match.getQueryString(), match.getLimit(), execCxt) ;
+        Function<TextHit,Binding> converter = new TextHitConverter(binding, sVar, scoreVar);
+        Iterator<Binding> bIter = Iter.map(r.iterator(), converter);
+        QueryIterator qIter = new QueryIterPlainWrapper(bIter, execCxt);
         return qIter ;
     }
 
-    private QueryIterator concreteSubject(Binding binding, Node s, StrMatch match, ExecutionContext execCxt) {
+    private QueryIterator concreteSubject(Binding binding, Node s, Node score, StrMatch match, ExecutionContext execCxt) {
         if (!s.isURI()) {
             log.warn("Subject not a URI: " + s) ;
             return IterLib.noResults(execCxt) ;
         }
 
+        Var scoreVar = (score==null) ? null : Var.alloc(score) ;
         String qs = match.getQueryString() ;
-        List<Node> x = query(match.getQueryString(), -1, execCxt) ;
-        if ( x == null || ! x.contains(s) )
+        List<TextHit> x = query(match.getQueryString(), -1, execCxt) ;
+        
+        if ( x == null ) // null return value - empty result
             return IterLib.noResults(execCxt) ;
-        else
-            return IterLib.result(binding, execCxt) ;
+        
+        for (TextHit hit : x ) {
+            if (hit.getNode().equals(s)) {
+                // found the node among the hits
+                return IterLib.oneResult(binding, scoreVar, NodeFactoryExtra.floatToNode(hit.getScore()), execCxt) ;
+            }
+        }
+
+        // node was not among the hits - empty result
+        return IterLib.noResults(execCxt) ;
     }
 
-    private List<Node> query(String queryString, int limit, ExecutionContext execCxt) {
+    private List<TextHit> query(String queryString, int limit, ExecutionContext execCxt) {
         // use the graph information in the text index if possible
         if (textIndex.getDocDef().getGraphField() != null
             && execCxt.getActiveGraph() instanceof GraphView) {

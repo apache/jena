@@ -18,8 +18,11 @@
 
 package org.apache.jena.query.text;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays ;
 import java.util.HashSet ;
+import java.util.Map ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
@@ -92,6 +95,24 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
         doTestSearch(turtle, queryString, expectedURIs);
     }
 
+
+    @Test
+    public void propertyFunctionText_1_score() {
+        // As before but capturing the score in a variable.
+        final String turtle = PF_DATA ;
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s ?score",
+                "WHERE {",
+                "    (?s ?score) text:query ('text') .",
+                "}"
+                );
+
+        Set<String> expectedURIs = new HashSet<>();
+        expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
+        doTestSearchWithScores(turtle, queryString, expectedURIs);
+    }
+
     @Test
     public void propertyFunctionText_2() {
         final String turtle = PF_DATA ;
@@ -122,6 +143,24 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
         Set<String> expectedURIs = new HashSet<>();
         expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
         doTestSearch(turtle, queryString, expectedURIs);
+    }
+
+    @Test
+    public void propertyFunctionText_2_score() {
+        // As before but capturing the score in a variable.
+        final String turtle = PF_DATA ;
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s ?score",
+                "WHERE {",
+                "    (?s ?score) text:query ('text') .",
+                "    ?s rdfs:label 'text' .",
+                "}"
+                );
+
+        Set<String> expectedURIs = new HashSet<>();
+        expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
+        doTestSearchWithScores(turtle, queryString, expectedURIs);
     }
 
     @Test
@@ -156,6 +195,24 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
         doTestSearch(turtle, queryString, expectedURIs);
     }
     
+    @Test
+    public void propertyFunctionText_3_score() {
+        // As before but capturing the score in a variable.
+        final String turtle = PF_DATA ;
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s ?score",
+                "WHERE {",
+                "    ?s rdfs:label 'text' .",
+                "    (?s ?score) text:query ('text') .",
+                "}"
+                );
+
+        Set<String> expectedURIs = new HashSet<>();
+        expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
+        doTestSearchWithScores(turtle, queryString, expectedURIs);
+    }
+
     @Test
     public void propertyFunctionText_4() {
         final String turtle = PF_DATA ;
@@ -273,6 +330,34 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
                 "http://example.org/data/resource/" + label + "2"
             ));
         doTestSearch(turtle, queryString, expectedURIs);
+    }
+
+    @Test
+    public void testMultipleResults_score() {
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "brownfox>",
+                "  rdfs:label 'The quick brown fox jumped over the lazy dog.'",
+                ".",
+                "<" + RESOURCE_BASE + "redfox>",
+                "  rdfs:label 'red fox'",
+                "."
+                );
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s ?score",
+                "WHERE {",
+                "    (?s ?score) text:query ( rdfs:label 'brown fox' 10 ) .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>();
+        expectedURIs.addAll( Arrays.asList(
+                RESOURCE_BASE + "brownfox",
+                RESOURCE_BASE + "redfox"
+            ));
+        Map<String,Float> scores = doTestSearchWithScores(turtle, queryString, expectedURIs);
+        // the entry for ("The quick brown fox...") should have a higher score since it's a better match
+        assertTrue(scores.get(RESOURCE_BASE + "brownfox") > scores.get(RESOURCE_BASE + "redfox"));
     }
 
     @Test
