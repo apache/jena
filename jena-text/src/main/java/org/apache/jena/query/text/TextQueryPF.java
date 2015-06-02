@@ -41,7 +41,6 @@ import org.apache.jena.sparql.pfunction.PropertyFunctionBase ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.IterLib ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.apache.jena.util.iterator.Map1Iterator ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -186,7 +185,7 @@ public class TextQueryPF extends PropertyFunctionBase {
         Var scoreVar = (score==null) ? null : Var.alloc(score) ;
         List<TextHit> r = query(match.getQueryString(), match.getLimit(), execCxt) ;
         Function<TextHit,Binding> converter = new TextHitConverter(binding, sVar, scoreVar);
-        Iterator<Binding> bIter = new Map1Iterator<TextHit, Binding>(converter, r.iterator());
+        Iterator<Binding> bIter = Iter.map(r.iterator(), converter);
         QueryIterator qIter = new QueryIterPlainWrapper(bIter, execCxt);
         return qIter ;
     }
