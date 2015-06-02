@@ -45,6 +45,9 @@ public class QueryIterDistinctMem extends QueryIterDistinctReduced
     @Override
     protected boolean isFreshSighting(Binding binding)
     {
-        return seen.contains(binding) ;
+        if ( seen.contains(binding) )
+            return false ;
+        seen.add(binding) ;
+        return true ;
     }
 }
