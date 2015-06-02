@@ -39,6 +39,7 @@ public class TextHitConverter implements Function<TextHit, Binding>
         this.score = score;
     }
     
+    @Override
     public Binding apply(TextHit hit) {
         if (score == null)
             return BindingFactory.binding(binding, match, hit.getNode());
