@@ -20,13 +20,12 @@ package org.apache.jena.sparql.engine.iterator ;
 
 import java.util.* ;
 
-import org.apache.jena.atlas.data.BagFactory ;
-import org.apache.jena.atlas.data.DistinctDataNet ;
-import org.apache.jena.atlas.data.ThresholdPolicy ;
-import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
+import org.apache.jena.atlas.data.* ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.riot.system.SerializationFactoryFinder ;
+import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -39,23 +38,23 @@ import org.apache.jena.sparql.engine.binding.BindingProjectNamed ;
  * {@link DistinctDataNet}, then yield   
  * not  return any results until the input iterator has been exhausted.
  * 
- * @see DistinctDataNet
+ * @see DistinctDataBag
  */
 public class QueryIterDistinct extends QueryIter1
 {
-    private int Threshold1 = 3 ;
-    private DistinctDataNet<Binding> db = null ;
+    private long memThreshold = Long.MAX_VALUE ;    // Default "off" value.
+    private DistinctDataBag<Binding> db = null ;
     private Iterator<Binding> iterator = null ;
     private Set<Binding> seen = new HashSet<>() ;
     private Binding slot = null ;
 
-    public QueryIterDistinct(QueryIterator qIter, ExecutionContext context) {
-        super(qIter, context) ;
-    }
-    
-    public QueryIterDistinct(QueryIterator qIter, ExecutionContext context, int threshold1) {
-        super(qIter, context) ;
-        this.Threshold1 = threshold1 ;
+    public QueryIterDistinct(QueryIterator qIter, ExecutionContext execCxt) {
+        super(qIter, execCxt) ;
+        if ( execCxt != null ) {
+            memThreshold = execCxt.getContext().getLong(ARQ.spillToDiskThreshold, memThreshold) ;
+            if ( memThreshold < 0 )
+                throw new ARQException("BAd spillToDiskThreshold: "+memThreshold) ;
+        }
     }
     
     @Override
@@ -67,7 +66,7 @@ public class QueryIterDistinct extends QueryIter1
             return iterator.hasNext() ;
        
         // At this point, we are currently in the initial pre-threshold mode.
-        if ( seen.size() >= Threshold1 ) {
+        if ( seen.size() < memThreshold ) {
             Binding b = getInputNextUnseen() ;
             if ( b == null )
                 return false ;
@@ -76,18 +75,19 @@ public class QueryIterDistinct extends QueryIter1
             return true ;
         }
         
-        // Hit the threashold.
+        // Hit the threshold.
         loadDataBag() ;
-        // Switch to iterating from the databad.  
+        // Switch to iterating from the data bag.  
         iterator = db.iterator() ;
         // Leave slot null.
         return iterator.hasNext() ;
     }
     
+    /** Load the data bag with. Filter incoming by the already seen in-memory elements */  
     private void loadDataBag() {
         ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(super.getExecContext().getContext()) ;
         Comparator<Binding> comparator = new BindingComparator(new ArrayList<SortCondition>(), super.getExecContext()) ;
-        this.db = BagFactory.newDistinctNet(policy, SerializationFactoryFinder.bindingSerializationFactory(), comparator) ;
+        this.db = BagFactory.newDistinctBag(policy, SerializationFactoryFinder.bindingSerializationFactory(), comparator) ;
         for(;;) {
             Binding b = getInputNextUnseen() ;
             if ( b == null )
@@ -96,9 +96,10 @@ public class QueryIterDistinct extends QueryIter1
         }
     }
     
-    // Return the next binding from the input filtered by seen.
-    // This does not update seen.
-    // Returns null on end of input.
+    /** Return the next binding from the input filtered by seen.
+     * This does not update seen.
+     * Returns null on end of input.
+    */
     private Binding getInputNextUnseen() {
         while( getInput().hasNext() ) {
             Binding b = getInputNext() ;
@@ -109,7 +110,7 @@ public class QueryIterDistinct extends QueryIter1
         return null ;
     }
 
-    // Return the next wrapped binding from the input.
+    /** Return the binding from the input, hiding any variables to be ignored. */
     private Binding getInputNext() {
         Binding b = getInput().next() ;
         // Hide unnamed and internal variables.

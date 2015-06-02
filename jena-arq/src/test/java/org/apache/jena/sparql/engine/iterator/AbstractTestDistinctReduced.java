@@ -77,7 +77,6 @@ public abstract class AbstractTestDistinctReduced extends BaseTest {
         distinct(data, results) ;
     }
 
-
     private void distinct(List<String> data, List<String> results) {
         // Distinct Iterators are not required to preserve order.
         List<Binding> input = build(data) ;
