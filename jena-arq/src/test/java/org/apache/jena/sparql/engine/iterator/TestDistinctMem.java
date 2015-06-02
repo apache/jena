@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,38 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.engine.iterator ;
+package org.apache.jena.sparql.engine.iterator;
 
-import java.util.HashSet ;
-import java.util.Set ;
+import java.util.List ;
 
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.util.Context ;
 
-/** Memory limited QueryIterDistinct */
-public class QueryIterDistinctMem extends QueryIterDistinctReduced
-{
-    private Set<Binding> seen = new HashSet<>() ;
-    
-    public QueryIterDistinctMem(QueryIterator iter, ExecutionContext context)
-    {
-        super(iter, context)  ;
-    }
+public class TestDistinctMem extends AbstractTestDistinctReduced {
 
     @Override
-    protected void closeSubIterator()
-    {
-        seen = null ;
-        super.closeSubIterator() ;
+    protected QueryIterator createQueryIter(List<Binding> data) {
+        QueryIterator qIter = new QueryIterPlainWrapper(data.iterator()) ;
+        return new QueryIterDistinctMem(qIter, new ExecutionContext(new Context(), null, null, null)) ;
     }
 
-    @Override
-    protected boolean isFreshSighting(Binding binding)
-    {
-        if ( seen.contains(binding) )
-            return false ;
-        seen.add(binding) ;
-        return true ;
-    }
 }
+

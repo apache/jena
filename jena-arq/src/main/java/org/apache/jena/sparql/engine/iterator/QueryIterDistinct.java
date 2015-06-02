@@ -18,50 +18,130 @@
 
 package org.apache.jena.sparql.engine.iterator ;
 
-import java.util.ArrayList ;
-import java.util.Comparator ;
+import java.util.* ;
 
 import org.apache.jena.atlas.data.BagFactory ;
 import org.apache.jena.atlas.data.DistinctDataNet ;
 import org.apache.jena.atlas.data.ThresholdPolicy ;
 import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
+import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.riot.system.SerializationFactoryFinder ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingComparator ;
+import org.apache.jena.sparql.engine.binding.BindingProjectNamed ;
 
 /**
  * A QueryIterator that suppresses items already seen. This will stream results
- * until the spill to disk threshold is passed. At that point, it will not
- * return any results until the input iterator has been exhausted.
+ * until a threshold is passed. At that point, it will fill a disk-backed
+ * {@link DistinctDataNet}, then yield   
+ * not  return any results until the input iterator has been exhausted.
  * 
  * @see DistinctDataNet
  */
-public class QueryIterDistinct extends QueryIterDistinctReduced
+public class QueryIterDistinct extends QueryIter1
 {
-    final DistinctDataNet<Binding> db ;
+    private int Threshold1 = 3 ;
+    private DistinctDataNet<Binding> db = null ;
+    private Iterator<Binding> iterator = null ;
+    private Set<Binding> seen = new HashSet<>() ;
+    private Binding slot = null ;
 
-    public QueryIterDistinct(QueryIterator qIter, ExecutionContext context)
-    {
+    public QueryIterDistinct(QueryIterator qIter, ExecutionContext context) {
         super(qIter, context) ;
-        ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(context.getContext()) ;
-        Comparator<Binding> comparator = new BindingComparator(new ArrayList<SortCondition>(), context) ;
-        this.db = BagFactory.newDistinctNet(policy, SerializationFactoryFinder.bindingSerializationFactory(), comparator) ;
+    }
+    
+    public QueryIterDistinct(QueryIterator qIter, ExecutionContext context, int threshold1) {
+        super(qIter, context) ;
+        this.Threshold1 = threshold1 ;
     }
     
     @Override
-    protected void closeSubIterator()
-    { db.close() ; }
+    protected boolean hasNextBinding() {
+        if ( slot != null )
+            return true ;
+        if ( iterator != null )
+            // Databag active.
+            return iterator.hasNext() ;
+       
+        // At this point, we are currently in the initial pre-threshold mode.
+        if ( seen.size() >= Threshold1 ) {
+            Binding b = getInputNextUnseen() ;
+            if ( b == null )
+                return false ;
+            seen.add(b) ;
+            slot = b ;
+            return true ;
+        }
+        
+        // Hit the threashold.
+        loadDataBag() ;
+        // Switch to iterating from the databad.  
+        iterator = db.iterator() ;
+        // Leave slot null.
+        return iterator.hasNext() ;
+    }
+    
+    private void loadDataBag() {
+        ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(super.getExecContext().getContext()) ;
+        Comparator<Binding> comparator = new BindingComparator(new ArrayList<SortCondition>(), super.getExecContext()) ;
+        this.db = BagFactory.newDistinctNet(policy, SerializationFactoryFinder.bindingSerializationFactory(), comparator) ;
+        for(;;) {
+            Binding b = getInputNextUnseen() ;
+            if ( b == null )
+                break ;
+            db.add(b) ;
+        }
+    }
+    
+    // Return the next binding from the input filtered by seen.
+    // This does not update seen.
+    // Returns null on end of input.
+    private Binding getInputNextUnseen() {
+        while( getInput().hasNext() ) {
+            Binding b = getInputNext() ;
+            if ( seen.contains(b) )
+                continue ;
+            return b ;
+        }
+        return null ;
+    }
+
+    // Return the next wrapped binding from the input.
+    private Binding getInputNext() {
+        Binding b = getInput().next() ;
+        // Hide unnamed and internal variables.
+        b = new BindingProjectNamed(b) ;
+        return b ;
+    }
+
+    @Override
+    protected Binding moveToNextBinding() {
+        if ( slot != null ) {
+            Binding b = slot ;
+            slot = null ;
+            return b ;
+        }
+        if ( iterator != null ) {
+            Binding b = iterator.next() ;
+            return b ;
+        }
+        throw new InternalErrorException() ;
+    }
+
+    @Override
+    protected void closeSubIterator() {
+        if ( db != null ) {
+            iterator = null ;
+            db.close() ;
+        }
+        db = null ;
+    }
 
     @Override
     protected void requestSubCancel()
-    { db.close() ; }
+    { super.close(); }
 
-    @Override
-    protected boolean isFreshSighting(Binding binding)
-    {
-        return db.netAdd(binding) ;
-    }
 }
