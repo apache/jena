@@ -40,6 +40,8 @@ import org.apache.jena.sparql.util.Symbol ;
  */
 public class TransformTopN extends TransformCopy {
 
+    // This must be less than ARQ.spillToDiskThreshold.
+    // Otherwise DISTINCT ends up reordering. 
 	private static final int defaultTopNSortingThreshold = 1000;
 	public static final Symbol externalSortBufferSize = ARQConstants.allocSymbol("topNSortingThreshold") ;
 
