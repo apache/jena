@@ -29,7 +29,10 @@ import org.apache.jena.rdf.model.* ;
  */
 public class VCARD {
 
-    protected static final String uri ="http://www.w3.org/2001/vcard-rdf/3.0#";
+	/**
+	 * The namespace of the vocabulary as a string
+	 */
+	public static final String uri ="http://www.w3.org/2001/vcard-rdf/3.0#";
 
     /** returns the URI for this schema
      * @return the URI for this schema

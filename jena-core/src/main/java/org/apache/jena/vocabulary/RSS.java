@@ -25,7 +25,10 @@ import org.apache.jena.rdf.model.* ;
 */
 public class RSS extends Object {
 
-    protected static final String uri = "http://purl.org/rss/1.0/";
+	/**
+	 * The namespace of the vocabulary as a string
+	 */
+	public static final String uri = "http://purl.org/rss/1.0/";
 
     /** returns the URI for this schema
         @return the URI for this schema
