@@ -40,11 +40,11 @@ public class TextHitConverter implements Function<TextHit, Binding>
     }
     
     public Binding apply(TextHit hit) {
+        if (score == null)
+            return BindingFactory.binding(binding, match, hit.getNode());
         BindingMap bmap = BindingFactory.create(binding);
         bmap.add(match, hit.getNode());
-        if (score != null) {
-            bmap.add(score, NodeFactoryExtra.floatToNode(hit.getScore()));
-        }
+        bmap.add(score, NodeFactoryExtra.floatToNode(hit.getScore()));
         return bmap;
     }
 }
