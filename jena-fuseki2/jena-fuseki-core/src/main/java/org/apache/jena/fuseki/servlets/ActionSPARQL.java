@@ -110,7 +110,10 @@ public abstract class ActionSPARQL extends ActionBase
         startRequest(action) ;
         // And also HTTP counter
         CounterSet csService = action.getDataService().getCounters() ;
-        CounterSet csOperation = action.getEndpoint().getCounters() ;
+        CounterSet csOperation = null ;
+        if ( action.getEndpoint() != null )
+            // Direct naming GSP does not have an "endpoint".
+            csOperation = action.getEndpoint().getCounters() ;
         
         incCounter(csService, Requests) ;
         incCounter(csOperation, Requests) ;
