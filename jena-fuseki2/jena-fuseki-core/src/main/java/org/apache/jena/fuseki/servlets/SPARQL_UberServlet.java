@@ -274,6 +274,26 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         doGraphStoreProtocol(action) ;
     }
     
+    /** See if the operation is enabled for this setup.
+     * Return true if dispatched 
+     */
+    private boolean serviceDispatch(HttpAction action, OperationName opName, ActionSPARQL servlet) {
+        Endpoint operation = action.getEndpoint() ;
+        if ( operation == null )
+            return false ;
+        if ( ! operation.isType(opName) ) 
+            return false ;
+        // Handle OPTIONS specially.
+//        if ( action.getRequest().getMethod().equals(HttpNames.METHOD_OPTIONS) ) {
+//            // See also ServletBase.CORS_ENABLED
+//            //action.log.info(format("[%d] %s", action.id, action.getMethod())) ;
+//            setCommonHeadersForOptions(action.getResponse()) ;
+//            ServletOps.success(action);
+//            return true ;
+//        }
+        executeRequest(action, servlet) ;
+        return true ;
+    }
     private String printName(String x) {
         if ( x.startsWith("/") )
             return x.substring(1) ;
@@ -308,7 +328,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
 
     private void executeRequest(HttpAction action, ActionSPARQL servlet) {
         servlet.executeLifecycle(action) ;
-//      // Forwarded dispatch.
+        // A call to "doCommon" or a forwarded dispatch looses "action".
 //      try
 //      {
 //          String target = getEPName(desc.name, endpointList) ;
@@ -330,19 +350,6 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         if ( mt.getCharset() != null )
         action.response.setCharacterEncoding(mt.getCharset()) ;
         return mt ;
-    }
-
-    /** return true if dispatched 
-     * @param opName 
-     */
-    private boolean serviceDispatch(HttpAction action, OperationName opName, ActionSPARQL servlet) {
-        Endpoint operation = action.getEndpoint() ;
-        if ( operation == null )
-            return false ;
-        if ( ! operation.isType(opName) ) 
-            return false ;
-        servlet.executeLifecycle(action) ;
-        return true ;
     }
 
     /** Find part after the dataset name: service name or the graph (direct naming) */ 

@@ -122,7 +122,6 @@ public class SPARQL_Update extends SPARQL_Protocol
         ContentType ct = FusekiLib.getContentType(action) ;
         if ( ct == null )
             ct = ctSPARQLUpdate ;
-        // ----
 
         if ( matchContentType(ctSPARQLUpdate, ct) ) {
             String charset = request.getCharacterEncoding() ;

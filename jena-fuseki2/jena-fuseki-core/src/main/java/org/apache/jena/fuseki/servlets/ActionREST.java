@@ -70,8 +70,6 @@ public abstract class ActionREST extends ActionSPARQL
 
     // Counter wrappers
     
-    // XXX Out of date - we now add HTTP counters to all endpoints. 
-    
     private final void doGet$(HttpAction action) {
         incCounter(action.getEndpoint(), CounterName.HTTPget) ;
         try {

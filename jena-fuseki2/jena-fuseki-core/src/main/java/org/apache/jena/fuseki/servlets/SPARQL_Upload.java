@@ -63,7 +63,6 @@ public class SPARQL_Upload extends ActionSPARQL
 
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response) {
-        setCommonHeaders(response) ;
         setCommonHeadersForOptions(response) ;
         response.setHeader(HttpNames.hAllow, "OPTIONS,POST") ;
         response.setHeader(HttpNames.hContentLengh, "0") ;

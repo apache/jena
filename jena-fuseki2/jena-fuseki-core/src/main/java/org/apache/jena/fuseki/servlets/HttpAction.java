@@ -394,6 +394,8 @@ public class HttpAction
         this.finishTime = System.nanoTime() ;
     }
 
+    public String getMethod()                           { return request.getMethod() ; }
+
     public HttpServletRequest getRequest()              { return request ; }
 
     public HttpServletResponseTracker getResponse()     { return response ; }
