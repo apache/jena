@@ -61,10 +61,11 @@ public class SystemState {
      */
     private static final StoreParams systemDatabaseParams = StoreParams.builder()
         .fileMode(FileMode.direct)
-        .blockReadCacheSize(20)
+        .blockSize(1024)
+        .blockReadCacheSize(50)
         .blockWriteCacheSize(20)
-        .node2NodeIdCacheSize(5000)
-        .nodeId2NodeCacheSize(5000)
+        .node2NodeIdCacheSize(500)
+        .nodeId2NodeCacheSize(500)
         .nodeMissCacheSize(100)
         .build() ;
     
@@ -90,14 +91,14 @@ public class SystemState {
     }
     
     public static String PREFIXES = StrUtils.strjoinNL
-        ("BASE <http://example/base#>",
+        ("BASE            <http://example/base#>",
          "PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>",
          "PREFIX fu:      <http://jena.apache.org/fuseki#>",
          "PREFIX fuseki:  <http://jena.apache.org/fuseki#>",
          "PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
          "PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>",
          "PREFIX tdb:     <http://jena.hpl.hp.com/2008/tdb#>",
-         "PREFIX sdb:     <http://jena.hpl.hp.com/20087/sdb#>",
+         "PREFIX sdb:     <http://jena.hpl.hp.com/2007/sdb#>",
          "PREFIX list:    <http://jena.apache.org/ARQ/list#>",
          "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>",
          "PREFIX apf:     <http://jena.apache.org/ARQ/property#>",
