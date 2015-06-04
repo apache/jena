@@ -101,10 +101,21 @@ public class OpAsQuery
                             query.addResultVar(var);
                     }
                     
-                    ElementGroup eg = this.currentGroup ;                   
-                    query.setQueryPattern(eg) ;
+                    // Simplify currentGroup if possible, primarily look for the case of a single sub-query
+                    // which will mean we have an ElementGroup with a single item which is
+                    ElementGroup eg = this.currentGroup ;
+                    if (eg.getElements().size() == 1) {
+                        Element e = eg.getElements().get(0);
+                        if (e instanceof ElementSubQuery) {
+                            query.setQueryPattern(e);
+                        } else {
+                            query.setQueryPattern(eg);
+                        }
+                    } else {
+                        query.setQueryPattern(eg) ;
+                    }
                     query.setQuerySelectType() ;
-                    query.setResultVars() ;                     // Variables from the group.
+                    query.setResultVars() ; // Variables from the group.
                     return query ; 
                 } finally {
                     this.hasRun = true;
@@ -551,10 +562,7 @@ public class OpAsQuery
             if (inProject) {
                 // If we've already inside a project then we are reconstructing a sub-query
                 // Create a new converter and call on the sub-op to get the sub-query
-                Converter subConverter = new Converter(opProject);
-                ElementSubQuery subQuery = new ElementSubQuery(subConverter.convert());
-                ElementGroup g = currentGroup();
-                g.addElement(subQuery);
+                convertAsSubQuery(opProject);
             } else {
                 // Defer adding result vars until the end.
                 // OpGroup generates dupes otherwise
@@ -566,32 +574,51 @@ public class OpAsQuery
             }
         }
 
+        private void convertAsSubQuery(Op op) {
+            Converter subConverter = new Converter(op);
+            ElementSubQuery subQuery = new ElementSubQuery(subConverter.convert());
+            ElementGroup g = currentGroup();
+            g.addElement(subQuery);
+        }
+
         @Override
         public void visit(OpReduced opReduced)
         { 
-            query.setReduced(true) ;
-            opReduced.getSubOp().visit(this) ;
+            if (inProject) {
+                convertAsSubQuery(opReduced);
+            } else {
+                query.setReduced(true) ;
+                opReduced.getSubOp().visit(this) ;
+            }
         }
 
         @Override
         public void visit(OpDistinct opDistinct)
         { 
-            query.setDistinct(true) ;
-            opDistinct.getSubOp().visit(this) ;
+            if (inProject) {
+                convertAsSubQuery(opDistinct);
+            } else {
+                query.setDistinct(true) ;
+                opDistinct.getSubOp().visit(this) ;
+            }
         }
 
         @Override
         public void visit(OpSlice opSlice)
         {
-            if ( opSlice.getStart() != Query.NOLIMIT )
-                query.setOffset(opSlice.getStart()) ;
-            if ( opSlice.getLength() != Query.NOLIMIT )
-                query.setLimit(opSlice.getLength()) ;
-            opSlice.getSubOp().visit(this) ;
+            if (inProject) {
+                convertAsSubQuery(opSlice);
+            } else {
+                if ( opSlice.getStart() != Query.NOLIMIT )
+                    query.setOffset(opSlice.getStart()) ;
+                if ( opSlice.getLength() != Query.NOLIMIT )
+                    query.setLimit(opSlice.getLength()) ;
+                opSlice.getSubOp().visit(this) ;
+            }
         }
 
         @Override
-        public void visit(OpGroup opGroup) {               
+        public void visit(OpGroup opGroup) {
             List<ExprAggregator> a = opGroup.getAggregators();
             
             // Aggregators are broken up in the algebra, split between a

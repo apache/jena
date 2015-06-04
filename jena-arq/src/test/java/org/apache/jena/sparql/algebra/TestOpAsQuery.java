@@ -27,8 +27,10 @@ import org.apache.jena.query.Syntax ;
 import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpAsQuery ;
+import org.apache.jena.sparql.util.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -199,7 +201,7 @@ public class TestOpAsQuery {
     
     @Test
     public void testSubQuery1() {
-        String query = "SELECT ?s WHERE { { SELECT ?s ?p WHERE { ?s ?p ?o } } }";
+        String query = "SELECT ?s WHERE { SELECT ?s ?p WHERE { ?s ?p ?o } }";
         checkQueryParseable(query, true);
     }
     
@@ -222,7 +224,7 @@ public class TestOpAsQuery {
     @Test
     public void testAggregatesInSubQuery1() {
         //Simplified form of a test case provided via the mailing list (JENA-445)
-        String query = "SELECT ?key ?agg WHERE { { SELECT ?key (COUNT(*) AS ?agg) { ?key ?p ?o } GROUP BY ?key } }";
+        String query = "SELECT ?key ?agg WHERE { SELECT ?key (COUNT(*) AS ?agg) { ?key ?p ?o } GROUP BY ?key }";
         checkQueryParseable(query, true);
     }
     
@@ -258,6 +260,62 @@ public class TestOpAsQuery {
                 "} \n" + 
                 "}\n"; 
         checkQuadQuery(queryString);
+    }
+    
+    @Test
+    public void testModifiersOnSubQuery1() {
+        // From JENA-954
+        String query = StrUtils.strjoinNL("SELECT (COUNT(*) as ?count) {",
+                                          "  SELECT DISTINCT ?uri ?graph WHERE {",
+                                          "    GRAPH ?graph {",
+                                          "      ?uri ?p ?o .",
+                                          "      }",
+                                          "    } LIMIT 1",
+                                          "}");
+        
+        checkQueryParseable(query, true);
+    }
+    
+    @Test
+    public void testModifiersOnSubQuery2() {
+        // From JENA-954
+        String query = StrUtils.strjoinNL("SELECT (COUNT(*) as ?count) {",
+                                          "  SELECT REDUCED ?uri ?graph WHERE {",
+                                          "    GRAPH ?graph {",
+                                          "      ?uri ?p ?o .",
+                                          "      }",
+                                          "    } LIMIT 1",
+                                          "}");
+        
+        checkQueryParseable(query, true);
+    }
+    
+    @Test
+    public void testModifiersOnSubQuery3() {
+        // From JENA-954
+        String query = StrUtils.strjoinNL("SELECT (COUNT(*) as ?count) {",
+                                          "  SELECT ?uri ?graph WHERE {",
+                                          "    GRAPH ?graph {",
+                                          "      ?uri ?p ?o .",
+                                          "      }",
+                                          "    } LIMIT 1",
+                                          "}");
+        
+        checkQueryParseable(query, true);
+    }
+    
+    @Test
+    public void testModifiersOnSubQuery4() {
+        // From JENA-954
+        String query = StrUtils.strjoinNL("SELECT (COUNT(*) as ?count) {",
+                                          "  SELECT ?uri ?graph WHERE {",
+                                          "    GRAPH ?graph {",
+                                          "      ?uri ?p ?o .",
+                                          "      }",
+                                          "    } OFFSET 1",
+                                          "}");
+        
+        checkQueryParseable(query, true);
     }
     
     @Test
@@ -316,7 +374,7 @@ public class TestOpAsQuery {
             // If the strings forms are equal their algebras will be
             Assert.assertEquals(r[0], r[1]);
         } else {
-            // Even if the strings come out as non-equal because of the translatation from algebra to query
+            // Even if the strings come out as non-equal because of the translation from algebra to query
             // the algebras should be equal
             // i.e. the queries should remain semantically equivalent
             Assert.assertNotEquals(r[0], r[1]);
