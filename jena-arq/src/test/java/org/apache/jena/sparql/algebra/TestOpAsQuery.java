@@ -18,20 +18,19 @@
 
 package org.apache.jena.sparql.algebra;
 
-import java.util.Map;
+import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertFalse ;
+import static org.junit.Assert.assertNotEquals ;
+import static org.junit.Assert.assertTrue ;
 
-import org.apache.jena.atlas.lib.StrUtils;
+import java.util.Map ;
+
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
 import org.apache.jena.query.Syntax ;
-import org.apache.jena.sparql.algebra.Algebra ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpAsQuery ;
-import org.apache.jena.sparql.util.StringUtils;
-import org.junit.Assert;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.Assert ;
+import org.junit.Test ;
 
 /**
  * Tests for {@link OpAsQuery}
