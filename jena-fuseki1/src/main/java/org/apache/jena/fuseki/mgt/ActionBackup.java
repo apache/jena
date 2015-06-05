@@ -103,7 +103,7 @@ public class ActionBackup extends ServletBase
                 }
                 catch ( RuntimeException ex )
                 {
-                    log.info(format("[%d] Exception during backup: ", action.id, ex.getMessage()), ex) ;
+                    log.info(format("[%d] Exception during backup: %s", action.id, ex.getMessage()), ex) ;
                     return Boolean.FALSE ;
                 }
                 finally {

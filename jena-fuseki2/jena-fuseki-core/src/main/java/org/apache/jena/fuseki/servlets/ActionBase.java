@@ -201,7 +201,7 @@ public abstract class ActionBase extends ServletBase
                 String h = en.nextElement() ;
                 Enumeration<String> vals = action.request.getHeaders(h) ;
                 if ( !vals.hasMoreElements() )
-                    log.info(format("[%d]   ", action.id, h)) ;
+                    log.info(format("[%d]   %s", action.id, h)) ;
                 else {
                     for (; vals.hasMoreElements();)
                         log.info(format("[%d]   %-20s %s", action.id, h, vals.nextElement())) ;
