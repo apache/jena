@@ -111,13 +111,18 @@ public class HttpAction
         this.dsRef = desc ;
         this.dsg = desc.dataset ;
         DatasetGraph basedsg = unwrap(dsg) ;
-
-        if ( isTransactional(basedsg) && isTransactional(dsg) ) {
+        
+        if ( isTransactional(dsg) ) {
             // Use transactional if it looks safe - abort is necessary.
+            // It is the responsibility of dsg to manage the basedsg
+            // if the basedsg is not transactional.
             transactional = (Transactional)dsg ;
             isTransactional = true ;
+        } else if ( isTransactional(basedsg) ) {
+            transactional = (Transactional)basedsg ;
+            // Intermediates may be stateful so there is no real abort. 
+            isTransactional = false ;
         } else {
-            // Unsure if safe
             transactional = new DatasetGraphWithLock(dsg) ;
             // No real abort.
             isTransactional = false ;
