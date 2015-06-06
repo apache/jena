@@ -204,6 +204,8 @@ public class SchemagenOptions
                         setOption(option, (String) optionValue);
                     } else if (optionValue instanceof Boolean) {
                         setOption(option, (Boolean) optionValue);
+                    } else if (optionValue instanceof Resource) {
+                        setOption(option, (Resource) optionValue);
                     } else {
                         throw new IllegalArgumentException("Schemagen options of type "
                                 + optionValue.getClass().getCanonicalName()

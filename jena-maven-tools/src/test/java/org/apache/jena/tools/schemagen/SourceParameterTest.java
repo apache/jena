@@ -29,6 +29,8 @@ import java.util.Collection;
 
 import jena.schemagen.SchemagenOptions.OPT;
 
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -105,7 +107,14 @@ public class SourceParameterTest
         Source s = new Source();
         setParamValue( s );
         SchemagenOptions so = new SchemagenOptions(null, s);
-        assertEquals( optionName, expected, so.getOption( option ).asLiteral().getValue() );
+        if (expected instanceof Resource)
+        {
+        	assertEquals( optionName, expected, so.getOption( option ).asResource() );
+        }
+        else
+        {
+        	assertEquals( optionName, expected, so.getOption( option ).asLiteral().getValue() );
+        }
     }
 
 
@@ -220,7 +229,8 @@ public class SourceParameterTest
             case NAMESPACE:
                 s.setNamespace( optionName );
 
-                expected = optionName;
+                //expected = optionName;
+                expected = ResourceFactory.createResource( optionName ); 
                 break;
 
             case OUTPUT:
