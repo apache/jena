@@ -19,11 +19,13 @@
 package org.apache.jena.query.text;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.jena.atlas.lib.StrUtils;
@@ -69,6 +71,11 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
         doTestQuery(dataset, label, queryString, expectedEntityURIs, expectedNumResults);
     }
 
+    protected Map<String,Float> doTestSearchWithScores(String turtle, String queryString, Set<String> expectedEntityURIs) {
+        loadData(turtle);
+        return doTestQueryWithScores(queryString, expectedEntityURIs);
+    }
+
     protected void doTestSearchNoResult(String turtle, String queryString) {
         doTestSearchNoResult("", turtle, queryString);
     }
@@ -85,13 +92,12 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
         model.read(reader, "", "TURTLE");
         dataset.commit();
     }
-    
+
     public static void doTestQuery(Dataset dataset, String label, String queryString, Set<String> expectedEntityURIs, int expectedNumResults) {
         Query query = QueryFactory.create(queryString) ;
         dataset.begin(ReadWrite.READ);
         try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
             ResultSet results = qexec.execSelect() ;
-
             assertEquals(label, expectedNumResults > 0, results.hasNext());
             int count;
             for (count=0; results.hasNext(); count++) {
@@ -103,6 +109,31 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
         finally {
             dataset.end() ;
         }        
+    }
+    
+    protected Map<String,Float> doTestQueryWithScores(String queryString, Set<String> expectedEntityURIs) {
+        Map<String,Float> scores = new HashMap<>();
+
+        Query query = QueryFactory.create(queryString) ;
+        dataset.begin(ReadWrite.READ);
+        try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
+            ResultSet results = qexec.execSelect() ;
+            
+            assertEquals(expectedEntityURIs.size() > 0, results.hasNext());
+            int count;
+            for (count=0; results.hasNext(); count++) {
+                QuerySolution soln = results.nextSolution();
+                String entityUri = soln.getResource("s").getURI();
+                assertTrue(expectedEntityURIs.contains(entityUri));
+                float score = soln.getLiteral("score").getFloat();
+                scores.put(entityUri, score);
+            }
+            assertEquals(expectedEntityURIs.size(), count);
+        }
+        finally {
+            dataset.end() ;
+        }
+        return scores;
     }
 
     public static void doTestNoResult(Dataset dataset, String label, String queryString) {
@@ -124,5 +155,4 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
         proc.execute();
         dataset.commit();
     }
-
 }

@@ -16,17 +16,21 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.engine.binding;
+package org.apache.jena.sparql.engine.iterator;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import java.util.List ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-   TestBindingStreams.class
-})
-public class TS_Binding
-{
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+
+public class TestDistinctDataBag extends AbstractTestDistinctReduced {
+
+    @Override
+    protected QueryIterator createQueryIter(List<Binding> data) {
+        QueryIterator qIter = new QueryIterPlainWrapper(data.iterator()) ;
+        // Default setting - no threshold.
+        return new QueryIterDistinct(qIter, null) ;
+    }
 
 }
 

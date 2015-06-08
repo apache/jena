@@ -47,12 +47,12 @@ public class AsyncPool
 
     private AsyncPool() { }
     
-    public AsyncTask submit(Runnable task, String displayName, DataService dataService) { 
+    public AsyncTask submit(Runnable task, String displayName, DataService dataService, long requestId) { 
         synchronized(mutex) {
             String taskId = Long.toString(++counter) ;
             Fuseki.serverLog.info(format("Task : %s : %s",taskId, displayName)) ;
             Callable<Object> c = Executors.callable(task) ;
-            AsyncTask asyncTask = new AsyncTask(c, this, taskId, displayName, dataService) ;
+            AsyncTask asyncTask = new AsyncTask(c, this, taskId, displayName, dataService, requestId) ;
             Future<Object> x = executor.submit(asyncTask) ;
             runningTasks.put(taskId, asyncTask) ;
             return asyncTask ;

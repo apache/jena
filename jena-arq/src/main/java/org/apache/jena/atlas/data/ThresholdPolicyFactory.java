@@ -70,7 +70,7 @@ public class ThresholdPolicyFactory
      */
     public static <E> ThresholdPolicy<E> policyFromContext(Context context)
     {
-        long threshold = (Long) context.get(ARQ.spillToDiskThreshold, defaultThreshold) ;
+        long threshold = context.getLong(ARQ.spillToDiskThreshold, defaultThreshold) ;
         if ( threshold >= 0 )
         {
             return count(threshold);

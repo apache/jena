@@ -25,7 +25,6 @@ import org.apache.jena.sparql.algebra.optimize.TS_Optimization ;
 import org.apache.jena.sparql.api.TS_API ;
 import org.apache.jena.sparql.core.TS_Core ;
 import org.apache.jena.sparql.engine.TS_Engine ;
-import org.apache.jena.sparql.engine.binding.TS_Binding ;
 import org.apache.jena.sparql.expr.E_Function ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.TS_Expr ;
@@ -58,7 +57,6 @@ import org.junit.runners.Suite ;
     , TS_UserFunctions.class
     
     , TS_ResultSet.class
-    , TS_Binding.class
     , TS_Engine.class
     , TS_Negation.class
     , TS_Solver.class

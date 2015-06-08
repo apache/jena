@@ -113,8 +113,7 @@ public class TestQueryIterSort {
     @Test
     public void testCleanAfterClose()
     {
-        iterator.setCallback(new Callback() { @Override
-        public void call() { /* do nothing */ } });
+        iterator.setCallback(()->{});   // Do nothing.
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
         context.set(ARQ.spillToDiskThreshold, 10L) ;

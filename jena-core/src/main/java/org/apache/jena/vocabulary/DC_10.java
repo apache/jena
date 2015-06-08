@@ -25,7 +25,10 @@ import org.apache.jena.rdf.model.* ;
 
 public class DC_10 {
 
-    protected static final String uri =
+	/**
+	 * The namespace of the vocabulary as a string
+	 */
+	public static final String uri =
         "http://purl.org/dc/elements/1.0/";
 
 /** returns the URI for this schema

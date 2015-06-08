@@ -20,6 +20,8 @@ package org.apache.jena.tools.schemagen;
 
 import jena.schemagen.SchemagenOptions.OPT;
 
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
@@ -231,8 +233,8 @@ public class Source {
     }
 
     @SchemagenOption(opt=OPT.NAMESPACE)
-    public String getNamespace() {
-        return namespace;
+    public Resource getNamespace() {
+    	return (namespace == null || namespace.isEmpty())? null : ResourceFactory.createResource(namespace);
     }
 
     @SchemagenOption(opt=OPT.DECLARATIONS)

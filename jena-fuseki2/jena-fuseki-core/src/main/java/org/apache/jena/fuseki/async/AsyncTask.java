@@ -45,21 +45,28 @@ public class AsyncTask implements Callable<Object>
 
     private final String taskId ;
 
+    private long requestId ;
+
     /*package*/ AsyncTask(Callable<Object> callable, 
                           AsyncPool pool,
                           String taskId,
                           String displayName,
-                          DataService dataService ) {
+                          DataService dataService,
+                          long requestId) {
         this.callable = callable ;
         this.pool = pool ;
         this.taskId = taskId ; 
         this.displayName = displayName ;
         this.dataService = dataService ;
+        this.requestId = requestId ;
     }
 
     /** Unique task id */
     public String getTaskId() { return taskId ; }
     
+    /** Request id that caused this task (may be -1 for N/A) */
+    public long getOriginatingRequestId() { return requestId ; }
+
     /** Display name - no newlines */
     public String displayName() { return displayName ; }
     
