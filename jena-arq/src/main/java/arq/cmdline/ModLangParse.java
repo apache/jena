@@ -88,7 +88,7 @@ public class ModLangParse implements ArgModuleGeneral
             String syntax = cmdLine.getValue(argSyntax) ;
             Lang lang$ = RDFLanguages.nameToLang(syntax) ;
             if ( lang$ == null )
-                throw new CmdException("Can not detemine the synatx from '" + syntax + "'") ;
+                throw new CmdException("Can not detemine the syntax from '" + syntax + "'") ;
             this.lang = lang$ ;
         }
 

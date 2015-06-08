@@ -115,7 +115,7 @@ public class Syntax extends Symbol
         return guessFileSyntax(url, syntaxSPARQL) ;
     }
 
-    /** Gues the synatx (query and update) based on filename */
+    /** Gues the syntax (query and update) based on filename */
     public static Syntax guessFileSyntax(String url, Syntax defaultSyntax)
     {
         if ( url.endsWith(".arq") )     return syntaxARQ ;
