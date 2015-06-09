@@ -18,7 +18,7 @@
 
 package jena;
 
-import static jena.cmdline.CmdLineUtils.setLog4jConfiguration ;
+import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
 
 import java.lang.reflect.Constructor ;
 
@@ -77,7 +77,7 @@ import org.apache.jena.shared.Command ;
 
 public class rdfparse {
 
-    static { setLog4jConfiguration() ; }
+    static { setCmdLogging("jena-log4j.properties") ; }
 
     /** Either start an RDF/XML to NTriple converter, or run test suite.
 	 * @param args The command-line arguments.

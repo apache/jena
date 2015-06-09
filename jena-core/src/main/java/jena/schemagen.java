@@ -21,9 +21,7 @@
 package jena;
 
 
-// Imports
-///////////////
-import static jena.cmdline.CmdLineUtils.setLog4jConfiguration ;
+import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
 
 import java.io.ByteArrayOutputStream ;
 import java.io.File ;
@@ -62,7 +60,7 @@ import org.slf4j.LoggerFactory ;
  */
 public class schemagen {
     
-    static { setLog4jConfiguration() ; }
+    static { setCmdLogging("jena-log4j.properties") ; }
 
     // Constants
     //////////////////////////////////

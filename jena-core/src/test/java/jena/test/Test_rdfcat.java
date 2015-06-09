@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 
+@SuppressWarnings("deprecation")
 public class Test_rdfcat extends TestCase
 {
     public void testAbbreviationTable()

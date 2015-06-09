@@ -16,24 +16,13 @@
  * limitations under the License.
  */
 
-package jena.cmdline;
+package jena;
 
 import java.lang.reflect.InvocationTargetException ;
 import java.lang.reflect.Method ;
 
-public class CmdLineUtils
+public class InvokingUtil
 {
-    static public void setLog4jConfiguration() 
-    {
-		setLog4jConfiguration("jena-log4j.properties") ;
-    }
-    
-    static public void setLog4jConfiguration(String resourceName) 
-    {
-    	if ( System.getProperty("log4j.configuration") == null ) 
-        	System.setProperty("log4j.configuration", resourceName) ;    		
-    }
-    
     public static void invokeCmd(String className, String[] args)
     {
         Class<?> cmd = null ;

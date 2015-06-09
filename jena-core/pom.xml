@@ -56,12 +56,23 @@
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
 		</dependency>
+    
+        <dependency>
+            <artifactId>commons-cli</artifactId>
+            <groupId>commons-cli</groupId>
+        </dependency>
 
 		<dependency>
 			<groupId>org.xenei</groupId>
 			<artifactId>junit-contracts</artifactId>
 			<version>0.1.2</version>
 			<scope>test</scope>
+            <exclusions>
+                <exclusion>
+                  <artifactId>commons-cli</artifactId>
+                  <groupId>commons-cli</groupId>
+                </exclusion>
+            </exclusions>
 		</dependency>
 		
 		<dependency>
