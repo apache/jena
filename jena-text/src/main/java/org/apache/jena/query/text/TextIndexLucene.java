@@ -22,7 +22,6 @@ import java.io.IOException ;
 import java.util.* ;
 import java.util.Map.Entry ;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
@@ -223,8 +222,8 @@ public class TextIndexLucene implements TextIndex {
             Map<String, Object> map = entity.getMap();
             String property = map.keySet().iterator().next();
             String value = (String)map.get(property);
-            String key = entity.getGraph() + "-" + entity.getId() + "-" + property + "-" + value + "-" + entity.getLanguage();
-            Term uid = new Term(docDef.getUidField(), DigestUtils.sha256Hex(key));
+            String hash = entity.getChecksum(property, value);
+            Term uid = new Term(docDef.getUidField(), hash);
             indexWriter.deleteDocuments(uid);
 
         } catch (Exception e) {
@@ -254,8 +253,8 @@ public class TextIndexLucene implements TextIndex {
                     doc.add(new Field(langField, lang, StringField.TYPE_STORED));
             }
             if (uidField != null) {
-                String key = entity.getGraph() + "-" + entity.getId() + "-" + e.getKey() + "-" + e.getValue() + "-" + entity.getLanguage();
-                doc.add(new Field(uidField, DigestUtils.sha256Hex(key), StringField.TYPE_STORED));
+                String hash = entity.getChecksum(e.getKey(), (String) e.getValue());
+                doc.add(new Field(uidField, hash, StringField.TYPE_STORED));
             }
         }
         return doc ;
