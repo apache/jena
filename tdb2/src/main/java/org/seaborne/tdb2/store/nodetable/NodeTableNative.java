@@ -18,7 +18,9 @@
 
 package org.seaborne.tdb2.store.nodetable ;
 
+import java.util.ArrayList ;
 import java.util.Iterator ;
+import java.util.List ;
 
 import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.atlas.lib.Pair ;
@@ -30,8 +32,8 @@ import org.seaborne.tdb2.lib.NodeLib ;
 import org.seaborne.tdb2.store.Hash ;
 import org.seaborne.tdb2.store.NodeId ;
 
-/** A fraemwork for a NodeTable based on native storage (string file and an index).
- * This class manages the index, and delegates the node storage.
+/** A framework for a NodeTable based on native storage (string file and an index).
+ *  This class manages the index, and delegates the node storage.
  */ 
 public abstract class NodeTableNative implements NodeTable
 {
@@ -70,16 +72,36 @@ public abstract class NodeTableNative implements NodeTable
         return x == null ;
     }
 
-//    @Override
-//    public List<NodeId> bulkNodeToNodeId(List<Node> nodes, boolean withAllocation) {
-//        return NodeTable.super.bulkNodeToNodeId(nodes, withAllocation) ;
-//    }
-//
-//    @Override
-//    public List<Node> bulkNodeIdToNode(List<NodeId> nodeIds) {
-//        return NodeTable.super.bulkNodeIdToNode(nodeIds) ;
-//    }
+    @Override
+    public List<NodeId> bulkNodeToNodeId(List<Node> nodes, boolean withAllocation) {
+        return bulkNodeToNodeIdImpl(this, nodes, withAllocation) ;
+    }
+
+    @Override
+    public List<Node> bulkNodeIdToNode(List<NodeId> nodeIds) {
+        return bulkNodeIdToNodeImpl(this, nodeIds) ;
+    }
     
+    static List<NodeId> bulkNodeToNodeIdImpl(NodeTable nt, List<Node> nodes, boolean withAllocation) {
+        List<NodeId> nodeIds = new ArrayList<>(nodes.size()) ;
+        for ( Node node : nodes ) {
+            NodeId nid = withAllocation ? nt.getAllocateNodeId(node) : nt.getNodeIdForNode(node) ;
+            nodeIds.add(nid) ;
+        }
+        return nodeIds ;
+    }
+    
+    static List<Node> bulkNodeIdToNodeImpl(NodeTable nt, List<NodeId> nodeIds) {
+        List<Node> nodes = new ArrayList<>(nodeIds.size()) ;
+        for ( NodeId nodeId : nodeIds ) {
+            Node n = nt.getNodeForNodeId(nodeId) ;
+            nodes.add(n) ;
+        }
+        return nodes ;
+    }
+    
+
+
     // ---- The worker functions
     // Synchronization:
     // accessIndex and readNodeFromTable

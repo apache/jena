@@ -18,7 +18,9 @@
 
 package org.seaborne.tdb2.store.nodetable ;
 
+import java.util.ArrayList ;
 import java.util.Iterator ;
+import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Cache ;
@@ -143,6 +145,32 @@ public class NodeTableCache implements NodeTable {
 //    public List<Node> bulkNodeIdToNode(List<NodeId> nodeIds) {
 //        return NodeTable.super.bulkNodeIdToNode(nodeIds) ;
 //    }
+
+    @Override
+    public List<NodeId> bulkNodeToNodeId(List<Node> required, boolean withAllocation) {
+        synchronized(lock) {
+            List<Node> nodes = new ArrayList<>() ;
+            for ( Node n : required ) {
+                // 
+                if ( getNodeIdForNodeCache(n) == null )
+                    nodes.add(n) ;
+            }
+            // Check bulk access.
+            List<NodeId> x = baseTable.bulkNodeToNodeId(nodes, true) ;
+            for ( int i = 0 ; i < nodes.size() ; i++ ) {
+                Node n = nodes.get(i) ;
+                NodeId nid = x.get(i) ;
+                cacheUpdate(n ,nid) ;
+            }
+            return x ;
+        }
+    }
+
+    @Override
+    public List<Node> bulkNodeIdToNode(List<NodeId> nodeIds) {
+        // XXX
+        return NodeTableOps.bulkNodeIdToNodeImpl(this, nodeIds) ;
+    }
 
     // ---- The worker functions
     // NodeId ==> Node

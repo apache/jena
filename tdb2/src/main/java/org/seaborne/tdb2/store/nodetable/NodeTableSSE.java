@@ -42,11 +42,8 @@ import org.seaborne.dboe.base.objectfile.ObjectFileStorage ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.NodeId ;
-//import org.apache.jena.tdb.base.objectfile.ObjectFile ;
-//import org.apache.jena.tdb.index.Index ;
 
 // For reference only.
-// 
 public class NodeTableSSE extends NodeTableNative {
 
     private long position ;
@@ -301,6 +298,4 @@ public class NodeTableSSE extends NodeTableNative {
             return string.length()*3 ;
         }
     }
-
-    
  }
