@@ -18,7 +18,6 @@
 
 package org.seaborne.tdb2.store.nodetable ;
 
-import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
@@ -74,34 +73,14 @@ public abstract class NodeTableNative implements NodeTable
 
     @Override
     public List<NodeId> bulkNodeToNodeId(List<Node> nodes, boolean withAllocation) {
-        return bulkNodeToNodeIdImpl(this, nodes, withAllocation) ;
+        return NodeTableOps.bulkNodeToNodeIdImpl(this, nodes, withAllocation) ;
     }
 
     @Override
     public List<Node> bulkNodeIdToNode(List<NodeId> nodeIds) {
-        return bulkNodeIdToNodeImpl(this, nodeIds) ;
+        return NodeTableOps.bulkNodeIdToNodeImpl(this, nodeIds) ;
     }
     
-    static List<NodeId> bulkNodeToNodeIdImpl(NodeTable nt, List<Node> nodes, boolean withAllocation) {
-        List<NodeId> nodeIds = new ArrayList<>(nodes.size()) ;
-        for ( Node node : nodes ) {
-            NodeId nid = withAllocation ? nt.getAllocateNodeId(node) : nt.getNodeIdForNode(node) ;
-            nodeIds.add(nid) ;
-        }
-        return nodeIds ;
-    }
-    
-    static List<Node> bulkNodeIdToNodeImpl(NodeTable nt, List<NodeId> nodeIds) {
-        List<Node> nodes = new ArrayList<>(nodeIds.size()) ;
-        for ( NodeId nodeId : nodeIds ) {
-            Node n = nt.getNodeForNodeId(nodeId) ;
-            nodes.add(n) ;
-        }
-        return nodes ;
-    }
-    
-
-
     // ---- The worker functions
     // Synchronization:
     // accessIndex and readNodeFromTable
