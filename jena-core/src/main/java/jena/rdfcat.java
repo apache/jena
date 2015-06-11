@@ -405,7 +405,6 @@ public class rdfcat
     //==============================================================================
 
     /** Local extension to CommandLine to handle mixed arguments and values */
-    @SuppressWarnings("deprecation")
     protected class RCCommandLine
         extends CommandLine
     {
@@ -457,7 +456,6 @@ public class rdfcat
     }
 
     /** Action to set the output format */
-    @SuppressWarnings("deprecation")
     protected class ReadAction
         implements RCAction
     {
