@@ -179,7 +179,8 @@ public class TDBBuilder {
         String primary = params.getPrimaryIndexTriples() ;
         String[] indexes = params.getTripleIndexes() ;
 
-        if ( indexes.length != 3 )
+        // Validation checks - common index forms.  
+        if ( indexes.length != 3 && indexes.length != 2 )
             error(log, "Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
         log.debug("Triple table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
 
@@ -195,7 +196,8 @@ public class TDBBuilder {
         String primary = params.getPrimaryIndexQuads() ;
         String[] indexes = params.getQuadIndexes() ;
 
-        if ( indexes.length != 6 )
+        // Validation checks - common index forms.  
+        if ( indexes.length != 6 && indexes.length != 4 )
             error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
         log.debug("Quad table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
 

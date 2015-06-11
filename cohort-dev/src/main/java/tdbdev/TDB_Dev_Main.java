@@ -20,65 +20,54 @@ package tdbdev;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.atlas.logging.ProgressLogger ;
 import org.apache.jena.query.* ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.TDBFactory ;
 import org.seaborne.tdb2.lib.TDBTxn ;
-import org.slf4j.LoggerFactory ;
+import org.seaborne.tdb2.loader.Loader ;
+import org.seaborne.tdb2.store.DatasetGraphTDB ;
 
 public class TDB_Dev_Main {
     static { LogCtl.setLog4j(); }
     
     public static void main(String[] args) throws Exception {
-        load() ;
-        query() ;
-    }
-
-    public static void query() {
         Location location = Location.create("DB") ;
-        String x = "<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType15>" ;
-        String qs = "SELECT * { VALUES ?s {"+x+"} ?s ?p ?o }" ;
+        boolean load = true ;
+        FileOps.ensureDir("DB");
+        if ( load )
+            FileOps.clearDirectory("DB");
         Dataset ds = TDBFactory.createDataset(location) ;
-        query(ds, qs) ;
+        String FILE = "/home/afs/Datasets/BSBM/bsbm-25m.nt.gz" ;
+        
+        if ( load )
+            load(ds, FILE) ;
+        count(ds) ;
+        query(ds) ;
         System.out.println("DONE") ;
         System.exit(0) ;
+    }
+
+    public static void query(Dataset ds) {
+        String x = "<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType15>" ;
+        String qs = "SELECT * { VALUES ?s {"+x+"} ?s ?p ?o }" ;
+        query(ds, qs) ;
     }        
     
-    public static void load() {
-        Location location = Location.create("DB") ;
-        FileOps.ensureDir("DB"); 
-        FileOps.clearDirectory("DB");
-        Dataset ds = TDBFactory.createDataset(location) ;
-        String FILE = "/home/afs/Datasets/BSBM/bsbm-5m.nt.gz" ;
+    public static void load(Dataset ds, String FILE) {
         
-        System.out.println("Load "+FILE) ;
-        StreamRDF s1 = StreamRDFLib.dataset(ds.asDatasetGraph()) ;
-        ProgressLogger plog = new ProgressLogger(LoggerFactory.getLogger("LOAD"), 
-                                                 "Triples", 100000, 10) ;
-        StreamRDFMonitor s2 = new StreamRDFMonitor(s1, plog) ;
-        // Ensure transaction overheads acccounted for
-        StreamRDFMerge s3 = new StreamRDFMerge(s2) ;
-        s3.start();
         
-        // Unwrap a layer of start/finish.
-        TDBTxn.executeWrite(ds, () -> {
-            RDFDataMgr.parse(s3, FILE) ;
-        }) ;
-        s3.finish();
+        System.out.println("Database: "+((DatasetGraphTDB)(ds.asDatasetGraph())).getLocation().getDirectoryPath()) ;
+        System.out.println("Load:     "+FILE) ;
+
+        Loader.bulkLoad(ds, FILE) ;
+    }
+    
+    public static void count(Dataset ds) {
         long x = TDBTxn.executeReadReturn(ds, () -> {
-            System.out.println("Read start") ;
             return Iter.count(ds.asDatasetGraph().find()) ;
         }) ;
         System.out.printf("Count = %,d\n", x) ;
-        String qs = "SELECT * { ?s ?p ?o } LIMIT 10" ;
-        query(ds, qs) ;
-        System.out.println("DONE") ;
-        System.exit(0) ;
     }
     
     public static void query(Dataset ds, String queryString) {

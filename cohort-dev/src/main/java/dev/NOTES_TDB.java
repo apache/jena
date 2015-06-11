@@ -26,6 +26,8 @@ import org.apache.jena.sparql.core.Quad ;
 
 
 public class NOTES_TDB {
+    // Loader: StreamRDFBatchSplit and parallel index update.
+
     
     // ** NodeTableCache and aborts.
     // NodeTableCache + abort -> clean out?

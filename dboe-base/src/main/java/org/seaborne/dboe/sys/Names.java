@@ -20,8 +20,6 @@ package org.seaborne.dboe.sys;
 /** Names of things in TDB */
 public class Names
 {
-    // TODO Split up this file.
-    
     /* System files */
     public static final String extJournal               = "jrnl" ;
     /* Component Transactional State */    
@@ -30,22 +28,24 @@ public class Names
     public static final String journalFileBase          = "journal" ;
     public static final String journalFile              = journalFileBase+"."+extJournal ;
 
+    // ++ Elsewhere
     /* RDF indexes */
     public static final String primaryIndexTriples      = "SPO" ; 
-    public static final String[] tripleIndexes          = { primaryIndexTriples, "POS", "OSP" } ;
+    public static final String[] tripleIndexes          = { primaryIndexTriples, "POS" /*, "OSP"*/ } ;
 
     public static final String primaryIndexQuads        = "GSPO" ; 
-    public static final String[] quadIndexes            = { primaryIndexQuads, "GPOS", "GOSP", "POSG", "OSPG", "SPOG"} ;
+    public static final String[] quadIndexes            = { primaryIndexQuads, "GPOS", /*"GOSP",*/ "POSG", /*"OSPG",*/ "SPOG"} ;
     
     public static final String primaryIndexPrefix       = "GPU" ;
     public static final String[] prefixIndexes          = { primaryIndexPrefix } ;
+    // ++ Elsewhere
     
     /* B+Trees - nodes file and records file */
     public static final String extBptState              = "bpt" ;
     public static final String extBptTree               = "idn" ;
     public static final String extBptRecords            = "dat" ;
 
-//    /* BTrees - single file per tree */
+//    /* B+Trees - single file per tree */
 //    public static final String btExt                    = "idx" ;
     
     /* ExtHash - dictionary file*/
