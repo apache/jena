@@ -233,19 +233,10 @@ void SelectClause() : {  Var v ; Expr expr ; Node n ; }
 #include  "json-extra.jj"
 #endif
 
+#ifdef ARQ
 void ConstructQuery() : { Template t ; 
-                          TripleCollectorBGP acc = new TripleCollectorBGP() ; }
+                          QuadAcc acc = new QuadAcc() ; }
 {
-// #ifndef ARQ
-//   <CONSTRUCT>
-//      { getQuery().setQueryConstructType() ; }
-//   t = ConstructTemplate() 
-//     { getQuery().setConstructTemplate(t) ; }
-//   ( DatasetClause() )*
-//   WhereClause()
-//   SolutionModifier()
-// #else
-
  <CONSTRUCT>
    { getQuery().setQueryConstructType() ; }
  (
@@ -265,7 +256,7 @@ void ConstructQuery() : { Template t ;
     <RBRACE>
     SolutionModifier()
     { 
-      t = new Template(acc.getBGP()) ;
+      t = new Template(acc) ;
       getQuery().setConstructTemplate(t) ;
       // Create a query in the same shape as the query created by writing out in full.
       ElementPathBlock epb = new ElementPathBlock(acc.getBGP()) ;
@@ -276,6 +267,41 @@ void ConstructQuery() : { Template t ;
  )
 //#endif
 }
+#else
+void ConstructQuery() : { Template t ; 
+                          QuadAcc acc = new QuadAcc() ; }
+{
+ <CONSTRUCT>
+   { getQuery().setQueryConstructType() ; }
+ (
+    // Full form.
+    t = ConstructTemplate() 
+      { getQuery().setConstructTemplate(t) ; }
+    ( DatasetClause() )*
+    WhereClause()
+    SolutionModifier()
+ |
+    // Abbreviated CONSTRUCT WHERE {}
+    ( DatasetClause() )*
+    <WHERE>
+    // Should have been "ConstructTemplate()"
+    <LBRACE>  
+    (TriplesTemplate(acc))?
+    <RBRACE>
+    SolutionModifier()
+    { 
+      t = new Template(acc) ;
+      getQuery().setConstructTemplate(t) ;
+      // Create a query in the same shape as the query created by writing out in full.
+      ElementPathBlock epb = new ElementPathBlock(acc.getBGP()) ;
+      ElementGroup elg = new ElementGroup() ;
+      elg.addElement(epb) ;
+      getQuery().setQueryPattern(elg) ;
+    }
+ )
+//#endif
+}
+#endif
 
 void DescribeQuery() : { Node n ; }
 {
@@ -1059,8 +1085,8 @@ ExprList ExpressionList() : { Expr expr = null ; ExprList args = new ExprList() 
 
 // -------- Construct patterns
 
-Template ConstructTemplate() : { TripleCollectorBGP acc = new TripleCollectorBGP(); 
-                                 Template t = new Template(acc.getBGP()) ; }
+Template ConstructTemplate() : { QuadAcc acc = new QuadAcc() ; 
+                                 Template t = new Template(acc) ; }
 {
     { setInConstructTemplate(true) ; }
   <LBRACE> 

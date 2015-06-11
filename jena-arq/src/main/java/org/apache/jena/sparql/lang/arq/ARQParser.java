@@ -11,7 +11,7 @@ import org.apache.jena.update.* ;
 import org.apache.jena.sparql.modify.request.* ;
 
 @SuppressWarnings("all")
-public class ARQParser extends ARQParserBase {
+public class ARQParser extends ARQParserBase implements ARQParserConstants {
     boolean allowAggregatesInExpressions = false ;
 
   final public void QueryUnit() throws ParseException {
@@ -507,7 +507,7 @@ public class ARQParser extends ARQParserBase {
 
   final public void ConstructQuery() throws ParseException {
                           Template t ;
-                          TripleCollectorBGP acc = new TripleCollectorBGP() ;
+                          QuadAcc acc = new QuadAcc() ;
     jj_consume_token(CONSTRUCT);
      getQuery().setQueryConstructType() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -579,7 +579,7 @@ public class ARQParser extends ARQParserBase {
       }
       jj_consume_token(RBRACE);
       SolutionModifier();
-      t = new Template(acc.getBGP()) ;
+      t = new Template(acc) ;
       getQuery().setConstructTemplate(t) ;
       ElementPathBlock epb = new ElementPathBlock(acc.getBGP()) ;
       ElementGroup elg = new ElementGroup() ;
@@ -2699,8 +2699,8 @@ public class ARQParser extends ARQParserBase {
   }
 
   final public Template ConstructTemplate() throws ParseException {
-                                 TripleCollectorBGP acc = new TripleCollectorBGP();
-                                 Template t = new Template(acc.getBGP()) ;
+                                 QuadAcc acc = new QuadAcc() ;
+                                 Template t = new Template(acc) ;
       setInConstructTemplate(true) ;
     jj_consume_token(LBRACE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -6796,21 +6796,18 @@ public class ARQParser extends ARQParserBase {
       for (int i = 0; i < jj_endpos; i++) {
         jj_expentry[i] = jj_lasttokens[i];
       }
-      boolean exists = false;
-      for (java.util.Iterator<?> it = jj_expentries.iterator(); it.hasNext();) {
-        exists = true;
+      jj_entries_loop: for (java.util.Iterator<?> it = jj_expentries.iterator(); it.hasNext();) {
         int[] oldentry = (int[])(it.next());
         if (oldentry.length == jj_expentry.length) {
           for (int i = 0; i < jj_expentry.length; i++) {
             if (oldentry[i] != jj_expentry[i]) {
-              exists = false;
-              break;
+              continue jj_entries_loop;
             }
           }
-          if (exists) break;
+          jj_expentries.add(jj_expentry);
+          break jj_entries_loop;
         }
       }
-      if (!exists) jj_expentries.add(jj_expentry);
       if (pos != 0) jj_lasttokens[(jj_endpos = pos) - 1] = kind;
     }
   }

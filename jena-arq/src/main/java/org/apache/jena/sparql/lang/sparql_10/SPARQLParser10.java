@@ -19,12 +19,50 @@
 
 package org.apache.jena.sparql.lang.sparql_10 ;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.query.* ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.expr.* ;
-import org.apache.jena.sparql.path.* ;
-import org.apache.jena.sparql.syntax.* ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.query.Query;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.expr.E_Add;
+import org.apache.jena.sparql.expr.E_Bound;
+import org.apache.jena.sparql.expr.E_Datatype;
+import org.apache.jena.sparql.expr.E_Divide;
+import org.apache.jena.sparql.expr.E_Equals;
+import org.apache.jena.sparql.expr.E_Function;
+import org.apache.jena.sparql.expr.E_GreaterThan;
+import org.apache.jena.sparql.expr.E_GreaterThanOrEqual;
+import org.apache.jena.sparql.expr.E_IsBlank;
+import org.apache.jena.sparql.expr.E_IsIRI;
+import org.apache.jena.sparql.expr.E_IsLiteral;
+import org.apache.jena.sparql.expr.E_IsURI;
+import org.apache.jena.sparql.expr.E_Lang;
+import org.apache.jena.sparql.expr.E_LangMatches;
+import org.apache.jena.sparql.expr.E_LessThan;
+import org.apache.jena.sparql.expr.E_LessThanOrEqual;
+import org.apache.jena.sparql.expr.E_LogicalAnd;
+import org.apache.jena.sparql.expr.E_LogicalNot;
+import org.apache.jena.sparql.expr.E_LogicalOr;
+import org.apache.jena.sparql.expr.E_Multiply;
+import org.apache.jena.sparql.expr.E_NotEquals;
+import org.apache.jena.sparql.expr.E_Regex;
+import org.apache.jena.sparql.expr.E_SameTerm;
+import org.apache.jena.sparql.expr.E_Str;
+import org.apache.jena.sparql.expr.E_Subtract;
+import org.apache.jena.sparql.expr.E_UnaryMinus;
+import org.apache.jena.sparql.expr.E_UnaryPlus;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.ExprVar;
+import org.apache.jena.sparql.modify.request.QuadAcc;
+import org.apache.jena.sparql.path.Path;
+import org.apache.jena.sparql.syntax.Element;
+import org.apache.jena.sparql.syntax.ElementFilter;
+import org.apache.jena.sparql.syntax.ElementGroup;
+import org.apache.jena.sparql.syntax.ElementNamedGraph;
+import org.apache.jena.sparql.syntax.ElementOptional;
+import org.apache.jena.sparql.syntax.ElementTriplesBlock;
+import org.apache.jena.sparql.syntax.ElementUnion;
+import org.apache.jena.sparql.syntax.Template;
+import org.apache.jena.sparql.syntax.TripleCollector;
 
 
 
@@ -879,8 +917,8 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
 
 // -------- Construct patterns
   final public Template ConstructTemplate() throws ParseException {
-                                 TripleCollectorBGP acc = new TripleCollectorBGP();
-                                 Template t = new Template(acc.getBGP()) ;
+                                 QuadAcc acc = new QuadAcc();
+                                 Template t = new Template(acc) ;
       setInConstructTemplate(true) ;
     jj_consume_token(LBRACE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -921,7 +959,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     throw new Error("Missing return statement in function");
   }
 
-  final public void ConstructTriples(TripleCollectorMark acc) throws ParseException {
+  final public void ConstructTriples(TripleCollector acc) throws ParseException {
     TriplesSameSubject(acc);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DOT:
@@ -967,7 +1005,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
 
 // -------- Triple lists with property and object lists
 // -------- Without paths: entry: TriplesSameSubject
-  final public void TriplesSameSubject(TripleCollectorMark acc) throws ParseException {
+  final public void TriplesSameSubject(TripleCollector acc) throws ParseException {
                                                  Node s ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
@@ -1009,7 +1047,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     }
   }
 
-  final public void PropertyListNotEmpty(Node s, TripleCollectorMark acc) throws ParseException {
+  final public void PropertyListNotEmpty(Node s, TripleCollector acc) throws ParseException {
       Node p = null ;
     p = Verb();
     ObjectList(s, p, null, acc);
@@ -1041,7 +1079,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     }
   }
 
-  final public void PropertyList(Node s, TripleCollectorMark acc) throws ParseException {
+  final public void PropertyList(Node s, TripleCollector acc) throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -1057,7 +1095,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     }
   }
 
-  final public void ObjectList(Node s, Node p, Path path, TripleCollectorMark acc) throws ParseException {
+  final public void ObjectList(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
                                                                    Node o ;
     Object(s, p, path, acc);
     label_14:
@@ -1075,11 +1113,10 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     }
   }
 
-  final public void Object(Node s, Node p, Path path, TripleCollectorMark acc) throws ParseException {
+  final public void Object(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
                                                                Node o ;
-      int mark = acc.mark() ;
     o = GraphNode(acc);
-    insert(acc, mark, s, p, path, o) ;
+    insert(acc, s, p, path, o) ;
   }
 
   final public Node Verb() throws ParseException {
@@ -1112,7 +1149,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
 
 // Anything that can stand in a node slot and which is
 // a number of triples
-  final public Node TriplesNode(TripleCollectorMark acc) throws ParseException {
+  final public Node TriplesNode(TripleCollector acc) throws ParseException {
                                           Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAREN:
@@ -1131,7 +1168,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     throw new Error("Missing return statement in function");
   }
 
-  final public Node BlankNodePropertyList(TripleCollectorMark acc) throws ParseException {
+  final public Node BlankNodePropertyList(TripleCollector acc) throws ParseException {
                                                     Token t ;
     t = jj_consume_token(LBRACKET);
       Node n = createBNode(t.beginLine, t.beginColumn) ;
@@ -1142,7 +1179,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
   }
 
 // ------- RDF collections
-  final public Node Collection(TripleCollectorMark acc) throws ParseException {
+  final public Node Collection(TripleCollector acc) throws ParseException {
       Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
     t = jj_consume_token(LPAREN);
     label_15:
@@ -1152,9 +1189,8 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
          listHead = cell ;
       if ( lastCell != null )
         insert(acc, lastCell, nRDFrest, cell) ;
-      mark = acc.mark() ;
       n = GraphNode(acc);
-      insert(acc, mark, cell, nRDFfirst, n) ;
+      insert(acc, cell, nRDFfirst, n) ;
       lastCell = cell ;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IRIref:
@@ -1197,7 +1233,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
   }
 
 // -------- Nodes in a graph pattern or template
-  final public Node GraphNode(TripleCollectorMark acc) throws ParseException {
+  final public Node GraphNode(TripleCollector acc) throws ParseException {
                                         Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:

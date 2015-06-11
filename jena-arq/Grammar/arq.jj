@@ -129,7 +129,7 @@ void SelectClause() : { Var v ; Expr expr ; Node n ; }
   { allowAggregatesInExpressions = false ; }
 }
 void ConstructQuery() : { Template t ;
-                          TripleCollectorBGP acc = new TripleCollectorBGP() ; }
+                          QuadAcc acc = new QuadAcc() ; }
 {
  <CONSTRUCT>
    { getQuery().setQueryConstructType() ; }
@@ -147,7 +147,7 @@ void ConstructQuery() : { Template t ;
     <RBRACE>
     SolutionModifier()
     {
-      t = new Template(acc.getBGP()) ;
+      t = new Template(acc) ;
       getQuery().setConstructTemplate(t) ;
       ElementPathBlock epb = new ElementPathBlock(acc.getBGP()) ;
       ElementGroup elg = new ElementGroup() ;
@@ -780,8 +780,8 @@ ExprList ExpressionList() : { Expr expr = null ; ExprList args = new ExprList() 
   )
   { return args ; }
 }
-Template ConstructTemplate() : { TripleCollectorBGP acc = new TripleCollectorBGP();
-                                 Template t = new Template(acc.getBGP()) ; }
+Template ConstructTemplate() : { QuadAcc acc = new QuadAcc() ;
+                                 Template t = new Template(acc) ; }
 {
     { setInConstructTemplate(true) ; }
   <LBRACE>

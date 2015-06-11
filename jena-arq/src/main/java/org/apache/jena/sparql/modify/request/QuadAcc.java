@@ -18,12 +18,13 @@
 
 package org.apache.jena.sparql.modify.request;
 
-import java.util.ArrayList ;
-import java.util.Collections ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import org.apache.jena.atlas.lib.SinkToCollection ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.atlas.lib.SinkToCollection;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.core.Quad;
 
 /** Accumulate quads (including allowing variables) during parsing. */
 public class QuadAcc extends QuadAccSink
@@ -59,6 +60,14 @@ public class QuadAcc extends QuadAccSink
         if ( ! ( other instanceof QuadAcc ) ) return false ;
         QuadAcc acc = (QuadAcc)other ;
         return quads.equals(acc.quads) ; 
+    }
+    
+    public BasicPattern getBGP(){
+    	BasicPattern bgp = new BasicPattern();
+    	for(Quad qd: this.quadsView){
+    		bgp.add(qd.asTriple());
+    	}
+    	return bgp;
     }
 
 }

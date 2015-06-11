@@ -97,7 +97,7 @@ public class ParserSPARQL11 extends SPARQLParser
             action.exec(parser) ;
         }
         catch (org.apache.jena.sparql.lang.sparql_11.ParseException ex)
-        { 
+        {   
             throw new QueryParseException(ex.getMessage(),
                                           ex.currentToken.beginLine,
                                           ex.currentToken.beginColumn

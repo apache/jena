@@ -17,11 +17,14 @@
  */
 
 package org.apache.jena.sparql.serializer;
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.BasicPattern ;
-import org.apache.jena.sparql.util.FmtUtils ;
+import java.util.List;
+
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.util.FmtUtils;
 
 public abstract class FormatterBase
 {
@@ -43,6 +46,11 @@ public abstract class FormatterBase
         FmtUtils.formatPattern(out, pattern, context) ;
     }
     
+    protected void formatQuads(List<Quad> quads)
+    {
+        FmtUtils.formatQuads(out, quads, context) ;
+    }
+    
     protected void formatTriple(Triple tp)
     {
         out.print(slotToString(tp.getSubject())) ;
@@ -51,7 +59,7 @@ public abstract class FormatterBase
         out.print(" ") ;
         out.print(slotToString(tp.getObject())) ;
     }
-    
+        
     protected String slotToString(Node n)
     {
         return FmtUtils.stringForNode(n, context) ;
