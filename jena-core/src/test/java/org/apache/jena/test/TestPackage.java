@@ -33,7 +33,6 @@ public class TestPackage extends TestCase {
     static {
         // Running directly (e.g. Eclipse) not from the POM. 
         System.setProperty("log4j.configuration", JenaTest.log4jFilenameTests);
-        
     }
 	
     static public TestSuite suite() {
