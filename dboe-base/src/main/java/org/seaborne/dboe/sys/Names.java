@@ -31,10 +31,10 @@ public class Names
     // ++ Elsewhere
     /* RDF indexes */
     public static final String primaryIndexTriples      = "SPO" ; 
-    public static final String[] tripleIndexes          = { primaryIndexTriples, "POS" /*, "OSP"*/ } ;
+    public static final String[] tripleIndexes          = { primaryIndexTriples, "POS", "OSP" } ;
 
     public static final String primaryIndexQuads        = "GSPO" ; 
-    public static final String[] quadIndexes            = { primaryIndexQuads, "GPOS", /*"GOSP",*/ "POSG", /*"OSPG",*/ "SPOG"} ;
+    public static final String[] quadIndexes            = { primaryIndexQuads, "GPOS", "GOSP", "POSG", "OSPG", "SPOG"} ;
     
     public static final String primaryIndexPrefix       = "GPU" ;
     public static final String[] prefixIndexes          = { primaryIndexPrefix } ;
