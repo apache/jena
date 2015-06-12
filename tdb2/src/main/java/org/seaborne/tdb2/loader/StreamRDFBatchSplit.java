@@ -26,6 +26,8 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.other.BatchedStreamRDF ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.Quad ;
+import org.seaborne.dboe.transaction.txn.Transaction ;
+import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.setup.TDBDatasetDetails ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
 import org.seaborne.tdb2.store.NodeId ;
@@ -38,6 +40,9 @@ import org.slf4j.LoggerFactory ;
  * @see BatchedStreamRDF BatchedStreamRDF, which batches by subject
  */
 public class StreamRDFBatchSplit implements StreamRDF {
+    // Need to handle transactions?
+    // Lizard des (TxnClient) 
+    
     private static Logger log = LoggerFactory.getLogger(StreamRDFBatchSplit.class) ;
     protected static NodeId placeholder = NodeId.create(-7) ;
     protected final List<Triple> triples ;
@@ -47,6 +52,7 @@ public class StreamRDFBatchSplit implements StreamRDF {
     private final int batchSize ;
     private final TDBDatasetDetails details ;
     private final DatasetGraphTDB dsg ;
+    private Transaction txn = null ;
     
     public StreamRDFBatchSplit(DatasetGraphTDB dsg, int batchSize) {
         this.dsg = dsg ;
@@ -60,6 +66,11 @@ public class StreamRDFBatchSplit implements StreamRDF {
     @Override
     public void start() {
         log.info("Batch size: "+batchSize);
+        // Multiple starts in one trnasaciton are possible.
+        if ( txn == null )
+            txn = dsg.getTxnSystem().getThreadTransaction() ;
+        if ( txn == null )
+            throw new TDBException("Not in a transaction") ;
     }
 
     @Override
@@ -74,17 +85,14 @@ public class StreamRDFBatchSplit implements StreamRDF {
             processBatch() ;
     }
 
-    int batchNumber = 1 ;
+    int batchNumber = 0 ;
     
     protected void processBatch() {
         //if ( batchNumber < 10 )
-        //FmtLog.info(log, ">>processBatch: [%d]->%d", batchNumber, triples.size()) ;
         batchNumber++ ;
-        
-        // Do this by filling the cache.
-        Set<Node> required = mapping.keySet() ;
-        // There is a change cache spills will mess the world up.
-        // Keep private copy then mass fill the cache?
+        //FmtLog.info(log, ">>processBatch: [%d]->%d", batchNumber, triples.size()) ;
+
+        Set<Node> requiredNodes = mapping.keySet() ;
 
         boolean executeBatchNodesPhase = true ;
         boolean executeIndexPhase = true ;
@@ -93,7 +101,7 @@ public class StreamRDFBatchSplit implements StreamRDF {
         
         if ( executeBatchNodesPhase )
             // Check this is a cache node table.
-            batchUpdateNodes(required, details) ;
+            batchUpdateNodes(requiredNodes, details) ;
         
         if ( executeIndexPhase ) {
             if ( batchUpdateIndexes )
@@ -189,15 +197,11 @@ public class StreamRDFBatchSplit implements StreamRDF {
         if ( mapping.containsKey(node)) 
             return ;
         
-        //if ( details.ntCache.containsNode(node) )
-        
         if ( NodeId.hasInlineDatatype(node) ) {
             NodeId nodeId = NodeId.inline(node) ;
             if ( nodeId != null )
                 return ;
         }
-        // if in cache
-        //   return ;
         mapping.put(node, placeholder) ;
     }
     

@@ -71,13 +71,15 @@ public class TupleIndexRecord extends TupleIndexBase
     /** Insert tuples */
     @Override
     public void addAll(Collection<Tuple<NodeId>> tuples) {
-        tuples.stream().forEach(this::add);
+        for ( Tuple<NodeId> t : tuples ) 
+            add(t) ;
     }
     
     /** Delete tuples */
     @Override
     public void deleteAll(Collection<Tuple<NodeId>> tuples) {
-        tuples.stream().forEach(this::delete);
+        for ( Tuple<NodeId> t : tuples ) 
+            delete(t) ;
     }
     
     /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any.

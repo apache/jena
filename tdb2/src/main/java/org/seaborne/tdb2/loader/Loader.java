@@ -49,5 +49,25 @@ public class Loader {
         }) ;
         sMonitor.finishMonitor();  
     }
+    
+    public static void bulkLoadBatching(Dataset ds, String ... files) {
+        DatasetGraphTDB dsg = (DatasetGraphTDB)ds.asDatasetGraph() ;
+
+        StreamRDFBatchSplit s1 = new StreamRDFBatchSplit(dsg, 10) ;
+        ProgressLogger plog = new ProgressLogger(LOG, "Triples", 100000, 10) ;
+        // Want the monitor on the outside to capture transaction wrapper costs.
+        StreamRDFMonitor sMonitor = new StreamRDFMonitor(s1, plog) ;
+        StreamRDF s3 = sMonitor ;
+
+        sMonitor.startMonitor(); 
+        TDBTxn.executeWrite(ds, () -> {
+            for ( String fn : files ) {
+                if ( files.length > 1 )
+                    FmtLog.info(LOG, "File: %s",fn);
+                RDFDataMgr.parse(s3, fn) ;
+            }
+        }) ;
+        sMonitor.finishMonitor();  
+    }
 }
 

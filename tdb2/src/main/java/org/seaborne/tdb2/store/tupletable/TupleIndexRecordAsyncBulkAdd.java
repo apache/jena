@@ -34,6 +34,7 @@ import org.apache.jena.atlas.lib.Tuple ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.RangeIndex ;
+import org.seaborne.dboe.transaction.txn.Transaction ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.lib.Async ;
 import org.seaborne.tdb2.lib.TupleLib ;
@@ -82,6 +83,9 @@ public class TupleIndexRecordAsyncBulkAdd extends TupleIndexBase
     /** Insert tuples */
     @Override
     public void addAll(Collection<Tuple<NodeId>> tuples) {
+        Transaction txn = null ;
+        // pass into async block.
+        
         async.execAsync(lock, () -> {
             // Transaction?
             
