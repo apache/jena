@@ -158,6 +158,16 @@ public class TransactionalBase implements TransactionalSystem {
         return null ; 
     }
     
+    @Override
+    final
+    public Transaction getThreadTransaction() {
+        Transaction txn = theTxn.get() ;
+        // Touched the thread local so it is defined now.
+//        if ( txn == null )
+//            theTxn.remove() ;
+        return txn ;
+    }
+    
     /** Get the transaction, checking there is one */  
     private Transaction getValidTransaction() {
         Transaction txn = theTxn.get() ;

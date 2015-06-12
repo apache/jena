@@ -66,5 +66,10 @@ public interface TransactionalSystem extends Transactional {
     public ReadWrite getState() ;
     
     public default boolean isInTransaction() { return getState() != null ; }  
+    
+    /** Return the tarsnaction objhect for this thread.  Low-level use only
+     *  Do not drive the transaction lifecycle by calling methods on this object. 
+     */
+    public Transaction getThreadTransaction() ;
 }
 
