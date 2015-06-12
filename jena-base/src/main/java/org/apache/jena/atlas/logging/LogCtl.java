@@ -165,26 +165,28 @@ public class LogCtl {
     }
 
     private static String log4Jsetup = StrUtils.strjoinNL
-    ("## Plain output to stdout",
-     "log4j.appender.jena.plain=org.apache.log4j.ConsoleAppender",
-     "log4j.appender.jena.plain.target=System.out",
-     "log4j.appender.jena.plain.layout=org.apache.log4j.PatternLayout",
-     "log4j.appender.jena.plain.layout.ConversionPattern=%m%n"
-     ,
-     "## Plain output with level, to stderr",
-     "log4j.appender.jena.plainlevel=org.apache.log4j.ConsoleAppender",
-     "log4j.appender.jena.plainlevel.target=System.err",
-     "log4j.appender.jena.plainlevel.layout=org.apache.log4j.PatternLayout",
-     "log4j.appender.jena.plainlevel.layout.ConversionPattern=%-5p %m%n"
-    
-     , "## Everything", "log4j.rootLogger=INFO, jena.plainlevel",
-     "log4j.logger.com.hp.hpl.jena=WARN",
-     "log4j.logger.org.apache.jena=WARN",
-     "log4j.logger.org.apache.jena.tdb.loader=INFO"
-    
-     , "## Parser output"
-     , "log4j.additivity.org.apache.jena.riot=false"
-     , "log4j.logger.org.apache.jena.riot=INFO, jena.plainlevel ") ;
+        ( "## Plain output to stdout"
+         ,"log4j.appender.jena.plain=org.apache.log4j.ConsoleAppender"
+         ,"log4j.appender.jena.plain.target=System.out"
+         ,"log4j.appender.jena.plain.layout=org.apache.log4j.PatternLayout"
+         ,"log4j.appender.jena.plain.layout.ConversionPattern=%m%n"
+         
+         ,"## Plain output with level, to stderr"
+         ,"log4j.appender.jena.plainlevel=org.apache.log4j.ConsoleAppender"
+         ,"log4j.appender.jena.plainlevel.target=System.err"
+         ,"log4j.appender.jena.plainlevel.layout=org.apache.log4j.PatternLayout"
+         ,"log4j.appender.jena.plainlevel.layout.ConversionPattern=%-5p %m%n"
+
+         ,"## Everything"
+         ,"log4j.rootLogger=INFO, jena.plainlevel"
+         ,"log4j.logger.com.hp.hpl.jena=WARN"
+         ,"log4j.logger.org.apache.jena=WARN"
+         ,"log4j.logger.org.apache.jena.tdb.loader=INFO"
+
+         , "## Parser output"
+         , "log4j.additivity.org.apache.jena.riot=false"
+         , "log4j.logger.org.apache.jena.riot=INFO, jena.plainlevel"
+         ) ;
     // ---- java.util.logging - because that's always present.
     static String defaultProperties = StrUtils.strjoinNL
         (
