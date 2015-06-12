@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory ;
  */
 public class schemagen {
     
-    static { setCmdLogging("jena-log4j.properties") ; }
+    static { setCmdLogging(); }
 
     // Constants
     //////////////////////////////////

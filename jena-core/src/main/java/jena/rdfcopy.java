@@ -52,7 +52,7 @@ import org.apache.jena.shared.JenaException ;
  */
 public class rdfcopy extends java.lang.Object {
 
-    static { setCmdLogging("jena-log4j.properties") ; }
+    static { setCmdLogging(); }
 
 	/**
 	* @param args the command line arguments

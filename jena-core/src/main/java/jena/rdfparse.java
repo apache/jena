@@ -77,7 +77,7 @@ import org.apache.jena.shared.Command ;
 
 public class rdfparse {
 
-    static { setCmdLogging("jena-log4j.properties") ; }
+    static { setCmdLogging(); }
 
     /** Either start an RDF/XML to NTriple converter, or run test suite.
 	 * @param args The command-line arguments.

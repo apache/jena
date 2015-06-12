@@ -46,7 +46,7 @@ import org.apache.jena.rdf.model.* ;
  */
 public class rdfcompare extends java.lang.Object {
 
-    static { setCmdLogging("jena-log4j.properties") ; }
+    static { setCmdLogging(); }
 
     /**
     * @param args the command line arguments
