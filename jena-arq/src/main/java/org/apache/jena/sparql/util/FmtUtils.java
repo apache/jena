@@ -18,29 +18,28 @@
 
 package org.apache.jena.sparql.util;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Pattern;
+import java.util.Locale ;
+import java.util.regex.Pattern ;
 
-import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Node_Literal;
-import org.apache.jena.graph.Triple;
-import org.apache.jena.iri.IRI;
-import org.apache.jena.iri.IRIFactory;
-import org.apache.jena.iri.IRIRelativize;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.sparql.ARQConstants;
-import org.apache.jena.sparql.ARQInternalErrorException;
-import org.apache.jena.sparql.core.BasicPattern;
-import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.serializer.SerializationContext;
-import org.apache.jena.vocabulary.XSD;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node_Literal ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.iri.IRI ;
+import org.apache.jena.iri.IRIFactory ;
+import org.apache.jena.iri.IRIRelativize ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.sparql.ARQConstants ;
+import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.core.Prologue ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.vocabulary.XSD ;
 
 /** Presentation forms of various kinds of objects.
  *  Beware that bNodes are abbreviated to _:b0 etc.
@@ -159,24 +158,6 @@ public class FmtUtils
             first = false ;
         }
     }
-    
-    public static void formatQuads(IndentedWriter out, List<Quad> quads, SerializationContext sCxt)
-    {
-        StringBuilder buffer = new StringBuilder() ;  
-        boolean first = true ;
-        for (Quad quad : quads )
-        {
-            if ( ! first )
-                buffer.append("\n") ;
-            stringForQuad(buffer, quad, sCxt) ;
-            buffer.append(" ." ) ;
-            out.print(buffer.toString()) ;
-            buffer.setLength(0) ;
-            first = false ;
-        }
-    }
-    
-    
     
     public static String stringForObject(Object obj)
     {

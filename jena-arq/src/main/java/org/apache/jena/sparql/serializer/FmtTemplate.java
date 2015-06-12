@@ -55,7 +55,7 @@ public class FmtTemplate extends FormatterBase
         out.incIndent(INDENT) ;
         out.pad() ;
     
-        formatQuads(template.getQuads()) ;
+        formatTriples(template.getBGP()) ;
         
         out.decIndent(INDENT) ;
         out.print("}") ;

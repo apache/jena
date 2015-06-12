@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.modify.TemplateLib;
@@ -56,6 +57,14 @@ public class Template
 
 
 //    public BasicPattern getBGP()        { return bgp ; }
+    public BasicPattern getBGP()
+    { 
+    	BasicPattern bgp = new BasicPattern();
+    	for(Quad q: qp.getQuads()){
+    		bgp.add(q.asTriple());
+    	}
+    	return bgp;
+    }
     public List<Triple> getTriples()
     { 
     	List<Triple> triples = new ArrayList<Triple>();
