@@ -58,7 +58,6 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
         return componentId ;
     }
 
-    //    
 //    // Very dangerous!
 //    protected void setForThread(Transaction txn, X state) {
 //        threadTxn.set(txn);
