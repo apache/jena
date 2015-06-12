@@ -38,7 +38,7 @@ public class TDB_Dev_Main {
         if ( load )
             FileOps.clearDirectory("DB");
         Dataset ds = TDBFactory.createDataset(location) ;
-        String FILE = "/home/afs/Datasets/BSBM/bsbm-100m.nt.gz" ;
+        String FILE = "/home/afs/Datasets/BSBM/bsbm-5m.nt.gz" ;
         
         if ( load )
             load(ds, FILE) ;
@@ -55,11 +55,9 @@ public class TDB_Dev_Main {
     }        
     
     public static void load(Dataset ds, String FILE) {
-        
-        
         System.out.println("Database: "+((DatasetGraphTDB)(ds.asDatasetGraph())).getLocation().getDirectoryPath()) ;
         System.out.println("Load:     "+FILE) ;
-
+        // Needs work: Loader.bulkLoadBatching
         Loader.bulkLoad(ds, FILE) ;
     }
     
