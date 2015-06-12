@@ -38,7 +38,7 @@ public class TDB_Dev_Main {
         if ( load )
             FileOps.clearDirectory("DB");
         Dataset ds = TDBFactory.createDataset(location) ;
-        String FILE = "/home/afs/Datasets/BSBM/bsbm-25m.nt.gz" ;
+        String FILE = "/home/afs/Datasets/BSBM/bsbm-100m.nt.gz" ;
         
         if ( load )
             load(ds, FILE) ;

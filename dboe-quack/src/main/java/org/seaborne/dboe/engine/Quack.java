@@ -160,7 +160,8 @@ public class Quack {
     
     public static void hardRewire() {
         // Replace OSP - until a global default SystemParams is ready. 
-        Names.tripleIndexes[2] = "PSO" ;
+        if ( Names.tripleIndexes.length > 2 )
+            Names.tripleIndexes[2] = "PSO" ;
     }
     
     public static Dataset createDataset(OpExecutorFactory executorFactory) {

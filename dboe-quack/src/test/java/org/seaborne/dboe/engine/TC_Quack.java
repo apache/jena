@@ -46,6 +46,7 @@ public class TC_Quack {
     @BeforeClass static public void beforeClass() {
         TDB.init();
         Quack.init() ;
+        // Assumes POS, PSO
         Quack.hardRewire() ;
         Quack2.init() ;
     }

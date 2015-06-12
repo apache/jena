@@ -26,24 +26,19 @@ import org.apache.jena.sparql.core.Quad ;
 
 
 public class NOTES_TDB {
-    // Loader: StreamRDFBatchSplit and parallel index update.
-
+    // Loader: Try with StreamRDFBatchSplit and a parallel index update.
     
     // ** NodeTableCache and aborts.
     // NodeTableCache + abort -> clean out?
     // Abort notification.
     // Or NodeTableCache part of the transaction.
-    
-    
-    // TxnEvent or actually a TransactionComponent
-    //   TC - a lot of baggage.
-    //   TxnEvet - separate part of the Transaction coordinator?
-    
-    // Transaction state changes notification API (TripleTable, QuadTable, Prefixes -> NodeTables) 
-    
+
     // DatasetGraphTDB has begin/commit/abort/end --> Not used?
     
     // Quack clean / split into general and TDB
+    // Quack and SPO, POS (fast load mode)
+    //   Index to index copy pogram.
+    //   Work wit Lizard?
     
     // DatasetGraph.exec(op)
     //   Interface ExecuteOp + generic registration.
@@ -65,7 +60,7 @@ interface StorageRDF {
     Iterator<Quad> find(Node g, Node s, Node p, Node o) ;
 }
 
-// Like Transactional(System) except not part of the transaction.  Called after  
+// Like Transactional(System) except not part of the transaction.  Called after main calls.
 interface TxnEvent {
     default void startBegin(ReadWrite mode) {}
     default void finishBegin(ReadWrite mode) {}
