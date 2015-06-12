@@ -144,6 +144,8 @@ public class rdfcat
     /** Action queue */
     protected List<RCAction> m_actionQ = new ArrayList<>();
 
+    // Allow testing to run silent.
+    public static boolean suppressDeprecationBanner = false ;
     
     // Constants
     //////////////////////////////////
@@ -209,10 +211,14 @@ public class rdfcat
 
     /* main loop */
     protected void go( String[] args ) {
-    		
-    		System.err.println( "------------------------------------" );
-		System.err.println( "DEPRECATED: Please use riot instead." );
-		System.err.println( "------------------------------------\n" );
+    	
+        if ( ! suppressDeprecationBanner ) {
+            System.err.println("------------------------------------------------------------------");
+    		System.err.println("   DEPRECATED: Please use 'riot' instead.");
+    		System.err.println("     http://jena.apache.org/documentation/io/#command-line-tools");
+            System.err.println("------------------------------------------------------------------");
+    		System.err.println() ;
+        }
     	
         // ensure we use the new RIOT parser subsystem
         enableRIOTParser();
