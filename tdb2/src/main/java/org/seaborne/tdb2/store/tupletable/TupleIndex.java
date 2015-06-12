@@ -32,24 +32,15 @@ public interface TupleIndex extends Sync, Closeable
     /** Insert a tuple */
     public void add(Tuple<NodeId> tuple) ;
 
-    public void addAll(Collection<Tuple<NodeId>> tuples) ;
-    
-//    /** Insert tuples */
-//    public default void addAll(Collection<Tuple<NodeId>> tuples) {
-//        tuples.stream().forEach(this::add);
-//    }
-
     /** Delete a tuple */
     public void delete(Tuple<NodeId> tuple) ; 
+
+    /** Insert tuples */
+    public void addAll(Collection<Tuple<NodeId>> tuples) ;
     
     /** Delete tuples */
     public void deleteAll(Collection<Tuple<NodeId>> tuples) ;
     
-//    /** Delete tuples */
-//    public default void deleteAll(Collection<Tuple<NodeId>> tuples) {
-//        tuples.stream().forEach(this::delete);
-//    } 
-//    
     /** Get a convenient display string for the index - do not rely on the format */ 
     public String getName() ;
     

@@ -61,17 +61,17 @@ public class TupleIndexRecord extends TupleIndexBase
         index.insert(r) ;
     }
     
-    /** Insert tuples */
-    @Override
-    public void addAll(Collection<Tuple<NodeId>> tuples) {
-        tuples.stream().forEach(this::add);
-    }
-    
     /** Delete a tuple */
     @Override
     protected void performDelete(Tuple<NodeId> tuple) { 
         Record r = TupleLib.record(factory, tuple, colMap) ;
         index.delete(r) ;
+    }
+    
+    /** Insert tuples */
+    @Override
+    public void addAll(Collection<Tuple<NodeId>> tuples) {
+        tuples.stream().forEach(this::add);
     }
     
     /** Delete tuples */

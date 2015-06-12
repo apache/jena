@@ -118,7 +118,7 @@ public class TupleTable implements Sync, Closeable
         }
     }
     
-    /** Insert tuples */
+    /** Delete tuples */
     public void deleteAll(List<Tuple<NodeId>> t) {
         // Parallel.
         for ( int i = 0 ; i < indexes.length ; i++ ) {
@@ -127,8 +127,6 @@ public class TupleTable implements Sync, Closeable
             syncNeeded = true ;
         }
     }
-
-
 
     /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any */
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern) {
