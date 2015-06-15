@@ -227,7 +227,6 @@
         </executions>
       </plugin>
 
-      <!--
       <plugin>
         <groupId>org.xenei</groupId>
         <artifactId>contract-test-maven-plugin</artifactId>
@@ -270,7 +269,6 @@
           </execution>
         </executions>
       </plugin>
-      -->
       
       <!--
       <plugin>
