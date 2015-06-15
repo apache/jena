@@ -34,16 +34,24 @@ import org.apache.jena.sparql.serializer.FormatterTemplate;
 import org.apache.jena.sparql.util.Iso;
 import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
-/** Triples template. */
+/** Quads/Triples template. */
 
 public class Template 
 {
     static final int HashTemplateGroup     = 0xB1 ;
     private final QuadAcc qp ;
+    private final BasicPattern bgp;
     
     public Template(QuadAcc qp)
     { 
         this.qp = qp ;
+        this.bgp = null;
+    }
+    
+    public Template(BasicPattern bgp)
+    { 
+    	this.bgp = bgp;
+    	this.qp = null;
     }
 
 //    public void addTriple(Triple t) { quads.addTriple(t) ; }
@@ -55,10 +63,11 @@ public class Template
 //    public void addTriplePath(int index, TriplePath path)
 //    { throw new ARQException("Triples-only collector") ; }
 
-
-//    public BasicPattern getBGP()        { return bgp ; }
     public BasicPattern getBGP()
     { 
+    	if (this.bgp != null){
+    		return this.bgp;
+    	}
     	BasicPattern bgp = new BasicPattern();
     	for(Quad q: qp.getQuads()){
     		bgp.add(q.asTriple());
@@ -67,13 +76,25 @@ public class Template
     }
     public List<Triple> getTriples()
     { 
+    	if(this.bgp != null){
+    		return this.bgp.getList();
+    	}
     	List<Triple> triples = new ArrayList<Triple>();
     	for(Quad q: qp.getQuads()){
     		triples.add(q.asTriple());
     	}
     	return triples;
     }
-    public List<Quad> getQuads()		{ return qp.getQuads() ; }
+    public List<Quad> getQuads() {
+    	if( this.bgp != null){
+    		List<Quad> quads = new ArrayList<Quad>();
+    		for(Triple triple: this.bgp.getList()){
+    			quads.add( new Quad( Quad.tripleInQuad, triple ) ); 
+    		}
+    		return quads;
+    	}   	
+    	return qp.getQuads() ; 
+    }
     // -------------------------
 
     public void subst(Collection<Triple> acc, Map<Node, Node> bNodeMap, Binding b)
@@ -91,7 +112,7 @@ public class Template
     { 
         // BNode invariant hashCode. 
         int calcHashCode = Template.HashTemplateGroup ;
-        for ( Quad q : qp.getQuads() )
+        for ( Quad q : getQuads() )
             calcHashCode ^=  hash(q) ^ calcHashCode<<1 ; 
         return calcHashCode ;
     }
@@ -108,6 +129,7 @@ public class Template
 
     private static int hashNode(Node node)
     {
+    	if ( node == null ) return 37 ; 
         if ( node.isBlank() ) return 59 ;
         return node.hashCode() ;
     }
