@@ -40,9 +40,9 @@ import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.apache.jena.tdb.sys.Names ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import tdb.cmdline.ModLocation ;
-import arq.cmdline.CmdGeneral ;
+import arq.cmdline.ArqCmdGeneral ;
 
-public class dumpnodetable extends CmdGeneral {
+public class dumpnodetable extends ArqCmdGeneral {
     ModLocation modLocation = new ModLocation() ;
 
     static public void main(String... argv) {

@@ -16,8 +16,12 @@
  * limitations under the License.
  */
 
-package arq.cmd;
+package jena.cmd;
 
+import static java.nio.file.Files.readAllBytes;
+
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList ;
 import java.util.Arrays ;
 import java.util.Collections ;
@@ -27,7 +31,6 @@ import java.util.List ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.util.FileManager ;
 
 /**
  * Command line, using the common named/positional arguments paradigm
@@ -120,7 +123,7 @@ public class CmdLineArgs extends CommandLineBase {
     }
 
     private CmdLineArgs addArgWorker(Arg arg, String value) {
-        ArgDecl argDecl = argMap.get(arg.name) ;
+        ArgDecl argDecl = argMap.get(arg.getName()) ;
 
         if ( !argDecl.takesValue() && value != null )
             throw new IllegalArgumentException("No value for argument: " + arg.getName()) ;
@@ -149,8 +152,11 @@ public class CmdLineArgs extends CommandLineBase {
         if ( !matchesIndirect(s, marker) )
             return s ;
         s = s.substring(marker.length()) ;
-        s = FileManager.get().readWholeFileAsUTF8(s) ;
-        return s ;
+        try {
+			return new String(readAllBytes(Paths.get(s)));
+		} catch (IOException e) {
+			throw new CmdException("Could not read from: " + s, e);
+		}
     }
 
     // ---- Argument access
@@ -326,11 +332,6 @@ public class CmdLineArgs extends CommandLineBase {
         throw new CmdException("Unknown argument: "+argStr) ;
     }
     
-    private ArgDecl find(String a) {
-        a = ArgDecl.canonicalForm(a) ;
-        return argMap.get(a) ;
-    }
-
     @Override
     public String toString() {
         if ( !processedArgs )

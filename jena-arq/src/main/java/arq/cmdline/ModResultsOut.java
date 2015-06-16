@@ -19,9 +19,8 @@
 package arq.cmdline;
 
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
+
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.resultset.ResultsFormat ;
@@ -47,7 +46,7 @@ public class ModResultsOut implements ArgModuleGeneral
     }
     
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Results") ;
         cmdLine.add(resultsFmtDecl,

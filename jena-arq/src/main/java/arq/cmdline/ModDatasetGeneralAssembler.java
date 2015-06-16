@@ -18,7 +18,6 @@
 
 package arq.cmdline;
 
-import arq.cmd.CmdArgModule ;
 import org.apache.jena.query.Dataset ;
 
 /** Add assembler to a general dataset description */
@@ -38,7 +37,7 @@ public class ModDatasetGeneralAssembler extends ModDatasetGeneral
     }
 
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         modAssembler.registerWith(cmdLine) ;
         super.registerWith(cmdLine) ;

@@ -18,9 +18,9 @@
 
 package arq.cmdline;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdArgModule ;
-import arq.cmd.CmdException ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.NotFoundException ;
@@ -50,7 +50,7 @@ public class ModAssembler extends ModBase
     }
     
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         //cmdLine.getUsage().startCategory("Dataset") ;
         cmdLine.add(assemblerDescDecl,

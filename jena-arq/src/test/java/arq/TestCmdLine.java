@@ -19,8 +19,9 @@
 package arq;
 import java.util.Iterator ;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdLineArgs ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdLineArgs;
+
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 

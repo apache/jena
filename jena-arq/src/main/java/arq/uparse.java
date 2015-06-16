@@ -21,6 +21,9 @@ package arq;
 import java.io.IOException ;
 import java.util.List ;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.QueryParseException ;
@@ -29,8 +32,7 @@ import org.apache.jena.sparql.modify.request.UpdateWriter ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;
 import org.apache.jena.util.FileUtils ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
+
 import arq.cmdline.CmdARQ ;
 
 public class uparse extends CmdARQ

@@ -20,10 +20,12 @@ package sdb;
 
 import java.util.List;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.atlas.lib.Lib ;
+
 import sdb.cmd.CmdArgsDB;
 
 /** Format an SDB database.  Destroys all existing data permanently.

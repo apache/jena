@@ -18,9 +18,7 @@
 
 package arq.cmdline;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
 
 
 public class ModRemote implements ArgModuleGeneral
@@ -48,7 +46,7 @@ public class ModRemote implements ArgModuleGeneral
     }
     
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Remote") ;
         cmdLine.add(serviceDecl,

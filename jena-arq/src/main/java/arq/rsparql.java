@@ -18,6 +18,8 @@
 
 package arq;
 
+import jena.cmd.CmdException;
+
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecution ;
 import org.apache.jena.query.QueryExecutionFactory ;
@@ -25,7 +27,7 @@ import org.apache.jena.query.Syntax ;
 import org.apache.jena.sparql.engine.http.HttpQuery ;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
-import arq.cmd.CmdException ;
+
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModQueryIn ;
 import arq.cmdline.ModRemote ;

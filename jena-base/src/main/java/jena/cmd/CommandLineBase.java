@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package arq.cmd;
+package jena.cmd;
 
 import java.util.ArrayList ;
 import java.util.List ;

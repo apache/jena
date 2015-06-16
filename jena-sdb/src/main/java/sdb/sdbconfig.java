@@ -20,10 +20,12 @@ package sdb;
 
 import java.util.List;
 
-import arq.cmd.CmdException ;
+import jena.cmd.CmdException;
+
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.atlas.lib.Lib ;
+
 import sdb.cmd.CmdArgsDB;
 import sdb.cmd.ModConfig;
 

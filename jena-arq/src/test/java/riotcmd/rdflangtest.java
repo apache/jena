@@ -18,7 +18,11 @@
 
 package riotcmd;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+import jena.cmd.TerminationException;
 import junit.framework.TestSuite ;
+
 import org.apache.jena.atlas.legacy.BaseTest2 ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
@@ -41,10 +45,8 @@ import org.apache.jena.sparql.vocabulary.FOAF ;
 import org.apache.jena.vocabulary.DC ;
 import org.apache.jena.vocabulary.DCTerms ;
 import org.apache.jena.vocabulary.RDF ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
-import arq.cmd.TerminationException ;
-import arq.cmdline.CmdGeneral ;
+
+import arq.cmdline.ArqCmdGeneral ;
 import arq.cmdline.ModEngine ;
 import arq.cmdline.ModSymbol ;
 
@@ -58,7 +60,7 @@ import arq.cmdline.ModSymbol ;
  * </pre>
  */
 
-public class rdflangtest extends CmdGeneral
+public class rdflangtest extends ArqCmdGeneral
 {
     protected ModSymbol modSymbol       = new ModSymbol() ;
     protected ArgDecl  strictDecl       = new ArgDecl(ArgDecl.NoValue, "strict") ;

@@ -18,8 +18,7 @@
 
 package arq.cmdline;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
 
 public class ModGeneral extends ModBase
 {
@@ -39,7 +38,7 @@ public class ModGeneral extends ModBase
     protected boolean help = false ;
     
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("General") ;
         cmdLine.add(argDeclVerbose, "-v   --verbose", "Verbose") ;

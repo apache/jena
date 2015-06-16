@@ -18,7 +18,9 @@
 
 package arq.cmdline;
 
-import arq.cmd.* ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
@@ -59,7 +61,7 @@ public class ModLangParse implements ArgModuleGeneral
     private Lang lang                   = null ;
     
     @Override
-    public void registerWith(CmdGeneral cmdLine) {
+    public void registerWith(ArqCmdGeneral cmdLine) {
         cmdLine.getUsage().startCategory("Parser control") ;
         cmdLine.add(argSink,    "--sink",           "Parse but throw away output") ;
         cmdLine.add(argSyntax,  "--syntax=NAME",    "Set syntax (otherwise syntax guessed from file extension)") ;

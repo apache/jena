@@ -21,6 +21,9 @@ package sdb.cmd;
 import java.sql.SQLException;
 import java.util.List;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.TerminationException;
+
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sdb.SDBException ;
@@ -36,10 +39,9 @@ import org.apache.jena.sdb.store.LayoutType ;
 import org.apache.jena.sdb.store.StoreFactory ;
 import org.apache.jena.shared.NotFoundException ;
 import org.apache.jena.util.FileManager ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdArgModule ;
-import arq.cmd.TerminationException ;
-import arq.cmdline.CmdGeneral ;
+
+import arq.cmdline.ArqCmdGeneral ;
+import arq.cmdline.CmdArgModule;
 import arq.cmdline.ModBase;
 
 /** Construction of a store from a store description,
@@ -86,7 +88,7 @@ public class ModStore extends ModBase
     }
     
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         final boolean AddUsage = false ;
         

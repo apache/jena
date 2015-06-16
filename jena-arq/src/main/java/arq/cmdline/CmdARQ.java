@@ -18,13 +18,14 @@
 
 package arq.cmdline;
 
-import arq.cmd.ArgDecl ;
+import jena.cmd.ArgDecl;
+
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorBase ;
 
-public abstract class CmdARQ extends CmdGeneral
+public abstract class CmdARQ extends ArqCmdGeneral
 {
     protected ModSymbol modSymbol = new ModSymbol() ;
     ArgDecl  strictDecl = new ArgDecl(ArgDecl.NoValue, "strict") ;

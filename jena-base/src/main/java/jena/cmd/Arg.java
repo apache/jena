@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package arq.cmd;
+package jena.cmd;
 
 import java.util.ArrayList ;
 import java.util.List ;
@@ -29,14 +29,14 @@ public class Arg
     
     Arg() { name = null ; value = null ; }
     
-    Arg(String _name) { this() ; setName(_name) ; }
+    public Arg(String _name) { this() ; setName(_name) ; }
     
     Arg(String _name, String _value) { this() ; setName(_name) ; setValue(_value) ; }
     
     void setName(String n) { name = n ; }
     
-    void setValue(String v) { value = v ; }
-    void addValue(String v) { values.add(v) ; }
+    public void setValue(String v) { value = v ; }
+    public void addValue(String v) { values.add(v) ; }
     
     public String getName() { return name ; }
     public String getValue() { return value; }

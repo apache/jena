@@ -18,9 +18,8 @@
 
 package arq.cmdline;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
+
 import org.apache.jena.Jena ;
 import org.apache.jena.sparql.util.Version ;
 
@@ -41,7 +40,7 @@ public class ModVersion implements ArgModuleGeneral
     public void addClass(Class<?> c) { versionMgr.addClass(c) ; }
     
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         cmdLine.add(versionDecl, "--version", "Version information") ;
     }

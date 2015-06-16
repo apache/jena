@@ -16,15 +16,12 @@
  * limitations under the License.
  */
 
-package arq.cmd;
+package jena.cmd;
 
-/** Exception used to indicate that the command should end now.
- *  Use instead of System.exit so that a wrapper can catch (else a command server
- *  wil exit wrongly). */
 
-public class TerminationException extends CmdException
-{
-    public int returnCode ;
-    public TerminationException(int rc) { super() ; this.returnCode = rc ; }
-    public int getCode() { return returnCode ; }
+public interface ArgProc {
+
+    void startArgs() ;
+    void finishArgs() ;
+    void arg(String arg, int i) ;
 }

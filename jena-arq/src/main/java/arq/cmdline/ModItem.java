@@ -18,9 +18,8 @@
 
 package arq.cmdline;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
+
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.util.FileManager ;
@@ -36,7 +35,7 @@ public class ModItem implements ArgModuleGeneral
     public ModItem() {}
     
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Item") ;
         cmdLine.add(queryFileDecl, "--file=", "File") ;

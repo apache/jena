@@ -20,7 +20,10 @@ package arq.cmdline ;
 
 import java.io.IOException ;
 
-import arq.cmd.* ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+import jena.cmd.TerminationException;
+
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
 import org.apache.jena.query.Syntax ;
@@ -46,7 +49,7 @@ public class ModQueryIn implements ArgModuleGeneral {
     }
 
     @Override
-    public void registerWith(CmdGeneral cmdLine) {
+    public void registerWith(ArqCmdGeneral cmdLine) {
         cmdLine.getUsage().startCategory("Query") ;
         cmdLine.add(queryFileDecl,   "--query, --file",  "File containing a query") ;
         cmdLine.add(querySyntaxDecl, "--syntax, --in",   "Syntax of the query") ;

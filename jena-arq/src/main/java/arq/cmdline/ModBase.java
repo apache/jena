@@ -18,7 +18,7 @@
 
 package arq.cmdline;
 
-import arq.cmd.ArgModuleGeneral ;
+
 
 public abstract class ModBase implements ArgModuleGeneral
 {

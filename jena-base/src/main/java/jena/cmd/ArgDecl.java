@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package arq.cmd;
+package jena.cmd;
 
 import java.util.ArrayList ;
 import java.util.Iterator ;
@@ -84,7 +84,7 @@ public class ArgDecl
         return names.contains(arg) ;
     }
     
-    static String canonicalForm(String str)
+    public static String canonicalForm(String str)
     {
         if ( str.startsWith("--") )
             return str.substring(2) ;

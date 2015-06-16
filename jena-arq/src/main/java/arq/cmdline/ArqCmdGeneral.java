@@ -20,14 +20,17 @@ package arq.cmdline;
 
 import java.io.PrintStream ;
 
-import arq.cmd.* ;
+import jena.cmd.ArgDecl;
+import jena.cmd.TerminationException;
+import jena.cmd.Usage;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.query.ARQ ;
 
 // Added usage + some common flags
 // This is the usual starting point for any sub 
 
-public abstract class CmdGeneral extends CmdArgModule implements CallbackHelp//, VersionCallback
+public abstract class ArqCmdGeneral extends CmdArgModule implements CallbackHelp//, VersionCallback
 {
     static { ARQ.init() ; }
 
@@ -38,7 +41,7 @@ public abstract class CmdGeneral extends CmdArgModule implements CallbackHelp//,
     // ModGeneral.
     // Which can set the globals here.
     
-    protected CmdGeneral(String[] argv)
+    protected ArqCmdGeneral(String[] argv)
     {
         super(argv) ;
         addModule(modGeneral) ;

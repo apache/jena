@@ -20,6 +20,9 @@ package riotcmd;
 
 import java.util.List ;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
@@ -29,9 +32,8 @@ import org.apache.jena.riot.process.inf.InfFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.util.FileManager ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
-import arq.cmdline.CmdGeneral ;
+
+import arq.cmdline.ArqCmdGeneral ;
 
 /*
  * TDB Infer
@@ -81,7 +83,7 @@ AllegroGraph RDFS++
     * owl:inverseOf
     * owl:TransitiveProperty
  */
-public class infer extends CmdGeneral
+public class infer extends ArqCmdGeneral
 {
     static final ArgDecl argRDFS = new ArgDecl(ArgDecl.HasValue, "rdfs") ;
     private Model vocab ;

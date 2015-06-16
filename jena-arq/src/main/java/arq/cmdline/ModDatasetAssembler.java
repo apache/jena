@@ -18,8 +18,8 @@
 
 package arq.cmdline;
 
-import arq.cmd.CmdArgModule ;
-import arq.cmd.CmdException ;
+import jena.cmd.CmdException;
+
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.NotFoundException ;
@@ -56,7 +56,7 @@ public class ModDatasetAssembler extends ModDataset
     }
 
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         modAssembler.registerWith(cmdLine) ;
     }

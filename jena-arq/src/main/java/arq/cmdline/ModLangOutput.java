@@ -22,7 +22,9 @@ import java.io.PrintStream ;
 import java.util.HashSet ;
 import java.util.Set ;
 
-import arq.cmd.* ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RDFLanguages ;
@@ -38,7 +40,7 @@ public class ModLangOutput implements ArgModuleGeneral
     private RDFFormat formattedOutput = null ;
 
     @Override
-    public void registerWith(CmdGeneral cmdLine) {
+    public void registerWith(ArqCmdGeneral cmdLine) {
         cmdLine.getUsage().startCategory("Output control") ;
         cmdLine.add(argOutput,    "--output=FMT",     "Output in the given format, streaming if possible.") ;
         cmdLine.add(argPretty,    "--formatted=FMT",  "Output, using pretty printing (consumes memory)") ;

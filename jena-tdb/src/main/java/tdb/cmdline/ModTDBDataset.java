@@ -21,6 +21,9 @@ package tdb.cmdline;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
@@ -33,10 +36,9 @@ import org.apache.jena.tdb.assembler.VocabTDB ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.apache.jena.util.FileManager ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdArgModule ;
-import arq.cmd.CmdException ;
-import arq.cmdline.CmdGeneral ;
+
+import arq.cmdline.ArqCmdGeneral ;
+import arq.cmdline.CmdArgModule;
 import arq.cmdline.ModDataset ;
 
 public class ModTDBDataset extends ModDataset
@@ -51,7 +53,7 @@ public class ModTDBDataset extends ModDataset
     public ModTDBDataset() {}
     
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         cmdLine.add(argMem, "--mem=FILE", "Execute on an in-memory TDB database (for testing)") ;
         cmdLine.addModule(modAssembler) ;

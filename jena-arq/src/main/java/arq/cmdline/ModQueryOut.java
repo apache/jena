@@ -19,9 +19,8 @@
 package arq.cmdline;
 
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.Syntax ;
@@ -36,7 +35,7 @@ public class ModQueryOut implements ArgModuleGeneral
     private boolean lineNumbers = false ;
     
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Output") ;
         cmdLine.add(queryOutputSyntaxDecl, "--out, --format",  "Output syntax") ;

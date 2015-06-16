@@ -20,9 +20,9 @@ package arq.cmdline;
 
 import java.util.List ;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdArgModule ;
-import arq.cmd.CmdException ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.query.LabelExistsException ;
@@ -51,7 +51,7 @@ public class ModDatasetGeneral extends ModDataset
     protected ModDatasetGeneral() {}
     
     @Override
-    public void registerWith(CmdGeneral cl)
+    public void registerWith(ArqCmdGeneral cl)
     {
         cl.getUsage().startCategory("Dataset") ;
         cl.add(dataDecl,

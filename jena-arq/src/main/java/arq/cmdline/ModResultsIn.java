@@ -18,7 +18,9 @@
 
 package arq.cmdline;
 
-import arq.cmd.* ;
+import jena.cmd.ArgDecl;
+import jena.cmd.TerminationException;
+
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
 import org.apache.jena.shared.NotFoundException ;
@@ -35,7 +37,7 @@ public class ModResultsIn implements ArgModuleGeneral
     private ResultSet resultSet = null ;
     
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Results") ;
         cmdLine.add(fileDecl,

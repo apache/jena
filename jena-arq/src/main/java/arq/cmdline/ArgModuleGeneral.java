@@ -16,12 +16,10 @@
  * limitations under the License.
  */
 
-package arq.cmd;
+package arq.cmdline;
 
-
-interface ArgProc {
-
-    void startArgs() ;
-    void finishArgs() ;
-    void arg(String arg, int i) ;
+public interface ArgModuleGeneral extends ArgModule
+{
+    // Registration phase for usage messages
+    public abstract void registerWith(ArqCmdGeneral cmdLine) ;
 }

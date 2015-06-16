@@ -18,13 +18,15 @@
 
 package sdb.cmd;
 
+import jena.cmd.ArgDecl;
+
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sdb.SDBFactory ;
 import org.apache.jena.sdb.Store ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdArgModule ;
-import arq.cmdline.CmdGeneral ;
+
+import arq.cmdline.ArqCmdGeneral ;
+import arq.cmdline.CmdArgModule;
 import arq.cmdline.ModBase;
 
 public class ModGraph extends ModBase
@@ -38,7 +40,7 @@ public class ModGraph extends ModBase
     public ModGraph() {}
     
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         cmdLine.add(argDeclGraphName,
                     "--graph=URI", "Graph name") ;

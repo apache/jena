@@ -18,8 +18,9 @@
 
 package tdb.cmdline;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;

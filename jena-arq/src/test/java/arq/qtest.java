@@ -20,7 +20,11 @@ package arq;
 
 import java.io.File ;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+import jena.cmd.TerminationException;
 import junit.framework.TestSuite ;
+
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ARQ ;
@@ -41,9 +45,7 @@ import org.apache.jena.vocabulary.DC ;
 import org.apache.jena.vocabulary.DCTerms ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.XSD ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
-import arq.cmd.TerminationException ;
+
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModEngine ;
 

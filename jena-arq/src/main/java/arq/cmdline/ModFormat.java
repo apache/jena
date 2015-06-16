@@ -22,9 +22,7 @@ package arq.cmdline;
 import java.util.Arrays;
 import java.util.List;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
 
 public class ModFormat implements ArgModuleGeneral
 {
@@ -48,7 +46,7 @@ public class ModFormat implements ArgModuleGeneral
     }
     
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Output format") ;
         cmdLine.add(resultsFmtDecl,

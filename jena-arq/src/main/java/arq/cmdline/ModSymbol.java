@@ -20,9 +20,8 @@ package arq.cmdline;
 
 import java.io.PrintStream ;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.util.Context ;
@@ -37,7 +36,7 @@ public class ModSymbol implements ArgModuleGeneral
     public ModSymbol() { }
     
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Symbol definition") ;
         cmdLine.add(setDecl, "--set", "Set a configuration symbol to a value") ;

@@ -18,9 +18,8 @@
 
 package arq.cmdline;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
+
 import org.apache.jena.atlas.lib.Timer ;
 
 
@@ -35,7 +34,7 @@ public class ModTime implements ArgModuleGeneral
     private boolean timing = false ;
     
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Time") ;
         cmdLine.add(timeDecl, "--time", "Time the operation") ;

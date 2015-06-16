@@ -16,15 +16,13 @@
  * limitations under the License.
  */
 
-package arq.cmd;
+package arq.cmdline;
 
-/**
- * Indicate that something went wrong - while executing the command or processing the request.
- */
 
-public class CmdException extends RuntimeException
+
+
+public interface ArgModule
 {
-    public CmdException()                             { super() ; }
-    public CmdException(String msg)                   { super(msg) ; }
-    public CmdException(String msg, Throwable cause)  { super(msg, cause) ; }
+    // Argument processing phase
+    public void processArgs(CmdArgModule cmdLine) ;
 }

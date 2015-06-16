@@ -18,9 +18,8 @@
 
 package arq.cmdline;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
+
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.util.FileManager ;
@@ -34,7 +33,7 @@ public class ModAlgebra implements ArgModuleGeneral
     private Op op = null ;
     
     @Override
-    public void registerWith(CmdGeneral cmdLine)
+    public void registerWith(ArqCmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Query") ;
         cmdLine.add(queryFileDecl,
