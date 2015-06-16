@@ -22,9 +22,9 @@ import jena.cmd.ArgDecl;
 
 public class ModGeneral extends ModBase
 {
-    private CallbackHelp helpCallback = null ;
+    private Runnable helpCallback = null ;
 
-    public ModGeneral(CallbackHelp callback) { this.helpCallback = callback ; }
+    public ModGeneral(Runnable callback) { this.helpCallback = callback ; }
     
     // Could be turned into a module but these are convenient as inherited flags 
     private final ArgDecl argDeclHelp        = new ArgDecl(false, "help", "h");
@@ -48,15 +48,12 @@ public class ModGeneral extends ModBase
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
-        verbose = cmdLine.contains(argDeclVerbose) ;
+        verbose = cmdLine.contains(argDeclVerbose) || cmdLine.contains(argDeclDebug) ;
         quiet   = cmdLine.contains(argDeclQuiet) ;
-        debug   = cmdLine.contains(argDeclDebug) ;
-        if ( debug )
-            verbose = true ;
         help = cmdLine.contains(argDeclHelp) ;
         if ( help )
-            helpCallback.doHelp() ;
+            helpCallback.run() ;
     }
 }

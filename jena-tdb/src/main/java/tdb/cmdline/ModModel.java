@@ -23,12 +23,12 @@ import jena.cmd.ArgDecl;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.util.FileManager ;
 
-import arq.cmdline.ArgModuleGeneral;
 import arq.cmdline.ArqCmdGeneral ;
 import arq.cmdline.CmdArgModule;
+import arq.cmdline.ModBase;
 
 /** Name a model */
-public class ModModel implements ArgModuleGeneral
+public class ModModel extends ModBase
 {
     protected ArgDecl modelArgDecl = null ;
     private Model model = null ;
@@ -53,7 +53,7 @@ public class ModModel implements ArgModuleGeneral
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         if ( cmdLine.contains(modelArgDecl) )
         {

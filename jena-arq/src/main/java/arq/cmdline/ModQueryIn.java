@@ -31,7 +31,7 @@ import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.util.FileUtils ;
 
-public class ModQueryIn implements ArgModuleGeneral {
+public class ModQueryIn extends ModBase {
     protected final ArgDecl queryFileDecl   = new ArgDecl(ArgDecl.HasValue, "query", "file") ;
     protected final ArgDecl querySyntaxDecl = new ArgDecl(ArgDecl.HasValue, "syntax", "syn", "in") ;
     protected final ArgDecl queryBaseDecl   = new ArgDecl(ArgDecl.HasValue, "base") ;
@@ -57,7 +57,7 @@ public class ModQueryIn implements ArgModuleGeneral {
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException {
+    public void accept(CmdArgModule cmdline) throws IllegalArgumentException {
         if ( cmdline.contains(queryBaseDecl) )
             baseURI = cmdline.getValue(queryBaseDecl) ;
 

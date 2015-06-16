@@ -66,7 +66,7 @@ public class ModDatasetGeneral extends ModDataset
     }
     
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         dataURLs = cmdLine.getValues(dataDecl) ;
         graphURLs = cmdLine.getValues(graphDecl) ;

@@ -22,15 +22,13 @@ import jena.cmd.ArgDecl;
 
 import org.apache.jena.tdb.base.file.Location ;
 
-import arq.cmdline.ArgModuleGeneral;
 import arq.cmdline.ArqCmdGeneral ;
 import arq.cmdline.CmdArgModule;
+import arq.cmdline.ModBase;
 
 
-public class ModLocation implements ArgModuleGeneral
+public class ModLocation extends ModBase
 {
-    public ModLocation() {}
-    
     protected final ArgDecl locationDecl = new ArgDecl(ArgDecl.HasValue, "location", "loc") ;
     protected Location location = null ;
     
@@ -45,7 +43,7 @@ public class ModLocation implements ArgModuleGeneral
     {}
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         if ( cmdLine.contains(locationDecl) )
         {

@@ -18,7 +18,9 @@
 
 package arq.cmdline;
 
-public interface ArgModuleGeneral extends ArgModule
+import java.util.function.Consumer;
+
+public interface ArgModuleGeneral extends Consumer<CmdArgModule>
 {
     // Registration phase for usage messages
     public abstract void registerWith(ArqCmdGeneral cmdLine) ;

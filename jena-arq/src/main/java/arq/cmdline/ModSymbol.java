@@ -28,13 +28,11 @@ import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
 
-public class ModSymbol implements ArgModuleGeneral
+public class ModSymbol extends ModBase
 {
     protected final ArgDecl setDecl = new ArgDecl(ArgDecl.HasValue, "set", "define", "defn", "def") ;
     Context context = new Context() ;
-    
-    public ModSymbol() { }
-    
+
     @Override
     public void registerWith(ArqCmdGeneral cmdLine)
     {
@@ -46,7 +44,7 @@ public class ModSymbol implements ArgModuleGeneral
     {}
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         ARQ.init();
         

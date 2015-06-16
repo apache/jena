@@ -36,9 +36,7 @@ public class ModGraph extends ModBase
 
     private Graph graph = null ;
     private String graphName = null ;
-    
-    public ModGraph() {}
-    
+
     @Override
     public void registerWith(ArqCmdGeneral cmdLine)
     {
@@ -47,7 +45,7 @@ public class ModGraph extends ModBase
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         graphName = cmdLine.getValue(argDeclGraphName) ;
     }

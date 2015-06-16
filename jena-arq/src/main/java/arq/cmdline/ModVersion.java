@@ -23,7 +23,7 @@ import jena.cmd.ArgDecl;
 import org.apache.jena.Jena ;
 import org.apache.jena.sparql.util.Version ;
 
-public class ModVersion implements ArgModuleGeneral
+public class ModVersion extends ModBase
 {
     protected final ArgDecl versionDecl = new ArgDecl(ArgDecl.NoValue, "version") ;
     protected boolean version = false ;
@@ -46,7 +46,7 @@ public class ModVersion implements ArgModuleGeneral
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         if ( cmdLine.contains(versionDecl) )
             version = true ;

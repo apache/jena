@@ -24,15 +24,13 @@ import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.util.FileManager ;
 
-public class ModItem implements ArgModuleGeneral
+public class ModItem extends ModBase
 {
     protected final ArgDecl queryFileDecl = new ArgDecl(ArgDecl.HasValue, "file") ;
 
     private String filename = null ;
     private String parseString = null ; 
     private Item item = null ;
-    
-    public ModItem() {}
     
     @Override
     public void registerWith(ArqCmdGeneral cmdLine)
@@ -42,7 +40,7 @@ public class ModItem implements ArgModuleGeneral
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         if ( cmdLine.contains(queryFileDecl) )
         {

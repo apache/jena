@@ -27,7 +27,7 @@ import org.apache.jena.shared.NotFoundException ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.resultset.ResultsFormat ;
 
-public class ModResultsIn implements ArgModuleGeneral
+public class ModResultsIn extends ModBase
 {
     protected final ArgDecl resultsInputFmtDecl = new ArgDecl(ArgDecl.HasValue, "in") ;
     protected final ArgDecl fileDecl = new ArgDecl(ArgDecl.HasValue, "file") ;
@@ -49,7 +49,7 @@ public class ModResultsIn implements ArgModuleGeneral
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException
+    public void accept(CmdArgModule cmdline) throws IllegalArgumentException
     {
         // Input file.
         if ( cmdline.contains(fileDecl) )

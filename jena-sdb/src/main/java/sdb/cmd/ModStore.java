@@ -146,7 +146,7 @@ public class ModStore extends ModBase
     
     
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         if (! cmdLine.contains(argDeclSDBdesc))
         {

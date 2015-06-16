@@ -47,7 +47,7 @@ public abstract class CmdArgModule extends CmdMain
             @Override
             public void action(CmdArgModule controller, ArgModuleGeneral module)
             { 
-                module.processArgs(controller) ;
+                module.accept(controller) ;
             }
         } ) ;
         processModulesAndArgs() ;

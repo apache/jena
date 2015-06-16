@@ -30,9 +30,7 @@ public class ModData extends ModBase
 {
     private ArgDecl argDeclLoad = new ArgDecl(ArgDecl.HasValue, "data", "load") ;
     private List <String> filesToLoad = new ArrayList<String>() ;
-    
-    public ModData() {}
-    
+
     @Override
     public void registerWith(ArqCmdGeneral cmdLine)
     {
@@ -42,7 +40,7 @@ public class ModData extends ModBase
 
     
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         filesToLoad = cmdLine.getValues(argDeclLoad) ;
     }

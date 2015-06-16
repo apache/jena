@@ -18,6 +18,8 @@
 
 package jena.cmd;
 
+import static java.util.stream.IntStream.range;
+
 import java.util.ArrayList ;
 import java.util.List ;
 
@@ -48,11 +50,8 @@ public class CommandLineBase {
     }
 
     protected void apply(ArgProc a) {
-        a.startArgs() ;
-        for (int i = 0; i < argList.size(); i++) {
-            String arg = argList.get(i) ;
-            a.arg(arg, i) ;
-        }
+        a.startArgs() ; 
+        range(0, argList.size()).forEach(i -> a.arg(argList.get(i), i));
         a.finishArgs() ;
     }
     

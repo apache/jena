@@ -112,7 +112,7 @@ public class juuid extends ArqCmdGeneral
         }
         
         @Override
-        public void processArgs(CmdArgModule cmdLine)
+        public void accept(CmdArgModule cmdLine)
         {
             String numStr = null ;
             

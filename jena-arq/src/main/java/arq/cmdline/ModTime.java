@@ -23,10 +23,9 @@ import jena.cmd.ArgDecl;
 import org.apache.jena.atlas.lib.Timer ;
 
 
-public class ModTime implements ArgModuleGeneral
+public class ModTime extends ModBase
 {
-    public ModTime() {}
-    
+
     protected final ArgDecl timeDecl = new ArgDecl(ArgDecl.NoValue, "time") ;
     
     protected Timer timer = new Timer() ;
@@ -44,7 +43,7 @@ public class ModTime implements ArgModuleGeneral
     {}
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         timing = cmdLine.contains(timeDecl) ;
     }

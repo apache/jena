@@ -26,7 +26,7 @@ import org.apache.jena.query.Query ;
 import org.apache.jena.query.Syntax ;
 import org.apache.jena.sparql.util.QueryOutputUtils ;
 
-public class ModQueryOut implements ArgModuleGeneral
+public class ModQueryOut extends ModBase
 {
     protected final ArgDecl queryOutputSyntaxDecl  = new ArgDecl(ArgDecl.HasValue, "out", "format") ;
     protected final ArgDecl queryNumberDecl        = new ArgDecl(ArgDecl.NoValue, "num", "number") ;
@@ -43,7 +43,7 @@ public class ModQueryOut implements ArgModuleGeneral
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException
+    public void accept(CmdArgModule cmdline) throws IllegalArgumentException
     {
         if ( cmdline.contains(queryOutputSyntaxDecl) )
         {

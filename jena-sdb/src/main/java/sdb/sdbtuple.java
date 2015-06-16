@@ -45,7 +45,7 @@ public class sdbtuple extends CmdArgsDB
         {}
 
         @Override
-        public void processArgs(CmdArgModule cmdLine)
+        public void accept(CmdArgModule cmdLine)
         {}
         
     }

@@ -31,7 +31,7 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RDFWriterRegistry ;
 import org.apache.jena.riot.system.StreamRDFWriter ;
 
-public class ModLangOutput implements ArgModuleGeneral
+public class ModLangOutput extends ModBase
 {
     protected ArgDecl argOutput       = new ArgDecl(ArgDecl.HasValue, "out", "output") ;
     protected ArgDecl argPretty       = new ArgDecl(ArgDecl.HasValue, "formatted", "pretty", "fmt") ;
@@ -48,7 +48,7 @@ public class ModLangOutput implements ArgModuleGeneral
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine) {
+    public void accept(CmdArgModule cmdLine) {
         if ( cmdLine.contains(argPretty) ) {
             String langName = cmdLine.getValue(argPretty) ;
             Lang lang = RDFLanguages.nameToLang(langName) ;

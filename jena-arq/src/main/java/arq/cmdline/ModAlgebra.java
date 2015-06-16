@@ -24,7 +24,7 @@ import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.util.FileManager ;
 
-public class ModAlgebra implements ArgModuleGeneral
+public class ModAlgebra extends ModBase
 {
     protected final ArgDecl queryFileDecl = new ArgDecl(ArgDecl.HasValue, "query", "file") ;
 
@@ -42,7 +42,7 @@ public class ModAlgebra implements ArgModuleGeneral
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         if ( cmdLine.contains(queryFileDecl) )
         {

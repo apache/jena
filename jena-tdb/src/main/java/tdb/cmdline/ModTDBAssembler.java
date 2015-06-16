@@ -46,12 +46,12 @@ public class ModTDBAssembler extends ModAssembler
     }
     
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         int count = 0 ;
 
-        modLocation.processArgs(cmdLine) ;
-        super.processArgs(cmdLine) ;
+        modLocation.accept(cmdLine) ;
+        super.accept(cmdLine) ;
         if ( super.getAssemblerFile() != null ) count++ ;
         if ( modLocation.getLocation() != null ) count++ ;    
         

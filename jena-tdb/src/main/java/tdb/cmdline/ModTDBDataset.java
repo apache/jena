@@ -49,9 +49,7 @@ public class ModTDBDataset extends ModDataset
     private ArgDecl argMem                  = new ArgDecl(ArgDecl.HasValue, "mem", "data") ;
     private ModTDBAssembler modAssembler    = new ModTDBAssembler() ;
     private String inMemFile                = null ;
-    
-    public ModTDBDataset() {}
-    
+
     @Override
     public void registerWith(ArqCmdGeneral cmdLine)
     {
@@ -60,10 +58,10 @@ public class ModTDBDataset extends ModDataset
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         inMemFile = cmdLine.getValue(argMem) ;
-        modAssembler.processArgs(cmdLine) ;
+        modAssembler.accept(cmdLine) ;
     }        
 
     @Override

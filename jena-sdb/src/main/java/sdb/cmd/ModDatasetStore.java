@@ -46,7 +46,7 @@ public class ModDatasetStore extends ModDataset
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         // Either a dataset or a store.
         

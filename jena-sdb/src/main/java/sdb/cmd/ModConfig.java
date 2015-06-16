@@ -36,8 +36,6 @@ public class ModConfig extends ModBase
     private boolean dropIndexes = false ;
     private boolean createIndexes = false ;
     
-    public ModConfig() {}
-
     @Override
     public void registerWith(ArqCmdGeneral cmdLine)
     {
@@ -52,7 +50,7 @@ public class ModConfig extends ModBase
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         format = cmdLine.contains(argDeclFormat) ;
         createStore = cmdLine.contains(argDeclCreate) ;

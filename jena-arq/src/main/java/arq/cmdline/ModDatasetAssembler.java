@@ -30,9 +30,7 @@ import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab ;
 public class ModDatasetAssembler extends ModDataset
 {
     private ModAssembler modAssembler = new ModAssembler() ;
-    
-    public ModDatasetAssembler() {}
-    
+
     @Override
     public Dataset createDataset()
     {
@@ -62,9 +60,9 @@ public class ModDatasetAssembler extends ModDataset
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
-        modAssembler.processArgs(cmdLine) ;
+        modAssembler.accept(cmdLine) ;
     }
 
 }

@@ -30,7 +30,7 @@ import org.apache.jena.query.ARQ ;
 // Added usage + some common flags
 // This is the usual starting point for any sub 
 
-public abstract class ArqCmdGeneral extends CmdArgModule implements CallbackHelp//, VersionCallback
+public abstract class ArqCmdGeneral extends CmdArgModule implements Runnable//, VersionCallback
 {
     static { ARQ.init() ; }
 
@@ -61,7 +61,7 @@ public abstract class ArqCmdGeneral extends CmdArgModule implements CallbackHelp
     protected boolean help()      { return modGeneral.help ; }
 
     @Override
-    final public void doHelp()
+    final public void run()
     {
         usage() ;
         throw new TerminationException(0) ;

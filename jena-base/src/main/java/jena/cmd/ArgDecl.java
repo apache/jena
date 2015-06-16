@@ -37,11 +37,10 @@ public class ArgDecl
     public static final boolean HasValue = true ;
     public static final boolean NoValue = false ;
 
-    /** Create a declaration for a command argument.
+   /** Create a declaration for a command argument.
     *
     * @param hasValue  Does it take a value or not?
     */
-
    public ArgDecl(boolean hasValue)
    {
        takesValue = hasValue ;
@@ -52,13 +51,18 @@ public class ArgDecl
     * @param hasValue  Does it take a value or not?
     * @param name      Name of argument
     */
-
    public ArgDecl(boolean hasValue, String... names)
    {
        this(hasValue) ;
        asList(names).forEach(this::addName);
    }
    
+   /** Create a declaration for a command argument.
+    * 
+    * @param hasValue Does it take a value or not?
+    * @param handler Callback action
+    * @param names Names of argument
+    */
    public ArgDecl(boolean hasValue, BiConsumer<String, String> handler, String... names)
    {
        this(hasValue, names) ;
@@ -93,14 +97,8 @@ public class ArgDecl
     
     public boolean matches(Arg a)
     {
-        for ( String n : names )
-        {
-            if ( a.getName().equals( n ) )
-            {
-                return true;
-            }
-        }
-        return false ;
+    	 	String name = a.getName();
+    		return names.stream().anyMatch(name::equals);
     }
     
     public boolean matches(String arg)
