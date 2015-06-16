@@ -18,39 +18,52 @@
 
 package jena.cmd;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.function.BiConsumer;
 
 /** A command line argument specification. */
 public class ArgDecl
 {
     boolean takesValue ;
-    String firstName ; 
+    
     List<String> names = new ArrayList<>() ;
+    
+	List<BiConsumer<String, String>> argHooks = new ArrayList<>() ;
+	
     public static final boolean HasValue = true ;
     public static final boolean NoValue = false ;
-    
-    private void init(boolean hasValue, String name)
-    {
-        takesValue = hasValue ;
-        firstName = canonicalForm(name) ;
-    }
-    
+
     /** Create a declaration for a command argument.
-     * 
-     * @param hasValue  Does it take a value or not?
-     * @param name      Name of argument
-     * @param names     Alternative names
-     */
-    
-    public ArgDecl(boolean hasValue, String name, String...names)
-    {
-        init(hasValue, name) ;
-        addName(name) ;
-        for ( String n : names )
-            addName(n) ;
-    }
+    *
+    * @param hasValue  Does it take a value or not?
+    */
+
+   public ArgDecl(boolean hasValue)
+   {
+       takesValue = hasValue ;
+   }
+
+   /** Create a declaration for a command argument.
+    *
+    * @param hasValue  Does it take a value or not?
+    * @param name      Name of argument
+    */
+
+   public ArgDecl(boolean hasValue, String... names)
+   {
+       this(hasValue) ;
+       asList(names).forEach(this::addName);
+   }
+   
+   public ArgDecl(boolean hasValue, BiConsumer<String, String> handler, String... names)
+   {
+       this(hasValue, names) ;
+       addHook( handler );
+   }
 
     public void addName(String name)
     {
@@ -59,11 +72,23 @@ public class ArgDecl
             names.add(name) ;
     }
     
-    public String getKeyName() { return firstName ; }
+    public String getKeyName() { return names.get(0) ; }
     
     public List<String> getNames() { return names ; }
     public Iterator<String> names() { return names.iterator() ; }
     
+    // Callback model
+
+    public void addHook(BiConsumer<String, String> argHandler)
+    {
+        argHooks.add(argHandler) ;
+    }
+
+    public void trigger(Arg arg)
+    {
+		argHooks.forEach(action -> action.accept( arg.getName(), arg.getValue() ));
+    }
+
     public boolean takesValue() { return takesValue ; }
     
     public boolean matches(Arg a)
