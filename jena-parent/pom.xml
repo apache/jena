@@ -307,7 +307,7 @@
       <dependency>
         <groupId>org.xenei</groupId>
         <artifactId>junit-contracts</artifactId>
-        <version>0.1.3</version>
+        <version>0.1.2</version>
         <scope>test</scope>
         <exclusions>
           <exclusion>
@@ -320,7 +320,7 @@
       <dependency>
         <groupId>org.xenei</groupId>
         <artifactId>contract-test-maven-plugin</artifactId>
-        <version>0.1.3</version>
+        <version>0.1.2</version>
         <scope>test</scope>
       </dependency>
 
