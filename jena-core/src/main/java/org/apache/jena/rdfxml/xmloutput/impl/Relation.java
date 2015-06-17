@@ -18,12 +18,14 @@
 
 package org.apache.jena.rdfxml.xmloutput.impl;
 
+import static org.apache.jena.atlas.iterator.Iter.map;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import org.apache.jena.util.iterator.Map1Iterator ;
+
 import org.apache.jena.util.iterator.WrappedIterator ;
 
 /**
@@ -208,7 +210,7 @@ class Relation<T> {
     {
         final T a = pair.getKey() ;
         Set<T> bs = pair.getValue() ;
-        return new Map1Iterator<>(b -> new PairEntry<>(a, b), bs.iterator()) ;
+        return map( bs.iterator(), b -> new PairEntry<>(a, b) ) ;
     }
 
     /**
@@ -220,8 +222,7 @@ class Relation<T> {
      */   
     public Iterator<PairEntry<T, T>> iterator()
     {
-        Map1Iterator<Map.Entry<T, Set<T>>,Iterator<PairEntry<T, T>>> iter1 =
-            new Map1Iterator<>( entry -> pairEntry(entry) , rows.entrySet().iterator()) ;
+        Iterator<Iterator<PairEntry<T, T>>> iter1 = map(rows.entrySet().iterator(), entry -> pairEntry(entry) );
         // And now flatten it.
         Iterator<PairEntry<T, T>> iter2 = WrappedIterator.createIteratorIterator(iter1) ;
         return iter2 ;

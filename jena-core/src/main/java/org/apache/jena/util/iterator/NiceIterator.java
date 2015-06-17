@@ -18,6 +18,8 @@
 
 package org.apache.jena.util.iterator;
 
+import static org.apache.jena.atlas.iterator.Iter.map;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -168,7 +170,7 @@ public class NiceIterator<T> implements ExtendedIterator<T>
     */     
     @Override
     public <U> ExtendedIterator<U> mapWith( Function<T, U> map1 )
-        { return new Map1Iterator<>( map1, this ); }
+        { return WrappedIterator.create(map(this, map1)); }
 
     /**
         If <code>it</code> is a Closableiterator, close it. Abstracts away from

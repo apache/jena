@@ -30,7 +30,6 @@ import org.apache.jena.graph.test.GraphTestBase ;
 import org.apache.jena.util.CollectionFactory ;
 import org.apache.jena.util.IteratorCollection ;
 import org.apache.jena.util.iterator.NullIterator ;
-import org.apache.jena.util.iterator.SingletonIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 
 public class TestIteratorCollection extends GraphTestBase
@@ -44,11 +43,6 @@ public class TestIteratorCollection extends GraphTestBase
     public void testEmptyToEmptySet()
         {
         assertEquals( CollectionFactory.createHashedSet(), IteratorCollection.iteratorToSet( NullIterator.instance() ) );
-        }
-    
-    public void testSingletonToSingleSet()
-        {
-        assertEquals( oneSet( "single" ), iteratorToSet( new SingletonIterator<>( "single" ) ) );
         }
     
     public void testLotsToSet()
@@ -80,12 +74,7 @@ public class TestIteratorCollection extends GraphTestBase
         {
         assertEquals( new ArrayList<>(), IteratorCollection.iteratorToList( NullIterator.instance() ) );
         }
-    
-    public void testSingletonToSingletonList()
-        {
-        assertEquals( oneList( "just one" ), IteratorCollection.iteratorToList( new SingletonIterator<>( "just one" ) ) );
-        }
-    
+
     public void testLotsToList()
         {
         List<Object> list = Arrays.asList( new Object[] {"to", "be", "or", "not", "to", "be"}  );
