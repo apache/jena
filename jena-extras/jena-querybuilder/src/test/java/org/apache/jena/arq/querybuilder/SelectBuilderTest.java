@@ -27,8 +27,8 @@ import org.junit.Test;
 public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
 	private SelectBuilder builder;
-
-	@Before
+	
+    @Before
 	public void setup() {
 		builder = new SelectBuilder();
 	}
@@ -45,7 +45,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
 		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY
 				+ var("s") + SPACE
-				+ node("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+				+ regexRDFtype
 				+ SPACE + var("o") + OPT_SPACE + DOT + CLOSE_CURLY,
 				builder.buildString());
 	}
@@ -65,10 +65,10 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 		 * OPTIONAL { ?s foaf:name ?name .} } ORDER BY ?s
 		 */
 		assertContainsRegex(PREFIX + "foaf:" + SPACE
-				+ node("http://xmlns.com/foaf/0.1/"), query);
+				+ uri("http://xmlns.com/foaf/0.1/"), query);
 		assertContainsRegex(SELECT + var("s"), query);
 		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE
-				+ node("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+				+ regexRDFtype
 				+ SPACE + "foaf:Person" + OPT_SPACE + DOT + SPACE + OPTIONAL
 				+ OPEN_CURLY + var("s") + SPACE + "foaf:name" + SPACE
 				+ var("name") + SPACE + DOT + OPT_SPACE + CLOSE_CURLY
@@ -79,10 +79,10 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
 		query = builder.buildString();
 		assertContainsRegex(PREFIX + "foaf:" + SPACE
-				+ node("http://xmlns.com/foaf/0.1/"), query);
+				+ uri("http://xmlns.com/foaf/0.1/"), query);
 		assertContainsRegex(SELECT + var("s"), query);
 		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE
-				+ node("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+                + regexRDFtype
 				+ SPACE + "foaf:Person" + OPT_SPACE + DOT + SPACE + OPTIONAL
 				+ OPEN_CURLY + var("s") + SPACE + "foaf:name" + SPACE
 				+ quote("Smith") + presentStringType() + SPACE + DOT

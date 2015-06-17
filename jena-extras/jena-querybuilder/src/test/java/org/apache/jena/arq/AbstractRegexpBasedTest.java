@@ -48,14 +48,17 @@ public abstract class AbstractRegexpBasedTest {
 	protected static final String OPTIONAL = "OPTIONAL" + SPACE;
 	protected static final String BIND = "BIND";
 
-	protected final String quote(String s) {
+	protected static String quote(String s) {
 		return String.format("%s%s%s", QUOTE, s, QUOTE);
 	}
 
-	protected final String node(String s) {
+	protected static String uri(String s) {
 		return String.format("%s%s%s", LT, s, GT);
 	}
 
+	/** Regex for rdf:type as a URI or the abbreviation 'a' */
+	protected static String regexRDFtype = "("+uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")+"|a)" ;
+	
 	protected final String var(String s) {
 		return "\\?" + s;
 	}

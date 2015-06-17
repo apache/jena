@@ -40,14 +40,14 @@ public class PrologHandlerTest extends AbstractHandlerTest {
 	public void testAddPrefixString() {
 		handler.addPrefix("pfx", "uri");
 		String[] lst = byLine(query.toString());
-		assertContainsRegex(PREFIX+"pfx:"+SPACE+node("uri"), lst);
+		assertContainsRegex(PREFIX+"pfx:"+SPACE+uri("uri"), lst);
 	}
 
 	@Test
 	public void testAddPrefixStringWithColon() {
 		handler.addPrefix("pfx:", "uri");
 		String[] lst = byLine(query.toString());
-		assertContainsRegex(PREFIX+"pfx:"+SPACE+node("uri"), lst);
+		assertContainsRegex(PREFIX+"pfx:"+SPACE+uri("uri"), lst);
 	}
 	
 	@Test
@@ -66,8 +66,8 @@ public class PrologHandlerTest extends AbstractHandlerTest {
 		map.put("pfx2", "uri2");
 		handler.addPrefixes(map);
 		String[] lst = byLine(query.toString());
-		assertContainsRegex(PREFIX+"pfx:"+SPACE+node("uri"), lst);
-		assertContainsRegex(PREFIX+"pfx2:"+SPACE+node("uri2"), lst);
+		assertContainsRegex(PREFIX+"pfx:"+SPACE+uri("uri"), lst);
+		assertContainsRegex(PREFIX+"pfx2:"+SPACE+uri("uri2"), lst);
 	}
 
 	@Test
@@ -77,8 +77,8 @@ public class PrologHandlerTest extends AbstractHandlerTest {
 		map.put("pfx2", "uri2");
 		handler.addPrefixes(map);
 		String[] lst = byLine(query.toString());
-		assertContainsRegex(PREFIX+"pfx:"+SPACE+node("uri"), lst);
-		assertContainsRegex(PREFIX+"pfx2:"+SPACE+node("uri2"), lst);
+		assertContainsRegex(PREFIX+"pfx:"+SPACE+uri("uri"), lst);
+		assertContainsRegex(PREFIX+"pfx2:"+SPACE+uri("uri2"), lst);
 	}
 	
 	@Test
