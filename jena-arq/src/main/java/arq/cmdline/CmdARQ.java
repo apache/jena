@@ -20,8 +20,9 @@ package arq.cmdline;
 
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdGeneral;
-import arq.cmdline.ModVersion;
+import jena.cmd.ModVersion;
 
+import org.apache.jena.Jena;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.RIOT ;
@@ -44,6 +45,7 @@ public abstract class CmdARQ extends CmdGeneral
         super(argv) ;
         addModule(modSymbol) ;
         addModule(modVersion) ;
+        modVersion.addClass(Jena.class) ;
         modVersion.addClass(ARQ.class) ;
         modVersion.addClass(RIOT.class) ;
         super.add(strictDecl, "--strict", "Operate in strict SPARQL mode (no extensions of any kind)") ; 

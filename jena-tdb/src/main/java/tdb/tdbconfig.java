@@ -22,6 +22,8 @@ package tdb;
 import java.util.List ;
 import java.util.Map ;
 
+import jena.cmd.ModVersion;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.graph.Node ;
@@ -36,11 +38,11 @@ import org.apache.jena.tdb.solver.stats.Stats ;
 import org.apache.jena.tdb.solver.stats.StatsResults ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.sys.DatasetControlNone ;
+
 import tdb.cmdline.CmdSub ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.CmdTDBGraph ;
 import arq.cmdline.CmdARQ ;
-import arq.cmdline.ModVersion ;
 
 /** Tools to manage a TDB store.  Subcommand based. */
 public class tdbconfig extends CmdSub
