@@ -44,8 +44,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 		builder.setVar(Var.alloc("p"), RDF.type);
 
 		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY
-				+ var("s") + SPACE
-				+ node("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+				+ var("s") + SPACE + "a"
 				+ SPACE + var("o") + OPT_SPACE + DOT + CLOSE_CURLY,
 				builder.buildString());
 	}
@@ -68,7 +67,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 				+ node("http://xmlns.com/foaf/0.1/"), query);
 		assertContainsRegex(SELECT + var("s"), query);
 		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE
-				+ node("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+				+ "a"
 				+ SPACE + "foaf:Person" + OPT_SPACE + DOT + SPACE + OPTIONAL
 				+ OPEN_CURLY + var("s") + SPACE + "foaf:name" + SPACE
 				+ var("name") + SPACE + DOT + OPT_SPACE + CLOSE_CURLY
@@ -82,7 +81,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 				+ node("http://xmlns.com/foaf/0.1/"), query);
 		assertContainsRegex(SELECT + var("s"), query);
 		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE
-				+ node("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+				+ "a"
 				+ SPACE + "foaf:Person" + OPT_SPACE + DOT + SPACE + OPTIONAL
 				+ OPEN_CURLY + var("s") + SPACE + "foaf:name" + SPACE
 				+ quote("Smith") + presentStringType() + SPACE + DOT
