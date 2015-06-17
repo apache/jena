@@ -19,14 +19,13 @@
 package arq;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
 import org.apache.jena.shared.uuid.* ;
 
-import arq.cmdline.ArqCmdGeneral ;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.ModBase ;
-
-public class juuid extends ArqCmdGeneral
+public class juuid extends CmdGeneral
 {
     ModJUUID modJUUID = new ModJUUID() ;
     int number = 1 ;
@@ -101,7 +100,7 @@ public class juuid extends ArqCmdGeneral
     class ModJUUID extends ModBase
     {
         @Override
-        public void registerWith(ArqCmdGeneral cmdLine)
+        public void registerWith(CmdGeneral cmdLine)
         {
             cmdLine.add(argDeclNum) ;
             cmdLine.add(argDeclReset) ;

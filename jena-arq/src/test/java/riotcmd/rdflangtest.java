@@ -46,7 +46,7 @@ import org.apache.jena.vocabulary.DC ;
 import org.apache.jena.vocabulary.DCTerms ;
 import org.apache.jena.vocabulary.RDF ;
 
-import arq.cmdline.ArqCmdGeneral ;
+import arq.cmdline.CmdARQ;
 import arq.cmdline.ModEngine ;
 import arq.cmdline.ModSymbol ;
 
@@ -60,7 +60,7 @@ import arq.cmdline.ModSymbol ;
  * </pre>
  */
 
-public class rdflangtest extends ArqCmdGeneral
+public class rdflangtest extends CmdARQ
 {
     protected ModSymbol modSymbol       = new ModSymbol() ;
     protected ArgDecl  strictDecl       = new ArgDecl(ArgDecl.NoValue, "strict") ;

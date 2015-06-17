@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.Store ;
@@ -30,9 +33,6 @@ import org.apache.jena.sdb.store.TupleTable ;
 import org.apache.jena.atlas.lib.Lib ;
 
 import sdb.cmd.CmdArgsDB;
-import arq.cmdline.ArqCmdGeneral ;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.ModBase;
 
 
 public class sdbtuple extends CmdArgsDB
@@ -41,7 +41,7 @@ public class sdbtuple extends CmdArgsDB
     {
         
         @Override
-        public void registerWith(ArqCmdGeneral cmdLine)
+        public void registerWith(CmdGeneral cmdLine)
         {}
 
         @Override

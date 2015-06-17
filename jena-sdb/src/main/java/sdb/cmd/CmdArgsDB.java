@@ -26,11 +26,12 @@ import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.StoreDesc ;
 import org.apache.jena.sdb.assembler.AssemblerVocab ;
-import arq.cmdline.ArqCmdGeneral ;
+
+import arq.cmdline.CmdARQ;
 import arq.cmdline.ModSymbol;
 import arq.cmdline.ModTime;
 
-public abstract class CmdArgsDB extends ArqCmdGeneral
+public abstract class CmdArgsDB extends CmdARQ
 {
     static {
         //  Tune N3 output for result set output.
@@ -53,9 +54,9 @@ public abstract class CmdArgsDB extends ArqCmdGeneral
         addModule(modLogSQL) ;
         addModule(modTime) ;
         ARQ.init() ;
-        super.modVersion.addClass(Jena.class) ;
-        super.modVersion.addClass(ARQ.class) ;
-        super.modVersion.addClass(SDB.class) ;
+        modVersion.addClass(Jena.class) ;
+        modVersion.addClass(ARQ.class) ;
+        modVersion.addClass(SDB.class) ;
     }
     
     protected void setModStore(ModStore modStore) { this.modStore = modStore ; }

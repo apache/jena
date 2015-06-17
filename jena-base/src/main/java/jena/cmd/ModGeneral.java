@@ -16,9 +16,7 @@
  * limitations under the License.
  */
 
-package arq.cmdline;
-
-import jena.cmd.ArgDecl;
+package jena.cmd;
 
 public class ModGeneral extends ModBase
 {
@@ -34,11 +32,11 @@ public class ModGeneral extends ModBase
 
     protected boolean verbose = false ;
     protected boolean quiet = false ;
-    protected boolean debug = false ;
+    public boolean debug = false ;
     protected boolean help = false ;
     
     @Override
-    public void registerWith(ArqCmdGeneral cmdLine)
+    public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("General") ;
         cmdLine.add(argDeclVerbose, "-v   --verbose", "Verbose") ;

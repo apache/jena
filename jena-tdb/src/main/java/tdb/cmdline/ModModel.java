@@ -19,13 +19,12 @@
 package tdb.cmdline;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.util.FileManager ;
-
-import arq.cmdline.ArqCmdGeneral ;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.ModBase;
 
 /** Name a model */
 public class ModModel extends ModBase
@@ -47,7 +46,7 @@ public class ModModel extends ModBase
     }
     
     @Override
-    public void registerWith(ArqCmdGeneral cmdLine)
+    public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.add(modelArgDecl, "--"+modelArgDecl.getKeyName()+"=filename", "Filename for a model") ;
     }

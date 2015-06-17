@@ -19,6 +19,9 @@
 package arq.cmdline;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 import jena.cmd.TerminationException;
 
 import org.apache.jena.query.ResultSet ;
@@ -37,7 +40,7 @@ public class ModResultsIn extends ModBase
     private ResultSet resultSet = null ;
     
     @Override
-    public void registerWith(ArqCmdGeneral cmdLine)
+    public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Results") ;
         cmdLine.add(fileDecl,

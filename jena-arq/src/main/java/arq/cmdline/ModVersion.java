@@ -19,9 +19,12 @@
 package arq.cmdline;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
 import org.apache.jena.Jena ;
-import org.apache.jena.sparql.util.Version ;
+import org.apache.jena.sparql.util.Version;
 
 public class ModVersion extends ModBase
 {
@@ -40,7 +43,7 @@ public class ModVersion extends ModBase
     public void addClass(Class<?> c) { versionMgr.addClass(c) ; }
     
     @Override
-    public void registerWith(ArqCmdGeneral cmdLine)
+    public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.add(versionDecl, "--version", "Version information") ;
     }

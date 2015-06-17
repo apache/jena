@@ -19,6 +19,9 @@
 package sdb.cmd;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
 import org.apache.jena.sdb.Store ;
 
@@ -37,7 +40,7 @@ public class ModConfig extends ModBase
     private boolean createIndexes = false ;
     
     @Override
-    public void registerWith(ArqCmdGeneral cmdLine)
+    public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.add(argDeclCreate,
                     "--create", "Format a database and add indexes") ;

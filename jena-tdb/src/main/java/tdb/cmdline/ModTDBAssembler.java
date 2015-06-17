@@ -20,12 +20,12 @@ package tdb.cmdline;
 
 import java.io.File;
 
+import jena.cmd.CmdArgModule;
 import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
 
 import org.apache.jena.tdb.base.file.Location ;
 
-import arq.cmdline.ArqCmdGeneral ;
-import arq.cmdline.CmdArgModule;
 import arq.cmdline.ModAssembler;
 
 /**  Extends ModAssembler to include --tdb.
@@ -66,7 +66,7 @@ public class ModTDBAssembler extends ModAssembler
     }
    
     @Override
-    public void registerWith(ArqCmdGeneral cmdLine)
+    public void registerWith(CmdGeneral cmdLine)
     {
         super.registerWith(cmdLine) ;
         cmdLine.addModule(modLocation) ;

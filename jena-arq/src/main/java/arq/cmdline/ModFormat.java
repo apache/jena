@@ -23,6 +23,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
 public class ModFormat extends ModBase
 {
@@ -44,7 +47,7 @@ public class ModFormat extends ModBase
     }
     
     @Override
-    public void registerWith(ArqCmdGeneral cmdLine)
+    public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Output format") ;
         cmdLine.add(resultsFmtDecl,

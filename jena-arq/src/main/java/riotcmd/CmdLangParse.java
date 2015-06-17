@@ -22,7 +22,6 @@ import java.io.InputStream ;
 import java.io.OutputStream ;
 
 import jena.cmd.CmdException;
-
 import org.apache.jena.Jena ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
@@ -45,7 +44,7 @@ import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import arq.cmdline.* ;
 
 /** Common framework for running RIOT parsers */
-public abstract class CmdLangParse extends ArqCmdGeneral
+public abstract class CmdLangParse extends CmdARQ
 {
     protected ModTime modTime                   = new ModTime() ;
     protected ModLangParse modLangParse         = new ModLangParse() ;

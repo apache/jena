@@ -19,12 +19,11 @@
 package tdb.cmdline;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
 import org.apache.jena.tdb.base.file.Location ;
-
-import arq.cmdline.ArqCmdGeneral ;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.ModBase;
 
 
 public class ModLocation extends ModBase
@@ -33,7 +32,7 @@ public class ModLocation extends ModBase
     protected Location location = null ;
     
     @Override
-    public void registerWith(ArqCmdGeneral cmdLine)
+    public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Location") ;
         cmdLine.add(locationDecl, "--loc=DIR", "Location (a directory)") ;

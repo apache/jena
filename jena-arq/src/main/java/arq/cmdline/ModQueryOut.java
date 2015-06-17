@@ -20,6 +20,9 @@ package arq.cmdline;
 
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.query.Query ;
@@ -35,7 +38,7 @@ public class ModQueryOut extends ModBase
     private boolean lineNumbers = false ;
     
     @Override
-    public void registerWith(ArqCmdGeneral cmdLine)
+    public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Output") ;
         cmdLine.add(queryOutputSyntaxDecl, "--out, --format",  "Output syntax") ;

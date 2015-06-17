@@ -38,10 +38,11 @@ import org.apache.jena.tdb.store.tupletable.TupleIndex ;
 import org.apache.jena.tdb.store.tupletable.TupleIndexRecord ;
 import org.apache.jena.tdb.sys.Names ;
 import org.apache.jena.tdb.sys.SystemTDB ;
-import tdb.cmdline.ModLocation ;
-import arq.cmdline.ArqCmdGeneral ;
 
-public class dumpbpt extends ArqCmdGeneral {
+import arq.cmdline.CmdARQ;
+import tdb.cmdline.ModLocation ;
+
+public class dumpbpt extends CmdARQ {
     ModLocation modLocation = new ModLocation() ;
 
     static public void main(String... argv) {

@@ -27,6 +27,7 @@ import java.util.Objects ;
 
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
@@ -55,10 +56,9 @@ import org.apache.jena.tdb.sys.Names ;
 import org.slf4j.Logger ;
 
 import tdb.cmdline.CmdTDB ;
-import arq.cmdline.ArqCmdGeneral ;
 
 /** Build node table - write triples/quads as text file */
-public class CmdNodeTableBuilder extends ArqCmdGeneral
+public class CmdNodeTableBuilder extends CmdGeneral
 {
     static { LogCtl.setLog4j() ; }
     private static Logger cmdLog =TDB.logLoader ;

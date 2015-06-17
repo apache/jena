@@ -21,13 +21,12 @@ package sdb.cmd;
 import java.util.List;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
 import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
 import org.apache.jena.sdb.sql.SDBConnection ;
-
-import arq.cmdline.ArqCmdGeneral ;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.ModBase;
 
 public class ModLogSQL extends ModBase
 {
@@ -36,7 +35,7 @@ public class ModLogSQL extends ModBase
     protected final ArgDecl argDeclLogSQL          = new ArgDecl(true, "log") ;
 
     @Override
-    public void registerWith(ArqCmdGeneral cmdLine)
+    public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("DB logging") ;
         cmdLine.add(argDeclLogSQL,         "--log=", "SQL logging [none, all, query, exceptions, statement]") ;

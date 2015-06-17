@@ -16,36 +16,32 @@
  * limitations under the License.
  */
 
-package arq.cmdline;
+package jena.cmd;
 
 import java.io.PrintStream ;
 
-import jena.cmd.ArgDecl;
-import jena.cmd.TerminationException;
-import jena.cmd.Usage;
-
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.query.ARQ ;
+
+import jena.cmd.ArgModuleGeneral;
+import jena.cmd.CmdArgModule;
+import jena.cmd.ModGeneral;
 
 // Added usage + some common flags
 // This is the usual starting point for any sub 
 
-public abstract class ArqCmdGeneral extends CmdArgModule implements Runnable//, VersionCallback
+public abstract class CmdGeneral extends CmdArgModule implements Runnable//, VersionCallback
 {
-    static { ARQ.init() ; }
 
     protected ModGeneral modGeneral = new ModGeneral(this) ;
-    protected ModVersion modVersion = new ModVersion(true) ;
     
     // Could be turned into a module but these are convenient as inherited flags
     // ModGeneral.
     // Which can set the globals here.
     
-    protected ArqCmdGeneral(String[] argv)
+    protected CmdGeneral(String[] argv)
     {
         super(argv) ;
         addModule(modGeneral) ;
-        addModule(modVersion) ;
     }
 
     @Override

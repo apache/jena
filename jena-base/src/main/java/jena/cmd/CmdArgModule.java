@@ -16,13 +16,12 @@
  * limitations under the License.
  */
 
-package arq.cmdline;
+package jena.cmd;
 
 import java.util.ArrayList ;
 import java.util.List ;
 
-import jena.cmd.CmdMain;
-import arq.cmdline.ArgModuleGeneral;
+import jena.cmd.ArgModuleGeneral;
 
 public abstract class CmdArgModule extends CmdMain
 {

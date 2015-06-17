@@ -21,7 +21,9 @@ package arq.cmdline;
 import java.util.List ;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
 import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
 
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
@@ -51,7 +53,7 @@ public class ModDatasetGeneral extends ModDataset
     protected ModDatasetGeneral() {}
     
     @Override
-    public void registerWith(ArqCmdGeneral cl)
+    public void registerWith(CmdGeneral cl)
     {
         cl.getUsage().startCategory("Dataset") ;
         cl.add(dataDecl,

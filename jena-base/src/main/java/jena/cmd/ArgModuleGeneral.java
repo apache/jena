@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-package arq.cmdline;
+package jena.cmd;
 
 import java.util.function.Consumer;
 
 public interface ArgModuleGeneral extends Consumer<CmdArgModule>
 {
     // Registration phase for usage messages
-    public abstract void registerWith(ArqCmdGeneral cmdLine) ;
+    public abstract void registerWith(CmdGeneral cmdLine) ;
 }

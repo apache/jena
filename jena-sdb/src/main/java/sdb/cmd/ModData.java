@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jena.cmd.ArgDecl;
-import arq.cmdline.ArqCmdGeneral ;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.ModBase;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
 public class ModData extends ModBase
 {
@@ -32,7 +32,7 @@ public class ModData extends ModBase
     private List <String> filesToLoad = new ArrayList<String>() ;
 
     @Override
-    public void registerWith(ArqCmdGeneral cmdLine)
+    public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.add(argDeclLoad,
                     "--load", "Load data (can be repeated)") ;

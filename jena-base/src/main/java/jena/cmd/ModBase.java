@@ -16,7 +16,8 @@
  * limitations under the License.
  */
 
-package arq.cmdline;
+package jena.cmd;
+
 
 
 

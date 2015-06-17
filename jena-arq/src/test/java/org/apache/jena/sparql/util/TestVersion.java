@@ -21,7 +21,6 @@ package org.apache.jena.sparql.util;
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.RIOT;
-import org.apache.jena.sparql.util.Version ;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -19,13 +19,13 @@
 package sdb.cmd;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
 import jena.cmd.TerminationException;
 
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sdb.SDBFactory ;
 
-import arq.cmdline.ArqCmdGeneral ;
-import arq.cmdline.CmdArgModule;
 import arq.cmdline.ModDataset;
 
 public class ModDatasetStore extends ModDataset
@@ -40,7 +40,7 @@ public class ModDatasetStore extends ModDataset
     }
 
     @Override
-    public void registerWith(ArqCmdGeneral cmdLine)
+    public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.add(argDeclSDBdesc, "--store=FILE", "Dataset assembler for an SDB store") ;
     }

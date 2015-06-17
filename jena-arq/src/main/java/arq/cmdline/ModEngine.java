@@ -19,8 +19,12 @@
 package arq.cmdline;
 
 import java.util.List ;
+
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
 import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
 import org.apache.jena.sparql.engine.main.QueryEngineMain ;
 import org.apache.jena.sparql.engine.main.QueryEngineMainQuad ;
@@ -45,14 +49,14 @@ public class ModEngine extends ModBase
     private boolean timing = false ;
     
     @Override
-    public void registerWith(ArqCmdGeneral cmdLine)
+    public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Query Engine") ;
         cmdLine.add(engineDecl, "--engine=EngineName", "Register another engine factory[ref]") ; 
         cmdLine.add(unEngineDecl, "--unengine=EngineName", "Unregister an engine factory") ;
     }
     
-    public void checkCommandLine(ArqCmdGeneral cmdLine)
+    public void checkCommandLine(CmdGeneral cmdLine)
     {}
 
     @Override

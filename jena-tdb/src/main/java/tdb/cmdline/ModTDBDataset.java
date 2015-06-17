@@ -22,7 +22,9 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
 import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.* ;
@@ -37,8 +39,6 @@ import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.apache.jena.util.FileManager ;
 
-import arq.cmdline.ArqCmdGeneral ;
-import arq.cmdline.CmdArgModule;
 import arq.cmdline.ModDataset ;
 
 public class ModTDBDataset extends ModDataset
@@ -51,7 +51,7 @@ public class ModTDBDataset extends ModDataset
     private String inMemFile                = null ;
 
     @Override
-    public void registerWith(ArqCmdGeneral cmdLine)
+    public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.add(argMem, "--mem=FILE", "Execute on an in-memory TDB database (for testing)") ;
         cmdLine.addModule(modAssembler) ;

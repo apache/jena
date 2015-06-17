@@ -19,14 +19,21 @@
 package arq.cmdline;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdGeneral;
+import arq.cmdline.ModVersion;
 
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorBase ;
 
-public abstract class CmdARQ extends ArqCmdGeneral
+public abstract class CmdARQ extends CmdGeneral
 {
+	static { ARQ.init() ; }
+	
+
+    protected ModVersion modVersion = new ModVersion(true) ;
+    
     protected ModSymbol modSymbol = new ModSymbol() ;
     ArgDecl  strictDecl = new ArgDecl(ArgDecl.NoValue, "strict") ;
     
@@ -36,9 +43,10 @@ public abstract class CmdARQ extends ArqCmdGeneral
     {
         super(argv) ;
         addModule(modSymbol) ;
-        super.add(strictDecl, "--strict", "Operate in strict SPARQL mode (no extensions of any kind)") ;
-        super.modVersion.addClass(ARQ.class) ;
-        super.modVersion.addClass(RIOT.class) ;
+        addModule(modVersion) ;
+        modVersion.addClass(ARQ.class) ;
+        modVersion.addClass(RIOT.class) ;
+        super.add(strictDecl, "--strict", "Operate in strict SPARQL mode (no extensions of any kind)") ; 
     }
     
     @Override

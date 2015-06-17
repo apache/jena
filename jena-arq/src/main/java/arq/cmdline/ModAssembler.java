@@ -19,7 +19,10 @@
 package arq.cmdline;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
 import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.shared.JenaException ;
@@ -50,7 +53,7 @@ public class ModAssembler extends ModBase
     }
     
     @Override
-    public void registerWith(ArqCmdGeneral cmdLine)
+    public void registerWith(CmdGeneral cmdLine)
     {
         //cmdLine.getUsage().startCategory("Dataset") ;
         cmdLine.add(assemblerDescDecl,
