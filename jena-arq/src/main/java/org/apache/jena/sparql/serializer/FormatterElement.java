@@ -35,6 +35,8 @@ import org.apache.jena.sparql.core.TriplePath ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.path.PathWriter ;
 import org.apache.jena.sparql.syntax.* ;
+import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.vocabulary.RDF ;
 
 
 public class FormatterElement extends FormatterBase
@@ -625,17 +627,20 @@ public class FormatterElement extends FormatterBase
     {
         String str = slotToString(s) ;
         out.print(str) ;
-        //out.pad(TRIPLES_SUBJECT_COLUMN) ;
         out.pad(subjectWidth) ;
         return str.length() ; 
     }
 
     // Assumes the indent is TRIPLES_SUBJECT_COLUMN+GAP
+    private static String RDFTYPE = FmtUtils.stringForNode(RDF.Nodes.type, new SerializationContext()) ;
+    
     private int printProperty(Node p)
     {
         String str = slotToString(p) ;
-        out.print(str) ;
-        //out.pad(TRIPLES_PROPERTY_COLUMN) ;
+        if ( p.equals(RDF.Nodes.type) && str.equals(RDFTYPE) )
+            out.print("a") ;
+        else
+            out.print(str) ;
         out.pad(predicateWidth) ;
         return str.length() ; 
     }
