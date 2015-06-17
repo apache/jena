@@ -73,8 +73,7 @@ public class PathEval
     /** Evaluate a path */
     static Iter<Node> eval$(Graph graph, Node node, Path path, PathEngine engine) {
         Collection<Node> acc = new ArrayList<>() ;
-        PathEvaluator evaluator = new PathEvaluator(graph, node, acc, engine) ;
-        path.visit(evaluator) ;
+        eval$(graph, node, path, engine, acc); 
         return Iter.iter(acc) ;
     }
 }
