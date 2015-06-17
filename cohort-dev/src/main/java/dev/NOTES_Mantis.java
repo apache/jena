@@ -18,9 +18,15 @@
 package dev;
 
 public class NOTES_Mantis {
+    // See also NOTES_TDB
+    
+    // ReadWrite => TxnMode.{READ,WRITE,EXCLUSIVE}
+    //   Exclusive => multithreading!
+    
     // NodeCache and abort
     
     // Reduce overheads
+    //   
     //  Record if change zero cost abort/commit.
     //  Shared state files / less sync's.
     

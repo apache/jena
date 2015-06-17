@@ -26,8 +26,16 @@ import org.apache.jena.sparql.core.Quad ;
 
 
 public class NOTES_TDB {
+    // See also NOTES_TDB
+    
+    
+
     // Loader: Try with StreamRDFBatchSplit and a parallel index update.
     //   Needs multi-threaded transaction control.
+    //   Mantis -> exclusive mode.  MRSW.
+    // Bulk loader from zero:
+    //  load SPO, then parallel load POS, OSP, PSO etc.
+    
     
     // ** NodeTableCache and aborts.
     // NodeTableCache + abort -> clean out?
