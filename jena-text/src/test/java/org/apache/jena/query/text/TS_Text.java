@@ -33,7 +33,8 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestDatasetWithLuceneMultilingualTextIndex.class
     , TestDatasetWithLuceneTextIndexWithLangField.class
     , TestDatasetWithLuceneGraphTextIndex.class
-    
+    , TestDatasetWithLuceneTextIndexDeletionSupport.class
+
     // Embedded solr not supported 
     //, TestDatasetWithEmbeddedSolrTextIndex.class
     

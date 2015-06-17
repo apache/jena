@@ -43,6 +43,7 @@ public class EntityDefinition {
     private final String                     primaryField ;
     private String                           graphField = null ;
     private String                           langField ;
+    private String                           uidField ;
 
     /**
      * @param entityField
@@ -169,6 +170,14 @@ public class EntityDefinition {
 
     public void setLangField(String langField) {
         this.langField = langField;
+    }
+
+    public String getUidField() {
+        return uidField;
+    }
+
+    public void setUidField(String uidField) {
+        this.uidField = uidField;
     }
 
     public Collection<String> fields() {

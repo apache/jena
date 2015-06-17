@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TestDatasetWithLuceneTextIndexWithLangField extends AbstractTestDatasetWithTextIndex {
+public class TestDatasetWithLuceneTextIndexWithLangField extends AbstractTestDatasetWithTextIndexBase {
     
     private static final String SPEC_BASE = "http://example.org/spec#";
     private static final String SPEC_ROOT_LOCAL = "lucene_text_dataset";

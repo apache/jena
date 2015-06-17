@@ -18,6 +18,8 @@
 
 package org.apache.jena.query.text;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import java.util.HashMap ;
 import java.util.Map ;
 
@@ -54,7 +56,12 @@ public class Entity
     { return map.get(key) ; }
 
     public Map<String, Object> getMap()     { return map ; }
-    
+
+    public String getChecksum(String property, String value) {
+        String key = getGraph() + "-" + getId() + "-" + property + "-" + value + "-" + getLanguage();
+        return DigestUtils.sha256Hex(key);
+    }
+
     @Override
     public String toString() {
         return id+" : "+map ;

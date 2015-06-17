@@ -20,6 +20,7 @@ package org.apache.jena.query.text;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -30,6 +31,10 @@ import java.util.Set;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.update.UpdateExecutionFactory;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateProcessor;
+import org.apache.jena.update.UpdateRequest;
 
 /*
  * This abstract class defines a collection of test methods for testing
@@ -62,14 +67,32 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
     }
     
     protected void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs, int expectedNumResults) {
+        loadData(turtle);
+        doTestQuery(dataset, label, queryString, expectedEntityURIs, expectedNumResults);
+    }
+
+    protected Map<String,Float> doTestSearchWithScores(String turtle, String queryString, Set<String> expectedEntityURIs) {
+        loadData(turtle);
+        return doTestQueryWithScores(queryString, expectedEntityURIs);
+    }
+
+    protected void doTestSearchNoResult(String turtle, String queryString) {
+        doTestSearchNoResult("", turtle, queryString);
+    }
+
+    protected void doTestSearchNoResult(String label, String turtle, String queryString) {
+        loadData(turtle);
+        doTestNoResult(dataset, label, queryString);
+    }
+
+    protected void loadData(String turtle) {
         Model model = dataset.getDefaultModel();
         Reader reader = new StringReader(turtle);
         dataset.begin(ReadWrite.WRITE);
         model.read(reader, "", "TURTLE");
         dataset.commit();
-        doTestQuery(dataset, label, queryString, expectedEntityURIs, expectedNumResults);
     }
-    
+
     public static void doTestQuery(Dataset dataset, String label, String queryString, Set<String> expectedEntityURIs, int expectedNumResults) {
         Query query = QueryFactory.create(queryString) ;
         dataset.begin(ReadWrite.READ);
@@ -88,13 +111,7 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
         }        
     }
     
-    protected Map<String,Float> doTestSearchWithScores(String turtle, String queryString, Set<String> expectedEntityURIs) {
-        Model model = dataset.getDefaultModel();
-        Reader reader = new StringReader(turtle);
-        dataset.begin(ReadWrite.WRITE);
-        model.read(reader, "", "TURTLE");
-        dataset.commit();
-        
+    protected Map<String,Float> doTestQueryWithScores(String queryString, Set<String> expectedEntityURIs) {
         Map<String,Float> scores = new HashMap<>();
 
         Query query = QueryFactory.create(queryString) ;
@@ -118,5 +135,24 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
         }
         return scores;
     }
-    
+
+    public static void doTestNoResult(Dataset dataset, String label, String queryString) {
+        Query query = QueryFactory.create(queryString) ;
+        dataset.begin(ReadWrite.READ);
+        try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
+            ResultSet results = qexec.execSelect() ;
+            assertFalse(label, results.hasNext());
+        }
+        finally {
+            dataset.end() ;
+        }
+    }
+
+    protected void doUpdate(String updateString) {
+        dataset.begin(ReadWrite.WRITE);
+        UpdateRequest request = UpdateFactory.create(updateString);
+        UpdateProcessor proc = UpdateExecutionFactory.create(request, dataset);
+        proc.execute();
+        dataset.commit();
+    }
 }

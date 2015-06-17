@@ -49,6 +49,7 @@ public class TextVocab
     public static final Property pDefaultField      = Vocab.property(NS, "defaultField") ;
     public static final Property pGraphField        = Vocab.property(NS, "graphField") ;
     public static final Property pLangField         = Vocab.property(NS, "langField") ;
+    public static final Property pUidField          = Vocab.property(NS, "uidField") ;
     public static final Property pMap               = Vocab.property(NS, "map") ;
     public static final Property pField             = Vocab.property(NS, "field") ;
     public static final Property pPredicate         = Vocab.property(NS, "predicate") ;

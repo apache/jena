@@ -104,7 +104,13 @@ public class TextIndexSolr implements TextIndex
         }
     }
 
-    private SolrInputDocument solrDoc(Entity entity) {
+    @Override
+    public void deleteEntity(Entity entity) {
+         //to be implemented
+    }
+
+    private SolrInputDocument solrDoc(Entity entity)
+    {
         SolrInputDocument doc = new SolrInputDocument() ;
         doc.addField(docDef.getEntityField(), entity.getId()) ;
 
