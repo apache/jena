@@ -29,6 +29,9 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 public class Loader {
+    
+    private static final int BATCH_SIZE = 100 ;
+    
     // XXX StreamRDFBatchSplit and parallel index update.
     private static Logger LOG = LoggerFactory.getLogger("Loader") ;
     
@@ -54,7 +57,7 @@ public class Loader {
         DatasetGraphTDB dsg = (DatasetGraphTDB)ds.asDatasetGraph() ;
 
         StreamRDFBatchSplit s1 = new StreamRDFBatchSplit(dsg, 10) ;
-        ProgressLogger plog = new ProgressLogger(LOG, "Triples", 100000, 10) ;
+        ProgressLogger plog = new ProgressLogger(LOG, "Triples", 100000, BATCH_SIZE) ;
         // Want the monitor on the outside to capture transaction wrapper costs.
         StreamRDFMonitor sMonitor = new StreamRDFMonitor(s1, plog) ;
         StreamRDF s3 = sMonitor ;
