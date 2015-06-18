@@ -134,10 +134,8 @@ void ConstructQuery() : { Template t ;
  <CONSTRUCT>
    { getQuery().setQueryConstructType() ; }
  (
-    <LBRACE>
-    t = ConstructQuads(acc)
+    t = ConstructTemplate()
       { getQuery().setConstructTemplate(t) ; }
-    <RBRACE>
     ( DatasetClause() )*
     WhereClause()
     SolutionModifier()
@@ -502,17 +500,14 @@ void QuadsNotTriples(QuadAccSink acc) : {Node gn ; Node prev = acc.getGraph() ; 
     <RBRACE>
     { setAccGraph(acc, prev) ; }
 }
-Template ConstructQuads(QuadAcc acc) : {Template t = new Template (acc);}
+void ConstructQuads(QuadAcc acc) : {}
 {
-    { setInConstructTemplate(true) ; }
     (TriplesTemplate(acc))?
     (
        ConstructQuadsNotTriples(acc)
        (<DOT>)?
        (TriplesTemplate(acc))?
     )*
-    { setInConstructTemplate(false) ;
-      return t ; }
 }
 void ConstructQuadsNotTriples(QuadAccSink acc) : {Node gn = null ; Node prev = acc.getGraph() ; }
 {
@@ -806,12 +801,12 @@ ExprList ExpressionList() : { Expr expr = null ; ExprList args = new ExprList() 
   )
   { return args ; }
 }
-Template ConstructTemplate() : { TripleCollectorBGP acc = new TripleCollectorBGP();
-                                 Template t = new Template(acc.getBGP()) ; }
+Template ConstructTemplate() : { QuadAcc acc = new QuadAcc() ;
+                                 Template t = new Template (acc);}
 {
     { setInConstructTemplate(true) ; }
   <LBRACE>
-    (ConstructTriples(acc))?
+    ConstructQuads(acc)
   <RBRACE>
     { setInConstructTemplate(false) ;
       return t ; }
