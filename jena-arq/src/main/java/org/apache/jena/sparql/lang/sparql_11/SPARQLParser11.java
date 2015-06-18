@@ -212,7 +212,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
   final public void ConstructQuery() throws ParseException {
                           Template t ;
-                          QuadAcc acc = new QuadAcc() ;
+                          TripleCollectorBGP acc = new TripleCollectorBGP() ;
     jj_consume_token(CONSTRUCT);
      getQuery().setQueryConstructType() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -284,7 +284,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       }
       jj_consume_token(RBRACE);
       SolutionModifier();
-      t = new Template(acc) ;
+      t = new Template(acc.getBGP()) ;
       getQuery().setConstructTemplate(t) ;
       ElementPathBlock epb = new ElementPathBlock(acc.getBGP()) ;
       ElementGroup elg = new ElementGroup() ;
@@ -2353,8 +2353,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public Template ConstructTemplate() throws ParseException {
-                                 QuadAcc acc = new QuadAcc() ;
-                                 Template t = new Template(acc) ;
+                                 TripleCollectorBGP acc = new TripleCollectorBGP();
+                                 Template t = new Template(acc.getBGP()) ;
       setInConstructTemplate(true) ;
     jj_consume_token(LBRACE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {

@@ -241,8 +241,10 @@ void ConstructQuery() : { Template t ;
    { getQuery().setQueryConstructType() ; }
  (
     // Full form.
-    t = ConstructTemplate() 
+    <LBRACE>
+    t = ConstructQuads(acc) 
       { getQuery().setConstructTemplate(t) ; }
+    <RBRACE>
     ( DatasetClause() )*
     WhereClause()
     SolutionModifier()
@@ -252,7 +254,7 @@ void ConstructQuery() : { Template t ;
     <WHERE>
     // Should have been "ConstructTemplate()"
     <LBRACE>  
-    (TriplesTemplate(acc))?
+    ConstructQuads(acc)
     <RBRACE>
     SolutionModifier()
     { 
@@ -268,9 +270,20 @@ void ConstructQuery() : { Template t ;
 //#endif
 }
 #else
+
 void ConstructQuery() : { Template t ; 
-                          QuadAcc acc = new QuadAcc() ; }
+                          TripleCollectorBGP acc = new TripleCollectorBGP() ; }
 {
+// #ifndef ARQ
+//   <CONSTRUCT>
+//      { getQuery().setQueryConstructType() ; }
+//   t = ConstructTemplate() 
+//     { getQuery().setConstructTemplate(t) ; }
+//   ( DatasetClause() )*
+//   WhereClause()
+//   SolutionModifier()
+// #else
+
  <CONSTRUCT>
    { getQuery().setQueryConstructType() ; }
  (
@@ -290,7 +303,7 @@ void ConstructQuery() : { Template t ;
     <RBRACE>
     SolutionModifier()
     { 
-      t = new Template(acc) ;
+      t = new Template(acc.getBGP()) ;
       getQuery().setConstructTemplate(t) ;
       // Create a query in the same shape as the query created by writing out in full.
       ElementPathBlock epb = new ElementPathBlock(acc.getBGP()) ;
@@ -728,7 +741,36 @@ void QuadsNotTriples(QuadAccSink acc) : {Node gn ; Node prev = acc.getGraph() ; 
     { setAccGraph(acc, prev) ; }
     
 }
+#ifdef ARQ
+Template ConstructQuads(QuadAcc acc) : {Template t = new Template (acc);}
+{
+    { setInConstructTemplate(true) ; }
+    (TriplesTemplate(acc))?
+    (
+       ConstructQuadsNotTriples(acc)
+       (<DOT>)?
+       (TriplesTemplate(acc))?
+    )*
+    
+    { setInConstructTemplate(false) ;
+      return t ; }
+}
 
+void ConstructQuadsNotTriples(QuadAccSink acc) : {Node gn = null ; Node prev = acc.getGraph() ; }
+{
+    (
+  	 <GRAPH>
+     gn = VarOrIri()
+    )?
+
+    { setAccGraph(acc, gn) ; }
+    <LBRACE> 
+    (TriplesTemplate(acc))?
+    <RBRACE>
+    { setAccGraph(acc, prev) ; }
+    
+}
+#endif
 void TriplesTemplate(TripleCollector acc) : { }
 {    // same as ConstructTriples
 #if SPARQL_11
@@ -1085,8 +1127,8 @@ ExprList ExpressionList() : { Expr expr = null ; ExprList args = new ExprList() 
 
 // -------- Construct patterns
 
-Template ConstructTemplate() : { QuadAcc acc = new QuadAcc() ; 
-                                 Template t = new Template(acc) ; }
+Template ConstructTemplate() : { TripleCollectorBGP acc = new TripleCollectorBGP(); 
+                                 Template t = new Template(acc.getBGP()) ; }
 {
     { setInConstructTemplate(true) ; }
   <LBRACE> 

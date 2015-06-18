@@ -89,7 +89,7 @@ public class Template
     	if( this.bgp != null){
     		List<Quad> quads = new ArrayList<Quad>();
     		for(Triple triple: this.bgp.getList()){
-    			quads.add( new Quad( Quad.tripleInQuad, triple ) ); 
+    			quads.add( new Quad( Quad.defaultGraphIRI, triple ) ); 
     		}
     		return quads;
     	}   	
@@ -146,7 +146,10 @@ public class Template
         {
             Quad q1 = list1.get(i) ;
             Quad q2 = list2.get(i) ;
-            Iso.quadIso(q1, q2, labelMap) ;
+            boolean iso = Iso.quadIso(q1, q2, labelMap) ;
+            if(!iso){
+            	return false;
+            }
         }
         return true ;
     }
