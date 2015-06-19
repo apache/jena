@@ -149,9 +149,7 @@ void ConstructQuery() : { Template t ;
     {
       t = new Template(acc) ;
       getQuery().setConstructTemplate(t) ;
-      ElementPathBlock epb = new ElementPathBlock(acc.getBGP()) ;
-      ElementGroup elg = new ElementGroup() ;
-      elg.addElement(epb) ;
+   ElementGroup elg = createQueryPattern(t);
       getQuery().setQueryPattern(elg) ;
     }
  )

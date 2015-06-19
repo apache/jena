@@ -259,9 +259,7 @@ void ConstructQuery() : { Template t ;
       t = new Template(acc) ;
       getQuery().setConstructTemplate(t) ;
       // Create a query in the same shape as the query created by writing out in full.
-      ElementPathBlock epb = new ElementPathBlock(acc.getBGP()) ;
-      ElementGroup elg = new ElementGroup() ;
-      elg.addElement(epb) ;
+	  ElementGroup elg = createQueryPattern(t);
       getQuery().setQueryPattern(elg) ;
     }
  )
