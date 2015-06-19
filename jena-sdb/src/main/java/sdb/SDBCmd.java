@@ -18,7 +18,8 @@
 
 package sdb;
 
-import arq.cmd.CmdMain ;
+import jena.cmd.CmdMain;
+
 import org.apache.jena.atlas.lib.Lib ;
 
 /** Convenience ways to execute commands (import static) */

@@ -27,7 +27,7 @@ import java.nio.file.Path ;
 import java.nio.file.StandardCopyOption ;
 import java.util.* ;
 
-import arq.cmd.CmdException ;
+import jena.cmd.CmdException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.FileOps ;

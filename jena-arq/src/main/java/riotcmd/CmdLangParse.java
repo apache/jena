@@ -21,6 +21,7 @@ package riotcmd;
 import java.io.InputStream ;
 import java.io.OutputStream ;
 
+import jena.cmd.CmdException;
 import org.apache.jena.Jena ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
@@ -39,16 +40,15 @@ import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import arq.cmd.CmdException ;
+
 import arq.cmdline.* ;
 
 /** Common framework for running RIOT parsers */
-public abstract class CmdLangParse extends CmdGeneral
+public abstract class CmdLangParse extends CmdARQ
 {
     protected ModTime modTime                   = new ModTime() ;
     protected ModLangParse modLangParse         = new ModLangParse() ;
     protected ModLangOutput modLangOutput       = new ModLangOutput() ;
-    protected ModSymbol modSymbol               = new ModSymbol() ;
     protected InferenceSetupRDFS setup          = null ; 
     
     interface LangHandler {

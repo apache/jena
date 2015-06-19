@@ -18,13 +18,13 @@
 
 package org.apache.jena.jdbc.mem.metadata;
 
-import java.sql.SQLException;
+import java.sql.SQLException ;
 
-import org.apache.jena.jdbc.JenaJDBC;
-import org.apache.jena.jdbc.connections.DatasetConnection;
-import org.apache.jena.jdbc.metadata.DatasetMetadata;
+import org.apache.jena.atlas.lib.Version ;
+import org.apache.jena.jdbc.JenaJDBC ;
+import org.apache.jena.jdbc.connections.DatasetConnection ;
+import org.apache.jena.jdbc.metadata.DatasetMetadata ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.sparql.util.Version ;
 
 /**
  * Connection metadata for in-memory datasets

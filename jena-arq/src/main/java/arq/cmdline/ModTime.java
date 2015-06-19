@@ -18,16 +18,17 @@
 
 package arq.cmdline;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
 import org.apache.jena.atlas.lib.Timer ;
 
 
-public class ModTime implements ArgModuleGeneral
+public class ModTime extends ModBase
 {
-    public ModTime() {}
-    
+
     protected final ArgDecl timeDecl = new ArgDecl(ArgDecl.NoValue, "time") ;
     
     protected Timer timer = new Timer() ;

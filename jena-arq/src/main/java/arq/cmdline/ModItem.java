@@ -18,22 +18,22 @@
 
 package arq.cmdline;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.util.FileManager ;
 
-public class ModItem implements ArgModuleGeneral
+public class ModItem extends ModBase
 {
     protected final ArgDecl queryFileDecl = new ArgDecl(ArgDecl.HasValue, "file") ;
 
     private String filename = null ;
     private String parseString = null ; 
     private Item item = null ;
-    
-    public ModItem() {}
     
     @Override
     public void registerWith(CmdGeneral cmdLine)

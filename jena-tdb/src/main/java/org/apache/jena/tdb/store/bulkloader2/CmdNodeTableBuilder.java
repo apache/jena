@@ -25,6 +25,10 @@ import java.util.Arrays ;
 import java.util.List ;
 import java.util.Objects ;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
+
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.DateTimeUtils ;
@@ -50,10 +54,8 @@ import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.tdb.sys.Names ;
 import org.slf4j.Logger ;
+
 import tdb.cmdline.CmdTDB ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
-import arq.cmdline.CmdGeneral ;
 
 /** Build node table - write triples/quads as text file */
 public class CmdNodeTableBuilder extends CmdGeneral

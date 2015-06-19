@@ -20,11 +20,13 @@ package sdb;
 
 import java.util.List ;
 
-import arq.cmd.ArgDecl ;
+import jena.cmd.ArgDecl;
+
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.store.StoreConfig ;
 import org.apache.jena.atlas.lib.Lib ;
+
 import sdb.cmd.CmdArgsDB ;
 
  /** Write out the data from an SDB model.  Only works for small models

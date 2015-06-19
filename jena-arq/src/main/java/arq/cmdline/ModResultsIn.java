@@ -18,14 +18,19 @@
 
 package arq.cmdline;
 
-import arq.cmd.* ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+import jena.cmd.TerminationException;
+
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
 import org.apache.jena.shared.NotFoundException ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.resultset.ResultsFormat ;
 
-public class ModResultsIn implements ArgModuleGeneral
+public class ModResultsIn extends ModBase
 {
     protected final ArgDecl resultsInputFmtDecl = new ArgDecl(ArgDecl.HasValue, "in") ;
     protected final ArgDecl fileDecl = new ArgDecl(ArgDecl.HasValue, "file") ;

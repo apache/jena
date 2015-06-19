@@ -21,6 +21,8 @@ package sdb;
 
 import java.util.List;
 
+import jena.cmd.ArgDecl;
+
 import org.apache.jena.query.* ;
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.compiler.SDB_QC ;
@@ -29,8 +31,8 @@ import org.apache.jena.sdb.util.PrintSDB ;
 import org.apache.jena.sparql.engine.QueryExecutionBase ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
 import org.apache.jena.atlas.lib.Lib ;
+
 import sdb.cmd.CmdArgsDB;
-import arq.cmd.ArgDecl ;
 import arq.cmdline.ModQueryIn;
 import arq.cmdline.ModResultsOut;
 
