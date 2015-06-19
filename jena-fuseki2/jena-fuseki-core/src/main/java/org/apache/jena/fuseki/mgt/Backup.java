@@ -45,7 +45,7 @@ public class Backup
         if ( ds.startsWith("/") )
             ds = ds.substring(1) ;
         if ( ds.contains("/") ) {
-            Fuseki.adminLog.warn("Dataset name: werid format: "+dsName) ;
+            Fuseki.adminLog.warn("Dataset name: weird format: "+dsName) ;
             // Some kind of fixup
             ds = ds.replace("/",  "_") ;
         }
