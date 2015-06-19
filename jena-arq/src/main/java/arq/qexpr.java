@@ -18,10 +18,11 @@
 
 package arq;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
-import arq.cmd.CmdLineArgs ;
-import arq.cmd.TerminationException ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+import jena.cmd.CmdLineArgs;
+import jena.cmd.TerminationException;
+
 import org.apache.jena.Jena ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.logging.LogCtl ;

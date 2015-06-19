@@ -18,12 +18,14 @@
 
 package sdb.cmd;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.TerminationException;
+
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sdb.SDBFactory ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdArgModule ;
-import arq.cmd.TerminationException ;
-import arq.cmdline.CmdGeneral ;
+
 import arq.cmdline.ModDataset;
 
 public class ModDatasetStore extends ModDataset
@@ -44,7 +46,7 @@ public class ModDatasetStore extends ModDataset
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         // Either a dataset or a store.
         

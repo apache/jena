@@ -16,23 +16,23 @@
  * limitations under the License.
  */
 
-package arq.cmdline;
+package jena.cmd;
 
 import java.io.PrintStream ;
 
-import arq.cmd.* ;
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.query.ARQ ;
+
+import jena.cmd.ArgModuleGeneral;
+import jena.cmd.CmdArgModule;
+import jena.cmd.ModGeneral;
 
 // Added usage + some common flags
 // This is the usual starting point for any sub 
 
-public abstract class CmdGeneral extends CmdArgModule implements CallbackHelp//, VersionCallback
+public abstract class CmdGeneral extends CmdArgModule implements Runnable//, VersionCallback
 {
-    static { ARQ.init() ; }
 
     protected ModGeneral modGeneral = new ModGeneral(this) ;
-    protected ModVersion modVersion = new ModVersion(true) ;
     
     // Could be turned into a module but these are convenient as inherited flags
     // ModGeneral.
@@ -42,7 +42,6 @@ public abstract class CmdGeneral extends CmdArgModule implements CallbackHelp//,
     {
         super(argv) ;
         addModule(modGeneral) ;
-        addModule(modVersion) ;
     }
 
     @Override
@@ -58,7 +57,7 @@ public abstract class CmdGeneral extends CmdArgModule implements CallbackHelp//,
     protected boolean help()      { return modGeneral.help ; }
 
     @Override
-    final public void doHelp()
+    final public void run()
     {
         usage() ;
         throw new TerminationException(0) ;

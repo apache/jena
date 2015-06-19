@@ -20,9 +20,11 @@ package arq.cmdline;
 
 import java.util.List ;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdArgModule ;
-import arq.cmd.CmdException ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
+
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.query.LabelExistsException ;
@@ -66,7 +68,7 @@ public class ModDatasetGeneral extends ModDataset
     }
     
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         dataURLs = cmdLine.getValues(dataDecl) ;
         graphURLs = cmdLine.getValues(graphDecl) ;

@@ -16,11 +16,9 @@
  * limitations under the License.
  */
 
-package arq.cmd;
+package jena.cmd;
 
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.shared.JenaException ;
 
 /** Adds main()-like methods
  * 
@@ -59,16 +57,6 @@ public abstract class CmdMain extends CmdLineArgs
     {
         try { mainMethod() ; }
         catch (TerminationException ex) { System.exit(ex.getCode()) ; }
-        catch (JenaException ex)
-        {
-            ex.printStackTrace(System.err) ;
-            
-            String s = Lib.className(ex) ;
-//            System.err.println(s) ;
-//            System.err.println(ex.getMessage()) ;
-            if ( exitOnFailure ) System.exit(2) ;
-            return 2 ;
-        }
         catch (IllegalArgumentException ex)
         {
             ex.printStackTrace(System.err) ;
@@ -87,6 +75,12 @@ public abstract class CmdMain extends CmdLineArgs
             
             if ( exitOnFailure ) System.exit(1) ;
             return 1 ;
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace(System.err) ;
+            if ( exitOnFailure ) System.exit(2) ;
+            return 2 ;
         }
         if ( exitOnSuccess ) 
             System.exit(0) ;

@@ -20,12 +20,13 @@ package sdb.cmd;
 
 import java.util.List;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
 import org.apache.jena.sdb.sql.SDBConnection ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdArgModule ;
-import arq.cmd.CmdException ;
-import arq.cmdline.CmdGeneral ;
-import arq.cmdline.ModBase;
 
 public class ModLogSQL extends ModBase
 {
@@ -42,7 +43,7 @@ public class ModLogSQL extends ModBase
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         List<String> vals = cmdLine.getValues(argDeclLogSQL) ;
         for ( String v : vals )

@@ -16,12 +16,15 @@
  * limitations under the License.
  */
 
-package arq.cmd;
+package jena.cmd;
 
+/**
+ * Indicate that something went wrong - while executing the command or processing the request.
+ */
 
-interface ArgProc {
-
-    void startArgs() ;
-    void finishArgs() ;
-    void arg(String arg, int i) ;
+public class CmdException extends RuntimeException
+{
+    public CmdException()                             { super() ; }
+    public CmdException(String msg)                   { super(msg) ; }
+    public CmdException(String msg, Throwable cause)  { super(msg, cause) ; }
 }

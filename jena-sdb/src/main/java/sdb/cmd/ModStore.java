@@ -21,6 +21,12 @@ package sdb.cmd;
 import java.sql.SQLException;
 import java.util.List;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+import jena.cmd.TerminationException;
+
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sdb.SDBException ;
@@ -36,11 +42,6 @@ import org.apache.jena.sdb.store.LayoutType ;
 import org.apache.jena.sdb.store.StoreFactory ;
 import org.apache.jena.shared.NotFoundException ;
 import org.apache.jena.util.FileManager ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdArgModule ;
-import arq.cmd.TerminationException ;
-import arq.cmdline.CmdGeneral ;
-import arq.cmdline.ModBase;
 
 /** Construction of a store from a store description,
  * possibly modified by command line arguments.
@@ -144,7 +145,7 @@ public class ModStore extends ModBase
     
     
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         if (! cmdLine.contains(argDeclSDBdesc))
         {

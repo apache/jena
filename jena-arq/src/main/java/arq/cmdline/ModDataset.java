@@ -18,6 +18,8 @@
 
 package arq.cmdline;
 
+import jena.cmd.ModBase;
+
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 
@@ -25,9 +27,7 @@ public abstract class ModDataset extends ModBase
 {
     protected boolean createAttempted = false ;
     protected Dataset dataset = null ;
-    
-    public ModDataset() {}
-    
+
     final
     public Dataset getDataset()
     { if ( ! createAttempted )

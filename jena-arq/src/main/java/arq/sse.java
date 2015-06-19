@@ -18,6 +18,9 @@
 
 package arq;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.TerminationException;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.shared.PrefixMapping ;
@@ -25,8 +28,7 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.ItemWriter ;
 import org.apache.jena.sparql.sse.SSE ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.TerminationException ;
+
 import arq.cmdline.CmdARQ_SSE ;
 
 public class sse extends CmdARQ_SSE

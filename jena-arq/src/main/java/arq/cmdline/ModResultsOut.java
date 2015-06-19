@@ -19,15 +19,17 @@
 package arq.cmdline;
 
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.resultset.ResultsFormat ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
 
-public class ModResultsOut implements ArgModuleGeneral
+public class ModResultsOut extends ModBase
 {
     protected final 
     ArgDecl resultsFmtDecl = new ArgDecl(ArgDecl.HasValue, "results", "out", "rfmt") ;
@@ -35,7 +37,7 @@ public class ModResultsOut implements ArgModuleGeneral
     private ResultsFormat resultsFormat = ResultsFormat.FMT_UNKNOWN ;
     
     @Override
-    public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException
+    public void accept(CmdArgModule cmdline) throws IllegalArgumentException
     {
         if ( cmdline.contains(resultsFmtDecl) )
         {

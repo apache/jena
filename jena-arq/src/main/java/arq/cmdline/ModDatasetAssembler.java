@@ -18,8 +18,10 @@
 
 package arq.cmdline;
 
-import arq.cmd.CmdArgModule ;
-import arq.cmd.CmdException ;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
+
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.NotFoundException ;
@@ -30,9 +32,7 @@ import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab ;
 public class ModDatasetAssembler extends ModDataset
 {
     private ModAssembler modAssembler = new ModAssembler() ;
-    
-    public ModDatasetAssembler() {}
-    
+
     @Override
     public Dataset createDataset()
     {
@@ -62,9 +62,9 @@ public class ModDatasetAssembler extends ModDataset
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
-        modAssembler.processArgs(cmdLine) ;
+        modAssembler.accept(cmdLine) ;
     }
 
 }

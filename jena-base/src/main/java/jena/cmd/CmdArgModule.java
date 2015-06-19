@@ -16,10 +16,12 @@
  * limitations under the License.
  */
 
-package arq.cmd;
+package jena.cmd;
 
 import java.util.ArrayList ;
 import java.util.List ;
+
+import jena.cmd.ArgModuleGeneral;
 
 public abstract class CmdArgModule extends CmdMain
 {
@@ -44,7 +46,7 @@ public abstract class CmdArgModule extends CmdMain
             @Override
             public void action(CmdArgModule controller, ArgModuleGeneral module)
             { 
-                module.processArgs(controller) ;
+                module.accept(controller) ;
             }
         } ) ;
         processModulesAndArgs() ;

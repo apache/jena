@@ -24,11 +24,15 @@ package jena;
 // Imports
 ///////////////
 
+import static java.util.Arrays.asList;
 import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
 
 import java.io.OutputStream ;
 import java.util.* ;
 import java.util.function.BiConsumer;
+
+import jena.cmd.Arg;
+import jena.cmd.ArgDecl;
 
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.IO_Ctl ;
@@ -151,35 +155,34 @@ public class rdfcat
     //////////////////////////////////
 
     /** Argument setting expected input language to N3 */
-    public final ArgDecl IN_N3 = new ArgDecl( true, "n", "n3", "ttl", "N3",
-    		(arg,val) -> m_actionQ.add( new ReadAction( val, "N3") ) );
+	public final ArgDecl IN_N3 = new ArgDecl(true, (arg, val) -> m_actionQ.add(new ReadAction(val, "N3")), "n", "n3",
+			"ttl", "N3");
 
     /** Argument setting expected input language to RDF/XML */
-    public final ArgDecl IN_RDF_XML = new ArgDecl( true, "x", "xml", "rdfxml", "rdf",
-    		(arg,val) -> m_actionQ.add( new ReadAction( val, "RDF/XML") ) );
+	public final ArgDecl IN_RDF_XML = new ArgDecl(true, (arg, val) -> m_actionQ.add(new ReadAction(val, "RDF/XML")),
+			"x", "xml", "rdfxml", "rdf");
 
     /** Argument setting expected input language to NTRIPLE */
-    public final ArgDecl IN_NTRIPLE = new ArgDecl( true, "t", "ntriples", "ntriple", "n-triple", "n-triples",
-    		(arg,val) -> m_actionQ.add( new ReadAction( val, "N-TRIPLE" ) ) );    
+    public final ArgDecl IN_NTRIPLE = new ArgDecl( true, (arg,val) -> m_actionQ.add( new ReadAction( val, "N-TRIPLE" )), "t", "ntriples", "ntriple", "n-triple", "n-triples" );    
 
     /** Argument to set the output language */
-    public final ArgDecl OUT_LANG = new ArgDecl( true, "out", (arg,val) -> setOutput( val ) );
+    public final ArgDecl OUT_LANG = new ArgDecl( true, (arg,val) -> setOutput( val ), "out" );
 
     /** Argument to set the default input language */
-    public final ArgDecl IN_LANG = new ArgDecl( true, "in", (arg,val) -> expectInput( val ) );
+    public final ArgDecl IN_LANG = new ArgDecl( true, (arg,val) -> expectInput( val ), "in" );
 
     /** Argument to turn include processing on */
-    public final ArgDecl INCLUDE = new ArgDecl( false, "include", (arg,val) -> setInclude( true ) );
+    public final ArgDecl INCLUDE = new ArgDecl( false, (arg,val) -> setInclude( true ), "include" );
 
     /** Argument to turn include processing off */
-    public final ArgDecl NOINCLUDE = new ArgDecl( false, "noinclude", (arg,val) -> setInclude( false ) );
+    public final ArgDecl NOINCLUDE = new ArgDecl( false, (arg,val) -> setInclude( false ), "noinclude" );
 
     /** Argument to leave import/seeAlso statements in place in flattened models */
-    public final ArgDecl NOFILTER = new ArgDecl( false, "nofilter", (arg,val) -> setRemoveIncludeStatements( false ) );
+    public final ArgDecl NOFILTER = new ArgDecl( false, (arg,val) -> setRemoveIncludeStatements( false ), "nofilter" );
 
     /** Argument to show usage */
-    public final ArgDecl HELP = new ArgDecl( false, "help", (arg,val) -> usage() );
-    public final ArgDecl USAGE = new ArgDecl( false, "usage", (arg,val) -> usage() );
+    public final ArgDecl HELP = new ArgDecl( false, (arg,val) -> usage(), "help" );
+    public final ArgDecl USAGE = new ArgDecl( false, (arg,val) -> usage(), "usage" );
 
     // Instance variables
     //////////////////////////////////
@@ -901,260 +904,4 @@ public class rdfcat
 	    	}
 
     }
-    
-    /** A command line argument that has been foundspecification.
-	 */
-	static class Arg
-	{
-	    String name ;
-	    String value ;
-	    List<String> values = new ArrayList<>() ;
-	    
-	    Arg() { name = null ; value = null ; }
-	    
-	    Arg(String _name) { this() ; setName(_name) ; }
-	    
-	    Arg(String _name, String _value) { this() ; setName(_name) ; setValue(_value) ; }
-	    
-	    void setName(String n) { name = n ; }
-	    
-	    void setValue(String v) { value = v ; }
-	    void addValue(String v) { values.add(v) ; }
-	    
-	    public String getName() { return name ; }
-	    public String getValue() { return value; }
-	    public List<String> getValues() { return values; }
-	    
-	    public boolean hasValue() { return value != null ; }
-	    
-	    public boolean matches(ArgDecl decl)
-	    {
-	        return decl.getNames().contains(name) ;
-	    }
-	    
-	}
-    
-    /** A command line argument specification.
-	 */
-	static class ArgDecl
-	{
-	    boolean takesValue ;
-	    Set<String> names = new HashSet<>() ;
-	    boolean takesArg = false ;
-		List<BiConsumer<String, String>> argHooks = new ArrayList<>() ;
-	    public static final boolean HasValue = true ;
-	    public static final boolean NoValue = false ;
-
-	    /** Create a declaration for a command argument.
-	     *
-	     * @param hasValue  Does it take a value or not?
-	     */
-
-	    public ArgDecl(boolean hasValue)
-	    {
-	        takesValue = hasValue ;
-	    }
-
-	    /** Create a declaration for a command argument.
-	     *
-	     * @param hasValue  Does it take a value or not?
-	     * @param name      Name of argument
-	     */
-
-	    public ArgDecl(boolean hasValue, String name)
-	    {
-	        this(hasValue) ;
-	        addName(name) ;
-	    }
-
-	    /** Create a declaration for a command argument.
-	     *
-	     * @param hasValue  Does it take a value or not?
-	     * @param name      Name of argument
-	     * @param handler   BiConsumer<String, String>
-	     */
-
-	    public ArgDecl(boolean hasValue, String name, BiConsumer<String, String> handler)
-	    {
-	        this(hasValue) ;
-	        addName(name) ;
-	        addHook( handler );
-	    }
-
-	    /** Create a declaration for a command argument.
-	     *
-	     * @param hasValue  Does it take a value or not?
-	     * @param name1      Name of argument
-	     * @param name2      Name of argument
-	     */
-
-	    public ArgDecl(boolean hasValue, String name1, String name2)
-	    {
-	        this(hasValue) ;
-	        addName(name1) ;
-	        addName(name2) ;
-	    }
-
-	    /** Create a declaration for a command argument.
-	     *
-	     * @param hasValue  Does it take a value or not?
-	     * @param name1      Name of argument
-	     * @param name2      Name of argument
-	     * @param handler   BiConsumer<String, String>
-	     */
-
-	    public ArgDecl(boolean hasValue, String name1, String name2, BiConsumer<String, String> handler)
-	    {
-	        this(hasValue) ;
-	        addName(name1) ;
-	        addName(name2) ;
-	        addHook( handler );
-	    }
-
-	    /** Create a declaration for a command argument.
-	     *
-	     * @param hasValue  Does it take a value or not?
-	     * @param name1      Name of argument
-	     * @param name2      Name of argument
-	     * @param name3      Name of argument
-	     */
-
-	    public ArgDecl(boolean hasValue, String name1, String name2, String name3)
-	    {
-	        this(hasValue) ;
-	        addName(name1) ;
-	        addName(name2) ;
-	        addName(name3) ;
-	    }
-
-	    /** Create a declaration for a command argument.
-	     *
-	     * @param hasValue  Does it take a value or not?
-	     * @param name1      Name of argument
-	     * @param name2      Name of argument
-	     * @param name3      Name of argument
-	     * @param handler   BiConsumer<String, String>
-	     */
-
-	    public ArgDecl(boolean hasValue, String name1, String name2, String name3, BiConsumer<String, String> handler)
-	    {
-	        this(hasValue) ;
-	        addName(name1) ;
-	        addName(name2) ;
-	        addName(name3) ;
-	        addHook( handler );
-	    }
-
-	    /** Create a declaration for a command argument.
-	     *
-	     * @param hasValue  Does it take a value or not?
-	     * @param name1      Name of argument
-	     * @param name2      Name of argument
-	     * @param name3      Name of argument
-	     * @param name4      Name of argument
-	     */
-
-	    public ArgDecl(boolean hasValue, String name1, String name2, String name3, String name4)
-	    {
-	        this(hasValue) ;
-	        addName(name1) ;
-	        addName(name2) ;
-	        addName(name3) ;
-	        addName(name4) ;
-	    }
-
-	    /** Create a declaration for a command argument.
-	     *
-	     * @param hasValue  Does it take a value or not?
-	     * @param name1      Name of argument
-	     * @param name2      Name of argument
-	     * @param name3      Name of argument
-	     * @param name4      Name of argument
-	     * @param handler    BiConsumer<String, String>
-	     */
-
-	    public ArgDecl(boolean hasValue, String name1, String name2, String name3, String name4, BiConsumer<String, String> handler)
-	    {
-	        this(hasValue) ;
-	        addName(name1) ;
-	        addName(name2) ;
-	        addName(name3) ;
-	        addName(name4) ;
-	        addHook( handler );
-	    }
-
-	    /** Create a declaration for a command argument.
-	     *
-	     * @param hasValue  Does it take a value or not?
-	     * @param name1      Name of argument
-	     * @param name2      Name of argument
-	     * @param name3      Name of argument
-	     * @param name4      Name of argument
-	     * @param name5      Name of argument
-	     * @param handler    BiConsumer<String, String>
-	     */
-
-	    public ArgDecl(boolean hasValue, String name1, String name2, String name3, String name4, String name5, BiConsumer<String, String> handler)
-	    {
-	        this(hasValue) ;
-	        addName(name1) ;
-	        addName(name2) ;
-	        addName(name3) ;
-	        addName(name4) ;
-	        addName(name5) ;
-	        addHook( handler );
-	    }
-
-	    public void addName(String name)
-	    {
-	        name = canonicalForm(name) ;
-	        names.add(name) ;
-	    }
-
-	    public Set<String> getNames() { return names ; }
-	    public Iterator<String> names() { return names.iterator() ; }
-
-	    // Callback model
-
-	    public void addHook(BiConsumer<String, String> argHandler)
-	    {
-	        argHooks.add(argHandler) ;
-	    }
-
-	    protected void trigger(Arg arg)
-	    {
-			argHooks.forEach(action -> action.accept( arg.getName(), arg.getValue() ));
-	    }
-
-	    public boolean takesValue() { return takesValue ; }
-
-	    public boolean matches(Arg a)
-	    {
-	        for ( String n : names )
-	        {
-	            if ( a.getName().equals( n ) )
-	            {
-	                return true;
-	            }
-	        }
-	        return false ;
-	    }
-
-	    public boolean matches(String arg)
-	    {
-	        arg = canonicalForm(arg) ;
-	        return names.contains(arg) ;
-	    }
-
-	    static String canonicalForm(String str)
-	    {
-	        if ( str.startsWith("--") )
-	            return str.substring(2) ;
-
-	        if ( str.startsWith("-") )
-	            return str.substring(1) ;
-
-	        return str ;
-	    }
-	}
 }

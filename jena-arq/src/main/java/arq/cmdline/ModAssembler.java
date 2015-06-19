@@ -18,9 +18,12 @@
 
 package arq.cmdline;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdArgModule ;
-import arq.cmd.CmdException ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.NotFoundException ;
@@ -43,7 +46,7 @@ public class ModAssembler extends ModBase
     // Dataset : default graph and named graphs
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         if ( cmdLine.contains(assemblerDescDecl) )
             assemblerFile = cmdLine.getValue(assemblerDescDecl) ;

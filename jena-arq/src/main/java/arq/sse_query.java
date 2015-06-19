@@ -19,6 +19,10 @@
 package arq;
 
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+import jena.cmd.TerminationException;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.Dataset ;
@@ -30,9 +34,7 @@ import org.apache.jena.sparql.engine.Plan ;
 import org.apache.jena.sparql.engine.PlanOp ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
-import arq.cmd.TerminationException ;
+
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModAlgebra ;
 import arq.cmdline.ModDataset ;

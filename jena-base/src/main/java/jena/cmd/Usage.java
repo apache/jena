@@ -16,12 +16,11 @@
  * limitations under the License.
  */
 
-package arq.cmd;
+package jena.cmd;
 
 import java.io.PrintStream ;
 import java.util.ArrayList ;
 import java.util.Collections ;
-import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
@@ -68,8 +67,7 @@ public class Usage
        int INDENT1 = 2 ;
        int INDENT2 = 4 ;
        out.incIndent(INDENT1) ;
-       //for ( Iterator<Category> iter = categories.iterator() ; iter.hasNext() ; )
-       
+   
        List<Category> categories2 = new ArrayList<>(categories) ;
        Collections.reverse(categories2) ;
 
@@ -80,9 +78,8 @@ public class Usage
                out.println( c.desc );
            }
            out.incIndent( INDENT2 );
-           for ( Iterator<Entry> iter2 = c.entries.iterator(); iter2.hasNext(); )
+           for ( final Entry e : c.entries )
            {
-               Entry e = iter2.next();
                out.print( e.arg );
                if ( e.msg != null )
                {

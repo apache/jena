@@ -22,21 +22,20 @@ package arq.cmdline;
 import java.util.Arrays;
 import java.util.List;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
-public class ModFormat implements ArgModuleGeneral
+public class ModFormat extends ModBase
 {
     protected final 
     ArgDecl resultsFmtDecl = new ArgDecl(ArgDecl.HasValue, "fmt", "format") ;
 
     private String format = "N-TRIPLES" ;
-    
-    public ModFormat() {}
-    
+
     @Override
-    public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException
+    public void accept(CmdArgModule cmdline) throws IllegalArgumentException
     {
         if ( cmdline.contains(resultsFmtDecl) )
         {
@@ -70,10 +69,7 @@ public class ModFormat implements ArgModuleGeneral
   
     private String lookup(String fmt)
     {
-        for ( String x : formats )
-            if ( x.equalsIgnoreCase(fmt))
-                return x ;
-        return "TURTLE" ;
+    		return formats.stream().filter(fmt::equalsIgnoreCase).findFirst().orElse("TURTLE");
     }
 
     static final List<String> formats = Arrays.asList(

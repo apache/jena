@@ -23,9 +23,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
-import arq.cmd.TerminationException ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+import jena.cmd.TerminationException;
+
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.sdb.SDB ;
@@ -33,6 +34,7 @@ import org.apache.jena.sdb.sql.SDBConnection ;
 import org.apache.jena.sdb.store.StoreConfig ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.util.FileManager ;
+
 import sdb.cmd.CmdArgsDB;
 
 public class sdbmeta extends CmdArgsDB

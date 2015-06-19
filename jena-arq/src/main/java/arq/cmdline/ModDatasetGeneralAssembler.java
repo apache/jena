@@ -18,14 +18,15 @@
 
 package arq.cmdline;
 
-import arq.cmd.CmdArgModule ;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+
 import org.apache.jena.query.Dataset ;
 
 /** Add assembler to a general dataset description */
 public class ModDatasetGeneralAssembler extends ModDatasetGeneral
 {
-    public ModDatasetGeneralAssembler() {}
-    
+
     private ModDatasetAssembler modAssembler = new ModDatasetAssembler() ;
     
     @Override
@@ -45,10 +46,10 @@ public class ModDatasetGeneralAssembler extends ModDatasetGeneral
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
-        modAssembler.processArgs(cmdLine) ;
-        super.processArgs(cmdLine) ;
+        modAssembler.accept(cmdLine) ;
+        super.accept(cmdLine) ;
     }
 
 }

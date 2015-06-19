@@ -16,9 +16,12 @@
  * limitations under the License.
  */
 
-package arq.cmdline;
+package jena.cmd;
 
-public interface CallbackHelp
-{
-    void doHelp() ; 
+
+public interface ArgProc {
+
+    void startArgs() ;
+    void finishArgs() ;
+    void arg(String arg, int i) ;
 }

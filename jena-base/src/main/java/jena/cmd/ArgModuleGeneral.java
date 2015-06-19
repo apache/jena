@@ -16,15 +16,12 @@
  * limitations under the License.
  */
 
-package arq.cmd;
+package jena.cmd;
 
-/** Exception used to indicate that the command should end now.
- *  Use instead of System.exit so that a wrapper can catch (else a command server
- *  wil exit wrongly). */
+import java.util.function.Consumer;
 
-public class TerminationException extends CmdException
+public interface ArgModuleGeneral extends Consumer<CmdArgModule>
 {
-    public int returnCode ;
-    public TerminationException(int rc) { super() ; this.returnCode = rc ; }
-    public int getCode() { return returnCode ; }
+    // Registration phase for usage messages
+    public abstract void registerWith(CmdGeneral cmdLine) ;
 }

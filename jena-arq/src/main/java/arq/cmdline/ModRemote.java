@@ -18,12 +18,13 @@
 
 package arq.cmdline;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
 
-public class ModRemote implements ArgModuleGeneral
+public class ModRemote extends ModBase
 {
     protected final 
     ArgDecl serviceDecl = new ArgDecl(ArgDecl.HasValue, "service") ;
@@ -35,13 +36,11 @@ public class ModRemote implements ArgModuleGeneral
     private String serviceURL ;
     private boolean usePost ;
     
-    public ModRemote() {}
-    
     public void checkCommandLine(CmdArgModule cmdLine)
     {}
     
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         serviceURL = cmdLine.getValue(serviceDecl) ;
         usePost = cmdLine.contains(postServiceDecl) ;

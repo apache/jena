@@ -18,14 +18,15 @@
 
 package sdb.cmd;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sdb.SDBFactory ;
 import org.apache.jena.sdb.Store ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdArgModule ;
-import arq.cmdline.CmdGeneral ;
-import arq.cmdline.ModBase;
 
 public class ModGraph extends ModBase
 {
@@ -34,9 +35,7 @@ public class ModGraph extends ModBase
 
     private Graph graph = null ;
     private String graphName = null ;
-    
-    public ModGraph() {}
-    
+
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
@@ -45,7 +44,7 @@ public class ModGraph extends ModBase
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         graphName = cmdLine.getValue(argDeclGraphName) ;
     }

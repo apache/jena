@@ -18,9 +18,13 @@
 
 package sdb.cmd;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
 import org.apache.jena.sdb.Store ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdArgModule ;
+
 import arq.cmdline.*;
 
 public class ModConfig extends ModBase
@@ -35,8 +39,6 @@ public class ModConfig extends ModBase
     private boolean dropIndexes = false ;
     private boolean createIndexes = false ;
     
-    public ModConfig() {}
-
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
@@ -51,7 +53,7 @@ public class ModConfig extends ModBase
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
         format = cmdLine.contains(argDeclFormat) ;
         createStore = cmdLine.contains(argDeclCreate) ;

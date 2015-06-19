@@ -16,15 +16,11 @@
  * limitations under the License.
  */
 
-package arq.cmd;
+package jena.cmd;
 
-/**
- * Indicate that something went wrong - while executing the command or processing the request.
- */
 
-public class CmdException extends RuntimeException
+
+
+public abstract class ModBase implements ArgModuleGeneral
 {
-    public CmdException()                             { super() ; }
-    public CmdException(String msg)                   { super(msg) ; }
-    public CmdException(String msg, Throwable cause)  { super(msg, cause) ; }
 }

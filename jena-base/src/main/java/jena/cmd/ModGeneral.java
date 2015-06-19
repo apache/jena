@@ -16,16 +16,13 @@
  * limitations under the License.
  */
 
-package arq.cmdline;
-
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdArgModule ;
+package jena.cmd;
 
 public class ModGeneral extends ModBase
 {
-    private CallbackHelp helpCallback = null ;
+    private Runnable helpCallback = null ;
 
-    public ModGeneral(CallbackHelp callback) { this.helpCallback = callback ; }
+    public ModGeneral(Runnable callback) { this.helpCallback = callback ; }
     
     // Could be turned into a module but these are convenient as inherited flags 
     private final ArgDecl argDeclHelp        = new ArgDecl(false, "help", "h");
@@ -35,7 +32,7 @@ public class ModGeneral extends ModBase
 
     protected boolean verbose = false ;
     protected boolean quiet = false ;
-    protected boolean debug = false ;
+    public boolean debug = false ;
     protected boolean help = false ;
     
     @Override
@@ -49,15 +46,12 @@ public class ModGeneral extends ModBase
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
+    public void accept(CmdArgModule cmdLine)
     {
-        verbose = cmdLine.contains(argDeclVerbose) ;
+        verbose = cmdLine.contains(argDeclVerbose) || cmdLine.contains(argDeclDebug) ;
         quiet   = cmdLine.contains(argDeclQuiet) ;
-        debug   = cmdLine.contains(argDeclDebug) ;
-        if ( debug )
-            verbose = true ;
         help = cmdLine.contains(argDeclHelp) ;
         if ( help )
-            helpCallback.doHelp() ;
+            helpCallback.run() ;
     }
 }
