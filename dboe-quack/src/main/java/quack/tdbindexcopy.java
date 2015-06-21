@@ -19,6 +19,10 @@ package quack ;
 
 import java.util.Objects ;
 
+import jena.cmd.ArgDecl ;
+import jena.cmd.CmdException ;
+import arq.cmdline.CmdARQ ;
+
 import org.apache.commons.lang3.NotImplementedException ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.ARQ ;
@@ -27,9 +31,6 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.TDB ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
-import arq.cmdline.CmdARQ ;
 
 /**
  * Copy a TDB index.

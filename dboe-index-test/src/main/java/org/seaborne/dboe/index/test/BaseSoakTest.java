@@ -19,8 +19,8 @@ package org.seaborne.dboe.index.test;
 
 import java.util.List ;
 
-import arq.cmd.CmdException ;
-import arq.cmdline.CmdGeneral ;
+import jena.cmd.CmdException ;
+import jena.cmd.CmdGeneral ;
 
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.RandomLib ;
