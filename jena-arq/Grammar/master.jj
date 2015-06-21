@@ -748,7 +748,7 @@ void ConstructQuads(QuadAcc acc) : {}
     )*    
 }
 
-void ConstructQuadsNotTriples(QuadAccSink acc) : {Node gn = null ; Node prev = acc.getGraph() ; }
+void ConstructQuadsNotTriples(QuadAccSink acc) : {Node gn = org.apache.jena.sparql.core.Quad.defaultGraphNodeGenerated ; Node prev = acc.getGraph() ; }
 {
     (
   	 <GRAPH>

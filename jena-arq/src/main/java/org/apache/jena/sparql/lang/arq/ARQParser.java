@@ -1995,7 +1995,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void ConstructQuadsNotTriples(QuadAccSink acc) throws ParseException {
-                                                  Node gn = null ; Node prev = acc.getGraph() ;
+                                                  Node gn = org.apache.jena.sparql.core.Quad.defaultGraphNodeGenerated ; Node prev = acc.getGraph() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case GRAPH:
       jj_consume_token(GRAPH);
