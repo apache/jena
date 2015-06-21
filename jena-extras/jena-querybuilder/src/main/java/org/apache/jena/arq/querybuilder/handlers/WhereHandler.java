@@ -269,18 +269,29 @@ public class WhereHandler implements Handler {
 	 * @param subQuery The subquery to add as the union.
 	 */
 	public void addUnion(SelectBuilder subQuery) {
-		ElementUnion union = new ElementUnion();
+		ElementUnion union=null; 
+		ElementGroup clause = getClause();
+		// if the last element is a union make sure we add to it.
+		if ( ! clause.isEmpty() ) {
+			Element lastElement =  clause.getElements().get(clause.getElements().size()-1);
+			if (lastElement instanceof ElementUnion)	
+			{
+				union = (ElementUnion) lastElement;
+			}
+		}	
+		if (union == null)
+		{
+			union = new ElementUnion();
+			clause.addElement( union );
+		}
 		if (subQuery.getVars().size() > 0) {
 			union.addElement(makeSubQuery(subQuery));
 		} else {
 			PrologHandler ph = new PrologHandler(query);
 			ph.addAll(subQuery.getPrologHandler());
-			for (Element el : subQuery.getWhereHandler().getClause()
-					.getElements()) {
-				union.addElement(el);
-			}
+			union.addElement( subQuery.getWhereHandler().getClause() );
 		}
-		getClause().addElement(union);
+		
 	}
 
 	/**
