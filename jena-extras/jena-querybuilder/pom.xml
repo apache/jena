@@ -29,6 +29,19 @@
     <version>2.13.1-SNAPSHOT</version>
   </parent>
 
+<!--  only here for testing -->
+  <repositories>
+    <repository>
+      <id>central</id>
+      <name>Sonatype snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  <!--  end of testing -->
+  
   <dependencies>
     <dependency>
       <groupId>org.apache.jena</groupId>
