@@ -39,8 +39,6 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.impl.LiteralLabelFactory ;
 import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.system.PrefixMapFactory;
