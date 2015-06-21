@@ -302,7 +302,7 @@
        <dependency>
         <groupId>org.xenei</groupId>
         <artifactId>junit-contracts</artifactId>
-        <version>0.1.3</version>
+        <version>0.1.4-SNAPSHOT</version>
         <scope>test</scope>
       </dependency> 
     </dependencies>
