@@ -54,7 +54,7 @@ public class FormatterElement extends FormatterBase
     public static final boolean GROUP_SEP_DOT = false ;
     
     /** Control whether the first item of a group is on the same line as the { */
-    public static final boolean GROUP_FIRST_ON_SAME_LINE = false ;
+    public static final boolean GROUP_FIRST_ON_SAME_LINE = true ;
 
     /** Control pretty printing */
     public static final boolean PRETTY_PRINT = true  ;
@@ -62,9 +62,6 @@ public class FormatterElement extends FormatterBase
     /** Control whether disjunction has set of delimiters - as it's a group usually, these aren't needed */
     public static final boolean UNION_MARKERS = false ;
     
-    /** Control whether a group of one is unnested - changes the query syntax tree */ 
-    public static final boolean GROUP_UNNEST_ONE = false ; 
-
     /** Control whether GRAPH indents in a fixed way or based on the layout size */
     public static final boolean GRAPH_FIXED_INDENT = true ;
     
@@ -116,42 +113,40 @@ public class FormatterElement extends FormatterBase
         }
         formatTriples(el.getPattern()) ;
     }
-    
+
     @Override
-    public void visit(ElementPathBlock el)
-    {
-        if ( el.isEmpty() )
-        {
-            out.println("# Empty BGP") ;
-            return ;
-        }
-        // Could be neater.
-        boolean first = true ;
-        PathBlock pBlk = el.getPattern() ;
-        for ( TriplePath tp : pBlk )
-        {
-            if ( ! first )
-            {
-                out.println(" .") ;
-            }
-            first = false ;
-            if ( tp.isTriple() )
-            {
-                printSubject(tp.getSubject()) ;
-                out.print(" ") ;
-                printProperty(tp.getPredicate()) ;
-                out.print(" ") ;
-                printObject(tp.getObject()) ;
-            }
-            else
-            {
-                printSubject(tp.getSubject()) ;
-                out.print(" ") ;
-                PathWriter.write(out, tp.getPath(), context.getPrologue()) ;
-                out.print(" ") ;
-                printObject(tp.getObject()) ;
-            }
-        }
+    public void visit(ElementPathBlock el) {
+      if ( el.isEmpty() ) 
+      {
+          out.println("# Empty BGP") ;
+          return ;
+      }
+        
+      // Split into BGP-path-BGP-...
+      PathBlock pBlk = el.getPattern() ;
+      BasicPattern bgp = new BasicPattern() ;
+      boolean first = true ;
+      for ( TriplePath tp : pBlk )
+      {
+          if ( tp.isTriple() ) {
+              bgp.add(tp.asTriple());
+              continue ;
+          }
+          flush(bgp) ;
+          out.println(" .") ;    
+          // Path
+          printSubject(tp.getSubject()) ;
+          out.print(" ") ;
+          PathWriter.write(out, tp.getPath(), context.getPrologue()) ;
+          out.print(" ") ;
+          printObject(tp.getObject()) ;
+      }
+      flush(bgp) ;
+    }
+
+    private void flush(BasicPattern bgp) {
+        formatTriples(bgp) ;
+        bgp.getList().clear(); 
     }
 
     @Override
@@ -292,17 +287,10 @@ public class FormatterElement extends FormatterBase
     @Override
     public void visit(ElementGroup el)
     {
-        if ( GROUP_UNNEST_ONE && el.getElements().size() == 1 )
-        {
-            // If this is an element of just one, we can remove the {} if it is a group.
-            Element e = el.getElements().get(0) ;
-            visitAsGroup(e) ;
-            return ;
-        }
-
         out.print("{") ;
+        int initialRowNumber = out.getRow() ;
         out.incIndent(INDENT) ;
-        if ( GROUP_FIRST_ON_SAME_LINE )
+        if ( ! GROUP_FIRST_ON_SAME_LINE )
             out.newline() ;  
         
         int row1 = out.getRow() ;
@@ -335,6 +323,8 @@ public class FormatterElement extends FormatterBase
             out.newline() ;
 
         // Finally, close the group.
+        if ( out.getRow() == initialRowNumber )
+            out.print(" ") ;
         out.print("}") ;
     }
 
@@ -525,7 +515,7 @@ public class FormatterElement extends FormatterBase
             if ( subj != null )
             {
                 if ( ! first )
-                    out.println() ;
+                    out.println(" .") ;
                 formatSameSubject(subj, subjAcc) ;
                 first = false ;
                 // At end of line of a block of triples with same subject.
@@ -542,7 +532,7 @@ public class FormatterElement extends FormatterBase
         if ( subj != null && subjAcc.size() != 0 )
         {
             if ( ! first )
-                out.println() ;
+                out.println(" .") ;
             first = false ;
             formatSameSubject(subj, subjAcc) ;
         }
@@ -577,7 +567,7 @@ public class FormatterElement extends FormatterBase
             out.incIndent(indent) ;
         }
 
-        // Remained of first triple
+        // Remainder of first triple
         printProperty(t1.getPredicate()) ;
         printGap() ;
         printObject(t1.getObject()) ;
@@ -597,7 +587,7 @@ public class FormatterElement extends FormatterBase
 
         // Finish off the block.
         out.decIndent(indent) ;
-        out.print(" .") ;
+        //out.print(" .") ;
     }
     
     private void setWidths(BasicPattern triples)
