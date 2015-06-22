@@ -20,7 +20,6 @@ package org.apache.jena.sparql.algebra;
 
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertFalse ;
-import static org.junit.Assert.assertNotEquals ;
 import static org.junit.Assert.assertTrue ;
 
 import java.util.Map ;
@@ -29,6 +28,8 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
 import org.apache.jena.query.Syntax ;
+import org.apache.jena.sparql.algebra.Algebra ;
+import org.apache.jena.sparql.algebra.Op ;
 import org.junit.Assert ;
 import org.junit.Test ;
 
@@ -37,30 +38,34 @@ import org.junit.Test ;
  */
 public class TestOpAsQuery {
 
+    // basic stuff
+    @Test public void testBasic01() { test$RoundTripQuery("SELECT * { }") ; }
+    @Test public void testBasic02() { test$RoundTripQuery("SELECT * { ?s ?p ?o }") ; }
+    @Test public void testBasic03() { test$RoundTripQuery("SELECT * { ?s ?p ?o FILTER(?o > 5) }") ; }
+    @Test public void testBasic04() { test$RoundTripQuery("SELECT ?s { ?s ?p ?o FILTER(?o > 5) }") ; }
+    @Test public void testBasic05() { test$RoundTripQuery("SELECT ?s (?o + 5 AS ?B) { ?s ?p ?o }") ; }
+    
     /**
      * Test of asQuery method, of class OpAsQuery.
      */
     @Test
     public void testCountStar() {
-        Object[] result = checkQuery("select (count(*) as ?cs) { ?s ?p ?o }");
-        assertEquals(result[0], result[1]);
+        test$RoundTripQuery("select (count(*) as ?cs) { ?s ?p ?o }");
     }
     
     @Test
     public void testCountGroup() {
-        Object[] result = checkQuery("select (count(?p) as ?cp) { ?s ?p ?o } group by ?s");
-        assertEquals(result[0], result[1]);
+		test$RoundTripQuery("select (count(?p) as ?cp) { ?s ?p ?o } group by ?s");
     }
     
     @Test
     public void testCountGroupAs() {
-        Object[] result = checkQuery("select (count(?p) as ?cp) { ?s ?p ?o }");
-        assertEquals(result[0], result[1]);
+		test$RoundTripQuery("select (count(?p) as ?cp) { ?s ?p ?o }");
     }
     
     @Test
     public void testDoubleCount() {
-        Query[] result = checkQuery("select (count(?s) as ?sc) (count(?p) as ?pc) { ?s ?p ?o }");
+        Query[] result = test$RoundTripQuery("select (count(?s) as ?sc) (count(?p) as ?pc) { ?s ?p ?o }") ;
         assertEquals(2, result[1].getResultVars().size());
         assertTrue(result[1].getResultVars().contains("sc"));
         assertTrue(result[1].getResultVars().contains("pc"));
@@ -69,100 +74,139 @@ public class TestOpAsQuery {
     /* JENA-166 */
     @Test
     public void testGroupWithExpression() {
-        Object[] result = checkQuery("SELECT (sample(?a) + 1 AS ?c) {} GROUP BY ?x");
-        assertEquals(result[0], result[1]);
+		test$RoundTripQuery("SELECT (sample(?a) + 1 AS ?c) {} GROUP BY ?x");
     }
+    
+    /* Coverage developed for JENA-963 : GROUP BY*/
+    @Test public void testGroupBy_01()
+    { test$RoundTripQuery("SELECT ?s { ?s ?p ?o } GROUP BY ?s"); }
+    
+    @Test public void testGroupBy_02()
+    { test$RoundTripQuery("SELECT (count(?p) as ?cp) { ?s ?p ?o } GROUP BY ?s"); }
+    
+    @Test public void testGroupBy_03()
+    { test$RoundTripQuery("SELECT ?s { ?s ?p ?o } GROUP BY ?s HAVING (count(*) > 1 )"); }
+    
+    @Test public void testGroupBy_04()
+    { test$RoundTripQuery("SELECT ?s { ?s ?p ?o } GROUP BY ?s HAVING (?s > 1 )"); }
+    
+    @Test public void testGroupBy_05()
+    { test$RoundTripQuery("SELECT (count(?p) as ?cp) { ?s ?p ?o } GROUP BY ?s HAVING (?cp > 1 )"); }
+    
+    @Test public void testGroupBy_06()
+    { test$RoundTripQuery("SELECT (count(?p) as ?cp) { ?s ?p ?o } GROUP BY (abs(?o)) HAVING (?cp > 1 )"); }
+    
+    @Test public void testGroupBy_07()
+    { test$RoundTripQuery("SELECT (?X+2 AS ?Y) (count(?p) as ?cp) ?Z (1/?X AS ?X1) { ?s ?p ?o } GROUP BY ?Z (abs(?o) AS ?X) HAVING (?cp > 1 )"); }
+    
+    @Test public void testGroupBy_08()
+    { test$RoundTripQuery("SELECT (count(?p) as ?cp) { ?s ?p ?o } GROUP BY (abs(?o)) HAVING (?cp > 1 )"); }
+    
+    @Test public void testGroupBy_09()
+    { test$RoundTripQuery("SELECT (count(?p) as ?cp) { ?s ?p ?o } GROUP BY (abs(?o)) ORDER BY (COUNT(*))"); }
+    
+    @Test public void testGroupBy_10()
+    { test$RoundTripQuery("SELECT (7+count(?p) as ?cp) { ?s ?p ?o } GROUP BY (abs(?o)) HAVING (?cp > 1 && SUM(?o) > 99 ) ORDER BY (6+COUNT(*))"); }
+    
+    @Test public void testGroupBy_11()
+    { test$RoundTripQuery("SELECT ?X { ?s ?p ?o } GROUP BY (abs(?o) AS ?X) HAVING (?cp > 1 )"); }
+    
+    @Test public void testGroupBy_12()
+    { test$RoundTripQuery("SELECT * { ?s ?q ?z {SELECT DISTINCT * { ?s ?p ?o }} }"); } 
+    
+    @Test public void testSubQuery_01()
+    { test$RoundTripQuery("SELECT ?s { SELECT (count(*) as ?cp) { ?s ?p ?o } }") ; }
+    
+    @Test public void testSubQuery_02()
+    { test$RoundTripQuery("SELECT ?s { ?s ?p ?o { SELECT (count(*) as ?cp) { ?s ?p ?o } }}") ; }
+    
+    @Test public void testSubQuery_03()
+    //{ testRoundTripQuery("SELECT ?s { { SELECT (count(*) as ?cp) { ?s ?p ?o } } ?s ?p ?o }") ; }
+    // The trailing ?s ?p ?o gets a {} round it.
+    { test$RoundTripAlegbra("SELECT ?s { { SELECT (count(*) as ?cp) { ?s ?p ?o } } ?s ?p ?o }") ; }
+    
+    @Test public void testSubQuery_04()
+    { test$RoundTripQuery("SELECT * WHERE { ?s ?p ?o . BIND(?o AS ?x) }") ; }
+    
+    @Test public void testSubQuery_05()
+    { test$RoundTripQuery("SELECT (?o AS ?x) WHERE { ?s ?p ?o .}") ; }
     
     @Test
     public void testProject1() {
-        Object[] result = checkQuery("SELECT (?x + 1 AS ?c) {}");
-        assertEquals(result[0], result[1]);
+		test$RoundTripQuery("SELECT (?x + 1 AS ?c) {}");
     }
     
     @Test
     public void testProject2() {
-        Query[] result = checkQuery("SELECT (?x + 1 AS ?c) ?d {}");
+        Query[] result = test$RoundTripQuery("SELECT (?x + 1 AS ?c) ?d {}");
         assertEquals(2, result[1].getResultVars().size());
         assertTrue(result[1].getResultVars().contains("c"));
         assertTrue(result[1].getResultVars().contains("d"));
     }
     
-    // This BIND is distinguisable, however
     @Test
     public void testNestedBind() {
-        Object[] result = checkQuery("SELECT ?c { { } UNION { BIND(?x + 1 AS ?c) } }");
-        assertEquals(result[0], result[1]);
+		test$RoundTripQuery("SELECT ?c { { } UNION { BIND(?x + 1 AS ?c) } }");
     }
     
     @Test
     public void testNestedProject() {
-        Object[] result = checkQuery("SELECT (?x + 1 AS ?c) { { } UNION { } }");
-        assertEquals(result[0], result[1]);
+		test$RoundTripQuery("SELECT (?x + 1 AS ?c) { { } UNION { } }");
     }
     
     @Test
     public void testGroupExpression() {
-        Object[] result = checkQuery("SELECT ?z { } GROUP BY (?x + ?y AS ?z)");
-        assertEquals(result[0], result[1]);
+		test$RoundTripQuery("SELECT ?z { } GROUP BY (?x + ?y AS ?z)");
     }
     
     @Test
     public void testNestedProjectWithGroup() {
-        Object[] result = checkQuery("SELECT (SAMPLE(?c) as ?s) { {} UNION {BIND(?x + 1 AS ?c)} } GROUP BY ?x");
-        assertEquals(result[0], result[1]);
+		test$RoundTripQuery("SELECT (SAMPLE(?c) as ?s) { {} UNION {BIND(?x + 1 AS ?c)} } GROUP BY ?x");
     }
     
     @Test
     public void testQuadPatternInDefaultGraph() {
-        Object[] result = checkQuadQuery("SELECT * WHERE { ?s a ?type }");
-        assertEquals(result[0], result[1]);
+        test$RoundTripQueryQuads("SELECT * WHERE { ?s a ?type }");
     }
     
     @Test
     public void testGraphClauseUri() {
-        Object[] result = checkQuery("SELECT * WHERE { GRAPH <http://example> { ?s a ?type } }");
-        assertEquals(result[0], result[1]);
+		test$RoundTripQuery("SELECT * WHERE { GRAPH <http://example> { ?s a ?type } }");
     }
     
     @Test
     public void testGraphClauseComplex() {
-        Object[] result = checkQuery("SELECT * WHERE { GRAPH <http://example> { ?s a ?type . OPTIONAL { ?s <http://label> ?label } } }");
-        assertEquals(result[0], result[1]);
+		test$RoundTripQuery("SELECT * WHERE { GRAPH <http://example> { ?s a ?type . OPTIONAL { ?s <http://label> ?label } } }");
     }
     
     @Test
     public void testQuadPatternInGraph() {
-        Object[] result = checkQuadQuery("SELECT * WHERE { GRAPH <http://example> { ?s a ?type } }");
-        assertEquals(result[0], result[1]);
+        test$RoundTripQueryQuads("SELECT * WHERE { GRAPH <http://example> { ?s a ?type } }");
     }
     
     @Test
     public void testQuadPatternInGraphComplex01() {
         //This fails because OpQuadPattern's are converted back to individual GRAPH clauses
-        Object[] result = checkQuadQuery("SELECT * WHERE { GRAPH <http://example> { ?s a ?type . OPTIONAL { ?s <http://label> ?label } } }");
+        Object[] result = roundTripQueryQuad("SELECT * WHERE { GRAPH <http://example> { ?s a ?type . OPTIONAL { ?s <http://label> ?label } } }");
         assertFalse(result[0].equals(result[1]));
     }
     
     @Test
     public void testQuadPatternInGraphComplex02() {
         //This succeeds since each OpQuadPattern is from a single simple GRAPH clause
-        Object[] result = checkQuadQuery("SELECT * WHERE { GRAPH <http://example> { ?s a ?type } OPTIONAL { GRAPH <http://example> { ?s <http://label> ?label } } }");
-        assertEquals(result[0], result[1]);
+        test$RoundTripQueryQuads("SELECT * WHERE { GRAPH <http://example> { ?s a ?type } OPTIONAL { GRAPH <http://example> { ?s <http://label> ?label } } }");
     }
     
     @Test
     public void testExtend1() {
-        //Top Level BIND should now be round trippable
-        Query[] result = checkQuery("SELECT * WHERE { ?s ?p ?o . BIND(?o AS ?x) }");
-        assertNotEquals(result[0], result[1]);
-        assertTrue(result[1].getResultVars().contains("x"));
+        // Top Level BIND should now be round trippable
+		test$RoundTripQuery("SELECT * WHERE { ?s ?p ?o . BIND(?o AS ?x) }");
     }
     
     @Test
     public void testExtend2() {
-        //Nested BIND should always have been round trippable
-        Query[] result = checkQuery("SELECT * WHERE { GRAPH ?g { ?s ?p ?o . BIND(?o AS ?x) } }");
-        assertEquals(result[0], result[1]);
+        // Nested BIND should always have been round trippable
+		test$RoundTripQuery("SELECT * WHERE { GRAPH ?g { ?s ?p ?o . BIND(?o AS ?x) } }");
     }
     
     @Test
@@ -180,58 +224,52 @@ public class TestOpAsQuery {
                  "   :documentType \"exam results\" ." ,
                  "    BIND( mylib:DateFormat( xsd:string(?date), \"yyyy-MM\" ) as ?yearmonth )",
                 "} group by ?yearmonth") ;
-        checkQueryParseable(query, true);
+        test$RoundTripQuery(query);
     }
     
     @Test
     public void testExtend4() {
         //Simplified repo of JENA-429
-        String query  = "SELECT ?key (COUNT(?member) AS ?total) WHERE { ?s ?p ?o . BIND(LCASE(?o) AS ?key) } GROUP BY ?key";
-        checkQueryParseable(query, true);
+        test$RoundTripQuery("SELECT ?key (COUNT(?member) AS ?total) WHERE { ?s ?p ?o . BIND(LCASE(?o) AS ?key) } GROUP BY ?key");
     }
     
     @Test
     public void testExtendInService() {
         //Original test case from JENA-422
-        Query[] result = checkQuery("SELECT * WHERE { SERVICE <http://example/endpoint> { ?s ?p ?o . BIND(?o AS ?x) } }");
-        assertEquals(result[0], result[1]);
+        Query[] result = test$RoundTripQuery("SELECT * WHERE { SERVICE <http://example/endpoint> { ?s ?p ?o . BIND(?o AS ?x) } }");
         assertTrue(result[1].toString().contains("BIND"));
     }
     
     @Test
     public void testSubQuery1() {
-        String query = "SELECT ?s WHERE { SELECT ?s ?p WHERE { ?s ?p ?o } }";
-        checkQueryParseable(query, true);
+        test$RoundTripQuery("SELECT ?s WHERE { SELECT ?s ?p WHERE { ?s ?p ?o } }");
     }
     
     @Test
     public void testSubQuery2() {
         String query = "SELECT ?s ?x WHERE { { SELECT ?s ?p WHERE { ?s ?p ?o } } { SELECT ?x WHERE { ?x ?p ?o } } }";
-        //These end up being non-equal queries because the nesting in the final query is a little funky
-        //but the results should still be semantically equivalent
-        checkQueryParseable(query, false);
+        // The second inner sub-query is specially fixed up  in OpJoin processing.
+        // Not all cases of sub-query have unnecessary {} removed.
+		test$RoundTripQuery(query) ;
     }
     
     @Test
     public void testSubQuery3() {
         String query = "SELECT * WHERE { { SELECT ?s ?p WHERE { ?s ?p ?o } } { SELECT ?x WHERE { ?x ?p ?o } } }";
-        //In this case there is insufficient information to correctly reverse translate the algebra so this query
-        //will not round trip
-        checkQueryNonRecoverable(query);
+		test$RoundTripQuery(query) ;
     }
     
     @Test
     public void testAggregatesInSubQuery1() {
         //Simplified form of a test case provided via the mailing list (JENA-445)
         String query = "SELECT ?key ?agg WHERE { SELECT ?key (COUNT(*) AS ?agg) { ?key ?p ?o } GROUP BY ?key }";
-        checkQueryParseable(query, true);
+        test$RoundTripQuery(query);
     }
     
     @Test
     public void testAggregatesInSubQuery2() {
         //Simplified form of a test case provided via the mailing list (JENA-445)
-        String query = "SELECT * WHERE { { SELECT ?key (COUNT(*) AS ?agg) { ?key ?p ?o } GROUP BY ?key } }";
-        checkQueryParseable(query, false);
+        test$RoundTripAlegbra("SELECT * WHERE { { SELECT ?key (COUNT(*) AS ?agg) { ?key ?p ?o } GROUP BY ?key } }");
     }
     
     @Test
@@ -258,7 +296,7 @@ public class TestOpAsQuery {
                 "}GROUP by ?country_cat \n" + 
                 "} \n" + 
                 "}\n"; 
-        checkQuadQuery(queryString);
+        test$RoundTripQuery(queryString);
     }
     
     @Test
@@ -272,7 +310,7 @@ public class TestOpAsQuery {
                                           "    } LIMIT 1",
                                           "}");
         
-        checkQueryParseable(query, true);
+        test$RoundTripQuery(query) ;
     }
     
     @Test
@@ -286,7 +324,7 @@ public class TestOpAsQuery {
                                           "    } LIMIT 1",
                                           "}");
         
-        checkQueryParseable(query, true);
+        test$RoundTripQuery(query);
     }
     
     @Test
@@ -300,7 +338,7 @@ public class TestOpAsQuery {
                                           "    } LIMIT 1",
                                           "}");
         
-        checkQueryParseable(query, true);
+        test$RoundTripQuery(query);
     }
     
     @Test
@@ -314,37 +352,69 @@ public class TestOpAsQuery {
                                           "    } OFFSET 1",
                                           "}");
         
-        checkQueryParseable(query, true);
+        test$RoundTripQuery(query);
     }
     
     @Test
     public void testPathExpressions1() {
         // test that the query after serialization is legal (as much a test of the serializer as way OpAsQuery works)
         String query = "PREFIX : <http://example/> SELECT * { ?s :p* ?o . ?x :r 123 . }" ;
-        Query r[] = checkQueryParseable(query, false);
+        test$RoundTripAlegbra(query);
     }
         
     @Test
     public void testPathExpressions2() {
         // test that the query  
         String query = "PREFIX : <http://example/> SELECT * { ?s :p*/:q ?o . ?x :r 123 . }" ;
-        Query r[] = checkQueryParseable(query, false);
+        test$RoundTripAlegbra(query);
     }
 
     @Test
     public void testMinus1() {
-        String query = "PREFIX : <http://example/> SELECT * { ?s :p ?o MINUS { ?s :q ?v .FILTER(?v<5) } }" ; 
-        Query r[] = checkQueryParseable(query, true);
+        test$RoundTripQuery("PREFIX : <http://example/> SELECT * { ?s :p ?o MINUS { ?s :q ?v .FILTER(?v<5) } }") ; 
     }
     
     @Test
     public void testMinus2() {
         // query gains a level of {} but the meaning is the same. 
         String query = "PREFIX : <http://example/> SELECT * { ?s :p ?o OPTIONAL { ?s :x ?2 } MINUS { ?s :q ?v .FILTER(?v<5) } }" ; 
-        Query r[] = checkQueryParseable(query, false);
+       test$RoundTripAlegbra(query);
     }
     
-    public Query[] checkQuery(String query) {
+    // Test for queries that do query->algebra->OpAsQuery->query
+    // to produce an output that is .equals the input.
+    public static Query[] test$RoundTripQuery(String query) {
+        Query[] r = roundTripQuery(query) ;
+        stripNamespacesAndBase(r[0]) ; 
+        stripNamespacesAndBase(r[1]) ;
+        assertEquals(r[0], r[1]) ;
+        return r ;
+    }
+    
+    // Test via quads  
+    public static Query[] test$RoundTripQueryQuads(String query) {
+        Query[] r = roundTripQueryQuad(query) ;
+        assertEquals(r[0], r[1]) ;
+        return r ;
+    }
+
+
+    // Compare A1 and A2 where 
+    //  query[Q1]->algebra[A1]->OpAsQuery->query[Q2]->algebra[A2]
+    // Sometimes Q1 and Q2 are equivalent but not .equals.  
+    public void test$RoundTripAlegbra(String query) {
+        Query[] r = roundTripQuery(query);
+        
+        // Even if the strings come out as non-equal because of the translation from algebra to query
+        // the algebras should be equal
+        // i.e. the queries should remain semantically equivalent
+        Op a1 = Algebra.compile(r[0]);
+        Op a2 = Algebra.compile(r[1]);
+        Assert.assertEquals(a1, a2);
+    }
+
+    // query->algebra->OpAsQuery->query
+    private static Query[] roundTripQuery(String query) {
         Query orig = QueryFactory.create(query, Syntax.syntaxSPARQL_11);
         Op toReconstruct = Algebra.compile(orig);
         Query got = OpAsQuery.asQuery(toReconstruct);
@@ -352,7 +422,8 @@ public class TestOpAsQuery {
         return r;
     }
     
-    public Query[] checkQuadQuery(String query) {
+ // query->algebra/quads->OpAsQuery->query
+    private static Query[] roundTripQueryQuad(String query) {
         Query orig = QueryFactory.create(query, Syntax.syntaxSPARQL_11);
         Op toReconstruct = Algebra.compile(orig);
         toReconstruct = Algebra.toQuadForm(toReconstruct);
@@ -361,33 +432,8 @@ public class TestOpAsQuery {
         return r;
     }
     
-    public Query[] checkQueryParseable(String query, boolean expectEquals) {
-        Query[] r = checkQuery(query);
-        
-        // Strip namespaces and Base URI from each so comparison is not affected by those
-        stripNamespacesAndBase(r[0]);
-        stripNamespacesAndBase(r[1]);
-        
-        if (expectEquals) {
-            // Expecting the string forms of the queries to be equal
-            // If the strings forms are equal their algebras will be
-            Assert.assertEquals(r[0], r[1]);
-        } else {
-            // Even if the strings come out as non-equal because of the translation from algebra to query
-            // the algebras should be equal
-            // i.e. the queries should remain semantically equivalent
-            Assert.assertNotEquals(r[0], r[1]);
-            Op a1 = Algebra.compile(r[0]);
-            Op a2 = Algebra.compile(r[1]);
-            Assert.assertEquals(a1, a2);
-        }
-        String query2 = r[1].toString();
-        Query q = QueryFactory.create(query2);
-        return r;
-    }
-    
-    public Query[] checkQueryNonRecoverable(String query) {
-        Query[] r = checkQuery(query);
+    public static void checkQueryNonRecoverable(String query) {
+        Query[] r = roundTripQuery(query);
         
         // Strip namespaces and Base URI from each so comparison is not affected by those
         stripNamespacesAndBase(r[0]);
@@ -400,11 +446,9 @@ public class TestOpAsQuery {
         Op a1 = Algebra.compile(r[0]);
         Op a2 = Algebra.compile(r[1]);
         Assert.assertNotEquals(a1, a2);
-        
-        return r;
     }
     
-    protected void stripNamespacesAndBase(Query q) {
+    protected static void stripNamespacesAndBase(Query q) {
         Map<String, String> prefixes = q.getPrefixMapping().getNsPrefixMap();
         for (String prefix : prefixes.keySet()) {
             q.getPrefixMapping().removeNsPrefix(prefix);
