@@ -307,7 +307,7 @@
       <dependency>
         <groupId>org.xenei</groupId>
         <artifactId>junit-contracts</artifactId>
-        <version>0.1.2</version>
+        <version>0.1.4</version>
         <scope>test</scope>
         <exclusions>
           <exclusion>
