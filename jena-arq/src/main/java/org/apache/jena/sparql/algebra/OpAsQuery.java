@@ -573,6 +573,25 @@ public class OpAsQuery {
         public void visit(OpLeftJoin opLeftJoin) {
             Element eLeft = asElement(opLeftJoin.getLeft()) ;
             ElementGroup eRight = asElementGroup(opLeftJoin.getRight()) ;
+            
+            // If the RHS is (filter) we need to protect it from becoming
+            // part of the expr for the LeftJoin.
+            // OPTIONAL {{ ?s ?p ?o FILTER (?o>34) }} is not the same as
+            // OPTIONAL { ?s ?p ?o FILTER (?o>34) }
+            
+            boolean mustProtect = false ;
+            for ( Element el : eRight.getElements() ) {
+                if ( el instanceof ElementFilter ) {
+                    mustProtect = true ;
+                    break ;
+                }
+            }
+                
+            if ( mustProtect ) {
+                ElementGroup eRight2 = new ElementGroup() ;
+                eRight2.addElement(eRight);
+                eRight = eRight2 ;
+            }
 
             if ( opLeftJoin.getExprs() != null ) {
                 for ( Expr expr : opLeftJoin.getExprs() ) {

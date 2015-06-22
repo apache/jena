@@ -38,12 +38,19 @@ import org.junit.Test ;
  */
 public class TestOpAsQuery {
 
-    // basic stuff
+    // Basic stuff
     @Test public void testBasic01() { test$RoundTripQuery("SELECT * { }") ; }
     @Test public void testBasic02() { test$RoundTripQuery("SELECT * { ?s ?p ?o }") ; }
     @Test public void testBasic03() { test$RoundTripQuery("SELECT * { ?s ?p ?o FILTER(?o > 5) }") ; }
     @Test public void testBasic04() { test$RoundTripQuery("SELECT ?s { ?s ?p ?o FILTER(?o > 5) }") ; }
     @Test public void testBasic05() { test$RoundTripQuery("SELECT ?s (?o + 5 AS ?B) { ?s ?p ?o }") ; }
+    
+    @Test public void testOptional01() 
+    { test$RoundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s ?q ?z FILTER (?foo) } }") ; }
+    
+    // Double {{...}} matter here in SPARQL.
+    @Test public void testOptional02() 
+    { test$RoundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { { ?s ?q ?z FILTER (?foo) } } }") ; }
     
     /**
      * Test of asQuery method, of class OpAsQuery.
