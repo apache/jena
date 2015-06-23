@@ -78,8 +78,10 @@ public class ElementGroup extends Element
     
     public int mark() { return elements.size() ; }
     
-    public List<Element> getElements() { return elements; }
-    public boolean isEmpty() { return elements.size() == 0 ; }
+    public List<Element> getElements()  { return elements; }
+    public boolean isEmpty()            { return elements.size() == 0 ; }
+    public int size()                   { return elements.size() ; }
+    public Element get(int idx)         { return elements.get(idx) ; }
 
     @Override
     public int hashCode()

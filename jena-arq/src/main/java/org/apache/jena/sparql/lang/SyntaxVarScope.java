@@ -253,9 +253,9 @@ public class SyntaxVarScope
             // BIND scope rules
             // (and service warning)
             
-            for ( int i = 0 ; i < el.getElements().size() ; i++ )
+            for ( int i = 0 ; i < el.size() ; i++ )
             {
-                Element e = el.getElements().get(i) ;
+                Element e = el.get(i) ;
                 // Tests.
                 if ( e instanceof ElementBind )
                 {

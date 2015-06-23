@@ -126,9 +126,9 @@ public class ParserBase
     protected Element compressGroupOfOneGroup(ElementGroup elg)
     {
         // remove group of one group.
-        if ( elg.getElements().size() == 1 )
+        if ( elg.size() == 1 )
         {
-            Element e1 = elg.getElements().get(0) ;
+            Element e1 = elg.get(0) ;
             if ( e1 instanceof ElementGroup )
                 return e1 ;
         }

@@ -315,21 +315,6 @@ public class OpAsQuery {
                 query.setLimit(level.opSlice.getLength()) ;
             }
             query.setResultVars() ;
-            
-//            // Fixup -- fixupSubQueryOfOne in processQueryPattern
-//            // Simplify currentGroup if possible, primarily look for the case of a single sub-query
-//            // which will mean we have an ElementGroup with a single item which is
-//            ElementGroup eg = this.currentGroup ;
-//            if (eg.getElements().size() == 1) {
-//                Element e = eg.getElements().get(0);
-//                if (e instanceof ElementSubQuery) {
-//                    query.setQueryPattern(e);
-//                } else {
-//                    query.setQueryPattern(eg);
-//                }
-//            } else {
-//                query.setQueryPattern(eg) ;
-//            }
             return query ;
         }
 
@@ -375,9 +360,9 @@ public class OpAsQuery {
             // Simplify currentGroup if possible, primarily look for the case of
             // a single sub-query which will mean we have an ElementGroup with a single
             // item which is ElementSubQuery.
-            if ( eg.getElements().size() != 1 )
+            if ( eg.size() != 1 )
                 return eg ;
-            Element e = eg.getElements().get(0) ;
+            Element e = eg.get(0) ;
             if ( e instanceof ElementSubQuery )
                 return e ;
             return eg ;
@@ -385,8 +370,8 @@ public class OpAsQuery {
         
         Element asElement(Op op) {
             ElementGroup g = asElementGroup(op) ;
-            if ( g.getElements().size() == 1 )
-                return g.getElements().get(0) ;
+            if ( g.size() == 1 )
+                return g.get(0) ;
             return g ;
         }
 
@@ -550,10 +535,10 @@ public class OpAsQuery {
             Element eRight = eRightGroup ;
             // Very special case. If the RHS is not something that risks
             // reparsing into a copmbined element of a group, strip the group-of-one. 
-            if ( eRightGroup.getElements().size() == 1 ) {
+            if ( eRightGroup.size() == 1 ) {
                 // This always was a {} around it but it's unnecessary in a group of one. 
-                if ( eRightGroup.getElements().get(0) instanceof ElementSubQuery )
-                    eRight = eRightGroup.getElements().get(0) ;
+                if ( eRightGroup.get(0) instanceof ElementSubQuery )
+                    eRight = eRightGroup.get(0) ;
             }
 
             ElementGroup g = currentGroup() ;
@@ -876,10 +861,10 @@ public class OpAsQuery {
 
         private Element lastElement() {
             ElementGroup g = currentGroup ;
-            if ( g == null || g.getElements().size() == 0 )
+            if ( g == null || g.size() == 0 )
                 return null ;
-            int len = g.getElements().size() ;
-            return g.getElements().get(len - 1) ;
+            int len = g.size() ;
+            return g.get(len - 1) ;
         }
 
         private void startSubGroup() {
