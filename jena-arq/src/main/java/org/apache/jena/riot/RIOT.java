@@ -23,7 +23,7 @@ import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 
 public class RIOT {
-    /** IRI for ARQ */
+    /** IRI for RIOT */
     public static final String riotIRI = "http://jena.apache.org/#riot" ;
 
     /** The product name */
