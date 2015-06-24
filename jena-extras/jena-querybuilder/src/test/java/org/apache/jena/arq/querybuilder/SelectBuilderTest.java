@@ -39,14 +39,14 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
 		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY
 				+ var("s") + SPACE + var("p") + SPACE + var("o") + OPT_SPACE
-				+ DOT + CLOSE_CURLY, builder.buildString());
+				+ CLOSE_CURLY, builder.buildString());
 
 		builder.setVar(Var.alloc("p"), RDF.type);
 
 		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY
 				+ var("s") + SPACE
 				+ regexRDFtype
-				+ SPACE + var("o") + OPT_SPACE + DOT + CLOSE_CURLY,
+				+ SPACE + var("o") + OPT_SPACE + CLOSE_CURLY,
 				builder.buildString());
 	}
 
@@ -69,9 +69,9 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 		assertContainsRegex(SELECT + var("s"), query);
 		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE
 				+ regexRDFtype
-				+ SPACE + "foaf:Person" + OPT_SPACE + DOT + SPACE + OPTIONAL
+				+ SPACE + "foaf:Person" + SPACE + OPTIONAL
 				+ OPEN_CURLY + var("s") + SPACE + "foaf:name" + SPACE
-				+ var("name") + SPACE + DOT + OPT_SPACE + CLOSE_CURLY
+				+ var("name") + OPT_SPACE + CLOSE_CURLY
 				+ CLOSE_CURLY, query);
 		assertContainsRegex(ORDER_BY + var("s"), query);
 
@@ -83,9 +83,9 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 		assertContainsRegex(SELECT + var("s"), query);
 		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE
                 + regexRDFtype
-				+ SPACE + "foaf:Person" + OPT_SPACE + DOT + SPACE + OPTIONAL
+				+ SPACE + "foaf:Person" + SPACE + OPTIONAL
 				+ OPEN_CURLY + var("s") + SPACE + "foaf:name" + SPACE
-				+ quote("Smith") + presentStringType() + SPACE + DOT
+				+ quote("Smith") + presentStringType()
 				+ OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY, query);
 		assertContainsRegex(ORDER_BY + var("s"), query);
 	}
@@ -97,7 +97,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 		String query = builder.buildString();
 
 		assertContainsRegex(WHERE + OPEN_CURLY + ":S" + SPACE + var("p")
-				+ SPACE + ":O" + OPT_SPACE + DOT + CLOSE_CURLY, query);
+				+ SPACE + ":O" + OPT_SPACE + CLOSE_CURLY, query);
 	}
 
 	@Test
@@ -107,7 +107,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 		String query = builder.buildString();
 
 		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE + ":P"
-				+ SPACE + ":O" + OPT_SPACE + DOT + CLOSE_CURLY, query);
+				+ SPACE + ":O" + OPT_SPACE + CLOSE_CURLY, query);
 	}
 
 	@Test
@@ -117,7 +117,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 		String query = builder.buildString();
 
 		assertContainsRegex(WHERE + OPEN_CURLY + ":S" + SPACE + ":P" + SPACE
-				+ var("o") + OPT_SPACE + DOT +  CLOSE_CURLY, query);
+				+ var("o") + OPT_SPACE +  CLOSE_CURLY, query);
 	}
 
 	@Test
