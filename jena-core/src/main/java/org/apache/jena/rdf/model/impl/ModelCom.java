@@ -18,9 +18,12 @@
 
 package org.apache.jena.rdf.model.impl;
 
+import static org.apache.jena.atlas.iterator.Iter.map;
+
 import java.io.* ;
 import java.net.URL ;
 import java.util.* ;
+
 import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
@@ -1390,7 +1393,7 @@ implements Model, PrefixMapping, Lock
       { return new ModelCom( g ); }
 
       public StmtIterator asStatements( final Iterator<Triple> it ) 
-      { return new StmtIteratorImpl( new Map1Iterator<>( t -> asStatement( t ), it ) ); }
+      { return new StmtIteratorImpl( map(it, t -> asStatement( t ) ) ); }
 
           public StmtIterator listBySubject( Container cont )
           { return listStatements( cont, null, (RDFNode) null ); }

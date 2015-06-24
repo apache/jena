@@ -115,7 +115,11 @@ package org.apache.jena.rdfxml.xmloutput.impl;
  * 
  * [6.34] literal ::= (any well-formed XML)
  */
+import static java.util.Arrays.asList;
+import static org.apache.jena.atlas.iterator.Iter.map;
+import static org.apache.jena.ext.com.google.common.collect.Iterators.singletonIterator;
 import static org.apache.jena.util.iterator.WrappedIterator.create;
+import static org.apache.jena.util.iterator.WrappedIterator.createIteratorIterator;
 
 import java.io.PrintWriter ;
 import java.util.* ;
@@ -1589,9 +1593,7 @@ class Unparser {
         // Now all the pleasing resources are in the buckets.
         // Add all their iterators togethor:
 
-        return WrappedIterator.createIteratorIterator(
-            		new Map1Iterator<>(bkt -> bkt.iterator(),
-            				Arrays.asList(bucketArray).iterator()));
+		return createIteratorIterator(map(asList(bucketArray).iterator(), bkt -> bkt.iterator()));
     }
 
     /**
@@ -1617,7 +1619,7 @@ class Unparser {
      * allow us to manage the closing issue.
      */
     private Iterator<Resource> listSubjects() {
-        Iterator<Resource> currentFile = new SingletonIterator<>( model.createResource( this.localName ) );
+        Iterator<Resource> currentFile = singletonIterator( model.createResource( this.localName ) );
         // The pleasing types
         Iterator<Resource> pleasing = pleasingTypeIterator();
 

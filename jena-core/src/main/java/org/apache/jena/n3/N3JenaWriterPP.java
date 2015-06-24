@@ -19,6 +19,9 @@
 package org.apache.jena.n3;
 
 //import org.apache.commons.logging.*;
+import static org.apache.jena.ext.com.google.common.collect.Iterators.singletonIterator;
+import static org.apache.jena.util.iterator.WrappedIterator.create;
+
 import java.util.* ;
 
 import org.apache.jena.rdf.model.* ;
@@ -268,13 +271,13 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
         ExtendedIterator<Property> eIter = null ;
         
         if ( hasTypes )
-            eIter = new SingletonIterator<>(RDF.type) ;
+            eIter = create(singletonIterator(RDF.type)) ;
 
-        ExtendedIterator<Property> eIter2 = WrappedIterator.create(tmp1.values().iterator()) ;
+        ExtendedIterator<Property> eIter2 = create(tmp1.values().iterator()) ;
             
         eIter = (eIter == null) ? eIter2 : eIter.andThen(eIter2) ;
                     
-        eIter2 = WrappedIterator.create(tmp2.values().iterator()) ;
+        eIter2 = create(tmp2.values().iterator()) ;
         
         eIter = (eIter == null) ? eIter2 : eIter.andThen(eIter2) ;
         return eIter ;
