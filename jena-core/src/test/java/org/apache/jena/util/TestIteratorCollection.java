@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import junit.framework.TestSuite;
+
 import org.apache.jena.graph.test.GraphTestBase ;
 import org.apache.jena.util.CollectionFactory ;
 import org.apache.jena.util.IteratorCollection ;
@@ -46,7 +47,8 @@ public class TestIteratorCollection extends GraphTestBase
         assertEquals( CollectionFactory.createHashedSet(), IteratorCollection.iteratorToSet( NullIterator.instance() ) );
         }
     
-    public void testSingletonToSingleSet()
+    @SuppressWarnings("deprecation")
+	public void testSingletonToSingleSet()
         {
         assertEquals( oneSet( "single" ), iteratorToSet( new SingletonIterator<>( "single" ) ) );
         }
@@ -81,7 +83,8 @@ public class TestIteratorCollection extends GraphTestBase
         assertEquals( new ArrayList<>(), IteratorCollection.iteratorToList( NullIterator.instance() ) );
         }
     
-    public void testSingletonToSingletonList()
+    @SuppressWarnings("deprecation")
+	public void testSingletonToSingletonList()
         {
         assertEquals( oneList( "just one" ), IteratorCollection.iteratorToList( new SingletonIterator<>( "just one" ) ) );
         }

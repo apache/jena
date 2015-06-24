@@ -115,6 +115,7 @@ package org.apache.jena.rdfxml.xmloutput.impl;
  * 
  * [6.34] literal ::= (any well-formed XML)
  */
+import static org.apache.jena.ext.com.google.common.collect.Iterators.singletonIterator;
 import static org.apache.jena.util.iterator.WrappedIterator.create;
 
 import java.io.PrintWriter ;
@@ -1617,7 +1618,7 @@ class Unparser {
      * allow us to manage the closing issue.
      */
     private Iterator<Resource> listSubjects() {
-        Iterator<Resource> currentFile = new SingletonIterator<>( model.createResource( this.localName ) );
+        Iterator<Resource> currentFile = singletonIterator( model.createResource( this.localName ) );
         // The pleasing types
         Iterator<Resource> pleasing = pleasingTypeIterator();
 

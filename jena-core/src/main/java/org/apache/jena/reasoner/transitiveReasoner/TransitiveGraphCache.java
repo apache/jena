@@ -18,6 +18,9 @@
 
 package org.apache.jena.reasoner.transitiveReasoner;
 
+import static org.apache.jena.ext.com.google.common.collect.Iterators.singletonIterator;
+import static org.apache.jena.util.iterator.WrappedIterator.create;
+
 import java.util.*;
 
 import org.apache.jena.graph.* ;
@@ -588,7 +591,7 @@ public class TransitiveGraphCache implements Finder {
                     if (gn_o == null) return NullIterator.instance();
                     gn_o = gn_o.leadNode();
                     if ( closed ? gn_s.pathTo(gn_o) : gn_s.directPathTo(gn_o) ) {
-                        return new SingletonIterator<>(new Triple(s, pred, o));
+                        return create(singletonIterator(new Triple(s, pred, o)));
                     } else {
                         return NullIterator.instance();
                     }
