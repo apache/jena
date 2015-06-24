@@ -49,13 +49,13 @@ public class AggSum  extends AggregatorBase
     public int hashCode()   { return HC_AggSum ^ getExpr().hashCode() ; }
     
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Aggregator other, boolean bySyntax) {
+        if ( other == null ) return false ;
         if ( this == other ) return true ; 
         if ( ! ( other instanceof AggSum ) )
             return false ;
         AggSum agg = (AggSum)other ;
-        return agg.getExpr().equals(getExpr()) ;
+        return getExpr().equals(agg.getExpr(), bySyntax) ;
     } 
 
     // ---- Accumulator

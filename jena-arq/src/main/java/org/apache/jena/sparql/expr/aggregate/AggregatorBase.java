@@ -21,6 +21,7 @@ package org.apache.jena.sparql.expr.aggregate;
 import java.util.HashMap ;
 import java.util.Locale ;
 import java.util.Map ;
+
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -145,7 +146,12 @@ public abstract class AggregatorBase implements Aggregator
     public abstract int hashCode() ;
 
     @Override
-    public abstract boolean equals(Object other) ;
+    public final boolean equals(Object other) {
+        if ( other == null ) return false ;
+        if ( this == other ) return true ;
+        if ( ! ( other instanceof Aggregator ) ) return false ;
+        return equals((Aggregator)other, false) ;
+    }
     
     protected static final int HC_AggAvg                    =  0x170 ;
     protected static final int HC_AggAvgDistinct            =  0x171 ;

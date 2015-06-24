@@ -127,24 +127,24 @@ public class AggCustom extends AggregatorBase
     }
     
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Aggregator other, boolean bySyntax) {
+        if ( other == null ) return false ; 
         if ( this == other ) return true ;
         
         if ( ! AggregateRegistry.isRegistered(iri) ) {
             E_Function f1 = asFunction() ;
-            if ( other instanceof AggCustom )
-                other = ((AggCustom)other).asFunction() ;
-            return f1.equals(other) ;
+            if ( ! ( other instanceof AggCustom ) )
+                return false ;
+            E_Function f2 = ((AggCustom)other).asFunction() ;
+            return f1.equals(f2, bySyntax) ;
         }
         
         if ( ! ( other instanceof AggCustom ) )
             return false ;
         AggCustom agg = (AggCustom)other ;
-        return 
-        		Objects.equals(this.iri, agg.iri) &&
-            this.isDistinct == agg.isDistinct &&
-            	Objects.equals(this.getExprList(), agg.getExprList()) ;
+        return Objects.equals(this.iri, agg.iri) &&
+               this.isDistinct == agg.isDistinct &&
+               this.getExprList().equals(agg.getExprList(), bySyntax) ;
     } 
 
     public static Accumulator createAccNull() { return new  AccCustom() ; }

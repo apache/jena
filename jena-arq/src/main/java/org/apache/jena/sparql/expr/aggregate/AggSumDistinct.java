@@ -46,15 +46,15 @@ public class AggSumDistinct  extends AggregatorBase
     public int hashCode()   { return HC_AggSumDistinct ^ getExpr().hashCode() ; }
     
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Aggregator other, boolean bySyntax) {
+        if ( other == null ) return false ;
         if ( this == other ) return true ; 
         if ( ! ( other instanceof AggSumDistinct ) )
             return false ;
         AggSumDistinct agg = (AggSumDistinct)other ;
-        return agg.getExpr().equals(getExpr()) ;
+        return getExpr().equals(agg.getExpr(), bySyntax) ;
     } 
- 
+
     @Override
     public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
 

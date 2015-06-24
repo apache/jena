@@ -51,6 +51,7 @@ import java.util.Calendar ;
 import java.util.Iterator ;
 import java.util.Properties ;
 import java.util.ServiceLoader ;
+
 import javax.xml.datatype.DatatypeConfigurationException ;
 import javax.xml.datatype.DatatypeFactory ;
 import javax.xml.datatype.Duration ;
@@ -1228,10 +1229,10 @@ public abstract class NodeValue extends ExprNode
     }
     
     @Override
-    public boolean equals(Object other)
-    {
-        // This is the equality condition Jena uses - lang tags are different by case. 
+    public boolean equals(Expr other, boolean bySyntax) {
+        if ( other == null ) return false ;
         if ( this == other ) return true ;
+        // This is the equality condition Jena uses - lang tags are different by case. 
 
         if ( ! ( other instanceof NodeValue ) )
             return false ;

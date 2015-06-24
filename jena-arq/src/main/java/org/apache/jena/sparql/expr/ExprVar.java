@@ -101,10 +101,9 @@ public class ExprVar extends ExprNode
     public int hashCode() { return varNode.hashCode() ; }
     
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Expr other, boolean bySyntax) {
+        if ( other == null ) return false ;
         if ( this == other ) return true ;
-
         if ( ! ( other instanceof ExprVar ) )
             return false ;
         ExprVar nvar = (ExprVar)other ;

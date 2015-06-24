@@ -20,6 +20,7 @@ package org.apache.jena.sparql.expr;
 
 import java.util.Collection ;
 import java.util.Set ;
+
 import javax.xml.datatype.DatatypeConstants ;
 
 import org.apache.jena.sparql.core.Var ;
@@ -89,4 +90,36 @@ public interface Expr
     public ExprFunction getFunction() ;
     
     public void visit(ExprVisitor visitor) ;
+    
+    /**
+     * <code>Expr</code> are used in both syntax and algebra. There is no syntax
+     * to algebra translation step because the parser uses operator precedence
+     * to build the right evaluation structure directly.
+     * <p>
+     * The exceptions to this are the <code>NOT EXISTS</code> and
+     * <code>EXISTS</code> expressions which involve a query pattern. As a
+     * result there are different ways in syntax to produce the same algebra
+     * form.
+     * <p>
+     * Two <code>Expr</code> are considered equal if they are equal as algebra
+     * expressions. <code>hashCode</code> and <code>equals</code> must implement
+     * that.
+     * <p>
+     * There is also <code>equalsBySyntax</code>. Because two different syntax
+     * forms can yield the same algebra, but two different algebra forms
+     * must be different syntax, <code>equalsBySyntax</code> implies <code>equals</code>
+     * (by alegbra).
+     * <p>
+     * Hence, different <code>hashCode</code> => not <code>equalsBySyntax<code>.
+     */ 
+    @Override
+    public int hashCode() ;
+
+    @Override
+    public boolean equals(Object other) ;
+
+    public boolean equalsBySyntax(Expr other) ;
+    
+    /** General equality operation - consider this to be 'protected' */
+    public boolean equals(Expr other, boolean bySyntax) ;
 }

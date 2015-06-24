@@ -53,6 +53,9 @@ public interface Aggregator
     @Override
     public boolean equals(Object other) ;
 
+    /** Consider this 'protected' */
+    public boolean equals(Aggregator other, boolean bySyntax) ;
+
     /** Format as an (extended) SPARQL expression */
     public String asSparqlExpr(SerializationContext sCxt) ;
 }

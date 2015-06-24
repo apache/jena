@@ -20,7 +20,6 @@ package org.apache.jena.sparql.expr;
 
 import java.util.ArrayList ;
 import java.util.List ;
-import java.util.Objects;
 
 import org.apache.jena.sparql.serializer.SerializationContext ;
 
@@ -36,8 +35,7 @@ public abstract class ExprFunction extends ExprNode
     protected String opSign ;
     private List<Expr> argList = null ;
     
-    protected ExprFunction(String fName)
-    {
+    protected ExprFunction(String fName) {
         funcSymbol = new FunctionLabel(fName) ;
         opSign = null ;
     }
@@ -52,8 +50,7 @@ public abstract class ExprFunction extends ExprNode
     public abstract int numArgs() ;
 
     // ExprFunctionN overrides this.
-    public List<Expr> getArgs()
-    {
+    public List<Expr> getArgs() {
         if ( argList != null )
             return argList ; 
         argList = new ArrayList<>() ;
@@ -68,8 +65,7 @@ public abstract class ExprFunction extends ExprNode
     public ExprFunction getFunction()  { return this ; }
     
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return funcSymbol.hashCode() ^ numArgs() ;
     }
     
@@ -78,8 +74,8 @@ public abstract class ExprFunction extends ExprNode
     // + The arguments are the same (including arity).
     
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Expr other, boolean bySyntax) {
+        if ( other == null ) return false ;
         if ( this == other ) return true ;
 
         if ( ! other.getClass().equals(this.getClass()) )
@@ -98,7 +94,7 @@ public abstract class ExprFunction extends ExprNode
         {
             Expr a1 = this.getArg(i) ;
             Expr a2 = ex.getArg(i) ;
-            if ( ! Objects.equals(a1, a2) )
+            if ( ! a1.equals(a2, bySyntax) )
                 return false ;
         }
         return true ;
