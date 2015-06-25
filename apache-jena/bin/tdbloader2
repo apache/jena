@@ -15,6 +15,30 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
+function printUsage() {
+  cat << EOF
+Usage: tdbloader2 <Options> <Data>
+
+Options are as follows:
+
+  --help
+    Prints this help summary and exits
+
+  --loc <DatabaseDirectory>
+    Sets the location in which the database should be created
+
+  --phase <Phase>
+    Sets the phase of the build to run, supported values are:
+
+      all    Full bulk load
+      data   Data phase only
+      index  Index phase only, requires the data phase to previously have been run
+
+    When not specified defaults to all
+
+EOF
+}
+
 # If JENA_HOME is empty
 if [ -z "$JENA_HOME" ]
 	then
@@ -48,7 +72,7 @@ case "$(uname)" in
 esac
 
 export JENA_CP
-echo $JENA_CP
+#echo $JENA_CP
 if [ -z "$SORT_ARGS" ]
 then
     SORT_ARGS="--buffer-size=50%"
@@ -84,6 +108,11 @@ do
       PHASE="$1"
       shift
       ;;
+    --help)
+      # Help
+      printUsage
+      exit 0
+      ;;
     *)
       # Once we see an unrecognized argument treat as start of files to process
       break
@@ -95,8 +124,8 @@ if [ -z "$PHASE" ]; then
   PHASE="all"
 fi
 
-echo "Location is '$LOC'"
-echo "Phase is '$PHASE'"
+#echo "Location is '$LOC'"
+#echo "Phase is '$PHASE'"
 
 log() { echo " $(date $DATE)" "$@" ; }
 

@@ -80,6 +80,15 @@ KEEPWORKFILES="${KEEPWORKFILES:-}"
 DATA_TRIPLES="$LOC/data-triples.tmp"
 DATA_QUADS="$LOC/data-quads.tmp"
 
+if [ ! -e "$DATA_TRIPLES" ] ; then
+  echo "No triples data file found in location, please run the tdbloader2data script first"
+  exit 1
+fi
+if [ ! -e "$DATA_QUADS" ]; then
+  echo "No quads data file found in location, please run the tdbloader2data script first"
+  exit 1
+fi
+
 # ---- Index intermediates
 ## All files are writtern S P O / G S P O columns per row but in different sort orders.
 log "Index Building Phase"
