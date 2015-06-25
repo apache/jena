@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##     http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+
+# The environment for this sub-script is setup by "tdbloader2"
+
+# Exit on error.
+set -e
+
+# Sort order is ASCII
+export LC_ALL="C"
+
+log() { echo " $(date $DATE)" "$@" ; }
+
+TMP=$$
+#DATE="+%Y-%m-%dT%H:%M:%S%:z"
+DATE="+%H:%M:%S"
+
+##--parallel is not always available.
+SORT_ARGS="${SORT_ARGS:---buffer-size=50%}"
+JVM_ARGS=${JVM_ARGS:--Xmx1200M}
+
+# Classpath set in "tdbloader2"
+if [ -z "$JENA_CP" ]
+then
+    echo "Classpath not provided : set JENA_CP" 1>&2
+    exit 1
+fi
+
+USAGE="Usage: tdbloader2index --loc location"
+PKG=org.apache.jena.tdb.store.bulkloader2
+
+while [ $# -gt 0 ]
+do
+  ARG=$1
+  case "$ARG" in
+    --loc|-loc)
+      # Location space separated
+      shift
+      LOC="$1"
+      shift
+      ;;
+    -*loc=*)
+      # Location = separated
+      LOC=${ARG/-*loc=/}
+      shift
+      ;;
+    --help)
+      echo $USAGE
+      exit 0
+      ;;
+    *)
+      # Any further arguments are ignored
+      break
+      ;;
+  esac
+done
+
+# Verify arguments
+if [ -z "$LOC" ] ; then echo "No location specified" ; exit 1 ; fi
+if [ ! -e "$LOC" ] ; then echo "Location specified does not exist: $LOC" ; exit 1; fi
+if [ ! -d "$LOC" ] ; then echo "Location is not a directory: $LOC" ; exit 1 ; fi
+
+KEEPWORKFILES="${KEEPWORKFILES:-}"
+
+DATA_TRIPLES="$LOC/data-triples.tmp"
+DATA_QUADS="$LOC/data-quads.tmp"
+
+# ---- Index intermediates
+## All files are writtern S P O / G S P O columns per row but in different sort orders.
+log "Index Building Phase"
+
+which pv >/dev/null 2>&1
+HAS_PV=$?
+
+process_rows()
+{
+    local KEYS="$1"
+    local DATA="$2"
+    local IDX=$3
+    local WORK="$LOC/$IDX-txt"
+
+    if [ ! -s "$DATA" ]
+    then
+	    return
+	  fi
+
+    log "Creating Index $IDX"
+    log "  Sort $IDX"
+    if [ $HAS_PV = 0 ]; then
+      # Use pv (pipe viewer) to monitor sort progress
+      # Note that progress data will only be seen if running in the foreground
+      SIZE=$(du -k "$DATA" | cut -f 1)
+      pv -c -N data < "$DATA" | sort $SORT_ARGS -u $KEYS | pv -c -N sort -s $SIZE > $WORK
+    else
+      # Use sort without any progress monitoring
+      sort $SORT_ARGS -u $KEYS < "$DATA" > $WORK
+    fi
+    log "  Sort $IDX Completed"
+    log "  Build $IDX"
+    rm -f "$LOC/$IDX.dat"
+    rm -f "$LOC/$IDX.idn"
+    java -cp "$JENA_CP" "$PKG".CmdIndexBuild "$LOC" "$IDX" "$WORK"
+    log "  Build $IDX Completed"
+    # Remove intermediary file.
+    if [ "$KEEPWORKFILES" != "yes" ] 
+    then
+	    rm "$WORK"
+    fi
+}
+
+K1="-k 1,1"
+K2="-k 2,2"
+K3="-k 3,3"
+K4="-k 4,4"
+
+process_rows "$K1 $K2 $K3" "$DATA_TRIPLES" SPO
+
+process_rows "$K2 $K3 $K1" "$DATA_TRIPLES" POS
+
+process_rows "$K3 $K1 $K2" "$DATA_TRIPLES" OSP
+
+process_rows "$K1 $K2 $K3 $K4" "$DATA_QUADS" GSPO
+
+process_rows "$K1 $K3 $K4 $K2" "$DATA_QUADS" GPOS
+
+process_rows "$K1 $K4 $K2 $K3" "$DATA_QUADS" GOSP
+
+process_rows "$K2 $K3 $K4 $K1" "$DATA_QUADS" SPOG
+
+process_rows "$K3 $K4 $K2 $K1" "$DATA_QUADS" POSG
+
+process_rows "$K4 $K2 $K3 $K1" "$DATA_QUADS" OSPG
+
+log "Index Building Phase Completed"
+
+# ---- Clean up.
+if [ "$KEEPWORKFILES" != "yes" ] 
+then
+    rm -f "$DATA_TRIPLES" "$DATA_QUADS" 
+fi

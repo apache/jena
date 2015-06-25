@@ -48,6 +48,7 @@ case "$(uname)" in
 esac
 
 export JENA_CP
+echo $JENA_CP
 if [ -z "$SORT_ARGS" ]
 then
     SORT_ARGS="--buffer-size=50%"
@@ -58,4 +59,73 @@ then
 fi
 export SORT_ARGS
 
-exec "$JENA_HOME/bin/tdbloader2worker" "$@"
+# Process arguments
+LOC=
+PHASE=
+
+while [ $# -gt 0 ]
+do
+  ARG=$1
+  case "$ARG" in
+    --loc|-loc)
+      # Location space separated
+      shift
+      LOC="$1"
+      shift
+      ;;
+    -*loc=*)
+      # Location = separated
+      LOC=${ARG/-*loc=/}
+      shift
+      ;;
+    --phase)
+      # Phase space separated
+      shift
+      PHASE="$1"
+      shift
+      ;;
+    *)
+      # Once we see an unrecognized argument treat as start of files to process
+      break
+      ;;
+  esac
+done
+
+if [ -z "$PHASE" ]; then
+  PHASE="all"
+fi
+
+echo "Location is '$LOC'"
+echo "Phase is '$PHASE'"
+
+log() { echo " $(date $DATE)" "$@" ; }
+
+#DATE="+%Y-%m-%dT%H:%M:%S%:z"
+DATE="+%H:%M:%S"
+
+# ---- Start
+log "-- TDB Bulk Loader Start"
+TIME1="$(date +%s)"
+
+case "$PHASE" in
+  all)
+    exec "$JENA_HOME/bin/tdbloader2data" --loc "$LOC" "$@"
+    exec "$JENA_HOME/bin/tdbloader2index" --loc "$LOC"
+    ;;
+  data)
+    exec "$JENA_HOME/bin/tdbloader2data" --loc "$LOC" "$@"
+    ;;
+  index)
+    exec "$JENA_HOME/bin/tdbloader2index" --loc "$LOC"
+    ;;
+  *)
+    echo "Unrecognized phase $PHASE" 1>&2
+    exit 1
+    ;;
+esac
+
+# ---- End
+TIME2="$(date +%s)"
+log "-- TDB Bulk Loader Finish"
+ELAPSED=$(($TIME2-$TIME1))
+log "-- $ELAPSED seconds"

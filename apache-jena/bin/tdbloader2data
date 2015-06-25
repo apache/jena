@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##     http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+
+# The environment for this sub-script is setup by "tdbloader2"
+
+# Exit on error.
+set -e
+
+# Sort order is ASCII
+export LC_ALL="C"
+
+log() { echo " $(date $DATE)" "$@" ; }
+
+#DATE="+%Y-%m-%dT%H:%M:%S%:z"
+DATE="+%H:%M:%S"
+
+## JVM Arguments
+JVM_ARGS=${JVM_ARGS:--Xmx1200M}
+
+# Classpath set in "tdbloader2"
+if [ -z "$JENA_CP" ]
+then
+    echo "Classpath not provided : set JENA_CP" 1>&2
+    exit 1
+fi
+
+USAGE="Usage: tdbloader2data --loc location datafile ..."
+PKG=org.apache.jena.tdb.store.bulkloader2
+
+while [ $# -gt 0 ]
+do
+  ARG=$1
+  case "$ARG" in
+    --loc|-loc)
+      # Location space separated
+      shift
+      LOC="$1"
+      shift
+      ;;
+    -*loc=*)
+      # Location = separated
+      LOC=${ARG/-*loc=/}
+      shift
+      ;;
+    --help)
+      echo $USAGE
+      exit 0
+      ;;
+    *)
+      # Any further arguments are treated as data files
+      break
+      ;;
+  esac
+done
+
+# Verify arguments
+if [ -z "$LOC" ] ; then echo "No location specified" ; exit 1 ; fi
+if [ $# = 0 ]; then echo "No data files specified" ; exit 1 ; fi
+
+# Look for any index and data files in the directory.
+# Skip a possible configuration file
+if test -n "$(find "$LOC" -maxdepth 1 -type f ! -name 'this.*' -print -quit)"
+then 
+    echo "Location is not empty: $LOC"
+    exit 1
+fi
+
+if [ ! -e "$LOC" ] ; then
+  # If non-existent try to create
+  mkdir "$LOC"
+  if [ $? != 0 ]; then
+    echo "Failed to create new directory: $LOC"
+    exit 1
+  fi
+fi
+if [ ! -d "$LOC" ] ; then echo "Location is not a directory: $LOC" ; exit 1 ; fi
+
+FILES="$@"
+## Stdin?
+KEEPWORKFILES="${KEEPWORKFILES:-}"
+
+# ---- Data loading phase
+log "Data Load Phase"
+# Produce nodes file and triples/quads text file.
+
+DATA_TRIPLES="$LOC/data-triples.tmp"
+DATA_QUADS="$LOC/data-quads.tmp"
+
+java $JVM_ARGS -cp "$JENA_CP" "$PKG".CmdNodeTableBuilder \
+    "--loc=$LOC" "--triples=$DATA_TRIPLES" "--quads=$DATA_QUADS" $FILES
+
+log "Data Load Phase Completed"
