@@ -17,24 +17,53 @@
 
 function printUsage() {
   cat << EOF
-Usage: tdbloader2 <Options> <Data>
+tdbloader2 - TDB Bulk Loader
 
-Options are as follows:
+Usage: tdbloader2 --loc <Directory> [Options] <Data> ...
 
+Bulk loader for TDB which manipulates the data files directly and so
+can only be used to create new databases.  This command relies on
+POSIX utilities so will only work on POSIX operating systems.
+
+If you wish to bulk load to an existing database please use tdbloader
+instead.
+
+Required options are as follows:
+
+  -l <DatabaseDirectory>
+  --loc <DatabaseDirectory>
+    Sets the location in which the database should be created.
+
+    This location must be a directory and must be empty, if a
+    non-existent path is specified it will be created as a new
+    directory.
+
+  <Data>
+    Specifies the path to one/more data files to load
+
+Common additional options are as follows:
+
+  -h
   --help
     Prints this help summary and exits
 
-  --loc <DatabaseDirectory>
-    Sets the location in which the database should be created
+Advanced additional options are as follows:
 
+  -k
+  --keep-work
+    Keeps the temporary work files around after they are no longer
+    needed.  May be useful for debugging.
+
+  -p <Phase>
   --phase <Phase>
     Sets the phase of the build to run, supported values are:
 
-      all    Full bulk load
-      data   Data phase only
-      index  Index phase only, requires the data phase to previously have been run
+      all      Full bulk load
+      data     Data phase only
+      index    Index phase only, requires the data phase to
+               previously have been run
 
-    When not specified defaults to all
+    When no phase is specified it defaults to all
 
 EOF
 }
@@ -86,12 +115,18 @@ export SORT_ARGS
 # Process arguments
 LOC=
 PHASE=
+KEEP_WORK=0
 
 while [ $# -gt 0 ]
 do
   ARG=$1
   case "$ARG" in
-    --loc|-loc)
+    -k|--keep-work)
+      # Keep work files
+      shift
+      KEEP_WORK=1
+      ;;
+    -l|--loc|-loc)
       # Location space separated
       shift
       LOC="$1"
@@ -102,13 +137,13 @@ do
       LOC=${ARG/-*loc=/}
       shift
       ;;
-    --phase)
+    -p|--phase)
       # Phase space separated
       shift
       PHASE="$1"
       shift
       ;;
-    --help)
+    -h|--help)
       # Help
       printUsage
       exit 0
@@ -123,9 +158,10 @@ done
 if [ -z "$PHASE" ]; then
   PHASE="all"
 fi
-
-#echo "Location is '$LOC'"
-#echo "Phase is '$PHASE'"
+COMMON_ARGS=
+if [ $KEEP_WORK = 0 ]; then
+  COMMON_ARGS="--keep-work"
+fi
 
 log() { echo " $(date $DATE)" "$@" ; }
 
@@ -138,14 +174,14 @@ TIME1="$(date +%s)"
 
 case "$PHASE" in
   all)
-    exec "$JENA_HOME/bin/tdbloader2data" --loc "$LOC" "$@"
-    exec "$JENA_HOME/bin/tdbloader2index" --loc "$LOC"
+    exec "$JENA_HOME/bin/tdbloader2data" $COMMON_ARGS --loc "$LOC" "$@"
+    exec "$JENA_HOME/bin/tdbloader2index" $COMMON_ARGS --loc "$LOC"
     ;;
   data)
-    exec "$JENA_HOME/bin/tdbloader2data" --loc "$LOC" "$@"
+    exec "$JENA_HOME/bin/tdbloader2data" $COMMON_ARGS --loc "$LOC" "$@"
     ;;
   index)
-    exec "$JENA_HOME/bin/tdbloader2index" --loc "$LOC"
+    exec "$JENA_HOME/bin/tdbloader2index" $COMMON_ARGS --loc "$LOC"
     ;;
   *)
     echo "Unrecognized phase $PHASE" 1>&2

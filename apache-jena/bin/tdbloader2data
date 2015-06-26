@@ -18,6 +18,48 @@
 
 # The environment for this sub-script is setup by "tdbloader2"
 
+function printUsage() {
+  cat << EOF
+tdbloader2data - TDB Bulk Loader - Data Phase
+
+Usage tdbloader2data --loc <Directory> [Options] <Data> ...
+
+Bulk Loader for TDB which generates the Node Table.  This command
+relies on POSIX utilities so will only work on POSIX operating
+systems.
+
+This command can only be used to create new database. If you wish to
+bulk load to an existing database please use tdbloader instead.
+
+Required options are as follows:
+
+  -l <DatabaseDirectory>
+  --loc <DatabaseDirectory>
+    Sets the location in which the database should be created.
+
+    This location must be a directory and must be empty, if a
+    non-existent path is specified it will be created as a new
+    directory.
+
+  <Data>
+    Specifies the path to one/more data files to load
+
+Common additional options are as follows:
+
+  -h
+  --help
+    Prints this help summary and exits
+
+Advanced additional options are as follows:
+
+  -k
+  --keep-work
+    Keeps the temporary work files around after they are no longer
+    needed.  May be useful for debugging.
+
+EOF
+}
+
 # Exit on error.
 set -e
 
@@ -29,24 +71,24 @@ log() { echo " $(date $DATE)" "$@" ; }
 #DATE="+%Y-%m-%dT%H:%M:%S%:z"
 DATE="+%H:%M:%S"
 
-## JVM Arguments
-JVM_ARGS=${JVM_ARGS:--Xmx1200M}
-
-# Classpath set in "tdbloader2"
-if [ -z "$JENA_CP" ]
-then
-    echo "Classpath not provided : set JENA_CP" 1>&2
-    exit 1
-fi
-
-USAGE="Usage: tdbloader2data --loc location datafile ..."
 PKG=org.apache.jena.tdb.store.bulkloader2
+
+# Process Arguments
+LOC=
+KEEP_WORK=0
 
 while [ $# -gt 0 ]
 do
   ARG=$1
   case "$ARG" in
-    --loc|-loc)
+    -k|--keep-work)
+      # Keep work files
+      # This option is actually not used by this script but may be passed in
+      # by the parent tdbloader2 script
+      shift
+      KEEP_WORK=1
+      ;;
+    -l|--loc|-loc)
       # Location space separated
       shift
       LOC="$1"
@@ -57,8 +99,8 @@ do
       LOC=${ARG/-*loc=/}
       shift
       ;;
-    --help)
-      echo $USAGE
+    -h|--help)
+      printUsage
       exit 0
       ;;
     *)
@@ -91,8 +133,16 @@ fi
 if [ ! -d "$LOC" ] ; then echo "Location is not a directory: $LOC" ; exit 1 ; fi
 
 FILES="$@"
-## Stdin?
-KEEPWORKFILES="${KEEPWORKFILES:-}"
+
+## JVM Arguments
+JVM_ARGS=${JVM_ARGS:--Xmx1200M}
+
+# Classpath set in "tdbloader2"
+if [ -z "$JENA_CP" ]
+then
+    echo "Classpath not provided : set JENA_CP" 1>&2
+    exit 1
+fi
 
 # ---- Data loading phase
 log "Data Load Phase"
