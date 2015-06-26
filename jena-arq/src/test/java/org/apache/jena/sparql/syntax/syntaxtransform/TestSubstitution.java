@@ -47,7 +47,7 @@ public class TestSubstitution extends BaseTest
 
     @Test public void subst_09() { testQuery("SELECT * {?s ?p ?o}", "SELECT * {?s ?p 1}", "o", "1") ; }  
     
-    @Test public void subst_10() { testQuery("SELECT * { SELECT ?o {} }", "SELECT * {SELECT (1 as ?o) {}}", "o", "1") ; }
+    @Test public void subst_10() { testQuery("SELECT * { SELECT ?o {} }", "SELECT * {{SELECT (1 as ?o) {}}}", "o", "1") ; }
     
     @Test public void subst_11() { testQuery("SELECT * { ?s ?p ?o { SELECT ?x { ?x ?p ?o } } }",
                                              "SELECT * { ?s ?p 1  { SELECT ?x { ?x ?p 1 } } }",
