@@ -1544,9 +1544,9 @@ class Unparser {
      * used before instantiating the underlying iterator.
      */
     private Iterator<Resource> allInfiniteLeft() {
-        return new LateBindingIterator<Resource>() {
-            @Override public Iterator<Resource> create() {
-                return infinite.iterator();
+        return new LazyIterator<Resource>() {
+            @Override public ExtendedIterator<Resource> create() {
+                return WrappedIterator.create(infinite.iterator());
             }
         };
     }

@@ -26,7 +26,10 @@ import java.util.Iterator ;
  * This allows an Iterator to be passed to some other
  * code, while delaying the evaluation of what actually
  * is going to be iterated over.
+ * 
+ * @deprecated use LazyIterator instead.
  */
+@Deprecated
 abstract public class LateBindingIterator<T> implements Iterator<T> {
 
     private Iterator<? extends T> it;

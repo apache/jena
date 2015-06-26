@@ -18,6 +18,10 @@
 
 package com.hp.hpl.jena.util.iterator;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 /** An ExtendedIterator that is created lazily.
  * This is useful when constructing an iterator is expensive and 
  * you'd prefer to delay doing it until certain it's actually needed.
@@ -84,6 +88,26 @@ abstract public class LazyIterator<T> implements ExtendedIterator<T> {
 		lazy();
 		it.close();
 			
+	}
+	
+	@Override
+	public T removeNext() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <X extends T> ExtendedIterator<T> andThen( Iterator<X> other ) {
+		return NiceIterator.andThen(this, other);
+	}
+
+	@Override
+	public List<T> toList() {
+		return NiceIterator.asList(this);
+	}
+
+	@Override
+	public Set<T> toSet() {
+		return NiceIterator.asSet(this);
 	}
 	 
 	private void lazy() {
