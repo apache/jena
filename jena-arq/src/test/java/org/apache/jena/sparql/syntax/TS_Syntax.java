@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,6 +18,9 @@
 
 package org.apache.jena.sparql.syntax;
 
+import org.apache.jena.sparql.syntax.syntaxtransform.TestFlattenSyntax ;
+import org.apache.jena.sparql.syntax.syntaxtransform.TestQueryOps ;
+import org.apache.jena.sparql.syntax.syntaxtransform.TestSubstitution ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
@@ -25,6 +28,10 @@ import org.junit.runners.Suite.SuiteClasses ;
 @RunWith(Suite.class)
 @SuiteClasses( {
     TestSerialization.class
+    , TestQueryOps.class
+    , TestSubstitution.class
+    , TestFlattenSyntax.class
 })
-public class TS_Serialization 
-{ }
+public class TS_Syntax {
+
+}
