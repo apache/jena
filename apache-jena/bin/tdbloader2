@@ -49,6 +49,10 @@ Common additional options are as follows:
 
 Advanced additional options are as follows:
 
+  -d
+  --debug
+    Enable debug mode, adds extra debug output
+
   -k
   --keep-work
     Keeps the temporary work files around after they are no longer
@@ -64,6 +68,10 @@ Advanced additional options are as follows:
                previously have been run
 
     When no phase is specified it defaults to all
+
+  -t
+  --trace
+    Enable trace mode, essentially sets -x within the scripts
 
 EOF
 }
@@ -101,13 +109,12 @@ case "$(uname)" in
 esac
 
 export JENA_CP
-#echo $JENA_CP
-if [ -z "$SORT_ARGS" ]
-then
+# echo JENA_CP
+if [ -z "$SORT_ARGS" ]; then
     SORT_ARGS="--buffer-size=50%"
-    if $(sort --parallel=3 < /dev/null 2>/dev/null) 
-    then
-	SORT_ARGS="$SORT_ARGS --parallel=3"
+    sort --parallel=3 < /dev/null 2>/dev/null
+    if [ $? = 0 ]; then
+    	SORT_ARGS="$SORT_ARGS --parallel=3"
     fi
 fi
 export SORT_ARGS
@@ -116,11 +123,23 @@ export SORT_ARGS
 LOC=
 PHASE=
 KEEP_WORK=0
+DEBUG=0
+TRACE=0
 
 while [ $# -gt 0 ]
 do
   ARG=$1
   case "$ARG" in
+    -d|--debug)
+      # Debug Mode
+      shift
+      DEBUG=1
+      ;;
+    -h|--help)
+      # Help
+      printUsage
+      exit 0
+      ;;
     -k|--keep-work)
       # Keep work files
       shift
@@ -143,10 +162,11 @@ do
       PHASE="$1"
       shift
       ;;
-    -h|--help)
-      # Help
-      printUsage
-      exit 0
+    -t|--trace)
+      # Trace mode
+      shift
+      TRACE=1
+      set -x
       ;;
     *)
       # Once we see an unrecognized argument treat as start of files to process
@@ -159,8 +179,14 @@ if [ -z "$PHASE" ]; then
   PHASE="all"
 fi
 COMMON_ARGS=
-if [ $KEEP_WORK = 0 ]; then
+if [ $KEEP_WORK = 1 ]; then
   COMMON_ARGS="--keep-work"
+fi
+if [ $DEBUG = 1 ]; then
+  COMMON_ARGS="$COMMON_ARGS --debug"
+fi
+if [ $TRACE = 1 ]; then
+  COMMON_ARGS="$COMMON_ARGS --trace"
 fi
 
 log() { echo " $(date $DATE)" "$@" ; }
@@ -172,16 +198,19 @@ DATE="+%H:%M:%S"
 log "-- TDB Bulk Loader Start"
 TIME1="$(date +%s)"
 
+TOOL_DIR=$JENA_HOME/bin/
+# DEV - Following is just for debugging
+TOOL_DIR=
 case "$PHASE" in
   all)
-    exec "$JENA_HOME/bin/tdbloader2data" $COMMON_ARGS --loc "$LOC" "$@"
-    exec "$JENA_HOME/bin/tdbloader2index" $COMMON_ARGS --loc "$LOC"
+    exec "${TOOL_DIR}tdbloader2data" $COMMON_ARGS --loc "$LOC" "$@"
+    exec "${TOOL_DIR}tdbloader2index" $COMMON_ARGS --loc "$LOC"
     ;;
   data)
-    exec "$JENA_HOME/bin/tdbloader2data" $COMMON_ARGS --loc "$LOC" "$@"
+    exec "${TOOL_DIR}tdbloader2data" $COMMON_ARGS --loc "$LOC" "$@"
     ;;
   index)
-    exec "$JENA_HOME/bin/tdbloader2index" $COMMON_ARGS --loc "$LOC"
+    exec "${TOOL_DIR}tdbloader2index" $COMMON_ARGS --loc "$LOC"
     ;;
   *)
     echo "Unrecognized phase $PHASE" 1>&2

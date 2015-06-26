@@ -49,11 +49,18 @@ Common additional options are as follows:
 
 Advanced additional options are as follows:
 
+  -d
+  --debug
+    Enable debug mode, adds extra debug output
+
   -k
   --keep-work
     Keeps the temporary work files around after they are no longer
     needed.  May be useful for debugging.
 
+  -t
+  --trace
+    Enable trace mode, essentially sets -x within the scripts
 EOF
 }
 
@@ -65,20 +72,45 @@ export LC_ALL="C"
 
 log() { echo " $(date $DATE)" "$@" ; }
 
-TMP=$$
+function debug() {
+ if [ $DEBUG = 1 ]; then
+   log "DEBUG" "$@"
+ fi
+}
+
+function warn() {
+  log "WARN" "$@"
+}
+
+function getSize() {
+  ls -l $1 | awk '{print $5}'
+}
+
 #DATE="+%Y-%m-%dT%H:%M:%S%:z"
 DATE="+%H:%M:%S"
 
 PKG=org.apache.jena.tdb.store.bulkloader2
+#DEV - Allows use against Jena 2 API
+PKG=com.hp.hpl.jena.tdb.store.bulkloader2
 
 # Process Arguments
 LOC=
 KEEP_WORK=0
+DEBUG=0
 
 while [ $# -gt 0 ]
 do
   ARG=$1
   case "$ARG" in
+    -d|--debug)
+      # Debug Mode
+      shift
+      DEBUG=1
+      ;;
+    -h|--help)
+      printUsage
+      exit 0
+      ;;
     -k|--keep-work)
       # Keep work files
       shift
@@ -95,9 +127,10 @@ do
       LOC=${ARG/-*loc=/}
       shift
       ;;
-    -h|--help)
-      printUsage
-      exit 0
+    -t|--trace)
+      # Trace mode
+      shift
+      set -x
       ;;
     *)
       # Any further arguments are ignored
@@ -111,6 +144,8 @@ if [ -z "$LOC" ] ; then echo "No location specified" ; exit 1 ; fi
 if [ ! -e "$LOC" ] ; then echo "Location specified does not exist: $LOC" ; exit 1; fi
 if [ ! -d "$LOC" ] ; then echo "Location is not a directory: $LOC" ; exit 1 ; fi
 
+# TODO Make LOC absolute
+
 DATA_TRIPLES="$LOC/data-triples.tmp"
 DATA_QUADS="$LOC/data-quads.tmp"
 
@@ -123,9 +158,12 @@ if [ ! -e "$DATA_QUADS" ]; then
   exit 1
 fi
 
+debug "Data files are $DATA_TRIPLES and $DATA_QUADS"
+
 ##--parallel is not always available.
 SORT_ARGS="${SORT_ARGS:---buffer-size=50%}"
 JVM_ARGS=${JVM_ARGS:--Xmx1200M}
+debug "JVM Arguments are $JVM_ARGS"
 
 # Classpath set in "tdbloader2"
 if [ -z "$JENA_CP" ]
@@ -133,17 +171,57 @@ then
     echo "Classpath not provided : set JENA_CP" 1>&2
     exit 1
 fi
+debug "Jena Classpath is $JENA_CP"
 
 # ---- Index intermediates
 ## All files are writtern S P O / G S P O columns per row but in different sort orders.
 log "Index Building Phase"
 
 # Check whether Pipe Viewer is available
-# Needs to temporarily disable exit on error
+# Needs to temporarily disable exit on error as which produces an error
+# if the given command is not found
 set +e
 which pv >/dev/null 2>&1
 HAS_PV=$?
 set -e
+if [ $HAS_PV = 0 ]; then
+  debug "pv (Pipe Viewer) available on your system so sorts will show progres"
+else
+  debug "No pv (Pipe Viewer) on your system so sorts will show no progress"
+fi
+
+# Check where we are storing temporary sort files
+debug "Sort Arguments: $SORT_ARGS"
+SORT_TEMP_DIR=
+if [[ "$SORT_ARGS" == *"-T "* ]]; then
+  # Specified via -T argument
+  SORT_TEMP_DIR=(${SORT_ARGS/-T /})
+  SORT_TEMP_DIR=${SORT_TEMP_DIR[0]}
+elif [[ "$SORT_ARGS" == *"--temporary-directory="* ]]; then
+  # Specified via --temporary-directory argument
+  SORT_TEMP_DIR=(${SORT_ARGS/--temporary-directory=/})
+  SORT_TEMP_DIR=${SORT_TEMP_DIR[0]}
+else
+  # Using the system temp directory
+  SORT_TEMP_DIR="$TMPDIR"
+fi
+debug "Sort Temp Directory: $SORT_TEMP_DIR"
+
+# Find out how much space is on the sort directory
+SORT_DRIVE_INFO=$(df "$SORT_TEMP_DIR" | tail -n +2)
+SORT_DRIVE_DISK=$(echo $SORT_DRIVE_INFO | awk '{print $1}')
+SORT_DRIVE_FREE_SPACE=$(echo $SORT_DRIVE_INFO | awk '{print $4}')
+SORT_DRIVE_USED=$(echo $SORT_DRIVE_INFO | awk '{print $5}')
+SORT_DRIVE_FREE=${SORT_DRIVE_USED/"%"/}
+SORT_DRIVE_FREE=$((100 - $SORT_DRIVE_FREE))
+debug "Sort Temp Directory ${SORT_TEMP_DIR} is on disk ${SORT_DRIVE_DISK} which has ${SORT_DRIVE_FREE}% free space (${SORT_DRIVE_FREE_SPACE} bytes)"
+
+if [ $SORT_DRIVE_FREE -le 10 ]; then
+  echo
+  warn "Sort Temp Directory ${SORT_TEMP_DIR} is on disk ${SORT_DRIVE_DISK} which only has ${SORT_DRIVE_FREE}% free space (${SORT_DRIVE_FREE_SPACE} bytes) available"
+  warn "This may result in sort failures if the data to be indexed is large"
+  echo
+fi
 
 generate_index()
 {
@@ -152,35 +230,52 @@ generate_index()
     local IDX=$3
     local WORK="$LOC/$IDX-txt"
 
-    if [ ! -s "$DATA" ]
-    then
+    if [ ! -s "$DATA" ]; then
+      debug "Skipping Index $IDX as no relevant data to index"
 	    return
 	  fi
 
     log "Creating Index $IDX"
 
     # Sort the input data
-    log "  Sort $IDX"
+    log "Sort $IDX"
+    debug "Sorting $DATA into work file $WORK"
     if [ $HAS_PV = 0 ]; then
       # Use pv (pipe viewer) to monitor sort progress
       # Note that progress data will only be seen if running in the foreground
-      SIZE=$(du -k "$DATA" | cut -f 1)
+      # To report progress need to know size of input data
+      SIZE=$(getSize "$DATA")
+      debug "Size of data to be sorted is $SIZE bytes"
+
       pv -c -N data < "$DATA" | sort $SORT_ARGS -u $KEYS | pv -c -N sort -s $SIZE > $WORK
+
+      # CAUTION
+      # If sort errors here then the piping through pv will stop us from seeing the error
+      # and we'll continue onwards
+      # Therefore we need to check that the output size is same as input size as this is
+      # the only way to tell if sort suceeded
+      OUTPUT_SIZE=$(getSize "$WORK")
+      debug "Size of sorted data is $OUTPUT_SIZE bytes"
+      if [ $SIZE != $OUTPUT_SIZE ]; then
+        log "Aborting due to sort error"
+        exit 1
+      fi
     else
       # Use sort without any progress monitoring
       sort $SORT_ARGS -u $KEYS < "$DATA" > $WORK
     fi
-    log "  Sort $IDX Completed"
+    log "Sort $IDX Completed"
 
     # Build into an index
-    log "  Build $IDX"
+    log "Build $IDX"
     rm -f "$LOC/$IDX.dat"
     rm -f "$LOC/$IDX.idn"
     java -cp "$JENA_CP" "$PKG".CmdIndexBuild "$LOC" "$IDX" "$WORK"
-    log "  Build $IDX Completed"
+    log "Build $IDX Completed"
 
     # Remove work file unless keeping
-    if [ $KEEP_WORK = 1 ]; then
+    if [ $KEEP_WORK = 0 ]; then
+      debug "Cleaning up work file $WORK"
 	    rm "$WORK"
     fi
 }
@@ -211,6 +306,7 @@ generate_index "$K4 $K2 $K3 $K1" "$DATA_QUADS" OSPG
 log "Index Building Phase Completed"
 
 # ---- Clean up.
-if [ $KEEP_WORK = 1 ]; then
-    rm -f "$DATA_TRIPLES" "$DATA_QUADS" 
+if [ $KEEP_WORK = 0 ]; then
+  debug "Cleaning up data files $DATA_TRIPLES and $DATA_QUADS"
+  rm -f "$DATA_TRIPLES" "$DATA_QUADS"
 fi

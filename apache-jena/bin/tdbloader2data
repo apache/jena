@@ -52,10 +52,18 @@ Common additional options are as follows:
 
 Advanced additional options are as follows:
 
+  -d
+  --debug
+    Enable debug mode, adds extra debug output
+
   -k
   --keep-work
     Keeps the temporary work files around after they are no longer
     needed.  May be useful for debugging.
+
+  -t
+  --trace
+    Enable trace mode, essentially sets -x within the scripts
 
 EOF
 }
@@ -63,24 +71,39 @@ EOF
 # Exit on error.
 set -e
 
-# Sort order is ASCII
-export LC_ALL="C"
-
 log() { echo " $(date $DATE)" "$@" ; }
+
+function debug() {
+ if [ $DEBUG = 1 ]; then
+   log "DEBUG" "$@"
+ fi
+}
 
 #DATE="+%Y-%m-%dT%H:%M:%S%:z"
 DATE="+%H:%M:%S"
 
 PKG=org.apache.jena.tdb.store.bulkloader2
+#DEV - Allows use against Jena 2 API
+PKG=com.hp.hpl.jena.tdb.store.bulkloader2
 
 # Process Arguments
 LOC=
 KEEP_WORK=0
+DEBUG=0
 
 while [ $# -gt 0 ]
 do
   ARG=$1
   case "$ARG" in
+    -d|--debug)
+      # Debug Mode
+      shift
+      DEBUG=1
+      ;;
+    -h|--help)
+      printUsage
+      exit 0
+      ;;
     -k|--keep-work)
       # Keep work files
       # This option is actually not used by this script but may be passed in
@@ -99,9 +122,10 @@ do
       LOC=${ARG/-*loc=/}
       shift
       ;;
-    -h|--help)
-      printUsage
-      exit 0
+    -t|--trace)
+      # Trace mode
+      shift
+      set -x
       ;;
     *)
       # Any further arguments are treated as data files
@@ -124,18 +148,23 @@ fi
 
 if [ ! -e "$LOC" ] ; then
   # If non-existent try to create
+  debug "Trying to create new database directory: $LOC"
   mkdir "$LOC"
   if [ $? != 0 ]; then
     echo "Failed to create new directory: $LOC"
     exit 1
   fi
+  debug "New database directory created: $LOC"
 fi
 if [ ! -d "$LOC" ] ; then echo "Location is not a directory: $LOC" ; exit 1 ; fi
+
+# TODO Make LOC absolute
 
 FILES="$@"
 
 ## JVM Arguments
 JVM_ARGS=${JVM_ARGS:--Xmx1200M}
+debug "JVM Arguments are $JVM_ARGS"
 
 # Classpath set in "tdbloader2"
 if [ -z "$JENA_CP" ]
@@ -150,6 +179,8 @@ log "Data Load Phase"
 
 DATA_TRIPLES="$LOC/data-triples.tmp"
 DATA_QUADS="$LOC/data-quads.tmp"
+
+debug "Data files are $DATA_TRIPLES and $DATA_QUADS"
 
 java $JVM_ARGS -cp "$JENA_CP" "$PKG".CmdNodeTableBuilder \
     "--loc=$LOC" "--triples=$DATA_TRIPLES" "--quads=$DATA_QUADS" $FILES
