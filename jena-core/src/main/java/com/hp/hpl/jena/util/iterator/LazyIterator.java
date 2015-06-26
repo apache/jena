@@ -60,11 +60,6 @@ abstract public class LazyIterator<T> implements ExtendedIterator<T> {
 		it.remove();
 	}
 
-	public ExtendedIterator<T> andThen(ClosableIterator<? extends T> other) {
-		lazy();
-		return it.andThen(other);
-	}
-
 	@Override
     public ExtendedIterator<T> filterKeep(Filter<T> f) {
 		lazy();
