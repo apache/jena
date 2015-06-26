@@ -122,15 +122,9 @@ public class QueryTransformOps {
                 for (String x : desc.getDefaultGraphURIs())
                     newQuery.addNamedGraphURI(x) ;
             }
-            // Not needed in a shallow copy?
-            // for ( ExprAggregator agg : query.getAggregators() )
-            // {
-            // // Hooks for
-            // //aggregatorsAllocated.put(key, v) ;
-            // //aggregatorsMap.put(v, aggExpr) ;
-            // //aggregators.add(aggExpr) ;
-            // }
-
+            
+            // Aggregators.
+            newQuery.getAggregators().addAll(query.getAggregators()) ;
         }
 
         @Override
