@@ -258,7 +258,7 @@ public class TextIndexLucene implements TextIndex {
                 RDFDatatype datatype = entity.getDatatype();
                 if (lang != null && !"".equals(lang)) {
                     doc.add(new Field(langField, lang, StringField.TYPE_STORED));
-                } else if (datatype != null && datatype != XSDDatatype.XSDstring) {
+                } else if (datatype != null && !datatype.equals(XSDDatatype.XSDstring)) {
                     // for non-string and non-langString datatypes, store the datatype in langField
                     doc.add(new Field(langField, DATATYPE_PREFIX + datatype.getURI(), StringField.TYPE_STORED));
                 }
