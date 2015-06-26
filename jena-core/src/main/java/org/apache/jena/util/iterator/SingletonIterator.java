@@ -18,9 +18,14 @@
 
 package org.apache.jena.util.iterator;
 
+import org.apache.jena.ext.com.google.common.collect.Iterators;
+
 /**
  * A ClosableIterator that contains only one element
+ * 
+ * @deprecated Please use {@link Iterators#singletonIterator(Object)} instead.
  */
+@Deprecated
 public class SingletonIterator<T> extends NiceIterator<T> implements ExtendedIterator<T> {
     
     /** The single value to be returned */

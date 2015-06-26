@@ -32,7 +32,7 @@ public class UniqueFilter<T> implements Predicate<T> {
 
 	@Override
 	public boolean test(T o) {
-		boolean retval = !seen.contains(o);
+		final boolean retval = !seen.contains(o);
 		if (retval)
 		{
 			seen.add( o );
