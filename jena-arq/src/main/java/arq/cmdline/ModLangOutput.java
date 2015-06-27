@@ -22,14 +22,19 @@ import java.io.PrintStream ;
 import java.util.HashSet ;
 import java.util.Set ;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RDFWriterRegistry ;
 import org.apache.jena.riot.system.StreamRDFWriter ;
-import arq.cmd.CmdException ;
 
-public class ModLangOutput implements ArgModuleGeneral
+public class ModLangOutput extends ModBase
 {
     protected ArgDecl argOutput       = new ArgDecl(ArgDecl.HasValue, "out", "output") ;
     protected ArgDecl argPretty       = new ArgDecl(ArgDecl.HasValue, "formatted", "pretty", "fmt") ;

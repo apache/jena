@@ -18,7 +18,12 @@
 
 package org.apache.jena.riot.thrift;
 
+import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.rdf.model.AnonId ;
+import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.thrift.TRDF ;
@@ -27,15 +32,11 @@ import org.apache.jena.riot.thrift.wire.RDF_BNode ;
 import org.apache.jena.riot.thrift.wire.RDF_IRI ;
 import org.apache.jena.riot.thrift.wire.RDF_Literal ;
 import org.apache.jena.riot.thrift.wire.RDF_Term ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.RDFS ;
+import org.apache.jena.vocabulary.XSD ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.vocabulary.RDF ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
-import com.hp.hpl.jena.vocabulary.XSD ;
 
 public class TestThriftTerm extends BaseTest {
     static PrefixMap prefixMap = PrefixMapFactory.create() ;
@@ -75,11 +76,17 @@ public class TestThriftTerm extends BaseTest {
     }
     
     @Test public void term_literal_01() {
-        testTerm("'foo'") ;
+        RDF_Term rt = testTerm("'foo'") ;
+        assertFalse(rt.getLiteral().isSetDatatype()) ;
+        assertFalse(rt.getLiteral().isSetDtPrefix()) ;
+        assertFalse(rt.getLiteral().isSetLangtag()) ;
     }
 
     @Test public void term_literal_02() {
-        testTerm("'foo'@en") ;
+        RDF_Term rt = testTerm("'foo'@en") ;
+        assertFalse(rt.getLiteral().isSetDatatype()) ;
+        assertFalse(rt.getLiteral().isSetDtPrefix()) ;
+        assertTrue(rt.getLiteral().isSetLangtag()) ;
     }    
 
     @Test public void term_literal_03() {
@@ -105,7 +112,6 @@ public class TestThriftTerm extends BaseTest {
         assertEquals(rt.getLiteral().getDtPrefix().getLocalName(), "") ;
     }
 
-    
     @Test public void term_var_01() {
         testTerm("?var") ;
     }
@@ -247,9 +253,40 @@ public class TestThriftTerm extends BaseTest {
             RDF_Literal lit = rt.getLiteral() ;
             assertTrue(lit.isSetLex()) ;
             assertEquals(node.getLiteralLexicalForm(), lit.getLex()) ;
+            
             // RDF 1.1
-            if ( node.getLiteralDatatype() != null ) {
-                assertTrue(lit.isSetDatatype() || lit.isSetDtPrefix()) ;
+            if (JenaRuntime.isRDF11) {
+                if ( Util.isSimpleString(node) ) {
+                    assertFalse(lit.isSetDatatype()) ;
+                    assertFalse(lit.isSetDtPrefix()) ;
+                    assertFalse(lit.isSetLangtag()) ;
+                } else if ( Util.isLangString(node) ) {
+                    assertFalse(lit.isSetDatatype()) ;
+                    assertFalse(lit.isSetDtPrefix()) ;
+                    assertTrue(lit.isSetLangtag()) ;
+                }
+                else {
+                    // Regular typed literal.
+                    assertTrue(lit.isSetDatatype() || lit.isSetDtPrefix()) ;
+                    assertFalse(lit.isSetLangtag()) ;
+                }
+                    
+            } else {
+                // RDF 1.0
+                if ( node.getLiteralDatatype() == null ) {
+                    if ( Util.isLangString(node ) ) {
+                        assertFalse(lit.isSetDatatype()) ;
+                        assertFalse(lit.isSetDtPrefix()) ;
+                        assertTrue(lit.isSetLangtag()) ;
+                    } else {
+                        assertFalse(lit.isSetDatatype()) ;
+                        assertFalse(lit.isSetDtPrefix()) ;
+                        assertFalse(lit.isSetLangtag()) ;
+                    }                        
+                } else {
+                    assertTrue(lit.isSetDatatype() || lit.isSetDtPrefix()) ;
+                }
+                    
             }
         } else if ( node.isBlank() ) {
             assertTrue(rt.isSetBnode()) ;

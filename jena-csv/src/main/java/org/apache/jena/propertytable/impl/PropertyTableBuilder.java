@@ -25,14 +25,13 @@ import java.util.List ;
 
 import org.apache.jena.atlas.csv.CSVParser ;
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.propertytable.PropertyTable ;
 import org.apache.jena.propertytable.Row ;
 import org.apache.jena.propertytable.lang.LangCSV ;
 import org.apache.jena.riot.system.IRIResolver ;
-
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
 
 
 /**

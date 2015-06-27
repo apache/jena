@@ -23,8 +23,7 @@ import org.apache.jena.hadoop.rdf.io.input.util.TrackedPipedQuadsStream;
 import org.apache.jena.hadoop.rdf.io.input.util.TrackedPipedRDFStream;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.riot.lang.PipedRDFIterator;
-
-import com.hp.hpl.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * An abstract record reader for whole file triple formats

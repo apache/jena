@@ -26,7 +26,7 @@ import org.junit.runners.AllTests ;
 /** The test suites - these are driven by a manifest file and use external files for tests */
 
 @RunWith(AllTests.class)
-public class TS_LangSuite extends TestSuite
+public class TS_LangSuite
 {
     private static final String manifest1 = "testing/RIOT/Lang/manifest-all.ttl" ;
 

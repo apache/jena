@@ -27,13 +27,13 @@ import java.util.Locale ;
 
 import javax.xml.datatype.XMLGregorianCalendar ;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.graph.NodeConst ;
-import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.sparql.graph.NodeConst ;
+import org.apache.jena.sparql.util.DateTimeStruct ;
 
 class NormalizeValue
 {

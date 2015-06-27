@@ -1,4 +1,4 @@
-PREFIX  jfn:  <http://jena.hpl.hp.com/ARQ/function#>
+PREFIX  jfn:  <http://jena.apache.org/ARQ/function#>
 PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX     :  <http://example.org/> 
 

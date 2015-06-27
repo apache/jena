@@ -19,10 +19,9 @@
 package arq.examples.riot;
 
 import static org.apache.jena.riot.RDFLanguages.TRIG ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.riot.RDFDataMgr ;
-
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
 
 /** Example of using RIOT : reading data into datasets. */
 public class ExRIOT_3

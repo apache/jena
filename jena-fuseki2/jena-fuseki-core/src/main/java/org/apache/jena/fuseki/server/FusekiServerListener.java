@@ -59,11 +59,12 @@ public class FusekiServerListener implements ServletContextListener {
                 Fuseki.serverLog.error("Failed to initialize : Server not running") ;
                 return ;
             }
-
+            // The command line code sets initialSetup. In a non-commandline startup,
+            // initialSetup is null. Set to include a possible config.ttl in the BASE area.
             if ( initialSetup == null ) {
                 initialSetup = new ServerInitialConfig() ;
                 String cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiServer.DFT_CONFIG).toAbsolutePath().toString() ;
-                initialSetup.fusekiConfigFile = cfg ;
+                initialSetup.fusekiServerConfigFile = cfg ;
             }
 
             if ( initialSetup != null ) {

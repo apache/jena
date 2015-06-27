@@ -18,12 +18,11 @@
 
 package org.apache.jena.riot.process.inf;
 
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFWrapper ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Quad ;
 
 /** Receive triples and quads (incoming because this is a StreamRDF);
  *  allow RDFS; output to place provided. 

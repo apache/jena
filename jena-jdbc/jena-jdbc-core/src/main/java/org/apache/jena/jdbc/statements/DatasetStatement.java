@@ -21,18 +21,13 @@ package org.apache.jena.jdbc.statements;
 import java.sql.SQLException;
 
 import org.apache.jena.jdbc.connections.DatasetConnection;
+import org.apache.jena.query.* ;
+import org.apache.jena.update.GraphStoreFactory ;
+import org.apache.jena.update.UpdateExecutionFactory ;
+import org.apache.jena.update.UpdateProcessor ;
+import org.apache.jena.update.UpdateRequest ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.ReadWrite;
-import com.hp.hpl.jena.update.GraphStoreFactory;
-import com.hp.hpl.jena.update.UpdateExecutionFactory;
-import com.hp.hpl.jena.update.UpdateProcessor;
-import com.hp.hpl.jena.update.UpdateRequest;
 
 /**
  * A Jena JDBC statement over a {@link Dataset}
@@ -140,7 +135,7 @@ public class DatasetStatement extends JenaStatement {
     }
 
     @Override
-    protected boolean hasActiveTransaction() throws SQLException {
+    protected boolean hasActiveTransaction() {
         return this.dsConn.getJenaDataset().isInTransaction();
     }
 

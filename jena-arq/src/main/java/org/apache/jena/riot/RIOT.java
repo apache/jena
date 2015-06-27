@@ -18,9 +18,9 @@
 
 package org.apache.jena.riot ;
 
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.sparql.SystemARQ ;
+import org.apache.jena.sparql.mgt.SystemInfo ;
 
 public class RIOT {
     /** IRI for ARQ */

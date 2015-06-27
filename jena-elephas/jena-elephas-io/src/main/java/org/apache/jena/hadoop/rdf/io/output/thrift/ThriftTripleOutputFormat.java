@@ -24,13 +24,12 @@ import java.nio.charset.Charset;
 import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.io.output.AbstractStreamRdfNodeTupleOutputFormat;
 import org.apache.jena.hadoop.rdf.io.output.writers.StreamRdfTripleWriter;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.thrift.StreamRDF2Thrift;
-
-import com.hp.hpl.jena.graph.Triple;
 
 public class ThriftTripleOutputFormat<TKey> extends AbstractStreamRdfNodeTupleOutputFormat<TKey, Triple, TripleWritable> {
 

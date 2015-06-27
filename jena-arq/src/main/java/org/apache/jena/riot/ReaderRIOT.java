@@ -25,8 +25,7 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
-
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Context ;
 
 /** Interface to parsing processes that takes an input stream and emit items.
  *  The "read" operation may be called repeatedly for a single ReaderRIOT, with different

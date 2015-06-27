@@ -18,15 +18,15 @@
 
 package sdb.cmd;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.Store;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.CmdGeneral;
-import arq.cmdline.ModBase;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.sdb.SDBFactory ;
+import org.apache.jena.sdb.Store ;
 
 public class ModGraph extends ModBase
 {

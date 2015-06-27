@@ -18,7 +18,7 @@
 
 package org.apache.jena.query.text;
 
-import com.hp.hpl.jena.query.QueryExecException ;
+import org.apache.jena.query.QueryExecException ;
 
 public class TextIndexException extends QueryExecException 
 {

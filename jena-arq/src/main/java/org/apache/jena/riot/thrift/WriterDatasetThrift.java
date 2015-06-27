@@ -29,9 +29,8 @@ import org.apache.jena.riot.WriterDatasetRIOT ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.StreamOps ;
 import org.apache.jena.riot.system.StreamRDF ;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.util.Context ;
 
 /** Write a dataset as RDF Thrift */
 public class WriterDatasetThrift implements WriterDatasetRIOT

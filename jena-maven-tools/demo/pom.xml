@@ -19,7 +19,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openjena.tools</groupId>
+  <groupId>com.example.jena</groupId>
   <artifactId>schemagen-demo</artifactId>
   <version>0.0.1</version>
   <packaging>jar</packaging>
@@ -27,9 +27,11 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.openjena.tools</groupId>
-        <artifactId>schemagen</artifactId>
-        <version>0.2-SNAPSHOT</version>
+        <groupId>org.apache.jena</groupId>
+        <artifactId>jena-maven-tools</artifactId>
+        <!-- add something like:
+          <version>0.8</version>
+        -->
         <configuration>
           <includes>
             <include>src/main/vocabs/*.ttl</include>
@@ -62,7 +64,11 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.7.3</version>
+      <!-- replace with something like
+        <version>3.0.0</version>
+      -->
+      <version>RELEASE</version>
     </dependency>
   </dependencies>
+
 </project>

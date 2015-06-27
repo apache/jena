@@ -25,20 +25,19 @@ import java.sql.* ;
 import java.util.Calendar ;
 import java.util.HashMap ;
 
+import org.apache.jena.datatypes.TypeMapper ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.jdbc.JdbcCompatibility ;
 import org.apache.jena.jdbc.results.metadata.AskResultsMetadata ;
 import org.apache.jena.jdbc.results.metadata.TripleResultsMetadata ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.Statement ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
+import org.apache.jena.vocabulary.XSD ;
 import org.junit.* ;
-
-import com.hp.hpl.jena.datatypes.TypeMapper ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.rdf.model.Statement ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
-import com.hp.hpl.jena.vocabulary.XSD ;
 
 /**
  * Abstract tests for Jena JDBC {@link ResultSet} implementations, these tests

@@ -18,31 +18,25 @@
 
 package org.apache.jena.query.text.assembler ;
 
-import static org.apache.jena.query.text.assembler.TextVocab.pDirectory ;
-import static org.apache.jena.query.text.assembler.TextVocab.pEntityMap ;
-import static org.apache.jena.query.text.assembler.TextVocab.pQueryAnalyzer ;
-
 import java.io.File ;
 import java.io.IOException ;
 
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.Mode ;
+import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.query.text.EntityDefinition ;
-import org.apache.jena.query.text.TextDatasetFactory ;
-import org.apache.jena.query.text.TextIndex ;
-import org.apache.jena.query.text.TextIndexException ;
-import org.apache.jena.riot.system.IRILib ;
+import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.query.text.*;
+import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.Statement ;
+import org.apache.jena.sparql.util.graph.GraphUtils ;
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.store.Directory ;
 import org.apache.lucene.store.FSDirectory ;
 import org.apache.lucene.store.RAMDirectory ;
 
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.assembler.Mode ;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
-import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.rdf.model.Statement ;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
+import static org.apache.jena.query.text.assembler.TextVocab.*;
 
 public class TextIndexLuceneAssembler extends AssemblerBase {
     /*
@@ -78,7 +72,18 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 File dir = new File(path) ;
                 directory = FSDirectory.open(dir) ;
             }
-            
+
+            Analyzer analyzer = null;
+            Statement analyzerStatement = root.getProperty(pAnalyzer);
+            if (null != analyzerStatement) {
+                RDFNode aNode = analyzerStatement.getObject();
+                if (! aNode.isResource()) {
+                    throw new TextIndexException("Text analyzer property is not a resource : " + aNode);
+                }
+                Resource analyzerResource = (Resource) aNode;
+                analyzer = (Analyzer) a.open(analyzerResource);
+            }
+
             Analyzer queryAnalyzer = null;
             Statement queryAnalyzerStatement = root.getProperty(pQueryAnalyzer);
             if (null != queryAnalyzerStatement) {
@@ -90,10 +95,24 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 queryAnalyzer = (Analyzer) a.open(analyzerResource);
             }
 
+            boolean isMultilingualSupport = false;
+            Statement mlSupportStatement = root.getProperty(pMultilingualSupport);
+            if (null != mlSupportStatement) {
+                RDFNode mlsNode = mlSupportStatement.getObject();
+                if (! mlsNode.isLiteral()) {
+                    throw new TextIndexException("text:multilingualSupport property must be a string : " + mlsNode);
+                }
+                isMultilingualSupport = mlsNode.asLiteral().getBoolean();
+            }
+
             Resource r = GraphUtils.getResourceValue(root, pEntityMap) ;
             EntityDefinition docDef = (EntityDefinition)a.open(r) ;
+            TextIndexConfig config = new TextIndexConfig(docDef);
+            config.setAnalyzer(analyzer);
+            config.setQueryAnalyzer(queryAnalyzer);
+            config.setMultilingualSupport(isMultilingualSupport);
 
-            return TextDatasetFactory.createLuceneIndex(directory, docDef, queryAnalyzer) ;
+            return TextDatasetFactory.createLuceneIndex(directory, config) ;
         } catch (IOException e) {
             IO.exception(e) ;
             return null ;

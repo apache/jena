@@ -18,8 +18,8 @@
 
 package org.apache.jena.riot.writer;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.vocabulary.RDF ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.vocabulary.RDF ;
 
 public class WriterConst
 {

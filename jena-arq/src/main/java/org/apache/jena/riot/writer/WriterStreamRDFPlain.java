@@ -20,15 +20,14 @@ package org.apache.jena.riot.writer ;
 
 import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.out.NodeFormatter ;
 import org.apache.jena.riot.out.NodeFormatterNT ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * An output of triples / quads that is streaming. It writes N-triples/N-quads.

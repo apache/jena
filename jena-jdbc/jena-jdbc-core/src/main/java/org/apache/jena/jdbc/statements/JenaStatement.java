@@ -38,17 +38,12 @@ import org.apache.jena.jdbc.results.MaterializedSelectResults;
 import org.apache.jena.jdbc.results.SelectResults;
 import org.apache.jena.jdbc.results.TripleIteratorResults;
 import org.apache.jena.jdbc.results.TripleListResults;
+import org.apache.jena.query.* ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateProcessor ;
+import org.apache.jena.update.UpdateRequest ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ReadWrite;
-import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateProcessor;
-import com.hp.hpl.jena.update.UpdateRequest;
 
 /**
  * Abstract Jena JDBC implementation of a statement that only permits read
@@ -202,7 +197,7 @@ public abstract class JenaStatement implements Statement {
     }
 
     @Override
-    public void addBatch(String sql) throws SQLException {
+    public void addBatch(String sql) {
         this.commands.add(sql);
     }
 
@@ -212,12 +207,12 @@ public abstract class JenaStatement implements Statement {
     }
 
     @Override
-    public void clearBatch() throws SQLException {
+    public void clearBatch() {
         this.commands.clear();
     }
 
     @Override
-    public void clearWarnings() throws SQLException {
+    public void clearWarnings() {
         this.warnings = null;
     }
 
@@ -620,17 +615,17 @@ public abstract class JenaStatement implements Statement {
     }
 
     @Override
-    public final Connection getConnection() throws SQLException {
+    public final Connection getConnection() {
         return this.connection;
     }
 
     @Override
-    public int getFetchDirection() throws SQLException {
+    public int getFetchDirection() {
         return this.fetchDirection;
     }
 
     @Override
-    public int getFetchSize() throws SQLException {
+    public int getFetchSize() {
         return this.fetchSize;
     }
 
@@ -640,12 +635,12 @@ public abstract class JenaStatement implements Statement {
     }
 
     @Override
-    public int getMaxFieldSize() throws SQLException {
+    public int getMaxFieldSize() {
         return NO_LIMIT;
     }
 
     @Override
-    public int getMaxRows() throws SQLException {
+    public int getMaxRows() {
         return maxRows;
     }
 
@@ -693,7 +688,7 @@ public abstract class JenaStatement implements Statement {
     }
 
     @Override
-    public int getQueryTimeout() throws SQLException {
+    public int getQueryTimeout() {
         return this.timeout;
     }
 
@@ -724,12 +719,12 @@ public abstract class JenaStatement implements Statement {
      * Gets that result sets are read-only
      */
     @Override
-    public final int getResultSetConcurrency() throws SQLException {
+    public final int getResultSetConcurrency() {
         return ResultSet.CONCUR_READ_ONLY;
     }
 
     @Override
-    public int getResultSetHoldability() throws SQLException {
+    public int getResultSetHoldability() {
         return this.holdability;
     }
 
@@ -744,12 +739,12 @@ public abstract class JenaStatement implements Statement {
     }
 
     @Override
-    public final int getResultSetType() throws SQLException {
+    public final int getResultSetType() {
         return this.type;
     }
 
     @Override
-    public int getUpdateCount() throws SQLException {
+    public int getUpdateCount() {
         return this.updateCount;
     }
 
@@ -764,7 +759,7 @@ public abstract class JenaStatement implements Statement {
     }
 
     @Override
-    public SQLWarning getWarnings() throws SQLException {
+    public SQLWarning getWarnings() {
         return this.warnings;
     }
 
@@ -808,12 +803,12 @@ public abstract class JenaStatement implements Statement {
     }
 
     @Override
-    public final boolean isClosed() throws SQLException {
+    public final boolean isClosed() {
         return this.closed;
     }
 
     @Override
-    public final boolean isPoolable() throws SQLException {
+    public final boolean isPoolable() {
         return true;
     }
 
@@ -823,7 +818,7 @@ public abstract class JenaStatement implements Statement {
     }
 
     @Override
-    public void setEscapeProcessing(boolean enable) throws SQLException {
+    public void setEscapeProcessing(boolean enable) {
         this.escapeProcessing = enable;
     }
 
@@ -852,18 +847,18 @@ public abstract class JenaStatement implements Statement {
     }
 
     @Override
-    public void setFetchSize(int rows) throws SQLException {
+    public void setFetchSize(int rows) {
         this.fetchSize = rows;
     }
 
     @Override
-    public void setMaxFieldSize(int max) throws SQLException {
+    public void setMaxFieldSize(int max) {
         // Ignored
         this.setWarning("setMaxFieldSize() was called but there is no field size limit for Jena JDBC connections");
     }
 
     @Override
-    public void setMaxRows(int max) throws SQLException {
+    public void setMaxRows(int max) {
         if (max <= NO_LIMIT) {
             this.maxRows = NO_LIMIT;
         } else {
@@ -872,13 +867,13 @@ public abstract class JenaStatement implements Statement {
     }
 
     @Override
-    public void setPoolable(boolean poolable) throws SQLException {
+    public void setPoolable(boolean poolable) {
         // Ignored
         this.setWarning("setPoolable() was called but Jena JDBC statements are always considered poolable");
     }
 
     @Override
-    public void setQueryTimeout(int seconds) throws SQLException {
+    public void setQueryTimeout(int seconds) {
         if (seconds <= NO_LIMIT) {
             this.timeout = NO_LIMIT;
         } else {
@@ -888,7 +883,7 @@ public abstract class JenaStatement implements Statement {
 
     // Java 6/7 compatibility
     @SuppressWarnings("javadoc")
-    public boolean isCloseOnCompletion() throws SQLException {
+    public boolean isCloseOnCompletion() {
         // Statements do not automatically close
         return false;
     }

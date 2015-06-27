@@ -23,14 +23,13 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import org.apache.hadoop.io.WritableComparator;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.types.comparators.SimpleBinaryComparator;
 import org.apache.jena.hadoop.rdf.types.converters.ThriftConverter;
 import org.apache.jena.riot.thrift.ThriftConvert;
 import org.apache.jena.riot.thrift.wire.RDF_Triple;
 import org.apache.thrift.TException;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * A writable triple

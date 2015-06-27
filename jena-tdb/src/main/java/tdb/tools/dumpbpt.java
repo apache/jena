@@ -24,25 +24,25 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.ColumnMap ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.base.record.Record ;
+import org.apache.jena.tdb.base.record.RecordFactory ;
+import org.apache.jena.tdb.index.IndexFactory ;
+import org.apache.jena.tdb.index.RangeIndex ;
+import org.apache.jena.tdb.index.bplustree.BPlusTree ;
+import org.apache.jena.tdb.store.NodeId ;
+import org.apache.jena.tdb.store.tupletable.TupleIndex ;
+import org.apache.jena.tdb.store.tupletable.TupleIndexRecord ;
+import org.apache.jena.tdb.sys.Names ;
+import org.apache.jena.tdb.sys.SystemTDB ;
+
+import arq.cmdline.CmdARQ;
 import tdb.cmdline.ModLocation ;
-import arq.cmdline.CmdGeneral ;
 
-import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.base.record.Record ;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.IndexFactory ;
-import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
-import com.hp.hpl.jena.tdb.store.tupletable.TupleIndexRecord ;
-import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-
-public class dumpbpt extends CmdGeneral {
+public class dumpbpt extends CmdARQ {
     ModLocation modLocation = new ModLocation() ;
 
     static public void main(String... argv) {
@@ -72,7 +72,7 @@ public class dumpbpt extends CmdGeneral {
 
     @Override
     protected String getCommandName() {
-        return Utils.className(this) ;
+        return Lib.className(this) ;
     }
 
     @Override

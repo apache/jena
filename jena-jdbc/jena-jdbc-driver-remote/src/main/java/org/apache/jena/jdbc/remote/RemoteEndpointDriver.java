@@ -38,8 +38,7 @@ import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.JenaDriver;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
-
-import com.hp.hpl.jena.query.ARQ;
+import org.apache.jena.query.ARQ ;
 
 /**
  * <p>

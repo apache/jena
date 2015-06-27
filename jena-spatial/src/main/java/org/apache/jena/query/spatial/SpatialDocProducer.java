@@ -18,7 +18,7 @@
 
 package org.apache.jena.query.spatial;
 
-import com.hp.hpl.jena.sparql.core.DatasetChanges ;
+import org.apache.jena.sparql.core.DatasetChanges ;
 
 public interface SpatialDocProducer extends DatasetChanges
 {

@@ -22,20 +22,19 @@ import java.io.Reader ;
 import java.io.StringReader ;
 import java.util.HashSet ;
 
+import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.text.assembler.TextAssembler ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.Resource ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-
 public class TestDatasetWithLuceneTextIndex extends AbstractTestDatasetWithTextIndex {
-	
+    
     private static final String SPEC_BASE = "http://example.org/spec#";
     private static final String SPEC_ROOT_LOCAL = "lucene_text_dataset";
     private static final String SPEC_ROOT_URI = SPEC_BASE + SPEC_ROOT_LOCAL;

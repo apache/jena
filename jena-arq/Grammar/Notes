@@ -8,21 +8,21 @@ master.jj - Template for SPARQL and ARQ
 
 sparql_11.jj - The SPARQL working group syntax
     This should be exactly the grammar in the SPARQL rec.
-    Generates com.hp.hpl.jena.query.parser.sparql_11.SPARQLParser
+    Generates org.apache.jena.query.parser.sparql_11.SPARQLParser
 
 arq.jj - The native query language of the query engine
-    Generates com.hp.hpl.jena.query.parser.arq.ARQParser
+    Generates org.apache.jena.query.parser.arq.ARQParser
 
 
 sparql_10.jj - SPARQL 1.0, but updated to match internal chnages in ARQ.
     This should produce the grammar in the SPARQ 1.0/DAWG rec.
-    Generates com.hp.hpl.jena.query.parser.sparql_10.SPARQLParser
+    Generates org.apache.jena.query.parser.sparql_10.SPARQLParser
     
 Archive/sparql_10-REC.jj is original for the SPARQL 1.0 specification. 
 
 Archive/rdql-arq.jjt
     RDQL for the ARQ query engine.
-    Generates com.hp.hpl.jena.query.parser.rdql.RDQLParser
+    Generates org.apache.jena.query.parser.rdql.RDQLParser
 
 ==== Making the parsers
 

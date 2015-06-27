@@ -18,13 +18,23 @@
 
 package arq;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+import jena.cmd.TerminationException;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.query.* ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.SysRIOT ;
-import arq.cmd.CmdException ;
-import arq.cmd.TerminationException ;
-import arq.cmdline.ArgDecl ;
+import org.apache.jena.shared.JenaException ;
+import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.mgt.Explain ;
+import org.apache.jena.sparql.resultset.ResultSetException ;
+import org.apache.jena.sparql.resultset.ResultsFormat ;
+import org.apache.jena.sparql.util.QueryExecUtils ;
+
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModDataset ;
 import arq.cmdline.ModDatasetGeneralAssembler ;
@@ -32,15 +42,6 @@ import arq.cmdline.ModEngine ;
 import arq.cmdline.ModQueryIn ;
 import arq.cmdline.ModResultsOut ;
 import arq.cmdline.ModTime ;
-
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.mgt.Explain ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetException ;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class query extends CmdARQ
 {
@@ -167,7 +168,7 @@ public class query extends CmdARQ
     }
 
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary() { return getCommandName()+" --data=<file> --query=<query>" ; }

@@ -17,15 +17,13 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.Collection ;
+import java.util.List ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.core.Var;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.sparql.core.Var ;
 
 /**
  * Handler for a dataset.
@@ -104,41 +102,28 @@ public class DatasetHandler implements Handler {
 	 * @param values The values to set.
 	 * @param fieldName The field name in Query that contain a list of strings.
 	 */
-	private void setVars(Map<Var, Node> values, String fieldName) {
-		if (values.isEmpty()) {
+	private void setVars(Map<Var, Node> values, List<String> lst) {
+		if (values.isEmpty() || lst == null || lst.isEmpty() ) {
 			return;
 		}
-		try {
-			Field f = Query.class.getDeclaredField(fieldName);
-			f.setAccessible(true);
-			@SuppressWarnings("unchecked")
-			List<String> orig = (List<String>) f.get(query);
-			List<String> lst = null;
-			if (orig != null) {
-				lst = new ArrayList<String>();
-				for (String s : orig) {
-					Node n = null;
-					if (s.startsWith("?")) {
-						Var v = Var.alloc(s.substring(1));
-						n = values.get(v);
-					}
-					lst.add(n == null ? s : n.toString());
-				}
-				f.set(query, lst);
+		
+		for (int i =0;i<lst.size();i++)
+		{
+			String s = lst.get(i);
+			Node n = null;
+			if (s.startsWith("?")) {
+				Var v = Var.alloc(s.substring(1));
+				n = values.get(v);
+				lst.set( i , n == null ? s : n.toString());
 			}
-		} catch (NoSuchFieldException e) {
-			throw new IllegalStateException(e.getMessage(), e);
-		} catch (SecurityException e) {
-			throw new IllegalStateException(e.getMessage(), e);
-		} catch (IllegalAccessException e) {
-			throw new IllegalStateException(e.getMessage(), e);
 		}
+		
 	}
 
 	@Override
 	public void setVars(Map<Var, Node> values) {
-		setVars(values, "namedGraphURIs");
-		setVars(values, "graphURIs");
+		setVars(values, query.getNamedGraphURIs());
+		setVars(values, query.getGraphURIs());
 	}
 
 	@Override

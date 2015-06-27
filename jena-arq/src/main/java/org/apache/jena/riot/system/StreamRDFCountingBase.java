@@ -18,10 +18,9 @@
 
 package org.apache.jena.riot.system ;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Quad ;
 
 /** Wrap another StreamRDF and provide counts of items */
 public class StreamRDFCountingBase extends StreamRDFWrapper implements StreamRDF, StreamRDFCounting {

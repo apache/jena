@@ -24,27 +24,35 @@ import java.util.Set ;
 import java.util.zip.GZIPOutputStream ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.fuseki.server.FusekiServer ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.util.Utils ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Transactional ;
+import org.apache.jena.sparql.core.TransactionalNull ;
 
 /** Perform a backup */ 
 public class Backup
 {
-    public static final String BackupArea = "backups" ;
-
     public static String chooseFileName(String dsName) {
-        FileOps.ensureDir(BackupArea) ;
-        final String ds = dsName.startsWith("/") ? dsName : "/" + dsName ;
-    
-        String timestamp = Utils.nowAsString("yyyy-MM-dd_HH-mm-ss") ;
-        final String filename = BackupArea + ds + "_" + timestamp ;
+        // Without the "/" - ie. a relative name.
+        String ds = dsName ;
+        if ( ds.startsWith("/") )
+            ds = ds.substring(1) ;
+        if ( ds.contains("/") ) {
+            Fuseki.adminLog.warn("Dataset name: weird format: "+dsName) ;
+            // Some kind of fixup
+            ds = ds.replace("/",  "_") ;
+        }
+
+        String timestamp = DateTimeUtils.nowAsString("yyyy-MM-dd_HH-mm-ss") ;
+        String filename = ds + "_" + timestamp ;
+        filename = FusekiServer.dirBackups.resolve(filename).toString() ;
         return filename ;
     }
     
@@ -52,7 +60,26 @@ public class Backup
     // same dataset multiple times at the same time. 
     private static Set<DatasetGraph> activeBackups = new HashSet<>() ;
     
-    public static void backup(DatasetGraph dsg, String backupfile) {
+    /** Perform a backup.
+     *  A backup is a dump of the datset in comrpessed N-Quads, done inside a transaction.
+     */
+    public static void backup(Transactional transactional, DatasetGraph dsg, String backupfile) {
+        if ( transactional == null )
+            transactional = new TransactionalNull() ;
+        transactional.begin(ReadWrite.READ);
+        try {
+            Backup.backup(dsg, backupfile) ;
+        }
+        finally {
+            transactional.end() ;
+        }
+    }
+    
+    /** Perform a backup.
+     * 
+     * @see #backup(Transactional, DatasetGraph, String)
+     */
+    private static void backup(DatasetGraph dsg, String backupfile) {
         if ( !backupfile.endsWith(".nq") )
             backupfile = backupfile + ".nq" ;
 
@@ -78,7 +105,6 @@ public class Backup
                 out = new FileOutputStream(backupfile) ;
                 out = new BufferedOutputStream(out) ;
             }
-
             RDFDataMgr.write(out, dsg, Lang.NQUADS) ;
             out.close() ;
             out = null ;

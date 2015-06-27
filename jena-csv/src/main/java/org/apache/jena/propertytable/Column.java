@@ -19,7 +19,7 @@ package org.apache.jena.propertytable;
 
 import java.util.List;
 
-import com.hp.hpl.jena.graph.Node;
+import org.apache.jena.graph.Node ;
 
 /**
  * Each Column of the PropertyTable has an unique columnKey Node of the predicate (or p for short).

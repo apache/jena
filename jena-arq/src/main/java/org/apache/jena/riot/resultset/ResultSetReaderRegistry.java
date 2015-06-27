@@ -31,16 +31,15 @@ import java.util.Map ;
 import java.util.Objects ;
 
 import org.apache.jena.atlas.lib.NotImplemented ;
+import org.apache.jena.query.ResultSet ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.thrift.BinRDF ;
-
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.sparql.resultset.CSVInput ;
-import com.hp.hpl.jena.sparql.resultset.JSONInput ;
-import com.hp.hpl.jena.sparql.resultset.TSVInput ;
-import com.hp.hpl.jena.sparql.resultset.XMLInput ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.resultset.CSVInput ;
+import org.apache.jena.sparql.resultset.JSONInput ;
+import org.apache.jena.sparql.resultset.TSVInput ;
+import org.apache.jena.sparql.resultset.XMLInput ;
+import org.apache.jena.sparql.util.Context ;
 
 public class ResultSetReaderRegistry {
     

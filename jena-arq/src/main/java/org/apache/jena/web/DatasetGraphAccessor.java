@@ -18,8 +18,8 @@
 
 package org.apache.jena.web;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
 
 public interface DatasetGraphAccessor
 {

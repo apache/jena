@@ -20,12 +20,16 @@ package arq.cmdline;
 
 import java.util.List ;
 
-import arq.cmd.CmdException ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMainQuad ;
-import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
-import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRefQuad ;
+import org.apache.jena.sparql.engine.main.QueryEngineMain ;
+import org.apache.jena.sparql.engine.main.QueryEngineMainQuad ;
+import org.apache.jena.sparql.engine.ref.QueryEngineRef ;
+import org.apache.jena.sparql.engine.ref.QueryEngineRefQuad ;
 
 
 public class ModEngine extends ModBase
@@ -59,65 +63,48 @@ public class ModEngine extends ModBase
     public void processArgs(CmdArgModule cmdLine)
     {
        
-        List<String> x = cmdLine.getValues(engineDecl) ;
+        List<String> engineDecls = cmdLine.getValues(engineDecl) ;
         
 //        if ( x.size() > 0 )
 //            QueryEngineRegistry.get().factories().clear() ;
 
-        for ( String engineName : x )
+        for ( String engineName : engineDecls )
         {
-            if ( engineName.equalsIgnoreCase( "ref" ) || engineName.equalsIgnoreCase( "reference" ) )
-            {
-                QueryEngineRef.register();
-                continue;
-            }
+			switch (engineName.toLowerCase()) {
+				case "reference":
+				case "ref":
+					QueryEngineRef.register();
+					continue;
+				case "refQuad":
+					QueryEngineRefQuad.register();
+					continue;
+				case "main":
+					QueryEngineMain.register();
+					continue;
+				case "quad":
+					QueryEngineMainQuad.register();
+					continue;
+				}
+			throw new CmdException("Engine name not recognized: " + engineName);
+		}
 
-            if ( engineName.equalsIgnoreCase( "refQuad" ) )
-            {
-                QueryEngineRefQuad.register();
-                continue;
-            }
-
-            if ( engineName.equalsIgnoreCase( "main" ) )
-            {
-                QueryEngineMain.register();
-                continue;
-            }
-
-            if ( engineName.equalsIgnoreCase( "quad" ) )
-            {
-                QueryEngineMainQuad.register();
-                continue;
-            }
-
-            throw new CmdException( "Engine name not recognized: " + engineName );
-        }
-
-        List<String> y = cmdLine.getValues(unEngineDecl) ;
-        for (String engineName : y)
+        List<String> unEngineDecls = cmdLine.getValues(unEngineDecl) ;
+        for (String engineName : unEngineDecls)
         {
-            if ( engineName.equalsIgnoreCase("ref") ||
-                 engineName.equalsIgnoreCase("reference") )
-            {
-                QueryEngineRef.unregister() ;
-                continue ;
-            }
-            if ( engineName.equalsIgnoreCase("refQuad") )
-            {
-                QueryEngineRefQuad.unregister() ;
-                continue ;
-            }
-            if ( engineName.equalsIgnoreCase("main") )
-            {
-                QueryEngineMain.unregister() ;
-                continue ;
-            }
-            if ( engineName.equalsIgnoreCase("main") )
-            {
-                QueryEngineMainQuad.unregister() ;
-                continue ;
-            }
-            throw new CmdException("Engine name not recognized: "+engineName) ;
+	        	switch (engineName.toLowerCase()) {
+				case "reference":
+				case "ref":
+					QueryEngineRef.register();
+					continue;
+				case "refQuad":
+					QueryEngineRefQuad.register();
+					continue;
+				case "main":
+					QueryEngineMain.register();
+					QueryEngineMainQuad.register();
+					continue;      
+	        }
+        		throw new CmdException("Engine name not recognized: "+engineName) ;
         }
     }
 }

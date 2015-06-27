@@ -26,8 +26,7 @@ import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.jena.hadoop.rdf.io.output.AbstractNodeTupleOutputFormat;
 import org.apache.jena.hadoop.rdf.io.output.writers.nquads.NQuadsWriter;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
-
-import com.hp.hpl.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * NQuads output format

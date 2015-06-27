@@ -18,7 +18,6 @@
 
 package org.apache.jena.hadoop.rdf.io.registry.readers;
 
-import java.io.IOException;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.jena.hadoop.rdf.io.input.readers.ntriples.WholeFileNTriplesReader;
@@ -32,7 +31,7 @@ public class NTriplesReaderFactory extends AbstractTriplesOnlyReaderFactory {
     }
 
     @Override
-    public RecordReader<LongWritable, TripleWritable> createTripleReader() throws IOException {
+    public RecordReader<LongWritable, TripleWritable> createTripleReader() {
         return new WholeFileNTriplesReader();
     }
 }

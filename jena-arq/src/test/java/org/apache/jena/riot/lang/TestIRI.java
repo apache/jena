@@ -18,9 +18,8 @@
 
 package org.apache.jena.riot.lang;
 
-import com.hp.hpl.jena.graph.Node ;
-
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.riot.ErrorHandlerTestLib ;
@@ -28,7 +27,6 @@ import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.apache.jena.riot.checker.CheckerIRI ;
 import org.apache.jena.riot.system.Checker ;
 import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.IRILib ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.junit.Test ;
 
@@ -73,39 +71,5 @@ public class TestIRI extends BaseTest
         Node n = RiotLib.createIRIorBNode("abc") ;
         assertTrue(n.isURI()) ;
         assertEquals("abc", n.getURI()) ;
-    }
-    
-    @Test public void fileIRI_1()
-    {
-        String uri = testFileIRI("D.ttl") ; 
-        assertTrue(uri.endsWith("D.ttl")) ;
-    }
-    
-    @Test public void fileIRI_2()
-    {
-        String uri = testFileIRI("file:/D.ttl") ; 
-        assertTrue(uri.endsWith("D.ttl")) ;
-    }
-    
-    @Test public void fileIRI_3()
-    {
-        String uri = testFileIRI("file://D.ttl") ; 
-        assertTrue(uri.endsWith("D.ttl")) ;
-    }
-
-    @Test public void fileIRI_4()
-    {
-        String iri = testFileIRI("file:///D.ttl") ;
-        // Even on windows, this is used as-is so no drive letter. 
-        assertEquals("file:///D.ttl", iri) ;
-    }
-    
-    private static String testFileIRI(String fn)
-    {
-        String uri1 = IRILib.filenameToIRI(fn) ;
-        assertTrue(uri1.startsWith("file:///")) ;
-        String uri2 = IRILib.filenameToIRI(uri1) ;
-        assertEquals(uri1, uri2) ;
-        return uri1 ;
     }
 }

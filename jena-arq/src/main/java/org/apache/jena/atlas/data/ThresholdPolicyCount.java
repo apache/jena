@@ -36,28 +36,18 @@ public class ThresholdPolicyCount<T> implements ThresholdPolicy<T>
         reset();
     }
 
-    /* (non-Javadoc)
-     * @see org.openjena.atlas.io.ThresholdPolicy#increment(java.lang.Object)
-     */
     @Override
     public void increment(T item)
     {
         count++;
     }
 
-    /* (non-Javadoc)
-     * @see org.openjena.atlas.io.ThresholdPolicy#isThresholdExceeded()
-     */
     @Override
     public boolean isThresholdExceeded()
     {
         return (count >= threshold);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.openjena.atlas.data.ThresholdPolicy#reset()
-     */
     @Override
     public void reset()
     {

@@ -19,16 +19,15 @@
 package arq.examples.riot;
 
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.out.SinkTripleOutput ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFBase ;
 import org.apache.jena.riot.system.SyntaxLabels ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.Property ;
-import com.hp.hpl.jena.sparql.vocabulary.FOAF ;
+import org.apache.jena.sparql.vocabulary.FOAF ;
 
 /** Example of using RIOT : extract only certain properties from a parser run */ 
 public class ExRIOT_4

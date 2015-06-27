@@ -18,8 +18,8 @@
 
 package org.apache.jena.atlas.data ;
 
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.sparql.util.Context ;
 
 public class ThresholdPolicyFactory
 {
@@ -65,12 +65,12 @@ public class ThresholdPolicyFactory
     }
 
     /**
-     * A threshold policy based on the {@link com.hp.hpl.jena.query.ARQ#spillToDiskThreshold} symbol in the given Context.
+     * A threshold policy based on the {@link org.apache.jena.query.ARQ#spillToDiskThreshold} symbol in the given Context.
      * If the symbol is not set, then the {@link #never()} policy is used by default.
      */
     public static <E> ThresholdPolicy<E> policyFromContext(Context context)
     {
-        long threshold = (Long) context.get(ARQ.spillToDiskThreshold, defaultThreshold) ;
+        long threshold = context.getLong(ARQ.spillToDiskThreshold, defaultThreshold) ;
         if ( threshold >= 0 )
         {
             return count(threshold);

@@ -18,7 +18,10 @@
 
 package arq.cmdline;
 
-import com.hp.hpl.jena.query.Dataset ;
+import jena.cmd.ModBase;
+
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 
 public abstract class ModDataset extends ModBase
 {
@@ -29,12 +32,14 @@ public abstract class ModDataset extends ModBase
     
     final
     public Dataset getDataset()
-    {
-        if ( ! createAttempted )
+    { if ( ! createAttempted )
             dataset = createDataset() ;
         createAttempted = true ;
         return dataset ;
     }
     
+    public DatasetGraph getDatasetGraph()
+    { return dataset.asDatasetGraph() ; }
+
     public abstract Dataset createDataset() ; 
 }

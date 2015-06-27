@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.langsuite;
 
-import com.hp.hpl.jena.sparql.junit.EarlReport ;
+import org.apache.jena.sparql.junit.EarlReport ;
 
 public class UnitTestSurpressed extends LangTestCase
 {

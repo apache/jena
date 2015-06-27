@@ -18,9 +18,9 @@
 
 package org.apache.jena.query.text.assembler;
 
-import com.hp.hpl.jena.rdf.model.Property ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.tdb.assembler.Vocab ;
+import org.apache.jena.rdf.model.Property ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.tdb.assembler.Vocab ;
 
 public class TextVocab
 {
@@ -36,8 +36,10 @@ public class TextVocab
     public static final Resource textIndex          = Vocab.resource(NS, "TextIndex") ;
     public static final Resource textIndexSolr      = Vocab.resource(NS, "TextIndexSolr") ;
     public static final Resource textIndexLucene    = Vocab.resource(NS, "TextIndexLucene") ;
+    public static final Property pLanguage          = Vocab.property(NS, "language") ;
     public static final Property pServer            = Vocab.property(NS, "server") ;            // Solr
     public static final Property pDirectory         = Vocab.property(NS, "directory") ;         // Lucene
+    public static final Property pMultilingualSupport   = Vocab.property(NS, "multilingualSupport") ;
     public static final Property pQueryAnalyzer     = Vocab.property(NS, "queryAnalyzer") ;
     public static final Property pEntityMap         = Vocab.property(NS, "entityMap") ;
     
@@ -45,6 +47,9 @@ public class TextVocab
     public static final Resource entityMap          = Vocab.resource(NS, "EntityMap") ;
     public static final Property pEntityField       = Vocab.property(NS, "entityField") ;
     public static final Property pDefaultField      = Vocab.property(NS, "defaultField") ;
+    public static final Property pGraphField        = Vocab.property(NS, "graphField") ;
+    public static final Property pLangField         = Vocab.property(NS, "langField") ;
+    public static final Property pUidField          = Vocab.property(NS, "uidField") ;
     public static final Property pMap               = Vocab.property(NS, "map") ;
     public static final Property pField             = Vocab.property(NS, "field") ;
     public static final Property pPredicate         = Vocab.property(NS, "predicate") ;
@@ -57,6 +62,7 @@ public class TextVocab
     public static final Resource simpleAnalyzer     = Vocab.resource(NS, "SimpleAnalyzer");
     public static final Resource keywordAnalyzer    = Vocab.resource(NS, "KeywordAnalyzer");
     public static final Resource lowerCaseKeywordAnalyzer    = Vocab.resource(NS, "LowerCaseKeywordAnalyzer");
+    public static final Resource localizedAnalyzer    = Vocab.resource(NS, "LocalizedAnalyzer");
 
 }
 

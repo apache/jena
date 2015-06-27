@@ -18,14 +18,13 @@
 
 package org.apache.jena.jdbc.mem.metadata;
 
-import java.sql.SQLException;
+import java.sql.SQLException ;
 
-import org.apache.jena.jdbc.JenaJDBC;
-import org.apache.jena.jdbc.connections.DatasetConnection;
-import org.apache.jena.jdbc.metadata.DatasetMetadata;
-
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.util.Version;
+import org.apache.jena.atlas.lib.Version ;
+import org.apache.jena.jdbc.JenaJDBC ;
+import org.apache.jena.jdbc.connections.DatasetConnection ;
+import org.apache.jena.jdbc.metadata.DatasetMetadata ;
+import org.apache.jena.query.ARQ ;
 
 /**
  * Connection metadata for in-memory datasets
@@ -50,22 +49,22 @@ public class MemDatasetMetadata extends DatasetMetadata {
     }
 
     @Override
-    public int getDatabaseMajorVersion() throws SQLException {
+    public int getDatabaseMajorVersion() {
         return 2;
     }
 
     @Override
-    public int getDatabaseMinorVersion() throws SQLException {
+    public int getDatabaseMinorVersion() {
         return 10;
     }
 
     @Override
-    public String getDatabaseProductName() throws SQLException {
+    public String getDatabaseProductName() {
         return "Apache Jena - ARQ - In-Memory";
     }
 
     @Override
-    public String getDatabaseProductVersion() throws SQLException {
+    public String getDatabaseProductVersion() {
         return arq.toString();
     }
 
@@ -80,28 +79,28 @@ public class MemDatasetMetadata extends DatasetMetadata {
     }
 
     @Override
-    public String getDriverName() throws SQLException {
+    public String getDriverName() {
         return "Apache Jena - JDBC - In-Memory Driver";
     }
 
     @Override
-    public String getDriverVersion() throws SQLException {
+    public String getDriverVersion() {
         return jdbc.toString();
     }
 
     @Override
-    public String getURL() throws SQLException {
+    public String getURL() {
         return "http://jena.apache.org";
     }
 
     @Override
-    public boolean usesLocalFilePerTable() throws SQLException {
+    public boolean usesLocalFilePerTable() {
         // In-Memory database doesn't use files
         return false;
     }
 
     @Override
-    public boolean usesLocalFiles() throws SQLException {
+    public boolean usesLocalFiles() {
         // In-Memory database doesn't use files
         return false;
     }

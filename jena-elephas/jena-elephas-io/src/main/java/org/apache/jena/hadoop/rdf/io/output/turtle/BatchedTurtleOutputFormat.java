@@ -21,11 +21,10 @@ package org.apache.jena.hadoop.rdf.io.output.turtle;
 import java.io.Writer;
 
 import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.io.output.AbstractBatchedNodeTupleOutputFormat;
 import org.apache.jena.hadoop.rdf.io.output.writers.turtle.BatchedTurtleWriter;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
-
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * Output format for Turtle that uses a batched approach, note that this will

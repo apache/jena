@@ -42,12 +42,11 @@ import java.sql.Types;
 import java.util.Calendar;
 import java.util.Map;
 
+import org.apache.jena.graph.Node ;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.statements.JenaStatement;
 import org.apache.jena.jdbc.utils.JdbcNodeUtils;
-
-import com.hp.hpl.jena.graph.Node;
 
 /**
  * Abstract implementation of a JDBC Result Set which makes all update methods
@@ -117,7 +116,7 @@ public abstract class JenaResultSet implements ResultSet {
     }
 
     @Override
-    public final void clearWarnings() throws SQLException {
+    public final void clearWarnings() {
         this.warnings = null;
     }
 
@@ -127,12 +126,12 @@ public abstract class JenaResultSet implements ResultSet {
     }
 
     @Override
-    public final int getHoldability() throws SQLException {
+    public final int getHoldability() {
         return this.holdability;
     }
 
     @Override
-    public final int getConcurrency() throws SQLException {
+    public final int getConcurrency() {
         return ResultSet.CONCUR_READ_ONLY;
     }
 
@@ -675,7 +674,7 @@ public abstract class JenaResultSet implements ResultSet {
     }
 
     @Override
-    public Statement getStatement() throws SQLException {
+    public Statement getStatement() {
         return this.statement;
     }
 
@@ -712,7 +711,7 @@ public abstract class JenaResultSet implements ResultSet {
     }
 	
     @Override
-    public final SQLWarning getWarnings() throws SQLException {
+    public final SQLWarning getWarnings() {
         return this.warnings;
     }
 
@@ -775,22 +774,22 @@ public abstract class JenaResultSet implements ResultSet {
     }
 
     @Override
-    public void refreshRow() throws SQLException {
+    public void refreshRow() {
         // No-op
     }
 
     @Override
-    public boolean rowDeleted() throws SQLException {
+    public boolean rowDeleted() {
         return false;
     }
 
     @Override
-    public boolean rowInserted() throws SQLException {
+    public boolean rowInserted() {
         return false;
     }
 
     @Override
-    public boolean rowUpdated() throws SQLException {
+    public boolean rowUpdated() {
         return false;
     }
 
@@ -1210,7 +1209,7 @@ public abstract class JenaResultSet implements ResultSet {
     }
 
     @Override
-    public boolean wasNull() throws SQLException {
+    public boolean wasNull() {
         return this.wasNull;
     }
 

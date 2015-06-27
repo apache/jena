@@ -18,7 +18,7 @@
 
 package arq;
 
-import arq.cmdline.ModVersion ;
+import jena.cmd.ModVersion;
 
 public class version
 {

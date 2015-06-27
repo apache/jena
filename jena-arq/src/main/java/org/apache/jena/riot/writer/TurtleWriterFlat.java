@@ -19,11 +19,10 @@
 package org.apache.jena.riot.writer;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.graph.Graph ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.StreamOps ;
 import org.apache.jena.riot.system.StreamRDF ;
-
-import com.hp.hpl.jena.graph.Graph ;
 
 /** Write Turtle with omne triple on one line with prefixed names, with short form literals (e.g. integers) */   
 public class TurtleWriterFlat extends TurtleWriterBase

@@ -19,7 +19,8 @@
 package org.apache.jena.riot ;
 
 import static org.apache.jena.riot.RDFLanguages.THRIFT ;
-import org.apache.jena.atlas.lib.Lib ;
+
+import java.util.Objects;
 
 /** Constants for writable formats */
 public class RDFFormat {
@@ -144,9 +145,9 @@ public class RDFFormat {
         if ( getClass() != obj.getClass() )
             return false ;
         RDFFormat other = (RDFFormat)obj ;
-        if ( !Lib.equal(lang, other.lang) )
+        if ( !Objects.equals(lang, other.lang) )
             return false ;
-        if ( !Lib.equal(variant, other.variant) )
+        if ( !Objects.equals(variant, other.variant) )
             return false ;
         return true ;
     }

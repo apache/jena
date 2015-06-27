@@ -50,14 +50,14 @@ public abstract class AbstractNodeOutputFormat<TValue> extends FileOutputFormat<
     private static final Logger LOG = LoggerFactory.getLogger(AbstractNodeOutputFormat.class);
 
     @Override
-    public RecordWriter<NodeWritable, TValue> getRecordWriter(TaskAttemptContext context) throws IOException, InterruptedException {
+    public RecordWriter<NodeWritable, TValue> getRecordWriter(TaskAttemptContext context) throws IOException {
         Configuration config = context.getConfiguration();
         boolean isCompressed = getCompressOutput(context);
         CompressionCodec codec = null;
         String extension = this.getFileExtension();
         if (isCompressed) {
             Class<? extends CompressionCodec> codecClass = getOutputCompressorClass(context, GzipCodec.class);
-            codec = (CompressionCodec) ReflectionUtils.newInstance(codecClass, config);
+            codec = ReflectionUtils.newInstance(codecClass, config);
             extension += codec.getDefaultExtension();
         }
         Path file = getDefaultWorkFile(context, extension);

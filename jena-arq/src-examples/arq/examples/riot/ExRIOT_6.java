@@ -21,12 +21,11 @@ package arq.examples.riot;
 import java.util.concurrent.ExecutorService ;
 import java.util.concurrent.Executors ;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.lang.PipedRDFIterator ;
 import org.apache.jena.riot.lang.PipedRDFStream ;
 import org.apache.jena.riot.lang.PipedTriplesStream ;
-
-import com.hp.hpl.jena.graph.Triple ;
 
 /**
  * Example of using RIOT : iterate over output of parser run using a

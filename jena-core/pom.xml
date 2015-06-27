@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
    Licensed to the Apache Software Foundation (ASF) under one or more
    contributor license agreements.  See the NOTICE file distributed with
@@ -16,17 +17,18 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jena-core</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - Core</name>
-  <version>2.13.0-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>12-SNAPSHOT</version>
+    <version>14-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 
@@ -51,25 +53,61 @@
     </dependency>
 
     <dependency>
-       <groupId>org.apache.jena</groupId>
-       <artifactId>jena-iri</artifactId>
-       <version>1.1.2-SNAPSHOT</version>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-iri</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
     </dependency>
+    
+     <dependency> 
+       <artifactId>commons-cli</artifactId> 
+       <groupId>commons-cli</groupId> 
+     </dependency> 
 
+    <dependency>
+      <groupId>org.xenei</groupId>
+      <artifactId>junit-contracts</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.xenei</groupId>
+      <artifactId>contract-test-maven-plugin</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-base</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-base</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
-  
+
     <resources>
 
       <!-- Legacy -->
       <resource>
-	<directory>etc</directory>
+        <directory>etc</directory>
         <targetPath>etc</targetPath>
         <filtering>false</filtering>
       </resource>
@@ -88,7 +126,7 @@
       </resource>
 
     </resources>
-  
+
     <plugins>
 
       <plugin>
@@ -108,6 +146,7 @@
           </systemProperties>
           <includes>
             <include>com/hp/hpl/jena/test/TestPackage.java</include>
+            <include>**/*_CS.java</include>
           </includes>
         </configuration>
       </plugin>
@@ -120,7 +159,7 @@
             <id>attach-sources</id>
             <phase>package</phase>
             <goals>
-	      <goal>jar-no-fork</goal>
+              <goal>jar-no-fork</goal>
             </goals>
           </execution>
           <execution>
@@ -179,22 +218,65 @@
         </executions>
       </plugin>
 
-      <!--
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-      </plugin>
-      <!- - see: http://maven.apache.org/guides/mini/guide-attached-tests.html - ->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
+        <groupId>org.xenei</groupId>
+        <artifactId>contract-test-maven-plugin</artifactId>
+        <version>0.1.2</version>
+        <configuration>
+          <packages>
+            <package>org.apache.jena.assembler</package>
+            <package>org.apache.jena.datatypes</package>
+            <package>org.apache.jena.enhanced</package>
+            <package>org.apache.jena.graph</package>
+            <package>org.apache.jena.mem</package>
+            <package>org.apache.jena.n3</package>
+            <package>org.apache.jena.ontology</package>
+            <package>org.apache.jena.rdf</package>
+            <package>org.apache.jena.rdfxml</package>
+            <package>org.apache.jena.reasoner</package>
+            <package>org.apache.jena.shared</package>
+            <package>org.apache.jena.util</package>
+            <package>org.apache.jena.vocabulary</package>
+          </packages>
+          <skipFilter>Wildcard( *.test.* )</skipFilter>
+          <unimplemented>
+            <report>true</report>
+            <failOnError>false</failOnError>
+          </unimplemented>
+          <untested>
+            <report>true</report>
+            <failOnError>false</failOnError>
+          </untested>
+          <errors>
+            <report>true</report>
+            <failOnError>false</failOnError>
+          </errors>
+        </configuration>
         <executions>
           <execution>
             <goals>
-              <goal>test-jar</goal>
+              <goal>contract-test</goal>
             </goals>
           </execution>
         </executions>
+      </plugin>
+      
+      <!--
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-resources-plugin</artifactId>
+      </plugin>
+      <!- - see: http://maven.apache.org/guides/mini/guide-attached-tests.html - ->
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-jar-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <goals>
+	      <goal>test-jar</goal>
+	    </goals>
+	  </execution>
+	</executions>
       </plugin>
       -->
     </plugins>

@@ -7,7 +7,7 @@
 
 # Test assembler;  An unformatted, in-memory HSQLDB store.
 
-[] ja:loadClass "com.hp.hpl.jena.sdb.SDB" .
+[] ja:loadClass "org.apache.jena.sdb.SDB" .
 
 <#store> rdf:type sdb:Store ;
     sdb:layout      "layout2" ;

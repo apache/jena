@@ -81,7 +81,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         @Override protected boolean allowREST_R(HttpAction action)   { return isEnabled(action, OperationName.GSP_R) || isEnabled(action, OperationName.GSP) ; }
         @Override protected boolean allowREST_W(HttpAction action)   { return isEnabled(action, OperationName.GSP) ; }
         // Quad operations tied to presence/absence of GSP.
-        @Override protected boolean allowQuadsR(HttpAction action)   { return isEnabled(action, OperationName.GSP_R) ; }
+        @Override protected boolean allowQuadsR(HttpAction action)   { return isEnabled(action, OperationName.GSP_R) || isEnabled(action, OperationName.GSP) ; }
         @Override protected boolean allowQuadsW(HttpAction action)   { return isEnabled(action, OperationName.GSP) ; }
 
         // Test whether there is a configuration that allows this action as the operation given.
@@ -185,10 +185,30 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         boolean hasTrailing = ( trailing.length() != 0 ) ;
         
         if ( !hasTrailing && !hasParams ) {
-            // Check enabled.  But no trailing here.
-            // if ( serviceDispatch(action, desc.readWriteGraphStore, trailing, restQuads_RW) ) return ;
-            // if ( serviceDispatch(action, desc.readGraphStore, trailing, restQuads_R) ) return ;
-            restQuads_RW.executeLifecycle(action) ;
+            // REST quads operations.
+//            if ( serviceDispatch(action, OperationName.GSP_R, restQuads_R) ) return ;
+//            if ( serviceDispatch(action, OperationName.GSP, restQuads_RW) ) return ;
+            
+//            boolean isPOST = method.equals(HttpNames.METHOD_POST) ;
+//            if ( isPOST ) {
+//                // Differentiate SPARQL query, SPARQL update by content type.
+//            }
+            
+            // REST dataset.
+            boolean isGET = method.equals(HttpNames.METHOD_GET) ;
+            boolean isHEAD = method.equals(HttpNames.METHOD_HEAD) ;
+            
+            // Check enabled.
+            if ( isGET || isHEAD ) {
+                if ( allowREST_R(action) )
+                    restQuads_R.executeLifecycle(action) ;
+                else
+                    ServletOps.errorForbidden("Forbidden: "+method+" on dataset") ;
+            }
+            if ( allowREST_W(action) )
+                restQuads_RW.executeLifecycle(action) ;
+            else
+                ServletOps.errorForbidden("Forbidden: "+method+" on dataset") ;
             return ;
         }
         
@@ -253,6 +273,26 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         doGraphStoreProtocol(action) ;
     }
     
+    /** See if the operation is enabled for this setup.
+     * Return true if dispatched 
+     */
+    private boolean serviceDispatch(HttpAction action, OperationName opName, ActionSPARQL servlet) {
+        Endpoint operation = action.getEndpoint() ;
+        if ( operation == null )
+            return false ;
+        if ( ! operation.isType(opName) ) 
+            return false ;
+        // Handle OPTIONS specially.
+//        if ( action.getRequest().getMethod().equals(HttpNames.METHOD_OPTIONS) ) {
+//            // See also ServletBase.CORS_ENABLED
+//            //action.log.info(format("[%d] %s", action.id, action.getMethod())) ;
+//            setCommonHeadersForOptions(action.getResponse()) ;
+//            ServletOps.success(action);
+//            return true ;
+//        }
+        executeRequest(action, servlet) ;
+        return true ;
+    }
     private String printName(String x) {
         if ( x.startsWith("/") )
             return x.substring(1) ;
@@ -287,7 +327,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
 
     private void executeRequest(HttpAction action, ActionSPARQL servlet) {
         servlet.executeLifecycle(action) ;
-//      // Forwarded dispatch.
+        // A call to "doCommon" or a forwarded dispatch looses "action".
 //      try
 //      {
 //          String target = getEPName(desc.name, endpointList) ;
@@ -309,19 +349,6 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         if ( mt.getCharset() != null )
         action.response.setCharacterEncoding(mt.getCharset()) ;
         return mt ;
-    }
-
-    /** return true if dispatched 
-     * @param opName 
-     */
-    private boolean serviceDispatch(HttpAction action, OperationName opName, ActionSPARQL servlet) {
-        Endpoint operation = action.getEndpoint() ;
-        if ( operation == null )
-            return false ;
-        if ( ! operation.isType(opName) ) 
-            return false ;
-        servlet.executeLifecycle(action) ;
-        return true ;
     }
 
     /** Find part after the dataset name: service name or the graph (direct naming) */ 

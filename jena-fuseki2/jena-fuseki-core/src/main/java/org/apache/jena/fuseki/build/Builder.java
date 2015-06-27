@@ -21,6 +21,8 @@ package org.apache.jena.fuseki.build;
 import static java.lang.String.format ;
 import static org.apache.jena.fuseki.FusekiLib.nodeLabel ;
 import static org.apache.jena.fuseki.FusekiLib.query ;
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.FusekiLib ;
@@ -28,20 +30,16 @@ import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataService ;
 import org.apache.jena.fuseki.server.Endpoint ;
 import org.apache.jena.fuseki.server.OperationName ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.QuerySolution ;
+import org.apache.jena.query.ResultSet ;
+import org.apache.jena.rdf.model.Literal ;
+import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.vocabulary.RDF ;
 import org.slf4j.Logger ;
-
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.rdf.model.Literal ;
-import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.vocabulary.RDF ;
 public class Builder
 {
     private static Logger log = Fuseki.builderLog ;
@@ -75,8 +73,7 @@ public class Builder
             throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
         Dataset ds = (Dataset)Assembler.general.open(datasetDesc) ;
         // In case the assembler included ja:contents
-        TDB.sync(ds) ;
-        DataService dataService = new DataService(null, ds.asDatasetGraph()) ;
+        DataService dataService = new DataService(ds.asDatasetGraph()) ;
         addServiceEP(dataService, OperationName.Query,  svc,    "fu:serviceQuery") ;
         addServiceEP(dataService, OperationName.Update, svc,    "fu:serviceUpdate") ;
         addServiceEP(dataService, OperationName.Upload, svc,    "fu:serviceUpload") ;
@@ -102,7 +99,7 @@ public class Builder
     
     /** Build a DataService starting at Resource svc */
     public static DataService buildDataService(DatasetGraph dsg, boolean allowUpdate) {
-        DataService dataService = new DataService(null, dsg) ;
+        DataService dataService = new DataService(dsg) ;
         addServiceEP(dataService, OperationName.Query, "query") ;
         addServiceEP(dataService, OperationName.Query, "sparql") ;
         if ( ! allowUpdate ) {

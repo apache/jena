@@ -20,33 +20,34 @@ package arq;
 
 import java.io.File ;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+import jena.cmd.TerminationException;
 import junit.framework.TestSuite ;
-import arq.cmd.CmdException ;
-import arq.cmd.TerminationException ;
-import arq.cmdline.ArgDecl ;
+
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.rdf.model.Literal ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sparql.ARQTestSuite ;
+import org.apache.jena.sparql.expr.E_Function ;
+import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.sparql.junit.EarlReport ;
+import org.apache.jena.sparql.junit.ScriptTestSuiteFactory ;
+import org.apache.jena.sparql.junit.SimpleTestRunner ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
+import org.apache.jena.sparql.vocabulary.DOAP ;
+import org.apache.jena.sparql.vocabulary.FOAF ;
+import org.apache.jena.sparql.vocabulary.TestManifest ;
+import org.apache.jena.vocabulary.DC ;
+import org.apache.jena.vocabulary.DCTerms ;
+import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.XSD ;
+
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModEngine ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.rdf.model.Literal ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.ARQTestSuite ;
-import com.hp.hpl.jena.sparql.expr.E_Function ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.junit.EarlReport ;
-import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
-import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
-import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.sparql.vocabulary.DOAP ;
-import com.hp.hpl.jena.sparql.vocabulary.FOAF ;
-import com.hp.hpl.jena.sparql.vocabulary.TestManifest ;
-import com.hp.hpl.jena.vocabulary.DC ;
-import com.hp.hpl.jena.vocabulary.DCTerms ;
-import com.hp.hpl.jena.vocabulary.RDF ;
-import com.hp.hpl.jena.vocabulary.XSD ;
 
 
 /** A program to execute query test suites
@@ -113,7 +114,7 @@ public class qtest extends CmdARQ
     }
     
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary() { return getCommandName()+" [ --data=<file> --query=<query> --result=<results> ] | --all | --dawg | <manifest>" ; }

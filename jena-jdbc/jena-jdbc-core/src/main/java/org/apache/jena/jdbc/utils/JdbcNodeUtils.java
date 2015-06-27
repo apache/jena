@@ -27,10 +27,10 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
-import com.hp.hpl.jena.vocabulary.XSD;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
+import org.apache.jena.vocabulary.XSD ;
 
 /**
  * Class with helpful utility methods for Jena JDBC

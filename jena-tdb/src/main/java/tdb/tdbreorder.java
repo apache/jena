@@ -21,22 +21,21 @@ package tdb;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.logging.LogCtl ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.engine.optimizer.StatsMatcher ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformationSubstitution ;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.sse.writers.WriterNode ;
-import com.hp.hpl.jena.tdb.sys.Names ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.shared.impl.PrefixMappingImpl ;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.op.OpBGP ;
+import org.apache.jena.sparql.algebra.op.OpQuadPattern ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.engine.optimizer.StatsMatcher ;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformationSubstitution ;
+import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.sse.writers.WriterNode ;
+import org.apache.jena.tdb.sys.Names ;
 
 public class tdbreorder
 {

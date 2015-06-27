@@ -18,8 +18,8 @@
 
 package org.apache.jena.riot.system;
 
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.core.Quad ;
 
 /** Take one item from a StreamRDF and present as a StreamRowRDF
  *  @see StreamRDF

@@ -23,15 +23,14 @@ import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 
 /** System-level testing of the parsers - testing the parser plumbing, not the language details */
 public class TestParserFactory extends BaseTest

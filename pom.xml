@@ -23,13 +23,14 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>2.13.0-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
 
   <!-- Needed for -Papache-release -->
+  <!-- The org.apache:apache version is also in jena-parent pom.xml -->
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>13</version>
+    <version>16</version>
     <relativePath />
   </parent>
 
@@ -63,14 +64,19 @@
       <!-- The maven artifacts of the basic modules -->
       <modules>
         <module>jena-parent</module>
+	<!-- <module>jena-shared-guava</module> -->
 	<!-- <module>jena-iri</module> -->
-        <module>jena-core</module>
+	<module>jena-base</module>
+
+	<module>jena-core</module>
         <module>jena-arq</module>
-        <module>jena-tdb</module>
-        <!--<module>jena-fuseki</module>-->
+        <module>jena-tdb</module> 
+	<module>apache-jena-libs</module>
+
+        <!--<module>jena-fuseki1</module>-->
 	<module>jena-fuseki2</module>
 
-	<!-- <module>jena-security</module> Lots of output and warnings -->
+	<module>jena-permissions</module>
 
         <!-- Slow to build - exclude from dev build -->
         <!-- <module>jena-jdbc</module>           -->
@@ -78,7 +84,7 @@
         <!-- <module>apache-jena-libs</module>    -->
         <!-- <module>apache-jena</module>         -->
         <!-- <module>jena-elephas</module> -->
-        <module>jena-extras</module>
+	<!-- <module>jena-extras</module> -->
       </modules>
     </profile>
 
@@ -97,11 +103,14 @@
       </activation>
       <modules>
         <module>jena-parent</module>
+        <module>jena-shaded-guava</module>
         <module>jena-iri</module>
-        <module>jena-core</module>
+        <module>jena-base</module>
 
+        <module>jena-core</module>
         <module>jena-arq</module>
         <module>jena-tdb</module>
+        <module>apache-jena-libs</module>
 
         <module>jena-text</module>
         <module>jena-spatial</module>
@@ -109,18 +118,16 @@
 
         <module>jena-sdb</module>
 
-        <module>jena-fuseki</module>
+        <module>jena-fuseki1</module>
         <module>jena-fuseki2</module>
-	<module>jena-security</module>
+	<!-- TEMP <module>jena-permissions</module> -->
 
         <module>jena-jdbc</module>
         <module>jena-maven-tools</module>
-        
         <module>jena-elephas</module>
-
-        <module>apache-jena-libs</module>
         <module>apache-jena</module>
         <module>apache-jena-osgi</module>
+
         <module>jena-extras</module>
       </modules>
     </profile>

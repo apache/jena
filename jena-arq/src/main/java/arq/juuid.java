@@ -18,16 +18,12 @@
 
 package arq;
 
-import arq.cmdline.ArgDecl ;
-import arq.cmdline.CmdArgModule ;
-import arq.cmdline.CmdGeneral ;
-import arq.cmdline.ModBase ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
-import com.hp.hpl.jena.shared.uuid.JenaUUID ;
-import com.hp.hpl.jena.shared.uuid.UUID_V1 ;
-import com.hp.hpl.jena.shared.uuid.UUID_V1_Gen ;
-import com.hp.hpl.jena.shared.uuid.UUID_V4 ;
-import com.hp.hpl.jena.shared.uuid.UUID_V4_Gen ;
+import org.apache.jena.shared.uuid.* ;
 
 public class juuid extends CmdGeneral
 {

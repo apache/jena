@@ -18,36 +18,35 @@
 
 package riotcmd;
 
+import jena.cmd.ArgDecl ;
+import jena.cmd.CmdException ;
+import jena.cmd.CmdGeneral ;
+import jena.cmd.TerminationException ;
 import junit.framework.TestSuite ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.legacy.BaseTest2 ;
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.rdf.model.Literal ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.langsuite.FactoryTestRiot ;
 import org.apache.jena.riot.langsuite.VocabLangRDF ;
-import arq.cmd.CmdException ;
-import arq.cmd.TerminationException ;
-import arq.cmdline.ArgDecl ;
-import arq.cmdline.CmdGeneral ;
+import org.apache.jena.sparql.expr.E_Function ;
+import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.sparql.junit.EarlReport ;
+import org.apache.jena.sparql.junit.SimpleTestRunner ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
+import org.apache.jena.sparql.vocabulary.DOAP ;
+import org.apache.jena.sparql.vocabulary.FOAF ;
+import org.apache.jena.vocabulary.DC ;
+import org.apache.jena.vocabulary.DCTerms ;
+import org.apache.jena.vocabulary.RDF ;
 import arq.cmdline.ModEngine ;
 import arq.cmdline.ModSymbol ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.rdf.model.Literal ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.expr.E_Function ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.junit.EarlReport ;
-import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
-import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.sparql.vocabulary.DOAP ;
-import com.hp.hpl.jena.sparql.vocabulary.FOAF ;
-import com.hp.hpl.jena.vocabulary.DC ;
-import com.hp.hpl.jena.vocabulary.DCTerms ;
-import com.hp.hpl.jena.vocabulary.RDF ;
 
 /** A program to execute RDF language test suites
  * 
@@ -95,10 +94,10 @@ public class rdflangtest extends CmdGeneral
     }
     
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
-    protected String getSummary() { return getCommandName()+" [ --data=<file> --query=<query> --result=<results> ] | --all | --dawg | <manifest>" ; }
+    protected String getSummary() { return getCommandName()+" <manifest>" ; }
     
     @Override
     protected void processModulesAndArgs()
@@ -112,7 +111,7 @@ public class rdflangtest extends CmdGeneral
     protected void exec()
     {
         // Paradoxical naming - the boolean is a visibility flag.
-        BaseTest.setTestLogging() ;
+        BaseTest2.setTestLogging() ;
         
         if ( contains(strictDecl) )
         {

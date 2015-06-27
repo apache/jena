@@ -32,19 +32,18 @@ import org.apache.jena.fuseki.server.ServerConfig ;
 import org.apache.jena.jdbc.JdbcCompatibility ;
 import org.apache.jena.jdbc.connections.JenaConnection ;
 import org.apache.jena.jdbc.utils.TestUtils ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.modify.request.Target ;
+import org.apache.jena.sparql.modify.request.UpdateDrop ;
+import org.apache.jena.update.Update ;
+import org.apache.jena.update.UpdateExecutionFactory ;
+import org.apache.jena.update.UpdateProcessor ;
 import org.junit.After ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Ignore;
-
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.modify.request.Target ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
-import com.hp.hpl.jena.update.Update ;
-import com.hp.hpl.jena.update.UpdateExecutionFactory ;
-import com.hp.hpl.jena.update.UpdateProcessor ;
 
 /**
  * Tests for the {@link RemoteEndpointConnection} where we use HTTP

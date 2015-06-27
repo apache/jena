@@ -23,8 +23,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.jena.riot.system.StreamRDF;
-
-import com.hp.hpl.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * Collector stream for quads.

@@ -69,8 +69,7 @@ import org.apache.jena.hadoop.rdf.types.CharacteristicSetWritable;
 import org.apache.jena.hadoop.rdf.types.NodeWritable;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
-
-import com.hp.hpl.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDF ;
 
 /**
  * Factory that can produce {@link Job} instances for computing various RDF

@@ -18,15 +18,14 @@
 
 package org.apache.jena.jdbc.tdb.metadata;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.Connection ;
+import java.sql.SQLException ;
 
-import org.apache.jena.jdbc.JenaJDBC;
-import org.apache.jena.jdbc.connections.DatasetConnection;
-import org.apache.jena.jdbc.metadata.DatasetMetadata;
-
-import com.hp.hpl.jena.sparql.util.Version;
-import com.hp.hpl.jena.tdb.TDB;
+import org.apache.jena.atlas.lib.Version ;
+import org.apache.jena.jdbc.JenaJDBC ;
+import org.apache.jena.jdbc.connections.DatasetConnection ;
+import org.apache.jena.jdbc.metadata.DatasetMetadata ;
+import org.apache.jena.tdb.TDB ;
 
 /**
  * Connection metadata for TDB datasets
@@ -51,27 +50,27 @@ public class TDBDatasetMetadata extends DatasetMetadata {
     }
 
     @Override
-    public int getDatabaseMajorVersion() throws SQLException {
+    public int getDatabaseMajorVersion() {
         return 0;
     }
 
     @Override
-    public int getDatabaseMinorVersion() throws SQLException {
+    public int getDatabaseMinorVersion() {
         return 10;
     }
 
     @Override
-    public String getDatabaseProductName() throws SQLException {
+    public String getDatabaseProductName() {
         return "Apache Jena - TDB";
     }
 
     @Override
-    public String getDatabaseProductVersion() throws SQLException {
+    public String getDatabaseProductVersion() {
         return tdb.toString(true);
     }
     
     @Override
-    public int getDefaultTransactionIsolation() throws SQLException {
+    public int getDefaultTransactionIsolation() {
         return Connection.TRANSACTION_SERIALIZABLE;
     }
 
@@ -86,34 +85,34 @@ public class TDBDatasetMetadata extends DatasetMetadata {
     }
 
     @Override
-    public String getDriverName() throws SQLException {
+    public String getDriverName() {
         return "Apache Jena - JDBC - TDB Driver";
     }
 
     @Override
-    public String getDriverVersion() throws SQLException {
+    public String getDriverVersion() {
         return jdbc.toString(true);
     }
 
     @Override
-    public String getURL() throws SQLException {
+    public String getURL() {
         return "http://jena.apache.org";
     }
 
     @Override
-    public boolean usesLocalFilePerTable() throws SQLException {
+    public boolean usesLocalFilePerTable() {
         // TDB database doesn't use files per table
         return false;
     }
 
     @Override
-    public boolean usesLocalFiles() throws SQLException {
+    public boolean usesLocalFiles() {
         // TDB database does use files
         return true;
     }
 
     @Override
-    public boolean supportsTransactionIsolationLevel(int level) throws SQLException {
+    public boolean supportsTransactionIsolationLevel(int level) {
         // TDB supports Serializable transactions
         switch (level) {
         case Connection.TRANSACTION_SERIALIZABLE:
@@ -124,7 +123,7 @@ public class TDBDatasetMetadata extends DatasetMetadata {
     }
 
     @Override
-    public boolean supportsTransactions() throws SQLException {
+    public boolean supportsTransactions() {
         // TDB supports transactions
         return true;
     }

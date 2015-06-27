@@ -19,8 +19,7 @@
 package org.apache.jena.hadoop.rdf.mapreduce.filter;
 
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
-
-import com.hp.hpl.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * Abstract mapper implementation for filtering quads

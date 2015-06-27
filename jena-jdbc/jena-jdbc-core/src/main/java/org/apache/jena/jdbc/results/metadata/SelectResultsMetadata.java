@@ -29,14 +29,13 @@ import org.apache.jena.jdbc.results.SelectResults;
 import org.apache.jena.jdbc.results.metadata.columns.ColumnInfo;
 import org.apache.jena.jdbc.results.metadata.columns.SparqlColumnInfo;
 import org.apache.jena.jdbc.results.metadata.columns.StringColumn;
+import org.apache.jena.query.ResultSet ;
+import org.apache.jena.query.ResultSetFactory ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.resultset.ResultSetPeekable ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.resultset.ResultSetPeekable;
 
 /**
  * Result Set Metadata for {@link SelectResults} instances

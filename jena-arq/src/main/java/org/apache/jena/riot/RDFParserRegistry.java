@@ -18,15 +18,6 @@
 
 package org.apache.jena.riot;
 
-import static org.apache.jena.riot.RDFLanguages.CSV ;
-import static org.apache.jena.riot.RDFLanguages.JSONLD ;
-import static org.apache.jena.riot.RDFLanguages.N3 ;
-import static org.apache.jena.riot.RDFLanguages.NQUADS ;
-import static org.apache.jena.riot.RDFLanguages.NTRIPLES ;
-import static org.apache.jena.riot.RDFLanguages.RDFJSON ;
-import static org.apache.jena.riot.RDFLanguages.RDFXML ;
-import static org.apache.jena.riot.RDFLanguages.THRIFT ;
-import static org.apache.jena.riot.RDFLanguages.TRIG ;
 import static org.apache.jena.riot.RDFLanguages.* ;
 
 import java.io.InputStream ;
@@ -45,8 +36,7 @@ import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.thrift.BinRDF ;
-
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Context ;
 
 /** The registry of languages and parsers.
  * To register a new parser:

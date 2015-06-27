@@ -18,6 +18,8 @@
 
 package org.apache.jena.query.text;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import java.util.HashMap ;
 import java.util.Map ;
 
@@ -25,13 +27,18 @@ public class Entity
 {
     private final String id ;
     private final String graph ;
+    private final String language ;
     private final Map<String, Object> map = new HashMap<>() ;
 
     public Entity(String entityId, String entityGraph) {
-        this.id = entityId ;
-        this.graph = entityGraph;
+        this(entityId, entityGraph, null);
     }
 
+    public Entity(String entityId, String entityGraph, String lang) {
+        this.id = entityId ;
+        this.graph = entityGraph;
+        this.language = lang;
+    }
     /** @deprecated Use {@linkplain #Entity(String, String)} */
     @Deprecated
     public Entity(String entityId)          { this(entityId, null) ; }
@@ -40,6 +47,8 @@ public class Entity
 
     public String getGraph()                { return graph ; }
 
+    public String getLanguage()                { return language ; }
+
     public void put(String key, Object value)
     { map.put(key, value) ; }
     
@@ -47,7 +56,12 @@ public class Entity
     { return map.get(key) ; }
 
     public Map<String, Object> getMap()     { return map ; }
-    
+
+    public String getChecksum(String property, String value) {
+        String key = getGraph() + "-" + getId() + "-" + property + "-" + value + "-" + getLanguage();
+        return DigestUtils.sha256Hex(key);
+    }
+
     @Override
     public String toString() {
         return id+" : "+map ;

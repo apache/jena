@@ -18,21 +18,21 @@
 
 package arq.examples.engine;
 
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.Transform ;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
-import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.engine.Plan ;
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
-import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.Transform ;
+import org.apache.jena.sparql.algebra.TransformCopy ;
+import org.apache.jena.sparql.algebra.Transformer ;
+import org.apache.jena.sparql.algebra.op.OpBGP ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.engine.Plan ;
+import org.apache.jena.sparql.engine.QueryEngineFactory ;
+import org.apache.jena.sparql.engine.QueryEngineRegistry ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.main.QueryEngineMain ;
+import org.apache.jena.sparql.util.Context ;
 
 /** Example skeleton for a query engine.
  *  To just extend ARQ by custom basic graph pattern matching (a very common case)

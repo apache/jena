@@ -26,9 +26,8 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.RiotLib ;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.util.Context ;
 
 /** TriG writer base class - ways to invoke a TriG writer */
 public abstract class TriGWriterBase extends WriterDatasetRIOTBase

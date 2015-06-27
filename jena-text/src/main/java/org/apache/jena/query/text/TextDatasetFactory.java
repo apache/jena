@@ -18,16 +18,15 @@
 
 package org.apache.jena.query.text;
 
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.query.text.assembler.TextVocab ;
-import org.apache.lucene.analysis.Analyzer ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.store.Directory ;
 import org.apache.solr.client.solrj.SolrServer ;
-
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
-import com.hp.hpl.jena.sparql.util.Context ;
 
 public class TextDatasetFactory
 {
@@ -84,49 +83,94 @@ public class TextDatasetFactory
         
         return dsgt ;
     }
-    
+
     /**
      * Create a Lucene TextIndex
-     * 
+     *
      * @param directory The Lucene Directory for the index
      * @param def The EntityDefinition that defines how entities are stored in the index
      * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
-     */ 
+     */
     public static TextIndex createLuceneIndex(Directory directory, EntityDefinition def, Analyzer queryAnalyzer)
     {
-        TextIndex index = new TextIndexLucene(directory, def, queryAnalyzer) ;
-        return index ; 
+        TextIndexConfig config = new TextIndexConfig(def);
+        config.setQueryAnalyzer(queryAnalyzer);
+        return createLuceneIndex(directory, config);
     }
 
-    /** 
+    /**
+     * Create a Lucene TextIndex
+     *
+     * @param directory The Lucene Directory for the index
+     * @param config The config definition for the index instantiation.
+     */
+    public static TextIndex createLuceneIndex(Directory directory, TextIndexConfig config)
+    {
+        TextIndex index;
+        if (config.isMultilingualSupport())
+            index = new TextIndexLuceneMultilingual(directory, config) ;
+        else
+            index = new TextIndexLucene(directory, config) ;
+        return index ;
+    }
+
+    /**
      * Create a text-indexed dataset, using Lucene
-     * 
+     *
      * @param base the base Dataset
      * @param directory The Lucene Directory for the index
      * @param def The EntityDefinition that defines how entities are stored in the index
      * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
-     */ 
+     */
     public static Dataset createLucene(Dataset base, Directory directory, EntityDefinition def, Analyzer queryAnalyzer)
     {
-        TextIndex index = createLuceneIndex(directory, def, queryAnalyzer) ;
-        return create(base, index, true) ; 
+        TextIndexConfig config = new TextIndexConfig(def);
+        config.setQueryAnalyzer(queryAnalyzer);
+        return createLucene(base, directory, config);
     }
 
     /**
      * Create a text-indexed dataset, using Lucene
-     * 
+     *
+     * @param base the base Dataset
+     * @param directory The Lucene Directory for the index
+     * @param config The config definition for the index instantiation.
+     */
+    public static Dataset createLucene(Dataset base, Directory directory, TextIndexConfig config)
+    {
+        TextIndex index = createLuceneIndex(directory, config) ;
+        return create(base, index, true) ;
+    }
+
+    /**
+     * Create a text-indexed dataset, using Lucene
+     *
      * @param base the base DatasetGraph
      * @param directory The Lucene Directory for the index
      * @param def The EntityDefinition that defines how entities are stored in the index
      * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
-     */ 
+     */
     public static DatasetGraph createLucene(DatasetGraph base, Directory directory, EntityDefinition def, Analyzer queryAnalyzer)
     {
-        TextIndex index = createLuceneIndex(directory, def, queryAnalyzer) ;
-        return create(base, index, true) ; 
+        TextIndexConfig config = new TextIndexConfig(def);
+        config.setQueryAnalyzer(queryAnalyzer);
+        return createLucene(base, directory, config) ;
     }
 
-    /** Create a Solr TextIndex */ 
+    /**
+     * Create a text-indexed dataset, using Lucene
+     *
+     * @param base the base DatasetGraph
+     * @param directory The Lucene Directory for the index
+     * @param config The config definition for the index instantiation.
+     */
+    public static DatasetGraph createLucene(DatasetGraph base, Directory directory, TextIndexConfig config)
+    {
+        TextIndex index = createLuceneIndex(directory, config) ;
+        return create(base, index, true) ;
+    }
+
+    /** Create a Solr TextIndex */
     public static TextIndex createSolrIndex(SolrServer server, EntityDefinition entMap)
     {
         TextIndex index = new TextIndexSolr(server, entMap) ;

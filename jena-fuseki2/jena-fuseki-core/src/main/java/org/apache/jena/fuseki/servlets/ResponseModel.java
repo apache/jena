@@ -30,13 +30,12 @@ import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.conneg.WebLib ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import static org.apache.jena.riot.WebContent.* ;
 import org.apache.jena.web.HttpSC ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
 
 public class ResponseModel
 {

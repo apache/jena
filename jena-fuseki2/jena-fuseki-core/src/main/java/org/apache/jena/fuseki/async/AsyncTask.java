@@ -22,8 +22,7 @@ import static java.lang.String.format ;
 
 import java.util.concurrent.Callable ;
 
-import com.hp.hpl.jena.sparql.util.Utils ;
-
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
@@ -46,21 +45,28 @@ public class AsyncTask implements Callable<Object>
 
     private final String taskId ;
 
+    private long requestId ;
+
     /*package*/ AsyncTask(Callable<Object> callable, 
                           AsyncPool pool,
                           String taskId,
                           String displayName,
-                          DataService dataService ) {
+                          DataService dataService,
+                          long requestId) {
         this.callable = callable ;
         this.pool = pool ;
         this.taskId = taskId ; 
         this.displayName = displayName ;
         this.dataService = dataService ;
+        this.requestId = requestId ;
     }
 
     /** Unique task id */
     public String getTaskId() { return taskId ; }
     
+    /** Request id that caused this task (may be -1 for N/A) */
+    public long getOriginatingRequestId() { return requestId ; }
+
     /** Display name - no newlines */
     public String displayName() { return displayName ; }
     
@@ -74,7 +80,7 @@ public class AsyncTask implements Callable<Object>
         }
             
         Fuseki.serverLog.info(format("[Task %s] starts : %s",taskId, displayName)) ;
-        startPoint = Utils.nowAsXSDDateTimeString() ;
+        startPoint = DateTimeUtils.nowAsXSDDateTimeString() ;
     }
     
     public void finish() {
@@ -83,7 +89,7 @@ public class AsyncTask implements Callable<Object>
             Log.warn(Fuseki.serverLog, msg) ;
             throw new InternalErrorException("Finish has already been called ["+getTaskId()+"]") ; 
         }
-        finishPoint = Utils.nowAsXSDDateTimeString() ;
+        finishPoint = DateTimeUtils.nowAsXSDDateTimeString() ;
         Fuseki.serverLog.info(format("[Task %s] finishes : %s",taskId, displayName)) ;
     }
     

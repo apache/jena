@@ -22,13 +22,12 @@ import java.io.OutputStream ;
 import java.io.Writer ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.graph.Graph ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.RiotLib ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Context ;
 
 public abstract class TurtleWriterBase extends WriterGraphRIOTBase
 {

@@ -21,17 +21,17 @@ package org.apache.jena.hadoop.rdf.types;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableComparator;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.hadoop.rdf.types.comparators.SimpleBinaryComparator;
 import org.apache.jena.hadoop.rdf.types.converters.ThriftConverter;
 import org.apache.jena.riot.thrift.TRDF;
 import org.apache.jena.riot.thrift.ThriftConvert;
 import org.apache.jena.riot.thrift.wire.RDF_Term;
+import org.apache.jena.sparql.util.NodeUtils ;
 import org.apache.thrift.TException;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.util.NodeUtils;
 
 /**
  * A writable for {@link Node} instances

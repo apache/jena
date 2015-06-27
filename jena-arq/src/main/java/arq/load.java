@@ -21,20 +21,21 @@ package arq;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
-import arq.cmdline.CmdUpdate ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateLoad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateExecutionFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.modify.request.UpdateLoad ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.util.graph.GraphLoadMonitor ;
+import org.apache.jena.update.UpdateExecutionFactory ;
+import org.apache.jena.update.UpdateRequest ;
+
+import arq.cmdline.CmdUpdate ;
 
 public class load extends CmdUpdate
 {
@@ -68,13 +69,13 @@ public class load extends CmdUpdate
     }
     
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary() { return getCommandName()+" --desc=assembler [--dump] --update=<request file>" ; }
 
     @Override
-    protected void execUpdate(GraphStore graphStore)
+    protected void execUpdate(DatasetGraph graphStore)
     {
         if ( loadFiles.size() == 0 )
             throw new CmdException("Nothing to do") ;

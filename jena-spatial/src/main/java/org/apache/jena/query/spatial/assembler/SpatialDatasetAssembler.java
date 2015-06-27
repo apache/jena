@@ -20,16 +20,14 @@ package org.apache.jena.query.spatial.assembler;
 
 import static org.apache.jena.query.spatial.assembler.SpatialVocab.pDataset;
 import static org.apache.jena.query.spatial.assembler.SpatialVocab.pIndex;
-
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.Mode ;
+import org.apache.jena.assembler.assemblers.AssemblerBase ;
+import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.spatial.SpatialDatasetFactory;
 import org.apache.jena.query.spatial.SpatialIndex;
-
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sparql.util.graph.GraphUtils ;
 
 public class SpatialDatasetAssembler extends AssemblerBase implements Assembler
 {

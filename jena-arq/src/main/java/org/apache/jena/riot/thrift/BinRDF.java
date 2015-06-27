@@ -22,22 +22,21 @@ import java.io.BufferedOutputStream ;
 import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.util.List ;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.iterator.Action ;
+import org.apache.jena.query.ResultSet ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.thrift.wire.RDF_StreamRow ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.ResultSetStream ;
+import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.thrift.TException ;
 import org.apache.thrift.protocol.TProtocol ;
 import org.apache.thrift.transport.TTransportException ;
-
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 /** Operations on binary RDF (which uses <a href="http://thrift.apache.org/">Apache Thrift</a>).
  * See also {@link ThriftConvert}, for specific functions on binary RDF.
@@ -169,11 +168,7 @@ public class BinRDF {
 
     // ** Java7 support
     public static void applyVisitor(TProtocol protocol, final VisitorStreamRowTRDF visitor) {
-        Action<RDF_StreamRow> action = new Action<RDF_StreamRow>() {
-            @Override
-            public void apply(RDF_StreamRow z) { TRDF.visit(z, visitor) ; }
-        } ;
-        apply(protocol, action) ;
+        apply(protocol, z -> TRDF.visit(z, visitor)) ;
     }
     
     /**
@@ -181,7 +176,7 @@ public class BinRDF {
      * @param protocol TProtocol
      * @param action   Code to act on the row.
      */
-    public static void apply(TProtocol protocol, Action<RDF_StreamRow> action) {
+    public static void apply(TProtocol protocol, Consumer<RDF_StreamRow> action) {
         RDF_StreamRow row = new RDF_StreamRow() ;
         while(protocol.getTransport().isOpen()) {
             try { row.read(protocol) ; }
@@ -190,7 +185,7 @@ public class BinRDF {
                     break ;
             }
             catch (TException ex) { TRDF.exception(ex) ; }
-            action.apply(row) ;
+            action.accept(row) ;
             row.clear() ;
         }
     }

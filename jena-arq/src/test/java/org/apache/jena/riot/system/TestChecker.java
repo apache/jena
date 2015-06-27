@@ -18,16 +18,15 @@
 
 package org.apache.jena.riot.system;
 
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.ErrorHandlerTestLib ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExError ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
+import org.apache.jena.shared.impl.JenaParameters ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.shared.impl.JenaParameters ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 /** Tests for node Checker */
 public class TestChecker

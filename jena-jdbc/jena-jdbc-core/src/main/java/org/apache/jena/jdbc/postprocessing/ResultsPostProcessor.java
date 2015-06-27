@@ -22,12 +22,11 @@ import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Properties;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.jdbc.results.metadata.AskResultsMetadata;
 import org.apache.jena.jdbc.results.metadata.SelectResultsMetadata;
 import org.apache.jena.jdbc.results.metadata.TripleResultsMetadata;
-
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.ResultSet;
+import org.apache.jena.query.ResultSet ;
 
 /**
  * Interface for results post processors, post processors have the ability to

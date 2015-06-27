@@ -137,7 +137,9 @@ define(
       /** Extract the server root path from the current window href */
       currentRootPath: function() {
         var path = window.location.pathname.replace( /\/[^/]*$/, "" );
-        return sprintf( "%s//%s:%s%s",  window.location.protocol, window.location.hostname, window.location.port, path );
+ 	// Need some kind of relative URL
+ 	// return path ; - See JENA-868 breaks the "info"
+	return sprintf( "%s//%s:%s%s",  window.location.protocol, window.location.hostname, window.location.port, path );
       }
     } );
 

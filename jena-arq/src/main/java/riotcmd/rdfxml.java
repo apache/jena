@@ -18,11 +18,10 @@
 
 package riotcmd;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Run the RDf/XML parser - and produce triples */
 public class rdfxml extends CmdLangParse
@@ -40,7 +39,7 @@ public class rdfxml extends CmdLangParse
     @Override
     protected String getCommandName()
     {
-        return Utils.classShortName(rdfxml.class) ;
+        return Lib.classShortName(rdfxml.class) ;
     }
     
     @Override

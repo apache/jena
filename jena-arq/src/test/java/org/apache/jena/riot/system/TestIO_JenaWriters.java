@@ -24,6 +24,10 @@ import java.util.LinkedHashMap ;
 import java.util.Map ;
 import java.util.Properties ;
 
+import org.apache.jena.n3.N3JenaWriter ;
+import org.apache.jena.rdf.model.impl.RDFWriterFImpl ;
+import org.apache.jena.rdfxml.xmloutput.impl.Abbreviated ;
+import org.apache.jena.rdfxml.xmloutput.impl.Basic ;
 import org.apache.jena.riot.IO_Jena ;
 import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_N3 ;
 import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_N3Plain ;
@@ -38,11 +42,6 @@ import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_Turtle2 ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.n3.N3JenaWriter ;
-import com.hp.hpl.jena.rdf.model.impl.RDFWriterFImpl ;
-import com.hp.hpl.jena.rdfxml.xmloutput.impl.Abbreviated ;
-import com.hp.hpl.jena.rdfxml.xmloutput.impl.Basic ;
 
 public class TestIO_JenaWriters {
     
@@ -63,7 +62,7 @@ public class TestIO_JenaWriters {
     }
 
     @Test
-    public void testWireIntoJena() throws Exception {
+    public void testWireIntoJena() {
         IO_JenaWriters.wireIntoJena();
         RDFWriterFImpl writerF = new RDFWriterFImpl();
         assertEquals(Basic.class, writerF.getWriter().getClass());
@@ -89,7 +88,7 @@ public class TestIO_JenaWriters {
     }
     
     @Test
-    public void testResetJena() throws Exception {
+    public void testResetJena() {
         IO_JenaWriters.wireIntoJena();
         IO_JenaWriters.resetJena();
         RDFWriterFImplExposingProtected writerF = new RDFWriterFImplExposingProtected();

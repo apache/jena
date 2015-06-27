@@ -48,20 +48,20 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.query.QueryBuildException ;
+import org.apache.jena.query.QueryParseException ;
+import org.apache.jena.query.Syntax ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.web.HttpNames ;
+import org.apache.jena.sparql.modify.UsingList ;
+import org.apache.jena.update.UpdateAction ;
+import org.apache.jena.update.UpdateException ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateRequest ;
 import org.apache.jena.web.HttpSC ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.query.QueryParseException ;
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.sparql.modify.UsingList ;
-import com.hp.hpl.jena.update.UpdateAction ;
-import com.hp.hpl.jena.update.UpdateException ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class SPARQL_Update extends SPARQL_Protocol 
 {
@@ -122,7 +122,6 @@ public class SPARQL_Update extends SPARQL_Protocol
         ContentType ct = FusekiLib.getContentType(action) ;
         if ( ct == null )
             ct = ctSPARQLUpdate ;
-        // ----
 
         if ( matchContentType(ctSPARQLUpdate, ct) ) {
             String charset = request.getCharacterEncoding() ;
@@ -211,7 +210,7 @@ public class SPARQL_Update extends SPARQL_Protocol
                 req = UpdateFactory.read(usingList, input, UpdateParseBase, Syntax.syntaxARQ);
             }
             catch (UpdateException ex) { ServletOps.errorBadRequest(ex.getMessage()) ; return ; }
-            catch (QueryParseException ex) { ServletOps.errorBadRequest(messageForQPE(ex)) ; return ; }
+            catch (QueryParseException ex) { ServletOps.errorBadRequest(messageForQueryException(ex)) ; return ; }
         }
         
         action.beginWrite() ;
@@ -225,10 +224,10 @@ public class SPARQL_Update extends SPARQL_Protocol
             action.abort() ;
             incCounter(action.getEndpoint().getCounters(), UpdateExecErrors) ;
             ServletOps.errorOccurred(ex.getMessage()) ;
-        } catch (QueryParseException ex) {
+        } catch (QueryParseException|QueryBuildException ex) {
             action.abort() ;
             // Counter inc'ed further out.
-            ServletOps.errorBadRequest(messageForQPE(ex)) ;
+            ServletOps.errorBadRequest(messageForQueryException(ex)) ;
         } catch (Throwable ex) {
             if ( ! ( ex instanceof ActionErrorException ) )
             {

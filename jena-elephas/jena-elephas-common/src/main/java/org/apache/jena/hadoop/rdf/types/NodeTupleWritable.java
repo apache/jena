@@ -21,8 +21,8 @@ package org.apache.jena.hadoop.rdf.types;
 import java.io.DataInput;
 import java.io.IOException;
 
-import org.apache.jena.atlas.lib.Tuple;
-import com.hp.hpl.jena.graph.Node;
+import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.graph.Node ;
 
 /**
  * A writable RDF tuple

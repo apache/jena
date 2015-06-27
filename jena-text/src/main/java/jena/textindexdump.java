@@ -18,8 +18,10 @@
 
 package jena ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.text.* ;
 import org.apache.jena.query.text.assembler.TextVocab ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.document.Document ;
 import org.apache.lucene.index.DirectoryReader ;
@@ -32,12 +34,9 @@ import org.apache.lucene.search.ScoreDoc ;
 import org.apache.lucene.store.Directory ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
+import jena.cmd.ArgDecl ;
+import jena.cmd.CmdException ;
 import arq.cmdline.CmdARQ ;
-
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /**
  * Text index development tool - dump the index.
@@ -92,7 +91,7 @@ public class textindexdump extends CmdARQ {
         else if ( textIndex instanceof TextIndexSolr )
             dump((TextIndexSolr)textIndex) ;
         else
-            System.err.println("Unsupported index type : "+Utils.className(textIndex)) ;
+            System.err.println("Unsupported index type : "+Lib.className(textIndex)) ;
         }
 
     private static void dump(TextIndexSolr textIndex) { System.err.println("Not implemented : dump Solr index") ; }

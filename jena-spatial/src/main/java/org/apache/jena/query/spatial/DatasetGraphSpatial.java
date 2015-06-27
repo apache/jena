@@ -18,17 +18,12 @@
 
 package org.apache.jena.query.spatial;
 
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.core.* ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ReadWrite;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.DatasetGraphMonitor;
-import com.hp.hpl.jena.sparql.core.DatasetGraphWithLock;
-import com.hp.hpl.jena.sparql.core.GraphView;
-import com.hp.hpl.jena.sparql.core.Transactional;
 
 public class DatasetGraphSpatial extends DatasetGraphMonitor implements Transactional 
 {

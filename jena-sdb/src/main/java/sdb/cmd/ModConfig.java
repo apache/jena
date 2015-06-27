@@ -18,7 +18,12 @@
 
 package sdb.cmd;
 
-import com.hp.hpl.jena.sdb.Store;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
+import org.apache.jena.sdb.Store ;
 
 import arq.cmdline.*;
 

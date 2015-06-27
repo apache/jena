@@ -21,9 +21,8 @@ package org.apache.jena.riot ;
 import org.apache.jena.riot.adapters.AdapterFileManager ;
 import org.apache.jena.riot.system.IO_JenaReaders ;
 import org.apache.jena.riot.system.IO_JenaWriters ;
-
-import com.hp.hpl.jena.sparql.util.Symbol ;
-import com.hp.hpl.jena.util.FileManager ;
+import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.util.FileManager ;
 
 public class IO_Jena
 {

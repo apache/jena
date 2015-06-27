@@ -18,19 +18,11 @@
 package org.apache.jena.arq.querybuilder.rewriters;
 
 import java.util.Map;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueBoolean;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDT;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDecimal;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDouble;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDuration;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueFloat;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueNode;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueString;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueVisitor;
+
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.sparql.expr.nodevalue.* ;
 
 /**
  * A rewriter that implements NoveValueVisitor

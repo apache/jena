@@ -22,11 +22,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
-
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * Abstract tests for quad output formats

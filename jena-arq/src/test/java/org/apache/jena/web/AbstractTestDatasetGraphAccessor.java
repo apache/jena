@@ -19,18 +19,17 @@
 package org.apache.jena.web;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.GraphUtil ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.sparql.graph.GraphFactory ;
+import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.GraphUtil ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.graph.GraphFactory ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public abstract class AbstractTestDatasetGraphAccessor extends BaseTest
 {

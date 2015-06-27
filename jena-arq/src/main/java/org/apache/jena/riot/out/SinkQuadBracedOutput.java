@@ -19,17 +19,16 @@
 package org.apache.jena.riot.out ;
 
 import java.io.OutputStream ;
+import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Sink ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.sparql.util.FmtUtils ;
 
 /**
  * A class that print quads, SPARQL style (maybe good for Trig too?)
@@ -84,7 +83,7 @@ public class SinkQuadBracedOutput implements Sink<Quad>, Closeable
             graphName = null ;
         }
 
-        if ( !Lib.equal(currentGraph, graphName) ) {
+        if ( !Objects.equals(currentGraph, graphName) ) {
             if ( null != currentGraph ) {
                 out.decIndent(BLOCK_INDENT) ;
                 out.println("}") ;

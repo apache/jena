@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <!-- 	Issue: rdf-containers-syntax-vs-schema
         Test:  test07
-        $Header: /home/afs/SourceForge/Jena-CVS/jena2/testing/wg/rdf-containers-syntax-vs-schema/test007.rdf,v 1.2 2005-08-04 09:53:16 jeremy_carroll Exp $
 
         rdf:li processing within each element is independent
 -->

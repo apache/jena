@@ -20,13 +20,14 @@ package sdb;
 
 import java.util.List;
 
+import jena.cmd.ArgDecl;
+
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.sdb.SDB ;
+import org.apache.jena.atlas.lib.Lib ;
+
 import sdb.cmd.CmdArgsDB;
 import sdb.cmd.ModGraph;
-import arq.cmdline.ArgDecl;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sdb.SDB ;
-import com.hp.hpl.jena.sparql.util.Utils;
 
  /** Write out the data from an SDB model.  Only works for small models
   * because of JDBC limitations in default configurations. 
@@ -62,10 +63,10 @@ public class sdbdump extends CmdArgsDB
     }
     
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
-    protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> [--out syntax]" ; }
+    protected String getSummary()  { return Lib.className(this)+" --sdb <SPEC> [--out syntax]" ; }
 
     @Override
     protected void processModulesAndArgs()

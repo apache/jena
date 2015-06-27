@@ -18,11 +18,10 @@
 
 package arq;
 
+import org.apache.jena.query.ResultSet ;
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModResultsIn ;
 import arq.cmdline.ModResultsOut ;
-
-import com.hp.hpl.jena.query.ResultSet ;
 
 /** Read and write result sets */
 

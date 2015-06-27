@@ -23,8 +23,7 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
-
-import com.hp.hpl.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * Abstract tests for Quad input formats

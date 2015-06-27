@@ -27,17 +27,16 @@ import java.nio.charset.Charset;
 import org.apache.hadoop.conf.Configurable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.compress.CompressionCodec;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.io.HadoopIOConstants;
 import org.apache.jena.hadoop.rdf.io.input.AbstractNodeTupleInputFormatTests;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.Property ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  * Abstract tests for compressed whole file triple formats

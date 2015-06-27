@@ -24,19 +24,17 @@ import java.io.IOException ;
 import java.util.Enumeration ;
 import java.util.Map ;
 
-import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.query.QueryCancelledException ;
 import org.apache.jena.riot.web.HttpNames ;
+import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
-
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.QueryCancelledException ;
-import com.hp.hpl.jena.sparql.util.Context ;
 
 /** General request lifecycle */
 public abstract class ActionBase extends ServletBase
@@ -80,8 +78,13 @@ public abstract class ActionBase extends ServletBase
             try {
                 execCommonWorker(action) ;
             } catch (QueryCancelledException ex) {
-                // Also need the per query info ...
-                String message = String.format("The query timed out (restricted to %s ms)", cxt.get(ARQ.queryTimeout));
+                // To put in the action timeout, need (1) global, (2) dataset and (3) protocol settings.
+                // See
+                //    global -- cxt.get(ARQ.queryTimeout) 
+                //    dataset -- dataset.getContect(ARQ.queryTimeout)
+                //    protocol -- SPARQL_Query.setAnyTimeouts
+                
+                String message = String.format("Query timed out");
                 // Possibility :: response.setHeader("Retry-after", "600") ;    // 5 minutes
                 ServletOps.responseSendError(response, HttpSC.SERVICE_UNAVAILABLE_503, message);
             } catch (ActionErrorException ex) {
@@ -183,8 +186,7 @@ public abstract class ActionBase extends ServletBase
       return name ; 
   }
 
-    @SuppressWarnings("unused") // ServletException
-    protected void doPatch(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPatch(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "HTTP PATCH not supported");
     }
     
@@ -199,7 +201,7 @@ public abstract class ActionBase extends ServletBase
                 String h = en.nextElement() ;
                 Enumeration<String> vals = action.request.getHeaders(h) ;
                 if ( !vals.hasMoreElements() )
-                    log.info(format("[%d]   ", action.id, h)) ;
+                    log.info(format("[%d]   %s", action.id, h)) ;
                 else {
                     for (; vals.hasMoreElements();)
                         log.info(format("[%d]   %-20s %s", action.id, h, vals.nextElement())) ;

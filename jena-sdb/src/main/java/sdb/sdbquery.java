@@ -21,19 +21,20 @@ package sdb;
 
 import java.util.List;
 
+import jena.cmd.ArgDecl;
+
+import org.apache.jena.query.* ;
+import org.apache.jena.sdb.SDB ;
+import org.apache.jena.sdb.compiler.SDB_QC ;
+import org.apache.jena.sdb.engine.QueryEngineSDB ;
+import org.apache.jena.sdb.util.PrintSDB ;
+import org.apache.jena.sparql.engine.QueryExecutionBase ;
+import org.apache.jena.sparql.util.QueryExecUtils ;
+import org.apache.jena.atlas.lib.Lib ;
+
 import sdb.cmd.CmdArgsDB;
-import arq.cmdline.ArgDecl;
 import arq.cmdline.ModQueryIn;
 import arq.cmdline.ModResultsOut;
-
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.sdb.SDB ;
-import com.hp.hpl.jena.sdb.compiler.SDB_QC;
-import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
-import com.hp.hpl.jena.sdb.util.PrintSDB;
-import com.hp.hpl.jena.sparql.engine.QueryExecutionBase;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.sparql.util.Utils;
 
  
  /** Query an SDB model.
@@ -77,7 +78,7 @@ public class sdbquery extends CmdArgsDB
     }
 
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary()  { return getCommandName()+" <SPEC> [--direct] [ <query> | --query=file ]"; }

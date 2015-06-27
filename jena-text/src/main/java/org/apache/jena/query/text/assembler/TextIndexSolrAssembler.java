@@ -20,18 +20,17 @@ package org.apache.jena.query.text.assembler;
 
 import static org.apache.jena.query.text.assembler.TextVocab.pEntityMap ;
 import static org.apache.jena.query.text.assembler.TextVocab.pServer ;
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.Mode ;
+import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.query.text.EntityDefinition ;
 import org.apache.jena.query.text.TextDatasetFactory ;
 import org.apache.jena.query.text.TextIndex ;
 import org.apache.jena.query.text.TextIndexException ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sparql.util.graph.GraphUtils ;
 import org.apache.solr.client.solrj.SolrServer ;
 import org.apache.solr.client.solrj.impl.HttpSolrServer ;
-
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.assembler.Mode ;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 
 public class TextIndexSolrAssembler extends AssemblerBase
 {

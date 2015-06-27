@@ -26,8 +26,7 @@ import java.util.List;
 
 import jena.schemagen;
 import jena.schemagen.OptionDefinition;
-
-import com.hp.hpl.jena.rdf.model.*;
+import org.apache.jena.rdf.model.* ;
 
 
 /**
@@ -205,6 +204,8 @@ public class SchemagenOptions
                         setOption(option, (String) optionValue);
                     } else if (optionValue instanceof Boolean) {
                         setOption(option, (Boolean) optionValue);
+                    } else if (optionValue instanceof Resource) {
+                        setOption(option, (Resource) optionValue);
                     } else {
                         throw new IllegalArgumentException("Schemagen options of type "
                                 + optionValue.getClass().getCanonicalName()

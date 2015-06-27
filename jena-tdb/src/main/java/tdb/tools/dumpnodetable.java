@@ -24,26 +24,26 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node_Literal ;
+import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.tdb.StoreConnection ;
+import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.setup.Build ;
+import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.tdb.store.NodeId ;
+import org.apache.jena.tdb.store.nodetable.NodeTable ;
+import org.apache.jena.tdb.sys.Names ;
+import org.apache.jena.tdb.sys.SystemTDB ;
+
+import arq.cmdline.CmdARQ;
 import tdb.cmdline.ModLocation ;
-import arq.cmdline.CmdGeneral ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Node_Literal ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.setup.Build ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-
-public class dumpnodetable extends CmdGeneral {
+public class dumpnodetable extends CmdARQ {
     ModLocation modLocation = new ModLocation() ;
 
     static public void main(String... argv) {
@@ -176,7 +176,7 @@ public class dumpnodetable extends CmdGeneral {
 
     @Override
     protected String getCommandName() {
-        return Utils.className(this) ;
+        return Lib.className(this) ;
     }
 
 }

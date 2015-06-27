@@ -24,32 +24,32 @@ import org.junit.After ;
 import org.junit.Before ;
 
 public class TestDatasetWithEmbeddedSolrTextIndex extends AbstractTestDatasetWithTextIndex {
-    
+
     private static final String  DATA_PATH      = "target/test/SolrARQ/data";
     private static final File    DATA_DIR       = new File(DATA_PATH);
     private static final String  INDEX_PATH     = DATA_PATH + "/index";
     private static final File    INDEX_DIR      = new File(INDEX_PATH);
     private static final String  TEST_ASSEM     = "testing/TextQuery/text-solr-config.ttl" ;
 
-	@Before
-	public void before() {
-//	    deleteOldFiles();
-	    INDEX_DIR.mkdirs();
-	    TextQuery.init() ;
-	    TextSearchUtil.createEmptyIndex(INDEX_DIR);
-	    dataset = TextDatasetFactory.create(TEST_ASSEM) ;
-	}
+    @Before
+    public void before() {
+        //deleteOldFiles();
+        INDEX_DIR.mkdirs();
+        TextQuery.init() ;
+        TextSearchUtil.createEmptyIndex(INDEX_DIR);
+        dataset = TextDatasetFactory.create(TEST_ASSEM) ;
+    }
 
-	@After
-	public void after() {
-		TextIndexSolr index = (TextIndexSolr) dataset.getContext().get(TextQuery.textIndex) ;
-		index.getServer().shutdown();
-		deleteOldFiles();
-	}
+    @After
+    public void after() {
+        TextIndexSolr index = (TextIndexSolr) dataset.getContext().get(TextQuery.textIndex) ;
+        index.getServer().shutdown();
+        deleteOldFiles();
+    }
 
-	public void deleteOldFiles() {
-	    dataset.close();
-		if (DATA_DIR.exists()) 
-			TextSearchUtil.emptyAndDeleteDirectory(DATA_DIR);
-	}
+    public void deleteOldFiles() {
+        dataset.close();
+        if (DATA_DIR.exists()) 
+            TextSearchUtil.emptyAndDeleteDirectory(DATA_DIR);
+    }
 }

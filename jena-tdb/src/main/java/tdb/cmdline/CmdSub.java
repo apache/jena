@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import arq.cmd.CmdException;
+import jena.cmd.CmdException;
 
 
 public class CmdSub

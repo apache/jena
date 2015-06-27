@@ -23,19 +23,20 @@ import static org.apache.jena.riot.thrift.TRDF.ANY ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
 
+import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.datatypes.xsd.impl.RDFLangString ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.thrift.wire.* ;
-
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Var ;
 
 /** Convert to and from Thrift wire objects.
  * See {@link StreamRDF2Thrift} and {@link Thrift2StreamRDF}
@@ -251,6 +252,12 @@ public class ThriftConvert
             
             // General encoding.
             RDF_Literal literal = new RDF_Literal(lex) ;
+            if ( JenaRuntime.isRDF11 ) {
+                if ( node.getLiteralDatatype().equals(XSDDatatype.XSDstring) || 
+                     node.getLiteralDatatype().equals(RDFLangString.rdfLangString) )
+                    dt = null ;
+            }
+            
             if ( dt != null ) {
                 RDF_PrefixName dtPrefixName = contract(dt, pmap) ;
                 if ( dtPrefixName != null )

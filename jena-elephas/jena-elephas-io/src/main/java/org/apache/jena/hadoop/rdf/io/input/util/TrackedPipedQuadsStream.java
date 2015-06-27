@@ -18,10 +18,9 @@
 
 package org.apache.jena.hadoop.rdf.io.input.util;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.lang.PipedRDFIterator;
-
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * A tracked piped quads stream

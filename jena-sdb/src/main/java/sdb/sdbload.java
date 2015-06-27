@@ -19,22 +19,23 @@
 package sdb;
 
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Iterator ;
+import java.util.List ;
 
-import sdb.cmd.CmdArgsDB;
-import sdb.cmd.ModGraph;
-import arq.cmdline.ArgDecl;
+import jena.cmd.ArgDecl;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphListener;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sdb.SDB ;
-import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
-import com.hp.hpl.jena.sparql.util.Timer;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.util.FileUtils;
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.lib.Timer ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.GraphListener ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.sdb.SDB ;
+import org.apache.jena.sdb.store.StoreBaseHSQL ;
+import org.apache.jena.util.FileUtils ;
+
+import sdb.cmd.CmdArgsDB ;
+import sdb.cmd.ModGraph ;
  
  /** Load data files into an SDB model in a database.
   * 
@@ -71,7 +72,7 @@ public class sdbload extends CmdArgsDB
     }
 
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary()  { return getCommandName()+" <SPEC> [--graph IRI] file ..."; }

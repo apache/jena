@@ -31,6 +31,7 @@ import org.apache.jena.riot.RiotException ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+/** Support for resources using the "ftp:" scheme */
 public class LocatorFTP extends LocatorURL {
     private static Logger         log         = LoggerFactory.getLogger(LocatorFTP.class) ;
     private static final String[] schemeNames = { "ftp" } ;

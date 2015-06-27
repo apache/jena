@@ -57,14 +57,6 @@ public abstract class ActionAsyncTask extends ActionItem
         return Async.asJson(aTask) ;
     }
     
-    public static AsyncTask execASyncTask(HttpAction action, AsyncPool asyncPool, String displayName, Runnable task) {
-        AsyncTask atask = Async.asyncTask(asyncPool, displayName, action.getDataService(), task) ;
-        Async.setLocationHeader(action, atask);
-        JsonValue v = Async.asJson(atask) ;
-        ServletOps.sendJsonReponse(action, v);
-        return atask ;
-    }
-    
     protected abstract Runnable createRunnable(HttpAction action) ;
 }
 

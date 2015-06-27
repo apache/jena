@@ -18,13 +18,13 @@
 
 package jena;
 
-import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
-
-import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.rdf.model.*;
+import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
 
 import java.net.*;
 import java.io.*;
+
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.shared.JenaException ;
 
 /** A program which read an RDF model and copy it to the standard output stream.
  *
@@ -52,7 +52,7 @@ import java.io.*;
  */
 public class rdfcopy extends java.lang.Object {
 
-    static { setLog4jConfiguration() ; }
+    static { setCmdLogging(); }
 
 	/**
 	* @param args the command line arguments

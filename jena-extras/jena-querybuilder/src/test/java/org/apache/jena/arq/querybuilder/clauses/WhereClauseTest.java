@@ -17,18 +17,27 @@
  */
 package org.apache.jena.arq.querybuilder.clauses;
 
-import org.apache.jena.arq.querybuilder.AbstractQueryBuilder ;
-import org.apache.jena.arq.querybuilder.SelectBuilder ;
-import org.junit.After ;
-import org.xenei.junit.contract.Contract ;
-import org.xenei.junit.contract.ContractTest ;
-import org.xenei.junit.contract.IProducer ;
+import java.util.List;
 
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException ;
+import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
+import org.apache.jena.arq.querybuilder.SelectBuilder;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.LiteralLabelFactory;
+import org.apache.jena.query.Query;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.expr.E_Random;
+import org.apache.jena.sparql.lang.sparql_11.ParseException;
+import org.apache.jena.sparql.syntax.Element;
+import org.apache.jena.sparql.syntax.ElementGroup;
+import org.apache.jena.sparql.syntax.ElementTriplesBlock;
+import org.junit.After;
+
+import static org.junit.Assert.*;
+
+import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractTest;
+import org.xenei.junit.contract.IProducer;
 
 @Contract(WhereClause.class)
 public class WhereClauseTest<T extends WhereClause<?>> extends
@@ -55,20 +64,22 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	@ContractTest
 	public void testAddWhereStrings() {
 		WhereClause<?> whereClause = getProducer().newInstance();
-		AbstractQueryBuilder<?> builder = whereClause.addWhere("<one>", "<two>", "three");
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + quote("three") + presentStringType() + OPT_SPACE
-				+ DOT + CLOSE_CURLY, builder.buildString());
+		AbstractQueryBuilder<?> builder = whereClause.addWhere("<one>",
+				"<two>", "three");
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + quote("three") + presentStringType()
+				+ OPT_SPACE + DOT + CLOSE_CURLY, builder.buildString());
 	}
 
 	@ContractTest
 	public void testAddOptionalString() {
 		WhereClause<?> whereClause = getProducer().newInstance();
-		AbstractQueryBuilder<?> builder = whereClause.addOptional("<one>", "<two>", "three");
+		AbstractQueryBuilder<?> builder = whereClause.addOptional("<one>",
+				"<two>", "three");
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ quote("three") + presentStringType() + OPT_SPACE
-				+ DOT + CLOSE_CURLY + CLOSE_CURLY, builder.buildString());
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
+				+ quote("three") + presentStringType() + OPT_SPACE + DOT
+				+ CLOSE_CURLY + CLOSE_CURLY, builder.buildString());
 
 	}
 
@@ -76,12 +87,11 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	public void testAddOptionalObjects() {
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addOptional(
-				NodeFactory.createURI("one"), 
-				NodeFactory.createURI("two"),
+				NodeFactory.createURI("one"), NodeFactory.createURI("two"),
 				NodeFactory.createURI("three"));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ node("three") + OPT_SPACE + DOT + CLOSE_CURLY,
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
+				+ uri("three") + OPT_SPACE + DOT + CLOSE_CURLY,
 				builder.buildString());
 	}
 
@@ -93,8 +103,8 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 				NodeFactory.createURI("three")));
 
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ node("three") + OPT_SPACE + DOT + CLOSE_CURLY,
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
+				+ uri("three") + OPT_SPACE + DOT + CLOSE_CURLY,
 				builder.buildString());
 	}
 
@@ -116,7 +126,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addSubQuery(sb);
 
-		assertContainsRegex(PREFIX + "pfx:" + SPACE + node("urn:uri") + SPACE
+		assertContainsRegex(PREFIX + "pfx:" + SPACE + uri("urn:uri") + SPACE
 				+ ".*" + WHERE + OPEN_CURLY + OPEN_CURLY + SELECT + var("x")
 				+ SPACE + WHERE + OPEN_CURLY + "pfx:one" + SPACE + "pfx:two"
 				+ SPACE + "pfx:three" + OPT_SPACE + DOT + CLOSE_CURLY,
@@ -133,11 +143,11 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		whereClause.getWhereHandler().addWhere(Triple.ANY);
 		AbstractQueryBuilder<?> builder = whereClause.addUnion(sb);
 
-		assertContainsRegex(PREFIX + "pfx:" + SPACE + node("uri") + ".+"
+		assertContainsRegex(PREFIX + "pfx:" + SPACE + uri("uri") + ".+"
 				+ UNION + OPEN_CURLY + SELECT + var("x") + SPACE + WHERE
-				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ quote("three") + presentStringType() + OPT_SPACE
-				+ DOT + CLOSE_CURLY + CLOSE_CURLY, builder.buildString());
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
+				+ quote("three") + presentStringType() + OPT_SPACE + DOT
+				+ CLOSE_CURLY + CLOSE_CURLY, builder.buildString());
 
 	}
 
@@ -147,46 +157,45 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addWhere(new Triple(
 				NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + var("v") + OPT_SPACE + DOT
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + var("v") + OPT_SPACE + DOT
 				+ CLOSE_CURLY, builder.buildString());
 
 		builder.setVar(v, NodeFactory.createURI("three"));
 
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + node("three") + OPT_SPACE + DOT
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + uri("three") + OPT_SPACE + DOT
 				+ CLOSE_CURLY, builder.buildString());
 
 		builder.setVar(v, NodeFactory.createURI("four"));
 
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + node("four") + OPT_SPACE + DOT
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + uri("four") + OPT_SPACE + DOT
 				+ CLOSE_CURLY, builder.buildString());
 
 		builder.setVar(v, null);
 
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + var("v") + OPT_SPACE + DOT
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + var("v") + OPT_SPACE + DOT
 				+ CLOSE_CURLY, builder.buildString());
 
 	}
 
 	@ContractTest
 	public void testSetVarsInFilter() throws ParseException {
-		Var v = Var.alloc("v");
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addFilter("?one < ?v");
 		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE
 				+ OPEN_PAREN + var("one") + OPT_SPACE + LT + OPT_SPACE
 				+ var("v") + CLOSE_PAREN + CLOSE_CURLY, builder.buildString());
 
-		builder.setVar(Var.alloc("v"),
-				NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10)));
+		builder.setVar(Var.alloc("v"), NodeFactory
+				.createLiteral(LiteralLabelFactory.createTypedLiteral(10)));
 
 		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE
 				+ OPEN_PAREN + var("one") + OPT_SPACE + LT + OPT_SPACE
 				+ quote("10") + "\\^\\^"
-				+ node("http://www.w3.org/2001/XMLSchema#int") + CLOSE_PAREN
+				+ uri("http://www.w3.org/2001/XMLSchema#int") + CLOSE_PAREN
 				+ CLOSE_CURLY, builder.buildString());
 
 	}
@@ -198,14 +207,14 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		AbstractQueryBuilder<?> builder = whereClause.addOptional(new Triple(
 				NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
 				+ var("v") + OPT_SPACE + DOT + CLOSE_CURLY + CLOSE_CURLY,
 				builder.buildString());
 
 		builder.setVar(v, NodeFactory.createURI("three"));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ node("three") + OPT_SPACE + DOT + CLOSE_CURLY + CLOSE_CURLY,
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
+				+ uri("three") + OPT_SPACE + DOT + CLOSE_CURLY + CLOSE_CURLY,
 				builder.buildString());
 	}
 
@@ -217,13 +226,13 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addSubQuery(sb);
 
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + ".+"
-				+ node("two") + ".+" + var("v") + ".+" + CLOSE_CURLY,
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + ".+"
+				+ uri("two") + ".+" + var("v") + ".+" + CLOSE_CURLY,
 				builder.buildString());
 
 		builder.setVar(v, NodeFactory.createURI("three"));
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + ".+"
-				+ node("two") + ".+" + node("three") + ".+" + CLOSE_CURLY,
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + ".+"
+				+ uri("two") + ".+" + uri("three") + ".+" + CLOSE_CURLY,
 				builder.buildString());
 	}
 
@@ -235,12 +244,54 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addUnion(sb);
 		assertContainsRegex(WHERE + OPEN_CURLY + UNION + OPEN_CURLY
-				+ node("one") + ".+" + node("two") + ".+" + var("v") + ".+"
+				+ uri("one") + ".+" + uri("two") + ".+" + var("v") + ".+"
 				+ CLOSE_CURLY, builder.buildString());
 
 		builder.setVar(v, NodeFactory.createURI("three"));
 		assertContainsRegex(WHERE + OPEN_CURLY + UNION + OPEN_CURLY
-				+ node("one") + ".+" + node("two") + ".+" + node("three")
+				+ uri("one") + ".+" + uri("two") + ".+" + uri("three")
 				+ ".+" + CLOSE_CURLY, builder.buildString());
+	}
+
+	@ContractTest
+	public void testBindStringVar() throws ParseException {
+		Var v = Var.alloc("foo");
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addBind("rand()", v);
+
+		assertContainsRegex(
+				OPEN_CURLY + BIND + OPEN_PAREN + "rand\\(\\)" + SPACE + "AS"
+						+ SPACE + var("foo") + CLOSE_PAREN + CLOSE_CURLY,
+				builder.buildString());
+		builder.setVar(v, NodeFactory.createURI("three"));
+		Query q = builder.build();
+		ElementGroup eg = (ElementGroup) q.getQueryPattern();
+		List<Element> lst = eg.getElements();
+		assertEquals( "Should only be one element",  1, lst.size());
+		assertTrue( "Should have an ElementTriplesBlock", lst.get(0) instanceof ElementTriplesBlock );
+		ElementTriplesBlock etb = (ElementTriplesBlock)lst.get(0);
+		assertTrue( "ElementGroup should be empty", etb.isEmpty() );
+	}
+
+	@ContractTest
+	public void testBindExprVar() {
+		Var v = Var.alloc("foo");
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause
+				.addBind(new E_Random(), v);
+
+		assertContainsRegex(
+				OPEN_CURLY + BIND + OPEN_PAREN + "rand\\(\\)" + SPACE + "AS"
+						+ SPACE + var("foo") + CLOSE_PAREN + CLOSE_CURLY,
+				builder.buildString());
+		
+		builder.setVar(v, NodeFactory.createURI("three"));
+		Query q = builder.build();
+		ElementGroup eg = (ElementGroup) q.getQueryPattern();
+		List<Element> lst = eg.getElements();
+		assertEquals( "Should only be one element",  1, lst.size());
+		assertTrue( "Should have an ElementTriplesBlock", lst.get(0) instanceof ElementTriplesBlock );
+		ElementTriplesBlock etb = (ElementTriplesBlock)lst.get(0);
+		assertTrue( "ElementGroup should be empty", etb.isEmpty() );
 	}
 }

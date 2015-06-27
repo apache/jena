@@ -18,12 +18,11 @@
 
 package riotcmd;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebContent ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /**
  * Guess the syntax from the filename. 
@@ -58,6 +57,6 @@ public class riot extends CmdLangParse
     @Override
     protected String getCommandName()
     {
-        return Utils.classShortName(riot.class) ;
+        return Lib.classShortName(riot.class) ;
     }
 }

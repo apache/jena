@@ -20,12 +20,19 @@ package org.apache.jena.fuseki.build ;
 
 import java.io.File ;
 import java.io.FilenameFilter ;
+import java.io.IOException ;
 import java.lang.reflect.Method ;
+import java.nio.file.DirectoryStream ;
+import java.nio.file.Files ;
+import java.nio.file.Path ;
+import java.nio.file.Paths ;
 import java.util.ArrayList ;
 import java.util.Collections ;
 import java.util.List ;
 
+import org.apache.jena.assembler.JA ;
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
@@ -34,19 +41,17 @@ import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DatasetStatus ;
 import org.apache.jena.fuseki.server.FusekiVocab ;
 import org.apache.jena.fuseki.server.SystemState ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.QuerySolution ;
+import org.apache.jena.query.ResultSet ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.update.UpdateAction ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateRequest ;
+import org.apache.jena.vocabulary.RDF ;
 import org.slf4j.Logger ;
-
-import com.hp.hpl.jena.assembler.JA ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
-import com.hp.hpl.jena.update.UpdateAction ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
-import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class FusekiConfig {
     static { Fuseki.init() ; }
@@ -119,7 +124,7 @@ public class FusekiConfig {
     private static List<DataAccessPoint> servicesAndDatasets(Model model) {
         // Old style configuration file : server to services.
         // ---- Services
-        ResultSet rs = FusekiLib.query("SELECT * { ?s fu:services [ list:member ?member ] }", model) ;
+        ResultSet rs = FusekiLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model) ;
         // If the old config.ttl file becomes just the server configuration file,
         // then don't warn here.
 //        if ( !rs.hasNext() )
@@ -127,12 +132,18 @@ public class FusekiConfig {
 
         List<DataAccessPoint> accessPoints = new ArrayList<>() ;
 
+        if ( ! rs.hasNext() )
+            // No "fu:services ( .... )" so try looking for services directly.
+            // This means Fuseki2, service configuration files (no server section) work for --conf. 
+            rs = FusekiLib.query("SELECT ?service { ?service a fu:Service }", model) ;
+
         for ( ; rs.hasNext() ; ) {
             QuerySolution soln = rs.next() ;
-            Resource svc = soln.getResource("member") ;
+            Resource svc = soln.getResource("service") ;
             DataAccessPoint acc = Builder.buildDataAccessPoint(svc) ;
             accessPoints.add(acc) ;
         }
+        
         return accessPoints ;
     }
     
@@ -156,8 +167,8 @@ public class FusekiConfig {
         SystemState.init$();        // Why? mvn jetty:run-war
         String x1 = StrUtils.strjoinNL
             ( SystemState.PREFIXES, 
-              "INSERT                    { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' }",
-              "WHERE { FILTER NOT EXISTS { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' } }"
+              "INSERT                    { [] ja:loadClass 'org.apache.jena.tdb.TDB' }",
+              "WHERE { FILTER NOT EXISTS { [] ja:loadClass 'org.apache.jena.tdb.TDB' } }"
              ) ;
         String x2 = StrUtils.strjoinNL
             (SystemState.PREFIXES,
@@ -186,19 +197,34 @@ public class FusekiConfig {
     
     /** Read service descriptions in the given directory */ 
     public static List<DataAccessPoint> readConfigurationDirectory(String dir) {
-        List<DataAccessPoint> dataServiceRef = new ArrayList<>() ;
-        File d = new File(dir) ;
-        String[] aFiles = d.list(visibleFiles) ;
-        if ( aFiles == null ) {
+        Path pDir = Paths.get(dir).normalize() ;
+        File dirFile = pDir.toFile() ;
+        if ( ! dirFile.exists() ) {
             log.warn("Not found: directory for assembler files for services: '"+dir+"'") ;
             return Collections.emptyList() ;
         }
-        for ( String assemFile : aFiles ) {
-            Model m = RDFDataMgr.loadModel(assemFile) ;
-            DataAccessPoint acc = readConfiguration(m) ; 
-            dataServiceRef.add(acc) ;
+        if ( ! dirFile.isDirectory() ) {
+            log.warn("Not a directory: '"+dir+"'") ;
+            return Collections.emptyList() ;
         }
+        // Files that are not hidden.
+        DirectoryStream.Filter<Path> filter = (entry)-> {
+                File f = entry.toFile() ;
+                return ! f.isHidden() && f.isFile() ;
+        } ;
 
+        List<DataAccessPoint> dataServiceRef = new ArrayList<>() ;
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(pDir, filter)) {
+            for ( Path p : stream ) {
+                String fn = IRILib.filenameToIRI(p.toString()) ;
+                log.info("Load configuration: "+fn);
+                Model m = RDFDataMgr.loadModel(fn) ;
+                DataAccessPoint acc = readConfiguration(m) ; 
+                dataServiceRef.add(acc) ;
+            }
+        } catch (IOException ex) {
+            log.warn("IOException:"+ex.getMessage(), ex);
+        }
         return dataServiceRef ;
     }
 

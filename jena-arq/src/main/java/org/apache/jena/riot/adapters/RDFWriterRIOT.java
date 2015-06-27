@@ -22,17 +22,16 @@ import java.io.OutputStream ;
 import java.io.Writer ;
 import java.util.Locale ;
 
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.RDFErrorHandler ;
+import org.apache.jena.rdf.model.RDFWriter ;
+import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.system.IO_JenaWriters ;
 import org.apache.jena.riot.system.RiotLib ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
-import com.hp.hpl.jena.rdf.model.RDFWriter ;
-import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.Symbol ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Symbol ;
 
 /** Adapter from RIOT to old style Jena RDFWriter. */
 public class RDFWriterRIOT implements RDFWriter 

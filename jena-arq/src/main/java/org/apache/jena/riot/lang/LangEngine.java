@@ -22,6 +22,7 @@ import static org.apache.jena.riot.tokens.TokenType.EOF ;
 import static org.apache.jena.riot.tokens.TokenType.NODE ;
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.iterator.PeekIterator ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.RiotParseException ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ParserProfile ;
@@ -29,22 +30,23 @@ import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 
-import com.hp.hpl.jena.graph.Node ;
-
 /** Common operations for RIOT parsers - not the implementation LangRIOT  */
 public class LangEngine
 {
     protected ParserProfile profile ;
     protected final Tokenizer tokens ;
-    private final PeekIterator<Token> peekIter ;
+    private PeekIterator<Token> peekIter ;
 
     protected LangEngine(Tokenizer tokens, ParserProfile profile)
     {
         this.tokens = tokens ;
         this.profile = profile ;
-        this.peekIter = new PeekIterator<>(tokens) ;
+        // The PeekIterator is always loaded with the next token until the end
+        // (for simplicity) but it measn this can throw an exception. 
+        try { this.peekIter = new PeekIterator<>(tokens) ; }
+        catch (RiotParseException ex) { raiseException(ex) ; }
     }
-     
+    
     // ---- Managing tokens.
     
     protected final Token peekToken()

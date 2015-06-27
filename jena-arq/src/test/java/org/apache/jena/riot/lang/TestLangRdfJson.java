@@ -25,6 +25,8 @@ import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.* ;
@@ -33,9 +35,6 @@ import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 public class TestLangRdfJson extends BaseTest
 {
