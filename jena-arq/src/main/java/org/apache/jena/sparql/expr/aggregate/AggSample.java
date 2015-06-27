@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import java.util.Objects;
-
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
@@ -47,13 +45,13 @@ public class AggSample extends AggregatorBase
     @Override
     public int hashCode()   { return HC_AggSample ^ getExpr().hashCode() ; }
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Aggregator other, boolean bySyntax) {
+        if ( other == null ) return false ;
         if ( this == other ) return true ; 
         if ( ! ( other instanceof AggSample ) )
             return false ;
         AggSample agg = (AggSample)other ;
-        return Objects.equals(this.exprList, agg.exprList) ;
+        return this.exprList.equals(agg.exprList, bySyntax) ;
     } 
 
     // ---- Accumulator

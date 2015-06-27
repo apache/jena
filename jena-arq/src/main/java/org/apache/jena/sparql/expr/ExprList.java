@@ -111,12 +111,24 @@ public class ExprList implements Iterable<Expr>
     @Override
     public int hashCode() { return expressions.hashCode() ; }
 
+    public boolean equals(ExprList other, boolean bySyntax) {
+        if ( this == other ) return true ;
+        for ( int i = 0 ; i < expressions.size() ; i++ ) {
+            Expr e1 = expressions.get(i) ;
+            Expr e2 = other.expressions.get(i) ;
+            if ( ! e1.equals(e2, bySyntax) ) 
+                return false ;
+        }
+        return true ;
+    }
+    
     @Override
     public boolean equals(Object other) {
         if ( this == other ) return true ;
         if ( ! ( other instanceof ExprList ) ) return false ;
         ExprList exprs = (ExprList)other ;
-        return expressions.equals(exprs.expressions) ;
+        //return expressions.equals(exprs.expressions) ;
+        return equals((ExprList)other, false) ;
     }
 
     public static ExprList splitConjunction(ExprList exprList1) {

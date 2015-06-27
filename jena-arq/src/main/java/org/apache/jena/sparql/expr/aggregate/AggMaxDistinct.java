@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import java.util.Objects;
-
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 
@@ -34,13 +32,12 @@ public class AggMaxDistinct extends AggMaxBase
     public int hashCode()   { return HC_AggMaxDistinct ^ getExpr().hashCode() ; }
     
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Aggregator other, boolean bySyntax) {
+        if ( other == null ) return false ;
         if ( this == other ) return true ; 
         if ( ! ( other instanceof AggMaxDistinct ) )
             return false ;
         AggMaxDistinct agg = (AggMaxDistinct)other ;
-        return Objects.equals(exprList, agg.exprList) ;
+        return exprList.equals(agg.exprList, bySyntax) ;
     }
-
 }

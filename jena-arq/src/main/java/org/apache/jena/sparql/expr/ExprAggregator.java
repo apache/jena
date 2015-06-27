@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.expr;
 
 import java.util.Objects;
+
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
@@ -72,8 +73,8 @@ public class ExprAggregator extends ExprNode
     }
     
     @Override
-    public boolean equals(Object other) 
-    {
+    public boolean equals(Expr other, boolean bySyntax) {
+        if ( other == null ) return false ;
         if ( this == other ) return true ;
         if ( ! ( other instanceof ExprAggregator ) )
             return false ;

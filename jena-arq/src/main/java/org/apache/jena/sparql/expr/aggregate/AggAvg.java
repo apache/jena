@@ -51,12 +51,12 @@ public class AggAvg extends AggregatorBase
     public int hashCode()   { return HC_AggAvg ^ getExprList().hashCode() ; }
 
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Aggregator other, boolean bySyntax) {
+        if ( other == null ) return false ;
         if ( this == other ) return true ;
         if ( ! ( other instanceof AggAvg ) ) return false ;
         AggAvg a = (AggAvg)other ;
-        return exprList.equals(a.exprList) ;
+        return exprList.equals(a.exprList, bySyntax) ;
     }
     
     // ---- Accumulator

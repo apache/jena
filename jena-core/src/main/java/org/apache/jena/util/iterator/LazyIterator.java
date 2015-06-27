@@ -18,6 +18,9 @@
 
 package org.apache.jena.util.iterator;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -59,11 +62,6 @@ abstract public class LazyIterator<T> implements ExtendedIterator<T> {
 		it.remove();
 	}
 
-	public ExtendedIterator<T> andThen(ClosableIterator<? extends T> other) {
-		lazy();
-		return it.andThen(other);
-	}
-
 	@Override
     public ExtendedIterator<T> filterKeep(Predicate<T> f) {
 		lazy();
@@ -87,6 +85,27 @@ abstract public class LazyIterator<T> implements ExtendedIterator<T> {
 		lazy();
 		it.close();
 			
+	}
+	
+	@Override
+	public T removeNext() {
+		lazy();
+		return it.removeNext();
+	}
+
+	@Override
+	public <X extends T> ExtendedIterator<T> andThen( Iterator<X> other ){
+		return NiceIterator.andThen(this, other);
+	}
+
+	@Override
+	public List<T> toList() {
+		return NiceIterator.asList(this);
+	}
+
+	@Override
+	public Set<T> toSet() {
+		return NiceIterator.asSet(this);
 	}
 	 
 	private void lazy() {

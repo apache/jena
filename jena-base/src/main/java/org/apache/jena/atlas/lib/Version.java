@@ -51,10 +51,8 @@ public class Version
      * Prints version information for all registered classes to the given writer
      * @param writer Writer to print version information to
      */
-    public void print(IndentedWriter writer)
-    {
-        for ( Class<?> c : classes )
-        {
+    public void print(IndentedWriter writer) {
+        for ( Class<?> c : classes ) {
             String x = Lib.classShortName( c );
             fields( writer, x, c );
         }
@@ -63,35 +61,36 @@ public class Version
     private static void fields(IndentedWriter writer, String prefix, Class< ? > cls)
     {
         for ( String field : fields )
-        {
             printField( writer, prefix, field, cls );
-        }
     }
     
-    private static String field(String fieldName, Class< ? > cls)
-    {
-        try
-        {
+    private static String field(String fieldName, Class<? > cls) {
+        try {
             Field f = cls.getDeclaredField(fieldName) ;
-            return f.get(null).toString() ;
-        } catch (IllegalArgumentException ex)
-        {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex)
-        {
-            ex.printStackTrace();
-        } catch (SecurityException ex)
-        {
-            ex.printStackTrace();
-        } catch (NoSuchFieldException ex)
-        {
-            ex.printStackTrace();
+            Object val = f.get(null) ;
+            if ( val == null )
+                return null ;
+            return val.toString() ;
+        }
+        catch (IllegalArgumentException ex) {
+            ex.printStackTrace() ;
+        }
+        catch (IllegalAccessException ex) {
+            ex.printStackTrace() ;
+        }
+        catch (SecurityException ex) {
+            ex.printStackTrace() ;
+        }
+        catch (NoSuchFieldException ex) {
+            ex.printStackTrace() ;
         }
         return "<error>" ;
     }
-        
-    private static void printField(IndentedWriter out, String prefix, String fieldName, Class< ? > cls)
-    {
+
+    private static void printField(IndentedWriter out, String prefix, String fieldName, Class<? > cls) {
+        String str = field(fieldName, cls) ;
+        if ( str == null )
+            return ;
         out.print(prefix) ;
         out.print(": ") ;
         out.pad(12) ;
@@ -99,7 +98,7 @@ public class Version
         out.print(": ") ;
         out.print(field(fieldName, cls)) ;
         out.println() ;
-        out.flush();
+        out.flush() ;
     }
     
     /**

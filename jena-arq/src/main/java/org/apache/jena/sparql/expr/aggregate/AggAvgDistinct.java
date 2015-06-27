@@ -51,12 +51,12 @@ public class AggAvgDistinct extends AggregatorBase
     }
 
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Aggregator other, boolean bySyntax) {
+        if ( other == null ) return false ;
         if ( this == other ) return true ;
         if ( ! ( other instanceof AggAvgDistinct ) ) return false ;
         AggAvgDistinct a = (AggAvgDistinct)other ;
-        return exprList.equals(a.exprList) ;
+        return exprList.equals(a.exprList, bySyntax) ;
     }
 
     

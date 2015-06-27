@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,28 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.expr.aggregate;
+package org.apache.jena.sparql.syntax;
 
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.syntax.syntaxtransform.TestFlattenSyntax ;
+import org.apache.jena.sparql.syntax.syntaxtransform.TestQueryOps ;
+import org.apache.jena.sparql.syntax.syntaxtransform.TestSubstitution ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+import org.junit.runners.Suite.SuiteClasses ;
 
-public class AggMin extends AggMinBase
-{
-    // ---- MIN(?var)
-    public AggMin(Expr expr) { super(expr, false) ; } 
-    @Override
-    public Aggregator copy(ExprList exprs) { return new AggMin(exprs.get(0)) ; }
+@RunWith(Suite.class)
+@SuiteClasses( {
+    TestSerialization.class
+    , TestQueryOps.class
+    , TestSubstitution.class
+    , TestFlattenSyntax.class
+})
+public class TS_Syntax {
 
-    @Override
-    public int hashCode()   { return HC_AggMin ^ getExpr().hashCode() ; }
-    
-    @Override
-    public boolean equals(Aggregator other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ; 
-        if ( ! ( other instanceof AggMin ) )
-            return false ;
-        AggMin agg = (AggMin)other ;
-        return exprList.equals(exprList, bySyntax) ;
-    }
 }

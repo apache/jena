@@ -33,61 +33,59 @@ public class E_Exists extends ExprFunctionOp
 {
     private static final String symbol = Tags.tagExists ;
 
-    public E_Exists(Op op)
-    {
+    public E_Exists(Op op) {
         this(null, op) ;
     }
-    
-    public E_Exists(Element elt)
-    {
+
+    public E_Exists(Element elt) {
         this(elt, Algebra.compile(elt)) ;
     }
-    
-    public E_Exists(Element el, Op op)
-    {
+
+    public E_Exists(Element el, Op op) {
         super(symbol, el, op) ;
     }
 
     @Override
-    public Expr copySubstitute(Binding binding)
-    {
+    public Expr copySubstitute(Binding binding) {
         Op op2 = Substitute.substitute(getGraphPattern(), binding) ;
         return new E_Exists(getElement(), op2) ;
     }
 
     @Override
-    public Expr applyNodeTransform(NodeTransform nodeTransform)
-    {
+    public Expr applyNodeTransform(NodeTransform nodeTransform) {
         Op op2 = NodeTransformLib.transform(nodeTransform, getGraphPattern()) ;
         return new E_Exists(getElement(), op2) ;
     }
 
-    
     @Override
-    protected NodeValue eval(Binding binding, QueryIterator qIter, FunctionEnv env)
-    {
+    protected NodeValue eval(Binding binding, QueryIterator qIter, FunctionEnv env) {
         boolean b = qIter.hasNext() ;
         return NodeValue.booleanReturn(b) ;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return symbol.hashCode() ^ getGraphPattern().hashCode() ;
     }
-    
-    @Override
-    public boolean equals(Object other)
-    {
-        if ( this == other ) return true ;
 
+    @Override
+    public boolean equals(Expr other, boolean bySyntax) {
+        if ( other == null ) return false ;
+        if ( this == other ) return true ;
         if ( ! ( other instanceof E_Exists ) )
             return false ;
         
         E_Exists ex = (E_Exists)other ;
-        return this.getGraphPattern().equals(ex.getGraphPattern()) ;
+        if ( bySyntax )
+            return this.getElement().equals(ex.getElement()) ;
+        else
+            return this.getGraphPattern().equals(ex.getGraphPattern()) ;
     }
     
     @Override
     public ExprFunctionOp copy(ExprList args, Op x) { return new E_Exists(x) ; }
+    
+    @Override
+    public ExprFunctionOp copy(ExprList args, Element elPattern) { return new E_Exists(elPattern) ; }
+
 }

@@ -68,7 +68,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 				"<two>", "three");
 		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
 				+ uri("two") + SPACE + quote("three") + presentStringType()
-				+ OPT_SPACE + DOT + CLOSE_CURLY, builder.buildString());
+				+ OPT_SPACE + CLOSE_CURLY, builder.buildString());
 	}
 
 	@ContractTest
@@ -78,7 +78,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 				"<two>", "three");
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
 				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
-				+ quote("three") + presentStringType() + OPT_SPACE + DOT
+				+ quote("three") + presentStringType() + OPT_SPACE
 				+ CLOSE_CURLY + CLOSE_CURLY, builder.buildString());
 
 	}
@@ -91,7 +91,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 				NodeFactory.createURI("three"));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
 				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
-				+ uri("three") + OPT_SPACE + DOT + CLOSE_CURLY,
+				+ uri("three") + OPT_SPACE + CLOSE_CURLY,
 				builder.buildString());
 	}
 
@@ -104,7 +104,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
 				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
-				+ uri("three") + OPT_SPACE + DOT + CLOSE_CURLY,
+				+ uri("three") + OPT_SPACE + CLOSE_CURLY,
 				builder.buildString());
 	}
 
@@ -129,7 +129,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		assertContainsRegex(PREFIX + "pfx:" + SPACE + uri("urn:uri") + SPACE
 				+ ".*" + WHERE + OPEN_CURLY + OPEN_CURLY + SELECT + var("x")
 				+ SPACE + WHERE + OPEN_CURLY + "pfx:one" + SPACE + "pfx:two"
-				+ SPACE + "pfx:three" + OPT_SPACE + DOT + CLOSE_CURLY,
+				+ SPACE + "pfx:three" + OPT_SPACE + CLOSE_CURLY,
 				builder.buildString());
 
 	}
@@ -146,7 +146,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		assertContainsRegex(PREFIX + "pfx:" + SPACE + uri("uri") + ".+"
 				+ UNION + OPEN_CURLY + SELECT + var("x") + SPACE + WHERE
 				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
-				+ quote("three") + presentStringType() + OPT_SPACE + DOT
+				+ quote("three") + presentStringType() + OPT_SPACE
 				+ CLOSE_CURLY + CLOSE_CURLY, builder.buildString());
 
 	}
@@ -158,25 +158,25 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		AbstractQueryBuilder<?> builder = whereClause.addWhere(new Triple(
 				NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
 		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
-				+ uri("two") + SPACE + var("v") + OPT_SPACE + DOT
+				+ uri("two") + SPACE + var("v") + OPT_SPACE
 				+ CLOSE_CURLY, builder.buildString());
 
 		builder.setVar(v, NodeFactory.createURI("three"));
 
 		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
-				+ uri("two") + SPACE + uri("three") + OPT_SPACE + DOT
+				+ uri("two") + SPACE + uri("three") + OPT_SPACE
 				+ CLOSE_CURLY, builder.buildString());
 
 		builder.setVar(v, NodeFactory.createURI("four"));
 
 		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
-				+ uri("two") + SPACE + uri("four") + OPT_SPACE + DOT
+				+ uri("two") + SPACE + uri("four") + OPT_SPACE
 				+ CLOSE_CURLY, builder.buildString());
 
 		builder.setVar(v, null);
 
 		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
-				+ uri("two") + SPACE + var("v") + OPT_SPACE + DOT
+				+ uri("two") + SPACE + var("v") + OPT_SPACE
 				+ CLOSE_CURLY, builder.buildString());
 
 	}
@@ -208,13 +208,13 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 				NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
 				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
-				+ var("v") + OPT_SPACE + DOT + CLOSE_CURLY + CLOSE_CURLY,
+				+ var("v") + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY,
 				builder.buildString());
 
 		builder.setVar(v, NodeFactory.createURI("three"));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
 				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
-				+ uri("three") + OPT_SPACE + DOT + CLOSE_CURLY + CLOSE_CURLY,
+				+ uri("three") + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY,
 				builder.buildString());
 	}
 

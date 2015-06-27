@@ -45,8 +45,8 @@ public class AggNull extends AggregatorBase
     @Override
     public int hashCode()   { return HC_AggNull ; }
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Aggregator other, boolean bySyntax) {
+        if ( other == null ) return false ;
         if ( this == other ) return true ; 
         return ( other instanceof AggNull ) ;
     } 

@@ -41,13 +41,13 @@ public class AggSampleDistinct extends AggregatorBase
     @Override
     public int hashCode()   { return HC_AggSample ^ getExpr().hashCode() ; }
     @Override
-    public boolean equals(Object other)
-    {
-        if ( this == other ) return true ; 
+    public boolean equals(Aggregator other, boolean bySyntax) {
+        if ( other == null ) return false ;
+        if ( this == other ) return true ;
         if ( ! ( other instanceof AggSampleDistinct ) )
             return false ;
         AggSampleDistinct agg = (AggSampleDistinct)other ;
-        return agg.getExpr().equals(getExpr()) ;
+        return this.exprList.equals(agg.exprList, bySyntax) ;
     } 
 
     @Override
