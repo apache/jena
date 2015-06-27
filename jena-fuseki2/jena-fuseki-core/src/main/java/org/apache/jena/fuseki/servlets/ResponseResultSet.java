@@ -44,7 +44,7 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.cache.Cache;
+import org.apache.jena.fuseki.cache.CacheEntry;
 import org.apache.jena.fuseki.cache.CacheAction;
 import org.apache.jena.fuseki.cache.CacheStore;
 import org.apache.jena.fuseki.conneg.ConNeg ;
@@ -96,9 +96,9 @@ public class ResponseResultSet
         doResponseResultSet$(action, null, booleanResult, null, DEF.rsOfferBoolean) ;
     }
 
-    public static void doResponseResultSet(HttpAction action, Boolean booleanResult, CacheAction cacheAction, Cache cache)
+    public static void doResponseResultSet(HttpAction action, Boolean booleanResult, CacheAction cacheAction, CacheEntry cacheEntry)
     {
-        doResponseResultSet$(action, null, booleanResult, null, DEF.rsOfferBoolean, cacheAction, cache) ;
+        doResponseResultSet$(action, null, booleanResult, null, DEF.rsOfferBoolean, cacheAction, cacheEntry) ;
     }
 
     public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue)
@@ -106,9 +106,9 @@ public class ResponseResultSet
         doResponseResultSet$(action, resultSet, null, qPrologue, DEF.rsOfferTable) ;
     }
 
-    public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue, CacheAction cacheAction, Cache cache)
+    public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue, CacheAction cacheAction, CacheEntry cacheEntry)
     {
-        doResponseResultSet$(action, resultSet, null, qPrologue, DEF.rsOfferTable, cacheAction, cache) ;
+        doResponseResultSet$(action, resultSet, null, qPrologue, DEF.rsOfferTable, cacheAction, cacheEntry) ;
     }
     
     // If we refactor the conneg into a single function, we can split boolean and result set handling. 
@@ -182,7 +182,7 @@ public class ResponseResultSet
                                              Prologue qPrologue,
                                              AcceptList contentTypeOffer,
                                              CacheAction cacheAction,
-                                             Cache cache)
+                                             CacheEntry cacheEntry)
     {
         HttpServletRequest request = action.request ;
         HttpServletResponse response = action.response ;
@@ -229,7 +229,7 @@ public class ResponseResultSet
         if ( equal(serializationType, contentTypeResultsXML) )
             sparqlXMLOutput(action, contentType, resultSet, stylesheetURL, booleanResult) ;
         else if ( equal(serializationType, contentTypeResultsJSON) )
-            jsonOutput(action, contentType, resultSet, booleanResult, cacheAction, cache) ;
+            jsonOutput(action, contentType, resultSet, booleanResult, cacheAction, cacheEntry) ;
         else if ( equal(serializationType, contentTypeTextPlain) )
             textOutput(action, contentType, resultSet, qPrologue, booleanResult) ;
         else if ( equal(serializationType, contentTypeTextCSV) )
@@ -321,7 +321,7 @@ public class ResponseResultSet
         } catch (IOException ex) { IO.exception(ex) ; }
     }
 
-    private static void jsonOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult, final CacheAction cacheAction, Cache cache)
+    private static void jsonOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult, final CacheAction cacheAction, CacheEntry cacheEntry)
     {
         OutputContent proc = new OutputContent(){
             @Override
@@ -368,13 +368,13 @@ public class ResponseResultSet
                     out.println(")");
                 }
                 log.info("cacheBuilder prepared for storing in cacheStore " + cacheBuilder.toString());
-                cache.initialized();
-                cache.setCacheBuilder(cacheBuilder);
-                cacheStore.doSet(cacheAction.getKey(), cache);
+                cacheEntry.initialized();
+                cacheEntry.setCacheBuilder(cacheBuilder);
+                cacheStore.doSet(cacheAction.getKey(), cacheEntry);
             }else{
 
-                Cache cacheValue =  (Cache)cacheStore.doGet(cacheAction.getKey());
-                StringBuilder cacheBuilder = cacheValue.getCacheBuilder();
+                CacheEntry cacheEntryValue =  (CacheEntry)cacheStore.doGet(cacheAction.getKey());
+                StringBuilder cacheBuilder = cacheEntryValue.getCacheBuilder();
                 output(action, contentType, charsetUTF8, proc, cacheBuilder, cacheAction);
             }
         } catch (IOException ex) { IO.exception(ex) ; }
