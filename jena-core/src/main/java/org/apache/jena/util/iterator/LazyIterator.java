@@ -62,22 +62,34 @@ abstract public class LazyIterator<T> implements ExtendedIterator<T> {
 		it.remove();
 	}
 
+	// This calls unlazy as the iterator chain is created.
+    // Too early - wait until the chain is used.
+//	@Override
+//    public ExtendedIterator<T> filterKeep(Predicate<T> f) {
+//		lazy();
+//		return it.filterKeep(f);
+//	}
+//
+//	@Override
+//    public ExtendedIterator<T> filterDrop(Predicate<T> f) {
+//		lazy();
+//		return it.filterDrop(f);
+//	}
+	
+	// Don't unlazy until hasNext of the filter is called. 
 	@Override
-    public ExtendedIterator<T> filterKeep(Predicate<T> f) {
-		lazy();
-		return it.filterKeep(f);
-	}
+	public FilterIterator<T> filterKeep( Predicate<T> f )
+	{ return new FilterIterator<>( f, this ); }
 
 	@Override
-    public ExtendedIterator<T> filterDrop(Predicate<T> f) {
-		lazy();
-		return it.filterDrop(f);
-	}
+	public FilterIterator<T> filterDrop( final Predicate<T> f )
+	{ return new FilterIterator<>( f.negate(), this ); }
 
 	@Override
     public <U> ExtendedIterator<U> mapWith(Function<T,U> map1) {
-		lazy();
-		return it.mapWith(map1);
+	    return new Map1Iterator<>(map1, this) ;
+		//lazy();
+		//return it.mapWith(map1);
 	}
 
 	@Override
