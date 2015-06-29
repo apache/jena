@@ -18,6 +18,13 @@
 
 # The environment for this sub-script is setup by "tdbloader2"
 
+# Pull in common functions
+if [ -z "$JENA_HOME" ]; then
+  echo "JENA_HOME is not set"
+  exit 1
+fi
+source "${JENA_HOME}/bin/tdbloader2common"
+
 function printUsage() {
   cat << EOF
 tdbloader2data - TDB Bulk Loader - Data Phase
@@ -71,19 +78,6 @@ EOF
 # Exit on error.
 set -e
 
-log() { echo " $(date $DATE)" "$@" ; }
-
-function debug() {
- if [ $DEBUG = 1 ]; then
-   log "DEBUG" "$@"
- fi
-}
-
-#DATE="+%Y-%m-%dT%H:%M:%S%:z"
-DATE="+%H:%M:%S"
-
-PKG=org.apache.jena.tdb.store.bulkloader2
-
 # Process Arguments
 LOC=
 KEEP_WORK=0
@@ -133,15 +127,18 @@ do
 done
 
 # Verify arguments
-if [ -z "$LOC" ] ; then echo "No location specified" ; exit 1 ; fi
-if [ $# = 0 ]; then echo "No data files specified" ; exit 1 ; fi
+if [ -z "$LOC" ]; then
+  abort 1 "No location specified"
+fi
+if [ $# = 0 ]; then
+  abort 1 "No data files specified"
+fi
 
 # Look for any index and data files in the directory.
 # Skip a possible configuration file
 if test -n "$(find "$LOC" -maxdepth 1 -type f ! -name 'this.*' -print -quit)"
 then 
-    echo "Location is not empty: $LOC"
-    exit 1
+    abort 1 "Location is not empty: $LOC"
 fi
 
 if [ ! -e "$LOC" ] ; then
@@ -149,12 +146,13 @@ if [ ! -e "$LOC" ] ; then
   debug "Trying to create new database directory: $LOC"
   mkdir "$LOC"
   if [ $? != 0 ]; then
-    echo "Failed to create new directory: $LOC"
-    exit 1
+    abort 1 "Failed to create new directory: $LOC"
   fi
   debug "New database directory created: $LOC"
 fi
-if [ ! -d "$LOC" ] ; then echo "Location is not a directory: $LOC" ; exit 1 ; fi
+if [ ! -d "$LOC" ]; then
+  abort 1 "Location is not a directory: $LOC"
+fi
 
 # TODO Make LOC absolute
 
@@ -165,22 +163,21 @@ JVM_ARGS=${JVM_ARGS:--Xmx1200M}
 debug "JVM Arguments are $JVM_ARGS"
 
 # Classpath set in "tdbloader2"
-if [ -z "$JENA_CP" ]
-then
-    echo "Classpath not provided : set JENA_CP" 1>&2
-    exit 1
+if [ -z "$JENA_CP" ]; then
+  abort 1 "Classpath not provided : set JENA_CP"
 fi
 
 # ---- Data loading phase
-log "Data Load Phase"
-# Produce nodes file and triples/quads text file.
+info "Data Load Phase"
 
+# Produce nodes file and triples/quads text file.
 DATA_TRIPLES="$LOC/data-triples.tmp"
 DATA_QUADS="$LOC/data-quads.tmp"
 
-debug "Data files are $DATA_TRIPLES and $DATA_QUADS"
+debug "Triples text files is $DATA_TRIPLES"
+debug "Quads text file is $DATA_QUADS"
 
 java $JVM_ARGS -cp "$JENA_CP" "$PKG".CmdNodeTableBuilder \
     "--loc=$LOC" "--triples=$DATA_TRIPLES" "--quads=$DATA_QUADS" $FILES
 
-log "Data Load Phase Completed"
+info "Data Load Phase Completed"

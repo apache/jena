@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##     http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+
+function log() {
+  echo " $(date $DATE)" "$@"
+}
+
+function debug() {
+ if [ $DEBUG = 1 ]; then
+   log "DEBUG" "$@"
+ fi
+}
+
+function info() {
+  log "INFO" "$@"
+}
+
+function warn() {
+  log "WARN" "$@" 1>&2
+}
+
+function error() {
+  log "ERROR" "$@" 1>&2
+}
+
+function abort() {
+  local EXIT=$1
+
+  # Trick to check for numeric
+  # -eq only returns true if the value is integer equals
+  if [ "$EXIT" -eq "$EXIT" ]; then
+    # Can use the provided exit code
+    shift
+  else
+    # Caller forgot to provide an exit code so use default of 1
+    EXIT=1
+  fi
+
+  # Log error and exit
+  error "$@"
+  exit $EXIT
+}
+
+function getSize() {
+  ls -l $1 | awk '{print $5}'
+}
+
+function getDriveInfo() {
+  local DIR=$1
+
+  local DRIVE_INFO=$(df "$DIR" | tail -n +2)
+  local DISK=$(echo $DRIVE_INFO | awk '{print $1}')
+  local FREE_BYTES=$(echo $DRIVE_INFO | awk '{print $4}')
+  local USED_PERCENT=$(echo $DRIVE_INFO | awk '{print $5}')
+  USED_PERCENT=${USED_PERCENT/"%"/}
+  local FREE_PERCENT=$((100 - $USED_PERCENT))
+
+  local INFO=()
+  INFO[0]=$DISK
+  INFO[1]=$USED_PERCENT
+  INFO[2]=$FREE_PERCENT
+  INFO[3]=$FREE_BYTES
+
+  echo ${INFO[@]}
+}
+
+#DATE="+%Y-%m-%dT%H:%M:%S%:z"
+DATE="+%H:%M:%S"
+
+PKG=org.apache.jena.tdb.store.bulkloader2

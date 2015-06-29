@@ -18,6 +18,13 @@
 
 # The environment for this sub-script is setup by "tdbloader2"
 
+# Pull in common functions
+if [ -z "$JENA_HOME" ]; then
+  echo "JENA_HOME is not set"
+  exit 1
+fi
+source "${JENA_HOME}/bin/tdbloader2common"
+
 function printUsage() {
   cat << EOF
 tdbloader2index - TDB Bulk Loader - Index Phase
@@ -70,27 +77,6 @@ set -e
 # Sort order is ASCII
 export LC_ALL="C"
 
-log() { echo " $(date $DATE)" "$@" ; }
-
-function debug() {
- if [ $DEBUG = 1 ]; then
-   log "DEBUG" "$@"
- fi
-}
-
-function warn() {
-  log "WARN" "$@"
-}
-
-function getSize() {
-  ls -l $1 | awk '{print $5}'
-}
-
-#DATE="+%Y-%m-%dT%H:%M:%S%:z"
-DATE="+%H:%M:%S"
-
-PKG=org.apache.jena.tdb.store.bulkloader2
-
 # Process Arguments
 LOC=
 KEEP_WORK=0
@@ -138,22 +124,26 @@ do
 done
 
 # Verify arguments
-if [ -z "$LOC" ] ; then echo "No location specified" ; exit 1 ; fi
-if [ ! -e "$LOC" ] ; then echo "Location specified does not exist: $LOC" ; exit 1; fi
-if [ ! -d "$LOC" ] ; then echo "Location is not a directory: $LOC" ; exit 1 ; fi
+if [ -z "$LOC" ]; then
+  abort 1 "No location specified"
+fi
+if [ ! -e "$LOC" ]; then
+  abort 1 "Location specified does not exist: $LOC"
+fi
+if [ ! -d "$LOC" ]; then
+  abort 1 "Location is not a directory: $LOC"
+fi
 
 # TODO Make LOC absolute
 
 DATA_TRIPLES="$LOC/data-triples.tmp"
 DATA_QUADS="$LOC/data-quads.tmp"
 
-if [ ! -e "$DATA_TRIPLES" ] ; then
-  echo "No triples data file found in location, please run the tdbloader2data script first"
-  exit 1
+if [ ! -e "$DATA_TRIPLES" ]; then
+  abort 1 "No triples text file found in location, please run the tdbloader2data script first"
 fi
 if [ ! -e "$DATA_QUADS" ]; then
-  echo "No quads data file found in location, please run the tdbloader2data script first"
-  exit 1
+  abort 1 "No quads text file found in location, please run the tdbloader2data script first"
 fi
 
 debug "Data files are $DATA_TRIPLES and $DATA_QUADS"
@@ -164,16 +154,14 @@ JVM_ARGS=${JVM_ARGS:--Xmx1200M}
 debug "JVM Arguments are $JVM_ARGS"
 
 # Classpath set in "tdbloader2"
-if [ -z "$JENA_CP" ]
-then
-    echo "Classpath not provided : set JENA_CP" 1>&2
-    exit 1
+if [ -z "$JENA_CP" ]; then
+  abort 1 "Classpath not provided : set JENA_CP"
 fi
 debug "Jena Classpath is $JENA_CP"
 
 # ---- Index intermediates
 ## All files are writtern S P O / G S P O columns per row but in different sort orders.
-log "Index Building Phase"
+info "Index Building Phase"
 
 # Check whether Pipe Viewer is available
 # Needs to temporarily disable exit on error as which produces an error
@@ -204,21 +192,14 @@ else
   SORT_TEMP_DIR="$TMPDIR"
 fi
 debug "Sort Temp Directory: $SORT_TEMP_DIR"
+SORT_DRIVE_INFO=($(getDriveInfo "${SORT_TEMP_DIR}"))
+debug "Sort Temp Directory ${DIR} is on disk ${SORT_DRIVE_INFO[0]} which has ${SORT_DRIVE_INFO[2]}% free space (${SORT_DRIVE_INFO[3]} bytes)"
 
-# Find out how much space is on the sort directory
-SORT_DRIVE_INFO=$(df "$SORT_TEMP_DIR" | tail -n +2)
-SORT_DRIVE_DISK=$(echo $SORT_DRIVE_INFO | awk '{print $1}')
-SORT_DRIVE_FREE_SPACE=$(echo $SORT_DRIVE_INFO | awk '{print $4}')
-SORT_DRIVE_USED=$(echo $SORT_DRIVE_INFO | awk '{print $5}')
-SORT_DRIVE_FREE=${SORT_DRIVE_USED/"%"/}
-SORT_DRIVE_FREE=$((100 - $SORT_DRIVE_FREE))
-debug "Sort Temp Directory ${SORT_TEMP_DIR} is on disk ${SORT_DRIVE_DISK} which has ${SORT_DRIVE_FREE}% free space (${SORT_DRIVE_FREE_SPACE} bytes)"
-
-if [ $SORT_DRIVE_FREE -le 10 ]; then
-  echo
-  warn "Sort Temp Directory ${SORT_TEMP_DIR} is on disk ${SORT_DRIVE_DISK} which only has ${SORT_DRIVE_FREE}% free space (${SORT_DRIVE_FREE_SPACE} bytes) available"
+if [ "${SORT_DRIVE_INFO[2]}" -le 10 ]; then
+  warn "-----"
+  warn "Sort Temp Directory ${SORT_TEMP_DIR} is on disk ${SORT_DRIVE_INFO[0]} which only has ${SORT_DRIVE_INFO[2]}% free space (${SORT_DRIVE_INFO[3]} bytes) available"
   warn "This may result in sort failures if the data to be indexed is large"
-  echo
+  warn "-----"
 fi
 
 generate_index()
@@ -233,17 +214,26 @@ generate_index()
 	    return
 	  fi
 
-    log "Creating Index $IDX"
+    info "Creating Index $IDX"
+
+    # For various purposes we need to know the size of the input data
+    local SIZE=$(getSize "$DATA")
+    debug "Size of data to be sorted is $SIZE bytes"
+
+    # Verify that we have enough space to sort the data
+    local WORK_DRIVE_INFO=($(getDriveInfo "${WORK}"))
+    if [ "${SIZE}" -ge "${WORK_DRIVE_INFO[3]}" ]; then
+      abort 1 "Insufficient free space on database drive ${WORK_DRIVE_INFO[0]}, there are ${WORK_DRIVE_INFO[3]} bytes free but ${SIZE} bytes are required"
+    else
+      debug "Sufficient free space on database drive ${WORK_DRIVE_INFO[0]} to attempt sorting data file ${DATA} (${SIZE} bytes required from ${WORK_DRIVE_INFO[3]} bytes free)"
+    fi
 
     # Sort the input data
-    log "Sort $IDX"
+    info "Sort $IDX"
     debug "Sorting $DATA into work file $WORK"
     if [ $HAS_PV = 0 ]; then
       # Use pv (pipe viewer) to monitor sort progress
       # Note that progress data will only be seen if running in the foreground
-      # To report progress need to know size of input data
-      SIZE=$(getSize "$DATA")
-      debug "Size of data to be sorted is $SIZE bytes"
 
       pv -c -N data < "$DATA" | sort $SORT_ARGS -u $KEYS | pv -c -N sort -s $SIZE > $WORK
 
@@ -252,24 +242,23 @@ generate_index()
       # and we'll continue onwards
       # Therefore we need to check that the output size is same as input size as this is
       # the only way to tell if sort suceeded
-      OUTPUT_SIZE=$(getSize "$WORK")
+      local OUTPUT_SIZE=$(getSize "$WORK")
       debug "Size of sorted data is $OUTPUT_SIZE bytes"
       if [ $SIZE != $OUTPUT_SIZE ]; then
-        log "Aborting due to sort error"
-        exit 1
+        abort 1 "Aborting due to sort error, see preceding output for error from sort"
       fi
     else
       # Use sort without any progress monitoring
       sort $SORT_ARGS -u $KEYS < "$DATA" > $WORK
     fi
-    log "Sort $IDX Completed"
+    info "Sort $IDX Completed"
 
     # Build into an index
-    log "Build $IDX"
+    info "Build $IDX"
     rm -f "$LOC/$IDX.dat"
     rm -f "$LOC/$IDX.idn"
     java -cp "$JENA_CP" "$PKG".CmdIndexBuild "$LOC" "$IDX" "$WORK"
-    log "Build $IDX Completed"
+    info "Build $IDX Completed"
 
     # Remove work file unless keeping
     if [ $KEEP_WORK = 0 ]; then
@@ -301,7 +290,7 @@ generate_index "$K3 $K4 $K2 $K1" "$DATA_QUADS" POSG
 
 generate_index "$K4 $K2 $K3 $K1" "$DATA_QUADS" OSPG
 
-log "Index Building Phase Completed"
+info "Index Building Phase Completed"
 
 # ---- Clean up.
 if [ $KEEP_WORK = 0 ]; then

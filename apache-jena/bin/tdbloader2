@@ -77,12 +77,10 @@ EOF
 }
 
 # If JENA_HOME is empty
-if [ -z "$JENA_HOME" ]
-	then
-    SCRIPT="$0"
-    # Catch common issue: script has been symlinked
-	if [ -L "$SCRIPT" ]
-		then
+if [ -z "$JENA_HOME" ];	then
+  SCRIPT="$0"
+  # Catch common issue: script has been symlinked
+	if [ -L "$SCRIPT" ]; then
 		SCRIPT="$(readlink "$0")"
 		# If link is relative
 		case "$SCRIPT" in
@@ -91,9 +89,10 @@ if [ -z "$JENA_HOME" ]
 		esac
 	fi
 
-    # Work out root from script location
-    JENA_HOME="$( cd "$( dirname "$SCRIPT" )/.." && pwd )"
+  # Work out root from script location
+  JENA_HOME="$( cd "$( dirname "$SCRIPT" )/.." && pwd )"
 fi
+source "${JENA_HOME}/bin/tdbloader2common"
 
 # ---- Setup
 JVM_ARGS=${JVM_ARGS:--Xmx1024M}
@@ -189,13 +188,8 @@ if [ $TRACE = 1 ]; then
   COMMON_ARGS="$COMMON_ARGS --trace"
 fi
 
-log() { echo " $(date $DATE)" "$@" ; }
-
-#DATE="+%Y-%m-%dT%H:%M:%S%:z"
-DATE="+%H:%M:%S"
-
 # ---- Start
-log "-- TDB Bulk Loader Start"
+info "-- TDB Bulk Loader Start"
 TIME1="$(date +%s)"
 
 TOOL_DIR="$JENA_HOME/bin"
@@ -211,13 +205,12 @@ case "$PHASE" in
     exec "${TOOL_DIR}/tdbloader2index" $COMMON_ARGS --loc "$LOC"
     ;;
   *)
-    echo "Unrecognized phase $PHASE" 1>&2
-    exit 1
+    abort 1 "Unrecognized phase $PHASE"
     ;;
 esac
 
 # ---- End
 TIME2="$(date +%s)"
-log "-- TDB Bulk Loader Finish"
+info "-- TDB Bulk Loader Finish"
 ELAPSED=$(($TIME2-$TIME1))
-log "-- $ELAPSED seconds"
+info "-- $ELAPSED seconds"
