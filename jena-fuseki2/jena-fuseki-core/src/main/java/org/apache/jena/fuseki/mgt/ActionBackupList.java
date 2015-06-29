@@ -54,11 +54,6 @@ public class ActionBackupList extends HttpServlet {
         doCommon(req, resp);
     }
 
-    @Override
-    protected void doHead(HttpServletRequest req, HttpServletResponse resp) {
-        doCommon(req, resp);
-    }
-
     protected void doCommon(HttpServletRequest request, HttpServletResponse response) {
         JsonBuilder builder = new JsonBuilder() ;
         builder.startObject("top") ;
