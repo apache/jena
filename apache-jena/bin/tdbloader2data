@@ -83,8 +83,6 @@ function debug() {
 DATE="+%H:%M:%S"
 
 PKG=org.apache.jena.tdb.store.bulkloader2
-#DEV - Allows use against Jena 2 API
-PKG=com.hp.hpl.jena.tdb.store.bulkloader2
 
 # Process Arguments
 LOC=

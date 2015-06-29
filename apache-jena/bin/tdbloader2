@@ -198,19 +198,17 @@ DATE="+%H:%M:%S"
 log "-- TDB Bulk Loader Start"
 TIME1="$(date +%s)"
 
-TOOL_DIR=$JENA_HOME/bin/
-# DEV - Following is just for debugging
-TOOL_DIR=
+TOOL_DIR="$JENA_HOME/bin"
 case "$PHASE" in
   all)
-    exec "${TOOL_DIR}tdbloader2data" $COMMON_ARGS --loc "$LOC" "$@"
-    exec "${TOOL_DIR}tdbloader2index" $COMMON_ARGS --loc "$LOC"
+    exec "${TOOL_DIR}/tdbloader2data" $COMMON_ARGS --loc "$LOC" "$@"
+    exec "${TOOL_DIR}/tdbloader2index" $COMMON_ARGS --loc "$LOC"
     ;;
   data)
-    exec "${TOOL_DIR}tdbloader2data" $COMMON_ARGS --loc "$LOC" "$@"
+    exec "${TOOL_DIR}/tdbloader2data" $COMMON_ARGS --loc "$LOC" "$@"
     ;;
   index)
-    exec "${TOOL_DIR}tdbloader2index" $COMMON_ARGS --loc "$LOC"
+    exec "${TOOL_DIR}/tdbloader2index" $COMMON_ARGS --loc "$LOC"
     ;;
   *)
     echo "Unrecognized phase $PHASE" 1>&2
