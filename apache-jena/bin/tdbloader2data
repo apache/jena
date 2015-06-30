@@ -237,7 +237,7 @@ if [ ! -d "$LOC" ]; then
   abort 1 "Database location is not a directory: $LOC"
 fi
 
-## Prepare JVM Arguments
+# Prepare JVM Arguments
 JVM_ARGS=${JVM_ARGS:--Xmx1200M}
 debug "JVM Arguments are $JVM_ARGS"
 

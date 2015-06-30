@@ -242,7 +242,7 @@ debug "Data text files are $DATA_TRIPLES and $DATA_QUADS"
 if [ -z "$SORT_ARGS" ]; then
     SORT_ARGS="--buffer-size=50%"
 
-    ##--parallel is not always available.
+    # --parallel is not always available.
     # Temporarily disable exit on error while we check for --parallel support
     set +e
     sort --parallel=3 < /dev/null 2>/dev/null
@@ -263,7 +263,7 @@ fi
 debug "Jena Classpath is $JENA_CP"
 
 # ---- Index intermediates
-## All files are written S P O / G S P O columns per row but in different sort orders.
+# All files are written S P O / G S P O columns per row but in different sort orders.
 info "Index Building Phase"
 
 # Check whether Pipe Viewer is available
