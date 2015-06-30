@@ -18,22 +18,20 @@
 
 package com.hp.hpl.jena.util.iterator;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 /** An ExtendedIterator that is created lazily.
  * This is useful when constructing an iterator is expensive and 
  * you'd prefer to delay doing it until certain it's actually needed.
  * For example, if you have <code>iterator1.andThen(iterator2)</code>
  * you could implement iterator2 as a LazyIterator.  
  * The sequence to be defined is defined by the subclass's definition 
- * of create().  That is called exactly once on the first attempt 
- * to interact with the LazyIterator.  
+ * of {@link #create()}.  That is called exactly once on the first attempt 
+ * to iterate (i.e. use one of the <code>hasNext</code>, <code>next</code>,
+ * <code>remove</code>, <code>removeNext</code> operations,
+ *  maybe indirectly via <code>toList</code>).
  */
-abstract public class LazyIterator<T> implements ExtendedIterator<T> {
+abstract public class LazyIterator<T> extends NiceIterator<T> {
 
-	private ExtendedIterator<T> it=null;
+	private ExtendedIterator<T> it = null;
 
 	/** An ExtendedIterator that is created lazily. 
 	 * This constructor has very low overhead - the real work is 
@@ -60,51 +58,14 @@ abstract public class LazyIterator<T> implements ExtendedIterator<T> {
 		it.remove();
 	}
 
-	@Override
-    public ExtendedIterator<T> filterKeep(Filter<T> f) {
-		lazy();
-		return it.filterKeep(f);
-	}
-
-	@Override
-    public ExtendedIterator<T> filterDrop(Filter<T> f) {
-		lazy();
-		return it.filterDrop(f);
-	}
-
-	@Override
-    public <U> ExtendedIterator<U> mapWith(Map1<T,U> map1) {
-		lazy();
-		return it.mapWith(map1);
-	}
-
-	@Override
+	// removeNext() is implemented with next() and remove() so lazy is called.
+        
+    @Override
     public void close() {
-		lazy();
-		it.close();
-			
-	}
-	
-	@Override
-	public T removeNext() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public <X extends T> ExtendedIterator<T> andThen( Iterator<X> other ) {
-		return NiceIterator.andThen(this, other);
-	}
-
-	@Override
-	public List<T> toList() {
-		return NiceIterator.asList(this);
-	}
-
-	@Override
-	public Set<T> toSet() {
-		return NiceIterator.asSet(this);
-	}
-	 
+        if ( it != null )
+            it.close() ;
+    }    
+    
 	private void lazy() {
 		if (it == null)
 			it = create();
