@@ -198,14 +198,38 @@ TIME1="$(date +%s)"
 TOOL_DIR="$JENA_HOME/bin"
 case "$PHASE" in
   all)
-    exec "${TOOL_DIR}/tdbloader2data" $COMMON_ARGS --loc "$LOC" "$@"
-    exec "${TOOL_DIR}/tdbloader2index" $COMMON_ARGS --loc "$LOC"
+    # All Phases
+    # Data Phase
+    "${TOOL_DIR}/tdbloader2data" $COMMON_ARGS --loc "$LOC" "$@"
+    RET=$?
+    if [ $RET -ne 0 ]; then
+      abort $RET "Failed during data phase"
+    fi
+
+    # Index Phase
+    "${TOOL_DIR}/tdbloader2index" $COMMON_ARGS --loc "$LOC"
+    RET=$?
+    if [ $RET -ne 0 ]; then
+      abort $RET "Failed during data phase"
+    fi
     ;;
+
   data)
-    exec "${TOOL_DIR}/tdbloader2data" $COMMON_ARGS --loc "$LOC" "$@"
+    # Data Phase
+    "${TOOL_DIR}/tdbloader2data" $COMMON_ARGS --loc "$LOC" "$@"
+    RET=$?
+    if [ $RET -ne 0 ]; then
+      abort $RET "Failed during data phase"
+    fi
     ;;
+
   index)
-    exec "${TOOL_DIR}/tdbloader2index" $COMMON_ARGS --loc "$LOC"
+    # Index Phase
+    "${TOOL_DIR}/tdbloader2index" $COMMON_ARGS --loc "$LOC"
+    RET=$?
+    if [ $RET -ne 0 ]; then
+      abort $RET "Failed during index phase"
+    fi
     ;;
   *)
     abort 1 "Unrecognized phase $PHASE"
