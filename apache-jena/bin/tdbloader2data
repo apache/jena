@@ -134,6 +134,13 @@ if [ $# = 0 ]; then
   abort 1 "No data files specified"
 fi
 
+# Make LOC absolute
+ABS_LOC=$(makeAbsolute "$LOC")
+if [ "$ABS_LOC" != "$LOC" ]; then
+  LOC="$ABS_LOC"
+  debug "Absolute database location is $LOC"
+fi
+
 # Look for any index and data files in the directory.
 # Skip a possible configuration file
 if test -n "$(find "$LOC" -maxdepth 1 -type f ! -name 'this.*' -print -quit)"
@@ -153,8 +160,6 @@ fi
 if [ ! -d "$LOC" ]; then
   abort 1 "Location is not a directory: $LOC"
 fi
-
-# TODO Make LOC absolute
 
 FILES="$@"
 

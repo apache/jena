@@ -79,6 +79,112 @@ function getDriveInfo() {
   echo ${INFO[@]}
 }
 
+function getFreeMem() {
+  set +e
+  local FREE_MEM=-1
+  case "$OSTYPE" in
+    darwin*)
+      # Have to get this from top
+      FREE_MEM=$(top -l 1 | grep PhysMem | awk '{print $6}')
+      FREE_MEM=${FREE_MEM%M}
+      FREE_MEM=$(($FREE_MEM * 1024 * 1024))
+      ;;
+    *)
+      # Try to use free if available
+      which free >/dev/null 2>&1
+      if [ $? -eq 0 ]; then
+        # Have free available
+        FREE_MEM=$(free -b)
+      fi
+      ;;
+  esac
+  set -e
+
+  echo "$FREE_MEM"
+}
+
+function resolveLink() {
+  local NAME=$1
+
+  if [ -L "$NAME" ]; then
+    case "$OSTYPE" in
+      darwin*|*BSB*|*BSD|BSD*)
+        # BSD style readlink behaves differently to GNU readlink
+        # Have to manually follow links
+        while [ -L "$NAME" ]; do
+          NAME=$(readlink "$NAME")
+        done
+        ;;
+      *)
+        # Assuming standard GNU readlink with -f for
+        # canonicalize
+        NAME=$(readlink -f "$NAME")
+        ;;
+    esac
+  fi
+
+  echo "$NAME"
+}
+
+function resolveLinks() {
+  local NAME=$1
+
+  if [ -L "$NAME" ]; then
+    NAME=$(resolveLink "$NAME")
+  elif [[ "$NAME" == *"/" ]]; then
+    # If the path ends in a / test -L will report false even
+    # if the path is actually a symbolic link
+    # So check if the name without the trailing / is a link and if
+    # so resolve it
+    if [ -L "${NAME%/}" ]; then
+      NAME=${NAME%/}
+      NAME=$(resolveLink "$NAME")
+    fi
+  fi
+  echo "$NAME"
+}
+
+function makeAbsolute() {
+  local NAME=$1
+
+  # Follow links
+  NAME=$(resolveLinks "$NAME")
+
+  # Put back trailing slash
+  # Do this before we make the path absolute or we'll absolutize wrong
+  if [ -d "$NAME" ]; then
+    if [[ "$NAME" != *"/" ]]; then
+      NAME="${NAME}/"
+    fi
+  fi
+
+  if [[ "$NAME" != "/"* ]]; then
+    # Now make absolute
+    case "$OSTYPE" in
+      darwin*|*BSB*|*BSD|BSD*)
+        # BSD style readlink does not support the -f for canonicalization
+        # so have to do this via cd, pwd and basename
+        local FILENAME=$(basename "$NAME")
+        NAME=$(cd $(dirname "$NAME"); pwd)
+        NAME="$NAME/$FILENAME"
+        ;;
+      *)
+        # Otherwise assume standard GNU readlink
+        NAME=$(readlink -f "$NAME")
+        ;;
+    esac
+
+    # Put back trailing slash
+    if [ -d "$NAME" ]; then
+      if [[ "$NAME" != *"/" ]]; then
+        NAME="${NAME}/"
+      fi
+    fi
+  fi
+
+  echo "$NAME"
+}
+
 #DATE="+%Y-%m-%dT%H:%M:%S%:z"
 DATE="+%H:%M:%S"
 

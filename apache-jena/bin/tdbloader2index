@@ -127,14 +127,21 @@ done
 if [ -z "$LOC" ]; then
   abort 1 "No location specified"
 fi
+
+# Make LOC absolute
+ABS_LOC=$(makeAbsolute "$LOC")
+if [ "$ABS_LOC" != "$LOC" ]; then
+  LOC="$ABS_LOC"
+  debug "Absolute database location is $LOC"
+fi
+
+# Check location
 if [ ! -e "$LOC" ]; then
   abort 1 "Location specified does not exist: $LOC"
 fi
 if [ ! -d "$LOC" ]; then
   abort 1 "Location is not a directory: $LOC"
 fi
-
-# TODO Make LOC absolute
 
 DATA_TRIPLES="$LOC/data-triples.tmp"
 DATA_QUADS="$LOC/data-quads.tmp"
@@ -146,7 +153,7 @@ if [ ! -e "$DATA_QUADS" ]; then
   abort 1 "No quads text file found in location, please run the tdbloader2data script first"
 fi
 
-debug "Data files are $DATA_TRIPLES and $DATA_QUADS"
+debug "Data text files are $DATA_TRIPLES and $DATA_QUADS"
 
 ##--parallel is not always available.
 SORT_ARGS="${SORT_ARGS:---buffer-size=50%}"
@@ -160,7 +167,7 @@ fi
 debug "Jena Classpath is $JENA_CP"
 
 # ---- Index intermediates
-## All files are writtern S P O / G S P O columns per row but in different sort orders.
+## All files are written S P O / G S P O columns per row but in different sort orders.
 info "Index Building Phase"
 
 # Check whether Pipe Viewer is available
@@ -191,6 +198,7 @@ else
   # Using the system temp directory
   SORT_TEMP_DIR="$TMPDIR"
 fi
+SORT_TEMP_DIR=$(makeAbsolute "$SORT_TEMP_DIR")
 debug "Sort Temp Directory: $SORT_TEMP_DIR"
 SORT_DRIVE_INFO=($(getDriveInfo "${SORT_TEMP_DIR}"))
 debug "Sort Temp Directory ${DIR} is on disk ${SORT_DRIVE_INFO[0]} which has ${SORT_DRIVE_INFO[2]}% free space (${SORT_DRIVE_INFO[3]} bytes)"
@@ -221,11 +229,34 @@ generate_index()
     debug "Size of data to be sorted is $SIZE bytes"
 
     # Verify that we have enough space to sort the data
+
+    # Firstly check that the output disk has sufficient space
     local WORK_DRIVE_INFO=($(getDriveInfo "${WORK}"))
     if [ "${SIZE}" -ge "${WORK_DRIVE_INFO[3]}" ]; then
+      # If there is insufficient disk space then we can abort now
       abort 1 "Insufficient free space on database drive ${WORK_DRIVE_INFO[0]}, there are ${WORK_DRIVE_INFO[3]} bytes free but ${SIZE} bytes are required"
     else
       debug "Sufficient free space on database drive ${WORK_DRIVE_INFO[0]} to attempt sorting data file ${DATA} (${SIZE} bytes required from ${WORK_DRIVE_INFO[3]} bytes free)"
+    fi
+
+    # Secondly check if there is enough space to sort in-memory or if sort may need to do an external sort
+    # We only issue warnings when the sort is likely to be external because there are various factors
+    # such as virtual memory and OS file caching that may complicate this
+    FREE_MEM=$(getFreeMem)
+    if [ "$FREE_MEM" -ge 0 ]; then
+      if [ "$SIZE" -ge "$FREE_MEM" ]; then
+        warn "Insufficient free memory to sort data in-memory, sort will need to perform an external sort using Temp Directory ${SORT_TEMP_DIR}"
+
+        # Check for disk space on temporary disk
+        SORT_DRIVE_INFO=($(getDriveInfo "${SORT_TEMP_DIR}"))
+        if [ "$SIZE" -ge "${SORT_DRIVE_INFO[3]}" ]; then
+          warn "There may be insufficient for sort to perform an external sort using Tempo Directory ${SORT_TEMP_DIR} (${SIZE} bytes required but only ${SORT_DRIVE_INFO[3]} bytes free)"
+        fi
+      else
+        debug "Should be sufficient free memory ($FREE_MEM bytes) for sort to be fully in-memory"
+      fi
+    else
+      warn "Unable to determine free memory on your OS, can't check whether sort will be in-memory or external sort using Temp Directory ${SORT_TEMP_DIR}"
     fi
 
     # Sort the input data
