@@ -18,12 +18,58 @@
 
 # The environment for this sub-script is setup by "tdbloader2"
 
+function resolveLink() {
+  local NAME=$1
+
+  if [ -L "$NAME" ]; then
+    case "$OSTYPE" in
+      darwin*|*BSB*|*BSD|BSD*)
+        # BSD style readlink behaves differently to GNU readlink
+        # Have to manually follow links
+        while [ -L "$NAME" ]; do
+          NAME=$(readlink "$NAME")
+        done
+        ;;
+      *)
+        # Assuming standard GNU readlink with -f for
+        # canonicalize
+        NAME=$(readlink -f "$NAME")
+        ;;
+    esac
+  fi
+
+  echo "$NAME"
+}
+
 # Pull in common functions
 if [ -z "$JENA_HOME" ]; then
   echo "JENA_HOME is not set"
   exit 1
 fi
-source "${JENA_HOME}/bin/tdbloader2common"
+# If JENA_HOME is a symbolic link need to resolve
+if [ -L "${JENA_HOME}" ]; then
+  JENA_HOME=$(resolveLink "$JENA_HOME")
+  # If link is relative
+	case "$JENA_HOME" in
+    /*)
+      # Already absolute
+      ;;
+    *)
+      # Relative, make absolute
+      JENA_HOME=$(dirname "$JENA_HOME")
+      ;;
+  esac
+  export JENA_HOME
+  echo "Resolved symbolic links for JENA_HOME to $JENA_HOME"
+fi
+
+if [ -e "${JENA_HOME}/bin/tdbloader2common" ]; then
+  # Can source common functions
+  source "${JENA_HOME}/bin/tdbloader2common"
+else
+  echo "Unable to locate common functions script tdbloader2common"
+  exit 1
+fi
 
 function printUsage() {
   cat << EOF
