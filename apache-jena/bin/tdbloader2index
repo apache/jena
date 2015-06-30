@@ -50,7 +50,7 @@ fi
 if [ -L "${JENA_HOME}" ]; then
   JENA_HOME=$(resolveLink "$JENA_HOME")
   # If link is relative
-	case "$JENA_HOME" in
+  case "$JENA_HOME" in
     /*)
       # Already absolute
       ;;
@@ -247,7 +247,7 @@ if [ -z "$SORT_ARGS" ]; then
     set +e
     sort --parallel=3 < /dev/null 2>/dev/null
     if [ $? = 0 ]; then
-    	SORT_ARGS="$SORT_ARGS --parallel=3"
+      SORT_ARGS="$SORT_ARGS --parallel=3"
     fi
     set -e
 fi
@@ -315,8 +315,8 @@ generate_index()
 
     if [ ! -s "$DATA" ]; then
       debug "Skipping Index $IDX as no relevant data to index"
-	    return
-	  fi
+      return
+    fi
 
     info "Creating Index $IDX"
 
@@ -390,7 +390,7 @@ generate_index()
     # Remove work file unless keeping
     if [ $KEEP_WORK = 0 ]; then
       debug "Cleaning up work file $WORK"
-	    rm "$WORK"
+      rm "$WORK"
     fi
 }
 

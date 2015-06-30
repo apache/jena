@@ -50,7 +50,7 @@ fi
 if [ -L "${JENA_HOME}" ]; then
   JENA_HOME=$(resolveLink "$JENA_HOME")
   # If link is relative
-	case "$JENA_HOME" in
+  case "$JENA_HOME" in
     /*)
       # Already absolute
       ;;
