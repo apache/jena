@@ -60,10 +60,32 @@ Advanced additional options are as follows:
   --debug
     Enable debug mode, adds extra debug output
 
+  -j <JvmArgs>
+  --jvm-args <JvmArgs>
+    Sets the arguments that should be passed to the JVM for the
+    JVM based portions of the build.
+
+    Generally it is best to not change these unless you have been
+    specifically advised to.  The scripts will use appropriate
+    defaults if this is not specified.
+
+    In particular be careful increasing the heap size since many
+    parts of TDB actually use memory mapped files that live
+    outside the heap so if the heap is too large the heap may
+    conflict with the memory mapped files for memory space.
+
   -k
   --keep-work
     Keeps the temporary work files around after they are no longer
     needed.  May be useful for debugging.
+
+  -s <SortArgs>
+  --sort-args <SortArgs>
+    Sets the arguments that should be passed to sort for the sort
+    based portions of the build.
+
+    Generally it is best not to change these as the scripts will
+    use appropriate defaults for your system.
 
   -t
   --trace
@@ -81,6 +103,8 @@ export LC_ALL="C"
 LOC=
 KEEP_WORK=0
 DEBUG=0
+JVM_ARGS=
+SORT_ARGS=
 
 while [ $# -gt 0 ]
 do
@@ -94,6 +118,12 @@ do
     -h|--help)
       printUsage
       exit 0
+      ;;
+    -j|--jvm-args)
+      # JVM Arguments
+      shift
+      JVM_ARGS="$1"
+      shift
       ;;
     -k|--keep-work)
       # Keep work files
@@ -111,21 +141,27 @@ do
       LOC=${ARG/-*loc=/}
       shift
       ;;
+    -s|--sort-args)
+      # Sort arguments
+      shift
+      SORT_ARGS=$1
+      shift
+      ;;
     -t|--trace)
       # Trace mode
       shift
       set -x
       ;;
     *)
-      # Any further arguments are ignored
-      break
+      # Additional options are not supported
+      abort 1 "Unrecognized option $ARG"
       ;;
   esac
 done
 
 # Verify arguments
 if [ -z "$LOC" ]; then
-  abort 1 "No location specified"
+  abort 1 "Required database location not specified"
 fi
 
 # Make LOC absolute
@@ -137,26 +173,40 @@ fi
 
 # Check location
 if [ ! -e "$LOC" ]; then
-  abort 1 "Location specified does not exist: $LOC"
+  abort 1 "Database location specified does not exist: $LOC"
 fi
 if [ ! -d "$LOC" ]; then
-  abort 1 "Location is not a directory: $LOC"
+  abort 1 "Database location is not a directory: $LOC"
 fi
 
+# Locate and check data text files
 DATA_TRIPLES="$LOC/data-triples.tmp"
 DATA_QUADS="$LOC/data-quads.tmp"
 
 if [ ! -e "$DATA_TRIPLES" ]; then
-  abort 1 "No triples text file found in location, please run the tdbloader2data script first"
+  abort 1 "No triples text file found in database location, please run the tdbloader2data script first"
 fi
 if [ ! -e "$DATA_QUADS" ]; then
-  abort 1 "No quads text file found in location, please run the tdbloader2data script first"
+  abort 1 "No quads text file found in database location, please run the tdbloader2data script first"
 fi
 
 debug "Data text files are $DATA_TRIPLES and $DATA_QUADS"
 
-##--parallel is not always available.
-SORT_ARGS="${SORT_ARGS:---buffer-size=50%}"
+# Prepare sort arguments
+if [ -z "$SORT_ARGS" ]; then
+    SORT_ARGS="--buffer-size=50%"
+
+    ##--parallel is not always available.
+    # Temporarily disable exit on error while we check for --parallel support
+    set +e
+    sort --parallel=3 < /dev/null 2>/dev/null
+    if [ $? = 0 ]; then
+    	SORT_ARGS="$SORT_ARGS --parallel=3"
+    fi
+    set -e
+fi
+
+# Prepare JVM arguments
 JVM_ARGS=${JVM_ARGS:--Xmx1200M}
 debug "JVM Arguments are $JVM_ARGS"
 
@@ -201,7 +251,7 @@ fi
 SORT_TEMP_DIR=$(makeAbsolute "$SORT_TEMP_DIR")
 debug "Sort Temp Directory: $SORT_TEMP_DIR"
 SORT_DRIVE_INFO=($(getDriveInfo "${SORT_TEMP_DIR}"))
-debug "Sort Temp Directory ${DIR} is on disk ${SORT_DRIVE_INFO[0]} which has ${SORT_DRIVE_INFO[2]}% free space (${SORT_DRIVE_INFO[3]} bytes)"
+debug "Sort Temp Directory is on disk ${SORT_DRIVE_INFO[0]} which has ${SORT_DRIVE_INFO[2]}% free space (${SORT_DRIVE_INFO[3]} bytes)"
 
 if [ "${SORT_DRIVE_INFO[2]}" -le 10 ]; then
   warn "-----"
@@ -288,7 +338,7 @@ generate_index()
     info "Build $IDX"
     rm -f "$LOC/$IDX.dat"
     rm -f "$LOC/$IDX.idn"
-    java -cp "$JENA_CP" "$PKG".CmdIndexBuild "$LOC" "$IDX" "$WORK"
+    java $JVM_ARGS -cp "$JENA_CP" "$PKG".CmdIndexBuild "$LOC" "$IDX" "$WORK"
     info "Build $IDX Completed"
 
     # Remove work file unless keeping

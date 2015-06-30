@@ -63,6 +63,20 @@ Advanced additional options are as follows:
   --debug
     Enable debug mode, adds extra debug output
 
+  -j <JvmArgs>
+  --jvm-args <JvmArgs>
+    Sets the arguments that should be passed to the JVM for the
+    JVM based portions of the build.
+
+    Generally it is best to not change these unless you have been
+    specifically advised to.  The scripts will use appropriate
+    defaults if this is not specified.
+
+    In particular be careful increasing the heap size since many
+    parts of TDB actually use memory mapped files that live
+    outside the heap so if the heap is too large the heap may
+    conflict with the memory mapped files for memory space.
+
   -k
   --keep-work
     Keeps the temporary work files around after they are no longer
@@ -96,6 +110,12 @@ do
       printUsage
       exit 0
       ;;
+    -j|--jvm-args)
+      # JVM Arguments
+      shift
+      JVM_ARGS="$1"
+      shift
+      ;;
     -k|--keep-work)
       # Keep work files
       # This option is actually not used by this script but may be passed in
@@ -119,6 +139,16 @@ do
       shift
       set -x
       ;;
+    --)
+      # Arguments separator
+      # All further arguments are treated as data files
+      shift
+      break
+      ;;
+    -*)
+      # Unrecognized
+      abort 1 "Unrecognized option $ARG, if this was meant to be a data file separate options from data files with --"
+      ;;
     *)
       # Any further arguments are treated as data files
       break
@@ -128,10 +158,10 @@ done
 
 # Verify arguments
 if [ -z "$LOC" ]; then
-  abort 1 "No location specified"
+  abort 1 "Required database location not specified"
 fi
 if [ $# = 0 ]; then
-  abort 1 "No data files specified"
+  abort 1 "No data files specified, one/more data files must be specified"
 fi
 
 # Make LOC absolute
@@ -145,7 +175,7 @@ fi
 # Skip a possible configuration file
 if test -n "$(find "$LOC" -maxdepth 1 -type f ! -name 'this.*' -print -quit)"
 then 
-    abort 1 "Location is not empty: $LOC"
+    abort 1 "Database location is not empty: $LOC"
 fi
 
 if [ ! -e "$LOC" ] ; then
@@ -158,12 +188,12 @@ if [ ! -e "$LOC" ] ; then
   debug "New database directory created: $LOC"
 fi
 if [ ! -d "$LOC" ]; then
-  abort 1 "Location is not a directory: $LOC"
+  abort 1 "Database location is not a directory: $LOC"
 fi
 
 FILES="$@"
 
-## JVM Arguments
+## Prepare JVM Arguments
 JVM_ARGS=${JVM_ARGS:--Xmx1200M}
 debug "JVM Arguments are $JVM_ARGS"
 

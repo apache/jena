@@ -80,7 +80,10 @@ function getDriveInfo() {
 }
 
 function getFreeMem() {
+  # May be called from a script where exit on error is set
+  # in which case disable for the life of this function
   set +e
+
   local FREE_MEM=-1
   case "$OSTYPE" in
     darwin*)
@@ -98,6 +101,7 @@ function getFreeMem() {
       fi
       ;;
   esac
+
   set -e
 
   echo "$FREE_MEM"

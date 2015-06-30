@@ -53,6 +53,20 @@ Advanced additional options are as follows:
   --debug
     Enable debug mode, adds extra debug output
 
+  -j <JvmArgs>
+  --jvm-args <JvmArgs>
+    Sets the arguments that should be passed to the JVM for the
+    JVM based portions of the build.
+
+    Generally it is best to not change these unless you have been
+    specifically advised to.  The scripts will use appropriate
+    defaults if this is not specified.
+
+    In particular be careful increasing the heap size since many
+    parts of TDB actually use memory mapped files that live
+    outside the heap so if the heap is too large the heap may
+    conflict with the memory mapped files for memory space.
+
   -k
   --keep-work
     Keeps the temporary work files around after they are no longer
@@ -68,6 +82,14 @@ Advanced additional options are as follows:
                previously have been run
 
     When no phase is specified it defaults to all
+
+  -s <SortArgs>
+  --sort-args <SortArgs>
+    Sets the arguments that should be passed to sort for the sort
+    based portions of the build.
+
+    Generally it is best not to change these as the scripts will
+    use appropriate defaults for your system.
 
   -t
   --trace
@@ -111,15 +133,7 @@ case "$(uname)" in
 esac
 
 export JENA_CP
-# echo JENA_CP
-if [ -z "$SORT_ARGS" ]; then
-    SORT_ARGS="--buffer-size=50%"
-    sort --parallel=3 < /dev/null 2>/dev/null
-    if [ $? = 0 ]; then
-    	SORT_ARGS="$SORT_ARGS --parallel=3"
-    fi
-fi
-export SORT_ARGS
+
 
 # Process arguments
 LOC=
@@ -127,6 +141,8 @@ PHASE=
 KEEP_WORK=0
 DEBUG=0
 TRACE=0
+JVM_ARGS=
+SORT_ARGS=
 
 while [ $# -gt 0 ]
 do
@@ -141,6 +157,12 @@ do
       # Help
       printUsage
       exit 0
+      ;;
+    -j|--jvm-args)
+      # JVM Arguments
+      shift
+      JVM_ARGS="$1"
+      shift
       ;;
     -k|--keep-work)
       # Keep work files
@@ -164,14 +186,30 @@ do
       PHASE="$1"
       shift
       ;;
+    -s|--sort-args)
+      # Sort arguments
+      shift
+      SORT_ARGS=$1
+      shift
+      ;;
     -t|--trace)
       # Trace mode
       shift
       TRACE=1
       set -x
       ;;
+    --)
+      # Arguments separator
+      # All further arguments are treated as data files
+      shift
+      break
+      ;;
+    -*)
+      # Looks like an option but not known
+      abort 1 "Unrecognized option $ARG, if this was meant to be a data file separate options from data files with --"
+      ;;
     *)
-      # Once we see an unrecognized argument treat as start of files to process
+      # Once we see an unrecognized argument that doesn't look like an option treat as start of files to process
       break
       ;;
   esac
@@ -180,7 +218,11 @@ done
 if [ -z "$PHASE" ]; then
   PHASE="all"
 fi
+
+# Prepare arguments to pass to children
 COMMON_ARGS=
+DATA_ARGS=
+INDEX_ARGS=
 if [ $KEEP_WORK = 1 ]; then
   COMMON_ARGS="--keep-work"
 fi
@@ -189,6 +231,12 @@ if [ $DEBUG = 1 ]; then
 fi
 if [ $TRACE = 1 ]; then
   COMMON_ARGS="$COMMON_ARGS --trace"
+fi
+if [ -n "$JVM_ARGS" ]; then
+  COMMON_ARGS="$COMMON_ARGS --jvm-args $JVM_ARGS"
+fi
+if [ -n "$SORT_ARGS" ]; then
+  INDEX_ARGS="--sort-args $SORT_ARGS"
 fi
 
 # ---- Start
@@ -200,14 +248,14 @@ case "$PHASE" in
   all)
     # All Phases
     # Data Phase
-    "${TOOL_DIR}/tdbloader2data" $COMMON_ARGS --loc "$LOC" "$@"
+    "${TOOL_DIR}/tdbloader2data" $COMMON_ARGS $DATA_ARGS --loc "$LOC" -- "$@"
     RET=$?
     if [ $RET -ne 0 ]; then
       abort $RET "Failed during data phase"
     fi
 
     # Index Phase
-    "${TOOL_DIR}/tdbloader2index" $COMMON_ARGS --loc "$LOC"
+    "${TOOL_DIR}/tdbloader2index" $COMMON_ARGS $INDEX_ARGS --loc "$LOC"
     RET=$?
     if [ $RET -ne 0 ]; then
       abort $RET "Failed during data phase"
@@ -216,7 +264,7 @@ case "$PHASE" in
 
   data)
     # Data Phase
-    "${TOOL_DIR}/tdbloader2data" $COMMON_ARGS --loc "$LOC" "$@"
+    "${TOOL_DIR}/tdbloader2data" $COMMON_ARGS $DATA_ARGS --loc "$LOC" -- "$@"
     RET=$?
     if [ $RET -ne 0 ]; then
       abort $RET "Failed during data phase"
@@ -225,7 +273,7 @@ case "$PHASE" in
 
   index)
     # Index Phase
-    "${TOOL_DIR}/tdbloader2index" $COMMON_ARGS --loc "$LOC"
+    "${TOOL_DIR}/tdbloader2index" $COMMON_ARGS $INDEX_ARGS --loc "$LOC"
     RET=$?
     if [ $RET -ne 0 ]; then
       abort $RET "Failed during index phase"
