@@ -103,7 +103,7 @@ function resolveLink() {
 
   if [ -L "$NAME" ]; then
     case "$OSTYPE" in
-      darwin*|*BSB*|*BSD|BSD*)
+      darwin*|bsd*)
         # BSD style readlink behaves differently to GNU readlink
         # Have to manually follow links
         while [ -L "$NAME" ]; do

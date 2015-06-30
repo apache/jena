@@ -112,7 +112,7 @@ function resolveLink() {
 
   if [ -L "$NAME" ]; then
     case "$OSTYPE" in
-      darwin*|*BSB*|*BSD|BSD*)
+      darwin*|bsd*)
         # BSD style readlink behaves differently to GNU readlink
         # Have to manually follow links
         while [ -L "$NAME" ]; do
@@ -165,7 +165,7 @@ function makeAbsolute() {
   if [[ "$NAME" != "/"* ]]; then
     # Now make absolute
     case "$OSTYPE" in
-      darwin*|*BSB*|*BSD|BSD*)
+      darwin*|bsd*)
         # BSD style readlink does not support the -f for canonicalization
         # so have to do this via cd, pwd and basename
         local FILENAME=$(basename "$NAME")
