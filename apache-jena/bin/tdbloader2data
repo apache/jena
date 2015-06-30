@@ -191,8 +191,6 @@ if [ ! -d "$LOC" ]; then
   abort 1 "Database location is not a directory: $LOC"
 fi
 
-FILES="$@"
-
 ## Prepare JVM Arguments
 JVM_ARGS=${JVM_ARGS:--Xmx1200M}
 debug "JVM Arguments are $JVM_ARGS"
@@ -205,6 +203,32 @@ fi
 # ---- Data loading phase
 info "Data Load Phase"
 
+# Prepare Files
+FILES=()
+F=0
+while [ $# -gt 0 ]; do
+  FILE=$1
+  shift
+
+  ABS_FILE=$(makeAbsolute "$FILE")
+  if [ "$FILE" != "$ABS_FILE" ]; then
+    # Relative path was resolved
+    FILES[$F]="$ABS_FILE"
+    debug "Relative data file $FILE was resolved to absolute data file $ABS_FILE"
+  else
+    # Already absolute
+    FILES[$F]="$FILE"
+  fi
+
+  F=$(($F + 1))
+done
+info "Got ${#FILES[@]} data files to load"
+F=1
+for file in ${FILES[@]}; do
+  info "Data file $F: $file"
+  F=$(($F + 1))
+done
+
 # Produce nodes file and triples/quads text file.
 DATA_TRIPLES="$LOC/data-triples.tmp"
 DATA_QUADS="$LOC/data-quads.tmp"
@@ -213,6 +237,6 @@ debug "Triples text files is $DATA_TRIPLES"
 debug "Quads text file is $DATA_QUADS"
 
 java $JVM_ARGS -cp "$JENA_CP" "$PKG".CmdNodeTableBuilder \
-    "--loc=$LOC" "--triples=$DATA_TRIPLES" "--quads=$DATA_QUADS" $FILES
+    "--loc=$LOC" "--triples=$DATA_TRIPLES" "--quads=$DATA_QUADS" "${FILES[@]}"
 
 info "Data Load Phase Completed"
