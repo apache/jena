@@ -19,14 +19,8 @@
 # Not tdbloader2.
 ## tdbloader2 is slightly different.
 ##   The main program is not a java program
-##   It is split into tdbloader2 and tdbloader2worker
-##   tdbloader2worker (the mainporgram) is the same in 
-##   developement and here. tdbloader2 is like the script 
-##   wrappers except it execs tdbloader2worker, not
-##   java.  It needs manually updating.
-##   Replace the java exec with:
-##     export JENA_CP
-##     exec tdbloader2worker "$@"
+##   It is split into several scripts that leverage a mixture of 
+##   POSIX and java tools and should be maintained separately
 
 CMDS=$(cat <<EOF
 jena.rdfcat
@@ -86,5 +80,3 @@ do
     make_bat $cmd
 done
 
-## Specials
-cp ../jena-tdb/bin/tdbloader2worker bin/tdbloader2worker
