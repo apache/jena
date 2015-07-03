@@ -19,6 +19,7 @@
 package org.apache.jena.query.text;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.jena.datatypes.RDFDatatype;
 
 import java.util.HashMap ;
 import java.util.Map ;
@@ -28,17 +29,20 @@ public class Entity
     private final String id ;
     private final String graph ;
     private final String language ;
+    private final RDFDatatype datatype ;
     private final Map<String, Object> map = new HashMap<>() ;
 
     public Entity(String entityId, String entityGraph) {
-        this(entityId, entityGraph, null);
+        this(entityId, entityGraph, null, null);
     }
 
-    public Entity(String entityId, String entityGraph, String lang) {
+    public Entity(String entityId, String entityGraph, String lang, RDFDatatype datatype) {
         this.id = entityId ;
         this.graph = entityGraph;
         this.language = lang;
+        this.datatype = datatype;
     }
+
     /** @deprecated Use {@linkplain #Entity(String, String)} */
     @Deprecated
     public Entity(String entityId)          { this(entityId, null) ; }
@@ -48,6 +52,8 @@ public class Entity
     public String getGraph()                { return graph ; }
 
     public String getLanguage()                { return language ; }
+
+    public RDFDatatype getDatatype()        { return datatype ; }
 
     public void put(String key, Object value)
     { map.put(key, value) ; }
