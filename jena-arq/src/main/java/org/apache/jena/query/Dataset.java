@@ -30,9 +30,8 @@ import org.apache.jena.sparql.util.Context ;
  *  and a background graph (also called the default
  *  graph or unnamed graph). */
 
-public interface Dataset extends Transactional
+public interface Dataset extends Transactional 
 {
-    // Rather than pull in the internal "Tranactional" interface, we duplicate it here. 
     /** Get the default graph as a Jena Model */
     public Model getDefaultModel() ;
     
