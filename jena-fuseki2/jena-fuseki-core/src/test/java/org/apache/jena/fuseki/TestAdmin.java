@@ -53,9 +53,9 @@ import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.riot.web.HttpResponseHandler ;
 import org.apache.jena.web.HttpSC ;
+import org.junit.After ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
-import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 /** Tests of the admin functionality */
@@ -64,21 +64,19 @@ public class TestAdmin extends BaseTest {
     // Name of the dataset in the assembler file.
     static String dsTest = "test-ds2" ;
     
-    @BeforeClass
-    public static void beforeClass() {
+    @Before public void beforeTest() {
         ServerTest.allocServer() ;
         ServerTest.resetServer() ;
     }
-
-    @AfterClass
-    public static void afterClass() {
+    
+    @After public void afterTest() {
         ServerTest.freeServer() ;
     }
-    
-    @Before public void beforeTest() {
-        ServerTest.resetServer() ;
+
+    @AfterClass public static void afterClass() {
+        ServerTest.teardownServer() ;
     }
-    
+  
     // --- Ping 
     
     @Test public void ping_1() {
@@ -137,27 +135,6 @@ public class TestAdmin extends BaseTest {
     @Test public void list_datasets_5() {
         JsonValue v = getDatasetDescription(datasetPath) ;
         checkJsonDatasetsOne(v.getAsObject()) ;
-    }
-
-    private static JsonValue getDatasetDescription(String dsName) {
-        try ( TypedInputStream in = execHttpGet(urlRoot+"$/"+opDatasets+"/"+dsName) ) {
-            assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType()) ;
-            JsonValue v = JSON.parse(in) ;
-            return v ;
-        }
-    }
-
-    // -- Add
-    
-    private static void addTestDataset() {
-        File f = new File("testing/config-ds-1.ttl") ;
-        org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8) ;
-        HttpEntity e = new FileEntity(f, ct) ;
-        execHttpPost(ServerTest.urlRoot+"$/"+opDatasets, e) ;
-    }
-    
-    private static void deleteDataset(String name) {
-        execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+name) ;
     }
 
     // Specific dataset
@@ -348,6 +325,28 @@ public class TestAdmin extends BaseTest {
         return httpGetJson(url) ;
     }
     
+
+    private static JsonValue getDatasetDescription(String dsName) {
+    try ( TypedInputStream in = execHttpGet(urlRoot+"$/"+opDatasets+"/"+dsName) ) {
+        assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType()) ;
+        JsonValue v = JSON.parse(in) ;
+        return v ;
+    }
+}
+
+// -- Add
+
+private static void addTestDataset() {
+    File f = new File("testing/config-ds-1.ttl") ;
+    org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8) ;
+    HttpEntity e = new FileEntity(f, ct) ;
+    execHttpPost(ServerTest.urlRoot+"$/"+opDatasets, e) ;
+}
+
+private static void deleteDataset(String name) {
+    execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+name) ;
+}
+
 
     static class JsonResponseHandler implements HttpResponseHandler {
 
