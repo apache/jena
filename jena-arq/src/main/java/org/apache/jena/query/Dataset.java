@@ -68,27 +68,7 @@ public interface Dataset extends Transactional
      *  which otherwise may throw {@link UnsupportedOperationException}
      */
     public boolean supportsTransactions() ;
-    
-    /** Start either a READ or WRITE transaction */ 
-    @Override
-    public void begin(ReadWrite readWrite) ;
-    
-    /** Commit a transaction - finish the transaction and make any changes permanent (if a "write" transaction) */  
-    @Override
-    public void commit() ;
-    
-    /** Abort a transaction - finish the transaction and undo any changes (if a "write" transaction) */  
-    @Override
-    public void abort() ;
 
-    /** Say whether a transaction is active */ 
-    @Override
-    public boolean isInTransaction() ;
-    
-    /** Finish the transaction - if a write transaction and commit() has not been called, then abort */  
-    @Override
-    public void end() ;
-    
     /** Get the dataset in graph form */
     public DatasetGraph asDatasetGraph() ; 
     
