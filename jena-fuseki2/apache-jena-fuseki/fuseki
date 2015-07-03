@@ -94,7 +94,7 @@ else
     echo $1
   }
   log_end_msg() {
-    if [ $1 -eq 0]; then
+    if [ $1 -eq 0 ]; then
       echo '[OK]'
     else
       echo '[failed]'
