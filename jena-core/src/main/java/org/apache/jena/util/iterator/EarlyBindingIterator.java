@@ -21,7 +21,9 @@ import java.util.*;
 
 /**
  * Fully execute the iterator immediately, but pretend we haven't.
+ * @deprecated Do not use.
  */
+@Deprecated
 public class EarlyBindingIterator<T> extends WrappedIterator<T> {
 
 static private <X> Iterator<X> early(Iterator<X> it) {
