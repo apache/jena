@@ -158,7 +158,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
 
     /**
      * Helper method for validating request.
-     * @param request HTTP request
+     * @param action HTTP action
      * @param params parameters in a collection of Strings
      */
     protected void validateParams(HttpAction action, Collection<String> params) {

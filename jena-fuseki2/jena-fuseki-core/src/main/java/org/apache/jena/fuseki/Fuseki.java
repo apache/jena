@@ -143,8 +143,14 @@ public class Fuseki {
     /** Instance of log for config server messages. */
     public static final Logger        configLog         = LoggerFactory.getLogger(configLogName) ;
 
+    /** Actual log file for cache server messages. */
+    public static final String        cacheLogName     = PATH + ".Cache" ;
+
+    /** Instance of log for cache server messages. */
+    public static final Logger        cacheLog         = LoggerFactory.getLogger(cacheLogName) ;
+
     /** Instance of log for config server message s */
-    public static boolean             verboseLogging    = false ;
+    public static boolean             verboseLogging    = true ;
 
     /**
      * An instance of management for stream opening, including redirecting

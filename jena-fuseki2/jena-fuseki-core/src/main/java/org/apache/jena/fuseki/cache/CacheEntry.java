@@ -18,7 +18,8 @@
 
 package org.apache.jena.fuseki.cache;
 
-import com.hp.hpl.jena.sparql.resultset.SPARQLResult;
+
+import org.apache.jena.sparql.resultset.SPARQLResult;
 
 public class CacheEntry {
 
