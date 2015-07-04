@@ -221,7 +221,7 @@
       <plugin>
         <groupId>org.xenei</groupId>
         <artifactId>contract-test-maven-plugin</artifactId>
-        <version>0.1.2</version>
+        <version>${ver.contract.tests}</version>
         <configuration>
           <packages>
             <package>org.apache.jena.assembler</package>

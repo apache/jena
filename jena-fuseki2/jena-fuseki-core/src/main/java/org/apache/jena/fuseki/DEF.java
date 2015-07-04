@@ -37,6 +37,8 @@ public class DEF
                                                                           contentTypeNTriples,
                                                                           contentTypeNTriplesAlt,
                                                                           contentTypeRDFXML,
+                                                                          contentTypeTriX,
+                                                                          contentTypeTriXxml,
                                                                           contentTypeJSONLD,
                                                                           contentTypeRDFJSON,
                                                                           contentTypeRDFThrift
@@ -48,7 +50,9 @@ public class DEF
                                                                           contentTypeJSONLD,
                                                                           contentTypeNQuads,
                                                                           contentTypeNQuadsAlt1,
-                                                                          contentTypeNQuadsAlt2 
+                                                                          contentTypeNQuadsAlt2, 
+                                                                          contentTypeTriX,
+                                                                          contentTypeTriXxml
                                                                           ) ;
     
     // Offer for SELECT

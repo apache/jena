@@ -99,7 +99,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
             String f = textIndex.getDocDef().getField(predicate) ;
             queryString = f + ":" + queryString ;
         }
-        List<TextHit> results = textIndex.query(queryString, limit) ;
+        List<TextHit> results = textIndex.query(predicate, queryString, limit) ;
         return results.iterator() ;
     }
 

@@ -29,8 +29,9 @@ import java.util.*;
  * This class may be deprecated in the future.  New development should 
  * use use <code>UniqueFilter</code> for simple filtering of an ExtendedIterator, for 
  * more complex filtering implement a custom <code>Filter</code>.
+ * @deprecated Do not use.
  */
-
+@Deprecated
 public class UniqueExtendedIterator<T> extends WrappedIterator<T> {
 
     /** The set of objects already seen */

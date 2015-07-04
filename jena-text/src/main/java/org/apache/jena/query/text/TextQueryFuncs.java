@@ -19,6 +19,7 @@
 package org.apache.jena.query.text;
 
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.rdf.model.AnonId ;
@@ -78,7 +79,8 @@ public class TextQueryFuncs {
         String x = TextQueryFuncs.subjectToString(s) ;
         String graphText = TextQueryFuncs.graphNodeToString(g) ;
         String language = o.getLiteral().language() ;
-        Entity entity = new Entity(x, graphText, language) ;
+        RDFDatatype datatype = o.getLiteral().getDatatype() ;
+        Entity entity = new Entity(x, graphText, language, datatype) ;
         String graphField = defn.getGraphField() ;
         if ( defn.getGraphField() != null )
             entity.put(graphField, graphText) ;

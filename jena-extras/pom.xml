@@ -127,7 +127,7 @@ limitations under the License.
       <dependency>
         <groupId>org.xenei</groupId>
         <artifactId>junit-contracts</artifactId>
-        <version>0.0.5</version>
+        <version>${ver.contract.tests}</version>
         <scope>test</scope>
       </dependency>   
     </dependencies>
