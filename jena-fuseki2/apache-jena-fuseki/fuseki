@@ -371,8 +371,8 @@ start() {
       rm -f "$FUSEKI_PID"
     fi
 
-    OLD_DIR=`pwd`
-    cd $FUSEKI_HOME
+# use subshell to cd to FUSKEI_HOME directory and execute
+    (cd "$FUSEKI_HOME"
     if [ "$FUSEKI_USER" ]
     then
       touch "$FUSEKI_PID"
@@ -388,7 +388,7 @@ start() {
       disown $!
       echo $! > "$FUSEKI_PID"
     fi
-    cd $OLD_DIR
+)
     
     log_end_msg 0
     print_started
