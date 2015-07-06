@@ -44,45 +44,95 @@ import com.hp.hpl.jena.sparql.algebra.op.OpTopN;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator;
+import com.hp.hpl.jena.sparql.expr.ExprLib;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.expr.ExprTransform;
 import com.hp.hpl.jena.sparql.expr.ExprTransformSubstitute;
 import com.hp.hpl.jena.sparql.expr.ExprTransformer;
 import com.hp.hpl.jena.sparql.expr.ExprVars;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
 
 /**
- * A transform that tries to remove unecessary assignments
+ * A transform that tries to in-line/eliminate assignments
  * <p>
- * There are two classes of assignments that we can try and remove:
+ * There are two classes of assignments that we can try and in-line/eliminate:
  * </p>
  * <ol>
  * <li>Assignments where the assigned variable is used only once in a subsequent
- * assignment</li>
- * <li>Assignments where the assigned value is never used elsewhere</li>
+ * assignment can be in-lined</li>
+ * <li>Assignments where the assigned value is never used elsewhere can be
+ * eliminated</li>
  * </ol>
  * <p>
  * Both of these changes can only happen inside of projections as otherwise we
  * have to assume that the user may need the resulting variable and thus we
- * leave the assignment alone.
+ * leave the assignment alone. Assignments to be in-lined must also be
+ * deterministic i.e. moving their placement in the query and thus the possible
+ * solutions they might operate must not change their outputs. Whether an
+ * expression is deterministic is defined by {@link ExprLib#isStable(Expr)}.
  * </p>
- * 
+ * <p>
+ * Assignments may be in-lined in the following places:
+ * </p>
+ * <ul>
+ * <li>Filter Expressions</li>
+ * <li>Bind and Select Expressions</li>
+ * <li>Group By Expressions</li>
+ * <li>Order By Expressions if aggressive in-lining is enabled</li>
+ * </ul>
+ * <p>
+ * In the case of order by we only in-line assignments when aggressive mode is
+ * set as the realities of order by are that expressions may be recomputed
+ * multiple times and so in-lining may actually hurt performance in those cases
+ * unless the expression to be in-lined is itself a constant.
+ * </p>
  */
 public class TransformEliminateAssignments extends TransformCopy {
 
     public static Op eliminate(Op op) {
+        return eliminate(op, false);
+    }
+
+    public static Op eliminate(Op op, boolean aggressive) {
         AssignmentTracker tracker = new AssignmentTracker();
         AssignmentPusher pusher = new AssignmentPusher(tracker);
         AssignmentPopper popper = new AssignmentPopper(tracker);
-        Transform transform = new TransformEliminateAssignments(tracker, pusher, popper);
+        Transform transform = new TransformEliminateAssignments(tracker, pusher, popper, aggressive);
 
         return Transformer.transform(transform, op, pusher, popper);
     }
 
-    private OpVisitor before, after;
-    private AssignmentTracker tracker;
+    private final OpVisitor before, after;
+    private final AssignmentTracker tracker;
+    private final boolean aggressive;
 
     private TransformEliminateAssignments(AssignmentTracker tracker, OpVisitor before, OpVisitor after) {
+        this(tracker, before, after, false);
+    }
+
+    private TransformEliminateAssignments(AssignmentTracker tracker, OpVisitor before, OpVisitor after,
+            boolean aggressive) {
         this.tracker = tracker;
         this.before = before;
+        this.after = after;
+        this.aggressive = aggressive;
+    }
+
+    protected boolean canInline(Expr e) {
+        return ExprLib.isStable(e);
+    }
+
+    protected boolean shouldInline(Expr e) {
+        // Inline everything when being aggressive
+        if (this.aggressive)
+            return true;
+
+        if (e == null)
+            return false;
+
+        // If not being aggressive only inline if the expression is a constant
+        return e.isConstant() || e instanceof NodeValue;
     }
 
     protected boolean isApplicable() {
@@ -121,13 +171,12 @@ public class TransformEliminateAssignments extends TransformCopy {
             // Usage count will be 2 if we can eliminate the assignment
             // First usage is when it is introduced by the assignment and the
             // second is when it is used now in this filter
-            if (this.tracker.getUsageCount(var) == 2 && this.tracker.getAssignments().containsKey(var)) {
+            Expr e = getAssignExpr(var);
+            if (this.tracker.getUsageCount(var) == 2 && hasAssignment(var) && canInline(e)) {
                 // Can go back and eliminate that assignment
-                subOp = Transformer.transform(
-                        new TransformRemoveAssignment(var, this.tracker.getAssignments().get(var)), subOp);
+                subOp = eliminateAssignment(subOp, var);
                 // Replace the variable usage with the expression
-                exprs = ExprTransformer.transform(
-                        new ExprTransformSubstitute(var, this.tracker.getAssignments().get(var)), exprs);
+                exprs = ExprTransformer.transform(new ExprTransformSubstitute(var, e), exprs);
                 this.tracker.getAssignments().remove(var);
                 modified = true;
             }
@@ -141,6 +190,14 @@ public class TransformEliminateAssignments extends TransformCopy {
         return super.transform(opFilter, subOp);
     }
 
+    private boolean hasAssignment(Var var) {
+        return this.tracker.getAssignments().containsKey(var);
+    }
+
+    private Expr getAssignExpr(Var var) {
+        return this.tracker.getAssignments().get(var);
+    }
+
     @Override
     public Op transform(OpExtend opExtend, Op subOp) {
         // No point tracking assignments if not in a projection as we can't
@@ -151,6 +208,9 @@ public class TransformEliminateAssignments extends TransformCopy {
 
         // Track the assignments for future reference
         this.tracker.putAssignments(opExtend.getVarExprList());
+
+        // TODO Could also eliminate assignments where the value is only used in
+        // a subsequent assignment
 
         // See if there are any assignments we can eliminate entirely i.e. those
         // where the assigned value is never used
@@ -203,11 +263,12 @@ public class TransformEliminateAssignments extends TransformCopy {
             // Usage count will be 2 if we can eliminate the assignment
             // First usage is when it is introduced by the assignment and the
             // second is when it is used now in this filter
-            if (this.tracker.getUsageCount(var) == 2 && this.tracker.getAssignments().containsKey(var)) {
+            Expr e = getAssignExpr(var);
+            if (this.tracker.getUsageCount(var) == 2 && hasAssignment(var) && canInline(e) && shouldInline(e)) {
                 // Can go back and eliminate that assignment
-                subOp = Transformer.transform(
-                        new TransformRemoveAssignment(var, this.tracker.getAssignments().get(var)), subOp);
-                // Replace the variable usage with the expression within the sort conditions
+                subOp = eliminateAssignment(subOp, var);
+                // Replace the variable usage with the expression within the
+                // sort conditions
                 conditions = processConditions(opOrder.getConditions(), conditions, var);
                 this.tracker.getAssignments().remove(var);
             }
@@ -228,23 +289,111 @@ public class TransformEliminateAssignments extends TransformCopy {
 
         for (SortCondition cond : inputConditions) {
             Expr e = cond.getExpression();
-            e = ExprTransformer.transform(new ExprTransformSubstitute(var, this.tracker.getAssignments().get(var)), e);
+            e = ExprTransformer.transform(new ExprTransformSubstitute(var, getAssignExpr(var)), e);
             outputConditions.add(new SortCondition(e, cond.getDirection()));
         }
-       
+
         return outputConditions;
     }
 
     @Override
     public Op transform(OpTopN opTop, Op subOp) {
-        // TODO Auto-generated method stub
+        if (!this.isApplicable())
+            return super.transform(opTop, subOp);
+
+        // See what vars are used in the sort conditions
+        Collection<Var> vars = new ArrayList<>();
+        for (SortCondition cond : opTop.getConditions()) {
+            ExprVars.varsMentioned(vars, cond.getExpression());
+        }
+
+        // Are any of these vars single usage?
+        List<SortCondition> conditions = null;
+        for (Var var : vars) {
+            // Usage count will be 2 if we can eliminate the assignment
+            // First usage is when it is introduced by the assignment and the
+            // second is when it is used now in this filter
+            Expr e = getAssignExpr(var);
+            if (this.tracker.getUsageCount(var) == 2 && hasAssignment(var) && canInline(e) && shouldInline(e)) {
+                // Can go back and eliminate that assignment
+                subOp = eliminateAssignment(subOp, var);
+                // Replace the variable usage with the expression within the
+                // sort conditions
+                conditions = processConditions(opTop.getConditions(), conditions, var);
+                this.tracker.getAssignments().remove(var);
+            }
+        }
+
+        // Create a new order if we've substituted any expressions
+        if (conditions != null) {
+            return new OpTopN(subOp, opTop.getLimit(), conditions);
+        }
+
         return super.transform(opTop, subOp);
     }
 
     @Override
     public Op transform(OpGroup opGroup, Op subOp) {
-        // TODO Auto-generated method stub
+        if (!this.isApplicable())
+            return super.transform(opGroup, subOp);
+
+        // See what vars are used in the filter
+        Collection<Var> vars = new ArrayList<>();
+        VarExprList exprs = new VarExprList(opGroup.getGroupVars());
+        List<ExprAggregator> aggs = new ArrayList<ExprAggregator>(opGroup.getAggregators());
+        for (Expr expr : exprs.getExprs().values()) {
+            ExprVars.varsMentioned(vars, expr);
+        }
+
+        // Are any of these vars single usage?
+        boolean modified = false;
+        for (Var var : vars) {
+            // Usage count will be 2 if we can eliminate the assignment
+            // First usage is when it is introduced by the assignment and the
+            // second is when it is used now in this group by
+            Expr e = getAssignExpr(var);
+            if (this.tracker.getUsageCount(var) == 2 && hasAssignment(var) && canInline(e)) {
+                // Can go back and eliminate that assignment
+                subOp = eliminateAssignment(subOp, var);
+                // Replace the variable usage with the expression in both the
+                // expressions and the aggregators
+                ExprTransform transform = new ExprTransformSubstitute(var, e);
+                exprs = processVarExprList(exprs, transform);
+                aggs = processAggregators(aggs, transform);
+                this.tracker.getAssignments().remove(var);
+                modified = true;
+            }
+        }
+
+        // Create a new group by if we've substituted any expressions
+        if (modified) {
+            return new OpGroup(subOp, exprs, aggs);
+        }
+
         return super.transform(opGroup, subOp);
+    }
+
+    private Op eliminateAssignment(Op subOp, Var var) {
+        return Transformer.transform(new TransformRemoveAssignment(var, getAssignExpr(var)), subOp);
+    }
+
+    private VarExprList processVarExprList(VarExprList exprs, ExprTransform transform) {
+        VarExprList newExprs = new VarExprList();
+        for (Var v : exprs.getVars()) {
+            Expr e = exprs.getExpr(v);
+            Expr e2 = ExprTransformer.transform(transform, e);
+            newExprs.add(v, e2);
+        }
+        return newExprs;
+    }
+
+    private List<ExprAggregator> processAggregators(List<ExprAggregator> aggs, ExprTransform transform) {
+        List<ExprAggregator> newAggs = new ArrayList<ExprAggregator>();
+        for (ExprAggregator agg : aggs) {
+            ExprAggregator e2 = (ExprAggregator) ExprTransformer.transform(transform, agg);
+            newAggs.add(e2);
+        }
+        return newAggs;
     }
 
     private static class AssignmentTracker extends VariableUsageTracker {
