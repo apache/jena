@@ -27,7 +27,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLRecoverableException;
@@ -42,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.metadata.JenaMetadata;
 import org.apache.jena.jdbc.postprocessing.ResultsPostProcessor;
@@ -51,12 +51,10 @@ import org.apache.jena.jdbc.results.metadata.SelectResultsMetadata;
 import org.apache.jena.jdbc.results.metadata.TripleResultsMetadata;
 import org.apache.jena.jdbc.statements.JenaPreparedStatement;
 import org.apache.jena.jdbc.statements.JenaStatement;
+import org.apache.jena.query.Query ;
+import org.apache.jena.update.UpdateRequest ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.update.UpdateRequest;
 
 /**
  * Abstract base implementation of a Jena JDBC connection
@@ -344,7 +342,7 @@ public abstract class JenaConnection implements Connection {
      * @return Results after processing by registered post-processors
      * @throws SQLException
      */
-    public final com.hp.hpl.jena.query.ResultSet applyPostProcessors(com.hp.hpl.jena.query.ResultSet results) throws SQLException {
+    public final org.apache.jena.query.ResultSet applyPostProcessors(org.apache.jena.query.ResultSet results) throws SQLException {
         for (ResultsPostProcessor postProcessor : this.postProcessors) {
             if (postProcessor == null)
                 continue;
@@ -449,7 +447,7 @@ public abstract class JenaConnection implements Connection {
     }
 
     @Override
-    public void clearWarnings() throws SQLException {
+    public void clearWarnings() {
         this.warnings = null;
     }
 
@@ -569,27 +567,27 @@ public abstract class JenaConnection implements Connection {
     }
 
     @Override
-    public boolean getAutoCommit() throws SQLException {
+    public boolean getAutoCommit() {
         return this.autoCommit;
     }
 
     @Override
-    public String getCatalog() throws SQLException {
+    public String getCatalog() {
         return JenaMetadata.DEFAULT_CATALOG;
     }
 
     @Override
-    public Properties getClientInfo() throws SQLException {
+    public Properties getClientInfo() {
         return this.clientInfo;
     }
 
     @Override
-    public String getClientInfo(String name) throws SQLException {
+    public String getClientInfo(String name) {
         return this.clientInfo.getProperty(name);
     }
 
     @Override
-    public int getHoldability() throws SQLException {
+    public int getHoldability() {
         return this.holdability;
     }
 
@@ -597,7 +595,7 @@ public abstract class JenaConnection implements Connection {
     public abstract DatabaseMetaData getMetaData() throws SQLException;
 
     @Override
-    public int getTransactionIsolation() throws SQLException {
+    public int getTransactionIsolation() {
         return this.isolationLevel;
     }
 
@@ -607,7 +605,7 @@ public abstract class JenaConnection implements Connection {
     }
 
     @Override
-    public SQLWarning getWarnings() throws SQLException {
+    public SQLWarning getWarnings() {
         return this.warnings;
     }
 
@@ -740,7 +738,7 @@ public abstract class JenaConnection implements Connection {
     }
 
     @Override
-    public void setAutoCommit(boolean autoCommit) throws SQLException {
+    public void setAutoCommit(boolean autoCommit) {
         this.autoCommit = autoCommit;
     }
 
@@ -750,12 +748,12 @@ public abstract class JenaConnection implements Connection {
     }
 
     @Override
-    public void setClientInfo(Properties properties) throws SQLClientInfoException {
+    public void setClientInfo(Properties properties) {
         this.clientInfo = properties;
     }
 
     @Override
-    public void setClientInfo(String name, String value) throws SQLClientInfoException {
+    public void setClientInfo(String name, String value) {
         this.clientInfo.put(name, value);
     }
 

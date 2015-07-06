@@ -24,16 +24,9 @@ import java.util.List ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.rdf.model.Model ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Model ;
 
 public class InferenceSetupRDFS
 {

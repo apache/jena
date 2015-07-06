@@ -38,6 +38,7 @@ import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.iterator.IteratorResourceClosing ;
 import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.lang.* ;
 import org.apache.jena.riot.out.CharSpace;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
@@ -47,9 +48,7 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Quad ;
 
 /** Operations to access RIOT parsers and send the output to 
  *  a StreamRDF (triples or quads as appropriate).
@@ -341,6 +340,7 @@ public class RiotReader
     /** Create a parser for Turtle */
     public static LangTurtle createParserTurtle(Tokenizer tokenizer, String baseIRI, StreamRDF dest)
     {
+        RiotLib.profile(RDFLanguages.TURTLE, baseIRI) ;
         LangTurtle parser = new LangTurtle(tokenizer, RiotLib.profile(RDFLanguages.TURTLE, baseIRI), dest) ;
         return parser ;
     }

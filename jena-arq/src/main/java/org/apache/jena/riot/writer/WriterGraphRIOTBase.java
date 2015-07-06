@@ -21,11 +21,10 @@ package org.apache.jena.riot.writer;
 import java.io.OutputStream ;
 import java.io.Writer ;
 
+import org.apache.jena.graph.Graph ;
 import org.apache.jena.riot.WriterGraphRIOT ;
 import org.apache.jena.riot.system.PrefixMap ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Context ;
 
 public abstract class WriterGraphRIOTBase implements WriterGraphRIOT
 {

@@ -18,11 +18,10 @@
 
 package org.apache.jena.riot.system;
 
+import org.apache.jena.rdf.model.impl.RDFReaderFImpl ;
 import org.apache.jena.riot.adapters.JenaReadersWriters ;
 import org.apache.jena.riot.adapters.RDFReaderRIOT_Web ;
-
-import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
-import com.hp.hpl.jena.sparql.util.Symbol ;
+import org.apache.jena.sparql.util.Symbol ;
 
 public class IO_JenaReaders
 {
@@ -47,10 +46,10 @@ public class IO_JenaReaders
         registerForModelRead("RDF/JSON",        JenaReadersWriters.RDFReaderRIOT_RDFJSON.class) ;
     }
     
-    static String jenaNTriplesReader = com.hp.hpl.jena.rdf.model.impl.NTripleReader.class.getName(); 
-    static String jenaTurtleReader = com.hp.hpl.jena.n3.turtle.TurtleReader.class.getName();
+    static String jenaNTriplesReader = org.apache.jena.rdf.model.impl.NTripleReader.class.getName(); 
+    static String jenaTurtleReader = org.apache.jena.n3.turtle.TurtleReader.class.getName();
     static String jenaN3Reader = jenaTurtleReader ;
-    static String jenaRDFReader = com.hp.hpl.jena.rdfxml.xmlinput.JenaReader.class.getName(); 
+    static String jenaRDFReader = org.apache.jena.rdfxml.xmlinput.JenaReader.class.getName(); 
     
     public static void resetJena() {
         RDFReaderFImpl.setBaseReaderClassName("RDF", jenaRDFReader) ;

@@ -18,13 +18,12 @@
 
 package org.apache.jena.hadoop.rdf.io.input.readers;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.io.input.util.TrackableInputStream;
 import org.apache.jena.hadoop.rdf.io.input.util.TrackedPipedRDFStream;
 import org.apache.jena.hadoop.rdf.io.input.util.TrackedPipedTriplesStream;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.lang.PipedRDFIterator;
-
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * An abstract record reader for whole file triple formats

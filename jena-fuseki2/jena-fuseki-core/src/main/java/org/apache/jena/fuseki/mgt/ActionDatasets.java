@@ -25,7 +25,6 @@ import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
 
-import javax.servlet.ServletException ;
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
@@ -36,34 +35,33 @@ import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.build.Builder ;
 import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.build.TemplateFunctions ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.* ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.shared.uuid.JenaUUID ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
+import org.apache.jena.update.UpdateAction ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateRequest ;
 import org.apache.jena.web.HttpSC ;
-
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.shared.uuid.JenaUUID ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
-import com.hp.hpl.jena.update.UpdateAction ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class ActionDatasets extends ActionContainerItem {
     
@@ -91,7 +89,7 @@ public class ActionDatasets extends ActionContainerItem {
     }
     
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
         doCommon(request, response);
     }
     
@@ -304,9 +302,11 @@ public class ActionDatasets extends ActionContainerItem {
             // Make it invisible to the outside.
             DataAccessPointRegistry.get().remove(name) ;
             
-            // Name to graph
-            // Statically configured databases aren't in the system database.
-            Quad q = getOne(systemDSG, null, null, pServiceName.asNode(), null) ;
+            // Find graph associated with this dataset name.
+            // (Statically configured databases aren't in the system database.)
+            
+            Node n = NodeFactory.createLiteral(DataAccessPoint.canonical(name)) ;
+            Quad q = getOne(systemDSG, null, null, pServiceName.asNode(), n) ;
 //            if ( q == null )
 //                ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
             if ( q != null ) {
@@ -352,7 +352,7 @@ public class ActionDatasets extends ActionContainerItem {
         }
     }
     
-    // ---- Auxilary functions
+    // ---- Auxiliary functions
 
     private static Quad getOne(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
         Iterator<Quad> iter = dsg.findNG(g, s, p, o) ;

@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <!-- 	Issue: rdfms-duplicate-member-props
         Test:  test001
-        $Header: /home/afs/SourceForge/Jena-CVS/jena2/testing/wg/rdfms-duplicate-member-props/test001.rdf,v 1.2 2005-08-04 09:53:20 jeremy_carroll Exp $
 
         Test case showing that duplicate rdf:_n properties are syntactically
         legal RDF.

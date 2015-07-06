@@ -39,9 +39,6 @@ public class TestStringBase extends TestDB
     private String baseString ; 
     
 
-    //static Charset csUTF8 = Charset.forName("UTF-8") ;
-
-
     public TestStringBase(String testLabel, String baseString, 
                     Connection jdbc, Params params, boolean verbose)
     {

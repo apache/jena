@@ -18,8 +18,8 @@
 
 package org.apache.jena.query.text.assembler;
 
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 
 public class TextAssembler
 {
@@ -31,9 +31,10 @@ public class TextAssembler
         Assembler.general.implementWith(TextVocab.textIndexSolr,    new TextIndexSolrAssembler()) ; 
         Assembler.general.implementWith(TextVocab.textIndexLucene,  new TextIndexLuceneAssembler()) ;
         Assembler.general.implementWith(TextVocab.standardAnalyzer, new StandardAnalyzerAssembler()) ;
-        Assembler.general.implementWith(TextVocab.simpleAnalyzer,	new SimpleAnalyzerAssembler()) ;
-        Assembler.general.implementWith(TextVocab.keywordAnalyzer,	new KeywordAnalyzerAssembler()) ;
-        Assembler.general.implementWith(TextVocab.lowerCaseKeywordAnalyzer,	new LowerCaseKeywordAnalyzerAssembler()) ;
+        Assembler.general.implementWith(TextVocab.simpleAnalyzer,   new SimpleAnalyzerAssembler()) ;
+        Assembler.general.implementWith(TextVocab.keywordAnalyzer,  new KeywordAnalyzerAssembler()) ;
+        Assembler.general.implementWith(TextVocab.lowerCaseKeywordAnalyzer, new LowerCaseKeywordAnalyzerAssembler()) ;
+        Assembler.general.implementWith(TextVocab.localizedAnalyzer, new LocalizedAnalyzerAssembler()) ;
     }
 }
 

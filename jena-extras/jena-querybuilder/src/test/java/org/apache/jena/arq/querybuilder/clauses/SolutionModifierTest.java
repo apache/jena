@@ -18,16 +18,14 @@
 package org.apache.jena.arq.querybuilder.clauses;
 
 import static org.junit.Assert.assertFalse;
-
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 import org.junit.After;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractTest;
 import org.xenei.junit.contract.IProducer;
-
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException;
 
 @Contract(SolutionModifierClause.class)
 public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends

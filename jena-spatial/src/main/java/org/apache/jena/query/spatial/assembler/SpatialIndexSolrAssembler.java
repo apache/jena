@@ -20,18 +20,17 @@ package org.apache.jena.query.spatial.assembler;
 
 import static org.apache.jena.query.spatial.assembler.SpatialVocab.pDefinition ;
 import static org.apache.jena.query.spatial.assembler.SpatialVocab.pServer ;
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.Mode ;
+import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.query.spatial.EntityDefinition ;
 import org.apache.jena.query.spatial.SpatialDatasetFactory ;
 import org.apache.jena.query.spatial.SpatialIndex ;
 import org.apache.jena.query.spatial.SpatialIndexException ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sparql.util.graph.GraphUtils ;
 import org.apache.solr.client.solrj.SolrServer ;
 import org.apache.solr.client.solrj.impl.HttpSolrServer ;
-
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.assembler.Mode ;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 
 public class SpatialIndexSolrAssembler extends AssemblerBase {
 	/*

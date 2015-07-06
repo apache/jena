@@ -22,12 +22,12 @@ import io.airlift.airline.Arguments;
 import io.airlift.airline.Command;
 import io.airlift.airline.HelpOption;
 import io.airlift.airline.Option;
-import io.airlift.airline.ParseArgumentsMissingException;
-import io.airlift.airline.ParseArgumentsUnexpectedException;
-import io.airlift.airline.ParseException;
-import io.airlift.airline.ParseOptionIllegalValueException;
-import io.airlift.airline.ParseOptionMissingException;
-import io.airlift.airline.ParseOptionMissingValueException;
+import io.airlift.airline.parser.ParseArgumentsMissingException;
+import io.airlift.airline.parser.ParseArgumentsUnexpectedException;
+import io.airlift.airline.parser.ParseException;
+import io.airlift.airline.parser.ParseOptionIllegalValueException;
+import io.airlift.airline.parser.ParseOptionMissingException;
+import io.airlift.airline.parser.ParseOptionMissingValueException;
 import io.airlift.airline.SingleCommand;
 import io.airlift.airline.help.Help;
 import io.airlift.airline.model.CommandMetadata;
@@ -127,9 +127,8 @@ public class RdfStats implements Tool {
      * 
      * @param args
      *            Arguments
-     * @throws Exception
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         try {
             // Run and exit with result code if no errors bubble up
             // Note that the exit code may still be a error code
@@ -163,7 +162,7 @@ public class RdfStats implements Tool {
     }
 
     @Override
-    public int run(String[] args) throws Exception {
+    public int run(String[] args) {
         try {
             if (args.length == 0) {
                 showUsage();

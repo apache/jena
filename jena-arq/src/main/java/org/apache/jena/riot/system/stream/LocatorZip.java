@@ -26,14 +26,11 @@ import java.util.zip.ZipFile ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.shared.JenaException ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.shared.JenaException ;
-
-
 /** Location files in a zip file */
-
 public class LocatorZip implements Locator
 {
     private static Logger log = LoggerFactory.getLogger(LocatorZip.class) ;

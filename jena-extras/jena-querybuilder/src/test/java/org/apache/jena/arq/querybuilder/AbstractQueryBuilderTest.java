@@ -19,19 +19,17 @@
 package org.apache.jena.arq.querybuilder;
 
 import static org.junit.Assert.*;
-
+import org.apache.jena.graph.FrontsNode ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.impl.LiteralLabel ;
+import org.apache.jena.graph.impl.LiteralLabelFactory ;
+import org.apache.jena.reasoner.rulesys.Node_RuleVariable ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.expr.ExprVar ;
+import org.apache.jena.vocabulary.RDF ;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.hp.hpl.jena.graph.FrontsNode;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
-import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
-import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.ExprVar;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 public class AbstractQueryBuilderTest {
 

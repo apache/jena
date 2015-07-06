@@ -18,11 +18,12 @@
 
 package arq.examples.update;
 
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.* ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.update.* ;
 
 /** Simple example of SPARQL/Update : read a update script from a file and execute it */ 
 public class UpdateReadFromFile
@@ -30,7 +31,7 @@ public class UpdateReadFromFile
     public static void main(String []args)
     {
         // Create an empty GraphStore (has an empty default graph and no named graphs) 
-        GraphStore graphStore = GraphStoreFactory.create() ;
+        Dataset graphStore = DatasetFactory.createMem() ;
         
         // ---- Read and update script in one step.
         UpdateAction.readExecute("update.ru", graphStore) ;

@@ -21,18 +21,16 @@ package sdb.cmd;
 import java.util.ArrayList;
 import java.util.List;
 
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.CmdGeneral;
-import arq.cmdline.ModBase;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
 public class ModData extends ModBase
 {
     private ArgDecl argDeclLoad = new ArgDecl(ArgDecl.HasValue, "data", "load") ;
     private List <String> filesToLoad = new ArrayList<String>() ;
-    
-    public ModData() {}
-    
+
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {

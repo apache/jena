@@ -21,19 +21,27 @@ package org.apache.jena.fuseki.server;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 
 /** Dataset setup (command line, config file) for a dataset (or several if config file) */
 public class ServerInitialConfig {
+    // Priority order : --conf, templated  
+    // through the command line processing should not allow --conf and a templated /dataset.
+    
     // Either this ...
-    public String    templateFile     = null ;
-    public Map<String,String> params  = new HashMap<>() ;
-    public String    datasetPath      = null ;
-    public boolean   allowUpdate      = false ;
-    // Or this ...
-    public String    fusekiConfigFile = null ;
+    public String    argTemplateFile     = null ;           // Command list args --mem, --loc, --memtdb
+    public String    datasetPath      = null ;              // Dataset name on the command line.
+    public boolean   allowUpdate      = false ;             // Command line --update.
     // Special case - directly pass in the dataset graphs - datasetPath must be given.
-    // This is not persistent across server restarts. 
-    public DatasetGraph dsg           = null ;
+    public DatasetGraph dsg           = null ;              // Command line --file.
+    
+    // Or this ... 
+    public String    fusekiCmdLineConfigFile = null ;       // Command line --conf.
+    // Or this ... (lowest priority)
+    public String    fusekiServerConfigFile = null ;        // "run" area
+    
+    
+    // Additional information.
+    public Map<String,String> params  = new HashMap<>() ;
     
 }

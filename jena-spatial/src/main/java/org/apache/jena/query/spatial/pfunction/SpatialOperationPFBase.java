@@ -23,25 +23,24 @@ import java.util.List ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.query.spatial.DatasetGraphSpatial ;
 import org.apache.jena.query.spatial.SpatialIndex ;
 import org.apache.jena.query.spatial.SpatialQuery ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Substitute ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.iterator.QueryIterExtendByVar ;
+import org.apache.jena.sparql.engine.iterator.QueryIterSlice ;
+import org.apache.jena.sparql.pfunction.PropFuncArg ;
+import org.apache.jena.sparql.pfunction.PropertyFunctionBase ;
+import org.apache.jena.sparql.util.IterLib ;
 import org.apache.lucene.spatial.query.SpatialOperation ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Substitute ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterExtendByVar ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSlice ;
-import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionBase ;
-import com.hp.hpl.jena.sparql.util.IterLib ;
 
 public abstract class SpatialOperationPFBase extends PropertyFunctionBase {
 

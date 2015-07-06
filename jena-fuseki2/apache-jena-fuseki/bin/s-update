@@ -35,7 +35,7 @@ require 'ostruct'
 #  Follow redirects => 301:  puts response["location"] # All headers are lowercase?
 
 SOH_NAME="SOH"
-SOH_VERSION="0.0.0"
+SOH_VERSION="0.0.2"
 
 $proxy = ENV['http_proxy'] ? URI.parse(ENV['http_proxy']) : OpenStruct.new  
 
@@ -45,7 +45,9 @@ $proxy = ENV['http_proxy'] ? URI.parse(ENV['http_proxy']) : OpenStruct.new
 $mtTurtle           = 'text/turtle;charset=utf-8'
 $mtRDF              = 'application/rdf+xml'
 $mtText             = 'text/plain'
-$mtNQuads           = 'text/n-quads'
+$mtNTriples         = 'application/n-triples'
+$mtNQuads           = 'application/n-quads'
+$mtJSONLD           = 'application/ld+json'
 $mtTriG             = 'application/trig'
 $mtSparqlResultsX   = 'application/sparql-results+xml'
 $mtSparqlResultsJ   = 'application/sparql-results+json'
@@ -66,6 +68,8 @@ $fileMediaTypes['rdf']   = $mtRDF
 $fileMediaTypes['owl']   = $mtRDF
 $fileMediaTypes['nq']    = $mtNQuads
 $fileMediaTypes['trig']  = $mtTriG
+$fileMediaTypes['json-ld']  = $mtJSONLD
+$fileMediaTypes['jsonld']  = $mtJSONLD
 
 # Global charset : no entry means "don't set"
 $charsetUTF8      = 'utf-8'
@@ -73,7 +77,7 @@ $charset = {}
 $charset[$mtTurtle]   = 'utf-8'
 $charset[$mtText]     = 'ascii'
 $charset[$mtTriG]     = 'utf-8'
-$charset[$mtNQuads]   = 'ascii'
+$charset[$mtNQuads]   = 'utf-8'
 
 # Headers
 
@@ -92,8 +96,10 @@ $headers = { "User-Agent" => "#{SOH_NAME}/Fuseki #{SOH_VERSION}"}
 $print_http = false
 
 # Default for GET
-# At least allow anythign (and hope!)
-$accept_rdf="#{$mtRDF};q=0.9 , #{$mtTurtle}"
+# At least allow anything (and hope!)
+$accept_rdf="#{$mtTurtle} , #{$mtNTriples};q=0.9 , #{$mtRDF};q=0.8 , #{$mtJSONLD};q=0.5"
+# Datasets
+$accept_ds="#{$mtTrig} , #{$mtNQuads};q=0.9 , #{$mtJSONLD};q=0.5"
 # For SPARQL query
 $accept_results="#{$mtSparqlResultsJ} , #{$mtSparqlResultsX};q=0.9 , #{$accept_rdf}"
 

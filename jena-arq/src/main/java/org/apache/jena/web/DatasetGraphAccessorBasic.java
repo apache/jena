@@ -19,10 +19,10 @@
 package org.apache.jena.web;
 
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.GraphUtil ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.GraphUtil ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 
 /** 
  * General implementation of operations for the SPARQL HTTP Update protocol

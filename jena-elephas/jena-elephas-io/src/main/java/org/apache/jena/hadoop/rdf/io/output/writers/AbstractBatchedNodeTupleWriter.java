@@ -66,7 +66,7 @@ public abstract class AbstractBatchedNodeTupleWriter<TKey, TValue, T extends Abs
     }
 
     @Override
-    public final void write(TKey key, T value) throws IOException, InterruptedException {
+    public final void write(TKey key, T value) throws IOException {
         LOG.debug("write({}={})", key, value);
         if (this.add(value) >= this.batchSize) {
             long size = this.writeOutput(writer);
@@ -87,7 +87,7 @@ public abstract class AbstractBatchedNodeTupleWriter<TKey, TValue, T extends Abs
     protected abstract long add(T value);
 
     @Override
-    public void close(TaskAttemptContext context) throws IOException, InterruptedException {
+    public void close(TaskAttemptContext context) throws IOException {
         if (this.writer != null) {
             long size = this.writeOutput(writer);
             if (size > 0)

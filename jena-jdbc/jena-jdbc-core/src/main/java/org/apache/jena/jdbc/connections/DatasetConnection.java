@@ -28,9 +28,8 @@ import org.apache.jena.jdbc.statements.DatasetPreparedStatement;
 import org.apache.jena.jdbc.statements.DatasetStatement;
 import org.apache.jena.jdbc.statements.JenaPreparedStatement;
 import org.apache.jena.jdbc.statements.JenaStatement;
-
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.ReadWrite;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.ReadWrite ;
 
 /**
  * Represents a connection to a {@link Dataset} instance
@@ -112,17 +111,17 @@ public abstract class DatasetConnection extends JenaConnection {
     }
 
     @Override
-    public boolean isClosed() throws SQLException {
+    public boolean isClosed() {
         return this.ds == null;
     }
 
     @Override
-    public boolean isReadOnly() throws SQLException {
+    public boolean isReadOnly() {
         return this.readonly;
     }
 
     @Override
-    public boolean isValid(int timeout) throws SQLException {
+    public boolean isValid(int timeout) {
         return !this.isClosed();
     }
 

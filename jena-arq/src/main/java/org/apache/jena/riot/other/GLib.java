@@ -19,15 +19,12 @@
 package org.apache.jena.riot.other;
 
 import java.util.Iterator ;
-
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /** A collection of Graph/Triple/Node related functions */
 public class GLib
@@ -43,89 +40,55 @@ public class GLib
     public static Iterator<Node> listSubjects(Graph graph)
     {
         ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
-        return Iter.iter(iter).map(projectTripleSubject).distinct() ;
+        return Iter.iter(iter).map(Triple::getSubject).distinct() ;
     }
 
     /** List the predicates in a graph (no duplicates) */
     public static Iterator<Node> listPredicates(Graph graph)
     {
         ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
-        return Iter.iter(iter).map(projectTriplePredicate).distinct() ;
+        return Iter.iter(iter).map(Triple::getPredicate).distinct() ;
     }
     
     /** List the objects in a graph (no duplicates) */
     public static Iterator<Node> listObjects(Graph graph)
     {
         ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
-        return Iter.iter(iter).map(projectTripleObject).distinct() ;
+        return Iter.iter(iter).map(Triple::getObject).distinct() ;
     }
-    
-    private static Transform<Quad, Triple> transformQuad2Triple = new Transform<Quad, Triple> () {
-        @Override
-        public Triple convert(Quad quad)    { return quad.asTriple() ; }
-    } ;
 
     /** Project quads to triples */
     public static Iter<Triple> quads2triples(Iterator<Quad> iter)
     {
-        return Iter.iter(iter).map(transformQuad2Triple) ;
+        return Iter.iter(iter).map(Quad::asTriple) ;
     }
 
     /** Project quad to graphname */
     public static Iterator<Node> quad2graphName(Iterator<Quad> iter)
-    { return Iter.map(iter, projectQuadGraphName) ; }
+    { return Iter.map(iter, Quad::getGraph) ; }
     
     /** Project quad to graphname */
     public static Iterator<Node> quad2subject(Iterator<Quad> iter)
-    { return Iter.map(iter, projectQuadSubject) ; }
+    { return Iter.map(iter, Quad::getSubject) ; }
     
     /** Project quad to predicate */
     public static Iterator<Node> quad2predicate(Iterator<Quad> iter)
-    { return Iter.map(iter, projectQuadPredicate) ; }
+    { return Iter.map(iter, Quad::getPredicate) ; }
     
     /** Project quad to object */
     public static Iterator<Node> quad2object(Iterator<Quad> iter)
-    { return Iter.map(iter, projectQuadObject) ; }
+    { return Iter.map(iter, Quad::getObject) ; }
     
     /** Project triple to subject */ 
     public static Iterator<Node> triple2subject(Iterator<Triple> iter)
-    { return Iter.map(iter, projectTripleSubject) ; }
+    { return Iter.map(iter, Triple::getSubject) ; }
     
     /** Project triple to predicate */ 
     public static Iterator<Node> triple2predicate(Iterator<Triple> iter)
-    { return Iter.map(iter, projectTriplePredicate) ; }
+    { return Iter.map(iter, Triple::getPredicate) ; }
     
     /** Project triple to object */ 
     public static Iterator<Node> triple2object(Iterator<Triple> iter)
-    { return Iter.map(iter, projectTripleObject) ; }
-
-    /** Transform quad to graphname */
-    public static Transform<Quad, Node> projectQuadGraphName = new Transform<Quad, Node>() {
-        @Override  public Node convert(Quad quad) { return quad.getGraph() ; }
-    } ;
-    /** Transform quad to subject */
-    public static Transform<Quad, Node> projectQuadSubject = new Transform<Quad, Node>() {
-        @Override  public Node convert(Quad quad) { return quad.getSubject() ; }
-    } ;
-    /** Transform quad to predicate */
-    public static Transform<Quad, Node> projectQuadPredicate = new Transform<Quad, Node>() {
-        @Override public Node convert(Quad quad) { return quad.getPredicate() ; }
-    } ;
-    /** Transform quad to object */
-    public static Transform<Quad, Node> projectQuadObject = new Transform<Quad, Node>() {
-        @Override public Node convert(Quad quad) { return quad.getObject() ; }
-    } ;
-    /** Transform triple to subject */ 
-    public static Transform<Triple, Node> projectTripleSubject   = new Transform<Triple, Node>() {
-        @Override public Node convert(Triple triple) { return triple.getSubject() ; }
-    } ;
-    /** Transform triple to predicate */ 
-    public static Transform<Triple, Node> projectTriplePredicate = new Transform<Triple, Node>() {
-        @Override public Node convert(Triple triple) { return triple.getPredicate() ; }
-    } ;
-    /** Transform triple to object */ 
-    public static Transform<Triple, Node> projectTripleObject    = new Transform<Triple, Node>() {
-        @Override public Node convert(Triple triple) { return triple.getObject() ; }
-    } ;
+    { return Iter.map(iter, Triple::getObject) ; }
 }
 

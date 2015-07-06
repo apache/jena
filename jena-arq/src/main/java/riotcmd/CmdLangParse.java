@@ -21,11 +21,16 @@ package riotcmd;
 import java.io.InputStream ;
 import java.io.OutputStream ;
 
+import jena.cmd.ArgDecl ;
+import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral ;
+import org.apache.jena.Jena ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
@@ -35,22 +40,22 @@ import org.apache.jena.riot.process.inf.InferenceSetupRDFS ;
 import org.apache.jena.riot.system.* ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
-import arq.cmd.CmdException ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import arq.cmdline.* ;
-
-import com.hp.hpl.jena.Jena ;
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 
 /** Common framework for running RIOT parsers */
 public abstract class CmdLangParse extends CmdGeneral
 {
+    static { RIOT.init(); }
     protected ModTime modTime                   = new ModTime() ;
     protected ModLangParse modLangParse         = new ModLangParse() ;
     protected ModLangOutput modLangOutput       = new ModLangOutput() ;
-    protected ModSymbol modSymbol               = new ModSymbol() ;
     protected InferenceSetupRDFS setup          = null ; 
+    protected ModSymbol modSymbol               = new ModSymbol() ;
+    protected ArgDecl strictDecl                = new ArgDecl(ArgDecl.NoValue, "strict") ;
+
+    protected boolean cmdStrictMode = false ; 
     
     interface LangHandler {
         String getItemsName() ;
@@ -84,16 +89,17 @@ public abstract class CmdLangParse extends CmdGeneral
     protected CmdLangParse(String[] argv)
     {
         super(argv) ;
-        
-        super.addModule(modSymbol) ;
-        super.addModule(modTime) ;
-        super.addModule(modLangOutput) ;
-        super.addModule(modLangParse) ;
+        addModule(modSymbol) ;
+        addModule(modTime) ;
+        addModule(modLangOutput) ;
+        addModule(modLangParse) ;
         
         super.modVersion.addClass(Jena.class) ;
-        super.modVersion.addClass(ARQ.class) ;
+        // Force - sometimes initialization does not cause these
+        // to initialized early enough for reflection.
+        String x1 = ARQ.VERSION ;
+        String x2 = ARQ.BUILD_DATE ;
         super.modVersion.addClass(RIOT.class) ;
-        
         
     }
 
@@ -112,7 +118,9 @@ public abstract class CmdLangParse extends CmdGeneral
     
 
     @Override
-    protected void processModulesAndArgs() {}
+    protected void processModulesAndArgs() {
+        cmdStrictMode = super.contains(strictDecl) ;
+    }
     
     protected interface PostParseHandler { void postParse(); }
     
@@ -286,7 +294,7 @@ public abstract class CmdLangParse extends CmdGeneral
     }
     
     
-    /** Create a streaming outoput sink if possible */
+    /** Create a streaming output sink if possible */
     protected StreamRDF createStreamSink() {
         if ( modLangParse.toBitBucket() )
             return StreamRDFLib.sinkNull() ;

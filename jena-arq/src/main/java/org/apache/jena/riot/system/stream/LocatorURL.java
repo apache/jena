@@ -21,9 +21,8 @@ package org.apache.jena.riot.system.stream;
 import java.util.Locale ;
 
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.util.FileUtils ;
 import org.slf4j.Logger ;
-
-import com.hp.hpl.jena.util.FileUtils ;
 
 public abstract class LocatorURL implements Locator
 {

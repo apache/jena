@@ -21,13 +21,12 @@ package org.apache.jena.propertytable.impl;
 import java.io.StringReader ;
 
 import org.apache.jena.atlas.csv.CSVParser ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.propertytable.BaseTest ;
 import org.apache.jena.propertytable.Row ;
 import org.junit.Assert ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
 
 
 /**

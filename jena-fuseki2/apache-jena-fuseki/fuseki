@@ -281,11 +281,6 @@ then
   fi
 fi
 
-if [ ! -z "$FUSEKI_HOME" ]
-then
-    FUSEKI_ADDITIONAL_ARGS=(--home "$FUSEKI_HOME")
-fi
-
 # Run command
 
 RUN_ARGS=(${JAVA_OPTIONS[@]} -jar "$FUSEKI_START" "${FUSEKI_ADDITIONAL_ARGS[@]}" $FUSEKI_ARGS)

@@ -23,26 +23,27 @@ import java.util.Collections ;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.apache.jena.atlas.lib.MultiMap ;
+import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
+import org.apache.jena.ext.com.google.common.collect.ListMultimap;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.lucene.analysis.Analyzer ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.rdf.model.Resource ;
 
 /**
  * Definition of a "document"
  */
 public class EntityDefinition {
-    private final Map<Node, String>      predicateToField = new HashMap<>() ;
-    private final Map<String, Analyzer>    fieldToAnalyzer  = new HashMap<>();
-    private final MultiMap<String, Node> fieldToPredicate = MultiMap.createMapList() ;
-    private final Collection<String>     fields           = Collections.unmodifiableCollection(fieldToPredicate.keys()) ;
+    private final Map<Node, String>          predicateToField = new HashMap<>() ;
+    private final Map<String, Analyzer>      fieldToAnalyzer  = new HashMap<>() ;
+    private final ListMultimap<String, Node> fieldToPredicate = ArrayListMultimap.create() ;
+    private final Collection<String>         fields           = Collections.unmodifiableCollection(fieldToPredicate.keys()) ;
     // private final Collection<String> fields =
     // Collections.unmodifiableCollection(fieldToPredicate.keySet()) ;
-    private final String                 entityField ;
-    private final String                 primaryField ;
-    private final String                 graphField ;
-    //private final Node                   primaryPredicate ;
+    private final String                     entityField ;
+    private final String                     primaryField ;
+    private String                           graphField = null ;
+    private String                           langField ;
+    private String                           uidField ;
 
     /**
      * @param entityField
@@ -51,7 +52,8 @@ public class EntityDefinition {
      *            The primary/default field to search
      */
     public EntityDefinition(String entityField, String primaryField) {
-        this(entityField, primaryField, (String)null) ;
+        this.entityField = entityField ;
+        this.primaryField = primaryField ;
     }
 
     /**
@@ -63,9 +65,8 @@ public class EntityDefinition {
      *            The field that stores graph URI, or null
      */
     public EntityDefinition(String entityField, String primaryField, String graphField) {
-        this.entityField = entityField ;
-        this.primaryField = primaryField ;
-        this.graphField = graphField ;
+        this(entityField, primaryField) ;
+        setGraphField(graphField);
     }
 
     /**
@@ -77,7 +78,8 @@ public class EntityDefinition {
      *            The property associated with the primary/default field
      */
     public EntityDefinition(String entityField, String primaryField, Resource primaryPredicate) {
-        this(entityField, primaryField, null, primaryPredicate.asNode()) ;
+        this(entityField, primaryField) ;
+        setPrimaryPredicate(primaryPredicate);
     }
 
     /**
@@ -89,7 +91,8 @@ public class EntityDefinition {
      *            The property associated with the primary/default field
      */
     public EntityDefinition(String entityField, String primaryField, Node primaryPredicate) {
-        this(entityField, primaryField, null, primaryPredicate) ;
+        this(entityField, primaryField) ;
+        setPrimaryPredicate(primaryPredicate);
     }
 
     /**
@@ -103,13 +106,21 @@ public class EntityDefinition {
      *            The property associated with the primary/default field
      */
     public EntityDefinition(String entityField, String primaryField, String graphField, Node primaryPredicate) {
-        this(entityField, primaryField, graphField) ;
-        set(primaryField, primaryPredicate) ;
+        this(entityField, primaryField) ;
+        setGraphField(graphField);
+        setPrimaryPredicate(primaryPredicate) ;
     }
-
-
+    
     public String getEntityField() {
         return entityField ;
+    }
+
+    public void setPrimaryPredicate(Resource primaryPredicate) {
+        setPrimaryPredicate(primaryPredicate.asNode());
+    }
+
+    public void setPrimaryPredicate(Node primaryPredicate) {
+        set(primaryField, primaryPredicate) ;
     }
 
     public void set(String field, Node predicate) {
@@ -129,11 +140,11 @@ public class EntityDefinition {
     }
     
     public void setAnalyzer(String field, Analyzer analyzer) {
-    	fieldToAnalyzer.put(field, analyzer);
+        fieldToAnalyzer.put(field, analyzer);
     }
     
     public Analyzer getAnalyzer(String field) {
-    	return fieldToAnalyzer.get(field);
+        return fieldToAnalyzer.get(field);
     }
 
     public String getPrimaryField() {
@@ -147,6 +158,26 @@ public class EntityDefinition {
 
     public String getGraphField() {
         return graphField ;
+    }
+
+    public void setGraphField(String graphField) {
+        this.graphField = graphField;
+    }
+
+    public String getLangField() {
+        return langField;
+    }
+
+    public void setLangField(String langField) {
+        this.langField = langField;
+    }
+
+    public String getUidField() {
+        return uidField;
+    }
+
+    public void setUidField(String uidField) {
+        this.uidField = uidField;
     }
 
     public Collection<String> fields() {

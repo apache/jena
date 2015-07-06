@@ -21,9 +21,9 @@ package org.apache.jena.atlas.web.auth;
 import java.net.URI;
 import java.util.Map;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.engine.http.Service;
-import com.hp.hpl.jena.sparql.util.Context;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.sparql.engine.http.Service ;
+import org.apache.jena.sparql.util.Context ;
 
 /**
  * <p>

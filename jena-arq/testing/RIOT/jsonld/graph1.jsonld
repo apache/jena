@@ -1,50 +1,62 @@
-[ {
-  "@id" : "_:b0",
-  "http://example/r" : [ {
-    "@value" : "4.5",
-    "@type" : "http://www.w3.org/2001/XMLSchema#decimal"
-  } ]
-}, {
-  "@id" : "_:b3"
-}, {
-  "@id" : "http://example/a"
-}, {
-  "@id" : "http://example/s",
-  "http://example/p" : [ {
-    "@value" : 2
+{
+  "@graph" : [ {
+    "@id" : "_:b2",
+    "r" : "4.5"
   }, {
-    "@value" : 1
-  } ]
-}, {
-  "@id" : "http://example/s1",
-  "http://example/b" : [ {
-    "@id" : "http://example/a"
-  } ]
-}, {
-  "@id" : "http://example/s2",
-  "http://example/b2" : [ {
-    "@id" : "_:b3"
+    "@id" : "http://example/s",
+    "http://example/p" : [ 2, 1 ]
+  }, {
+    "@id" : "http://example/s1",
+    "b" : "http://example/a"
+  }, {
+    "@id" : "http://example/s2",
+    "b" : "http://example/a",
+    "b2" : "_:b3"
+  }, {
+    "@id" : "http://example/s3",
+    "b1" : "_:b3"
+  }, {
+    "@id" : "http://example/x1",
+    "http://example/q" : {
+      "@list" : [ "a", "b" ]
+    }
+  }, {
+    "@id" : "http://example/x2",
+    "q" : "_:b2"
   } ],
-  "http://example/b" : [ {
-    "@id" : "http://example/a"
-  } ]
-}, {
-  "@id" : "http://example/s3",
-  "http://example/b1" : [ {
-    "@id" : "_:b3"
-  } ]
-}, {
-  "@id" : "http://example/x1",
-  "http://example/q" : [ {
-    "@list" : [ {
-      "@value" : "a"
-    }, {
-      "@value" : "b"
-    } ]
-  } ]
-}, {
-  "@id" : "http://example/x2",
-  "http://example/q" : [ {
-    "@id" : "_:b0"
-  } ]
-} ]
+  "@context" : {
+    "rest" : {
+      "@id" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
+      "@type" : "@id"
+    },
+    "first" : {
+      "@id" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
+      "@type" : "http://www.w3.org/2001/XMLSchema#string"
+    },
+    "q" : {
+      "@id" : "http://example/q",
+      "@type" : "@id"
+    },
+    "r" : {
+      "@id" : "http://example/r",
+      "@type" : "http://www.w3.org/2001/XMLSchema#decimal"
+    },
+    "b2" : {
+      "@id" : "http://example/b2",
+      "@type" : "@id"
+    },
+    "b" : {
+      "@id" : "http://example/b",
+      "@type" : "@id"
+    },
+    "p" : {
+      "@id" : "http://example/p",
+      "@type" : "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "b1" : {
+      "@id" : "http://example/b1",
+      "@type" : "@id"
+    },
+    "xsd" : "http://www.w3.org/2001/XMLSchema#"
+  }
+}

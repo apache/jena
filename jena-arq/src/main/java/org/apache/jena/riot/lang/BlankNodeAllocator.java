@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.lang;
 
-import com.hp.hpl.jena.graph.Node ;
+import org.apache.jena.graph.Node ;
 
 /** Interface to allocators for blank nodes. */
 public interface BlankNodeAllocator

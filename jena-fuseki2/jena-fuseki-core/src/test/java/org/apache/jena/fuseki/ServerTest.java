@@ -26,21 +26,20 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.jetty.JettyFuseki ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.modify.request.Target ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.update.Update ;
-import com.hp.hpl.jena.update.UpdateExecutionFactory ;
-import com.hp.hpl.jena.update.UpdateProcessor ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.modify.request.Target ;
+import org.apache.jena.sparql.modify.request.UpdateDrop ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.update.Update ;
+import org.apache.jena.update.UpdateExecutionFactory ;
+import org.apache.jena.update.UpdateProcessor ;
 
 /**
  * Manage a server for testing. Example for one server per test suite:
@@ -105,31 +104,31 @@ public class ServerTest {
         FileOps.ensureDir(TS_Fuseki.FusekiTestHome);
         FileOps.ensureDir(TS_Fuseki.FusekiTestBase) ;
         FusekiEnv.FUSEKI_BASE = Paths.get(TS_Fuseki.FusekiTestBase).toAbsolutePath() ;
-        setupServer(null) ;
+        setupServer(ServerTest.port, null, ServerTest.datasetPath) ;
     }
     
-    protected static void setupServer(String authConfigFile) {
+    protected static void setupServer(int port, String authConfigFile, String datasetPath) {
         SystemState.location = Location.mem() ;
         SystemState.init$() ;
         
         ServerInitialConfig params = new ServerInitialConfig() ;
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         params.dsg = dsg ;
-        params.datasetPath = ServerTest.datasetPath ;
+        params.datasetPath = datasetPath ;
         params.allowUpdate = true ;
         FusekiServerListener.initialSetup = params ;
         
-        JettyServerConfig config = make(true, true) ;
+        JettyServerConfig config = make(port, true, true) ;
         config.authConfigFile = authConfigFile ;
         JettyFuseki.initializeServer(config);
         JettyFuseki.instance.start() ;
         server = JettyFuseki.instance ;
     }
 
-    public static JettyServerConfig make(boolean allowUpdate, boolean listenLocal) {
+    public static JettyServerConfig make(int port, boolean allowUpdate, boolean listenLocal) {
         JettyServerConfig config = new JettyServerConfig() ;
         // Avoid any persistent record.
-        config.port = ServerTest.port ;
+        config.port = port ;
         config.contextPath = "/" ;
         config.loopback = listenLocal ;
         config.jettyConfigFile = null ;
@@ -144,7 +143,7 @@ public class ServerTest {
             server.stop() ;
         server = null ;
         // Clear out the registry.
-        Collection<String> keys = Iter.toList(DataAccessPointRegistry.get().keys()) ;
+        Collection<String> keys = Iter.toList(DataAccessPointRegistry.get().keys().iterator()) ;
         for (String k : keys)
             DataAccessPointRegistry.get().remove(k) ;
     }

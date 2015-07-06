@@ -22,8 +22,7 @@ import java.io.Writer;
 
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.riot.system.StreamRDF;
-
-import com.hp.hpl.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * A writer for {@link StreamRDF} based quad writers

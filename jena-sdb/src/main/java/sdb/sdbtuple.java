@@ -21,18 +21,18 @@ package sdb;
 import java.util.ArrayList;
 import java.util.List;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
+import org.apache.jena.sdb.SDB ;
+import org.apache.jena.sdb.Store ;
+import org.apache.jena.sdb.store.TableDesc ;
+import org.apache.jena.sdb.store.TupleTable ;
+import org.apache.jena.atlas.lib.Lib ;
+
 import sdb.cmd.CmdArgsDB;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.CmdGeneral;
-import arq.cmdline.ModBase;
-
-import com.hp.hpl.jena.sdb.SDB ;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.store.TableDesc;
-import com.hp.hpl.jena.sdb.store.TupleTable;
-
-import com.hp.hpl.jena.sparql.util.Utils;
 
 
 public class sdbtuple extends CmdArgsDB
@@ -131,7 +131,7 @@ public class sdbtuple extends CmdArgsDB
     { return getCommandName()+" --sdb <SPEC> [--print|--load|--create|--drop] [--table TableName] TableName..." ; }
 
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
 
     static final String divider = "- - - - - - - - - - - - - -" ;
     boolean needDivider = false ;

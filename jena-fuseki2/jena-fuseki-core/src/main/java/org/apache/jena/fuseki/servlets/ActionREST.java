@@ -18,10 +18,8 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import java.io.IOException ;
 import java.util.Locale ;
 
-import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -34,7 +32,7 @@ public abstract class ActionREST extends ActionSPARQL
     { super() ; }
 
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void service(HttpServletRequest request, HttpServletResponse response) {
         // Direct all verbs to our common framework.
         doCommon(request, response) ;
     }
@@ -71,8 +69,6 @@ public abstract class ActionREST extends ActionSPARQL
     }
 
     // Counter wrappers
-    
-    // XXX Out of date - we now add HTTP counters to all endpoints. 
     
     private final void doGet$(HttpAction action) {
         incCounter(action.getEndpoint(), CounterName.HTTPget) ;

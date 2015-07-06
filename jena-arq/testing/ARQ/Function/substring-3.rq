@@ -1,4 +1,4 @@
-PREFIX  jfn:  <http://jena.hpl.hp.com/ARQ/function#>
+PREFIX  jfn:  <http://jena.apache.org/ARQ/function#>
 PREFIX  : <http://example/> 
 
 SELECT ?p ?v

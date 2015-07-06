@@ -29,8 +29,7 @@ import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.MediaType ;
-
-import com.hp.hpl.jena.util.FileUtils ;
+import org.apache.jena.util.FileUtils ;
 
 /** Central registry of RDF languages and syntaxes.
  * @see RDFParserRegistry

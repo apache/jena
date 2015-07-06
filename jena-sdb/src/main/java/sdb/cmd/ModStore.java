@@ -21,27 +21,27 @@ package sdb.cmd;
 import java.sql.SQLException;
 import java.util.List;
 
-import arq.cmd.TerminationException;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.CmdGeneral;
-import arq.cmdline.ModBase;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+import jena.cmd.TerminationException;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
-import com.hp.hpl.jena.sdb.sql.SAPStorageType;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.store.DatasetStore;
-import com.hp.hpl.jena.sdb.store.LayoutType;
-import com.hp.hpl.jena.sdb.store.StoreFactory;
-import com.hp.hpl.jena.shared.NotFoundException;
-import com.hp.hpl.jena.util.FileManager;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.sdb.SDBException ;
+import org.apache.jena.sdb.SDBFactory ;
+import org.apache.jena.sdb.Store ;
+import org.apache.jena.sdb.StoreDesc ;
+import org.apache.jena.sdb.sql.MySQLEngineType ;
+import org.apache.jena.sdb.sql.SAPStorageType ;
+import org.apache.jena.sdb.sql.SDBConnection ;
+import org.apache.jena.sdb.sql.SDBExceptionSQL ;
+import org.apache.jena.sdb.store.DatasetStore ;
+import org.apache.jena.sdb.store.LayoutType ;
+import org.apache.jena.sdb.store.StoreFactory ;
+import org.apache.jena.shared.NotFoundException ;
+import org.apache.jena.util.FileManager ;
 
 /** Construction of a store from a store description,
  * possibly modified by command line arguments.

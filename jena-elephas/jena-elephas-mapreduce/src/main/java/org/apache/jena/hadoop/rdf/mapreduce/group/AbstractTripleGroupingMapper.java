@@ -18,10 +18,9 @@
 
 package org.apache.jena.hadoop.rdf.mapreduce.group;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.types.NodeWritable;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
-
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * Abstract mapper implementation which helps in grouping triples by assigning

@@ -20,7 +20,7 @@ package org.apache.jena.riot.system;
 
 import java.util.Map ;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
+import org.apache.jena.shared.PrefixMapping ;
 
 /**
  * Factory which provides prefix maps

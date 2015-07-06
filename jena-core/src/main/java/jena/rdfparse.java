@@ -18,12 +18,12 @@
 
 package jena;
 
-import static jena.cmdline.CmdLineUtils.setLog4jConfiguration ;
+import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
 
 import java.lang.reflect.Constructor ;
 
-import com.hp.hpl.jena.rdfxml.xmlinput.NTriple ;
-import com.hp.hpl.jena.shared.Command ;
+import org.apache.jena.rdfxml.xmlinput.NTriple ;
+import org.apache.jena.shared.Command ;
 
 /** A command line interface into ARP.
  * Creates NTriple's or just error messages.
@@ -77,7 +77,7 @@ import com.hp.hpl.jena.shared.Command ;
 
 public class rdfparse {
 
-    static { setLog4jConfiguration() ; }
+    static { setCmdLogging(); }
 
     /** Either start an RDF/XML to NTriple converter, or run test suite.
 	 * @param args The command-line arguments.

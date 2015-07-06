@@ -1,0 +1,56 @@
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:        <http://www.w3.org/2002/07/owl#> .
+
+@prefix ja:         <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix sec:		<http://apache.org/jena/permissions/Assembler#> .
+@prefix my:         <http://apache.org/jena/permissions/test#> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#>
+
+<>	ja:loadClass	"org.apache.jena.permissions.SecuredAssembler" .
+
+sec:Model 
+	rdfs:subClassOf ja:NamedModel ;
+	 .
+
+my:baseModel 
+	a ja:MemoryModel;
+	.
+	
+my:secModel
+	a sec:Model;
+	sec:baseModel my:baseModel ;
+	ja:modelName "http://example.com/securedModel" ;
+	sec:evaluatorFactory "org.apache.jena.permissions.MockSecurityEvaluator" ;
+	.
+		
+my:secModel2
+    a sec:Model;
+    sec:baseModel my:baseModel ;
+    ja:modelName "http://example.com/securedModel2" ;
+    sec:evaluatorImpl my:secEvaluator ;
+    .
+        
+my:secEvaluator
+    a sec:Evaluator ;
+    sec:args [  rdf:_1 "bob" ;
+                ] ;
+    sec:evaluatorClass "org.apache.jena.permissions.StaticSecurityEvaluator" ;
+    .
+    
+my:secModel3
+    a sec:Model;
+    sec:baseModel my:baseModel ;
+    ja:modelName "http://example.com/securedModel3" ;
+    sec:evaluatorImpl my:secEvaluator2 ;
+    .
+    
+ my:secEvaluator2
+    a sec:Evaluator ;
+    sec:args [  rdf:_1 my:baseModel ;
+                ] ;
+    sec:evaluatorClass "org.apache.jena.permissions.ModelBasedSecurityEvaluator" ;
+    .
+        
+    
+    

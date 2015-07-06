@@ -21,14 +21,15 @@ package sdb;
 
 import java.util.List;
 
-import sdb.cmd.CmdArgsDB;
-import arq.cmdline.ArgDecl;
+import jena.cmd.ArgDecl;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sdb.SDB ;
-import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
-import com.hp.hpl.jena.sparql.util.Utils;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.sdb.SDB ;
+import org.apache.jena.sdb.SDBFactory ;
+import org.apache.jena.sdb.store.StoreBaseHSQL ;
+import org.apache.jena.atlas.lib.Lib ;
+
+import sdb.cmd.CmdArgsDB;
  
  /** Delete a model in an SDB database.
   * 
@@ -60,7 +61,7 @@ public class sdbdelete extends CmdArgsDB
     }
 
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary()  { return getCommandName()+" <SPEC> default | <IRI> ..."; }

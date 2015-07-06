@@ -19,7 +19,7 @@
 package org.apache.jena.riot.system;
 
 import org.apache.jena.iri.IRI ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
+import org.apache.jena.shared.PrefixMapping ;
 
 
 public class Prologue

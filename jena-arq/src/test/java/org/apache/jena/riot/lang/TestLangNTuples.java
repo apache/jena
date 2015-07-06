@@ -123,22 +123,22 @@ abstract public class TestLangNTuples extends BaseTest
     }
     
     // Bad terms - but accepted by default.
-    @Test 
+    @Test(expected=ExFatal.class)
     public void tuple_bad_10()       { parseCount("<x> <p> <bad uri> .") ; } 
 
-    // Bad terms - but accepted by default.
+    // Bad terms (value range) - but legal syntax 
     @Test 
     public void tuple_bad_11()       { parseCount("<x> <p> \"9000\"^^<http://www.w3.org/2001/XMLSchema#byte> .") ; } 
 
-    // Bad terms - but accepted by default.
-    @Test (expected=ExError.class)
+    // Bad - relative URI.
+    @Test(expected=ExError.class)
     public void tuple_bad_21()       { parseCheck("<x> <p> <z> .") ; } 
 
-    // Bad terms - with checking.
-    @Test (expected=ExWarning.class)
-    public void tuple_bad_22()       { parseCheck("<http://example/x> <http://example/p> <http://example/bad uri> .") ; } 
+    // Bad terms
+    @Test(expected=ExFatal.class)
+    public void tuple_bad_22()       { parseCheck("<http://example/x> <http://example/p> \"abc\"^^<http://example/bad uri> .") ; } 
 
-    @Test  (expected=ExWarning.class)
+    @Test(expected=ExWarning.class)
     public void tuple_bad_23()       { parseCheck("<http://example/x> <http://example/p> \"9000\"^^<http://www.w3.org/2001/XMLSchema#byte> .") ; } 
     
     // ASCII vs UTF-8

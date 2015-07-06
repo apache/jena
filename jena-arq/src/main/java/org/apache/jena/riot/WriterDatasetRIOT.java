@@ -23,9 +23,8 @@ import java.io.Writer ;
 
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.system.PrefixMap ;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.util.Context ;
 
 /**
  * A RIOT serializer for a language.

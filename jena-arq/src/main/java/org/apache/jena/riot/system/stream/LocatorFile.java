@@ -24,14 +24,13 @@ import java.io.InputStream ;
 import java.security.AccessControlException ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.system.IRILib ;
+import org.apache.jena.util.FileUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.util.FileUtils ;
 
 /** Location files in the filing system.
  *  A FileLocator can have a "current directory" - this is separate from any

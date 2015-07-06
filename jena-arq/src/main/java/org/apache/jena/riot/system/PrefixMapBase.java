@@ -18,17 +18,15 @@
 
 package org.apache.jena.riot.system;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.lib.ActionKeyValue;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIFactory;
-
-import com.hp.hpl.jena.shared.PrefixMapping;
+import org.apache.jena.shared.PrefixMapping ;
 
 /**
  * Abstract base implementation of a {@link PrefixMap} which provides
@@ -54,16 +52,8 @@ public abstract class PrefixMapBase implements PrefixMap {
     
     @Override
     public Map<String, String> getMappingCopyStr() {
-        final Map<String, String> smap = new HashMap<>();
-        ActionKeyValue<String, IRI> action = new ActionKeyValue<String, IRI>() {
-            @Override
-            public void apply(String key, IRI value) {
-                String str = value.toString();
-                smap.put(key, str);
-            }
-        };
-        Iter.apply(getMapping(), action);
-        return smap;
+		return getMapping().entrySet().stream()
+				.collect(toMap(Map.Entry::getKey, v -> v.getValue().toString()));
     }
     
     @Override
@@ -73,9 +63,7 @@ public abstract class PrefixMapBase implements PrefixMap {
     
     @Override
     public void putAll(PrefixMap pmap) {
-        for (Map.Entry<String, IRI> e : pmap.getMapping().entrySet()) {
-            this.add(e.getKey(), e.getValue());
-        }
+    		pmap.getMapping().forEach(this::add);
     }
 
     @Override
@@ -85,9 +73,7 @@ public abstract class PrefixMapBase implements PrefixMap {
 
     @Override
     public void putAll(Map<String, String> mapping) {
-        for (Map.Entry<String, String> e : mapping.entrySet()) {
-            this.add(e.getKey(), e.getValue());
-        }
+    		mapping.forEach(this::add);
     }
 
     /**

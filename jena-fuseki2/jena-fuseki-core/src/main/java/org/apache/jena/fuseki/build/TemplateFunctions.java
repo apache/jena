@@ -26,8 +26,7 @@ import java.util.Map.Entry ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.riot.Lang ;
-
-import com.hp.hpl.jena.util.FileUtils ;
+import org.apache.jena.util.FileUtils ;
 
 public class TemplateFunctions
 {

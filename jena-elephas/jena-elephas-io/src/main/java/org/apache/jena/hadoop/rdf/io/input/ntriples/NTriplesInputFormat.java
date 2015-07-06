@@ -18,8 +18,6 @@
 
 package org.apache.jena.hadoop.rdf.io.input.ntriples;
 
-import java.io.IOException;
-
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
@@ -38,8 +36,7 @@ import org.apache.jena.hadoop.rdf.types.TripleWritable;
 public class NTriplesInputFormat extends AbstractNLineFileInputFormat<LongWritable, TripleWritable> {
 
     @Override
-    public RecordReader<LongWritable, TripleWritable> createRecordReader(InputSplit inputSplit, TaskAttemptContext context)
-            throws IOException, InterruptedException {
+    public RecordReader<LongWritable, TripleWritable> createRecordReader(InputSplit inputSplit, TaskAttemptContext context) {
         return new NTriplesReader();
     }
 

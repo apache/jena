@@ -22,14 +22,24 @@ import java.io.*;
 import java.util.*;
 
 import jena.rdfcat;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-
 import junit.framework.TestCase;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 
+@SuppressWarnings("deprecation")
 public class Test_rdfcat extends TestCase
 {
+    // Switch off the banner during testing.
+    @Override
+    public void setUp() {
+        jena.rdfcat.suppressDeprecationBanner = true ;
+    }
+    
+    @Override
+    public void tearDown() {
+        jena.rdfcat.suppressDeprecationBanner = false ;
+    }
+    
     public void testAbbreviationTable()
         {
         assertEquals( "RDF/XML", jena.rdfcat.unabbreviate.get( "x" ) );

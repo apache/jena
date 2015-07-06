@@ -26,6 +26,10 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+/** LocatorClassLoader provides access to Java resources.
+ * File names should be an exact match for the java resource, i.e. no "file:"  
+ * There is no scheme name for Java resources.
+ */
 public class LocatorClassLoader  implements Locator
 {
     static Logger log = LoggerFactory.getLogger(LocatorClassLoader.class) ;

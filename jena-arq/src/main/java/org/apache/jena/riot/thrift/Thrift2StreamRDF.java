@@ -18,15 +18,14 @@
 
 package org.apache.jena.riot.thrift;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.thrift.wire.RDF_PrefixDecl ;
 import org.apache.jena.riot.thrift.wire.RDF_Quad ;
 import org.apache.jena.riot.thrift.wire.RDF_Triple ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Quad ;
 
 /** Thrift RDF (wire format) to RDF terms (Jena java objects)
  * 

@@ -22,17 +22,16 @@ import java.io.OutputStream ;
 import java.util.Collection ;
 import java.util.Iterator ;
 
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.thrift.wire.RDF_DataTuple ;
 import org.apache.jena.riot.thrift.wire.RDF_Term ;
 import org.apache.jena.riot.thrift.wire.RDF_VAR ;
 import org.apache.jena.riot.thrift.wire.RDF_VarTuple ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.thrift.TException ;
 import org.apache.thrift.protocol.TProtocol ;
 import org.apache.thrift.transport.TIOStreamTransport ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 /** Converted from Bindings to SPARQL result set encoded in Thrift */
 public class Binding2Thrift implements AutoCloseable {

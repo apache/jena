@@ -22,6 +22,7 @@ import java.io.IOException ;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.apache.jena.graph.Node ;
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
 import org.apache.lucene.document.Document ;
@@ -41,7 +42,6 @@ import org.apache.lucene.util.Version ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Node ;
 import com.spatial4j.core.shape.Point ;
 import com.spatial4j.core.shape.Shape ;
 

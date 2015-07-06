@@ -24,15 +24,14 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.csv.CSVParser ;
-import org.apache.jena.propertytable.util.IRILib ;
+import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.* ;
-
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
 
 /**
  * The LangRIOT implementation for CSV

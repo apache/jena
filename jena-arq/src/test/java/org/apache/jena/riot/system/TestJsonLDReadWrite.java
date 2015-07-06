@@ -26,16 +26,15 @@ import java.util.Iterator ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.util.IsoMatcher ;
 import org.junit.Assert ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.IsoMatcher ;
 
 /** tests : JSONLD->RDF ; JSONLD->RDF->JSONLD */
 public class TestJsonLDReadWrite extends BaseTest
@@ -44,9 +43,13 @@ public class TestJsonLDReadWrite extends BaseTest
     
     @Test public void read_g01() { graphJ2R("graph1.jsonld", "graph1.ttl") ; }
 
+    @Test public void read_g02() { graphJ2R("graph2.jsonld", "graph2.ttl") ; }
+
     @Test public void read_ds01() { datasetJ2R("graph1.jsonld", "graph1.ttl") ; }
 
-    @Test public void read_ds02() { datasetJ2R("dataset1.jsonld", "dataset1.trig") ; }
+    @Test public void read_ds02() { datasetJ2R("graph2.jsonld", "graph2.ttl") ; }
+
+    @Test public void read_ds03() { datasetJ2R("dataset1.jsonld", "dataset1.trig") ; }
 
     private void graphJ2R(String inFile, String outFile)
     {
@@ -145,6 +148,7 @@ public class TestJsonLDReadWrite extends BaseTest
     	if (namespaces == null) return;
     	
     	for (String prefix : namespaces.keySet()) {
+    	    if ( ! prefix.isEmpty() )
     		Assert.assertEquals("Model does contain expected namespace " + prefix + ": <" + namespaces.get(prefix) + ">", namespaces.get(prefix), m.getNsPrefixURI(prefix));
     	}
     }

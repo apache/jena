@@ -62,7 +62,7 @@ public abstract class AbstractWholeFileNodeTupleWriter<TKey, TValue, T extends A
     }
 
     @Override
-    public final void write(TKey key, T value) throws IOException, InterruptedException {
+    public final void write(TKey key, T value) {
         LOG.debug("write({}={})", key, value);
         this.add(value);
     }
@@ -76,7 +76,7 @@ public abstract class AbstractWholeFileNodeTupleWriter<TKey, TValue, T extends A
     protected abstract void add(T value);
 
     @Override
-    public void close(TaskAttemptContext context) throws IOException, InterruptedException {
+    public void close(TaskAttemptContext context) throws IOException {
         if (this.writer != null) {
             this.writeOutput(writer);
             this.writer.close();

@@ -19,11 +19,14 @@
 package arq.examples.update;
 
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.* ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.update.UpdateAction ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateRequest ;
 
 /** Build an update request up out of indvidiual Updates specified as strings.
  *  See UpdatePorgrammatic for another way to build up a request. 
@@ -34,20 +37,21 @@ public class UpdateExecuteOperations
 {
     public static void main(String []args)
     {
-        // Create an empty GraphStore (has an empty default graph and no named graphs) 
-        GraphStore graphStore = GraphStoreFactory.create() ;
+        // Create an empty DatasetGraph (has an empty default graph and no named graphs) 
+        Dataset graphStore = DatasetFactory.createMem() ;
+        
         ex1(graphStore) ;
         ex2(graphStore) ;
         ex3(graphStore) ;
     }
     
-    public static void ex1(GraphStore graphStore)
+    public static void ex1(Dataset graphStore)
     {
         // Execute one operation.
         UpdateAction.parseExecute("LOAD <file:etc/update-data.ttl>", graphStore) ;
     }
     
-    public static void ex2(GraphStore graphStore)
+    public static void ex2(Dataset graphStore)
     {
         // Execute a series of operations at once.
         // See ex3 for a better way to build up a request
@@ -62,7 +66,7 @@ public class UpdateExecuteOperations
         UpdateAction.parseExecute(cmd, graphStore) ;
     }
     
-    public static void ex3(GraphStore graphStore)
+    public static void ex3(Dataset graphStore)
     {
         // Build up the request then execute it.
         // This is the preferred way for complex sequences of operations. 

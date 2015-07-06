@@ -1,4 +1,4 @@
-PREFIX  afn:     <http://jena.hpl.hp.com/ARQ/function#>
+PREFIX  afn:     <http://jena.apache.org/ARQ/function#>
 
 # Take local name to make a more portable test
 SELECT ?x (afn:localname(?g) AS ?gn)

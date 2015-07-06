@@ -25,11 +25,10 @@ import java.util.Map ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.logging.Log ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
-import com.hp.hpl.jena.rdf.model.RDFWriter ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.RDFErrorHandler ;
+import org.apache.jena.rdf.model.RDFWriter ;
 
 public abstract class JenaWriterBase implements RDFWriter
 {

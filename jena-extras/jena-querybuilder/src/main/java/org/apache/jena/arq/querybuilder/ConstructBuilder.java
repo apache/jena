@@ -27,11 +27,10 @@ import org.apache.jena.arq.querybuilder.handlers.ConstructHandler;
 import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
-
-import com.hp.hpl.jena.graph.FrontsTriple;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException;
+import org.apache.jena.graph.FrontsTriple ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 
 /**
  * Build an Construct query.
@@ -146,23 +145,6 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder>
 		return this;
 	}
 
-	// convert a node to a string
-	private static String toString(Node node) {
-		if (node.isBlank()) {
-			return node.getBlankNodeLabel();
-		}
-		if (node.isLiteral()) {
-			return node.toString();
-		}
-		if (node.isURI()) {
-			return String.format("<%s>", node.getURI());
-		}
-		if (node.isVariable()) {
-			return String.format("?%s", node.getName());
-		}
-		return node.toString();
-	}
-
 	@Override
 	public ConstructBuilder addWhere(Triple t) {
 		whereHandler.addWhere(t);
@@ -225,6 +207,18 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder>
 		return this;
 	}
 
+	@Override
+	public ConstructBuilder addBind(Expr expression, Object var) {
+		whereHandler.addBind( expression, makeVar(var) );
+		return this;
+	}
+
+	@Override
+	public ConstructBuilder addBind(String expression, Object var) throws ParseException {
+		whereHandler.addBind( expression, makeVar(var) );
+		return this;
+	}
+	
 	@Override
 	public ConstructBuilder addConstruct(Triple t) {
 		constructHandler.addConstruct(t);

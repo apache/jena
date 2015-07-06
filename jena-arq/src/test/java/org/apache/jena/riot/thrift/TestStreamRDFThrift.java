@@ -21,11 +21,12 @@ package org.apache.jena.riot.thrift;
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.util.Iterator ;
-
-import org.apache.jena.atlas.iterator.Filter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RIOT ;
@@ -33,18 +34,14 @@ import org.apache.jena.riot.system.StreamOps ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.system.StreamRDFWriter ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.graph.GraphFactory ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.util.IsoMatcher ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.graph.GraphFactory ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.IsoMatcher ;
 
 public class TestStreamRDFThrift extends BaseTest {
 
@@ -131,7 +128,7 @@ public class TestStreamRDFThrift extends BaseTest {
         boolean b = IsoMatcher.isomorphic(dsg1, dsg2) ;
         assertTrue(b) ;
         // Stronger - same bNode and same as in original data.
-        Node obj = Iter.first(dsg1.listGraphNodes(), filterBlankNode) ;
+        Node obj = Iter.first(dsg1.listGraphNodes(), Node::isBlank) ;
         termAsObject(dsg1, obj) ;
     }
 
@@ -150,7 +147,7 @@ public class TestStreamRDFThrift extends BaseTest {
         boolean b = IsoMatcher.isomorphic(dsg1, dsg2) ;
         assertTrue(b) ;
         // Stronger - same bNode and same as in original data.
-        Node obj = Iter.first(dsg1.listGraphNodes(), filterBlankNode) ;
+        Node obj = Iter.first(dsg1.listGraphNodes(), Node::isBlank) ;
         termAsObject(dsg1, obj) ;
     }
     
@@ -174,13 +171,6 @@ public class TestStreamRDFThrift extends BaseTest {
         }
         fail("Failed to find "+term) ;
     }
-    
-    static Filter<Node> filterBlankNode = new Filter<Node>() {
-        @Override
-        public boolean accept(Node item) {
-            return item.isBlank() ;
-        }
-    } ;
     
     // ** Java8
 //    public static <T> Stream<T> stream(Iterator<? extends T> iterator) {

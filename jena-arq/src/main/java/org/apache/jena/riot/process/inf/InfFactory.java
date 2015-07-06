@@ -18,9 +18,8 @@
 
 package org.apache.jena.riot.process.inf;
 
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.system.StreamRDF ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
 
 public class InfFactory
 {

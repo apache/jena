@@ -18,11 +18,10 @@
 
 package org.apache.jena.riot.adapters;
 
+import org.apache.jena.rdf.model.RDFReader ;
+import org.apache.jena.rdf.model.RDFReaderF ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
-
-import com.hp.hpl.jena.rdf.model.RDFReader ;
-import com.hp.hpl.jena.rdf.model.RDFReaderF ;
 
 /** Adapter to old style Jena reader factory */ 
 public class RDFReaderFactoryRIOT implements RDFReaderF

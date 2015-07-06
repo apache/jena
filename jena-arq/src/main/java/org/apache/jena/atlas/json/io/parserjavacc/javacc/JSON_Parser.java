@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 package org.apache.jena.atlas.json.io.parserjavacc.javacc ;
-//This is javacc generated code
+
 @SuppressWarnings("all")
 public class JSON_Parser extends JSON_ParserBase implements JSON_ParserConstants {
 

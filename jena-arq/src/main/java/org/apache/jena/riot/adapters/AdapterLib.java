@@ -20,18 +20,17 @@ package org.apache.jena.riot.adapters ;
 
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.stream.* ;
 
-import com.hp.hpl.jena.sparql.util.Utils ;
-
 class AdapterLib {
-    public static com.hp.hpl.jena.util.TypedStream convert(TypedInputStream in) {
-        return new com.hp.hpl.jena.util.TypedStream(in, in.getContentType(), in.getCharset()) ;
+    public static org.apache.jena.util.TypedStream convert(TypedInputStream in) {
+        return new org.apache.jena.util.TypedStream(in, in.getContentType(), in.getCharset()) ;
     }
 
-    public static LocationMapper copyConvert(com.hp.hpl.jena.util.LocationMapper locMap) {
+    public static LocationMapper copyConvert(org.apache.jena.util.LocationMapper locMap) {
         LocationMapper lmap2 = new LocationMapper() ;
         if ( locMap == null )
             return null ;
@@ -51,22 +50,22 @@ class AdapterLib {
         return lmap2 ;
     }
 
-    public static Locator convert(com.hp.hpl.jena.util.Locator oldloc) {
-        if ( oldloc instanceof com.hp.hpl.jena.util.LocatorFile ) {
-            com.hp.hpl.jena.util.LocatorFile lFile = (com.hp.hpl.jena.util.LocatorFile)oldloc ;
+    public static Locator convert(org.apache.jena.util.Locator oldloc) {
+        if ( oldloc instanceof org.apache.jena.util.LocatorFile ) {
+            org.apache.jena.util.LocatorFile lFile = (org.apache.jena.util.LocatorFile)oldloc ;
             return new LocatorFile(lFile.getDir()) ;
         }
-        if ( oldloc instanceof com.hp.hpl.jena.util.LocatorClassLoader ) {
-            com.hp.hpl.jena.util.LocatorClassLoader classLoc = (com.hp.hpl.jena.util.LocatorClassLoader)oldloc ;
+        if ( oldloc instanceof org.apache.jena.util.LocatorClassLoader ) {
+            org.apache.jena.util.LocatorClassLoader classLoc = (org.apache.jena.util.LocatorClassLoader)oldloc ;
             return new LocatorClassLoader(classLoc.getClassLoader()) ;
         }
-        if ( oldloc instanceof com.hp.hpl.jena.util.LocatorURL )
+        if ( oldloc instanceof org.apache.jena.util.LocatorURL )
             return new LocatorHTTP() ;
-        if ( oldloc instanceof com.hp.hpl.jena.util.LocatorZip ) {
-            com.hp.hpl.jena.util.LocatorZip zipLoc = (com.hp.hpl.jena.util.LocatorZip)oldloc ;
+        if ( oldloc instanceof org.apache.jena.util.LocatorZip ) {
+            org.apache.jena.util.LocatorZip zipLoc = (org.apache.jena.util.LocatorZip)oldloc ;
             return new LocatorZip(zipLoc.getZipFileName()) ;
         }
 
-        throw new RiotException("Unrecognized Locator: " + Utils.className(oldloc)) ;
+        throw new RiotException("Unrecognized Locator: " + Lib.className(oldloc)) ;
     }
 }

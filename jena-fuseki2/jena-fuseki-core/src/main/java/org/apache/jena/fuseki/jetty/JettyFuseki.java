@@ -23,6 +23,7 @@ import static org.apache.jena.fuseki.Fuseki.serverLog ;
 
 import java.io.FileInputStream ;
 
+import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
@@ -35,8 +36,6 @@ import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.util.security.Constraint ;
 import org.eclipse.jetty.webapp.WebAppContext ;
 import org.eclipse.jetty.xml.XmlConfiguration ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Standalone server, not run as a WAR file.
  * Used in testing and development.
@@ -87,25 +86,9 @@ public class JettyFuseki {
         instance = new JettyFuseki(config) ;
     }
     
-    /** Build a Jetty server using the development files for the webapp
-     *  No command line configuration. 
-     */
-    public static Server create(int port) {
-        return create("/", port) ;
-    }
-
-    public static Server create(String contextPath, int port) {
-        Server server = new Server(port) ;
-        WebAppContext webapp = createWebApp(contextPath) ;
-        server.setHandler(webapp) ;
-        return server ;
-    }
-
     private JettyFuseki(JettyServerConfig config) {
         this.serverConfig = config ;
-        
         buildServerWebapp(serverConfig.contextPath, serverConfig.jettyConfigFile, config.enableCompression) ;
-        
         if ( mgtConnector == null )
             mgtConnector = serverConnector ;
     }
@@ -121,7 +104,7 @@ public class JettyFuseki {
         if ( version != null && version.equals("${project.version}") )
             version = null ;
         if ( buildDate != null && buildDate.equals("${build.time.xsd}") )
-            buildDate = Utils.nowAsXSDDateTimeString() ;
+            buildDate = DateTimeUtils.nowAsXSDDateTimeString() ;
         
         if ( version != null && buildDate != null )
             serverLog.info(format("%s %s %s", Fuseki.NAME, version, buildDate)) ;
@@ -142,7 +125,7 @@ public class JettyFuseki {
             serverLog.error("SPARQLServer: Failed to start server: " + ex.getMessage(), ex) ;
             System.exit(1) ;
         }
-        String now = Utils.nowAsString() ;
+        String now = DateTimeUtils.nowAsString() ;
         serverLog.info(format("Started %s on port %d", now, serverConnector.getPort())) ;
     }
 
@@ -160,7 +143,7 @@ public class JettyFuseki {
      * Stop the {@link JettyFuseki} instance.
      */
     public void stop() {
-        String now = Utils.nowAsString() ;
+        String now = DateTimeUtils.nowAsString() ;
         serverLog.info(format("Stopped %s on port %d", now, serverConnector.getPort())) ;
         try {
             server.stop() ;
@@ -216,7 +199,6 @@ public class JettyFuseki {
         webapp.setErrorHandler(new FusekiErrorHandler()) ;
         return webapp ;
     }
-    
 
     public static String getenv(String name) {
         String x = System.getenv(name) ;

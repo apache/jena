@@ -23,20 +23,19 @@ import java.net.HttpURLConnection ;
 import java.net.URL ;
 
 import static org.apache.jena.fuseki.ServerTest.* ;
-
 import org.junit.AfterClass ;
 import org.junit.Assert ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.apache.jena.atlas.junit.BaseTest ;
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
-import com.hp.hpl.jena.sparql.sse.Item ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
-import com.hp.hpl.jena.sparql.util.Convert ;
+import org.apache.jena.query.* ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.resultset.ResultSetCompare ;
+import org.apache.jena.sparql.sse.Item ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.sse.builders.BuilderResultSet ;
+import org.apache.jena.sparql.util.Convert ;
 
 public class TestQuery extends BaseTest 
 {

@@ -1,0 +1,57 @@
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+</head>
+ <body>
+<p>A parser for <a href="http://www.w3.org/TR/rdf-syntax-grammar">RDF/XML</a>.
+</p>
+<p>
+See the
+<a href="/documentation/io/index.html">ARP documentation</a>
+for more information.
+</p>
+<!--
+<p>The interaction between ARP and Xerces
+seems to include a significant
+memory leak possibly caused by Xerces interning some strings, on behalf of ARP.
+This feature cannot be turned off.
+This is not a new bug, so ARP users will not experience a degradation
+in performance. However, for users who have limited memory, or who are processing
+large files, or files from many diverse sources,
+or for long-lived applications such as web servers, it is important to
+be aware of this leak. I believe that the strings being interned correspond
+to the XML element tags and attribute names in the XML document. These
+form an open set in RDF/XML, unlike most XML applications.
+</p>
+<p>
+A potential work around is to use a SAX parser other than Xerces and then
+use {@link org.apache.jena.rdf.arp.SAX2Model SAX2Model} or
+{@link org.apache.jena.rdf.arp.SAX2RDF SAX2RDF} to parse the SAX event stream as RDF.
+</p>
+<p>
+The size of the leak is presumably highly dependent on the actual
+RDF/XML documents read. As an example the OWL Guide wine ontology,
+(using the version from the OWL Test Cases) contains about 2000 triples
+and leaks about 180K.
+</p>
+-->
+</body>
+</html>

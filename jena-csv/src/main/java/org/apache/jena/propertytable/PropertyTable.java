@@ -20,9 +20,9 @@ package org.apache.jena.propertytable;
 import java.util.Collection;
 import java.util.List;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /**
  * PropertyTable is designed to be a table of RDF terms, or Nodes in Jena. 

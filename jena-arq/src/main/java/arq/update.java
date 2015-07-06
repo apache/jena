@@ -20,21 +20,22 @@ package arq;
 
 import java.util.List ;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
-import arq.cmdline.CmdUpdate ;
+import org.apache.jena.sparql.SystemARQ ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Transactional ;
+import org.apache.jena.sparql.core.TransactionalNull ;
+import org.apache.jena.update.UpdateExecutionFactory ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateRequest ;
 
-import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.core.Transactional ;
-import com.hp.hpl.jena.sparql.core.TransactionalNull ;
-import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateExecutionFactory ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import arq.cmdline.CmdUpdate ;
 
 public class update extends CmdUpdate
 {
@@ -47,66 +48,56 @@ public class update extends CmdUpdate
     public static void main (String... argv)
     { new update(argv).mainRun() ; }
     
-    protected update(String[] argv)
-    {
+    protected update(String[] argv) {
         super(argv) ;
         super.add(updateArg, "--update=FILE", "Update commands to execute") ;
         super.add(dumpArg, "--dump", "Dump the resulting graph store") ;
     }
 
     @Override
-    protected void processModulesAndArgs()
-    {
-        requestFiles = getValues(updateArg) ;   // ????
+    protected void processModulesAndArgs() {
+        requestFiles = getValues(updateArg) ; // ????
         dump = contains(dumpArg) ;
-        
+
         super.processModulesAndArgs() ;
     }
-    
+
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
     protected String getSummary() { return getCommandName()+" --desc=assembler [--dump] --update=<request file>" ; }
 
     // Subclass for specialised commands making common updates more convenient
     @Override
-    protected void execUpdate(GraphStore graphStore)
-    {
+    protected void execUpdate(DatasetGraph graphStore) {
         if ( requestFiles.size() == 0 && getPositional().size() == 0 )
             throw new CmdException("Nothing to do") ;
-     
-        Transactional transactional = (graphStore instanceof Transactional ) ? (Transactional)graphStore : new TransactionalNull() ;
 
-        for ( String filename : requestFiles )
-        {
-            try
-            {
-                transactional.begin( ReadWrite.WRITE );
-                execOneFile( filename, graphStore );
-                transactional.commit();
+        Transactional transactional = (graphStore instanceof Transactional) ? (Transactional)graphStore : new TransactionalNull() ;
+
+        for ( String filename : requestFiles ) {
+            try {
+                transactional.begin(ReadWrite.WRITE) ;
+                execOneFile(filename, graphStore) ;
+                transactional.commit() ;
             }
-            finally
-            {
-                transactional.end();
+            finally {
+                transactional.end() ;
             }
         }
 
-        for ( String requestString : super.getPositional() )
-        {
-            requestString = indirect( requestString );
+        for ( String requestString : super.getPositional() ) {
+            requestString = indirect(requestString) ;
 
-            try
-            {
-                transactional.begin( ReadWrite.WRITE );
-                execOne( requestString, graphStore );
-                transactional.commit();
+            try {
+                transactional.begin(ReadWrite.WRITE) ;
+                execOne(requestString, graphStore) ;
+                transactional.commit() ;
             }
-            finally
-            {
-                transactional.end();
+            finally {
+                transactional.end() ;
             }
-
 
         }
         SystemARQ.sync(graphStore) ;
@@ -115,15 +106,12 @@ public class update extends CmdUpdate
             RDFDataMgr.write(System.out, graphStore, Lang.NQUADS) ;
     }
 
-
-    private void execOneFile(String filename, GraphStore store)
-    {
+    private void execOneFile(String filename, DatasetGraph store) {
         UpdateRequest req = UpdateFactory.read(filename, updateSyntax) ;
         UpdateExecutionFactory.create(req, store).execute() ;
     }
-    
-    private void execOne(String requestString, GraphStore store)
-    {
+
+    private void execOne(String requestString, DatasetGraph store) {
         UpdateRequest req = UpdateFactory.create(requestString, updateSyntax) ;
         UpdateExecutionFactory.create(req, store).execute() ;
     }

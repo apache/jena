@@ -6,15 +6,24 @@
   <div class="row">
     <div class="col-md-12">
       <table class='table'>
-        <tr class="headings"><th>Name</th><th>Active?</th><th></th></tr>
+        <tr class="headings">
+          <th>Name</th>
+          <!-- JENA-867 <th>Active?</th> -->
+          <th></th>
+        </tr>
         <% _.each( datasets, function( ds ) { %>
           <tr>
             <td>
               <%= ds.name() %>
             </td>
-            <td><input type='checkbox' class='checkbox' checked /></td>
+            <!-- JENA-867 temporarily disable non-functional checkbox
+            <td>
+              <input type='checkbox' class='checkbox' checked />
+            </td>
+            -->
             <td>
               <div>
+                <!-- JENA-869 Disable download button until it works again -->
                 <a class="btn btn-sm action remove btn-primary" data-ds-id='<%= ds.name() %>'><i class='fa fa-times-circle'></i> remove</a>
                 <a class="btn btn-sm action backup btn-primary" data-ds-id='<%= ds.name() %>'><i class='fa fa-download'></i> backup</a>
                 <a class="btn btn-sm action add-data btn-primary" href="dataset.html?tab=upload&ds=<%= ds.name() %>"><i class='fa fa-upload'></i> upload data</a>

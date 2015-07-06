@@ -21,24 +21,25 @@ package tdb.cmdline;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.riot.RDFDataMgr ;
-import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
-import arq.cmdline.CmdArgModule ;
-import arq.cmdline.CmdGeneral ;
-import arq.cmdline.ModDataset ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
 
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
-import com.hp.hpl.jena.util.FileManager ;
+import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.shared.JenaException ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb.assembler.VocabTDB ;
+import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
+import org.apache.jena.util.FileManager ;
+
+import arq.cmdline.ModDataset ;
 
 public class ModTDBDataset extends ModDataset
 {

@@ -20,7 +20,6 @@ package org.apache.jena.riot;
 
 import java.util.* ;
 
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.out.JsonLDWriter ;
 import org.apache.jena.riot.system.RiotLib ;
@@ -48,23 +47,23 @@ public class RDFWriterRegistry
         {
             // Built-ins
             
-            if ( Lib.equal(RDFFormat.TURTLE_PRETTY, serialization) )
+            if ( Objects.equals(RDFFormat.TURTLE_PRETTY, serialization) )
                 return new TurtleWriter() ;
-            if ( Lib.equal(RDFFormat.TURTLE_BLOCKS, serialization) )
+            if ( Objects.equals(RDFFormat.TURTLE_BLOCKS, serialization) )
                 return new TurtleWriterBlocks() ;
-            if ( Lib.equal(RDFFormat.TURTLE_FLAT, serialization) )
+            if ( Objects.equals(RDFFormat.TURTLE_FLAT, serialization) )
                 return new TurtleWriterFlat() ;
             
-            if ( Lib.equal(RDFFormat.NTRIPLES_UTF8, serialization) )
+            if ( Objects.equals(RDFFormat.NTRIPLES_UTF8, serialization) )
                 return new NTriplesWriter() ;
-            if ( Lib.equal(RDFFormat.NTRIPLES_ASCII, serialization) )
+            if ( Objects.equals(RDFFormat.NTRIPLES_ASCII, serialization) )
                 return new NTriplesWriter(CharSpace.ASCII) ;
             
-            if ( Lib.equal(RDFFormat.RDFJSON, serialization) )
+            if ( Objects.equals(RDFFormat.RDFJSON, serialization) )
                 return new RDFJSONWriter() ;
-            if ( Lib.equal(RDFFormat.RDFXML_PRETTY, serialization) )
+            if ( Objects.equals(RDFFormat.RDFXML_PRETTY, serialization) )
                 return new RDFXMLAbbrevWriter() ;
-            if ( Lib.equal(RDFFormat.RDFXML_PLAIN, serialization) )
+            if ( Objects.equals(RDFFormat.RDFXML_PLAIN, serialization) )
                 return new RDFXMLPlainWriter() ;
             
             WriterDatasetRIOT dsw = wdsfactory.create(serialization) ;
@@ -78,17 +77,17 @@ public class RDFWriterRegistry
         @Override
         public WriterDatasetRIOT create(RDFFormat serialization)
         {
-            if ( Lib.equal(RDFFormat.TRIG_PRETTY, serialization) )
+            if ( Objects.equals(RDFFormat.TRIG_PRETTY, serialization) )
                 return new TriGWriter() ;
-            if ( Lib.equal(RDFFormat.TRIG_BLOCKS, serialization) )
+            if ( Objects.equals(RDFFormat.TRIG_BLOCKS, serialization) )
                 return new TriGWriterBlocks() ;
-            if ( Lib.equal(RDFFormat.TRIG_FLAT, serialization) )
+            if ( Objects.equals(RDFFormat.TRIG_FLAT, serialization) )
                 return new TriGWriterFlat() ;
-            if ( Lib.equal(RDFFormat.NQUADS_UTF8, serialization) )
+            if ( Objects.equals(RDFFormat.NQUADS_UTF8, serialization) )
                 return new NQuadsWriter() ;
-            if ( Lib.equal(RDFFormat.NQUADS_ASCII, serialization) )
+            if ( Objects.equals(RDFFormat.NQUADS_ASCII, serialization) )
                 return new NQuadsWriter(CharSpace.ASCII) ;
-            if ( Lib.equal(RDFFormat.RDFNULL, serialization) )
+            if ( Objects.equals(RDFFormat.RDFNULL, serialization) )
                 return NullWriter.factory.create(RDFFormat.RDFNULL) ;
             return null ;
     }} ;

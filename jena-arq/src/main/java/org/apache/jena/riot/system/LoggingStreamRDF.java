@@ -18,11 +18,10 @@
 
 package org.apache.jena.riot.system ;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.out.NodeFmtLib ;
+import org.apache.jena.sparql.core.Quad ;
 import org.slf4j.Logger ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 
 public class LoggingStreamRDF implements StreamRDF {
     private Logger log ;

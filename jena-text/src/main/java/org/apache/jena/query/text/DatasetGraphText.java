@@ -21,18 +21,13 @@ package org.apache.jena.query.text ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.core.* ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphMonitor ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphWithLock ;
-import com.hp.hpl.jena.sparql.core.GraphView ;
-import com.hp.hpl.jena.sparql.core.Transactional ;
 
 public class DatasetGraphText extends DatasetGraphMonitor implements Transactional
 {
@@ -83,28 +78,28 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
     }
 
     /** Search the text index on the default text field */
-    public Iterator<Node> search(String queryString) {
+    public Iterator<TextHit> search(String queryString) {
         return search(queryString, null) ;
     }
 
     /** Search the text index on the text field associated with the predicate */
-    public Iterator<Node> search(String queryString, Node predicate) {
+    public Iterator<TextHit> search(String queryString, Node predicate) {
         return search(queryString, predicate, -1) ;
     }
 
     /** Search the text index on the default text field */
-    public Iterator<Node> search(String queryString, int limit) {
+    public Iterator<TextHit> search(String queryString, int limit) {
         return search(queryString, null, limit) ;
     }
 
     /** Search the text index on the text field associated with the predicate */
-    public Iterator<Node> search(String queryString, Node predicate, int limit) {
+    public Iterator<TextHit> search(String queryString, Node predicate, int limit) {
         queryString = QueryParserBase.escape(queryString) ;
         if ( predicate != null ) {
             String f = textIndex.getDocDef().getField(predicate) ;
             queryString = f + ":" + queryString ;
         }
-        List<Node> results = textIndex.query(queryString, limit) ;
+        List<TextHit> results = textIndex.query(queryString, limit) ;
         return results.iterator() ;
     }
 
@@ -142,6 +137,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
      */
     @Override
     public void commit() {
+        super.getMonitor().finish() ;
         // Phase 1
         if (readWriteMode.get() == ReadWrite.WRITE) {
             try {
@@ -167,7 +163,6 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
             throw new TextIndexException(t);
         }
         readWriteMode.set(null);
-        super.getMonitor().finish() ;
     }
 
     @Override

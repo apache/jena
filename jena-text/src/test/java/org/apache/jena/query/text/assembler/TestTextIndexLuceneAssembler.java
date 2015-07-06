@@ -18,14 +18,13 @@
 
 package org.apache.jena.query.text.assembler;
 
+import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.query.text.TextIndexLucene ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.vocabulary.RDFS ;
+import org.apache.lucene.analysis.core.KeywordAnalyzer ;
 import org.apache.lucene.store.RAMDirectory ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
-
 import static org.junit.Assert.* ;
 
 public class TestTextIndexLuceneAssembler extends AbstractTestTextAssembler {
@@ -66,6 +65,7 @@ public class TestTextIndexLuceneAssembler extends AbstractTestTextAssembler {
         TextIndexLucene index = (TextIndexLucene) assembler.open(a, root, /*mode*/ null);
         try {
             assertFalse(index.getDirectory() instanceof RAMDirectory);
+            assertNotNull(index.getQueryAnalyzer());
         }
         finally {
             index.close();
@@ -82,6 +82,16 @@ public class TestTextIndexLuceneAssembler extends AbstractTestTextAssembler {
         TextIndexLucene index = (TextIndexLucene) assembler.open(a, root, /*mode*/ null);
         try {
             assertTrue(index.getDirectory() instanceof RAMDirectory);
+        }
+        finally {
+            index.close();
+        }
+    }
+    
+    @Test public void testQueryAnalyzer() {
+        TextIndexLucene index = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC_QUERY_ANALYZER);
+        try {
+            assertTrue(index.getQueryAnalyzer() instanceof KeywordAnalyzer);
         }
         finally {
             index.close();

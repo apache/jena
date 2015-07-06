@@ -49,14 +49,13 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.riot.web.HttpOp ;
+import org.apache.jena.sparql.core.Prologue ;
+import org.apache.jena.sparql.resultset.SPARQLResult ;
 import org.apache.jena.web.HttpSC ;
-
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.core.Prologue ;
-import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
 /** Handle SPARQL Query requests overt eh SPARQL Protocol. 
  * Subclasses provide this algorithm with the actual dataset to query, whether
@@ -240,7 +239,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         } catch (ActionErrorException ex) {
             throw ex ;
         } catch (QueryParseException ex) {
-            ServletOps.errorBadRequest("Parse error: \n" + queryString + "\n\r" + messageForQPE(ex)) ;
+            ServletOps.errorBadRequest("Parse error: \n" + queryString + "\n\r" + messageForQueryException(ex)) ;
         }
         // Should not happen.
         catch (QueryException ex) {
@@ -256,7 +255,12 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                 // Deals with exceptions itself.
                 sendResults(action, result, query.getPrologue()) ;
             }
-        } catch (QueryCancelledException ex) {
+        } 
+        catch (QueryParseException ex) {
+            // Late stage static error (e.g. bad fixed Lucene query string). 
+            ServletOps.errorBadRequest("Query parse error: \n" + queryString + "\n\r" + messageForQueryException(ex)) ;
+        }
+        catch (QueryCancelledException ex) {
             // Additional counter information.
             incCounter(action.getEndpoint().getCounters(), QueryTimeouts) ;
             throw ex ;

@@ -18,16 +18,16 @@
 
 package tdb.cmdline;
 
-import arq.cmdline.ArgDecl ;
-import arq.cmdline.ArgModuleGeneral ;
-import arq.cmdline.CmdArgModule ;
-import arq.cmdline.CmdGeneral ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.util.FileManager ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.util.FileManager ;
 
 /** Name a model */
-public class ModModel implements ArgModuleGeneral
+public class ModModel extends ModBase
 {
     protected ArgDecl modelArgDecl = null ;
     private Model model = null ;

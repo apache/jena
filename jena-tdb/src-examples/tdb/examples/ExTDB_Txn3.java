@@ -51,7 +51,7 @@ public class ExTDB_Txn3
     public static void execQuery(String sparqlQueryString, DatasetGraph dsg)
     {
         // Add a datset wrapper to conform with the query interface.
-        // This shoudl not be very expensive.
+        // This should not be very expensive.
         Dataset dataset = DatasetFactory.create(dsg) ;
         
         Query query = QueryFactory.create(sparqlQueryString) ;

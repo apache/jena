@@ -27,8 +27,7 @@ import org.apache.jena.hadoop.rdf.io.output.writers.StreamRdfQuadWriter;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.writer.WriterStreamRDFBlocks;
-
-import com.hp.hpl.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * Output format for TriG

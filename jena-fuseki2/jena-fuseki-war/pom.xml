@@ -21,19 +21,15 @@
 
   <name>Apache Jena - Fuseki WAR File</name>
   <artifactId>jena-fuseki-war</artifactId>
-  <version>2.0.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.3.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent> 
 
   <packaging>war</packaging>
-
-  <description>WAR file for Fuseki</description>
-  <url>http://jena.apache.org/</url>
 
   <!-- Need if the parent is a snapshot -->
   <repositories>
@@ -46,30 +42,6 @@
       </releases>
     </repository>
   </repositories>
-
-  <organization>
-    <name>Apache Jena</name>
-    <url>http://jena.apache.org/</url>
-  </organization>
-
-  <licenses>
-    <license>
-      <name>Apache 2.0 License</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-    </license>
-  </licenses>
-
-  <properties>
-    <this.root>${project.artifactId}-${project.version}</this.root>
-    
-    <server.jar.name>${this.root}-server</server.jar.name>
-    <!-- Eventually, move to jena-parent -->
-    <ver.jetty>9.1.1.v20140108</ver.jetty>
-    <ver.shiro>1.2.2</ver.shiro>
-
-    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
-    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>  
-  </properties>
 
   <dependencies>
 

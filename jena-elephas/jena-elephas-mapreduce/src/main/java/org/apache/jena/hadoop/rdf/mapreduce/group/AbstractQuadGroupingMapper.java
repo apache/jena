@@ -20,8 +20,7 @@ package org.apache.jena.hadoop.rdf.mapreduce.group;
 
 import org.apache.jena.hadoop.rdf.types.NodeWritable;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
-
-import com.hp.hpl.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * Abstract mapper implementation which helps in grouping quads by assigning

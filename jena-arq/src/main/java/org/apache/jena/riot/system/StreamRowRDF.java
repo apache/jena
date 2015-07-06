@@ -18,10 +18,9 @@
 
 package org.apache.jena.riot.system;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.system.StreamRDF ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Quad ;
 
 /** An item in a stream of RDF data.
  *  This is the row item for pull-processing an RDF stream.

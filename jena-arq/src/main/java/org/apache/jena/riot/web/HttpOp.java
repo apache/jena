@@ -18,53 +18,46 @@
 
 package org.apache.jena.riot.web;
 
-import static java.lang.String.format;
+import static java.lang.String.format ;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.UnsupportedCharsetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.net.URI ;
+import java.net.URISyntaxException ;
+import java.nio.charset.StandardCharsets ;
+import java.util.ArrayList ;
+import java.util.List ;
+import java.util.concurrent.atomic.AtomicLong ;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpMessage;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.*;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.AbstractHttpClient;
-import org.apache.http.impl.client.SystemDefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.apache.http.impl.conn.SchemeRegistryFactory;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
-import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.atlas.web.TypedInputStream;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
-import org.apache.jena.atlas.web.auth.ServiceAuthenticator;
-import org.apache.jena.riot.RiotException;
-import org.apache.jena.riot.WebContent;
-import org.apache.jena.web.HttpSC;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.engine.http.Params;
-import com.hp.hpl.jena.sparql.engine.http.Params.Pair;
+import org.apache.http.* ;
+import org.apache.http.client.HttpClient ;
+import org.apache.http.client.entity.UrlEncodedFormEntity ;
+import org.apache.http.client.methods.* ;
+import org.apache.http.conn.ClientConnectionManager ;
+import org.apache.http.entity.ContentType ;
+import org.apache.http.entity.InputStreamEntity ;
+import org.apache.http.entity.StringEntity ;
+import org.apache.http.impl.client.AbstractHttpClient ;
+import org.apache.http.impl.client.SystemDefaultHttpClient ;
+import org.apache.http.impl.conn.PoolingClientConnectionManager ;
+import org.apache.http.impl.conn.SchemeRegistryFactory ;
+import org.apache.http.message.BasicNameValuePair ;
+import org.apache.http.protocol.BasicHttpContext ;
+import org.apache.http.protocol.HttpContext ;
+import org.apache.http.util.EntityUtils ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.web.HttpException ;
+import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
+import org.apache.jena.atlas.web.auth.ServiceAuthenticator ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.WebContent ;
+import org.apache.jena.sparql.engine.http.Params ;
+import org.apache.jena.sparql.engine.http.Params.Pair ;
+import org.apache.jena.web.HttpSC ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 /**
  * Simplified HTTP operations; simplification means only supporting certain uses
@@ -550,11 +543,9 @@ public class HttpOp {
             HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
         StringEntity e = null;
         try {
-            e = new StringEntity(content, "UTF-8");
+            e = new StringEntity(content, StandardCharsets.UTF_8);
             e.setContentType(contentType);
             execHttpPost(url, e, acceptType, handler, httpClient, httpContext, authenticator);
-        } catch (UnsupportedCharsetException | UnsupportedEncodingException e1) {
-            throw new InternalErrorException("Platform does not support required UTF-8");
         }
         finally {
             closeEntity(e);
@@ -899,11 +890,9 @@ public class HttpOp {
             HttpContext httpContext, HttpAuthenticator authenticator) {
         StringEntity e = null;
         try {
-            e = new StringEntity(content, "UTF-8");
+            e = new StringEntity(content, StandardCharsets.UTF_8);
             e.setContentType(contentType);
             execHttpPut(url, e, httpClient, httpContext, authenticator);
-        } catch (UnsupportedCharsetException | UnsupportedEncodingException e1) {
-            throw new InternalErrorException("Platform does not support required UTF-8");
         }
         finally {
             closeEntity(e);
@@ -1239,15 +1228,11 @@ public class HttpOp {
     }
 
     private static HttpEntity convertFormParams(Params params) {
-        try {
-            List<NameValuePair> nvps = new ArrayList<>();
-            for (Pair p : params.pairs())
-                nvps.add(new BasicNameValuePair(p.getName(), p.getValue()));
-            HttpEntity e = new UrlEncodedFormEntity(nvps, "UTF-8");
-            return e;
-        } catch (UnsupportedEncodingException e) {
-            throw new InternalErrorException("Platform does not support required UTF-8");
-        }
+        List<NameValuePair> nvps = new ArrayList<>();
+        for (Pair p : params.pairs())
+            nvps.add(new BasicNameValuePair(p.getName(), p.getValue()));
+        HttpEntity e = new UrlEncodedFormEntity(nvps, StandardCharsets.UTF_8);
+        return e;
     }
 
     private static void closeEntity(HttpEntity entity) {

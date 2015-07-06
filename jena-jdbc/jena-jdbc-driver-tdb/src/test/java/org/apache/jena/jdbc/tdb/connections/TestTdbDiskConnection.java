@@ -27,14 +27,13 @@ import org.apache.jena.jdbc.connections.DatasetConnection;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.tdb.connections.TDBConnection;
 import org.apache.jena.jdbc.utils.TestUtils;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.tdb.StoreConnection ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb.base.file.Location ;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
-
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.tdb.StoreConnection;
-import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.base.file.Location;
 
 /**
  * Tests for the {@link DatasetConnection} backed by a purely in-memory testing
@@ -55,7 +54,7 @@ public class TestTdbDiskConnection extends AbstractJenaConnectionTests {
      */
     @After
     public void cleanupTest() {
-        StoreConnection.expel(new Location(tempDir.getRoot().getAbsolutePath()), true);
+        StoreConnection.expel(Location.create(tempDir.getRoot().getAbsolutePath()), true);
     }
 
     @Override

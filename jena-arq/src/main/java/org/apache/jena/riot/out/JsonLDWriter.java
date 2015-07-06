@@ -23,18 +23,24 @@ import java.io.OutputStream ;
 import java.io.OutputStreamWriter ;
 import java.io.Writer ;
 import java.util.* ;
-import java.util.Map.Entry ;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.iterator.Action ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Chars ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.writer.WriterDatasetRIOTBase ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.vocabulary.RDF ;
 
 import com.fasterxml.jackson.core.JsonGenerationException ;
 import com.fasterxml.jackson.databind.JsonMappingException ;
@@ -42,12 +48,6 @@ import com.github.jsonldjava.core.JsonLdError ;
 import com.github.jsonldjava.core.JsonLdOptions ;
 import com.github.jsonldjava.core.JsonLdProcessor ;
 import com.github.jsonldjava.utils.JsonUtils ;
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class JsonLDWriter extends WriterDatasetRIOTBase
 {
@@ -115,6 +115,9 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         Map<String, IRI> pmap = prefixMap.getMapping() ;
         for ( Entry<String, IRI> e : pmap.entrySet() ) {
             String key = e.getKey() ;
+            if ( key.isEmpty() )
+                // Prefix "" is not allowed in JSON-LD
+                continue ;
             IRI iri = e.getValue() ;
             ctx.put(e.getKey(), e.getValue().toString()) ;
         }
@@ -123,9 +126,9 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
     private static void addProperties(final Map<String, Object> ctx, Graph graph) {
         // Add some properties directly so it becomes "localname": ....
         final Set<String> dups = new HashSet<>() ;
-        Action<Triple> x = new Action<Triple>() {
+        Consumer<Triple> x = new Consumer<Triple>() {
             @Override
-            public void apply(Triple item) {
+            public void accept(Triple item) {
                 Node p = item.getPredicate() ;
                 Node o = item.getObject() ;
                 if ( p.equals(RDF.type.asNode()) )

@@ -20,8 +20,8 @@ package org.apache.jena.riot.process.inf;
 
 import java.util.List ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.vocabulary.RDF ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.vocabulary.RDF ;
 
 
 /** Apply a fixed set of inference rules to a stream of triples.

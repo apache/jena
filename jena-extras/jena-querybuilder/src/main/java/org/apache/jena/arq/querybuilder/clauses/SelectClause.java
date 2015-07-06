@@ -18,10 +18,12 @@
 package org.apache.jena.arq.querybuilder.clauses;
 
 import java.util.List;
+
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.handlers.SelectHandler;
-
-import com.hp.hpl.jena.sparql.core.Var;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
  * Interface that defines the SelectClause as per
@@ -70,7 +72,38 @@ public interface SelectClause<T extends AbstractQueryBuilder<T>> {
 	 * @return The builder for chaining.
 	 */
 	public T addVar(Object var);
+	
+	/**
+	 * Add an expression as variable to the select statement.
+	 * 
+	 * creates an '(Expression as Var)' to the select statement.
+	 * 
+	 * A variable may only be added once. Attempting to add the same variable
+	 * multiple times will be silently ignored.
+	 * 
+	 * @param expr The expression to be added
+	 * @param var
+	 *            The variable to add.
+	 * @return The builder for chaining.
+	 */
+	public T addVar(Expr expr, Object var);
 
+	/**
+	 * Add an expression as variable to the select statement.
+	 * 
+	 * creates an '(Expression as Var)' to the select statement.
+	 * 
+	 * A variable may only be added once. Attempting to add the same variable
+	 * multiple times will be silently ignored.
+	 * 
+	 * @param expr The expression to be added
+	 * @param var
+	 *            The variable to add.
+	 * @return The builder for chaining.
+	 * @throws ParseException 
+	 */
+	public T addVar(String expr, Object var) throws ParseException;
+	
 	/**
 	 * @return A list of all the variables that have been added.
 	 */

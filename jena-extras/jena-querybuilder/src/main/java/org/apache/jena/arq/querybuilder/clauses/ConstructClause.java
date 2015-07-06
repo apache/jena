@@ -19,9 +19,8 @@ package org.apache.jena.arq.querybuilder.clauses;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.handlers.ConstructHandler;
-
-import com.hp.hpl.jena.graph.FrontsTriple;
-import com.hp.hpl.jena.graph.Triple;
+import org.apache.jena.graph.FrontsTriple ;
+import org.apache.jena.graph.Triple ;
 
 /**
  * Interface that defines the ConstructClause as per

@@ -21,11 +21,10 @@ package riotcmd;
 import java.io.InputStream ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
-
-import com.hp.hpl.jena.sparql.util.Timer ;
 
 public class CmdTokens
 {

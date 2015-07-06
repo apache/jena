@@ -19,8 +19,7 @@ package org.apache.jena.arq.querybuilder.clauses;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
-
-import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException;
+import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 
 /**
  * Interface that defines the SolutionClause as per

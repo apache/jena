@@ -18,11 +18,10 @@
 
 package tdb;
 
+import org.apache.jena.tdb.TDB ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.ModTDBDataset ;
 import arq.cmdline.ModDataset ;
-
-import com.hp.hpl.jena.tdb.TDB ;
 
 
 public class tdbquery extends arq.query

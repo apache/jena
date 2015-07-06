@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <!-- 	Issue: none
         Test:  test001
-        $Header: /home/afs/SourceForge/Jena-CVS/jena2/testing/wg/rdfms-para196/test001.rdf,v 1.2 2005-08-04 09:53:29 jeremy_carroll Exp $
 
         test case showing that the 2nd URI in M&S Paragraph 196 is
         permitted as a namespace URI (and any namespace URI starting

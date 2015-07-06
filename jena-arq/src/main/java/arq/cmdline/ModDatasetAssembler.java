@@ -18,21 +18,21 @@
 
 package arq.cmdline;
 
-import arq.cmd.CmdException ;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.shared.NotFoundException ;
-import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.shared.JenaException ;
+import org.apache.jena.shared.NotFoundException ;
+import org.apache.jena.sparql.ARQException ;
+import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab ;
 
 /** Add assembler to a general dataset description */
 public class ModDatasetAssembler extends ModDataset
 {
     private ModAssembler modAssembler = new ModAssembler() ;
-    
-    public ModDatasetAssembler() {}
-    
+
     @Override
     public Dataset createDataset()
     {

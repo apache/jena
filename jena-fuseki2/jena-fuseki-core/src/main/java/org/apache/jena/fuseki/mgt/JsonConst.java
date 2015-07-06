@@ -20,30 +20,31 @@ package org.apache.jena.fuseki.mgt ;
 
 public class JsonConst
 {
-    public static final String taskId       = "taskId" ;
-    public static final String task         = "task" ;
-    public static final String datasets     = "datasets" ;
+    public static final String taskId           = "taskId" ;
+    public static final String taskRequestId    = "requestId" ;
+    public static final String task             = "task" ;
+    public static final String datasets         = "datasets" ;
 
-    public static final String finished     = "finished" ;
-    public static final String started      = "started" ;
+    public static final String finished         = "finished" ;
+    public static final String started          = "started" ;
 
-    public static final String uptime       = "uptime" ;
-    public static final String startDT      = "startDateTime" ;
-    public static final String server       = "server" ;
-    public static final String port         = "port" ;
-    public static final String hostname     = "hostname" ;
-    public static final String admin        = "admin" ;
-    public static final String version      = "version" ;
-    public static final String built        = "built" ;
+    public static final String uptime           = "uptime" ;
+    public static final String startDT          = "startDateTime" ;
+    public static final String server           = "server" ;
+    public static final String port             = "port" ;
+    public static final String hostname         = "hostname" ;
+    public static final String admin            = "admin" ;
+    public static final String version          = "version" ;
+    public static final String built            = "built" ;
 
-    public static final String services     = "services" ;
-    public static final String operation    = "operation" ;
-    public static final String description  = "description" ;
-    public static final String endpoints    = "endpoints" ;
+    public static final String services         = "services" ;
+    public static final String operation        = "operation" ;
+    public static final String description      = "description" ;
+    public static final String endpoints        = "endpoints" ;
 
-    public static final String dsName       = "ds.name" ;
-    public static final String dsState      = "ds.state" ;
-    public static final String dsService    = "ds.services" ;
+    public static final String dsName           = "ds.name" ;
+    public static final String dsState          = "ds.state" ;
+    public static final String dsService        = "ds.services" ;
 
     public static final String srvType          = "srv.type" ;
     public static final String srvDescription   = "srv.description" ;

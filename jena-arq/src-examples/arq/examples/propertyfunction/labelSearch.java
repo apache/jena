@@ -18,46 +18,38 @@
 
 package arq.examples.propertyfunction;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryBuildException ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.Table ;
-import com.hp.hpl.jena.sparql.algebra.TableFactory ;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
-import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator ;
-import com.hp.hpl.jena.sparql.engine.main.QC ;
-import com.hp.hpl.jena.sparql.expr.E_Regex ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprVar ;
-import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunction ;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry ;
-import com.hp.hpl.jena.sparql.syntax.ElementFilter ;
-import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
-import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock ;
-
 import org.apache.jena.atlas.logging.Log ;
-
-import com.hp.hpl.jena.sparql.util.NodeUtils ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sparql.algebra.Algebra ;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.Table ;
+import org.apache.jena.sparql.algebra.TableFactory ;
+import org.apache.jena.sparql.algebra.op.OpBGP ;
+import org.apache.jena.sparql.algebra.op.OpFilter ;
+import org.apache.jena.sparql.algebra.op.OpJoin ;
+import org.apache.jena.sparql.algebra.op.OpTable ;
+import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator ;
+import org.apache.jena.sparql.engine.main.QC ;
+import org.apache.jena.sparql.expr.E_Regex ;
+import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.ExprVar ;
+import org.apache.jena.sparql.pfunction.PropFuncArg ;
+import org.apache.jena.sparql.pfunction.PropertyFunction ;
+import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
+import org.apache.jena.sparql.syntax.ElementFilter ;
+import org.apache.jena.sparql.syntax.ElementGroup ;
+import org.apache.jena.sparql.syntax.ElementTriplesBlock ;
+import org.apache.jena.sparql.util.NodeUtils ;
+import org.apache.jena.vocabulary.RDFS ;
 
 /** Example extension or property function to show rewriting part of a query.
  *  A simpler, more driect way to implement property functions is to extends

@@ -41,7 +41,9 @@
               <li class="active"><a href="index.html"><i class="fa fa-home"></i></a></li>
               <li class=""><a href="dataset.html"><i class="fa fa-database"></i> dataset</a></li>
               <li class=""><a href="manage.html"><i class="fa fa-cogs"></i> manage datasets</a></li>
-              <li class=""><a href="service.html"><i class="fa fa-wrench"></i> services</a></li>
+              <!-- JENA-887 not yet implemented
+              <li class=""><a href="services.html"><i class="fa fa-wrench"></i> services</a></li>
+              -->
               <li class=""><a href="documentation.html"><i class="fa fa-info-circle"></i> help</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -49,7 +51,7 @@
                 <div>Server<br />status:</div>
               </li>
               <li class="status-indicator">
-                <a class="" href="admin/server-log.html" id="server-status-light" title="current server status">
+                <a class="" href="#admin/server-log.html" id="server-status-light" title="current server status">
                   <span class="server-up"></span>
                 </a>
               </li>
@@ -82,18 +84,13 @@
         <div class="bg-info col-md-12">
           <p><i class="fa fa-info-circle"></i> Use the following pages to perform actions or tasks on this server:</p>
           <dl class="dl-horizontal">
-            <dt><a href="query.html">SPARQL query form</a></dt>
-            <dd>to run a SPARQL query against one of the active datasets hosted by this server</dd>
-            <dt><a href="validation.html">validate</a></dt>
-            <dd>to validate SPARQL query syntax, or RDF data syntax</dd>
-            <dt><a href="admin/index.html">administer</a></dt>
-            <dd>to administer the datasets on this server, including adding and removing datasets,
-                enabling data services, uploading data and performing backups. </dd>
-            <dt><a href="documentation.html">logs</a></dt>
-            <dd>to view server log files</dd>
-            <dt><a href="documentation.html">help</a></dt>
-            <dd>for a summary of commands, and links to online documentation</dd>
-
+            <dt><a href="dataset.html">Dataset</a></dt>
+            <dd>Run queries and modify datasets hosted by this server.</dd>
+            <dt><a href="manage.html">Manage datasets</a></dt>
+            <dd>Administer the datasets on this server, including adding datasets,
+                uploading data and performing backups. </dd>
+            <dt><a href="documentation.html">Help</a></dt>
+            <dd>Summary of commands and links to online documentation.</dd>
           </dl>
         </div>
       </div>

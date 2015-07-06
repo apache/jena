@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.jena</groupId>
+  <artifactId>jena-permissions</artifactId>
+  <version>3.0.0-SNAPSHOT</version>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+  <name>Apache Jena - Security Permissions</name>
+  <description>Security Permissions wrapper around Jena RDF implementation.</description>
+  <url>http://jena.apache.org/documentation/security</url>
+  <inceptionYear>2012</inceptionYear>
+
+  <parent>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>jena-parent</artifactId>
+    <version>14-SNAPSHOT</version>
+    <relativePath>../jena-parent</relativePath>
+  </parent>
+	<organization>
+		 <name>The Apache Software Foundation</name>
+    	<url>http://www.apache.org/</url>
+	</organization>
+	<issueManagement>
+		<url>http://issues.apache.org/jira/browse/JENA</url>
+		<system>JIRA</system>
+	</issueManagement>
+	<build>
+		<plugins>
+			<plugin>
+	        	<groupId>org.codehaus.mojo</groupId>
+	        	<artifactId>build-helper-maven-plugin</artifactId>
+	        	<version>1.9.1</version>
+	        	<executions>
+	          		<execution>
+	            		<id>add-example-source</id>
+	            		<phase>generate-sources</phase>
+	            		<goals>
+	              			<goal>add-source</goal>
+	            		</goals>
+	            		<configuration>
+	              			<sources>
+	                			<source>src/example/java</source>
+	              			</sources>
+	            		</configuration>
+	          		</execution>
+	          		<execution>
+	            		<id>add-example-resource</id>
+	            		<phase>generate-sources</phase>
+	            		<goals>
+	              			<goal>add-resource</goal>
+	            		</goals>
+	            		<configuration>
+	              			<resources>
+	                			<resource>
+	                				<directory>src/example/resources</directory>
+	                				<targetPath>${project.build.outputDirectory}</targetPath>
+	                			</resource>
+	              			</resources>
+	            		</configuration>
+	          		</execution>
+	        	</executions>
+	      	</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<excludePackageNames>org.apache.jena.security.example:org.apache.jena.security.example.*</excludePackageNames>
+					<tags>
+						<tag>
+							<name>sec.graph</name>
+							<!-- tag for all places -->
+							<placement>a</placement>
+							<head>Required graph permissions:</head>
+						</tag>
+						<tag>
+							<name>sec.triple</name>
+							<!-- tag for all places -->
+							<placement>a</placement>
+							<head>Required triple permissions:</head>
+						</tag>
+					</tags>
+					<overview>${basedir}/src/main/overview.html</overview>
+					 
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+              		<excludes>
+                		<exclude>org/apache/jena/security/example/**</exclude>
+              		</excludes>
+            	</configuration>
+				<executions>
+					<execution>
+						<id>create-test-jar</id>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>create-example-jar</id>
+		            	<phase>package</phase>
+		            	<goals>
+		              		<goal>jar</goal>
+		            	</goals>
+		            	<configuration>
+		            		<classedDirectory>target</classedDirectory>
+		              		<classifier>example</classifier>
+		              		<includes>
+		                		<include>../src/example/**</include>
+		                		<include>../src/example</include>
+		                		<include>META-INF/**</include>
+		                		<include>org/apache/jena/security/example/**</include>
+		              		</includes>
+		              		<excludes>
+		              			<exclude>META-INF/DEPENDENCIES</exclude>
+		              		</excludes>
+		            	</configuration>
+		          	</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>apache-jena-libs</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-core</artifactId>
+			<version>${project.version}</version>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+			<version>1.2.2</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+</project>

@@ -22,9 +22,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.system.StreamRDF;
-
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * Collector stream for triples.
