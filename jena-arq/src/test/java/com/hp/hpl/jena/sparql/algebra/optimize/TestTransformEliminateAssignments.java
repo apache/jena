@@ -145,6 +145,38 @@ public class TestTransformEliminateAssignments {
              "    (table unit)))");
         //@formatter:on
     }
+    
+    @Test
+    public void extend_02() {
+        // Assigned variable used only once can substitute expression for the
+        // later usage of the variable
+        // However we must be inside a projection as otherwise the assigned
+        // variable would be visible and we couldn't eliminate the assignment
+        //@formatter:off
+        test(StrUtils.strjoinNL("(project (?z)",
+                                "  (extend ((?x true) (?y ?x) (?z ?y))",
+                                "    (table unit)))"),
+             "(project (?z)",
+             "  (extend (?z true)",
+             "    (table unit)))");
+        //@formatter:on
+    }
+    
+    @Test
+    public void extend_03() {
+        // Assigned variable used only once can substitute expression for the
+        // later usage of the variable
+        // However we must be inside a projection as otherwise the assigned
+        // variable would be visible and we couldn't eliminate the assignment
+        //@formatter:off
+        test(StrUtils.strjoinNL("(project (?z)",
+                                "  (extend ((?a true) (?b ?a) (?c false) (?d ?c) (?z (|| ?b ?d)))",
+                                "    (table unit)))"),
+             "(project (?z)",
+             "  (extend (?z (|| true false))",
+             "    (table unit)))");
+        //@formatter:on
+    }
 
     @Test
     public void orderby_01() {

@@ -78,7 +78,6 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
  * <ul>
  * <li>Filter Expressions</li>
  * <li>Bind and Select Expressions</li>
- * <li>Group By Expressions</li>
  * <li>Order By Expressions if aggressive in-lining is enabled</li>
  * </ul>
  * <p>
@@ -211,11 +210,7 @@ public class TransformEliminateAssignments extends TransformCopy {
         // Track the assignments for future reference
         this.tracker.putAssignments(opExtend.getVarExprList());
 
-        // TODO Could also eliminate assignments where the value is only used in
-        // a subsequent assignment
-
-        // See if there are any assignments we can eliminate entirely i.e. those
-        // where the assigned value is never used
+        // Eliminate and inline assignments
         VarExprList unusedAssignments = processUnused(opExtend.getVarExprList());
         VarExprList newAssignments = new VarExprList();
         for (Var assignVar : opExtend.getVarExprList().getVars()) {
@@ -229,6 +224,7 @@ public class TransformEliminateAssignments extends TransformCopy {
             Collection<Var> vars = new ArrayList<>();
             ExprVars.varsMentioned(vars, currExpr);
 
+            // See if we can inline anything
             for (Var var : vars) {
                 // Usage count will be 2 if we can eliminate the assignment
                 // First usage is when it is introduced by the assignment and
@@ -241,6 +237,10 @@ public class TransformEliminateAssignments extends TransformCopy {
                     // expression
                     currExpr = ExprTransformer.transform(new ExprTransformSubstitute(var, e), currExpr);
                     this.tracker.getAssignments().remove(var);
+
+                    // Need to update any assignments we may be tracking that
+                    // refer to the variable we just inlined
+                    this.tracker.updateAssignments(var, e);
 
                     // If the assignment to be eliminated was introduced by the
                     // extend we are processing need to remove it from the
@@ -271,7 +271,7 @@ public class TransformEliminateAssignments extends TransformCopy {
             if (this.tracker.getUsageCount(var) == 1)
                 singleUse.add(var, assignments.getExpr(var));
         }
-        
+
         // If nothing is single use
         if (singleUse.size() == 0)
             return null;
@@ -367,49 +367,57 @@ public class TransformEliminateAssignments extends TransformCopy {
 
     @Override
     public Op transform(OpGroup opGroup, Op subOp) {
-        if (!this.isApplicable())
-            return super.transform(opGroup, subOp);
-
-        // See what vars are used in the filter
-        Collection<Var> vars = new ArrayList<>();
-        VarExprList exprs = new VarExprList(opGroup.getGroupVars());
-        List<ExprAggregator> aggs = new ArrayList<ExprAggregator>(opGroup.getAggregators());
-        for (Expr expr : exprs.getExprs().values()) {
-            ExprVars.varsMentioned(vars, expr);
-        }
-
-        // Are any of these vars single usage?
-        boolean modified = false;
-        for (Var var : vars) {
-            // Usage count will be 2 if we can eliminate the assignment
-            // First usage is when it is introduced by the assignment and the
-            // second is when it is used now in this group by
-            Expr e = getAssignExpr(var);
-            if (this.tracker.getUsageCount(var) == 2 && hasAssignment(var) && canInline(e)) {
-                // Can go back and eliminate that assignment
-                subOp = eliminateAssignment(subOp, var);
-                // Replace the variable usage with the expression in both the
-                // expressions and the aggregators
-                ExprTransform transform = new ExprTransformSubstitute(var, e);
-                exprs = processVarExprList(exprs, transform);
-                aggs = processAggregators(aggs, transform);
-                this.tracker.getAssignments().remove(var);
-                modified = true;
-            }
-        }
-
-        // Create a new group by if we've substituted any expressions
-        if (modified) {
-            return new OpGroup(subOp, exprs, aggs);
-        }
-
         return super.transform(opGroup, subOp);
+
+        // TODO Unclear if this will work properly or not because group can
+        // introduce new assignments as well as evaluate expressions
+
+        //@formatter:off
+//        if (!this.isApplicable())
+//            return super.transform(opGroup, subOp);
+//
+//        // See what vars are used in the filter
+//        Collection<Var> vars = new ArrayList<>();
+//        VarExprList exprs = new VarExprList(opGroup.getGroupVars());
+//        List<ExprAggregator> aggs = new ArrayList<ExprAggregator>(opGroup.getAggregators());
+//        for (Expr expr : exprs.getExprs().values()) {
+//            ExprVars.varsMentioned(vars, expr);
+//        }
+//
+//        // Are any of these vars single usage?
+//        boolean modified = false;
+//        for (Var var : vars) {
+//            // Usage count will be 2 if we can eliminate the assignment
+//            // First usage is when it is introduced by the assignment and the
+//            // second is when it is used now in this group by
+//            Expr e = getAssignExpr(var);
+//            if (this.tracker.getUsageCount(var) == 2 && hasAssignment(var) && canInline(e)) {
+//                // Can go back and eliminate that assignment
+//                subOp = eliminateAssignment(subOp, var);
+//                // Replace the variable usage with the expression in both the
+//                // expressions and the aggregators
+//                ExprTransform transform = new ExprTransformSubstitute(var, e);
+//                exprs = processVarExprList(exprs, transform);
+//                aggs = processAggregators(aggs, transform);
+//                this.tracker.getAssignments().remove(var);
+//                modified = true;
+//            }
+//        }
+//
+//        // Create a new group by if we've substituted any expressions
+//        if (modified) {
+//            return new OpGroup(subOp, exprs, aggs);
+//        }
+//
+//        return super.transform(opGroup, subOp);
+        //@formatter:on
     }
 
     private Op eliminateAssignment(Op subOp, Var var) {
         return Transformer.transform(new TransformRemoveAssignment(var, getAssignExpr(var)), subOp);
     }
 
+    @SuppressWarnings("unused")
     private VarExprList processVarExprList(VarExprList exprs, ExprTransform transform) {
         VarExprList newExprs = new VarExprList();
         for (Var v : exprs.getVars()) {
@@ -420,6 +428,7 @@ public class TransformEliminateAssignments extends TransformCopy {
         return newExprs;
     }
 
+    @SuppressWarnings("unused")
     private List<ExprAggregator> processAggregators(List<ExprAggregator> aggs, ExprTransform transform) {
         List<ExprAggregator> newAggs = new ArrayList<ExprAggregator>();
         for (ExprAggregator agg : aggs) {
@@ -456,6 +465,15 @@ public class TransformEliminateAssignments extends TransformCopy {
             int i = getUsageCount(var);
             if (i > 2) {
                 this.assignments.remove(var);
+            }
+        }
+
+        public void updateAssignments(Var v, Expr e) {
+            ExprTransformSubstitute transform = new ExprTransformSubstitute(v, e);
+            for (Var assignVar : this.assignments.keySet()) {
+                Expr assignExpr = this.assignments.get(assignVar);
+                assignExpr = ExprTransformer.transform(transform, assignExpr);
+                this.assignments.put(assignVar, assignExpr);
             }
         }
 
