@@ -120,16 +120,18 @@ public class TransformEliminateAssignments extends TransformCopy {
     }
 
     protected boolean canInline(Expr e) {
+        if (e == null)
+            return false;
         return ExprLib.isStable(e);
     }
 
     protected boolean shouldInline(Expr e) {
+        if (e == null)
+            return false;
+
         // Inline everything when being aggressive
         if (this.aggressive)
             return true;
-
-        if (e == null)
-            return false;
 
         // If not being aggressive only inline if the expression is a constant
         return e.isConstant() || e instanceof NodeValue;
@@ -214,13 +216,47 @@ public class TransformEliminateAssignments extends TransformCopy {
 
         // See if there are any assignments we can eliminate entirely i.e. those
         // where the assigned value is never used
-        VarExprList assignments = processUnused(opExtend.getVarExprList());
-        if (assignments == null)
-            return super.transform(opExtend, subOp);
+        VarExprList unusedAssignments = processUnused(opExtend.getVarExprList());
+        VarExprList newAssignments = new VarExprList();
+        for (Var assignVar : opExtend.getVarExprList().getVars()) {
+            // If unused eliminate
+            if (unusedAssignments != null && unusedAssignments.contains(assignVar))
+                continue;
 
-        // Can eliminate some assignments entirely
-        if (assignments.size() > 0) {
-            return OpExtend.extend(subOp, assignments);
+            Expr currExpr = opExtend.getVarExprList().getExpr(assignVar);
+
+            // See what vars are used in the current expression
+            Collection<Var> vars = new ArrayList<>();
+            ExprVars.varsMentioned(vars, currExpr);
+
+            for (Var var : vars) {
+                // Usage count will be 2 if we can eliminate the assignment
+                // First usage is when it is introduced by the assignment and
+                // the second is when it is used now used in another assignment
+                Expr e = getAssignExpr(var);
+                if (this.tracker.getUsageCount(var) == 2 && hasAssignment(var) && canInline(e)) {
+                    // Can go back and eliminate that assignment
+                    subOp = eliminateAssignment(subOp, var);
+                    // Replace the variable usage with the expression within
+                    // expression
+                    currExpr = ExprTransformer.transform(new ExprTransformSubstitute(var, e), currExpr);
+                    this.tracker.getAssignments().remove(var);
+
+                    // If the assignment to be eliminated was introduced by the
+                    // extend we are processing need to remove it from the
+                    // VarExprList we are currently building
+                    if (newAssignments.contains(var) && newAssignments.getExpr(var).equals(e)) {
+                        newAssignments.getVars().remove(var);
+                        newAssignments.getExprs().remove(var);
+                    }
+                }
+            }
+            newAssignments.add(assignVar, currExpr);
+        }
+
+        // May be able to eliminate the extend entirely in some cases
+        if (newAssignments.size() > 0) {
+            return OpExtend.extend(subOp, newAssignments);
         } else {
             return subOp;
         }
@@ -230,20 +266,17 @@ public class TransformEliminateAssignments extends TransformCopy {
         if (CollectionUtils.disjoint(assignments.getVars(), this.tracker.getAssignments().keySet()))
             return null;
 
-        VarExprList modified = new VarExprList();
+        VarExprList singleUse = new VarExprList();
         for (Var var : assignments.getVars()) {
-            // If an assignment is used more than once then it must be preserved
-            // for now
-            if (this.tracker.getUsageCount(var) > 1)
-                modified.add(var, assignments.getExpr(var));
+            if (this.tracker.getUsageCount(var) == 1)
+                singleUse.add(var, assignments.getExpr(var));
         }
-
-        // If all assignments are used more than once then there are no changes
-        // and we return null
-        if (modified.size() == assignments.size())
+        
+        // If nothing is single use
+        if (singleUse.size() == 0)
             return null;
 
-        return modified;
+        return singleUse;
     }
 
     @Override
@@ -262,7 +295,7 @@ public class TransformEliminateAssignments extends TransformCopy {
         for (Var var : vars) {
             // Usage count will be 2 if we can eliminate the assignment
             // First usage is when it is introduced by the assignment and the
-            // second is when it is used now in this filter
+            // second is when it is used now in this order expression
             Expr e = getAssignExpr(var);
             if (this.tracker.getUsageCount(var) == 2 && hasAssignment(var) && canInline(e) && shouldInline(e)) {
                 // Can go back and eliminate that assignment

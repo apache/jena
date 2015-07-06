@@ -56,11 +56,48 @@ public class TestTransformEliminateAssignments {
     }
 
     private void testNoChange(String... input) {
-        test(StrUtils.strjoinNL(input), (String[]) null);
+        testNoChange(false, input);
+    }
+
+    private void testNoChangeAggressive(String... input) {
+        testNoChange(true, input);
+    }
+
+    private void testNoChange(boolean aggressive, String... input) {
+        test(StrUtils.strjoinNL(input), aggressive, (String[]) null);
     }
 
     @Test
-    public void single_use_extend_01() {
+    public void unused_01() {
+        // Assignments never used can be eliminated
+        // However we must be inside a projection as otherwise the assigned
+        // variable would be visible and we couldn't eliminate the assignment
+        //@formatter:off
+        test(StrUtils.strjoinNL("(project (?y)",
+                                "  (extend (?x true)",
+                                "    (table unit)))"),
+             "(project (?y)",
+             "  (table unit))");
+        //@formatter:on
+    }
+
+    @Test
+    public void unused_02() {
+        // Assignments never used can be eliminated
+        // However we must be inside a projection as otherwise the assigned
+        // variable would be visible and we couldn't eliminate the assignment
+        //@formatter:off
+        test(StrUtils.strjoinNL("(project (?y)",
+                                "  (extend ((?x true) (?y false))",
+                                "    (table unit)))"),
+             "(project (?y)",
+             "  (extend (?y false)",
+             "    (table unit)))");
+        //@formatter:on
+    }
+
+    @Test
+    public void filter_01() {
         // Assigned variable used only once can substitute expression for the
         // later usage of the variable
         // However we must be inside a projection as otherwise the assigned
@@ -77,8 +114,9 @@ public class TestTransformEliminateAssignments {
     }
 
     @Test
-    public void single_use_extend_02() {
+    public void filter_02() {
         // Assignment for ?y can be removed because it is never used
+        // Assignment for ?x can be in-lined
         // However we must be inside a projection as otherwise the assigned
         // variable would be visible and we couldn't eliminate the assignment
         //@formatter:off
@@ -93,7 +131,23 @@ public class TestTransformEliminateAssignments {
     }
 
     @Test
-    public void single_use_extend_03() {
+    public void extend_01() {
+        // Assigned variable used only once can substitute expression for the
+        // later usage of the variable
+        // However we must be inside a projection as otherwise the assigned
+        // variable would be visible and we couldn't eliminate the assignment
+        //@formatter:off
+        test(StrUtils.strjoinNL("(project (?y)",
+                                "  (extend ((?x true) (?y ?x))",
+                                "    (table unit)))"),
+             "(project (?y)",
+             "  (extend (?y true)",
+             "    (table unit)))");
+        //@formatter:on
+    }
+
+    @Test
+    public void orderby_01() {
         // Assigned variable used only once can substitute expression for the
         // later usage of the variable
         // However we must be inside a projection as otherwise the assigned
@@ -110,7 +164,7 @@ public class TestTransformEliminateAssignments {
     }
 
     @Test
-    public void single_use_extend_complex_01() {
+    public void orderby_02() {
         // Assigned variable used only once can substitute expression for the
         // later usage of the variable
         // BUT we won't do this by default for complex expressions where they
@@ -124,7 +178,7 @@ public class TestTransformEliminateAssignments {
     }
 
     @Test
-    public void single_use_extend_complex_02() {
+    public void orderby_03() {
         // Assigned variable used only once can substitute expression for the
         // later usage of the variable
         // BUT we won't do this by default for complex expressions where they
@@ -141,9 +195,9 @@ public class TestTransformEliminateAssignments {
              "    (table unit)))");
         //@formatter:on
     }
-    
+
     @Test
-    public void single_use_extend_unstable_01() {
+    public void filter_unstable_01() {
         // Assigned variable used only once can substitute expression for the
         // later usage of the variable
         // EXCEPT if the expression is unstable in which case we leave it alone
@@ -154,9 +208,9 @@ public class TestTransformEliminateAssignments {
                                         "      (table unit))))"));
         //@formatter:on
     }
-    
+
     @Test
-    public void single_use_extend_unstable_02() {
+    public void filter_unstable_02() {
         // Assigned variable used only once can substitute expression for the
         // later usage of the variable
         // EXCEPT if the expression is unstable in which case we leave it alone
@@ -167,9 +221,9 @@ public class TestTransformEliminateAssignments {
                                         "      (table unit))))"));
         //@formatter:on
     }
-    
+
     @Test
-    public void single_use_extend_unstable_03() {
+    public void filter_unstable_03() {
         // Assigned variable used only once can substitute expression for the
         // later usage of the variable
         // EXCEPT if the expression is unstable in which case we leave it alone
@@ -180,9 +234,9 @@ public class TestTransformEliminateAssignments {
                                         "      (table unit))))"));
         //@formatter:on
     }
-    
+
     @Test
-    public void single_use_extend_unstable_04() {
+    public void filter_unstable_04() {
         // Assigned variable used only once can substitute expression for the
         // later usage of the variable
         // EXCEPT if the expression is unstable in which case we leave it alone
@@ -195,7 +249,59 @@ public class TestTransformEliminateAssignments {
     }
 
     @Test
-    public void single_use_extend_outside_projection_01() {
+    public void orderby_unstable_01() {
+        // Assigned variable used only once can substitute expression for the
+        // later usage of the variable
+        // EXCEPT if the expression is unstable in which case we leave it alone
+        //@formatter:off
+        testNoChangeAggressive(StrUtils.strjoinNL("(project (?y)",
+                                                  "  (order (?x)",
+                                                  "    (extend (?x (rand))",
+                                                  "      (table unit))))"));
+        //@formatter:on
+    }
+
+    @Test
+    public void orderby_unstable_02() {
+        // Assigned variable used only once can substitute expression for the
+        // later usage of the variable
+        // EXCEPT if the expression is unstable in which case we leave it alone
+        //@formatter:off
+        testNoChangeAggressive(StrUtils.strjoinNL("(project (?y)",
+                                                  "  (order (?x)",
+                                                  "    (extend (?x (uuid))",
+                                            "      (table unit))))"));
+        //@formatter:on
+    }
+
+    @Test
+    public void orderby_unstable_03() {
+        // Assigned variable used only once can substitute expression for the
+        // later usage of the variable
+        // EXCEPT if the expression is unstable in which case we leave it alone
+        //@formatter:off
+        testNoChangeAggressive(StrUtils.strjoinNL("(project (?y)",
+                                                  "  (order (?x)",
+                                                  "    (extend (?x (struuid))",
+                                                  "      (table unit))))"));
+        //@formatter:on
+    }
+
+    @Test
+    public void orderby_unstable_04() {
+        // Assigned variable used only once can substitute expression for the
+        // later usage of the variable
+        // EXCEPT if the expression is unstable in which case we leave it alone
+        //@formatter:off
+        testNoChangeAggressive(StrUtils.strjoinNL("(project (?y)",
+                                                  "  (order (?x)",
+                                                  "    (extend (?x (bnode))",
+                                                  "      (table unit))))"));
+        //@formatter:on
+    }
+
+    @Test
+    public void ineligible_01() {
         // Cannot eliminate as there is no projection so the assigned variable
         // is visible even though in the algebra given it is used only once
         //@formatter:off
@@ -206,7 +312,7 @@ public class TestTransformEliminateAssignments {
     }
 
     @Test
-    public void single_use_extend_outside_projection_02() {
+    public void ineligible_02() {
         // Cannot eliminate as there is no projection so the assigned variable
         // is visible even though in the algebra given it is used only once
         //@formatter:off
@@ -217,7 +323,7 @@ public class TestTransformEliminateAssignments {
     }
 
     @Test
-    public void multi_use_extend_01() {
+    public void ineligible_03() {
         // As the assigned variable is used multiple times we leave the
         // assignment alone
         //@formatter:off
@@ -229,7 +335,7 @@ public class TestTransformEliminateAssignments {
     }
 
     @Test
-    public void multi_use_extend_02() {
+    public void ineligible_04() {
         // Because the value of the assignment is used in multiple places we
         // leave the assignment alone
         //@formatter:off
@@ -243,7 +349,21 @@ public class TestTransformEliminateAssignments {
     }
 
     @Test
-    public void scoped_use_extend_01() {
+    public void scope_01() {
+        // If the assignment is out of scope by the time it is used in the outer
+        // scope then we can't substitute it out there
+        // In this test the outer ?x is technically different from the inner ?x
+        // anyway because of the projection
+        //@formatter:off
+        testNoChange(StrUtils.strjoinNL("(filter (exprlist ?x)",
+                                        "  (project (?x ?y)",
+                                        "    (extend (?x true)",
+                                        "      (table unit))))"));
+        //@formatter:on
+    }
+
+    @Test
+    public void scope_02() {
         // If the assignment is out of scope by the time it is used in the outer
         // scope then we can't substitute it out there
         // However if the scoping means the value is never used we can instead
@@ -260,7 +380,7 @@ public class TestTransformEliminateAssignments {
     }
 
     @Test
-    public void scoped_use_extend_02() {
+    public void scope_03() {
         // If the assignment is out of scope by the time it is used in the outer
         // scope then we can't substitute it out there
         // However in this case we can substitute it in the inner scope
