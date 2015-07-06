@@ -16,16 +16,16 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.algebra.optimize;
+package org.apache.jena.sparql.algebra.optimize;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
-import com.hp.hpl.jena.sparql.algebra.op.OpExtend;
-import com.hp.hpl.jena.sparql.algebra.op.OpExtendAssign;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarExprList;
-import com.hp.hpl.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.TransformCopy;
+import org.apache.jena.sparql.algebra.op.OpAssign;
+import org.apache.jena.sparql.algebra.op.OpExtend;
+import org.apache.jena.sparql.algebra.op.OpExtendAssign;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.core.VarExprList;
+import org.apache.jena.sparql.expr.Expr;
 
 /**
  * A transform capable of removing assignments from the algebra tree

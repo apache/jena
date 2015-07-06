@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.algebra.optimize;
+package org.apache.jena.sparql.algebra.optimize;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,31 +27,31 @@ import java.util.Map;
 
 import org.apache.jena.atlas.lib.CollectionUtils;
 
-import com.hp.hpl.jena.query.SortCondition;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.sparql.algebra.op.OpExt;
-import com.hp.hpl.jena.sparql.algebra.op.OpExtend;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
-import com.hp.hpl.jena.sparql.algebra.op.OpGroup;
-import com.hp.hpl.jena.sparql.algebra.op.OpOrder;
-import com.hp.hpl.jena.sparql.algebra.op.OpProject;
-import com.hp.hpl.jena.sparql.algebra.op.OpTopN;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarExprList;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprAggregator;
-import com.hp.hpl.jena.sparql.expr.ExprLib;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.ExprTransform;
-import com.hp.hpl.jena.sparql.expr.ExprTransformSubstitute;
-import com.hp.hpl.jena.sparql.expr.ExprTransformer;
-import com.hp.hpl.jena.sparql.expr.ExprVars;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
+import org.apache.jena.query.SortCondition;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.OpVisitorBase;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.algebra.TransformCopy;
+import org.apache.jena.sparql.algebra.Transformer;
+import org.apache.jena.sparql.algebra.op.OpExt;
+import org.apache.jena.sparql.algebra.op.OpExtend;
+import org.apache.jena.sparql.algebra.op.OpFilter;
+import org.apache.jena.sparql.algebra.op.OpGroup;
+import org.apache.jena.sparql.algebra.op.OpOrder;
+import org.apache.jena.sparql.algebra.op.OpProject;
+import org.apache.jena.sparql.algebra.op.OpTopN;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.core.VarExprList;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprAggregator;
+import org.apache.jena.sparql.expr.ExprLib;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.ExprTransform;
+import org.apache.jena.sparql.expr.ExprTransformSubstitute;
+import org.apache.jena.sparql.expr.ExprTransformer;
+import org.apache.jena.sparql.expr.ExprVars;
+import org.apache.jena.sparql.expr.NodeValue;
 
 /**
  * A transform that tries to in-line/eliminate assignments

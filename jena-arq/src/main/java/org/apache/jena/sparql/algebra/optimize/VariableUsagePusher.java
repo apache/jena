@@ -16,42 +16,44 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.algebra.optimize;
+package org.apache.jena.sparql.algebra.optimize;
 
 import java.util.Collection;
 
-import com.hp.hpl.jena.sparql.algebra.op.OpProject;
-import com.hp.hpl.jena.sparql.core.Var;
+import org.apache.jena.sparql.algebra.op.OpProject;
+import org.apache.jena.sparql.core.Var;
 
 /**
- * An after visitor for tracking variable usage
+ * A before visitor for tracking variable usage
  * 
  */
-public class VariableUsagePopper extends VariableUsageVisitor {
+public class VariableUsagePusher extends VariableUsageVisitor {
 
-    public VariableUsagePopper(VariableUsageTracker tracker) {
+    public VariableUsagePusher(VariableUsageTracker tracker) {
         super(tracker);
     }
 
     @Override
     protected void action(Collection<Var> vars) {
-        this.tracker.decrement(vars);
+        this.tracker.increment(vars);
     }
 
     @Override
     protected void action(Var var) {
-        this.tracker.decrement(var);
+        this.tracker.increment(var);
     }
 
     @Override
     protected void action(String var) {
-        this.tracker.decrement(var);
+        this.tracker.increment(var);
     }
 
     @Override
     public void visit(OpProject opProject) {
         super.visit(opProject);
-        this.tracker.pop();
+        this.tracker.push();
         super.visit(opProject);
     }
+
+    
 }
