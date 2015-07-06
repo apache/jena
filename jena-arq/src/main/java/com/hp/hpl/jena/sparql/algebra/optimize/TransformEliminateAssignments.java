@@ -78,7 +78,8 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
  * <ul>
  * <li>Filter Expressions</li>
  * <li>Bind and Select Expressions</li>
- * <li>Order By Expressions if aggressive in-lining is enabled</li>
+ * <li>Order By Expressions if aggressive in-lining is enabled or the assigned
+ * expression is a constant</li>
  * </ul>
  * <p>
  * In the case of order by we only in-line assignments when aggressive mode is
@@ -99,7 +100,7 @@ public class TransformEliminateAssignments extends TransformCopy {
         AssignmentPopper popper = new AssignmentPopper(tracker);
         Transform transform = new TransformEliminateAssignments(tracker, pusher, popper, aggressive);
 
-        return Transformer.transform(transform, op, pusher, popper);
+        return Transformer.transformSkipService(transform, op, pusher, popper);
     }
 
     private final OpVisitor before, after;

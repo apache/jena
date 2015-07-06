@@ -403,6 +403,18 @@ public class ARQ
     public static final Symbol optIndexJoinStrategy = ARQConstants.allocSymbol("optIndexJoinStrategy");
     
     /**
+     * Context key controlling whether the standard optimizer applies optimizations where by some
+     * assignments may be eliminated/inlined into the operators where their values are used only once
+     */
+    public static final Symbol optInlineAssignments = ARQConstants.allocSymbol("optInlineAssignments");
+    
+    /**
+     * Context key controlling whether the standard optimizer aggressively inlines assignments whose
+     * values are used only once into operators where those expressions may be evaluated multiple times e.g. order
+     */
+    public static final Symbol optInlineAssignmentsAggressive = ARQConstants.allocSymbol("optInlineAssignmentsAggressive");
+    
+    /**
      * Context key controlling whether the standard optimizater applies optimizations to joined BGPs to
      * merge them into single BGPs.
      * By default, this transformation is applied.
