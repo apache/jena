@@ -38,9 +38,13 @@ import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.algebra.op.OpExtend;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.op.OpGroup;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
+import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
+import com.hp.hpl.jena.sparql.algebra.op.OpMinus;
 import com.hp.hpl.jena.sparql.algebra.op.OpOrder;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
 import com.hp.hpl.jena.sparql.algebra.op.OpTopN;
+import com.hp.hpl.jena.sparql.algebra.op.OpUnion;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.Expr;
@@ -532,5 +536,33 @@ public class TransformEliminateAssignments extends TransformCopy {
             this.tracker.decrementDepth();
         }
 
+        @Override
+        public void visit(OpUnion opUnion) {
+            unsafe();
+        }
+
+        @Override
+        public void visit(OpLeftJoin opLeftJoin) {
+            // TODO Technically if the assignment is single use and comes from
+            // the LHS we could keep it but for now we don't try and do this
+            unsafe();
+        }
+        
+        @Override
+        public void visit(OpMinus opMinus) {
+            unsafe();
+        }
+        
+        @Override
+        public void visit(OpJoin opJoin) {
+            unsafe();
+        }
+
+        private void unsafe() {
+            // Throw out any assignments because if they would be eligible their
+            // values can't be bound in every branch of the union and thus
+            // inlining could change the semantics
+            tracker.getAssignments().clear();
+        }
     }
 }

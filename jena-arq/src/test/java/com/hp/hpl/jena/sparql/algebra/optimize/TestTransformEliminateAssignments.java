@@ -145,7 +145,7 @@ public class TestTransformEliminateAssignments {
              "    (table unit)))");
         //@formatter:on
     }
-    
+
     @Test
     public void extend_02() {
         // Assigned variable used only once can substitute expression for the
@@ -161,7 +161,7 @@ public class TestTransformEliminateAssignments {
              "    (table unit)))");
         //@formatter:on
     }
-    
+
     @Test
     public void extend_03() {
         // Assigned variable used only once can substitute expression for the
@@ -379,7 +379,66 @@ public class TestTransformEliminateAssignments {
                      "      (bgp (triple ?x ?y ?z)))))");
         //@formatter:on
     }
-    
+
+    @Test
+    public void ineligible_05() {
+        // Don't inline if we'd move it from within a n-ary operator as doing so
+        // may change the queries semantics
+        //@formatter:off
+        testNoChange("(project (?s)",
+                    "  (filter (exprlist ?x)",
+                    "    (union",
+                    "      (bgp (triple ?s ?p ?o))",
+                    "      (extend (?x true)",
+                    "        (table unit)))))");
+        //@formatter:on
+    }
+
+    @Test
+    public void ineligible_06() {
+        // Don't inline if we'd move it from within a n-ary operator as doing so
+        // may change the queries semantics
+        //@formatter:off
+        testNoChange("(project (?s)",
+                    "  (filter (exprlist ?x)",
+                    "    (leftjoin",
+                    "      (bgp (triple ?s ?p ?o))",
+                    "      (extend (?x true)",
+                    "        (table unit)))))");
+        //@formatter:on
+    }
+
+    @Test
+    public void ineligible_07() {
+        // Don't inline if we'd move it from within a n-ary operator as doing so
+        // may change the queries semantics
+        //@formatter:off
+        testNoChange("(project (?s)",
+                    "  (filter (exprlist ?x)",
+                    "    (minus",
+                    "      (bgp (triple ?s ?p ?o))",
+                    "      (extend (?x true)",
+                    "        (table unit)))))");
+        //@formatter:on
+    }
+
+    @Test
+    public void ineligible_08() {
+        // Don't inline if we'd move it from within a n-ary operator as doing so
+        // may change the queries semantics
+        // Technically a trivial case like this is probably safe to inline but
+        // the reality is that the assignment expression may depend on the
+        // behaviour of one branch and so it is safer to not inline
+        //@formatter:off
+        testNoChange("(project (?s)",
+                    "  (filter (exprlist ?x)",
+                    "    (join",
+                    "      (bgp (triple ?s ?p ?o))",
+                    "      (extend (?x true)",
+                    "        (table unit)))))");
+        //@formatter:on
+    }
+
     @Test
     public void no_merge_01() {
         // We should not merge extends

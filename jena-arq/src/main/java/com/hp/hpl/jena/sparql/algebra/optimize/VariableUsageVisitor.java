@@ -64,7 +64,7 @@ public abstract class VariableUsageVisitor extends OpVisitorBase {
     protected abstract void action(Var var);
 
     protected abstract void action(String var);
-    
+
     @Override
     public void visit(OpBGP opBGP) {
         Collection<Var> vars = new ArrayList<>();
@@ -115,8 +115,10 @@ public abstract class VariableUsageVisitor extends OpVisitorBase {
     @Override
     public void visit(OpLeftJoin opLeftJoin) {
         Collection<Var> vars = new ArrayList<>();
-        for (Expr expr : opLeftJoin.getExprs().getList()) {
-            ExprVars.varsMentioned(vars, expr);
+        if (opLeftJoin.getExprs() != null) {
+            for (Expr expr : opLeftJoin.getExprs().getList()) {
+                ExprVars.varsMentioned(vars, expr);
+            }
         }
         action(vars);
     }
