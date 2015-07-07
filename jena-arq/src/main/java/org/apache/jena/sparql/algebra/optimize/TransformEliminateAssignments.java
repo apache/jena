@@ -28,28 +28,38 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.jena.atlas.lib.CollectionUtils;
-
 import org.apache.jena.query.SortCondition;
+import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.OpVisitor;
 import org.apache.jena.sparql.algebra.OpVisitorBase;
 import org.apache.jena.sparql.algebra.Transform;
 import org.apache.jena.sparql.algebra.TransformCopy;
 import org.apache.jena.sparql.algebra.Transformer;
+import org.apache.jena.sparql.algebra.op.OpDistinct;
 import org.apache.jena.sparql.algebra.op.OpExt;
 import org.apache.jena.sparql.algebra.op.OpExtend;
 import org.apache.jena.sparql.algebra.op.OpFilter;
 import org.apache.jena.sparql.algebra.op.OpGroup;
+import org.apache.jena.sparql.algebra.op.OpJoin;
+import org.apache.jena.sparql.algebra.op.OpLeftJoin;
+import org.apache.jena.sparql.algebra.op.OpMinus;
 import org.apache.jena.sparql.algebra.op.OpOrder;
 import org.apache.jena.sparql.algebra.op.OpProject;
+import org.apache.jena.sparql.algebra.op.OpReduced;
 import org.apache.jena.sparql.algebra.op.OpTopN;
+import org.apache.jena.sparql.algebra.op.OpUnion;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarExprList;
+import org.apache.jena.sparql.expr.E_Exists;
+import org.apache.jena.sparql.expr.E_NotExists;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprAggregator;
+import org.apache.jena.sparql.expr.ExprFunctionOp;
 import org.apache.jena.sparql.expr.ExprLib;
 import org.apache.jena.sparql.expr.ExprList;
 import org.apache.jena.sparql.expr.ExprTransform;
+import org.apache.jena.sparql.expr.ExprTransformCopy;
 import org.apache.jena.sparql.expr.ExprTransformSubstitute;
 import org.apache.jena.sparql.expr.ExprTransformer;
 import org.apache.jena.sparql.expr.ExprVars;
@@ -562,10 +572,13 @@ public class TransformEliminateAssignments extends TransformCopy {
             this.tracker.decrementDepth();
         }
 
-<<<<<<< HEAD:jena-arq/src/main/java/org/apache/jena/sparql/algebra/optimize/TransformEliminateAssignments.java
-=======
         @Override
         public void visit(OpUnion opUnion) {
+            unsafe();
+        }
+        
+        @Override
+        public void visit(OpJoin opJoin) {
             unsafe();
         }
 
@@ -579,11 +592,6 @@ public class TransformEliminateAssignments extends TransformCopy {
         @Override
         public void visit(OpMinus opMinus) {
             // Anything from the RHS doesn't project out anyway
-            unsafe();
-        }
-
-        @Override
-        public void visit(OpJoin opJoin) {
             unsafe();
         }
 
@@ -607,7 +615,6 @@ public class TransformEliminateAssignments extends TransformCopy {
             // inlining could change the semantics
             tracker.getAssignments().clear();
         }
->>>>>>> 67bb248... Additional tests and fixes for assignment inlining (JENA-780):jena-arq/src/main/java/com/hp/hpl/jena/sparql/algebra/optimize/TransformEliminateAssignments.java
     }
 
     /**
@@ -645,6 +652,5 @@ public class TransformEliminateAssignments extends TransformCopy {
                 return new E_NotExists(opArg2);
             throw new ARQInternalErrorException("Unrecognized ExprFunctionOp: \n" + funcOp);
         }
-
     }
 }
