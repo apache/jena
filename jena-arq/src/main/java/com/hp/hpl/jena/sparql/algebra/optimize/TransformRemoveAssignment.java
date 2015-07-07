@@ -18,11 +18,14 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
+import java.util.List;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
 import com.hp.hpl.jena.sparql.algebra.op.OpExtend;
 import com.hp.hpl.jena.sparql.algebra.op.OpExtendAssign;
+import com.hp.hpl.jena.sparql.algebra.op.OpProject;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.Expr;
@@ -110,6 +113,19 @@ public class TransformRemoveAssignment extends TransformCopy {
             } else {
                 return subOp;
             }
+        }
+    }
+
+    public Op transform(OpProject opProject, Op subOp) {
+        if (!opProject.getVars().contains(this.var))
+            return super.transform(opProject, subOp);
+        
+        List<Var> newVars = opProject.getVars();
+        newVars.remove(this.var);
+        if (newVars.size() > 0) {
+            return new OpProject(subOp, newVars);
+        } else {
+            return subOp;
         }
     }
 

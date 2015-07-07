@@ -440,6 +440,58 @@ public class TestTransformEliminateAssignments {
     }
 
     @Test
+    public void through_project_01() {
+        // We can inline out through a project by also eliminating the variable
+        // from the project
+        //@formatter:off
+        test(StrUtils.strjoinNL("(project (?y)",
+                                "  (filter (exprlist ?x)",
+                                "    (project (?x)",
+                                "      (extend (?x true)",
+                                "        (table unit)))))"),
+            "(project (?y)",
+            "  (filter true",
+            "    (table unit)))");
+        //@formatter:on
+    }
+
+    @Test
+    public void through_project_02() {
+        // We can inline out through a project by also eliminating the variable
+        // from the project
+        //@formatter:off
+        test(StrUtils.strjoinNL("(project (?y)",
+                                "  (filter (exprlist ?x)",
+                                "    (project (?x ?y)",
+                                "      (extend (?x true)",
+                                "        (bgp (triple ?y <urn:pred> <urn:obj>))))))"),
+            "(project (?y)",
+            "  (filter true",
+            "    (project (?y)",
+            "      (bgp (triple ?y <urn:pred> <urn:obj>)))))");
+        //@formatter:on
+    }
+
+    @Test
+    public void through_project_03() {
+        // We can't inline out through a project if the assignment is not
+        // projected
+        // However we can still eliminate it from the inner projection if that
+        // would render it unused
+        //@formatter:off
+        test(StrUtils.strjoinNL("(project (?y)",
+                                "  (filter (exprlist ?x)",
+                                "    (project (?y)",
+                                "      (extend (?x true)",
+                                "        (table unit)))))"),
+             "(project (?y)",
+             "  (filter (exprlist ?x)",
+             "    (project (?y)",
+             "      (table unit))))");
+        //@formatter:on
+    }
+
+    @Test
     public void no_merge_01() {
         // We should not merge extends
         //@formatter:off
