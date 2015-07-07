@@ -176,6 +176,12 @@ public class Optimize implements Rewrite
 
         if ( context.isTrueOrUndef(ARQ.optFilterExpandOneOf) )
             op = apply("Break up IN and NOT IN", new TransformExpandOneOf(), op) ;
+        
+        // Eliminate/Inline assignments where possible
+        // Do this before we do the filter transformations as inlining assignments may
+        // give us more flexibility in optimizing filters
+        if ( context.isTrue(ARQ.optInlineAssignments) )
+            op = TransformEliminateAssignments.eliminate(op, context.isTrue(ARQ.optInlineAssignmentsAggressive));
 
         // Apply some general purpose filter transformations
                 
