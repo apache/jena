@@ -99,14 +99,14 @@ public class TransformRemoveAssignment extends TransformCopy {
             // If topmost only ignore any transformations lower down the tree
             // hence call getSubOp() rather than using the provided subOp
             if (assignments.size() > 0) {
-                return OpExtend.extend(opExtend.getSubOp(), assignments);
+                return OpExtend.create(opExtend.getSubOp(), assignments);
             } else {
                 return opExtend.getSubOp();
             }
         } else {
             // Otherwise preserve any transformations from lower down the tree
             if (assignments.size() > 0) {
-                return OpExtend.extend(subOp, assignments);
+                return OpExtend.create(subOp, assignments);
             } else {
                 return subOp;
             }
