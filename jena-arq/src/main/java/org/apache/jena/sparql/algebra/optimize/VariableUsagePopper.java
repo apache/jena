@@ -18,24 +18,40 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import java.util.Collection;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestReorderBGP.class
-    , TestVarRename.class
-    , TestOptDistinctReduced.class
-    , TestSemanticEquivalence.class
-    , TestTransformConstantFolding.class
-    , TestTransformFilters.class
-    , TestTransformFilterPlacement.class
-    , TestTransformMergeBGPs.class
-    , TestTransformPromoteTableEmpty.class
-    , TestTransformEliminateAssignments.class
-    , TestTransformTopN.class
-    , TestOptimizer.class
-})
+import org.apache.jena.sparql.algebra.op.OpProject;
+import org.apache.jena.sparql.core.Var;
 
-public class TS_Optimization
-{}
+/**
+ * An after visitor for tracking variable usage
+ * 
+ */
+public class VariableUsagePopper extends VariableUsageVisitor {
+
+    public VariableUsagePopper(VariableUsageTracker tracker) {
+        super(tracker);
+    }
+
+    @Override
+    protected void action(Collection<Var> vars) {
+        this.tracker.decrement(vars);
+    }
+
+    @Override
+    protected void action(Var var) {
+        this.tracker.decrement(var);
+    }
+
+    @Override
+    protected void action(String var) {
+        this.tracker.decrement(var);
+    }
+
+    @Override
+    public void visit(OpProject opProject) {
+        super.visit(opProject);
+        this.tracker.pop();
+        super.visit(opProject);
+    }
+}
