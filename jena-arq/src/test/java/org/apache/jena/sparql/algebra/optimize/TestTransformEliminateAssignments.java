@@ -380,6 +380,18 @@ public class TestTransformEliminateAssignments {
                      "      (bgp (triple ?x ?y ?z)))))");
         //@formatter:on
     }
+    
+    @Test
+    public void no_merge_01() {
+        // We should not merge extends
+        //@formatter:off
+        testNoChange("(project (?x ?y)",
+                     "  (filter (exprlist ?x)",
+                     "    (extend (?x true)",
+                     "      (extend (?y false)",
+                     "        (table unit)))))");
+        //@formatter:on
+    }
 
     @Test
     public void scope_01() {

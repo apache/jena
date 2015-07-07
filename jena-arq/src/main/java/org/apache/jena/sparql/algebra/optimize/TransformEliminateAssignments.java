@@ -257,7 +257,7 @@ public class TransformEliminateAssignments extends TransformCopy {
 
         // May be able to eliminate the extend entirely in some cases
         if (newAssignments.size() > 0) {
-            return OpExtend.extend(subOp, newAssignments);
+            return OpExtend.create(subOp, newAssignments);
         } else {
             return subOp;
         }
