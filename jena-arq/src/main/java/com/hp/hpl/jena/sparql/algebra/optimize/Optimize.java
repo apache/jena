@@ -176,6 +176,12 @@ public class Optimize implements Rewrite
 
         if ( context.isTrueOrUndef(ARQ.optFilterExpandOneOf) )
             op = apply("Break up IN and NOT IN", new TransformExpandOneOf(), op) ;
+        
+        // Eliminate/Inline assignments where possible
+        // Do this before we do the filter transformations as inlining assignments may
+        // give us more flexibility in optimizing filters
+        if ( context.isTrue(ARQ.optInlineAssignments) )
+            op = TransformEliminateAssignments.eliminate(op, context.isTrue(ARQ.optInlineAssignmentsAggressive));
 
         // Apply some general purpose filter transformations
                 
@@ -235,10 +241,6 @@ public class Optimize implements Rewrite
         // Off by default due to minimal performance difference
         if ( context.isTrue(ARQ.optFilterInequality) )
             op = apply("Filter Inequality", new TransformFilterInequality(), op);
-        
-        // Eliminate/Inline assignments where possible
-        if ( context.isTrue(ARQ.optInlineAssignments) )
-            op = TransformEliminateAssignments.eliminate(op, context.isTrue(ARQ.optInlineAssignmentsAggressive));
         
         // Promote table empty as late as possible since this will only be produced by other 
         // optimizations and never directly from algebra generation
