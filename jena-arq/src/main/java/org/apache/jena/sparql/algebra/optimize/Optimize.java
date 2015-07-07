@@ -171,6 +171,12 @@ public class Optimize implements Rewrite
 
         if ( context.isTrueOrUndef(ARQ.optFilterExpandOneOf) )
             op = apply("Break up IN and NOT IN", new TransformExpandOneOf(), op) ;
+        
+        // Eliminate/Inline assignments where possible
+        // Do this before we do some of the filter transformation work as inlining assignments 
+        // may give us more flexibility in optimizing the resulting filters
+        if ( context.isTrue(ARQ.optInlineAssignments) )
+            op = TransformEliminateAssignments.eliminate(op, context.isTrue(ARQ.optInlineAssignmentsAggressive));
 
         // Apply some general purpose filter transformations
                 
@@ -203,7 +209,7 @@ public class Optimize implements Rewrite
         // Find joins/leftJoin that can be done by index joins (generally preferred as fixed memory overhead).
         if ( context.isTrueOrUndef(ARQ.optIndexJoinStrategy) )
             op = apply("Index Join strategy", new TransformJoinStrategy(), op) ;
-        
+                
         // Place filters close to where their dependency variables are defined.
         // This prunes the output of that step as early as possible.
         // If done before TransformJoinStrategy, you can get two applications
@@ -231,9 +237,6 @@ public class Optimize implements Rewrite
         if ( context.isTrue(ARQ.optFilterInequality) )
             op = apply("Filter Inequality", new TransformFilterInequality(), op);
         
-        // Eliminate/Inline assignments where possible
-        if ( context.isTrue(ARQ.optInlineAssignments) )
-            op = TransformEliminateAssignments.eliminate(op, context.isTrue(ARQ.optInlineAssignmentsAggressive));
         
         // Promote table empty as late as possible since this will only be produced by other 
         // optimizations and never directly from algebra generation
