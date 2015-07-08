@@ -382,6 +382,100 @@ public class TestTransformEliminateAssignments {
     }
     
     @Test
+    public void ineligible_09() {
+        // We can't inline if the assignment will be projected out
+        //@formatter:off
+        testNoChange("(project (?x ?y)",
+                     "  (filter (exprlist ?x)",
+                     "    (extend (?x true)",
+                     "      (bgp (triple ?y <urn:pred> <urn:obj>)))))");;
+        //@formatter:on
+    }
+
+    @Test
+    public void ineligible_10() {
+        // We can't inline out of an EXISTS since the assignment isn't projected
+        // out anyway
+        //@formatter:off
+        testNoChange("(project (?y)",
+                     "  (filter (exprlist ?x (exists",
+                     "                         (extend (?x true)",
+                     "                           (table unit))))",
+                     "    (table unit)))");
+        //@formatter:on
+    }
+
+    @Test
+    public void ineligible_11() {
+        // We can't inline out of an EXISTS since the assignment isn't projected
+        // out anyway
+        //@formatter:off
+        testNoChange("(project (?y)",
+                     "  (filter (exprlist ?x)",
+                     "    (filter (exprlist (exists",
+                     "                         (extend (?x true)",
+                     "                           (table unit))))",
+                     "      (table unit))))");
+        //@formatter:on
+    }
+
+    @Test
+    public void exists_01() {
+        // We can't inline into an EXISTS since the assignment isn't projected
+        // out anyway and its an n-ary operator so would change semantics
+        // However this makes the assignment unused so can still remove it
+        //@formatter:off
+        test(StrUtils.strjoinNL("(project (?y)",
+                               "  (filter (exprlist (exists",
+                               "                      (filter (exprlist ?x)",
+                               "                        (table unit))))",
+                               "    (extend (?x true)",
+                               "      (table unit))))"),
+            "(project (?y)",
+            "  (filter (exprlist (exists",
+            "                      (filter (exprlist ?x)",
+            "                        (table unit))))",
+            "    (table unit)))");
+        //@formatter:on
+    }
+
+    @Test
+    public void exists_02() {
+        // Could inline within an exists but still needs to meet other rules
+        // Even though an exists is technically a form of projection can't
+        // discount the variable being needed elsewhere
+        //@formatter:off
+        testNoChange("(project (?y)",
+                     "  (filter (exprlist (exists",
+                     "                      (filter (exprlist ?x)",
+                     "                        (extend (?x true)",
+                     "                          (table unit)))))",
+                     "    (table unit)))");
+        //@formatter:on
+    }
+
+    @Test
+    public void exists_03() {
+        // Can inline within an exists provided it meets normal conditions of
+        // being inside a projection
+        //@formatter:off
+        test(StrUtils.strjoinNL("(project (?y)",
+                               "  (filter (exprlist (exists",
+                               "                      (project (?y)",
+                               "                        (filter (exprlist ?x)",
+                               "                          (extend (?x true)",
+                               "                            (table unit))))))",
+                               "    (table unit)))"),
+            "(project (?y)",
+            "  (filter (exprlist (exists",
+            "                      (project (?y)",
+            "                        (filter (exprlist true)",
+            "                          (table unit)))))",
+            "    (table unit)))");
+        //@formatter:on
+    }
+
+    @Test
     public void through_project_01() {
         // We can inline out through a project by also eliminating the variable
         // from the project
@@ -393,7 +487,8 @@ public class TestTransformEliminateAssignments {
                                 "        (table unit)))))"),
             "(project (?y)",
             "  (filter true",
-            "    (table unit)))");
+            "    (project ()",
+            "      (table unit))))");
         //@formatter:on
     }
 
