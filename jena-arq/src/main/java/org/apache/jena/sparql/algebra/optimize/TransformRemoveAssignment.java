@@ -18,11 +18,15 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.TransformCopy;
 import org.apache.jena.sparql.algebra.op.OpAssign;
 import org.apache.jena.sparql.algebra.op.OpExtend;
 import org.apache.jena.sparql.algebra.op.OpExtendAssign;
+import org.apache.jena.sparql.algebra.op.OpProject;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarExprList;
 import org.apache.jena.sparql.expr.Expr;
@@ -36,6 +40,7 @@ public class TransformRemoveAssignment extends TransformCopy {
     private Var var;
     private Expr expr;
     private boolean topmostOnly = true;
+    private boolean aboveExtend = false;
 
     public TransformRemoveAssignment(Var var, Expr expr, boolean topmostOnly) {
         this.var = var;
@@ -85,6 +90,9 @@ public class TransformRemoveAssignment extends TransformCopy {
                 modified.add(v, orig.getExpr(v));
             }
         }
+        if (modified.size() > 0 && modified.size() == orig.size())
+            return null;
+        
         return modified;
     }
 
@@ -93,6 +101,8 @@ public class TransformRemoveAssignment extends TransformCopy {
         VarExprList assignments = processAssignments(opExtend);
         if (assignments == null)
             return super.transform(opExtend, subOp);
+        
+        this.aboveExtend = true;
 
         // Rewrite appropriately
         if (this.topmostOnly) {
@@ -111,14 +121,23 @@ public class TransformRemoveAssignment extends TransformCopy {
                 return subOp;
             }
         }
+        
     }
 
     public Op transform(OpProject opProject, Op subOp) {
         if (!opProject.getVars().contains(this.var))
             return super.transform(opProject, subOp);
         
-        List<Var> newVars = opProject.getVars();
+        List<Var> newVars = new ArrayList<Var>(opProject.getVars());
         newVars.remove(this.var);
-        return new OpProject(subOp, newVars);
+        if (this.topmostOnly) {
+            if (this.aboveExtend) {
+                return new OpProject(subOp, newVars);
+            } else {
+                return opProject;
+            }
+        } else {
+            return new OpProject(subOp, newVars);
+        }
     }
 }

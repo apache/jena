@@ -62,10 +62,11 @@ import org.apache.jena.sparql.expr.NodeValue;
  * </p>
  * <ol>
  * <li>Assignments where the assigned variable is used only once in a subsequent
- * assignment can be in-lined</li>
+ * expression can be in-lined</li>
  * <li>Assignments where the assigned value is never used elsewhere can be
  * eliminated</li>
  * </ol>
+ * <h3>Eligibility for In-lining</h3>
  * <p>
  * Both of these changes can only happen inside of projections as otherwise we
  * have to assume that the user may need the resulting variable and thus we
@@ -75,19 +76,45 @@ import org.apache.jena.sparql.expr.NodeValue;
  * expression is deterministic is defined by {@link ExprLib#isStable(Expr)}.
  * </p>
  * <p>
+ * In-lining must also respect variable scope, it is possible with a nested
+ * query to have an assignment in-lined out through a projection that projects
+ * it provided that the projection is appropriately modified.
+ * </p>
+ * <p>
+ * There are also various other conditions on assignments that might be eligible
+ * for in-lining:
+ * </p>
+ * <ul>
+ * <li>They cannot occur inside a n-ary operator (e.g. join, {@code UNION},
+ * {@code OPTIONAL} etc.) because then in-lining would change semantics because
+ * an expression that previously was only valid for part of the query might
+ * become valid for a larger part of the query</li>
+ * <li>They cannot be in-lined into an {@code EXISTS} or {@code NOT EXISTS} in a
+ * filter</li>
+ * <li>They cannot be in-lined out of a {@code DISTINCT} or {@code REDUCED}
+ * because the assignment would be relevant for the purposes of distinctness</li>
+ * </ul>
+ * <p>
+ * Please see <a
+ * href="https://issues.apache.org/jira/browse/JENA-780">JENA-780</a> for more
+ * information on this.
+ * </p>
+ * <h3>In-lining Application</h3>
+ * <p>
  * Assignments may be in-lined in the following places:
  * </p>
  * <ul>
- * <li>Filter Expressions</li>
- * <li>Bind and Select Expressions</li>
- * <li>Order By Expressions if aggressive in-lining is enabled or the assigned
- * expression is a constant</li>
+ * <li>{@code FILTER} Expressions</li>
+ * <li>{@code BIND} and Project Expressions</li>
+ * <li>{@code ORDER BY} Expressions if aggressive in-lining is enabled or the
+ * assigned expression is a constant</li>
  * </ul>
  * <p>
- * In the case of order by we only in-line assignments when aggressive mode is
- * set as the realities of order by are that expressions may be recomputed
- * multiple times and so in-lining may actually hurt performance in those cases
- * unless the expression to be in-lined is itself a constant.
+ * In the case of {@code ORDER BY} we only in-line assignments when aggressive
+ * mode is set unless the assignment is a constant value. This is because during
+ * order by evaluation expressions may be recomputed multiple times and so
+ * in-lining may actually hurt performance in those cases unless the expression
+ * to be in-lined is itself a constant.
  * </p>
  */
 public class TransformEliminateAssignments extends TransformCopy {
@@ -557,6 +584,20 @@ public class TransformEliminateAssignments extends TransformCopy {
 
         @Override
         public void visit(OpJoin opJoin) {
+            unsafe();
+        }
+
+        @Override
+        public void visit(OpDistinct opDistinct) {
+            // Inlining out through the distinct might change the results of the
+            // distinct
+            unsafe();
+        }
+
+        @Override
+        public void visit(OpReduced opReduced) {
+            // Inlining out through the reduced might change the results of the
+            // reduced
             unsafe();
         }
 
