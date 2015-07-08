@@ -122,11 +122,6 @@ public class TransformRemoveAssignment extends TransformCopy {
         
         List<Var> newVars = opProject.getVars();
         newVars.remove(this.var);
-        if (newVars.size() > 0) {
-            return new OpProject(subOp, newVars);
-        } else {
-            return subOp;
-        }
+        return new OpProject(subOp, newVars);
     }
-
 }

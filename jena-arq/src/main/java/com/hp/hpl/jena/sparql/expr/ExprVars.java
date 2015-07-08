@@ -59,6 +59,20 @@ public class ExprVars
         ExprWalker.walk(vv, expr) ;
     }
     
+    public static void nonOpVarsMentioned(Collection<Var> acc, Expr expr)
+    {
+        ExprVars.Action<Var> action =
+                new ExprVars.Action<Var>(){
+                    @Override
+                    public void var(Collection<Var> acc, Var var)
+                    {
+                        acc.add(var) ;
+                    }
+                } ;
+        ExprNoOpVarsWorker<Var> vv = new ExprNoOpVarsWorker<>(acc, action) ;
+        ExprWalker.walk(vv, expr) ;
+    }
+    
     public static Set<String> getVarNamesMentioned(Expr expr)
     {
         Set<String> acc = new HashSet<>() ;
@@ -123,5 +137,18 @@ public class ExprVars
                 action.var(acc, v) ;
         }
         
+    }
+    
+    static class ExprNoOpVarsWorker<T> extends ExprVarsWorker<T>
+    {
+        public ExprNoOpVarsWorker(Collection<T> acc, Action<T> action) {
+            super(acc, action);
+            // TODO Auto-generated constructor stub
+        }
+
+        public void visit(ExprFunctionOp funcOp) {
+            // Don't include op vars
+            return;
+        }
     }
 }

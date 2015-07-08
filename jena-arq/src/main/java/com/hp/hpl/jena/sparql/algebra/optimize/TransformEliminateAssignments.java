@@ -21,13 +21,16 @@ package com.hp.hpl.jena.sparql.algebra.optimize;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.jena.atlas.lib.CollectionUtils;
 
 import com.hp.hpl.jena.query.SortCondition;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
@@ -47,11 +50,15 @@ import com.hp.hpl.jena.sparql.algebra.op.OpTopN;
 import com.hp.hpl.jena.sparql.algebra.op.OpUnion;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarExprList;
+import com.hp.hpl.jena.sparql.expr.E_Exists;
+import com.hp.hpl.jena.sparql.expr.E_NotExists;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprAggregator;
+import com.hp.hpl.jena.sparql.expr.ExprFunctionOp;
 import com.hp.hpl.jena.sparql.expr.ExprLib;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.ExprTransform;
+import com.hp.hpl.jena.sparql.expr.ExprTransformCopy;
 import com.hp.hpl.jena.sparql.expr.ExprTransformSubstitute;
 import com.hp.hpl.jena.sparql.expr.ExprTransformer;
 import com.hp.hpl.jena.sparql.expr.ExprVars;
@@ -103,8 +110,9 @@ public class TransformEliminateAssignments extends TransformCopy {
         AssignmentPusher pusher = new AssignmentPusher(tracker);
         AssignmentPopper popper = new AssignmentPopper(tracker);
         Transform transform = new TransformEliminateAssignments(tracker, pusher, popper, aggressive);
+        ExprTransform exprTransform = new ExprTransformEliminateAssignments(aggressive);
 
-        return Transformer.transformSkipService(transform, op, pusher, popper);
+        return Transformer.transformSkipService(transform, exprTransform, op, pusher, popper);
     }
 
     private final OpVisitor before, after;
@@ -165,9 +173,9 @@ public class TransformEliminateAssignments extends TransformCopy {
             return super.transform(opFilter, subOp);
 
         // See what vars are used in the filter
-        Collection<Var> vars = new ArrayList<>();
+        Set<Var> vars = new HashSet<>();
         for (Expr expr : opFilter.getExprs().getList()) {
-            ExprVars.varsMentioned(vars, expr);
+            ExprVars.nonOpVarsMentioned(vars, expr);
         }
 
         // Are any of these vars single usage?
@@ -226,8 +234,8 @@ public class TransformEliminateAssignments extends TransformCopy {
             Expr currExpr = opExtend.getVarExprList().getExpr(assignVar);
 
             // See what vars are used in the current expression
-            Collection<Var> vars = new ArrayList<>();
-            ExprVars.varsMentioned(vars, currExpr);
+            Set<Var> vars = new HashSet<Var>();
+            ExprVars.nonOpVarsMentioned(vars, currExpr);
 
             // See if we can inline anything
             for (Var var : vars) {
@@ -547,12 +555,13 @@ public class TransformEliminateAssignments extends TransformCopy {
             // the LHS we could keep it but for now we don't try and do this
             unsafe();
         }
-        
+
         @Override
         public void visit(OpMinus opMinus) {
+            // Anything from the RHS doesn't project out anyway
             unsafe();
         }
-        
+
         @Override
         public void visit(OpJoin opJoin) {
             unsafe();
@@ -564,5 +573,43 @@ public class TransformEliminateAssignments extends TransformCopy {
             // inlining could change the semantics
             tracker.getAssignments().clear();
         }
+    }
+
+    /**
+     * Handles expression transforms for eliminating assignments
+     */
+    private static class ExprTransformEliminateAssignments extends ExprTransformCopy {
+
+        private final boolean aggressive;
+
+        /**
+         * @param aggressive
+         *            Whether to inline aggressively
+         */
+        public ExprTransformEliminateAssignments(boolean aggressive) {
+            this.aggressive = aggressive;
+        }
+
+        @Override
+        public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg) {
+            // Need to use fresh visitors when working inside an exists/not
+            // exists as we should only do self-contained inlining
+
+            AssignmentTracker tracker = new AssignmentTracker();
+            AssignmentPusher pusher = new AssignmentPusher(tracker);
+            AssignmentPopper popper = new AssignmentPopper(tracker);
+            Transform transform = new TransformEliminateAssignments(tracker, pusher, popper, aggressive);
+            ExprTransformEliminateAssignments exprTransform = new ExprTransformEliminateAssignments(aggressive);
+
+            Op opArg2 = Transformer.transform(transform, exprTransform, opArg, pusher, popper);
+            if (opArg2 == opArg)
+                return super.transform(funcOp, args, opArg);
+            if (funcOp instanceof E_Exists)
+                return new E_Exists(opArg2);
+            if (funcOp instanceof E_NotExists)
+                return new E_NotExists(opArg2);
+            throw new ARQInternalErrorException("Unrecognized ExprFunctionOp: \n" + funcOp);
+        }
+
     }
 }
