@@ -478,6 +478,30 @@ public class TestTransformEliminateAssignments {
     }
 
     @Test
+    public void ineligible_12() {
+        // Can't inline through a distinct
+        //@formatter:off
+        testNoChange("(project (?y)",
+                     "  (filter (exprlist ?x)",
+                     "    (distinct",
+                     "      (extend (?x true)",
+                     "        (bgp (triple ?s ?p ?o))))))");
+        //@formatter:on
+    }
+
+    @Test
+    public void ineligible_13() {
+        // Can't inline through a reduced
+        //@formatter:off
+        testNoChange("(project (?y)",
+                     "  (filter (exprlist ?x)",
+                     "    (reduced",
+                     "      (extend (?x true)",
+                     "        (bgp (triple ?s ?p ?o))))))");
+        //@formatter:on
+    }
+
+    @Test
     public void exists_01() {
         // We can't inline into an EXISTS since the assignment isn't projected
         // out anyway and its an n-ary operator so would change semantics
@@ -587,6 +611,18 @@ public class TestTransformEliminateAssignments {
     }
 
     @Test
+    public void through_project_04() {
+        // Can't inline because the value is projected out
+        //@formatter:off
+        testNoChange("(project (?y)",
+                     "  (project (?x ?y)",
+                     "    (filter (exprlist ?x)",
+                     "      (extend (?x true)",
+                     "        (bgp (triple ?y <urn:pred> <urn:obj>))))))");
+        //@formatter:on
+    }
+
+    @Test
     public void no_merge_01() {
         // We should not merge extends
         //@formatter:off
@@ -645,5 +681,63 @@ public class TestTransformEliminateAssignments {
             "    (filter (exprlist true)",
             "      (table unit))))");
         //@formatter:on
+    }
+
+    @Test
+    public void scope_04() {
+        // Only the topmost assignment should be inlined since any deeper
+        // assignments are technically different variables
+        //@formatter:off
+        test(StrUtils.strjoinNL("(project (?y)",
+                                "  (filter (exprlist ?x)",
+                                "    (extend (?x true)",
+                                "      (project (?z)",
+                                "         (filter (exprlist (|| ?x (! ?x)))",
+                                "           (extend (?x false)",
+                                "             (table unit)))))))"),
+             "(project (?y)",
+             "  (filter (exprlist true)",
+             "    (project (?z)",
+             "      (filter (exprlist (|| ?x (! ?x)))",
+             "        (extend (?x false)",
+             "          (table unit))))))");
+       //@formatter:on
+    }
+
+    @Test
+    public void scope_05() {
+        // Technically invalid query but validates that the inner projection of
+        // ?x blocks later in-lining
+        //@formatter:off
+        testNoChange("(project (?y)",
+                     "  (filter (exprlist ?x)",
+                     "    (extend (?x true)",
+                     "      (project (?x)",
+                     "         (filter (exprlist (|| ?x (! ?x)))",
+                     "           (extend (?x false)",
+                     "             (table unit)))))))");
+       //@formatter:off
+    }
+    
+    @Test
+    public void scope_06() {
+        // In-lining in the outer scope should not change the inner scope
+        //@formatter:off
+        test(StrUtils.strjoinNL("(project (?y)",
+                                "  (filter (exprlist ?x)",
+                                "    (extend (?x true)",
+                                "      (project (?z)",
+                                "         (project (?x)",
+                                "           (filter (exprlist (|| ?x (! ?x)))",
+                                "             (extend (?x false)",
+                                "               (table unit))))))))"),
+            "(project (?y)",
+            "  (filter (exprlist true)",
+            "    (project (?z)",
+            "       (project (?x)",
+            "         (filter (exprlist (|| ?x (! ?x)))",
+            "           (extend (?x false)",
+            "             (table unit)))))))");
+       //@formatter:off
     }
 }
