@@ -39,6 +39,20 @@
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
   </properties>
 
+ <!--  here for testing only -->
+   <repositories>
+    <repository>
+      <id>sonatype_snapshot</id>
+      <name>Sonatype Snapshots</name>
+      <layout>default</layout>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  <!--  end of testing only -->
+
   <dependencies>
 
     <dependency>
