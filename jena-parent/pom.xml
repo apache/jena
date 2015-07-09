@@ -43,7 +43,7 @@
  	<!--  here for testing only -->
    <repositories>
     <repository>
-      <id>central</id>
+      <id>sonatype_snapshot</id>
       <name>Sonatype Snapshots</name>
       <layout>default</layout>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
