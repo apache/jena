@@ -40,19 +40,7 @@
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
     </license>
   </licenses>
- 	<!--  here for testing only -->
-   <repositories>
-    <repository>
-      <id>sonatype_snapshot</id>
-      <name>Sonatype Snapshots</name>
-      <layout>default</layout>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-  <!--  end of testing only -->
+ 	
   <organization>
     <name>The Apache Software Foundation</name>
     <url>http://www.apache.org/</url>
