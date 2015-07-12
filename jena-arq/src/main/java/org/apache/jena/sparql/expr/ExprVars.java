@@ -143,11 +143,12 @@ public class ExprVars
     {
         public ExprNoOpVarsWorker(Collection<T> acc, Action<T> action) {
             super(acc, action);
-            // TODO Auto-generated constructor stub
         }
 
+        @Override
         public void visit(ExprFunctionOp funcOp) {
-            // Don't include op vars
+            // As for ExprVarsWorker except don't include the vars in the
+            // the algebra exprssion of an ExprFunctionOp
             return;
         }
     }
