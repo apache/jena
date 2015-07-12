@@ -447,7 +447,7 @@ public class TestTransformEliminateAssignments {
         testNoChange("(project (?x ?y)",
                      "  (filter (exprlist ?x)",
                      "    (extend (?x true)",
-                     "      (bgp (triple ?y <urn:pred> <urn:obj>)))))");;
+                     "      (bgp (triple ?y <urn:pred> <urn:obj>)))))");
         //@formatter:on
     }
 

@@ -18,52 +18,16 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.* ;
 
-import org.apache.jena.atlas.lib.CollectionUtils;
-import org.apache.jena.query.SortCondition;
-import org.apache.jena.sparql.ARQInternalErrorException;
-import org.apache.jena.sparql.algebra.Op;
-import org.apache.jena.sparql.algebra.OpVisitor;
-import org.apache.jena.sparql.algebra.OpVisitorBase;
-import org.apache.jena.sparql.algebra.Transform;
-import org.apache.jena.sparql.algebra.TransformCopy;
-import org.apache.jena.sparql.algebra.Transformer;
-import org.apache.jena.sparql.algebra.op.OpDistinct;
-import org.apache.jena.sparql.algebra.op.OpExt;
-import org.apache.jena.sparql.algebra.op.OpExtend;
-import org.apache.jena.sparql.algebra.op.OpFilter;
-import org.apache.jena.sparql.algebra.op.OpGroup;
-import org.apache.jena.sparql.algebra.op.OpJoin;
-import org.apache.jena.sparql.algebra.op.OpLeftJoin;
-import org.apache.jena.sparql.algebra.op.OpMinus;
-import org.apache.jena.sparql.algebra.op.OpOrder;
-import org.apache.jena.sparql.algebra.op.OpProject;
-import org.apache.jena.sparql.algebra.op.OpReduced;
-import org.apache.jena.sparql.algebra.op.OpTopN;
-import org.apache.jena.sparql.algebra.op.OpUnion;
-import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.core.VarExprList;
-import org.apache.jena.sparql.expr.E_Exists;
-import org.apache.jena.sparql.expr.E_NotExists;
-import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.expr.ExprAggregator;
-import org.apache.jena.sparql.expr.ExprFunctionOp;
-import org.apache.jena.sparql.expr.ExprLib;
-import org.apache.jena.sparql.expr.ExprList;
-import org.apache.jena.sparql.expr.ExprTransform;
-import org.apache.jena.sparql.expr.ExprTransformCopy;
-import org.apache.jena.sparql.expr.ExprTransformSubstitute;
-import org.apache.jena.sparql.expr.ExprTransformer;
-import org.apache.jena.sparql.expr.ExprVars;
-import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.atlas.lib.CollectionUtils ;
+import org.apache.jena.query.SortCondition ;
+import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.algebra.* ;
+import org.apache.jena.sparql.algebra.op.* ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.VarExprList ;
+import org.apache.jena.sparql.expr.* ;
 
 /**
  * A transform that tries to in-line/eliminate assignments
@@ -458,7 +422,6 @@ public class TransformEliminateAssignments extends TransformCopy {
         return Transformer.transform(new TransformRemoveAssignment(var, getAssignExpr(var)), subOp);
     }
 
-    @SuppressWarnings("unused")
     private VarExprList processVarExprList(VarExprList exprs, ExprTransform transform) {
         VarExprList newExprs = new VarExprList();
         for (Var v : exprs.getVars()) {
@@ -469,7 +432,6 @@ public class TransformEliminateAssignments extends TransformCopy {
         return newExprs;
     }
 
-    @SuppressWarnings("unused")
     private List<ExprAggregator> processAggregators(List<ExprAggregator> aggs, ExprTransform transform) {
         List<ExprAggregator> newAggs = new ArrayList<ExprAggregator>();
         for (ExprAggregator agg : aggs) {
@@ -536,17 +498,17 @@ public class TransformEliminateAssignments extends TransformCopy {
 
     private static class AssignmentPusher extends VariableUsagePusher {
 
-        private AssignmentTracker tracker;
+        private AssignmentTracker assignmentTracker;
 
         public AssignmentPusher(AssignmentTracker tracker) {
             super(tracker);
-            this.tracker = tracker;
+            this.assignmentTracker = tracker;
         }
 
         @Override
         public void visit(OpProject opProject) {
             super.visit(opProject);
-            this.tracker.incrementDepth();
+            this.assignmentTracker.incrementDepth();
         }
     }
 
