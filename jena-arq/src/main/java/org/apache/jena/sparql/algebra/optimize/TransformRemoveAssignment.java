@@ -121,9 +121,9 @@ public class TransformRemoveAssignment extends TransformCopy {
                 return subOp;
             }
         }
-        
     }
 
+    @Override
     public Op transform(OpProject opProject, Op subOp) {
         if (!opProject.getVars().contains(this.var))
             return super.transform(opProject, subOp);
