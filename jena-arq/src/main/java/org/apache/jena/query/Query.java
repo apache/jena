@@ -261,9 +261,6 @@ public class Query extends Prologue implements Cloneable, Printable
     public void setQueryPattern(Element elt)
     {
         queryPattern = elt ;
-//        if ( queryBlock == null )
-//            queryBlock = new ElementBlock(null, null) ;
-//        queryBlock.setPatternElement(elt) ;
     }
     
     public Element getQueryPattern() { return queryPattern ; }
@@ -643,10 +640,6 @@ public class Query extends Prologue implements Cloneable, Printable
                 Log.warn(this, "setResultVars(): no query pattern") ;
             return ;
         }
-        
-        // May have been added via addResultVar(,Expr)
-//        if ( resultVars.size() != 0 ) 
-//            return ;
         
         if ( isSelectType() )
         {
