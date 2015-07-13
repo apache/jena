@@ -164,17 +164,19 @@ public class TestAssemblerHelp extends AssemblerTestBase
     public static boolean impIsLoaded = false;
     public static boolean impIsConstructed = false;
     
-    public static class Imp extends AssemblerBase
-        {
-        static { impIsLoaded = true; }
-
+    public static class Imp extends AssemblerBase {
         public Imp()
             { impIsConstructed = true; }
         
         @Override
         public Object open( Assembler a, Resource root, Mode irrelevant )
             { return null; }
+        
+        // Set when assmbler hook called - in case already java-loaded 
+        public static void whenRequiredByAssembler(AssemblerGroup ag) {
+            impIsLoaded = true;
         }
+    }
     
     static Model gremlinModel = modelWithStatements( "eh:Wossname ja:assembler 'org.apache.jena.assembler.test.TestAssemblerHelp$Gremlin'" );
     
@@ -201,6 +203,8 @@ public class TestAssemblerHelp extends AssemblerTestBase
         {
         String className = "org.apache.jena.assembler.test.TestAssemblerHelp$Imp";
         AssemblerGroup group = AssemblerGroup.create();
+        // In case already loaded.
+        impIsLoaded = false ;
         Model m = model( "eh:Wossname ja:assembler '" + className + "'" );
         assertEquals( false, impIsLoaded );
         AssemblerHelp.loadAssemblerClasses( group, m );
