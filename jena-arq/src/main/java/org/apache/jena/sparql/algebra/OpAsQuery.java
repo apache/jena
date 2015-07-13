@@ -338,9 +338,11 @@ public class OpAsQuery {
         private static Expr rewrite(Expr expr, ExprTransform transform) {
             return ExprTransformer.transform(transform, expr) ;
         }
-
         
-        // processQueryPattern : query.setQueryPattern
+        /**
+         * Process for a single pattern below the modifiers.
+         * Cleans up the ElementGroup produced.
+         */
         
         private void processQueryPattern(QueryLevelDetails level) {
             Op op = level.pattern ;
@@ -379,14 +381,14 @@ public class OpAsQuery {
             return el2 ;
         }
         
-        Element asElement(Op op) {
+        private Element asElement(Op op) {
             ElementGroup g = asElementGroup(op) ;
             if ( g.size() == 1 )
                 return g.get(0) ;
             return g ;
         }
 
-        ElementGroup asElementGroup(Op op) {
+        private ElementGroup asElementGroup(Op op) {
             startSubGroup() ;
             op.visit(this) ;
             return endSubGroup() ;
