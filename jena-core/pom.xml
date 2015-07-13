@@ -153,7 +153,7 @@
             </property>
           </systemProperties>
           <includes>
-            <include>com/hp/hpl/jena/test/TestPackage.java</include>
+            <include>org/apache/jena/test/TestPackage.java</include>
             <include>**/*_CS.java</include>
           </includes>
         </configuration>
@@ -192,15 +192,15 @@
           <windowtitle>Apache Jena</windowtitle>
           <doctitle>Apache Jena Core ${project.version}</doctitle>
           <bottom>Licenced under the Apache License, Version 2.0</bottom>
-          <excludePackageNames>com.hp.hpl.jena.shared.*:*.impl:com.hp.hpl.jena.assembler.assemblers:*.exceptions:*.regexptrees:com.hp.hpl.jena.mem:com.hp.hpl.jena.mem.*:com.hp.hpl.jena.n3:com.hp.hpl.jena.n3.*:com.hp.hpl.jena.rdf.arp.*:com.hp.hpl.jena.util.*:jena.cmdline:jena.util</excludePackageNames>
+          <excludePackageNames>org.apache.jena.shared.*:*.impl:org.apache.jena.assembler.assemblers:*.exceptions:*.regexptrees:org.apache.jena.mem:org.apache.jena.mem.*:org.apache.jena.n3:org.apache.jena.n3.*:org.apache.jena.rdf.arp.*:org.apache.jena.util.*:jena.cmdline:jena.util</excludePackageNames>
           <groups>
             <group>
               <title>API - Application Programming Interface</title>
-              <packages>com.hp.hpl.jena.db:com.hp.hpl.jena.rdf.model:com.hp.hpl.jena.rdf.listeners:com.hp.hpl.jena.rdf.arp:com.hp.hpl.jena.rdf.arp.lang:com.hp.hpl.jena.datatypes:com.hp.hpl.jena.datatypes.xsd:com.hp.hpl.jena.rdql:com.hp.hpl.jena.shared:com.hp.hpl.jena.vocabulary:com.hp.hpl.jena.xmloutput:com.hp.hpl.jena.ontology:com.hp.hpl.jena.ontology.daml:com.hp.hpl.jena.reasoner:com.hp.hpl.jena.reasoner.rulesys:com.hp.hpl.jena.reasoner.rulesys.builtins:com.hp.hpl.jena.reasoner.transitiveReasoner:com.hp.hpl.jena.reasoner.dig</packages>
+              <packages>org.apache.jena.db:org.apache.jena.rdf.model:org.apache.jena.rdf.listeners:org.apache.jena.rdf.arp:org.apache.jena.rdf.arp.lang:org.apache.jena.datatypes:org.apache.jena.datatypes.xsd:org.apache.jena.rdql:org.apache.jena.shared:org.apache.jena.vocabulary:org.apache.jena.xmloutput:org.apache.jena.ontology:org.apache.jena.ontology.daml:org.apache.jena.reasoner:org.apache.jena.reasoner.rulesys:org.apache.jena.reasoner.rulesys.builtins:org.apache.jena.reasoner.transitiveReasoner:org.apache.jena.reasoner.dig</packages>
             </group>
             <group>
               <title>SPI - System Programming Interface</title>
-              <packages>com.hp.hpl.jena.enhanced:com.hp.hpl.jena.graph:com.hp.hpl.jena.graph.compose:com.hp.hpl.jena.graph.query:com.hp.hpl.jena.util:com.hp.hpl.jena.util.iterator</packages>
+              <packages>org.apache.jena.enhanced:org.apache.jena.graph:org.apache.jena.graph.compose:org.apache.jena.graph.query:org.apache.jena.util:org.apache.jena.util.iterator</packages>
             </group>
             <group>
               <title>Command line tools</title>
@@ -208,7 +208,7 @@
             </group>
             <group>
               <title>Other Packages</title>
-              <packages>com.hp.hpl.jena.assembler</packages>
+              <packages>org.apache.jena.assembler</packages>
             </group>
           </groups>
         </configuration>

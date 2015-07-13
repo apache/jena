@@ -538,6 +538,11 @@ public class TransformEliminateAssignments extends TransformCopy {
         public void visit(OpUnion opUnion) {
             unsafe();
         }
+        
+        @Override
+        public void visit(OpJoin opJoin) {
+            unsafe();
+        }
 
         @Override
         public void visit(OpLeftJoin opLeftJoin) {
@@ -549,11 +554,6 @@ public class TransformEliminateAssignments extends TransformCopy {
         @Override
         public void visit(OpMinus opMinus) {
             // Anything from the RHS doesn't project out anyway
-            unsafe();
-        }
-
-        @Override
-        public void visit(OpJoin opJoin) {
             unsafe();
         }
 
@@ -614,6 +614,5 @@ public class TransformEliminateAssignments extends TransformCopy {
                 return new E_NotExists(opArg2);
             throw new ARQInternalErrorException("Unrecognized ExprFunctionOp: \n" + funcOp);
         }
-
     }
 }
