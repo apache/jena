@@ -133,7 +133,7 @@ public class TestRDFJSON extends BaseTest
     @Test public void rdfjson_escapes()
     {
     	Graph g = GraphFactory.createGraphMem();
-    	Node s = NodeFactory.createAnon();
+    	Node s = NodeFactory.createBlankNode();
     	Node p = NodeFactory.createURI("http://predicate");
     	g.add(new Triple(s, p, NodeFactory.createLiteral("quote \" character")));
     	g.add(new Triple(s, p, NodeFactory.createLiteral("new \n\r lines")));

@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.riot.out.NodeToLabel ;
 
 /** Allocate blank nodes according to the label given.
@@ -53,6 +52,6 @@ public class BlankNodeAllocatorLabel implements BlankNodeAllocator
     }
     
     private Node create(String label) {
-        return NodeFactory.createAnon(new AnonId(label)) ;
+        return NodeFactory.createBlankNode(label) ;
     }
 }
