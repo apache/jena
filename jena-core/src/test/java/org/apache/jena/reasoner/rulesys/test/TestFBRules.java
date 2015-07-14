@@ -790,7 +790,7 @@ public class TestFBRules extends TestCase {
         data = Factory.createGraphMem();
         data.add(new Triple(n1, p, Util.makeIntNode(3)) );
         data.add(new Triple(n2, p, res));
-        data.add(new Triple(n3, p, NodeFactory.createAnon()));
+        data.add(new Triple(n3, p, NodeFactory.createBlankNode()));
         infgraph = createInfGraph(rules, data);
         
         TestUtil.assertIteratorValues(this, infgraph.find(n1, s, null),

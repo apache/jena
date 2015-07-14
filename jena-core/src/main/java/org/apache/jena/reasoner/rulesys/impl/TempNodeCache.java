@@ -78,7 +78,7 @@ public class TempNodeCache {
         }
         if (result == null) {
             // No value yet, so create one
-            result = NodeFactory.createAnon();
+            result = NodeFactory.createBlankNode();
             ipMap.put(ip, result);
             if (pclass != null) {
                 classMap.put(result, pclass);

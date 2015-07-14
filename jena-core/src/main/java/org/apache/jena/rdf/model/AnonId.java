@@ -18,100 +18,75 @@
 
 package org.apache.jena.rdf.model;
 
-import java.rmi.server.UID;
+import org.apache.jena.graph.BlankNodeId ;
 
-import org.apache.jena.shared.impl.JenaParameters ;
-
-/** Create a new id for an anonymous node.
+/** System id for an anonymous node.
+ * <p>
+ * Blank nodes have identity ({@code .equals} tells them apart)
+ * but have no web-visible external stable identifier like a URI.
+ * <p>
+ * The Jena API has traditionally had {@code AnonId}
+ * in the RDF API. {@link BlankNodeId} is the SPI equivalent and databases 
+ * that need a persistent identifier across JVM instances use that for blank nodes.
  *
  * <p>This id is guaranteed to be unique on this machine.</p>
  */
 
-// This version contains experimental modifications by der to 
-// switch off normal UID allocation for bNodes to assist tracking
-// down apparent non-deterministic behaviour.
-
-public class AnonId extends java.lang.Object {
-    
-    // Support for running in environments, like Google App Engine, where
-    // java.rmi.server.UID is not available
-    // Will be obsoleted by improved AnonId handling
-    static boolean UIDok = true;
-    static {
-        try { new UID() ; }
-        catch (Throwable ex) { UIDok = false ; }
-    }
-    
-    protected String id = null;
-
-    /** 
-        Support for debugging: global anonID counter. The intial value is just to
-        make the output look prettier if it has lots (but not lots and lots) of bnodes
-        in it.
-    */
-    private static int idCount = 100000;
+public class AnonId {
+    private final BlankNodeId blankNodeId ;
     
     public static AnonId create()
         { return new AnonId(); }
     
     public static AnonId create( String id )
         { return new AnonId( id ); }
-    
-    /** 
-        Creates new AnonId. Normally this id is guaranteed to be unique on this 
-        machine: it is time-dependant. However, sometimes [incorrect] code is
-        sensitive to bnode ordering and produces bizarre bugs. Hence the
-        disableBNodeUIDGeneration flag, which allows bnode IDs to be predictable.
-    */
-    public AnonId() {
-        if (JenaParameters.disableBNodeUIDGeneration) {
-            synchronized (AnonId.class) {
-                id = "A" + idCount++; // + rand.nextLong();
-            }
-        } else if (!UIDok) {
-            id = java.util.UUID.randomUUID().toString(); 
-        } else {
-            id = (new UID()).toString();
-        }
-    }
+
+    public AnonId() { 
+        blankNodeId = BlankNodeId.create() ;
+    } 
     
     /** Create a new AnonId from the string argument supplied
+     * @param idStr A string representation of the id to be created.
+     */    
+    public AnonId( String idStr ) { 
+        blankNodeId = BlankNodeId.create(idStr) ;
+    }
+    
+    /** Create a new AnonId from the BlankNodeId argument supplied
      * @param id A string representation of the id to be created.
      */    
-    public AnonId( String id ) {
-        this.id = id;
-    }
+    public AnonId( BlankNodeId id ) { blankNodeId = id ; }
+
+    public String getLabelString() { return blankNodeId.getLabelString() ; }
     
-    /** Test whether two id's are the same
-        @param o the object to be compared
-        @return true if and only if the two id's are the same
-    */    
+    /** Return the system BlankNodeId */
+    public BlankNodeId getBlankNodeId() { return blankNodeId ; }
+    
     @Override
-    public boolean equals( Object o ) {
-        return o instanceof AnonId && id.equals( ((AnonId) o).id );
-    }
+    public String toString() { return blankNodeId.toString() ; }
     
-    /** return a string representation of the id
-     * @return a string representation of the id
-     */    
-    @Override
-    public String toString() {
-        return id;
-    }
-    
-    /**
-        Answer the label string of this AnonId. To be used in preference to
-        toString().
-    */
-    public String getLabelString() {
-        return id;
-    }
-    
-    /** return a hashcode for this id
-     * @return the hash code
-     */    
     @Override
     public int hashCode() {
-        return id.hashCode();
+        final int prime = 31 ;
+        int result = 1 ;
+        result = prime * result + ((blankNodeId == null) ? 0 : blankNodeId.hashCode()) ;
+        return result ;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true ;
+        if ( obj == null )
+            return false ;
+        if ( !(obj instanceof AnonId) )
+            return false ;
+        AnonId other = (AnonId)obj ;
+        if ( blankNodeId == null ) {
+            if ( other.blankNodeId != null )
+                return false ;
+        } else if ( !blankNodeId.equals(other.blankNodeId) )
+            return false ;
+        return true ;
     }
 }

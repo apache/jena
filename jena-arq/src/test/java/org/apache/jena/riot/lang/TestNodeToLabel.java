@@ -89,7 +89,7 @@ public class TestNodeToLabel extends BaseTest
     @Test public void node2label_02()
     {
         NodeToLabel mapper = factory.create() ;
-        Node x = NodeFactory.createAnon() ;
+        Node x = NodeFactory.createBlankNode() ;
         String s1 = mapper.get(null, x) ;
         String s2 = mapper.get(null, x) ;
         assertNotNull(s1) ;
@@ -100,8 +100,8 @@ public class TestNodeToLabel extends BaseTest
     @Test public void node2label_03()
     {
         NodeToLabel mapper = factory.create() ;
-        Node x1 = NodeFactory.createAnon() ;
-        Node x2 = NodeFactory.createAnon() ;
+        Node x1 = NodeFactory.createBlankNode() ;
+        Node x2 = NodeFactory.createBlankNode() ;
         String s1 = mapper.get(null, x1) ;
         String s2 = mapper.get(null, x2) ;
         assertNotNull(s1) ;

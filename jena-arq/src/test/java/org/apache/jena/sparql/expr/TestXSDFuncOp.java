@@ -425,7 +425,7 @@ public class TestXSDFuncOp extends BaseTest
 
     @Test public void testCompare23()
     {
-        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createAnon()) ;
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createBlankNode()) ;
         NodeValue nv2 = NodeValue.makeString("5") ;
         
         try {
@@ -452,7 +452,7 @@ public class TestXSDFuncOp extends BaseTest
     
     @Test public void testSameUnknown_2()
     {
-        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createAnon()) ; 
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createBlankNode()) ; 
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createURI("test:abc")) ;
         
         assertFalse(NodeValue.sameAs(nv1, nv2)) ;
@@ -569,7 +569,7 @@ public class TestXSDFuncOp extends BaseTest
     
     @Test public void testCompareGeneral1()
     {
-        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createAnon()) ;
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createBlankNode()) ;
         NodeValue nv2 = NodeValue.makeString("5") ;
         
         // bNodes before strings
@@ -579,7 +579,7 @@ public class TestXSDFuncOp extends BaseTest
     
     @Test public void testCompareGeneral2()
     {
-        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createAnon()) ;
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createBlankNode()) ;
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createURI("test:abc")) ;
         
         // bNodes before URIs

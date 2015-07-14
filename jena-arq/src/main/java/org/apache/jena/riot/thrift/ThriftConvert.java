@@ -31,7 +31,6 @@ import org.apache.jena.datatypes.xsd.impl.RDFLangString ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.thrift.wire.* ;
@@ -66,7 +65,7 @@ public class ThriftConvert
             return NodeFactory.createURI(term.getIri().getIri()) ;
         
         if ( term.isSetBnode() )
-            return NodeFactory.createAnon(new AnonId(term.getBnode().getLabel())) ;
+            return NodeFactory.createBlankNode(term.getBnode().getLabel()) ;
 
         if ( term.isSetLiteral() ) {
             RDF_Literal lit = term.getLiteral() ;

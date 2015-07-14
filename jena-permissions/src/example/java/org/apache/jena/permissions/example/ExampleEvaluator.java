@@ -17,20 +17,14 @@
  */
 package org.apache.jena.permissions.example;
 
-import java.security.Principal;
-import java.util.Set;
+import java.security.Principal ;
+import java.util.Set ;
 
-import org.apache.http.auth.BasicUserPrincipal;
-import org.apache.jena.permissions.SecurityEvaluator;
-
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.rdf.model.AnonId;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.vocabulary.RDF;
+import org.apache.http.auth.BasicUserPrincipal ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.permissions.SecurityEvaluator ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.vocabulary.RDF ;
 
 /**
  * An example evaluator that only provides access to messages in the graph that 
@@ -83,7 +77,7 @@ public class ExampleEvaluator implements SecurityEvaluator {
 			return evaluate( principal, r );
 		}
 		else if (node.getType().equals( SecNode.Type.Anonymous)) {
-			Resource r = model.getRDFNode( NodeFactory.createAnon( new AnonId( node.getValue()) ) ).asResource();
+			Resource r = model.getRDFNode( NodeFactory.createBlankNode( node.getValue()) ).asResource();
 			return evaluate( principal, r );
 		}
 		else

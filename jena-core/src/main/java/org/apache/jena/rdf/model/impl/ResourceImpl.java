@@ -19,8 +19,11 @@
 package org.apache.jena.rdf.model.impl;
 
 import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.enhanced.* ;
-import org.apache.jena.graph.* ;
+import org.apache.jena.enhanced.EnhGraph ;
+import org.apache.jena.enhanced.EnhNode ;
+import org.apache.jena.enhanced.Implementation ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.rdf.model.* ;
 
 /** An implementation of Resource.
@@ -90,7 +93,7 @@ public class ResourceImpl extends EnhNode implements Resource {
     }
 
     public ResourceImpl(AnonId id, ModelCom m) {
-        this( NodeFactory.createAnon( id ), m );
+        this( NodeFactory.createBlankNode( id.getLabelString() ), m );
     }
 
     public ResourceImpl(String uri, ModelCom m) {
@@ -128,11 +131,11 @@ public class ResourceImpl extends EnhNode implements Resource {
         }
     
     private static Node fresh( String uri )
-        { return uri == null ? NodeFactory.createAnon() : NodeFactory.createURI( uri ); }
+        { return uri == null ? NodeFactory.createBlankNode() : NodeFactory.createURI( uri ); }
 
     @Override
     public AnonId getId() 
-        { return asNode().getBlankNodeId(); }
+        { return new AnonId(asNode().getBlankNodeId()); }
 
     @Override
     public String  getURI() {

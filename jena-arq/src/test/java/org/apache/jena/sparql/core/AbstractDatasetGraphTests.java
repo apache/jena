@@ -233,7 +233,7 @@ public abstract class AbstractDatasetGraphTests
         DatasetGraph dsg = emptyDataset() ;
         Node subject = NodeFactory.createURI("http://example/s");
         Node predicate = NodeFactory.createURI("http://example/p");
-        Node object = NodeFactory.createAnon();
+        Node object = NodeFactory.createBlankNode();
         dsg.add(new Quad(Quad.defaultGraphIRI, subject, predicate, object));
         dsg.deleteAny(Node.ANY, subject, null, null);
     }
@@ -243,8 +243,8 @@ public abstract class AbstractDatasetGraphTests
         DatasetGraph dsg = emptyDataset() ;
         Node subject = NodeFactory.createURI("http://example/s");
         Node predicate = NodeFactory.createURI("http://example/p");
-        Node object1 = NodeFactory.createAnon();
-        Node object2 = NodeFactory.createAnon();
+        Node object1 = NodeFactory.createBlankNode();
+        Node object2 = NodeFactory.createBlankNode();
         Node graph = NodeFactory.createURI("http://example/g") ; 
         
         dsg.add(graph, subject, predicate, object1);
