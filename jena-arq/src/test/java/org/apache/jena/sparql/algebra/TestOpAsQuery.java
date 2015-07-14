@@ -53,9 +53,13 @@ public class TestOpAsQuery {
     @Test public void testOptional02() 
     { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { { ?s ?q ?z FILTER (?foo) } } }") ; }
     
-    /**
-     * Test of asQuery method, of class OpAsQuery.
-     */
+    @Test public void testOptional03() 
+    // Don't currently unnest the LHS of the second optional.  See testOptional03a
+    { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s ?p1 ?o1 } OPTIONAL { ?s ?p2 ?o2 } } ") ; }
+
+    @Test public void testOptional04() 
+    { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s ?p1 ?o1 } OPTIONAL { ?s ?p2 ?o2 } OPTIONAL { ?s ?p3 ?o3 }} ") ; }
+
     @Test
     public void testCountStar() {
         test_roundTripQuery("select (count(*) as ?cs) { ?s ?p ?o }");
