@@ -112,30 +112,46 @@ public class FormatterElement extends FormatterBase
 
     @Override
     public void visit(ElementPathBlock el) {
+        // Write path block - don't put in a final trailing "." 
         if ( el.isEmpty() ) {
             out.println("# Empty BGP") ;
             return ;
         }
 
         // Split into BGP-path-BGP-...
+        // where the BGPs may be empty.
         PathBlock pBlk = el.getPattern() ;
         BasicPattern bgp = new BasicPattern() ;
-        boolean first = true ;
+        boolean first = true ;      // Has anything been output?
         for ( TriplePath tp : pBlk ) {
             if ( tp.isTriple() ) {
                 bgp.add(tp.asTriple()) ;
                 continue ;
             }
-            flush(bgp) ;
-            out.println(" .") ;
+            
+            if ( !bgp.isEmpty() ) {
+                if ( !first )
+                    out.println(" .") ;
+                flush(bgp) ;
+                first = false ;
+            }
+            if ( !first )
+                out.println(" .") ;
             // Path
             printSubject(tp.getSubject()) ;
             out.print(" ") ;
             PathWriter.write(out, tp.getPath(), context.getPrologue()) ;
             out.print(" ") ;
             printObject(tp.getObject()) ;
+            first = false ;
         }
-        flush(bgp) ;
+        // Flush any stored triple patterns.
+        if ( !bgp.isEmpty() ) {
+            if ( !first )
+                out.println(" .") ;
+            flush(bgp) ;
+            first = false ;
+        }
     }
 
     private void flush(BasicPattern bgp) {
