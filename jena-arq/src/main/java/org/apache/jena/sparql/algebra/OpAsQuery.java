@@ -450,30 +450,10 @@ public class OpAsQuery {
                 g = currentGroup() ;
             }
 
-            ElementPathBlock currentPathBlock = null ;
             for ( Op op : opSequence.getElements() ) {
                 Element e = asElement(op) ;
-                // -- Combining code.
-                if ( e instanceof ElementPathBlock ) {
-                    if ( currentPathBlock != null ) {
-                        // Use last ElementPathBlock
-                        ElementPathBlock newPathBlock = (ElementPathBlock)e ;
-                        currentPathBlock.getPattern().addAll(newPathBlock.getPattern());
-                        // Don't add to the ElementGroup.
-                        continue ;
-                    } else { 
-                        // Start an ElementPathBlock 
-                        currentPathBlock = (ElementPathBlock)e ;
-                        // fall through to add the element.
-                    }
-                } else {
-                    // Current element not a ElementPathBlock
-                    currentPathBlock = null ;
-                }
-                // -- End combining code
-                g.addElement(e) ;
+                insertIntoGroup(g, e) ;
             }
-
             
             if ( nestGroup )
                 endSubGroup() ;
@@ -558,7 +538,7 @@ public class OpAsQuery {
             ElementGroup eRightGroup = asElementGroup(opJoin.getRight()) ;
             Element eRight = eRightGroup ;
             // Very special case. If the RHS is not something that risks
-            // reparsing into a copmbined element of a group, strip the group-of-one. 
+            // reparsing into a combined element of a group, strip the group-of-one. 
             // See also ElementTransformCleanGroupsOfOne
             if ( eRightGroup.size() == 1 ) {
                 // This always was a {} around it but it's unnecessary in a group of one. 
@@ -567,8 +547,8 @@ public class OpAsQuery {
             }
 
             ElementGroup g = currentGroup() ;
-            g.addElement(eLeft) ;
-            g.addElement(eRight) ;
+            insertIntoGroup(g, eLeft) ;
+            insertIntoGroup(g, eRight) ;
             return ;
         }
 
@@ -747,18 +727,18 @@ public class OpAsQuery {
         @Override
         public void visit(OpAssign opAssign) {
             Element e = asElement(opAssign.getSubOp()) ;
-            if ( currentGroup() != e )
-                currentGroup().addElement(e) ;
+            // If (assign ... (table unit)), and first in group, don't add the empty group.
+            insertIntoGroup(currentGroup(), e) ;
             processAssigns(Arrays.asList(opAssign), (var,expr)->{
                 currentGroup().addElement(new ElementAssign(var,expr)) ;
             }) ;
         }
-
+        
         @Override
         public void visit(OpExtend opExtend) {
             Element e = asElement(opExtend.getSubOp()) ;
-            if ( currentGroup() != e )
-                currentGroup().addElement(e) ;
+            // If (extend ... (table unit)), and first in group, don't add the empty group.
+            insertIntoGroup(currentGroup(), e) ;
             processExtends(Arrays.asList(opExtend), (var,expr)->{
                 currentGroup().addElement(new ElementBind(var,expr)) ;
             }) ;
@@ -819,12 +799,55 @@ public class OpAsQuery {
             throw new ARQNotImplemented("OpTopN") ;
         }
 
+        /** Insert into a group, skip initial empty subgroups; recombining ElementPathBlock */
+        private static void insertIntoGroup(ElementGroup eg, Element e) {
+            // Skip initial empty subgroup.
+            if ( emptyGroup(e) && eg.isEmpty() )
+                return ;
+
+            // Empty group.
+            if ( eg.isEmpty() ) {
+                eg.addElement(e);
+                return ;
+            }
+            
+            Element eltTop = eg.getLast() ;
+            if ( ! ( eltTop instanceof ElementPathBlock ) ) {
+                // Not working on a ElementPathBlock - no need to group-of-one 
+                // when inserting ElementPathBlock.
+                e = unwrapGroupOfOnePathBlock(e) ;
+                eg.addElement(e);
+                return ;
+            }
+            if ( ! ( e  instanceof ElementPathBlock ) ) {
+                eg.addElement(e);
+                return ;
+            }
+            // Combine.
+            ElementPathBlock currentPathBlock = (ElementPathBlock)eltTop ;
+            ElementPathBlock newPathBlock = (ElementPathBlock)e ;
+            currentPathBlock.getPattern().addAll(newPathBlock.getPattern());
+        }
+
+        private static Element unwrapGroupOfOnePathBlock(Element e) {
+            Element e2 = getElementOfGroupOfOne(e) ;
+            if ( e2 != null )
+                return e2 ;
+            return e ;
+        }
+
+        private static Element getElementOfGroupOfOne(Element e) {
+            if ( e instanceof ElementGroup ) {
+                ElementGroup eg = (ElementGroup)e ;
+                if ( eg.size() == 1 )
+                    return eg.get(0) ;
+            }
+            return null ;
+        }
+        
         private Element lastElement() {
             ElementGroup g = currentGroup ;
-            if ( g == null || g.size() == 0 )
-                return null ;
-            int len = g.size() ;
-            return g.get(len - 1) ;
+            return g.getLast() ; 
         }
 
         private void startSubGroup() {
