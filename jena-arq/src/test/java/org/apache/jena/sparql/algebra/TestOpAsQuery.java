@@ -128,7 +128,7 @@ public class TestOpAsQuery {
     { test_roundTripQuery("SELECT ?s { ?s ?p ?o { SELECT (count(*) as ?cp) { ?s ?p ?o } }}") ; }
     
     @Test public void testSubQuery_03()
-    //{ testRoundTripQuery("SELECT ?s { { SELECT (count(*) as ?cp) { ?s ?p ?o } } ?s ?p ?o }") ; }
+    //{ test_roundTripQuery("SELECT ?s { { SELECT (count(*) as ?cp) { ?s ?p ?o } } ?s ?p ?o }") ; }
     // The trailing ?s ?p ?o gets a {} round it.
     { test_equivalentQuery("SELECT ?s { { SELECT (count(*) as ?cp) { ?s ?p ?o } } ?s ?p ?o }",
                            "SELECT ?s { { SELECT (count(*) as ?cp) { ?s ?p ?o } } { ?s ?p ?o } }") ; }
@@ -365,16 +365,14 @@ public class TestOpAsQuery {
     
     @Test
     public void testPathExpressions1() {
-        // test that the query after serialization is legal (as much a test of the serializer as way OpAsQuery works)
         String query = "PREFIX : <http://example/> SELECT * { ?s :p* ?o . ?x :r 123 . }" ;
-        test_roundTripAlegbra(query);
+        test_roundTripQuery(query);
     }
         
     @Test
     public void testPathExpressions2() {
-        // test that the query  
         String query = "PREFIX : <http://example/> SELECT * { ?s :p*/:q ?o . ?x :r 123 . }" ;
-        test_roundTripAlegbra(query);
+        test_roundTripQuery(query);
     }
 
     @Test
@@ -384,16 +382,17 @@ public class TestOpAsQuery {
     
     @Test
     public void testMinus2() {
-        // query gains a level of {} but the meaning is the same. 
-        String query = "PREFIX : <http://example/> SELECT * { ?s :p ?o OPTIONAL { ?s :x ?2 } MINUS { ?s :q ?v .FILTER(?v<5) } }" ; 
-       test_roundTripAlegbra(query);
+        // query gains a level of {} but the meaning is the same.
+        String query = "PREFIX : <http://example/> SELECT * { ?s :p ?o OPTIONAL { ?s :x ?2 } MINUS { ?s :q ?v .FILTER(?v<5) } }" ;
+        test_roundTripAlegbra(query) ;
     }
     
-    
     // There 3 classes of transformations: there are 3 main test operations.
-    //   The same query is recovered from OpAsQuery
-    //   Different queries with the same alegra forms
-    //   Different equivalent queries - same answers, different algebra.
+    //   test_roundTripQuery: The same query is recovered from OpAsQuery
+    //   test_roundTripAlegbra: Different queries with the same alegra forms
+    //   test_equivalentQuery: Different equivalent queries - same answers, different algebra.
+    // 
+    // test_roundTripQuery is test_equivalentQuery with same input and expected.
     // + quad variants.
     
     public static void test_equivalentQuery(String input, String expected) {
@@ -426,7 +425,6 @@ public class TestOpAsQuery {
     // Sometimes Q1 and Q2 are equivalent but not .equals.  
     public void test_roundTripAlegbra(String query) {
         Query[] r = roundTripQuery(query);
-        
         // Even if the strings come out as non-equal because of the translation from algebra to query
         // the algebras should be equal
         // i.e. the queries should remain semantically equivalent

@@ -439,7 +439,7 @@ public class OpAsQuery {
         // There is one special case to consider:
         // A path expression was expanded into a OpSequence during Algenra
         // generation. The simple path expressions become an OpSequence that could be
-        // recombined into an ElementPathBlock
+        // recombined into an ElementPathBlock.
 
         @Override
         public void visit(OpSequence opSequence) {
@@ -450,11 +450,31 @@ public class OpAsQuery {
                 g = currentGroup() ;
             }
 
+            ElementPathBlock currentPathBlock = null ;
             for ( Op op : opSequence.getElements() ) {
                 Element e = asElement(op) ;
+                // -- Combining code.
+                if ( e instanceof ElementPathBlock ) {
+                    if ( currentPathBlock != null ) {
+                        // Use last ElementPathBlock
+                        ElementPathBlock newPathBlock = (ElementPathBlock)e ;
+                        currentPathBlock.getPattern().addAll(newPathBlock.getPattern());
+                        // Don't add to the ElementGroup.
+                        continue ;
+                    } else { 
+                        // Start an ElementPathBlock 
+                        currentPathBlock = (ElementPathBlock)e ;
+                        // fall through to add the element.
+                    }
+                } else {
+                    // Current element not a ElementPathBlock
+                    currentPathBlock = null ;
+                }
+                // -- End combining code
                 g.addElement(e) ;
             }
 
+            
             if ( nestGroup )
                 endSubGroup() ;
             return ;
