@@ -21,12 +21,13 @@ package org.apache.jena.graph.test;
 import java.util.function.Function ;
 
 import junit.framework.TestSuite ;
+
+import org.apache.jena.graph.BlankNodeId ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.graph.impl.LiteralLabelFactory ;
-import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.shared.PrefixMapping ;
 
 public class TestTriple extends GraphTestBase
@@ -44,14 +45,14 @@ public class TestTriple extends GraphTestBase
         
     public void testTripleEquals() {
         // create some nodes to test
-        AnonId id = AnonId.create();
+        BlankNodeId id = BlankNodeId.create();
         LiteralLabel L2 = LiteralLabelFactory.create(id.toString(), "", false);
         String U2 = id.toString();
         String N2 = id.toString();
 
         Node[] nodes = new Node[] {
             Node.ANY,
-            NodeFactory.createAnon(id),    NodeFactory.createAnon(),
+            NodeFactory.createBlankNode(id),    NodeFactory.createBlankNode(),
             NodeFactory.createLiteral(L),  NodeFactory.createLiteral(L2),
             NodeFactory.createURI(U),      NodeFactory.createURI(U2),
             NodeFactory.createVariable(N), NodeFactory.createVariable(N2)

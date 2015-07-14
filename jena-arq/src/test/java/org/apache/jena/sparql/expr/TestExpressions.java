@@ -406,7 +406,7 @@ public class TestExpressions
     static {
         BindingMap b = BindingFactory.create() ;
         b.add(Var.alloc("a"), NodeFactory.createLiteral("A")) ;
-        b.add(Var.alloc("b"), NodeFactory.createAnon()) ;
+        b.add(Var.alloc("b"), NodeFactory.createBlankNode()) ;
         b.add(Var.alloc("x"), NodeFactory.createURI("urn:x")) ;
         env = b ;
     }

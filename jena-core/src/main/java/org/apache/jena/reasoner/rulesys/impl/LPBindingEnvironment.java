@@ -79,11 +79,11 @@ public class LPBindingEnvironment implements BindingEnvironment {
     @Override
     public Triple instantiate(TriplePattern pattern) {
         Node s = getGroundVersion(pattern.getSubject());
-        if (s.isVariable()) s = NodeFactory.createAnon();
+        if (s.isVariable()) s = NodeFactory.createBlankNode();
         Node p = getGroundVersion(pattern.getPredicate());
-        if (p.isVariable()) p = NodeFactory.createAnon();
+        if (p.isVariable()) p = NodeFactory.createBlankNode();
         Node o = getGroundVersion(pattern.getObject());
-        if (o.isVariable()) o = NodeFactory.createAnon();
+        if (o.isVariable()) o = NodeFactory.createBlankNode();
         return new Triple(s, p, o);
     }
 

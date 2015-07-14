@@ -22,12 +22,9 @@ import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
-import org.apache.jena.riot.thrift.TRDF ;
-import org.apache.jena.riot.thrift.ThriftConvert ;
 import org.apache.jena.riot.thrift.wire.RDF_BNode ;
 import org.apache.jena.riot.thrift.wire.RDF_IRI ;
 import org.apache.jena.riot.thrift.wire.RDF_Literal ;
@@ -124,7 +121,7 @@ public class TestThriftTerm extends BaseTest {
     
     @Test public void term_bnode_02() {
         String label = "abcdefghijklmn" ;
-        Node n = NodeFactory.createAnon(new AnonId("abcdefghijklmn")) ;
+        Node n = NodeFactory.createBlankNode("abcdefghijklmn") ;
         RDF_Term rt = testTerm(n) ;
         assertTrue(rt.isSetBnode()) ;
         assertEquals("abcdefghijklmn", rt.getBnode().getLabel()) ;

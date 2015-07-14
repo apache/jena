@@ -18,16 +18,16 @@
 
 package org.apache.jena.testing_framework;
 
-import java.util.StringTokenizer;
+import java.util.StringTokenizer ;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.impl.LiteralLabel;
-import org.apache.jena.graph.impl.LiteralLabelFactory;
-import org.apache.jena.rdf.model.AnonId;
-import org.apache.jena.shared.*;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.impl.LiteralLabel ;
+import org.apache.jena.graph.impl.LiteralLabelFactory ;
+import org.apache.jena.shared.JenaException ;
+import org.apache.jena.shared.PrefixMapping ;
 
 /**
  * Creating nodes from string specifications.
@@ -89,7 +89,7 @@ public class NodeCreateUtils {
 		if (Character.isDigit(first))
 			return NodeFactory.createLiteral(x, "", XSDDatatype.XSDinteger);
 		if (first == '_')
-			return NodeFactory.createAnon(new AnonId(x));
+			return NodeFactory.createBlankNode(x);
 		if (x.equals("??"))
 			return Node.ANY;
 		if (first == '?')

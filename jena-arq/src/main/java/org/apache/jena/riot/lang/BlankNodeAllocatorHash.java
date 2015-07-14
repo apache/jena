@@ -29,7 +29,6 @@ import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.rdf.model.AnonId ;
 
 /**
  * Allocate bnode labels using a per-run seed and the label presented.
@@ -126,6 +125,6 @@ public class BlankNodeAllocatorHash implements BlankNodeAllocator {
         mDigest.update(labelBytes) ;
         byte[] bytes = mDigest.digest() ; // resets
         String hexString = Bytes.asHexLC(bytes) ;
-        return NodeFactory.createAnon(new AnonId(hexString)) ;
+        return NodeFactory.createBlankNode(hexString) ;
     }
 }

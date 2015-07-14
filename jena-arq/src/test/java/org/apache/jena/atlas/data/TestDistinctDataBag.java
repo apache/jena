@@ -164,16 +164,16 @@ public class TestDistinctDataBag extends TestCase
     private Binding randomBinding(Var[] vars)
     {
         BindingMap binding = BindingFactory.create();
-        binding.add(vars[0], NodeFactory.createAnon());
+        binding.add(vars[0], NodeFactory.createBlankNode());
         binding.add(vars[1], NodeFactory.createURI(randomURI()));
         binding.add(vars[2], NodeFactory.createURI(randomURI()));
         binding.add(vars[3], NodeFactory.createLiteral(randomString(20)));
-        binding.add(vars[4], NodeFactory.createAnon());
+        binding.add(vars[4], NodeFactory.createBlankNode());
         binding.add(vars[5], NodeFactory.createURI(randomURI()));
         binding.add(vars[6], NodeFactory.createURI(randomURI()));
         binding.add(vars[7], NodeFactory.createLiteral(randomString(5)));
         binding.add(vars[8], NodeFactory.createLiteral("" + random.nextInt(), XSDDatatype.XSDinteger));
-        binding.add(vars[9], NodeFactory.createAnon());
+        binding.add(vars[9], NodeFactory.createBlankNode());
         return binding;
     }
 

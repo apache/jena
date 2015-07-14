@@ -26,7 +26,6 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.n3.IRIResolver ;
 import org.apache.jena.n3.JenaURIException ;
-import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.vocabulary.RDF ;
@@ -255,7 +254,7 @@ public class ParserBase
         if ( isBNodeIRI(iri) )
         {
             String s = iri.substring(bNodeLabelStart.length()) ;
-            Node n = NodeFactory.createAnon(new AnonId(s)) ;
+            Node n = NodeFactory.createBlankNode(s) ;
             return n ;
         }
         return NodeFactory.createURI(iri) ;

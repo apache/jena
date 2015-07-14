@@ -121,7 +121,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         // String id = r.getAnonymousID();
         Node rr = (Node) r.getUserData();
         if (rr == null) {
-            rr = NodeFactory.createAnon();
+            rr = NodeFactory.createBlankNode();
             r.setUserData(rr);
         }
         return rr;

@@ -41,7 +41,6 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ResultSet ;
-import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.ResultBinding ;
@@ -449,7 +448,7 @@ class XMLInputStAX extends SPARQLResult {
                             Node node = null ;
                             // if ( inputGraphLabels.getValue() )
                             if ( inputGraphLabels )
-                                node = NodeFactory.createAnon(new AnonId(label)) ;
+                                node = NodeFactory.createBlankNode(label) ;
                             else
                                 node = bNodes.asNode(label) ;
                             addBinding(binding, Var.alloc(varName), node) ;
