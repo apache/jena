@@ -20,11 +20,12 @@ package org.apache.jena.fuseki.mgt;
 
 /** Various contants used in the admin functions */ 
 public class MgtConst {
-    public static final String  opDump      = "dump" ;  
-    public static final String  opPing      = "ping" ;
+    public static final String  opDump          = "dump" ;  
+    public static final String  opPing          = "ping" ;
     
-    public static final String  opStats     = "stats" ;  
-    public static final String  opDatasets  = "datasets" ;
-    public static final String  opServer    = "server" ;
+    public static final String  opStats         = "stats" ;  
+    public static final String  opDatasets      = "datasets" ;
+    public static final String  opListBackups   = "backups-list" ;
+    public static final String  opServer        = "server" ;
 }
 
