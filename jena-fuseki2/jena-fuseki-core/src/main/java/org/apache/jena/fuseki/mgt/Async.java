@@ -53,7 +53,7 @@ public class Async
     }
 
     public static AsyncTask execASyncTask(HttpAction action, AsyncPool asyncPool, String displayName, Runnable runnable) {
-        AsyncTask atask = Async.asyncTask(asyncPool, "backup", action.getDataService(), runnable, action.id) ;
+        AsyncTask atask = Async.asyncTask(asyncPool, displayName, action.getDataService(), runnable, action.id) ;
         Async.setLocationHeader(action, atask); 
         return atask ;
     }

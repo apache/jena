@@ -20,14 +20,16 @@ package org.apache.jena.fuseki.mgt;
 
 import static java.lang.String.format ;
 
-import java.io.* ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.io.OutputStream ;
+import java.io.StringReader ;
 import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
 
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.json.JsonBuilder ;
@@ -78,21 +80,6 @@ public class ActionDatasets extends ActionContainerItem {
     private static final String tDatabasetMem       = "mem" ;
 
     public ActionDatasets() { super() ; }
-    
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        doCommon(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        doCommon(request, response);
-    }
-    
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
-        doCommon(request, response);
-    }
     
     // ---- GET : return details of dataset or datasets.
     @Override
