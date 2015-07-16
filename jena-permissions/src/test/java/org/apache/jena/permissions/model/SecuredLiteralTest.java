@@ -17,55 +17,46 @@
  */
 package org.apache.jena.permissions.model;
 
-import org.apache.jena.datatypes.DatatypeFormatException ;
-import org.apache.jena.permissions.AccessDeniedException;
+import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.permissions.MockSecurityEvaluator;
+import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.model.SecuredLiteral;
 import org.apache.jena.permissions.model.impl.SecuredLiteralImpl;
-import org.apache.jena.rdf.model.Literal ;
-import org.apache.jena.rdf.model.ResourceFactory ;
-import org.apache.jena.rdf.model.ResourceRequiredException ;
-import org.apache.jena.shared.BadBooleanException ;
-import org.apache.jena.shared.BadCharLiteralException ;
-import org.junit.Assert ;
-import org.junit.Before ;
-import org.junit.Test ;
-import org.junit.runner.RunWith ;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.ResourceRequiredException;
+import org.apache.jena.shared.BadBooleanException;
+import org.apache.jena.shared.BadCharLiteralException;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-@RunWith( value = SecurityEvaluatorParameters.class )
-public class SecuredLiteralTest extends SecuredRDFNodeTest
-{
+@RunWith(value = SecurityEvaluatorParameters.class)
+public class SecuredLiteralTest extends SecuredRDFNodeTest {
 
-	public SecuredLiteralTest( final MockSecurityEvaluator securityEvaluator )
-	{
+	public SecuredLiteralTest(final MockSecurityEvaluator securityEvaluator) {
 		super(securityEvaluator);
 	}
 
-	private SecuredLiteral getSecuredLiteral()
-	{
+	private SecuredLiteral getSecuredLiteral() {
 		return (SecuredLiteral) getSecuredRDFNode();
 	}
 
 	@Test
-	public void sameValueAs()
-	{
-		try
-		{
+	public void sameValueAs() {
+		try {
 			getSecuredLiteral().sameValueAs(
 					ResourceFactory.createPlainLiteral("Junk"));
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
@@ -73,395 +64,281 @@ public class SecuredLiteralTest extends SecuredRDFNodeTest
 
 	@Override
 	@Before
-	public void setup()
-	{
+	public void setup() {
 		super.setup();
 		Literal l = ResourceFactory.createTypedLiteral("literal");
 		setSecuredRDFNode(SecuredLiteralImpl.getInstance(securedModel, l), l);
 	}
 
 	@Test
-	public void testAsLiteral()
-	{
+	public void testAsLiteral() {
 		getSecuredLiteral().asLiteral();
 	}
 
 	@Test
-	public void testAsResource()
-	{
-		try
-		{
+	public void testAsResource() {
+		try {
 			getSecuredLiteral().asResource();
 			Assert.fail("Should have thrown ResoruceRequiredException");
-		}
-		catch (final ResourceRequiredException e)
-		{
+		} catch (final ResourceRequiredException e) {
 			// expected
 		}
 	}
 
 	@Test
-	public void testGetBoolean()
-	{
-		try
-		{
+	public void testGetBoolean() {
+		try {
 			getSecuredLiteral().getBoolean();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
-		}
-		catch (final DatatypeFormatException | BadBooleanException e )
-		{
+		} catch (final DatatypeFormatException | BadBooleanException e) {
 			// expected
 		}
 	}
 
 	@Test
-	public void testGetByte()
-	{
-		try
-		{
+	public void testGetByte() {
+		try {
 			getSecuredLiteral().getByte();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
-		}
-		catch (final DatatypeFormatException | NumberFormatException e )
-		{
+		} catch (final DatatypeFormatException | NumberFormatException e) {
 			// expected
 		}
 	}
 
 	@Test
-	public void testGetChar()
-	{
-		try
-		{
+	public void testGetChar() {
+		try {
 			getSecuredLiteral().getChar();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
-		}
-		catch (final DatatypeFormatException | BadCharLiteralException e )
-		{
+		} catch (final DatatypeFormatException | BadCharLiteralException e) {
 			// expected
 		}
 	}
 
 	@Test
-	public void testGetDatatype()
-	{
-		try
-		{
+	public void testGetDatatype() {
+		try {
 			getSecuredLiteral().getDatatype();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
-	public void testGetDatatypeURI()
-	{
-		try
-		{
+	public void testGetDatatypeURI() {
+		try {
 			getSecuredLiteral().getDatatypeURI();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
-	public void testGetDouble()
-	{
-		try
-		{
+	public void testGetDouble() {
+		try {
 			getSecuredLiteral().getDouble();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
-		}
-		catch (final DatatypeFormatException | NumberFormatException e )
-		{
+		} catch (final DatatypeFormatException | NumberFormatException e) {
 			// expected
 		}
 
 	}
 
 	@Test
-	public void testGetFloat()
-	{
-		try
-		{
+	public void testGetFloat() {
+		try {
 			getSecuredLiteral().getFloat();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
-		}
-		catch (final DatatypeFormatException | NumberFormatException e )
-		{
+		} catch (final DatatypeFormatException | NumberFormatException e) {
 			// expected
 		}
 	}
 
 	@Test
-	public void testGetInt()
-	{
-		try
-		{
+	public void testGetInt() {
+		try {
 			getSecuredLiteral().getInt();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
-		}
-		catch (final DatatypeFormatException | NumberFormatException e )
-		{
+		} catch (final DatatypeFormatException | NumberFormatException e) {
 			// expected
 		}
 	}
 
 	@Test
-	public void testGetLanguage()
-	{
-		try
-		{
+	public void testGetLanguage() {
+		try {
 			getSecuredLiteral().getLanguage();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
-	public void testGetLexicalForm()
-	{
-		try
-		{
+	public void testGetLexicalForm() {
+		try {
 			getSecuredLiteral().getLexicalForm();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
-	public void testGetLong()
-	{
-		try
-		{
+	public void testGetLong() {
+		try {
 			getSecuredLiteral().getLong();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
-		}
-		catch (final DatatypeFormatException | NumberFormatException e )
-		{
+		} catch (final DatatypeFormatException | NumberFormatException e) {
 			// expected
 		}
 	}
 
 	@Test
-	public void testGetShort()
-	{
-		try
-		{
+	public void testGetShort() {
+		try {
 			getSecuredLiteral().getShort();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
-		}
-		catch (final DatatypeFormatException | NumberFormatException e )
-		{
+		} catch (final DatatypeFormatException | NumberFormatException e) {
 			// expected
 		}
 	}
 
 	@Test
-	public void testGetString()
-	{
-		try
-		{
+	public void testGetString() {
+		try {
 			getSecuredLiteral().getString();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
-		}
-		catch (final DatatypeFormatException | NumberFormatException e )
-		{
+		} catch (final DatatypeFormatException | NumberFormatException e) {
 			// expected
 		}
 	}
 
 	@Test
-	public void testGetValue()
-	{
-		try
-		{
+	public void testGetValue() {
+		try {
 			getSecuredLiteral().getValue();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
-	public void testIsWellFormedXML()
-	{
-		try
-		{
+	public void testIsWellFormedXML() {
+		try {
 			getSecuredLiteral().isWellFormedXML();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}

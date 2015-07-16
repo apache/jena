@@ -19,25 +19,26 @@ package org.apache.jena.permissions.model;
 
 import java.util.Set;
 
-import org.apache.jena.permissions.AccessDeniedException;
 import org.apache.jena.permissions.Factory;
 import org.apache.jena.permissions.MockSecurityEvaluator;
+import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
+import org.apache.jena.permissions.UpdateDeniedException;
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.model.SecuredStatement;
 import org.apache.jena.permissions.model.impl.SecuredStatementImpl;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.shared.PropertyNotFoundException ;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.shared.AccessDeniedException;
+import org.apache.jena.shared.PropertyNotFoundException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith( value = SecurityEvaluatorParameters.class )
-public class SecuredStatementTest
-{
+@RunWith(value = SecurityEvaluatorParameters.class)
+public class SecuredStatementTest {
 	private final MockSecurityEvaluator securityEvaluator;
 	private Statement baseStatement;
 	private SecuredStatement securedStatement;
@@ -45,19 +46,16 @@ public class SecuredStatementTest
 	private SecuredModel securedModel;
 	private Property property;
 
-	public SecuredStatementTest( final MockSecurityEvaluator securityEvaluator )
-	{
+	public SecuredStatementTest(final MockSecurityEvaluator securityEvaluator) {
 		this.securityEvaluator = securityEvaluator;
 	}
 
-	protected Model createModel()
-	{
+	protected Model createModel() {
 		return ModelFactory.createDefaultModel();
 	}
 
 	@Before
-	public void setup()
-	{
+	public void setup() {
 		baseModel = createModel();
 		property = ResourceFactory
 				.createProperty("http://example.com/property");
@@ -73,209 +71,153 @@ public class SecuredStatementTest
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update
-	 * @throws AccessDeniedException
+	 * @throws AccessDeniedRuntimeException
 	 */
 	@Test
-	public void testChangeLiteralObject()
-	{
+	public void testChangeLiteralObject() {
 		final Set<Action> perms = SecurityEvaluator.Util
 				.asSet(new Action[] { Action.Update });
-		try
-		{
+		try {
 			securedStatement.changeLiteralObject(true);
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown UpdateDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final UpdateDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown UpdateDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			securedStatement.changeLiteralObject('c');
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown UpdateDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final UpdateDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown UpdateDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			securedStatement.changeLiteralObject(3.14d);
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown UpdateDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final UpdateDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown UpdateDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			securedStatement.changeLiteralObject(3.14F);
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown UpdateDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final UpdateDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown UpdateDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			securedStatement.changeLiteralObject(2);
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown UpdateDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final UpdateDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown UpdateDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			securedStatement.changeLiteralObject(2L);
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown UpdateDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final UpdateDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown UpdateDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			securedStatement.changeObject(ResourceFactory.createResource());
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown UpdateDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final UpdateDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown UpdateDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			securedStatement.changeObject("Waaa hooo");
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown UpdateDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final UpdateDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown UpdateDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			final Literal l = ResourceFactory
 					.createTypedLiteral(Integer.MAX_VALUE);
 			securedStatement.changeObject(l.getLexicalForm(), true);
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown UpdateDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final UpdateDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown UpdateDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			securedStatement.changeObject("dos", "es");
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown UpdateDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final UpdateDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown UpdateDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			securedStatement.changeObject("dos", "es", false);
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown UpdateDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final UpdateDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown UpdateDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
@@ -283,303 +225,229 @@ public class SecuredStatementTest
 	}
 
 	@Test
-	public void testCreateReifiedStatement()
-	{
+	public void testCreateReifiedStatement() {
 		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Update, Action.Create });
 
-		try
-		{
+		try {
 			securedStatement.createReifiedStatement();
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown AccessDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final AccessDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown AccessDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			securedStatement.createReifiedStatement("http://example.com/rsURI");
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown AccessDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final AccessDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown AccessDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
-	public void testGetProperty()
-	{
+	public void testGetProperty() {
 		// get property of the object
 		baseModel.add(baseStatement.getObject().asResource(), property,
 				ResourceFactory.createResource());
-		try
-		{
+		try {
 			securedStatement.getProperty(property);
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown PropertyNotFound Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown PropertyNotFoundException Exception");
 			}
-		}
-		catch (final PropertyNotFoundException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final PropertyNotFoundException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown PropertyNotFound Exception: %s - %s",
+						.format("Should not have thrown PropertyNotFoundException Exception: %s - %s",
 								e, securityEvaluator));
 			}
 		}
 	}
 
 	@Test
-	public void testGets()
-	{
+	public void testGets() {
 		final Set<Action> perms = SecurityEvaluator.Util
 				.asSet(new Action[] { Action.Read });
 
 		securedStatement = SecuredStatementImpl.getInstance(securedModel,
 				baseStatement.changeLiteralObject(true));
-		try
-		{
+		try {
 			securedStatement.getBoolean();
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
 		securedStatement = SecuredStatementImpl.getInstance(securedModel,
 				baseStatement.changeLiteralObject(Byte.MAX_VALUE));
-		try
-		{
+		try {
 			securedStatement.getByte();
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
 		securedStatement = SecuredStatementImpl.getInstance(securedModel,
 				baseStatement.changeLiteralObject('c'));
-		try
-		{
+		try {
 			securedStatement.getChar();
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
 		securedStatement = SecuredStatementImpl.getInstance(securedModel,
 				baseStatement.changeLiteralObject(3.14d));
-		try
-		{
+		try {
 			securedStatement.getDouble();
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
 		securedStatement = SecuredStatementImpl.getInstance(securedModel,
 				baseStatement.changeLiteralObject(3.14F));
-		try
-		{
+		try {
 			securedStatement.getFloat();
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
 		securedStatement = SecuredStatementImpl.getInstance(securedModel,
 				baseStatement.changeLiteralObject(2));
-		try
-		{
+		try {
 			securedStatement.getInt();
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
 		securedStatement = SecuredStatementImpl.getInstance(securedModel,
 				baseStatement.changeObject("dos", "es"));
-		try
-		{
+		try {
 			securedStatement.getLanguage();
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
 		securedStatement = SecuredStatementImpl.getInstance(securedModel,
 				baseStatement.changeLiteralObject(2L));
-		try
-		{
+		try {
 			securedStatement.getLong();
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
 		securedStatement = SecuredStatementImpl.getInstance(securedModel,
 				baseStatement.changeLiteralObject(Short.MAX_VALUE));
-		try
-		{
+		try {
 			securedStatement.getShort();
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
 		securedStatement = SecuredStatementImpl.getInstance(securedModel,
 				baseStatement.changeObject("who hoo"));
-		try
-		{
+		try {
 			securedStatement.getString();
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
 		securedStatement = SecuredStatementImpl.getInstance(securedModel,
 				baseStatement.changeObject("who hoo"));
-		try
-		{
+		try {
 			securedStatement.hasWellFormedXML();
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
-	public void testGetStatementProperty()
-	{
+	public void testGetStatementProperty() {
 		// get property of the subject
 		final ReifiedStatement s = baseStatement.createReifiedStatement();
 		s.addLiteral(property, "yee haw");
@@ -588,109 +456,84 @@ public class SecuredStatementTest
 	}
 
 	@Test
-	public void testIsReified()
-	{
+	public void testIsReified() {
 		final Set<Action> perms = SecurityEvaluator.Util
 				.asSet(new Action[] { Action.Read });
 
-		try
-		{
+		try {
 			securedStatement.isReified();
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
-	public void testListReifiedStatements()
-	{
+	public void testListReifiedStatements() {
 		final Set<Action> perms = SecurityEvaluator.Util
 				.asSet(new Action[] { Action.Read });
 
-		try
-		{
+		try {
 			securedStatement.listReifiedStatements();
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
-	public void testRemove()
-	{
+	public void testRemove() {
 		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Update, Action.Delete });
 
-		try
-		{
+		try {
 			securedStatement.remove();
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown AccessDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final AccessDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown AccessDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
-	public void testRemoveReification()
-	{
+	public void testRemoveReification() {
 		baseStatement.createReifiedStatement();
 		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Update, Action.Delete });
 
-		try
-		{
+		try {
 			securedStatement.removeReification();
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown AccessDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final AccessDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown AccessDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
-	public void testUnsecuredGets()
-	{
+	public void testUnsecuredGets() {
 		securedStatement.getAlt();
 		securedStatement.getBag();
 		securedStatement.getSeq();

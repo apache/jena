@@ -28,7 +28,7 @@ import org.apache.jena.permissions.SecurityEvaluator.SecTriple;
  */
 public interface SecuredItem
 {
-
+	
 	/**
 	 * Utilities for SecuredItem implementations.
 	 */
@@ -50,6 +50,16 @@ public interface SecuredItem
 			return si1.getSecurityEvaluator()
 					.equals(si2.getSecurityEvaluator())
 					&& si1.getModelIRI().equals(si2.getModelIRI());
+		}
+		
+		public static String modelPermissionMsg( final SecNode modelURI )
+		{
+			return String.format("Model permissions violation: %s", modelURI);
+		}
+		
+		public static String triplePermissionMsg( final SecNode modelURI )
+		{
+			return String.format("Triple permissions violation: %s", modelURI);
 		}
 	}
 

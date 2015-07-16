@@ -22,13 +22,16 @@ import java.lang.reflect.Proxy;
 import org.apache.commons.collections4.map.LRUMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.jena.permissions.AccessDeniedException;
+import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.SecurityEvaluator.SecNode;
 import org.apache.jena.permissions.SecurityEvaluator.SecTriple;
 import org.apache.jena.permissions.SecurityEvaluator.SecNode.Type;
+import org.apache.jena.permissions.UpdateDeniedException;
 import org.apache.jena.rdf.model.Statement ;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.vocabulary.RDF ;
 
@@ -490,18 +493,18 @@ public abstract class SecuredItemImpl implements SecuredItem
 	/**
 	 * check that create on the securedModel is allowed,
 	 * 
-	 * @throws AccessDeniedException
+	 * @throws AddDeniedException
 	 *             on failure
 	 */
-	protected void checkCreate()
+	protected void checkCreate() throws AddDeniedException
 	{
 		if (!canCreate())
 		{
-			throw new AccessDeniedException(modelNode, Action.Create);
+			throw new AddDeniedException( SecuredItem.Util.modelPermissionMsg(modelNode));
 		}
 	}
 
-	protected void checkCreate( final org.apache.jena.graph.Triple t )
+	protected void checkCreate( final org.apache.jena.graph.Triple t )  throws AddDeniedException
 	{
 		checkCreate(SecuredItemImpl.convert(t));
 	}
@@ -509,24 +512,35 @@ public abstract class SecuredItemImpl implements SecuredItem
 	/**
 	 * check that the triple can be created in the securedModel.,
 	 * 
-	 * @throws AccessDeniedException
+	 * @throws AddDeniedException
 	 *             on failure
 	 */
-	protected void checkCreate( final SecTriple t )
+	protected void checkCreate( final SecTriple t ) throws AddDeniedException
 	{
 		if (!canCreate(t))
 		{
-			throw new AccessDeniedException(modelNode, t.toString(),
-					Action.Create);
+			throw new AddDeniedException(SecuredItem.Util.triplePermissionMsg(modelNode), t.asTriple() );
 		}
 	}
 
-	protected void checkCreate( final Statement s )
+	/**
+	 * check that the statement can be created.
+	 * @param s The statement.
+	 * @throws AddDeniedException on failure
+	 */
+	protected void checkCreate( final Statement s ) throws AddDeniedException
 	{
 		checkCreate(s.asTriple());
 	}
 
-	protected void checkCreateReified( final String uri, final SecTriple t )
+	/**
+	 * Check that a triple can be reified.
+	 * @param uri The URI for the reification subject.  May be null.
+	 * @param t the triple that is to be reified.
+	 * @throws AddDeniedException on failure to add triple
+	 * @throws UpdateDenied if the updates of the graph are not allowed.
+	 */
+	protected void checkCreateReified( final String uri, final SecTriple t )  throws AddDeniedException, UpdateDeniedException
 	{
 		checkUpdate();
 		final SecNode n = uri == null ? SecNode.FUTURE : new SecNode(Type.URI,
@@ -539,7 +553,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 				.asNode()), t.getObject()));
 	}
 
-	protected void checkCreateStatement( final ExtendedIterator<Statement> stmts )
+	protected void checkCreateStatement( final ExtendedIterator<Statement> stmts )  throws AddDeniedException
 	{
 		if (!canCreate(SecTriple.ANY))
 		{
@@ -558,7 +572,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 	}
 
 	protected void checkCreateTriples(
-			final ExtendedIterator<org.apache.jena.graph.Triple> triples )
+			final ExtendedIterator<org.apache.jena.graph.Triple> triples ) throws AddDeniedException
 	{
 		if (!canCreate(SecTriple.ANY))
 		{
@@ -579,14 +593,14 @@ public abstract class SecuredItemImpl implements SecuredItem
 	/**
 	 * check that delete on the securedModel is allowed,
 	 * 
-	 * @throws AccessDeniedException
+	 * @throws DeleteDeniedException
 	 *             on failure
 	 */
-	protected void checkDelete()
+	protected void checkDelete() throws DeleteDeniedException
 	{
 		if (!canDelete())
 		{
-			throw new AccessDeniedException(modelNode, Action.Delete);
+			throw new DeleteDeniedException(SecuredItem.Util.modelPermissionMsg(modelNode));
 		}
 	}
 
@@ -598,15 +612,14 @@ public abstract class SecuredItemImpl implements SecuredItem
 	/**
 	 * check that the triple can be deleted in the securedModel.,
 	 * 
-	 * @throws AccessDeniedException
+	 * @throws DeleteDeniedException
 	 *             on failure
 	 */
 	protected void checkDelete( final SecTriple t )
 	{
 		if (!canDelete(t))
 		{
-			throw new AccessDeniedException(modelNode, t.toString(),
-					Action.Delete);
+			throw new DeleteDeniedException(SecuredItem.Util.triplePermissionMsg(modelNode), t.asTriple());
 		}
 	}
 
@@ -656,18 +669,18 @@ public abstract class SecuredItemImpl implements SecuredItem
 	/**
 	 * check that read on the securedModel is allowed,
 	 * 
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 *             on failure
 	 */
-	protected void checkRead()
+	protected void checkRead() throws ReadDeniedException
 	{
 		if (!canRead())
 		{
-			throw new AccessDeniedException(modelNode, Action.Read);
+			throw new ReadDeniedException(SecuredItem.Util.modelPermissionMsg(modelNode));
 		}
 	}
 
-	protected void checkRead( final org.apache.jena.graph.Triple t )
+	protected void checkRead( final org.apache.jena.graph.Triple t ) throws ReadDeniedException
 	{
 		checkRead(SecuredItemImpl.convert(t));
 	}
@@ -675,24 +688,23 @@ public abstract class SecuredItemImpl implements SecuredItem
 	/**
 	 * check that the triple can be read in the securedModel.,
 	 * 
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 *             on failure
 	 */
-	protected void checkRead( final SecTriple t )
+	protected void checkRead( final SecTriple t ) throws ReadDeniedException
 	{
 		if (!canRead(t))
 		{
-			throw new AccessDeniedException(modelNode, t.toString(),
-					Action.Read);
+			throw new ReadDeniedException(SecuredItem.Util.triplePermissionMsg(modelNode), t.asTriple());
 		}
 	}
 
-	protected void checkRead( final Statement s )
+	protected void checkRead( final Statement s ) throws ReadDeniedException
 	{
 		checkRead(s.asTriple());
 	}
 
-	protected void checkReadStatement( final ExtendedIterator<Statement> stmts )
+	protected void checkReadStatement( final ExtendedIterator<Statement> stmts ) throws ReadDeniedException
 	{
 		try
 		{
@@ -708,7 +720,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 	}
 
 	protected void checkReadTriples(
-			final ExtendedIterator<org.apache.jena.graph.Triple> triples )
+			final ExtendedIterator<org.apache.jena.graph.Triple> triples ) throws ReadDeniedException
 	{
 		try
 		{
@@ -726,19 +738,25 @@ public abstract class SecuredItemImpl implements SecuredItem
 	/**
 	 * check that update on the securedModel is allowed,
 	 * 
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
 	 *             on failure
 	 */
-	protected void checkUpdate()
+	protected void checkUpdate() throws UpdateDeniedException
 	{
 		if (!canUpdate())
 		{
-			throw new AccessDeniedException(modelNode, Action.Update);
+			throw new UpdateDeniedException(SecuredItem.Util.modelPermissionMsg(modelNode));
 		}
 	}
 
+	/**
+	 * Check that a triple can be changed from one value to another.
+	 * @param from The original triple
+	 * @param to The final triple
+	 * @throws UpdateDeniedException
+	 */
 	protected void checkUpdate( final org.apache.jena.graph.Triple from,
-			final org.apache.jena.graph.Triple to )
+			final org.apache.jena.graph.Triple to )  throws UpdateDeniedException
 	{
 		checkUpdate(SecuredItemImpl.convert(from), SecuredItemImpl.convert(to));
 	}
@@ -748,15 +766,15 @@ public abstract class SecuredItemImpl implements SecuredItem
 	 * 
 	 * @param from the starting triple
 	 * @param to the final triple.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
 	 *             on failure
 	 */
-	protected void checkUpdate( final SecTriple from, final SecTriple to )
+	protected void checkUpdate( final SecTriple from, final SecTriple to ) throws UpdateDeniedException
 	{
 		if (!canUpdate(from, to))
 		{
-			throw new AccessDeniedException(modelNode, String.format(
-					"%s to %s", from, to), Action.Update);
+			throw new UpdateDeniedException( String.format(
+					"%s: %s to %s", SecuredItem.Util.modelPermissionMsg(modelNode), from, to));
 		}
 	}
 

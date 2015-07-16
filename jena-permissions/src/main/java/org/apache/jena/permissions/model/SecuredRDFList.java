@@ -21,9 +21,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.jena.permissions.AccessDeniedException;
+import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
+import org.apache.jena.permissions.UpdateDeniedException;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
 public interface SecuredRDFList extends RDFList, SecuredResource
@@ -33,10 +36,11 @@ public interface SecuredRDFList extends RDFList, SecuredResource
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple(SecNode.FUTURE, listFirst(), value)
 	 * @sec.triple Create SecTriple(SecNode.FUTURE, listFirst(), listNil())
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public void add( final RDFNode value ) throws AccessDeniedException;
+	public void add( final RDFNode value ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * Resulting list will contain the readable nodes from this list
@@ -44,10 +48,12 @@ public interface SecuredRDFList extends RDFList, SecuredResource
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( SecNode.FUTURE, RDF.first, value )
 	 * @sec.triple Create SecTriple( SecNode.FUTURE, RDF.rest, this )
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public RDFList append( final Iterator<? extends RDFNode> nodes )
-			throws AccessDeniedException;
+			throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * Resulting list will contain the readable nodes from this list
@@ -56,9 +62,11 @@ public interface SecuredRDFList extends RDFList, SecuredResource
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( SecNode.FUTURE, RDF.first, value )
 	 * @sec.triple Create SecTriple( SecNode.FUTURE, RDF.rest, this )
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public RDFList append( final RDFList list ) throws AccessDeniedException;
+	public RDFList append( final RDFList list ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * Uses the security settings for the application of the function calls.
@@ -67,11 +75,11 @@ public interface SecuredRDFList extends RDFList, SecuredResource
 	 * @sec.graph Read
 	 * @sec.triple Read (to be included in the calculation)
 	 * @sec.triple other permissions required by the function.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 *             graph Read or other permissions are not met
 	 */
 	@Override
-	public void apply( final ApplyFn fn ) throws AccessDeniedException;
+	public void apply( final ApplyFn fn ) throws ReadDeniedException;
 
 	/**
 	 * This method is intended to provide the capabilities to apply functions
@@ -89,10 +97,10 @@ public interface SecuredRDFList extends RDFList, SecuredResource
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read and constraints
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	public void apply( Set<Action> constraints, final ApplyFn fn )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * @sec.triple Read for triples containing the returned RDFNodes.
@@ -106,39 +114,42 @@ public interface SecuredRDFList extends RDFList, SecuredResource
 	 * @sec.triple Create SecTriple( SecNode.FUTURE, RDF.first, node ) for each
 	 *            node in
 	 *            nodes.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public void concatenate( final Iterator<? extends RDFNode> nodes )
-			throws AccessDeniedException;
+			throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( SecNode.FUTURE, RDF.first, node ) for each
 	 *            node in
 	 *            list.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public void concatenate( final RDFList list ) throws AccessDeniedException;
+	public void concatenate( final RDFList list ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( SecNode.FUTURE, RDF.first, value )
 	 * @sec.triple Create SecTriple( SecNode.FUTURE, RDF.rest, this )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredRDFList cons( final RDFNode value )
-			throws AccessDeniedException;
+			throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read for triple containing value.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean contains( final RDFNode value ) throws AccessDeniedException;
+	public boolean contains( final RDFNode value ) throws ReadDeniedException;
 
 	/**
 	 * Creates a copy of this list comprising the readable elements of this
@@ -147,9 +158,11 @@ public interface SecuredRDFList extends RDFList, SecuredResource
 	 * @sec.triple Read on each triple to be read.
 	 * @sec.triple Create SecTriple( SecNode.FUTURE, RDF.first, value )
 	 * @sec.triple Create SecTriple( SecNode.FUTURE, RDF.rest, this )
+	 * @throws ReadDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredRDFList copy();
+	public SecuredRDFList copy() throws ReadDeniedException, AddDeniedException;
 
 	/**
 	 * Answer the node that is the i'th element of the list, assuming that the
@@ -159,13 +172,13 @@ public interface SecuredRDFList extends RDFList, SecuredResource
 	 * List may be shortened by security constraints.
 	 * 
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 * @throws EmptyListException
 	 * @throws ListIndexException
 	 * @throws InvalidListException
 	 */
 	@Override
-	public SecuredRDFNode get( final int i ) throws AccessDeniedException,
+	public SecuredRDFNode get( final int i ) throws ReadDeniedException,
 			EmptyListException, ListIndexException, InvalidListException;
 
 	/**
@@ -175,11 +188,11 @@ public interface SecuredRDFList extends RDFList, SecuredResource
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read for triple containing value.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 * @throws EmptyListException
 	 */
 	@Override
-	public RDFNode getHead() throws AccessDeniedException, EmptyListException;
+	public RDFNode getHead() throws ReadDeniedException, EmptyListException;
 
 	/**
 	 * The value that is at the tail of the list.
@@ -188,77 +201,78 @@ public interface SecuredRDFList extends RDFList, SecuredResource
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read for triple containing value.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 * @throws EmptyListException
 	 * @throws ListIndexException
 	 * @throws InvalidListException
 	 */
 	@Override
-	public SecuredRDFList getTail() throws AccessDeniedException,
+	public SecuredRDFList getTail() throws ReadDeniedException,
 			EmptyListException, ListIndexException, InvalidListException;
 
 	/**
 	 * @sec.graph Read
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public String getValidityErrorMessage() throws AccessDeniedException;
+	public String getValidityErrorMessage() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read for triple containing value.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 * @throws EmptyListException
 	 * @throws ListIndexException
 	 * @throws InvalidListException
 	 */
 	@Override
-	public int indexOf( final RDFNode value ) throws AccessDeniedException,
+	public int indexOf( final RDFNode value ) throws ReadDeniedException,
 			EmptyListException, ListIndexException, InvalidListException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read for triple containing value.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 * @throws EmptyListException
 	 * @throws ListIndexException
 	 * @throws InvalidListException
 	 */
 	@Override
 	public int indexOf( final RDFNode value, final int start )
-			throws AccessDeniedException, EmptyListException,
+			throws ReadDeniedException, EmptyListException,
 			ListIndexException, InvalidListException;
 
 	/**
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean isEmpty() throws AccessDeniedException;
+	public boolean isEmpty() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean isValid() throws AccessDeniedException, EmptyListException,
+	public boolean isValid() throws ReadDeniedException, EmptyListException,
 			ListIndexException, InvalidListException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read for triple containing value to be included in the result.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public ExtendedIterator<RDFNode> iterator() throws AccessDeniedException;
+	public ExtendedIterator<RDFNode> iterator() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read + requiredPerms for triple containing value to be
 	 *            included in the result.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	public ExtendedIterator<RDFNode> iterator( Set<Action> requiredPerms )
-			throws AccessDeniedException, EmptyListException,
+			throws ReadDeniedException, EmptyListException,
 			ListIndexException, InvalidListException;
 
 	/**
@@ -268,14 +282,14 @@ public interface SecuredRDFList extends RDFList, SecuredResource
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read for triple containing value.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 * @throws EmptyListException
 	 * @throws ListIndexException
 	 * @throws InvalidListException
 	 */
 	@Override
 	public Object reduce( final ReduceFn fn, final Object initial )
-			throws AccessDeniedException, EmptyListException,
+			throws ReadDeniedException, EmptyListException,
 			ListIndexException, InvalidListException;
 
 	/**
@@ -292,123 +306,129 @@ public interface SecuredRDFList extends RDFList, SecuredResource
 	 *            The reduction function
 	 * @param initial
 	 *            The initial state for the ruduce value.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 * @throws EmptyListException
 	 * @throws ListIndexException
 	 * @throws InvalidListException
 	 */
 	public Object reduce( Set<Action> requiredActions, final ReduceFn fn,
-			final Object initial ) throws AccessDeniedException,
+			final Object initial ) throws ReadDeniedException,
 			EmptyListException, ListIndexException, InvalidListException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete for triple containing value.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 * @throws EmptyListException
 	 * @throws ListIndexException
 	 * @throws InvalidListException
 	 */
 	@Override
-	public RDFList remove( final RDFNode val ) throws AccessDeniedException;
+	public RDFList remove( final RDFNode val ) throws UpdateDeniedException, DeleteDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete for all triples.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 * @throws EmptyListException
 	 * @throws ListIndexException
 	 * @throws InvalidListException
 	 */
 	@Override
 	@Deprecated
-	public void removeAll() throws AccessDeniedException;
+	public void removeAll() throws UpdateDeniedException, DeleteDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete for the head triple.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 * @throws EmptyListException
 	 * @throws ListIndexException
 	 * @throws InvalidListException
 	 */
 	@Override
-	public RDFList removeHead() throws AccessDeniedException;
+	public RDFList removeHead() throws UpdateDeniedException, DeleteDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete for triple containing value.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 * @throws EmptyListException
 	 * @throws ListIndexException
 	 * @throws InvalidListException
 	 */
 	@Override
-	public void removeList() throws AccessDeniedException;
+	public void removeList() throws UpdateDeniedException, DeleteDeniedException;
 
 	/**
 	 * @sec.graph Update
-	 * @sec.triple Update for triplie i, and value.
-	 * @throws AccessDeniedException
+	 * @sec.triple Update for triple i, and value.
+	 * @throws UpdateDeniedException
 	 * @throws EmptyListException
 	 * @throws ListIndexException
 	 * @throws InvalidListException
 	 */
 	@Override
 	public SecuredRDFNode replace( final int i, final RDFNode value )
-			throws AccessDeniedException;
+			throws UpdateDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read for triples included in the comparison.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 * @throws EmptyListException
 	 * @throws ListIndexException
 	 * @throws InvalidListException
 	 */
 	@Override
 	public boolean sameListAs( final RDFList list )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create for triple containing value.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 * @throws EmptyListException
 	 * @throws ListIndexException
 	 * @throws InvalidListException
 	 */
 	@Override
 	public SecuredRDFNode setHead( final RDFNode value )
-			throws AccessDeniedException;
+			throws UpdateDeniedException, DeleteDeniedException;
 
 	/**
 	 * @sec.graph Update
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
 	 */
 	@Override
-	public void setStrict( final boolean strict ) throws AccessDeniedException;
+	public void setStrict( final boolean strict ) throws UpdateDeniedException;
 
 	/**
 	 * Size may be modified by security constraionts.
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read for triples counted in the result.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 * @throws EmptyListException
 	 * @throws ListIndexException
 	 * @throws InvalidListException
 	 */
 	@Override
-	public int size() throws AccessDeniedException;
+	public int size() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create for triple containing value.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 */
 	@Override
 	public SecuredRDFList with( final RDFNode value )
-			throws AccessDeniedException;
+			throws UpdateDeniedException, DeleteDeniedException;
 
 }

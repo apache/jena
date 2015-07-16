@@ -17,14 +17,14 @@
  */
 package org.apache.jena.permissions.graph;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.GraphEventManager ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphEventManager;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.Factory;
 import org.apache.jena.permissions.StaticSecurityEvaluator;
 import org.apache.jena.permissions.graph.SecuredGraph;
-import org.apache.jena.sparql.graph.GraphFactory ;
+import org.apache.jena.sparql.graph.GraphFactory;
 import org.junit.Assert;
 import org.junit.Test;
 

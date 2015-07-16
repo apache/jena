@@ -19,39 +19,36 @@ package org.apache.jena.permissions.model;
 
 import java.util.Set;
 
-import org.apache.jena.permissions.AccessDeniedException;
 import org.apache.jena.permissions.MockSecurityEvaluator;
+import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.model.SecuredContainer;
 import org.apache.jena.permissions.model.impl.SecuredContainerImpl;
-import org.apache.jena.rdf.model.Container ;
-import org.apache.jena.rdf.model.ResourceFactory ;
-import org.apache.jena.rdf.model.Statement ;
+import org.apache.jena.rdf.model.Container;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.shared.AccessDeniedException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith( value = SecurityEvaluatorParameters.class )
-public abstract class SecuredContainerTest extends SecuredResourceTest
-{
+@RunWith(value = SecurityEvaluatorParameters.class)
+public abstract class SecuredContainerTest extends SecuredResourceTest {
 
-	public SecuredContainerTest( final MockSecurityEvaluator securityEvaluator )
-	{
+	public SecuredContainerTest(final MockSecurityEvaluator securityEvaluator) {
 		super(securityEvaluator);
 	}
 
-	private SecuredContainer getSecuredContainer()
-	{
+	private SecuredContainer getSecuredContainer() {
 		return (SecuredContainer) getSecuredRDFNode();
 	}
 
 	@Override
 	@Before
-	public void setup()
-	{
+	public void setup() {
 		super.setup();
 		final Container container = baseModel
 				.getBag("http://example.com/testContainer");
@@ -62,22 +59,16 @@ public abstract class SecuredContainerTest extends SecuredResourceTest
 	}
 
 	@Test
-	public void test()
-	{
-		try
-		{
+	public void test() {
+		try {
 			getSecuredContainer().size();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
@@ -86,174 +77,127 @@ public abstract class SecuredContainerTest extends SecuredResourceTest
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
 	 */
 	@Test
-	public void testAdd()
-	{
+	public void testAdd() {
 		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Update, Action.Create });
-		try
-		{
+		try {
 			getSecuredContainer().add(true);
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown AccessDeniedException");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final AccessDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown AccessDeniedException: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			getSecuredContainer().add('c');
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown AccessDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final AccessDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown AccessDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			getSecuredContainer().add(3.14D);
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown AccessDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final AccessDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown AccessDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			getSecuredContainer().add(3.14F);
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown AccessDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final AccessDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown AccessDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			getSecuredContainer().add(2L);
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown AccessDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final AccessDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown AccessDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
 		final Object o = Integer.valueOf("1234");
-		try
-		{
+		try {
 			getSecuredContainer().add(o);
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown AccessDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final AccessDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown AccessDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			getSecuredContainer().add(
 					ResourceFactory
 							.createResource("http://example.com/testResource"));
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown AccessDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final AccessDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown AccessDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			getSecuredContainer().add("foo");
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown AccessDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final AccessDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown AccessDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			getSecuredContainer().add("dos", "esp");
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown AccessDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final AccessDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown AccessDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
@@ -261,216 +205,158 @@ public abstract class SecuredContainerTest extends SecuredResourceTest
 	}
 
 	@Test
-	public void testContains()
-	{
-		try
-		{
+	public void testContains() {
+		try {
 			getSecuredContainer().contains(true);
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			getSecuredContainer().contains('c');
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			getSecuredContainer().contains(3.14D);
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
 						.format("Should not have thrown AccessDenied Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			getSecuredContainer().contains(3.14F);
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			getSecuredContainer().contains(2L);
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
 		final Object o = Integer.valueOf("1234");
-		try
-		{
+		try {
 			getSecuredContainer().contains(o);
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			getSecuredContainer().contains(
 					ResourceFactory
 							.createResource("http://example.com/testResource"));
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
 						.format("Should not have thrown AccessDenied Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			getSecuredContainer().contains("foo");
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 
-		try
-		{
+		try {
 			getSecuredContainer().contains("dos", "esp");
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
-	public void testIterator()
-	{
-		try
-		{
+	public void testIterator() {
+		try {
 			getSecuredContainer().iterator();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
-	public void testRemove()
-	{
+	public void testRemove() {
 		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Update, Action.Delete });
 		final Statement s = baseModel.listStatements().next();
-		try
-		{
+		try {
 			getSecuredContainer().remove(s);
-			if (!securityEvaluator.evaluate(perms))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(perms)) {
+				Assert.fail("Should have thrown AccessDeniedException");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(perms))
-			{
+		} catch (final AccessDeniedException e) {
+			if (securityEvaluator.evaluate(perms)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown AccessDeniedException: %s - %s",
 								e, e.getTriple()));
 			}
 		}

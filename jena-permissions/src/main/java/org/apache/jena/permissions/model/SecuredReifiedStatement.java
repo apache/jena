@@ -17,7 +17,8 @@
  */
 package org.apache.jena.permissions.model;
 
-import org.apache.jena.permissions.AccessDeniedException;
+
+import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.rdf.model.ReifiedStatement ;
 
 /**
@@ -30,9 +31,9 @@ public interface SecuredReifiedStatement extends ReifiedStatement,
 {
 	/**
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredStatement getStatement();
+	public SecuredStatement getStatement() throws ReadDeniedException;
 
 }

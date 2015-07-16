@@ -26,10 +26,10 @@ import java.util.function.Function;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.permissions.AccessDeniedException;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.impl.ItemHolder;
+import org.apache.jena.permissions.impl.SecuredItem;
 import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.permissions.impl.SecuredItemInvoker;
 import org.apache.jena.permissions.model.SecuredModel;
@@ -38,6 +38,7 @@ import org.apache.jena.permissions.model.SecuredRDFNode;
 import org.apache.jena.permissions.utils.RDFListIterator;
 import org.apache.jena.permissions.utils.RDFListSecFilter;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 import org.apache.jena.vocabulary.RDF ;
@@ -767,7 +768,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 
 	@Override
 	public Object reduce( final Set<Action> requiredActions, final ReduceFn fn,
-			final Object initial ) throws AccessDeniedException,
+			final Object initial ) throws 
 			EmptyListException, ListIndexException, InvalidListException
 	{
 		Object acc = initial;
@@ -815,7 +816,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 			}
 			if (denied)
 			{
-				throw new AccessDeniedException(getModelNode(), Action.Delete);
+				throw new DeleteDeniedException(SecuredItem.Util.triplePermissionMsg(getModelNode()));
 			}
 			else
 			{

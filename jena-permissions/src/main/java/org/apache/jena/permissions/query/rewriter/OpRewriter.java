@@ -22,11 +22,12 @@ import java.util.List;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.permissions.AccessDeniedException;
+import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.SecurityEvaluator.SecNode;
 import org.apache.jena.permissions.SecurityEvaluator.SecTriple;
+import org.apache.jena.permissions.impl.SecuredItem;
 import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVisitor ;
@@ -217,7 +218,7 @@ public class OpRewriter implements OpVisitor
 			}
 			else
 			{
-				throw new AccessDeniedException(graphIRI, Action.Read);
+				throw new ReadDeniedException(SecuredItem.Util.modelPermissionMsg(graphIRI));
 			}
 		}
 

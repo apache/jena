@@ -20,6 +20,7 @@ package org.apache.jena.permissions.graph.impl;
 import org.apache.jena.graph.* ;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
+import org.apache.jena.permissions.UpdateDeniedException;
 import org.apache.jena.permissions.graph.*;
 import org.apache.jena.permissions.impl.ItemHolder;
 import org.apache.jena.permissions.impl.SecuredItem;
@@ -72,7 +73,7 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph
 	}
 
 	@Override
-	public void add( final Triple t ) throws AddDeniedException
+	public void add( final Triple t ) throws AddDeniedException, UpdateDeniedException
 	{
 		checkUpdate();
 		checkCreate(t);

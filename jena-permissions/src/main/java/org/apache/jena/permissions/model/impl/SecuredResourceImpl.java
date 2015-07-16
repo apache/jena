@@ -21,9 +21,10 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.permissions.AccessDeniedException;
+import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.impl.ItemHolder;
+import org.apache.jena.permissions.impl.SecuredItem;
 import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.permissions.impl.SecuredItemInvoker;
 import org.apache.jena.permissions.model.SecuredModel;
@@ -356,10 +357,9 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	{
 		if (!canReadProperty(p))
 		{
-			throw new AccessDeniedException(getModelNode(), SecuredItemImpl
-					.convert(
-							new Triple(holder.getBaseItem().asNode(), p,
-									Node.ANY)).toString(), Action.Read);
+			throw new ReadDeniedException(SecuredItem.Util.triplePermissionMsg(getModelNode()), 
+					new Triple(holder.getBaseItem().asNode(), p,
+									Node.ANY));
 		}
 	}
 

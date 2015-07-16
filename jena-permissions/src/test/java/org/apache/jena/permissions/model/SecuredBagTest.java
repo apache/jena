@@ -20,23 +20,20 @@ package org.apache.jena.permissions.model;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.model.impl.SecuredBagImpl;
-import org.apache.jena.rdf.model.Bag ;
+import org.apache.jena.rdf.model.Bag;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 
-@RunWith( value = SecurityEvaluatorParameters.class )
-public class SecuredBagTest extends SecuredContainerTest
-{
+@RunWith(value = SecurityEvaluatorParameters.class)
+public class SecuredBagTest extends SecuredContainerTest {
 
-	public SecuredBagTest( final MockSecurityEvaluator securityEvaluator )
-	{
+	public SecuredBagTest(final MockSecurityEvaluator securityEvaluator) {
 		super(securityEvaluator);
 	}
 
 	@Override
 	@Before
-	public void setup()
-	{
+	public void setup() {
 		super.setup();
 		final Bag bag = baseModel.getBag("http://example.com/testContainer");
 		bag.add("SomeDummyItem");

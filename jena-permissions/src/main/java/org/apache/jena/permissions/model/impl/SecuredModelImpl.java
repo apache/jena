@@ -27,7 +27,6 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.CollectionGraph ;
-import org.apache.jena.permissions.AccessDeniedException;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.SecTriple;
 import org.apache.jena.permissions.graph.SecuredGraph;
@@ -2073,20 +2072,20 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 	public SecuredModel read( final InputStream in, final String base )
 	{
 		checkUpdate();
-		try
-		{
+//		try
+//		{
 			SecuredModelImpl.readerFactory.getReader().read(holder.getSecuredItem(), in, base);
 			return holder.getSecuredItem();
-		}
-		catch (final JenaException e)
-		{
-			if ((e.getCause() != null)
-					&& (e.getCause() instanceof AccessDeniedException))
-			{
-				throw (AccessDeniedException) e.getCause();
-			}
-			throw e;
-		}
+//		}
+//		catch (final JenaException e)
+//		{
+//			if ((e.getCause() != null)
+//					&& (e.getCause() instanceof AccessDeniedRuntimeException))
+//			{
+//				throw (AccessDeniedRuntimeException) e.getCause();
+//			}
+//			throw e;
+//		}
 	}
 
 	@Override
@@ -2094,40 +2093,40 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 			final String lang )
 	{
 		checkUpdate();
-		try
-		{
+//		try
+//		{
 			SecuredModelImpl.readerFactory.getReader(lang).read(holder.getSecuredItem(), in, base);
 			return holder.getSecuredItem();
-		}
-		catch (final JenaException e)
-		{
-			if ((e.getCause() != null)
-					&& (e.getCause() instanceof AccessDeniedException))
-			{
-				throw (AccessDeniedException) e.getCause();
-			}
-			throw e;
-		}
+//		}
+//		catch (final JenaException e)
+//		{
+//			if ((e.getCause() != null)
+//					&& (e.getCause() instanceof AccessDeniedRuntimeException))
+//			{
+//				throw (AccessDeniedRuntimeException) e.getCause();
+//			}
+//			throw e;
+//		}
 	}
 
 	@Override
 	public SecuredModel read( final Reader reader, final String base )
 	{
 		checkUpdate();
-		try
-		{
+//		try
+//		{
 			SecuredModelImpl.readerFactory.getReader().read(holder.getSecuredItem(), reader, base);
 			return holder.getSecuredItem();
-		}
-		catch (final JenaException e)
-		{
-			if ((e.getCause() != null)
-					&& (e.getCause() instanceof AccessDeniedException))
-			{
-				throw (AccessDeniedException) e.getCause();
-			}
-			throw e;
-		}
+//		}
+//		catch (final JenaException e)
+//		{
+//			if ((e.getCause() != null)
+//					&& (e.getCause() instanceof AccessDeniedRuntimeException))
+//			{
+//				throw (AccessDeniedRuntimeException) e.getCause();
+//			}
+//			throw e;
+//		}
 	}
 
 	@Override
@@ -2135,61 +2134,61 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 			final String lang )
 	{
 		checkUpdate();
-		try
-		{
+//		try
+//		{
 			SecuredModelImpl.readerFactory.getReader(lang).read(holder.getSecuredItem(), reader,
 					base);
 			return holder.getSecuredItem();
-		}
-		catch (final JenaException e)
-		{
-			if ((e.getCause() != null)
-					&& (e.getCause() instanceof AccessDeniedException))
-			{
-				throw (AccessDeniedException) e.getCause();
-			}
-			throw e;
-		}
+//		}
+//		catch (final JenaException e)
+//		{
+//			if ((e.getCause() != null)
+//					&& (e.getCause() instanceof AccessDeniedRuntimeException))
+//			{
+//				throw (AccessDeniedRuntimeException) e.getCause();
+//			}
+//			throw e;
+//		}
 	}
 
 	@Override
 	public SecuredModel read( final String url )
 	{
 		checkUpdate();
-		try
-		{
+//		try
+//		{
 			SecuredModelImpl.readerFactory.getReader().read(holder.getSecuredItem(), url);
 			return holder.getSecuredItem();
-		}
-		catch (final JenaException e)
-		{
-			if ((e.getCause() != null)
-					&& (e.getCause() instanceof AccessDeniedException))
-			{
-				throw (AccessDeniedException) e.getCause();
-			}
-			throw e;
-		}
+//		}
+//		catch (final JenaException e)
+//		{
+//			if ((e.getCause() != null)
+//					&& (e.getCause() instanceof AccessDeniedRuntimeException))
+//			{
+//				throw (AccessDeniedRuntimeException) e.getCause();
+//			}
+//			throw e;
+//		}
 	}
 
 	@Override
 	public SecuredModel read( final String url, final String lang )
 	{
 		checkUpdate();
-		try
-		{
+//		try
+//		{
 			SecuredModelImpl.readerFactory.getReader(lang).read(holder.getSecuredItem(), url);
 			return holder.getSecuredItem();
-		}
-		catch (final JenaException e)
-		{
-			if ((e.getCause() != null)
-					&& (e.getCause() instanceof AccessDeniedException))
-			{
-				throw (AccessDeniedException) e.getCause();
-			}
-			throw e;
-		}
+//		}
+//		catch (final JenaException e)
+//		{
+//			if ((e.getCause() != null)
+//					&& (e.getCause() instanceof AccessDeniedRuntimeException))
+//			{
+//				throw (AccessDeniedRuntimeException) e.getCause();
+//			}
+//			throw e;
+//		}
 	}
 
 	@Override

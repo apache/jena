@@ -17,10 +17,12 @@
  */
 package org.apache.jena.permissions.model;
 
-import org.apache.jena.permissions.AccessDeniedException;
+import org.apache.jena.permissions.ReadDeniedException;
+import org.apache.jena.permissions.UpdateDeniedException;
 import org.apache.jena.rdf.model.Alt ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.ResourceF ;
+import org.apache.jena.shared.AddDeniedException;
 
 /**
  * The interface for secured Alt instances.
@@ -33,232 +35,241 @@ public interface SecuredAlt extends Alt, SecuredContainer
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredRDFNode getDefault() throws AccessDeniedException;
+	public SecuredRDFNode getDefault() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredAlt getDefaultAlt() throws AccessDeniedException;
+	public SecuredAlt getDefaultAlt() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredBag getDefaultBag() throws AccessDeniedException;
+	public SecuredBag getDefaultBag() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean getDefaultBoolean() throws AccessDeniedException;
+	public boolean getDefaultBoolean() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public byte getDefaultByte() throws AccessDeniedException;
+	public byte getDefaultByte() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public char getDefaultChar() throws AccessDeniedException;
+	public char getDefaultChar() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public double getDefaultDouble() throws AccessDeniedException;
+	public double getDefaultDouble() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public float getDefaultFloat() throws AccessDeniedException;
+	public float getDefaultFloat() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public int getDefaultInt() throws AccessDeniedException;
+	public int getDefaultInt() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public String getDefaultLanguage() throws AccessDeniedException;
+	public String getDefaultLanguage() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredLiteral getDefaultLiteral() throws AccessDeniedException;
+	public SecuredLiteral getDefaultLiteral() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public long getDefaultLong() throws AccessDeniedException;
+	public long getDefaultLong() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredResource getDefaultResource() throws AccessDeniedException;
+	public SecuredResource getDefaultResource() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	@Deprecated
 	public SecuredResource getDefaultResource( final ResourceF f )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredSeq getDefaultSeq() throws AccessDeniedException;
+	public SecuredSeq getDefaultSeq() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public short getDefaultShort() throws AccessDeniedException;
+	public short getDefaultShort() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public String getDefaultString() throws AccessDeniedException;
+	public String getDefaultString() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update SecTriple(this, RDF.li(1), existing ), SecTriple(this,
 	 *            RDF.li(1), o )
 	 * @sec.triple Create SecTriple(this, RDF.li(1), o ) if no current default
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredAlt setDefault( final boolean o )
-			throws AccessDeniedException;
+			throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update SecTriple(this, RDF.li(1), existing ), SecTriple(this,
 	 *            RDF.li(1), o )
 	 * @sec.triple Create SecTriple(this, RDF.li(1), o ) if no current default
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredAlt setDefault( final char o ) throws AccessDeniedException;
+	public SecuredAlt setDefault( final char o ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update SecTriple(this, RDF.li(1), existing ), SecTriple(this,
 	 *            RDF.li(1), o )
 	 * @sec.triple Create SecTriple(this, RDF.li(1), o ) if no current default
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredAlt setDefault( final double o ) throws AccessDeniedException;
+	public SecuredAlt setDefault( final double o ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update SecTriple(this, RDF.li(1), existing ), SecTriple(this,
 	 *            RDF.li(1), o )
 	 * @sec.triple Create SecTriple(this, RDF.li(1), o ) if no current default
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredAlt setDefault( final float o ) throws AccessDeniedException;
+	public SecuredAlt setDefault( final float o ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update SecTriple(this, RDF.li(1), existing ), SecTriple(this,
 	 *            RDF.li(1), o )
 	 * @sec.triple Create SecTriple(this, RDF.li(1), o ) if no current default
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredAlt setDefault( final long o ) throws AccessDeniedException;
+	public SecuredAlt setDefault( final long o ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update SecTriple(this, RDF.li(1), existing ), SecTriple(this,
 	 *            RDF.li(1), o )
 	 * @sec.triple Create SecTriple(this, RDF.li(1), o ) if no current default
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredAlt setDefault( final Object o ) throws AccessDeniedException;
+	public SecuredAlt setDefault( final Object o ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update SecTriple(this, RDF.li(1), existing ), SecTriple(this,
 	 *            RDF.li(1), o )
 	 * @sec.triple Create SecTriple(this, RDF.li(1), o ) if no current default
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredAlt setDefault( final RDFNode o )
-			throws AccessDeniedException;
+			throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update SecTriple(this, RDF.li(1), existing ), SecTriple(this,
 	 *            RDF.li(1), o )
 	 * @sec.triple Create SecTriple(this, RDF.li(1), o ) if no current default
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredAlt setDefault( final String o ) throws AccessDeniedException;
+	public SecuredAlt setDefault( final String o ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update SecTriple(this, RDF.li(1), existing ), SecTriple(this,
 	 *            RDF.li(1), o )
 	 * @sec.triple Create SecTriple(this, RDF.li(1), o ) if no current default
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredAlt setDefault( final String o, final String l )
-			throws AccessDeniedException;
+			throws UpdateDeniedException, AddDeniedException;
 
 }

@@ -23,6 +23,14 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.jena.graph.FrontsNode;
+import org.apache.jena.graph.FrontsTriple;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.LiteralLabel;
+import org.apache.jena.graph.impl.LiteralLabelFactory;
+import org.apache.jena.rdf.model.AnonId;
 
 /**
  * SecurityEvaluator.
@@ -124,7 +132,7 @@ public interface SecurityEvaluator {
 	 * An "Any" node type matches any node.
 	 * </p>
 	 */
-	public static class SecNode implements Comparable<SecNode> {
+	public static class SecNode implements Comparable<SecNode>, FrontsNode {
 
 		/**
 		 * The types of nodes.
@@ -294,12 +302,31 @@ public interface SecurityEvaluator {
 		public String toString() {
 			return String.format("[%s:%s]", getType(), getValue());
 		}
+
+		@Override
+		public Node asNode() {
+			switch (type) {
+			case Anonymous:
+				AnonId id = AnonId.create(value);
+				return NodeFactory.createAnon( id );
+			case Any:
+				return Node.ANY;
+			case Literal:
+				LiteralLabel lit = LiteralLabelFactory.create(value, (String)null);
+				return NodeFactory.createLiteral(lit);
+			case URI:
+				return NodeFactory.createURI( value );
+			
+			default :
+				return Node.ANY;
+			}
+		}
 	}
 
 	/**
 	 * An immutable triple of SecNodes.
 	 */
-	public static class SecTriple implements Comparable<SecTriple> {
+	public static class SecTriple implements Comparable<SecTriple>, FrontsTriple {
 		private final SecNode subject;
 		private final SecNode predicate;
 		private final SecNode object;
@@ -394,6 +421,11 @@ public interface SecurityEvaluator {
 			return String.format("( %s, %s, %s )", getSubject(),
 					getPredicate(), getObject());
 		}
+
+		@Override
+		public Triple asTriple() {
+			return new Triple( subject.asNode(), predicate.asNode(), object.asNode() );
+		}
 	}
 
 	/**
@@ -446,6 +478,7 @@ public interface SecurityEvaluator {
 	 * @param graphIRI
 	 *            The IRI of the graph to check
 	 * @return true if the action is allowed, false otherwise.
+	 * 
 	 */
 	public boolean evaluate(Object principal, Action action, SecNode graphIRI);
 

@@ -17,24 +17,23 @@
  */
 package org.apache.jena.permissions.model;
 
-import org.apache.jena.permissions.AccessDeniedException;
 import org.apache.jena.permissions.Factory;
 import org.apache.jena.permissions.MockSecurityEvaluator;
+import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.model.SecuredRDFNode;
 import org.apache.jena.permissions.model.impl.SecuredRDFNodeImpl;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.*;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith( value = SecurityEvaluatorParameters.class )
-public class SecuredRDFNodeTest
-{
+@RunWith(value = SecurityEvaluatorParameters.class)
+public class SecuredRDFNodeTest {
 	protected final MockSecurityEvaluator securityEvaluator;
 	protected Model baseModel;
 	protected SecuredModel securedModel;
@@ -50,36 +49,30 @@ public class SecuredRDFNodeTest
 	public static Resource o = ResourceFactory
 			.createResource("http://example.com/graph/o");
 
-	public SecuredRDFNodeTest( final MockSecurityEvaluator securityEvaluator )
-	{
+	public SecuredRDFNodeTest(final MockSecurityEvaluator securityEvaluator) {
 		this.securityEvaluator = securityEvaluator;
 	}
 
-	protected Model createModel()
-	{
+	protected Model createModel() {
 		return ModelFactory.createDefaultModel();
 	}
 
-	protected RDFNode getBaseRDFNode()
-	{
+	protected RDFNode getBaseRDFNode() {
 		return baseRDFNode;
 	}
 
-	protected SecuredRDFNode getSecuredRDFNode()
-	{
+	protected SecuredRDFNode getSecuredRDFNode() {
 		return securedRDFNode;
 	}
 
-	protected void setSecuredRDFNode( final SecuredRDFNode securedRDFNode,
-			final RDFNode baseRDFNode )
-	{
+	protected void setSecuredRDFNode(final SecuredRDFNode securedRDFNode,
+			final RDFNode baseRDFNode) {
 		this.securedRDFNode = securedRDFNode;
 		this.baseRDFNode = baseRDFNode;
 	}
 
 	@Before
-	public void setup()
-	{
+	public void setup() {
 		baseModel = createModel();
 		baseModel.removeAll();
 		baseModel.add(SecuredRDFNodeTest.s, SecuredRDFNodeTest.p,
@@ -94,86 +87,66 @@ public class SecuredRDFNodeTest
 	}
 
 	@After
-	public void teardown()
-	{
+	public void teardown() {
 		securedModel.close();
 		securedModel = null;
 	}
 
 	@Test
-	public void testAsNode()
-	{
-		try
-		{
+	public void testAsNode() {
+		try {
 			securedRDFNode.asNode();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
-	public void testCanAs()
-	{
-		try
-		{
+	public void testCanAs() {
+		try {
 			securedRDFNode.canAs(Resource.class);
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
-	public void testGetModel()
-	{
+	public void testGetModel() {
 		final Model m2 = securedRDFNode.getModel();
 		Assert.assertTrue("Model should have been secured",
 				m2 instanceof SecuredModel);
 	}
 
 	@Test
-	public void testInModel()
-	{
+	public void testInModel() {
 		final Model m2 = ModelFactory.createDefaultModel();
-		try
-		{
+		try {
 			final RDFNode n2 = securedRDFNode.inModel(m2);
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
 			Assert.assertFalse("RDFNode should not have been secured",
 					n2 instanceof SecuredRDFNode);
 			Assert.assertEquals("Wrong securedModel returned", n2.getModel(),
 					m2);
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
@@ -182,24 +155,19 @@ public class SecuredRDFNodeTest
 		final SecuredModel m3 = Factory.getInstance(securityEvaluator,
 				"http://example.com/securedGraph2", m2);
 
-		try
-		{
+		try {
 			final RDFNode n2 = securedRDFNode.inModel(m3);
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
 			Assert.assertTrue("RDFNode should have been secured",
 					n2 instanceof SecuredRDFNode);
 			Assert.assertEquals("Wrong securedModel returned", n2.getModel(),
 					m3);
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}

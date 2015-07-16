@@ -17,37 +17,33 @@
  */
 package org.apache.jena.permissions.model;
 
-import org.apache.jena.permissions.AccessDeniedException;
 import org.apache.jena.permissions.MockSecurityEvaluator;
+import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.model.SecuredReifiedStatement;
 import org.apache.jena.permissions.model.impl.SecuredReifiedStatementImpl;
-import org.apache.jena.rdf.model.ReifiedStatement ;
+import org.apache.jena.rdf.model.ReifiedStatement;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith( value = SecurityEvaluatorParameters.class )
-public class SecuredReifiedStatementTest extends SecuredResourceTest
-{
+@RunWith(value = SecurityEvaluatorParameters.class)
+public class SecuredReifiedStatementTest extends SecuredResourceTest {
 
 	public SecuredReifiedStatementTest(
-			final MockSecurityEvaluator securityEvaluator )
-	{
+			final MockSecurityEvaluator securityEvaluator) {
 		super(securityEvaluator);
 	}
 
-	private SecuredReifiedStatement getSecuredReifiedStatement()
-	{
+	private SecuredReifiedStatement getSecuredReifiedStatement() {
 		return (SecuredReifiedStatement) getSecuredRDFNode();
 	}
 
 	@Override
 	@Before
-	public void setup()
-	{
+	public void setup() {
 		super.setup();
 		final ReifiedStatement stmt = baseModel.listStatements().next()
 				.createReifiedStatement();
@@ -58,25 +54,19 @@ public class SecuredReifiedStatementTest extends SecuredResourceTest
 
 	/**
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws AccessDeniedRuntimeException
 	 */
 	@Test
-	public void testGetStatement()
-	{
-		try
-		{
+	public void testGetStatement() {
+		try {
 			getSecuredReifiedStatement().getStatement();
-			if (!securityEvaluator.evaluate(Action.Read))
-			{
-				Assert.fail("Should have thrown AccessDenied Exception");
+			if (!securityEvaluator.evaluate(Action.Read)) {
+				Assert.fail("Should have thrown ReadDeniedException Exception");
 			}
-		}
-		catch (final AccessDeniedException e)
-		{
-			if (securityEvaluator.evaluate(Action.Read))
-			{
+		} catch (final ReadDeniedException e) {
+			if (securityEvaluator.evaluate(Action.Read)) {
 				Assert.fail(String
-						.format("Should not have thrown AccessDenied Exception: %s - %s",
+						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
 								e, e.getTriple()));
 			}
 		}
