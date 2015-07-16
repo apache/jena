@@ -18,38 +18,14 @@
 
 package org.apache.jena.shared;
 
-import org.apache.jena.graph.Triple;
-
 /**
- * Exception to throw if a delete is denied.
- */
-public class DeleteDeniedException extends AccessDeniedException {
-	public DeleteDeniedException() {
-		super();
-	}
+    Superclass of exceptions of all refusals of operation on a graph.
+*/
 
-	public DeleteDeniedException(String message) {
-		super(message);
-	}
-
-	public DeleteDeniedException(String message, Triple triple) {
-		super(message, triple);
-	}
-
-	public DeleteDeniedException(String message, Throwable cause, Triple triple) {
-		super(message, cause, triple);
-	}
-
-	public DeleteDeniedException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public DeleteDeniedException(Throwable cause, Triple triple) {
-		super(cause, triple);
-	}
-
-	public DeleteDeniedException(Throwable cause) {
-		super(cause);
-	}
-
-}
+public class OperationDeniedException extends JenaException
+    {
+    	public OperationDeniedException()                                  { super(); }
+    	public OperationDeniedException(String message)                    { super(message); }
+    	public OperationDeniedException(Throwable cause)                   { super(cause) ; }
+    	public OperationDeniedException(String message, Throwable cause)   { super(message, cause) ; }
+    }

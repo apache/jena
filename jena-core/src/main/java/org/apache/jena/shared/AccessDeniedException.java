@@ -18,25 +18,38 @@
 
 package org.apache.jena.shared;
 
-import org.apache.jena.graph.* ;
+import org.apache.jena.graph.Triple ;
 
 /**
-    Superclass of exceptions thrown when attempting to add/delete on a
-    readonly graph/model.
+    Superclass of exceptions thrown when permissions do not allow an operation 
+    on a graph.
 */
 
-public class UpdateDeniedException extends JenaException
+public class AccessDeniedException extends OperationDeniedException
     {
     private Triple triple;
     
-    public UpdateDeniedException( String message )
-        { super(message); }
-
-    public UpdateDeniedException( String message, Triple triple )
+    public AccessDeniedException()                                  { super(); }
+	public AccessDeniedException(String message)                    { super(message); }
+	public AccessDeniedException(Throwable cause)                   { super(cause) ; }
+	public AccessDeniedException(String message, Throwable cause)   { super(message, cause) ; }
+	
+   
+    public AccessDeniedException( String message, Triple triple )
         { 
         super( message + triple.toString() ); 
         this.triple = triple;
         }
+    
+    public AccessDeniedException(Throwable cause, Triple triple)                   
+    { 
+    	super(cause) ;
+    	 this.triple = triple;
+    }
+	public AccessDeniedException(String message, Throwable cause, Triple triple)   { 
+		super(message, cause) ; 
+		this.triple = triple;
+	}
         
     public Triple getTriple()
         { return triple; }
