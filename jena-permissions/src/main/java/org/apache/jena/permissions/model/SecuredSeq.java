@@ -34,6 +34,7 @@ import org.apache.jena.shared.DeleteDeniedException;
  * http://www.w3.org/TR/2004/REC-rdf-mt-20040210/#Containers
  * 
  */
+@SuppressWarnings("deprecation")
 public interface SecuredSeq extends Seq, SecuredContainer
 {
 	/**	 * 

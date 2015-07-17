@@ -223,7 +223,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     @Test public void testModify2()
     {
         // Use blank nodes (will expose any problems in serialization when spill occurs)
-        Triple t =  new Triple(org.apache.jena.graph.NodeFactory.createAnon(),p,o2);
+        Triple t =  new Triple(org.apache.jena.graph.NodeFactory.createBlankNode(),p,o2);
         
         DatasetGraph gStore = getEmptyDatasetGraph() ;
         // Set the threshold to in order to force spill to disk
@@ -272,8 +272,8 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     @Test public void testCopy()
     {
         // Use blank nodes (will expose any problems in serialization when spill occurs)
-        Triple t =  new Triple(org.apache.jena.graph.NodeFactory.createAnon(),p,o2);
-        Triple t2 = new Triple(org.apache.jena.graph.NodeFactory.createAnon(),p,o1);
+        Triple t =  new Triple(org.apache.jena.graph.NodeFactory.createBlankNode(),p,o2);
+        Triple t2 = new Triple(org.apache.jena.graph.NodeFactory.createBlankNode(),p,o1);
         
         DatasetGraph gStore = getEmptyDatasetGraph() ;
         // Set the threshold to in order to force spill to disk
@@ -333,7 +333,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
         
         
         Graph g = GraphFactory.createPlainGraph() ;
-        Node b = org.apache.jena.graph.NodeFactory.createAnon() ;
+        Node b = org.apache.jena.graph.NodeFactory.createBlankNode() ;
         
         g.add(new Triple(s, p, b)) ;
         g.add(new Triple(b, q, v)) ;

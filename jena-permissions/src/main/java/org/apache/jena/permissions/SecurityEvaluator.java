@@ -30,7 +30,6 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.graph.impl.LiteralLabelFactory;
-import org.apache.jena.rdf.model.AnonId;
 
 /**
  * SecurityEvaluator.
@@ -307,8 +306,7 @@ public interface SecurityEvaluator {
 		public Node asNode() {
 			switch (type) {
 			case Anonymous:
-				AnonId id = AnonId.create(value);
-				return NodeFactory.createAnon( id );
+				return NodeFactory.createBlankNode( value );
 			case Any:
 				return Node.ANY;
 			case Literal:

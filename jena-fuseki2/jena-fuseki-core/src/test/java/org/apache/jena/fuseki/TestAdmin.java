@@ -21,6 +21,7 @@ package org.apache.jena.fuseki;
 import static org.apache.jena.fuseki.ServerTest.datasetPath ;
 import static org.apache.jena.fuseki.ServerTest.urlRoot ;
 import static org.apache.jena.fuseki.mgt.MgtConst.opDatasets ;
+import static org.apache.jena.fuseki.mgt.MgtConst.opListBackups ;
 import static org.apache.jena.fuseki.mgt.MgtConst.opPing ;
 import static org.apache.jena.fuseki.mgt.MgtConst.opServer ;
 import static org.apache.jena.fuseki.mgt.MgtConst.opStats ;
@@ -315,16 +316,23 @@ public class TestAdmin extends BaseTest {
     }
     
     @Test public void task_5() {
-        // Short ruuning task - still in info API call.
+        // Short running task - still in info API call.
         String x = execSleepTask(null, 1) ;
         checkInTasks(x) ;
+    }
+
+    @Test public void list_backups_1() {
+        try ( TypedInputStream in = execHttpGet(urlRoot+"$/"+opListBackups) ) {
+            assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType()) ;
+            JsonValue v = JSON.parseAny(in) ;
+            assertNotNull(v.getAsObject().get("backups")) ; 
+        }
     }
 
     private JsonValue getTask(String taskId) {
         String url = urlRoot+"$/tasks/"+taskId ;
         return httpGetJson(url) ;
     }
-    
 
     private static JsonValue getDatasetDescription(String dsName) {
     try ( TypedInputStream in = execHttpGet(urlRoot+"$/"+opDatasets+"/"+dsName) ) {

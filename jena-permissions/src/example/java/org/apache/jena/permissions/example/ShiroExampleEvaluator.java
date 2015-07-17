@@ -17,22 +17,16 @@
  */
 package org.apache.jena.permissions.example;
 
-import java.util.Set;
+import java.util.Set ;
 
-import org.apache.jena.permissions.SecurityEvaluator;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.rdf.model.AnonId;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.permissions.SecurityEvaluator ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.vocabulary.RDF ;
+import org.apache.shiro.SecurityUtils ;
+import org.apache.shiro.subject.Subject ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 /**
  * Class to use Shiro to provide credentials.
@@ -130,7 +124,7 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
 		}
 		// anonymous nodes have to be retrieved from the model as anonymous nodes.
 		else if (node.getType().equals( SecNode.Type.Anonymous)) {
-			Resource r = model.getRDFNode( NodeFactory.createAnon( new AnonId( node.getValue()) ) ).asResource();
+			Resource r = model.getRDFNode( NodeFactory.createBlankNode( node.getValue()) ).asResource();
 			return evaluate( principal, r );
 		}
 		// anything else (literals) can be seen.

@@ -17,20 +17,19 @@
  */
 package org.apache.jena.permissions.model;
 
-import java.net.URL;
-import java.security.Principal;
-import java.util.Set;
+import java.net.URL ;
+import java.security.Principal ;
+import java.util.Set ;
 
-import org.apache.http.auth.BasicUserPrincipal;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.permissions.Factory;
-import org.apache.jena.permissions.SecurityEvaluator;
-import org.apache.jena.permissions.model.SecuredModel;
-import org.apache.jena.rdf.model.*;
-import org.apache.jena.vocabulary.RDF;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.http.auth.BasicUserPrincipal ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.permissions.Factory ;
+import org.apache.jena.permissions.SecurityEvaluator ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.vocabulary.RDF ;
+import org.junit.Assert ;
+import org.junit.Before ;
+import org.junit.Test ;
 
 /**
  * Tests secured model functions against graph where only partial data is
@@ -306,19 +305,19 @@ public class SecuredModelDetailTest {
 			return true;
 		}
 
-		private boolean evaluate(SecNode node) {
-			if (node.equals(SecNode.ANY)) {
-				return false; // all wild cards are false
+		private boolean evaluate( SecNode node )
+		{
+			if (node.equals( SecNode.ANY )) {
+				return false;  // all wild cards are false
 			}
-
-			if (node.getType().equals(SecNode.Type.URI)) {
-				Resource r = model.createResource(node.getValue());
-				return evaluate(r);
-			} else if (node.getType().equals(SecNode.Type.Anonymous)) {
-				Resource r = model.getRDFNode(
-						NodeFactory.createAnon(new AnonId(node.getValue())))
-						.asResource();
-				return evaluate(r);
+			
+			if (node.getType().equals( SecNode.Type.URI)) {
+				Resource r = model.createResource( node.getValue() );
+				return evaluate( r );
+			}
+			else if (node.getType().equals( SecNode.Type.Anonymous)) {
+				Resource r = model.getRDFNode( NodeFactory.createBlankNode( node.getValue()) ).asResource();
+				return evaluate( r );
 			} else {
 				return true;
 			}

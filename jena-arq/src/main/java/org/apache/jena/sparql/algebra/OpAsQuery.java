@@ -69,7 +69,14 @@ import org.apache.jena.vocabulary.RDF ;
 public class OpAsQuery {
     // Query cleaning is done in fixupGroupsOfOne by applying an ElementTransform. 
     
-    // TODO OpTopN (which is an optimizer additional algebra operator).
+    // Some thigns that can be done further:
+    
+    // TODO Optimization formats like OpTopN (which is an optimizer additional algebra operator).
+    // TODO More group flattening.
+    // OPTIONAL (LeftJoin) unbundles the LHS to avoid { { P OPTIONAL{} } OPTIONAL{} }
+    // This is actually a general situation.
+    // Adding onto the end of a group when the item added can not merge into the existing last element.  
+    // e.g. BIND, VALUES.
 
     static class /* struct */ QueryLevelDetails {
         // The stack of processing in a query is:
@@ -338,9 +345,11 @@ public class OpAsQuery {
         private static Expr rewrite(Expr expr, ExprTransform transform) {
             return ExprTransformer.transform(transform, expr) ;
         }
-
         
-        // processQueryPattern : query.setQueryPattern
+        /**
+         * Process for a single pattern below the modifiers.
+         * Cleans up the ElementGroup produced.
+         */
         
         private void processQueryPattern(QueryLevelDetails level) {
             Op op = level.pattern ;
@@ -379,14 +388,14 @@ public class OpAsQuery {
             return el2 ;
         }
         
-        Element asElement(Op op) {
+        private Element asElement(Op op) {
             ElementGroup g = asElementGroup(op) ;
             if ( g.size() == 1 )
                 return g.get(0) ;
             return g ;
         }
 
-        ElementGroup asElementGroup(Op op) {
+        private ElementGroup asElementGroup(Op op) {
             startSubGroup() ;
             op.visit(this) ;
             return endSubGroup() ;
@@ -437,7 +446,7 @@ public class OpAsQuery {
         // There is one special case to consider:
         // A path expression was expanded into a OpSequence during Algenra
         // generation. The simple path expressions become an OpSequence that could be
-        // recombined into an ElementPathBlock
+        // recombined into an ElementPathBlock.
 
         @Override
         public void visit(OpSequence opSequence) {
@@ -450,9 +459,9 @@ public class OpAsQuery {
 
             for ( Op op : opSequence.getElements() ) {
                 Element e = asElement(op) ;
-                g.addElement(e) ;
+                insertIntoGroup(g, e) ;
             }
-
+            
             if ( nestGroup )
                 endSubGroup() ;
             return ;
@@ -536,7 +545,7 @@ public class OpAsQuery {
             ElementGroup eRightGroup = asElementGroup(opJoin.getRight()) ;
             Element eRight = eRightGroup ;
             // Very special case. If the RHS is not something that risks
-            // reparsing into a copmbined element of a group, strip the group-of-one. 
+            // reparsing into a combined element of a group, strip the group-of-one. 
             // See also ElementTransformCleanGroupsOfOne
             if ( eRightGroup.size() == 1 ) {
                 // This always was a {} around it but it's unnecessary in a group of one. 
@@ -545,16 +554,9 @@ public class OpAsQuery {
             }
 
             ElementGroup g = currentGroup() ;
-            g.addElement(eLeft) ;
-            g.addElement(eRight) ;
+            insertIntoGroup(g, eLeft) ;
+            insertIntoGroup(g, eRight) ;
             return ;
-        }
-
-        private static boolean emptyGroup(Element element) {
-            if ( !(element instanceof ElementGroup) )
-                return false ;
-            ElementGroup eg = (ElementGroup)element ;
-            return eg.isEmpty() ;
         }
 
         @Override
@@ -567,13 +569,7 @@ public class OpAsQuery {
             // OPTIONAL {{ ?s ?p ?o FILTER (?o>34) }} is not the same as
             // OPTIONAL { ?s ?p ?o FILTER (?o>34) }
             
-            boolean mustProtect = false ;
-            for ( Element el : eRight.getElements() ) {
-                if ( el instanceof ElementFilter ) {
-                    mustProtect = true ;
-                    break ;
-                }
-            }
+            boolean mustProtect = eRight.getElements().stream().anyMatch(el -> el instanceof ElementFilter ) ;
                 
             if ( mustProtect ) {
                 ElementGroup eRight2 = new ElementGroup() ;
@@ -588,8 +584,13 @@ public class OpAsQuery {
                 }
             }
             ElementGroup g = currentGroup() ;
-            if ( !emptyGroup(eLeft) )
-                g.addElement(eLeft) ;
+            if ( !emptyGroup(eLeft) ) {
+                if ( eLeft instanceof ElementGroup )
+                    g.getElements().addAll(((ElementGroup)eLeft).getElements()) ;
+                else
+                    g.addElement(eLeft) ;
+            }
+                
             ElementOptional opt = new ElementOptional(eRight) ;
             g.addElement(opt) ;
         }
@@ -725,18 +726,18 @@ public class OpAsQuery {
         @Override
         public void visit(OpAssign opAssign) {
             Element e = asElement(opAssign.getSubOp()) ;
-            if ( currentGroup() != e )
-                currentGroup().addElement(e) ;
+            // If (assign ... (table unit)), and first in group, don't add the empty group.
+            insertIntoGroup(currentGroup(), e) ;
             processAssigns(Arrays.asList(opAssign), (var,expr)->{
                 currentGroup().addElement(new ElementAssign(var,expr)) ;
             }) ;
         }
-
+        
         @Override
         public void visit(OpExtend opExtend) {
             Element e = asElement(opExtend.getSubOp()) ;
-            if ( currentGroup() != e )
-                currentGroup().addElement(e) ;
+            // If (extend ... (table unit)), and first in group, don't add the empty group.
+            insertIntoGroup(currentGroup(), e) ;
             processExtends(Arrays.asList(opExtend), (var,expr)->{
                 currentGroup().addElement(new ElementBind(var,expr)) ;
             }) ;
@@ -797,12 +798,68 @@ public class OpAsQuery {
             throw new ARQNotImplemented("OpTopN") ;
         }
 
+        private static boolean emptyGroup(Element element) {
+            if ( !(element instanceof ElementGroup) )
+                return false ;
+            ElementGroup eg = (ElementGroup)element ;
+            return eg.isEmpty() ;
+        }
+
+        private static boolean groupOfOne(Element element) {
+            if ( !(element instanceof ElementGroup) )
+                return false ;
+            ElementGroup eg = (ElementGroup)element ;
+            return eg.size() == 1 ;
+        }
+
+        /** Insert into a group, skip initial empty subgroups; recombining ElementPathBlock */
+        private static void insertIntoGroup(ElementGroup eg, Element e) {
+            // Skip initial empty subgroup.
+            if ( emptyGroup(e) && eg.isEmpty() )
+                return ;
+
+            // Empty group.
+            if ( eg.isEmpty() ) {
+                eg.addElement(e);
+                return ;
+            }
+            
+            Element eltTop = eg.getLast() ;
+            if ( ! ( eltTop instanceof ElementPathBlock ) ) {
+                // Not working on a ElementPathBlock - no need to group-of-one 
+                // when inserting ElementPathBlock.
+                e = unwrapGroupOfOnePathBlock(e) ;
+                eg.addElement(e);
+                return ;
+            }
+            if ( ! ( e  instanceof ElementPathBlock ) ) {
+                eg.addElement(e);
+                return ;
+            }
+            // Combine.
+            ElementPathBlock currentPathBlock = (ElementPathBlock)eltTop ;
+            ElementPathBlock newPathBlock = (ElementPathBlock)e ;
+            currentPathBlock.getPattern().addAll(newPathBlock.getPattern());
+        }
+
+        private static Element unwrapGroupOfOnePathBlock(Element e) {
+            Element e2 = getElementOfGroupOfOne(e) ;
+            if ( e2 != null )
+                return e2 ;
+            return e ;
+        }
+
+        private static Element getElementOfGroupOfOne(Element e) {
+            if ( groupOfOne(e) ) {
+                ElementGroup eg = (ElementGroup)e ;
+                return eg.get(0) ;
+            }
+            return null ;
+        }
+        
         private Element lastElement() {
             ElementGroup g = currentGroup ;
-            if ( g == null || g.size() == 0 )
-                return null ;
-            int len = g.size() ;
-            return g.get(len - 1) ;
+            return g.getLast() ; 
         }
 
         private void startSubGroup() {

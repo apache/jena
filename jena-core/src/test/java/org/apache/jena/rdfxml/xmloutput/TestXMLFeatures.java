@@ -418,7 +418,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
         // SystemOutAndErr.block();
         // TestLogger tl = new TestLogger(BaseXMLWriter.class);
         blockLogger() ;
-        Node blank = NodeFactory.createAnon() ;
+        Node blank = NodeFactory.createBlankNode() ;
         Node prop = NodeFactory.createURI(s) ;
         Graph g = Factory.createGraphMem() ;
         g.add(Triple.create(blank, prop, blank)) ;

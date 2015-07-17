@@ -18,28 +18,22 @@
 
 package org.apache.jena.sparql.resultset;
 
-import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
-import java.util.Queue;
-import java.util.Set;
+import java.io.InputStream ;
+import java.util.* ;
 
-import org.apache.jena.atlas.AtlasException;
-import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.atlas.io.PeekReader;
-import org.apache.jena.atlas.iterator.PeekIterator;
-import org.apache.jena.atlas.json.io.parser.TokenizerJSON;
+import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.PeekReader ;
+import org.apache.jena.atlas.iterator.PeekIterator ;
+import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.QueryException ;
-import org.apache.jena.rdf.model.AnonId ;
-import org.apache.jena.riot.tokens.Token;
-import org.apache.jena.riot.tokens.TokenType;
 import org.apache.jena.riot.RiotParseException ;
+import org.apache.jena.riot.tokens.Token ;
+import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
@@ -552,7 +546,7 @@ public class JSONInputIterator extends QueryIteratorBase {
 					return NodeFactory.createLiteral(value);
 				}
 			} else if (type.equals("bnode")) {
-				return NodeFactory.createAnon(new AnonId(value));
+				return NodeFactory.createBlankNode(value);
 			} else {
 				exception(pos, "Encountered a Node object with an invalid type value '%s', expected one of uri, literal or bnode", type);
 			}

@@ -347,7 +347,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 		super(securityEvaluator, modelURI, holder);
 		this.graph = org.apache.jena.permissions.Factory.getInstance(securityEvaluator, modelURI, holder
 				.getBaseItem().getGraph());
-		this.holder = holder; // FIXME -- this should just access the super holder.
+		this.holder = holder; 
 	}
 	
 	 private RDFNode asObject( Object o )
@@ -1536,11 +1536,13 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 		return holder.getBaseItem().getReader(lang);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void resetRDFReaderF() {
 		holder.getBaseItem().resetRDFReaderF();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public String removeReader(String lang) throws IllegalArgumentException {
 		return holder.getBaseItem().removeReader(lang);
@@ -1621,11 +1623,13 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 		return holder.getBaseItem().getWriter(lang);
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void resetRDFWriterF() {
 		holder.getBaseItem().resetRDFWriterF();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public String removeWriter(String lang) throws IllegalArgumentException {
 		return holder.getBaseItem().removeWriter(lang);
@@ -2485,6 +2489,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 		return holder.getSecuredItem();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public String setReaderClassName( final String lang, final String className )
 	{
@@ -2492,6 +2497,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 		return holder.getBaseItem().setReaderClassName(lang, className);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public String setWriterClassName( final String lang, final String className )
 	{

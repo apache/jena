@@ -30,6 +30,7 @@ import org.apache.jena.query.QueryFactory ;
 import org.apache.jena.query.Syntax ;
 import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Assert ;
 import org.junit.Test ;
 
@@ -52,9 +53,13 @@ public class TestOpAsQuery {
     @Test public void testOptional02() 
     { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { { ?s ?q ?z FILTER (?foo) } } }") ; }
     
-    /**
-     * Test of asQuery method, of class OpAsQuery.
-     */
+    @Test public void testOptional03() 
+    // Don't currently unnest the LHS of the second optional.  See testOptional03a
+    { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s ?p1 ?o1 } OPTIONAL { ?s ?p2 ?o2 } } ") ; }
+
+    @Test public void testOptional04() 
+    { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s ?p1 ?o1 } OPTIONAL { ?s ?p2 ?o2 } OPTIONAL { ?s ?p3 ?o3 }} ") ; }
+
     @Test
     public void testCountStar() {
         test_roundTripQuery("select (count(*) as ?cs) { ?s ?p ?o }");
@@ -128,10 +133,7 @@ public class TestOpAsQuery {
     { test_roundTripQuery("SELECT ?s { ?s ?p ?o { SELECT (count(*) as ?cp) { ?s ?p ?o } }}") ; }
     
     @Test public void testSubQuery_03()
-    //{ testRoundTripQuery("SELECT ?s { { SELECT (count(*) as ?cp) { ?s ?p ?o } } ?s ?p ?o }") ; }
-    // The trailing ?s ?p ?o gets a {} round it.
-    { test_equivalentQuery("SELECT ?s { { SELECT (count(*) as ?cp) { ?s ?p ?o } } ?s ?p ?o }",
-                           "SELECT ?s { { SELECT (count(*) as ?cp) { ?s ?p ?o } } { ?s ?p ?o } }") ; }
+    { test_roundTripQuery("SELECT ?s { { SELECT (count(*) as ?cp) { ?s ?p ?o } } ?s ?p ?o }") ; }
     
     @Test public void testSubQuery_04()
     { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o . BIND(?o AS ?x) }") ; }
@@ -365,16 +367,14 @@ public class TestOpAsQuery {
     
     @Test
     public void testPathExpressions1() {
-        // test that the query after serialization is legal (as much a test of the serializer as way OpAsQuery works)
         String query = "PREFIX : <http://example/> SELECT * { ?s :p* ?o . ?x :r 123 . }" ;
-        test_roundTripAlegbra(query);
+        test_roundTripQuery(query);
     }
         
     @Test
     public void testPathExpressions2() {
-        // test that the query  
         String query = "PREFIX : <http://example/> SELECT * { ?s :p*/:q ?o . ?x :r 123 . }" ;
-        test_roundTripAlegbra(query);
+        test_roundTripQuery(query);
     }
 
     @Test
@@ -384,16 +384,53 @@ public class TestOpAsQuery {
     
     @Test
     public void testMinus2() {
-        // query gains a level of {} but the meaning is the same. 
-        String query = "PREFIX : <http://example/> SELECT * { ?s :p ?o OPTIONAL { ?s :x ?2 } MINUS { ?s :q ?v .FILTER(?v<5) } }" ; 
-       test_roundTripAlegbra(query);
+        // query gains a level of {} but the meaning is the same.
+        String query = "PREFIX : <http://example/> SELECT * { ?s :p ?o OPTIONAL { ?s :x ?2 } MINUS { ?s :q ?v .FILTER(?v<5) } }" ;
+        test_roundTripAlegbra(query) ;
     }
     
+    @Test
+    public void testValues1() {
+        String query = "SELECT  * { VALUES ?x {1 2} ?s ?p ?x }" ;
+        test_roundTripQuery(query) ;
+    }
+    
+    @Test
+    public void testValues2() {
+        String query = "SELECT  * { ?s ?p ?x  VALUES ?x {1 2} }" ;
+        test_roundTripQuery(query) ;
+    }
+
+    // Algebra to query : optimization cases OpAsQuery can handle.
+    
+    @Test
+    public void testAlgebra01() {
+        String opStr = "(sequence (bgp (?s1 ?p1 ?o1)) (bgp (?s2 ?p2 ?o2)) )" ;
+        String query = "SELECT * { ?s1 ?p1 ?o1. ?s2 ?p2 ?o2}" ;
+        test_AlgebraToQuery(opStr, query);
+    }
+    
+    @Test
+    public void testAlgebra02() {
+        String opStr = "(sequence (bgp (?s1 ?p1 ?o1)) (path ?x (path* :p) ?z) )" ;
+        String query = "PREFIX : <http://example/> SELECT * { ?s1 ?p1 ?o1. ?x :p* ?z}" ;
+        test_AlgebraToQuery(opStr, query);
+    }
+
+    @Test
+    public void testAlgebra03() {
+        String opStr = "(sequence  (path ?x (path* :p) ?z) (bgp (?s1 ?p1 ?o1)) )" ;
+        String query = "PREFIX : <http://example/> SELECT * { ?x :p* ?z . ?s1 ?p1 ?o1. }" ;
+        test_AlgebraToQuery(opStr, query);
+    }
     
     // There 3 classes of transformations: there are 3 main test operations.
-    //   The same query is recovered from OpAsQuery
-    //   Different queries with the same alegra forms
-    //   Different equivalent queries - same answers, different algebra.
+    //   test_roundTripQuery: The same query is recovered from OpAsQuery
+    //   test_roundTripAlegbra: Different queries with the same alegra forms
+    //   test_equivalentQuery: Different equivalent queries - same answers, different algebra.
+    //   test_algebraToQuery: algebra to query (e.g. optimization shapes)
+    // 
+    // test_roundTripQuery is test_equivalentQuery with same input and expected.
     // + quad variants.
     
     public static void test_equivalentQuery(String input, String expected) {
@@ -426,13 +463,21 @@ public class TestOpAsQuery {
     // Sometimes Q1 and Q2 are equivalent but not .equals.  
     public void test_roundTripAlegbra(String query) {
         Query[] r = roundTripQuery(query);
-        
         // Even if the strings come out as non-equal because of the translation from algebra to query
         // the algebras should be equal
         // i.e. the queries should remain semantically equivalent
         Op a1 = Algebra.compile(r[0]);
         Op a2 = Algebra.compile(r[1]);
         Assert.assertEquals(a1, a2);
+    }
+    
+    // algebra->OpAsQuery->query
+    public static void test_AlgebraToQuery(String input, String expected) {
+        Op op = SSE.parseOp(input) ;
+        Query orig = QueryFactory.create(expected, Syntax.syntaxSPARQL_11);
+        stripNamespacesAndBase(orig) ;
+        Query got = OpAsQuery.asQuery(op);
+        Assert.assertEquals(orig, got) ;
     }
 
     // query->algebra->OpAsQuery->query
@@ -444,7 +489,7 @@ public class TestOpAsQuery {
         return r;
     }
     
- // query->algebra/quads->OpAsQuery->query
+    // query->algebra/quads->OpAsQuery->query
     private static Query[] roundTripQueryQuad(String query) {
         Query orig = QueryFactory.create(query, Syntax.syntaxSPARQL_11);
         Op toReconstruct = Algebra.compile(orig);

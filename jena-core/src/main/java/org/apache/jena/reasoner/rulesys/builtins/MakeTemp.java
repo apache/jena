@@ -48,7 +48,7 @@ public class MakeTemp extends BaseBuiltin {
     @Override
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         for (int i = 0; i < length; i++) {
-            if (!context.getEnv().bind(args[i], NodeFactory.createAnon())) return false;
+            if (!context.getEnv().bind(args[i], NodeFactory.createBlankNode())) return false;
         }
         return true;   
     }

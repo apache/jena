@@ -24,7 +24,6 @@ import org.apache.jena.atlas.io.BlockUTF8 ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.riot.system.PrefixMap ;
@@ -111,7 +110,7 @@ public class NodecSSE implements Nodec
             // In particular, bnode labels can contain ":" from Jena
             // TokenizerText does not recognize these.
             str = str.substring(2) ;
-            return NodeFactory.createAnon(new AnonId(str)) ;
+            return NodeFactory.createBlankNode(str) ;
         }
 
         if ( str.startsWith("<") )

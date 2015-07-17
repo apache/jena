@@ -25,7 +25,6 @@ import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.impl.ItemHolder;
 import org.apache.jena.permissions.impl.SecuredItem;
-import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.permissions.impl.SecuredItemInvoker;
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.model.SecuredResource;
@@ -73,7 +72,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 			final Node n = resource.asNode();
 			if (resource.isAnon())
 			{
-				goodResource = securedModel.createResource(n.getBlankNodeId());
+				goodResource = securedModel.createResource(new AnonId(n.getBlankNodeId()));
 			}
 			else
 			{

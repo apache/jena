@@ -451,7 +451,7 @@ public abstract class LangTurtleBase extends LangBase {
                 exception(errorToken, "Malformed list") ;
 
             // Node for the list structre.
-            Node nextCell = NodeFactory.createAnon() ;
+            Node nextCell = NodeFactory.createBlankNode() ;
             if ( listHead == null )
                 listHead = nextCell ;
             if ( lastCell != null )

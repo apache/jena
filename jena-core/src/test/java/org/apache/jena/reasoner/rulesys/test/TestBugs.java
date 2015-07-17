@@ -821,7 +821,9 @@ public class TestBugs extends TestCase {
         public boolean bodyCall(Node[] args, int length, RuleContext context) {
             checkArgs(length, context);
             BindingEnvironment env = context.getEnv();
-            Triple t = new Triple( NodeFactory.createAnon(), NodeFactory.createURI("http://jena.hpl.hp.com/example#"), NodeFactory.createAnon());
+            Triple t = new Triple( NodeFactory.createBlankNode(), 
+                                   NodeFactory.createURI("http://jena.hpl.hp.com/example#"), 
+                                   NodeFactory.createBlankNode());
             Node l = NodeFactory.createLiteral( LiteralLabelFactory.createTypedLiteral(t) );
             return env.bind(args[0], l);
         }

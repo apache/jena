@@ -135,6 +135,16 @@
     <servlet-name>PingServlet</servlet-name>
     <servlet-class>org.apache.jena.fuseki.mgt.ActionPing</servlet-class>
   </servlet>
+  
+  <servlet>
+    <servlet-name>BackupListServlet</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionBackupList</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>BackupListServlet</servlet-name>
+    <url-pattern>/$/backups-list</url-pattern>
+  </servlet-mapping>
 
   <servlet-mapping>
    <servlet-name>DumpServlet</servlet-name>

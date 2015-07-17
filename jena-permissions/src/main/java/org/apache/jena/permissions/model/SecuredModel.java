@@ -60,7 +60,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel add( final List<Statement> statements )
-			throws UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -69,7 +69,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredModel add( final Model m ) throws UpdateDeniedException, AddDeniedException;
+	public SecuredModel add( final Model m ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -79,7 +79,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel add( final Resource s, final Property p, final RDFNode o )
-			throws UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -89,7 +89,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel add( final Resource s, final Property p, final String o )
-			throws UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -100,7 +100,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	@Override
 	public SecuredModel add( final Resource s, final Property p,
 			final String o, final boolean wellFormed )
-			throws UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -111,7 +111,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	@Override
 	public SecuredModel add( final Resource s, final Property p,
 			final String lex, final RDFDatatype datatype )
-			throws UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -121,7 +121,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel add( final Resource s, final Property p,
-			final String o, final String l ) throws UpdateDeniedException, AddDeniedException;
+			final String o, final String l ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -130,7 +130,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredModel add( final Statement s ) throws UpdateDeniedException, AddDeniedException;
+	public SecuredModel add( final Statement s ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -140,7 +140,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel add( final Statement[] statements )
-			throws UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -150,7 +150,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel add( final StmtIterator iter )
-			throws UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -160,7 +160,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel addLiteral( final Resource s, final Property p,
-			final boolean o ) throws UpdateDeniedException, AddDeniedException;
+			final boolean o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -170,7 +170,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel addLiteral( final Resource s, final Property p,
-			final char o ) throws UpdateDeniedException, AddDeniedException;
+			final char o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -180,7 +180,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel addLiteral( final Resource s, final Property p,
-			final double o ) throws UpdateDeniedException, AddDeniedException;
+			final double o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -190,7 +190,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel addLiteral( final Resource s, final Property p,
-			final float o ) throws UpdateDeniedException, AddDeniedException;
+			final float o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -200,7 +200,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel addLiteral( final Resource s, final Property p,
-			final int o ) throws UpdateDeniedException, AddDeniedException;
+			final int o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -210,7 +210,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel addLiteral( final Resource s, final Property p,
-			final Literal o ) throws UpdateDeniedException, AddDeniedException;
+			final Literal o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -220,7 +220,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel addLiteral( final Resource s, final Property p,
-			final long o ) throws UpdateDeniedException, AddDeniedException;
+			final long o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -231,7 +231,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	@Override
 	@Deprecated
 	public SecuredModel addLiteral( final Resource s, final Property p,
-			final Object o ) throws UpdateDeniedException, AddDeniedException;
+			final Object o ) throws AddDeniedException, UpdateDeniedException; 
 
 	@Override
 	public SecuredRDFNode asRDFNode( final Node n );
@@ -305,8 +305,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean containsAll( final Model model )
-			throws ReadDeniedException;
+	public boolean containsAll( final Model model )	throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
@@ -418,7 +417,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredAlt createAlt() throws UpdateDeniedException, AddDeniedException;
+	public SecuredAlt createAlt() throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -428,7 +427,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredAlt createAlt( final String uri )
-			throws UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -437,7 +436,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredBag createBag() throws UpdateDeniedException, AddDeniedException;
+	public SecuredBag createBag() throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -447,14 +446,14 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredBag createBag( final String uri )
-			throws UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @throws UpdateDeniedException
 	 */
 	@Override
-	public SecuredRDFList createList() throws UpdateDeniedException, AddDeniedException;
+	public SecuredRDFList createList() throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -468,7 +467,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredRDFList createList( final Iterator<? extends RDFNode> members )
-			throws UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -482,7 +481,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredRDFList createList( final RDFNode[] members )
-			throws UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -492,7 +491,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredStatement createLiteralStatement( final Resource s,
-			final Property p, final boolean o ) throws UpdateDeniedException, AddDeniedException;
+			final Property p, final boolean o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -502,7 +501,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredStatement createLiteralStatement( final Resource s,
-			final Property p, final char o ) throws UpdateDeniedException, AddDeniedException;
+			final Property p, final char o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -512,7 +511,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredStatement createLiteralStatement( final Resource s,
-			final Property p, final double o ) throws UpdateDeniedException, AddDeniedException;
+			final Property p, final double o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -522,7 +521,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredStatement createLiteralStatement( final Resource s,
-			final Property p, final float o ) throws UpdateDeniedException, AddDeniedException;
+			final Property p, final float o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -532,7 +531,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredStatement createLiteralStatement( final Resource s,
-			final Property p, final int o ) throws UpdateDeniedException, AddDeniedException;
+			final Property p, final int o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -542,7 +541,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredStatement createLiteralStatement( final Resource s,
-			final Property p, final long o ) throws UpdateDeniedException, AddDeniedException;
+			final Property p, final long o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -552,7 +551,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredStatement createLiteralStatement( final Resource s,
-			final Property p, final Object o ) throws UpdateDeniedException, AddDeniedException;
+			final Property p, final Object o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -562,7 +561,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public Property createProperty( final String uri )
-			throws UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -572,7 +571,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public Property createProperty( final String nameSpace,
-			final String localName ) throws UpdateDeniedException, AddDeniedException;
+			final String localName ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -588,7 +587,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public ReifiedStatement createReifiedStatement( final Statement s )
-			throws UpdateDeniedException, ReadDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException, ReadDeniedException;
 
 	/**
 	 * @sec.graph Update
@@ -602,7 +601,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public ReifiedStatement createReifiedStatement( final String uri,
-			final Statement s ) throws UpdateDeniedException, ReadDeniedException, AddDeniedException;
+			final Statement s ) throws AddDeniedException, UpdateDeniedException, ReadDeniedException;
 
 	/**
 	 * @sec.graph Update
@@ -614,7 +613,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredResource createResource() throws UpdateDeniedException, ReadDeniedException, AddDeniedException;
+	public SecuredResource createResource() throws AddDeniedException, UpdateDeniedException, ReadDeniedException;
 
 	/**
 	 * @sec.graph Update
@@ -627,7 +626,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredResource createResource( final AnonId id )
-			throws UpdateDeniedException, ReadDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException, ReadDeniedException;
 
 	/**
 	 * @sec.graph Update
@@ -637,7 +636,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredResource createResource( final Resource type )
-			throws UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException;
 
 	@Override
 	@Deprecated
@@ -657,7 +656,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredResource createResource( final String uri, final Resource type )
-			throws UpdateDeniedException, ReadDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException, ReadDeniedException;
 
 	@Override
 	@Deprecated
@@ -670,7 +669,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @trhows AddDeniedException
 	 */
 	@Override
-	public SecuredSeq createSeq() throws UpdateDeniedException, AddDeniedException;
+	public SecuredSeq createSeq() throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -680,7 +679,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredSeq createSeq( final String uri )
-			throws UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException;
 
 	/**
 	 * @sec.graph Update
@@ -690,7 +689,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredStatement createStatement( final Resource s,
-			final Property p, final RDFNode o ) throws UpdateDeniedException, AddDeniedException;
+			final Property p, final RDFNode o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -700,7 +699,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredStatement createStatement( final Resource s,
-			final Property p, final String o ) throws UpdateDeniedException, AddDeniedException;
+			final Property p, final String o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -710,7 +709,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	@Override
 	public SecuredStatement createStatement( final Resource s,
 			final Property p, final String o, final boolean wellFormed )
-			throws UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -721,7 +720,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	@Override
 	public SecuredStatement createStatement( final Resource s,
 			final Property p, final String o, final String l )
-			throws UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -732,7 +731,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	@Override
 	public SecuredStatement createStatement( final Resource s,
 			final Property p, final String o, final String l,
-			final boolean wellFormed ) throws UpdateDeniedException, AddDeniedException;
+			final boolean wellFormed ) throws AddDeniedException, UpdateDeniedException; 
 
 	@Override
 	public SecuredLiteral createTypedLiteral( final boolean v );
@@ -792,16 +791,14 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws UpdateDeniedException
 	 */
 	@Override
-	public void enterCriticalSection( final boolean readLockRequested )
-			throws ReadDeniedException, UpdateDeniedException;
+	public void enterCriticalSection( final boolean readLockRequested ) throws ReadDeniedException, UpdateDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
 	 */
 	@Override
-	public String expandPrefix( final String prefixed )
-			throws ReadDeniedException;
+	public String expandPrefix( final String prefixed ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
@@ -841,7 +838,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredResource getAnyReifiedStatement( final Statement s )
-			throws ReadDeniedException, UpdateDeniedException, AddDeniedException;
+			throws AddDeniedException, ReadDeniedException, UpdateDeniedException;
 
 	/**
 	 * @sec.graph Read
@@ -868,24 +865,21 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredStatement getProperty( final Resource s, final Property p )
-			throws ReadDeniedException;
+	public SecuredStatement getProperty( final Resource s, final Property p ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
 	 */
 	@Override
-	public Property getProperty( final String uri )
-			throws ReadDeniedException;
+	public Property getProperty( final String uri ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
 	 */
 	@Override
-	public Property getProperty( final String nameSpace, final String localName )
-			throws ReadDeniedException;
+	public Property getProperty( final String nameSpace, final String localName ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read if the node exists
@@ -913,8 +907,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredStatement getRequiredProperty( final Resource s,
-			final Property p ) throws PropertyNotFoundException,
-			ReadDeniedException;
+			final Property p ) throws PropertyNotFoundException, ReadDeniedException;
 
 	@Override
 	public SecuredResource getResource( final String uri );
@@ -966,8 +959,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean isIsomorphicWith( final Model g )
-			throws ReadDeniedException;
+	public boolean isIsomorphicWith( final Model g ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -999,8 +991,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 
 	@Override
 	public SecuredStatementIterator listLiteralStatements(
-			final Resource subject, final Property predicate, final char object )
-			throws ReadDeniedException;
+			final Resource subject, final Property predicate, final char object ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1022,8 +1013,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredStatementIterator listLiteralStatements(
-			final Resource subject, final Property predicate, final float object )
-			throws ReadDeniedException;
+			final Resource subject, final Property predicate, final float object ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1034,8 +1024,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 
 	@Override
 	public SecuredStatementIterator listLiteralStatements(
-			final Resource subject, final Property predicate, final long object )
-			throws ReadDeniedException;
+			final Resource subject, final Property predicate, final long object ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1061,8 +1050,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredNodeIterator<RDFNode> listObjectsOfProperty( final Property p )
-			throws ReadDeniedException;
+	public SecuredNodeIterator<RDFNode> listObjectsOfProperty( final Property p ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1081,8 +1069,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredRSIterator listReifiedStatements()
-			throws ReadDeniedException;
+	public SecuredRSIterator listReifiedStatements() throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1091,8 +1078,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredRSIterator listReifiedStatements( final Statement st )
-			throws ReadDeniedException;
+	public SecuredRSIterator listReifiedStatements( final Statement st ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1103,8 +1089,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredResIterator listResourcesWithProperty( final Property p )
-			throws ReadDeniedException;
+	public SecuredResIterator listResourcesWithProperty( final Property p ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1197,8 +1182,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredStatementIterator listStatements()
-			throws ReadDeniedException;
+	public SecuredStatementIterator listStatements() throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1218,8 +1202,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredStatementIterator listStatements( final Resource subject,
-			final Property predicate, final String object )
-			throws ReadDeniedException;
+			final Property predicate, final String object )  throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1229,8 +1212,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredStatementIterator listStatements( final Resource subject,
-			final Property predicate, final String object, final String lang )
-			throws ReadDeniedException;
+			final Property predicate, final String object, final String lang ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1239,8 +1221,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredStatementIterator listStatements( final Selector s )
-			throws ReadDeniedException;
+	public SecuredStatementIterator listStatements( final Selector s ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1262,8 +1243,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredResIterator listSubjectsWithProperty( final Property p )
-			throws ReadDeniedException;
+	public SecuredResIterator listSubjectsWithProperty( final Property p ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1334,8 +1314,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws UpdateDeniedException
 	 */
 	@Override
-	public SecuredModel read( final InputStream in, final String base )
-			throws UpdateDeniedException;
+	public SecuredModel read( final InputStream in, final String base ) throws UpdateDeniedException;
 
 	/**
 	 * 
@@ -1352,8 +1331,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws UpdateDeniedException
 	 */
 	@Override
-	public SecuredModel read( final Reader reader, final String base )
-			throws UpdateDeniedException;
+	public SecuredModel read( final Reader reader, final String base ) throws UpdateDeniedException;
 
 	/**
 	 * 
@@ -1378,8 +1356,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws UpdateDeniedException
 	 */
 	@Override
-	public SecuredModel read( final String url, final String lang )
-			throws UpdateDeniedException;
+	public SecuredModel read( final String url, final String lang ) throws UpdateDeniedException;
 
 	/**
 	 * 
@@ -1398,8 +1375,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredModel register( final ModelChangedListener listener )
-			throws ReadDeniedException;
+	public SecuredModel register( final ModelChangedListener listener ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1410,7 +1386,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel remove( final List<Statement> statements )
-			throws UpdateDeniedException, DeleteDeniedException;
+			throws DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
@@ -1420,7 +1396,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws DeleteDeniedException
 	 */
 	@Override
-	public SecuredModel remove( final Model m ) throws UpdateDeniedException, DeleteDeniedException;
+	public SecuredModel remove( final Model m ) throws  DeleteDeniedException, UpdateDeniedException;;
 
 	/**
 	 * 
@@ -1430,7 +1406,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws DeleteDeniedException
 	 */
 	@Override
-	public SecuredModel remove( final Resource s, final Property p, final RDFNode o ) throws UpdateDeniedException, DeleteDeniedException;
+	public SecuredModel remove( final Resource s, final Property p, final RDFNode o ) throws  DeleteDeniedException, UpdateDeniedException;;
 
 	/**
 	 * 
@@ -1441,7 +1417,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel remove( final Statement s )
-			throws UpdateDeniedException, DeleteDeniedException;
+			throws  DeleteDeniedException, UpdateDeniedException;;
 
 	/**
 	 * 
@@ -1452,7 +1428,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel remove( final Statement[] statements )
-			throws UpdateDeniedException, DeleteDeniedException;
+			throws  DeleteDeniedException, UpdateDeniedException;;
 
 	/**
 	 * 
@@ -1463,7 +1439,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel remove( final StmtIterator iter )
-			throws UpdateDeniedException, DeleteDeniedException;
+			throws  DeleteDeniedException, UpdateDeniedException;;
 
 	/**
 	 * 
@@ -1473,7 +1449,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws DeleteDeniedException
 	 */
 	@Override
-	public SecuredModel removeAll() throws UpdateDeniedException, DeleteDeniedException;
+	public SecuredModel removeAll() throws  DeleteDeniedException, UpdateDeniedException;;
 
 	/**
 	 * 
@@ -1484,7 +1460,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel removeAll( final Resource s, final Property p,
-			final RDFNode r ) throws UpdateDeniedException, DeleteDeniedException;
+			final RDFNode r ) throws  DeleteDeniedException, UpdateDeniedException;;
 
 	/**
 	 * 
@@ -1496,7 +1472,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public void removeAllReifications( final Statement s )
-			throws UpdateDeniedException, DeleteDeniedException;
+			throws  DeleteDeniedException, UpdateDeniedException;;
 
 	/**
 	 * 
@@ -1517,7 +1493,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public void removeReification( final ReifiedStatement rs )
-			throws UpdateDeniedException, DeleteDeniedException;
+			throws  DeleteDeniedException, UpdateDeniedException;;
 
 	/**
 	 * 
@@ -1525,8 +1501,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws UpdateDeniedException
 	 */
 	@Override
-	public String setReaderClassName( final String lang, final String className )
-			throws UpdateDeniedException;
+	public String setReaderClassName( final String lang, final String className ) throws UpdateDeniedException;
 
 	/**
 	 * 
@@ -1534,8 +1509,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws UpdateDeniedException
 	 */
 	@Override
-	public String setWriterClassName( final String lang, final String className )
-			throws UpdateDeniedException;
+	public String setWriterClassName( final String lang, final String className ) throws UpdateDeniedException;
 
 	/**
 	 * 
