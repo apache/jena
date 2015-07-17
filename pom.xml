@@ -120,7 +120,7 @@
 
         <module>jena-fuseki1</module>
         <module>jena-fuseki2</module>
-	<!-- TEMP <module>jena-permissions</module> -->
+	<module>jena-permissions</module>
 
         <module>jena-jdbc</module>
         <module>jena-maven-tools</module>
