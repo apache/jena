@@ -62,6 +62,7 @@ public class DatasetChangesCapture implements DatasetChanges {
         this.captureDelete = captureDelete ;
         this.captureNoAdd = captureNoAdd ;
         this.captureNoDelete = captureNoDelete ;
+        this.actions = new LinkedList<>() ;
     }
 
     /** The actions recorded.
@@ -73,7 +74,8 @@ public class DatasetChangesCapture implements DatasetChanges {
 
     @Override
     public void start() {
-        actions = new LinkedList<>() ;
+        if ( actions == null )
+            actions = new LinkedList<>() ;
     }
 
     @Override
