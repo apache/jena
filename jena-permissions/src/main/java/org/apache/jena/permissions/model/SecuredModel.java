@@ -666,7 +666,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( SecNode.FUTURE, RDF.type, RDF.Alt )
 	 * @throws UpdateDeniedException
-	 * @trhows AddDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredSeq createSeq() throws AddDeniedException, UpdateDeniedException; 
@@ -675,7 +675,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( uri, RDF.type, RDF.Alt )
 	 * @throws UpdateDeniedException
-	 * @trhows AddDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredSeq createSeq( final String uri )
@@ -685,7 +685,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s, p, o )
 	 * @throws UpdateDeniedException
-	 * @trhows AddDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredStatement createStatement( final Resource s,
@@ -695,7 +695,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s, p, o )
 	 * @throws UpdateDeniedException
-	 * @trhows AddDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredStatement createStatement( final Resource s,
@@ -715,7 +715,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s, p, literal(o,l,false ))
 	 * @throws UpdateDeniedException
-	 * @trhows AddDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredStatement createStatement( final Resource s,
@@ -726,7 +726,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s, p, literal(o,l,wellFormed )
 	 * @throws UpdateDeniedException
-	 * @trhows AddDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredStatement createStatement( final Resource s,
