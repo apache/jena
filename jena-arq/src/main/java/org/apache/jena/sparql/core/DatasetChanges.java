@@ -35,4 +35,8 @@ public interface DatasetChanges
      
     /** Indicator that a sequence of changes has now finished */
     public void finish() ;
+    
+    /** Release any resources */
+    public void reset() ;
+
 }

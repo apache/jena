@@ -135,6 +135,9 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
 
         @Override
         public void change(QuadAction qaction, Node g, Node s, Node p, Node o) { }
+
+        @Override
+        public void reset() {}
     }
 
 
@@ -160,6 +163,9 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
         public void change(QuadAction qaction, Node g, Node s, Node p, Node o) { 
             lastSubject = s;
         }
+
+        @Override
+        public void reset() {}
     }
 
 }

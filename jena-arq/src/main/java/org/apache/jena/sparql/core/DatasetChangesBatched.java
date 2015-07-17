@@ -16,81 +16,76 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core;
+package org.apache.jena.sparql.core ;
 
 import java.util.ArrayList ;
 import java.util.List ;
-import java.util.Objects;
+import java.util.Objects ;
 
 import org.apache.jena.graph.Node ;
 
-/** Collect a stream of DatasetChanges into batches.
- *  A batch is adjacent quads changes with  
- *  (same graph, same subject, same action).  
+/**
+ * Collect a stream of DatasetChanges into batches. A batch is adjacent quads
+ * changes with (same graph, same subject, same action).
  */
-public abstract class DatasetChangesBatched implements DatasetChanges
-{
-    private QuadAction currentAction    = null ;
-    private Node currentSubject         = null ;
-    private Node currentGraph           = null ;
-    private List<Quad>   batchQuads     = null ;
-    private boolean mergeBlankNodes     = false ;
+public abstract class DatasetChangesBatched implements DatasetChanges {
+    private QuadAction currentAction   = null ;
+    private Node       currentSubject  = null ;
+    private Node       currentGraph    = null ;
+    private List<Quad> batchQuads      = null ;
+    private boolean    mergeBlankNodes = false ;
 
-    protected DatasetChangesBatched()
-    {
+    protected DatasetChangesBatched() {
         this(false) ;
     }
-    
-    /* Merge bNodes in a batch - i.e. include them in the current batch, not as new entities */ 
-    protected DatasetChangesBatched(boolean mergeBNodes)
-    {
+
+    /*
+     * Merge bNodes in a batch - i.e. include them in the current batch, not as
+     * new entities
+     */
+    protected DatasetChangesBatched(boolean mergeBNodes) {
         this.mergeBlankNodes = mergeBNodes ;
     }
-    
-    @Override public final void start()
-    {
+
+    @Override
+    public final void start() {
         startBatched() ;
         startBatch() ;
     }
 
-    @Override public final void finish()
-    {
+    @Override
+    public final void finish() {
         finishBatch() ;
         finishBatched() ;
     }
 
     @Override
-    public void change(QuadAction qaction, Node g, Node s, Node p, Node o)
-    {
-        if ( mergeBlankNodes && s.isBlank() )
-        {
+    public final void reset() { }
+
+    @Override
+    public void change(QuadAction qaction, Node g, Node s, Node p, Node o) {
+        if ( mergeBlankNodes && s.isBlank() ) {
             if ( batchQuads == null )
                 // No active batch.
                 startBatch() ;
             // Drop and through and include in the current batch.
-        }
-        else if ( ! Objects.equals(currentAction, qaction) ||
-                  ! Objects.equals(currentGraph, g) ||
-                  ! Objects.equals(currentSubject, s) )
-        {
+        } else if ( !Objects.equals(currentAction, qaction) || !Objects.equals(currentGraph, g) || !Objects.equals(currentSubject, s) ) {
             finishBatch() ;
             startBatch() ;
             currentAction = qaction ;
             currentGraph = g ;
             currentSubject = s ;
         }
-        
-        batchQuads.add(new Quad(g,s,p,o)) ;
+
+        batchQuads.add(new Quad(g, s, p, o)) ;
     }
-    
-    private void startBatch()
-    {
+
+    private void startBatch() {
         if ( batchQuads == null )
             batchQuads = new ArrayList<>() ;
     }
 
-    protected void finishBatch()
-    {
+    protected void finishBatch() {
         if ( batchQuads == null || batchQuads.size() == 0 )
             return ;
         dispatch(currentAction, batchQuads) ;
@@ -104,4 +99,3 @@ public abstract class DatasetChangesBatched implements DatasetChanges
     protected abstract void finishBatched() ;
 
 }
-
