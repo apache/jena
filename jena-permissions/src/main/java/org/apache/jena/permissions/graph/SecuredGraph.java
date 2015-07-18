@@ -22,8 +22,8 @@ import org.apache.jena.graph.GraphStatisticsHandler ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.permissions.ReadDeniedException;
+import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
-import org.apache.jena.permissions.SecurityEvaluator.SecNode;
 import org.apache.jena.shared.AddDeniedException ;
 import org.apache.jena.shared.DeleteDeniedException ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
@@ -33,7 +33,7 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  * 
  * Use the SecuredGraph.Factory to create instances
  */
-public interface SecuredGraph extends Graph
+public interface SecuredGraph extends Graph, SecuredItem
 {
 
 	/**
@@ -100,7 +100,11 @@ public interface SecuredGraph extends Graph
 	@Override
 	public SecuredGraphEventManager getEventManager();
 
-	public SecNode getModelNode();
+	/**
+	 * Return the name of the graph.
+	 * @return The name of the graph as a node.
+	 */
+	public Node getModelNode();
 
 	@Override
 	public SecuredPrefixMapping getPrefixMapping();

@@ -19,8 +19,8 @@ package org.apache.jena.permissions.model;
 
 
 import org.apache.jena.permissions.ReadDeniedException;
+import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.UpdateDeniedException;
-import org.apache.jena.permissions.impl.SecuredItem;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.AddDeniedException;
 import org.apache.jena.shared.DeleteDeniedException;

@@ -19,7 +19,9 @@ package org.apache.jena.permissions.example;
 
 import java.util.Set ;
 
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.SecurityEvaluator ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.vocabulary.RDF ;
@@ -57,14 +59,14 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
 	 * We allow any action on the graph itself, so this is always true.
 	 */
 	@Override
-	public boolean evaluate(Object principal, Action action, SecNode graphIRI) {
+	public boolean evaluate(Object principal, Action action, Node graphIRI) {
 		// we allow any action on a graph.
 		return true;
 	}
 
 	/**
 	 * This is our internal check to see if the user may access the resource.
-	 * This method is called from the evauate(Object,SecNode) method.
+	 * This method is called from the evauate(Object,Node) method.
 	 * A user may only access the resource if they are authenticated, and are either the
 	 * sender or the recipient.
 	 * Additionally the admin can always see the messages.
@@ -107,32 +109,23 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
 	 * @param node
 	 * @return
 	 */
-	private boolean evaluate( Object principal, SecNode node )
+	private boolean evaluate( Object principal, Node node )
 	{
 		// Access to wild card is false -- this forces checks to the acutal nodes
 		// to be returned.
 		// we could have checked for admin access here and returned true since the admin
 		// can see any node.
-		if (node.equals( SecNode.ANY )) {
+		if (node.equals( Node.ANY )) {
 			return false;  
 		}
 		
-		// URI nodes are retrieved from the model and evaluated
-		if (node.getType().equals( SecNode.Type.URI)) {
-			Resource r = model.createResource( node.getValue() );
-			return evaluate( principal, r );
-		}
-		// anonymous nodes have to be retrieved from the model as anonymous nodes.
-		else if (node.getType().equals( SecNode.Type.Anonymous)) {
-			Resource r = model.getRDFNode( NodeFactory.createBlankNode( node.getValue()) ).asResource();
+		// URI nodes and blank nodes are retrieved from the model and evaluated
+		if (node.isURI() || node.isBlank()) {
+			Resource r = model.getRDFNode( node ).asResource();
 			return evaluate( principal, r );
 		}
 		// anything else (literals) can be seen.
-		else
-		{
-			return true;
-		}
-
+		return true;
 	}
 	
 	/**
@@ -141,7 +134,7 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
 	 * @param triple
 	 * @return
 	 */
-	private boolean evaluate( Object principal, SecTriple triple ) {
+	private boolean evaluate( Object principal, Triple triple ) {
 		// we could have checked here to see if the principal was the admin and 
 		// just returned true since the admin can perform any operation on any triple.
 		return evaluate( principal, triple.getSubject()) &&
@@ -155,7 +148,7 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
 	 * upon action this method would sort those out appropriately.
 	 */
 	@Override
-	public boolean evaluate(Object principal, Action action, SecNode graphIRI, SecTriple triple) {
+	public boolean evaluate(Object principal, Action action, Node graphIRI, Triple triple) {
 		// we could have checked here to see if the principal was the admin and 
 		// just returned true since the admin can perform any operation on any triple.
 		return evaluate( principal, triple );
@@ -169,7 +162,7 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
 	 * graph.
 	 */
 	@Override
-	public boolean evaluate(Object principal, Set<Action> actions, SecNode graphIRI) {
+	public boolean evaluate(Object principal, Set<Action> actions, Node graphIRI) {
 		return true;
 	}
 
@@ -179,8 +172,8 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
 	 * for a single action.
 	 */
 	@Override
-	public boolean evaluate(Object principal, Set<Action> actions, SecNode graphIRI,
-			SecTriple triple) {
+	public boolean evaluate(Object principal, Set<Action> actions, Node graphIRI,
+			Triple triple) {
 		return evaluate( principal, triple );
 	}
 
@@ -192,7 +185,7 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
 	 * graph.
 	 */
 	@Override
-	public boolean evaluateAny(Object principal, Set<Action> actions, SecNode graphIRI) {
+	public boolean evaluateAny(Object principal, Set<Action> actions, Node graphIRI) {
 		return true;
 	}
 
@@ -202,8 +195,8 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
 	 * for a single action.
 	 */
 	@Override
-	public boolean evaluateAny(Object principal, Set<Action> actions, SecNode graphIRI,
-			SecTriple triple) {
+	public boolean evaluateAny(Object principal, Set<Action> actions, Node graphIRI,
+			Triple triple) {
 		return evaluate( principal, triple );
 	}
 
@@ -213,7 +206,7 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
 	 * they have access to. (e.g. they can not remvoe themself from the messsage). 
 	 */
 	@Override
-	public boolean evaluateUpdate(Object principal, SecNode graphIRI, SecTriple from, SecTriple to) {
+	public boolean evaluateUpdate(Object principal, Node graphIRI, Triple from, Triple to) {
 		return evaluate( principal, from ) && evaluate( principal, to );
 	}
 

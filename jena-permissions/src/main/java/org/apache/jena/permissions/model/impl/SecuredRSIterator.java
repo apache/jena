@@ -23,9 +23,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.apache.jena.graph.Node;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.SecurityEvaluator.SecNode;
 import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.rdf.model.RSIterator ;
@@ -40,7 +40,7 @@ public class SecuredRSIterator implements RSIterator
 	private class PermReifiedStatementFilter implements Predicate<ReifiedStatement>
 	{
 		private final SecurityEvaluator evaluator;
-		private final SecNode modelNode;
+		private final Node modelNode;
 		private final Set<Action> actions;
 
 		public PermReifiedStatementFilter( final Action[] actions,
@@ -55,7 +55,7 @@ public class SecuredRSIterator implements RSIterator
 		public boolean test( final ReifiedStatement t )
 		{
 			return evaluator.evaluateAny(evaluator.getPrincipal(), actions, modelNode,
-					SecuredItemImpl.convert(t.getStatement().asTriple()));
+					t.getStatement().asTriple());
 		}
 
 	}

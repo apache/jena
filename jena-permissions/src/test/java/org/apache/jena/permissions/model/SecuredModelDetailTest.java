@@ -22,7 +22,9 @@ import java.security.Principal ;
 import java.util.Set ;
 
 import org.apache.http.auth.BasicUserPrincipal ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.Factory ;
 import org.apache.jena.permissions.SecurityEvaluator ;
 import org.apache.jena.rdf.model.* ;
@@ -290,7 +292,7 @@ public class SecuredModelDetailTest {
 
 		@Override
 		public boolean evaluate(Object principal, Action action,
-				SecNode graphIRI) {
+				Node graphIRI) {
 			// we allow any action on a graph.
 			return true;
 		}
@@ -305,18 +307,14 @@ public class SecuredModelDetailTest {
 			return true;
 		}
 
-		private boolean evaluate( SecNode node )
+		private boolean evaluate( Node node )
 		{
-			if (node.equals( SecNode.ANY )) {
+			if (node.equals( Node.ANY )) {
 				return false;  // all wild cards are false
 			}
 			
-			if (node.getType().equals( SecNode.Type.URI)) {
-				Resource r = model.createResource( node.getValue() );
-				return evaluate( r );
-			}
-			else if (node.getType().equals( SecNode.Type.Anonymous)) {
-				Resource r = model.getRDFNode( NodeFactory.createBlankNode( node.getValue()) ).asResource();
+			if (node.isURI() || node.isBlank()) {
+				Resource r = model.getRDFNode( node ).asResource();
 				return evaluate( r );
 			} else {
 				return true;
@@ -324,7 +322,7 @@ public class SecuredModelDetailTest {
 
 		}
 
-		private boolean evaluate(SecTriple triple) {
+		private boolean evaluate(Triple triple) {
 			return evaluate(triple.getSubject())
 					&& evaluate(triple.getObject())
 					&& evaluate(triple.getPredicate());
@@ -332,37 +330,37 @@ public class SecuredModelDetailTest {
 
 		@Override
 		public boolean evaluate(Object principal, Action action,
-				SecNode graphIRI, SecTriple triple) {
+				Node graphIRI, Triple triple) {
 			return evaluate(triple);
 		}
 
 		@Override
 		public boolean evaluate(Object principal, Set<Action> actions,
-				SecNode graphIRI) {
+				Node graphIRI) {
 			return true;
 		}
 
 		@Override
 		public boolean evaluate(Object principal, Set<Action> actions,
-				SecNode graphIRI, SecTriple triple) {
+				Node graphIRI, Triple triple) {
 			return evaluate(triple);
 		}
 
 		@Override
 		public boolean evaluateAny(Object principal, Set<Action> actions,
-				SecNode graphIRI) {
+				Node graphIRI) {
 			return true;
 		}
 
 		@Override
 		public boolean evaluateAny(Object principal, Set<Action> actions,
-				SecNode graphIRI, SecTriple triple) {
+				Node graphIRI, Triple triple) {
 			return evaluate(triple);
 		}
 
 		@Override
-		public boolean evaluateUpdate(Object principal, SecNode graphIRI,
-				SecTriple from, SecTriple to) {
+		public boolean evaluateUpdate(Object principal, Node graphIRI,
+				Triple from, Triple to) {
 			return evaluate(from) && evaluate(to);
 		}
 

@@ -26,10 +26,10 @@ import java.util.function.Function;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.impl.ItemHolder;
-import org.apache.jena.permissions.impl.SecuredItem;
 import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.permissions.impl.SecuredItemInvoker;
 import org.apache.jena.permissions.model.SecuredModel;
@@ -379,14 +379,14 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 
 	private void checkCreateNewList( final RDFNode value, final Resource tail )
 	{
-		checkCreate(new SecurityEvaluator.SecTriple(
-				SecurityEvaluator.SecNode.FUTURE,
-				SecuredItemImpl.convert(listFirst().asNode()),
-				SecuredItemImpl.convert(value.asNode())));
-		checkCreate(new SecurityEvaluator.SecTriple(
-				SecurityEvaluator.SecNode.FUTURE,
-				SecuredItemImpl.convert(listRest().asNode()),
-				SecuredItemImpl.convert(tail.asNode())));
+		checkCreate(new Triple(
+				SecurityEvaluator.FUTURE,
+				listFirst().asNode(),
+				value.asNode()));
+		checkCreate(new Triple(
+				SecurityEvaluator.FUTURE,
+				listRest().asNode(),
+				tail.asNode()));
 	}
 
 	private Set<Statement> collectStatements( final Set<Action> actions )
@@ -421,20 +421,19 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 		}
 		else
 		{
-			final org.apache.jena.permissions.SecurityEvaluator.SecNode p = SecuredItemImpl
-					.convert(listFirst().asNode());
-			org.apache.jena.permissions.SecurityEvaluator.SecTriple t = new org.apache.jena.permissions.SecurityEvaluator.SecTriple(
-					org.apache.jena.permissions.SecurityEvaluator.SecNode.FUTURE,
-					p, org.apache.jena.permissions.SecurityEvaluator.SecNode.ANY);
+			
+			Triple t = new Triple(
+					SecurityEvaluator.FUTURE,
+					listFirst().asNode(), Node.ANY);
 			if (!canCreate(t))
 			{
 				final List<RDFNode> list = new ArrayList<RDFNode>();
 				while (nodes.hasNext())
 				{
 					final RDFNode n = nodes.next();
-					t = new org.apache.jena.permissions.SecurityEvaluator.SecTriple(
-							org.apache.jena.permissions.SecurityEvaluator.SecNode.FUTURE,
-							p, SecuredItemImpl.convert(n.asNode()));
+					t = new Triple(
+							SecurityEvaluator.FUTURE,
+							listFirst().asNode(), n.asNode());
 					checkCreate(t);
 					list.add(n);
 				}
@@ -460,11 +459,9 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 		}
 		else
 		{
-			final org.apache.jena.permissions.SecurityEvaluator.SecNode p = SecuredItemImpl
-					.convert(listFirst().asNode());
-			org.apache.jena.permissions.SecurityEvaluator.SecTriple t = new org.apache.jena.permissions.SecurityEvaluator.SecTriple(
-					org.apache.jena.permissions.SecurityEvaluator.SecNode.FUTURE,
-					p, org.apache.jena.permissions.SecurityEvaluator.SecNode.ANY);
+			Triple t = new Triple(
+					SecurityEvaluator.FUTURE,
+					listFirst().asNode(), Node.ANY);
 			if (!canCreate(t))
 			{
 				final ExtendedIterator<RDFNode> iter = list.iterator();
@@ -472,10 +469,10 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 				{
 					while (iter.hasNext())
 					{
-						t = new org.apache.jena.permissions.SecurityEvaluator.SecTriple(
-								org.apache.jena.permissions.SecurityEvaluator.SecNode.FUTURE,
-								p, SecuredItemImpl
-										.convert(iter.next().asNode()));
+						t = new Triple(
+								SecurityEvaluator.FUTURE,
+								listFirst().asNode(), 
+										iter.next().asNode());
 						checkCreate(t);
 					}
 				}
@@ -878,7 +875,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Delete, Action.Read });
 		if (getSecurityEvaluator().evaluate(getSecurityEvaluator().getPrincipal(), perms, this.getModelNode(),
-				SecuredItemImpl.convert(t)))
+				t))
 		{
 			holder.getBaseItem().removeList();
 		}
@@ -886,7 +883,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 		{
 			for (final Statement s : collectStatements(perms))
 			{
-				if (canDelete(s.asTriple()))
+				if (canDelete(s))
 				{
 					s.remove();
 				}
@@ -1040,10 +1037,10 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	public SecuredRDFList with( final RDFNode value )
 	{
 		checkUpdate();
-		checkCreate(new SecurityEvaluator.SecTriple(
-				SecurityEvaluator.SecNode.FUTURE,
-				SecuredItemImpl.convert(listFirst().asNode()),
-				SecuredItemImpl.convert(value.asNode())));
+		checkCreate(new Triple(
+				SecurityEvaluator.FUTURE,
+				listFirst().asNode(),
+				value.asNode()));
 		return SecuredRDFListImpl.getInstance(getModel(), holder.getBaseItem()
 				.with(value));
 	}

@@ -20,10 +20,9 @@ package org.apache.jena.permissions.utils;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.impl.SecuredItem;
-import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.rdf.model.RDFList ;
 import org.apache.jena.rdf.model.Statement ;
 import org.apache.jena.vocabulary.RDF ;
@@ -52,7 +51,6 @@ public class RDFListSecFilter<T extends RDFList> implements Predicate<T>
 	{
 		final Statement s = o.getRequiredProperty(RDF.first);
 		return securedItem.getSecurityEvaluator().evaluate(principal, perms,
-				securedItem.getModelNode(),
-				SecuredItemImpl.convert(s.asTriple()));
+				securedItem.getModelNode(),	s.asTriple());
 	}
 }

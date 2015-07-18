@@ -19,9 +19,10 @@ package org.apache.jena.permissions.query;
 
 import org.apache.jena.permissions.Factory;
 import org.apache.jena.permissions.MockSecurityEvaluator;
-import org.apache.jena.permissions.SecurityEvaluator.SecNode.Type;
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.query.SecuredQueryEngineFactory;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -108,10 +109,9 @@ public class DataSetTest {
 
 			@Override
 			public boolean evaluate(final Object principal,
-					final Action action, final SecNode graphIRI,
-					final SecTriple triple) {
-				if (triple.getSubject().equals(
-						new SecNode(Type.URI, "http://example.com/resource/1"))) {
+					final Action action, final Node graphIRI,
+					final Triple triple) {
+				if (triple.getSubject().isURI() && triple.getSubject().getURI().equals( "http://example.com/resource/1")) {
 					return false;
 				}
 				return super.evaluate(principal, action, graphIRI, triple);
@@ -150,10 +150,10 @@ public class DataSetTest {
 
 			@Override
 			public boolean evaluate(final Object principal,
-					final Action action, final SecNode graphIRI,
-					final SecTriple triple) {
-				if (triple.getSubject().equals(
-						new SecNode(Type.URI, "http://example.com/resource/1"))) {
+					final Action action, final Node graphIRI,
+					final Triple triple) {
+				if (triple.getSubject().isURI() && triple.getSubject().getURI().equals(
+						"http://example.com/resource/1")) {
 					return false;
 				}
 				return super.evaluate(principal, action, graphIRI, triple);
