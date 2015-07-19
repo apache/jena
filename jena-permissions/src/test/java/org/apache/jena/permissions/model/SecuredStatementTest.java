@@ -71,7 +71,6 @@ public class SecuredStatementTest {
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update
-	 * @throws AccessDeniedRuntimeException
 	 */
 	@Test
 	public void testChangeLiteralObject() {

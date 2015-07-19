@@ -59,7 +59,6 @@ public class SecuredResourceTest extends SecuredRDFNodeTest {
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create (this, p, o )
-	 * @throws AccessDeniedRuntimeException
 	 */
 	@Test
 	public void testAddLiteralBoolean() {
