@@ -1397,7 +1397,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws DeleteDeniedException
 	 */
 	@Override
-	public SecuredModel remove( final Model m ) throws  DeleteDeniedException, UpdateDeniedException;;
+	public SecuredModel remove( final Model m ) throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
@@ -1407,7 +1407,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws DeleteDeniedException
 	 */
 	@Override
-	public SecuredModel remove( final Resource s, final Property p, final RDFNode o ) throws  DeleteDeniedException, UpdateDeniedException;;
+	public SecuredModel remove( final Resource s, final Property p, final RDFNode o ) throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
@@ -1418,7 +1418,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel remove( final Statement s )
-			throws  DeleteDeniedException, UpdateDeniedException;;
+			throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
@@ -1429,7 +1429,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel remove( final Statement[] statements )
-			throws  DeleteDeniedException, UpdateDeniedException;;
+			throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
@@ -1440,7 +1440,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel remove( final StmtIterator iter )
-			throws  DeleteDeniedException, UpdateDeniedException;;
+			throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
@@ -1450,7 +1450,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws DeleteDeniedException
 	 */
 	@Override
-	public SecuredModel removeAll() throws  DeleteDeniedException, UpdateDeniedException;;
+	public SecuredModel removeAll() throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
@@ -1461,7 +1461,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel removeAll( final Resource s, final Property p,
-			final RDFNode r ) throws  DeleteDeniedException, UpdateDeniedException;;
+			final RDFNode r ) throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
@@ -1473,7 +1473,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public void removeAllReifications( final Statement s )
-			throws  DeleteDeniedException, UpdateDeniedException;;
+			throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
@@ -1494,7 +1494,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public void removeReification( final ReifiedStatement rs )
-			throws  DeleteDeniedException, UpdateDeniedException;;
+			throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 

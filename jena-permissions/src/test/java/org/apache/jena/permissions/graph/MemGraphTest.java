@@ -53,7 +53,6 @@ public class MemGraphTest {
 		return GraphFactory.createDefaultGraph();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Before
 	public void setUp() throws Exception {
 		baseGraph = createGraph();
