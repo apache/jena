@@ -704,7 +704,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s, p, o )
-	 * @throws AccessDeniedRuntimeException
+	 * @throws AddDeniedException
+	 * @throws UpdateDeniedException
 	 */
 	@Override
 	public SecuredStatement createStatement( final Resource s,

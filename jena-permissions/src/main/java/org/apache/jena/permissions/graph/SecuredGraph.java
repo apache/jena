@@ -154,7 +154,7 @@ public interface SecuredGraph extends Graph, SecuredItem
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete (s, p, o )
-	 *@throws DeleteDeniesException
+	 * @throws DeleteDeniedException
 	 */
 	@Override
 	public void remove( Node s, Node p, Node o ) throws DeleteDeniedException;

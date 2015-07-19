@@ -52,10 +52,6 @@ public class SecuredReifiedStatementTest extends SecuredResourceTest {
 				stmt);
 	}
 
-	/**
-	 * @sec.graph Read
-	 * @throws AccessDeniedRuntimeException
-	 */
 	@Test
 	public void testGetStatement() {
 		try {
