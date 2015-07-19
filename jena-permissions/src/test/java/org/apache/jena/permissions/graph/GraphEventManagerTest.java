@@ -62,7 +62,6 @@ public class GraphEventManagerTest {
 	}
 
 	@Test
-	@SuppressWarnings("deprecation")
 	public void notifyAddTest() {
 		Object principal = securityEvaluator.getPrincipal();
 		final Set<Action> ADD = SecurityEvaluator.Util.asSet(new Action[] {
@@ -75,10 +74,8 @@ public class GraphEventManagerTest {
 		}
 		g.delete(Triple.ANY);
 		listener.reset();
-
 	}
 
-	@SuppressWarnings("deprecation")
 	@Test
 	public void notifyDeleteTest() {
 		Object principal = securityEvaluator.getPrincipal();
@@ -117,13 +114,13 @@ public class GraphEventManagerTest {
 		tripleArray = new Triple[] {
 				new Triple(NodeFactory.createURI("http://example.com/1"),
 						NodeFactory.createURI("http://example.com/v"),
-						NodeFactory.createAnon()),
+						NodeFactory.createBlankNode()),
 				new Triple(NodeFactory.createURI("http://example.com/2"),
 						NodeFactory.createURI("http://example.com/v"),
-						NodeFactory.createAnon()),
+						NodeFactory.createBlankNode()),
 				new Triple(NodeFactory.createURI("http://example.com/3"),
 						NodeFactory.createURI("http://example.com/v"),
-						NodeFactory.createAnon()) };
+						NodeFactory.createBlankNode()) };
 
 	}
 }

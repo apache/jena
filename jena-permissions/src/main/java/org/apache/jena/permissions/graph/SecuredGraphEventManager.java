@@ -36,7 +36,6 @@ import org.apache.jena.graph.impl.CollectionGraph ;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.impl.CachedSecurityEvaluator;
-import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.permissions.utils.PermTripleFilter;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.NiceIterator ;

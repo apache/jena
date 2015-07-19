@@ -26,7 +26,6 @@ import java.util.function.Predicate;
 import org.apache.jena.graph.Node;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.rdf.model.RSIterator ;
 import org.apache.jena.rdf.model.ReifiedStatement ;

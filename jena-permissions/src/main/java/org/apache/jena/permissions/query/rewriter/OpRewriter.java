@@ -26,7 +26,6 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.shared.ReadDeniedException;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVisitor ;

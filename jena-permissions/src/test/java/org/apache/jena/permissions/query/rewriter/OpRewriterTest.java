@@ -50,10 +50,10 @@ public class OpRewriterTest {
 						RDF.type.asNode(),
 						NodeFactory.createURI("http://example.com/class")),
 				new Triple(NodeFactory.createVariable("foo"),
-						NodeFactory.createAnon(),
+						NodeFactory.createBlankNode(),
 						NodeFactory.createVariable("bar")),
 				new Triple(NodeFactory.createVariable("bar"),
-						NodeFactory.createAnon(),
+						NodeFactory.createBlankNode(),
 						NodeFactory.createVariable("baz")), };
 	}
 
@@ -104,10 +104,10 @@ public class OpRewriterTest {
 						RDF.type.asNode(),
 						NodeFactory.createURI("http://example.com/class")),
 				new Triple(NodeFactory.createVariable("foo"),
-						NodeFactory.createAnon(),
+						NodeFactory.createBlankNode(),
 						NodeFactory.createVariable("bar")),
 				new Triple(NodeFactory.createVariable("bar"),
-						NodeFactory.createAnon(),
+						NodeFactory.createBlankNode(),
 						NodeFactory.createVariable("baz")), };
 		try {
 			rewriter.visit(new OpBGP(BasicPattern.wrap(Arrays.asList(triples))));
