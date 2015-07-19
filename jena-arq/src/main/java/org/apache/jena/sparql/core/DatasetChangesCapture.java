@@ -108,7 +108,8 @@ public class DatasetChangesCapture implements DatasetChanges {
 
     @Override
     public void reset() {
-        actions.clear() ;
+        if ( actions != null )
+            actions.clear() ;
         actions = null ;
     }
 }
