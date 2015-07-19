@@ -146,6 +146,11 @@ public class SecuredQueryEngine extends QueryEngineMain
 				{
 					return null;
 				}
+
+				@Override
+				public boolean isPrincipalAuthenticated(Object principal) {
+					return true;
+				}
 			};
 
 		}

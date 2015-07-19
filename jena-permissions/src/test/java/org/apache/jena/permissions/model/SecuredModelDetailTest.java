@@ -376,6 +376,11 @@ public class SecuredModelDetailTest {
 			return principal;
 		}
 
+		@Override
+		public boolean isPrincipalAuthenticated(Object principal) {
+			return principal != null;
+		}
+
 	}
 
 }

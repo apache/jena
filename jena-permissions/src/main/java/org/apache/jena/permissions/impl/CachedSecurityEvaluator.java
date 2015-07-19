@@ -89,4 +89,9 @@ public class CachedSecurityEvaluator implements SecurityEvaluator {
 		return origPrincipal;
 	}
 
+	@Override
+	public boolean isPrincipalAuthenticated(Object principal) {
+		return wrapped.isPrincipalAuthenticated(principal);
+	}
+
 }

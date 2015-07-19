@@ -218,5 +218,17 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
 		return SecurityUtils.getSubject();
 	}
 
+	/**
+	 * Verify the Shiro subject is authenticated.
+	 */
+	@Override
+	public boolean isPrincipalAuthenticated(Object principal) {
+		if (principal instanceof Subject)
+		{
+			return ((Subject)principal).isAuthenticated();
+		}
+		return false;
+	}
+
 
 }

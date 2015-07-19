@@ -389,4 +389,18 @@ public interface SecurityEvaluator {
 	 * @return The current principal
 	 */
 	public Object getPrincipal();
+	
+	/**
+	 * Returns true if the principal is recognized as an authenticated principal by the
+	 * underlying authentication mechanism.
+	 * 
+	 * This is to handle the case where an authentication mechanism returns a non-null object to
+	 * indicate a non-authenticated principal.  (e.g. Shiro).
+	 * 
+	 * The principal is guaranteed to have been the return value from an earlier getPrincipal() call.
+	 * 
+	 * @param principal The principal to check.
+	 * @return true if authenticated, false if not.
+	 */
+	public boolean isPrincipalAuthenticated( Object principal );
 }

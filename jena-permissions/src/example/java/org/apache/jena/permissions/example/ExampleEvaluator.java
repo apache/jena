@@ -126,9 +126,15 @@ public class ExampleEvaluator implements SecurityEvaluator {
 		}
 		principal = new BasicUserPrincipal( userName );
 	}
+	
 	@Override
 	public Principal getPrincipal() {
 		return principal;
+	}
+
+	@Override
+	public boolean isPrincipalAuthenticated(Object principal) {
+		return principal != null;
 	}
 
 }

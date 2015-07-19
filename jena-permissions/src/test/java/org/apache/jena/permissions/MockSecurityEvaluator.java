@@ -227,4 +227,10 @@ public class MockSecurityEvaluator implements SecurityEvaluator
 				update, delete, forceTripleChecks);
 	}
 
+
+	@Override
+	public boolean isPrincipalAuthenticated(Object principal) {
+		return principal != null;
+	}
+
 }
