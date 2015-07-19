@@ -15,51 +15,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.permissions;
+package org.apache.jena.shared;
 
 import org.apache.jena.graph.Triple;
-import org.apache.jena.shared.AccessDeniedException;
 
-public class ReadDeniedException extends AccessDeniedException {
+public class UpdateDeniedException extends AccessDeniedException {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2241945715756635813L;
+	private static final long serialVersionUID = -2200205468688578585L;
 
-	public ReadDeniedException() {
+	public UpdateDeniedException() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	public ReadDeniedException(String message, Throwable cause, Triple triple) {
+	public UpdateDeniedException(String message, Throwable cause, Triple triple) {
 		super(message, cause, triple);
-		// TODO Auto-generated constructor stub
 	}
 
-	public ReadDeniedException(String message, Throwable cause) {
+	public UpdateDeniedException(String message, Throwable cause) {
 		super(message, cause);
-		// TODO Auto-generated constructor stub
 	}
 
-	public ReadDeniedException(String message, Triple triple) {
+	public UpdateDeniedException(String message, Triple triple) {
 		super(message, triple);
-		// TODO Auto-generated constructor stub
 	}
 
-	public ReadDeniedException(String message) {
+	public UpdateDeniedException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
 	}
 
-	public ReadDeniedException(Throwable cause, Triple triple) {
+	public UpdateDeniedException(Throwable cause, Triple triple) {
 		super(cause, triple);
-		// TODO Auto-generated constructor stub
 	}
 
-	public ReadDeniedException(Throwable cause) {
+	public UpdateDeniedException(Throwable cause) {
 		super(cause);
-		// TODO Auto-generated constructor stub
 	}
 
 }

@@ -21,7 +21,6 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.impl.ItemHolder;
@@ -32,6 +31,7 @@ import org.apache.jena.permissions.model.SecuredStatement;
 import org.apache.jena.permissions.utils.PermStatementFilter;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.PropertyNotFoundException ;
+import org.apache.jena.shared.ReadDeniedException;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /**

@@ -19,10 +19,10 @@ package org.apache.jena.permissions.graph;
 
 import java.util.Map;
 
-import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.permissions.SecuredItem;
-import org.apache.jena.permissions.UpdateDeniedException;
 import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.shared.ReadDeniedException;
+import org.apache.jena.shared.UpdateDeniedException;
 
 /**
  * The interface for secured PrefixMapping instances.

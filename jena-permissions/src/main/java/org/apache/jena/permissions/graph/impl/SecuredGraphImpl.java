@@ -21,13 +21,13 @@ import org.apache.jena.graph.* ;
 import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.UpdateDeniedException;
 import org.apache.jena.permissions.graph.*;
 import org.apache.jena.permissions.impl.ItemHolder;
 import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.permissions.utils.PermTripleFilter;
 import org.apache.jena.shared.AddDeniedException ;
 import org.apache.jena.shared.DeleteDeniedException ;
+import org.apache.jena.shared.UpdateDeniedException;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /**

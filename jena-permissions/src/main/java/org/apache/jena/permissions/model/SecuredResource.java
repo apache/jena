@@ -18,12 +18,12 @@
 package org.apache.jena.permissions.model;
 
 import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.permissions.ReadDeniedException;
-import org.apache.jena.permissions.UpdateDeniedException;
 import org.apache.jena.permissions.model.impl.SecuredStatementIterator;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.AddDeniedException;
 import org.apache.jena.shared.DeleteDeniedException;
+import org.apache.jena.shared.ReadDeniedException;
+import org.apache.jena.shared.UpdateDeniedException;
 
 /**
  * The interface for secured Resource instances.

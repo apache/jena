@@ -17,12 +17,12 @@
  */
 package org.apache.jena.permissions.model;
 
-import org.apache.jena.permissions.ReadDeniedException;
-import org.apache.jena.permissions.UpdateDeniedException;
 import org.apache.jena.rdf.model.Alt ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.ResourceF ;
 import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.ReadDeniedException;
+import org.apache.jena.shared.UpdateDeniedException;
 
 /**
  * The interface for secured Alt instances.

@@ -19,7 +19,6 @@ package org.apache.jena.permissions.model;
 
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.permissions.MockSecurityEvaluator;
-import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.model.SecuredLiteral;
@@ -29,6 +28,7 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.ResourceRequiredException;
 import org.apache.jena.shared.BadBooleanException;
 import org.apache.jena.shared.BadCharLiteralException;
+import org.apache.jena.shared.ReadDeniedException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

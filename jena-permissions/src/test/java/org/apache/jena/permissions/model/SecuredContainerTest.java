@@ -20,7 +20,6 @@ package org.apache.jena.permissions.model;
 import java.util.Set;
 
 import org.apache.jena.permissions.MockSecurityEvaluator;
-import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
@@ -30,6 +29,7 @@ import org.apache.jena.rdf.model.Container;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.shared.AccessDeniedException;
+import org.apache.jena.shared.ReadDeniedException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

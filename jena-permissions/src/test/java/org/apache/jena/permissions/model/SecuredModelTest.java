@@ -34,6 +34,8 @@ import org.apache.jena.permissions.graph.SecuredPrefixMappingTest;
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.AccessDeniedException;
+import org.apache.jena.shared.ReadDeniedException;
+import org.apache.jena.shared.UpdateDeniedException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

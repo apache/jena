@@ -21,7 +21,7 @@
 */
 package org.apache.jena.shared;
 
-public class CannotCreateException extends JenaException
+public class CannotCreateException extends OperationDeniedException
     {
     public CannotCreateException( String message )
             { super( message ); }

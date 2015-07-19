@@ -21,12 +21,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.UpdateDeniedException;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.AddDeniedException;
 import org.apache.jena.shared.DeleteDeniedException;
+import org.apache.jena.shared.ReadDeniedException;
+import org.apache.jena.shared.UpdateDeniedException;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
 public interface SecuredRDFList extends RDFList, SecuredResource

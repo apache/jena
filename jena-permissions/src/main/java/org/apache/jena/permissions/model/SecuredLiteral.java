@@ -19,9 +19,9 @@ package org.apache.jena.permissions.model;
 
 import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.shared.ReadDeniedException;
 
 /**
  * The interface for secured Literal instances.

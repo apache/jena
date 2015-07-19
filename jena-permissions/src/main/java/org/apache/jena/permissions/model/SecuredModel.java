@@ -28,8 +28,6 @@ import java.util.List ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.permissions.ReadDeniedException;
-import org.apache.jena.permissions.UpdateDeniedException;
 import org.apache.jena.permissions.graph.SecuredGraph;
 import org.apache.jena.permissions.graph.SecuredPrefixMapping;
 import org.apache.jena.permissions.model.impl.SecuredNodeIterator;
@@ -40,6 +38,8 @@ import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.AddDeniedException;
 import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.shared.PropertyNotFoundException ;
+import org.apache.jena.shared.ReadDeniedException;
+import org.apache.jena.shared.UpdateDeniedException;
 
 /**
  * The interface for secured Model instances.

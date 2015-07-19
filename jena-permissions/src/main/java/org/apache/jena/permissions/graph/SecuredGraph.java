@@ -21,11 +21,11 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphStatisticsHandler ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.permissions.ReadDeniedException;
 import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.shared.AddDeniedException ;
 import org.apache.jena.shared.DeleteDeniedException ;
+import org.apache.jena.shared.ReadDeniedException;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /**

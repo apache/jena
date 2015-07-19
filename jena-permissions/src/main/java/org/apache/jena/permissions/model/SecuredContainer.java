@@ -19,8 +19,6 @@ package org.apache.jena.permissions.model;
 
 import java.util.Set;
 
-import org.apache.jena.permissions.ReadDeniedException;
-import org.apache.jena.permissions.UpdateDeniedException;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.model.impl.SecuredNodeIterator;
 import org.apache.jena.rdf.model.Container ;
@@ -28,6 +26,8 @@ import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Statement ;
 import org.apache.jena.shared.AddDeniedException;
 import org.apache.jena.shared.DeleteDeniedException;
+import org.apache.jena.shared.ReadDeniedException;
+import org.apache.jena.shared.UpdateDeniedException;
 
 /**
  * The interface for secured Container instances.
