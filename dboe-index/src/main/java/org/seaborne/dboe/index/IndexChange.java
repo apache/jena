@@ -23,7 +23,7 @@ import org.seaborne.dboe.base.record.Record ;
 
 import org.apache.jena.sparql.core.DatasetChanges ;
 
-/** Temporary class to refien what to put into Jena itself.
+/** Temporary class to refine what to put into Jena itself.
  * @see DatasetChanges
  */
 public class IndexChange {
