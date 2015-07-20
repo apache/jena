@@ -16,27 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core;
+package org.apache.jena.sparql.core.journaling;
 
-import org.apache.jena.sparql.core.journaling.TestJournaling;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestContext.class
-    , TestDatasetGraphMem.class
-    , TestDatasetGraphMemTriplesQuads.class
-    , TestDatasetMem.class
-    // Not ready , TestDynamicDatasetMem.class
-    , TestDatasetGraphsRegular.class
-    , TestGraphOverDatasetMem.class
-    , TestDatasetGraphViewGraphs.class
-    , TestDatasetMonitor.class
-    , TestDatasetGraphWithLock.class
-    , TestJournaling.class
-})
-
-public class TS_Core
-{}
-
+@SuiteClasses({ TestQuadOperation.class, TestListBackedOperationRecord.class, TestDatasetGraphWithRecord.class })
+public class TestJournaling {}
