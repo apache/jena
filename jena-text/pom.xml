@@ -44,7 +44,12 @@
       <version>3.0.0-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
-
+    
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    
     <!-- Testing support -->
     <dependency>
       <groupId>org.apache.jena</groupId>
