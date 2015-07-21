@@ -135,7 +135,7 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient-osgi</artifactId>
-      <version>${ver.httpclient}</version>
+      <version>${ver.httpclient-osgi}</version>
       <exclusions>
 	<!-- These are all embedded within httpclient-osgi -->
 	<exclusion>
@@ -163,7 +163,7 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore-osgi</artifactId>
-      <version>${ver.httpcore}</version> 
+      <version>${ver.httpcore-osgi}</version> 
       <exclusions>
         <exclusion>
           <groupId>org.apache.httpcomponents</groupId>
