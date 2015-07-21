@@ -29,8 +29,7 @@ package org.apache.jena.ontology;
  * Interface representing the ontology abstraction for a qualified cardinality
  * restriction.   A qualified restriction is a DAML+OIL term for a restriction
  * with a cardinality constraint <em>and</em> a constraint that the values of
- * the restricted property must all belong to the given class.  At the current 
- * time, qualified restrictions are part of DAML+OIL, but not part of OWL.
+ * the restricted property must all belong to the given class.
  * </p>
  */
 public interface CardinalityQRestriction 

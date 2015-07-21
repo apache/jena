@@ -63,7 +63,6 @@ limitations under the License.
 
   <properties>
     <jenaCoreVersion>${project.version}</jenaCoreVersion>
-    <version>${project.version}</version>
     <mavenVersion>3.0.4</mavenVersion>
   </properties>
 
@@ -189,7 +188,7 @@ limitations under the License.
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>${jenaCoreVersion}</version>
+      <version>3.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
