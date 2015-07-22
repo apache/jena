@@ -18,29 +18,40 @@
 
 package org.apache.jena.sparql.syntax;
 
-import java.util.Collection ;
-import java.util.List ;
-import java.util.Map ;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.BasicPattern ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.modify.TemplateLib ;
-import org.apache.jena.sparql.serializer.FormatterTemplate ;
-import org.apache.jena.sparql.util.Iso ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.modify.TemplateLib;
+import org.apache.jena.sparql.modify.request.QuadAcc;
+import org.apache.jena.sparql.serializer.FormatterTemplate;
+import org.apache.jena.sparql.util.Iso;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
-/** Triples template. */
+/** Quads/Triples template. */
 
 public class Template 
 {
     static final int HashTemplateGroup     = 0xB1 ;
-    private final BasicPattern bgp ;
+    private final QuadAcc qp ;
+    private final BasicPattern bgp;
+    
+    public Template(QuadAcc qp)
+    { 
+        this.qp = qp ;
+        this.bgp = null;
+    }
     
     public Template(BasicPattern bgp)
     { 
-        this.bgp = bgp ;
+    	this.bgp = bgp;
+    	this.qp = null;
     }
 
 //    public void addTriple(Triple t) { quads.addTriple(t) ; }
@@ -52,14 +63,43 @@ public class Template
 //    public void addTriplePath(int index, TriplePath path)
 //    { throw new ARQException("Triples-only collector") ; }
 
-
-    public BasicPattern getBGP()        { return bgp ; }
-    public List<Triple> getTriples()    { return bgp.getList() ; }
+    public BasicPattern getBGP()
+    { 
+    	if (this.bgp != null){
+    		return this.bgp;
+    	}
+    	BasicPattern bgp = new BasicPattern();
+    	for(Quad q: qp.getQuads()){
+    		bgp.add(q.asTriple());
+    	}
+    	return bgp;
+    }
+    public List<Triple> getTriples()
+    { 
+    	if(this.bgp != null){
+    		return this.bgp.getList();
+    	}
+    	List<Triple> triples = new ArrayList<Triple>();
+    	for(Quad q: qp.getQuads()){
+    		triples.add(q.asTriple());
+    	}
+    	return triples;
+    }
+    public List<Quad> getQuads() {
+    	if( this.bgp != null){
+    		List<Quad> quads = new ArrayList<Quad>();
+    		for(Triple triple: this.bgp.getList()){
+    			quads.add( new Quad( Quad.defaultGraphNodeGenerated, triple ) ); 
+    		}
+    		return quads;
+    	}   	
+    	return qp.getQuads() ; 
+    }
     // -------------------------
 
     public void subst(Collection<Triple> acc, Map<Node, Node> bNodeMap, Binding b)
     {
-        for ( Triple t : bgp.getList() )
+        for ( Triple t : getTriples() )
         {
             t = TemplateLib.subst(t, b, bNodeMap) ;
             acc.add(t) ;
@@ -72,22 +112,24 @@ public class Template
     { 
         // BNode invariant hashCode. 
         int calcHashCode = Template.HashTemplateGroup ;
-        for ( Triple t : bgp.getList() )
-            calcHashCode ^=  hash(t) ^ calcHashCode<<1 ; 
+        for ( Quad q : getQuads() )
+            calcHashCode ^=  hash(q) ^ calcHashCode<<1 ; 
         return calcHashCode ;
     }
     
-    private static int hash(Triple triple)
+    private static int hash(Quad quad)
     {
         int hash = 0 ;
-        hash = hashNode(triple.getSubject())   ^ hash<<1 ;
-        hash = hashNode(triple.getPredicate()) ^ hash<<1 ;
-        hash = hashNode(triple.getObject())    ^ hash<<1 ;
+        hash = hashNode(quad.getSubject())   ^ hash<<1 ;
+        hash = hashNode(quad.getPredicate()) ^ hash<<1 ;
+        hash = hashNode(quad.getObject())    ^ hash<<1 ;
+        hash = hashNode(quad.getGraph())     ^ hash<<1 ;
         return hash ;
     }
 
     private static int hashNode(Node node)
     {
+    	if ( node == null ) return 37 ; 
         if ( node.isBlank() ) return 59 ;
         return node.hashCode() ;
     }
@@ -96,15 +138,18 @@ public class Template
     {
         if ( ! ( temp2 instanceof Template) ) return false ;
         Template tg2 = (Template)temp2 ;
-        List<Triple> list1 = this.bgp.getList() ;
-        List<Triple> list2 = tg2.bgp.getList() ;
+        List<Quad> list1 = this.getQuads() ;
+        List<Quad> list2 = tg2.getQuads() ;
         if ( list1.size() != list2.size() ) return false ;
         
         for ( int i = 0 ; i < list1.size() ; i++ )
         {
-            Triple t1 = list1.get(i) ;
-            Triple t2 = list2.get(i) ;
-            Iso.tripleIso(t1, t2, labelMap) ;
+            Quad q1 = list1.get(i) ;
+            Quad q2 = list2.get(i) ;
+            boolean iso = Iso.quadIso(q1, q2, labelMap) ;
+            if(!iso){
+            	return false;
+            }
         }
         return true ;
     }

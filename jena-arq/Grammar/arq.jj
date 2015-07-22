@@ -129,7 +129,7 @@ void SelectClause() : { Var v ; Expr expr ; Node n ; }
   { allowAggregatesInExpressions = false ; }
 }
 void ConstructQuery() : { Template t ;
-                          TripleCollectorBGP acc = new TripleCollectorBGP() ; }
+                          QuadAcc acc = new QuadAcc() ; }
 {
  <CONSTRUCT>
    { getQuery().setQueryConstructType() ; }
@@ -143,15 +143,13 @@ void ConstructQuery() : { Template t ;
     ( DatasetClause() )*
     <WHERE>
     <LBRACE>
-    (TriplesTemplate(acc))?
+    ConstructQuads(acc)
     <RBRACE>
     SolutionModifier()
     {
-      t = new Template(acc.getBGP()) ;
+      t = new Template(acc) ;
       getQuery().setConstructTemplate(t) ;
-      ElementPathBlock epb = new ElementPathBlock(acc.getBGP()) ;
-      ElementGroup elg = new ElementGroup() ;
-      elg.addElement(epb) ;
+   ElementGroup elg = createQueryPattern(t);
       getQuery().setQueryPattern(elg) ;
     }
  )
@@ -500,6 +498,27 @@ void QuadsNotTriples(QuadAccSink acc) : {Node gn ; Node prev = acc.getGraph() ; 
     <RBRACE>
     { setAccGraph(acc, prev) ; }
 }
+void ConstructQuads(QuadAcc acc) : {}
+{
+    (TriplesTemplate(acc))?
+    (
+       ConstructQuadsNotTriples(acc)
+       (<DOT>)?
+       (TriplesTemplate(acc))?
+    )*
+}
+void ConstructQuadsNotTriples(QuadAccSink acc) : {Node gn = org.apache.jena.sparql.core.Quad.defaultGraphNodeGenerated ; Node prev = acc.getGraph() ; }
+{
+    (
+    <GRAPH>
+     gn = VarOrIri()
+    )?
+    { setAccGraph(acc, gn) ; }
+    <LBRACE>
+    (TriplesTemplate(acc))?
+    <RBRACE>
+    { setAccGraph(acc, prev) ; }
+}
 void TriplesTemplate(TripleCollector acc) : { }
 {
     TriplesSameSubject(acc)
@@ -780,12 +799,12 @@ ExprList ExpressionList() : { Expr expr = null ; ExprList args = new ExprList() 
   )
   { return args ; }
 }
-Template ConstructTemplate() : { TripleCollectorBGP acc = new TripleCollectorBGP();
-                                 Template t = new Template(acc.getBGP()) ; }
+Template ConstructTemplate() : { QuadAcc acc = new QuadAcc() ;
+                                 Template t = new Template (acc);}
 {
     { setInConstructTemplate(true) ; }
   <LBRACE>
-    (ConstructTriples(acc))?
+    ConstructQuads(acc)
   <RBRACE>
     { setInConstructTemplate(false) ;
       return t ; }

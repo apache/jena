@@ -233,6 +233,40 @@ void SelectClause() : {  Var v ; Expr expr ; Node n ; }
 #include  "json-extra.jj"
 #endif
 
+#ifdef ARQ
+void ConstructQuery() : { Template t ; 
+                          QuadAcc acc = new QuadAcc() ; }
+{
+ <CONSTRUCT>
+   { getQuery().setQueryConstructType() ; }
+ (
+    // Full form.
+    t = ConstructTemplate() 
+      { getQuery().setConstructTemplate(t) ; }
+    ( DatasetClause() )*
+    WhereClause()
+    SolutionModifier()
+ |
+    // Abbreviated CONSTRUCT WHERE {}
+    ( DatasetClause() )*
+    <WHERE>
+    // Should have been "ConstructTemplate()"
+    <LBRACE>  
+    ConstructQuads(acc)
+    <RBRACE>
+    SolutionModifier()
+    { 
+      t = new Template(acc) ;
+      getQuery().setConstructTemplate(t) ;
+      // Create a query in the same shape as the query created by writing out in full.
+	  ElementGroup elg = createQueryPattern(t);
+      getQuery().setQueryPattern(elg) ;
+    }
+ )
+//#endif
+}
+#else
+
 void ConstructQuery() : { Template t ; 
                           TripleCollectorBGP acc = new TripleCollectorBGP() ; }
 {
@@ -276,6 +310,7 @@ void ConstructQuery() : { Template t ;
  )
 //#endif
 }
+#endif
 
 void DescribeQuery() : { Node n ; }
 {
@@ -702,7 +737,32 @@ void QuadsNotTriples(QuadAccSink acc) : {Node gn ; Node prev = acc.getGraph() ; 
     { setAccGraph(acc, prev) ; }
     
 }
+#ifdef ARQ
+void ConstructQuads(QuadAcc acc) : {}
+{
+    (TriplesTemplate(acc))?
+    (
+       ConstructQuadsNotTriples(acc)
+       (<DOT>)?
+       (TriplesTemplate(acc))?
+    )*    
+}
 
+void ConstructQuadsNotTriples(QuadAccSink acc) : {Node gn = org.apache.jena.sparql.core.Quad.defaultGraphNodeGenerated ; Node prev = acc.getGraph() ; }
+{
+    (
+  	 <GRAPH>
+     gn = VarOrIri()
+    )?
+
+    { setAccGraph(acc, gn) ; }
+    <LBRACE> 
+    (TriplesTemplate(acc))?
+    <RBRACE>
+    { setAccGraph(acc, prev) ; }
+    
+}
+#endif
 void TriplesTemplate(TripleCollector acc) : { }
 {    // same as ConstructTriples
 #if SPARQL_11
@@ -1058,6 +1118,18 @@ ExprList ExpressionList() : { Expr expr = null ; ExprList args = new ExprList() 
 
 
 // -------- Construct patterns
+#ifdef ARQ
+Template ConstructTemplate() : { QuadAcc acc = new QuadAcc() ;
+                                 Template t = new Template (acc);}
+{
+    { setInConstructTemplate(true) ; }
+  <LBRACE> 
+    ConstructQuads(acc)
+  <RBRACE>
+    { setInConstructTemplate(false) ;
+      return t ; }
+}
+#else
 
 Template ConstructTemplate() : { TripleCollectorBGP acc = new TripleCollectorBGP(); 
                                  Template t = new Template(acc.getBGP()) ; }
@@ -1069,6 +1141,7 @@ Template ConstructTemplate() : { TripleCollectorBGP acc = new TripleCollectorBGP
     { setInConstructTemplate(false) ;
       return t ; }
 }
+#endif
 
 void ConstructTriples(TripleCollector acc) : { }
 {    // Same as TriplesTemplate, but retain for 1.0 legacy
