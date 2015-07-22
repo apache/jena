@@ -36,6 +36,7 @@ public interface TextIndex extends Closeable //, Transactional
     // Update operations
     void addEntity(Entity entity) ;
     void updateEntity(Entity entity) ;
+    void deleteEntity(Entity entity) ;
     
     
     // read operations
@@ -45,9 +46,9 @@ public interface TextIndex extends Closeable //, Transactional
     /** Access the index - limit if -1 for as many as possible 
      * Throw QueryParseException for syntax errors in the query string.
      */ 
-    List<TextHit> query(String qs, int limit) ;
+    List<TextHit> query(Node property, String qs, int limit) ;
     
-    List<TextHit> query(String qs) ;
+    List<TextHit> query(Node property, String qs) ;
 
     EntityDefinition getDocDef() ;
 }

@@ -17,10 +17,7 @@
  */
 package org.apache.jena.permissions.model.impl;
 
-import org.apache.jena.permissions.SecurityEvaluator.SecNode;
-import org.apache.jena.permissions.SecurityEvaluator.SecTriple;
-import org.apache.jena.permissions.impl.SecuredItem;
-import org.apache.jena.permissions.impl.SecuredItemImpl;
+import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.rdf.model.* ;
 
 public class SecuredSelector implements Selector
@@ -38,12 +35,6 @@ public class SecuredSelector implements Selector
 	{
 		this.securedItem = securedItem;
 		this.selector = selector;
-	}
-
-	private SecNode getNode( final RDFNode node )
-	{
-		return node == null ? SecNode.ANY : SecuredItemImpl.convert(node
-				.asNode());
 	}
 
 	@Override
@@ -67,7 +58,7 @@ public class SecuredSelector implements Selector
 	@Override
 	public boolean isSimple()
 	{
-		return securedItem.canRead(SecTriple.ANY);
+		return selector.isSimple();
 	}
 
 	/**
@@ -82,11 +73,9 @@ public class SecuredSelector implements Selector
 	@Override
 	public boolean test( final Statement s )
 	{
-		if (selector.test(s))
+		if (securedItem.canRead(s))
 		{
-			final SecTriple t = new SecTriple(getNode(s.getSubject()),
-					getNode(s.getPredicate()), getNode(s.getObject()));
-			return securedItem.canRead(t);
+			return selector.test(s);
 		}
 		return false;
 	}

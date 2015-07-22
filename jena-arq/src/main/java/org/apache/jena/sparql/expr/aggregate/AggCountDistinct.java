@@ -63,8 +63,8 @@ public class AggCountDistinct extends AggregatorBase
     public int hashCode()   { return HC_AggCountDistinct ; }
 
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Aggregator other, boolean bySyntax) {
+        if ( other == null ) return false ;
         if ( this == other ) return true ;
         if ( ! ( other instanceof AggCountDistinct ) ) return false ;
         return true ;

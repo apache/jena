@@ -40,6 +40,7 @@ public class TextVocab
     public static final Property pServer            = Vocab.property(NS, "server") ;            // Solr
     public static final Property pDirectory         = Vocab.property(NS, "directory") ;         // Lucene
     public static final Property pMultilingualSupport   = Vocab.property(NS, "multilingualSupport") ;
+    public static final Property pStoreValues       = Vocab.property(NS, "storeValues") ;
     public static final Property pQueryAnalyzer     = Vocab.property(NS, "queryAnalyzer") ;
     public static final Property pEntityMap         = Vocab.property(NS, "entityMap") ;
     
@@ -49,6 +50,7 @@ public class TextVocab
     public static final Property pDefaultField      = Vocab.property(NS, "defaultField") ;
     public static final Property pGraphField        = Vocab.property(NS, "graphField") ;
     public static final Property pLangField         = Vocab.property(NS, "langField") ;
+    public static final Property pUidField          = Vocab.property(NS, "uidField") ;
     public static final Property pMap               = Vocab.property(NS, "map") ;
     public static final Property pField             = Vocab.property(NS, "field") ;
     public static final Property pPredicate         = Vocab.property(NS, "predicate") ;

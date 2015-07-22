@@ -18,7 +18,12 @@
 
 package arq.cmdline;
 
-import arq.cmd.* ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
@@ -27,7 +32,7 @@ import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.util.FileManager ;
 
-public class ModLangParse implements ArgModuleGeneral
+public class ModLangParse extends ModBase
 {
     private ArgDecl argCheck    = new ArgDecl(ArgDecl.NoValue, "check") ;
     private ArgDecl argNoCheck  = new ArgDecl(ArgDecl.NoValue, "nocheck", "noCheck") ;

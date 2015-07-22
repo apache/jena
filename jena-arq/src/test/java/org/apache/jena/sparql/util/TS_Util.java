@@ -27,7 +27,6 @@ import org.junit.runners.Suite.SuiteClasses ;
 @SuiteClasses( {
     TestDateTimeParsing.class ,
     TestList.class ,
-    TestVersion.class ,
     TestDateTimeUtils.class ,
     TestFmtUtils.class
 })

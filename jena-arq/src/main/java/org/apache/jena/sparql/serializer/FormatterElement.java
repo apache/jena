@@ -35,6 +35,8 @@ import org.apache.jena.sparql.core.TriplePath ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.path.PathWriter ;
 import org.apache.jena.sparql.syntax.* ;
+import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.vocabulary.RDF ;
 
 
 public class FormatterElement extends FormatterBase
@@ -52,7 +54,7 @@ public class FormatterElement extends FormatterBase
     public static final boolean GROUP_SEP_DOT = false ;
     
     /** Control whether the first item of a group is on the same line as the { */
-    public static final boolean GROUP_FIRST_ON_SAME_LINE = false ;
+    public static final boolean GROUP_FIRST_ON_SAME_LINE = true ;
 
     /** Control pretty printing */
     public static final boolean PRETTY_PRINT = true  ;
@@ -60,9 +62,6 @@ public class FormatterElement extends FormatterBase
     /** Control whether disjunction has set of delimiters - as it's a group usually, these aren't needed */
     public static final boolean UNION_MARKERS = false ;
     
-    /** Control whether a group of one is unnested - changes the query syntax tree */ 
-    public static final boolean GROUP_UNNEST_ONE = false ; 
-
     /** Control whether GRAPH indents in a fixed way or based on the layout size */
     public static final boolean GRAPH_FIXED_INDENT = true ;
     
@@ -80,76 +79,84 @@ public class FormatterElement extends FormatterBase
     
     public static final int TRIPLES_COLUMN_GAP = 2 ;
 
-    public FormatterElement(IndentedWriter out, SerializationContext context)
-    {
+    public FormatterElement(IndentedWriter out, SerializationContext context) {
         super(out, context) ;
     }
-    
-    public static void format(IndentedWriter out, SerializationContext cxt, Element el)
-    {
+
+    public static void format(IndentedWriter out, SerializationContext cxt, Element el) {
         FormatterElement fmt = new FormatterElement(out, cxt) ;
         fmt.startVisit() ;
         el.visit(fmt) ;
         fmt.finishVisit() ;
     }
-    
-    
-    public static String asString(Element el)
-    {
+
+    public static String asString(Element el) {
         SerializationContext cxt = new SerializationContext() ;
         IndentedLineBuffer b = new IndentedLineBuffer() ;
         FormatterElement.format(b, cxt, el) ;
         return b.toString() ;
     }
 
-    public boolean topMustBeGroup() { return false ; }
-    
+    public boolean topMustBeGroup() {
+        return false ;
+    }
+
     @Override
-    public void visit(ElementTriplesBlock el)
-    {
-        if ( el.isEmpty() )
-        {
+    public void visit(ElementTriplesBlock el) {
+        if ( el.isEmpty() ) {
             out.println("# Empty BGP") ;
             return ;
         }
         formatTriples(el.getPattern()) ;
     }
-    
+
     @Override
-    public void visit(ElementPathBlock el)
-    {
-        if ( el.isEmpty() )
-        {
+    public void visit(ElementPathBlock el) {
+        // Write path block - don't put in a final trailing "." 
+        if ( el.isEmpty() ) {
             out.println("# Empty BGP") ;
             return ;
         }
-        // Could be neater.
-        boolean first = true ;
+
+        // Split into BGP-path-BGP-...
+        // where the BGPs may be empty.
         PathBlock pBlk = el.getPattern() ;
-        for ( TriplePath tp : pBlk )
-        {
-            if ( ! first )
-            {
+        BasicPattern bgp = new BasicPattern() ;
+        boolean first = true ;      // Has anything been output?
+        for ( TriplePath tp : pBlk ) {
+            if ( tp.isTriple() ) {
+                bgp.add(tp.asTriple()) ;
+                continue ;
+            }
+            
+            if ( !bgp.isEmpty() ) {
+                if ( !first )
+                    out.println(" .") ;
+                flush(bgp) ;
+                first = false ;
+            }
+            if ( !first )
                 out.println(" .") ;
-            }
+            // Path
+            printSubject(tp.getSubject()) ;
+            out.print(" ") ;
+            PathWriter.write(out, tp.getPath(), context.getPrologue()) ;
+            out.print(" ") ;
+            printObject(tp.getObject()) ;
             first = false ;
-            if ( tp.isTriple() )
-            {
-                printSubject(tp.getSubject()) ;
-                out.print(" ") ;
-                printProperty(tp.getPredicate()) ;
-                out.print(" ") ;
-                printObject(tp.getObject()) ;
-            }
-            else
-            {
-                printSubject(tp.getSubject()) ;
-                out.print(" ") ;
-                PathWriter.write(out, tp.getPath(), context.getPrologue()) ;
-                out.print(" ") ;
-                printObject(tp.getObject()) ;
-            }
         }
+        // Flush any stored triple patterns.
+        if ( !bgp.isEmpty() ) {
+            if ( !first )
+                out.println(" .") ;
+            flush(bgp) ;
+            first = false ;
+        }
+    }
+
+    private void flush(BasicPattern bgp) {
+        formatTriples(bgp) ;
+        bgp.getList().clear(); 
     }
 
     @Override
@@ -182,22 +189,21 @@ public class FormatterElement extends FormatterBase
     }
 
     @Override
-    public void visit(ElementFilter el)
-    {
+    public void visit(ElementFilter el) {
         out.print("FILTER ") ;
         Expr expr = el.getExpr() ;
         FmtExprSPARQL v = new FmtExprSPARQL(out, context) ;
-        
+
         // This assumes that complex expressions are bracketted
         // (parens) as necessary except for some cases:
-        //   Plain variable or constant
-        
+        // Plain variable or constant
+
         boolean addParens = false ;
         if ( expr.isVariable() )
             addParens = true ;
         if ( expr.isConstant() )
             addParens = true ;
-        
+
         if ( addParens )
             out.print("( ") ;
         v.format(expr) ;
@@ -206,10 +212,9 @@ public class FormatterElement extends FormatterBase
     }
 
     @Override
-    public void visit(ElementAssign el)
-    {
+    public void visit(ElementAssign el) {
         out.print("LET (") ;
-        out.print("?"+el.getVar().getVarName()) ;
+        out.print("?" + el.getVar().getVarName()) ;
         out.print(" := ") ;
         FmtExprSPARQL v = new FmtExprSPARQL(out, context) ;
         v.format(el.getExpr()) ;
@@ -217,31 +222,27 @@ public class FormatterElement extends FormatterBase
     }
 
     @Override
-    public void visit(ElementBind el)
-    {
+    public void visit(ElementBind el) {
         out.print("BIND(") ;
         FmtExprSPARQL v = new FmtExprSPARQL(out, context) ;
         v.format(el.getExpr()) ;
         out.print(" AS ") ;
-        out.print("?"+el.getVar().getVarName()) ;
+        out.print("?" + el.getVar().getVarName()) ;
         out.print(")") ;
     }
 
     @Override
-    public void visit(ElementData el)
-    {
+    public void visit(ElementData el) {
         QuerySerializer.outputDataBlock(out, el.getVars(), el.getRows(), context.getPrologue()) ;
     }
 
     @Override
-    public void visit(ElementUnion el)
-    {
-        if ( el.getElements().size() == 1 )
-        {
+    public void visit(ElementUnion el) {
+        if ( el.getElements().size() == 1 ) {
             // If this is an element of just one, just do it inplace
             // Can't happen from a parsed query.
             // Now can :-)
-            
+
             // SPARQL 1.1 inline UNION.
             // Same as OPTIONAL, MINUS
             out.print("UNION") ;
@@ -252,74 +253,58 @@ public class FormatterElement extends FormatterBase
             return ;
         }
 
-        if ( UNION_MARKERS )
-        {
+        if ( UNION_MARKERS ) {
             out.print("{") ;
             out.newline() ;
             out.pad() ;
         }
-            
-        out.incIndent(INDENT) ;
-        
-        boolean first = true ;
-        for ( Element subElement : el.getElements() )
-        {
 
-            if ( !first )
-            {
-                out.decIndent( INDENT );
-                out.newline();
-                out.print( "UNION" );
-                out.newline();
-                out.incIndent( INDENT );
+        out.incIndent(INDENT) ;
+
+        boolean first = true ;
+        for ( Element subElement : el.getElements() ) {
+            if ( !first ) {
+                out.decIndent(INDENT) ;
+                out.newline() ;
+                out.print("UNION") ;
+                out.newline() ;
+                out.incIndent(INDENT) ;
             }
-            visitAsGroup( subElement );
-            first = false;
+            visitAsGroup(subElement) ;
+            first = false ;
         }
-        
+
         out.decIndent(INDENT) ;
 
-        if ( UNION_MARKERS )
-        {
+        if ( UNION_MARKERS ) {
             out.newline() ;
             out.print("}") ;
         }
     }
 
-    
     @Override
-    public void visit(ElementGroup el)
-    {
-        if ( GROUP_UNNEST_ONE && el.getElements().size() == 1 )
-        {
-            // If this is an element of just one, we can remove the {} if it is a group.
-            Element e = el.getElements().get(0) ;
-            visitAsGroup(e) ;
-            return ;
-        }
-
+    public void visit(ElementGroup el) {
         out.print("{") ;
+        int initialRowNumber = out.getRow() ;
         out.incIndent(INDENT) ;
-        if ( GROUP_FIRST_ON_SAME_LINE )
-            out.newline() ;  
-        
+        if ( !GROUP_FIRST_ON_SAME_LINE )
+            out.newline() ;
+
         int row1 = out.getRow() ;
         out.pad() ;
-    
+
         boolean first = true ;
         Element lastElt = null ;
 
-        for ( Element subElement : el.getElements())
-        {
+        for ( Element subElement : el.getElements() ) {
             // Some adjacent elements need a DOT:
             // ElementTriplesBlock, ElementPathBlock
-            if ( ! first )
-            {
+            if ( !first ) {
                 // Need to move on after the last thing printed.
                 // Check for necessary DOT as separator
                 if ( GROUP_SEP_DOT || needsDotSeparator(lastElt, subElement) )
                     out.print(" . ") ;
-                out.newline() ;    
+                out.newline() ;
             }
             subElement.visit(this) ;
             first = false ;
@@ -333,22 +318,21 @@ public class FormatterElement extends FormatterBase
             out.newline() ;
 
         // Finally, close the group.
+        if ( out.getRow() == initialRowNumber )
+            out.print(" ") ;
         out.print("}") ;
     }
 
-    private static boolean needsDotSeparator(Element el1, Element el2)
-    {
+    private static boolean needsDotSeparator(Element el1, Element el2) {
         return needsDotSeparator(el1) && needsDotSeparator(el2) ;
     }
-    
-    private static boolean needsDotSeparator(Element el)
-    {
-        return ( el instanceof ElementTriplesBlock ) || ( el instanceof ElementPathBlock ) ;
+
+    private static boolean needsDotSeparator(Element el) {
+        return (el instanceof ElementTriplesBlock) || (el instanceof ElementPathBlock) ;
     }
 
     @Override
-    public void visit(ElementOptional el)
-    {
+    public void visit(ElementOptional el) {
         out.print("OPTIONAL") ;
         out.incIndent(INDENT) ;
         out.newline() ;
@@ -356,62 +340,51 @@ public class FormatterElement extends FormatterBase
         out.decIndent(INDENT) ;
     }
 
-
     @Override
-    public void visit(ElementNamedGraph el)
-    {
+    public void visit(ElementNamedGraph el) {
         visitNodePattern("GRAPH", el.getGraphNameNode(), el.getElement()) ;
     }
 
     @Override
-    public void visit(ElementService el)
-    {
+    public void visit(ElementService el) {
         String x = "SERVICE" ;
         if ( el.getSilent() )
             x = "SERVICE SILENT" ;
         visitNodePattern(x, el.getServiceNode(), el.getElement()) ;
     }
 
-    private void visitNodePattern(String label, Node node, Element subElement)
-    {
+    private void visitNodePattern(String label, Node node, Element subElement) {
         int len = label.length() ;
         out.print(label) ;
         out.print(" ") ;
-        String nodeStr = ( node == null ) ? "*" : slotToString(node) ;
+        String nodeStr = (node == null) ? "*" : slotToString(node) ;
         out.print(nodeStr) ;
         len += nodeStr.length() ;
-        if ( GRAPH_FIXED_INDENT )
-        {
+        if ( GRAPH_FIXED_INDENT ) {
             out.incIndent(INDENT) ;
             out.newline() ; // NB and newline
-        }
-        else
-        {
+        } else {
             out.print(" ") ;
             len++ ;
             out.incIndent(len) ;
         }
         visitAsGroup(subElement) ;
-        
+
         if ( GRAPH_FIXED_INDENT )
             out.decIndent(INDENT) ;
         else
             out.decIndent(len) ;
     }
 
-    private void visitElement1(String label, Element1 el)
-    {
+    private void visitElement1(String label, Element1 el) {
 
         int len = label.length() ;
         out.print(label) ;
         len += label.length() ;
-        if ( ELEMENT1_FIXED_INDENT )
-        {
+        if ( ELEMENT1_FIXED_INDENT ) {
             out.incIndent(INDENT) ;
             out.newline() ; // NB and newline
-        }
-        else
-        {
+        } else {
             out.print(" ") ;
             len++ ;
             out.incIndent(len) ;
@@ -424,78 +397,66 @@ public class FormatterElement extends FormatterBase
     }
 
     @Override
-    public void visit(ElementExists el)
-    {
+    public void visit(ElementExists el) {
         visitElement1("EXISTS", el) ;
     }
 
     @Override
-    public void visit(ElementNotExists el)
-    {
+    public void visit(ElementNotExists el) {
         visitElement1("NOT EXISTS", el) ;
     }
-    
+
     @Override
-    public void visit(ElementMinus el)
-    {
+    public void visit(ElementMinus el) {
         out.print("MINUS") ;
         out.incIndent(INDENT) ;
         out.newline() ;
         visitAsGroup(el.getMinusElement()) ;
         out.decIndent(INDENT) ;
     }
-    
+
     @Override
-    public void visit(ElementSubQuery el)
-    {
+    public void visit(ElementSubQuery el) {
         out.print("{ ") ;
         out.incIndent(INDENT) ;
         Query q = el.getQuery() ;
-        
+
         // Serialize with respect to the existing context
-        QuerySerializerFactory factory = SerializerRegistry.get().getQuerySerializerFactory(Syntax.syntaxARQ);
-        QueryVisitor serializer = factory.create(Syntax.syntaxARQ, context, out);
-        q.visit(serializer);
-        
+        QuerySerializerFactory factory = SerializerRegistry.get().getQuerySerializerFactory(Syntax.syntaxARQ) ;
+        QueryVisitor serializer = factory.create(Syntax.syntaxARQ, context, out) ;
+        q.visit(serializer) ;
+
         out.decIndent(INDENT) ;
         out.print("}") ;
     }
 
-    public void visitAsGroup(Element el)
-    {
-        boolean needBraces = ! ( ( el instanceof ElementGroup ) || ( el instanceof ElementSubQuery ) ) ; 
-        
-        if ( needBraces )
-        {
+    public void visitAsGroup(Element el) {
+        boolean needBraces = !((el instanceof ElementGroup) || (el instanceof ElementSubQuery)) ;
+
+        if ( needBraces ) {
             out.print("{ ") ;
             out.incIndent(INDENT) ;
         }
-        
+
         el.visit(this) ;
-        
-        if ( needBraces )
-        {
+
+        if ( needBraces ) {
             out.decIndent(INDENT) ;
             out.print("}") ;
         }
     }
 
-    // Work variables.
-    // Assumes not threaded
-    
     int subjectWidth = -1 ;
     int predicateWidth = -1 ;
     
     @Override
-    protected void formatTriples(BasicPattern triples)
-    {
-        if ( ! PRETTY_PRINT )
-        {
+    protected void formatTriples(BasicPattern triples) {
+        if ( !PRETTY_PRINT ) {
             super.formatTriples(triples) ;
             return ;
         }
-        
-        // TODO RDF Collections - spot the parsers pattern 
+
+        // TODO RDF Collections - spot the parsers pattern
         if ( triples.isEmpty() )
             return ;
 
@@ -504,26 +465,24 @@ public class FormatterElement extends FormatterBase
             subjectWidth = TRIPLES_SUBJECT_COLUMN ;
         if ( predicateWidth > TRIPLES_PROPERTY_COLUMN )
             predicateWidth = TRIPLES_PROPERTY_COLUMN ;
-        
+
         // Loops:
-        List<Triple> subjAcc = new ArrayList<>() ;    // Accumulate all triples with the same subject.
-        Node subj = null ;                  // Subject being accumulated
-        
-        boolean first = true ;             // Print newlines between blocks.
-        
+        List<Triple> subjAcc = new ArrayList<>() ; // Accumulate all triples
+                                                   // with the same subject.
+        Node subj = null ; // Subject being accumulated
+
+        boolean first = true ; // Print newlines between blocks.
+
         int indent = -1 ;
-        for ( Triple t : triples )
-        {
-            if ( subj != null && t.getSubject().equals(subj) )
-            {
+        for ( Triple t : triples ) {
+            if ( subj != null && t.getSubject().equals(subj) ) {
                 subjAcc.add(t) ;
                 continue ;
             }
-            
-            if ( subj != null )
-            {
-                if ( ! first )
-                    out.println() ;
+
+            if ( subj != null ) {
+                if ( !first )
+                    out.println(" .") ;
                 formatSameSubject(subj, subjAcc) ;
                 first = false ;
                 // At end of line of a block of triples with same subject.
@@ -535,19 +494,17 @@ public class FormatterElement extends FormatterBase
             subjAcc.clear() ;
             subjAcc.add(t) ;
         }
-        
+
         // Flush accumulator
-        if ( subj != null && subjAcc.size() != 0 )
-        {
-            if ( ! first )
-                out.println() ;
+        if ( subj != null && subjAcc.size() != 0 ) {
+            if ( !first )
+                out.println(" .") ;
             first = false ;
             formatSameSubject(subj, subjAcc) ;
         }
     }
-    
-    private void formatSameSubject(Node subject, List<Triple> triples)
-    {
+
+    private void formatSameSubject(Node subject, List<Triple> triples) {
         if ( triples == null || triples.size() == 0 )
             return ;
         
@@ -563,27 +520,23 @@ public class FormatterElement extends FormatterBase
         int indent = subjectWidth + TRIPLES_COLUMN_GAP ;
         int s1_len = printSubject(t1.getSubject()) ;
 
-        if ( s1_len > TRIPLES_SUBJECT_LONG )
-        {
+        if ( s1_len > TRIPLES_SUBJECT_LONG ) {
             // Too long - start a new line.
             out.incIndent(indent) ;
             out.println() ;
-        }
-        else
-        {
+        } else {
             printGap() ;
             out.incIndent(indent) ;
         }
 
-        // Remained of first triple
+        // Remainder of first triple
         printProperty(t1.getPredicate()) ;
         printGap() ;
         printObject(t1.getObject()) ;
-        
+
         // Do the rest
-        
-        for (  ; iter.hasNext() ; )
-        {
+
+        for ( ; iter.hasNext() ; ) {
             Triple t = iter.next() ;
             out.println(" ;") ;
             printProperty(t.getPredicate()) ;
@@ -595,62 +548,57 @@ public class FormatterElement extends FormatterBase
 
         // Finish off the block.
         out.decIndent(indent) ;
-        out.print(" .") ;
+        // out.print(" .") ;
     }
-    
-    private void setWidths(BasicPattern triples)
-    {
+
+    private void setWidths(BasicPattern triples) {
         subjectWidth = -1 ;
         predicateWidth = -1 ;
 
-        for ( Triple t : triples )
-        {
+        for ( Triple t : triples ) {
             String s = slotToString(t.getSubject()) ;
             if ( s.length() > subjectWidth )
                 subjectWidth = s.length() ;
-            
+
             String p = slotToString(t.getPredicate()) ;
             if ( p.length() > predicateWidth )
                 predicateWidth = p.length() ;
         }
     }
-    
-    private void printGap()
-    {
+
+    private void printGap() {
         out.print(' ', TRIPLES_COLUMN_GAP) ;
     }
-    
+
     // Indent must be set first.
-    private int printSubject(Node s)
-    {
+    private int printSubject(Node s) {
         String str = slotToString(s) ;
         out.print(str) ;
-        //out.pad(TRIPLES_SUBJECT_COLUMN) ;
         out.pad(subjectWidth) ;
-        return str.length() ; 
+        return str.length() ;
     }
 
     // Assumes the indent is TRIPLES_SUBJECT_COLUMN+GAP
-    private int printProperty(Node p)
-    {
-        String str = slotToString(p) ;
-        out.print(str) ;
-        //out.pad(TRIPLES_PROPERTY_COLUMN) ;
-        out.pad(predicateWidth) ;
-        return str.length() ; 
-    }
+    private static String RDFTYPE = FmtUtils.stringForNode(RDF.Nodes.type, new SerializationContext()) ;
     
-    private int printObject(Node obj)
-    {
+    private int printProperty(Node p) {
+        String str = slotToString(p) ;
+        if ( p.equals(RDF.Nodes.type) && str.equals(RDFTYPE) )
+            out.print("a") ;
+        else
+            out.print(str) ;
+        out.pad(predicateWidth) ;
+        return str.length() ;
+    }
+
+    private int printObject(Node obj) {
         return printNoCol(obj) ;
     }
-    
-    private int printNoCol(Node node)
-    {
-        String str = slotToString(node) ; 
+
+    private int printNoCol(Node node) {
+        String str = slotToString(node) ;
         out.print(str) ;
         return str.length() ;
-        
+
     }
-    
 }

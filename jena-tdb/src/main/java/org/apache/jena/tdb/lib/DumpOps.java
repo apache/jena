@@ -24,7 +24,8 @@ import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
 
-import arq.cmd.CmdException ;
+import jena.cmd.CmdException;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.ByteBufferLib ;
 import org.apache.jena.atlas.lib.Pair ;

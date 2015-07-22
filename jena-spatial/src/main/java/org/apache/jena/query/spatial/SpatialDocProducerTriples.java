@@ -56,4 +56,7 @@ public class SpatialDocProducerTriples implements SpatialDocProducer {
 			return;
 		context.index(g, s, p, o);
 	}
+
+    @Override
+    public void reset() {}
 }

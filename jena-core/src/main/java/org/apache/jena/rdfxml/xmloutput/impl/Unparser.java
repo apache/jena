@@ -115,7 +115,6 @@ package org.apache.jena.rdfxml.xmloutput.impl;
  * 
  * [6.34] literal ::= (any well-formed XML)
  */
-import static org.apache.jena.util.iterator.WrappedIterator.create;
 
 import java.io.PrintWriter ;
 import java.util.* ;
@@ -1545,11 +1544,11 @@ class Unparser {
      * used before instantiating the underlying iterator.
      */
     private ExtendedIterator<Resource> allInfiniteLeft() {
-        return create(new LateBindingIterator<Resource>() {
-            @Override public Iterator<Resource> create() {
-                return infinite.iterator();
+        return new LazyIterator<Resource>() {
+            @Override public ExtendedIterator<Resource> create() {
+                return WrappedIterator.create(infinite.iterator());
             }
-        });
+        };
     }
 
     private Iterator<Resource> pleasingTypeIterator() {

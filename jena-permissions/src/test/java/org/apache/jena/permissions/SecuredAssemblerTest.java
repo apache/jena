@@ -44,7 +44,6 @@ public class SecuredAssemblerTest
 		model = ModelFactory.createDefaultModel();
 		URL url = SecuredAssemblerTest.class.getClassLoader().getResource( SecuredAssemblerTest.class.getName().replace(".", "/")+".ttl");
 		model.read( url.toURI().toString(), "TURTLE" );
-		//model.write( System.out, "TURTLE" );
 	}
 	
 	@Test

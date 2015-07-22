@@ -20,12 +20,10 @@ package org.apache.jena.sdb.layout1;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.FmtUtils ;
-
 
 public class CodecSimple implements EncoderDecoder
 {
@@ -52,7 +50,7 @@ public class CodecSimple implements EncoderDecoder
             System.err.println(s) ;
         
         if ( s.startsWith("_:") )
-            return NodeFactory.createAnon(new AnonId(s.substring(2))) ;
+            return NodeFactory.createBlankNode(s.substring(2)) ;
         return stringToNode(s, prefixMapping) ; 
     }
     

@@ -18,9 +18,13 @@
 
 package sdb.cmd;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
 import org.apache.jena.sdb.Store ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdArgModule ;
+
 import arq.cmdline.*;
 
 public class ModConfig extends ModBase

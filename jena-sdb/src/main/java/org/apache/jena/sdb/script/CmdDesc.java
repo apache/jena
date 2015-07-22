@@ -22,7 +22,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import arq.cmd.CmdLineArgs ;
+import jena.cmd.CmdLineArgs;
+
 import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.Resource ;

@@ -18,14 +18,16 @@
 
 package arq.cmdline;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.util.FileManager ;
 
-public class ModAlgebra implements ArgModuleGeneral
+public class ModAlgebra extends ModBase
 {
     protected final ArgDecl queryFileDecl = new ArgDecl(ArgDecl.HasValue, "query", "file") ;
 

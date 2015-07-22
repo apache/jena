@@ -37,7 +37,7 @@ import org.apache.jena.sparql.path.TS_Path ;
 import org.apache.jena.sparql.resultset.TS_ResultSet ;
 import org.apache.jena.sparql.solver.TS_Solver ;
 import org.apache.jena.sparql.syntax.TS_SSE ;
-import org.apache.jena.sparql.syntax.TS_Serialization ;
+import org.apache.jena.sparql.syntax.TS_Syntax ;
 import org.apache.jena.sparql.transaction.TS_Transaction ;
 import org.apache.jena.sparql.util.TS_Util ;
 import org.junit.AfterClass ;
@@ -63,7 +63,7 @@ import org.junit.runners.Suite ;
     , TS_Algebra.class
     , TS_Optimization.class
     , TS_ResultSet.class
-    , TS_Serialization.class
+    , TS_Syntax.class
     , TS_API.class
     , TS_Core.class
     , TS_Path.class

@@ -18,16 +18,16 @@
 
 package org.apache.jena.sparql.util;
 
-import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.lib.Version ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.riot.RIOT;
-import org.apache.jena.sparql.util.Version ;
-import org.junit.Assert;
-import org.junit.Test;
+import org.apache.jena.riot.RIOT ;
+import org.junit.Assert ;
+import org.junit.Test ;
 
 /**
- * Tests for the {@link Version} utility class
- *
+ * Tests for the {@link org.apache.jena.atlas.lib.Version} utility class
+ * Done here so there is something to test.
  */
 public class TestVersion {
 

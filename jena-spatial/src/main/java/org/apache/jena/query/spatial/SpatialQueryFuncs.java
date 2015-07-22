@@ -20,7 +20,6 @@ package org.apache.jena.query.spatial;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.rdf.model.AnonId ;
 
 public class SpatialQueryFuncs {
     
@@ -50,7 +49,7 @@ public class SpatialQueryFuncs {
     public static Node stringToNode(String v) {
         if ( v.startsWith("_:") ) {
             v = v.substring("_:".length()) ;
-            return NodeFactory.createAnon(new AnonId(v)) ;
+            return NodeFactory.createBlankNode(v) ;
         }
         else
             return NodeFactory.createURI(v) ;

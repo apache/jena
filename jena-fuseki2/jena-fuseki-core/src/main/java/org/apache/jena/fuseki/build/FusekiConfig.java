@@ -43,6 +43,7 @@ import org.apache.jena.fuseki.server.FusekiVocab ;
 import org.apache.jena.fuseki.server.SystemState ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.QuerySolution ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.RDFDataMgr ;
@@ -263,25 +264,29 @@ public class FusekiConfig {
         
         List<DataAccessPoint> refs = new ArrayList<>() ;
         
-        ResultSet rs = FusekiLib.query(qs, ds) ;
-        
-//        ResultSetFormatter.out(rs); 
-//        ((ResultSetRewindable)rs).reset();
-        
-        for ( ; rs.hasNext() ; ) {
-            QuerySolution row = rs.next() ;
-            Resource s = row.getResource("s") ;
-            Resource g = row.getResource("g") ;
-            Resource rStatus = row.getResource("status") ;
-            //String name = row.getLiteral("name").getLexicalForm() ;
-            DatasetStatus status = DatasetStatus.status(rStatus) ;
-            
-            Model m = ds.getNamedModel(g.getURI()) ;
-            // Rebase the resoure of the service description to the containing graph.
-            Resource svc = m.wrapAsResource(s.asNode()) ;
-            DataAccessPoint ref = Builder.buildDataAccessPoint(svc) ;
-            refs.add(ref) ;
-        }
-        return refs ;
+        ds.begin(ReadWrite.WRITE) ;
+        try {
+            ResultSet rs = FusekiLib.query(qs, ds) ;
+
+    //        ResultSetFormatter.out(rs); 
+    //        ((ResultSetRewindable)rs).reset();
+
+            for ( ; rs.hasNext() ; ) {
+                QuerySolution row = rs.next() ;
+                Resource s = row.getResource("s") ;
+                Resource g = row.getResource("g") ;
+                Resource rStatus = row.getResource("status") ;
+                //String name = row.getLiteral("name").getLexicalForm() ;
+                DatasetStatus status = DatasetStatus.status(rStatus) ;
+
+                Model m = ds.getNamedModel(g.getURI()) ;
+                // Rebase the resoure of the service description to the containing graph.
+                Resource svc = m.wrapAsResource(s.asNode()) ;
+                DataAccessPoint ref = Builder.buildDataAccessPoint(svc) ;
+                refs.add(ref) ;
+            }
+            ds.commit(); 
+            return refs ;
+        } finally { ds.end() ; }
     }
 }

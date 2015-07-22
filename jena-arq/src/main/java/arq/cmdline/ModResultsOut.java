@@ -19,15 +19,17 @@
 package arq.cmdline;
 
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.resultset.ResultsFormat ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
 
-public class ModResultsOut implements ArgModuleGeneral
+public class ModResultsOut extends ModBase
 {
     protected final 
     ArgDecl resultsFmtDecl = new ArgDecl(ArgDecl.HasValue, "results", "out", "rfmt") ;

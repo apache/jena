@@ -116,6 +116,11 @@ public class Prologue
      */
     public void setBaseURI(String baseURI)
     {
+        if ( baseURI == null ) {
+            this.seenBaseURI = false ;
+            this.resolver = null ;
+            return ;
+        }
         this.seenBaseURI = true ;
         this.resolver = IRIResolver.create(baseURI) ; 
     }
@@ -125,6 +130,11 @@ public class Prologue
      */
     public void setBaseURI(IRIResolver resolver)
     {
+        if ( resolver == null ) {
+            this.seenBaseURI = false ;
+            this.resolver = null ;
+            return ;
+        }
         this.seenBaseURI = true ;
         this.resolver = resolver ; 
     }

@@ -27,20 +27,23 @@
   line tools.  The scripts can be copied to a convenient place on the
   command path.
 
-  To use the Jena tools from the command line you need to set the JENAROOT
+  To use the Jena tools from the command line you need to set the JENA_HOME
   environment variable to point to the location where you have 
   unzipped the Jena distribution:
 
   Windows:
-    set JENA_HOME=\path\to\apache-jena-2.7.5
+    set JENA_HOME=\path\to\apache-jena-x.y.z
     bat\sparql.bat --version    
 
   Linux:
     The command scripts automatically set JENA_HOME but if you want
     to switch to a different version fro the same scripts:
 
-    export JENA_HOME=/path/to/apache-jena-2.7.5
+    export JENA_HOME=/path/to/apache-jena-x.y.z
     bin/sparql --version    
+
+  Where x.y.z is the version of the Jena command line tools you have 
+  downloaded
     
   If you receive a class not found exception when trying to run one of the 
   scripts then you may have set JENA_HOME incorrectly. A quick and easy way

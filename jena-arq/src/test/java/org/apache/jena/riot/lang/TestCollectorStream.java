@@ -35,7 +35,7 @@ public class TestCollectorStream  {
 		List<Triple> results = new ArrayList<>();
 		out.start();
         for (int i = 1; i <= size; i++) {
-            Triple t = new Triple(NodeFactory.createAnon(),
+            Triple t = new Triple(NodeFactory.createBlankNode(),
                     NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
             out.triple(t);
             results.add(t);
@@ -57,7 +57,7 @@ public class TestCollectorStream  {
 		out.start();
         for (int i = 1; i <= size; i++) {
         	Quad q = new Quad(NodeFactory.createURI("http://graph"),
-                    NodeFactory.createAnon(),
+                    NodeFactory.createBlankNode(),
                     NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
             out.quad(q);
             results.add(q);

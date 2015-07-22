@@ -48,8 +48,8 @@ import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.eclipse.jetty.server.Server ;
 import org.slf4j.Logger ;
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
+import jena.cmd.ArgDecl ;
+import jena.cmd.CmdException ;
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModDatasetAssembler ;
 

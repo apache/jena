@@ -32,10 +32,10 @@ public class AggMinDistinct extends AggMinBase
     @Override
     public int hashCode()   { return HC_AggMinDistinct ^ getExpr().hashCode() ; }
     
-   @Override
-    public boolean equals(Object other)
-    {
-       if ( this == other ) return true ; 
+    @Override
+    public boolean equals(Aggregator other, boolean bySyntax) {
+        if ( other == null ) return false ;
+        if ( this == other ) return true ; 
         if ( ! ( other instanceof AggMinDistinct ) )
             return false ;
         AggMinDistinct agg = (AggMinDistinct)other ;

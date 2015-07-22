@@ -269,7 +269,7 @@ public class TestOrdering extends BaseTest
     
     @Test public void test_variable3() {
         Node x = NodeFactory.createVariable("x");
-        Node y = NodeFactory.createAnon();
+        Node y = NodeFactory.createBlankNode();
         
         int res = NodeUtils.compareRDFTerms(x, y);
         assertTrue("Variable nodes should be less than blank nodes", Expr.CMP_LESS == res);

@@ -22,7 +22,8 @@ package sdb;
 import java.util.Iterator ;
 import java.util.List ;
 
-import arq.cmd.ArgDecl ;
+import jena.cmd.ArgDecl;
+
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.graph.Graph ;
@@ -32,6 +33,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.store.StoreBaseHSQL ;
 import org.apache.jena.util.FileUtils ;
+
 import sdb.cmd.CmdArgsDB ;
 import sdb.cmd.ModGraph ;
  

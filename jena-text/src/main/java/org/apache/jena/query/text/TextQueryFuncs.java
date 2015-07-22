@@ -19,9 +19,9 @@
 package org.apache.jena.query.text;
 
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.FmtUtils ;
 
@@ -46,12 +46,6 @@ public class TextQueryFuncs {
         return nodeToString(g) ;
     }
 
-    /** retrieve language (if exists) if object is literal */
-    public static String getLiteralLanguage(Node o) {
-        String lang = o.getLiteral().language();
-        return lang;
-    }
-
     private static String nodeToString(Node n) {
         return (n.isURI() ) ? n.getURI() : "_:" + n.getBlankNodeLabel() ;
     }
@@ -60,7 +54,7 @@ public class TextQueryFuncs {
     public static Node stringToNode(String v) {
         if ( v.startsWith("_:") ) {
             v = v.substring("_:".length()) ;
-            return NodeFactory.createAnon(new AnonId(v)) ;
+            return NodeFactory.createBlankNode(v) ;
         }
         else
             return NodeFactory.createURI(v) ;
@@ -83,8 +77,9 @@ public class TextQueryFuncs {
     
         String x = TextQueryFuncs.subjectToString(s) ;
         String graphText = TextQueryFuncs.graphNodeToString(g) ;
-        String language = TextQueryFuncs.getLiteralLanguage(o) ;
-        Entity entity = new Entity(x, graphText, language) ;
+        String language = o.getLiteral().language() ;
+        RDFDatatype datatype = o.getLiteral().getDatatype() ;
+        Entity entity = new Entity(x, graphText, language, datatype) ;
         String graphField = defn.getGraphField() ;
         if ( defn.getGraphField() != null )
             entity.put(graphField, graphText) ;

@@ -17,20 +17,15 @@
  */
 package org.apache.jena.permissions.example;
 
-import java.security.Principal;
-import java.util.Set;
+import java.security.Principal ;
+import java.util.Set ;
 
-import org.apache.http.auth.BasicUserPrincipal;
-import org.apache.jena.permissions.SecurityEvaluator;
-
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.rdf.model.AnonId;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.vocabulary.RDF;
+import org.apache.http.auth.BasicUserPrincipal ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.permissions.SecurityEvaluator ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.vocabulary.RDF ;
 
 /**
  * An example evaluator that only provides access to messages in the graph that 
@@ -55,7 +50,7 @@ public class ExampleEvaluator implements SecurityEvaluator {
 	}
 	
 	@Override
-	public boolean evaluate(Object principal, Action action, SecNode graphIRI) {
+	public boolean evaluate(Object principal, Action action, Node graphIRI) {
 		// we allow any action on a graph.
 		return true;
 	}
@@ -72,62 +67,54 @@ public class ExampleEvaluator implements SecurityEvaluator {
 		return true;	
 	}
 	
-	private boolean evaluate( Object principal, SecNode node )
+	private boolean evaluate( Object principal, Node node )
 	{
-		if (node.equals( SecNode.ANY )) {
+		if (node.equals( Node.ANY )) {
 			return false;  // all wild cards are false
 		}
 		
-		if (node.getType().equals( SecNode.Type.URI)) {
-			Resource r = model.createResource( node.getValue() );
+		if (node.isURI() || node.isBlank()) {
+			Resource r = model.getRDFNode( node ).asResource();
 			return evaluate( principal, r );
 		}
-		else if (node.getType().equals( SecNode.Type.Anonymous)) {
-			Resource r = model.getRDFNode( NodeFactory.createAnon( new AnonId( node.getValue()) ) ).asResource();
-			return evaluate( principal, r );
-		}
-		else
-		{
-			return true;
-		}
-
+		return true;
 	}
 	
-	private boolean evaluate( Object principal, SecTriple triple ) {
+	private boolean evaluate( Object principal, Triple triple ) {
 		return evaluate( principal, triple.getSubject()) &&
 				evaluate( principal, triple.getObject()) &&
 				evaluate( principal, triple.getPredicate());
 	}
 	
 	@Override
-	public boolean evaluate(Object principal, Action action, SecNode graphIRI, SecTriple triple) {
+	public boolean evaluate(Object principal, Action action, Node graphIRI, Triple triple) {
 		return evaluate( principal, triple );
 	}
 
 	@Override
-	public boolean evaluate(Object principal, Set<Action> actions, SecNode graphIRI) {
+	public boolean evaluate(Object principal, Set<Action> actions, Node graphIRI) {
 		return true;
 	}
 
 	@Override
-	public boolean evaluate(Object principal, Set<Action> actions, SecNode graphIRI,
-			SecTriple triple) {
+	public boolean evaluate(Object principal, Set<Action> actions, Node graphIRI,
+			Triple triple) {
 		return evaluate( principal, triple );
 	}
 
 	@Override
-	public boolean evaluateAny(Object principal, Set<Action> actions, SecNode graphIRI) {
+	public boolean evaluateAny(Object principal, Set<Action> actions, Node graphIRI) {
 		return true;
 	}
 
 	@Override
-	public boolean evaluateAny(Object principal, Set<Action> actions, SecNode graphIRI,
-			SecTriple triple) {
+	public boolean evaluateAny(Object principal, Set<Action> actions, Node graphIRI,
+			Triple triple) {
 		return evaluate( principal, triple );
 	}
 
 	@Override
-	public boolean evaluateUpdate(Object principal, SecNode graphIRI, SecTriple from, SecTriple to) {
+	public boolean evaluateUpdate(Object principal, Node graphIRI, Triple from, Triple to) {
 		return evaluate( principal, from ) && evaluate( principal, to );
 	}
 

@@ -66,9 +66,9 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addWhere("<one>",
 				"<two>", "three");
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + quote("three") + presentStringType()
-				+ OPT_SPACE + DOT + CLOSE_CURLY, builder.buildString());
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + quote("three") + presentStringType()
+				+ OPT_SPACE + CLOSE_CURLY, builder.buildString());
 	}
 
 	@ContractTest
@@ -77,8 +77,8 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		AbstractQueryBuilder<?> builder = whereClause.addOptional("<one>",
 				"<two>", "three");
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ quote("three") + presentStringType() + OPT_SPACE + DOT
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
+				+ quote("three") + presentStringType() + OPT_SPACE
 				+ CLOSE_CURLY + CLOSE_CURLY, builder.buildString());
 
 	}
@@ -90,8 +90,8 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 				NodeFactory.createURI("one"), NodeFactory.createURI("two"),
 				NodeFactory.createURI("three"));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ node("three") + OPT_SPACE + DOT + CLOSE_CURLY,
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
+				+ uri("three") + OPT_SPACE + CLOSE_CURLY,
 				builder.buildString());
 	}
 
@@ -103,8 +103,8 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 				NodeFactory.createURI("three")));
 
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ node("three") + OPT_SPACE + DOT + CLOSE_CURLY,
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
+				+ uri("three") + OPT_SPACE + CLOSE_CURLY,
 				builder.buildString());
 	}
 
@@ -126,10 +126,10 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addSubQuery(sb);
 
-		assertContainsRegex(PREFIX + "pfx:" + SPACE + node("urn:uri") + SPACE
+		assertContainsRegex(PREFIX + "pfx:" + SPACE + uri("urn:uri") + SPACE
 				+ ".*" + WHERE + OPEN_CURLY + OPEN_CURLY + SELECT + var("x")
 				+ SPACE + WHERE + OPEN_CURLY + "pfx:one" + SPACE + "pfx:two"
-				+ SPACE + "pfx:three" + OPT_SPACE + DOT + CLOSE_CURLY,
+				+ SPACE + "pfx:three" + OPT_SPACE + CLOSE_CURLY,
 				builder.buildString());
 
 	}
@@ -143,10 +143,10 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		whereClause.getWhereHandler().addWhere(Triple.ANY);
 		AbstractQueryBuilder<?> builder = whereClause.addUnion(sb);
 
-		assertContainsRegex(PREFIX + "pfx:" + SPACE + node("uri") + ".+"
+		assertContainsRegex(PREFIX + "pfx:" + SPACE + uri("uri") + ".+"
 				+ UNION + OPEN_CURLY + SELECT + var("x") + SPACE + WHERE
-				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ quote("three") + presentStringType() + OPT_SPACE + DOT
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
+				+ quote("three") + presentStringType() + OPT_SPACE
 				+ CLOSE_CURLY + CLOSE_CURLY, builder.buildString());
 
 	}
@@ -157,26 +157,26 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addWhere(new Triple(
 				NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + var("v") + OPT_SPACE + DOT
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + var("v") + OPT_SPACE
 				+ CLOSE_CURLY, builder.buildString());
 
 		builder.setVar(v, NodeFactory.createURI("three"));
 
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + node("three") + OPT_SPACE + DOT
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + uri("three") + OPT_SPACE
 				+ CLOSE_CURLY, builder.buildString());
 
 		builder.setVar(v, NodeFactory.createURI("four"));
 
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + node("four") + OPT_SPACE + DOT
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + uri("four") + OPT_SPACE
 				+ CLOSE_CURLY, builder.buildString());
 
 		builder.setVar(v, null);
 
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + var("v") + OPT_SPACE + DOT
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + var("v") + OPT_SPACE
 				+ CLOSE_CURLY, builder.buildString());
 
 	}
@@ -195,7 +195,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE
 				+ OPEN_PAREN + var("one") + OPT_SPACE + LT + OPT_SPACE
 				+ quote("10") + "\\^\\^"
-				+ node("http://www.w3.org/2001/XMLSchema#int") + CLOSE_PAREN
+				+ uri("http://www.w3.org/2001/XMLSchema#int") + CLOSE_PAREN
 				+ CLOSE_CURLY, builder.buildString());
 
 	}
@@ -207,14 +207,14 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		AbstractQueryBuilder<?> builder = whereClause.addOptional(new Triple(
 				NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ var("v") + OPT_SPACE + DOT + CLOSE_CURLY + CLOSE_CURLY,
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
+				+ var("v") + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY,
 				builder.buildString());
 
 		builder.setVar(v, NodeFactory.createURI("three"));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ node("three") + OPT_SPACE + DOT + CLOSE_CURLY + CLOSE_CURLY,
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
+				+ uri("three") + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY,
 				builder.buildString());
 	}
 
@@ -226,13 +226,13 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addSubQuery(sb);
 
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + ".+"
-				+ node("two") + ".+" + var("v") + ".+" + CLOSE_CURLY,
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + ".+"
+				+ uri("two") + ".+" + var("v") + ".+" + CLOSE_CURLY,
 				builder.buildString());
 
 		builder.setVar(v, NodeFactory.createURI("three"));
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + ".+"
-				+ node("two") + ".+" + node("three") + ".+" + CLOSE_CURLY,
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + ".+"
+				+ uri("two") + ".+" + uri("three") + ".+" + CLOSE_CURLY,
 				builder.buildString());
 	}
 
@@ -244,12 +244,12 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addUnion(sb);
 		assertContainsRegex(WHERE + OPEN_CURLY + UNION + OPEN_CURLY
-				+ node("one") + ".+" + node("two") + ".+" + var("v") + ".+"
+				+ uri("one") + ".+" + uri("two") + ".+" + var("v") + ".+"
 				+ CLOSE_CURLY, builder.buildString());
 
 		builder.setVar(v, NodeFactory.createURI("three"));
 		assertContainsRegex(WHERE + OPEN_CURLY + UNION + OPEN_CURLY
-				+ node("one") + ".+" + node("two") + ".+" + node("three")
+				+ uri("one") + ".+" + uri("two") + ".+" + uri("three")
 				+ ".+" + CLOSE_CURLY, builder.buildString());
 	}
 

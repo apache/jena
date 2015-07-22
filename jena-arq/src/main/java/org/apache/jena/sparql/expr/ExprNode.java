@@ -20,6 +20,7 @@ package org.apache.jena.sparql.expr;
 
 import java.util.Collection ;
 import java.util.Set ;
+
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -36,21 +37,19 @@ import org.apache.jena.sparql.util.ExprUtils ;
 public abstract class ExprNode implements Expr
 {
     @Override
-    public boolean isSatisfied(Binding binding, FunctionEnv funcEnv)
-    {
+    public boolean isSatisfied(Binding binding, FunctionEnv funcEnv) {
         try {
             NodeValue v = eval(binding, funcEnv) ;
             boolean b = XSDFuncOp.booleanEffectiveValue(v) ;
             return b ;
         }
-        catch (ExprEvalException ex)
-        { 
+        catch (ExprEvalException ex) { 
             return false ;
         }
     }
 
-    public boolean isExpr() { return true ; }
-    public final Expr getExpr()   { return this ; }
+    public boolean isExpr()     { return true ; }
+    public final Expr getExpr() { return this ; }
     
     // --- interface Constraint
     
@@ -58,63 +57,69 @@ public abstract class ExprNode implements Expr
     public abstract NodeValue eval(Binding binding, FunctionEnv env) ; 
     
     @Override
-    public Set<Var> getVarsMentioned() { return ExprVars.getVarsMentioned(this) ; }
+    public Set<Var> getVarsMentioned()                      { return ExprVars.getVarsMentioned(this) ; }
     @Override
-    public void varsMentioned(Collection<Var> acc) { ExprVars.varsMentioned(acc, this) ; }
+    public void varsMentioned(Collection<Var> acc)          { ExprVars.varsMentioned(acc, this) ; }
 
-    public Set<String> getVarNamesMentioned() { return ExprVars.getVarNamesMentioned(this) ; }
-    public void varNamesMentioned(Collection<String> acc) { ExprVars.varNamesMentioned(acc, this) ; }
+    public Set<String> getVarNamesMentioned()               { return ExprVars.getVarNamesMentioned(this) ; }
+    public void varNamesMentioned(Collection<String> acc)   { ExprVars.varNamesMentioned(acc, this) ; }
 
     @Override
-    public abstract int     hashCode() ;
+    public abstract int hashCode() ;
     @Override
-    public abstract boolean equals(Object other) ;
+    public final boolean equals(Object other) {
+        if ( other == null ) return false ;
+        if ( this == other ) return true ;
+        if ( ! ( other instanceof Expr ) ) return false ;
+        return equals((Expr)other, false) ;
+    }
     
-    protected static NodeValue eval(Binding binding, FunctionEnv funcEnv, Expr expr)
-    {   
+    @Override
+    public final boolean equalsBySyntax(Expr other) {
+        if ( other == null ) return false ;
+        if ( this == other ) return true ;
+        return equals(other, true) ;
+    }
+    
+    @Override
+    public abstract boolean equals(Expr other, boolean bySyntax) ;
+    
+    protected static NodeValue eval(Binding binding, FunctionEnv funcEnv, Expr expr) {   
         if ( expr == null ) return null ;
         return expr.eval(binding, funcEnv) ;
     }
     
     @Override
-    final public Expr deepCopy()                     
-    { return copySubstitute(null) ; }
+    final public Expr deepCopy()        { return copySubstitute(null) ; }
     
     @Override
     public abstract Expr copySubstitute(Binding binding) ;
     
     @Override
     public abstract Expr applyNodeTransform(NodeTransform transform) ;
-
         
     // ---- Default implementations
     @Override
-    public boolean isVariable()        { return false ; }
+    public boolean isVariable()         { return false ; }
     @Override
-    public String getVarName()         { return null ; } //throw new ExprException("Expr.getVarName called on non-variable") ; }
+    public String getVarName()          { return null ; } //throw new ExprException("Expr.getVarName called on non-variable") ; }
     @Override
-    public ExprVar getExprVar()        { return null ; } //throw new ExprException("Expr.getVar called on non-variable") ; }
+    public ExprVar getExprVar()         { return null ; } //throw new ExprException("Expr.getVar called on non-variable") ; }
     @Override
-    public Var asVar()                 { return null ; } //throw new ExprException("Expr.getVar called on non-variable") ; }
+    public Var asVar()                  { return null ; } //throw new ExprException("Expr.getVar called on non-variable") ; }
     
     @Override
-    public boolean isConstant()        { return false ; }
+    public boolean isConstant()         { return false ; }
     @Override
-    public NodeValue getConstant()     { return null ; } // throw new ExprException("Expr.getConstant called on non-constant") ; }
+    public NodeValue getConstant()      { return null ; } // throw new ExprException("Expr.getConstant called on non-constant") ; }
     
     @Override
-    public boolean isFunction()        { return false ; }
+    public boolean isFunction()         { return false ; }
     @Override
-    public ExprFunction getFunction()  { return null ; }
-    
-    public boolean isGraphPattern()    { return false ; }
-    public Op getGraphPattern()        { return null ; }
-    
-    // ---- 
-    
+    public ExprFunction getFunction()   { return null ; }
+
+    public boolean isGraphPattern()     { return false ; }
+    public Op getGraphPattern()         { return null ; }
     @Override
-    public String toString()
-    {
-        return ExprUtils.fmtSPARQL(this) ; 
-    }
+    public String toString()            { return ExprUtils.fmtSPARQL(this) ; } 
 }

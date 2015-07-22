@@ -19,10 +19,11 @@
 package org.apache.jena.sparql.core;
 
 import java.util.Iterator ;
-import java.util.Objects;
+import java.util.List ;
+import java.util.Objects ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.IteratorConcat;
+import org.apache.jena.atlas.iterator.IteratorConcat ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.shared.JenaException ;
@@ -91,9 +92,8 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
         // Delete all triples in the default graph 
         getDefaultGraph().clear() ;
         // Now remove the named graphs (but don't clear them - they may be shared).
-        Iterator<Node> gnIter = listGraphNodes() ;
-        for ( ; gnIter.hasNext(); ) {
-            Node gn = gnIter.next() ; 
+        List<Node> gnList = Iter.toList(listGraphNodes()) ;
+        for ( Node gn : gnList ) {
             removeGraph(gn) ;
         }
     }

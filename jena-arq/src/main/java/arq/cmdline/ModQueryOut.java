@@ -19,15 +19,17 @@
 package arq.cmdline;
 
 
-import arq.cmd.ArgDecl ;
-import arq.cmd.ArgModuleGeneral ;
-import arq.cmd.CmdArgModule ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.Syntax ;
 import org.apache.jena.sparql.util.QueryOutputUtils ;
 
-public class ModQueryOut implements ArgModuleGeneral
+public class ModQueryOut extends ModBase
 {
     protected final ArgDecl queryOutputSyntaxDecl  = new ArgDecl(ArgDecl.HasValue, "out", "format") ;
     protected final ArgDecl queryNumberDecl        = new ArgDecl(ArgDecl.NoValue, "num", "number") ;

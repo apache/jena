@@ -16,7 +16,6 @@ function createManifest
     mf:entries
     ( 
 EOF
-    # Queries good syntax
     for f in *.rq *.arq
       do
       cat >> manifest.ttl <<EOF

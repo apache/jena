@@ -20,18 +20,19 @@ package org.apache.jena.permissions.query;
 import org.apache.jena.permissions.Factory;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
-import org.apache.jena.permissions.SecurityEvaluator.SecNode.Type;
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.query.SecuredQueryEngineFactory;
-import org.apache.jena.query.QueryExecution ;
-import org.apache.jena.query.QueryExecutionFactory ;
-import org.apache.jena.query.QuerySolution ;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.rdf.model.ResourceFactory ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -57,9 +58,7 @@ public class QueryEngineTest {
 
 	}
 
-
-	public static Model populateModel(Model baseModel)
-	{
+	public static Model populateModel(Model baseModel) {
 
 		Resource r = ResourceFactory
 				.createResource("http://example.com/resource/1");
@@ -101,11 +100,10 @@ public class QueryEngineTest {
 				ResourceFactory.createTypedLiteral(9.42));
 		return baseModel;
 	}
-	
+
 	@Before
-	public void setUp()
-	{
-		baseModel = populateModel( ModelFactory.createDefaultModel());
+	public void setUp() {
+		baseModel = populateModel(ModelFactory.createDefaultModel());
 	}
 
 	@After
@@ -150,10 +148,10 @@ public class QueryEngineTest {
 
 			@Override
 			public boolean evaluate(final Object principal,
-					final Action action, final SecNode graphIRI,
-					final SecTriple triple) {
-				if (triple.getSubject().equals(
-						new SecNode(Type.URI, "http://example.com/resource/1"))) {
+					final Action action, final Node graphIRI,
+					final Triple triple) {
+				if (triple.getSubject().isURI() && triple.getSubject().getURI().equals(
+						 "http://example.com/resource/1")) {
 					return false;
 				}
 				return super.evaluate(principal, action, graphIRI, triple);
@@ -186,18 +184,15 @@ public class QueryEngineTest {
 	}
 
 	@Test
-	public void testSelectAllType()
-	{
+	public void testSelectAllType() {
 		final SecurityEvaluator eval = new MockSecurityEvaluator(true, true,
 				true, true, true, true) {
 
 			@Override
 			public boolean evaluate(Object principal, final Action action,
-					final SecNode graphIRI, final SecTriple triple )
-			{
-				if (triple.getSubject().equals(
-						new SecNode(Type.URI, "http://example.com/resource/1")))
-				{
+					final Node graphIRI, final Triple triple) {
+				if (triple.getSubject().isURI() && triple.getSubject().getURI().equals(
+						 "http://example.com/resource/1")) {
 					return false;
 				}
 				return super.evaluate(principal, action, graphIRI, triple);
@@ -205,55 +200,40 @@ public class QueryEngineTest {
 		};
 		final SecuredModel model = Factory.getInstance(eval,
 				"http://example.com/securedModel", baseModel);
-		try
-		{
-			 String query = "SELECT ?s ?p ?o WHERE "
-					+ " { ?s ?p ?o } ";
-			 QueryExecution qexec = QueryExecutionFactory.create(query,
-					model);
-			try
-			{
+		try {
+			String query = "SELECT ?s ?p ?o WHERE " + " { ?s ?p ?o } ";
+			QueryExecution qexec = QueryExecutionFactory.create(query, model);
+			try {
 				final ResultSet results = qexec.execSelect();
 				int count = 0;
-				for (; results.hasNext();)
-				{
+				for (; results.hasNext();) {
 					count++;
 					final QuerySolution soln = results.nextSolution();
-					//System.out.println( soln );
+					// System.out.println( soln );
 				}
 				// 2x 3 values + type triple
 				Assert.assertEquals(8, count);
-			}
-			finally
-			{
+			} finally {
 				qexec.close();
 			}
-			
-			query = "SELECT ?s ?p ?o WHERE "
-					+ " { GRAPH ?g {?s ?p ?o } }";
-			qexec = QueryExecutionFactory.create(query,
-					model);
-			try
-			{
+
+			query = "SELECT ?s ?p ?o WHERE " + " { GRAPH ?g {?s ?p ?o } }";
+			qexec = QueryExecutionFactory.create(query, model);
+			try {
 				final ResultSet results = qexec.execSelect();
 				int count = 0;
-				for (; results.hasNext();)
-				{
+				for (; results.hasNext();) {
 					count++;
 					final QuerySolution soln = results.nextSolution();
-					//System.out.println( soln );
+					// System.out.println( soln );
 				}
 				// 2x 3 values + type triple
 				// no named graphs so no results.
 				Assert.assertEquals(0, count);
-			}
-			finally
-			{
+			} finally {
 				qexec.close();
 			}
-		}
-		finally
-		{
+		} finally {
 			model.close();
 		}
 	}

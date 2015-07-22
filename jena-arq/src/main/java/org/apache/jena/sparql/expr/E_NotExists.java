@@ -77,18 +77,22 @@ public class E_NotExists extends ExprFunctionOp
     }
     
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Expr other, boolean bySyntax) {
+        if ( other == null ) return false ;
         if ( this == other ) return true ;
-
         if ( ! ( other instanceof E_NotExists ) )
             return false ;
         
         E_NotExists ex = (E_NotExists)other ;
-        return this.getGraphPattern().equals(ex.getGraphPattern()) ;
+        if ( bySyntax )
+            return this.getElement().equals(ex.getElement()) ;
+        else
+            return this.getGraphPattern().equals(ex.getGraphPattern()) ;
     }
     
     @Override
     public ExprFunctionOp copy(ExprList args, Op x) { return new E_NotExists(x) ; }
-
+    
+    @Override
+    public ExprFunctionOp copy(ExprList args, Element elPattern) { return new E_NotExists(elPattern) ; }
 }

@@ -18,6 +18,8 @@
 
 package arq.cmdline;
 
+import jena.cmd.ModBase;
+
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 

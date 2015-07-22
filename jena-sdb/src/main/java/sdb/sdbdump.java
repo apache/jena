@@ -20,10 +20,12 @@ package sdb;
 
 import java.util.List;
 
-import arq.cmd.ArgDecl ;
+import jena.cmd.ArgDecl;
+
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.atlas.lib.Lib ;
+
 import sdb.cmd.CmdArgsDB;
 import sdb.cmd.ModGraph;
 

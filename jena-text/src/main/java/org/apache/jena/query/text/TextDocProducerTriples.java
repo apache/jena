@@ -53,20 +53,35 @@ public class TextDocProducerTriples implements TextDocProducer {
     }
 
     @Override
+    public void reset() { }
+
+    @Override
     public void change(QuadAction qaction, Node g, Node s, Node p, Node o) {
         // One document per triple/quad
 
-        if ( qaction != QuadAction.ADD )
+        if ( qaction != QuadAction.ADD &&
+             qaction != QuadAction.DELETE )
             return ;
+
 
         Entity entity = TextQueryFuncs.entityFromQuad(defn, g, s, p, o) ;
         // Null means does not match defn
         if ( entity != null ) {
-            indexer.addEntity(entity) ;
-            
-            // Auto commit the entity if we aren't in a transaction
-            if (!inTransaction.get()) {
-                indexer.commit() ;
+            if (qaction == QuadAction.ADD) {
+                indexer.addEntity(entity);
+
+                // Auto commit the entity if we aren't in a transaction
+                if (!inTransaction.get()) {
+                    indexer.commit();
+                }
+            }
+            else if (qaction == QuadAction.DELETE) {
+                indexer.deleteEntity(entity);
+
+                // Auto commit the entity if we aren't in a transaction
+                if (!inTransaction.get()) {
+                    indexer.commit();
+                }
             }
         }
     }

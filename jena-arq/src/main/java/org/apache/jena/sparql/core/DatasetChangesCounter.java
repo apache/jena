@@ -58,6 +58,7 @@ public class DatasetChangesCounter implements DatasetChanges
         return countAdd > 0 || countDelete > 0 ;
     }
     
+    @Override
     public void reset() { 
         countStart    = 0 ;
         countFinish   = 0 ;

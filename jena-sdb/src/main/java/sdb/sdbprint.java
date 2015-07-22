@@ -20,6 +20,9 @@ package sdb;
 
 import java.util.List;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.Syntax ;
 import org.apache.jena.sdb.SDB ;
@@ -31,9 +34,8 @@ import org.apache.jena.sdb.store.LayoutType ;
 import org.apache.jena.sdb.util.PrintSDB ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.atlas.lib.Lib ;
+
 import sdb.cmd.CmdArgsDB;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
 import arq.cmdline.ModQueryIn;
 
 

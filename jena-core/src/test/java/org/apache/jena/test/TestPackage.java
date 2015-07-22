@@ -18,10 +18,8 @@
 
 package org.apache.jena.test;
 
-import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import junit.framework.TestCase ;
+import junit.framework.TestSuite ;
 import org.apache.jena.assembler.test.TestAssemblerPackage ;
 
 /**
@@ -33,7 +31,8 @@ import org.apache.jena.assembler.test.TestAssemblerPackage ;
 public class TestPackage extends TestCase {
 
     static {
-    	setCmdLogging(JenaTest.log4jFilenameTests);
+        // Running directly (e.g. Eclipse) not from the POM. 
+        System.setProperty("log4j.configuration", JenaTest.log4jFilenameTests);
     }
 	
     static public TestSuite suite() {

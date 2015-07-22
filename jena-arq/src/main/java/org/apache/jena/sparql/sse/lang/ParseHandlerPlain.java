@@ -161,7 +161,7 @@ public class ParseHandlerPlain implements ParseHandler
         Node n = null ;
         if ( label.equals("") )
             // Fresh anonymous bNode
-            n = NodeFactory.createAnon() ; 
+            n = NodeFactory.createBlankNode() ; 
         else
             n = bNodeLabels.asNode(label) ;
         Item item = Item.createNode(n, line, column) ;

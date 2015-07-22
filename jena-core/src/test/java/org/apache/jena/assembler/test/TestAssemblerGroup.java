@@ -70,18 +70,20 @@ public class TestAssemblerGroup extends AssemblerTestBase
     
     public static boolean loaded = false;
     
-    public static class Trivial
-        {
-        static { 
-        	loaded = true;
+    public static class Trivial {
+        // Use the hook static method - copes with classes already loaded.
+        public static void whenRequiredByAssembler(AssemblerGroup ag) {
+            loaded = true;
         }
-        }
+    }
     
     public void testLoadsClasses()
         {
         AssemblerGroup a = AssemblerGroup.create();
         a.implementWith( resource( "T" ), new MockAssembler() );
         Resource root = resourceInModel( "x rdf:type T; _c ja:loadClass '" + TestAssemblerGroup.class.getName() + "$Trivial'" );
+        // In case already loaded.
+        loaded = false;
         assertFalse( "something has pre-loaded Trivial, so we can't test if it gets loaded", loaded );
         assertEquals( "mockmockmock", a.open( root ) );
         assertTrue( "the assembler group did not obey the ja:loadClass directive", loaded );

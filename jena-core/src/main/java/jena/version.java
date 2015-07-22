@@ -30,7 +30,7 @@ import org.apache.jena.Jena ;
  */
 public class version implements Jena {
 
-    static { setCmdLogging("jena-log4j.properties") ; }
+    static { setCmdLogging(); }
 
     /**
 	 * Print out jena version information and exit.

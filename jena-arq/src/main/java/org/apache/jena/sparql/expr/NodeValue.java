@@ -18,29 +18,9 @@
 
 package org.apache.jena.sparql.expr;
 
-import static javax.xml.datatype.DatatypeConstants.DAYS ;
-import static javax.xml.datatype.DatatypeConstants.HOURS ;
-import static javax.xml.datatype.DatatypeConstants.MINUTES ;
-import static javax.xml.datatype.DatatypeConstants.MONTHS ;
-import static javax.xml.datatype.DatatypeConstants.SECONDS ;
-import static javax.xml.datatype.DatatypeConstants.YEARS ;
+import static javax.xml.datatype.DatatypeConstants.* ;
 import static org.apache.jena.datatypes.xsd.XSDDatatype.* ;
-import static org.apache.jena.sparql.expr.ValueSpaceClassification.VSPACE_BOOLEAN ;
-import static org.apache.jena.sparql.expr.ValueSpaceClassification.VSPACE_DATE ;
-import static org.apache.jena.sparql.expr.ValueSpaceClassification.VSPACE_DATETIME ;
-import static org.apache.jena.sparql.expr.ValueSpaceClassification.VSPACE_DIFFERENT ;
-import static org.apache.jena.sparql.expr.ValueSpaceClassification.VSPACE_DURATION ;
-import static org.apache.jena.sparql.expr.ValueSpaceClassification.VSPACE_G_DAY ;
-import static org.apache.jena.sparql.expr.ValueSpaceClassification.VSPACE_G_MONTH ;
-import static org.apache.jena.sparql.expr.ValueSpaceClassification.VSPACE_G_MONTHDAY ;
-import static org.apache.jena.sparql.expr.ValueSpaceClassification.VSPACE_G_YEAR ;
-import static org.apache.jena.sparql.expr.ValueSpaceClassification.VSPACE_G_YEARMONTH ;
-import static org.apache.jena.sparql.expr.ValueSpaceClassification.VSPACE_LANG ;
-import static org.apache.jena.sparql.expr.ValueSpaceClassification.VSPACE_NODE ;
-import static org.apache.jena.sparql.expr.ValueSpaceClassification.VSPACE_NUM ;
-import static org.apache.jena.sparql.expr.ValueSpaceClassification.VSPACE_STRING ;
-import static org.apache.jena.sparql.expr.ValueSpaceClassification.VSPACE_TIME ;
-import static org.apache.jena.sparql.expr.ValueSpaceClassification.VSPACE_UNKNOWN ;
+import static org.apache.jena.sparql.expr.ValueSpaceClassification.* ;
 
 import java.io.File ;
 import java.io.FileInputStream ;
@@ -51,6 +31,7 @@ import java.util.Calendar ;
 import java.util.Iterator ;
 import java.util.Properties ;
 import java.util.ServiceLoader ;
+
 import javax.xml.datatype.DatatypeConfigurationException ;
 import javax.xml.datatype.DatatypeFactory ;
 import javax.xml.datatype.Duration ;
@@ -66,7 +47,6 @@ import org.apache.jena.datatypes.xsd.XSDDateTime ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.impl.LiteralLabel ;
-import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
@@ -74,7 +54,7 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.nodevalue.* ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.graph.NodeConst ;
-import org.apache.jena.sparql.graph.NodeTransform;
+import org.apache.jena.sparql.graph.NodeTransform ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.util.* ;
 import org.apache.jena.vocabulary.RDF ;
@@ -154,7 +134,7 @@ public abstract class NodeValue extends ExprNode
     
     // Use "==" for equality.
     private static final String strForUnNode = "node value nothing" ;
-    public static final NodeValue nvNothing = NodeValue.makeNode(org.apache.jena.graph.NodeFactory.createAnon(new AnonId("node value nothing"))) ;
+    public static final NodeValue nvNothing = NodeValue.makeNode(NodeFactory.createBlankNode("node value nothing")) ;
     
     public static final String xsdNamespace = XSD+"#" ; 
     
@@ -1228,10 +1208,10 @@ public abstract class NodeValue extends ExprNode
     }
     
     @Override
-    public boolean equals(Object other)
-    {
-        // This is the equality condition Jena uses - lang tags are different by case. 
+    public boolean equals(Expr other, boolean bySyntax) {
+        if ( other == null ) return false ;
         if ( this == other ) return true ;
+        // This is the equality condition Jena uses - lang tags are different by case. 
 
         if ( ! ( other instanceof NodeValue ) )
             return false ;

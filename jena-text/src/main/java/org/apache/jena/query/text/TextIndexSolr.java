@@ -104,7 +104,13 @@ public class TextIndexSolr implements TextIndex
         }
     }
 
-    private SolrInputDocument solrDoc(Entity entity) {
+    @Override
+    public void deleteEntity(Entity entity) {
+         //to be implemented
+    }
+
+    private SolrInputDocument solrDoc(Entity entity)
+    {
         SolrInputDocument doc = new SolrInputDocument() ;
         doc.addField(docDef.getEntityField(), entity.getId()) ;
 
@@ -178,10 +184,10 @@ public class TextIndexSolr implements TextIndex
     }
 
     @Override
-    public List<TextHit> query(String qs) { return query(qs, 0) ; } 
+    public List<TextHit> query(Node property, String qs) { return query(property, qs, 0) ; }
 
     @Override
-    public List<TextHit> query(String qs, int limit) {
+    public List<TextHit> query(Node property, String qs, int limit) {
         SolrDocumentList solrResults = solrQuery(qs, limit) ;
         List<TextHit> results = new ArrayList<>() ;
 
@@ -190,7 +196,14 @@ public class TextIndexSolr implements TextIndex
             // log.info("Entity: "+uriStr) ;
             Node n = TextQueryFuncs.stringToNode(str) ;
             Float score = (Float) sd.getFirstValue("score");
-            TextHit hit = new TextHit(n, score.floatValue());
+            // capture literal value, if stored
+            Node literal = null;
+            String field = (property != null) ? docDef.getField(property) : docDef.getPrimaryField();
+            String value = (String) sd.getFirstValue(field);
+            if (value != null) {
+                literal = NodeFactory.createLiteral(value); // FIXME: language and datatype
+            }
+            TextHit hit = new TextHit(n, score.floatValue(), literal);
             results.add(hit) ;
         }
 

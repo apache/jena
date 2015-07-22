@@ -186,7 +186,7 @@ public class TemplateLib
     private static Node newBlank(Node n, Map<Node, Node> bNodeMap)
     {
         if ( ! bNodeMap.containsKey(n) ) 
-            bNodeMap.put(n, NodeFactory.createAnon() );
+            bNodeMap.put(n, NodeFactory.createBlankNode() );
         return bNodeMap.get(n) ;
     }
 }

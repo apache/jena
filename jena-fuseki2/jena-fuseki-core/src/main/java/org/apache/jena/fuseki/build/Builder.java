@@ -64,7 +64,7 @@ public class Builder
 
     /** Build a DatasetRef starting at Resource svc */
     public static DataService buildDataService(Resource svc) {
-        log.info("Service: " + nodeLabel(svc)) ;
+        //log.debug("Service: " + nodeLabel(svc)) ;
         // DO REAL WORK
         Resource datasetDesc = ((Resource)getOne(svc, "fu:dataset")) ;
         

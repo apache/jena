@@ -54,8 +54,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				.createURI("two"), NodeFactory.createLiteral("three")));
 		handler.addAll(handler2);
 
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + quote("three") + OPT_SPACE + DOT
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + quote("three") + OPT_SPACE
 				+ CLOSE_CURLY, query.toString());
 	}
 
@@ -63,8 +63,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	public void addWhereTriple() {
 		handler.addWhere(new Triple(NodeFactory.createURI("one"), NodeFactory
 				.createURI("two"), NodeFactory.createURI("three")));
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + node("three") + OPT_SPACE + DOT
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + uri("three") + OPT_SPACE
 				+ CLOSE_CURLY, query.toString());
 	}
 
@@ -73,17 +73,17 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addWhere(new Triple(NodeFactory.createURI("one"),
 				ResourceFactory.createResource("two").asNode(), ResourceFactory
 						.createLangLiteral("three", "en-US").asNode()));
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + quote("three") + "@en-US" + OPT_SPACE
-				+ DOT + CLOSE_CURLY, query.toString());
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + quote("three") + "@en-US" + OPT_SPACE
+				+ CLOSE_CURLY, query.toString());
 	}
 
 	@Test
 	public void testAddWhereAnonymous() {
 		handler.addWhere(new Triple(Node.ANY, RDF.first.asNode(), Node.ANY));
 		assertContainsRegex(WHERE + OPEN_CURLY + "ANY" + SPACE
-				+ node("http://www\\.w3\\.org/1999/02/22-rdf-syntax-ns#first")
-				+ SPACE + "ANY" + OPT_SPACE + DOT + CLOSE_CURLY,
+				+ uri("http://www\\.w3\\.org/1999/02/22-rdf-syntax-ns#first")
+				+ SPACE + "ANY" + OPT_SPACE + CLOSE_CURLY,
 				query.toString());
 	}
 
@@ -92,8 +92,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addOptional(new Triple(NodeFactory.createURI("one"),
 				NodeFactory.createURI("two"), NodeFactory.createURI("three")));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ node("three") + OPT_SPACE + DOT + CLOSE_CURLY + CLOSE_CURLY,
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
+				+ uri("three") + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY,
 				query.toString());
 	}
 
@@ -102,8 +102,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addOptional(new Triple(Node.ANY, RDF.first.asNode(), Node.ANY));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
 				+ OPEN_CURLY + "ANY" + SPACE
-				+ node("http://www\\.w3\\.org/1999/02/22-rdf-syntax-ns#first")
-				+ SPACE + "ANY" + OPT_SPACE + DOT + CLOSE_CURLY + CLOSE_CURLY,
+				+ uri("http://www\\.w3\\.org/1999/02/22-rdf-syntax-ns#first")
+				+ SPACE + "ANY" + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY,
 				query.toString());
 	}
 
@@ -113,8 +113,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				ResourceFactory.createResource("two").asNode(), ResourceFactory
 						.createLangLiteral("three", "en-US").asNode()));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ quote("three") + "@en-US" + OPT_SPACE + DOT + CLOSE_CURLY
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
+				+ quote("three") + "@en-US" + OPT_SPACE + CLOSE_CURLY
 				+ CLOSE_CURLY, query.toString());
 	}
 
@@ -122,8 +122,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	public void testAddWhereStrings() {
 		handler.addWhere(new Triple(NodeFactory.createURI("one"), NodeFactory
 				.createURI("two"), NodeFactory.createURI("three")));
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + node("three") + OPT_SPACE + DOT
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + uri("three") + OPT_SPACE
 				+ CLOSE_CURLY, query.toString());
 	}
 
@@ -163,7 +163,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				.addWhere("<one>", "<two>", "three");
 		handler.addSubQuery(sb);
 		assertContainsRegex("SELECT" + SPACE + var("x") + SPACE + WHERE
-				+ OPEN_CURLY + node("one") + ".+" + node("two") + ".+"
+				+ OPEN_CURLY + uri("one") + ".+" + uri("two") + ".+"
 				+ quote("three") + ".+" + CLOSE_CURLY, query.toString());
 	}
 
@@ -172,8 +172,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		SelectBuilder sb = new SelectBuilder();
 		sb.addPrefix("pfx", "uri").addWhere("<one>", "<two>", "three");
 		handler.addSubQuery(sb);
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + ".+"
-				+ node("two") + ".+" + quote("three") + ".+" + CLOSE_CURLY,
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + ".+"
+				+ uri("two") + ".+" + quote("three") + ".+" + CLOSE_CURLY,
 				query.toString());
 	}
 
@@ -185,8 +185,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
 		handler.addUnion(sb);
 		assertContainsRegex(WHERE + OPEN_CURLY + UNION + OPEN_CURLY
-				+ node("one") + SPACE + node("two") + SPACE + node("three")
-				+ OPT_SPACE + DOT + CLOSE_CURLY, query.toString());
+				+ uri("one") + SPACE + uri("two") + SPACE + uri("three")
+				+ OPT_SPACE + CLOSE_CURLY, query.toString());
 	}
 
 	@Test
@@ -197,8 +197,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
 		handler.addUnion(sb);
 		assertContainsRegex(WHERE + OPEN_CURLY + UNION + OPEN_CURLY + SELECT
-				+ var("x") + SPACE + WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + node("three") + OPT_SPACE + DOT
+				+ var("x") + SPACE + WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + uri("three") + OPT_SPACE
 				+ CLOSE_CURLY, query.toString());
 	}
 
@@ -211,8 +211,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
 		handler.addGraph(NodeFactory.createURI("graph"), handler2);
 		assertContainsRegex(WHERE + OPEN_CURLY + "GRAPH" + SPACE
-				+ node("graph") + SPACE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + node("three") + OPT_SPACE + DOT
+				+ uri("graph") + SPACE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + uri("three") + OPT_SPACE
 				+ CLOSE_CURLY + CLOSE_CURLY, query.toString());
 
 	}
@@ -222,14 +222,14 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		Var v = Var.alloc("v");
 		handler.addWhere(new Triple(NodeFactory.createURI("one"), NodeFactory
 				.createURI("two"), v));
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + var("v") + OPT_SPACE + DOT
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + var("v") + OPT_SPACE
 				+ CLOSE_CURLY, query.toString());
 		Map<Var, Node> values = new HashMap<Var, Node>();
 		values.put(v, NodeFactory.createURI("three"));
 		handler.setVars(values);
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + SPACE
-				+ node("two") + SPACE + node("three") + OPT_SPACE + DOT
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + uri("three") + OPT_SPACE
 				+ CLOSE_CURLY, query.toString());
 	}
 
@@ -247,7 +247,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE
 				+ OPEN_PAREN + var("one") + OPT_SPACE + LT + OPT_SPACE
 				+ quote("10") + "\\^\\^"
-				+ node("http://www.w3.org/2001/XMLSchema#int") + CLOSE_PAREN
+				+ uri("http://www.w3.org/2001/XMLSchema#int") + CLOSE_PAREN
 				+ CLOSE_CURLY, query.toString());
 
 	}
@@ -258,15 +258,15 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addOptional(new Triple(NodeFactory.createURI("one"),
 				NodeFactory.createURI("two"), v));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ var("v") + OPT_SPACE + DOT + CLOSE_CURLY + CLOSE_CURLY,
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
+				+ var("v") + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY,
 				query.toString());
 		Map<Var, Node> values = new HashMap<Var, Node>();
 		values.put(v, NodeFactory.createURI("three"));
 		handler.setVars(values);
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + node("one") + SPACE + node("two") + SPACE
-				+ node("three") + OPT_SPACE + DOT + CLOSE_CURLY + CLOSE_CURLY,
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
+				+ uri("three") + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY,
 				query.toString());
 	}
 
@@ -276,14 +276,14 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		SelectBuilder sb = new SelectBuilder();
 		sb.addPrefix("pfx", "uri").addWhere("<one>", "<two>", v);
 		handler.addSubQuery(sb);
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + ".+"
-				+ node("two") + ".+" + var("v") + ".+" + CLOSE_CURLY,
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + ".+"
+				+ uri("two") + ".+" + var("v") + ".+" + CLOSE_CURLY,
 				query.toString());
 		Map<Var, Node> values = new HashMap<Var, Node>();
 		values.put(v, NodeFactory.createURI("three"));
 		handler.setVars(values);
-		assertContainsRegex(WHERE + OPEN_CURLY + node("one") + ".+"
-				+ node("two") + ".+" + node("three") + ".+" + CLOSE_CURLY,
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + ".+"
+				+ uri("two") + ".+" + uri("three") + ".+" + CLOSE_CURLY,
 				query.toString());
 	}
 
@@ -294,13 +294,13 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		sb.addPrefix("pfx", "uri").addWhere("<one>", "<two>", v);
 		handler.addUnion(sb);
 		assertContainsRegex(WHERE + OPEN_CURLY + UNION + OPEN_CURLY
-				+ node("one") + ".+" + node("two") + ".+" + var("v") + ".+"
+				+ uri("one") + ".+" + uri("two") + ".+" + var("v") + ".+"
 				+ CLOSE_CURLY, query.toString());
 		Map<Var, Node> values = new HashMap<Var, Node>();
 		values.put(v, NodeFactory.createURI("three"));
 		handler.setVars(values);
 		assertContainsRegex(WHERE + OPEN_CURLY + UNION + OPEN_CURLY
-				+ node("one") + ".+" + node("two") + ".+" + node("three")
+				+ uri("one") + ".+" + uri("two") + ".+" + uri("three")
 				+ ".+" + CLOSE_CURLY, query.toString());
 	}
 

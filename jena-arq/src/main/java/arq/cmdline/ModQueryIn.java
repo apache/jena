@@ -20,7 +20,13 @@ package arq.cmdline ;
 
 import java.io.IOException ;
 
-import arq.cmd.* ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+import jena.cmd.TerminationException;
+
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
 import org.apache.jena.query.Syntax ;
@@ -28,7 +34,7 @@ import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.util.FileUtils ;
 
-public class ModQueryIn implements ArgModuleGeneral {
+public class ModQueryIn extends ModBase {
     protected final ArgDecl queryFileDecl   = new ArgDecl(ArgDecl.HasValue, "query", "file") ;
     protected final ArgDecl querySyntaxDecl = new ArgDecl(ArgDecl.HasValue, "syntax", "syn", "in") ;
     protected final ArgDecl queryBaseDecl   = new ArgDecl(ArgDecl.HasValue, "base") ;

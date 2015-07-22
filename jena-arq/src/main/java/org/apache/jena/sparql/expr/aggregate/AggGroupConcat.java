@@ -124,13 +124,14 @@ public class AggGroupConcat extends AggregatorBase
     public int hashCode()   { return HC_AggCountVar ^ exprList.hashCode() ; }
     
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Aggregator other, boolean bySyntax) {
+        if ( other == null ) return false ;
         if ( this == other ) return true ;
         if ( ! ( other instanceof AggGroupConcat ) )
             return false ;
         AggGroupConcat agg = (AggGroupConcat)other ;
-        return Objects.equals(agg.getSeparator(),getSeparator()) && agg.getExpr().equals(getExpr()) ;
+        return Objects.equals(agg.getSeparator(), getSeparator()) &&
+               agg.getExpr().equals(getExpr(), bySyntax) ;
     }
 
     // ---- Accumulator

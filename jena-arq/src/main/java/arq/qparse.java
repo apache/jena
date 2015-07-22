@@ -21,6 +21,9 @@ package arq;
 import java.io.PrintStream ;
 import java.util.Iterator ;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.* ;
@@ -31,8 +34,7 @@ import org.apache.jena.sparql.lang.ParserBase ;
 import org.apache.jena.sparql.resultset.ResultSetException ;
 import org.apache.jena.sparql.util.QueryOutputUtils ;
 import org.apache.jena.sparql.util.QueryUtils ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
+
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModEngine ;
 import arq.cmdline.ModQueryIn ;

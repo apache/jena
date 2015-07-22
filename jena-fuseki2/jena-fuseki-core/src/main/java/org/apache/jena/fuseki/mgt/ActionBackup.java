@@ -19,10 +19,6 @@
 package org.apache.jena.fuseki.mgt;
 
 import static java.lang.String.format ;
-
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
-
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.slf4j.Logger ;
@@ -31,12 +27,6 @@ import org.slf4j.LoggerFactory ;
 public class ActionBackup extends ActionAsyncTask
 {
     public ActionBackup() { super() ; }
-    
-    // Only POST
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        doCommon(request, response);
-    }
 
     @Override
     protected Runnable createRunnable(HttpAction action) {

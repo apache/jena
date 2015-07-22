@@ -18,7 +18,7 @@
 
 package sdb.cmd;
 
-import java.util.List;
+import java.util.List ;
 
 import org.apache.jena.Jena ;
 import org.apache.jena.query.ARQ ;
@@ -26,11 +26,10 @@ import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.StoreDesc ;
 import org.apache.jena.sdb.assembler.AssemblerVocab ;
-import arq.cmdline.CmdGeneral ;
-import arq.cmdline.ModSymbol;
-import arq.cmdline.ModTime;
+import arq.cmdline.CmdARQ ;
+import arq.cmdline.ModTime ;
 
-public abstract class CmdArgsDB extends CmdGeneral
+public abstract class CmdArgsDB extends CmdARQ
 {
     static {
         //  Tune N3 output for result set output.
@@ -40,7 +39,6 @@ public abstract class CmdArgsDB extends CmdGeneral
         System.setProperty("propertyColumn",       "14") ;
     }
     
-    private ModSymbol modSymbol = new ModSymbol() ;
     private ModStore  modStore  = new ModStore() ;
     private ModTime   modTime   = new ModTime() ;
     private ModLogSQL modLogSQL = new ModLogSQL() ;
@@ -48,14 +46,13 @@ public abstract class CmdArgsDB extends CmdGeneral
     protected CmdArgsDB(String argv[])
     {
         super(argv) ;
-        addModule(modSymbol) ;
         addModule(modStore) ;
         addModule(modLogSQL) ;
         addModule(modTime) ;
         ARQ.init() ;
-        super.modVersion.addClass(Jena.class) ;
-        super.modVersion.addClass(ARQ.class) ;
-        super.modVersion.addClass(SDB.class) ;
+        modVersion.addClass(Jena.class) ;
+        modVersion.addClass(ARQ.class) ;
+        modVersion.addClass(SDB.class) ;
     }
     
     protected void setModStore(ModStore modStore) { this.modStore = modStore ; }

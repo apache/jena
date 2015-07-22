@@ -21,10 +21,12 @@ package sdb;
 import java.sql.Connection ;
 import java.util.List ;
 
-import arq.cmd.CmdException ;
+import jena.cmd.CmdException;
+
 import org.apache.jena.atlas.lib.Lib ;
 import org.junit.runner.JUnitCore ;
 import org.junit.runner.notification.RunListener ;
+
 import sdb.cmd.CmdArgsDB ;
 import sdb.junit.TextListener2 ;
 import sdb.test.Params ;

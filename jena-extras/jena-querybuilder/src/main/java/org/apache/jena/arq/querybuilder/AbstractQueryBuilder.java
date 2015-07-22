@@ -364,4 +364,5 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		new SelectHandler(q2).setVars(values);
 		return q2;
 	}
+	
 }

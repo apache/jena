@@ -18,6 +18,10 @@
 
 package riotcmd;
 
+import jena.cmd.ArgDecl ;
+import jena.cmd.CmdException ;
+import jena.cmd.CmdGeneral ;
+import jena.cmd.TerminationException ;
 import junit.framework.TestSuite ;
 import org.apache.jena.atlas.legacy.BaseTest2 ;
 import org.apache.jena.atlas.lib.Lib ;
@@ -41,10 +45,6 @@ import org.apache.jena.sparql.vocabulary.FOAF ;
 import org.apache.jena.vocabulary.DC ;
 import org.apache.jena.vocabulary.DCTerms ;
 import org.apache.jena.vocabulary.RDF ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
-import arq.cmd.TerminationException ;
-import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModEngine ;
 import arq.cmdline.ModSymbol ;
 
@@ -97,7 +97,7 @@ public class rdflangtest extends CmdGeneral
     protected String getCommandName() { return Lib.className(this) ; }
     
     @Override
-    protected String getSummary() { return getCommandName()+" [ --data=<file> --query=<query> --result=<results> ] | --all | --dawg | <manifest>" ; }
+    protected String getSummary() { return getCommandName()+" <manifest>" ; }
     
     @Override
     protected void processModulesAndArgs()

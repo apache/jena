@@ -18,13 +18,13 @@
 
 package org.apache.jena.jdbc.remote.metadata;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.Connection ;
+import java.sql.SQLException ;
 
-import org.apache.jena.jdbc.JenaJDBC;
-import org.apache.jena.jdbc.metadata.JenaMetadata;
-import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
-import org.apache.jena.sparql.util.Version ;
+import org.apache.jena.atlas.lib.Version ;
+import org.apache.jena.jdbc.JenaJDBC ;
+import org.apache.jena.jdbc.metadata.JenaMetadata ;
+import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection ;
 
 /**
  * Represents metadata about connections to remote endpoints

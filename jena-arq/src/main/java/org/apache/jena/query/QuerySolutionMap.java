@@ -53,6 +53,17 @@ public class QuerySolutionMap extends QuerySolutionBase
         map.putAll(other.map);
     }
 
+    /** Return a <code>Map&lt;String, RDFNode&gt;</code> representing the current
+     * state of this <code>QuerySolutionMap</code>. The map is not connected
+     * to the <code>QuerySolutionMap</code> and later changes to either <code>Map</code>
+     * or <code>QuerySolutionMap</code> will not reflected in the other.  
+     * 
+     * @return Map<String, RDFNode>
+     */
+    public Map<String, RDFNode> asMap() { 
+        return new HashMap<>(map) ;
+    }
+    
     /** Add all of the solutions from one QuerySolution into this QuerySolutionMap */
     public void addAll(QuerySolution other)
     { 
@@ -82,5 +93,4 @@ public class QuerySolutionMap extends QuerySolutionBase
         }
         return tmp ;
     }
-        
 }

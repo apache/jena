@@ -52,7 +52,11 @@
 #
 # FUSEKI_START
 #   Path to the jar file. Defaults to $FUSEKI_HOME/fuseki-server.jar 
-
+#
+# FUSEKI_CLASSES
+#   Path to extra jars to add to the class path.  Defaults to none
+#   Should be of the form path/class.jar:path/class2.jar
+#
 # FUSEKI_CONF
 #   The Fuseki configuration file, usually in RDF Turtle notation.
 #
@@ -94,7 +98,7 @@ else
     echo $1
   }
   log_end_msg() {
-    if [ $1 -eq 0]; then
+    if [ $1 -eq 0 ]; then
       echo '[OK]'
     else
       echo '[failed]'
@@ -281,16 +285,15 @@ then
   fi
 fi
 
-if [ ! -z "$FUSEKI_HOME" ]
-then
-    FUSEKI_ADDITIONAL_ARGS=(--home "$FUSEKI_HOME")
-fi
-
 # Run command
 
-RUN_ARGS=(${JAVA_OPTIONS[@]} -jar "$FUSEKI_START" "${FUSEKI_ADDITIONAL_ARGS[@]}" $FUSEKI_ARGS)
+if [ -z "$FUSEKI_CLASSES" ]
+then
+  RUN_ARGS=(${JAVA_OPTIONS[@]} -jar "$FUSEKI_START" "${FUSEKI_ADDITIONAL_ARGS[@]}" $FUSEKI_ARGS)
+else
+  RUN_ARGS=(${JAVA_OPTIONS[@]} -cp "$FUSEKI_START:$FUSEKI_CLASSES" org.apache.jena.fuseki.cmd.FusekiCmd "${FUSEKI_ADDITIONAL_ARGS[@]}" $FUSEKI_ARGS)
+fi
 RUN_CMD=("$JAVA" "${RUN_ARGS[@]}")
-
 
 #####################################################
 # Comment these out after you're happy with what
@@ -304,6 +307,7 @@ then
   log_daemon_msg "FUSEKI_PID     =  $FUSEKI_PID"
   log_daemon_msg "FUSEKI_ARGS    =  $FUSEKI_ARGS"
   log_daemon_msg "FUSEKI_START   =  $FUSEKI_START"
+  log_daemon_msg "FUSEKI_CLASSES =  $FUSEKI_CLASSES"
   log_daemon_msg "CONFIGS        =  ${CONFIGS[*]}"
   log_daemon_msg "JAVA           =  $JAVA"
   log_daemon_msg "JAVA_OPTIONS   =  ${JAVA_OPTIONS[*]}"
@@ -367,6 +371,8 @@ start() {
       rm -f "$FUSEKI_PID"
     fi
 
+# use subshell to cd to FUSKEI_HOME directory and execute
+    (cd "$FUSEKI_HOME"
     if [ "$FUSEKI_USER" ]
     then
       touch "$FUSEKI_PID"
@@ -382,7 +388,8 @@ start() {
       disown $!
       echo $! > "$FUSEKI_PID"
     fi
-
+)
+    
     log_end_msg 0
     print_started
   fi

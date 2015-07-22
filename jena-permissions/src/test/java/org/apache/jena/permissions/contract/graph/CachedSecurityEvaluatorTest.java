@@ -18,6 +18,8 @@
 
 package org.apache.jena.permissions.contract.graph;
 
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.StaticSecurityEvaluator;
 import org.apache.jena.permissions.impl.CachedSecurityEvaluator;
@@ -32,15 +34,15 @@ public class CachedSecurityEvaluatorTest {
 	
 	public CachedSecurityEvaluatorTest() {
 		securityEvaluator = new StaticSecurityEvaluator( "bob" );
-		cachedEvaluator = new CachedSecurityEvaluator( securityEvaluator, "ted" );
+		cachedEvaluator = new CachedSecurityEvaluator( securityEvaluator, NodeFactory.createURI("urn:ted") );
 		
 	}
 	
 	@Test
 	public void testGetPrincipal()
 	{
-		assertEquals( "bob", securityEvaluator.getPrincipal());
-		assertEquals( "ted", cachedEvaluator.getPrincipal());
+		assertEquals( "urn:bob", securityEvaluator.getPrincipal().getURI());
+		assertEquals( "urn:ted", ((Node)cachedEvaluator.getPrincipal()).getURI());
 	}
 
 }

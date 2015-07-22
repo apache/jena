@@ -30,8 +30,8 @@ import org.apache.jena.query.spatial.SpatialQuery;
 import org.apache.jena.sparql.core.Quad ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
+import jena.cmd.ArgDecl ;
+import jena.cmd.CmdException ;
 import arq.cmdline.CmdARQ;
 
 /**

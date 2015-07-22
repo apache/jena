@@ -26,6 +26,7 @@ public class TextIndexConfig {
     Analyzer analyzer;
     Analyzer queryAnalyzer;
     boolean multilingualSupport;
+    boolean valueStored;
 
     public TextIndexConfig(EntityDefinition entDef) {
         this.entDef = entDef;
@@ -57,5 +58,13 @@ public class TextIndexConfig {
 
     public void setMultilingualSupport(boolean multilingualSupport) {
         this.multilingualSupport = multilingualSupport;
+    }
+
+    public boolean isValueStored() {
+        return valueStored;
+    }
+
+    public void setValueStored(boolean valueStored) {
+        this.valueStored = valueStored;
     }
 }

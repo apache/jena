@@ -45,7 +45,7 @@ public class ElementFilter extends Element
         if ( ! ( el2 instanceof ElementFilter ) )
             return false ;
         ElementFilter f2 = (ElementFilter)el2 ;
-        if ( ! this.getExpr().equals(f2.getExpr()) )
+        if ( ! this.getExpr().equalsBySyntax(f2.getExpr()) )
             return false ;
         return true ;
     }

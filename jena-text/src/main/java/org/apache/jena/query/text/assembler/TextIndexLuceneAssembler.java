@@ -105,12 +105,23 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 isMultilingualSupport = mlsNode.asLiteral().getBoolean();
             }
 
+            boolean storeValues = false;
+            Statement storeValuesStatement = root.getProperty(pStoreValues);
+            if (null != storeValuesStatement) {
+                RDFNode svNode = storeValuesStatement.getObject();
+                if (! svNode.isLiteral()) {
+                    throw new TextIndexException("text:storeValues property must be a string : " + svNode);
+                }
+                storeValues = svNode.asLiteral().getBoolean();
+            }
+
             Resource r = GraphUtils.getResourceValue(root, pEntityMap) ;
             EntityDefinition docDef = (EntityDefinition)a.open(r) ;
             TextIndexConfig config = new TextIndexConfig(docDef);
             config.setAnalyzer(analyzer);
             config.setQueryAnalyzer(queryAnalyzer);
             config.setMultilingualSupport(isMultilingualSupport);
+            config.setValueStored(storeValues);
 
             return TextDatasetFactory.createLuceneIndex(directory, config) ;
         } catch (IOException e) {

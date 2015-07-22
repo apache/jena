@@ -189,10 +189,15 @@ public class FmtExprSPARQL
             FormatterElement fmtElt = new FormatterElement(out, context) ;
             out.print(fn) ;
             out.print(" ") ;
-            Element el = funcOp.getElement() ; 
-            if ( el == null )
-                el = OpAsQuery.asQuery(funcOp.getGraphPattern()).getQueryPattern() ;
-            el.visit(fmtElt) ;
+            int indent = out.getAbsoluteIndent() ;
+            int currentCol = out.getCol() ;
+            try {
+                out.setAbsoluteIndent(currentCol);
+                Element el = funcOp.getElement() ; 
+                if ( el == null )
+                    el = OpAsQuery.asQuery(funcOp.getGraphPattern()).getQueryPattern() ;
+                el.visit(fmtElt) ;
+            } finally { out.setAbsoluteIndent(indent); }
         }
 
         @Override

@@ -69,6 +69,9 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
                                         "  OPTIONAL {" ,
                                         "    ?eMap :langField ?langField" ,
                                         "  }",
+                                        "  OPTIONAL {" ,
+                                        "    ?eMap :uidField ?uidField" ,
+                                        "  }",
             "}") ;
         ParameterizedSparqlString pss = new ParameterizedSparqlString(qs1) ;
         pss.setIri("eMap", root.getURI()) ;
@@ -92,6 +95,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
         String graphField = qsol1.contains("graphField") ? qsol1.getLiteral("graphField").getLexicalForm() : null;
         String langField = qsol1.contains("langField") ? qsol1.getLiteral("langField").getLexicalForm() : null;
         String defaultField = qsol1.contains("dftField") ? qsol1.getLiteral("dftField").getLexicalForm() : null ;
+        String uniqueIdField = qsol1.contains("uidField") ? qsol1.getLiteral("uidField").getLexicalForm() : null;
 
         Multimap<String, Node> mapDefs = HashMultimap.create() ; 
         Map<String, Analyzer> analyzerDefs = new HashMap<>();
@@ -162,6 +166,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
         EntityDefinition docDef = new EntityDefinition(entityField, defaultField);
         docDef.setGraphField(graphField);
         docDef.setLangField(langField);
+        docDef.setUidField(uniqueIdField);
         for ( String f : mapDefs.keys() ) {
             for ( Node p : mapDefs.get(f)) 
                 docDef.set(f, p) ;

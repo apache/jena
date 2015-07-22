@@ -21,6 +21,9 @@ package arq;
 import java.util.Iterator ;
 import java.util.List ;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Graph ;
@@ -31,8 +34,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.graph.GraphLoadMonitor ;
 import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateRequest ;
-import arq.cmd.ArgDecl ;
-import arq.cmd.CmdException ;
+
 import arq.cmdline.CmdUpdate ;
 
 public class load extends CmdUpdate
