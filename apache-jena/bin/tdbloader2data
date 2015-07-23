@@ -217,13 +217,7 @@ if [ "$ABS_LOC" != "$LOC" ]; then
   debug "Absolute database location is $LOC"
 fi
 
-# Look for any index and data files in the directory.
-# Skip a possible configuration file
-if test -n "$(find "$LOC" -maxdepth 1 -type f ! -name 'this.*' -print -quit)"
-then 
-    abort 1 "Database location is not empty: $LOC"
-fi
-
+# Make sure LOC is a valid directory
 if [ ! -e "$LOC" ] ; then
   # If non-existent try to create
   debug "Trying to create new database directory: $LOC"
@@ -235,6 +229,13 @@ if [ ! -e "$LOC" ] ; then
 fi
 if [ ! -d "$LOC" ]; then
   abort 1 "Database location is not a directory: $LOC"
+fi
+
+# Look for any index and data files in the directory.
+# Skip a possible configuration file
+if test -n "$(find "$LOC" -maxdepth 1 -type f ! -name 'this.*' -print -quit)"
+then 
+    abort 1 "Database location is not empty: $LOC"
 fi
 
 # Prepare JVM Arguments

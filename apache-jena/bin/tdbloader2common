@@ -64,6 +64,9 @@ function getDriveInfo() {
   local DIR=$1
 
   local DRIVE_INFO=$(df "$DIR" | tail -n +2)
+  if [ -z "${DRIVE_INFO}" ]; then
+    abort 1 "Failed to get drive information for $DIR"
+  fi
   local DISK=$(echo $DRIVE_INFO | awk '{print $1}')
   local FREE_BYTES=$(echo $DRIVE_INFO | awk '{print $4}')
   local USED_PERCENT=$(echo $DRIVE_INFO | awk '{print $5}')
