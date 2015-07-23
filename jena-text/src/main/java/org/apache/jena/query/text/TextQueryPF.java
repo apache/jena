@@ -222,7 +222,9 @@ public class TextQueryPF extends PropertyFunctionBase {
             if (hit.getNode().equals(s)) {
                 // found the node among the hits
                 if (literalVar == null) {
-                    return IterLib.oneResult(binding, scoreVar, NodeFactoryExtra.floatToNode(hit.getScore()), execCxt);
+                    return (scoreVar == null) ?
+                        IterLib.result(binding, execCxt) :
+                        IterLib.oneResult(binding, scoreVar, NodeFactoryExtra.floatToNode(hit.getScore()), execCxt);
                 }
                 BindingMap bmap = BindingFactory.create(binding);
                 if (scoreVar != null) {
