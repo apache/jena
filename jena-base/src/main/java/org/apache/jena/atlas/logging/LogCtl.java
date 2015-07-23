@@ -173,7 +173,7 @@ public class LogCtl {
           ,"log4j.appender.jena.plainlevel.layout=org.apache.log4j.PatternLayout"
           ,"log4j.appender.jena.plainlevel.layout.ConversionPattern=%-5p %m%n"
 
-//          , "## Plain output to stdout"
+//          , "## Plain output to stdout, unadorned output format"
 //          ,"log4j.appender.jena.plain=org.apache.log4j.ConsoleAppender"
 //          ,"log4j.appender.jena.plain.target=System.out"
 //          ,"log4j.appender.jena.plain.layout=org.apache.log4j.PatternLayout"
@@ -191,16 +191,10 @@ public class LogCtl {
          ) ;
     // ---- java.util.logging - because that's always present.
     static String defaultProperties = StrUtils.strjoinNL
-        (
-         // Handlers - output
-         // All (comma separated)
-         // "handlers=java.util.logging.ConsoleHandler,org.apache.jena.atlas.logging.java.ConsoleHandlerStdout",
-    
-         // Atlas.
-         "handlers=org.apache.jena.atlas.logging.java.ConsoleHandlerStdout",
-         "org.apache.atlas.jena.logging.java.ConsoleHandlerStdout.level=INFO",
-         "java.util.logging.ConsoleHandler.formatter=atlas.logging.java.TextFormatter"
-    ) ;
+        ("handlers=org.apache.jena.atlas.logging.java.ConsoleHandlerStdout"
+         ,"org.apache.atlas.jena.logging.java.ConsoleHandlerStdout.level=INFO"
+         ,"java.util.logging.ConsoleHandler.formatter=org.apache.atlas.logging.java.TextFormatter"
+        ) ;
 
     /**
      * Set logging
