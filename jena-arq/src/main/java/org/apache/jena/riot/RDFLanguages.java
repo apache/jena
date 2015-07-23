@@ -100,7 +100,7 @@ public class RDFLanguages
     /** <a href="http://www.w3.org/TR/rdf-json/">RDF/JSON</a>.  This is not <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
     public static final Lang RDFJSON  = LangBuilder.create(strLangRDFJSON, contentTypeRDFJSON)
                                                 .addAltNames("RDFJSON")
-                                                .addFileExtensions("rj", "json")
+                                                .addFileExtensions("rj")
                                                 .build() ;
     
     /** <a href="http://www.w3.org/TR/trig/">TriG</a> */
