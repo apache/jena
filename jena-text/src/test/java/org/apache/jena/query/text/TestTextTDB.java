@@ -174,7 +174,7 @@ public class TestTextTDB extends BaseTest
         assertEquals(2,x.size());
     }
     
-    @Test public void itShouldWorkWithConcreteSubject() {
+    @Test public void textDB_7_subject_bound_first() {
         Dataset ds = create() ;
         data(ds, 
             "(<ex:g1> <s1> rdfs:label 'foo')",
