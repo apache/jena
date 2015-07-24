@@ -1,7 +1,7 @@
 #!/bin/sh
 ## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
-function resolveLink() {
+resolveLink() {
   local NAME=$1
 
   if [ -L "$NAME" ]; then
@@ -26,7 +26,6 @@ function resolveLink() {
 
 # If JENA_HOME is empty
 if [ -z "$JENA_HOME" ]; then
-  echo "JENA_HOME not set, attempting to locate JENA_HOME automatically"
   SCRIPT="$0"
   # Catch common issue: script has been symlinked
   if [ -L "$SCRIPT" ]; then
@@ -46,8 +45,8 @@ if [ -z "$JENA_HOME" ]; then
   # Work out root from script location
   JENA_HOME="$( cd "$( dirname "$SCRIPT" )/.." && pwd )"
   export JENA_HOME
-  echo "Located JENA_HOME at ${JENA_HOME}"
 fi
+
 # If JENA_HOME is a symbolic link need to resolve
 if [ -L "${JENA_HOME}" ]; then
   JENA_HOME=$(resolveLink "$JENA_HOME")
@@ -62,7 +61,6 @@ if [ -L "${JENA_HOME}" ]; then
       ;;
   esac
   export JENA_HOME
-  echo "Resolved symbolic links for JENA_HOME to $JENA_HOME"
 fi
 
 # ---- Setup

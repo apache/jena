@@ -1,0 +1,10 @@
+{
+  "@id" : "http://example/s",
+  "p" : "http://example/o",
+  "@context" : {
+    "p" : {
+      "@id" : "http://example/p",
+      "@type" : "@id"
+    }
+  }
+}

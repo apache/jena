@@ -98,12 +98,14 @@ public class TestStreamManager extends BaseTest
     @Test public void fm_read_01()  { read("D.nt") ; }
     @Test public void fm_read_02()  { read("D.ttl") ; }
     @Test public void fm_read_03()  { read("D.rdf") ; }
-    @Test public void fm_read_04()  { read("D.json") ; }
+    @Test public void fm_read_04()  { read("D.rj") ; }
+    @Test public void fm_read_05()  { read("D.jsonld") ; }
 
     @Test public void fm_read_11()  { read("file:D.nt") ; }
     @Test public void fm_read_12()  { read("file:D.ttl") ; }
     @Test public void fm_read_13()  { read("file:D.rdf") ; }
-    @Test public void fm_read_14()  { read("file:D.json") ; }
+    @Test public void fm_read_14()  { read("file:D.rj") ; }
+    @Test public void fm_read_15()  { read("file:D.jsonld") ; }
     
     // TriG
     // NQuads

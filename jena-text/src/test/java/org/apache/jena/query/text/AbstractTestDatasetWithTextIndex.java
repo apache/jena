@@ -277,6 +277,22 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
         doTestSearch(turtle, queryString, expectedURIs);
     }
 
+    @Test
+    public void propertyFunctionText_8() {
+        final String turtle = PF_DATA ;
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s rdfs:label 'text' .",
+                "    ?s text:query 'text' .",
+                "    ?s rdfs:label 'text' .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>();
+        expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
 
     @Test
     public void testMultipleResults() {
