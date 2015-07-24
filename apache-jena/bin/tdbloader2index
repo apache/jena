@@ -269,15 +269,19 @@ info "Index Building Phase"
 # Check whether Pipe Viewer is available
 # Needs to temporarily disable exit on error as which produces an error
 # if the given command is not found
-set +e
-which pv >/dev/null 2>&1
-HAS_PV=$?
-set -e
-if [ $HAS_PV = 0 ]; then
-  debug "pv (Pipe Viewer) available on your system so sorts will show progres"
-else
-  debug "No pv (Pipe Viewer) on your system so sorts will show no progress"
-fi
+#set +e
+#which pv >/dev/null 2>&1
+#HAS_PV=$?
+#set -e
+#if [ $HAS_PV = 0 ]; then
+#  debug "pv (Pipe Viewer) available on your system so sorts will show progres"
+#else
+#  debug "No pv (Pipe Viewer) on your system so sorts will show no progress"
+#fi
+
+# TODO Pipe Viewer causes hangs in some terminals so currently disabled by default
+# May be manually enabled by setting HAS_PV to zero in your environment
+HAS_PV=${HAS_PV:-1}
 
 # Check where we are storing temporary sort files
 debug "Sort Arguments: $SORT_ARGS"
@@ -345,7 +349,7 @@ generate_index()
     FREE_MEM=$(getFreeMem)
     if [ "$FREE_MEM" -ge 0 ]; then
       if [ "$SIZE" -ge "$FREE_MEM" ]; then
-        warn "Insufficient free memory to sort data in-memory, sort will need to perform an external sort using Temp Directory ${SORT_TEMP_DIR}"
+        debug "Insufficient free memory to sort data in-memory, sort will need to perform an external sort using Temp Directory ${SORT_TEMP_DIR}"
 
         # Check for disk space on temporary disk
         SORT_DRIVE_INFO=($(getDriveInfo "${SORT_TEMP_DIR}"))
@@ -358,7 +362,7 @@ generate_index()
         debug "Should be sufficient free memory ($FREE_MEM bytes) for sort to be fully in-memory"
       fi
     else
-      warn "Unable to determine free memory on your OS, can't check whether sort will be in-memory or external sort using Temp Directory ${SORT_TEMP_DIR}"
+      debug "Unable to determine free memory on your OS, can't check whether sort will be in-memory or external sort using Temp Directory ${SORT_TEMP_DIR}"
     fi
 
     # Sort the input data
