@@ -190,7 +190,7 @@ public class TestTextTDB extends BaseTest
             "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
             "SELECT *",
             "FROM <ex:g1>",
-            "{ ?s a <http://example.org/Entity> . ?s text:query 'foo' . ?s rdfs:label ?o }"
+            "{ ?s a <http://example.org/Entity> . ?s text:query 'foo' }"
             ) ;
         Query q = QueryFactory.create(qs) ;
         QueryExecution qexec = QueryExecutionFactory.create(q, ds) ;
