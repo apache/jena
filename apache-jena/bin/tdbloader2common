@@ -108,7 +108,7 @@ function getFreeMem() {
         case "$FREE_MEM" in
           ''|*[!0-9]*)
             # Clean up free output on 3.x kernels
-            FREE_MEM=$(echo "$FREE_MEM" | tail -n +2 | head | awk '{print $4}')
+            FREE_MEM=$(echo "$FREE_MEM" | tail -n +2 | head -n 1 | awk '{print $4}')
         esac
 
         # Final check that the output is numeric
