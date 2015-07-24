@@ -22,9 +22,8 @@ import java.security.Principal ;
 import java.util.Set ;
 
 import org.apache.http.auth.BasicUserPrincipal ;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.permissions.Factory ;
 import org.apache.jena.permissions.SecurityEvaluator ;
 import org.apache.jena.rdf.model.* ;

@@ -269,15 +269,19 @@ info "Index Building Phase"
 # Check whether Pipe Viewer is available
 # Needs to temporarily disable exit on error as which produces an error
 # if the given command is not found
-set +e
-which pv >/dev/null 2>&1
-HAS_PV=$?
-set -e
-if [ $HAS_PV = 0 ]; then
-  debug "pv (Pipe Viewer) available on your system so sorts will show progres"
-else
-  debug "No pv (Pipe Viewer) on your system so sorts will show no progress"
-fi
+#set +e
+#which pv >/dev/null 2>&1
+#HAS_PV=$?
+#set -e
+#if [ $HAS_PV = 0 ]; then
+#  debug "pv (Pipe Viewer) available on your system so sorts will show progres"
+#else
+#  debug "No pv (Pipe Viewer) on your system so sorts will show no progress"
+#fi
+
+# TODO Pipe Viewer causes hangs in some terminals so currently disabled by default
+# May be manually enabled by setting HAS_PV to zero in your environment
+HAS_PV=${HAS_PV:-1}
 
 # Check where we are storing temporary sort files
 debug "Sort Arguments: $SORT_ARGS"
@@ -297,13 +301,15 @@ fi
 SORT_TEMP_DIR=$(makeAbsolute "$SORT_TEMP_DIR")
 debug "Sort Temp Directory: $SORT_TEMP_DIR"
 SORT_DRIVE_INFO=($(getDriveInfo "${SORT_TEMP_DIR}"))
-debug "Sort Temp Directory is on disk ${SORT_DRIVE_INFO[0]} which has ${SORT_DRIVE_INFO[2]}% free space (${SORT_DRIVE_INFO[3]} bytes)"
+if [ "${#SORT_DRIVE_INFO[@]}" -gt 0 ]; then
+  debug "Sort Temp Directory is on disk ${SORT_DRIVE_INFO[0]} which has ${SORT_DRIVE_INFO[2]}% free space (${SORT_DRIVE_INFO[3]} bytes)"
 
-if [ "${SORT_DRIVE_INFO[2]}" -le 10 ]; then
-  warn "-----"
-  warn "Sort Temp Directory ${SORT_TEMP_DIR} is on disk ${SORT_DRIVE_INFO[0]} which only has ${SORT_DRIVE_INFO[2]}% free space (${SORT_DRIVE_INFO[3]} bytes) available"
-  warn "This may result in sort failures if the data to be indexed is large"
-  warn "-----"
+  if [ "${SORT_DRIVE_INFO[2]}" -le 10 ]; then
+    warn "-----"
+    warn "Sort Temp Directory ${SORT_TEMP_DIR} is on disk ${SORT_DRIVE_INFO[0]} which only has ${SORT_DRIVE_INFO[2]}% free space (${SORT_DRIVE_INFO[3]} bytes) available"
+    warn "This may result in sort failures if the data to be indexed is large"
+    warn "-----"
+  fi
 fi
 
 generate_index()
@@ -327,12 +333,14 @@ generate_index()
     # Verify that we have enough space to sort the data
 
     # Firstly check that the output disk has sufficient space
-    local WORK_DRIVE_INFO=($(getDriveInfo "${WORK}"))
-    if [ "${SIZE}" -ge "${WORK_DRIVE_INFO[3]}" ]; then
-      # If there is insufficient disk space then we can abort now
-      abort 1 "Insufficient free space on database drive ${WORK_DRIVE_INFO[0]}, there are ${WORK_DRIVE_INFO[3]} bytes free but ${SIZE} bytes are required"
-    else
-      debug "Sufficient free space on database drive ${WORK_DRIVE_INFO[0]} to attempt sorting data file ${DATA} (${SIZE} bytes required from ${WORK_DRIVE_INFO[3]} bytes free)"
+    local WORK_DRIVE_INFO=($(getDriveInfo "$LOC"))
+    if [ "${#WORK_DRIVE_INFO[@]}" -gt 0 ]; then
+      if [ "${SIZE}" -ge "${WORK_DRIVE_INFO[3]}" ]; then
+        # If there is insufficient disk space then we can abort now
+        abort 1 "Insufficient free space on database drive ${WORK_DRIVE_INFO[0]}, there are ${WORK_DRIVE_INFO[3]} bytes free but ${SIZE} bytes are required"
+      else
+        debug "Sufficient free space on database drive ${WORK_DRIVE_INFO[0]} to attempt sorting data file ${DATA} (${SIZE} bytes required from ${WORK_DRIVE_INFO[3]} bytes free)"
+      fi
     fi
 
     # Secondly check if there is enough space to sort in-memory or if sort may need to do an external sort
@@ -341,18 +349,20 @@ generate_index()
     FREE_MEM=$(getFreeMem)
     if [ "$FREE_MEM" -ge 0 ]; then
       if [ "$SIZE" -ge "$FREE_MEM" ]; then
-        warn "Insufficient free memory to sort data in-memory, sort will need to perform an external sort using Temp Directory ${SORT_TEMP_DIR}"
+        debug "Insufficient free memory to sort data in-memory, sort will need to perform an external sort using Temp Directory ${SORT_TEMP_DIR}"
 
         # Check for disk space on temporary disk
         SORT_DRIVE_INFO=($(getDriveInfo "${SORT_TEMP_DIR}"))
-        if [ "$SIZE" -ge "${SORT_DRIVE_INFO[3]}" ]; then
-          warn "There may be insufficient for sort to perform an external sort using Tempo Directory ${SORT_TEMP_DIR} (${SIZE} bytes required but only ${SORT_DRIVE_INFO[3]} bytes free)"
+        if [ "${#SORT_DRIVE_INFO[@]}" -gt 0 ]; then
+          if [ "$SIZE" -ge "${SORT_DRIVE_INFO[3]}" ]; then
+            warn "There may be insufficient for sort to perform an external sort using Tempo Directory ${SORT_TEMP_DIR} (${SIZE} bytes required but only ${SORT_DRIVE_INFO[3]} bytes free)"
+          fi
         fi
       else
         debug "Should be sufficient free memory ($FREE_MEM bytes) for sort to be fully in-memory"
       fi
     else
-      warn "Unable to determine free memory on your OS, can't check whether sort will be in-memory or external sort using Temp Directory ${SORT_TEMP_DIR}"
+      debug "Unable to determine free memory on your OS, can't check whether sort will be in-memory or external sort using Temp Directory ${SORT_TEMP_DIR}"
     fi
 
     # Sort the input data

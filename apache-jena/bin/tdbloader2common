@@ -64,6 +64,9 @@ function getDriveInfo() {
   local DIR=$1
 
   local DRIVE_INFO=$(df "$DIR" | tail -n +2)
+  if [ -z "${DRIVE_INFO}" ]; then
+    abort 1 "Failed to get drive information for $DIR"
+  fi
   local DISK=$(echo $DRIVE_INFO | awk '{print $1}')
   local FREE_BYTES=$(echo $DRIVE_INFO | awk '{print $4}')
   local USED_PERCENT=$(echo $DRIVE_INFO | awk '{print $5}')
@@ -92,12 +95,27 @@ function getFreeMem() {
       FREE_MEM=${FREE_MEM%M}
       FREE_MEM=$(($FREE_MEM * 1024 * 1024))
       ;;
-    *)
+    linux*)
       # Try to use free if available
       which free >/dev/null 2>&1
       if [ $? -eq 0 ]; then
         # Have free available
         FREE_MEM=$(free -b)
+
+        # Check the output
+        # 2.x kernels produce just an integer
+        # 3.x kernels produce detailed information
+        case "$FREE_MEM" in
+          ''|*[!0-9]*)
+            # Clean up free output on 3.x kernels
+            FREE_MEM=$(echo "$FREE_MEM" | tail -n +2 | head -n 1 | awk '{print $4}')
+        esac
+
+        # Final check that the output is numeric
+        if [ ! "$FREE_MEM" -eq "$FREE_MEM" ] 2>/dev/null; then
+          # Non-numeric
+          FREE_MEM=-1
+        fi
       fi
       ;;
   esac

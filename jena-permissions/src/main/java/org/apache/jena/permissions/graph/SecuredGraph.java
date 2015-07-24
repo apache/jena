@@ -104,12 +104,14 @@ public interface SecuredGraph extends Graph, SecuredItem
 	 * Return the name of the graph.
 	 * @return The name of the graph as a node.
 	 */
-	public Node getModelNode();
+	@Override
+    public Node getModelNode();
 
 	@Override
 	public SecuredPrefixMapping getPrefixMapping();
 
-	public SecurityEvaluator getSecurityEvaluator();
+	@Override
+    public SecurityEvaluator getSecurityEvaluator();
 
 	/**
 	 * @sec.graph Read
@@ -154,7 +156,7 @@ public interface SecuredGraph extends Graph, SecuredItem
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete (s, p, o )
-	 *@throws DeleteDeniesException
+	 * @throws DeleteDeniedException
 	 */
 	@Override
 	public void remove( Node s, Node p, Node o ) throws DeleteDeniedException;

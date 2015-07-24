@@ -47,7 +47,7 @@
   </organization>
 
   <properties>
-    <ver.slf4j>1.7.9</ver.slf4j>
+    <ver.slf4j>1.7.12</ver.slf4j>
     <ver.log4j>1.2.17</ver.log4j>
     <ver.junit>4.12</ver.junit>
     <ver.xerces>2.11.0</ver.xerces>
@@ -58,10 +58,17 @@
 
     <!-- These are connected because solr4j depends on httpclient as well -->
     <ver.httpclient>4.2.6</ver.httpclient>
-    <ver.httpcore>4.2.5</ver.httpcore>
-    <ver.lucene>4.6.1</ver.lucene>
-    <ver.solr>4.6.1</ver.solr>
-    <ver.spatial4j>0.4</ver.spatial4j>
+    <ver.httpcore>4.2.6</ver.httpcore>
+    <!-- Normally, these are the same as the above
+	 In the case of 4.2.6, there isn't a httpcore-osgi.
+    -->
+    <ver.httpcore-osgi>4.2.5</ver.httpcore-osgi>
+    <ver.httpclient-osgi>4.2.6</ver.httpclient-osgi>
+
+    <ver.commons-codec>1.9</ver.commons-codec>
+    <ver.lucene>4.9.1</ver.lucene>
+    <ver.solr>4.9.1</ver.solr>
+    <ver.spatial4j>0.4.1</ver.spatial4j>
 
     <jdk.version>1.8</jdk.version>
     <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
@@ -135,6 +142,12 @@
         </exclusions>
       </dependency>
 
+      <dependency>
+	<groupId>commons-codec</groupId>
+	<artifactId>commons-codec</artifactId>
+	<version>${ver.commons-codec}</version>
+      </dependency>
+      
       <dependency>
 	<groupId>org.apache.thrift</groupId>
 	<artifactId>libthrift</artifactId>
