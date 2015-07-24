@@ -110,6 +110,12 @@ function getFreeMem() {
             # Clean up free output on 3.x kernels
             FREE_MEM=$(echo "$FREE_MEM" | tail -n +2 | head | awk '{print $4}')
         esac
+
+        # Final check that the output is numeric
+        if [ ! "$FREE_MEM" -eq "$FREE_MEM" ] 2>/dev/null; then
+          # Non-numeric
+          FREE_MEM=-1
+        fi
       fi
       ;;
   esac
