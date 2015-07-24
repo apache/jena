@@ -93,6 +93,9 @@ import org.apache.jena.sparql.expr.aggregate.* ;
 import org.apache.jena.update.* ;
 import org.apache.jena.sparql.modify.request.* ;
 #endif
+#ifdef ARQ
+import org.apache.jena.sparql.core.Quad ;
+#endif
 
 public class CLASS extends PARSERBASE
 {
@@ -748,7 +751,7 @@ void ConstructQuads(QuadAcc acc) : {}
     )*    
 }
 
-void ConstructQuadsNotTriples(QuadAccSink acc) : {Node gn = org.apache.jena.sparql.core.Quad.defaultGraphNodeGenerated ; Node prev = acc.getGraph() ; }
+void ConstructQuadsNotTriples(QuadAccSink acc) : {Node gn = Quad.defaultGraphNodeGenerated ; Node prev = acc.getGraph() ; }
 {
     (
   	 <GRAPH>

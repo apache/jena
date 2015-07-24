@@ -33,6 +33,7 @@ import org.apache.jena.sparql.path.* ;
 import org.apache.jena.sparql.expr.aggregate.* ;
 import org.apache.jena.update.* ;
 import org.apache.jena.sparql.modify.request.* ;
+import org.apache.jena.sparql.core.Quad ;
 public class ARQParser extends ARQParserBase
 {
     boolean allowAggregatesInExpressions = false ;
@@ -507,7 +508,7 @@ void ConstructQuads(QuadAcc acc) : {}
        (TriplesTemplate(acc))?
     )*
 }
-void ConstructQuadsNotTriples(QuadAccSink acc) : {Node gn = org.apache.jena.sparql.core.Quad.defaultGraphNodeGenerated ; Node prev = acc.getGraph() ; }
+void ConstructQuadsNotTriples(QuadAccSink acc) : {Node gn = Quad.defaultGraphNodeGenerated ; Node prev = acc.getGraph() ; }
 {
     (
     <GRAPH>
