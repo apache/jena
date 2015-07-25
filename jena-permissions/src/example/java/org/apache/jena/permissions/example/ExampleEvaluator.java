@@ -25,6 +25,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.SecurityEvaluator ;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.jena.vocabulary.RDF ;
 
 /**
@@ -61,6 +62,10 @@ public class ExampleEvaluator implements SecurityEvaluator {
 		// a message is only available to sender or recipient
 		if (r.hasProperty( RDF.type, msgType ))
 		{
+			if (principal == null)
+			{
+				throw new AuthenticationRequiredException();
+			}
 			return r.hasProperty( pTo, principal.getName() ) ||
 					r.hasProperty( pFrom, principal.getName());
 		}

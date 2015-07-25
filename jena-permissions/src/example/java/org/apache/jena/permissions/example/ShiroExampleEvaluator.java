@@ -20,7 +20,6 @@ package org.apache.jena.permissions.example;
 import java.util.Set ;
 
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.SecurityEvaluator ;
 import org.apache.jena.rdf.model.* ;
@@ -81,6 +80,8 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
 		Subject subject = (Subject)principalObj;
 		if (! subject.isAuthenticated())
 		{
+			// we could throw an AuthenticationRequiredException but
+			// in our case we just return false.
 			LOG.info( "User not authenticated");
 			return false;
 		}

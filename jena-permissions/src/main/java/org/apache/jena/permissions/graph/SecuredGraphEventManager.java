@@ -28,18 +28,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.GraphEventManager ;
-import org.apache.jena.graph.GraphListener ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.CollectionGraph ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphEventManager;
+import org.apache.jena.graph.GraphListener;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.CollectionGraph;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.impl.CachedSecurityEvaluator;
 import org.apache.jena.permissions.utils.PermTripleFilter;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.NiceIterator ;
-import org.apache.jena.util.iterator.WrappedIterator ;
+import org.apache.jena.shared.AuthenticationRequiredException;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.NiceIterator;
+import org.apache.jena.util.iterator.WrappedIterator;
 
 /**
  * Since we sit between the graph and other items we have to determine when the
@@ -60,11 +61,12 @@ public class SecuredGraphEventManager implements GraphEventManager {
 		}
 
 		private Triple[] getArray(final Graph g, final Triple[] triples,
-				final Set<Action> perms) {
+				final Set<Action> perms) throws AuthenticationRequiredException {
 			Triple[] retval = triples;
 			if (g instanceof SecuredGraph) {
 				final SecuredGraph sg = (SecuredGraph) g;
-				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(sg.getSecurityEvaluator(), runAs);
+				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(
+						sg.getSecurityEvaluator(), runAs);
 				if (evaluator.evaluateAny(runAs, perms, sg.getModelNode())) {
 					if (!evaluator.evaluateAny(runAs, perms, sg.getModelNode(),
 							Triple.ANY)) {
@@ -72,12 +74,10 @@ public class SecuredGraphEventManager implements GraphEventManager {
 								Arrays.asList(triples).iterator(), perms)
 								.toList();
 						retval = list.toArray(new Triple[list.size()]);
-					}
-					else {
+					} else {
 						retval = triples;
 					}
-				}
-				else {
+				} else {
 					retval = new Triple[0];
 				}
 			}
@@ -85,7 +85,8 @@ public class SecuredGraphEventManager implements GraphEventManager {
 		}
 
 		@Override
-		public void notifyAddArray(final Graph g, final Triple[] triples) {
+		public void notifyAddArray(final Graph g, final Triple[] triples)
+				throws AuthenticationRequiredException {
 			final Triple[] added = getArray(g, triples,
 					SecuredGraphEventManager.ADD);
 
@@ -95,11 +96,13 @@ public class SecuredGraphEventManager implements GraphEventManager {
 		}
 
 		@Override
-		public void notifyAddGraph(final Graph g, final Graph added) {
+		public void notifyAddGraph(final Graph g, final Graph added)
+				throws AuthenticationRequiredException {
 			Graph addGraph = added;
 			if (g instanceof SecuredGraph) {
 				final SecuredGraph sg = (SecuredGraph) g;
-				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(sg.getSecurityEvaluator(), runAs);
+				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(
+						sg.getSecurityEvaluator(), runAs);
 				if (evaluator.evaluateAny(runAs, SecuredGraphEventManager.ADD,
 						sg.getModelNode())) {
 					if (!evaluator.evaluateAny(runAs,
@@ -110,12 +113,10 @@ public class SecuredGraphEventManager implements GraphEventManager {
 						addGraph = new CollectionGraph(Arrays.asList(getArray(
 								g, lst.toArray(new Triple[lst.size()]),
 								SecuredGraphEventManager.ADD)));
-					}
-					else {
+					} else {
 						addGraph = added;
 					}
-				}
-				else {
+				} else {
 					addGraph = new CollectionGraph(
 							Collections.<Triple> emptyList());
 				}
@@ -127,11 +128,13 @@ public class SecuredGraphEventManager implements GraphEventManager {
 		}
 
 		@Override
-		public void notifyAddIterator(final Graph g, final Iterator<Triple> it) {
+		public void notifyAddIterator(final Graph g, final Iterator<Triple> it)
+				throws AuthenticationRequiredException {
 
 			if (g instanceof SecuredGraph) {
 				final SecuredGraph sg = (SecuredGraph) g;
-				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(sg.getSecurityEvaluator(), runAs);
+				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(
+						sg.getSecurityEvaluator(), runAs);
 				// only report if we can write to the graph
 				if (evaluator.evaluateAny(runAs, SecuredGraphEventManager.ADD,
 						sg.getModelNode())) {
@@ -143,19 +146,20 @@ public class SecuredGraphEventManager implements GraphEventManager {
 						iter.close();
 					}
 				}
-			}
-			else {
+			} else {
 				wrapped.notifyAddIterator(g, it);
 			}
 
 		}
 
 		@Override
-		public void notifyAddList(final Graph g, final List<Triple> triples) {
+		public void notifyAddList(final Graph g, final List<Triple> triples)
+				throws AuthenticationRequiredException {
 			List<Triple> list = triples;
 			if (g instanceof SecuredGraph) {
 				final SecuredGraph sg = (SecuredGraph) g;
-				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(sg.getSecurityEvaluator(), runAs);
+				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(
+						sg.getSecurityEvaluator(), runAs);
 				if (evaluator.evaluateAny(runAs, SecuredGraphEventManager.ADD,
 						sg.getModelNode())) {
 					if (!evaluator.evaluateAny(runAs,
@@ -163,12 +167,10 @@ public class SecuredGraphEventManager implements GraphEventManager {
 							Triple.ANY)) {
 						list = wrapPermIterator(sg, triples.iterator(),
 								SecuredGraphEventManager.ADD).toList();
-					}
-					else {
+					} else {
 						list = triples;
 					}
-				}
-				else {
+				} else {
 					list = Collections.emptyList();
 				}
 			}
@@ -180,19 +182,20 @@ public class SecuredGraphEventManager implements GraphEventManager {
 		}
 
 		@Override
-		public void notifyAddTriple(final Graph g, final Triple t) {
+		public void notifyAddTriple(final Graph g, final Triple t)
+				throws AuthenticationRequiredException {
 			boolean notify = false;
 			if (g instanceof SecuredGraph) {
 				final SecuredGraph sg = (SecuredGraph) g;
-				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(sg.getSecurityEvaluator(), runAs);
+				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(
+						sg.getSecurityEvaluator(), runAs);
 				notify = evaluator.evaluateAny(runAs,
 						SecuredGraphEventManager.ADD, sg.getModelNode());
 				if (notify) {
 					notify = evaluator.evaluateAny(runAs,
 							SecuredGraphEventManager.ADD, sg.getModelNode(), t);
 				}
-			}
-			else {
+			} else {
 				notify = true;
 			}
 			if (notify) {
@@ -201,11 +204,13 @@ public class SecuredGraphEventManager implements GraphEventManager {
 		}
 
 		@Override
-		public void notifyDeleteArray(final Graph g, final Triple[] triples) {
+		public void notifyDeleteArray(final Graph g, final Triple[] triples)
+				throws AuthenticationRequiredException {
 			Triple[] deleted = triples;
 			if (g instanceof SecuredGraph) {
 				final SecuredGraph sg = (SecuredGraph) g;
-				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(sg.getSecurityEvaluator(), runAs);
+				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(
+						sg.getSecurityEvaluator(), runAs);
 				if (evaluator.evaluateAny(runAs,
 						SecuredGraphEventManager.DELETE, sg.getModelNode())) {
 					if (!evaluator.evaluateAny(runAs,
@@ -215,12 +220,10 @@ public class SecuredGraphEventManager implements GraphEventManager {
 								Arrays.asList(triples).iterator(),
 								SecuredGraphEventManager.DELETE).toList();
 						deleted = list.toArray(new Triple[list.size()]);
-					}
-					else {
+					} else {
 						deleted = triples;
 					}
-				}
-				else {
+				} else {
 					deleted = new Triple[0];
 				}
 			}
@@ -231,10 +234,12 @@ public class SecuredGraphEventManager implements GraphEventManager {
 		}
 
 		@Override
-		public void notifyDeleteGraph(final Graph g, final Graph removed) {
+		public void notifyDeleteGraph(final Graph g, final Graph removed)
+				throws AuthenticationRequiredException {
 			if (g instanceof SecuredGraph) {
 				final SecuredGraph sg = (SecuredGraph) g;
-				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(sg.getSecurityEvaluator(), runAs);
+				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(
+						sg.getSecurityEvaluator(), runAs);
 				if (evaluator.evaluateAny(runAs,
 						SecuredGraphEventManager.DELETE, sg.getModelNode())) {
 					Graph g2 = removed;
@@ -243,31 +248,31 @@ public class SecuredGraphEventManager implements GraphEventManager {
 							Triple.ANY)) {
 						g2 = new CollectionGraph(
 								removed.find(Triple.ANY)
-								.filterKeep(
-										new PermTripleFilter(
-												SecuredGraphEventManager.DELETE,
-												sg, evaluator))
-												.toList());
+										.filterKeep(
+												new PermTripleFilter(
+														SecuredGraphEventManager.DELETE,
+														sg, evaluator))
+										.toList());
 
 					}
 					wrapped.notifyDeleteGraph(g, g2);
-				}
-				else {
+				} else {
 					// do nothing.
 				}
-			}
-			else {
+			} else {
 				wrapped.notifyDeleteGraph(g, removed);
 			}
 		}
 
 		@Override
 		public void notifyDeleteIterator(final Graph g,
-				final Iterator<Triple> it) {
+				final Iterator<Triple> it)
+				throws AuthenticationRequiredException {
 			Iterator<Triple> iter = it;
 			if (g instanceof SecuredGraph) {
 				final SecuredGraph sg = (SecuredGraph) g;
-				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(sg.getSecurityEvaluator(), runAs);
+				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(
+						sg.getSecurityEvaluator(), runAs);
 				if (evaluator.evaluateAny(runAs,
 						SecuredGraphEventManager.DELETE, sg.getModelNode())) {
 
@@ -281,23 +286,23 @@ public class SecuredGraphEventManager implements GraphEventManager {
 					}
 					// else use the default list as all can bee seen
 					wrapped.notifyDeleteIterator(g, iter);
-				}
-				else {
+				} else {
 					// do nothing.
 				}
-			}
-			else {
+			} else {
 				wrapped.notifyDeleteIterator(g, iter);
 			}
 
 		}
 
 		@Override
-		public void notifyDeleteList(final Graph g, final List<Triple> triples) {
+		public void notifyDeleteList(final Graph g, final List<Triple> triples)
+				throws AuthenticationRequiredException {
 			List<Triple> list = triples;
 			if (g instanceof SecuredGraph) {
 				final SecuredGraph sg = (SecuredGraph) g;
-				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(sg.getSecurityEvaluator(), runAs);
+				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(
+						sg.getSecurityEvaluator(), runAs);
 				if (evaluator.evaluateAny(runAs,
 						SecuredGraphEventManager.DELETE, sg.getModelNode())) {
 					if (!evaluator.evaluateAny(runAs,
@@ -311,8 +316,7 @@ public class SecuredGraphEventManager implements GraphEventManager {
 												sg, evaluator)).toList();
 					}
 					// else use the default list as all can bee seen
-				}
-				else {
+				} else {
 					list = Collections.emptyList();
 				}
 			}
@@ -323,19 +327,21 @@ public class SecuredGraphEventManager implements GraphEventManager {
 		}
 
 		@Override
-		public void notifyDeleteTriple(final Graph g, final Triple t) {
+		public void notifyDeleteTriple(final Graph g, final Triple t)
+				throws AuthenticationRequiredException {
 			boolean notify = false;
 			if (g instanceof SecuredGraph) {
 				final SecuredGraph sg = (SecuredGraph) g;
-				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(sg.getSecurityEvaluator(), runAs);
+				final SecurityEvaluator evaluator = new CachedSecurityEvaluator(
+						sg.getSecurityEvaluator(), runAs);
 				notify = evaluator.evaluateAny(runAs,
 						SecuredGraphEventManager.DELETE, sg.getModelNode());
 				if (notify) {
 					notify = evaluator.evaluateAny(runAs,
-							SecuredGraphEventManager.DELETE, sg.getModelNode(), t);
+							SecuredGraphEventManager.DELETE, sg.getModelNode(),
+							t);
 				}
-			}
-			else {
+			} else {
 				notify = true;
 			}
 			if (notify) {
@@ -350,8 +356,9 @@ public class SecuredGraphEventManager implements GraphEventManager {
 
 		private ExtendedIterator<Triple> wrapPermIterator(
 				final SecuredGraph sg, final Iterator<Triple> it,
-				final Set<Action> perms) {
-			final SecurityEvaluator evaluator = new CachedSecurityEvaluator(sg.getSecurityEvaluator(), runAs);
+				final Set<Action> perms) throws AuthenticationRequiredException {
+			final SecurityEvaluator evaluator = new CachedSecurityEvaluator(
+					sg.getSecurityEvaluator(), runAs);
 			if (!evaluator.evaluateAny(runAs, perms, sg.getModelNode(),
 					Triple.ANY)) {
 				// nope so wrap the iterator with security iterator
@@ -359,7 +366,7 @@ public class SecuredGraphEventManager implements GraphEventManager {
 						new PermTripleFilter(perms, sg, evaluator));
 			}
 			return WrappedIterator.create(it);
-				}
+		}
 
 	}
 
@@ -372,13 +379,9 @@ public class SecuredGraphEventManager implements GraphEventManager {
 
 	static {
 		SecuredGraphEventManager.ADD = new HashSet<Action>(
-				Arrays.asList(new Action[] {
-						Action.Create, Action.Read
-				}));
+				Arrays.asList(new Action[] { Action.Create, Action.Read }));
 		SecuredGraphEventManager.DELETE = new HashSet<Action>(
-				Arrays.asList(new Action[] {
-						Action.Delete, Action.Read
-				}));
+				Arrays.asList(new Action[] { Action.Delete, Action.Read }));
 	}
 
 	public SecuredGraphEventManager(final SecuredGraph securedGraph,
@@ -403,170 +406,171 @@ public class SecuredGraphEventManager implements GraphEventManager {
 	}
 
 	@Override
-	public void notifyAddArray(final Graph g, final Triple[] triples) {
+	public void notifyAddArray(final Graph g, final Triple[] triples)
+			throws AuthenticationRequiredException {
 		final boolean wrap = baseGraph.equals(g);
 
 		for (final SecuredGraphListener sgl : getListenerCollection()) {
 			if (wrap) {
 				sgl.notifyAddArray(securedGraph, triples);
-			}
-			else {
+			} else {
 				sgl.notifyAddArray(g, triples);
 			}
 		}
 	}
 
 	@Override
-	public void notifyAddGraph(final Graph g, final Graph added) {
+	public void notifyAddGraph(final Graph g, final Graph added)
+			throws AuthenticationRequiredException {
 		final boolean wrap = baseGraph.equals(g);
 
 		for (final SecuredGraphListener sgl : getListenerCollection()) {
 			if (wrap) {
 				sgl.notifyAddGraph(securedGraph, added);
-			}
-			else {
+			} else {
 				sgl.notifyAddGraph(g, added);
 			}
 		}
 	}
 
 	@Override
-	public void notifyAddIterator(final Graph g, final Iterator<Triple> it) {
+	public void notifyAddIterator(final Graph g, final Iterator<Triple> it)
+			throws AuthenticationRequiredException {
 		notifyAddIterator(g, WrappedIterator.create(it).toList());
 		baseGraph.equals(g);
 	}
 
 	@Override
-	public void notifyAddIterator(final Graph g, final List<Triple> triples) {
+	public void notifyAddIterator(final Graph g, final List<Triple> triples)
+			throws AuthenticationRequiredException {
 		final boolean wrap = baseGraph.equals(g);
 
 		for (final SecuredGraphListener sgl : getListenerCollection()) {
 			if (wrap) {
 				sgl.notifyAddIterator(securedGraph, triples.iterator());
-			}
-			else {
+			} else {
 				sgl.notifyAddIterator(g, triples.iterator());
 			}
 		}
 	}
 
 	@Override
-	public void notifyAddList(final Graph g, final List<Triple> triples) {
+	public void notifyAddList(final Graph g, final List<Triple> triples)
+			throws AuthenticationRequiredException {
 		final boolean wrap = baseGraph.equals(g);
 
 		for (final SecuredGraphListener sgl : getListenerCollection()) {
 			if (wrap) {
 				sgl.notifyAddList(securedGraph, triples);
-			}
-			else {
+			} else {
 				sgl.notifyAddList(g, triples);
 			}
 		}
 	}
 
 	@Override
-	public void notifyAddTriple(final Graph g, final Triple t) {
+	public void notifyAddTriple(final Graph g, final Triple t)
+			throws AuthenticationRequiredException {
 		final boolean wrap = baseGraph.equals(g);
 
 		for (final SecuredGraphListener sgl : getListenerCollection()) {
 			if (wrap) {
 				sgl.notifyAddTriple(securedGraph, t);
-			}
-			else {
+			} else {
 				sgl.notifyAddTriple(g, t);
 			}
 		}
 	}
 
 	@Override
-	public void notifyDeleteArray(final Graph g, final Triple[] triples) {
+	public void notifyDeleteArray(final Graph g, final Triple[] triples)
+			throws AuthenticationRequiredException {
 		final boolean wrap = baseGraph.equals(g);
 
 		for (final SecuredGraphListener sgl : getListenerCollection()) {
 			if (wrap) {
 				sgl.notifyDeleteArray(securedGraph, triples);
-			}
-			else {
+			} else {
 				sgl.notifyDeleteArray(g, triples);
 			}
 		}
 	}
 
 	@Override
-	public void notifyDeleteGraph(final Graph g, final Graph removed) {
+	public void notifyDeleteGraph(final Graph g, final Graph removed)
+			throws AuthenticationRequiredException {
 		final boolean wrap = baseGraph.equals(g);
 
 		for (final SecuredGraphListener sgl : getListenerCollection()) {
 			if (wrap) {
 				sgl.notifyDeleteGraph(securedGraph, removed);
-			}
-			else {
+			} else {
 				sgl.notifyDeleteGraph(g, removed);
 			}
 		}
 	}
 
 	@Override
-	public void notifyDeleteIterator(final Graph g, final Iterator<Triple> it) {
+	public void notifyDeleteIterator(final Graph g, final Iterator<Triple> it)
+			throws AuthenticationRequiredException {
 		notifyDeleteIterator(g, WrappedIterator.create(it).toList());
 	}
 
 	@Override
-	public void notifyDeleteIterator(final Graph g, final List<Triple> triples) {
+	public void notifyDeleteIterator(final Graph g, final List<Triple> triples)
+			throws AuthenticationRequiredException {
 		final boolean wrap = baseGraph.equals(g);
 
 		for (final SecuredGraphListener sgl : getListenerCollection()) {
 			if (wrap) {
 				sgl.notifyDeleteIterator(securedGraph, triples.iterator());
-			}
-			else {
+			} else {
 				sgl.notifyDeleteIterator(g, triples.iterator());
 			}
 		}
 	}
 
 	@Override
-	public void notifyDeleteList(final Graph g, final List<Triple> L) {
+	public void notifyDeleteList(final Graph g, final List<Triple> L)
+			throws AuthenticationRequiredException {
 		final boolean wrap = baseGraph.equals(g);
 
 		for (final SecuredGraphListener sgl : getListenerCollection()) {
 			if (wrap) {
 				sgl.notifyDeleteList(securedGraph, L);
-			}
-			else {
+			} else {
 				sgl.notifyDeleteList(g, L);
 			}
 		}
 	}
 
 	@Override
-	public void notifyDeleteTriple(final Graph g, final Triple t) {
+	public void notifyDeleteTriple(final Graph g, final Triple t)
+			throws AuthenticationRequiredException {
 		final boolean wrap = baseGraph.equals(g);
 
 		for (final SecuredGraphListener sgl : getListenerCollection()) {
 			if (wrap) {
 				sgl.notifyDeleteTriple(securedGraph, t);
-			}
-			else {
+			} else {
 				sgl.notifyDeleteTriple(g, t);
 			}
 		}
 	}
 
 	@Override
-	public void notifyEvent(final Graph source, final Object value) {
+	public void notifyEvent(final Graph source, final Object value)
+			throws AuthenticationRequiredException {
 		if ((source instanceof SecuredGraph) && securedGraph.equals(source)) {
 			baseGraph.getEventManager().notifyEvent(baseGraph, value);
-		}
-		else {
+		} else {
 
 			final boolean wrap = baseGraph.equals(source);
 
 			for (final SecuredGraphListener sgl : getListenerCollection()) {
 				if (wrap) {
 					sgl.notifyEvent(securedGraph, value);
-				}
-				else {
+				} else {
 					sgl.notifyEvent(source, value);
 				}
 			}
@@ -591,8 +595,7 @@ public class SecuredGraphEventManager implements GraphEventManager {
 		if (sgl != null) {
 			if (sgl.size() == 1) {
 				listenerMap.remove(listener);
-			}
-			else {
+			} else {
 				sgl.pop();
 				listenerMap.put(listener, sgl);
 			}

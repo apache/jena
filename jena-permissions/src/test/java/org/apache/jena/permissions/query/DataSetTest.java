@@ -56,11 +56,7 @@ public class DataSetTest {
 		dsg.getContext().set(TDB.symUnionDefaultGraph, true);
 		Dataset myDataset = DatasetFactory.create(dsg);
 
-		// DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-		//
-		// Dataset myDataset = TDBFactory.createDataset();
 		baseModel = myDataset.getNamedModel("http://example.com/baseModel");
-		// baseModel = myDataset.getDefaultModel();
 		baseModel = QueryEngineTest.populateModel(baseModel);
 
 		dftModel = Factory.getInstance(eval, "http://example.com/securedModel",
@@ -68,9 +64,6 @@ public class DataSetTest {
 
 		dataset = DatasetFactory.createMem();
 		dataset.setDefaultModel(dftModel);
-
-		// // dataset.addNamedModel( dftModel.getModelIRI(), dftModel);
-
 	}
 
 	@Test
@@ -92,7 +85,7 @@ public class DataSetTest {
 				int count = 0;
 				for (; results.hasNext();) {
 					count++;
-					final QuerySolution soln = results.nextSolution();
+					results.nextSolution();
 				}
 				Assert.assertEquals(8, count);
 			} finally {
@@ -170,8 +163,7 @@ public class DataSetTest {
 				int count = 0;
 				for (; results.hasNext();) {
 					count++;
-					final QuerySolution soln = results.nextSolution();
-					// System.out.println( soln );
+					results.nextSolution();
 				}
 				// 2x 3 values + type triple
 				Assert.assertEquals(8, count);
@@ -186,8 +178,7 @@ public class DataSetTest {
 				int count = 0;
 				for (; results.hasNext();) {
 					count++;
-					final QuerySolution soln = results.nextSolution();
-					// System.out.println( soln );
+					results.nextSolution();
 				}
 				// 2x 3 values + type triple
 				// all are in the base graph so no named graphs

@@ -17,10 +17,11 @@
  */
 package org.apache.jena.permissions.model;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.permissions.SecuredItem;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.jena.shared.ReadDeniedException;
 
 /**
@@ -28,23 +29,27 @@ import org.apache.jena.shared.ReadDeniedException;
  * 
  * Use one the SecuredRDFNode derived class Factories to create instances
  */
-public interface SecuredRDFNode extends RDFNode, SecuredItem
-{
+public interface SecuredRDFNode extends RDFNode, SecuredItem {
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public Node asNode() throws ReadDeniedException;
+	public Node asNode() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public <T extends RDFNode> boolean canAs( final Class<T> view )
-			throws ReadDeniedException;
+	public <T extends RDFNode> boolean canAs(final Class<T> view)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	@Override
 	public SecuredModel getModel();
@@ -52,8 +57,11 @@ public interface SecuredRDFNode extends RDFNode, SecuredItem
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public RDFNode inModel( final Model m ) throws ReadDeniedException;
+	public RDFNode inModel(final Model m) throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 }

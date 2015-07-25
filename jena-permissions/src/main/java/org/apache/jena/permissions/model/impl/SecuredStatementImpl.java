@@ -17,21 +17,25 @@
  */
 package org.apache.jena.permissions.model.impl;
 
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.impl.ItemHolder;
 import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.permissions.impl.SecuredItemInvoker;
 import org.apache.jena.permissions.model.*;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.shared.PropertyNotFoundException ;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.AuthenticationRequiredException;
+import org.apache.jena.shared.DeleteDeniedException;
+import org.apache.jena.shared.PropertyNotFoundException;
+import org.apache.jena.shared.ReadDeniedException;
+import org.apache.jena.shared.UpdateDeniedException;
 
 /**
  * Implementation of SecuredStatement to be used by a SecuredItemInvoker proxy.
  */
 public class SecuredStatementImpl extends SecuredItemImpl implements
-		SecuredStatement
-{
+		SecuredStatement {
 	/**
 	 * get a SecuredStatement
 	 * 
@@ -41,16 +45,13 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	 *            The statement to secure.
 	 * @return the SecuredStatement
 	 */
-	public static SecuredStatement getInstance(
-			final SecuredModel securedModel, final Statement stmt )
-	{
-		if (securedModel == null)
-		{
+	public static SecuredStatement getInstance(final SecuredModel securedModel,
+			final Statement stmt) {
+		if (securedModel == null) {
 			throw new IllegalArgumentException(
 					"Secured securedModel may not be null");
 		}
-		if (stmt == null)
-		{
+		if (stmt == null) {
 			throw new IllegalArgumentException("Statement may not be null");
 		}
 
@@ -61,10 +62,8 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 				securedModel, holder);
 		// if we are going to create a duplicate proxy, just return this
 		// one.
-		if (stmt instanceof SecuredStatement)
-		{
-			if (checker.isEquivalent((SecuredStatement) stmt))
-			{
+		if (stmt instanceof SecuredStatement) {
+			if (checker.isEquivalent((SecuredStatement) stmt)) {
 				return (SecuredStatement) stmt;
 			}
 		}
@@ -87,17 +86,16 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	 * @param holder
 	 *            The item holder that will contain this SecuredStatement.
 	 */
-	private SecuredStatementImpl( final SecuredModel securedModel,
-			final ItemHolder<Statement, SecuredStatement> holder )
-	{
+	private SecuredStatementImpl(final SecuredModel securedModel,
+			final ItemHolder<Statement, SecuredStatement> holder) {
 		super(securedModel, holder);
 		this.holder = holder;
 		this.securedModel = securedModel;
 	}
 
 	@Override
-	public Triple asTriple()
-	{
+	public Triple asTriple() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		final Triple retval = holder.getBaseItem().asTriple();
 		checkRead(retval);
@@ -105,26 +103,23 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public boolean canCreate()
-	{
+	public boolean canCreate() throws AuthenticationRequiredException {
 		return super.canCreate() ? canCreate(holder.getBaseItem()) : false;
 	}
 
 	@Override
-	public boolean canDelete()
-	{
+	public boolean canDelete() throws AuthenticationRequiredException {
 		return super.canDelete() ? canDelete(holder.getBaseItem()) : false;
 	}
 
 	@Override
-	public boolean canRead()
-	{
+	public boolean canRead() throws AuthenticationRequiredException {
 		return super.canRead() ? canRead(holder.getBaseItem()) : false;
 	}
 
 	@Override
-	public SecuredStatement changeLiteralObject( final boolean o )
-	{
+	public SecuredStatement changeLiteralObject(final boolean o)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		final Triple base = holder.getBaseItem().asTriple();
 		final Triple newBase = getNewTriple(base, o);
@@ -134,8 +129,8 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public SecuredStatement changeLiteralObject( final char o )
-	{
+	public SecuredStatement changeLiteralObject(final char o)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		final Triple base = holder.getBaseItem().asTriple();
 		final Triple newBase = getNewTriple(base, o);
@@ -145,8 +140,8 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public SecuredStatement changeLiteralObject( final double o )
-	{
+	public SecuredStatement changeLiteralObject(final double o)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		final Triple base = holder.getBaseItem().asTriple();
 		final Triple newBase = getNewTriple(base, o);
@@ -156,8 +151,8 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public SecuredStatement changeLiteralObject( final float o )
-	{
+	public SecuredStatement changeLiteralObject(final float o)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		final Triple base = holder.getBaseItem().asTriple();
 		final Triple newBase = getNewTriple(base, o);
@@ -167,8 +162,8 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public SecuredStatement changeLiteralObject( final int o )
-	{
+	public SecuredStatement changeLiteralObject(final int o)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		final Triple base = holder.getBaseItem().asTriple();
 		final Triple newBase = getNewTriple(base, o);
@@ -178,8 +173,8 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public SecuredStatement changeLiteralObject( final long o )
-	{
+	public SecuredStatement changeLiteralObject(final long o)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		final Triple base = holder.getBaseItem().asTriple();
 		final Triple newBase = getNewTriple(base, o);
@@ -189,8 +184,8 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public SecuredStatement changeObject( final RDFNode o )
-	{
+	public SecuredStatement changeObject(final RDFNode o)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		final Triple base = holder.getBaseItem().asTriple();
 		final Triple newBase = new Triple(base.getSubject(),
@@ -201,8 +196,8 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public SecuredStatement changeObject( final String o )
-	{
+	public SecuredStatement changeObject(final String o)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		final Triple base = holder.getBaseItem().asTriple();
 		final Triple newBase = getNewTriple(base, o);
@@ -212,21 +207,22 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public SecuredStatement changeObject( final String o,
-			final boolean wellFormed )
-	{
+	public SecuredStatement changeObject(final String o,
+			final boolean wellFormed) throws UpdateDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		final Triple base = holder.getBaseItem().asTriple();
 		final Triple newBase = new Triple(base.getSubject(),
-				base.getPredicate(), NodeFactory.createLiteral(o, "", wellFormed));
+				base.getPredicate(), NodeFactory.createLiteral(o, "",
+						wellFormed));
 		checkUpdate(base, newBase);
 		return SecuredStatementImpl.getInstance(getModel(), holder
 				.getBaseItem().changeObject(o));
 	}
 
 	@Override
-	public SecuredStatement changeObject( final String o, final String l )
-	{
+	public SecuredStatement changeObject(final String o, final String l)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		final Triple base = holder.getBaseItem().asTriple();
 		final Triple newBase = new Triple(base.getSubject(),
@@ -237,13 +233,14 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public SecuredStatement changeObject( final String o, final String l,
-			final boolean wellFormed )
-	{
+	public SecuredStatement changeObject(final String o, final String l,
+			final boolean wellFormed) throws UpdateDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		final Triple base = holder.getBaseItem().asTriple();
 		final Triple newBase = new Triple(base.getSubject(),
-				base.getPredicate(), NodeFactory.createLiteral(o, l, wellFormed));
+				base.getPredicate(),
+				NodeFactory.createLiteral(o, l, wellFormed));
 		checkUpdate(base, newBase);
 		return SecuredStatementImpl.getInstance(getModel(), holder
 				.getBaseItem().changeObject(o, l, wellFormed));
@@ -251,7 +248,8 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 
 	@Override
 	public SecuredReifiedStatement createReifiedStatement()
-	{
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		checkCreateReified(null, holder.getBaseItem());
 		return SecuredReifiedStatementImpl.getInstance(getModel(), holder
@@ -259,8 +257,9 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public SecuredReifiedStatement createReifiedStatement( final String uri )
-	{
+	public SecuredReifiedStatement createReifiedStatement(final String uri)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		checkCreateReified(uri, holder.getBaseItem());
 		return SecuredReifiedStatementImpl.getInstance(getModel(), holder
@@ -268,38 +267,36 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public SecuredAlt getAlt()
-	{
+	public SecuredAlt getAlt() {
 		return SecuredAltImpl.getInstance(getModel(), holder.getBaseItem()
 				.getAlt());
 	}
 
 	@Override
-	public SecuredBag getBag()
-	{
+	public SecuredBag getBag() {
 		return SecuredBagImpl.getInstance(getModel(), holder.getBaseItem()
 				.getBag());
 	}
 
 	@Override
-	public boolean getBoolean()
-	{
+	public boolean getBoolean() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(holder.getBaseItem().asTriple());
 		return holder.getBaseItem().getBoolean();
 	}
 
 	@Override
-	public byte getByte()
-	{
+	public byte getByte() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(holder.getBaseItem().asTriple());
 		return holder.getBaseItem().getByte();
 	}
 
 	@Override
-	public char getChar()
-	{
+	public char getChar() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(holder.getBaseItem().asTriple());
 		return holder.getBaseItem().getChar();
@@ -307,67 +304,64 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public double getDouble()
-	{
+	public double getDouble() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(holder.getBaseItem().asTriple());
 		return holder.getBaseItem().getDouble();
 	}
 
 	@Override
-	public float getFloat()
-	{
+	public float getFloat() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(holder.getBaseItem().asTriple());
 		return holder.getBaseItem().getFloat();
 	}
 
 	@Override
-	public int getInt()
-	{
+	public int getInt() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(holder.getBaseItem().asTriple());
 		return holder.getBaseItem().getInt();
 	}
 
 	@Override
-	public String getLanguage()
-	{
+	public String getLanguage() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(holder.getBaseItem().asTriple());
 		return holder.getBaseItem().getLiteral().getLanguage();
 	}
 
 	@Override
-	public SecuredLiteral getLiteral()
-	{
+	public SecuredLiteral getLiteral() {
 		return SecuredLiteralImpl.getInstance(getModel(), holder.getBaseItem()
 				.getLiteral());
 	}
 
 	@Override
-	public long getLong()
-	{
+	public long getLong() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(holder.getBaseItem().asTriple());
 		return holder.getBaseItem().getLong();
 	}
 
 	@Override
-	public SecuredModel getModel()
-	{
+	public SecuredModel getModel() {
 		return securedModel;
 	}
 
-	private Triple getNewTriple( final Triple t, final Object o )
-	{
-		return new Triple(t.getSubject(), t.getPredicate(), 
-		                  NodeFactory.createLiteral(String.valueOf(o), "", false));
+	private Triple getNewTriple(final Triple t, final Object o) {
+		return new Triple(t.getSubject(), t.getPredicate(),
+				NodeFactory.createLiteral(String.valueOf(o), "", false));
 	}
 
 	@Override
-	public SecuredRDFNode getObject()
-	{
+	public SecuredRDFNode getObject() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(holder.getBaseItem().asTriple());
 		final RDFNode rdfNode = holder.getBaseItem().getObject();
@@ -376,15 +370,14 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public SecuredProperty getPredicate()
-	{
+	public SecuredProperty getPredicate() {
 		return SecuredPropertyImpl.getInstance(getModel(), holder.getBaseItem()
 				.getPredicate());
 	}
 
 	@Override
-	public SecuredStatement getProperty( final Property p )
-	{
+	public SecuredStatement getProperty(final Property p)
+			throws AuthenticationRequiredException {
 		final StmtIterator s = holder
 				.getBaseItem()
 				.getModel()
@@ -392,120 +385,102 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 						p, (RDFNode) null);
 		final SecuredStatementIterator iter = new SecuredStatementIterator(
 				getModel(), s);
-		try
-		{
-			if (iter.hasNext())
-			{
+		try {
+			if (iter.hasNext()) {
 				return SecuredStatementImpl
 						.getInstance(getModel(), iter.next());
-			}
-			else
-			{
+			} else {
 				throw new PropertyNotFoundException(p);
 			}
-		}
-		finally
-		{
+		} finally {
 			iter.close();
 		}
 	}
 
 	@Override
-	public SecuredResource getResource()
-	{
+	public SecuredResource getResource() {
 		return SecuredResourceImpl.getInstance(getModel(), holder.getBaseItem()
 				.getResource());
 	}
 
 	@Override
 	@Deprecated
-	public SecuredResource getResource( final ResourceF f )
-	{
+	public SecuredResource getResource(final ResourceF f) {
 		return SecuredResourceImpl.getInstance(getModel(), holder.getBaseItem()
 				.getResource(f));
 	}
 
 	@Override
-	public SecuredSeq getSeq()
-	{
+	public SecuredSeq getSeq() {
 		return SecuredSeqImpl.getInstance(getModel(), holder.getBaseItem()
 				.getSeq());
 	}
 
 	@Override
-	public short getShort()
-	{
+	public short getShort() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(holder.getBaseItem().asTriple());
 		return holder.getBaseItem().getShort();
 	}
 
 	@Override
-	public SecuredStatement getStatementProperty( final Property p )
-	{
+	public SecuredStatement getStatementProperty(final Property p) {
 		final RSIterator rsIter = holder.getBaseItem().listReifiedStatements();
-		try
-		{
-			while (rsIter.hasNext())
-			{
+		try {
+			while (rsIter.hasNext()) {
 				final ReifiedStatement s = rsIter.next();
-				if (s.hasProperty(p))
-				{
+				if (s.hasProperty(p)) {
 					return SecuredStatementImpl.getInstance(getModel(),
 							s.getProperty(p));
 				}
 			}
 			throw new PropertyNotFoundException(p);
-		}
-		finally
-		{
+		} finally {
 			rsIter.close();
 		}
 	}
 
 	@Override
-	public String toString()
-	{
-		if (canRead() && canRead(holder.getBaseItem().asTriple()))
-		{
+	public String toString() throws ReadDeniedException,
+			AuthenticationRequiredException {
+		if (canRead() && canRead(holder.getBaseItem().asTriple())) {
 			return holder.getBaseItem().toString();
-		}
-		else
-		{
+		} else {
 			return super.toString();
 		}
 	}
-	
-	@Override
-	public String getString()
-	{ return getLiteral().getLexicalForm(); }
 
 	@Override
-	public SecuredResource getSubject()
-	{
+	public String getString() {
+		return getLiteral().getLexicalForm();
+	}
+
+	@Override
+	public SecuredResource getSubject() {
 		return SecuredResourceImpl.getInstance(getModel(), holder.getBaseItem()
 				.getSubject());
 	}
 
 	@Override
-	public boolean hasWellFormedXML()
-	{
+	public boolean hasWellFormedXML() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(holder.getBaseItem().asTriple());
 		return holder.getBaseItem().getLiteral().isWellFormedXML();
 	}
 
 	@Override
-	public boolean isReified()
-	{
+	public boolean isReified() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(holder.getBaseItem().asTriple());
 		return holder.getBaseItem().isReified();
 	}
 
 	@Override
-	public RSIterator listReifiedStatements()
-	{
+	public RSIterator listReifiedStatements() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(holder.getBaseItem().asTriple());
 		return new SecuredRSIterator(getModel(), holder.getBaseItem()
@@ -513,8 +488,8 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public SecuredStatement remove()
-	{
+	public SecuredStatement remove() throws UpdateDeniedException,
+			DeleteDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		checkDelete(holder.getBaseItem());
 		holder.getBaseItem().remove();
@@ -522,32 +497,25 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public void removeReification()
-	{
+	public void removeReification() throws UpdateDeniedException,
+			DeleteDeniedException, AuthenticationRequiredException {
 		checkUpdate();
-		if (!canDelete(Triple.ANY))
-		{
+		if (!canDelete(Triple.ANY)) {
 			StmtIterator iter = null;
 			final RSIterator rsIter = holder.getBaseItem()
 					.listReifiedStatements();
-			try
-			{
-				while (rsIter.hasNext())
-				{
+			try {
+				while (rsIter.hasNext()) {
 					final ReifiedStatement stmt = rsIter.next();
 					iter = stmt.listProperties();
-					while (iter.hasNext())
-					{
+					while (iter.hasNext()) {
 						final Statement s = iter.next();
 						checkDelete(s);
 					}
 				}
-			}
-			finally
-			{
+			} finally {
 				rsIter.close();
-				if (iter != null)
-				{
+				if (iter != null) {
 					iter.close();
 				}
 			}

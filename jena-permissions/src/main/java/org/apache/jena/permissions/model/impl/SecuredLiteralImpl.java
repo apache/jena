@@ -17,24 +17,25 @@
  */
 package org.apache.jena.permissions.model.impl;
 
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.permissions.impl.ItemHolder ;
-import org.apache.jena.permissions.impl.SecuredItemInvoker ;
-import org.apache.jena.permissions.model.SecuredLiteral ;
-import org.apache.jena.permissions.model.SecuredModel ;
-import org.apache.jena.permissions.model.SecuredResource ;
-import org.apache.jena.rdf.model.Literal ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.RDFVisitor ;
-import org.apache.jena.rdf.model.ResourceRequiredException ;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.permissions.impl.ItemHolder;
+import org.apache.jena.permissions.impl.SecuredItemInvoker;
+import org.apache.jena.permissions.model.SecuredLiteral;
+import org.apache.jena.permissions.model.SecuredModel;
+import org.apache.jena.permissions.model.SecuredResource;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFVisitor;
+import org.apache.jena.rdf.model.ResourceRequiredException;
+import org.apache.jena.shared.AuthenticationRequiredException;
+import org.apache.jena.shared.ReadDeniedException;
 
 /**
  * Implementation of SecuredLiteral to be used by a SecuredItemInvoker proxy.
  */
 public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements
-		SecuredLiteral
-{
+		SecuredLiteral {
 	/**
 	 * Get an instance of SecuredLiteral
 	 * 
@@ -44,23 +45,19 @@ public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements
 	 *            the literal to secure
 	 * @return SecuredLiteral
 	 */
-	public static SecuredLiteral getInstance( final SecuredModel securedModel,
-			final Literal literal )
-	{
-		if (securedModel == null)
-		{
+	public static SecuredLiteral getInstance(final SecuredModel securedModel,
+			final Literal literal) {
+		if (securedModel == null) {
 			throw new IllegalArgumentException(
 					"Secured securedModel may not be null");
 		}
-		if (literal == null)
-		{
+		if (literal == null) {
 			throw new IllegalArgumentException("literal may not be null");
 		}
 
 		// check that literal has a securedModel.
 		Literal goodLiteral = literal;
-		if (goodLiteral.getModel() == null)
-		{
+		if (goodLiteral.getModel() == null) {
 			goodLiteral = securedModel.createTypedLiteral(
 					literal.getLexicalForm(), literal.getDatatype());
 		}
@@ -71,10 +68,8 @@ public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements
 				holder);
 		// if we are going to create a duplicate proxy, just return this
 		// one.
-		if (goodLiteral instanceof SecuredLiteral)
-		{
-			if (checker.isEquivalent((SecuredLiteral) goodLiteral))
-			{
+		if (goodLiteral instanceof SecuredLiteral) {
+			if (checker.isEquivalent((SecuredLiteral) goodLiteral)) {
 				return (SecuredLiteral) goodLiteral;
 			}
 		}
@@ -96,60 +91,55 @@ public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements
 	 *            The item holder that will contain this SecuredLiteral.
 	 */
 
-	private SecuredLiteralImpl( final SecuredModel securedModel,
-			final ItemHolder<? extends Literal, ? extends SecuredLiteral> holder )
-	{
+	private SecuredLiteralImpl(final SecuredModel securedModel,
+			final ItemHolder<? extends Literal, ? extends SecuredLiteral> holder) {
 		super(securedModel, holder);
 		this.holder = holder;
 	}
 
 	@Override
-	public SecuredLiteral asLiteral()
-	{
+	public SecuredLiteral asLiteral() {
 		return holder.getSecuredItem();
 	}
 
 	@Override
-	public SecuredResource asResource()
-	{
-		if (canRead())
-		{
+	public SecuredResource asResource() {
+		if (canRead()) {
 			throw new ResourceRequiredException(asNode());
-		}
-		else
-		{
-			throw new ResourceRequiredException(NodeFactory.createLiteral("Can not read"));
+		} else {
+			throw new ResourceRequiredException(
+					NodeFactory.createLiteral("Can not read"));
 		}
 	}
 
 	@Override
-	public boolean getBoolean()
-	{
+	public boolean getBoolean() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getBoolean();
 	}
 
 	@Override
-	public byte getByte()
-	{
+	public byte getByte() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getByte();
 	}
 
 	@Override
-	public char getChar()
-	{
+	public char getChar() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getChar();
 	}
 
 	/**
-	 * Return the datatype of the literal. This will be null in the
-	 * case of plain literals.
+	 * Return the datatype of the literal. This will be null in the case of
+	 * plain literals.
 	 */
 	@Override
-	public RDFDatatype getDatatype()
-	{
+	public RDFDatatype getDatatype() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getDatatype();
 	}
@@ -159,36 +149,36 @@ public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements
 	 * case of plain literals.
 	 */
 	@Override
-	public String getDatatypeURI()
-	{
+	public String getDatatypeURI() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getDatatypeURI();
 	}
 
 	@Override
-	public double getDouble()
-	{
+	public double getDouble() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getDouble();
 	}
 
 	@Override
-	public float getFloat()
-	{
+	public float getFloat() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getFloat();
 	}
 
 	@Override
-	public int getInt()
-	{
+	public int getInt() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getInt();
 	}
 
 	@Override
-	public String getLanguage()
-	{
+	public String getLanguage() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getLanguage();
 	}
@@ -197,80 +187,78 @@ public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements
 	 * Return the lexical form of the literal.
 	 */
 	@Override
-	public String getLexicalForm()
-	{
+	public String getLexicalForm() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getLexicalForm();
 	}
 
 	@Override
-	public long getLong()
-	{
+	public long getLong() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getLong();
 	}
 
 	@Override
-	public short getShort()
-	{
+	public short getShort() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getShort();
 	}
 
 	@Override
-	public String getString()
-	{
+	public String getString() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getString();
 	}
 
 	/**
-	 * Return the value of the literal. In the case of plain literals
-	 * this will return the literal string. In the case of typed literals
-	 * it will return a java object representing the value. In the case
-	 * of typed literals representing a java primitive then the appropriate
-	 * java wrapper class (Integer etc) will be returned.
+	 * Return the value of the literal. In the case of plain literals this will
+	 * return the literal string. In the case of typed literals it will return a
+	 * java object representing the value. In the case of typed literals
+	 * representing a java primitive then the appropriate java wrapper class
+	 * (Integer etc) will be returned.
 	 */
 	@Override
-	public Object getValue()
-	{
+	public Object getValue() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getValue();
 	}
 
 	@Override
-	public Literal inModel( final Model m )
-	{
+	public Literal inModel(final Model m) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return m.createTypedLiteral(holder.getBaseItem().getLexicalForm(),
 				holder.getBaseItem().getDatatype());
 	}
 
 	@Override
-	public boolean isWellFormedXML()
-	{
+	public boolean isWellFormedXML() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().isWellFormedXML();
 	}
 
 	/**
-	 * Test that two literals are semantically equivalent.
-	 * In some cases this may be the sames as equals, in others
-	 * equals is stricter. For example, two xsd:int literals with
-	 * the same value but different language tag are semantically
-	 * equivalent but distinguished by the java equality function
+	 * Test that two literals are semantically equivalent. In some cases this
+	 * may be the sames as equals, in others equals is stricter. For example,
+	 * two xsd:int literals with the same value but different language tag are
+	 * semantically equivalent but distinguished by the java equality function
 	 * in order to support round tripping.
 	 */
 	@Override
-	public boolean sameValueAs( final Literal other )
-	{
+	public boolean sameValueAs(final Literal other) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().sameValueAs(other);
 	}
 
 	@Override
-	public Object visitWith( final RDFVisitor rv )
-	{
+	public Object visitWith(final RDFVisitor rv) {
 		return rv.visitLiteral(this);
 	}
 }

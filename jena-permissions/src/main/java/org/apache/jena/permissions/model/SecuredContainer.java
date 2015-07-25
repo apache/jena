@@ -21,10 +21,11 @@ import java.util.Set;
 
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.model.impl.SecuredNodeIterator;
-import org.apache.jena.rdf.model.Container ;
-import org.apache.jena.rdf.model.RDFNode ;
-import org.apache.jena.rdf.model.Statement ;
+import org.apache.jena.rdf.model.Container;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.shared.ReadDeniedException;
 import org.apache.jena.shared.UpdateDeniedException;
@@ -35,197 +36,261 @@ import org.apache.jena.shared.UpdateDeniedException;
  * Use one of the SecuredContainer derived class Factory methods to create
  * instances
  */
-public interface SecuredContainer extends Container, SecuredResource
-{
+public interface SecuredContainer extends Container, SecuredResource {
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
 	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredContainer add( final boolean o ) throws UpdateDeniedException, AddDeniedException;
+	public SecuredContainer add(final boolean o) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
 	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredContainer add( final char o ) throws UpdateDeniedException, AddDeniedException;
+	public SecuredContainer add(final char o) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
 	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredContainer add( final double o ) throws UpdateDeniedException, AddDeniedException;
+	public SecuredContainer add(final double o) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
 	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredContainer add( final float o ) throws UpdateDeniedException, AddDeniedException;
+	public SecuredContainer add(final float o) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
 	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredContainer add( final long o ) throws UpdateDeniedException, AddDeniedException;
+	public SecuredContainer add(final long o) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
 	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredContainer add( final Object o ) throws UpdateDeniedException, AddDeniedException;
+	public SecuredContainer add(final Object o) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
 	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredContainer add( final RDFNode o ) throws UpdateDeniedException, AddDeniedException;
+	public SecuredContainer add(final RDFNode o) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
 	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredContainer add( final String o ) throws UpdateDeniedException, AddDeniedException;
+	public SecuredContainer add(final String o) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
 	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredContainer add( final String o, final String l )
-			throws UpdateDeniedException, AddDeniedException;
+	public SecuredContainer add(final String o, final String l)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean contains( final boolean o ) throws ReadDeniedException;
+	public boolean contains(final boolean o) throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean contains( final char o ) throws ReadDeniedException;
+	public boolean contains(final char o) throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean contains( final double o ) throws ReadDeniedException;
+	public boolean contains(final double o) throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean contains( final float o ) throws ReadDeniedException;
+	public boolean contains(final float o) throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean contains( final long o ) throws ReadDeniedException;
+	public boolean contains(final long o) throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean contains( final Object o ) throws ReadDeniedException;
+	public boolean contains(final Object o) throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean contains( final RDFNode o ) throws ReadDeniedException;
+	public boolean contains(final RDFNode o) throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean contains( final String o ) throws ReadDeniedException;
+	public boolean contains(final String o) throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean contains( final String o, final String l )
-			throws ReadDeniedException;
+	public boolean contains(final String o, final String l)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read on each triple ( this, rdf:li_? node ) returned by
-	 *            iterator;
+	 *             iterator;
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredNodeIterator<RDFNode> iterator() throws ReadDeniedException;
+	public SecuredNodeIterator<RDFNode> iterator() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
-	 * @param perms the Permissions required on each node returned
+	 * @param perms
+	 *            the Permissions required on each node returned
 	 * @sec.graph Read
 	 * @sec.triple Read + perms on each triple ( this, rdf:li_? node ) returned
-	 *            by iterator;
+	 *             by iterator;
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
-	public SecuredNodeIterator<RDFNode> iterator( Set<Action> perms )
-			throws ReadDeniedException;
+	public SecuredNodeIterator<RDFNode> iterator(Set<Action> perms)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete s as triple;
 	 * @throws UpdateDeniedException
 	 * @throws DeleteDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredContainer remove( final Statement s )
-			throws UpdateDeniedException, DeleteDeniedException;
+	public SecuredContainer remove(final Statement s)
+			throws UpdateDeniedException, DeleteDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public int size() throws ReadDeniedException;
+	public int size() throws ReadDeniedException,
+			AuthenticationRequiredException;
 }
