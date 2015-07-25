@@ -1,0 +1,214 @@
+#!/usr/bin/env bash
+
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##     http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+
+function log() {
+  echo " $(date $DATE)" "$@"
+}
+
+function debug() {
+ if [ $DEBUG = 1 ]; then
+   log "DEBUG" "$@"
+ fi
+}
+
+function info() {
+  log "INFO" "$@"
+}
+
+function warn() {
+  log "WARN" "$@" 1>&2
+}
+
+function error() {
+  log "ERROR" "$@" 1>&2
+}
+
+function abort() {
+  local EXIT=$1
+
+  # Trick to check for numeric
+  # -eq only returns true if the value is integer equals
+  if [ "$EXIT" -eq "$EXIT" ]; then
+    # Can use the provided exit code
+    shift
+  else
+    # Caller forgot to provide an exit code so use default of 1
+    EXIT=1
+  fi
+
+  # Log error and exit
+  error "$@"
+  exit $EXIT
+}
+
+function getSize() {
+  ls -l $1 | awk '{print $5}'
+}
+
+function getDriveInfo() {
+  local DIR=$1
+
+  local DRIVE_INFO=$(df -k "$DIR" | tail -n +2)
+  if [ -z "${DRIVE_INFO}" ]; then
+    abort 1 "Failed to get drive information for $DIR"
+  fi
+  local DISK=$(echo $DRIVE_INFO | awk '{print $1}')
+  local FREE_BYTES=$(echo $DRIVE_INFO | awk '{print $4}')
+  FREE_BYTES="$(($FREE_BYTES * 1024))"
+  local USED_PERCENT=$(echo $DRIVE_INFO | awk '{print $5}')
+  USED_PERCENT=${USED_PERCENT/"%"/}
+  local FREE_PERCENT=$((100 - $USED_PERCENT))
+
+  local INFO=()
+  INFO[0]="$DISK"
+  INFO[1]="$USED_PERCENT"
+  INFO[2]="$FREE_PERCENT"
+  INFO[3]="$FREE_BYTES"
+
+  echo ${INFO[@]}
+}
+
+function getFreeMem() {
+  # May be called from a script where exit on error is set
+  # in which case disable for the life of this function
+  set +e
+
+  local FREE_MEM=-1
+  case "$OSTYPE" in
+    darwin*)
+      # Have to get this from top
+      FREE_MEM=$(top -l 1 | grep PhysMem | awk '{print $6}')
+      FREE_MEM=${FREE_MEM%M}
+      FREE_MEM=$(($FREE_MEM * 1024 * 1024))
+      ;;
+    linux*)
+      # Try to use free if available
+      which free >/dev/null 2>&1
+      if [ $? -eq 0 ]; then
+        # Have free available
+        FREE_MEM=$(free -b)
+
+        # Check the output
+        # 2.x kernels produce just an integer
+        # 3.x kernels produce detailed information
+        case "$FREE_MEM" in
+          ''|*[!0-9]*)
+            # Clean up free output on 3.x kernels
+            FREE_MEM=$(echo "$FREE_MEM" | tail -n +2 | head -n 1 | awk '{print $4}')
+        esac
+
+        # Final check that the output is numeric
+        if [ ! "$FREE_MEM" -eq "$FREE_MEM" ] 2>/dev/null; then
+          # Non-numeric
+          FREE_MEM=-1
+        fi
+      fi
+      ;;
+  esac
+
+  set -e
+
+  echo "$FREE_MEM"
+}
+
+function resolveLink() {
+  local NAME=$1
+
+  if [ -L "$NAME" ]; then
+    case "$OSTYPE" in
+      darwin*|bsd*)
+        # BSD style readlink behaves differently to GNU readlink
+        # Have to manually follow links
+        while [ -L "$NAME" ]; do
+          NAME=$(readlink "$NAME")
+        done
+        ;;
+      *)
+        # Assuming standard GNU readlink with -f for
+        # canonicalize
+        NAME=$(readlink -f "$NAME")
+        ;;
+    esac
+  fi
+
+  echo "$NAME"
+}
+
+function resolveLinks() {
+  local NAME=$1
+
+  if [ -L "$NAME" ]; then
+    NAME=$(resolveLink "$NAME")
+  elif [[ "$NAME" == *"/" ]]; then
+    # If the path ends in a / test -L will report false even
+    # if the path is actually a symbolic link
+    # So check if the name without the trailing / is a link and if
+    # so resolve it
+    if [ -L "${NAME%/}" ]; then
+      NAME=${NAME%/}
+      NAME=$(resolveLink "$NAME")
+    fi
+  fi
+  echo "$NAME"
+}
+
+function makeAbsolute() {
+  local NAME=$1
+
+  # Follow links
+  NAME=$(resolveLinks "$NAME")
+
+  # Put back trailing slash
+  # Do this before we make the path absolute or we'll absolutize wrong
+  if [ -d "$NAME" ]; then
+    if [[ "$NAME" != *"/" ]]; then
+      NAME="${NAME}/"
+    fi
+  fi
+
+  if [[ "$NAME" != "/"* ]]; then
+    # Now make absolute
+    case "$OSTYPE" in
+      darwin*|bsd*)
+        # BSD style readlink does not support the -f for canonicalization
+        # so have to do this via cd, pwd and basename
+        local FILENAME=$(basename "$NAME")
+        NAME=$(cd $(dirname "$NAME"); pwd)
+        NAME="$NAME/$FILENAME"
+        ;;
+      *)
+        # Otherwise assume standard GNU readlink
+        NAME=$(readlink -f "$NAME")
+        ;;
+    esac
+
+    # Put back trailing slash
+    if [ -d "$NAME" ]; then
+      if [[ "$NAME" != *"/" ]]; then
+        NAME="${NAME}/"
+      fi
+    fi
+  fi
+
+  echo "$NAME"
+}
+
+#DATE="+%Y-%m-%dT%H:%M:%S%:z"
+DATE="+%H:%M:%S"
+
+PKG=org.apache.jena.tdb.store.bulkloader2

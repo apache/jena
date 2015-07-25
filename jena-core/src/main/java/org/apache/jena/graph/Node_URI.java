@@ -26,7 +26,12 @@ import org.apache.jena.shared.* ;
 */
 public class Node_URI extends Node_Concrete
     {    
+    /** @deprecated Use {@code Node_URI(String)} */
+    @Deprecated
     protected Node_URI( Object uri )
+        { super( uri ); }
+
+    protected Node_URI( String uri )
         { super( uri ); }
 
     @Override

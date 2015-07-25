@@ -21,11 +21,11 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphStatisticsHandler ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.permissions.AccessDeniedException;
+import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
-import org.apache.jena.permissions.SecurityEvaluator.SecNode;
 import org.apache.jena.shared.AddDeniedException ;
 import org.apache.jena.shared.DeleteDeniedException ;
+import org.apache.jena.shared.ReadDeniedException;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /**
@@ -33,70 +33,66 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  * 
  * Use the SecuredGraph.Factory to create instances
  */
-public interface SecuredGraph extends Graph
+public interface SecuredGraph extends Graph, SecuredItem
 {
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create
-	 * @throws AccessDeniedException
 	 * @throws AddDeniedException
 	 */
 	@Override
-	public void add( final Triple t ) throws AddDeniedException,
-			AccessDeniedException;
+	public void add( final Triple t ) throws AddDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean contains( final Node s, final Node p, final Node o )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean contains( final Triple t ) throws AccessDeniedException;
+	public boolean contains( final Triple t ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete
-	 * @throws AccessDeniedException
 	 * @throws DeleteDeniedException
 	 */
 	@Override
-	public void delete( final Triple t ) throws DeleteDeniedException,
-			AccessDeniedException;
+	public void delete( final Triple t ) throws DeleteDeniedException;
 
 	/**
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean dependsOn( final Graph other ) throws AccessDeniedException;
+	public boolean dependsOn( final Graph other ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read, otherwise filtered from iterator.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public ExtendedIterator<Triple> find( final Node s, final Node p,
-			final Node o ) throws AccessDeniedException;
+			final Node o ) throws ReadDeniedException;
 
     /**
 	 * @sec.graph Read
 	 * @sec.triple Read, otherwise filtered from iterator.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public ExtendedIterator<Triple> find( final Triple triple )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	@Override
 	public SecuredCapabilities getCapabilities();
@@ -104,59 +100,65 @@ public interface SecuredGraph extends Graph
 	@Override
 	public SecuredGraphEventManager getEventManager();
 
-	public SecNode getModelNode();
+	/**
+	 * Return the name of the graph.
+	 * @return The name of the graph as a node.
+	 */
+	@Override
+    public Node getModelNode();
 
 	@Override
 	public SecuredPrefixMapping getPrefixMapping();
 
-	public SecurityEvaluator getSecurityEvaluator();
+	@Override
+    public SecurityEvaluator getSecurityEvaluator();
 
 	/**
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public GraphStatisticsHandler getStatisticsHandler()
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean isEmpty() throws AccessDeniedException;
+	public boolean isEmpty() throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean isIsomorphicWith( final Graph g )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 
 	/**
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public int size() throws AccessDeniedException;
+	public int size() throws ReadDeniedException;
 	
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete for every triple
-	 * @throws AccessDeniedException
+	 * @throws DeleteDeniedException
 	 */
 	@Override
-	public void clear();
+	public void clear() throws DeleteDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete (s, p, o )
-	 * @throws AccessDeniedException
+	 * @throws DeleteDeniedException
 	 */
 	@Override
-	public void remove( Node s, Node p, Node o );
+	public void remove( Node s, Node p, Node o ) throws DeleteDeniedException;
 
 }

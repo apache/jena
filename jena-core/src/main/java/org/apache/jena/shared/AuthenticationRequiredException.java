@@ -16,25 +16,30 @@
  * limitations under the License.
  */
 
-package org.apache.jena.util.iterator;
-import java.util.*;
+package org.apache.jena.shared;
 
 /**
- * Fully execute the iterator immediately, but pretend we haven't.
- * @deprecated Do not use.
+ * Exception to indicate that authentication is required for the operation to proceed.
+ * 
+ * My only be thrown if authentication credentials are not available.
+ *
  */
-@Deprecated
-public class EarlyBindingIterator<T> extends WrappedIterator<T> {
+public class AuthenticationRequiredException extends OperationDeniedException {
 
-static private <X> Iterator<X> early(Iterator<X> it) {
-		List<X> v = new ArrayList<>();
-		while (it.hasNext()) v.add(it.next());
-		close(it);
-		return v.iterator();
+	public AuthenticationRequiredException() {
+		super();
 	}
 
-    public EarlyBindingIterator(Iterator<? extends T> it) {
-		super( early(it) );
+	public AuthenticationRequiredException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public AuthenticationRequiredException(String message) {
+		super(message);
+	}
+
+	public AuthenticationRequiredException(Throwable cause) {
+		super(cause);
 	}
 
 }

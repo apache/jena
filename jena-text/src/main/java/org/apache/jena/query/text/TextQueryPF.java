@@ -35,7 +35,6 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.binding.BindingMap ;
-import org.apache.jena.sparql.engine.iterator.QueryIterExtendByVar ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.engine.iterator.QueryIterSlice ;
 import org.apache.jena.sparql.mgt.Explain ;
@@ -223,15 +222,15 @@ public class TextQueryPF extends PropertyFunctionBase {
             if (hit.getNode().equals(s)) {
                 // found the node among the hits
                 if (literalVar == null) {
-                    return IterLib.oneResult(binding, scoreVar, NodeFactoryExtra.floatToNode(hit.getScore()), execCxt);
+                    return (scoreVar == null) ?
+                        IterLib.result(binding, execCxt) :
+                        IterLib.oneResult(binding, scoreVar, NodeFactoryExtra.floatToNode(hit.getScore()), execCxt);
                 }
                 BindingMap bmap = BindingFactory.create(binding);
                 if (scoreVar != null) {
                     bmap.add(scoreVar, NodeFactoryExtra.floatToNode(hit.getScore()));
                 }
-                if (literalVar != null) {
-                    bmap.add(literalVar, hit.getLiteral());
-                }
+                bmap.add(literalVar, hit.getLiteral());
                 return IterLib.result(bmap, execCxt) ;
             }
         }

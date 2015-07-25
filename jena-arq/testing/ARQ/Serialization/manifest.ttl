@@ -472,6 +472,30 @@
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-pat-04.rq> ; 
       ]
+      [  mf:name    "syntax-path-01.rq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-path-01.rq> ; 
+      ]
+      [  mf:name    "syntax-path-02.rq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-path-02.rq> ; 
+      ]
+      [  mf:name    "syntax-path-03.rq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-path-03.rq> ; 
+      ]
+      [  mf:name    "syntax-path-04.rq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-path-04.rq> ; 
+      ]
+      [  mf:name    "syntax-path-05.rq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-path-05.rq> ; 
+      ]
+      [  mf:name    "syntax-path-06.rq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-path-06.rq> ; 
+      ]
       [  mf:name    "syntax-qname-01.rq" ;
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-qname-01.rq> ; 

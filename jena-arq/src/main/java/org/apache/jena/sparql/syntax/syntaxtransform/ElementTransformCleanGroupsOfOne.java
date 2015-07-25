@@ -27,56 +27,24 @@ import org.apache.jena.sparql.syntax.* ;
  *  They do matter for <code>OPTIONAL { { ?s ?p ?o FILTER(?foo) } }</code>.
  */
 public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
-
+    // Improvements: scan group elements to work out for non-reducable adjacents.
+    // These ones may clash with an adjeact one in the group above.
+    // ElementTransformCleanGroupsOfOne -> ElementTransformCleanGroups
+    
     public ElementTransformCleanGroupsOfOne() {}
     
     @Override
     public Element transform(ElementGroup eltGroup, List<Element> elts) {
-        if ( elts.size() != 1 ) {
-            // Adjecent elements be sorted out?
-            boolean isSafe = true ;
-            for ( Element elt : elts ) {
-                if ( isSafe ) {
-                    // is it a group ? or one?
-                    
-                }
-                    
-                
-                if ( ( elt instanceof ElementTriplesBlock ) ||
-                     ( elt instanceof ElementPathBlock ) ||
-                     ( elt instanceof ElementFilter ) ) {
-                    isSafe = false ;
-                }
-                    
-            }
-            
-            
+        if ( elts.size() != 1 )
             return super.transform(eltGroup, elts) ;
-            
-        }
         Element elt = elts.get(0) ;
-        // Improvements: scan group elements to work out for non-reducable adjacentts.  
         if ( ( elt instanceof ElementTriplesBlock ) ||
-                ( elt instanceof ElementPathBlock ) ||
-                ( elt instanceof ElementFilter ) )
+             ( elt instanceof ElementPathBlock ) ||
+             ( elt instanceof ElementFilter ) )
             return super.transform(eltGroup, elts) ;    // No transformation.
         return elt ;
-        
-        // Remove if:
-        //???  Do this one level up (!= 1) and look for adajacent safe to collapse items
     }
 
-    // Plan B work from one level above.
-    
-    private boolean containsFilter(ElementGroup eltGroup) {
-        return eltGroup.getElements().stream().anyMatch(el2 ->( el2 instanceof ElementFilter ) ) ;
-//        for ( Element el2 : eltGroup.getElements() ) {
-//            if ( el2 instanceof ElementFilter )
-//                return true ;
-//        }
-//        return false ;
-    }
-    
     // Special case: If Optional, and the original had a {{}} protected filter, keep {{}}
     // transform/ElementGroup has already run so undo if necessary.
     @Override
@@ -91,8 +59,6 @@ public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
         
         // Step 1 : does the original eltOptional has a {{}} RHS? 
         Element x = eltOptional.getOptionalElement() ;
-        
-        
         
         if ( ! ( x instanceof ElementGroup ) )
             // No. But it is not possible in written query syntax to have a nongroup as the RHS. 
@@ -121,7 +87,10 @@ public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
         } 
         // No need to protect - process as usual.
         return super.transform(eltOptional, transformedElt) ;
-
+    }
+    
+    private boolean containsFilter(ElementGroup eltGroup) {
+        return eltGroup.getElements().stream().anyMatch(el2 ->( el2 instanceof ElementFilter ) ) ;
     }
     
     // Removed layers of groups of one.  Return inner most group.

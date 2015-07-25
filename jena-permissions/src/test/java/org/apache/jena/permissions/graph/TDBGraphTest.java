@@ -20,36 +20,32 @@ package org.apache.jena.permissions.graph;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.permissions.MockSecurityEvaluator;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.tdb.TDB ;
-import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.tdb.TDB;
+import org.apache.jena.tdb.TDBFactory;
 import org.junit.After;
 
-public class TDBGraphTest extends MemGraphTest
-{
+public class TDBGraphTest extends MemGraphTest {
 
 	private DatasetGraph dsGraph;
 
 	private File f;
 
-	public TDBGraphTest( final MockSecurityEvaluator securityEvaluator )
-	{
+	public TDBGraphTest(final MockSecurityEvaluator securityEvaluator) {
 		super(securityEvaluator);
 	}
 
 	@Override
-	protected Graph createGraph() throws IOException
-	{
+	protected Graph createGraph() throws IOException {
 		TDB.init();
 		dsGraph = TDBFactory.createDataset().asDatasetGraph();
 		return dsGraph.getDefaultGraph();
 	}
 
 	@After
-	public void tearDown()
-	{
+	public void tearDown() {
 		TDB.sync(dsGraph);
 		dsGraph.close();
 		TDB.closedown();

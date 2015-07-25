@@ -18,16 +18,38 @@
 
 package org.apache.jena.shared;
 
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Triple;
 
 /**
-    Exception to throw if a delete is denied.
-*/
-public class DeleteDeniedException extends UpdateDeniedException
-    {
-    public DeleteDeniedException( String message )
-        { super( message ); }
+ * Exception to throw if a delete is denied.
+ */
+public class DeleteDeniedException extends AccessDeniedException {
+	public DeleteDeniedException() {
+		super();
+	}
 
-    public DeleteDeniedException( String message, Triple triple )
-        { super( message, triple ); }
-    }
+	public DeleteDeniedException(String message) {
+		super(message);
+	}
+
+	public DeleteDeniedException(String message, Triple triple) {
+		super(message, triple);
+	}
+
+	public DeleteDeniedException(String message, Throwable cause, Triple triple) {
+		super(message, cause, triple);
+	}
+
+	public DeleteDeniedException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public DeleteDeniedException(Throwable cause, Triple triple) {
+		super(cause, triple);
+	}
+
+	public DeleteDeniedException(Throwable cause) {
+		super(cause);
+	}
+
+}

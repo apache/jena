@@ -21,11 +21,10 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.apache.jena.graph.Node;
+import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.SecurityEvaluator.SecNode;
-import org.apache.jena.permissions.impl.SecuredItem;
-import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.rdf.model.Statement ;
 
 /**
@@ -36,7 +35,7 @@ import org.apache.jena.rdf.model.Statement ;
 public class PermStatementFilter implements Predicate<Statement>
 {
 	private final SecurityEvaluator evaluator;
-	private final SecNode modelNode;
+	private final Node modelNode;
 	private final Set<Action> actions;
 	private final Object principal;
 
@@ -157,8 +156,7 @@ public class PermStatementFilter implements Predicate<Statement>
 	@Override
 	public boolean test( final Statement s )
 	{
-		return evaluator.evaluateAny(principal, actions, modelNode,
-				SecuredItemImpl.convert(s.asTriple()));
+		return evaluator.evaluateAny(principal, actions, modelNode, s.asTriple());
 	}
 
 }

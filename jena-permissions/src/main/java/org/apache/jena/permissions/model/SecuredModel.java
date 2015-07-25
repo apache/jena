@@ -28,7 +28,6 @@ import java.util.List ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.permissions.AccessDeniedException;
 import org.apache.jena.permissions.graph.SecuredGraph;
 import org.apache.jena.permissions.graph.SecuredPrefixMapping;
 import org.apache.jena.permissions.model.impl.SecuredNodeIterator;
@@ -36,7 +35,11 @@ import org.apache.jena.permissions.model.impl.SecuredRSIterator;
 import org.apache.jena.permissions.model.impl.SecuredResIterator;
 import org.apache.jena.permissions.model.impl.SecuredStatementIterator;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.shared.PropertyNotFoundException ;
+import org.apache.jena.shared.ReadDeniedException;
+import org.apache.jena.shared.UpdateDeniedException;
 
 /**
  * The interface for secured Model instances.
@@ -52,165 +55,183 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create for each statement as a triple.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredModel add( final List<Statement> statements )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create for each statement in the securedModel as a triple.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredModel add( final Model m ) throws AccessDeniedException;
+	public SecuredModel add( final Model m ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create the triple SecTriple(s,p,o)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredModel add( final Resource s, final Property p, final RDFNode o )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create the triple SecTriple(s,p,o)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredModel add( final Resource s, final Property p, final String o )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create the triple SecTriple(s,p,o)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredModel add( final Resource s, final Property p,
 			final String o, final boolean wellFormed )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create the triple SecTriple(s,p,literal(lex,datatype))
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredModel add( final Resource s, final Property p,
 			final String lex, final RDFDatatype datatype )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create the triple SecTriple(s,p,literal(o,l,false))
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredModel add( final Resource s, final Property p,
-			final String o, final String l ) throws AccessDeniedException;
+			final String o, final String l ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create the statement as a triple
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredModel add( final Statement s ) throws AccessDeniedException;
+	public SecuredModel add( final Statement s ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create all the statements as triples.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredModel add( final Statement[] statements )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create all the statements as triples.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredModel add( final StmtIterator iter )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create triple(s,p,o)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredModel addLiteral( final Resource s, final Property p,
-			final boolean o ) throws AccessDeniedException;
+			final boolean o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create triple(s,p,o)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredModel addLiteral( final Resource s, final Property p,
-			final char o ) throws AccessDeniedException;
+			final char o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create triple(s,p,o)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredModel addLiteral( final Resource s, final Property p,
-			final double o ) throws AccessDeniedException;
+			final double o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create triple(s,p,o)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredModel addLiteral( final Resource s, final Property p,
-			final float o ) throws AccessDeniedException;
+			final float o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create triple(s,p,o)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredModel addLiteral( final Resource s, final Property p,
-			final int o ) throws AccessDeniedException;
+			final int o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create triple(s,p,o)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredModel addLiteral( final Resource s, final Property p,
-			final Literal o ) throws AccessDeniedException;
+			final Literal o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create triple(s,p,o)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredModel addLiteral( final Resource s, final Property p,
-			final long o ) throws AccessDeniedException;
+			final long o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create triple(s,p,o)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	@Deprecated
 	public SecuredModel addLiteral( final Resource s, final Property p,
-			final Object o ) throws AccessDeniedException;
+			final Object o ) throws AddDeniedException, UpdateDeniedException; 
 
 	@Override
 	public SecuredRDFNode asRDFNode( final Node n );
@@ -221,10 +242,12 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.graph Update it t does not exist
 	 * @sec.triple Read if t does exist
 	 * @sec.triple Create if t does exist
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
+	 * @throws ReadException
 	 */
 	public SecuredStatement asStatement( final Triple t )
-			throws AccessDeniedException;
+			throws UpdateDeniedException, AddDeniedException, ReadDeniedException;
 
 	@Override
 	public SecuredModel begin();
@@ -235,199 +258,202 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( s, p, SecNode.ANY )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean contains( final Resource s, final Property p )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( s, p, o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean contains( final Resource s, final Property p, final RDFNode o )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( s, p, o )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean contains( final Resource s, final Property p, final String o )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( s, p, literal(o,l,null) )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean contains( final Resource s, final Property p,
-			final String o, final String l ) throws AccessDeniedException;
+			final String o, final String l ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read s as a triple with null replaced by SecNode.ANY
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean contains( final Statement s ) throws AccessDeniedException;
+	public boolean contains( final Statement s ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read every statement in securedModel.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean containsAll( final Model model )
-			throws AccessDeniedException;
+	public boolean containsAll( final Model model )	throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read every statement
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean containsAll( final StmtIterator iter )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read any statement in securedModel to be included in check, if
 	 *            no
 	 *            statement in securedModel can be read will return false;
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean containsAny( final Model model )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read any statement in iter to be included in check, if no
 	 *            statement in iter can be read will return false;
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean containsAny( final StmtIterator iter )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( s, p, literal(o) )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean containsLiteral( final Resource s, final Property p,
-			final boolean o ) throws AccessDeniedException;
+			final boolean o ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( s, p, literal(o) )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean containsLiteral( final Resource s, final Property p,
-			final char o ) throws AccessDeniedException;
+			final char o ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( s, p, literal(o) )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean containsLiteral( final Resource s, final Property p,
-			final double o ) throws AccessDeniedException;
+			final double o ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( s, p, literal(o) )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean containsLiteral( final Resource s, final Property p,
-			final float o ) throws AccessDeniedException;
+			final float o ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( s, p, literal(o) )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean containsLiteral( final Resource s, final Property p,
-			final int o ) throws AccessDeniedException;
+			final int o ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( s, p, literal(o) )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean containsLiteral( final Resource s, final Property p,
-			final long o ) throws AccessDeniedException;
+			final long o ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( s, p, typedLiteral(o) )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean containsLiteral( final Resource s, final Property p,
-			final Object o ) throws AccessDeniedException;
+			final Object o ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( s, p, resource) where SecTriple(s,p,resource) is in the
 	 *            securedModel.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean containsResource( final RDFNode r )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( SecNode.ANY, RDF.type, Rdf.Alt)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredAlt createAlt() throws AccessDeniedException;
+	public SecuredAlt createAlt() throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( uri, RDF.type, Rdf.Alt)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredAlt createAlt( final String uri )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( SecNode.ANY, RDF.type, Rdf.Bag)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredBag createBag() throws AccessDeniedException;
+	public SecuredBag createBag() throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( uri, RDF.type, Rdf.Bag)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredBag createBag( final String uri )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
 	 */
 	@Override
-	public SecuredRDFList createList() throws AccessDeniedException;
+	public SecuredRDFList createList() throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -436,11 +462,12 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 *            RDF.first.asNode(),
 	 *            member.asNode())
 	 * @sec.triple Create SecTriple(SecNode.ANY, RDF.rest.asNode(), SecNode.ANY)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredRDFList createList( final Iterator<? extends RDFNode> members )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -449,92 +476,102 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 *            RDF.first.asNode(),
 	 *            member.asNode())
 	 * @sec.triple Create SecTriple(SecNode.ANY, RDF.rest.asNode(), SecNode.ANY)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredRDFList createList( final RDFNode[] members )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s,p,o )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredStatement createLiteralStatement( final Resource s,
-			final Property p, final boolean o ) throws AccessDeniedException;
+			final Property p, final boolean o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s,p,o )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredStatement createLiteralStatement( final Resource s,
-			final Property p, final char o ) throws AccessDeniedException;
+			final Property p, final char o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s,p,o )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredStatement createLiteralStatement( final Resource s,
-			final Property p, final double o ) throws AccessDeniedException;
+			final Property p, final double o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s,p,o )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredStatement createLiteralStatement( final Resource s,
-			final Property p, final float o ) throws AccessDeniedException;
+			final Property p, final float o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s,p,o )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredStatement createLiteralStatement( final Resource s,
-			final Property p, final int o ) throws AccessDeniedException;
+			final Property p, final int o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s,p,o )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredStatement createLiteralStatement( final Resource s,
-			final Property p, final long o ) throws AccessDeniedException;
+			final Property p, final long o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s,p,o )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredStatement createLiteralStatement( final Resource s,
-			final Property p, final Object o ) throws AccessDeniedException;
+			final Property p, final Object o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s,p,o )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public Property createProperty( final String uri )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s,p,o )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public Property createProperty( final String nameSpace,
-			final String localName ) throws AccessDeniedException;
+			final String localName ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
@@ -544,11 +581,13 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.triple create SecTriple( SecNode.Future, RDF.subject,
 	 *            t.getPredicate() )
 	 * @sec.triple create SecTriple( SecNode.Future, RDF.subject, t.getObject() )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws ReadDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public ReifiedStatement createReifiedStatement( final Statement s )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException, ReadDeniedException;
 
 	/**
 	 * @sec.graph Update
@@ -556,41 +595,48 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.triple create SecTriple( uri, RDF.subject, t.getSubject() )
 	 * @sec.triple create SecTriple( uri, RDF.subject, t.getPredicate() )
 	 * @sec.triple create SecTriple( uri, RDF.subject, t.getObject() )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws ReadDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public ReifiedStatement createReifiedStatement( final String uri,
-			final Statement s ) throws AccessDeniedException;
+			final Statement s ) throws AddDeniedException, UpdateDeniedException, ReadDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Read s as a triple
-	 * @sec.triple create SecTriple( SecNode.FUTURE, SecNode.IGNORE,
+	 * @sec.triple Create SecTriple( SecNode.FUTURE, SecNode.IGNORE,
 	 *            SecNode.IGNORE )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws ReadDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredResource createResource() throws AccessDeniedException;
+	public SecuredResource createResource() throws AddDeniedException, UpdateDeniedException, ReadDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Read s as a triple
-	 * @sec.triple create SecTriple( Anonymous(id), SecNode.IGNORE,
+	 * @sec.triple Create SecTriple( Anonymous(id), SecNode.IGNORE,
 	 *            SecNode.IGNORE )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws ReadDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredResource createResource( final AnonId id )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException, ReadDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( SecNode.FUTURE, RDF.type, type )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredResource createResource( final Resource type )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException;
 
 	@Override
 	@Deprecated
@@ -604,11 +650,13 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.graph Create if uri does not exist
 	 * @sec.triple Read if SecTriple( uri, RDF.type, type ) exists
 	 * @sec.triple Create if SecTriple( uri, RDF.type, type ) does not exist
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws ReadDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredResource createResource( final String uri, final Resource type )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException, ReadDeniedException;
 
 	@Override
 	@Deprecated
@@ -617,67 +665,74 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( SecNode.FUTURE, RDF.type, RDF.Alt )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredSeq createSeq() throws AccessDeniedException;
+	public SecuredSeq createSeq() throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( uri, RDF.type, RDF.Alt )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredSeq createSeq( final String uri )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s, p, o )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredStatement createStatement( final Resource s,
-			final Property p, final RDFNode o ) throws AccessDeniedException;
+			final Property p, final RDFNode o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s, p, o )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredStatement createStatement( final Resource s,
-			final Property p, final String o ) throws AccessDeniedException;
+			final Property p, final String o ) throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s, p, o )
-	 * @throws AccessDeniedException
+	 * @throws AddDeniedException
+	 * @throws UpdateDeniedException
 	 */
 	@Override
 	public SecuredStatement createStatement( final Resource s,
 			final Property p, final String o, final boolean wellFormed )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s, p, literal(o,l,false ))
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredStatement createStatement( final Resource s,
 			final Property p, final String o, final String l )
-			throws AccessDeniedException;
+			throws AddDeniedException, UpdateDeniedException; 
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( s, p, literal(o,l,wellFormed )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredStatement createStatement( final Resource s,
 			final Property p, final String o, final String l,
-			final boolean wellFormed ) throws AccessDeniedException;
+			final boolean wellFormed ) throws AddDeniedException, UpdateDeniedException; 
 
 	@Override
 	public SecuredLiteral createTypedLiteral( final boolean v );
@@ -725,43 +780,42 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read for every triple contributed to the difference.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public Model difference( final Model model ) throws AccessDeniedException;
+	public Model difference( final Model model ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read if read lock is requested
 	 * @sec.graph Update if write lock is requested
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
+	 * @throws UpdateDeniedException
 	 */
 	@Override
-	public void enterCriticalSection( final boolean readLockRequested )
-			throws AccessDeniedException;
+	public void enterCriticalSection( final boolean readLockRequested ) throws ReadDeniedException, UpdateDeniedException;
 
 	/**
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public String expandPrefix( final String prefixed )
-			throws AccessDeniedException;
+	public String expandPrefix( final String prefixed ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( resource, RDF.type, RDF.alt )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredAlt getAlt( final Resource r ) throws AccessDeniedException;
+	public SecuredAlt getAlt( final Resource r ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( uri, RDF.type, RDF.alt )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredAlt getAlt( final String uri ) throws AccessDeniedException;
+	public SecuredAlt getAlt( final String uri ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read if statement exists
@@ -779,27 +833,29 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 *            reification did not exist
 	 * @sec.triple Create SecTriple( result, RDF.object, s.getObject() ) if
 	 *            reification did not exist
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredResource getAnyReifiedStatement( final Statement s )
-			throws AccessDeniedException;
+			throws AddDeniedException, ReadDeniedException, UpdateDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( resource, RDF.type, RDF.Bag )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredBag getBag( final Resource r ) throws AccessDeniedException;
+	public SecuredBag getBag( final Resource r ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( uri, RDF.type, RDF.Bag )
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredBag getBag( final String uri ) throws AccessDeniedException;
+	public SecuredBag getBag( final String uri ) throws ReadDeniedException;
 
 	@Override
 	public SecuredGraph getGraph();
@@ -807,35 +863,32 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read on the returned statement.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredStatement getProperty( final Resource s, final Property p )
-			throws AccessDeniedException;
+	public SecuredStatement getProperty( final Resource s, final Property p ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public Property getProperty( final String uri )
-			throws AccessDeniedException;
+	public Property getProperty( final String uri ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public Property getProperty( final String nameSpace, final String localName )
-			throws AccessDeniedException;
+	public Property getProperty( final String nameSpace, final String localName ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read if the node exists
 	 * @sec.graph Update if the node does not exist
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public RDFNode getRDFNode( final Node n ) throws AccessDeniedException;
+	public RDFNode getRDFNode( final Node n ) throws ReadDeniedException;
 
 	/**
 	 * .
@@ -850,13 +903,12 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.triple Read on SecTriple(s, p, SecNode.ANY) if
 	 *            PropertyNotFoundException
 	 *            was thrown
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 * @throws PropertyNotFoundException
 	 */
 	@Override
 	public SecuredStatement getRequiredProperty( final Resource s,
-			final Property p ) throws PropertyNotFoundException,
-			AccessDeniedException;
+			final Property p ) throws PropertyNotFoundException, ReadDeniedException;
 
 	@Override
 	public SecuredResource getResource( final String uri );
@@ -869,173 +921,165 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on SecTriple(resource, RDF.type, RDF.Seq)
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredSeq getSeq( final Resource r ) throws AccessDeniedException;
+	public SecuredSeq getSeq( final Resource r ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on SecTriple(uri, RDF.type, RDF.Seq)
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredSeq getSeq( final String uri ) throws AccessDeniedException;
+	public SecuredSeq getSeq( final String uri ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all triples contributed to the new securedModel.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public Model intersection( final Model model ) throws AccessDeniedException;
+	public Model intersection( final Model model ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean isEmpty() throws AccessDeniedException;
+	public boolean isEmpty() throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read all compared triples. Triples that can not be read will
 	 *            not be compared.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean isIsomorphicWith( final Model g )
-			throws AccessDeniedException;
+	public boolean isIsomorphicWith( final Model g ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on s as triple
 	 * @sec.triple Read on at least one set reified statements.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean isReified( final Statement s ) throws AccessDeniedException;
+	public boolean isReified( final Statement s ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all triples returned.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredStatementIterator listLiteralStatements(
 			final Resource subject, final Property predicate,
-			final boolean object ) throws AccessDeniedException;
+			final boolean object ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all triples returned.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 
 	@Override
 	public SecuredStatementIterator listLiteralStatements(
-			final Resource subject, final Property predicate, final char object )
-			throws AccessDeniedException;
+			final Resource subject, final Property predicate, final char object ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all triples returned.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 
 	@Override
 	public SecuredStatementIterator listLiteralStatements(
 			final Resource subject, final Property predicate,
-			final double object ) throws AccessDeniedException;
+			final double object ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all triples returned.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
-
 	@Override
 	public SecuredStatementIterator listLiteralStatements(
-			final Resource subject, final Property predicate, final float object )
-			throws AccessDeniedException;
+			final Resource subject, final Property predicate, final float object ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all triples returned.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 
 	@Override
 	public SecuredStatementIterator listLiteralStatements(
-			final Resource subject, final Property predicate, final long object )
-			throws AccessDeniedException;
+			final Resource subject, final Property predicate, final long object ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public NsIterator listNameSpaces() throws AccessDeniedException;
+	public NsIterator listNameSpaces() throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on each RDFNode returned
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredNodeIterator<RDFNode> listObjects() throws AccessDeniedException;
+	public SecuredNodeIterator<RDFNode> listObjects() throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on each RDFNode returned
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredNodeIterator<RDFNode> listObjectsOfProperty( final Property p )
-			throws AccessDeniedException;
+	public SecuredNodeIterator<RDFNode> listObjectsOfProperty( final Property p ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on each RDFNode returned
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredNodeIterator<RDFNode> listObjectsOfProperty( final Resource s,
-			final Property p ) throws AccessDeniedException;
+			final Property p ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on each Reified statement returned
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredRSIterator listReifiedStatements()
-			throws AccessDeniedException;
+	public SecuredRSIterator listReifiedStatements() throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on each Reified statement returned
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredRSIterator listReifiedStatements( final Statement st )
-			throws AccessDeniedException;
+	public SecuredRSIterator listReifiedStatements( final Statement st ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1043,11 +1087,10 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.triple Read at least one SecTriple( resource, p, o ) for each
 	 *            resource
 	 *            returned;
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredResIterator listResourcesWithProperty( final Property p )
-			throws AccessDeniedException;
+	public SecuredResIterator listResourcesWithProperty( final Property p ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1055,37 +1098,11 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.triple Read at least one SecTriple( resource, p, o ) for each
 	 *            resource
 	 *            returned;
-	 * @throws AccessDeniedException
-	 */
-
-	@Override
-	public SecuredResIterator listResourcesWithProperty( final Property p,
-			final boolean o ) throws AccessDeniedException;
-
-	/**
-	 * 
-	 * @sec.graph Read
-	 * @sec.triple Read at least one SecTriple( resource, p, o ) for each
-	 *            resource
-	 *            returned;
-	 * @throws AccessDeniedException
-	 */
-
-	@Override
-	public SecuredResIterator listResourcesWithProperty( final Property p,
-			final char o ) throws AccessDeniedException;
-
-	/**
-	 * 
-	 * @sec.graph Read
-	 * @sec.triple Read at least one SecTriple( resource, p, o ) for each
-	 *            resource
-	 *            returned;
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredResIterator listResourcesWithProperty( final Property p,
-			final double o ) throws AccessDeniedException;
+			final boolean o ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1093,11 +1110,11 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.triple Read at least one SecTriple( resource, p, o ) for each
 	 *            resource
 	 *            returned;
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredResIterator listResourcesWithProperty( final Property p,
-			final float o ) throws AccessDeniedException;
+			final char o ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1105,11 +1122,11 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.triple Read at least one SecTriple( resource, p, o ) for each
 	 *            resource
 	 *            returned;
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredResIterator listResourcesWithProperty( final Property p,
-			final long o ) throws AccessDeniedException;
+			final double o ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1117,11 +1134,35 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.triple Read at least one SecTriple( resource, p, o ) for each
 	 *            resource
 	 *            returned;
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredResIterator listResourcesWithProperty( final Property p,
-			final Object o ) throws AccessDeniedException;
+			final float o ) throws ReadDeniedException;
+
+	/**
+	 * 
+	 * @sec.graph Read
+	 * @sec.triple Read at least one SecTriple( resource, p, o ) for each
+	 *            resource
+	 *            returned;
+	 * @throws ReadDeniedException
+	 */
+	@Override
+	public SecuredResIterator listResourcesWithProperty( final Property p,
+			final long o ) throws ReadDeniedException;
+
+	/**
+	 * 
+	 * @sec.graph Read
+	 * @sec.triple Read at least one SecTriple( resource, p, o ) for each
+	 *            resource
+	 *            returned;
+	 * @throws ReadDeniedException
+	 */
+	@Override
+	public SecuredResIterator listResourcesWithProperty( final Property p,
+			final Object o ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1129,63 +1170,59 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.triple Read at least one SecTriple( resource, p, o ) for each
 	 *            resource
 	 *            returned
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredResIterator listResourcesWithProperty( final Property p,
-			final RDFNode o ) throws AccessDeniedException;
+			final RDFNode o ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all triples returned
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredStatementIterator listStatements()
-			throws AccessDeniedException;
+	public SecuredStatementIterator listStatements() throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all triples returned
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredStatementIterator listStatements( final Resource s,
-			final Property p, final RDFNode o ) throws AccessDeniedException;
+			final Property p, final RDFNode o ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all triples returned
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredStatementIterator listStatements( final Resource subject,
-			final Property predicate, final String object )
-			throws AccessDeniedException;
+			final Property predicate, final String object )  throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all triples returned
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredStatementIterator listStatements( final Resource subject,
-			final Property predicate, final String object, final String lang )
-			throws AccessDeniedException;
+			final Property predicate, final String object, final String lang ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all triples returned
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredStatementIterator listStatements( final Selector s )
-			throws AccessDeniedException;
+	public SecuredStatementIterator listStatements( final Selector s ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1193,10 +1230,10 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.triple Read at least one SecTriple( resource, p, o ) for each
 	 *            resource
 	 *            returned
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredResIterator listSubjects() throws AccessDeniedException;
+	public SecuredResIterator listSubjects() throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1204,11 +1241,10 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.triple Read at least one SecTriple( resource, p, o ) for each
 	 *            resource
 	 *            returned
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredResIterator listSubjectsWithProperty( final Property p )
-			throws AccessDeniedException;
+	public SecuredResIterator listSubjectsWithProperty( final Property p ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1216,11 +1252,11 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.triple Read at least one SecTriple( resource, p, o ) for each
 	 *            resource
 	 *            returned
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredResIterator listSubjectsWithProperty( final Property p,
-			final RDFNode o ) throws AccessDeniedException;
+			final RDFNode o ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1228,11 +1264,11 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.triple Read at least one SecTriple( resource, p, o ) for each
 	 *            resource
 	 *            returned
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredResIterator listSubjectsWithProperty( final Property p,
-			final String o ) throws AccessDeniedException;
+			final String o ) throws ReadDeniedException;
 
 	/**
 	 * 
@@ -1240,19 +1276,19 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @sec.triple Read at least one SecTriple( resource, p, o ) for each
 	 *            resource
 	 *            returned
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredResIterator listSubjectsWithProperty( final Property p,
-			final String o, final String l ) throws AccessDeniedException;
+			final String o, final String l ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredPrefixMapping lock() throws AccessDeniedException;
+	public SecuredPrefixMapping lock() throws ReadDeniedException;
 
 	@Override
 	public SecuredModel notifyEvent( final Object e );
@@ -1260,242 +1296,246 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	/**
 	 * 
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public String qnameFor( final String uri ) throws AccessDeniedException;
+	public String qnameFor( final String uri ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredModel query( final Selector s ) throws AccessDeniedException;
+	public SecuredModel query( final Selector s ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
 	 */
 	@Override
-	public SecuredModel read( final InputStream in, final String base )
-			throws AccessDeniedException;
+	public SecuredModel read( final InputStream in, final String base ) throws UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
 	 */
 	@Override
 	public SecuredModel read( final InputStream in, final String base,
-			final String lang ) throws AccessDeniedException;
+			final String lang ) throws UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
 	 */
 	@Override
-	public SecuredModel read( final Reader reader, final String base )
-			throws AccessDeniedException;
+	public SecuredModel read( final Reader reader, final String base ) throws UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
 	 */
 	@Override
 	public SecuredModel read( final Reader reader, final String base,
-			final String lang ) throws AccessDeniedException;
+			final String lang ) throws UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
 	 */
 	@Override
-	public SecuredModel read( final String url ) throws AccessDeniedException;
+	public SecuredModel read( final String url ) throws UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
 	 */
 	@Override
-	public SecuredModel read( final String url, final String lang )
-			throws AccessDeniedException;
+	public SecuredModel read( final String url, final String lang ) throws UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
 	 */
 	@Override
 	public SecuredModel read( final String url, final String base,
-			final String lang ) throws AccessDeniedException;
+			final String lang ) throws UpdateDeniedException;
 
 	/**
 	 * 
 	 * Listener will be filtered to only report events that the user can see.
 	 * 
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredModel register( final ModelChangedListener listener )
-			throws AccessDeniedException;
+	public SecuredModel register( final ModelChangedListener listener ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
 	 * @sec.triple Delete on every statement in statments.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 */
 	@Override
 	public SecuredModel remove( final List<Statement> statements )
-			throws AccessDeniedException;
+			throws DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
 	 * @sec.triple Delete on every statement in baseModel.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 */
 	@Override
-	public SecuredModel remove( final Model m ) throws AccessDeniedException;
+	public SecuredModel remove( final Model m ) throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
 	 * @sec.triple Delete on SecTriple( s, p, o )
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 */
 	@Override
-	public SecuredModel remove( final Resource s, final Property p, final RDFNode o ) throws AccessDeniedException;
+	public SecuredModel remove( final Resource s, final Property p, final RDFNode o ) throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
 	 * @sec.triple Delete on statment.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 */
 	@Override
 	public SecuredModel remove( final Statement s )
-			throws AccessDeniedException;
+			throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
 	 * @sec.triple Delete on every statement in statments.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 */
 	@Override
 	public SecuredModel remove( final Statement[] statements )
-			throws AccessDeniedException;
+			throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
 	 * @sec.triple Delete on every statement in iter.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 */
 	@Override
 	public SecuredModel remove( final StmtIterator iter )
-			throws AccessDeniedException;
+			throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
 	 * @sec.triple Delete on every statement in the securedModel
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 */
 	@Override
-	public SecuredModel removeAll() throws AccessDeniedException;
+	public SecuredModel removeAll() throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
 	 * @sec.triple Delete on every statement identified by SecTriple( s,p,o)
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 */
 	@Override
 	public SecuredModel removeAll( final Resource s, final Property p,
-			final RDFNode r ) throws AccessDeniedException;
+			final RDFNode r ) throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
 	 * @sec.triple Delete on every reification statement for each statement in
 	 *            statments.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 */
 	@Override
 	public void removeAllReifications( final Statement s )
-			throws AccessDeniedException;
+			throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
 	 */
 	@Override
 	public SecuredPrefixMapping removeNsPrefix( final String prefix )
-			throws AccessDeniedException;
+			throws UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
 	 * @sec.triple Delete on every reification statement fore each statement in
 	 *            rs.
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 */
 	@Override
 	public void removeReification( final ReifiedStatement rs )
-			throws AccessDeniedException;
+			throws  DeleteDeniedException, UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
 	 */
 	@Override
-	public String setReaderClassName( final String lang, final String className )
-			throws AccessDeniedException;
+	public String setReaderClassName( final String lang, final String className ) throws UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Update
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
 	 */
 	@Override
-	public String setWriterClassName( final String lang, final String className )
-			throws AccessDeniedException;
+	public String setWriterClassName( final String lang, final String className ) throws UpdateDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public String shortForm( final String uri ) throws AccessDeniedException;
+	public String shortForm( final String uri ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public long size() throws AccessDeniedException;
+	public long size() throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all statements contributed to the union.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public Model union( final Model model ) throws AccessDeniedException;
+	public Model union( final Model model ) throws ReadDeniedException;
 
 	@Override
 	public SecuredModel unregister( final ModelChangedListener listener );
@@ -1507,60 +1547,60 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all statements that are written.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredModel write( final OutputStream out )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all statements that are written.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredModel write( final OutputStream out, final String lang )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all statements that are written.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredModel write( final OutputStream out, final String lang,
-			final String base ) throws AccessDeniedException;
+			final String base ) throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all statements that are written.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredModel write( final Writer writer )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all statements that are written.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredModel write( final Writer writer, final String lang )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * 
 	 * @sec.graph Read
 	 * @sec.triple Read on all statements that are written.
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public SecuredModel write( final Writer writer, final String lang,
-			final String base ) throws AccessDeniedException;
+			final String base ) throws ReadDeniedException;
 
 }

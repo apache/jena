@@ -28,6 +28,11 @@ public class SecuredUnsupportedPolymorphismException extends
 		UnsupportedPolymorphismException
 {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4329005499222402816L;
+
 	public SecuredUnsupportedPolymorphismException(
 			final SecuredRDFNodeImpl node, final Class<?> type )
 	{

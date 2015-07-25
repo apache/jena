@@ -20,6 +20,7 @@ package org.apache.jena.graph.test;
 
 
 import junit.framework.TestSuite ;
+
 import org.apache.jena.JenaRuntime ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
@@ -27,7 +28,6 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.* ;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.graph.impl.LiteralLabelFactory ;
-import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
@@ -48,15 +48,15 @@ public class TestNode extends GraphTestBase
     private static final String U = "http://some.domain.name/magic/spells.incant";
     private static final String N = "Alice";
     private static final LiteralLabel L = LiteralLabelFactory.create( "ashes are burning", "en", false );
-    private static final AnonId A = AnonId.create();
+    private static final BlankNodeId A = BlankNodeId.create();
 
     public void testBlanks()
     {
-        assertTrue( "anonymous nodes are blank", NodeFactory.createAnon().isBlank() );
-        assertFalse( "anonymous nodes aren't literal", NodeFactory.createAnon().isLiteral() );
-        assertFalse( "anonymous nodes aren't URIs", NodeFactory.createAnon().isURI() );
-        assertFalse( "anonymous nodes aren't variables", NodeFactory.createAnon().isVariable() );
-        assertEquals( "anonymous nodes have the right id", NodeFactory.createAnon(A).getBlankNodeId(), A );
+        assertTrue( "anonymous nodes are blank", NodeFactory.createBlankNode().isBlank() );
+        assertFalse( "anonymous nodes aren't literal", NodeFactory.createBlankNode().isLiteral() );
+        assertFalse( "anonymous nodes aren't URIs", NodeFactory.createBlankNode().isURI() );
+        assertFalse( "anonymous nodes aren't variables", NodeFactory.createBlankNode().isVariable() );
+        assertEquals( "anonymous nodes have the right id", NodeFactory.createBlankNode(A).getBlankNodeId(), A );
     }
 
     public void testLiterals()
@@ -114,7 +114,7 @@ public class TestNode extends GraphTestBase
      */
     private Object [][] eqTestCases()
     {
-        AnonId id = AnonId.create();
+        BlankNodeId id = BlankNodeId.create();
         LiteralLabel L2 = LiteralLabelFactory.create( id.toString(), "", false );
 
         LiteralLabel LLang1 = LiteralLabelFactory.createByValue( "xyz", "en", null) ;
@@ -125,9 +125,9 @@ public class TestNode extends GraphTestBase
         return new Object [][]
             {
             { Node.ANY, "0" },
-            { NodeFactory.createAnon( id ), "1" },
-            { NodeFactory.createAnon(), "2" },
-            { NodeFactory.createAnon( id ), "1" },
+            { NodeFactory.createBlankNode( id ), "1" },
+            { NodeFactory.createBlankNode(), "2" },
+            { NodeFactory.createBlankNode( id ), "1" },
             { NodeFactory.createLiteral( L ), "3" },
 
             { NodeFactory.createLiteral( L2 ), "4" },
@@ -178,10 +178,10 @@ public class TestNode extends GraphTestBase
         assertDiffer( "different variables", NodeFactory.createVariable( "xx" ), NodeFactory.createVariable( "yy" ) );
         assertEquals( "same vars", NodeFactory.createVariable( "aa" ), NodeFactory.createVariable( "aa" ) );
         assertEquals( "same URI", NodeFactory.createURI( U ), NodeFactory.createURI( U ) );
-        assertEquals( "same anon", NodeFactory.createAnon( A ), NodeFactory.createAnon( A ) );
+        assertEquals( "same anon", NodeFactory.createBlankNode( A ), NodeFactory.createBlankNode( A ) );
         assertEquals( "same literal", NodeFactory.createLiteral( L ), NodeFactory.createLiteral( L ) );
         assertFalse( "distinct URIs", NodeFactory.createURI( U ) == NodeFactory.createURI( U ) );
-        assertFalse( "distinct hyphens", NodeFactory.createAnon( A ) == NodeFactory.createAnon( A ) );
+        assertFalse( "distinct hyphens", NodeFactory.createBlankNode( A ) == NodeFactory.createBlankNode( A ) );
         assertFalse( "distinct literals", NodeFactory.createLiteral( L ) == NodeFactory.createLiteral( L ) );
         assertFalse( "distinct vars", NodeFactory.createVariable( "aa" ) == NodeFactory.createVariable( "aa" ) );
     }
@@ -192,9 +192,9 @@ public class TestNode extends GraphTestBase
      */
     public void testLabels()
     {
-        AnonId id = AnonId.create();
+        BlankNodeId id = BlankNodeId.create();
         assertEquals( "get URI value", U, NodeFactory.createURI( U ).getURI() );
-        assertEquals( "get blank value", id, NodeFactory.createAnon( id ).getBlankNodeId() );
+        assertEquals( "get blank value", id, NodeFactory.createBlankNode( id ).getBlankNodeId() );
         assertEquals( "get literal value", L, NodeFactory.createLiteral( L ).getLiteral() );
         assertEquals( "get variable name", N, NodeFactory.createVariable( N ).getName() );
     }
@@ -205,7 +205,7 @@ public class TestNode extends GraphTestBase
      */
     public void testFailingLabels()
     {
-        Node u = NodeFactory.createURI( U ), b = NodeFactory.createAnon();
+        Node u = NodeFactory.createURI( U ), b = NodeFactory.createBlankNode();
         Node l = NodeFactory.createLiteral( L ), v = NodeFactory.createVariable( N );
         Node a = Node.ANY;
         /* */
@@ -245,7 +245,7 @@ public class TestNode extends GraphTestBase
 
     public void testGetBlankNodeLabelString()
     {
-        Node n = NodeFactory.createAnon();
+        Node n = NodeFactory.createBlankNode();
         assertEquals( n.getBlankNodeId().getLabelString(), n.getBlankNodeLabel() );
     }
 
@@ -272,13 +272,13 @@ public class TestNode extends GraphTestBase
     /**
         Test that anonymous nodes are created with the correct labels
      */
-    public void testCreateAnon()
+    public void testCreateBlankNode()
     {
         String idA = "_xxx", idB = "_yyy";
         Node a = NodeCreateUtils.create( idA ), b = NodeCreateUtils.create( idB );
         assertTrue( "both must be bnodes", a.isBlank() && b.isBlank() );
-        assertEquals( new AnonId( idA ), a.getBlankNodeId() );
-        assertEquals( new AnonId( idB ), b.getBlankNodeId() );
+        assertEquals( BlankNodeId.create( idA ), a.getBlankNodeId() );
+        assertEquals( BlankNodeId.create( idB ), b.getBlankNodeId() );
     }
 
     public void testCreateVariable()
@@ -468,7 +468,7 @@ public class TestNode extends GraphTestBase
             @Override
             public Object visitAny( Node_ANY it ) { return it; }
             @Override
-            public Object visitBlank( Node_Blank it, AnonId id ) { return it; }
+            public Object visitBlank( Node_Blank it, BlankNodeId id ) { return it; }
             @Override
             public Object visitLiteral( Node_Literal it, LiteralLabel lit ) { return it; }
             @Override
@@ -506,7 +506,7 @@ public class TestNode extends GraphTestBase
             public Object visitAny( Node_ANY it ) 
             { return null; }
             @Override
-            public Object visitBlank( Node_Blank it, AnonId id ) 
+            public Object visitBlank( Node_Blank it, BlankNodeId id ) 
             { assertTrue( it.getBlankNodeId() == id ); return null; }
             @Override
             public Object visitLiteral( Node_Literal it, LiteralLabel lit ) 
@@ -534,7 +534,7 @@ public class TestNode extends GraphTestBase
             public Object visitAny( Node_ANY it ) 
             { strings[0] += " any"; return null; }
             @Override
-            public Object visitBlank( Node_Blank it, AnonId id ) 
+            public Object visitBlank( Node_Blank it, BlankNodeId id ) 
             { strings[0] += " blank"; return null; }
             @Override
             public Object visitLiteral( Node_Literal it, LiteralLabel lit ) 

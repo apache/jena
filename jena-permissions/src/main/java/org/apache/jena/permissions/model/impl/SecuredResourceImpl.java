@@ -21,10 +21,9 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.permissions.AccessDeniedException;
+import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.impl.ItemHolder;
-import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.permissions.impl.SecuredItemInvoker;
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.model.SecuredResource;
@@ -32,6 +31,7 @@ import org.apache.jena.permissions.model.SecuredStatement;
 import org.apache.jena.permissions.utils.PermStatementFilter;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.PropertyNotFoundException ;
+import org.apache.jena.shared.ReadDeniedException;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /**
@@ -72,7 +72,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 			final Node n = resource.asNode();
 			if (resource.isAnon())
 			{
-				goodResource = securedModel.createResource(n.getBlankNodeId());
+				goodResource = securedModel.createResource(new AnonId(n.getBlankNodeId()));
 			}
 			else
 			{
@@ -356,10 +356,9 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	{
 		if (!canReadProperty(p))
 		{
-			throw new AccessDeniedException(getModelNode(), SecuredItemImpl
-					.convert(
-							new Triple(holder.getBaseItem().asNode(), p,
-									Node.ANY)).toString(), Action.Read);
+			throw new ReadDeniedException(SecuredItem.Util.triplePermissionMsg(getModelNode()), 
+					new Triple(holder.getBaseItem().asNode(), p,
+									Node.ANY));
 		}
 	}
 

@@ -17,14 +17,14 @@
  */
 package org.apache.jena.permissions.graph;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.GraphEventManager ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphEventManager;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.Factory;
 import org.apache.jena.permissions.StaticSecurityEvaluator;
 import org.apache.jena.permissions.graph.SecuredGraph;
-import org.apache.jena.sparql.graph.GraphFactory ;
+import org.apache.jena.sparql.graph.GraphFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -43,11 +43,11 @@ public class CrossIDGraphEventManagerTest {
 
 		g = GraphFactory.createDefaultGraph();
 		g.add(new Triple(NodeFactory.createURI("urn:ann"), NodeFactory
-				.createURI("http://example.com/v"), NodeFactory.createAnon()));
+				.createURI("http://example.com/v"), NodeFactory.createBlankNode()));
 		g.add(new Triple(NodeFactory.createURI("urn:bob"), NodeFactory
-				.createURI("http://example.com/v"), NodeFactory.createAnon()));
+				.createURI("http://example.com/v"), NodeFactory.createBlankNode()));
 		g.add(new Triple(NodeFactory.createURI("urn:ann"), NodeFactory
-				.createURI("http://example.com/v2"), NodeFactory.createAnon()));
+				.createURI("http://example.com/v2"), NodeFactory.createBlankNode()));
 
 		sg = Factory.getInstance(securityEvaluator,
 				"http://example.com/testGraph", g);
@@ -62,13 +62,13 @@ public class CrossIDGraphEventManagerTest {
 	@Test
 	public void notificationsTest() {
 		sg.add(new Triple(NodeFactory.createURI("urn:bob"), NodeFactory
-				.createURI("http://example.com/v2"), NodeFactory.createAnon()));
+				.createURI("http://example.com/v2"), NodeFactory.createBlankNode()));
 
 		Assert.assertTrue("Should recorded add", bobListener.isAdd());
 		Assert.assertFalse("Should not have recorded add", annListener.isAdd());
 
 		sg.delete(new Triple(NodeFactory.createURI("urn:bob"), NodeFactory
-				.createURI("http://example.com/v2"), NodeFactory.createAnon()));
+				.createURI("http://example.com/v2"), NodeFactory.createBlankNode()));
 
 		Assert.assertTrue("Should recorded delete", bobListener.isDelete());
 		Assert.assertFalse("Should not have recorded delete",

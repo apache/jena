@@ -30,6 +30,7 @@ public class Node_Variable extends Node_Fluid
          Initialise this Node_Variable with a name object (which should be a
          VariableName object).
     */
+    @Deprecated
     protected Node_Variable( Object name )
         { super( name ); }
     

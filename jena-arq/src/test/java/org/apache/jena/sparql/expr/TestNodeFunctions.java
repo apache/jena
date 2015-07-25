@@ -115,7 +115,7 @@ public class TestNodeFunctions extends BaseTest {
 
     @Test(expected=ExprTypeException.class)
     public void testStr4() {
-        Node n = NodeFactory.createAnon() ;
+        Node n = NodeFactory.createBlankNode() ;
         String s = NodeFunctions.str(n) ;
     }
 
@@ -162,7 +162,7 @@ public class TestNodeFunctions extends BaseTest {
 
     @Test(expected=ExprTypeException.class)
     public void testDatatype6() {
-        NodeValue nv = NodeValue.makeNode(NodeFactory.createAnon()) ;
+        NodeValue nv = NodeValue.makeNode(NodeFactory.createBlankNode()) ;
         NodeValue r = NodeFunctions.datatype(nv) ;
     }
 
@@ -289,7 +289,7 @@ public class TestNodeFunctions extends BaseTest {
     }
 
     @Test public void testIsBlank1() {
-        NodeValue nv = NodeValue.makeNode(NodeFactory.createAnon()) ;
+        NodeValue nv = NodeValue.makeNode(NodeFactory.createBlankNode()) ;
         NodeValue r = NodeFunctions.isBlank(nv) ;
         assertEquals(NodeValue.TRUE, r) ;
 

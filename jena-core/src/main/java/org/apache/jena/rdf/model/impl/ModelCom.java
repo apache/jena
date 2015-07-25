@@ -911,7 +911,7 @@ implements Model, PrefixMapping, Lock
     { return r.inModel( this ).as( Bag.class ); }
 
     static private Node makeURI(String uri) 
-    { return uri == null ? NodeFactory.createAnon() : NodeFactory.createURI( uri ); }
+    { return uri == null ? NodeFactory.createBlankNode() : NodeFactory.createURI( uri ); }
 
     @Override
     public Alt getAlt( String uri )  
@@ -1327,7 +1327,7 @@ implements Model, PrefixMapping, Lock
 
      @Override
      public Resource createResource()  
-     { return IteratorFactory.asResource( NodeFactory.createAnon(),this ); }
+     { return IteratorFactory.asResource( NodeFactory.createBlankNode(),this ); }
 
      @Override
      public Resource createResource( String uri )  

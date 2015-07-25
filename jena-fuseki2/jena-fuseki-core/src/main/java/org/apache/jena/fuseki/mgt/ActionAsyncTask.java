@@ -18,9 +18,6 @@
 
 package org.apache.jena.fuseki.mgt;
 
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
-
 import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.fuseki.async.AsyncPool ;
@@ -38,7 +35,7 @@ public abstract class ActionAsyncTask extends ActionItem
     
     @Override
     final
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+    protected void execGet(HttpAction action) {
         ServletOps.errorMethodNotAllowed(METHOD_GET);
     }
 

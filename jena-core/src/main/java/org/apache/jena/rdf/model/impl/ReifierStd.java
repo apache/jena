@@ -206,7 +206,7 @@ public class ReifierStd
     public static Node reifyAs(Graph graph, Node node, Triple triple)
     {
         if ( node == null )
-            node = NodeFactory.createAnon() ;
+            node = NodeFactory.createBlankNode() ;
         else
         {
             Triple t = getTriple(graph, node) ; 

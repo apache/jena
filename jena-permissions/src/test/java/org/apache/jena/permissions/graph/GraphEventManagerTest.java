@@ -17,21 +17,19 @@
  */
 package org.apache.jena.permissions.graph;
 
-import java.util.Arrays;
 import java.util.Set;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.GraphEventManager ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.CollectionGraph ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphEventManager;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.Factory;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.graph.SecuredGraph;
-import org.apache.jena.sparql.graph.GraphFactory ;
+import org.apache.jena.sparql.graph.GraphFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,9 +39,8 @@ import org.junit.runner.RunWith;
  * Verifies that messages are properly filtered when sent to listeners.
  *
  */
-@RunWith( value = SecurityEvaluatorParameters.class )
-public class GraphEventManagerTest
-{
+@RunWith(value = SecurityEvaluatorParameters.class)
+public class GraphEventManagerTest {
 	private final GraphEventManager manager;
 	private final Graph g;
 	private final SecuredGraph sg;
@@ -52,8 +49,7 @@ public class GraphEventManagerTest
 
 	private final RecordingGraphListener listener;
 
-	public GraphEventManagerTest( final MockSecurityEvaluator securityEvaluator )
-	{
+	public GraphEventManagerTest(final MockSecurityEvaluator securityEvaluator) {
 		this.securityEvaluator = securityEvaluator;
 		g = GraphFactory.createDefaultGraph();
 
@@ -66,53 +62,40 @@ public class GraphEventManagerTest
 	}
 
 	@Test
-	@SuppressWarnings("deprecation")
-	public void notifyAddTest()
-	{
+	public void notifyAddTest() {
 		Object principal = securityEvaluator.getPrincipal();
 		final Set<Action> ADD = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Create, Action.Read });
 		g.add(tripleArray[0]);
-		if (securityEvaluator.evaluateAny(principal, ADD, sg.getModelNode()))
-		{
+		if (securityEvaluator.evaluateAny(principal, ADD, sg.getModelNode())) {
 			Assert.assertTrue("Should recorded add", listener.isAdd());
-		}
-		else
-		{
+		} else {
 			Assert.assertFalse("Should not have recorded add", listener.isAdd());
 		}
 		g.delete(Triple.ANY);
 		listener.reset();
-
 	}
 
-	@SuppressWarnings("deprecation")
-    @Test
-	public void notifyDeleteTest()
-	{
+	@Test
+	public void notifyDeleteTest() {
 		Object principal = securityEvaluator.getPrincipal();
 		final Set<Action> DELETE = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Delete, Action.Read });
 		g.delete(tripleArray[0]);
-		if (securityEvaluator.evaluateAny(principal, DELETE, sg.getModelNode()))
-		{
+		if (securityEvaluator.evaluateAny(principal, DELETE, sg.getModelNode())) {
 			Assert.assertTrue("Should have recorded delete",
 					listener.isDelete());
-		}
-		else
-		{
+		} else {
 			Assert.assertFalse("Should not have recorded delete",
 					listener.isDelete());
 		}
 
 		listener.reset();
 
-		
 	}
 
 	@Test
-	public void notifyEventTest()
-	{
+	public void notifyEventTest() {
 		g.getEventManager().notifyEvent(g, "Foo");
 		Assert.assertTrue("Should recorded delete", listener.isEvent());
 		listener.reset();
@@ -127,18 +110,17 @@ public class GraphEventManagerTest
 	}
 
 	@Before
-	public void setup()
-	{
+	public void setup() {
 		tripleArray = new Triple[] {
 				new Triple(NodeFactory.createURI("http://example.com/1"),
 						NodeFactory.createURI("http://example.com/v"),
-						NodeFactory.createAnon()),
+						NodeFactory.createBlankNode()),
 				new Triple(NodeFactory.createURI("http://example.com/2"),
 						NodeFactory.createURI("http://example.com/v"),
-						NodeFactory.createAnon()),
+						NodeFactory.createBlankNode()),
 				new Triple(NodeFactory.createURI("http://example.com/3"),
 						NodeFactory.createURI("http://example.com/v"),
-						NodeFactory.createAnon()) };
+						NodeFactory.createBlankNode()) };
 
 	}
 }

@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.rdf.model.AnonId ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.riot.out.NodeToLabel ;
@@ -43,12 +42,12 @@ public class BlankNodeAllocatorLabelEncoded implements BlankNodeAllocator {
 
     @Override
     public Node alloc(String label) {
-        return NodeFactory.createAnon(new AnonId(NodeFmtLib.decodeBNodeLabel(label))) ;
+        return NodeFactory.createBlankNode(NodeFmtLib.decodeBNodeLabel(label)) ;
     }
 
     @Override
     public Node create() {
         String label = SysRIOT.BNodeGenIdPrefix + (counter.getAndIncrement()) ;
-        return NodeFactory.createAnon(new AnonId(label)) ;
+        return NodeFactory.createBlankNode(label) ;
     }
 }

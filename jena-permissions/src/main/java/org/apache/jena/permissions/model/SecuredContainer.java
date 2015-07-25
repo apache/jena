@@ -19,12 +19,15 @@ package org.apache.jena.permissions.model;
 
 import java.util.Set;
 
-import org.apache.jena.permissions.AccessDeniedException;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.model.impl.SecuredNodeIterator;
 import org.apache.jena.rdf.model.Container ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Statement ;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.DeleteDeniedException;
+import org.apache.jena.shared.ReadDeniedException;
+import org.apache.jena.shared.UpdateDeniedException;
 
 /**
  * The interface for secured Container instances.
@@ -38,181 +41,191 @@ public interface SecuredContainer extends Container, SecuredResource
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredContainer add( final boolean o ) throws AccessDeniedException;
+	public SecuredContainer add( final boolean o ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredContainer add( final char o ) throws AccessDeniedException;
+	public SecuredContainer add( final char o ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredContainer add( final double o ) throws AccessDeniedException;
+	public SecuredContainer add( final double o ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredContainer add( final float o ) throws AccessDeniedException;
+	public SecuredContainer add( final float o ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredContainer add( final long o ) throws AccessDeniedException;
+	public SecuredContainer add( final long o ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredContainer add( final Object o ) throws AccessDeniedException;
+	public SecuredContainer add( final Object o ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredContainer add( final RDFNode o ) throws AccessDeniedException;
+	public SecuredContainer add( final RDFNode o ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
-	public SecuredContainer add( final String o ) throws AccessDeniedException;
+	public SecuredContainer add( final String o ) throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AddDeniedException
 	 */
 	@Override
 	public SecuredContainer add( final String o, final String l )
-			throws AccessDeniedException;
+			throws UpdateDeniedException, AddDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean contains( final boolean o ) throws AccessDeniedException;
+	public boolean contains( final boolean o ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean contains( final char o ) throws AccessDeniedException;
+	public boolean contains( final char o ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean contains( final double o ) throws AccessDeniedException;
+	public boolean contains( final double o ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean contains( final float o ) throws AccessDeniedException;
+	public boolean contains( final float o ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean contains( final long o ) throws AccessDeniedException;
+	public boolean contains( final long o ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean contains( final Object o ) throws AccessDeniedException;
+	public boolean contains( final Object o ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean contains( final RDFNode o ) throws AccessDeniedException;
+	public boolean contains( final RDFNode o ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public boolean contains( final String o ) throws AccessDeniedException;
+	public boolean contains( final String o ) throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read SecTriple( this, RDF.li, o );
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
 	public boolean contains( final String o, final String l )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read on each triple ( this, rdf:li_? node ) returned by
 	 *            iterator;
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public SecuredNodeIterator<RDFNode> iterator() throws AccessDeniedException;
+	public SecuredNodeIterator<RDFNode> iterator() throws ReadDeniedException;
 
 	/**
 	 * @param perms the Permissions required on each node returned
 	 * @sec.graph Read
 	 * @sec.triple Read + perms on each triple ( this, rdf:li_? node ) returned
 	 *            by iterator;
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	public SecuredNodeIterator<RDFNode> iterator( Set<Action> perms )
-			throws AccessDeniedException;
+			throws ReadDeniedException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete s as triple;
-	 * @throws AccessDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws DeleteDeniedException
 	 */
 	@Override
 	public SecuredContainer remove( final Statement s )
-			throws AccessDeniedException;
+			throws UpdateDeniedException, DeleteDeniedException;
 
 	/**
 	 * @sec.graph Read
-	 * @throws AccessDeniedException
+	 * @throws ReadDeniedException
 	 */
 	@Override
-	public int size() throws AccessDeniedException;
+	public int size() throws ReadDeniedException;
 }

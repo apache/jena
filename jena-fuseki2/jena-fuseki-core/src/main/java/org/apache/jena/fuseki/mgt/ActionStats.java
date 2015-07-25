@@ -27,7 +27,6 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import javax.servlet.ServletOutputStream ;
-import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.json.JsonBuilder ;
@@ -37,13 +36,7 @@ import org.apache.jena.fuseki.servlets.HttpAction ;
 
 public class ActionStats extends ActionContainerItem
 {
-    // XXX Use ActionContainerItem
     public ActionStats() { super() ; } 
-    
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        doCommon(req, resp); 
-    }
     
     // This does not consult the system database for dormant etc.
     @Override
