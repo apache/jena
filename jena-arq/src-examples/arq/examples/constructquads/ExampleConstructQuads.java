@@ -54,7 +54,7 @@ public class ExampleConstructQuads {
 		Property p1 = model.createProperty("http://eg.com/p1");
 		Resource o1 = model.createResource("http://eg.com/o1");
 		model1.add(s1, p1, o1);
-		dataset.addNamedModel("<http://eg.com/g1>", model1);
+		dataset.addNamedModel("http://eg.com/g1", model1);
 
 
 		// construct named graph
