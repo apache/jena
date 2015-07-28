@@ -63,21 +63,22 @@ function getSize() {
 function getDriveInfo() {
   local DIR=$1
 
-  local DRIVE_INFO=$(df "$DIR" | tail -n +2)
+  local DRIVE_INFO=$(df -k "$DIR" | tail -n +2)
   if [ -z "${DRIVE_INFO}" ]; then
     abort 1 "Failed to get drive information for $DIR"
   fi
   local DISK=$(echo $DRIVE_INFO | awk '{print $1}')
   local FREE_BYTES=$(echo $DRIVE_INFO | awk '{print $4}')
+  FREE_BYTES="$(($FREE_BYTES * 1024))"
   local USED_PERCENT=$(echo $DRIVE_INFO | awk '{print $5}')
   USED_PERCENT=${USED_PERCENT/"%"/}
   local FREE_PERCENT=$((100 - $USED_PERCENT))
 
   local INFO=()
-  INFO[0]=$DISK
-  INFO[1]=$USED_PERCENT
-  INFO[2]=$FREE_PERCENT
-  INFO[3]=$FREE_BYTES
+  INFO[0]="$DISK"
+  INFO[1]="$USED_PERCENT"
+  INFO[2]="$FREE_PERCENT"
+  INFO[3]="$FREE_BYTES"
 
   echo ${INFO[@]}
 }
