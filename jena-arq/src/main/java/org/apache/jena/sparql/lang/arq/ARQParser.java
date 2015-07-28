@@ -9,6 +9,7 @@ import org.apache.jena.sparql.path.* ;
 import org.apache.jena.sparql.expr.aggregate.* ;
 import org.apache.jena.update.* ;
 import org.apache.jena.sparql.modify.request.* ;
+import org.apache.jena.sparql.core.Quad ;
 
 @SuppressWarnings("all")
 public class ARQParser extends ARQParserBase implements ARQParserConstants {
@@ -1995,7 +1996,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void ConstructQuadsNotTriples(QuadAccSink acc) throws ParseException {
-                                                  Node gn = org.apache.jena.sparql.core.Quad.defaultGraphNodeGenerated ; Node prev = acc.getGraph() ;
+                                                  Node gn = Quad.defaultGraphNodeGenerated ; Node prev = acc.getGraph() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case GRAPH:
       jj_consume_token(GRAPH);
@@ -5520,30 +5521,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     finally { jj_save(4, xla); }
   }
 
-  private boolean jj_3R_172() {
-    if (jj_scan_token(INTEGER_POSITIVE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_167() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_172()) {
-    jj_scanpos = xsp;
-    if (jj_3R_173()) {
-    jj_scanpos = xsp;
-    if (jj_3R_174()) return true;
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_72() {
-    if (jj_scan_token(DAY)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
   private boolean jj_3R_71() {
     if (jj_scan_token(MONTH)) return true;
     if (jj_scan_token(LPAREN)) return true;
@@ -6651,6 +6628,30 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   private boolean jj_3R_73() {
     if (jj_scan_token(HOURS)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_172() {
+    if (jj_scan_token(INTEGER_POSITIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_167() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_172()) {
+    jj_scanpos = xsp;
+    if (jj_3R_173()) {
+    jj_scanpos = xsp;
+    if (jj_3R_174()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_72() {
+    if (jj_scan_token(DAY)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }

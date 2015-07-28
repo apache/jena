@@ -27,16 +27,6 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
 
 /** A interface for a single execution of a query. */
-
-
-/**
- * @author Administrator
- *
- */
-/**
- * @author Administrator
- *
- */
 public interface QueryExecution extends AutoCloseable 
 {
     /** Set the initial association of variables and values.
@@ -111,18 +101,15 @@ public interface QueryExecution extends AutoCloseable
      */
     public Iterator<Triple> execConstructTriples();
     
-    
     /**
      * Similar to execConstructTriples(), except that constructing {@link Quad}.
      */
     public Iterator<Quad> execConstructQuads();
     
-    
     /**
      * Similar to execConstructTriples(), except that constructing {@link Dataset}.
      */
     public Dataset execConstructDataset();
-
 
     /** Execute a DESCRIBE query */
     public Model execDescribe();

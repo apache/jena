@@ -32,6 +32,8 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.util.PrintUtil;
 
@@ -52,7 +54,7 @@ public class ExampleConstructQuads {
 		Property p1 = model.createProperty("http://eg.com/p1");
 		Resource o1 = model.createResource("http://eg.com/o1");
 		model1.add(s1, p1, o1);
-		dataset.addNamedModel("<http://eg.com/g1>", model1);
+		dataset.addNamedModel("http://eg.com/g1", model1);
 
 
 		// construct named graph
@@ -97,7 +99,7 @@ public class ExampleConstructQuads {
 		query = QueryFactory.create(queryString, Syntax.syntaxARQ);
 		qexec = QueryExecutionFactory.create(query, dataset);
 		Dataset d = qexec.execConstructDataset();
-		PrintUtil.printOut(d.getNamedModel("<http://eg.com/g1>").listStatements());
+		RDFDataMgr.write(System.out, d, Lang.TRIG) ;
 		qexec.close();
 		
 		//short form 1
