@@ -298,17 +298,20 @@ else
   # Using the system temp directory
   SORT_TEMP_DIR="$TMPDIR"
 fi
-SORT_TEMP_DIR=$(makeAbsolute "$SORT_TEMP_DIR")
-debug "Sort Temp Directory: $SORT_TEMP_DIR"
-SORT_DRIVE_INFO=($(getDriveInfo "${SORT_TEMP_DIR}"))
-if [ "${#SORT_DRIVE_INFO[@]}" -gt 0 ]; then
-  debug "Sort Temp Directory is on disk ${SORT_DRIVE_INFO[0]} which has ${SORT_DRIVE_INFO[2]}% free space (${SORT_DRIVE_INFO[3]} bytes)"
+if [ -n "$SORT_TEMP_DIR" ]; then
+  # If we've figured out the sort temporary directory then check it
+  SORT_TEMP_DIR=$(makeAbsolute "$SORT_TEMP_DIR")
+  debug "Sort Temp Directory: $SORT_TEMP_DIR"
+  SORT_DRIVE_INFO=($(getDriveInfo "${SORT_TEMP_DIR}"))
+  if [ "${#SORT_DRIVE_INFO[@]}" -gt 0 ]; then
+    debug "Sort Temp Directory is on disk ${SORT_DRIVE_INFO[0]} which has ${SORT_DRIVE_INFO[2]}% free space (${SORT_DRIVE_INFO[3]} bytes)"
 
-  if [ "${SORT_DRIVE_INFO[2]}" -le 10 ]; then
-    warn "-----"
-    warn "Sort Temp Directory ${SORT_TEMP_DIR} is on disk ${SORT_DRIVE_INFO[0]} which only has ${SORT_DRIVE_INFO[2]}% free space (${SORT_DRIVE_INFO[3]} bytes) available"
-    warn "This may result in sort failures if the data to be indexed is large"
-    warn "-----"
+    if [ "${SORT_DRIVE_INFO[2]}" -le 10 ]; then
+      warn "-----"
+      warn "Sort Temp Directory ${SORT_TEMP_DIR} is on disk ${SORT_DRIVE_INFO[0]} which only has ${SORT_DRIVE_INFO[2]}% free space (${SORT_DRIVE_INFO[3]} bytes) available"
+      warn "This may result in sort failures if the data to be indexed is large"
+      warn "-----"
+    fi
   fi
 fi
 
