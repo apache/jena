@@ -82,7 +82,7 @@ class ARQParserBase
     protected ElementGroup createQueryPattern(Template t){
         ElementGroup elg = new ElementGroup();
         List<Quad> quads = t.getQuads();
-        HashMap<Node, BasicPattern> graphs = new HashMap<Node, BasicPattern>();
+        HashMap<Node, BasicPattern> graphs = new HashMap<>();
         for (Quad q: quads){
           BasicPattern bgp = graphs.get(q.getGraph());
           if (bgp == null){
