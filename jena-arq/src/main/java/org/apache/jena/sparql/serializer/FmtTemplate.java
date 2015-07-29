@@ -18,9 +18,10 @@
 
 package org.apache.jena.sparql.serializer;
 
-import org.apache.jena.atlas.io.IndentedLineBuffer ;
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.sparql.syntax.Template ;
+import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.sparql.syntax.Template;
+import org.apache.jena.sparql.util.FmtUtils;
 
 public class FmtTemplate extends FormatterBase
     implements FormatterTemplate 
@@ -51,6 +52,19 @@ public class FmtTemplate extends FormatterBase
     @Override
     public void format(Template template)
     {
+    	
+    	if (template.isConstructQuadTemplate()){
+            out.print("{") ;
+            out.incIndent(INDENT) ;
+            out.pad() ;
+            
+    		out.print("GRAPH");
+    		out.print(" ");
+    		out.print(FmtUtils.stringForNode(template.getGraphNode()));
+    		out.print(" ");
+    	}
+    	
+    
         out.print("{") ;
         out.incIndent(INDENT) ;
         out.pad() ;
@@ -60,6 +74,12 @@ public class FmtTemplate extends FormatterBase
         out.decIndent(INDENT) ;
         out.print("}") ;
         out.newline() ;
+        
+    	if (template.isConstructQuadTemplate()){
+            out.decIndent(INDENT) ;
+            out.print("}") ;
+            out.newline() ;
+    	}
 
     }
 

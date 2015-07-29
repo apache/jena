@@ -65,6 +65,7 @@ public class ExampleConstructQuads {
 		Iterator<Quad> quads = qexec.execConstructQuads();
 		PrintUtil.printOut(quads);
 		qexec.close();
+		arq.qparse.main("--in", "arq", queryString);
 		
 		// construct default graph 1
 		System.out.println("construct default graph 1:");
@@ -74,6 +75,7 @@ public class ExampleConstructQuads {
 		quads = qexec.execConstructQuads();
 		PrintUtil.printOut(quads);
 		qexec.close();
+		arq.qparse.main("--in", "arq", queryString);
 		
 		// construct default graph 2
 		System.out.println("construct default graph 2:");
@@ -83,6 +85,7 @@ public class ExampleConstructQuads {
 		quads = qexec.execConstructQuads();
 		PrintUtil.printOut(quads);
 		qexec.close();
+		arq.qparse.main("--in", "arq", queryString);
 		
 		// construct triples
 		System.out.println("construct default graph 2:");
@@ -92,6 +95,7 @@ public class ExampleConstructQuads {
 		Iterator<Triple> triples = qexec.execConstructTriples();
 		PrintUtil.printOut(triples);
 		qexec.close();
+		arq.qparse.main("--in", "arq", queryString);
 		
 		//construct dataset
 		System.out.println("construct dataset:");
@@ -101,6 +105,7 @@ public class ExampleConstructQuads {
 		Dataset d = qexec.execConstructDataset();
 		RDFDataMgr.write(System.out, d, Lang.TRIG) ;
 		qexec.close();
+		arq.qparse.main("--in", "arq", queryString);
 		
 		//short form 1
 		System.out.println("short form 1:");
@@ -110,6 +115,7 @@ public class ExampleConstructQuads {
 		quads = qexec.execConstructQuads();
 		PrintUtil.printOut(quads);
 		qexec.close();
+		arq.qparse.main("--in", "arq", queryString);
 		
 		//short form 2
 		System.out.println("short form 2:");
@@ -119,6 +125,7 @@ public class ExampleConstructQuads {
 		quads = qexec.execConstructQuads();
 		PrintUtil.printOut(quads);
 		qexec.close();
+		arq.qparse.main("--in", "arq", queryString);
 		
 		//short form 3
 		System.out.println("short form 3:");
@@ -128,6 +135,7 @@ public class ExampleConstructQuads {
 		triples = qexec.execConstructTriples();
 		PrintUtil.printOut(triples);
 		qexec.close();
+		arq.qparse.main("--in", "arq", queryString);
 		
 		//short form 4
 		System.out.println("short form 4:");
@@ -137,7 +145,7 @@ public class ExampleConstructQuads {
 		quads = qexec.execConstructQuads();
 		PrintUtil.printOut(quads);
 		qexec.close();
-		
+		arq.qparse.main("--in", "arq", queryString);
 
 	}
 }

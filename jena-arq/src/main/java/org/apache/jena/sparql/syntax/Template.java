@@ -53,6 +53,17 @@ public class Template
     	this.bgp = bgp;
     	this.qp = null;
     }
+    
+    public boolean isConstructQuadTemplate(){
+    	return this.qp != null && ! this.getQuads().isEmpty();
+    }
+    
+    public Node getGraphNode() {
+    	if (!this.isConstructQuadTemplate()){
+    		return null;
+    	}
+    	return this.getQuads().get(0).getGraph();
+    }
 
 //    public void addTriple(Triple t) { quads.addTriple(t) ; }
 //    public int mark() { return quads.mark() ; }
@@ -123,8 +134,14 @@ public class Template
         hash = hashNode(quad.getSubject())   ^ hash<<1 ;
         hash = hashNode(quad.getPredicate()) ^ hash<<1 ;
         hash = hashNode(quad.getObject())    ^ hash<<1 ;
-        hash = hashNode(quad.getGraph())     ^ hash<<1 ;
+        hash = hashGraph(quad.getGraph())    ^ hash<<1 ;
         return hash ;
+    }
+    
+    private static int hashGraph(Node node){
+    	if ( node == null ) return Quad.defaultGraphNodeGenerated.hashCode() ; 
+        if ( node.isBlank() ) return 59 ;
+        return node.hashCode() ;
     }
 
     private static int hashNode(Node node)

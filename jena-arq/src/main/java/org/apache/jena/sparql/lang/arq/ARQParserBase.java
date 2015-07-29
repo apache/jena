@@ -93,8 +93,10 @@ class ARQParserBase
         }
         for(Node n: graphs.keySet()){
           Element el = new ElementPathBlock(graphs.get(n));
-          if(! Quad.defaultGraphIRI.equals(n) ){
-            el = new ElementNamedGraph(n, el);
+          if(! Quad.defaultGraphNodeGenerated.equals(n) ){
+        	ElementGroup e = new ElementGroup();
+        	e.addElement(el);
+            el = new ElementNamedGraph(n, e);
           }
           elg.addElement(el);
         }
