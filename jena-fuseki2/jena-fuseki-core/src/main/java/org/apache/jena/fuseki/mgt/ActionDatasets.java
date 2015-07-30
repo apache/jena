@@ -133,13 +133,16 @@ public class ActionDatasets extends ActionContainerItem {
             else
                 assemblerFromBody(action, dest) ;
             
-            // Keep a persistent copy imediately.  This is not used for
+            // ----
+            // Keep a persistent copy immediately.  This is not used for
             // anything other than being "for the record".
             filename1 = FusekiServer.dirFileArea.resolve(uuid.asString()).toString() ;
             try ( OutputStream outCopy = IO.openOutputFile(filename1) ) {
                 RDFDataMgr.write(outCopy, model, Lang.TURTLE) ;
             }
+            // ----
 
+            // Process configuration.
             Statement stmt = getOne(model, null, pServiceName, null) ;
             if ( stmt == null ) {
                 StmtIterator sIter = model.listStatements(null, pServiceName, (RDFNode)null ) ;
@@ -164,6 +167,7 @@ public class ActionDatasets extends ActionContainerItem {
             String datasetPath = DataAccessPoint.canonical(datasetName) ;
             action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
             
+            // ---- Check whether ti already exists 
             if ( DataAccessPointRegistry.get().isRegistered(datasetPath) )
                 // And abort.
                 ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetPath) ;
@@ -171,9 +175,12 @@ public class ActionDatasets extends ActionContainerItem {
             // Copy to the configuration directory for server start up next time.
             filename2 = datasetPath.substring(1) ;        // Without "/"
             filename2 = FusekiServer.dirConfiguration.resolve(filename2).toString()+".ttl" ;
+            // If the file theer is a file already in the configuratin area even though
+            // not currently in the DataAccessPointRegistry
             if ( FileOps.exists(filename2) )
-                ServletOps.error(HttpSC.INTERNAL_SERVER_ERROR_500, "Configuration file of that name already exists "+filename2) ;
+                ServletOps.error(HttpSC.CONFLICT_409, "Configuration file of that name already exists "+filename2) ;
 
+            // Write to configuration directory.
             try ( OutputStream outCopy = IO.openOutputFile(filename2) ) {
                 RDFDataMgr.write(outCopy, model, Lang.TURTLE) ;
             }
