@@ -285,13 +285,7 @@ public class QueryExecutionBase implements QueryExecution
         checkNotClosed() ;
         try
         {
-            Iterator<Quad> it = execConstructQuads();
-                        
-            while (it.hasNext())
-            {
-                Quad q = it.next();
-                graph.add(q);
-            }
+        	execConstructQuads().forEachRemaining(graph::add);
         }
         finally
         {
