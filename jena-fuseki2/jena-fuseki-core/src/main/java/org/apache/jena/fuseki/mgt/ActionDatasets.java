@@ -322,7 +322,7 @@ public class ActionDatasets extends ActionContainerItem {
             // Make it invisible to the outside.
             DataAccessPointRegistry.get().remove(name) ;
             // Delete configuration file.
-            // Shoudl be only one, undo damage if multiple.
+            // Should be only one, undo damage if multiple.
             existingConfigurationFile(name).stream().forEach(FileOps::deleteSilent);
             
             // Find graph associated with this dataset name.
