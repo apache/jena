@@ -24,9 +24,6 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.io.StringReader ;
-import java.nio.file.DirectoryStream ;
-import java.nio.file.Files ;
-import java.nio.file.Path ;
 import java.util.* ;
 
 import javax.servlet.ServletOutputStream ;
@@ -173,8 +170,8 @@ public class ActionDatasets extends ActionContainerItem {
                 // And abort.
                 ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetPath) ;
             
-            configFile = generateConfigurationFilename(datasetPath) ;
-            List<String> existing = existingConfigurationFile(datasetPath) ;
+            configFile = FusekiEnv.generateConfigurationFilename(datasetPath) ;
+            List<String> existing = FusekiEnv.existingConfigurationFile(datasetPath) ;
             if ( ! existing.isEmpty() )
                 ServletOps.error(HttpSC.CONFLICT_409, "Configuration file for "+datasetPath+" already exists") ;
 
@@ -323,7 +320,7 @@ public class ActionDatasets extends ActionContainerItem {
             DataAccessPointRegistry.get().remove(name) ;
             // Delete configuration file.
             // Should be only one, undo damage if multiple.
-            existingConfigurationFile(name).stream().forEach(FileOps::deleteSilent);
+            FusekiEnv.existingConfigurationFile(name).stream().forEach(FileOps::deleteSilent);
             
             // Find graph associated with this dataset name.
             // (Statically configured databases aren't in the system database.)
@@ -400,53 +397,7 @@ public class ActionDatasets extends ActionContainerItem {
         return stmt ;
     }
     
-    /** Dataset set name to configuration file name. */
-    private String datasetNameToConfigurationFile(HttpAction action, String dsName) {
-        List<String> existing = existingConfigurationFile(dsName) ;
-        if ( ! existing.isEmpty() ) {
-            if ( existing.size() > 1 ) {
-                action.log.warn(format("[%d] Multiple existing configuration files for %s : %s",
-                                       action.id, dsName, existing));
-                ServletOps.errorBadRequest("Multiple existing configuration files for "+dsName);
-                return null ;
-            }
-            return existing.get(0) ;
-        }
-        
-        return generateConfigurationFilename(dsName) ;
-    }
     
-        
-    // TODO To a library place and use for all ref->filename
-    private String generateConfigurationFilename(String dsName) {
-        String filename = dsName ;
-        // Without "/"
-        if ( filename.startsWith("/"))
-            filename = filename.substring(1) ;
-        filename = FusekiServer.dirConfiguration.resolve(filename).toString()+".ttl" ;
-        return filename ;
-    }
-    
-    /** Return the filenames of all matching files in the configuration directory */  
-    private List<String> existingConfigurationFile(String baseFilename) {
-        // TODO To a library place and use for all ref->filename
-        try { 
-            // Basename glob.
-            List<String> paths = new ArrayList<>() ;
-
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(FusekiServer.dirConfiguration, baseFilename+"*") ) {
-                stream.forEach((p)-> paths.add(p.getFileName().toString())) ;
-            }
-//            DirectoryStream.Filter<Path> matchingFiles = (entry) -> {
-//                String fn = entry.getFileName().toString() ;
-//                return fn.startsWith(baseFilename) ;
-//            } ;
-//            try (DirectoryStream<Path> stream = Files.newDirectoryStream(FusekiServer.dirConfiguration, matchingFiles)) {
-            return paths ;
-        } catch (IOException ex) {
-            throw new InternalErrorException("Failed to read configuration directory "+FusekiServer.dirConfiguration) ;
-        }
-    }
     
     // XXX Merge with Upload.incomingData
     
