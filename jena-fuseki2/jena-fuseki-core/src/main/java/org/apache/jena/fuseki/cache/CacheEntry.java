@@ -23,35 +23,24 @@ import org.apache.jena.sparql.resultset.SPARQLResult;
 
 public class CacheEntry {
 
-    private boolean initialized = false;
+    String Key;
+    String Value;
 
-    private SPARQLResult result;
 
-    private StringBuilder cacheBuilder;
-
-    public SPARQLResult getResult() {
-        return result;
+    public String getKey() {
+        return Key;
     }
 
-    public void setResult(SPARQLResult result) {
-        this.result = result;
+    public void setKey(String key) {
+        Key = key;
     }
 
-    public StringBuilder getCacheBuilder() {
-        return cacheBuilder;
+    public String getValue() {
+        return Value;
     }
 
-    public void setCacheBuilder(StringBuilder cacheBuilder) {
-        this.cacheBuilder = cacheBuilder;
+    public void setValue(String value) {
+        Value = value;
     }
 
-    public void initialized(){
-        if ( this.initialized )
-            return ;
-        initialized = true ;
-    }
-
-    public boolean isInitialized(){
-        return this.initialized;
-    }
 }
