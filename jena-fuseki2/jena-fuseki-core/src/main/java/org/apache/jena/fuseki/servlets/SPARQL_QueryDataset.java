@@ -40,19 +40,19 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     protected void validateQuery(HttpAction action, Query query) 
     { }
    
+    /** Decide the datset - this modifies the query 
+     *  If the query has a dataset description.   
+     */
     @Override
-    protected Dataset decideDataset(HttpAction action, Query query, String queryStringLog) 
-    { 
+    protected Dataset decideDataset(HttpAction action, Query query, String queryStringLog) { 
         DatasetGraph dsg = action.getActiveDSG() ;
-        
-        // query.getDatasetDescription() ;
-        
-        // Protocol.
-        DatasetDescription dsDesc = getDatasetDescription(action) ;
-        if (dsDesc != null )
-        {
-            //errorBadRequest("SPARQL Query: Dataset description in the protocol request") ;
+        DatasetDescription dsDesc = getDatasetDescription(action, query) ;
+        if ( dsDesc != null ) {
             dsg = DynamicDatasets.dynamicDataset(dsDesc, dsg, false) ;
+            if ( query.hasDatasetDescription() ) {
+                query.getGraphURIs().clear() ;
+                query.getNamedGraphURIs().clear() ;
+            }
         }
         
         return DatasetFactory.create(dsg) ;
