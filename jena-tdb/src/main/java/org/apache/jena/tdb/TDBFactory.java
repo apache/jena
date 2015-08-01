@@ -26,6 +26,7 @@ import org.apache.jena.tdb.assembler.VocabTDB ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.setup.StoreParams ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.tdb.sys.TDBInternal ;
 import org.apache.jena.tdb.sys.TDBMaker ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
@@ -92,16 +93,16 @@ public class TDBFactory
         TDBMaker.releaseLocation(location) ;
     }
 
-    /** Return the location of a dataset if it is backed by TDB, else null */ 
+    /** Test whether a dataset is backed by TDB. */ 
     public static boolean isBackedByTDB(Dataset dataset) {
         DatasetGraph dsg = dataset.asDatasetGraph() ;
         return isBackedByTDB(dsg) ;
     }
     
-    /** Return the location of a dataset if it is backed by TDB, else null */ 
+    /** Test whether a dataset is backed by TDB. */ 
     public static boolean isBackedByTDB(DatasetGraph datasetGraph) {
         if ( datasetGraph instanceof DatasetGraphTransaction )
-            // The swicthing "connection" for TDB 
+            // The switching "connection" for TDB 
             return true ;
         if ( datasetGraph instanceof DatasetGraphTDB )
             // A transaction or the base storage.
@@ -123,17 +124,21 @@ public class TDBFactory
             return ((DatasetGraphTransaction)datasetGraph).getLocation() ;
         return null ;
     }
+    
+    /** test whether a location has a TDB database (pragmatic test). */ 
+    private static boolean freshLocation(Location location) {
+        return TDBInternal.isNewDatabaseArea(location) ;
+    }
 
     /** Set the {@link StoreParams} for specific Location.
      *  This call must only be called before a dataset from Location
      *  is created. This operation should be used with care; bad choices
      *  of {@link StoreParams} can reduce performance.
      *  
-     *  <a href="http://jena.apache.org/documentation/tdb/store-paramters.html"
-     *  >See documentation</a>.
+     *  <a href="http://jena.apache.org/documentation/tdb/store-parameters.html">See documentation</a>.
      *  
      *  @param location  The persistent storage location
-     *  @param params  StoreParams to use
+     *  @param params    StoreParams to use
      *  @throws IllegalStateException If the dataset has already been setup.
      */
     public static void setup(Location location, StoreParams params) {

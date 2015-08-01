@@ -29,6 +29,20 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
         get().put(name, accessPt);
     }
     
+    // Debugging
+    public static void print(String string) {
+        System.out.flush() ;
+        if ( string == null )
+            string = "DataAccessPointRegistry" ;
+        System.err.println("== "+string) ;
+        DataAccessPointRegistry.get().keys().iterator().forEachRemaining((k) -> {
+            System.err.print("  (key="+k) ;
+            DataAccessPoint ref = DataAccessPointRegistry.get().get(k) ;
+            System.err.print(", ref="+ref.getName()) ;
+            System.err.println(")") ; 
+        }) ;
+    }
+    
     private static DataAccessPointRegistry singleton = new DataAccessPointRegistry() ;
 
     public static DataAccessPointRegistry get() { return singleton ; }
