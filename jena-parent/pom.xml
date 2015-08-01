@@ -646,7 +646,7 @@
               <link>http://jena.apache.org/documentation/javadoc/text/</link>
               <link>http://jena.apache.org/documentation/javadoc/spatial/</link>
               <link>http://jena.apache.org/documentation/javadoc/fuseki/</link>
-              <link>http://jena.apache.org/documentation/javadoc/security/</link>
+              <link>http://jena.apache.org/documentation/javadoc/permissions/</link>
               <link>http://jena.apache.org/documentation/javadoc/jdbc/</link>
             </links>
           </configuration>
