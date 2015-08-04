@@ -56,95 +56,111 @@ public class ExampleConstructQuads {
 		model1.add(s1, p1, o1);
 		dataset.addNamedModel("http://eg.com/g1", model1);
 
-
 		// construct named graph
 		System.out.println("construct named graph:");
 		String queryString = "CONSTRUCT { GRAPH ?g {<http://eg.com/s1> <http://eg.com/p1> ?o} } WHERE{ GRAPH ?g {<http://eg.com/s1> <http://eg.com/p1> ?o} }";
 		Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-		QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
-		Iterator<Quad> quads = qexec.execConstructQuads();
-		PrintUtil.printOut(quads);
-		qexec.close();
+		try (QueryExecution qexec = QueryExecutionFactory
+				.create(query, dataset)) {
+			Iterator<Quad> quads = qexec.execConstructQuads();
+			PrintUtil.printOut(quads);
+			qexec.close();
+		}
 		arq.qparse.main("--in", "arq", queryString);
-		
+
 		// construct default graph 1
 		System.out.println("construct default graph 1:");
 		queryString = "CONSTRUCT {  {<http://eg.com/s1> <http://eg.com/p1> ?o} } WHERE{ GRAPH ?g {<http://eg.com/s1> <http://eg.com/p1> ?o} }";
-		query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-		qexec = QueryExecutionFactory.create(query, dataset);
-		quads = qexec.execConstructQuads();
-		PrintUtil.printOut(quads);
-		qexec.close();
+		try (QueryExecution qexec = QueryExecutionFactory
+				.create(query, dataset)) {
+			Iterator<Quad> quads = qexec.execConstructQuads();
+			PrintUtil.printOut(quads);
+			qexec.close();
+		}
 		arq.qparse.main("--in", "arq", queryString);
-		
+
 		// construct default graph 2
 		System.out.println("construct default graph 2:");
 		queryString = "CONSTRUCT {<http://eg.com/s1> <http://eg.com/p1> ?o}  WHERE{ GRAPH ?g {<http://eg.com/s1> <http://eg.com/p1> ?o} }";
 		query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-		qexec = QueryExecutionFactory.create(query, dataset);
-		quads = qexec.execConstructQuads();
-		PrintUtil.printOut(quads);
-		qexec.close();
+		try (QueryExecution qexec = QueryExecutionFactory
+				.create(query, dataset)) {
+			Iterator<Quad> quads = qexec.execConstructQuads();
+			PrintUtil.printOut(quads);
+			qexec.close();
+		}
 		arq.qparse.main("--in", "arq", queryString);
-		
+
 		// construct triples
 		System.out.println("construct default graph 2:");
 		queryString = "CONSTRUCT {<http://eg.com/s1> <http://eg.com/p1> ?o}  WHERE{ GRAPH ?g {<http://eg.com/s1> <http://eg.com/p1> ?o} }";
 		query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-		qexec = QueryExecutionFactory.create(query, dataset);
-		Iterator<Triple> triples = qexec.execConstructTriples();
-		PrintUtil.printOut(triples);
-		qexec.close();
+		try (QueryExecution qexec = QueryExecutionFactory
+				.create(query, dataset)) {
+			Iterator<Triple> triples = qexec.execConstructTriples();
+			PrintUtil.printOut(triples);
+			qexec.close();
+		}
 		arq.qparse.main("--in", "arq", queryString);
-		
-		//construct dataset
+
+		// construct dataset
 		System.out.println("construct dataset:");
 		queryString = "CONSTRUCT { GRAPH ?g {<http://eg.com/s1> <http://eg.com/p1> ?o} } WHERE{ GRAPH ?g {<http://eg.com/s1> <http://eg.com/p1> ?o} }";
 		query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-		qexec = QueryExecutionFactory.create(query, dataset);
-		Dataset d = qexec.execConstructDataset();
-		RDFDataMgr.write(System.out, d, Lang.TRIG) ;
-		qexec.close();
+		try (QueryExecution qexec = QueryExecutionFactory
+				.create(query, dataset)) {
+			Dataset d = qexec.execConstructDataset();
+			RDFDataMgr.write(System.out, d, Lang.TRIG);
+			qexec.close();
+		}
 		arq.qparse.main("--in", "arq", queryString);
-		
-		//short form 1
+
+		// short form 1
 		System.out.println("short form 1:");
 		queryString = "CONSTRUCT WHERE{ GRAPH ?g {<http://eg.com/s1> <http://eg.com/p1> ?o} }";
 		query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-		qexec = QueryExecutionFactory.create(query, dataset);
-		quads = qexec.execConstructQuads();
-		PrintUtil.printOut(quads);
-		qexec.close();
+		try (QueryExecution qexec = QueryExecutionFactory
+				.create(query, dataset)) {
+			Iterator<Quad> quads = qexec.execConstructQuads();
+			PrintUtil.printOut(quads);
+			qexec.close();
+		}
 		arq.qparse.main("--in", "arq", queryString);
-		
-		//short form 2
+
+		// short form 2
 		System.out.println("short form 2:");
 		queryString = "CONSTRUCT WHERE{ <http://eg.com/s> <http://eg.com/p> ?o }";
 		query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-		qexec = QueryExecutionFactory.create(query, dataset);
-		quads = qexec.execConstructQuads();
-		PrintUtil.printOut(quads);
-		qexec.close();
+		try (QueryExecution qexec = QueryExecutionFactory
+				.create(query, dataset)) {
+			Iterator<Quad> quads = qexec.execConstructQuads();
+			PrintUtil.printOut(quads);
+			qexec.close();
+		}
 		arq.qparse.main("--in", "arq", queryString);
-		
-		//short form 3
+
+		// short form 3
 		System.out.println("short form 3:");
 		queryString = "CONSTRUCT WHERE{ <http://eg.com/s> <http://eg.com/p> ?o }";
 		query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-		qexec = QueryExecutionFactory.create(query, dataset);
-		triples = qexec.execConstructTriples();
-		PrintUtil.printOut(triples);
-		qexec.close();
+		try (QueryExecution qexec = QueryExecutionFactory
+				.create(query, dataset)) {
+			Iterator<Triple> triples = qexec.execConstructTriples();
+			PrintUtil.printOut(triples);
+			qexec.close();
+		}
 		arq.qparse.main("--in", "arq", queryString);
-		
-		//short form 4
+
+		// short form 4
 		System.out.println("short form 4:");
 		queryString = "CONSTRUCT WHERE{ {<http://eg.com/s> <http://eg.com/p> ?o} }";
 		query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-		qexec = QueryExecutionFactory.create(query, dataset);
-		quads = qexec.execConstructQuads();
-		PrintUtil.printOut(quads);
-		qexec.close();
+		try (QueryExecution qexec = QueryExecutionFactory
+				.create(query, dataset)) {
+			Iterator<Quad> quads = qexec.execConstructQuads();
+			PrintUtil.printOut(quads);
+			qexec.close();
+		}
 		arq.qparse.main("--in", "arq", queryString);
 
 	}
