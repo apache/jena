@@ -165,7 +165,6 @@ public class ExampleConstructQuads {
 		File[] tests = new File("testing/ARQ/Syntax/Syntax-ARQ")
 				.listFiles(new FilenameFilter() {
 					public boolean accept(File dir, String fname) {
-						System.out.println(fname);
 						if (fname.startsWith("syntax-quad-construct-")) {
 							return true;
 						}

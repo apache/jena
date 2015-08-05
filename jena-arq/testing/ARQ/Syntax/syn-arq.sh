@@ -185,3 +185,83 @@ SELECT *
   LET ?x := (4+5)
 }
 EOF
+
+## ---- CONSTRUCT QUAD
+
+N=0
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-quad-construct-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT { GRAPH :g { :s :p :o } } WHERE {}
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-quad-construct-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT { GRAPH ?g { ?s ?p ?o } } WHERE { ?s ?p ?o }
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-quad-construct-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT { :s :p :o } WHERE {}
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-quad-construct-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT {
+   GRAPH ?g { :s :p :o }
+   ?s ?p ?o
+   }
+WHERE
+   { GRAPH ?g { ?s ?p ?o } }
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-quad-construct-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT {
+   ?s ?p ?o
+   GRAPH ?g { :s :p :o }
+   }
+WHERE
+   { GRAPH ?g { ?s ?p ?o } }
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-quad-construct-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT {
+   GRAPH ?g { :s :p :o }
+   ?s ?p ?o .
+   ?s ?p ?o .
+   GRAPH ?g { ?s ?p ?o }
+   ?s ?p ?o .
+   ?s ?p ?o
+   GRAPH ?g { ?s ?p ?o }
+   }
+WHERE
+   { GRAPH ?g { ?s ?p ?o } }
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-quad-construct-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT {
+   GRAPH <urn:x-arq:DefaultGraphNode> {:s :p :o .}
+   }
+WHERE {}
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-quad-construct-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT {
+   GRAPH ?g { :s :p :o }
+   GRAPH ?g1 { :s :p :o }
+   }
+WHERE
+   { }
+EOF
