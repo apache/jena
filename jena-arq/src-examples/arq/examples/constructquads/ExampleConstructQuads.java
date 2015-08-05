@@ -18,6 +18,12 @@
 
 package arq.examples.constructquads;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.jena.graph.Triple;
@@ -38,7 +44,7 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.util.PrintUtil;
 
 public class ExampleConstructQuads {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException, IOException {
 
 		// create testing data :
 		// 1) default graph data
@@ -64,7 +70,6 @@ public class ExampleConstructQuads {
 				.create(query, dataset)) {
 			Iterator<Quad> quads = qexec.execConstructQuads();
 			PrintUtil.printOut(quads);
-			qexec.close();
 		}
 		arq.qparse.main("--in", "arq", queryString);
 
@@ -75,7 +80,6 @@ public class ExampleConstructQuads {
 				.create(query, dataset)) {
 			Iterator<Quad> quads = qexec.execConstructQuads();
 			PrintUtil.printOut(quads);
-			qexec.close();
 		}
 		arq.qparse.main("--in", "arq", queryString);
 
@@ -87,7 +91,6 @@ public class ExampleConstructQuads {
 				.create(query, dataset)) {
 			Iterator<Quad> quads = qexec.execConstructQuads();
 			PrintUtil.printOut(quads);
-			qexec.close();
 		}
 		arq.qparse.main("--in", "arq", queryString);
 
@@ -99,7 +102,6 @@ public class ExampleConstructQuads {
 				.create(query, dataset)) {
 			Iterator<Triple> triples = qexec.execConstructTriples();
 			PrintUtil.printOut(triples);
-			qexec.close();
 		}
 		arq.qparse.main("--in", "arq", queryString);
 
@@ -111,7 +113,6 @@ public class ExampleConstructQuads {
 				.create(query, dataset)) {
 			Dataset d = qexec.execConstructDataset();
 			RDFDataMgr.write(System.out, d, Lang.TRIG);
-			qexec.close();
 		}
 		arq.qparse.main("--in", "arq", queryString);
 
@@ -123,7 +124,6 @@ public class ExampleConstructQuads {
 				.create(query, dataset)) {
 			Iterator<Quad> quads = qexec.execConstructQuads();
 			PrintUtil.printOut(quads);
-			qexec.close();
 		}
 		arq.qparse.main("--in", "arq", queryString);
 
@@ -135,7 +135,6 @@ public class ExampleConstructQuads {
 				.create(query, dataset)) {
 			Iterator<Quad> quads = qexec.execConstructQuads();
 			PrintUtil.printOut(quads);
-			qexec.close();
 		}
 		arq.qparse.main("--in", "arq", queryString);
 
@@ -147,7 +146,6 @@ public class ExampleConstructQuads {
 				.create(query, dataset)) {
 			Iterator<Triple> triples = qexec.execConstructTriples();
 			PrintUtil.printOut(triples);
-			qexec.close();
 		}
 		arq.qparse.main("--in", "arq", queryString);
 
@@ -159,9 +157,31 @@ public class ExampleConstructQuads {
 				.create(query, dataset)) {
 			Iterator<Quad> quads = qexec.execConstructQuads();
 			PrintUtil.printOut(quads);
-			qexec.close();
 		}
 		arq.qparse.main("--in", "arq", queryString);
 
+		// run-construct-quad-test
+		System.out.println("run-construct-quad-test:");
+		File[] tests = new File("testing/ARQ/Syntax/Syntax-ARQ")
+				.listFiles(new FilenameFilter() {
+					public boolean accept(File dir, String fname) {
+						System.out.println(fname);
+						if (fname.startsWith("syntax-quad-construct-")) {
+							return true;
+						}
+						return false;
+					}
+				});
+		for (File test : tests) {
+			System.out.println("======== File: "+test.getName());
+			try (BufferedReader br = new BufferedReader(new FileReader(test))) {
+				String line = null;
+				while( (line = br.readLine()) != null){
+					System.out.println(line);
+				}
+			}
+			System.out.println("==== Output of qparse --file "+ test.getName());
+			arq.qparse.main("--in", "arq", "--file", test.getAbsolutePath());
+		}
 	}
 }
