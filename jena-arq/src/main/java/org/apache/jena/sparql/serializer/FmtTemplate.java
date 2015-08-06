@@ -69,7 +69,7 @@ public class FmtTemplate extends FormatterBase
 
         	out.print("GRAPH");
       		out.print(" ");
-      		out.print(FmtUtils.stringForNode(quad.getGraph()));
+      		out.print(slotToString(quad.getGraph()));
       		out.print(" ");
       		
       		out.newline() ;
