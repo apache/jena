@@ -645,9 +645,10 @@
               <link>http://jena.apache.org/documentation/javadoc/tdb/</link>
               <link>http://jena.apache.org/documentation/javadoc/text/</link>
               <link>http://jena.apache.org/documentation/javadoc/spatial/</link>
-              <link>http://jena.apache.org/documentation/javadoc/fuseki/</link>
-              <link>http://jena.apache.org/documentation/javadoc/security/</link>
+              <link>http://jena.apache.org/documentation/javadoc/fuseki2/</link>
+              <link>http://jena.apache.org/documentation/javadoc/permissions/</link>
               <link>http://jena.apache.org/documentation/javadoc/jdbc/</link>
+              <link>http://jena.apache.org/documentation/javadoc/elephas/</link>
             </links>
           </configuration>
         </plugin>

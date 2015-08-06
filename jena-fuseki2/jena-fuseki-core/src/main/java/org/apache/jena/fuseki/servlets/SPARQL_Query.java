@@ -364,7 +364,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
 
     /** Choose the dataset for this SPARQL Query request. 
      * @param action
-     * @param query
+     * @param query  Query - this may be modified to remove a DatasetDescription.
      * @param queryStringLog 
      * @return {@link Dataset}
      */

@@ -24,9 +24,7 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.io.StringReader ;
-import java.util.HashMap ;
-import java.util.Iterator ;
-import java.util.Map ;
+import java.util.* ;
 
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
@@ -118,8 +116,8 @@ public class ActionDatasets extends ActionContainerItem {
         boolean committed = false ;
         // Also acts as a concurrency lock
         system.begin(ReadWrite.WRITE) ;
-        String filename1 = null ;
-        String filename2 = null ;
+        String systemFileCopy = null ;
+        String configFile = null ;
             
         try {
             // Where to build the templated service/database. 
@@ -133,13 +131,16 @@ public class ActionDatasets extends ActionContainerItem {
             else
                 assemblerFromBody(action, dest) ;
             
-            // Keep a persistent copy imediately.  This is not used for
+            // ----
+            // Keep a persistent copy immediately.  This is not used for
             // anything other than being "for the record".
-            filename1 = FusekiServer.dirFileArea.resolve(uuid.asString()).toString() ;
-            try ( OutputStream outCopy = IO.openOutputFile(filename1) ) {
+            systemFileCopy = FusekiServer.dirFileArea.resolve(uuid.asString()).toString() ;
+            try ( OutputStream outCopy = IO.openOutputFile(systemFileCopy) ) {
                 RDFDataMgr.write(outCopy, model, Lang.TURTLE) ;
             }
+            // ----
 
+            // Process configuration.
             Statement stmt = getOne(model, null, pServiceName, null) ;
             if ( stmt == null ) {
                 StmtIterator sIter = model.listStatements(null, pServiceName, (RDFNode)null ) ;
@@ -164,17 +165,18 @@ public class ActionDatasets extends ActionContainerItem {
             String datasetPath = DataAccessPoint.canonical(datasetName) ;
             action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
             
+            // ---- Check whether ti already exists 
             if ( DataAccessPointRegistry.get().isRegistered(datasetPath) )
                 // And abort.
                 ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetPath) ;
+            
+            configFile = FusekiEnv.generateConfigurationFilename(datasetPath) ;
+            List<String> existing = FusekiEnv.existingConfigurationFile(datasetPath) ;
+            if ( ! existing.isEmpty() )
+                ServletOps.error(HttpSC.CONFLICT_409, "Configuration file for "+datasetPath+" already exists") ;
 
-            // Copy to the configuration directory for server start up next time.
-            filename2 = datasetPath.substring(1) ;        // Without "/"
-            filename2 = FusekiServer.dirConfiguration.resolve(filename2).toString()+".ttl" ;
-            if ( FileOps.exists(filename2) )
-                ServletOps.error(HttpSC.INTERNAL_SERVER_ERROR_500, "Configuration file of that name already exists "+filename2) ;
-
-            try ( OutputStream outCopy = IO.openOutputFile(filename2) ) {
+            // Write to configuration directory.
+            try ( OutputStream outCopy = IO.openOutputFile(configFile) ) {
                 RDFDataMgr.write(outCopy, model, Lang.TURTLE) ;
             }
 
@@ -196,8 +198,8 @@ public class ActionDatasets extends ActionContainerItem {
         } catch (IOException ex) { IO.exception(ex); }
         finally { 
             if ( ! committed ) {
-                if ( filename1 != null ) FileOps.deleteSilent(filename1);
-                if ( filename2 != null ) FileOps.deleteSilent(filename2);
+                if ( systemFileCopy != null ) FileOps.deleteSilent(systemFileCopy);
+                if ( configFile != null ) FileOps.deleteSilent(configFile);
                 system.abort() ; 
             }
             system.end() ; 
@@ -205,83 +207,6 @@ public class ActionDatasets extends ActionContainerItem {
         return null ;
     }
     
-//    //@Override
-//    // The system database version.  
-//    // Keep for easy replacement until comfortable new way is stable. 
-//    protected JsonValue execPostContainer1(HttpAction action) {
-//        JenaUUID uuid = JenaUUID.generate() ;
-//        String newURI = uuid.asURI() ;
-//        Node gn = NodeFactory.createURI(newURI) ;
-//        
-//        ContentType ct = FusekiLib.getContentType(action) ;
-//        
-//        boolean committed = false ;
-//        system.begin(ReadWrite.WRITE) ;
-//        try {
-//            Model model = system.getNamedModel(gn.getURI()) ;
-//            StreamRDF dest = StreamRDFLib.graph(model.getGraph()) ;
-//    
-//            if ( WebContent.isHtmlForm(ct) )
-//                assemblerFromForm(action, dest) ;
-//            else if ( WebContent.isMultiPartForm(ct) )
-//                assemblerFromUpload(action, dest) ;
-//            else
-//                assemblerFromBody(action, dest) ;
-//            
-//            // Keep a persistent copy.
-//            String filename = FusekiServer.dirFileArea.resolve(uuid.asString()).toString() ;
-//            try ( OutputStream outCopy = new FileOutputStream(filename) ) {
-//                RDFDataMgr.write(outCopy, model, Lang.TURTLE) ;
-//            }
-//            
-//            Statement stmt = getOne(model, null, pServiceName, null) ;
-//            if ( stmt == null ) {
-//                StmtIterator sIter = model.listStatements(null, pServiceName, (RDFNode)null ) ;
-//                if ( ! sIter.hasNext() )
-//                    ServletOps.errorBadRequest("No name given in description of Fuseki service") ;
-//                sIter.next() ;
-//                if ( sIter.hasNext() )
-//                    ServletOps.errorBadRequest("Multiple names given in description of Fuseki service") ;
-//                throw new InternalErrorException("Inconsistent: getOne didn't fail the second time") ;
-//            }
-//                
-//            if ( ! stmt.getObject().isLiteral() )
-//                ServletOps.errorBadRequest("Found "+FmtUtils.stringForRDFNode(stmt.getObject())+" : Service names are strings, then used to build the external URI") ;
-//            
-//            Resource subject = stmt.getSubject() ;
-//            Literal object = stmt.getObject().asLiteral() ;
-//            
-//            if ( object.getDatatype() != null && ! object.getDatatype().equals(XSDDatatype.XSDstring) )
-//                action.log.warn(format("[%d] Service name '%s' is not a string", action.id, FmtUtils.stringForRDFNode(object)));
-//    
-//            String datasetName = object.getLexicalForm() ;
-//            String datasetPath = DataAccessPoint.canonical(datasetName) ;
-//            action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
-//            
-//            if ( DataAccessPointRegistry.get().isRegistered(datasetPath) )
-//                // And abort.
-//                ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetPath) ;
-//                
-//            model.removeAll(null, pStatus, null) ;
-//            model.add(subject, pStatus, FusekiVocab.stateActive) ;
-//            
-//            // Need to be in Resource space at this point.
-//            DataAccessPoint ref = Builder.buildDataAccessPoint(subject) ;
-//            DataAccessPointRegistry.register(datasetPath, ref) ;
-//            action.getResponse().setContentType(WebContent.contentTypeTextPlain); 
-//            ServletOutputStream out = action.getResponse().getOutputStream() ;
-//            ServletOps.success(action) ;
-//            system.commit();
-//            committed = true ;
-//            
-//        } catch (IOException ex) { IO.exception(ex); }
-//        finally { 
-//            if ( ! committed ) system.abort() ; 
-//            system.end() ; 
-//        }
-//        return null ;
-//    }
-
     @Override
     protected JsonValue execPostItem(HttpAction action) {
         String name = action.getDatasetName() ;
@@ -370,7 +295,6 @@ public class ActionDatasets extends ActionContainerItem {
 //      ServletOps.errorBadRequest("DELETE only applies to a specific dataset.") ;
 //      return ;
 //  }
-  
         // Does not exist?
         String name = action.getDatasetName() ;
         if ( name == null )
@@ -394,6 +318,9 @@ public class ActionDatasets extends ActionContainerItem {
 
             // Make it invisible to the outside.
             DataAccessPointRegistry.get().remove(name) ;
+            // Delete configuration file.
+            // Should be only one, undo damage if multiple.
+            FusekiEnv.existingConfigurationFile(name).stream().forEach(FileOps::deleteSilent);
             
             // Find graph associated with this dataset name.
             // (Statically configured databases aren't in the system database.)
@@ -414,6 +341,9 @@ public class ActionDatasets extends ActionContainerItem {
             if ( ! committed ) systemDSG.abort() ; 
             systemDSG.end() ; 
         }
+        
+        // Remove the configuration file (if any).
+        DataAccessPointRegistry.get().remove(name) ;
     }
 
     // Persistent state change.

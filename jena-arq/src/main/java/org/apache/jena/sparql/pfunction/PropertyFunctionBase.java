@@ -88,25 +88,24 @@ public abstract class PropertyFunctionBase implements PropertyFunction
     
     class RepeatApplyIteratorPF extends QueryIterRepeatApply
     {
-        private ExecutionContext execCxt ;
-        private PropFuncArg argSubject ; 
-        private Node predicate ;
-        private PropFuncArg argObject ;
+        private final PropFuncArg argSubject ; 
+        private final Node predicate ;
+        private final PropFuncArg argObject ;
         
-       public RepeatApplyIteratorPF(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
-       { 
-           super(input, execCxt) ;
-           this.argSubject = argSubject ;
-           this.predicate = predicate ;
-           this.argObject = argObject ;
-       }
+        public RepeatApplyIteratorPF(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
+        { 
+            super(input, execCxt) ;
+            this.argSubject = argSubject ;
+            this.predicate = predicate ;
+            this.argObject = argObject ;
+        }
 
         @Override
         protected QueryIterator nextStage(Binding binding)
         {
-            QueryIterator iter = exec(binding, argSubject, predicate, argObject, super.getExecContext()) ;
+            QueryIterator iter = exec(binding, argSubject, predicate, argObject, getExecContext()) ;
             if ( iter == null ) 
-                iter = IterLib.noResults(execCxt) ;
+                iter = IterLib.noResults(getExecContext()) ;
             return iter ;
         }
         

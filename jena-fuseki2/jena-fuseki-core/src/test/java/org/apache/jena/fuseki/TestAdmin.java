@@ -32,15 +32,10 @@ import static org.apache.jena.riot.web.HttpOp.execHttpPost ;
 import java.io.File ;
 import java.io.IOException ;
 import java.io.InputStream ;
-import java.util.ArrayList ;
-import java.util.List ;
 
 import org.apache.http.HttpEntity ;
 import org.apache.http.HttpResponse ;
-import org.apache.http.NameValuePair ;
-import org.apache.http.client.entity.UrlEncodedFormEntity ;
 import org.apache.http.entity.FileEntity ;
-import org.apache.http.message.BasicNameValuePair ;
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonArray ;
 import org.apache.jena.atlas.json.JsonObject ;
@@ -177,17 +172,14 @@ public class TestAdmin extends BaseTest {
     }
     
     @Test public void add_delete_dataset_3() throws Exception {
-        String name = "MEMTEST" ;
-        //String args = "dbType=mem&dbName="+name ;
-        
-        List<NameValuePair> args = new ArrayList<NameValuePair>() ;
-        args.add(new BasicNameValuePair("dbType", "mem")) ;
-        args.add(new BasicNameValuePair("dbName", name)) ;
-        
-        HttpEntity e = new UrlEncodedFormEntity(args) ;
-        execHttpPost(ServerTest.urlRoot+"$/"+opDatasets, e) ;
-        checkExists(name) ;
-        deleteDataset(name) ;
+        checkNotThere(dsTest) ;
+        addTestDataset() ;
+        checkExists(dsTest) ;
+        deleteDataset(dsTest) ;
+        checkNotThere(dsTest) ;
+        addTestDataset() ;
+        checkExists(dsTest) ;
+        deleteDataset(dsTest) ;
     }
     
     @Test public void delete_dataset_1() {
