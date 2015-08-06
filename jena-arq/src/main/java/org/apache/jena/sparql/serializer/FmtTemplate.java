@@ -18,8 +18,12 @@
 
 package org.apache.jena.sparql.serializer;
 
+import java.util.List;
+
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.syntax.Template;
 import org.apache.jena.sparql.util.FmtUtils;
 
@@ -52,35 +56,42 @@ public class FmtTemplate extends FormatterBase
     @Override
     public void format(Template template)
     {
-    	
-    	if (template.isConstructQuadTemplate()){
-            out.print("{") ;
-            out.incIndent(INDENT) ;
-            out.pad() ;
-            
-    		out.print("GRAPH");
-    		out.print(" ");
-    		out.print(FmtUtils.stringForNode(template.getGraphNode()));
-    		out.print(" ");
-    	}
-    	
-    
         out.print("{") ;
         out.incIndent(INDENT) ;
         out.pad() ;
-    
-        formatTriples(template.getBGP()) ;
         
-        out.decIndent(INDENT) ;
-        out.print("}") ;
-        out.newline() ;
-        
-    	if (template.isConstructQuadTemplate()){
-            out.decIndent(INDENT) ;
-            out.print("}") ;
-            out.newline() ;
-    	}
+        List<Quad> quads = template.getQuads();
+        for(Quad quad: quads){
+          BasicPattern bgp = new BasicPattern();
+          bgp.add(quad.asTriple());
+          out.newline() ;
+          if(! Quad.defaultGraphNodeGenerated.equals(quad.getGraph()) ){
 
+        	out.print("GRAPH");
+      		out.print(" ");
+      		out.print(FmtUtils.stringForNode(quad.getGraph()));
+      		out.print(" ");
+      		
+      		out.newline() ;
+            out.incIndent(INDENT) ;
+            out.pad() ;
+            out.print("{") ;
+            out.incIndent(INDENT) ;
+            out.pad() ;
+          }
+          
+          formatTriples(bgp) ;
+          
+          if(! Quad.defaultGraphNodeGenerated.equals(quad.getGraph()) ){
+              out.decIndent(INDENT) ;
+              out.print("}") ;
+              out.decIndent(INDENT) ;
+          }
+       }
+       out.newline() ;
+       out.decIndent(INDENT) ;
+       out.print("}") ;
+       out.newline() ;
     }
 
 }

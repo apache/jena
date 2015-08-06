@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.lang.arq;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.jena.atlas.json.io.JSONHandler ;
 import org.apache.jena.atlas.json.io.JSONHandlerBase ;
@@ -81,16 +82,7 @@ class ARQParserBase
     protected void jsonValueVar(String image, long currLine, long currCol)       { throw new NotImplemented("yet") ; }
     protected ElementGroup createQueryPattern(Template t){
         ElementGroup elg = new ElementGroup();
-        List<Quad> quads = t.getQuads();
-        HashMap<Node, BasicPattern> graphs = new HashMap<>();
-        for (Quad q: quads){
-          BasicPattern bgp = graphs.get(q.getGraph());
-          if (bgp == null){
-            bgp = new BasicPattern();
-            graphs.put(q.getGraph(), bgp);
-          }
-          bgp.add( q.asTriple() );
-        }
+        Map<Node, BasicPattern> graphs = t.getGraphPattern();
         for(Node n: graphs.keySet()){
           Element el = new ElementPathBlock(graphs.get(n));
           if(! Quad.defaultGraphNodeGenerated.equals(n) ){

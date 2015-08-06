@@ -20,9 +20,11 @@ package org.apache.jena.sparql.syntax;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.BasicPattern;
@@ -54,17 +56,6 @@ public class Template
     	this.qp = null;
     }
     
-    public boolean isConstructQuadTemplate(){
-    	return this.qp != null && ! this.getQuads().isEmpty();
-    }
-    
-    public Node getGraphNode() {
-    	if (!this.isConstructQuadTemplate()){
-    		return null;
-    	}
-    	return this.getQuads().get(0).getGraph();
-    }
-
 //    public void addTriple(Triple t) { quads.addTriple(t) ; }
 //    public int mark() { return quads.mark() ; }
 //    public void addTriple(int index, Triple t) { quads.addTriple(index, t) ; }
@@ -106,6 +97,21 @@ public class Template
     	}   	
     	return qp.getQuads() ; 
     }
+    
+    public Map<Node, BasicPattern> getGraphPattern(){
+        List<Quad> quads = getQuads();
+        HashMap<Node, BasicPattern> graphs = new HashMap<>();
+        for (Quad q: quads){
+          BasicPattern bgp = graphs.get(q.getGraph());
+          if (bgp == null){
+            bgp = new BasicPattern();
+            graphs.put(q.getGraph(), bgp);
+          }
+          bgp.add( q.asTriple() );
+        }
+        return graphs;
+    }
+
     // -------------------------
 
     public void subst(Collection<Triple> acc, Map<Node, Node> bNodeMap, Binding b)
