@@ -56,21 +56,31 @@ public class ExampleEvaluator implements SecurityEvaluator {
 		return true;
 	}
 
-	private boolean evaluate( Object principalObj, Resource r )
-	{
-		Principal principal = (Principal)principalObj;
-		// a message is only available to sender or recipient
-		if (r.hasProperty( RDF.type, msgType ))
-		{
-			if (principal == null)
-			{
-				throw new AuthenticationRequiredException();
-			}
-			return r.hasProperty( pTo, principal.getName() ) ||
-					r.hasProperty( pFrom, principal.getName());
-		}
-		return true;	
-	}
+	// not that in this implementation all permission checks flow through 
+    // this method.  We can do this because we have a simple permissions 
+    // requirement.  A more complex set of permissions requirement would 
+    // require a different strategy.
+    private boolean evaluate( Object principalObj, Resource r )
+    {
+        Principal principal = (Principal)principalObj;
+        // we do not allow anonymous (un-authenticated) reads of data.
+        // Another strategy would be to only require authentication if the
+        // data being requested was restricted -- but that is a more complex
+        // process and not suitable for this simple example.
+        if (principal == null)
+        {
+            throw new AuthenticationRequiredException();
+        }
+        
+        // a message is only available to sender or recipient
+        if (r.hasProperty( RDF.type, msgType ))
+        {
+            return r.hasProperty( pTo, principal.getName() ) ||
+                    r.hasProperty( pFrom, principal.getName());
+        }
+        return true;    
+    }
+    
 	
 	private boolean evaluate( Object principal, Node node )
 	{
