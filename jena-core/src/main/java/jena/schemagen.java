@@ -47,7 +47,6 @@ import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.jena.vocabulary.XSD ;
 import org.apache.xerces.util.XMLChar ;
-import org.slf4j.LoggerFactory ;
 
 
 
@@ -1168,7 +1167,7 @@ public class schemagen {
                 comment.append( ((Literal) n).getLexicalForm().trim() );
             }
             else {
-                LoggerFactory.getLogger( getClass() ).debug( "Not a literal: " + n );
+                System.err.println( "Warning: Comment on resource <" + r.getURI() + "> is not a literal: " + n );
             }
         }
 

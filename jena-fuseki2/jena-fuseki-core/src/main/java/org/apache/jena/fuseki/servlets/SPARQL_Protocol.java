@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.servlets;
+package org.apache.jena.fuseki.servlets ;
 
 import static org.apache.jena.riot.web.HttpNames.paramDefaultGraphURI ;
 import static org.apache.jena.riot.web.HttpNames.paramNamedGraphURI ;
@@ -34,60 +34,74 @@ import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryException ;
 import org.apache.jena.sparql.core.DatasetDescription ;
 
-/** Support for the SPARQL protocol (SPARQL Query, SPARQL Update)
+/**
+ * Support for the SPARQL protocol (SPARQL Query, SPARQL Update)
  */
-public  abstract class SPARQL_Protocol extends ActionSPARQL
-{
-    protected SPARQL_Protocol() { super() ; }
+public abstract class SPARQL_Protocol extends ActionSPARQL {
+    protected SPARQL_Protocol() {
+        super() ;
+    }
 
-    protected static String messageForQueryException(QueryException ex)
-    { if ( ex.getMessage() != null )
+    protected static String messageForQueryException(QueryException ex) {
+        if ( ex.getMessage() != null )
             return ex.getMessage() ;
         if ( ex.getCause() != null )
             return Lib.classShortName(ex.getCause().getClass()) ;
         return null ;
     }
-    
-    protected static DatasetDescription getDatasetDescription(HttpAction action)
-    {
+
+    protected static DatasetDescription getProtocolDatasetDescription(HttpAction action) {
         List<String> graphURLs = toStrList(action.request.getParameterValues(paramDefaultGraphURI)) ;
         List<String> namedGraphs = toStrList(action.request.getParameterValues(paramNamedGraphURI)) ;
-        
+
         graphURLs = removeEmptyValues(graphURLs) ;
         namedGraphs = removeEmptyValues(namedGraphs) ;
-        
+
         if ( graphURLs.size() == 0 && namedGraphs.size() == 0 )
             return null ;
         return DatasetDescription.create(graphURLs, namedGraphs) ;
     }
-    
-    protected static DatasetDescription getDatasetDescription(Query query)
-    {
+
+    protected static DatasetDescription getQueryDatasetDescription(Query query) {
         return DatasetDescription.create(query) ;
     }
-   
-    private static List<String> toStrList(String[] array)
-    {
+
+    /** Given an action (protocol request) and a query, decide the DatasetDescription, if any.
+     *   
+     * @param action Action details - may be null.
+     * @param query  The query - may be null.
+     * @return DatasetDescription or null
+     */
+    protected static DatasetDescription getDatasetDescription(HttpAction action, Query query) {
+        // Protocol overrides query,
+        DatasetDescription dsDesc = null ;
+        if ( action != null ) {
+            dsDesc = getProtocolDatasetDescription(action) ;
+            if (dsDesc != null ) 
+                return dsDesc ;
+        }
+        if ( query != null )
+            dsDesc = getQueryDatasetDescription(query) ;
+        return dsDesc ;
+    }
+    
+    private static List<String> toStrList(String[] array) {
         if ( array == null )
             return Collections.emptyList() ;
         return Arrays.asList(array) ;
     }
 
-    private static List<String> removeEmptyValues(List<String> list)
-    {
+    private static List<String> removeEmptyValues(List<String> list) {
         return Iter.iter(list).filter(acceptNonEmpty).toList() ;
     }
-    
-    private static Predicate<String> acceptNonEmpty = item -> item != null && !item.isEmpty();
-    
-    protected static int countParamOccurences(HttpServletRequest request, String param)
-    {
+
+    private static Predicate<String> acceptNonEmpty = item -> item != null && !item.isEmpty() ;
+
+    protected static int countParamOccurences(HttpServletRequest request, String param) {
         String[] x = request.getParameterValues(param) ;
         if ( x == null )
             return 0 ;
         return x.length ;
     }
-    
 
 }
-

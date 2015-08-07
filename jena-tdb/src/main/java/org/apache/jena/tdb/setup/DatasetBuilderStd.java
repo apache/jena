@@ -19,7 +19,6 @@
 package org.apache.jena.tdb.setup ;
 
 import java.io.File ;
-import java.io.FileFilter ;
 import java.util.Collections ;
 import java.util.HashMap ;
 import java.util.Map ;
@@ -84,7 +83,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
         StoreParams locParams = StoreParamsCodec.read(location) ;
         StoreParams dftParams = StoreParams.getDftStoreParams() ;
         // This can write the chosen parameters if necessary (new database, appParams != null, locParams == null)
-        boolean newArea = isNewDatabaseArea(location) ;
+        boolean newArea = TDBInternal.isNewDatabaseArea(location) ;
         StoreParams params = Build.decideStoreParams(location, newArea, appParams, locParams, dftParams) ;
         DatasetBuilderStd x = new DatasetBuilderStd() ;
         x.standardSetup() ;
@@ -92,30 +91,6 @@ public class DatasetBuilderStd implements DatasetBuilder {
         return dsg ;
     }
     
-    /** Look at a directory and see if it is a new area */
-    private static boolean isNewDatabaseArea(Location location) {
-        if ( location.isMem() )
-            return true ;
-        File d = new File(location.getDirectoryPath()) ;
-        if ( !d.exists() )
-            return true ;
-        FileFilter ff = fileFilterNewDB ;
-        File[] entries = d.listFiles(ff) ;
-        return entries.length == 0 ;
-    }
-    
-    static FileFilter fileFilterNewDB  = (pathname)->{
-        String fn = pathname.getName() ;
-        if ( fn.equals(".") || fn.equals("..") )
-            return false ;
-        if ( pathname.isDirectory() )
-            return true ;
-
-        if ( fn.equals(StoreParamsConst.TDB_CONFIG_FILE) )
-            return false ;
-        return true ;
-    } ;
-
     public static DatasetGraphTDB create(StoreParams params) {
         // Memory version?
         return create(Location.mem(), params) ;
