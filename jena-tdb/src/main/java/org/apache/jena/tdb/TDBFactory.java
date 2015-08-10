@@ -18,6 +18,9 @@
 
 package org.apache.jena.tdb;
 
+import java.io.File ;
+
+import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -125,9 +128,32 @@ public class TDBFactory
         return null ;
     }
     
-    /** test whether a location has a TDB database (pragmatic test). */ 
-    private static boolean freshLocation(Location location) {
-        return TDBInternal.isNewDatabaseArea(location) ;
+    /** Test whether a location already has a TDB database or whether a call to TDBFactory 
+     * will cause a new, fresh TDB database to be created (pragmatic tests).
+     * The directory may be empty, or not exist.
+     * Existing databases return "true".  
+     */
+    public static boolean inUseLocation(String directory) {
+        return inUseLocation(Location.create(directory)) ;
+    }
+
+    /** Test whether a location already has a TDB database or whether a call to TDBFactory 
+     * will cause a new, fresh TDB database to be created (pragmatic tests).
+     * The directory may be empty, or not exist.
+     * Existing databases return "true".  
+     */
+    public static boolean inUseLocation(Location location) {
+        if ( location.isMemUnique() )
+            return false ;
+        if ( location.isMem() )
+            return StoreConnection.getExisting(location) != null ;
+        String dirname = location.getDirectoryPath() ;
+        File d = new File(dirname) ;
+        
+        if ( ! d.exists() )
+            // TDB autocreates directories one level.
+            return ! FileOps.exists(d.getParent()) ;
+        return ! TDBInternal.isNewDatabaseArea(location) ;
     }
 
     /** Set the {@link StoreParams} for specific Location.
