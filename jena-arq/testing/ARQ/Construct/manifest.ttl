@@ -49,4 +49,60 @@
               qt:data   <reif-data-2.ttl> ] ;
         mf:result  <reif-result-2.rdf>
       ]
+      [  mf:name    "Construct Quad: Named Graph" ;
+         mf:action
+            [ qt:query     <q-construct-quad-named-graph.arq> ;
+              qt:data      <dft.ttl> ;
+              qt:graphData <g1.ttl> ;
+              qt:graphData <g2.ttl> ] ;
+        mf:result  <results-construct-quad-named-graph.trig>
+      ]
+      [  mf:name    "Construct Quad: Default Graph 1" ;
+         mf:action
+            [ qt:query     <q-construct-quad-default-graph-1.arq> ;
+              qt:data      <dft.ttl> ;
+              qt:graphData <g1.ttl> ;
+              qt:graphData <g2.ttl> ] ;
+        mf:result  <results-construct-quad-default-graph.ttl>
+      ]
+      [  mf:name    "Construct Quad: Default Graph 2" ;
+         mf:action
+            [ qt:query     <q-construct-quad-default-graph-2.arq> ;
+              qt:data      <dft.ttl> ;
+              qt:graphData <g1.ttl> ;
+              qt:graphData <g2.ttl> ] ;
+        mf:result  <results-construct-quad-default-graph.ttl>
+      ]
+      [  mf:name    "Construct Quad: Dataset" ;
+         mf:action
+            [ qt:query     <q-construct-quad-dataset.arq> ;
+              qt:data      <dft.ttl> ;
+              qt:graphData <g1.ttl> ;
+              qt:graphData <g2.ttl> ] ;
+        mf:result  <results-construct-quad-dataset.trig>
+      ]
+      [  mf:name    "Construct Quad: Short Form 1" ;
+         mf:action
+            [ qt:query     <q-construct-quad-short-form-1.arq> ;
+              qt:data      <dft.ttl> ;
+              qt:graphData <g1.ttl> ;
+              qt:graphData <g2.ttl> ] ;
+        mf:result  <results-construct-quad-short-form-1.trig>
+      ]
+      [  mf:name    "Construct Quad: Short Form 2" ;
+         mf:action
+            [ qt:query     <q-construct-quad-short-form-2.arq> ;
+              qt:data      <dft.ttl> ;
+              qt:graphData <g1.ttl> ;
+              qt:graphData <g2.ttl> ] ;
+        mf:result  <results-construct-quad-short-form-2.ttl>
+      ]
+      [  mf:name    "Construct Quad: Short Form 3" ;
+         mf:action
+            [ qt:query     <q-construct-quad-short-form-3.arq> ;
+              qt:data      <dft.ttl> ;
+              qt:graphData <g1.ttl> ;
+              qt:graphData <g2.ttl> ] ;
+        mf:result  <results-construct-quad-short-form-3.trig>
+      ]
     ).

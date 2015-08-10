@@ -1,0 +1,3 @@
+@prefix : <http://example.org/ns#> .
+<g1.ttl> {:s1 :p :o1 }
+<g2.ttl> {:s2 :p :o2 }

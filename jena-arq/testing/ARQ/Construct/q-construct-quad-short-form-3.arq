@@ -1,0 +1,5 @@
+PREFIX :   <http://example.org/ns#>
+
+CONSTRUCT
+WHERE
+    { ?s :p ?o. GRAPH ?g { ?sg :p ?og  }  }
