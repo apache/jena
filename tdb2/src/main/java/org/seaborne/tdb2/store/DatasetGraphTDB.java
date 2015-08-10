@@ -91,21 +91,33 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     { return triples2quads(Quad.defaultGraphIRI, iter) ; }
  
     @Override
-    protected void addToDftGraph(Node s, Node p, Node o)
-    { getTripleTable().add(s,p,o) ; }
+    protected void addToDftGraph(Node s, Node p, Node o) { 
+        notifyAdd(null, s, p, o) ;
+        getTripleTable().add(s,p,o) ;
+    }
 
     @Override
-    protected void addToNamedGraph(Node g, Node s, Node p, Node o)
-    { getQuadTable().add(g, s, p, o) ; }
+    protected void addToNamedGraph(Node g, Node s, Node p, Node o) {
+        notifyAdd(g, s, p, o) ;
+        getQuadTable().add(g, s, p, o) ; 
+    }
+
 
     @Override
-    protected void deleteFromDftGraph(Node s, Node p, Node o)
-    { getTripleTable().delete(s,p,o) ; }
+    protected void deleteFromDftGraph(Node s, Node p, Node o) {
+        notifyDelete(null, s, p, o) ;
+        getTripleTable().delete(s, p, o) ;
+    }
 
     @Override
-    protected void deleteFromNamedGraph(Node g, Node s, Node p, Node o)
-    { getQuadTable().delete(g, s, p, o) ; }
+    protected void deleteFromNamedGraph(Node g, Node s, Node p, Node o) {
+        notifyDelete(g, s, p, o) ;
+        getQuadTable().delete(g, s, p, o) ;
+    }
     
+    private final void notifyAdd(Node g, Node s, Node p, Node o) {}
+    private final void notifyDelete(Node g, Node s, Node p, Node o) {}
+
     public GraphTDB getDefaultGraphTDB() 
     { return (GraphTDB)getDefaultGraph() ; }
 
@@ -229,8 +241,14 @@ public class DatasetGraphTDB extends DatasetGraphCaching
                 array[len] = iter.next() ;
             }
 
+            //boolean tripleTable = t.getTupleTable().getTupleLen() == 3 ;
+            
             // Delete them.
             for (int i = 0; i < len; i++) {
+                if ( false ) {
+                    // Need to resolve :-(
+                }
+                
                 t.getTupleTable().delete(array[i]) ;
                 array[i] = null ;
             }
