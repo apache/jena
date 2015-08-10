@@ -29,6 +29,11 @@ import java.util.stream.StreamSupport ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sink ;
 
+/**
+ * Iter provides general utilities for working with {@link Iterator}s.
+ *
+ * @param <T> the type of element over which an instance of Iter iterates
+ */
 public class Iter<T> implements Iterator<T> {
     
     // Most Iterable<T> operations have been removed - use streams instad.

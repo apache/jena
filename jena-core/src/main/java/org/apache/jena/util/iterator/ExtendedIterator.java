@@ -23,19 +23,16 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
-    an ExtendedIterator is a ClosableIterator on which other operations are
-    defined for convenience in iterator composition: composition, filtering
-    in, filtering out, and element mapping.
-<br>
-    NOTE that the result of each of these operations consumes the base
-    iterator(s); they do not make independant copies.
-<br>
-    The canonical implementation of ExtendedIterator is NiceIterator, which
-    also defines static methods for these operations that will work on any
-    ClosableIterators.    
-<br>
-*/
-
+ * An ExtendedIterator is a {@link ClosableIterator} on which other operations are defined for convenience in iterator
+ * composition: composition, filtering in, filtering out, and element mapping.<br>
+ * NOTE that the result of these operations consumes the base iterator(s); they do not make independent copies. <br>
+ * The canonical implementation of ExtendedIterator is {@link NiceIterator}, which also defines static methods for these
+ * operations that will work on any ClosableIterators. <br>
+ * Generally, ExtendedIterator should only be used when working with the Graph API to handle {@link Iterator}s of
+ * {@link org.apache.jena.graph.Triple}s. For other uses, consider {@link org.apache.jena.atlas.iterator.Iter}.
+ * 
+ * @param <T> the type of element over which an instance of ExtendedIterator iterates
+ */
 public interface ExtendedIterator<T> extends ClosableIterator<T>
     {
     /**
