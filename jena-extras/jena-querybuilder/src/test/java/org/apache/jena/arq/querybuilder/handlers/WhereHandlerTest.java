@@ -188,6 +188,22 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				+ uri("one") + SPACE + uri("two") + SPACE + uri("three")
 				+ OPT_SPACE + CLOSE_CURLY, query.toString());
 	}
+	
+	@Test
+	public void testAddUnionToExisting() {
+		handler.addWhere( new Triple( NodeFactory.createURI( "s"), NodeFactory.createURI("p"),
+				NodeFactory.createURI("o")));
+		SelectBuilder sb = new SelectBuilder();
+		sb.addWhere(new Triple(NodeFactory.createURI("one"), NodeFactory
+				.createURI("two"), NodeFactory.createURI("three")));
+
+		handler.addUnion(sb);
+		assertContainsRegex(WHERE + OPEN_CURLY + OPEN_CURLY 
+				+ uri("s") + SPACE+ uri("p") + SPACE + uri("o")+CLOSE_CURLY
+				+OPT_SPACE + UNION + OPEN_CURLY
+				+ uri("one") + SPACE + uri("two") + SPACE + uri("three")
+				+ OPT_SPACE + CLOSE_CURLY+ CLOSE_CURLY, query.toString());
+	}
 
 	@Test
 	public void testAddUnionWithVar() {
@@ -202,6 +218,23 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				+ CLOSE_CURLY, query.toString());
 	}
 
+	@Test
+	public void testAddUnionToExistingWithVar() {
+		handler.addWhere( new Triple( NodeFactory.createURI( "s"), NodeFactory.createURI("p"),
+				NodeFactory.createURI("o")));
+		SelectBuilder sb = new SelectBuilder().addVar("x").addWhere(
+				new Triple(NodeFactory.createURI("one"), NodeFactory
+						.createURI("two"), NodeFactory.createURI("three")));
+
+		handler.addUnion(sb);
+		assertContainsRegex(WHERE + OPEN_CURLY + OPEN_CURLY 
+				+ uri("s") + SPACE+ uri("p") + SPACE + uri("o")+CLOSE_CURLY
+				+OPT_SPACE 				
+				+ UNION + OPEN_CURLY + SELECT
+				+ var("x") + SPACE + WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + uri("three") + OPT_SPACE
+				+ CLOSE_CURLY, query.toString());
+	}
 	@Test
 	public void addGraph() {
 

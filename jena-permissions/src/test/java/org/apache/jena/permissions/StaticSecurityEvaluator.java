@@ -80,4 +80,9 @@ public class StaticSecurityEvaluator implements SecurityEvaluator {
 		return user;
 	}
 
+	@Override
+	public boolean isPrincipalAuthenticated(Object principal) {
+		return principal != null;
+	}
+
 }

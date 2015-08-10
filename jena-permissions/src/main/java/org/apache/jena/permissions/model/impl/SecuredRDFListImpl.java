@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
@@ -36,143 +36,54 @@ import org.apache.jena.permissions.model.SecuredRDFList;
 import org.apache.jena.permissions.model.SecuredRDFNode;
 import org.apache.jena.permissions.utils.RDFListIterator;
 import org.apache.jena.permissions.utils.RDFListSecFilter;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.jena.shared.DeleteDeniedException;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.WrappedIterator ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.shared.ReadDeniedException;
+import org.apache.jena.shared.UpdateDeniedException;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.WrappedIterator;
+import org.apache.jena.vocabulary.RDF;
 
 public class SecuredRDFListImpl extends SecuredResourceImpl implements
-		SecuredRDFList
-{
+		SecuredRDFList {
 	// called plain node but still returns a secured node
-	private class PlainNodeMap implements Function<RDFList, RDFNode>
-	{
+	private class PlainNodeMap implements Function<RDFList, RDFNode> {
 
 		@Override
-		public RDFNode apply( final RDFList o )
-		{
+		public RDFNode apply(final RDFList o) {
 			return SecuredRDFNodeImpl.getInstance(getModel(), o
 					.getRequiredProperty(listFirst()).getObject());
 		}
 
 	}
 
-	private class SecuredListMap implements Function<RDFList, SecuredRDFList>
-	{
+	private class SecuredListMap implements Function<RDFList, SecuredRDFList> {
 
 		@Override
-		public SecuredRDFList apply( final RDFList o )
-		{
+		public SecuredRDFList apply(final RDFList o) {
 			return SecuredRDFListImpl.getInstance(getModel(), o);
 		}
 
 	}
 
-	private class SecuredNodeMap implements Function<RDFList, SecuredRDFNode>
-	{
+	private class SecuredNodeMap implements Function<RDFList, SecuredRDFNode> {
 
 		private Property p;
-		public SecuredNodeMap(Property p)
-		{
-			this.p=p;
+
+		public SecuredNodeMap(Property p) {
+			this.p = p;
 		}
-		
+
 		@Override
-		public SecuredRDFNode apply( final RDFList o )
-		{
+		public SecuredRDFNode apply(final RDFList o) {
 			return SecuredRDFNodeImpl.getInstance(getModel(), o
 					.getRequiredProperty(p).getObject());
 		}
 
 	}
 
-	/*
-	 * private class SecuredRDFListIterator implements Iterator<SecuredRDFList>
-	 * {
-	 * private SecuredRDFList current;
-	 * private Boolean found;
-	 * private final Set<Action> restrictions;
-	 * 
-	 * private SecuredRDFListIterator( final Action restriction )
-	 * {
-	 * this(SecurityEvaluator.Util.asSet(new Action[] { restriction }));
-	 * }
-	 * 
-	 * private SecuredRDFListIterator( final Set<Action> restrictions )
-	 * {
-	 * this.current = SecuredRDFListImpl.this.holder.getSecuredItem();
-	 * this.restrictions = restrictions;
-	 * }
-	 * 
-	 * private boolean checkCandidate()
-	 * {
-	 * if (!endOfList())
-	 * {
-	 * final SecNode candidate = current.getRequiredProperty(listFirst())
-	 * .getObject().asNode();
-	 * return getSecurityEvaluator().evaluate(
-	 * restrictions,
-	 * getModelNode(),
-	 * new SecurityEvaluator.SecTriple(SecuredItemImpl
-	 * .convert(current.asNode()), SecuredItemImpl
-	 * .convert(RDF.first.asNode()), SecuredItemImpl
-	 * .convert(candidate)));
-	 * }
-	 * return false;
-	 * }
-	 * 
-	 * private boolean endOfList()
-	 * {
-	 * return current.equals(listNil());
-	 * }
-	 * 
-	 * @Override
-	 * public boolean hasNext()
-	 * {
-	 * if ((found == null) && !endOfList())
-	 * {
-	 * found = checkCandidate();
-	 * while (!found && !endOfList())
-	 * {
-	 * incrementCurrent();
-	 * found = checkCandidate();
-	 * }
-	 * }
-	 * return found == null ? false : found;
-	 * }
-	 * 
-	 * private void incrementCurrent()
-	 * {
-	 * if (!endOfList())
-	 * {
-	 * current = (SecuredRDFList) current
-	 * .getRequiredProperty(listRest()).getResource()
-	 * .as(RDFList.class);
-	 * }
-	 * }
-	 * 
-	 * @Override
-	 * public SecuredRDFList next()
-	 * {
-	 * if (hasNext())
-	 * {
-	 * found = null;
-	 * final SecuredRDFList retval = current;
-	 * incrementCurrent();
-	 * return retval;
-	 * }
-	 * throw new NoSuchElementException();
-	 * }
-	 * 
-	 * @Override
-	 * public void remove()
-	 * {
-	 * throw new UnsupportedOperationException();
-	 * }
-	 * 
-	 * }
-	 */
 	/**
 	 * Get an instance of SecuredProperty
 	 * 
@@ -182,23 +93,19 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	 *            The rdfList to secure
 	 * @return The SecuredProperty
 	 */
-	public static <T extends RDFList> SecuredRDFList getInstance( final SecuredModel securedModel,
-			final T rdfList )
-	{
-		if (securedModel == null)
-		{
+	public static <T extends RDFList> SecuredRDFList getInstance(
+			final SecuredModel securedModel, final T rdfList) {
+		if (securedModel == null) {
 			throw new IllegalArgumentException(
 					"Secured securedModel may not be null");
 		}
-		if (rdfList == null)
-		{
+		if (rdfList == null) {
 			throw new IllegalArgumentException("RDFList may not be null");
 		}
 
 		// check that property has a securedModel.
 		RDFList goodList = rdfList;
-		if (goodList.getModel() == null)
-		{
+		if (goodList.getModel() == null) {
 			goodList = securedModel.createList(rdfList.asJavaList().iterator());
 		}
 
@@ -208,10 +115,8 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 				holder);
 		// if we are going to create a duplicate proxy, just return this
 		// one.
-		if (goodList instanceof SecuredRDFList)
-		{
-			if (checker.isEquivalent((SecuredRDFList) goodList))
-			{
+		if (goodList instanceof SecuredRDFList) {
+			if (checker.isEquivalent((SecuredRDFList) goodList)) {
 				return (SecuredRDFList) goodList;
 			}
 		}
@@ -239,34 +144,28 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 
 	private final ItemHolder<RDFList, SecuredRDFList> holder;
 
-	protected SecuredRDFListImpl( final SecuredModel securedModel,
-			final ItemHolder<RDFList, SecuredRDFList> holder )
-	{
+	protected SecuredRDFListImpl(final SecuredModel securedModel,
+			final ItemHolder<RDFList, SecuredRDFList> holder) {
 		super(securedModel, holder);
 		this.holder = holder;
 	}
 
 	@Override
-	public void add( final RDFNode value )
-	{
+	public void add(final RDFNode value) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		checkCreateNewList(value, listNil());
 		holder.getBaseItem().add(value);
 	}
 
 	@Override
-	public SecuredRDFList append( final Iterator<? extends RDFNode> nodes )
-	{
+	public SecuredRDFList append(final Iterator<? extends RDFNode> nodes)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		SecuredRDFList copy = copy();
-		if (nodes.hasNext())
-		{
-			if (((RDFList)copy.getBaseItem()).size()>0)
-//			if (copy.size() > 0)
-			{
+		if (nodes.hasNext()) {
+			if (((RDFList) copy.getBaseItem()).size() > 0) {
 				copy.concatenate(copy.getModel().createList(nodes));
-			}
-			else
-			{
+			} else {
 				copy = copy.getModel().createList(nodes);
 			}
 		}
@@ -274,18 +173,14 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	}
 
 	@Override
-	public RDFList append( final RDFList list )
-	{
-		if (holder.getBaseItem().isEmpty())
-		{
+	public RDFList append(final RDFList list) throws ReadDeniedException,
+			AuthenticationRequiredException {
+		if (holder.getBaseItem().isEmpty()) {
 			return list.size() == 0 ? ModelFactory.createDefaultModel()
 					.createList() : list.copy();
-		}
-		else
-		{
+		} else {
 			final RDFList copy = copy();
-			if (list.size() > 0)
-			{
+			if (list.size() > 0) {
 				copy.concatenate(list.copy());
 			}
 			return copy;
@@ -293,44 +188,36 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	}
 
 	@Override
-	public void apply( final ApplyFn fn )
-	{
+	public void apply(final ApplyFn fn) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		// iterator() checks Read
 		final ExtendedIterator<RDFNode> i = iterator();
-		try
-		{
-			while (i.hasNext())
-			{
+		try {
+			while (i.hasNext()) {
 				fn.apply(i.next());
 			}
-		}
-		finally
-		{
+		} finally {
 			i.close();
 		}
 	}
 
 	@Override
-	public void apply( final Set<Action> perms, final ApplyFn fn )
-	{
+	public void apply(final Set<Action> perms, final ApplyFn fn)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		// iterator() checks Read
 		final ExtendedIterator<RDFNode> i = iterator(perms);
-		try
-		{
-			while (i.hasNext())
-			{
+		try {
+			while (i.hasNext()) {
 				fn.apply(i.next());
 			}
-		}
-		finally
-		{
+		} finally {
 			i.close();
 		}
 	}
 
 	@Override
-	public List<RDFNode> asJavaList()
-	{
+	public List<RDFNode> asJavaList() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		// iterator() checks Read
 		return iterator().toList();
 	}
@@ -341,21 +228,17 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	 * @param val
 	 * @return the modified RDFList.
 	 */
-	private RDFList baseRemove( final RDFList val )
-	{
+	private RDFList baseRemove(final RDFList val) {
 
 		RDFList prev = null;
 		RDFList cell = holder.getBaseItem();
 		final boolean searching = true;
 
-		while (searching && !cell.isEmpty())
-		{
-			if (cell.equals(val))
-			{
+		while (searching && !cell.isEmpty()) {
+			if (cell.equals(val)) {
 				// found the value to be removed
 				final RDFList tail = cell.getTail();
-				if (prev != null)
-				{
+				if (prev != null) {
 					prev.setTail(tail);
 				}
 
@@ -363,9 +246,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 
 				// return this unless we have removed the head element
 				return (prev == null) ? tail : this;
-			}
-			else
-			{
+			} else {
 				// not found yet
 				prev = cell;
 				cell = cell.getTail();
@@ -376,107 +257,79 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 		return this;
 	}
 
-	private void checkCreateNewList( final RDFNode value, final Resource tail )
-	{
-		checkCreate(new Triple(
-				SecurityEvaluator.FUTURE,
-				listFirst().asNode(),
+	private void checkCreateNewList(final RDFNode value, final Resource tail)
+			throws AddDeniedException, AuthenticationRequiredException {
+		checkCreate(new Triple(SecurityEvaluator.FUTURE, listFirst().asNode(),
 				value.asNode()));
-		checkCreate(new Triple(
-				SecurityEvaluator.FUTURE,
-				listRest().asNode(),
+		checkCreate(new Triple(SecurityEvaluator.FUTURE, listRest().asNode(),
 				tail.asNode()));
 	}
 
-	private Set<Statement> collectStatements( final Set<Action> actions )
-	{
+	private Set<Statement> collectStatements(final Set<Action> actions) {
 		final Set<Statement> stmts = new HashSet<Statement>();
 		final ExtendedIterator<RDFList> iter = WrappedIterator.create(
 				new RDFListIterator(holder.getBaseItem())).filterKeep(
 				new RDFListSecFilter<RDFList>(this, actions));
-		try
-		{
-			while (iter.hasNext())
-			{
+		try {
+			while (iter.hasNext()) {
 				stmts.addAll(iter.next().listProperties().toSet());
 			}
 			return stmts;
-		}
-		finally
-		{
+		} finally {
 			iter.close();
 		}
 	}
 
 	@Override
-	public void concatenate( final Iterator<? extends RDFNode> nodes )
-	{
+	public void concatenate(final Iterator<? extends RDFNode> nodes)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
-		if (holder.getBaseItem().isEmpty())
-		{
+		if (holder.getBaseItem().isEmpty()) {
 			// concatenating list onto the empty list is an error
 			throw new EmptyListUpdateException(
 					"Tried to concatenate onto the empty list");
-		}
-		else
-		{
-			
-			Triple t = new Triple(
-					SecurityEvaluator.FUTURE,
-					listFirst().asNode(), Node.ANY);
-			if (!canCreate(t))
-			{
+		} else {
+
+			Triple t = new Triple(SecurityEvaluator.FUTURE, listFirst()
+					.asNode(), Node.ANY);
+			if (!canCreate(t)) {
 				final List<RDFNode> list = new ArrayList<RDFNode>();
-				while (nodes.hasNext())
-				{
+				while (nodes.hasNext()) {
 					final RDFNode n = nodes.next();
-					t = new Triple(
-							SecurityEvaluator.FUTURE,
-							listFirst().asNode(), n.asNode());
+					t = new Triple(SecurityEvaluator.FUTURE, listFirst()
+							.asNode(), n.asNode());
 					checkCreate(t);
 					list.add(n);
 				}
 				holder.getBaseItem().concatenate(list.iterator());
 
-			}
-			else
-			{
+			} else {
 				holder.getBaseItem().concatenate(nodes);
 			}
 		}
 	}
 
 	@Override
-	public void concatenate( final RDFList list )
-	{
+	public void concatenate(final RDFList list) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
-		if (holder.getBaseItem().isEmpty())
-		{
+		if (holder.getBaseItem().isEmpty()) {
 			// concatenating list onto the empty list is an error
 			throw new EmptyListUpdateException(
 					"Tried to concatenate onto the empty list");
-		}
-		else
-		{
-			Triple t = new Triple(
-					SecurityEvaluator.FUTURE,
-					listFirst().asNode(), Node.ANY);
-			if (!canCreate(t))
-			{
+		} else {
+			Triple t = new Triple(SecurityEvaluator.FUTURE, listFirst()
+					.asNode(), Node.ANY);
+			if (!canCreate(t)) {
 				final ExtendedIterator<RDFNode> iter = list.iterator();
-				try
-				{
-					while (iter.hasNext())
-					{
-						t = new Triple(
-								SecurityEvaluator.FUTURE,
-								listFirst().asNode(), 
-										iter.next().asNode());
+				try {
+					while (iter.hasNext()) {
+						t = new Triple(SecurityEvaluator.FUTURE, listFirst()
+								.asNode(), iter.next().asNode());
 						checkCreate(t);
 					}
-				}
-				finally
-				{
+				} finally {
 					iter.close();
 				}
 			}
@@ -485,8 +338,9 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	}
 
 	@Override
-	public SecuredRDFList cons( final RDFNode value )
-	{
+	public SecuredRDFList cons(final RDFNode value)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		checkCreateNewList(value, holder.getBaseItem());
 		return SecuredRDFListImpl.getInstance(getModel(), holder.getBaseItem()
@@ -494,214 +348,177 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	}
 
 	@Override
-	public boolean contains( final RDFNode value )
-	{
+	public boolean contains(final RDFNode value) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		// iterator() checks Read
 		final ExtendedIterator<RDFNode> iter = iterator();
-		try
-		{
-			while (iter.hasNext())
-			{
-				if (value.equals(iter.next()))
-				{
+		try {
+			while (iter.hasNext()) {
+				if (value.equals(iter.next())) {
 					return true;
 				}
 			}
 			return false;
-		}
-		finally
-		{
+		} finally {
 			iter.close();
 		}
 	}
 
 	@Override
-	public SecuredRDFList copy()
-	{
+	public SecuredRDFList copy() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		SecuredRDFList retval = null;
-		if (canRead())
-		{
-			final ExtendedIterator<RDFNode> iter = getSecuredRDFListIterator(Action.Read)
-					.mapWith( list -> list.getRequiredProperty(listFirst()).getObject());
-			if (iter.hasNext())
-			{
+		if (canRead()) {
+			final ExtendedIterator<RDFNode> iter = getSecuredRDFListIterator(
+					Action.Read).mapWith(
+					list -> list.getRequiredProperty(listFirst()).getObject());
+			if (iter.hasNext()) {
 				retval = getModel().createList(iter);
-			}
-			else
-			{
+			} else {
 				retval = getModel().createList();
 			}
-		}
-		else
-		{
+		} else {
 			retval = getModel().createList();
 		}
 		return retval;
 	}
 
 	@Override
-	public SecuredRDFNode get( final int i )
-	{
+	public SecuredRDFNode get(final int i) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		final ExtendedIterator<SecuredRDFNode> iter = getSecuredRDFListIterator(
 				Action.Read).mapWith(new SecuredNodeMap(listFirst()));
 		int idx = 0;
-		try
-		{
-			while (iter.hasNext())
-			{
-				if (i == idx)
-				{
+		try {
+			while (iter.hasNext()) {
+				if (i == idx) {
 					return iter.next();
-				}
-				else
-				{
+				} else {
 					idx++;
 					iter.next();
 				}
 
 			}
 			throw new ListIndexException();
-		}
-		finally
-		{
+		} finally {
 			iter.close();
 		}
 	}
 
 	@Override
-	public SecuredRDFNode getHead()
-	{
+	public SecuredRDFNode getHead() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
-		Statement s = holder.getBaseItem().getRequiredProperty( listFirst() );
-		checkRead( s );
+		Statement s = holder.getBaseItem().getRequiredProperty(listFirst());
+		checkRead(s);
 		return SecuredRDFNodeImpl.getInstance(getModel(), s.getObject());
 	}
 
 	private ExtendedIterator<RDFList> getSecuredRDFListIterator(
-			final Action perm )
-	{
+			final Action perm) {
 		return WrappedIterator
 				.create(new RDFListIterator(holder.getBaseItem())).filterKeep(
 						new RDFListSecFilter<RDFList>(this, perm));
 	}
 
 	private ExtendedIterator<RDFList> getSecuredRDFListIterator(
-			final Set<Action> perm )
-	{
+			final Set<Action> perm) {
 		return WrappedIterator
 				.create(new RDFListIterator(holder.getBaseItem())).filterKeep(
 						new RDFListSecFilter<RDFList>(this, perm));
 	}
 
 	@Override
-	public boolean getStrict()
-	{
+	public boolean getStrict() {
 		return holder.getBaseItem().getStrict();
 	}
 
 	@Override
-	public SecuredRDFList getTail()
-	{
+	public SecuredRDFList getTail() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
-		Statement s = holder.getBaseItem().getRequiredProperty( listRest() );
-		checkRead( s );
-		return SecuredRDFListImpl.getInstance(getModel(), s.getObject().as(RDFList.class));
+		Statement s = holder.getBaseItem().getRequiredProperty(listRest());
+		checkRead(s);
+		return SecuredRDFListImpl.getInstance(getModel(),
+				s.getObject().as(RDFList.class));
 	}
 
 	@Override
-	public String getValidityErrorMessage()
-	{
+	public String getValidityErrorMessage() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getValidityErrorMessage();
 	}
 
 	@Override
-	public int indexOf( final RDFNode value )
-	{
+	public int indexOf(final RDFNode value) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		final ExtendedIterator<SecuredRDFNode> iter = getSecuredRDFListIterator(
 				Action.Read).mapWith(new SecuredNodeMap(listFirst()));
-		try
-		{
+		try {
 			int retval = 0;
-			while (iter.hasNext())
-			{
-				if (value.equals(iter.next()))
-				{
+			while (iter.hasNext()) {
+				if (value.equals(iter.next())) {
 					return retval;
-				}
-				else
-				{
+				} else {
 					retval++;
 				}
 			}
 			return -1;
-		}
-		finally
-		{
+		} finally {
 			iter.close();
 		}
 	}
 
 	@Override
-	public int indexOf( final RDFNode value, final int start )
-	{
+	public int indexOf(final RDFNode value, final int start)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		final ExtendedIterator<SecuredRDFNode> iter = getSecuredRDFListIterator(
 				Action.Read).mapWith(new SecuredNodeMap(listFirst()));
-		try
-		{
+		try {
 			int retval = 0;
-			while (iter.hasNext() && (retval < start))
-			{
+			while (iter.hasNext() && (retval < start)) {
 				iter.next();
 				retval++;
 			}
-			while (iter.hasNext())
-			{
-				if (value.equals(iter.next()))
-				{
+			while (iter.hasNext()) {
+				if (value.equals(iter.next())) {
 					return retval;
-				}
-				else
-				{
+				} else {
 					retval++;
 				}
 			}
 			return -1;
-		}
-		finally
-		{
+		} finally {
 			iter.close();
 		}
 	}
 
 	@Override
-	public boolean isEmpty()
-	{
+	public boolean isEmpty() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		final ExtendedIterator<RDFNode> iter = iterator();
-		try
-		{
+		try {
 			return !iter.hasNext();
-		}
-		finally
-		{
+		} finally {
 			iter.close();
 		}
 	}
 
 	@Override
-	public boolean isValid()
-	{
+	public boolean isValid() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().isValid();
 	}
 
 	@Override
-	public ExtendedIterator<RDFNode> iterator()
-	{
+	public ExtendedIterator<RDFNode> iterator() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return getSecuredRDFListIterator(Action.Read).mapWith(
 				new PlainNodeMap());
@@ -709,8 +526,8 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	}
 
 	@Override
-	public ExtendedIterator<RDFNode> iterator( final Set<Action> constraints )
-	{
+	public ExtendedIterator<RDFNode> iterator(final Set<Action> constraints)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		final Set<Action> req = new HashSet<Action>(constraints);
 		req.add(Action.Read);
@@ -718,44 +535,38 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 
 	}
 
-	public Class<? extends RDFList> listAbstractionClass()
-	{
+	public Class<? extends RDFList> listAbstractionClass() {
 		return RDFList.class;
 	}
 
-	public Property listFirst()
-	{
+	public Property listFirst() {
 		return m_listFirst;
 	}
 
-	public Resource listNil()
-	{
+	public Resource listNil() {
 		return m_listNil;
 	}
 
-	public Property listRest()
-	{
+	public Property listRest() {
 		return m_listRest;
 	}
 
-	public Resource listType()
-	{
+	public Resource listType() {
 		return m_listType;
 	}
 
 	@Override
-	public <T> ExtendedIterator<T> mapWith( final Function<RDFNode, T> fn )
-	{
+	public <T> ExtendedIterator<T> mapWith(final Function<RDFNode, T> fn)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		return iterator().mapWith(fn);
 	}
 
 	@Override
-	public Object reduce( final ReduceFn fn, final Object initial )
-	{
+	public Object reduce(final ReduceFn fn, final Object initial)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		Object acc = initial;
 
-		for (final Iterator<RDFNode> i = iterator(); i.hasNext();)
-		{
+		for (final Iterator<RDFNode> i = iterator(); i.hasNext();) {
 			acc = fn.reduce(i.next(), acc);
 		}
 
@@ -763,15 +574,14 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	}
 
 	@Override
-	public Object reduce( final Set<Action> requiredActions, final ReduceFn fn,
-			final Object initial ) throws 
-			EmptyListException, ListIndexException, InvalidListException
-	{
+	public Object reduce(final Set<Action> requiredActions, final ReduceFn fn,
+			final Object initial) throws EmptyListException,
+			ListIndexException, InvalidListException, ReadDeniedException,
+			AuthenticationRequiredException {
 		Object acc = initial;
 		final Set<Action> perms = new HashSet<Action>(requiredActions);
 		perms.add(Action.Read);
-		for (final Iterator<RDFNode> i = iterator(perms); i.hasNext();)
-		{
+		for (final Iterator<RDFNode> i = iterator(perms); i.hasNext();) {
 			acc = fn.reduce(i.next(), acc);
 		}
 
@@ -779,48 +589,38 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	}
 
 	@Override
-	public RDFList remove( final RDFNode val )
-	{
+	public RDFList remove(final RDFNode val) throws UpdateDeniedException,
+			DeleteDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		RDFList cell = null;
 		boolean denied = false;
 
-		if (!canDelete(new Triple(Node.ANY, listFirst().asNode(), val.asNode())))
-		{
+		if (!canDelete(new Triple(Node.ANY, listFirst().asNode(), val.asNode()))) {
 			// iterate over the deletable items
 			final ExtendedIterator<RDFList> iter = getSecuredRDFListIterator(Action.Delete);// .mapWith(new
 																							// SecuredListMap());
-			while (iter.hasNext())
-			{
+			while (iter.hasNext()) {
 				cell = iter.next();
 
 				if (val.equals(cell.getRequiredProperty(listFirst())
-						.getObject()))
-				{
+						.getObject())) {
 					if (canDelete(new Triple(cell.asNode(), listFirst()
-							.asNode(), val.asNode())))
-					{
+							.asNode(), val.asNode()))) {
 						return SecuredRDFListImpl.getInstance(getModel(),
 								baseRemove(cell));
 
-					}
-					else
-					{
+					} else {
 						denied = true;
 					}
 				}
 			}
-			if (denied)
-			{
-				throw new DeleteDeniedException(SecuredItem.Util.triplePermissionMsg(getModelNode()));
-			}
-			else
-			{
+			if (denied) {
+				throw new DeleteDeniedException(
+						SecuredItem.Util.triplePermissionMsg(getModelNode()));
+			} else {
 				return this;
 			}
-		}
-		else
-		{
+		} else {
 			return SecuredRDFListImpl.getInstance(getModel(), holder
 					.getBaseItem().remove(val));
 		}
@@ -828,21 +628,19 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 
 	@Override
 	@Deprecated
-	public void removeAll()
-	{
+	public void removeAll() throws UpdateDeniedException,
+			AuthenticationRequiredException {
 		removeList();
 	}
 
 	@Override
-	public SecuredRDFList removeHead()
-	{
+	public SecuredRDFList removeHead() throws UpdateDeniedException,
+			DeleteDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		final ExtendedIterator<SecuredRDFList> iter = getSecuredRDFListIterator(
 				Action.Read).mapWith(new SecuredListMap());
-		try
-		{
-			if (!iter.hasNext())
-			{
+		try {
+			if (!iter.hasNext()) {
 				throw new EmptyListException(
 						"Attempted to delete the head of a nil list");
 			}
@@ -851,39 +649,27 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 			checkDelete(s);
 			return SecuredRDFListImpl.getInstance(getModel(), baseRemove(cell));
 
-		}
-		finally
-		{
+		} finally {
 			iter.close();
 		}
 	}
 
 	@Override
-	public void removeList()
-	{
+	public void removeList() throws UpdateDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		final Triple t = new Triple(Node.ANY, listFirst().asNode(), Node.ANY);
-		/*
-		 * if (!canRead(t))
-		 * {
-		 * throw new EmptyListException(
-		 * "Attempted to delete the head of a nil list" );
-		 * }
-		 */
+
 		// have to be able to read and delete to delete all.
 		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Delete, Action.Read });
-		if (getSecurityEvaluator().evaluate(getSecurityEvaluator().getPrincipal(), perms, this.getModelNode(),
-				t))
-		{
+		if (getSecurityEvaluator().evaluate(
+				getSecurityEvaluator().getPrincipal(), perms,
+				this.getModelNode(), t)) {
 			holder.getBaseItem().removeList();
-		}
-		else
-		{
-			for (final Statement s : collectStatements(perms))
-			{
-				if (canDelete(s))
-				{
+		} else {
+			for (final Statement s : collectStatements(perms)) {
+				if (canDelete(s)) {
 					s.remove();
 				}
 			}
@@ -891,19 +677,17 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	}
 
 	@Override
-	public SecuredRDFNode replace( final int i, final RDFNode value )
-	{
+	public SecuredRDFNode replace(final int i, final RDFNode value)
+			throws UpdateDeniedException, AuthenticationRequiredException,
+			ListIndexException {
 		checkUpdate();
 		final SecuredNodeMap map = new SecuredNodeMap(listFirst());
 		final ExtendedIterator<SecuredRDFList> iter = getSecuredRDFListIterator(
 				Action.Read).mapWith(new SecuredListMap());
 		int idx = 0;
-		try
-		{
-			while (iter.hasNext())
-			{
-				if (i == idx)
-				{
+		try {
+			while (iter.hasNext()) {
+				if (i == idx) {
 					final SecuredRDFList list = iter.next();
 					final SecuredRDFNode retval = map.apply(list);
 					final Triple t = new Triple(list.asNode(), listFirst()
@@ -914,90 +698,73 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 					final RDFList base = (RDFList) list.getBaseItem();
 					base.getRequiredProperty(listFirst()).changeObject(value);
 					return retval;
-				}
-				else
-				{
+				} else {
 					idx++;
 					iter.next();
 				}
 
 			}
 			throw new ListIndexException();
-		}
-		finally
-		{
+		} finally {
 			iter.close();
 		}
 	}
 
 	@Override
-	public boolean sameListAs( final RDFList list )
-	{
+	public boolean sameListAs(final RDFList list) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<RDFNode> thisIter = null;
 		ExtendedIterator<RDFNode> thatIter = null;
-		try
-		{
+		try {
 			thisIter = iterator();
 			thatIter = list.iterator();
-			while (thisIter.hasNext() && thatIter.hasNext())
-			{
+			while (thisIter.hasNext() && thatIter.hasNext()) {
 				final RDFNode thisN = thisIter.next();
 				final RDFNode thatN = thatIter.next();
-				if ((thisN == null) || !thisN.equals(thatN))
-				{
+				if ((thisN == null) || !thisN.equals(thatN)) {
 					// not equal at this position
 					return false;
 				}
 			}
 			return !(thisIter.hasNext() || thatIter.hasNext());
-		}
-		finally
-		{
-			if (thisIter != null)
-			{
+		} finally {
+			if (thisIter != null) {
 				thisIter.close();
 			}
-			if (thatIter != null)
-			{
+			if (thatIter != null) {
 				thatIter.close();
 			}
 		}
 	}
 
 	@Override
-	public SecuredRDFNode setHead( final RDFNode value )
-	{
+	public SecuredRDFNode setHead(final RDFNode value)
+			throws EmptyListException, AuthenticationRequiredException {
 		final ExtendedIterator<SecuredRDFList> iter = getSecuredRDFListIterator(
 				Action.Read).mapWith(new SecuredListMap());
-		try
-		{
-			if (iter.hasNext())
-			{
+		try {
+			if (iter.hasNext()) {
 				return replace(0, value);
-			}
-			else
-			{
+			} else {
 				throw new EmptyListException(
 						"Tried to set the head of an empty list");
 			}
-		}
-		finally
-		{
+		} finally {
 			iter.close();
 		}
 	}
 
 	@Override
-	public void setStrict( final boolean strict )
-	{
+	public void setStrict(final boolean strict) throws UpdateDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().setStrict(strict);
 	}
 
 	@Override
-	public SecuredRDFList setTail( final RDFList tail )
-	{
+	public SecuredRDFList setTail(final RDFList tail)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 
 		final Statement rest = holder.getBaseItem().getRequiredProperty(
@@ -1014,18 +781,16 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	}
 
 	@Override
-	public int size()
-	{
+	public int size() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		final Triple t = new Triple(Node.ANY, listFirst().asNode(), Node.ANY);
-		if (canRead(t))
-		{
+		if (canRead(t)) {
 			return holder.getBaseItem().size();
 		}
 		final ExtendedIterator<RDFNode> iter = iterator();
 		int i = 0;
-		while (iter.hasNext())
-		{
+		while (iter.hasNext()) {
 			i++;
 			iter.next();
 		}
@@ -1033,12 +798,11 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	}
 
 	@Override
-	public SecuredRDFList with( final RDFNode value )
-	{
+	public SecuredRDFList with(final RDFNode value)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
-		checkCreate(new Triple(
-				SecurityEvaluator.FUTURE,
-				listFirst().asNode(),
+		checkCreate(new Triple(SecurityEvaluator.FUTURE, listFirst().asNode(),
 				value.asNode()));
 		return SecuredRDFListImpl.getInstance(getModel(), holder.getBaseItem()
 				.with(value));

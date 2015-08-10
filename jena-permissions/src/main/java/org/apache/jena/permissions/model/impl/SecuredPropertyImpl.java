@@ -17,20 +17,21 @@
  */
 package org.apache.jena.permissions.model.impl;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.permissions.impl.ItemHolder;
 import org.apache.jena.permissions.impl.SecuredItemInvoker;
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.model.SecuredProperty;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.Property ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.shared.AuthenticationRequiredException;
+import org.apache.jena.shared.ReadDeniedException;
 
 /**
  * Implementation of SecuredProperty to be used by a SecuredItemInvoker proxy.
  */
 public class SecuredPropertyImpl extends SecuredResourceImpl implements
-		SecuredProperty
-{
+		SecuredProperty {
 	/**
 	 * Get an instance of SecuredProperty
 	 * 
@@ -40,31 +41,24 @@ public class SecuredPropertyImpl extends SecuredResourceImpl implements
 	 *            The property to secure
 	 * @return The SecuredProperty
 	 */
-	public static SecuredProperty getInstance( final SecuredModel securedModel,
-			final Property property )
-	{
-		if (securedModel == null)
-		{
+	public static SecuredProperty getInstance(final SecuredModel securedModel,
+			final Property property) {
+		if (securedModel == null) {
 			throw new IllegalArgumentException(
 					"Secured securedModel may not be null");
 		}
-		if (property == null)
-		{
+		if (property == null) {
 			throw new IllegalArgumentException("Property may not be null");
 		}
 
 		// check that property has a securedModel.
 		Property goodProp = property;
-		if (goodProp.getModel() == null)
-		{
+		if (goodProp.getModel() == null) {
 			final Node n = property.asNode();
-			if (property.isAnon())
-			{
+			if (property.isAnon()) {
 				goodProp = securedModel.createProperty(n.getBlankNodeId()
 						.getLabelString());
-			}
-			else
-			{
+			} else {
 				goodProp = securedModel.createProperty(property.asNode()
 						.getURI());
 			}
@@ -76,10 +70,8 @@ public class SecuredPropertyImpl extends SecuredResourceImpl implements
 				securedModel, holder);
 		// if we are going to create a duplicate proxy, just return this
 		// one.
-		if (goodProp instanceof SecuredProperty)
-		{
-			if (checker.isEquivalent((SecuredProperty) goodProp))
-			{
+		if (goodProp instanceof SecuredProperty) {
+			if (checker.isEquivalent((SecuredProperty) goodProp)) {
 				return (SecuredProperty) goodProp;
 			}
 		}
@@ -102,28 +94,25 @@ public class SecuredPropertyImpl extends SecuredResourceImpl implements
 	 */
 	private SecuredPropertyImpl(
 			final SecuredModel securedModel,
-			final ItemHolder<? extends Property, ? extends SecuredProperty> holder )
-	{
+			final ItemHolder<? extends Property, ? extends SecuredProperty> holder) {
 		super(securedModel, holder);
 		this.holder = holder;
 	}
 
 	@Override
-	public int getOrdinal()
-	{
+	public int getOrdinal() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getOrdinal();
 	}
 
 	@Override
-	public Property inModel( final Model m )
-	{
+	public Property inModel(final Model m) {
 		return (Property) super.inModel(m);
 	}
 
 	@Override
-	public boolean isProperty()
-	{
+	public boolean isProperty() {
 		return true;
 	}
 }

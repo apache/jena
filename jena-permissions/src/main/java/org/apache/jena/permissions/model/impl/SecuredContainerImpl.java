@@ -24,8 +24,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.impl.ItemHolder;
 import org.apache.jena.permissions.impl.SecuredItemInvoker;
@@ -33,17 +33,21 @@ import org.apache.jena.permissions.model.SecuredContainer;
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.utils.ContainerFilter;
 import org.apache.jena.permissions.utils.PermStatementFilter;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.WrappedIterator ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.AuthenticationRequiredException;
+import org.apache.jena.shared.DeleteDeniedException;
+import org.apache.jena.shared.ReadDeniedException;
+import org.apache.jena.shared.UpdateDeniedException;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.WrappedIterator;
+import org.apache.jena.vocabulary.RDF;
 
 /**
  * Implementation of SecuredContainer to be used by a SecuredItemInvoker proxy.
  */
 public class SecuredContainerImpl extends SecuredResourceImpl implements
-		SecuredContainer
-{
+		SecuredContainer {
 	/**
 	 * Constructor
 	 * 
@@ -53,23 +57,19 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements
 	 *            The container to secure.
 	 * @return The SecuredResource
 	 */
-	public static SecuredContainer getInstance(
-			final SecuredModel securedModel, final Container container )
-	{
-		if (securedModel == null)
-		{
+	public static SecuredContainer getInstance(final SecuredModel securedModel,
+			final Container container) {
+		if (securedModel == null) {
 			throw new IllegalArgumentException(
 					"Secured securedModel may not be null");
 		}
-		if (container == null)
-		{
+		if (container == null) {
 			throw new IllegalArgumentException("Container may not be null");
 		}
 
 		// check that resource has a securedModel.
 		Container goodContainer = container;
-		if (goodContainer.getModel() == null)
-		{
+		if (goodContainer.getModel() == null) {
 			container.asNode();
 			goodContainer = securedModel.createBag();
 		}
@@ -81,10 +81,8 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements
 				securedModel, holder);
 		// if we are going to create a duplicate proxy, just return this
 		// one.
-		if (goodContainer instanceof SecuredContainer)
-		{
-			if (checker.isEquivalent((SecuredContainer) goodContainer))
-			{
+		if (goodContainer instanceof SecuredContainer) {
+			if (checker.isEquivalent((SecuredContainer) goodContainer)) {
 				return (SecuredContainer) goodContainer;
 			}
 		}
@@ -107,63 +105,61 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements
 	 */
 	protected SecuredContainerImpl(
 			final SecuredModel securedModel,
-			final ItemHolder<? extends Container, ? extends SecuredContainer> holder )
-	{
+			final ItemHolder<? extends Container, ? extends SecuredContainer> holder) {
 		super(securedModel, holder);
 		this.holder = holder;
 		// listener=new ChangeListener();
 		// holder.getBaseItem().getModel().register(listener);
 	}
 
-	protected RDFNode asObject( Object o )
-    { 
-		 return o instanceof RDFNode ? (RDFNode) o : ResourceFactory.createTypedLiteral( o ); 
-    }
-	
-	protected RDFNode asLiteral( String o, String l )
-	{
+	protected RDFNode asObject(Object o) {
+		return o instanceof RDFNode ? (RDFNode) o : ResourceFactory
+				.createTypedLiteral(o);
+	}
+
+	protected RDFNode asLiteral(String o, String l) {
 		return holder.getBaseItem().getModel().createLiteral(o, l);
 	}
-	
+
 	@Override
-	public SecuredContainer add( final boolean o )
-	{
-		return add( asObject( o ));
+	public SecuredContainer add(final boolean o) throws AddDeniedException,
+			UpdateDeniedException, AuthenticationRequiredException {
+		return add(asObject(o));
 	}
 
 	@Override
-	public SecuredContainer add( final char o )
-	{
-		return add( asObject( o ));
+	public SecuredContainer add(final char o) throws AddDeniedException,
+			UpdateDeniedException, AuthenticationRequiredException {
+		return add(asObject(o));
 	}
 
 	@Override
-	public SecuredContainer add( final double o )
-	{
-		return add( asObject( o ));
+	public SecuredContainer add(final double o) throws AddDeniedException,
+			UpdateDeniedException, AuthenticationRequiredException {
+		return add(asObject(o));
 	}
 
 	@Override
-	public SecuredContainer add( final float o )
-	{
-		return add( asObject( o ));
+	public SecuredContainer add(final float o) throws AddDeniedException,
+			UpdateDeniedException, AuthenticationRequiredException {
+		return add(asObject(o));
 	}
 
 	@Override
-	public SecuredContainer add( final long o )
-	{
-		return add( asObject( o ));
+	public SecuredContainer add(final long o) throws AddDeniedException,
+			UpdateDeniedException, AuthenticationRequiredException {
+		return add(asObject(o));
 	}
 
 	@Override
-	public SecuredContainer add( final Object o )
-	{
-		return add( asObject( o ));
+	public SecuredContainer add(final Object o) throws AddDeniedException,
+			UpdateDeniedException, AuthenticationRequiredException {
+		return add(asObject(o));
 	}
 
 	@Override
-	public SecuredContainer add( final RDFNode o )
-	{
+	public SecuredContainer add(final RDFNode o) throws AddDeniedException,
+			UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		final int pos = holder.getBaseItem().size();
 		checkAdd(pos, o.asNode());
@@ -172,73 +168,74 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements
 	}
 
 	@Override
-	public SecuredContainer add( final String o )
-	{
-		return add( asLiteral( o, "" ));
+	public SecuredContainer add(final String o) throws AddDeniedException,
+			UpdateDeniedException, AuthenticationRequiredException {
+		return add(asLiteral(o, ""));
 	}
 
 	@Override
-	public SecuredContainer add( final String o, final String l )
-	{
-		return add( asLiteral( o, l));
+	public SecuredContainer add(final String o, final String l)
+			throws AddDeniedException, UpdateDeniedException,
+			AuthenticationRequiredException {
+		return add(asLiteral(o, l));
 	}
 
-	protected void checkAdd( final int pos, final Literal literal )
-	{
+	protected void checkAdd(final int pos, final Literal literal)
+			throws AddDeniedException, UpdateDeniedException,
+			AuthenticationRequiredException {
 		checkAdd(pos, literal.asNode());
 	}
 
-	protected void checkAdd( final int pos, final Node node )
-	{
+	protected void checkAdd(final int pos, final Node node)
+			throws AddDeniedException, UpdateDeniedException,
+			AuthenticationRequiredException {
 		checkCreate(new Triple(holder.getBaseItem().asNode(), RDF.li(pos)
 				.asNode(), node));
 	}
 
 	@Override
-	public boolean contains( final boolean o )
-	{
-		return contains( asObject( o ) );
+	public boolean contains(final boolean o) throws ReadDeniedException,
+			AuthenticationRequiredException {
+		return contains(asObject(o));
 	}
 
 	@Override
-	public boolean contains( final char o )
-	{
-		return contains( asObject( o ) );
+	public boolean contains(final char o) throws ReadDeniedException,
+			AuthenticationRequiredException {
+		return contains(asObject(o));
 	}
 
 	@Override
-	public boolean contains( final double o )
-	{
-		return contains( asObject( o ) );
+	public boolean contains(final double o) throws ReadDeniedException,
+			AuthenticationRequiredException {
+		return contains(asObject(o));
 	}
 
 	@Override
-	public boolean contains( final float o )
-	{
-		return contains( asObject( o ) );
+	public boolean contains(final float o) throws ReadDeniedException,
+			AuthenticationRequiredException {
+		return contains(asObject(o));
 	}
 
 	@Override
-	public boolean contains( final long o )
-	{
-		return contains( asObject( o ) );
+	public boolean contains(final long o) throws ReadDeniedException,
+			AuthenticationRequiredException {
+		return contains(asObject(o));
 	}
 
 	@Override
-	public boolean contains( final Object o )
-	{
-		return contains( asObject( o ) );
+	public boolean contains(final Object o) throws ReadDeniedException,
+			AuthenticationRequiredException {
+		return contains(asObject(o));
 	}
 
 	@Override
-	public boolean contains( final RDFNode o )
-	{
+	public boolean contains(final RDFNode o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		// iterator check reads
 		final SecuredNodeIterator<RDFNode> iter = iterator();
-		while (iter.hasNext())
-		{
-			if (iter.next().asNode().equals(o.asNode()))
-			{
+		while (iter.hasNext()) {
+			if (iter.next().asNode().equals(o.asNode())) {
 				return true;
 			}
 		}
@@ -246,111 +243,94 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements
 	}
 
 	@Override
-	public boolean contains( final String o )
-	{
-		return contains( asLiteral( o, "" ));
+	public boolean contains(final String o) throws ReadDeniedException,
+			AuthenticationRequiredException {
+		return contains(asLiteral(o, ""));
 	}
 
 	@Override
-	public boolean contains( final String o, final String l )
-	{
-		return contains( asLiteral( o, l ));
+	public boolean contains(final String o, final String l)
+			throws ReadDeniedException, AuthenticationRequiredException {
+		return contains(asLiteral(o, l));
 	}
 
-	protected int getAddIndex()
-	{
+	protected int getAddIndex() {
 		int pos = -1;
 		final ExtendedIterator<Statement> iter = holder.getBaseItem()
 				.listProperties();
-		try
-		{
-			while (iter.hasNext())
-			{
+		try {
+			while (iter.hasNext()) {
 				pos = Math.max(pos, getIndex(iter.next().getPredicate()));
 			}
-		}
-		finally
-		{
+		} finally {
 			iter.close();
 		}
 		return pos + 1;
 	}
 
-	protected static int getIndex( final Property p )
-	{
+	protected static int getIndex(final Property p) {
 		if (p.getNameSpace().equals(RDF.getURI())
-				&& p.getLocalName().startsWith("_"))
-		{
-			try
-			{
+				&& p.getLocalName().startsWith("_")) {
+			try {
 				return Integer.parseInt(p.getLocalName().substring(1));
-			}
-			catch (final NumberFormatException e)
-			{
+			} catch (final NumberFormatException e) {
 				// acceptable;
 			}
 		}
 		return -1;
 	}
 
-	protected ExtendedIterator<Statement> getStatementIterator(
-			final Action perm )
-	{
+	protected ExtendedIterator<Statement> getStatementIterator(final Action perm) {
 		return holder.getBaseItem().listProperties()
 				.filterKeep(new ContainerFilter())
 				.filterKeep(new PermStatementFilter(perm, this));
 	}
 
 	protected ExtendedIterator<Statement> getStatementIterator(
-			final Set<Action> perm )
-	{
+			final Set<Action> perm) {
 		return holder.getBaseItem().listProperties()
 				.filterKeep(new ContainerFilter())
 				.filterKeep(new PermStatementFilter(perm, this));
 	}
 
 	@Override
-	public boolean isAlt()
-	{
+	public boolean isAlt() {
 		return holder.getBaseItem().isAlt();
 	}
 
 	@Override
-	public boolean isBag()
-	{
+	public boolean isBag() {
 		return holder.getBaseItem().isBag();
 	}
 
 	@Override
-	public boolean isSeq()
-	{
+	public boolean isSeq() {
 		return holder.getBaseItem().isSeq();
 	}
 
 	@Override
-	public SecuredNodeIterator<RDFNode> iterator()
-	{
+	public SecuredNodeIterator<RDFNode> iterator() {
 		// listProperties calls checkRead();
-        SecuredStatementIterator iter = listProperties(); 
-        try {
-	        SortedSet<Statement> result = new TreeSet<Statement>( new ContainerComparator() );
-	        while (iter.hasNext()) {
-	        	Statement stmt = iter.next();
-	        	if (stmt.getPredicate().getOrdinal() > 0)
-	        	{
-	        		result.add( stmt );
-	        	}
-	        }
-	        return new SecuredNodeIterator<RDFNode>(getModel(), new StatementRemovingIterator(result.iterator()).mapWith( s -> s.getObject() ) );
-        }
-        finally {
-        	iter.close();
-        }
+		SecuredStatementIterator iter = listProperties();
+		try {
+			SortedSet<Statement> result = new TreeSet<Statement>(
+					new ContainerComparator());
+			while (iter.hasNext()) {
+				Statement stmt = iter.next();
+				if (stmt.getPredicate().getOrdinal() > 0) {
+					result.add(stmt);
+				}
+			}
+			return new SecuredNodeIterator<RDFNode>(getModel(),
+					new StatementRemovingIterator(result.iterator())
+							.mapWith(s -> s.getObject()));
+		} finally {
+			iter.close();
+		}
 	}
 
 	@Override
-	public SecuredNodeIterator<RDFNode> iterator( final Set<Action> perms )
-	{
+	public SecuredNodeIterator<RDFNode> iterator(final Set<Action> perms) {
 		checkRead();
 		final Set<Action> permsCopy = new HashSet<Action>(perms);
 		permsCopy.add(Action.Read);
@@ -361,8 +341,9 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements
 	}
 
 	@Override
-	public SecuredContainer remove( final Statement s )
-	{
+	public SecuredContainer remove(final Statement s)
+			throws UpdateDeniedException, DeleteDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		checkDelete(s.asTriple());
 		holder.getBaseItem().remove(s);
@@ -370,188 +351,39 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements
 	}
 
 	@Override
-	public int size()
-	{
+	public int size() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().size();
 	}
-	/*
-	 * private synchronized void resetIndexes()
-	 * {
-	 * indexes.clear();
-	 * }
-	 */
-	/*
-	/**
-	 * find the position of i in the array
-	 * 
-	 * @param i
-	 * @return the position or x<0 if not found.
-	 */
-	/*
-	 * protected int mapValue( int i )
-	 * {
-	 * rebuildIndex();
-	 * return Collections.binarySearch( indexes, i );
-	 * }
-	 * 
-	 * // return the value at position i
-	 * protected int unmapValue( int i )
-	 * {
-	 * return indexes.get(i);
-	 * }
-	 * 
-	 * 
-	 * private synchronized void rebuildIndex()
-	 * {
-	 * if (indexes.isEmpty())
-	 * {
-	 * ExtendedIterator<Statement> iter = getStatementIterator( Action.Read );
-	 * try {
-	 * while (iter.hasNext())
-	 * {
-	 * indexes.add( getIndex( iter.next().getPredicate() ) );
-	 * }
-	 * }
-	 * finally {
-	 * iter.close();
-	 * }
-	 * Collections.sort(indexes);
-	 * }
-	 * }
-	 * 
-	 * private class ChangeListener implements ModelChangedListener
-	 * {
-	 * 
-	 * private void checkStatement( Statement s )
-	 * {
-	 * if (indexes != null && s.getSubject().equals( holder.getBaseItem()))
-	 * {
-	 * resetIndexes();
-	 * }
-	 * }
-	 * 
-	 * private void checkStatements( Iterator<Statement> iter )
-	 * {
-	 * while( indexes != null && iter.hasNext())
-	 * {
-	 * checkStatement( iter.next() );
-	 * }
-	 * }
-	 * 
-	 * @Override
-	 * public void addedStatement( Statement s )
-	 * {
-	 * checkStatement( s );
-	 * }
-	 * 
-	 * @Override
-	 * public void addedStatements( Statement[] statements )
-	 * {
-	 * checkStatements( Arrays.asList(statements).iterator() );
-	 * }
-	 * 
-	 * @Override
-	 * public void addedStatements( List<Statement> statements )
-	 * {
-	 * checkStatements( statements.iterator() );
-	 * }
-	 * 
-	 * @Override
-	 * public void addedStatements( StmtIterator statements )
-	 * {
-	 * try {
-	 * checkStatements( statements );
-	 * }
-	 * finally {
-	 * statements.close();
-	 * }
-	 * }
-	 * 
-	 * @Override
-	 * public void addedStatements( Model baseModel )
-	 * {
-	 * addedStatements( baseModel.listStatements() );
-	 * }
-	 * 
-	 * @Override
-	 * public void removedStatement( Statement s )
-	 * {
-	 * checkStatement( s );
-	 * }
-	 * 
-	 * @Override
-	 * public void removedStatements( Statement[] statements )
-	 * {
-	 * checkStatements( Arrays.asList(statements).iterator() );
-	 * }
-	 * 
-	 * @Override
-	 * public void removedStatements( List<Statement> statements )
-	 * {
-	 * checkStatements( statements.iterator() );
-	 * }
-	 * 
-	 * @Override
-	 * public void removedStatements( StmtIterator statements )
-	 * {
-	 * try {
-	 * checkStatements( statements );
-	 * }
-	 * finally {
-	 * statements.close();
-	 * }
-	 * }
-	 * 
-	 * @Override
-	 * public void removedStatements( Model baseModel )
-	 * {
-	 * removedStatements( baseModel.listStatements() );
-	 * }
-	 * 
-	 * @Override
-	 * public void notifyEvent( Model baseModel, Object event )
-	 * {
-	 * // do nothing
-	 * }
-	 * 
-	 * }
-	 */
 
-	static class ContainerComparator implements Comparator<Statement>
-	{
+	static class ContainerComparator implements Comparator<Statement> {
 
 		@Override
-		public int compare( Statement arg0, Statement arg1 )
-		{
-			return Integer.valueOf(arg0.getPredicate().getOrdinal()).compareTo( arg1.getPredicate().getOrdinal());
+		public int compare(Statement arg0, Statement arg1) {
+			return Integer.valueOf(arg0.getPredicate().getOrdinal()).compareTo(
+					arg1.getPredicate().getOrdinal());
 		}
-		
+
 	}
-	
-	static class StatementRemovingIterator extends WrappedIterator<Statement>
-	{
+
+	static class StatementRemovingIterator extends WrappedIterator<Statement> {
 		private Statement stmt;
-		
-		public StatementRemovingIterator( Iterator<? extends Statement> base )
-		{
+
+		public StatementRemovingIterator(Iterator<? extends Statement> base) {
 			super(base);
 		}
 
 		@Override
-		public Statement next()
-		{
+		public Statement next() {
 			stmt = super.next();
 			return stmt;
 		}
 
 		@Override
-		public void remove()
-		{
+		public void remove() {
 			stmt.remove();
 			super.remove();
 		}
-		
-		
 	}
 }

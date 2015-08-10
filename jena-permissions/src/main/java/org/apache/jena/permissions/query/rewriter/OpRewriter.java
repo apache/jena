@@ -20,17 +20,18 @@ package org.apache.jena.permissions.query.rewriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
+import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.jena.shared.ReadDeniedException;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.op.* ;
-import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.op.*;
+import org.apache.jena.sparql.core.BasicPattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,8 +42,7 @@ import org.slf4j.LoggerFactory;
  * This implementation inserts security evaluator checks where necessary.
  * </p>
  */
-public class OpRewriter implements OpVisitor
-{
+public class OpRewriter implements OpVisitor {
 	private static Logger LOG = LoggerFactory.getLogger(OpRewriter.class);
 	private OpSequence result;
 	private final Node graphIRI;
@@ -53,12 +53,14 @@ public class OpRewriter implements OpVisitor
 
 	/**
 	 * Constructor
-	 * @param securityEvaluator The security evaluator to use
-	 * @param graphIRI The IRI for the default graph.
+	 * 
+	 * @param securityEvaluator
+	 *            The security evaluator to use
+	 * @param graphIRI
+	 *            The IRI for the default graph.
 	 */
-	public OpRewriter( final SecurityEvaluator securityEvaluator,
-			final Node graphIRI )
-	{
+	public OpRewriter(final SecurityEvaluator securityEvaluator,
+			final Node graphIRI) {
 		this.securityEvaluator = securityEvaluator;
 		this.graphIRI = graphIRI;
 		this.silentFail = false;
@@ -67,40 +69,41 @@ public class OpRewriter implements OpVisitor
 
 	/**
 	 * Constructor
-	 * @param securityEvaluator The security evaluator to use
-	 * @param graphIRI The IRI for the default graph.
+	 * 
+	 * @param securityEvaluator
+	 *            The security evaluator to use
+	 * @param graphIRI
+	 *            The IRI for the default graph.
 	 */
-	public OpRewriter( final SecurityEvaluator securityEvaluator,
-			final String graphIRI )
-	{
-		this(securityEvaluator, NodeFactory.createURI( graphIRI));
+	public OpRewriter(final SecurityEvaluator securityEvaluator,
+			final String graphIRI) {
+		this(securityEvaluator, NodeFactory.createURI(graphIRI));
 	}
 
 	/**
 	 * Add the operation to the result.
-	 * @param op the operation to add.
+	 * 
+	 * @param op
+	 *            the operation to add.
 	 */
-	private void addOp( final Op op )
-	{
+	private void addOp(final Op op) {
 		result.add(op);
 	}
 
 	/**
 	 * Get the result of the rewrite.
+	 * 
 	 * @return the resulting operator
 	 */
-	public Op getResult()
-	{
-		if (result.size() == 0)
-		{
+	public Op getResult() {
+		if (result.size() == 0) {
 			return OpNull.create();
 		}
-		if (result.size() == 1)
-		{
+		if (result.size() == 1) {
 			return result.get(0);
 		}
 		return result;
-		
+
 	}
 
 	/**
@@ -108,14 +111,14 @@ public class OpRewriter implements OpVisitor
 	 *
 	 * Registers n as a variable if it is one.
 	 * 
-	 * @param n the node to check
-	 * @param variables the list of variable nodes
+	 * @param n
+	 *            the node to check
+	 * @param variables
+	 *            the list of variable nodes
 	 * @Return n for chaining.
 	 */
-	private Node registerVariables( final Node n, final List<Node> variables )
-	{
-		if (n.isVariable() && !variables.contains(n))
-		{
+	private Node registerVariables(final Node n, final List<Node> variables) {
+		if (n.isVariable() && !variables.contains(n)) {
 			variables.add(n);
 		}
 		return n;
@@ -123,23 +126,24 @@ public class OpRewriter implements OpVisitor
 
 	/**
 	 * Reset the rewriter to the initial state.
+	 * 
 	 * @return this rewriter for chaining.
 	 */
-	public OpRewriter reset()
-	{
+	public OpRewriter reset() {
 		result = OpSequence.create();
 		return this;
 	}
 
 	/**
 	 * Register all the variables in the triple.
-	 * @param t the triple to register.
-	 * @param variables The list of variables.
+	 * 
+	 * @param t
+	 *            the triple to register.
+	 * @param variables
+	 *            The list of variables.
 	 * @return t for chaining
 	 */
-	private Triple registerBGPTriple( final Triple t,
-			final List<Node> variables )
-	{
+	private Triple registerBGPTriple(final Triple t, final List<Node> variables) {
 		registerVariables(t.getSubject(), variables);
 		registerVariables(t.getPredicate(), variables);
 		registerVariables(t.getObject(), variables);
@@ -152,23 +156,21 @@ public class OpRewriter implements OpVisitor
 	 * @param op1
 	 * @return the rewritten op.
 	 */
-	private Op rewriteOp1( final Op1 op1 )
-	{
+	private Op rewriteOp1(final Op1 op1) {
 		final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
 		op1.getSubOp().visit(rewriter);
 		return rewriter.getResult();
 	}
 
 	/**
-	 * rewrites the left and right parts of the op2 the left part is
-	 * returned the right part is placed in the rewriter
+	 * rewrites the left and right parts of the op2 the left part is returned
+	 * the right part is placed in the rewriter
 	 * 
 	 * @param op2
 	 * @param rewriter
 	 * @return the rewritten op.
 	 */
-	private Op rewriteOp2( final Op2 op2, final OpRewriter rewriter )
-	{
+	private Op rewriteOp2(final Op2 op2, final OpRewriter rewriter) {
 		op2.getLeft().visit(rewriter.reset());
 		final Op left = rewriter.getResult();
 		op2.getRight().visit(rewriter.reset());
@@ -182,11 +184,9 @@ public class OpRewriter implements OpVisitor
 	 * @param dest
 	 * @return the rewritten op.
 	 */
-	private OpN rewriteOpN( final OpN source, final OpN dest )
-	{
+	private OpN rewriteOpN(final OpN source, final OpN dest) {
 		final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
-		for (final Op o : source.getElements())
-		{
+		for (final Op o : source.getElements()) {
 			o.visit(rewriter.reset());
 			dest.add(rewriter.getResult());
 		}
@@ -197,50 +197,48 @@ public class OpRewriter implements OpVisitor
 	 * rewrites the subop of assign.
 	 */
 	@Override
-	public void visit( final OpAssign opAssign )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpAssign"); }
+	public void visit(final OpAssign opAssign) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpAssign");
+		}
 		addOp(OpAssign.assign(rewriteOp1(opAssign), opAssign.getVarExprList()));
 	}
 
 	@Override
-	public void visit( final OpBGP opBGP )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpBGP"); }
+	public void visit(final OpBGP opBGP) throws ReadDeniedException,
+			AuthenticationRequiredException {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpBGP");
+		}
 		Object principal = securityEvaluator.getPrincipal();
-		if (!securityEvaluator.evaluate(principal, Action.Read, graphIRI))
-		{
-			if (silentFail)
-			{
+		if (!securityEvaluator.evaluate(principal, Action.Read, graphIRI)) {
+			if (silentFail) {
 				return;
-			}
-			else
-			{
-				throw new ReadDeniedException(SecuredItem.Util.modelPermissionMsg(graphIRI));
+			} else {
+				throw new ReadDeniedException(
+						SecuredItem.Util.modelPermissionMsg(graphIRI));
 			}
 		}
 
 		// if the user can read any triple just add the opBGP
-		if (securityEvaluator.evaluate(principal, Action.Read, graphIRI, Triple.ANY))
-		{
+		if (securityEvaluator.evaluate(principal, Action.Read, graphIRI,
+				Triple.ANY)) {
 			addOp(opBGP);
-		}
-		else
-		{
+		} else {
 			// add security filtering to the resulting triples
 			final List<Triple> newBGP = new ArrayList<Triple>();
 			final List<Node> variables = new ArrayList<Node>();
 			// register all variables
-			for (final Triple t : opBGP.getPattern().getList())
-			{
+			for (final Triple t : opBGP.getPattern().getList()) {
 				newBGP.add(registerBGPTriple(t, variables));
 			}
 			// create the security function.
 			final SecuredFunction secFunc = new SecuredFunction(graphIRI,
 					securityEvaluator, variables, newBGP);
 			// create the filter
-			Op filter = OpFilter.filter(secFunc, new OpBGP(BasicPattern.wrap(newBGP)));
-			// add the filter 
+			Op filter = OpFilter.filter(secFunc,
+					new OpBGP(BasicPattern.wrap(newBGP)));
+			// add the filter
 			addOp(filter);
 		}
 	}
@@ -249,9 +247,10 @@ public class OpRewriter implements OpVisitor
 	 * Rewrite left and right
 	 */
 	@Override
-	public void visit( final OpConditional opCondition )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpConditional"); }
+	public void visit(final OpConditional opCondition) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpConditional");
+		}
 		final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
 		addOp(new OpConditional(rewriteOp2(opCondition, rewriter),
 				rewriter.getResult()));
@@ -261,9 +260,10 @@ public class OpRewriter implements OpVisitor
 	 * returns the dsNames
 	 */
 	@Override
-	public void visit( final OpDatasetNames dsNames )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpDatasetName"); }
+	public void visit(final OpDatasetNames dsNames) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpDatasetName");
+		}
 		addOp(dsNames);
 	}
 
@@ -271,9 +271,10 @@ public class OpRewriter implements OpVisitor
 	 * Rewrite left and right
 	 */
 	@Override
-	public void visit( final OpDiff opDiff )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpDiff"); }
+	public void visit(final OpDiff opDiff) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpDiff");
+		}
 		final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
 		addOp(OpDiff.create(rewriteOp2(opDiff, rewriter), rewriter.getResult()));
 	}
@@ -282,9 +283,10 @@ public class OpRewriter implements OpVisitor
 	 * Rewrite sequence elements
 	 */
 	@Override
-	public void visit( final OpDisjunction opDisjunction )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpDisjunction"); }
+	public void visit(final OpDisjunction opDisjunction) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpDisjunction");
+		}
 		addOp(rewriteOpN(opDisjunction, OpDisjunction.create()));
 	}
 
@@ -292,9 +294,10 @@ public class OpRewriter implements OpVisitor
 	 * rewrites the subop of distinct
 	 */
 	@Override
-	public void visit( final OpDistinct opDistinct )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpDistinct"); }
+	public void visit(final OpDistinct opDistinct) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpDistinct");
+		}
 		addOp(new OpDistinct(rewriteOp1(opDistinct)));
 	}
 
@@ -302,9 +305,10 @@ public class OpRewriter implements OpVisitor
 	 * Returns the Ext
 	 */
 	@Override
-	public void visit( final OpExt opExt )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpExt"); }
+	public void visit(final OpExt opExt) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpExt");
+		}
 		addOp(opExt);
 	}
 
@@ -312,9 +316,10 @@ public class OpRewriter implements OpVisitor
 	 * rewrites the subop of extend.
 	 */
 	@Override
-	public void visit( final OpExtend opExtend )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpExtend"); }
+	public void visit(final OpExtend opExtend) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpExtend");
+		}
 		addOp(OpExtend.extend(rewriteOp1(opExtend), opExtend.getVarExprList()));
 	}
 
@@ -322,9 +327,10 @@ public class OpRewriter implements OpVisitor
 	 * rewrites the subop of filter.
 	 */
 	@Override
-	public void visit( final OpFilter opFilter )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpFilter"); }
+	public void visit(final OpFilter opFilter) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpFilter");
+		}
 		addOp(OpFilter.filter(opFilter.getExprs(), rewriteOp1(opFilter)));
 	}
 
@@ -332,10 +338,12 @@ public class OpRewriter implements OpVisitor
 	 * rewrites the subop of graph.
 	 */
 	@Override
-	public void visit( final OpGraph opGraph )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpGraph"); }
-		final OpRewriter rewriter = new OpRewriter(securityEvaluator, opGraph.getNode());
+	public void visit(final OpGraph opGraph) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpGraph");
+		}
+		final OpRewriter rewriter = new OpRewriter(securityEvaluator,
+				opGraph.getNode());
 		opGraph.getSubOp().visit(rewriter);
 		addOp(new OpGraph(opGraph.getNode(), rewriter.getResult()));
 	}
@@ -344,9 +352,10 @@ public class OpRewriter implements OpVisitor
 	 * rewrites the subop of group.
 	 */
 	@Override
-	public void visit( final OpGroup opGroup )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpGroup"); }
+	public void visit(final OpGroup opGroup) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpGroup");
+		}
 		addOp(new OpGroup(rewriteOp1(opGroup), opGroup.getGroupVars(),
 				opGroup.getAggregators()));
 	}
@@ -355,9 +364,10 @@ public class OpRewriter implements OpVisitor
 	 * Parses the joins and recursively calls the left and right parts
 	 */
 	@Override
-	public void visit( final OpJoin opJoin )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpJoin"); }
+	public void visit(final OpJoin opJoin) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpJoin");
+		}
 		final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
 		addOp(OpJoin.create(rewriteOp2(opJoin, rewriter), rewriter.getResult()));
 	}
@@ -366,9 +376,10 @@ public class OpRewriter implements OpVisitor
 	 * returns the label
 	 */
 	@Override
-	public void visit( final OpLabel opLabel )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpLabel"); }
+	public void visit(final OpLabel opLabel) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpLabel");
+		}
 		addOp(opLabel);
 	}
 
@@ -376,9 +387,10 @@ public class OpRewriter implements OpVisitor
 	 * Parses the joins and recursively calls the left and right parts
 	 */
 	@Override
-	public void visit( final OpLeftJoin opLeftJoin )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpLeftJoin"); }
+	public void visit(final OpLeftJoin opLeftJoin) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpLeftJoin");
+		}
 		final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
 		addOp(OpLeftJoin.create(rewriteOp2(opLeftJoin, rewriter),
 				rewriter.getResult(), opLeftJoin.getExprs()));
@@ -388,9 +400,10 @@ public class OpRewriter implements OpVisitor
 	 * rewrites the subop of list.
 	 */
 	@Override
-	public void visit( final OpList opList )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpList"); }
+	public void visit(final OpList opList) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpList");
+		}
 		addOp(new OpList(rewriteOp1(opList)));
 	}
 
@@ -398,9 +411,10 @@ public class OpRewriter implements OpVisitor
 	 * Rewrite left and right
 	 */
 	@Override
-	public void visit( final OpMinus opMinus )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpMinus"); }
+	public void visit(final OpMinus opMinus) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpMinus");
+		}
 		final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
 		addOp(OpMinus.create(rewriteOp2(opMinus, rewriter),
 				rewriter.getResult()));
@@ -410,9 +424,10 @@ public class OpRewriter implements OpVisitor
 	 * returns the null
 	 */
 	@Override
-	public void visit( final OpNull opNull )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpNull"); }
+	public void visit(final OpNull opNull) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpNull");
+		}
 		addOp(opNull);
 	}
 
@@ -420,9 +435,10 @@ public class OpRewriter implements OpVisitor
 	 * rewrites the subop of order.
 	 */
 	@Override
-	public void visit( final OpOrder opOrder )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpOrder"); }
+	public void visit(final OpOrder opOrder) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpOrder");
+		}
 		addOp(new OpOrder(rewriteOp1(opOrder), opOrder.getConditions()));
 	}
 
@@ -430,9 +446,10 @@ public class OpRewriter implements OpVisitor
 	 * Returns the path
 	 */
 	@Override
-	public void visit( final OpPath opPath )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpPath"); }
+	public void visit(final OpPath opPath) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpPath");
+		}
 		addOp(opPath);
 	}
 
@@ -440,16 +457,14 @@ public class OpRewriter implements OpVisitor
 	 * rewrites the subop of proc.
 	 */
 	@Override
-	public void visit( final OpProcedure opProc )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpProc"); }
-		if (opProc.getProcId() != null)
-		{
+	public void visit(final OpProcedure opProc) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpProc");
+		}
+		if (opProc.getProcId() != null) {
 			addOp(new OpProcedure(opProc.getProcId(), opProc.getArgs(),
 					rewriteOp1(opProc)));
-		}
-		else
-		{
+		} else {
 			addOp(new OpProcedure(opProc.getURI(), opProc.getArgs(),
 					rewriteOp1(opProc)));
 		}
@@ -459,9 +474,10 @@ public class OpRewriter implements OpVisitor
 	 * rewrites the subop of project.
 	 */
 	@Override
-	public void visit( final OpProject opProject )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpProject"); }
+	public void visit(final OpProject opProject) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpProject");
+		}
 		addOp(new OpProject(rewriteOp1(opProject), opProject.getVars()));
 	}
 
@@ -469,9 +485,10 @@ public class OpRewriter implements OpVisitor
 	 * rewrites the subop of propFunc.
 	 */
 	@Override
-	public void visit( final OpPropFunc opPropFunc )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpPropFunc"); }
+	public void visit(final OpPropFunc opPropFunc) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpPropFunc");
+		}
 		addOp(new OpPropFunc(opPropFunc.getProperty(),
 				opPropFunc.getSubjectArgs(), opPropFunc.getObjectArgs(),
 				rewriteOp1(opPropFunc)));
@@ -481,9 +498,10 @@ public class OpRewriter implements OpVisitor
 	 * Returns the quad
 	 */
 	@Override
-	public void visit( final OpQuad opQuad )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpQuad"); }
+	public void visit(final OpQuad opQuad) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpQuad");
+		}
 		addOp(opQuad);
 	}
 
@@ -491,9 +509,10 @@ public class OpRewriter implements OpVisitor
 	 * Returns the quadpattern
 	 */
 	@Override
-	public void visit( final OpQuadPattern quadPattern )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpQuadPattern"); }
+	public void visit(final OpQuadPattern quadPattern) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpQuadPattern");
+		}
 		addOp(quadPattern);
 	}
 
@@ -501,9 +520,10 @@ public class OpRewriter implements OpVisitor
 	 * rewrites the subop of reduced.
 	 */
 	@Override
-	public void visit( final OpReduced opReduced )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpReduced"); }
+	public void visit(final OpReduced opReduced) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpReduced");
+		}
 		addOp(OpReduced.create(rewriteOp1(opReduced)));
 	}
 
@@ -511,9 +531,10 @@ public class OpRewriter implements OpVisitor
 	 * Rewrite sequence elements
 	 */
 	@Override
-	public void visit( final OpSequence opSequence )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpSequence"); }
+	public void visit(final OpSequence opSequence) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpSequence");
+		}
 		addOp(rewriteOpN(opSequence, OpSequence.create()));
 	}
 
@@ -521,9 +542,10 @@ public class OpRewriter implements OpVisitor
 	 * returns the service
 	 */
 	@Override
-	public void visit( final OpService opService )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting opService"); }
+	public void visit(final OpService opService) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting opService");
+		}
 		addOp(opService);
 	}
 
@@ -533,9 +555,10 @@ public class OpRewriter implements OpVisitor
 	 * This also handles the limit case
 	 */
 	@Override
-	public void visit( final OpSlice opSlice )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpSlice"); }
+	public void visit(final OpSlice opSlice) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpSlice");
+		}
 		addOp(opSlice);
 	}
 
@@ -543,9 +566,10 @@ public class OpRewriter implements OpVisitor
 	 * returns the table
 	 */
 	@Override
-	public void visit( final OpTable opTable )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpTable"); }
+	public void visit(final OpTable opTable) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpTable");
+		}
 		addOp(opTable);
 	}
 
@@ -553,9 +577,10 @@ public class OpRewriter implements OpVisitor
 	 * rewrites the subop of top.
 	 */
 	@Override
-	public void visit( final OpTopN opTop )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpTop"); }
+	public void visit(final OpTopN opTop) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpTop");
+		}
 		addOp(new OpTopN(rewriteOp1(opTop), opTop.getLimit(),
 				opTop.getConditions()));
 	}
@@ -564,9 +589,10 @@ public class OpRewriter implements OpVisitor
 	 * Converts to BGP
 	 */
 	@Override
-	public void visit( final OpTriple opTriple )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpTriple"); }
+	public void visit(final OpTriple opTriple) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpTriple");
+		}
 		visit(opTriple.asBGP());
 	}
 
@@ -574,9 +600,10 @@ public class OpRewriter implements OpVisitor
 	 * Rewrite left and right
 	 */
 	@Override
-	public void visit( final OpUnion opUnion )
-	{
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpUnion"); }
+	public void visit(final OpUnion opUnion) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpUnion");
+		}
 		final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
 		addOp(OpUnion.create(rewriteOp2(opUnion, rewriter),
 				rewriter.getResult()));
@@ -584,7 +611,9 @@ public class OpRewriter implements OpVisitor
 
 	@Override
 	public void visit(OpQuadBlock quadBlock) {
-		if (LOG.isDebugEnabled()) { LOG.debug( "Starting visiting OpQuadBlock"); }
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting visiting OpQuadBlock");
+		}
 		addOp(quadBlock);
 	}
 }

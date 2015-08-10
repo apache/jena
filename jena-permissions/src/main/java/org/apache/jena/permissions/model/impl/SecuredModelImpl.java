@@ -56,14 +56,16 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		}
 
 		@Override
-		public void addedStatement(final Statement s) {
+		public void addedStatement(final Statement s)
+				throws AuthenticationRequiredException {
 			if (canRead(s)) {
 				wrapped.addedStatement(s);
 			}
 		}
 
 		@Override
-		public void addedStatements(final List<Statement> statements) {
+		public void addedStatements(final List<Statement> statements)
+				throws AuthenticationRequiredException {
 			if (canRead(Triple.ANY)) {
 				wrapped.addedStatements(statements);
 			} else {
@@ -79,7 +81,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		}
 
 		@Override
-		public void addedStatements(final Model m) {
+		public void addedStatements(final Model m)
+				throws AuthenticationRequiredException {
 			if (canRead(Triple.ANY)) {
 				wrapped.addedStatements(m);
 			} else {
@@ -89,7 +92,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		}
 
 		@Override
-		public void addedStatements(final Statement[] statements) {
+		public void addedStatements(final Statement[] statements)
+				throws AuthenticationRequiredException {
 			if (canRead(Triple.ANY)) {
 				wrapped.addedStatements(statements);
 			} else {
@@ -107,7 +111,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		}
 
 		@Override
-		public void addedStatements(final StmtIterator statements) {
+		public void addedStatements(final StmtIterator statements)
+				throws AuthenticationRequiredException {
 			if (canRead(Triple.ANY)) {
 				wrapped.addedStatements(statements);
 			} else {
@@ -127,14 +132,16 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		}
 
 		@Override
-		public void removedStatement(final Statement s) {
+		public void removedStatement(final Statement s)
+				throws AuthenticationRequiredException {
 			if (canRead(s)) {
 				wrapped.removedStatement(s);
 			}
 		}
 
 		@Override
-		public void removedStatements(final List<Statement> statements) {
+		public void removedStatements(final List<Statement> statements)
+				throws AuthenticationRequiredException {
 
 			if (canRead(Triple.ANY)) {
 				wrapped.removedStatements(statements);
@@ -151,7 +158,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		}
 
 		@Override
-		public void removedStatements(final Model m) {
+		public void removedStatements(final Model m)
+				throws AuthenticationRequiredException {
 			if (canRead(Triple.ANY)) {
 				wrapped.removedStatements(m);
 			} else {
@@ -161,7 +169,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		}
 
 		@Override
-		public void removedStatements(final Statement[] statements) {
+		public void removedStatements(final Statement[] statements)
+				throws AuthenticationRequiredException {
 			if (canRead(Triple.ANY)) {
 				wrapped.removedStatements(statements);
 			} else {
@@ -179,7 +188,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		}
 
 		@Override
-		public void removedStatements(final StmtIterator statements) {
+		public void removedStatements(final StmtIterator statements)
+				throws AuthenticationRequiredException {
 			if (canRead(Triple.ANY)) {
 				wrapped.removedStatements(statements);
 			} else {
@@ -194,19 +204,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		}
 	}
 
-	/*
-	 * private class ReadFilter extends Filter<Resource> { private SecuredItem
-	 * si; private SecuredResource r; private Property p; ReadFilter(
-	 * SecuredItem si, SecuredResource r, Property p ) { this.si = si; this.r =
-	 * r; this.p = p; }
-	 * 
-	 * @Override public boolean test(Resource o) { Triple t = new Triple(
-	 * r.asNode(), p.asNode(), o.asNode()); return si.canRead(
-	 * SecuredItemImpl.convert( t ) ); }};
-	 */
 	private static final RDFReaderF readerFactory = new RDFReaderFImpl();
-
-	// private static final RDFWriterF writerFactory = new RDFWriterFImpl();
 
 	/**
 	 * Get an instance of SecuredModel
@@ -260,7 +258,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	// The secured graph that this securedModel contains.
 	private final SecuredGraph graph;
 
-	//
 	Map<ModelChangedListener, SecuredModelChangedListener> listeners = new HashMap<ModelChangedListener, SecuredModelChangedListener>();
 
 	/**
@@ -293,7 +290,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel add(final List<Statement> statements) {
+	public SecuredModel add(final List<Statement> statements)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		checkCreateFrontsTriples(WrappedIterator.create(statements.iterator()));
 		holder.getBaseItem().add(statements);
@@ -301,7 +300,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel add(final Model m) {
+	public SecuredModel add(final Model m) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		if (!canCreate(Triple.ANY)) {
 			checkCreateFrontsTriples(m.listStatements());
@@ -311,7 +311,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel add(final Resource s, final Property p, final RDFNode o) {
+	public SecuredModel add(final Resource s, final Property p, final RDFNode o)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		checkCreate(new Triple(s.asNode(), p.asNode(), o.asNode()));
 		holder.getBaseItem().add(s, p, o);
@@ -319,13 +321,16 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel add(final Resource s, final Property p, final String o) {
+	public SecuredModel add(final Resource s, final Property p, final String o)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		return add(s, p, o, false);
 	}
 
 	@Override
 	public SecuredModel add(final Resource s, final Property p, final String o,
-			final boolean wellFormed) {
+			final boolean wellFormed) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		checkCreate(new Triple(s.asNode(), p.asNode(),
 				NodeFactory.createLiteral(o, "", wellFormed)));
@@ -335,7 +340,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredModel add(final Resource s, final Property p,
-			final String lex, final RDFDatatype datatype) {
+			final String lex, final RDFDatatype datatype)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		checkCreate(new Triple(s.asNode(), p.asNode(),
 				NodeFactory.createLiteral(lex, datatype)));
@@ -345,7 +352,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredModel add(final Resource s, final Property p, final String o,
-			final String l) {
+			final String l) throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		checkCreate(new Triple(s.asNode(), p.asNode(),
 				NodeFactory.createLiteral(o, l, false)));
@@ -354,7 +362,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel add(final Statement s) {
+	public SecuredModel add(final Statement s) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		checkCreate(s);
 		holder.getBaseItem().add(s);
@@ -362,7 +371,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel add(final Statement[] statements) {
+	public SecuredModel add(final Statement[] statements)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		if (!canCreate(Triple.ANY)) {
 			for (final Statement s : statements) {
@@ -375,7 +386,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel add(final StmtIterator iter) {
+	public SecuredModel add(final StmtIterator iter)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		if (!canCreate(Triple.ANY)) {
 			final List<Triple> lst = new ArrayList<Triple>();
@@ -399,51 +412,58 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredModel addLiteral(final Resource s, final Property p,
-			final boolean o) {
+			final boolean o) throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		final Literal l = ResourceFactory.createTypedLiteral(o);
 		if (l == null) {
-			throw new IllegalArgumentException("HOw did we get a null");
+			throw new IllegalArgumentException("How did we get a null");
 		}
 		return add(s, p, l);
 	}
 
 	@Override
 	public SecuredModel addLiteral(final Resource s, final Property p,
-			final char o) {
+			final char o) throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		final Literal l = ResourceFactory.createTypedLiteral(o);
 		return add(s, p, l);
 	}
 
 	@Override
 	public SecuredModel addLiteral(final Resource s, final Property p,
-			final double o) {
+			final double o) throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		final Literal l = ResourceFactory.createTypedLiteral(o);
 		return add(s, p, l);
 	}
 
 	@Override
 	public SecuredModel addLiteral(final Resource s, final Property p,
-			final float o) {
+			final float o) throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		final Literal l = ResourceFactory.createTypedLiteral(o);
 		return add(s, p, l);
 	}
 
 	@Override
 	public SecuredModel addLiteral(final Resource s, final Property p,
-			final int o) {
+			final int o) throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		final Literal l = ResourceFactory.createTypedLiteral(o);
 		return add(s, p, l);
 	}
 
 	@Override
 	public SecuredModel addLiteral(final Resource s, final Property p,
-			final Literal o) {
+			final Literal o) throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		return add(s, p, o);
 	}
 
 	@Override
 	public SecuredModel addLiteral(final Resource s, final Property p,
-			final long o) {
+			final long o) throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		final Literal l = ResourceFactory.createTypedLiteral(o);
 		return add(s, p, l);
 	}
@@ -451,7 +471,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	@Override
 	@Deprecated
 	public SecuredModel addLiteral(final Resource s, final Property p,
-			final Object o) {
+			final Object o) throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		return add(s, p, asObject(o));
 	}
 
@@ -462,7 +483,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredStatement asStatement(final Triple t) {
+	public SecuredStatement asStatement(final Triple t)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		final ExtendedIterator<Triple> iter = holder.getBaseItem().getGraph()
 				.find(t);
 		final boolean exists = iter.hasNext();
@@ -484,27 +507,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		return holder.getSecuredItem();
 	}
 
-	// private void checkCreate( final Node n, final Triple t )
-	// {
-	// checkRead(t);
-	// checkCreate(new SecurityEvaluator.SecTriple(n,
-	// SecuredItemImpl.convert(RDF.subject.asNode()),
-	// SecuredItemImpl.convert(t.getSubject())));
-	// checkCreate(new SecurityEvaluator.SecTriple(n,
-	// SecuredItemImpl.convert(RDF.predicate.asNode()),
-	// SecuredItemImpl.convert(t.getPredicate())));
-	// checkCreate(new SecurityEvaluator.SecTriple(n,
-	// SecuredItemImpl.convert(RDF.object.asNode()),
-	// SecuredItemImpl.convert(t.getObject())));
-	// }
-
-	/*
-	 * private void checkCreateAnonymousResource( final
-	 * SecurityEvaluator.SecNode n ) { checkUpdate(); final
-	 * SecurityEvaluator.SecTriple t = new SecurityEvaluator.SecTriple(n,
-	 * SecurityEvaluator.SecNode.IGNORE, SecurityEvaluator.SecNode.IGNORE);
-	 * checkCreate(t); }
-	 */
 	@Override
 	public void close() {
 		holder.getBaseItem().close();
@@ -517,7 +519,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public boolean contains(final Resource s, final Property p) {
+	public boolean contains(final Resource s, final Property p)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		final SecuredStatementIterator iter = new SecuredStatementIterator(
 				holder.getSecuredItem(), holder.getBaseItem().listStatements(s,
@@ -530,7 +533,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public boolean contains(final Resource s, final Property p, final RDFNode o) {
+	public boolean contains(final Resource s, final Property p, final RDFNode o)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		final SecuredStatementIterator iter = new SecuredStatementIterator(
 				holder.getSecuredItem(), holder.getBaseItem().listStatements(s,
@@ -543,7 +547,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public boolean contains(final Resource s, final Property p, final String o) {
+	public boolean contains(final Resource s, final Property p, final String o)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		final SecuredStatementIterator iter = new SecuredStatementIterator(
 				holder.getSecuredItem(), holder.getBaseItem().listStatements(s,
@@ -557,7 +562,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public boolean contains(final Resource s, final Property p, final String o,
-			final String l) {
+			final String l) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		final SecuredStatementIterator iter = new SecuredStatementIterator(
 				holder.getSecuredItem(), holder.getBaseItem().listStatements(s,
@@ -570,19 +576,22 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public boolean contains(final Statement s) {
+	public boolean contains(final Statement s) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(s);
 		return holder.getBaseItem().contains(s);
 	}
 
 	@Override
-	public boolean containsAll(final Model model) {
+	public boolean containsAll(final Model model) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		return containsAll(model.listStatements());
 	}
 
 	@Override
-	public boolean containsAll(final StmtIterator iter) {
+	public boolean containsAll(final StmtIterator iter)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		final boolean doCheck = canRead(Triple.ANY);
 		try {
@@ -602,13 +611,15 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public boolean containsAny(final Model model) {
+	public boolean containsAny(final Model model) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		return containsAny(model.listStatements());
 
 	}
 
 	@Override
-	public boolean containsAny(final StmtIterator iter) {
+	public boolean containsAny(final StmtIterator iter)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		final boolean skipCheck = canRead(Triple.ANY);
 		try {
@@ -628,48 +639,56 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public boolean containsLiteral(final Resource s, final Property p,
-			final boolean o) {
+			final boolean o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		return contains(s, p, ResourceFactory.createTypedLiteral(o));
 	}
 
 	@Override
 	public boolean containsLiteral(final Resource s, final Property p,
-			final char o) {
+			final char o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		return contains(s, p, ResourceFactory.createTypedLiteral(o));
 	}
 
 	@Override
 	public boolean containsLiteral(final Resource s, final Property p,
-			final double o) {
+			final double o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		return contains(s, p, ResourceFactory.createTypedLiteral(o));
 	}
 
 	@Override
 	public boolean containsLiteral(final Resource s, final Property p,
-			final float o) {
+			final float o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		return contains(s, p, ResourceFactory.createTypedLiteral(o));
 	}
 
 	@Override
 	public boolean containsLiteral(final Resource s, final Property p,
-			final int o) {
+			final int o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		return contains(s, p, ResourceFactory.createTypedLiteral(o));
 	}
 
 	@Override
 	public boolean containsLiteral(final Resource s, final Property p,
-			final long o) {
+			final long o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		return contains(s, p, ResourceFactory.createTypedLiteral(o));
 	}
 
 	@Override
 	public boolean containsLiteral(final Resource s, final Property p,
-			final Object o) {
+			final Object o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		return contains(s, p, asObject(o));
 	}
 
 	@Override
-	public boolean containsResource(final RDFNode r) {
+	public boolean containsResource(final RDFNode r)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		if (canRead(new Triple(Node.ANY, Node.ANY, Node.ANY))) {
 			return holder.getBaseItem().containsResource(r);
@@ -699,7 +718,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredAlt createAlt() {
+	public SecuredAlt createAlt() throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		checkCreate(new Triple(SecurityEvaluator.FUTURE, RDF.type.asNode(),
 				RDF.Alt.asNode()));
@@ -708,7 +728,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredAlt createAlt(final String uri) {
+	public SecuredAlt createAlt(final String uri) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		checkCreate(new Triple(NodeFactory.createURI(uri), RDF.type.asNode(),
 				RDF.Alt.asNode()));
@@ -717,17 +738,18 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredBag createBag() {
+	public SecuredBag createBag() throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
-		checkCreate(new Triple(SecurityEvaluator.FUTURE,
-				RDF.type.asNode(),
+		checkCreate(new Triple(SecurityEvaluator.FUTURE, RDF.type.asNode(),
 				RDF.Bag.asNode()));
 		return SecuredBagImpl.getInstance(holder.getSecuredItem(), holder
 				.getBaseItem().createBag());
 	}
 
 	@Override
-	public SecuredBag createBag(final String uri) {
+	public SecuredBag createBag(final String uri) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		checkCreate(new Triple(NodeFactory.createURI(uri), RDF.type.asNode(),
 				RDF.Bag.asNode()));
@@ -735,19 +757,25 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 				.getBaseItem().createBag(uri));
 	}
 
-	private Model createCopy() {
+	private Model createCopy() throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException {
 		return ModelFactory.createDefaultModel().add(holder.getSecuredItem());
 	}
 
 	@Override
-	public SecuredRDFList createList() {
+	public SecuredRDFList createList() throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
+		checkCreate(new Triple(SecurityEvaluator.FUTURE, RDF.first.asNode(),
+				RDF.nil.asNode()));
 		return SecuredRDFListImpl.getInstance(holder.getSecuredItem(), holder
 				.getBaseItem().createList());
 	}
 
 	@Override
-	public SecuredRDFList createList(final Iterator<? extends RDFNode> members) {
+	public SecuredRDFList createList(final Iterator<? extends RDFNode> members)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		checkCreate(new Triple(SecurityEvaluator.FUTURE, RDF.rest.asNode(),
 				SecurityEvaluator.FUTURE));
@@ -775,7 +803,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredRDFList createList(final RDFNode[] members) {
+	public SecuredRDFList createList(final RDFNode[] members)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		return createList(Arrays.asList(members).iterator());
 	}
 
@@ -849,13 +879,14 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	@Override
 	public SecuredProperty createProperty(final String nameSpace,
 			final String localName) {
-		checkUpdate();
 		return SecuredPropertyImpl.getInstance(holder.getSecuredItem(), holder
 				.getBaseItem().createProperty(nameSpace, localName));
 	}
 
 	@Override
-	public ReifiedStatement createReifiedStatement(final Statement s) {
+	public SecuredReifiedStatement createReifiedStatement(final Statement s)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		checkCreateReified(null, s);
 		return SecuredReifiedStatementImpl.getInstance(holder.getSecuredItem(),
@@ -863,8 +894,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public ReifiedStatement createReifiedStatement(final String uri,
-			final Statement s) {
+	public SecuredReifiedStatement createReifiedStatement(final String uri,
+			final Statement s) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		checkCreateReified(uri, s);
 		return SecuredReifiedStatementImpl.getInstance(holder.getSecuredItem(),
@@ -887,7 +919,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredResource createResource(final Resource type) {
+	public SecuredResource createResource(final Resource type)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		final Triple t = new Triple(SecurityEvaluator.FUTURE,
 				RDF.type.asNode(), type.asNode());
@@ -899,7 +933,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	@Deprecated
-	public SecuredResource createResource(final ResourceF f) {
+	public SecuredResource createResource(final ResourceF f)
+			throws AuthenticationRequiredException {
 		return createResource(null, f);
 	}
 
@@ -911,7 +946,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredResource createResource(final String uri, final Resource type) {
+	public SecuredResource createResource(final String uri, final Resource type)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		final Resource r = ResourceFactory.createResource(uri);
 		final Triple t = new Triple(r.asNode(), RDF.type.asNode(),
 				type.asNode());
@@ -935,17 +972,18 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredSeq createSeq() {
+	public SecuredSeq createSeq() throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
-		checkCreate(new Triple(SecurityEvaluator.FUTURE,
-				RDF.type.asNode(),
+		checkCreate(new Triple(SecurityEvaluator.FUTURE, RDF.type.asNode(),
 				RDF.Alt.asNode()));
 		return SecuredSeqImpl.getInstance(holder.getSecuredItem(), holder
 				.getBaseItem().createSeq());
 	}
 
 	@Override
-	public SecuredSeq createSeq(final String uri) {
+	public SecuredSeq createSeq(final String uri) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		checkCreate(new Triple(NodeFactory.createURI(uri), RDF.type.asNode(),
 				RDF.Alt.asNode()));
@@ -955,7 +993,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredStatement createStatement(final Resource s, final Property p,
-			final RDFNode o) {
+			final RDFNode o) throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		checkCreate(new Triple(s.asNode(), p.asNode(), o.asNode()));
 		return SecuredStatementImpl.getInstance(holder.getSecuredItem(), holder
@@ -964,7 +1003,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredStatement createStatement(final Resource s, final Property p,
-			final String o) {
+			final String o) throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		checkCreate(new Triple(s.asNode(), p.asNode(), NodeFactory.createURI(o)));
 		return SecuredStatementImpl.getInstance(holder.getSecuredItem(), holder
@@ -973,19 +1013,24 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredStatement createStatement(final Resource s, final Property p,
-			final String o, final boolean wellFormed) {
+			final String o, final boolean wellFormed)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		return createStatement(s, p, o, "", wellFormed);
 	}
 
 	@Override
 	public SecuredStatement createStatement(final Resource s, final Property p,
-			final String o, final String l) {
+			final String o, final String l) throws UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException {
 		return createStatement(s, p, o, l, false);
 	}
 
 	@Override
 	public SecuredStatement createStatement(final Resource s, final Property p,
-			final String o, final String l, final boolean wellFormed) {
+			final String o, final String l, final boolean wellFormed)
+			throws UpdateDeniedException, AddDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		checkCreate(new Triple(s.asNode(), p.asNode(),
 				NodeFactory.createLiteral(o, l, wellFormed)));
@@ -1076,7 +1121,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public Model difference(final Model model) {
+	public Model difference(final Model model) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		if (canRead(Triple.ANY)) {
 			return holder.getBaseItem().difference(model);
@@ -1086,7 +1132,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public void enterCriticalSection(final boolean readLockRequested) {
+	public void enterCriticalSection(final boolean readLockRequested)
+			throws UpdateDeniedException, ReadDeniedException,
+			AuthenticationRequiredException {
 		if (readLockRequested) {
 			checkRead();
 		} else {
@@ -1101,13 +1149,15 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public String expandPrefix(final String prefixed) {
+	public String expandPrefix(final String prefixed)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().expandPrefix(prefixed);
 	}
 
 	@Override
-	public SecuredAlt getAlt(final Resource r) {
+	public SecuredAlt getAlt(final Resource r) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(new Triple(r.asNode(), RDF.type.asNode(), RDF.Alt.asNode()));
 		return SecuredAltImpl.getInstance(holder.getSecuredItem(), holder
@@ -1115,7 +1165,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredAlt getAlt(final String uri) {
+	public SecuredAlt getAlt(final String uri) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(new Triple(NodeFactory.createURI(uri), RDF.type.asNode(),
 				RDF.Alt.asNode()));
@@ -1124,7 +1175,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredResource getAnyReifiedStatement(final Statement s) {
+	public SecuredResource getAnyReifiedStatement(final Statement s)
+			throws ReadDeniedException, UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException {
 		final RSIterator it = listReifiedStatements(s);
 		if (it.hasNext()) {
 			try {
@@ -1140,7 +1193,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredBag getBag(final Resource r) {
+	public SecuredBag getBag(final Resource r) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(new Triple(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode()));
 		return SecuredBagImpl.getInstance(holder.getSecuredItem(), holder
@@ -1148,7 +1202,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredBag getBag(final String uri) {
+	public SecuredBag getBag(final String uri) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(new Triple(NodeFactory.createURI(uri), RDF.type.asNode(),
 				RDF.Bag.asNode()));
@@ -1167,25 +1222,29 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public Map<String, String> getNsPrefixMap() {
+	public Map<String, String> getNsPrefixMap() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getNsPrefixMap();
 	}
 
 	@Override
-	public String getNsPrefixURI(final String prefix) {
+	public String getNsPrefixURI(final String prefix)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getNsPrefixURI(prefix);
 	}
 
 	@Override
-	public String getNsURIPrefix(final String uri) {
+	public String getNsURIPrefix(final String uri) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getNsURIPrefix(uri);
 	}
 
 	@Override
-	public SecuredStatement getProperty(final Resource s, final Property p) {
+	public SecuredStatement getProperty(final Resource s, final Property p)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		final StmtIterator stmt = listStatements(s, p, (RDFNode) null);
 		try {
 			if (stmt.hasNext()) {
@@ -1201,7 +1260,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredProperty getProperty(final String uri) {
+	public SecuredProperty getProperty(final String uri)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return SecuredPropertyImpl.getInstance(holder.getSecuredItem(), holder
 				.getBaseItem().getProperty(uri));
@@ -1209,14 +1269,16 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredProperty getProperty(final String nameSpace,
-			final String localName) {
+			final String localName) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return SecuredPropertyImpl.getInstance(holder.getSecuredItem(), holder
 				.getBaseItem().getProperty(nameSpace, localName));
 	}
 
 	@Override
-	public SecuredRDFNode getRDFNode(final Node n) {
+	public SecuredRDFNode getRDFNode(final Node n) throws ReadDeniedException,
+			UpdateDeniedException, AuthenticationRequiredException {
 		RDFNode rdfNode = null;
 		if (n.isLiteral()) {
 			rdfNode = ResourceFactory.createTypedLiteral(
@@ -1227,7 +1289,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 			rdfNode = ResourceFactory.createResource(n.getBlankNodeId()
 					.toString());
 		} else {
-			throw new IllegalArgumentException("Illegal SecNode type: " + n);
+			throw new IllegalArgumentException("Illegal Node type: "
+					+ n.getClass());
 		}
 
 		if (holder.getBaseItem().containsResource(rdfNode)) {
@@ -1268,7 +1331,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredStatement getRequiredProperty(final Resource s,
-			final Property p) {
+			final Property p) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		if (canRead(Triple.ANY)) {
 			return SecuredStatementImpl.getInstance(holder.getSecuredItem(),
@@ -1300,7 +1364,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredSeq getSeq(final Resource r) {
+	public SecuredSeq getSeq(final Resource r) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(new Triple(r.asNode(), RDF.type.asNode(), RDF.Seq.asNode()));
 		return SecuredSeqImpl.getInstance(holder.getSecuredItem(), holder
@@ -1308,7 +1373,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredSeq getSeq(final String uri) {
+	public SecuredSeq getSeq(final String uri) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(new Triple(NodeFactory.createURI(uri), RDF.type.asNode(),
 				RDF.Seq.asNode()));
@@ -1344,7 +1410,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public Model intersection(final Model model) {
+	public Model intersection(final Model model) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		if (!canRead(Triple.ANY)) {
 			return holder.getBaseItem().intersection(model);
@@ -1359,13 +1426,15 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public boolean isEmpty() {
+	public boolean isEmpty() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().isEmpty();
 	}
 
 	@Override
-	public boolean isIsomorphicWith(final Model g) {
+	public boolean isIsomorphicWith(final Model g) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		final boolean retval = holder.getBaseItem().isIsomorphicWith(g);
 		if (retval && !canRead(Triple.ANY)) {
@@ -1390,7 +1459,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public boolean isReified(final Statement s) {
+	public boolean isReified(final Statement s) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		checkRead(s);
 
@@ -1410,7 +1480,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	@Override
 	public SecuredStatementIterator listLiteralStatements(
 			final Resource subject, final Property predicate,
-			final boolean object) {
+			final boolean object) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return new SecuredStatementIterator(holder.getSecuredItem(), holder
 				.getBaseItem()
@@ -1419,7 +1490,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredStatementIterator listLiteralStatements(
-			final Resource subject, final Property predicate, final char object) {
+			final Resource subject, final Property predicate, final char object)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return new SecuredStatementIterator(holder.getSecuredItem(), holder
 				.getBaseItem()
@@ -1429,7 +1501,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	@Override
 	public SecuredStatementIterator listLiteralStatements(
 			final Resource subject, final Property predicate,
-			final double object) {
+			final double object) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return new SecuredStatementIterator(holder.getSecuredItem(), holder
 				.getBaseItem()
@@ -1438,7 +1511,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredStatementIterator listLiteralStatements(
-			final Resource subject, final Property predicate, final float object) {
+			final Resource subject, final Property predicate, final float object)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return new SecuredStatementIterator(holder.getSecuredItem(), holder
 				.getBaseItem()
@@ -1447,7 +1521,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredStatementIterator listLiteralStatements(
-			final Resource subject, final Property predicate, final long object) {
+			final Resource subject, final Property predicate, final long object)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return new SecuredStatementIterator(holder.getSecuredItem(), holder
 				.getBaseItem()
@@ -1455,13 +1530,15 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public NsIterator listNameSpaces() {
+	public NsIterator listNameSpaces() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().listNameSpaces();
 	}
 
 	@Override
-	public SecuredNodeIterator<RDFNode> listObjects() {
+	public SecuredNodeIterator<RDFNode> listObjects()
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<RDFNode> nIter = holder.getBaseItem().listObjects();
 		if (!canRead(Triple.ANY)) {
@@ -1471,7 +1548,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredNodeIterator<RDFNode> listObjectsOfProperty(final Property p) {
+	public SecuredNodeIterator<RDFNode> listObjectsOfProperty(final Property p)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<RDFNode> nIter = holder.getBaseItem()
 				.listObjectsOfProperty(p);
@@ -1483,7 +1561,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredNodeIterator<RDFNode> listObjectsOfProperty(final Resource s,
-			final Property p) {
+			final Property p) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<RDFNode> nIter = holder.getBaseItem()
 				.listObjectsOfProperty(s, p);
@@ -1494,14 +1573,16 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredRSIterator listReifiedStatements() {
+	public SecuredRSIterator listReifiedStatements()
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return new SecuredRSIterator(holder.getSecuredItem(), holder
 				.getBaseItem().listReifiedStatements());
 	}
 
 	@Override
-	public SecuredRSIterator listReifiedStatements(final Statement st) {
+	public SecuredRSIterator listReifiedStatements(final Statement st)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		checkRead(st);
 		return new SecuredRSIterator(holder.getSecuredItem(), holder
@@ -1509,7 +1590,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredResIterator listResourcesWithProperty(final Property p) {
+	public SecuredResIterator listResourcesWithProperty(final Property p)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<Resource> rIter = holder.getBaseItem()
 				.listResourcesWithProperty(p);
@@ -1522,7 +1604,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredResIterator listResourcesWithProperty(final Property p,
-			final boolean o) {
+			final boolean o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<Resource> rIter = holder.getBaseItem()
 				.listResourcesWithProperty(p, o);
@@ -1535,7 +1618,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredResIterator listResourcesWithProperty(final Property p,
-			final char o) {
+			final char o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<Resource> rIter = holder.getBaseItem()
 				.listResourcesWithProperty(p, o);
@@ -1548,7 +1632,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredResIterator listResourcesWithProperty(final Property p,
-			final double o) {
+			final double o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<Resource> rIter = holder.getBaseItem()
 				.listResourcesWithProperty(p, o);
@@ -1561,7 +1646,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredResIterator listResourcesWithProperty(final Property p,
-			final float o) {
+			final float o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<Resource> rIter = holder.getBaseItem()
 				.listResourcesWithProperty(p, o);
@@ -1574,7 +1660,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredResIterator listResourcesWithProperty(final Property p,
-			final long o) {
+			final long o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<Resource> rIter = holder.getBaseItem()
 				.listResourcesWithProperty(p, o);
@@ -1587,7 +1674,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredResIterator listResourcesWithProperty(final Property p,
-			final Object o) {
+			final Object o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<Resource> rIter = holder.getBaseItem()
 				.listResourcesWithProperty(p, o);
@@ -1600,7 +1688,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredResIterator listResourcesWithProperty(final Property p,
-			final RDFNode o) {
+			final RDFNode o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<Resource> rIter = holder.getBaseItem()
 				.listResourcesWithProperty(p, o);
@@ -1611,7 +1700,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredStatementIterator listStatements() {
+	public SecuredStatementIterator listStatements()
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return new SecuredStatementIterator(holder.getSecuredItem(), holder
 				.getBaseItem().listStatements());
@@ -1619,7 +1709,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredStatementIterator listStatements(final Resource s,
-			final Property p, final RDFNode o) {
+			final Property p, final RDFNode o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return new SecuredStatementIterator(holder.getSecuredItem(), holder
 				.getBaseItem().listStatements(s, p, o));
@@ -1627,7 +1718,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredStatementIterator listStatements(final Resource subject,
-			final Property predicate, final String object) {
+			final Property predicate, final String object)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return new SecuredStatementIterator(holder.getSecuredItem(), holder
 				.getBaseItem().listStatements(subject, predicate, object));
@@ -1635,21 +1727,24 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredStatementIterator listStatements(final Resource subject,
-			final Property predicate, final String object, final String lang) {
+			final Property predicate, final String object, final String lang)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return new SecuredStatementIterator(holder.getSecuredItem(), holder
 				.getBaseItem().listStatements(subject, predicate, object, lang));
 	}
 
 	@Override
-	public SecuredStatementIterator listStatements(final Selector s) {
+	public SecuredStatementIterator listStatements(final Selector s)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return new SecuredStatementIterator(holder.getSecuredItem(), holder
 				.getBaseItem().listStatements(s));
 	}
 
 	@Override
-	public SecuredResIterator listSubjects() {
+	public SecuredResIterator listSubjects() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<Resource> rIter = holder.getBaseItem().listSubjects();
 		if (!canRead(Triple.ANY)) {
@@ -1659,7 +1754,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredResIterator listSubjectsWithProperty(final Property p) {
+	public SecuredResIterator listSubjectsWithProperty(final Property p)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<Resource> rIter = holder.getBaseItem()
 				.listSubjectsWithProperty(p);
@@ -1671,7 +1767,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredResIterator listSubjectsWithProperty(final Property p,
-			final RDFNode o) {
+			final RDFNode o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<Resource> rIter = holder.getBaseItem()
 				.listSubjectsWithProperty(p, o);
@@ -1683,7 +1780,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredResIterator listSubjectsWithProperty(final Property p,
-			final String o) {
+			final String o) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<Resource> rIter = holder.getBaseItem()
 				.listSubjectsWithProperty(p, o);
@@ -1696,7 +1794,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredResIterator listSubjectsWithProperty(final Property p,
-			final String o, final String l) {
+			final String o, final String l) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		ExtendedIterator<Resource> rIter = holder.getBaseItem()
 				.listSubjectsWithProperty(p, o, l);
@@ -1708,7 +1807,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredPrefixMapping lock() {
+	public SecuredPrefixMapping lock() throws UpdateDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().lock();
 		return holder.getSecuredItem();
@@ -1721,13 +1821,15 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public String qnameFor(final String uri) {
+	public String qnameFor(final String uri) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().qnameFor(uri);
 	}
 
 	@Override
-	public SecuredModel query(final Selector s) {
+	public SecuredModel query(final Selector s) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return SecuredModelImpl.getInstance(
 				holder.getSecuredItem(),
@@ -1736,130 +1838,65 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel read(final InputStream in, final String base) {
+	public SecuredModel read(final InputStream in, final String base)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
-		// try
-		// {
 		SecuredModelImpl.readerFactory.getReader().read(
 				holder.getSecuredItem(), in, base);
 		return holder.getSecuredItem();
-		// }
-		// catch (final JenaException e)
-		// {
-		// if ((e.getCause() != null)
-		// && (e.getCause() instanceof AccessDeniedRuntimeException))
-		// {
-		// throw (AccessDeniedRuntimeException) e.getCause();
-		// }
-		// throw e;
-		// }
 	}
 
 	@Override
 	public SecuredModel read(final InputStream in, final String base,
-			final String lang) {
+			final String lang) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
-		// try
-		// {
 		SecuredModelImpl.readerFactory.getReader(lang).read(
 				holder.getSecuredItem(), in, base);
 		return holder.getSecuredItem();
-		// }
-		// catch (final JenaException e)
-		// {
-		// if ((e.getCause() != null)
-		// && (e.getCause() instanceof AccessDeniedRuntimeException))
-		// {
-		// throw (AccessDeniedRuntimeException) e.getCause();
-		// }
-		// throw e;
-		// }
 	}
 
 	@Override
-	public SecuredModel read(final Reader reader, final String base) {
+	public SecuredModel read(final Reader reader, final String base)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkUpdate();
-		// try
-		// {
 		SecuredModelImpl.readerFactory.getReader().read(
 				holder.getSecuredItem(), reader, base);
 		return holder.getSecuredItem();
-		// }
-		// catch (final JenaException e)
-		// {
-		// if ((e.getCause() != null)
-		// && (e.getCause() instanceof AccessDeniedRuntimeException))
-		// {
-		// throw (AccessDeniedRuntimeException) e.getCause();
-		// }
-		// throw e;
-		// }
 	}
 
 	@Override
 	public SecuredModel read(final Reader reader, final String base,
-			final String lang) {
+			final String lang) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
-		// try
-		// {
 		SecuredModelImpl.readerFactory.getReader(lang).read(
 				holder.getSecuredItem(), reader, base);
 		return holder.getSecuredItem();
-		// }
-		// catch (final JenaException e)
-		// {
-		// if ((e.getCause() != null)
-		// && (e.getCause() instanceof AccessDeniedRuntimeException))
-		// {
-		// throw (AccessDeniedRuntimeException) e.getCause();
-		// }
-		// throw e;
-		// }
 	}
 
 	@Override
-	public SecuredModel read(final String url) {
+	public SecuredModel read(final String url) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
-		// try
-		// {
 		SecuredModelImpl.readerFactory.getReader().read(
 				holder.getSecuredItem(), url);
 		return holder.getSecuredItem();
-		// }
-		// catch (final JenaException e)
-		// {
-		// if ((e.getCause() != null)
-		// && (e.getCause() instanceof AccessDeniedRuntimeException))
-		// {
-		// throw (AccessDeniedRuntimeException) e.getCause();
-		// }
-		// throw e;
-		// }
 	}
 
 	@Override
-	public SecuredModel read(final String url, final String lang) {
+	public SecuredModel read(final String url, final String lang)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkUpdate();
-		// try
-		// {
 		SecuredModelImpl.readerFactory.getReader(lang).read(
 				holder.getSecuredItem(), url);
 		return holder.getSecuredItem();
-		// }
-		// catch (final JenaException e)
-		// {
-		// if ((e.getCause() != null)
-		// && (e.getCause() instanceof AccessDeniedRuntimeException))
-		// {
-		// throw (AccessDeniedRuntimeException) e.getCause();
-		// }
-		// throw e;
-		// }
 	}
 
 	@Override
 	public SecuredModel read(final String url, final String base,
-			final String lang) {
+			final String lang) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		try {
 			final InputStream is = new URL(url).openStream();
 			try {
@@ -1876,7 +1913,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel register(final ModelChangedListener listener) {
+	public SecuredModel register(final ModelChangedListener listener)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		if (!listeners.containsKey(listener)) {
 			final SecuredModelChangedListener secL = new SecuredModelChangedListener(
@@ -1888,7 +1926,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel remove(final List<Statement> statements) {
+	public SecuredModel remove(final List<Statement> statements)
+			throws UpdateDeniedException, DeleteDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		if (!canDelete(Triple.ANY)) {
 			for (final Statement s : statements) {
@@ -1900,7 +1940,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel remove(final Model m) {
+	public SecuredModel remove(final Model m) throws UpdateDeniedException,
+			DeleteDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		if (!canDelete(Triple.ANY)) {
 			final StmtIterator iter = m.listStatements();
@@ -1920,7 +1961,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredModel remove(final Resource s, final Property p,
-			final RDFNode o) {
+			final RDFNode o) throws UpdateDeniedException,
+			DeleteDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		checkDelete(new Triple(s.asNode(), p.asNode(), o.asNode()));
 		holder.getBaseItem().remove(s, p, o);
@@ -1928,7 +1970,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel remove(final Statement s) {
+	public SecuredModel remove(final Statement s) throws UpdateDeniedException,
+			DeleteDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		checkDelete(wildCardTriple(s));
 		holder.getBaseItem().remove(s);
@@ -1936,7 +1979,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel remove(final Statement[] statements) {
+	public SecuredModel remove(final Statement[] statements)
+			throws UpdateDeniedException, DeleteDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		if (!canDelete(Triple.ANY)) {
 			for (final Statement s : statements) {
@@ -1948,7 +1993,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel remove(final StmtIterator iter) {
+	public SecuredModel remove(final StmtIterator iter)
+			throws UpdateDeniedException, DeleteDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		if (!canDelete(Triple.ANY)) {
 			final List<Triple> lst = new ArrayList<Triple>();
@@ -1971,7 +2018,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel removeAll() {
+	public SecuredModel removeAll() throws UpdateDeniedException,
+			DeleteDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		if (!canDelete(Triple.ANY)) {
 			final StmtIterator iter = holder.getBaseItem().listStatements();
@@ -1989,7 +2037,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredModel removeAll(final Resource s, final Property p,
-			final RDFNode r) {
+			final RDFNode r) throws UpdateDeniedException,
+			DeleteDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		if (!canDelete(new Triple(wildCardNode(s), wildCardNode(p),
 				wildCardNode(r)))) {
@@ -2008,7 +2057,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public void removeAllReifications(final Statement s) {
+	public void removeAllReifications(final Statement s)
+			throws UpdateDeniedException, DeleteDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		if (canDelete(new Triple(Node.ANY, RDF.subject.asNode(),
 				wildCardNode(s.getSubject())))
@@ -2039,14 +2090,17 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredPrefixMapping removeNsPrefix(final String prefix) {
+	public SecuredPrefixMapping removeNsPrefix(final String prefix)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().removeNsPrefix(prefix);
 		return holder.getSecuredItem();
 	}
 
 	@Override
-	public void removeReification(final ReifiedStatement rs) {
+	public void removeReification(final ReifiedStatement rs)
+			throws UpdateDeniedException, DeleteDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		if (!canDelete(Triple.ANY)) {
 			final StmtIterator stmtIter = rs.listProperties();
@@ -2062,28 +2116,32 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public boolean samePrefixMappingAs(final PrefixMapping other) {
+	public boolean samePrefixMappingAs(final PrefixMapping other)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().samePrefixMappingAs(other);
 	}
 
 	@Override
 	public SecuredPrefixMapping setNsPrefix(final String prefix,
-			final String uri) {
+			final String uri) throws UpdateDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().setNsPrefix(prefix, uri);
 		return holder.getSecuredItem();
 	}
 
 	@Override
-	public SecuredPrefixMapping setNsPrefixes(final Map<String, String> map) {
+	public SecuredPrefixMapping setNsPrefixes(final Map<String, String> map)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().setNsPrefixes(map);
 		return holder.getSecuredItem();
 	}
 
 	@Override
-	public SecuredPrefixMapping setNsPrefixes(final PrefixMapping other) {
+	public SecuredPrefixMapping setNsPrefixes(final PrefixMapping other)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().setNsPrefixes(other);
 		return holder.getSecuredItem();
@@ -2091,33 +2149,37 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public String setReaderClassName(final String lang, final String className) {
+	public String setReaderClassName(final String lang, final String className)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		return holder.getBaseItem().setReaderClassName(lang, className);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public String setWriterClassName(final String lang, final String className) {
+	public String setWriterClassName(final String lang, final String className)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		return holder.getBaseItem().setWriterClassName(lang, className);
 	}
 
 	@Override
-	public String shortForm(final String uri) {
+	public String shortForm(final String uri) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().shortForm(uri);
 	}
 
 	@Override
-	public long size() {
+	public long size() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().size();
 	}
 
 	@Override
 	public boolean supportsSetOperations() {
-		return holder.getBaseItem().supportsTransactions();
+		return holder.getBaseItem().supportsSetOperations();
 	}
 
 	@Override
@@ -2126,7 +2188,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public Model union(final Model model) {
+	public Model union(final Model model) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		if (canRead(Triple.ANY)) {
 			return holder.getBaseItem().union(model);
@@ -2155,7 +2218,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredPrefixMapping withDefaultMappings(final PrefixMapping map) {
+	public SecuredPrefixMapping withDefaultMappings(final PrefixMapping map)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().withDefaultMappings(map);
 		return holder.getSecuredItem();
@@ -2168,7 +2232,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel write(final OutputStream out) {
+	public SecuredModel write(final OutputStream out)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		if (canRead(Triple.ANY)) {
 			holder.getBaseItem().write(out);
@@ -2180,7 +2245,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel write(final OutputStream out, final String lang) {
+	public SecuredModel write(final OutputStream out, final String lang)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		if (canRead(Triple.ANY)) {
 			holder.getBaseItem().write(out, lang);
@@ -2192,7 +2258,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredModel write(final OutputStream out, final String lang,
-			final String base) {
+			final String base) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		if (canRead(Triple.ANY)) {
 			holder.getBaseItem().write(out, lang, base);
@@ -2204,7 +2271,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel write(final Writer writer) {
+	public SecuredModel write(final Writer writer) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		if (canRead(Triple.ANY)) {
 			holder.getBaseItem().write(writer);
@@ -2215,7 +2283,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredModel write(final Writer writer, final String lang) {
+	public SecuredModel write(final Writer writer, final String lang)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		if (canRead(Triple.ANY)) {
 			holder.getBaseItem().write(writer, lang);
@@ -2227,7 +2296,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
 	@Override
 	public SecuredModel write(final Writer writer, final String lang,
-			final String base) {
+			final String base) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		if (canRead(Triple.ANY)) {
 			holder.getBaseItem().write(writer, lang, base);

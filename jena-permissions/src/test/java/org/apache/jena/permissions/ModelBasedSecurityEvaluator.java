@@ -73,7 +73,14 @@ public class ModelBasedSecurityEvaluator implements SecurityEvaluator {
 
 	@Override
 	public Object getPrincipal() {
-		return null;
+		return "principal";
+	}
+
+
+
+	@Override
+	public boolean isPrincipalAuthenticated(Object principal) {
+		return principal != null;
 	}
 
 }

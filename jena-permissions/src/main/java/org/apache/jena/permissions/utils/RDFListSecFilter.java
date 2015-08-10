@@ -23,34 +23,31 @@ import java.util.function.Predicate;
 import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.rdf.model.RDFList ;
-import org.apache.jena.rdf.model.Statement ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.rdf.model.RDFList;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.shared.AuthenticationRequiredException;
+import org.apache.jena.vocabulary.RDF;
 
-public class RDFListSecFilter<T extends RDFList> implements Predicate<T>
-{
+public class RDFListSecFilter<T extends RDFList> implements Predicate<T> {
 	private final SecuredItem securedItem;
 	private final Set<Action> perms;
 	private final Object principal;
 
-	public RDFListSecFilter( final SecuredItem securedItem, final Action perm )
-	{
+	public RDFListSecFilter(final SecuredItem securedItem, final Action perm) {
 		this(securedItem, SecurityEvaluator.Util.asSet(new Action[] { perm }));
 	}
 
-	public RDFListSecFilter( final SecuredItem securedItem,
-			final Set<Action> perms )
-	{
+	public RDFListSecFilter(final SecuredItem securedItem,
+			final Set<Action> perms) {
 		this.securedItem = securedItem;
 		this.perms = perms;
 		this.principal = securedItem.getSecurityEvaluator().getPrincipal();
 	}
 
 	@Override
-	public boolean test( final RDFList o )
-	{
+	public boolean test(final RDFList o) throws AuthenticationRequiredException {
 		final Statement s = o.getRequiredProperty(RDF.first);
 		return securedItem.getSecurityEvaluator().evaluate(principal, perms,
-				securedItem.getModelNode(),	s.asTriple());
+				securedItem.getModelNode(), s.asTriple());
 	}
 }

@@ -23,16 +23,18 @@ import java.util.Map.Entry;
 import org.apache.jena.permissions.graph.SecuredPrefixMapping;
 import org.apache.jena.permissions.impl.ItemHolder;
 import org.apache.jena.permissions.impl.SecuredItemImpl;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.shared.impl.PrefixMappingImpl ;
+import org.apache.jena.shared.AuthenticationRequiredException;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.shared.ReadDeniedException;
+import org.apache.jena.shared.UpdateDeniedException;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
 
 /**
  * Implementation of SecuredPrefixMapping to be used by a SecuredItemInvoker
  * proxy.
  */
 public class SecuredPrefixMappingImpl extends SecuredItemImpl implements
-		SecuredPrefixMapping
-{
+		SecuredPrefixMapping {
 	// the item holder that holds this SecuredPrefixMapping
 	private final ItemHolder<PrefixMapping, SecuredPrefixMapping> holder;
 
@@ -44,121 +46,120 @@ public class SecuredPrefixMappingImpl extends SecuredItemImpl implements
 	 * @param holder
 	 *            The item holder that will contain this SecuredPrefixMapping.
 	 */
-	SecuredPrefixMappingImpl( final SecuredGraphImpl graph,
-			final ItemHolder<PrefixMapping, SecuredPrefixMapping> holder )
-	{
+	SecuredPrefixMappingImpl(final SecuredGraphImpl graph,
+			final ItemHolder<PrefixMapping, SecuredPrefixMapping> holder) {
 		super(graph, holder);
 		this.holder = holder;
 	}
 
 	@Override
-	public String expandPrefix( final String prefixed )
-	{
+	public String expandPrefix(final String prefixed)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().expandPrefix(prefixed);
 	}
 
 	@Override
-	public Map<String, String> getNsPrefixMap()
-	{
+	public Map<String, String> getNsPrefixMap() throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getNsPrefixMap();
 	}
 
 	@Override
-	public String getNsPrefixURI( final String prefix )
-	{
+	public String getNsPrefixURI(final String prefix)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getNsPrefixURI(prefix);
 	}
 
 	@Override
-	public String getNsURIPrefix( final String uri )
-	{
+	public String getNsURIPrefix(final String uri) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getNsURIPrefix(uri);
 	}
 
 	@Override
-	public SecuredPrefixMapping lock()
-	{
+	public SecuredPrefixMapping lock() throws UpdateDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().lock();
 		return holder.getSecuredItem();
 	}
 
 	@Override
-	public String qnameFor( final String uri )
-	{
+	public String qnameFor(final String uri) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().qnameFor(uri);
 	}
 
 	@Override
-	public SecuredPrefixMapping removeNsPrefix( final String prefix )
-	{
+	public SecuredPrefixMapping removeNsPrefix(final String prefix)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().removeNsPrefix(prefix);
 		return holder.getSecuredItem();
 	}
 
 	@Override
-	public boolean samePrefixMappingAs( final PrefixMapping other )
-	{
+	public boolean samePrefixMappingAs(final PrefixMapping other)
+			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().samePrefixMappingAs(other);
 	}
 
 	@Override
-	public SecuredPrefixMapping setNsPrefix( final String prefix,
-			final String uri )
-	{
+	public SecuredPrefixMapping setNsPrefix(final String prefix,
+			final String uri) throws UpdateDeniedException,
+			AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().setNsPrefix(prefix, uri);
 		return holder.getSecuredItem();
 	}
 
 	@Override
-	public SecuredPrefixMapping setNsPrefixes( final Map<String, String> map )
-	{
+	public SecuredPrefixMapping setNsPrefixes(final Map<String, String> map)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().setNsPrefixes(map);
 		return holder.getSecuredItem();
 	}
 
 	@Override
-	public SecuredPrefixMapping setNsPrefixes( final PrefixMapping other )
-	{
+	public SecuredPrefixMapping setNsPrefixes(final PrefixMapping other)
+			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().setNsPrefixes(other);
 		return holder.getSecuredItem();
 	}
 
 	@Override
-	public String shortForm( final String uri )
-	{
+	public String shortForm(final String uri) throws ReadDeniedException,
+			AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().shortForm(uri);
 	}
 
 	@Override
-	public SecuredPrefixMapping withDefaultMappings( final PrefixMapping map )
-	{
-		// mapping only updates if there are map entries to add.  Since this gets called
-		// when we are doing deep triple checks while writing we need to attempt the 
+	public SecuredPrefixMapping withDefaultMappings(final PrefixMapping map)
+			throws UpdateDeniedException, AuthenticationRequiredException {
+		// mapping only updates if there are map entries to add. Since this gets
+		// called
+		// when we are doing deep triple checks while writing we need to attempt
+		// the
 		// update only if there are new updates to add.
-		
+
 		PrefixMapping m = holder.getBaseItem();
 		PrefixMappingImpl pm = new PrefixMappingImpl();
-		for ( Entry<String, String> e : map.getNsPrefixMap().entrySet())
-		{
-			if (m.getNsPrefixURI(e.getKey()) == null && m.getNsURIPrefix(e.getValue()) == null )
-			{
-				pm.setNsPrefix( e.getKey(), e.getValue() );
+		for (Entry<String, String> e : map.getNsPrefixMap().entrySet()) {
+			if (m.getNsPrefixURI(e.getKey()) == null
+					&& m.getNsURIPrefix(e.getValue()) == null) {
+				pm.setNsPrefix(e.getKey(), e.getValue());
 			}
 		}
-		if ( !pm.getNsPrefixMap().isEmpty())
-		{
+		if (!pm.getNsPrefixMap().isEmpty()) {
 			checkUpdate();
 			holder.getBaseItem().withDefaultMappings(pm);
 		}
