@@ -18,25 +18,27 @@
 
 package org.apache.jena.sparql.junit ;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.jena.query.ResultSetFactory ;
-import org.apache.jena.query.Syntax ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.rdf.model.Statement ;
-import org.apache.jena.sparql.resultset.ResultsFormat ;
-import org.apache.jena.sparql.resultset.SPARQLResult ;
-import org.apache.jena.sparql.vocabulary.TestManifest ;
-import org.apache.jena.sparql.vocabulary.TestManifestX ;
-import org.apache.jena.sparql.vocabulary.VocabTestQuery ;
-import org.apache.jena.util.FileManager ;
-import org.apache.jena.util.iterator.ClosableIterator ;
-import org.apache.jena.util.junit.TestException ;
-import org.apache.jena.util.junit.TestUtils ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.RDFS ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.ResultSetFactory;
+import org.apache.jena.query.Syntax;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.sparql.resultset.ResultsFormat;
+import org.apache.jena.sparql.resultset.SPARQLResult;
+import org.apache.jena.sparql.vocabulary.TestManifest;
+import org.apache.jena.sparql.vocabulary.TestManifestX;
+import org.apache.jena.sparql.vocabulary.VocabTestQuery;
+import org.apache.jena.util.FileManager;
+import org.apache.jena.util.iterator.ClosableIterator;
+import org.apache.jena.util.junit.TestException;
+import org.apache.jena.util.junit.TestUtils;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 
 /**
  * Wrapper class for individual test items. Assumes it is a query test item,
@@ -150,6 +152,11 @@ public class TestItem
         if ( ResultsFormat.isRDFGraphSyntax(format) ) {
             Model m = FileManager.get().loadModel(resultFile) ;
             return new SPARQLResult(m) ;
+        }
+        
+        if ( ResultsFormat.isDatasetSyntax(format) ) {
+            Dataset d = RDFDataMgr.loadDataset(resultFile) ;
+            return new SPARQLResult(d) ;
         }
 
         // Attempt to handle as a resulset or boolean result.s

@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.BasicPattern;
@@ -65,6 +64,16 @@ public class Template
 //    public void addTriplePath(int index, TriplePath path)
 //    { throw new ARQException("Triples-only collector") ; }
 
+    
+    public boolean containsRealQuad(){
+    	for(Quad quad : this.getQuads()){
+    		if ( ! Quad.defaultGraphNodeGenerated.equals( quad.getGraph())){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
     public BasicPattern getBGP()
     { 
     	if (this.bgp != null){

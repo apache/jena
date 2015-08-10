@@ -18,35 +18,55 @@
 
 package org.apache.jena.sparql.junit;
 
-import java.io.IOException ;
-import java.io.PrintStream ;
-import java.io.PrintWriter ;
-import java.util.* ;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.riot.checker.CheckerLiterals ;
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.ResultSetStream ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
-import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
-import org.apache.jena.sparql.resultset.RDFOutput ;
-import org.apache.jena.sparql.resultset.ResultSetCompare ;
-import org.apache.jena.sparql.resultset.SPARQLResult ;
-import org.apache.jena.sparql.util.DatasetUtils ;
-import org.apache.jena.sparql.vocabulary.ResultSetGraphVocab ;
-import org.apache.jena.util.FileUtils ;
-import org.apache.jena.util.junit.TestUtils ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryException;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFactory;
+import org.apache.jena.query.ResultSetFormatter;
+import org.apache.jena.query.ResultSetRewindable;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.checker.CheckerLiterals;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.sparql.SystemARQ;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.ResultSetStream;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.engine.binding.BindingMap;
+import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
+import org.apache.jena.sparql.resultset.RDFOutput;
+import org.apache.jena.sparql.resultset.ResultSetCompare;
+import org.apache.jena.sparql.resultset.SPARQLResult;
+import org.apache.jena.sparql.util.DatasetUtils;
+import org.apache.jena.sparql.util.IsoMatcher;
+import org.apache.jena.sparql.vocabulary.ResultSetGraphVocab;
+import org.apache.jena.util.FileUtils;
+import org.apache.jena.util.junit.TestUtils;
+import org.apache.jena.vocabulary.RDF;
 
 public class QueryTest extends EarlTestCase
 {
@@ -348,8 +368,13 @@ public class QueryTest extends EarlTestCase
    void runTestConstruct(Query query, QueryExecution qe)
     {
         // Do the query!
-        Model resultsActual = qe.execConstruct() ;
-        compareGraphResults(resultsActual, query) ;
+	    if ( query.isConstructQuad() ){
+	    	Dataset resultActual = qe.execConstructDataset();
+	    	compareDatasetResults(resultActual, query) ;
+	    } else {
+	    	Model resultsActual = qe.execConstruct() ;
+	    	compareGraphResults(resultsActual, query) ;
+	    }
     }
    
    private void compareGraphResults(Model resultsActual, Query query)
@@ -364,6 +389,28 @@ public class QueryTest extends EarlTestCase
                 if ( ! resultsExpected.isIsomorphicWith(resultsActual) )
                 {
                     printFailedModelTest(query, resultsExpected, resultsActual) ;
+                    fail("Results do not match: "+testItem.getName()) ;
+                }
+            } catch (Exception ex)
+            {
+                String typeName = (query.isConstructType()?"construct":"describe") ;
+                fail("Exception in result testing ("+typeName+"): "+ex) ;
+            }
+        }
+    }
+   
+   private void compareDatasetResults(Dataset resultsActual, Query query)
+   {
+        if ( results != null )
+        {
+            try {
+                if ( ! results.isDataset() )
+                    fail("Expected results are not a graph: "+testItem.getName()) ;
+                    
+                Dataset resultsExpected = results.getDataset() ;
+                if ( ! IsoMatcher.isomorphic( resultsExpected.asDatasetGraph(),resultsActual.asDatasetGraph() ) )
+                {
+                    printFailedDatasetTest(query, resultsExpected, resultsActual) ;
                     fail("Results do not match: "+testItem.getName()) ;
                 }
             } catch (Exception ex)
@@ -446,6 +493,16 @@ public class QueryTest extends EarlTestCase
         out.println("---------------------------------------") ;
         expected.write(out, "TTL") ;
         out.println() ;
+    }
+    
+    void printFailedDatasetTest(Query query, Dataset expected, Dataset results)
+    {
+    	System.out.println("=======================================") ;
+    	System.out.println("Failure: "+description()) ;
+    	RDFDataMgr.write(System.out, results, Lang.TRIG);
+    	System.out.println("---------------------------------------") ;
+    	RDFDataMgr.write(System.out, expected, Lang.TRIG);
+        System.out.println() ;
     }
     
     @Override

@@ -146,7 +146,8 @@ public class Query extends Prologue implements Cloneable, Printable
     public boolean isAskType()                  { return queryType == QueryTypeAsk ; }
 
     public boolean isUnknownType()              { return queryType == QueryTypeUnknown ; }
-
+    
+    public boolean isConstructQuad()            { return isConstructType() && constructTemplate.containsRealQuad() ; }
     // It was a mistake to extend Prologue ... but what is done is done.
     public Prologue getPrologue()               { return this ; }
     
