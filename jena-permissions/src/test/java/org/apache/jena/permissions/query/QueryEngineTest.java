@@ -26,7 +26,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -130,7 +129,7 @@ public class QueryEngineTest {
 				int count = 0;
 				for (; results.hasNext();) {
 					count++;
-					final QuerySolution soln = results.nextSolution();
+					results.nextSolution();
 				}
 				Assert.assertEquals(8, count);
 			} finally {
@@ -208,8 +207,7 @@ public class QueryEngineTest {
 				int count = 0;
 				for (; results.hasNext();) {
 					count++;
-					final QuerySolution soln = results.nextSolution();
-					// System.out.println( soln );
+					results.nextSolution();
 				}
 				// 2x 3 values + type triple
 				Assert.assertEquals(8, count);
@@ -224,8 +222,7 @@ public class QueryEngineTest {
 				int count = 0;
 				for (; results.hasNext();) {
 					count++;
-					final QuerySolution soln = results.nextSolution();
-					// System.out.println( soln );
+					results.nextSolution();
 				}
 				// 2x 3 values + type triple
 				// no named graphs so no results.

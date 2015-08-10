@@ -22,18 +22,17 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
+import org.apache.jena.shared.AuthenticationRequiredException;
 
 /**
- * A filter for to filter ExtendedIterators on Triples.
- * This filter removes any triple that the user can not perform all
- * the actions on.
+ * A filter for to filter ExtendedIterators on Triples. This filter removes any
+ * triple that the user can not perform all the actions on.
  */
-public class PermTripleFilter implements Predicate<Triple>
-{
+public class PermTripleFilter implements Predicate<Triple> {
 	private final SecurityEvaluator evaluator;
 	private final Node modelNode;
 	private final Set<Action> actions;
@@ -48,8 +47,7 @@ public class PermTripleFilter implements Predicate<Triple>
 	 * @param securedItem
 	 *            The secured item that secures this iterator.
 	 */
-	public PermTripleFilter( final Action action, final SecuredItem securedItem )
-	{
+	public PermTripleFilter(final Action action, final SecuredItem securedItem) {
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(new Action[] { action });
 		this.evaluator = securedItem.getSecurityEvaluator();
@@ -67,9 +65,8 @@ public class PermTripleFilter implements Predicate<Triple>
 	 * @param evaluator
 	 *            The security evaluator to evaluate the security queries.
 	 */
-	public PermTripleFilter( final Action action,
-			final SecuredItem securedItem, final SecurityEvaluator evaluator )
-	{
+	public PermTripleFilter(final Action action, final SecuredItem securedItem,
+			final SecurityEvaluator evaluator) {
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(new Action[] { action });
 		this.evaluator = evaluator;
@@ -85,9 +82,8 @@ public class PermTripleFilter implements Predicate<Triple>
 	 * @param securedItem
 	 *            The secured item that secures this iterator.
 	 */
-	public PermTripleFilter( final Action[] actions,
-			final SecuredItem securedItem )
-	{
+	public PermTripleFilter(final Action[] actions,
+			final SecuredItem securedItem) {
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(actions);
 		this.evaluator = securedItem.getSecurityEvaluator();
@@ -105,9 +101,8 @@ public class PermTripleFilter implements Predicate<Triple>
 	 * @param evaluator
 	 *            The security evaluator to evaluate the security queries.
 	 */
-	public PermTripleFilter( final Action[] actions,
-			final SecuredItem securedItem, final SecurityEvaluator evaluator )
-	{
+	public PermTripleFilter(final Action[] actions,
+			final SecuredItem securedItem, final SecurityEvaluator evaluator) {
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(actions);
 		this.evaluator = evaluator;
@@ -123,9 +118,8 @@ public class PermTripleFilter implements Predicate<Triple>
 	 * @param securedItem
 	 *            The secured item that secures this iterator.
 	 */
-	public PermTripleFilter( final Collection<Action> actions,
-			final SecuredItem securedItem )
-	{
+	public PermTripleFilter(final Collection<Action> actions,
+			final SecuredItem securedItem) {
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(actions);
 		this.evaluator = securedItem.getSecurityEvaluator();
@@ -143,9 +137,8 @@ public class PermTripleFilter implements Predicate<Triple>
 	 * @param evaluator
 	 *            The security evaluator to evaluate the security queries.
 	 */
-	public PermTripleFilter( final Collection<Action> actions,
-			final SecuredItem securedItem, final SecurityEvaluator evaluator )
-	{
+	public PermTripleFilter(final Collection<Action> actions,
+			final SecuredItem securedItem, final SecurityEvaluator evaluator) {
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(actions);
 		this.evaluator = evaluator;
@@ -153,9 +146,9 @@ public class PermTripleFilter implements Predicate<Triple>
 	}
 
 	@Override
-	public boolean test( final Triple triple )
-	{
-		return evaluator.evaluateAny(principal, actions, modelNode,triple);
+	public boolean test(final Triple triple)
+			throws AuthenticationRequiredException {
+		return evaluator.evaluateAny(principal, actions, modelNode, triple);
 	}
 
 }

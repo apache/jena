@@ -17,7 +17,8 @@
  */
 package org.apache.jena.permissions.model;
 
-import org.apache.jena.rdf.model.Property ;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.jena.shared.ReadDeniedException;
 
 /**
@@ -25,14 +26,16 @@ import org.apache.jena.shared.ReadDeniedException;
  * 
  * Use the SecuredProperty.Factory to create instances
  */
-public interface SecuredProperty extends SecuredResource, Property
-{
+public interface SecuredProperty extends SecuredResource, Property {
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public int getOrdinal() throws ReadDeniedException;
+	public int getOrdinal() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 }

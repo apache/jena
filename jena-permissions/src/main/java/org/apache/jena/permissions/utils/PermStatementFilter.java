@@ -25,15 +25,14 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.rdf.model.Statement ;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.shared.AuthenticationRequiredException;
 
 /**
- * A filter for to filter ExtendedIterators on Statements.
- * This filter removes any triple that the user can not perform all
- * the actions on.
+ * A filter for to filter ExtendedIterators on Statements. This filter removes
+ * any triple that the user can not perform all the actions on.
  */
-public class PermStatementFilter implements Predicate<Statement>
-{
+public class PermStatementFilter implements Predicate<Statement> {
 	private final SecurityEvaluator evaluator;
 	private final Node modelNode;
 	private final Set<Action> actions;
@@ -48,9 +47,8 @@ public class PermStatementFilter implements Predicate<Statement>
 	 * @param securedItem
 	 *            The secured item that secures this iterator.
 	 */
-	public PermStatementFilter( final Action action,
-			final SecuredItem securedItem )
-	{
+	public PermStatementFilter(final Action action,
+			final SecuredItem securedItem) {
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(new Action[] { action });
 		this.evaluator = securedItem.getSecurityEvaluator();
@@ -68,9 +66,8 @@ public class PermStatementFilter implements Predicate<Statement>
 	 * @param evaluator
 	 *            The security evaluator to evaluate the security queries.
 	 */
-	public PermStatementFilter( final Action action,
-			final SecuredItem securedItem, final SecurityEvaluator evaluator )
-	{
+	public PermStatementFilter(final Action action,
+			final SecuredItem securedItem, final SecurityEvaluator evaluator) {
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(new Action[] { action });
 		this.evaluator = evaluator;
@@ -86,9 +83,8 @@ public class PermStatementFilter implements Predicate<Statement>
 	 * @param securedItem
 	 *            The secured item that secures this iterator.
 	 */
-	public PermStatementFilter( final Action[] actions,
-			final SecuredItem securedItem )
-	{
+	public PermStatementFilter(final Action[] actions,
+			final SecuredItem securedItem) {
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(actions);
 		this.evaluator = securedItem.getSecurityEvaluator();
@@ -106,9 +102,8 @@ public class PermStatementFilter implements Predicate<Statement>
 	 * @param evaluator
 	 *            The security evaluator to evaluate the security queries.
 	 */
-	public PermStatementFilter( final Action[] actions,
-			final SecuredItem securedItem, final SecurityEvaluator evaluator )
-	{
+	public PermStatementFilter(final Action[] actions,
+			final SecuredItem securedItem, final SecurityEvaluator evaluator) {
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(actions);
 		this.evaluator = evaluator;
@@ -124,9 +119,8 @@ public class PermStatementFilter implements Predicate<Statement>
 	 * @param securedItem
 	 *            The secured item that secures this iterator.
 	 */
-	public PermStatementFilter( final Collection<Action> actions,
-			final SecuredItem securedItem )
-	{
+	public PermStatementFilter(final Collection<Action> actions,
+			final SecuredItem securedItem) {
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(actions);
 		this.evaluator = securedItem.getSecurityEvaluator();
@@ -144,9 +138,8 @@ public class PermStatementFilter implements Predicate<Statement>
 	 * @param evaluator
 	 *            The security evaluator to evaluate the security queries.
 	 */
-	public PermStatementFilter( final Collection<Action> actions,
-			final SecuredItem securedItem, final SecurityEvaluator evaluator )
-	{
+	public PermStatementFilter(final Collection<Action> actions,
+			final SecuredItem securedItem, final SecurityEvaluator evaluator) {
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(actions);
 		this.evaluator = evaluator;
@@ -154,9 +147,10 @@ public class PermStatementFilter implements Predicate<Statement>
 	}
 
 	@Override
-	public boolean test( final Statement s )
-	{
-		return evaluator.evaluateAny(principal, actions, modelNode, s.asTriple());
+	public boolean test(final Statement s)
+			throws AuthenticationRequiredException {
+		return evaluator.evaluateAny(principal, actions, modelNode,
+				s.asTriple());
 	}
 
 }

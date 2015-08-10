@@ -17,82 +17,105 @@
  */
 package org.apache.jena.permissions.graph;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.GraphStatisticsHandler ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphStatisticsHandler;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
-import org.apache.jena.shared.AddDeniedException ;
-import org.apache.jena.shared.DeleteDeniedException ;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.AuthenticationRequiredException;
+import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.shared.ReadDeniedException;
-import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.shared.UpdateDeniedException;
+import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
  * The interface for secured Graph instances.
  * 
  * Use the SecuredGraph.Factory to create instances
  */
-public interface SecuredGraph extends Graph, SecuredItem
-{
+public interface SecuredGraph extends Graph, SecuredItem {
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Create
 	 * @throws AddDeniedException
+	 * @throws UpdateDeniedException
+	 *             if the graph can not be updated.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public void add( final Triple t ) throws AddDeniedException;
+	public void add(final Triple t) throws AddDeniedException,
+			UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean contains( final Node s, final Node p, final Node o )
-			throws ReadDeniedException;
+	public boolean contains(final Node s, final Node p, final Node o)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean contains( final Triple t ) throws ReadDeniedException;
+	public boolean contains(final Triple t) throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete
 	 * @throws DeleteDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public void delete( final Triple t ) throws DeleteDeniedException;
+	public void delete(final Triple t) throws DeleteDeniedException,
+			UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean dependsOn( final Graph other ) throws ReadDeniedException;
+	public boolean dependsOn(final Graph other) throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read, otherwise filtered from iterator.
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public ExtendedIterator<Triple> find( final Node s, final Node p,
-			final Node o ) throws ReadDeniedException;
+	public ExtendedIterator<Triple> find(final Node s, final Node p,
+			final Node o) throws ReadDeniedException,
+			AuthenticationRequiredException;
 
-    /**
+	/**
 	 * @sec.graph Read
 	 * @sec.triple Read, otherwise filtered from iterator.
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public ExtendedIterator<Triple> find( final Triple triple )
-			throws ReadDeniedException;
+	public ExtendedIterator<Triple> find(final Triple triple)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	@Override
 	public SecuredCapabilities getCapabilities();
@@ -102,63 +125,80 @@ public interface SecuredGraph extends Graph, SecuredItem
 
 	/**
 	 * Return the name of the graph.
+	 * 
 	 * @return The name of the graph as a node.
 	 */
 	@Override
-    public Node getModelNode();
+	public Node getModelNode();
 
 	@Override
 	public SecuredPrefixMapping getPrefixMapping();
 
 	@Override
-    public SecurityEvaluator getSecurityEvaluator();
+	public SecurityEvaluator getSecurityEvaluator();
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
 	public GraphStatisticsHandler getStatisticsHandler()
-			throws ReadDeniedException;
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean isEmpty() throws ReadDeniedException;
+	public boolean isEmpty() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean isIsomorphicWith( final Graph g )
-			throws ReadDeniedException;
-
+	public boolean isIsomorphicWith(final Graph g) throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public int size() throws ReadDeniedException;
-	
+	public int size() throws ReadDeniedException,
+			AuthenticationRequiredException;
+
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete for every triple
 	 * @throws DeleteDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public void clear() throws DeleteDeniedException;
+	public void clear() throws DeleteDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete (s, p, o )
 	 * @throws DeleteDeniedException
+	 * @throws UpdateDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public void remove( Node s, Node p, Node o ) throws DeleteDeniedException;
+	public void remove(Node s, Node p, Node o) throws DeleteDeniedException,
+			UpdateDeniedException, AuthenticationRequiredException;
 
 }

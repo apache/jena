@@ -17,10 +17,11 @@
  */
 package org.apache.jena.permissions.model;
 
-import org.apache.jena.datatypes.DatatypeFormatException ;
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.rdf.model.Literal ;
-import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.datatypes.DatatypeFormatException;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.jena.shared.ReadDeniedException;
 
 /**
@@ -28,8 +29,7 @@ import org.apache.jena.shared.ReadDeniedException;
  * 
  * Use the SecuredLiteral.Factory to create instances
  */
-public interface SecuredLiteral extends Literal, SecuredRDFNode
-{
+public interface SecuredLiteral extends Literal, SecuredRDFNode {
 
 	@Override
 	public SecuredLiteral asLiteral();
@@ -38,135 +38,180 @@ public interface SecuredLiteral extends Literal, SecuredRDFNode
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
 	 * @throws DatatypeFormatException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
 	public boolean getBoolean() throws ReadDeniedException,
-			DatatypeFormatException;
+			DatatypeFormatException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
 	 * @throws DatatypeFormatException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public byte getByte() throws ReadDeniedException, DatatypeFormatException;
+	public byte getByte() throws ReadDeniedException, DatatypeFormatException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
 	 * @throws DatatypeFormatException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public char getChar() throws ReadDeniedException, DatatypeFormatException;
+	public char getChar() throws ReadDeniedException, DatatypeFormatException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public RDFDatatype getDatatype() throws ReadDeniedException;
+	public RDFDatatype getDatatype() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public String getDatatypeURI() throws ReadDeniedException;
+	public String getDatatypeURI() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
 	 * @throws DatatypeFormatException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
 	public double getDouble() throws ReadDeniedException,
-			DatatypeFormatException;
+			DatatypeFormatException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
 	 * @throws DatatypeFormatException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
 	public float getFloat() throws ReadDeniedException,
-			DatatypeFormatException;
+			DatatypeFormatException, AuthenticationRequiredException;
+
+	/**
+	 * @sec.graph Read
+	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
+	 * @throws DatatypeFormatException
+	 */
+	@Override
+	public int getInt() throws ReadDeniedException, DatatypeFormatException,
+			AuthenticationRequiredException;
+
+	/**
+	 * @sec.graph Read
+	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
+	 */
+	@Override
+	public String getLanguage() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
 	 * @throws DatatypeFormatException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public int getInt() throws ReadDeniedException, DatatypeFormatException;
-
-	/**
-	 * @sec.graph Read
-	 * @throws ReadDeniedException
-	 */
-	@Override
-	public String getLanguage() throws ReadDeniedException;
-
-	/**
-	 * @sec.graph Read
-	 * @throws ReadDeniedException
-	 * @throws DatatypeFormatException
-	 */
-	@Override
-	public String getLexicalForm() throws ReadDeniedException;
+	public String getLexicalForm() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
 	 * @throws DatatypeFormatException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public long getLong() throws ReadDeniedException, DatatypeFormatException;
+	public long getLong() throws ReadDeniedException, DatatypeFormatException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
 	 * @throws DatatypeFormatException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
 	public short getShort() throws ReadDeniedException,
-			DatatypeFormatException;
+			DatatypeFormatException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
 	 * @throws DatatypeFormatException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
 	public String getString() throws ReadDeniedException,
-			DatatypeFormatException;
+			DatatypeFormatException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public Object getValue() throws ReadDeniedException;
+	public Object getValue() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public Literal inModel( final Model m ) throws ReadDeniedException;
+	public Literal inModel(final Model m) throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean isWellFormedXML() throws ReadDeniedException;
+	public boolean isWellFormedXML() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean sameValueAs( final Literal other )
-			throws ReadDeniedException;
+	public boolean sameValueAs(final Literal other) throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 }

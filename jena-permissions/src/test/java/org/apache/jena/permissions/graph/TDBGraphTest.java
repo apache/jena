@@ -17,7 +17,6 @@
  */
 package org.apache.jena.permissions.graph;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.apache.jena.graph.Graph;
@@ -30,8 +29,6 @@ import org.junit.After;
 public class TDBGraphTest extends MemGraphTest {
 
 	private DatasetGraph dsGraph;
-
-	private File f;
 
 	public TDBGraphTest(final MockSecurityEvaluator securityEvaluator) {
 		super(securityEvaluator);
