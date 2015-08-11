@@ -27,8 +27,8 @@ import java.util.concurrent.ConcurrentHashMap ;
 import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicLong ;
 
-import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.query.ReadWrite ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.sys.SystemBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
@@ -57,10 +57,15 @@ public class TransactionCoordinator {
     private boolean coordinatorStarted = false ;
 
     private final ComponentGroup components = new ComponentGroup() ;
+    // Components 
+    private ComponentGroup txnComponents = null ;
     //List<TransactionalComponent> elements ;
     private List<ShutdownHook> shutdownHooks ;
     private TxnIdGenerator txnIdGenerator = TxnIdFactory.txnIdGenSimple ;
     
+    //private QuorumGenerator quorumGenerator = null ;
+    private QuorumGenerator quorumGenerator = (m) -> components ;
+
     // Semaphore to implement "Single Active Writer" - independent of readers 
     private Semaphore writersWaiting = new Semaphore(1, true) ;
 
@@ -145,6 +150,11 @@ public class TransactionCoordinator {
         }
     }
     
+    public void setQuorumGenerator(QuorumGenerator qGen) {
+        checkSetup() ;
+        this.quorumGenerator = qGen ;
+    }
+
     public void start() {
         checkSetup() ;
         recovery() ;
@@ -329,15 +339,18 @@ public class TransactionCoordinator {
             TxnId txnId = txnIdGenerator.generate() ;
             List<SysTrans> sysTransList = new ArrayList<>() ;
             Transaction transaction = new Transaction(this, txnId, readWrite, dataVersion, sysTransList) ;
+            
+            ComponentGroup txnComponents = chooseComponents(this.components, readWrite) ;
+            
             try {
-                components.forEachComponent(elt -> {
+                txnComponents.forEachComponent(elt -> {
                     SysTrans sysTrans = new SysTrans(elt, transaction, txnId) ;
                     sysTransList.add(sysTrans) ; }) ;
                 // Calling each component must be inside the lock
                 // so that a transaction does not commit overlapping with setup.
                 // If it did, different components might end up starting from
                 // different start states of the overall system.
-                components.forEachComponent(elt -> elt.begin(transaction)) ;
+                txnComponents.forEachComponent(elt -> elt.begin(transaction)) ;
             } catch(Throwable ex) {
                 // Careful about incomplete.
                 //abort() ;
@@ -348,6 +361,18 @@ public class TransactionCoordinator {
         }
     }
     
+    private ComponentGroup chooseComponents(ComponentGroup components, ReadWrite readWrite) {
+        if ( quorumGenerator == null )
+            return components ;
+        ComponentGroup cg = quorumGenerator.genQuorum(readWrite) ;
+        cg.forEach((id, c) -> {
+            TransactionalComponent tcx = components.findComponent(id) ;
+            if ( ! tcx.equals(c) )
+                log.warn("TransactionalComponent not in TransactionCoordinator's ComponentGroup") ; 
+        }) ;
+        return cg ;
+    }
+
     /** Attempt to promote a tranasaction from READ to WRITE.
      * No-op for a transaction already a writer.
      * Throws {@link TransactionException} if the promotion
@@ -378,8 +403,10 @@ public class TransactionCoordinator {
     }
 
     /*package*/ void executePrepare(Transaction transaction) {
+        // Do here because it needs access to the journal.
         notifyPrepareStart(transaction);
-        components.forEach((id, c) -> {
+        transaction.getComponents().forEach(sysTrans -> {
+            TransactionalComponent c = sysTrans.getComponent() ;
             // XXX Pass journal to TransactionalComponent.commitPrepare?
             ByteBuffer data = c.commitPrepare(transaction) ;
             if ( data != null ) {
@@ -405,34 +432,11 @@ public class TransactionCoordinator {
             if ( transaction.getMode() == WRITE )
                 advanceEpoch() ;
             notifyCommitFinish(transaction) ;
+            
         }
     }
 
     
-    // V1
-    
-//    /*package*/ void executeCommit(Transaction transaction, List<PrepareState> prepareState, Runnable commit, Runnable finish) {
-//        // This is the commit point. 
-//        synchronized(lock) {
-//            // No transactions begin during this block.
-//            notifyCommitStart(transaction) ;
-//            prepareState.forEach(ps -> journal.write(ps) ) ;
-//            journal.writeJournal(JournalEntry.COMMIT) ;
-//            // *** COMMIT POINT
-//            journal.sync() ;
-//            // *** COMMIT POINT
-//            // Now run the Transactions commit actions. 
-//            commit.run() ;
-//            journal.truncate(0) ;
-//            // and tell the Transaction it's finished. 
-//            finish.run() ;
-//            // Bump global serialization point if necessary.
-//            if ( transaction.getMode() == WRITE )
-//                advanceEpoch() ;
-//            notifyCommitFinish(transaction) ;
-//        }
-//    }
-
     // Inside the global transaction start/commit lock.
     private void advanceEpoch() {
         long wEpoch = writerEpoch.get() ;
