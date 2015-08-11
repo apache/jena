@@ -44,8 +44,8 @@ import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
  */
 final
 public class DatasetGraphTDB extends DatasetGraphCaching
-                             implements DatasetGraphTxn, /*Old world*/ 
-                             /*DatasetGraph,*/ Sync, Closeable
+                             implements DatasetGraphTxn,
+                             /*Old world*//*DatasetGraph,*/ Sync, Closeable
 {
     private TripleTable tripleTable ;
     private QuadTable quadTable ;
