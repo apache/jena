@@ -20,6 +20,7 @@ package org.seaborne.dboe.transaction.txn;
 import java.util.Arrays ;
 import java.util.HashMap ;
 import java.util.Map ;
+import java.util.Objects ;
 import java.util.function.BiConsumer ;
 import java.util.function.Consumer ;
 
@@ -38,6 +39,7 @@ public class ComponentGroup {
     }
     
     public void add(TransactionalComponent component) {
+        Objects.requireNonNull(component) ;
         //Log.info(this, "add("+component.getComponentId()+")") ;
         if ( component.getComponentId() == null )
             Log.warn(this,  "Null component id - likely to be overwritten: "+component) ;
@@ -69,6 +71,7 @@ public class ComponentGroup {
     public void addAll(ComponentGroup components) {
         this.group.putAll(components.group); 
     }
-
+    
+    public int size() { return group.size() ; }
 }
 
