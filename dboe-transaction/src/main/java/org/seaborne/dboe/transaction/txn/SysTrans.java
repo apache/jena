@@ -34,19 +34,20 @@ class SysTrans {
         this.txnId = txnId ;
     }
 
-    public void begin() { }
+    public void begin()                 { }
 
-    public ByteBuffer commitPrepare() { return elt.commitPrepare(transaction) ; }
+    public ByteBuffer commitPrepare()   { return elt.commitPrepare(transaction) ; }
 
-    public void commit() { elt.commit(transaction); }
+    public void commit()                { elt.commit(transaction); }
 
-    public void commitEnd() { elt.commitEnd(transaction); }
+    public void commitEnd()             { elt.commitEnd(transaction); }
 
-    public void abort() { elt.abort(transaction); }
+    public void abort()                 { elt.abort(transaction); }
 
-    public void complete() { elt.complete(transaction); }
+    public void complete()              { elt.complete(transaction); }
     
-    public Transaction getTransaction()     { return transaction ; } 
-    public TxnId getTxnId()                 { return txnId ; } 
-    public ComponentId getComponentId()     { return elt.getComponentId() ; }
+    public Transaction getTransaction()             { return transaction ; } 
+    public TxnId getTxnId()                         { return txnId ; } 
+    public TransactionalComponent getComponent()    { return elt ; }
+    public ComponentId getComponentId()             { return elt.getComponentId() ; }
 }
