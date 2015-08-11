@@ -80,9 +80,9 @@ public class Transaction {
 
     /**
      * Each transaction is allocated a serialization point by the transaction
-     * coordinator. Normally, this is related to the This number inceases over
-     * time as the data changes. Two readers can have the same serialization
-     * point - they are working with the same view of the data.
+     * coordinator. Normally, this is related to this number and it increases
+     * over time as the data changes. Two readers can have the same
+     * serialization point - they are working with the same view of the data.
      */
     public long getSerilizationId() {
         return dataEpoch ;
@@ -143,16 +143,6 @@ public class Transaction {
         endInternal() ;
     }
 
-   
-    
-//    public TransactionCoordinatorState detach() {
-//        return txnMgr.detach(this) ;
-//    }
-//
-//    public void attach(TransactionCoordinatorState systemState) {
-//        txnMgr.attach(systemState) ;
-//    }
-
     public void end() {
         txnMgr.notifyEndStart(this) ;
         if ( isWriteTxn() && getState() == ACTIVE ) {
@@ -177,6 +167,10 @@ public class Transaction {
         else
             setState(END_ABORTED);
         txnMgr.notifyCompleteFinish(this);
+    }
+    
+    /*package*/ List<SysTrans> getComponents() {
+        return components ;
     }
     
     /*package*/ void detach() {
