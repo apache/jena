@@ -394,7 +394,7 @@ public class QueryEngineHTTP implements QueryExecution {
     
     @Override
     public Iterator<Quad> execConstructQuads(){
-    	return null;
+    	return execQuads();
     }
     
     @Override
@@ -468,6 +468,32 @@ public class QueryEngineHTTP implements QueryExecution {
                     + " which is not a valid RDF Graph syntax");
 
         return RiotReader.createIteratorTriples(in, lang, null);
+    }
+    
+    private Iterator<Quad> execQuads() {
+        checkNotClosed() ;
+        HttpQuery httpQuery = makeHttpQuery();
+        httpQuery.setAccept(WebContent.defaultDatasetAcceptHeader);
+        InputStream in = httpQuery.exec();
+        
+        // Don't assume the endpoint actually gives back the content type we
+        // asked for
+        String actualContentType = httpQuery.getContentType();
+
+        // If the server fails to return a Content-Type then we will assume
+        // the server returned the type we asked for
+        if (actualContentType == null || actualContentType.equals("")) {
+            actualContentType = WebContent.defaultDatasetAcceptHeader;
+        }
+
+        // Try to select language appropriately here based on the model content
+        // type
+        Lang lang = RDFLanguages.contentTypeToLang(actualContentType);
+        if (!RDFLanguages.isQuads(lang))
+            throw new QueryException("Endpoint returned Content Type: " + actualContentType
+                    + " which is not a valid RDF Dataset syntax");
+
+        return RiotReader.createIteratorQuads(in, lang, null);
     }
 
     @Override

@@ -31,6 +31,13 @@ public class DEF
     
     public static final AcceptList jsonOffer          = AcceptList.create(contentTypeJSON) ;
 
+    public static final AcceptList pureRdfOffer       = AcceptList.create(contentTypeTurtle, 
+                                                                          contentTypeTurtleAlt1,
+                                                                          contentTypeTurtleAlt2,
+                                                                          contentTypeNTriples,
+                                                                          contentTypeRDFXML
+                                                                          ) ;
+    
     public static final AcceptList rdfOffer           = AcceptList.create(contentTypeTurtle, 
                                                                           contentTypeTurtleAlt1,
                                                                           contentTypeTurtleAlt2,
