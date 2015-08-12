@@ -24,14 +24,14 @@ import java.util.Iterator ;
 
 import org.apache.jena.iri.IRIFactory ;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.Property ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.rdf.model.Statement ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Property ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.Statement ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.TDBFactory ;
 
 /** Example of single threaded use of TDB workign with the Jena RDF API */
 public class ExTDB6

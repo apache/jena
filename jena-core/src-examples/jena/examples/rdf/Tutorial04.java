@@ -18,8 +18,8 @@
 
 package jena.examples.rdf ;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.vocabulary.*;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.vocabulary.*;
 
 /** Tutorial 4 - create a model and write it in XML form to standard out
  */

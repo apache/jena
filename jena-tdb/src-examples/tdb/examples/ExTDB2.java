@@ -18,8 +18,8 @@
 
 package tdb.examples;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.tdb.TDBFactory ;
 
 /**
  * Using an assembler description (see wiki for details of the assembler format for TDB)

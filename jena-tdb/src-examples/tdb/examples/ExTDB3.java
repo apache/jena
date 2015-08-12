@@ -20,15 +20,15 @@ package tdb.examples;
 
 import org.apache.jena.riot.RDFDataMgr ;
 
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab ;
-import com.hp.hpl.jena.sparql.util.TypeNotUniqueException ;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
-import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.shared.JenaException ;
+import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab ;
+import org.apache.jena.sparql.util.TypeNotUniqueException ;
+import org.apache.jena.sparql.util.graph.GraphUtils ;
+import org.apache.jena.tdb.assembler.VocabTDB ;
 
 /** 
  * Examples of finding an assembler for a TDB model in a larger collection
