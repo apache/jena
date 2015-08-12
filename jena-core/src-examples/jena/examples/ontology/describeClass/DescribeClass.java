@@ -25,9 +25,9 @@ package jena.examples.ontology.describeClass;
 import java.io.PrintStream;
 import java.util.*;
 
-import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import org.apache.jena.ontology.*;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.shared.PrefixMapping;
 
 
 
