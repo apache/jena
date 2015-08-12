@@ -63,8 +63,8 @@ public class TransactionCoordinator {
     private List<ShutdownHook> shutdownHooks ;
     private TxnIdGenerator txnIdGenerator = TxnIdFactory.txnIdGenSimple ;
     
-    //private QuorumGenerator quorumGenerator = null ;
-    private QuorumGenerator quorumGenerator = (m) -> components ;
+    private QuorumGenerator quorumGenerator = null ;
+    //private QuorumGenerator quorumGenerator = (m) -> components ;
 
     // Semaphore to implement "Single Active Writer" - independent of readers 
     private Semaphore writersWaiting = new Semaphore(1, true) ;
@@ -370,6 +370,7 @@ public class TransactionCoordinator {
             if ( ! tcx.equals(c) )
                 log.warn("TransactionalComponent not in TransactionCoordinator's ComponentGroup") ; 
         }) ;
+        log.info("Custom ComponentGroup for transaction "+readWrite+": size="+cg.size()) ;
         return cg ;
     }
 
