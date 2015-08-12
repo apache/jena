@@ -70,7 +70,6 @@ public class FusekiCmd extends CmdARQ
           
           , "## Everything"
           , "log4j.rootLogger=INFO, jena.plain"
-          , "log4j.logger.com.hp.hpl.jena=WARN"
           , "log4j.logger.org.apache.jena=WARN"
           
           , "# Server log."

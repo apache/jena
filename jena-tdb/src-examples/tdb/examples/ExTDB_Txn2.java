@@ -20,15 +20,15 @@ package tdb.examples;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateExecutionFactory ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateProcessor ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.update.GraphStore ;
+import org.apache.jena.update.GraphStoreFactory ;
+import org.apache.jena.update.UpdateExecutionFactory ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateProcessor ;
+import org.apache.jena.update.UpdateRequest ;
 
 /** Example of a WRITE transaction. */
 public class ExTDB_Txn2

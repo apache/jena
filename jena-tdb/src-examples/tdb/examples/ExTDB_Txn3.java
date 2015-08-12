@@ -18,10 +18,10 @@
 
 package tdb.examples;
 
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
+import org.apache.jena.query.* ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
 /** Illustraion of working at the DatasetGraph level.
  *  Normally, applications work with {@link Dataset}.
