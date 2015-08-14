@@ -369,7 +369,7 @@ public class TestAPI extends BaseTest
         DatasetGraph expected = DatasetGraphFactory.createMem();
         expected.add(g1.asNode(), s.asNode(), p.asNode(), o.asNode());
         
-        assertEquals(1, count); // 3 duplicated quads
+        assertEquals(1, count); 
         assertTrue(IsoMatcher.isomorphic( expected, result) );
         
     }
@@ -412,6 +412,40 @@ public class TestAPI extends BaseTest
         }
         assertEquals(1, result.size());
         assertTrue(dft.isIsomorphicWith(result));
+    }
+    
+    
+    // Allow duplicated quads in execConstructQuads()
+    @Test public void testARQConstructQuad_Duplicate_1() {
+        String queryString = "CONSTRUCT { GRAPH ?g1 {?s ?p ?o} } WHERE { ?s ?p ?o. GRAPH ?g1 {?s1 ?p1 ?o1} }";
+        Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
+        
+        QueryExecution qExec = QueryExecutionFactory.create(q, d);
+        
+        Iterator<Quad> ts = qExec.execConstructQuads();
+        long count = 0;
+        Quad expected = Quad.create( g1.asNode(), s.asNode(), p.asNode(), o.asNode());
+        while (ts.hasNext()) {
+            count++;
+            Quad qd = ts.next();
+            assertEquals(expected, qd);
+        }
+        assertEquals(3, count); // 3 duplicated quads
+    }
+    
+    // No duplicated quads in execConstructDataset()
+    @Test public void testARQConstructQuad_Duplicate_2() {
+        String queryString = "CONSTRUCT { GRAPH ?g1 {?s ?p ?o} } WHERE { ?s ?p ?o. GRAPH ?g1 {?s1 ?p1 ?o1} }";
+        Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
+        
+        QueryExecution qExec = QueryExecutionFactory.create(q, d);
+        
+        Dataset result = qExec.execConstructDataset();
+
+        DatasetGraph expected = DatasetGraphFactory.createMem();
+        expected.add(g1.asNode(), s.asNode(), p.asNode(), o.asNode());
+        assertEquals(1, result.asDatasetGraph().size());
+        assertTrue(IsoMatcher.isomorphic( expected, result.asDatasetGraph()) );
     }
     
     private QueryExecution makeQExec(String queryString)
