@@ -28,6 +28,7 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.QuerySolutionMap;
 import org.apache.jena.query.ResultSet;
@@ -447,6 +448,88 @@ public class TestAPI extends BaseTest
         assertEquals(1, result.asDatasetGraph().size());
         assertTrue(IsoMatcher.isomorphic( expected, result.asDatasetGraph()) );
     }
+    
+    // Allow duplicated template quads in execConstructQuads()
+    @Test public void testARQConstructQuad_Duplicate_3() {
+        String queryString = "CONSTRUCT { GRAPH ?g1 {?s ?p ?o} GRAPH ?g1 {?s ?p ?o} } WHERE { ?s ?p ?o. GRAPH ?g1 {?s1 ?p1 ?o1} }";
+        Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
+        
+        QueryExecution qExec = QueryExecutionFactory.create(q, d);
+        
+        Iterator<Quad> ts = qExec.execConstructQuads();
+        long count = 0;
+        Quad expected = Quad.create( g1.asNode(), s.asNode(), p.asNode(), o.asNode());
+        while (ts.hasNext()) {
+            count++;
+            Quad qd = ts.next();
+            assertEquals(expected, qd);
+        }
+        assertEquals(6, count); // 6 duplicated quads
+    }
+    
+    // Allow duplicated template quads in execConstructQuads()
+    @Test public void testARQConstructQuad_Prefix() {
+        String queryString = "PREFIX :   <http://example/ns#> CONSTRUCT { GRAPH :g1 { ?s :p ?o} } WHERE { ?s ?p ?o }";
+        Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
+        
+        QueryExecution qExec = QueryExecutionFactory.create(q, d);
+        
+        Iterator<Quad> quads = qExec.execConstructQuads();
+        DatasetGraph result = DatasetGraphFactory.createMem();
+        long count = 0;
+        while (quads.hasNext()) {
+            count++;
+            Quad qd = quads.next();
+            result.add(qd);
+        }
+        
+        DatasetGraph expected = DatasetGraphFactory.createMem();
+        expected.add(g1.asNode(), s.asNode(), p.asNode(), o.asNode());
+        
+        assertEquals(1, count); 
+        assertTrue(IsoMatcher.isomorphic( expected, result) );
+        
+    }
+    
+    // Test construct triple short form:
+    @Test public void testARQConstructQuad_ShortForm_1() {
+        String queryString = "CONSTRUCT WHERE {?s ?p ?o }";
+        Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
+        
+        QueryExecution qExec = QueryExecutionFactory.create(q, d);
+        
+        Model result = ModelFactory.createDefaultModel();
+        qExec.execConstruct(result);
+
+        assertEquals(1, result.size());
+        assertTrue(dft.isIsomorphicWith(result));
+    }
+    
+    // Test construct quad short form:
+    @Test public void testARQConstructQuad_ShortForm_2() {
+        String queryString = "CONSTRUCT WHERE { GRAPH ?g {?s ?p ?o} }";
+        Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
+        
+        QueryExecution qExec = QueryExecutionFactory.create(q, d);
+        Dataset result = qExec.execConstructDataset();
+        
+        Dataset expected = DatasetFactory.createMem();
+        expected.addNamedModel(g1.getURI(), m);
+        
+        assertTrue(IsoMatcher.isomorphic( expected.asDatasetGraph(), result.asDatasetGraph()) );
+    }
+    
+    // Test bad construct quad short form:
+    @Test public void testARQConstructQuad_ShortForm_bad() {
+        String queryString = "CONSTRUCT WHERE { GRAPH ?g {?s ?p ?o. FILTER isIRI(?o)}  }";
+        try {
+        	QueryFactory.create(queryString, Syntax.syntaxARQ);
+        }catch (QueryParseException e){
+        	return;
+        }
+        fail("Short form of construct quad MUST be simple graph patterns!");
+    }
+    
     
     private QueryExecution makeQExec(String queryString)
     {
