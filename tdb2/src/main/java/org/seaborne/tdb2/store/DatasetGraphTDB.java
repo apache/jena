@@ -29,6 +29,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraphCaching ;
+import org.apache.jena.sparql.core.DatasetPrefixStorage ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.seaborne.dboe.base.file.Location ;
@@ -49,7 +50,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
 {
     private TripleTable tripleTable ;
     private QuadTable quadTable ;
-    private DatasetPrefixesTDB prefixes ;
+    private DatasetPrefixStorage prefixes ;
     private final ReorderTransformation transform ;
     private final StoreParams config ;
     private final Location location ;
@@ -59,7 +60,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     private final TransactionalSystem txnSystem ;
 
     public DatasetGraphTDB(TransactionalSystem txnSystem, 
-                           TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes,
+                           TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes,
                            ReorderTransformation transform, Location location, StoreParams params) {
         this.txnSystem = txnSystem ;
         this.tripleTable = tripleTable ;
@@ -176,7 +177,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     
     public ReorderTransformation getReorderTransform()      { return transform ; }
     
-    public DatasetPrefixesTDB getPrefixes()                 { return prefixes ; }
+    public DatasetPrefixStorage getPrefixes()                 { return prefixes ; }
     
     @Override
     public Iterator<Node> listGraphNodes()
@@ -270,7 +271,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     
     @Override
     public void setDefaultGraph(Graph g) { 
-        throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
+        throw new UnsupportedOperationException("Can't set default graph on a TDB-backed dataset") ;
     }
 
     @Override
