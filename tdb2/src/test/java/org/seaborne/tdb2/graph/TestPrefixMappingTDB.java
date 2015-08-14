@@ -20,17 +20,17 @@ package org.seaborne.tdb2.graph;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.sparql.core.DatasetPrefixStorage ;
 import org.apache.jena.sparql.graph.AbstractTestPrefixMapping2 ;
 import org.junit.* ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.ConfigTest ;
 import org.seaborne.tdb2.junit.BuildTestLib ;
-import org.seaborne.tdb2.store.DatasetPrefixesTDB ;
 import org.seaborne.tdb2.sys.StoreConnection ;
 
 public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
 {
-    static DatasetPrefixesTDB last = null ;
+    static DatasetPrefixStorage last = null ;
     
     @BeforeClass public static void beforeClass() {}
     @AfterClass public static void afterClass()   { StoreConnection.reset() ; ConfigTest.deleteTestingDir() ; }
@@ -45,11 +45,11 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
         return view() ;
     }
 
-    static DatasetPrefixesTDB createTestingMem() { 
+    static DatasetPrefixStorage createTestingMem() { 
         return createTesting(Location.mem()) ;
     }
     
-    static DatasetPrefixesTDB createTesting(Location location) {
+    static DatasetPrefixStorage createTesting(Location location) {
         return BuildTestLib.makePrefixes(location) ;
     }
 
@@ -59,7 +59,7 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
     }
 
     @Test public void multiple1() {
-        DatasetPrefixesTDB prefixes = createTestingMem() ;
+        DatasetPrefixStorage prefixes = createTestingMem() ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
         PrefixMapping pmap2 = prefixes.getPrefixMapping("http://graph/") ;
         pmap1.setNsPrefix("x", "http://foo/") ;
@@ -68,7 +68,7 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
     }
     
     @Test public void multiple2() {
-        DatasetPrefixesTDB prefixes = createTestingMem() ;
+        DatasetPrefixStorage prefixes = createTestingMem() ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping("http://graph/") ;  // Same
         PrefixMapping pmap2 = prefixes.getPrefixMapping("http://graph/") ;
         pmap1.setNsPrefix("x", "http://foo/") ;
@@ -83,7 +83,7 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
         String dir = ConfigTest.getTestingDir() ;
         FileOps.clearDirectory(dir) ;
 
-        DatasetPrefixesTDB prefixes = createTesting(Location.create(dir)) ;
+        DatasetPrefixStorage prefixes = createTesting(Location.create(dir)) ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
 
         String x = pmap1.getNsPrefixURI("x") ;
@@ -98,7 +98,7 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
         String dir = ConfigTest.getTestingDir() ;
         FileOps.clearDirectory(dir) ;
 
-        DatasetPrefixesTDB prefixes = createTesting(Location.create(dir)) ;
+        DatasetPrefixStorage prefixes = createTesting(Location.create(dir)) ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
 
         pmap1.setNsPrefix("x", "http://foo/") ;

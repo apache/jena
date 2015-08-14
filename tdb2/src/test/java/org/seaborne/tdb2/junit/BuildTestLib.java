@@ -18,6 +18,7 @@
 package org.seaborne.tdb2.junit;
 
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.core.DatasetPrefixStorage ;
 import org.seaborne.dboe.base.file.* ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.Index ;
@@ -28,7 +29,6 @@ import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
 import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.setup.TDBBuilder ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
-import org.seaborne.tdb2.store.DatasetPrefixesTDB ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.store.nodetable.NodeTableCache ;
 import org.seaborne.tdb2.store.nodetable.NodeTableInline ;
@@ -63,7 +63,7 @@ public class BuildTestLib {
         return nt ;
     }
 
-    public static DatasetPrefixesTDB makePrefixes(Location location) {
+    public static DatasetPrefixStorage makePrefixes(Location location) {
         DatasetGraphTDB ds = (DatasetGraphTDB)TDBBuilder.build(location) ;
         ds.begin(ReadWrite.WRITE);
         return ds.getPrefixes() ; 
