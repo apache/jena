@@ -365,12 +365,15 @@ public class TransactionCoordinator {
         if ( quorumGenerator == null )
             return components ;
         ComponentGroup cg = quorumGenerator.genQuorum(readWrite) ;
+        if ( cg == null )
+            return components ;
         cg.forEach((id, c) -> {
             TransactionalComponent tcx = components.findComponent(id) ;
             if ( ! tcx.equals(c) )
                 log.warn("TransactionalComponent not in TransactionCoordinator's ComponentGroup") ; 
         }) ;
-        log.info("Custom ComponentGroup for transaction "+readWrite+": size="+cg.size()) ;
+        if ( log.isDebugEnabled() )
+            log.debug("Custom ComponentGroup for transaction "+readWrite+": size="+cg.size()+" of "+components.size()) ;
         return cg ;
     }
 
