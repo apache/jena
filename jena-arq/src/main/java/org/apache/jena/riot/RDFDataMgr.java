@@ -252,6 +252,7 @@ public class RDFDataMgr
      * @param lang      Language syntax
      */
     public static void read(Graph graph, InputStream in, String base, Lang lang) {
+        Objects.requireNonNull(in, "InputStream is null") ;
         StreamRDF dest = StreamRDFLib.graph(graph) ;
         process(dest, new TypedInputStream(in), base, lang, null) ;
     }
