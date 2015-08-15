@@ -519,6 +519,17 @@ public class TestAPI extends BaseTest
         assertTrue(IsoMatcher.isomorphic( expected.asDatasetGraph(), result.asDatasetGraph()) );
     }
     
+    // Test construct triple and quad short form:
+    @Test public void testARQConstructQuad_ShortForm_3() {
+        String queryString = "CONSTRUCT WHERE { ?s ?p ?o. GRAPH ?g1 {?s1 ?p1 ?o1} }";
+        Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
+        
+        QueryExecution qExec = QueryExecutionFactory.create(q, d);
+        Dataset result = qExec.execConstructDataset();
+        
+        assertTrue(IsoMatcher.isomorphic( d.asDatasetGraph(), result.asDatasetGraph()) );
+    }
+    
     // Test bad construct quad short form:
     @Test public void testARQConstructQuad_ShortForm_bad() {
         String queryString = "CONSTRUCT WHERE { GRAPH ?g {?s ?p ?o. FILTER isIRI(?o)}  }";
