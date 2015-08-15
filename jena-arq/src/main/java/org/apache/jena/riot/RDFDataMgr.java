@@ -20,6 +20,7 @@ package org.apache.jena.riot;
 
 import java.io.* ;
 import java.util.Iterator ;
+import java.util.Objects ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Lib ;
@@ -250,8 +251,7 @@ public class RDFDataMgr
      * @param base      Base URI 
      * @param lang      Language syntax
      */
-    public static void read(Graph graph, InputStream in, String base, Lang lang)
-    {
+    public static void read(Graph graph, InputStream in, String base, Lang lang) {
         StreamRDF dest = StreamRDFLib.graph(graph) ;
         process(dest, new TypedInputStream(in), base, lang, null) ;
     }
@@ -266,8 +266,7 @@ public class RDFDataMgr
      * @param lang      Language syntax
      */
     @Deprecated
-    public static void read(Model model, Reader in, String base, Lang lang)
-    {
+    public static void read(Model model, Reader in, String base, Lang lang) {
         read(model.getGraph(), in, base,  lang) ;
     }
 
@@ -281,8 +280,7 @@ public class RDFDataMgr
      * @param lang      Language syntax
      */
     @Deprecated
-    public static void read(Graph graph, Reader in, String base, Lang lang)
-    {
+    public static void read(Graph graph, Reader in, String base, Lang lang) {
         StreamRDF dest = StreamRDFLib.graph(graph) ;
         process(dest, in, base, lang, null) ;
     }
@@ -293,8 +291,7 @@ public class RDFDataMgr
      * @param base      Base URI 
      * @param lang      Language syntax
      */
-    public static void read(Model model, StringReader in, String base, Lang lang)
-    {
+    public static void read(Model model, StringReader in, String base, Lang lang) {
         Graph g = model.getGraph() ;
         StreamRDF dest = StreamRDFLib.graph(g) ;
         process(dest, in, base, lang, null) ;
@@ -306,8 +303,7 @@ public class RDFDataMgr
      * @param base      Base URI 
      * @param lang      Language syntax
      */
-    public static void read(Graph graph, StringReader in, String base, Lang lang)
-    {
+    public static void read(Graph graph, StringReader in, String base, Lang lang) {
         StreamRDF dest = StreamRDFLib.graph(graph) ;
         process(dest, in, base, lang, null) ;
     }
@@ -321,8 +317,7 @@ public class RDFDataMgr
     /** Create a memory Model and read in some data
      * @see #read(Model,String) 
      */ 
-    public static Model loadModel(String uri)
-    { 
+    public static Model loadModel(String uri) { 
         Model m = createModel() ;
         read(m, uri) ;
         return m ;
@@ -331,8 +326,7 @@ public class RDFDataMgr
     /** Create a memory Model and read in some data
      * @see #read(Model,String,Lang) 
      */
-    public static Model loadModel(String uri, Lang lang)
-	{
+    public static Model loadModel(String uri, Lang lang) {
 		Model m = createModel() ;
         read(m, uri,lang) ;
         return m ;
@@ -344,8 +338,7 @@ public class RDFDataMgr
     /** Create a memory Graph and read in some data
      * @see #read(Graph,String) 
      */ 
-    public static Graph loadGraph(String uri)
-	{ 
+    public static Graph loadGraph(String uri) { 
         Graph g = createGraph() ;
         read(g, uri) ;
         return g ;
@@ -354,8 +347,7 @@ public class RDFDataMgr
 	/** Create a memory Graph and read in some data
      * @see #read(Graph,String,Lang) 
      */ 
-    public static Graph loadGraph(String uri, Lang lang)
-	{ 
+    public static Graph loadGraph(String uri, Lang lang) { 
         Graph g = createGraph() ;
         read(g, uri, lang) ;
         return g ;
@@ -367,8 +359,7 @@ public class RDFDataMgr
 	/** Create a memory Dataset and read in some data
      * @see #read(Dataset,String) 
      */ 
-    public static Dataset loadDataset(String uri)
-	{ 
+    public static Dataset loadDataset(String uri) { 
         Dataset ds = createDataset() ;
         read(ds, uri) ;
         return ds ;
@@ -377,8 +368,7 @@ public class RDFDataMgr
 	/** Create a memory Dataset and read in some data
      * @see #read(Dataset,String,Lang) 
      */
-    public static Dataset loadDataset(String uri, Lang lang)
-	{
+    public static Dataset loadDataset(String uri, Lang lang) {
         Dataset ds = createDataset() ;
         read(ds, uri, lang) ;
         return ds ;
@@ -391,8 +381,7 @@ public class RDFDataMgr
 	/** Create a memory DatasetGraph and read in some data
      * @see #read(DatasetGraph,String) 
      */ 
-    public static DatasetGraph loadDatasetGraph(String uri)
-	{
+    public static DatasetGraph loadDatasetGraph(String uri)	{
 		DatasetGraph ds = createDatasetGraph() ;
         read(ds, uri) ;
         return ds ;
@@ -400,8 +389,7 @@ public class RDFDataMgr
 	/** Create a memory DatasetGraph and read in some data
      * @see #read(DatasetGraph,String,Lang) 
      */
-    public static DatasetGraph loadDatasetGraph(String uri, Lang lang)
-	{
+    public static DatasetGraph loadDatasetGraph(String uri, Lang lang) {
 		DatasetGraph ds = createDatasetGraph() ;
         read(ds, uri, lang) ;
         return ds ;	
@@ -416,8 +404,7 @@ public class RDFDataMgr
      * @param dataset   Destination
      * @param uri       URI to read from (includes file: and a plain file name).
      */
-    public static void read(Dataset dataset, String uri)
-    {
+    public static void read(Dataset dataset, String uri) {
         read(dataset.asDatasetGraph(), uri) ;
     }
 
@@ -426,8 +413,7 @@ public class RDFDataMgr
      * @param dataset   Destination
      * @param uri       URI to read from (includes file: and a plain file name).
      */
-    public static void read(DatasetGraph dataset, String uri)
-    {
+    public static void read(DatasetGraph dataset, String uri) {
         read(dataset, uri, null) ;
     }
 
@@ -437,8 +423,7 @@ public class RDFDataMgr
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param hintLang  Language syntax
      */
-    public static void read(Dataset dataset, String uri, Lang hintLang)
-    {
+    public static void read(Dataset dataset, String uri, Lang hintLang) {
         read(dataset.asDatasetGraph(), uri, hintLang) ;
     }
 
@@ -448,8 +433,7 @@ public class RDFDataMgr
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param hintLang  Language syntax
      */
-    public static void read(DatasetGraph dataset, String uri, Lang hintLang)
-    {
+    public static void read(DatasetGraph dataset, String uri, Lang hintLang) {
         read(dataset, uri, hintLang, null) ;
     }
 
@@ -460,8 +444,7 @@ public class RDFDataMgr
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Language syntax
      */
-    public static void read(Dataset dataset, String uri, String base, Lang hintLang)
-    {
+    public static void read(Dataset dataset, String uri, String base, Lang hintLang) {
         read(dataset.asDatasetGraph(), uri, base, hintLang) ;
     }
 
@@ -472,8 +455,7 @@ public class RDFDataMgr
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Language syntax
      */
-    public static void read(DatasetGraph dataset, String uri, String base, Lang hintLang)
-    {
+    public static void read(DatasetGraph dataset, String uri, String base, Lang hintLang) {
         read(dataset, uri, base, hintLang, null) ;
     }
 
@@ -484,8 +466,7 @@ public class RDFDataMgr
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param hintLang  Language syntax
      */
-    public static void read(Dataset dataset, String uri, Lang hintLang, Context context)
-    {
+    public static void read(Dataset dataset, String uri, Lang hintLang, Context context) {
         read(dataset.asDatasetGraph(), uri, hintLang, context) ;
     }
     
@@ -495,8 +476,7 @@ public class RDFDataMgr
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param hintLang  Language syntax
      */
-    public static void read(DatasetGraph dataset, String uri, Lang hintLang, Context context)
-    {
+    public static void read(DatasetGraph dataset, String uri, Lang hintLang, Context context) {
         read(dataset, uri, uri, hintLang, context) ;
     }
     
@@ -511,8 +491,7 @@ public class RDFDataMgr
 	 * Throws parse errors depending on the language and reader; the dataset may be partially updated. 
 	 */ 
 
-    public static void read(Dataset dataset, String uri, String base, Lang hintLang, Context context)
-    {
+    public static void read(Dataset dataset, String uri, String base, Lang hintLang, Context context) {
 		read(dataset.asDatasetGraph(), uri, uri, hintLang, context) ;
     }
 
@@ -527,8 +506,7 @@ public class RDFDataMgr
 	 * Throws parse errors depending on the language and reader; the dataset may be partially updated. 
 	 */ 
 
-    public static void read(DatasetGraph dataset, String uri, String base, Lang hintLang, Context context)
-    {
+    public static void read(DatasetGraph dataset, String uri, String base, Lang hintLang, Context context) {
         StreamRDF sink = StreamRDFLib.dataset(dataset) ;
         parse(sink, uri, base, hintLang, context) ;
     }
@@ -538,8 +516,7 @@ public class RDFDataMgr
      * @param in        InputStream
      * @param lang      Language syntax
      */
-    public static void read(Dataset dataset, InputStream in, Lang lang)
-    {
+    public static void read(Dataset dataset, InputStream in, Lang lang) {
         read(dataset.asDatasetGraph(), in, lang) ;
     }
     
@@ -548,8 +525,7 @@ public class RDFDataMgr
      * @param in        InputStream
      * @param lang      Language syntax
      */
-    public static void read(DatasetGraph dataset, InputStream in, Lang lang)
-    {
+    public static void read(DatasetGraph dataset, InputStream in, Lang lang) {
         read(dataset, in, null, lang) ;
     }
     
@@ -559,8 +535,7 @@ public class RDFDataMgr
      * @param base      Base URI
      * @param lang      Language syntax
      */
-    public static void read(Dataset dataset, InputStream in, String base, Lang lang)
-    {
+    public static void read(Dataset dataset, InputStream in, String base, Lang lang) {
         read(dataset.asDatasetGraph(), in, base, lang) ; 
     }
     
@@ -570,8 +545,8 @@ public class RDFDataMgr
      * @param base      Base URI
      * @param lang      Language syntax
      */
-    public static void read(DatasetGraph dataset, InputStream in, String base, Lang lang)
-    {
+    public static void read(DatasetGraph dataset, InputStream in, String base, Lang lang) {
+        Objects.requireNonNull(in, "InputStream is null") ;
         StreamRDF dest = StreamRDFLib.dataset(dataset) ;
         process(dest, new TypedInputStream(in), base, lang, null) ;
     }
@@ -586,8 +561,7 @@ public class RDFDataMgr
      * @deprecated use an InputStream or a StringReader.
      */
     @Deprecated
-    public static void read(Dataset dataset, Reader in, String base, Lang lang)
-    {
+    public static void read(Dataset dataset, Reader in, String base, Lang lang) {
 		read(dataset.asDatasetGraph(), in, base, lang) ;
     }
 
@@ -601,8 +575,7 @@ public class RDFDataMgr
      * @deprecated use an InputStream or a StringReader.
      */
     @Deprecated
-    public static void read(DatasetGraph dataset, Reader in, String base, Lang lang)
-    {
+    public static void read(DatasetGraph dataset, Reader in, String base, Lang lang) {
         StreamRDF dest = StreamRDFLib.dataset(dataset) ;
         process(dest, in, base, lang, null) ;
     }
@@ -628,8 +601,7 @@ public class RDFDataMgr
      * @param base      Base URI
      * @param lang      Language syntax
      */
-    public static void read(DatasetGraph dataset, StringReader in, String base, Lang lang)
-    {
+    public static void read(DatasetGraph dataset, StringReader in, String base, Lang lang) {
         StreamRDF dest = StreamRDFLib.dataset(dataset) ;
         process(dest, in, base, lang, null) ;
     }
@@ -638,8 +610,7 @@ public class RDFDataMgr
      * @param sink     Destination for the RDF read.
      * @param uri       URI to read from (includes file: and a plain file name).
      */
-    public static void parse(StreamRDF sink, String uri)
-    {
+    public static void parse(StreamRDF sink, String uri) {
         parse(sink, uri, null) ;
     }
 
@@ -648,8 +619,7 @@ public class RDFDataMgr
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param lang      Hint for the syntax
      */
-    public static void parse(StreamRDF sink, String uri, Lang lang)
-    {
+    public static void parse(StreamRDF sink, String uri, Lang lang) {
         parse(sink, uri, lang, null) ;
     }
 
@@ -660,8 +630,7 @@ public class RDFDataMgr
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
-    public static void parse(StreamRDF sink, String uri, Lang hintLang, Context context)
-    {
+    public static void parse(StreamRDF sink, String uri, Lang hintLang, Context context) {
         parse(sink, uri, uri, hintLang, context) ;
     }
 
@@ -672,8 +641,7 @@ public class RDFDataMgr
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
-    public static void parse(StreamRDF sink, String uri, String base, Lang hintLang, Context context)
-    {
+    public static void parse(StreamRDF sink, String uri, String base, Lang hintLang, Context context) {
         if ( uri == null )
             throw new IllegalArgumentException("URI to read from is null") ;
         if ( base == null )
@@ -692,8 +660,7 @@ public class RDFDataMgr
      * @param in        Bytes to read.
      * @param lang      Syntax for the stream.
      */
-    public static void parse(StreamRDF sink, InputStream in, Lang lang)
-    {
+    public static void parse(StreamRDF sink, InputStream in, Lang lang) {
         parse(sink, in, null, lang, null) ;  
     }
 
@@ -703,8 +670,7 @@ public class RDFDataMgr
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Hint for the syntax
      */
-    public static void parse(StreamRDF sink, InputStream in, String base, Lang hintLang)
-    {
+    public static void parse(StreamRDF sink, InputStream in, String base, Lang hintLang) {
         parse(sink, in, base, hintLang, null) ;  
     }
 
@@ -715,8 +681,7 @@ public class RDFDataMgr
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
-    public static void parse(StreamRDF sink, StringReader in, String base, Lang hintLang, Context context)
-    {
+    public static void parse(StreamRDF sink, StringReader in, String base, Lang hintLang, Context context) {
         process(sink, in, base, hintLang, context) ;
     }
 
@@ -725,8 +690,7 @@ public class RDFDataMgr
      * @param in        StringReader
      * @param lang      Syntax for the stream.
      */
-    public static void parse(StreamRDF sink, StringReader in, Lang lang)
-    {
+    public static void parse(StreamRDF sink, StringReader in, Lang lang) {
         parse(sink, in, null, lang, null) ;  
     }
 
@@ -736,8 +700,7 @@ public class RDFDataMgr
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Hint for the syntax
      */
-    public static void parse(StreamRDF sink, StringReader in, String base, Lang hintLang)
-    {
+    public static void parse(StreamRDF sink, StringReader in, String base, Lang hintLang) {
         parse(sink, in, base, hintLang, null) ;  
     }
 
@@ -750,8 +713,7 @@ public class RDFDataMgr
      * @deprecated     Use an InputStream or a StringReader. 
      */
     @Deprecated
-    public static void parse(StreamRDF sink, Reader in, String base, Lang hintLang, Context context)
-    {
+    public static void parse(StreamRDF sink, Reader in, String base, Lang hintLang, Context context) {
         process(sink, in, base, hintLang, context) ;
     }
 
@@ -762,8 +724,7 @@ public class RDFDataMgr
      * @deprecated     Use an InputStream or a StringReader. 
      */
     @Deprecated
-    public static void parse(StreamRDF sink, Reader in, Lang lang)
-    {
+    public static void parse(StreamRDF sink, Reader in, Lang lang) {
         parse(sink, in, null, lang, null) ;  
     }
 
@@ -775,8 +736,7 @@ public class RDFDataMgr
      * @deprecated     Use an InputStream or a StringReader. 
      */
     @Deprecated
-    public static void parse(StreamRDF sink, Reader in, String base, Lang hintLang)
-    {
+    public static void parse(StreamRDF sink, Reader in, String base, Lang hintLang) {
         parse(sink, in, base, hintLang, null) ;  
     }
 
@@ -787,8 +747,7 @@ public class RDFDataMgr
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
-    public static void parse(StreamRDF sink, InputStream in, String base, Lang hintLang, Context context)
-    {
+    public static void parse(StreamRDF sink, InputStream in, String base, Lang hintLang, Context context) {
         process(sink, new TypedInputStream(in), base, hintLang, context) ;
     }
 
@@ -796,8 +755,7 @@ public class RDFDataMgr
      * @param sink      Destination for the RDF read.
      * @param in        Bytes to read.  This must include the content type.
      */
-    public static void parse(StreamRDF sink, TypedInputStream in)
-    {
+    public static void parse(StreamRDF sink, TypedInputStream in) {
         parse(sink, in, (String)null) ;
     }
 
@@ -807,9 +765,8 @@ public class RDFDataMgr
      * @param in        Bytes to read.
      * @param base      Base URI
      */
-    public static void parse(StreamRDF sink, TypedInputStream in, String base)
-    {
-        parse(sink, in, base, (Context)null) ;
+    public static void parse(StreamRDF sink, TypedInputStream in, String base) {
+        parse(sink, in, base, (Context)null);
     }
 
     /** Read RDF data.
@@ -818,10 +775,10 @@ public class RDFDataMgr
      * @param base      Base URI
      * @param context   Content object to control reading process.
      */
-    public static void parse(StreamRDF sink, TypedInputStream in, String base, Context context)
-    {
+    public static void parse(StreamRDF sink, TypedInputStream in, String base, Context context) {
+        Objects.requireNonNull(in, "TypedInputStream is null") ;
         Lang hintLang = RDFLanguages.contentTypeToLang(in.getMediaType()) ;
-        process(sink, new TypedInputStream(in), base, hintLang, context) ;
+        process(sink, in, base, hintLang, context) ;
     }
 
     /** Open a stream to the destination (URI or filename)
@@ -838,8 +795,7 @@ public class RDFDataMgr
      * @param context
      * @return TypedInputStream
      */
-    public static TypedInputStream open(String filenameOrURI, Context context)
-    {
+    public static TypedInputStream open(String filenameOrURI, Context context) {
         StreamManager sMgr = StreamManager.get() ;
         if ( context != null )
         {
@@ -857,12 +813,10 @@ public class RDFDataMgr
      * @param streamManager
      * @return TypedInputStream
      */
-    public static TypedInputStream open(String filenameOrURI, StreamManager streamManager)
-    {
+    public static TypedInputStream open(String filenameOrURI, StreamManager streamManager) {
         TypedInputStream in = streamManager.open(filenameOrURI) ;
             
-        if ( in == null )
-        {
+        if ( in == null ) {
             if ( log.isDebugEnabled() )
                 //log.debug("Found: "+filenameOrURI+" ("+loc.getName()+")") ;
                 log.debug("Not Found: "+filenameOrURI) ;
@@ -883,18 +837,7 @@ public class RDFDataMgr
 
     private static void process(StreamRDF destination, TypedInputStream in, String baseUri, Lang lang, Context context)
     {
-        // Issue is whether lang overrides all.
-        // Not in the case of remote conneg, no file extension, when lang is default. 
-//        // ---- NEW
-//        if ( lang != null ) {
-//            ReaderRIOT reader = createReader(lang) ;
-//            if ( reader == null )
-//                throw new RiotException("No parser registered for language: "+lang.getLabel()) ;
-//            reader.read(in, baseUri, lang.getContentType(), destination, context) ;
-//            return ;
-//        }
-//        // ---- NEW
-        
+        Objects.requireNonNull(in, "TypedInputStream is null") ;
         ContentType ct = WebContent.determineCT(in.getContentType(), lang, baseUri) ;
         if ( ct == null )
             throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : stream="+in.getContentType()+")") ;
@@ -906,19 +849,8 @@ public class RDFDataMgr
     }
     
     // java.io.Readers are NOT preferred.
-    private static void process(StreamRDF destination, Reader in, String baseUri, Lang lang, Context context )
-    {
-//        // ---- NEW
-//        if ( lang != null ) {
-//            ReaderRIOT reader = createReader(lang) ;
-//            if ( reader == null )
-//                throw new RiotException("No parser registered for language: "+lang.getLabel()) ;
-//            reader.read(in, baseUri, lang.getContentType(), destination, context) ;
-//            return ;
-//        }
-//        // ---- NEW
-
-        // Not as good as from an InputStream 
+    private static void process(StreamRDF destination, Reader in, String baseUri, Lang lang, Context context ) {
+        Objects.requireNonNull(in, "Reader is null") ;
         ContentType ct = WebContent.determineCT(null, lang, baseUri) ;
         if ( ct == null )
             throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : hint="+lang+")") ;
@@ -927,38 +859,6 @@ public class RDFDataMgr
             throw new RiotException("No parser registered for content type: "+ct.getContentType()) ;
         reader.read(in, baseUri, ct, destination, context) ;
     }
-
-//    ///---- NEW / rewrite
-//    // Lang is definitive.  needs further consideration
-//    private static void process2(StreamRDF destination, TypedInputStream in, String uri, Lang givenLang, Context context)
-//    {
-//        Pair<Lang, ContentType> p = selectLang(in.getMediaType(), uri, givenLang, context) ;
-//        Lang lang = p.getLeft() ;
-//        ContentType ct = p.getRight() ;
-//
-//        if ( lang == null )
-//            throw new RiotException("Syntax not identified (URI="+uri+" : stream="+in.getContentType()+")") ;
-//
-//        ReaderRIOT reader = createReader(lang) ;
-//        if ( reader == null )
-//            throw new RiotException("No parser registered for lang: "+lang.getLabel()) ;
-//        reader.read(in, uri, ct, destination, context) ;
-//    }
-//
-//    private static Pair<Lang, ContentType> selectLang(ContentType ct, String uri, Lang lang, Context context) {
-//        if ( lang != null )
-//            return Pair.create(lang, lang.getContentType()) ;
-//
-//        Lang ctLang = RDFLanguages.contentTypeToLang(ct) ;
-//        if ( ctLang != null )
-//            return Pair.create(ctLang, ct) ;
-//
-//        Lang filenameLang = RDFLanguages.filenameToLang(uri) ;
-//        if ( filenameLang != null )
-//            return Pair.create(filenameLang, filenameLang.getContentType()) ;
-//        return null ;
-//    }
-//    ///---- NEW
 
     /** 
      * @see RDFLanguages#shortnameToLang  to go from Jena short name to {@link Lang}
@@ -974,8 +874,7 @@ public class RDFDataMgr
         return r.create(lang) ;
     }
     
-    private static ReaderRIOT getReader(ContentType ct)
-    {
+    private static ReaderRIOT getReader(ContentType ct) {
         Lang lang = RDFLanguages.contentTypeToLang(ct) ;
         if ( lang == null )
             return null ;
@@ -1003,9 +902,8 @@ public class RDFDataMgr
      * @param model     Graph to write
      * @param lang      Language for the seralization.
      */
-    public static void write(OutputStream out, Model model, Lang lang)
-    {
-        write(out, model.getGraph(), lang) ;
+    public static void write(OutputStream out, Model model, Lang lang) {
+        write(out, model.getGraph(), lang);
     }
 
     /** Write the model to the output stream in the default serialization for the language.
@@ -1013,9 +911,8 @@ public class RDFDataMgr
      * @param model         Model to write
      * @param serialization Serialization format
      */
-    public static void write(OutputStream out, Model model, RDFFormat serialization)
-    {
-        write(out, model.getGraph(), serialization) ;
+    public static void write(OutputStream out, Model model, RDFFormat serialization) {
+        write(out, model.getGraph(), serialization);
     }
     
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1023,11 +920,9 @@ public class RDFDataMgr
      * @param model         Model to write
      * @param lang          Serialization format
      */
-    public static void write(StringWriter out, Model model, Lang lang)
-    {
-        write(out, model.getGraph(), lang) ;
+    public static void write(StringWriter out, Model model, Lang lang) {
+        write(out, model.getGraph(), lang);
     }
-    
 
     /** Write the graph to the output stream in the default serialization for the language.
      * @param out           Writer
@@ -1036,9 +931,8 @@ public class RDFDataMgr
      * @deprecated Use of writers is deprecated - use an OutputStream
      */
     @Deprecated
-    public static void write(Writer out, Model model, Lang lang)
-    {
-        write(out, model.getGraph(), lang) ;
+    public static void write(Writer out, Model model, Lang lang) {
+        write(out, model.getGraph(), lang);
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1046,9 +940,8 @@ public class RDFDataMgr
      * @param model         Model to write
      * @param serialization Serialization format
      */
-    public static void write(StringWriter out, Model model, RDFFormat serialization)
-    {
-        write(out, model.getGraph(), serialization) ;
+    public static void write(StringWriter out, Model model, RDFFormat serialization) {
+        write(out, model.getGraph(), serialization);
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1058,9 +951,8 @@ public class RDFDataMgr
      * @deprecated Use of writers is deprecated - use an OutputStream
      */
     @Deprecated
-    public static void write(Writer out, Model model, RDFFormat serialization)
-    {
-        write(out, model.getGraph(), serialization) ;
+    public static void write(Writer out, Model model, RDFFormat serialization) {
+        write(out, model.getGraph(), serialization);
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1068,10 +960,9 @@ public class RDFDataMgr
      * @param graph     Graph to write
      * @param lang      Language for the seralization.
      */
-    public static void write(OutputStream out, Graph graph, Lang lang)
-    {
-        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang) ;
-        write(out, graph, serialization) ;
+    public static void write(OutputStream out, Graph graph, Lang lang) {
+        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang);
+        write(out, graph, serialization);
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1079,9 +970,8 @@ public class RDFDataMgr
      * @param graph         Graph to write
      * @param serialization Serialization format
      */
-    public static void write(OutputStream out, Graph graph, RDFFormat serialization)
-    {
-        write$(out, graph, serialization) ;
+    public static void write(OutputStream out, Graph graph, RDFFormat serialization) {
+        write$(out, graph, serialization);
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1089,10 +979,9 @@ public class RDFDataMgr
      * @param graph         Graph to write
      * @param lang          Serialization format
      */
-    public static void write(StringWriter out, Graph graph, Lang lang)
-    {
+    public static void write(StringWriter out, Graph graph, Lang lang) {
         // Only known reasonable use of a Writer
-        write$(out, graph, RDFWriterRegistry.defaultSerialization(lang)) ;
+        write$(out, graph, RDFWriterRegistry.defaultSerialization(lang));
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1102,20 +991,18 @@ public class RDFDataMgr
      * @deprecated Use of writers is deprecated - use an OutputStream
      */
     @Deprecated
-    public static void write(Writer out, Graph graph, Lang lang)
-    {
-        write$(out, graph, RDFWriterRegistry.defaultSerialization(lang)) ;
+    public static void write(Writer out, Graph graph, Lang lang) {
+        write$(out, graph, RDFWriterRegistry.defaultSerialization(lang));
     }
-    
+
     /** Write the graph to the output stream in the default serialization for the language.
      * @param out           OutputStream
      * @param graph         Graph to write
      * @param serialization Serialization format
      */
-    public static void write(StringWriter out, Graph graph, RDFFormat serialization)
-    {
+    public static void write(StringWriter out, Graph graph, RDFFormat serialization) {
         // Only known reasonable use of a Writer
-        write$(out, graph, serialization) ;
+        write$(out, graph, serialization);
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1125,9 +1012,8 @@ public class RDFDataMgr
      * @deprecated Use of writers is deprecated - use an OutputStream
      */
     @Deprecated
-    public static void write(Writer out, Graph graph, RDFFormat serialization)
-    {
-        write$(out, graph, serialization) ;
+    public static void write(Writer out, Graph graph, RDFFormat serialization) {
+        write$(out, graph, serialization);
     }
     
     /** Write the Dataset to the output stream in the default serialization for the language.
@@ -1135,9 +1021,8 @@ public class RDFDataMgr
      * @param dataset   Dataset to write
      * @param lang      Language for the seralization.
      */
-    public static void write(OutputStream out, Dataset dataset, Lang lang)
-    {
-        write(out, dataset.asDatasetGraph(), lang) ;
+    public static void write(OutputStream out, Dataset dataset, Lang lang) {
+        write(out, dataset.asDatasetGraph(), lang);
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1145,9 +1030,8 @@ public class RDFDataMgr
      * @param dataset       Dataset to write
      * @param serialization Serialization format
      */
-    public static void write(OutputStream out, Dataset dataset, RDFFormat serialization)
-    {
-        write(out, dataset.asDatasetGraph(), serialization) ;
+    public static void write(OutputStream out, Dataset dataset, RDFFormat serialization) {
+        write(out, dataset.asDatasetGraph(), serialization);
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1155,9 +1039,8 @@ public class RDFDataMgr
      * @param dataset       Dataset to write
      * @param serialization Serialization format
      */
-    public static void write(StringWriter out, Dataset dataset, RDFFormat serialization)
-    {
-        write$(out, dataset.asDatasetGraph(), serialization) ;
+    public static void write(StringWriter out, Dataset dataset, RDFFormat serialization) {
+        write$(out, dataset.asDatasetGraph(), serialization);
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1165,10 +1048,9 @@ public class RDFDataMgr
      * @param dataset       Dataset to write
      * @param lang      Language for the seralization.
      */
-    public static void write(StringWriter out, Dataset dataset, Lang lang)
-    {
-        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang) ;
-        write$(out, dataset.asDatasetGraph(), serialization) ;
+    public static void write(StringWriter out, Dataset dataset, Lang lang) {
+        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang);
+        write$(out, dataset.asDatasetGraph(), serialization);
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1178,9 +1060,8 @@ public class RDFDataMgr
      * @deprecated Use of writers is deprecated - use an OutputStream
      */
     @Deprecated
-    public static void write(Writer out, Dataset dataset, RDFFormat serialization)
-    {
-        write$(out, dataset.asDatasetGraph(), serialization) ;
+    public static void write(Writer out, Dataset dataset, RDFFormat serialization) {
+        write$(out, dataset.asDatasetGraph(), serialization);
     }
 
     /** Write the DatasetGraph to the output stream in the default serialization for the language.
@@ -1188,10 +1069,9 @@ public class RDFDataMgr
      * @param dataset   DatasetGraph to write
      * @param lang      Language for the seralization.
      */
-    public static void write(OutputStream out, DatasetGraph dataset, Lang lang)
-    {
-        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang) ;
-        write(out, dataset, serialization) ;
+    public static void write(OutputStream out, DatasetGraph dataset, Lang lang) {
+        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang);
+        write(out, dataset, serialization);
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1199,9 +1079,8 @@ public class RDFDataMgr
      * @param dataset       DatasetGraph to write
      * @param serialization Serialization format
      */
-    public static void write(OutputStream out, DatasetGraph dataset, RDFFormat serialization)
-    {
-        write$(out, dataset, serialization) ;
+    public static void write(OutputStream out, DatasetGraph dataset, RDFFormat serialization) {
+        write$(out, dataset, serialization);
     }
 
     /** Write the DatasetGraph to the output stream in the default serialization for the language.
@@ -1209,10 +1088,9 @@ public class RDFDataMgr
      * @param dataset   DatasetGraph to write
      * @param lang      Language for the seralization.
      */
-    public static void write(StringWriter out, DatasetGraph dataset, Lang lang)
-    {
-        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang) ;
-        write(out, dataset, serialization) ;
+    public static void write(StringWriter out, DatasetGraph dataset, Lang lang) {
+        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang);
+        write(out, dataset, serialization);
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1220,9 +1098,8 @@ public class RDFDataMgr
      * @param dataset       DatasetGraph to write
      * @param serialization Serialization format
      */
-    public static void write(StringWriter out, DatasetGraph dataset, RDFFormat serialization)
-    {
-        write$(out, dataset, serialization) ;
+    public static void write(StringWriter out, DatasetGraph dataset, RDFFormat serialization) {
+        write$(out, dataset, serialization);
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1232,108 +1109,92 @@ public class RDFDataMgr
      * @deprecated Use of writers is deprecated - use an OutputStream
      */
     @Deprecated
-    public static void write(Writer out, DatasetGraph dataset, RDFFormat serialization)
-    {
-        write$(out, dataset, serialization) ;
+    public static void write(Writer out, DatasetGraph dataset, RDFFormat serialization) {
+        write$(out, dataset, serialization);
     }
 
     /** Write an iterator of triples (in N-Triples)
      * @param out
      * @param iterator
      */
-    public static void writeTriples(OutputStream out, Iterator<Triple> iterator)
-    {
-        NTriplesWriter.write(out, iterator) ;        
+    public static void writeTriples(OutputStream out, Iterator<Triple> iterator) {
+        NTriplesWriter.write(out, iterator);
     }
-    
 
     /** Write an iterator of quads (in N-Quads)
      * @param out
      * @param iterator
      */
-    public static void writeQuads(OutputStream out, Iterator<Quad> iterator)
-    {
-        NQuadsWriter.write(out, iterator) ;        
+    public static void writeQuads(OutputStream out, Iterator<Quad> iterator) {
+        NQuadsWriter.write(out, iterator);
     }
 
     /** Create a writer for an RDF language
      * @param lang   Language for the seralization.
      * @return WriterGraphRIOT
      */
-    
-    public static WriterGraphRIOT createGraphWriter(Lang lang)
-    {
-        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang) ;
-        return createGraphWriter$(serialization) ;    
+    public static WriterGraphRIOT createGraphWriter(Lang lang) {
+        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang);
+        return createGraphWriter$(serialization);
     }
 
     /** Create a writer for an RDF language
      * @param serialization Serialization format
      * @return WriterGraphRIOT
      */
-    public static WriterGraphRIOT createGraphWriter(RDFFormat serialization)
-    {
-        return createGraphWriter$(serialization) ;    
+    public static WriterGraphRIOT createGraphWriter(RDFFormat serialization) {
+        return createGraphWriter$(serialization);
     }
 
     /** Create a writer for an RDF language
      * @param lang   Language for the seralization.
      * @return WriterGraphRIOT
      */
-    
-    public static WriterDatasetRIOT createDatasetWriter(Lang lang)
-    {
-        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang) ;
-        return createDatasetWriter$(serialization) ;    
+    public static WriterDatasetRIOT createDatasetWriter(Lang lang) {
+        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang);
+        return createDatasetWriter$(serialization);
     }
     
     /** Create a writer for an RDF language
      * @param serialization Serialization format
      * @return WriterGraphRIOT
      */
-    public static WriterDatasetRIOT createDatasetWriter(RDFFormat serialization)
-    {
-        return createDatasetWriter$(serialization) ;    
+    public static WriterDatasetRIOT createDatasetWriter(RDFFormat serialization) {
+        return createDatasetWriter$(serialization);
     }
     
-    private static WriterGraphRIOT createGraphWriter$(RDFFormat serialization)
-    {
-        WriterGraphRIOTFactory wf = RDFWriterRegistry.getWriterGraphFactory(serialization) ;
+    private static WriterGraphRIOT createGraphWriter$(RDFFormat serialization) {
+        WriterGraphRIOTFactory wf = RDFWriterRegistry.getWriterGraphFactory(serialization);
         if ( wf == null )
-            throw new RiotException("No graph writer for "+serialization) ; 
-        return wf.create(serialization) ;
+            throw new RiotException("No graph writer for " + serialization);
+        return wf.create(serialization);
     }
 
-    private static WriterDatasetRIOT createDatasetWriter$(RDFFormat serialization)
-    {
-        WriterDatasetRIOTFactory wf = RDFWriterRegistry.getWriterDatasetFactory(serialization) ;
+    private static WriterDatasetRIOT createDatasetWriter$(RDFFormat serialization) {
+        WriterDatasetRIOTFactory wf = RDFWriterRegistry.getWriterDatasetFactory(serialization);
         if ( wf == null )
-            throw new RiotException("No dataset writer for "+serialization) ; 
-        return wf.create(serialization) ;
+            throw new RiotException("No dataset writer for " + serialization);
+        return wf.create(serialization);
     }
 
-    private static void write$(OutputStream out, Graph graph, RDFFormat serialization)
-    {
-        WriterGraphRIOT w = createGraphWriter$(serialization) ;
-        w.write(out, graph, RiotLib.prefixMap(graph), null, null) ;
+    private static void write$(OutputStream out, Graph graph, RDFFormat serialization) {
+        WriterGraphRIOT w = createGraphWriter$(serialization);
+        w.write(out, graph, RiotLib.prefixMap(graph), null, null);
     }
 
-    private static void write$(Writer out, Graph graph, RDFFormat serialization)
-    {
-        WriterGraphRIOT w = createGraphWriter$(serialization) ;
-        w.write(out, graph, RiotLib.prefixMap(graph), null, null) ;
+    private static void write$(Writer out, Graph graph, RDFFormat serialization) {
+        WriterGraphRIOT w = createGraphWriter$(serialization);
+        w.write(out, graph, RiotLib.prefixMap(graph), null, null);
     }
 
-    private static void write$(OutputStream out, DatasetGraph dataset, RDFFormat serialization)
-    {
-        WriterDatasetRIOT w = createDatasetWriter$(serialization) ;
-        w.write(out, dataset, RiotLib.prefixMap(dataset), null, null) ;
+    private static void write$(OutputStream out, DatasetGraph dataset, RDFFormat serialization) {
+        WriterDatasetRIOT w = createDatasetWriter$(serialization);
+        w.write(out, dataset, RiotLib.prefixMap(dataset), null, null);
     }
 
-    private static void write$(Writer out, DatasetGraph dataset, RDFFormat serialization)
-    {
-        WriterDatasetRIOT w = createDatasetWriter$(serialization) ;
-        w.write(out, dataset, RiotLib.prefixMap(dataset), null, null) ;
+    private static void write$(Writer out, DatasetGraph dataset, RDFFormat serialization) {
+        WriterDatasetRIOT w = createDatasetWriter$(serialization);
+        w.write(out, dataset, RiotLib.prefixMap(dataset), null, null);
     }
 }
 
