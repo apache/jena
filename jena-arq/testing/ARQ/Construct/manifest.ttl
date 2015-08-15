@@ -105,4 +105,68 @@
               qt:graphData <g2.ttl> ] ;
         mf:result  <results-construct-quad-short-form-3.trig>
       ]
+      [  mf:name    "Construct Quad: Syntax 1" ;
+         mf:action
+            [ qt:query     <q-construct-quad-syntax-1.arq> ;
+              qt:data      <dft.ttl> ;
+              qt:graphData <g1.ttl> ;
+              qt:graphData <g2.ttl> ] ;
+        mf:result  <results-construct-quad-syntax-1.trig>
+      ]
+      [  mf:name    "Construct Quad: Syntax 2" ;
+         mf:action
+            [ qt:query     <q-construct-quad-syntax-2.arq> ;
+              qt:data      <dft.ttl> ;
+              qt:graphData <g1.ttl> ;
+              qt:graphData <g2.ttl> ] ;
+        mf:result  <results-construct-quad-syntax-2.trig>
+      ]
+      [  mf:name    "Construct Quad: Syntax 3" ;
+         mf:action
+            [ qt:query     <q-construct-quad-syntax-3.arq> ;
+              qt:data      <dft.ttl> ;
+              qt:graphData <g1.ttl> ;
+              qt:graphData <g2.ttl> ] ;
+        mf:result  <results-construct-quad-syntax-3.ttl>
+      ]
+      [  mf:name    "Construct Quad: Syntax 4" ;
+         mf:action
+            [ qt:query     <q-construct-quad-syntax-4.arq> ;
+              qt:data      <dft.ttl> ;
+              qt:graphData <g1.ttl> ;
+              qt:graphData <g2.ttl> ] ;
+        mf:result  <results-construct-quad-syntax-4.trig>
+      ]
+      [  mf:name    "Construct Quad: Syntax 5" ;
+         mf:action
+            [ qt:query     <q-construct-quad-syntax-5.arq> ;
+              qt:data      <dft.ttl> ;
+              qt:graphData <g1.ttl> ;
+              qt:graphData <g2.ttl> ] ;
+        mf:result  <results-construct-quad-syntax-5.trig>
+      ]
+      [  mf:name    "Construct Quad: Syntax 6" ;
+         mf:action
+            [ qt:query     <q-construct-quad-syntax-6.arq> ;
+              qt:data      <dft.ttl> ;
+              qt:graphData <g1.ttl> ;
+              qt:graphData <g2.ttl> ] ;
+        mf:result  <results-construct-quad-syntax-6.trig>
+      ]
+      [  mf:name    "Construct Quad: Syntax 7" ;
+         mf:action
+            [ qt:query     <q-construct-quad-syntax-7.arq> ;
+              qt:data      <dft.ttl> ;
+              qt:graphData <g1.ttl> ;
+              qt:graphData <g2.ttl> ] ;
+        mf:result  <results-construct-quad-syntax-7.ttl>
+      ]
+      [  mf:name    "Construct Quad: Syntax 7" ;
+         mf:action
+            [ qt:query     <q-construct-quad-syntax-7.arq> ;
+              qt:data      <dft.ttl> ;
+              qt:graphData <g1.ttl> ;
+              qt:graphData <g2.ttl> ] ;
+        mf:result  <results-construct-quad-syntax-7.ttl>
+      ]
     ).

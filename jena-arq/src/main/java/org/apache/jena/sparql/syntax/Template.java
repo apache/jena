@@ -81,7 +81,8 @@ public class Template
     	}
     	BasicPattern bgp = new BasicPattern();
     	for(Quad q: qp.getQuads()){
-    		bgp.add(q.asTriple());
+    		if (Quad.defaultGraphNodeGenerated.equals(q.getGraph()))
+    			bgp.add(q.asTriple());
     	}
     	return bgp;
     }
@@ -92,7 +93,8 @@ public class Template
     	}
     	List<Triple> triples = new ArrayList<Triple>();
     	for(Quad q: qp.getQuads()){
-    		triples.add(q.asTriple());
+    		if (Quad.defaultGraphNodeGenerated.equals(q.getGraph()))
+    			triples.add(q.asTriple());
     	}
     	return triples;
     }
