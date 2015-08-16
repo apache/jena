@@ -245,17 +245,14 @@ public class Query extends Prologue implements Cloneable, Printable
     public boolean isQueryResultStar() { return queryResultStar ; }
 
     /** Set whether the query had SELECT/DESCRIBE *
-     * Strictly, this just means whether the projection is  
      * 
      * @param isQueryStar 
      */
     public void setQueryResultStar(boolean isQueryStar)
     {
-//        if ( isConstructType() )
-//            throw new IllegalArgumentException("Query is a CONSTRUCT query") ;
-//        if ( isAskType() )
-//            throw new IllegalArgumentException("Query is an ASK query") ;
         queryResultStar = isQueryStar ;
+        if ( isQueryStar ) 
+            resultVarsSet = false ;
     }
     
     public void setQueryPattern(Element elt)
