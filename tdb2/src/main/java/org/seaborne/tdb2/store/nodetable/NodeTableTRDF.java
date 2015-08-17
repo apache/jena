@@ -30,7 +30,7 @@ import org.seaborne.dboe.index.Index ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.NodeId ;
 
-/** NodeTable using Thrist for the I/O and storage. */
+/** NodeTable using Thrift for the I/O and storage. */
 
 public class NodeTableTRDF extends NodeTableNative {
     // Write buffering is done in the underlying BinaryDataFile
