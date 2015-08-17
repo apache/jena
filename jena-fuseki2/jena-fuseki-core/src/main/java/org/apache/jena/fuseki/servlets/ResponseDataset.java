@@ -19,12 +19,6 @@
 package org.apache.jena.fuseki.servlets;
 
 import static org.apache.jena.riot.WebContent.charsetUTF8;
-import static org.apache.jena.riot.WebContent.contentTypeJSONLD;
-import static org.apache.jena.riot.WebContent.contentTypeNTriples;
-import static org.apache.jena.riot.WebContent.contentTypeRDFJSON;
-import static org.apache.jena.riot.WebContent.contentTypeRDFXML;
-import static org.apache.jena.riot.WebContent.contentTypeTurtle;
-
 import java.util.HashMap;
 import java.util.Map;
 

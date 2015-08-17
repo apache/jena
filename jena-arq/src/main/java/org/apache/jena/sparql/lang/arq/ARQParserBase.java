@@ -17,8 +17,6 @@
  */
 
 package org.apache.jena.sparql.lang.arq;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.atlas.json.io.JSONHandler ;
@@ -33,7 +31,6 @@ import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.ElementNamedGraph;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.sparql.syntax.Template;
-import org.apache.jena.util.PrintUtil;
 
 class ARQParserBase
     extends SPARQLParserBase

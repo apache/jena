@@ -25,7 +25,6 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.syntax.Template;
-import org.apache.jena.sparql.util.FmtUtils;
 
 public class FmtTemplate extends FormatterBase
     implements FormatterTemplate 
