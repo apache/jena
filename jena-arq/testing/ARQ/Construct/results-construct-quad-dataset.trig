@@ -1,0 +1,4 @@
+@prefix : <http://example.org/ns#> .
+{:s :m :o}
+<g1.ttl> {:s1 :m :o1 }
+<g2.ttl> {:s2 :m :o2 }

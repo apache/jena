@@ -1,0 +1,7 @@
+PREFIX :   <http://example.org/ns#>
+
+CONSTRUCT {
+   GRAPH <urn:x-arq:DefaultGraphNode> {:s :p :o .}
+   }
+WHERE {}
+

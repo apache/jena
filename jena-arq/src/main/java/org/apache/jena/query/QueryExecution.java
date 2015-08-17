@@ -18,16 +18,15 @@
 
 package org.apache.jena.query;
 
-import java.util.Iterator ;
-import java.util.concurrent.TimeUnit ;
+import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.util.Context;
 
 /** A interface for a single execution of a query. */
-
-
 public interface QueryExecution extends AutoCloseable 
 {
     /** Set the initial association of variables and values.
@@ -101,6 +100,16 @@ public interface QueryExecution extends AutoCloseable
      * by applying the CONSTRUCT template of the query to the bindings in the WHERE clause.
      */
     public Iterator<Triple> execConstructTriples();
+    
+    /**
+     * Similar to execConstructTriples(), except that constructing {@link Quad}.
+     */
+    public Iterator<Quad> execConstructQuads();
+    
+    /**
+     * Similar to execConstructTriples(), except that constructing {@link Dataset}.
+     */
+    public Dataset execConstructDataset();
 
     /** Execute a DESCRIBE query */
     public Model execDescribe();

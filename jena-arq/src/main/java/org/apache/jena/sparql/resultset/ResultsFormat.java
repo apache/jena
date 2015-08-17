@@ -63,7 +63,9 @@ public class ResultsFormat extends Symbol
     static public ResultsFormat FMT_RDF_TTL      = new ResultsFormat(contentTypeTurtle) ;
     static public ResultsFormat FMT_RDF_TURTLE   = new ResultsFormat(contentTypeTurtle) ;
     static public ResultsFormat FMT_RDF_NT       = new ResultsFormat(contentTypeNTriples) ;
+    static public ResultsFormat FMT_TRIG         = new ResultsFormat(contentTypeTriG) ;
     static public ResultsFormat FMT_UNKNOWN      = new ResultsFormat("unknown") ;
+    
     // ---- Compatibility
     
     // Common names to symbol (used by arq.rset)
@@ -95,6 +97,8 @@ public class ResultsFormat extends Symbol
         names.put("graph",       FMT_RDF_TTL) ;
         names.put("nt",          FMT_RDF_NT) ;
         names.put("n-triples",   FMT_RDF_NT) ;
+        
+        names.put("trig",        FMT_TRIG) ;
 
     }
 
@@ -110,6 +114,11 @@ public class ResultsFormat extends Symbol
         if ( FMT_RDF_XML.equals(fmt) ) return true ;
         if ( FMT_RDF_NT.equals(fmt) ) return true ;
         return false ;
+    }
+    
+    public static boolean isDatasetSyntax(ResultsFormat fmt){
+    	if ( FMT_TRIG.equals(fmt) ) return true ;
+    	return false;
     }
     
     public static ResultsFormat guessSyntax(String url, ResultsFormat defaultFormat)
@@ -152,6 +161,10 @@ public class ResultsFormat extends Symbol
             return FMT_RS_CSV ;
         if ( url.endsWith(".tsv") )
             return FMT_RS_TSV ;
+        
+        // Trig for Dataset
+        if ( url.endsWith(".trig") )
+            return FMT_TRIG ;
         
         return defaultFormat ;
     }

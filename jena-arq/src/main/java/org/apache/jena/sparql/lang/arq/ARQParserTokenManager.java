@@ -10,6 +10,7 @@ package org.apache.jena.sparql.lang.arq ;
 
 
 
+
 /** Token Manager. */
 public class ARQParserTokenManager implements ARQParserConstants
 {

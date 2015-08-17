@@ -1,0 +1,8 @@
+PREFIX : <http://example/>
+
+CONSTRUCT {
+   GRAPH ?g { :s :p :o }
+   GRAPH ?g1 { :s :p :o }
+   }
+WHERE
+   { }

@@ -17,10 +17,23 @@
  */
 
 package org.apache.jena.sparql.lang.arq;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.jena.atlas.json.io.JSONHandler ;
 import org.apache.jena.atlas.json.io.JSONHandlerBase ;
 import org.apache.jena.atlas.lib.NotImplemented ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.lang.SPARQLParserBase ;
+import org.apache.jena.sparql.syntax.Element;
+import org.apache.jena.sparql.syntax.ElementGroup;
+import org.apache.jena.sparql.syntax.ElementNamedGraph;
+import org.apache.jena.sparql.syntax.ElementPathBlock;
+import org.apache.jena.sparql.syntax.Template;
+import org.apache.jena.util.PrintUtil;
 
 class ARQParserBase
     extends SPARQLParserBase
@@ -67,4 +80,18 @@ class ARQParserBase
     protected void jsonValueNull(long currLine, long currCol)                    { handler.valueNull(currLine, currCol) ; }
     
     protected void jsonValueVar(String image, long currLine, long currCol)       { throw new NotImplemented("yet") ; }
+    protected ElementGroup createQueryPattern(Template t){
+        ElementGroup elg = new ElementGroup();
+        Map<Node, BasicPattern> graphs = t.getGraphPattern();
+        for(Node n: graphs.keySet()){
+          Element el = new ElementPathBlock(graphs.get(n));
+          if(! Quad.defaultGraphNodeGenerated.equals(n) ){
+        	ElementGroup e = new ElementGroup();
+        	e.addElement(el);
+            el = new ElementNamedGraph(n, e);
+          }
+          elg.addElement(el);
+        }
+        return elg;
+    }
 }
