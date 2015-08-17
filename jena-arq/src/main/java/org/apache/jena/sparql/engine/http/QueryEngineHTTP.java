@@ -36,6 +36,8 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.ARQException ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.ResultSetCheckCondition ;
 import org.apache.jena.sparql.graph.GraphFactory ;
@@ -399,7 +401,20 @@ public class QueryEngineHTTP implements QueryExecution {
     
     @Override
     public Dataset execConstructDataset(){
-    	return null;
+    	
+    	DatasetGraph graph = DatasetGraphFactory.createMem();
+    	
+        checkNotClosed() ;
+        try
+        {
+        	execConstructQuads().forEachRemaining(graph::add);
+        }
+        finally
+        {
+            this.close();
+        }
+        return DatasetFactory.create(graph);
+
     }
 
     @Override
