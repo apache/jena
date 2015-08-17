@@ -60,8 +60,8 @@ public class BPlusTreeFactory {
         return bpt ;
     }
 
-    /** Reset an existign B+Tree with difrerent storage units.
-     * For each, null means "use same as original" 
+    /** Reset an existing B+Tree with different storage units.
+     *  For each, null means "use same as original" 
      */
     public static BPlusTree rebuild(BPlusTree bpt, BufferChannel chan, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves) {
         if ( chan == null )
