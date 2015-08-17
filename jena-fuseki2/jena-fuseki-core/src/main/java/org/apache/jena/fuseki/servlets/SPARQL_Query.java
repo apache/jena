@@ -18,61 +18,48 @@
 
 package org.apache.jena.fuseki.servlets ;
 
-import static java.lang.String.format;
-import static org.apache.jena.fuseki.server.CounterName.QueryTimeouts;
-import static org.apache.jena.riot.WebContent.ctHTMLForm;
-import static org.apache.jena.riot.WebContent.ctSPARQLQuery;
-import static org.apache.jena.riot.WebContent.isHtmlForm;
-import static org.apache.jena.riot.WebContent.matchContentType;
-import static org.apache.jena.riot.web.HttpNames.paramAccept;
-import static org.apache.jena.riot.web.HttpNames.paramCallback;
-import static org.apache.jena.riot.web.HttpNames.paramDefaultGraphURI;
-import static org.apache.jena.riot.web.HttpNames.paramForceAccept;
-import static org.apache.jena.riot.web.HttpNames.paramNamedGraphURI;
-import static org.apache.jena.riot.web.HttpNames.paramOutput1;
-import static org.apache.jena.riot.web.HttpNames.paramOutput2;
-import static org.apache.jena.riot.web.HttpNames.paramQuery;
-import static org.apache.jena.riot.web.HttpNames.paramQueryRef;
-import static org.apache.jena.riot.web.HttpNames.paramStyleSheet;
-import static org.apache.jena.riot.web.HttpNames.paramTimeout;
+import static java.lang.String.format ;
+import static org.apache.jena.fuseki.server.CounterName.QueryTimeouts ;
+import static org.apache.jena.riot.WebContent.ctHTMLForm ;
+import static org.apache.jena.riot.WebContent.ctSPARQLQuery ;
+import static org.apache.jena.riot.WebContent.isHtmlForm ;
+import static org.apache.jena.riot.WebContent.matchContentType ;
+import static org.apache.jena.riot.web.HttpNames.paramAccept ;
+import static org.apache.jena.riot.web.HttpNames.paramCallback ;
+import static org.apache.jena.riot.web.HttpNames.paramDefaultGraphURI ;
+import static org.apache.jena.riot.web.HttpNames.paramForceAccept ;
+import static org.apache.jena.riot.web.HttpNames.paramNamedGraphURI ;
+import static org.apache.jena.riot.web.HttpNames.paramOutput1 ;
+import static org.apache.jena.riot.web.HttpNames.paramOutput2 ;
+import static org.apache.jena.riot.web.HttpNames.paramQuery ;
+import static org.apache.jena.riot.web.HttpNames.paramQueryRef ;
+import static org.apache.jena.riot.web.HttpNames.paramStyleSheet ;
+import static org.apache.jena.riot.web.HttpNames.paramTimeout ;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Locale;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.util.* ;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest ;
+import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.io.IndentedLineBuffer;
-import org.apache.jena.atlas.web.AcceptList;
-import org.apache.jena.atlas.web.ContentType;
-import org.apache.jena.atlas.web.MediaType;
-import org.apache.jena.fuseki.DEF;
-import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.fuseki.FusekiException;
-import org.apache.jena.fuseki.FusekiLib;
-import org.apache.jena.fuseki.conneg.WebLib;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryCancelledException;
-import org.apache.jena.query.QueryException;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.QueryParseException;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.Syntax;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.web.HttpNames;
-import org.apache.jena.riot.web.HttpOp;
-import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.resultset.SPARQLResult;
-import org.apache.jena.web.HttpSC;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.web.AcceptList ;
+import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.atlas.web.MediaType ;
+import org.apache.jena.fuseki.DEF ;
+import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.conneg.WebLib ;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.riot.web.HttpNames ;
+import org.apache.jena.riot.web.HttpOp ;
+import org.apache.jena.sparql.core.Prologue ;
+import org.apache.jena.sparql.resultset.SPARQLResult ;
+import org.apache.jena.web.HttpSC ;
 
 /** Handle SPARQL Query requests overt eh SPARQL Protocol. 
  * Subclasses provide this algorithm with the actual dataset to query, whether
@@ -332,18 +319,18 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         }
 
         if ( query.isConstructType() ) {
-        	
+            
             MediaType rdfMediaType = AcceptList.match( DEF.pureRdfOffer, new AcceptList( WebLib.getAccept(action.getRequest())));
-		    
-			if ( ! rdfMediaType.getType().equals("*") ) {
-			    Model model = queryExecution.execConstruct();
-			    action.log.info(format("[%d] exec/construct/model", action.id));
-			    return new SPARQLResult(model);
-			} else  {
-			    Dataset dataset = queryExecution.execConstructDataset();
-			    action.log.info(format("[%d] exec/construct/dataset", action.id));
-			    return new SPARQLResult(dataset);
-		    }
+            
+            if ( ! rdfMediaType.getType().equals("*") ) {
+                Model model = queryExecution.execConstruct();
+                action.log.info(format("[%d] exec/construct/model", action.id));
+                return new SPARQLResult(model);
+            } else  {
+                Dataset dataset = queryExecution.execConstructDataset();
+                action.log.info(format("[%d] exec/construct/dataset", action.id));
+                return new SPARQLResult(dataset);
+            }
         }
 
         if ( query.isDescribeType() ) {
@@ -409,7 +396,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         else if ( result.isBoolean() )
             ResponseResultSet.doResponseResultSet(action, result.getBooleanResult()) ;
         else if ( result.isDataset() )
-        	ResponseDataset.doResponseDataset(action, result.getDataset());
+            ResponseDataset.doResponseDataset(action, result.getDataset());
         else
             ServletOps.errorOccurred("Unknown or invalid result type") ;
     }
