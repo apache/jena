@@ -27,13 +27,13 @@ function resolveLink() {
         # BSD style readlink behaves differently to GNU readlink
         # Have to manually follow links
         while [ -L "$NAME" ]; do
-          NAME=$(readlink "$NAME")
+          NAME=$(readlink -- "$NAME")
         done
         ;;
       *)
         # Assuming standard GNU readlink with -f for
         # canonicalize
-        NAME=$(readlink -f "$NAME")
+        NAME=$(readlink -f -- "$NAME")
         ;;
     esac
   fi
@@ -284,6 +284,6 @@ debug "Triples text files is $DATA_TRIPLES"
 debug "Quads text file is $DATA_QUADS"
 
 java $JVM_ARGS -cp "$JENA_CP" "$PKG".CmdNodeTableBuilder \
-    "--loc=$LOC" "--triples=$DATA_TRIPLES" "--quads=$DATA_QUADS" "${FILES[@]}"
+    "--loc=$LOC" "--triples=$DATA_TRIPLES" "--quads=$DATA_QUADS" -- "${FILES[@]}"
 
 info "Data Load Phase Completed"

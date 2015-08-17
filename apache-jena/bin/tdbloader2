@@ -108,13 +108,13 @@ function resolveLink() {
         # BSD style readlink behaves differently to GNU readlink
         # Have to manually follow links
         while [ -L "$NAME" ]; do
-          NAME=$(readlink "$NAME")
+          NAME=$(readlink -- "$NAME")
         done
         ;;
       *)
         # Assuming standard GNU readlink with -f for
         # canonicalize
-        NAME=$(readlink -f "$NAME")
+        NAME=$(readlink -f -- "$NAME")
         ;;
     esac
   fi
