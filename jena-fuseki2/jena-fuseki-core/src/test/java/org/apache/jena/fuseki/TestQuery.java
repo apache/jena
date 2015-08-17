@@ -160,6 +160,20 @@ public class TestQuery extends BaseTest {
     }
     
     @Test
+    public void query_construct_quad_02()
+    {
+        String queryString = " CONSTRUCT { GRAPH <http://eg/g> {?s ?p ?oq} } WHERE {?s ?p ?oq}" ;
+        Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
+               
+        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, query) ) {
+            Dataset result = qExec.execConstructDataset();
+            Assert.assertTrue(result.asDatasetGraph().find().hasNext());
+            Assert.assertEquals( "http://eg/g", result.asDatasetGraph().find().next().getGraph().getURI());
+
+        }
+    }
+    
+    @Test
     public void query_construct_01()
     {
         String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}" ;
