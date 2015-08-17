@@ -23,5 +23,4 @@ import org.seaborne.dboe.transaction.Transactional ;
 /** Transaction representation of a DatasetGraph */ 
 public interface DatasetGraphTxn extends DatasetGraph, Transactional, org.apache.jena.sparql.core.Transactional {
     // Combines org.seaborne.dboe.transaction.Transactional and org.apache.jena.sparql.core.Transactional.
-    //public DatasetGraphTDB getBaseDatasetGraph() ;
 }
