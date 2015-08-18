@@ -22,10 +22,15 @@ import static org.apache.jena.query.ReadWrite.WRITE ;
 import static org.seaborne.dboe.transaction.txn.journal.JournalEntryType.UNDO ;
 
 import java.nio.ByteBuffer ;
-import java.util.* ;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Objects ;
 import java.util.concurrent.ConcurrentHashMap ;
 import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicLong ;
+import java.util.concurrent.locks.ReadWriteLock ;
+import java.util.concurrent.locks.ReentrantReadWriteLock ;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ReadWrite ;
@@ -68,12 +73,18 @@ public class TransactionCoordinator {
 
     // Semaphore to implement "Single Active Writer" - independent of readers 
     private Semaphore writersWaiting = new Semaphore(1, true) ;
-
-    @FunctionalInterface
-    public interface ShutdownHook { void shutdown() ; }
+    
+    // All transaction need a "read" lock through out their lifetime. 
+    // Do not confuse with read/write transactions.  We need a 
+    // "one exclusive, or many other" lock which happens to be called ReadWriteLock
+    // See also {@code lock} which protects the datastructures during transaction management.  
+    private ReadWriteLock exclusivitylock = new ReentrantReadWriteLock() ;
 
     // Coordinator wide lock object.
     private Object lock = new Object() ;
+
+    @FunctionalInterface
+    public interface ShutdownHook { void shutdown() ; }
 
     /** Create a TransactionCoordinator, initially with no associated {@link TransactionalComponent}s */ 
     public TransactionCoordinator(Location location) {
@@ -269,6 +280,83 @@ public class TransactionCoordinator {
             throw new TransactionException("TransactionCoordinator has been shutdown") ;
     }
 
+    private void releaseWriterLock() {
+        writersWaiting.release() ;
+    }
+    
+    private boolean acquireWriterLock(boolean canBlock) {
+        if ( ! canBlock )
+            return writersWaiting.tryAcquire() ;
+        try { 
+            writersWaiting.acquire() ; 
+            return true;
+        } catch (InterruptedException e) { throw new TransactionException(e) ; }
+    }
+    
+    // Work in progress.
+    /** Enter exclusive mode. 
+     * There are no active transactions on return; new transactions wil be held up in 'begin'.
+     * Return to normal (release waiting transactions, allow new transactions)
+     * with {@link #endExclusive}.   
+     */
+    public void beginExclusive() {
+        beginExclusive(true);
+    }
+    
+    public boolean beginExclusive(boolean canBlock) {
+        if ( canBlock ) {
+            exclusivitylock.writeLock().lock() ;
+            return true ;
+        }
+        return exclusivitylock.writeLock().tryLock() ;
+    }
+
+    /** Return to normal (release waiting transactions, allow new transactions).
+     * Must be paired with an earlier {@link #beginExclusive}. 
+     */
+    public void endExclusive() {
+        exclusivitylock.writeLock().unlock() ;
+    }
+
+    /** Execute an action in exclusive mode.  This method can block.
+     * Equivalent to:
+     * <pre>
+     *  beginExclusive() ;
+     *  try { action.run(); }
+     *  finally { endExclusive(); }
+     * </pre>
+     * 
+     * @param action
+     */
+    public void execExclusive(Runnable action) {
+        beginExclusive() ;
+        try { action.run(); }
+        finally { endExclusive(); }
+    }
+    
+    /** Block until no writers are active.
+     * Must call 
+     * Return 'true' if the writers semaphore was grabbed, else false.
+     */
+    public boolean disableWriters(boolean canBlock) {
+        return acquireWriterLock(canBlock) ;
+    }
+    
+    /** Block until no writers are active.
+     * Must call {@link #enableWriters} later.
+     * Return 'true' if the writers semaphore was grabbed, else false.
+     */
+    public void disableWriters() {
+        disableWriters(true) ;
+    }
+
+    /** Allow writers.  
+     * This must be used in conjunction with {@link #disableWriters}
+     */ 
+    public void enableWriters() {
+        releaseWriterLock();
+    }
+    
     /** Start a transaction. This may block. */
     public Transaction begin(ReadWrite readWrite) {
         return begin(readWrite, true) ;
@@ -284,31 +372,27 @@ public class TransactionCoordinator {
         Objects.nonNull(readWrite) ;
         checkActive() ;
         
+        if ( canBlock )
+            exclusivitylock.readLock().lock() ;
+        else {
+            if ( ! exclusivitylock.readLock().tryLock() )
+                return null ;
+        }
+        
         // Readers never block.
-        if ( readWrite == WRITE )
-        {
+        if ( readWrite == WRITE ) {
             // Writers take a WRITE permit from the semaphore to ensure there
             // is at most one active writer, else the attempt to start the
             // transaction blocks.
-            // Released by in notifyCommitEnd
-            if ( ! canBlock ) {
-                boolean b = writersWaiting.tryAcquire() ;
-                if ( !b )
-                    return null ;
-            }
-            else {
-                try { writersWaiting.acquire() ; }
-                catch (InterruptedException e) { throw new TransactionException(e) ; }
+            // Released by in notifyCommitFinish/notifyAbortFinish
+            boolean b = acquireWriterLock(canBlock) ;
+            if ( !b ) {
+                exclusivitylock.readLock().unlock() ;
+                return null ;
             }
         }
 
         Transaction transaction = begin$(readWrite) ;
-        // Thread safe - we have not let the Transaction object out yet.
-        countBegin.incrementAndGet() ;
-        switch(readWrite) {
-            case READ:  countBeginRead.incrementAndGet() ; break ;
-            case WRITE: countBeginWrite.incrementAndGet() ; break ;
-        }
         startActiveTransaction(transaction) ;
         transaction.begin();
         return transaction;
@@ -398,10 +482,6 @@ public class TransactionCoordinator {
 
     // Called by Transaction after the action of commit()/abort() or end() 
     /*package*/ void completed(Transaction transaction) {
-        // The check that a writer has called commit()/abort() 
-        // explicitly before end() is in Transaction where lifecycle
-        // checks are done.
-        // finishActiveTransaction is idempotent.
         finishActiveTransaction(transaction);
         journal.reset() ;
     }
@@ -436,7 +516,6 @@ public class TransactionCoordinator {
             if ( transaction.getMode() == WRITE )
                 advanceEpoch() ;
             notifyCommitFinish(transaction) ;
-            
         }
     }
 
@@ -456,18 +535,44 @@ public class TransactionCoordinator {
     
     // Active transactions: this is (the missing) ConcurrentHashSet
     private final static Object dummy                   = new Object() ;    
-    private Map<Transaction, Object> activeTransactions = new ConcurrentHashMap<>() ;
-
+    private ConcurrentHashMap<Transaction, Object> activeTransactions = new ConcurrentHashMap<>() ;
+    private AtomicLong activeTransactionCount = new AtomicLong(0) ;
+    private AtomicLong activeReadersCount = new AtomicLong(0) ;
+    private AtomicLong activeWritersCount = new AtomicLong(0) ;
+    
     private void startActiveTransaction(Transaction transaction) {
-        activeTransactions.put(transaction, dummy) ;
+        synchronized(lock) {
+            // Use lock to ensure all the counters move together.
+            // Thread safe - we have not let the Transaction object out yet.
+            countBegin.incrementAndGet() ;
+            switch(transaction.getMode()) {
+                case READ:  countBeginRead.incrementAndGet() ;  activeReadersCount.incrementAndGet() ; break ;
+                case WRITE: countBeginWrite.incrementAndGet() ; activeWritersCount.incrementAndGet() ; break ;
+            }
+            activeTransactionCount.incrementAndGet() ;
+            activeTransactions.put(transaction, dummy) ;
+        }
     }
     
     private void finishActiveTransaction(Transaction transaction) {
-        // Idempotent.
-        Object x = activeTransactions.remove(transaction) ; 
-        if ( x != null )
+        synchronized(lock) {
+            // Idempotent.
+            Object x = activeTransactions.remove(transaction) ;
+            if ( x == null )
+                return ;
             countFinished.incrementAndGet() ;
+            activeTransactionCount.decrementAndGet() ;
+            switch(transaction.getMode()) {
+                case READ:  activeReadersCount.decrementAndGet() ; break ;
+                case WRITE: activeWritersCount.decrementAndGet() ; break ;
+            }
+        }
+        exclusivitylock.readLock().unlock() ; 
     }
+    
+    public long countActiveReaders()    { return activeReadersCount.get() ; } 
+    public long countActiveWriter()     { return activeWritersCount.get() ; } 
+    public long countActive()           { return activeTransactionCount.get(); }
     
     // notify*Start/Finish called round each transaction lifecycle step
     // Called in cooperation between Transaction and TransactionCoordinator
@@ -482,17 +587,15 @@ public class TransactionCoordinator {
     private void notifyCommitStart(Transaction transaction) {}
     
     private void notifyCommitFinish(Transaction transaction) {
-        if ( transaction.getMode() == WRITE ) {
-            writersWaiting.release();
-        }
+        if ( transaction.getMode() == WRITE )
+            releaseWriterLock();
     }
     
     private void notifyAbortStart(Transaction transaction) { }
     
     private void notifyAbortFinish(Transaction transaction) {
-        if ( transaction.getMode() == WRITE ) {
-            writersWaiting.release();
-        }
+        if ( transaction.getMode() == WRITE )
+            releaseWriterLock();
     }
 
     /*package*/ void notifyEndStart(Transaction transaction) { }
@@ -522,7 +625,5 @@ public class TransactionCoordinator {
     public long countBeginWrite()   { return countBeginWrite.get() ; }
 
     public long countFinished()     { return countFinished.get() ; }
-
-    public long countActive()       { return activeTransactions.size() ; }
 }
 

@@ -54,6 +54,10 @@ public abstract class AbstractTestTxn {
     protected void checkClear() {
         assertEquals(0, txnMgr.countActive()) ;
         assertEquals(0, txnMgr.countBegin()-txnMgr.countFinished()) ;
+        assertEquals(0, txnMgr.countActiveReaders()) ;
+        assertEquals(0, txnMgr.countActiveWriter()) ;
+        
+
     }
 }
 

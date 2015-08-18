@@ -18,9 +18,9 @@
 package org.seaborne.dboe.transaction;
 
 import static org.junit.Assert.assertEquals ;
-import org.junit.Test ;
 
 import org.apache.jena.query.ReadWrite ;
+import org.junit.Test ;
 
 public class TestTransactionCoordinator extends AbstractTestTxn {
     @Test public void txn_coord_read_1() {
@@ -29,6 +29,8 @@ public class TestTransactionCoordinator extends AbstractTestTxn {
         assertEquals(0, txnMgr.countBegin()) ;
         assertEquals(0, txnMgr.countBeginRead()) ;
         assertEquals(0, txnMgr.countBeginWrite()) ;
+        assertEquals(0, txnMgr.countActiveReaders()) ;
+        assertEquals(0, txnMgr.countActiveWriter()) ;
 
         unit.begin(ReadWrite.READ);
 
@@ -37,6 +39,9 @@ public class TestTransactionCoordinator extends AbstractTestTxn {
         assertEquals(1, txnMgr.countBegin()) ;
         assertEquals(1, txnMgr.countBeginRead()) ;
         assertEquals(0, txnMgr.countBeginWrite()) ;
+        
+        assertEquals(1, txnMgr.countActiveReaders()) ;
+        assertEquals(0, txnMgr.countActiveWriter()) ;
 
         unit.end() ;
 
@@ -45,6 +50,8 @@ public class TestTransactionCoordinator extends AbstractTestTxn {
         assertEquals(0, txnMgr.countBeginWrite()) ;
         assertEquals(1, txnMgr.countFinished()) ;
         assertEquals(1, txnMgr.countBegin()) ;
+        assertEquals(0, txnMgr.countActiveReaders()) ;
+        assertEquals(0, txnMgr.countActiveWriter()) ;
     }
     
     @Test public void txn_coord_read_2() {
@@ -85,6 +92,10 @@ public class TestTransactionCoordinator extends AbstractTestTxn {
         assertEquals(0, txnMgr.countBegin()) ;
         assertEquals(0, txnMgr.countBeginRead()) ;
         assertEquals(0, txnMgr.countBeginWrite()) ;
+
+        assertEquals(0, txnMgr.countActiveReaders()) ;
+        assertEquals(0, txnMgr.countActiveWriter()) ;
+
         
         unit.begin(ReadWrite.WRITE);
         
@@ -93,6 +104,9 @@ public class TestTransactionCoordinator extends AbstractTestTxn {
         assertEquals(1, txnMgr.countBegin()) ;
         assertEquals(0, txnMgr.countBeginRead()) ;
         assertEquals(1, txnMgr.countBeginWrite()) ;
+        
+        assertEquals(0, txnMgr.countActiveReaders()) ;
+        assertEquals(1, txnMgr.countActiveWriter()) ;
 
         unit.commit() ;
 
@@ -101,7 +115,10 @@ public class TestTransactionCoordinator extends AbstractTestTxn {
         assertEquals(1, txnMgr.countBegin()) ;
         assertEquals(0, txnMgr.countBeginRead()) ;
         assertEquals(1, txnMgr.countBeginWrite()) ;
-        
+
+        assertEquals(0, txnMgr.countActiveReaders()) ;
+        assertEquals(0, txnMgr.countActiveWriter()) ;
+
         unit.end() ;
 
         assertEquals(0, txnMgr.countActive()) ;
@@ -109,6 +126,9 @@ public class TestTransactionCoordinator extends AbstractTestTxn {
         assertEquals(1, txnMgr.countBegin()) ;
         assertEquals(0, txnMgr.countBeginRead()) ;
         assertEquals(1, txnMgr.countBeginWrite()) ;
+
+        assertEquals(0, txnMgr.countActiveReaders()) ;
+        assertEquals(0, txnMgr.countActiveWriter()) ;
     }
 
     @Test public void txn_coord_write_2() {
@@ -117,6 +137,8 @@ public class TestTransactionCoordinator extends AbstractTestTxn {
         assertEquals(0, txnMgr.countBegin()) ;
         assertEquals(0, txnMgr.countBeginRead()) ;
         assertEquals(0, txnMgr.countBeginWrite()) ;
+        assertEquals(0, txnMgr.countActiveReaders()) ;
+        assertEquals(0, txnMgr.countActiveWriter()) ;
         
         unit.begin(ReadWrite.WRITE);
         
@@ -125,7 +147,10 @@ public class TestTransactionCoordinator extends AbstractTestTxn {
         assertEquals(1, txnMgr.countBegin()) ;
         assertEquals(0, txnMgr.countBeginRead()) ;
         assertEquals(1, txnMgr.countBeginWrite()) ;
-
+        
+        assertEquals(0, txnMgr.countActiveReaders()) ;
+        assertEquals(1, txnMgr.countActiveWriter()) ;
+        
         unit.abort() ;
 
         assertEquals(0, txnMgr.countActive()) ;
@@ -134,6 +159,9 @@ public class TestTransactionCoordinator extends AbstractTestTxn {
         assertEquals(0, txnMgr.countBeginRead()) ;
         assertEquals(1, txnMgr.countBeginWrite()) ;
         
+        assertEquals(0, txnMgr.countActiveReaders()) ;
+        assertEquals(0, txnMgr.countActiveWriter()) ;
+        
         unit.end() ;
 
         assertEquals(0, txnMgr.countActive()) ;
@@ -141,6 +169,9 @@ public class TestTransactionCoordinator extends AbstractTestTxn {
         assertEquals(1, txnMgr.countBegin()) ;
         assertEquals(0, txnMgr.countBeginRead()) ;
         assertEquals(1, txnMgr.countBeginWrite()) ;
+
+        assertEquals(0, txnMgr.countActiveReaders()) ;
+        assertEquals(0, txnMgr.countActiveWriter()) ;
     }
 }
 
