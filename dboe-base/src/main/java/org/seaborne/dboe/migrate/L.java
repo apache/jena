@@ -24,6 +24,8 @@ import java.io.Writer ;
 import java.nio.ByteBuffer ;
 import java.nio.charset.StandardCharsets ;
 import java.util.UUID ;
+import java.util.concurrent.Callable ;
+import java.util.concurrent.FutureTask ;
 import java.util.concurrent.Semaphore ;
 import java.util.concurrent.locks.Lock ;
 import java.util.function.Supplier ;
@@ -31,7 +33,6 @@ import java.util.function.Supplier ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.StrUtils ;
-
 import org.apache.jena.shared.uuid.JenaUUID ;
 
 /** Misc class */
@@ -96,6 +97,29 @@ public class L {
         new Thread(r2).start();
         semaStart.release(1);
         semaFinish.acquireUninterruptibly();
+    }
+
+    /** Run synchronously but on another thread. */
+    public static <T> T syncCallThread(Supplier<T> r) {
+        Semaphore semaStart = new Semaphore(0, true) ;
+        Semaphore semaFinish = new Semaphore(0, true) ;
+        Callable<T> r2 = () -> {
+            semaStart.acquireUninterruptibly(); 
+            T t = r.get() ;
+            semaFinish.release(1);
+            return t ;
+        } ;
+        FutureTask<T> ft = new FutureTask<T>(r2) ;
+        new Thread(ft).start(); 
+        semaStart.release(1);
+        semaFinish.acquireUninterruptibly();
+        try {
+            return ft.get() ;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null ;
+        }
     }
 
     /** Run inside a Lock */
