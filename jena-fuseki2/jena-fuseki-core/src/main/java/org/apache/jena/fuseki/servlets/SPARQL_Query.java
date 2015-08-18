@@ -45,14 +45,10 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
-import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.atlas.web.MediaType ;
-import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.conneg.WebLib ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.web.HttpNames ;
@@ -319,18 +315,9 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         }
 
         if ( query.isConstructType() ) {
-            
-            MediaType rdfMediaType = AcceptList.match( DEF.pureRdfOffer, new AcceptList( WebLib.getAccept(action.getRequest())));
-            
-            if ( ! rdfMediaType.getType().equals("*") ) {
-                Model model = queryExecution.execConstruct();
-                action.log.info(format("[%d] exec/construct/model", action.id));
-                return new SPARQLResult(model);
-            } else  {
-                Dataset dataset = queryExecution.execConstructDataset();
-                action.log.info(format("[%d] exec/construct/dataset", action.id));
-                return new SPARQLResult(dataset);
-            }
+            Dataset dataset = queryExecution.execConstructDataset();
+            action.log.info(format("[%d] exec/construct/dataset", action.id));
+            return new SPARQLResult(dataset);
         }
 
         if ( query.isDescribeType() ) {
@@ -391,12 +378,10 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     protected void sendResults(HttpAction action, SPARQLResult result, Prologue qPrologue) {
         if ( result.isResultSet() )
             ResponseResultSet.doResponseResultSet(action, result.getResultSet(), qPrologue) ;
-        else if ( result.isGraph() )
-            ResponseModel.doResponseModel(action, result.getModel()) ;
-        else if ( result.isBoolean() )
-            ResponseResultSet.doResponseResultSet(action, result.getBooleanResult()) ;
         else if ( result.isDataset() )
             ResponseDataset.doResponseDataset(action, result.getDataset());
+        else if ( result.isBoolean() )
+            ResponseResultSet.doResponseResultSet(action, result.getBooleanResult()) ;
         else
             ServletOps.errorOccurred("Unknown or invalid result type") ;
     }

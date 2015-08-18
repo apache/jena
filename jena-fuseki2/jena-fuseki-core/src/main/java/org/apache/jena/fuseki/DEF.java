@@ -31,11 +31,24 @@ public class DEF
     
     public static final AcceptList jsonOffer          = AcceptList.create(contentTypeJSON) ;
 
-    public static final AcceptList pureRdfOffer       = AcceptList.create(contentTypeTurtle, 
+    public static final AcceptList constructOffer     = AcceptList.create(contentTypeTurtle, 
                                                                           contentTypeTurtleAlt1,
                                                                           contentTypeTurtleAlt2,
                                                                           contentTypeNTriples,
-                                                                          contentTypeRDFXML
+                                                                          contentTypeNTriplesAlt,
+                                                                          contentTypeRDFXML,
+                                                                          contentTypeTriX,
+                                                                          contentTypeTriXxml,
+                                                                          contentTypeJSONLD,
+                                                                          contentTypeRDFJSON,
+                                                                          contentTypeRDFThrift,
+                                                                          
+                                                                          contentTypeTriG,
+                                                                          contentTypeTriGAlt1,
+                                                                          contentTypeTriGAlt2,
+                                                                          contentTypeNQuads,
+                                                                          contentTypeNQuadsAlt1,
+                                                                          contentTypeNQuadsAlt2
                                                                           ) ;
     
     public static final AcceptList rdfOffer           = AcceptList.create(contentTypeTurtle, 

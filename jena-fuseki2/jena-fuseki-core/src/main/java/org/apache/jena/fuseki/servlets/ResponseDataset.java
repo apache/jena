@@ -19,6 +19,8 @@
 package org.apache.jena.fuseki.servlets;
 
 import static org.apache.jena.riot.WebContent.charsetUTF8;
+import static org.apache.jena.riot.WebContent.contentTypeNQuads;
+import static org.apache.jena.riot.WebContent.contentTypeTriG;
 import static org.apache.jena.riot.WebContent.contentTypeJSONLD;
 import static org.apache.jena.riot.WebContent.contentTypeNTriples;
 import static org.apache.jena.riot.WebContent.contentTypeRDFJSON;
@@ -41,7 +43,6 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.riot.WebContent;
 import org.apache.jena.web.HttpSC;
 
 public class ResponseDataset
@@ -49,6 +50,13 @@ public class ResponseDataset
     // Short names for "output="
     private static final String contentOutputTriG          = "trig" ;
     private static final String contentOutputNQuads        = "n-quads" ;
+    private static final String contentOutputJSONLD        = "json-ld" ;
+    private static final String contentOutputJSONRDF       = "json-rdf" ;
+    private static final String contentOutputJSON          = "json" ;
+    private static final String contentOutputXML           = "xml" ;
+    private static final String contentOutputText          = "text" ;
+    private static final String contentOutputTTL           = "ttl" ;
+    private static final String contentOutputNT            = "nt" ;
 
 
     public static Map<String,String> shortNamesModel = new HashMap<String, String>() ;
@@ -56,8 +64,15 @@ public class ResponseDataset
 
         // Some short names.  keys are lowercase.
         
-        ResponseOps.put(shortNamesModel, contentOutputNQuads,  WebContent.contentTypeNQuads) ;
-        ResponseOps.put(shortNamesModel, contentOutputTriG,     WebContent.contentTypeTriG) ;
+        ResponseOps.put(shortNamesModel, contentOutputNQuads,   contentTypeNQuads) ;
+        ResponseOps.put(shortNamesModel, contentOutputTriG,     contentTypeTriG) ;
+        ResponseOps.put(shortNamesModel, contentOutputJSONLD,   contentTypeJSONLD) ;
+        ResponseOps.put(shortNamesModel, contentOutputJSONRDF,  contentTypeRDFJSON) ;
+        ResponseOps.put(shortNamesModel, contentOutputJSON,     contentTypeJSONLD) ;
+        ResponseOps.put(shortNamesModel, contentOutputXML,      contentTypeRDFXML) ;
+        ResponseOps.put(shortNamesModel, contentOutputText,     contentTypeTurtle) ;
+        ResponseOps.put(shortNamesModel, contentOutputTTL,      contentTypeTurtle) ;
+        ResponseOps.put(shortNamesModel, contentOutputNT,       contentTypeNTriples) ;
     }
 
     public static void doResponseDataset(HttpAction action, Dataset dataset) 
@@ -68,7 +83,7 @@ public class ResponseDataset
         String mimeType = null ;        // Header request type 
 
         // TODO Use MediaType throughout.
-        MediaType i = ConNeg.chooseContentType(request, DEF.quadsOffer, DEF.acceptNQuads) ;
+        MediaType i = ConNeg.chooseContentType(request, DEF.constructOffer, DEF.acceptNQuads) ;
         if ( i != null )
             mimeType = i.getContentType() ;
 
@@ -122,7 +137,10 @@ public class ResponseDataset
             ResponseResultSet.setHttpResponse(action, contentType, charset) ; 
             response.setStatus(HttpSC.OK_200) ;
             ServletOutputStream out = response.getOutputStream() ;
-            RDFDataMgr.write(out, dataset, lang) ;
+            if (RDFLanguages.isQuads(lang))
+                RDFDataMgr.write(out, dataset, lang) ;
+            else 
+            	RDFDataMgr.write(out, dataset.getDefaultModel(), lang) ;
             out.flush() ;
         }
         catch (Exception ex) { 

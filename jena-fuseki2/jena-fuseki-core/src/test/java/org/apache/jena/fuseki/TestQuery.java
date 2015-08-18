@@ -42,6 +42,7 @@ import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderResultSet ;
 import org.apache.jena.sparql.util.Convert ;
+import org.apache.jena.rdf.model.*;
 import org.junit.AfterClass ;
 import org.junit.Assert ;
 import org.junit.BeforeClass ;
@@ -169,7 +170,6 @@ public class TestQuery extends BaseTest {
             Dataset result = qExec.execConstructDataset();
             Assert.assertTrue(result.asDatasetGraph().find().hasNext());
             Assert.assertEquals( "http://eg/g", result.asDatasetGraph().find().next().getGraph().getURI());
-
         }
     }
     
@@ -180,6 +180,16 @@ public class TestQuery extends BaseTest {
         try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, query) ) {
             Iterator<Triple> result = qExec.execConstructTriples();
             Assert.assertTrue(result.hasNext());
+        }
+    }
+    
+    @Test
+    public void query_construct_02()
+    {
+        String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}" ;
+        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, query) ) {
+            Model result = qExec.execConstruct();
+            assertEquals(1, result.size());
         }
     }
 
