@@ -295,15 +295,15 @@ public class TransactionCoordinator {
     
     // Work in progress.
     /** Enter exclusive mode. 
-     * There are no active transactions on return; new transactions wil be held up in 'begin'.
+     * There are no active transactions on return; new transactions will be held up in 'begin'.
      * Return to normal (release waiting transactions, allow new transactions)
-     * with {@link #endExclusive}.   
+     * with {@link #finishExclusiveMode}.   
      */
-    public void beginExclusive() {
-        beginExclusive(true);
+    public void startExclusiveMode() {
+        startExclusiveMode(true);
     }
     
-    public boolean beginExclusive(boolean canBlock) {
+    public boolean startExclusiveMode(boolean canBlock) {
         if ( canBlock ) {
             exclusivitylock.writeLock().lock() ;
             return true ;
@@ -312,9 +312,9 @@ public class TransactionCoordinator {
     }
 
     /** Return to normal (release waiting transactions, allow new transactions).
-     * Must be paired with an earlier {@link #beginExclusive}. 
+     * Must be paired with an earlier {@link #startExclusiveMode}. 
      */
-    public void endExclusive() {
+    public void finishExclusiveMode() {
         exclusivitylock.writeLock().unlock() ;
     }
 
@@ -329,9 +329,9 @@ public class TransactionCoordinator {
      * @param action
      */
     public void execExclusive(Runnable action) {
-        beginExclusive() ;
+        startExclusiveMode() ;
         try { action.run(); }
-        finally { endExclusive(); }
+        finally { finishExclusiveMode(); }
     }
     
     /** Block until no writers are active.
@@ -356,6 +356,24 @@ public class TransactionCoordinator {
     public void enableWriters() {
         releaseWriterLock();
     }
+
+    /** Execute an action in as if a Write but no write transaction started.
+     * This method can block.
+     * Equivalent to:
+     * <pre>
+     *  disableWriters() ;
+     *  try { action.run(); }
+     *  finally { enableWriters(); }
+     * </pre>
+     * 
+     * @param action
+     */
+    public void execAsWriter(Runnable action) {
+        disableWriters() ;
+        try { action.run(); }
+        finally { enableWriters(); }
+    }
+
     
     /** Start a transaction. This may block. */
     public Transaction begin(ReadWrite readWrite) {
