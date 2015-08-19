@@ -25,10 +25,11 @@ import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.core.DatasetGraphCaching ;
+import org.apache.jena.sparql.core.DatasetGraphTriplesQuads ;
 import org.apache.jena.sparql.core.DatasetPrefixStorage ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
@@ -44,16 +45,18 @@ import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
  *  @see DatasetGraphTxn for the Transaction form.
  */
 final
-public class DatasetGraphTDB extends DatasetGraphCaching
+public class DatasetGraphTDB extends DatasetGraphTriplesQuads
                              implements DatasetGraphTxn,
                              /*Old world*//*DatasetGraph,*/ Sync, Closeable
 {
+    // SWITCHING.
     private TripleTable tripleTable ;
     private QuadTable quadTable ;
     private DatasetPrefixStorage prefixes ;
+    private final Location location ;
+    // SWITCHING.
     private final ReorderTransformation transform ;
     private final StoreParams config ;
-    private final Location location ;
     
     private GraphTDB defaultGraphTDB ;
     private boolean closed = false ;
@@ -103,7 +106,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         getQuadTable().add(g, s, p, o) ; 
     }
 
-
     @Override
     protected void deleteFromDftGraph(Node s, Node p, Node o) {
         notifyDelete(null, s, p, o) ;
@@ -119,14 +121,8 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     private final void notifyAdd(Node g, Node s, Node p, Node o) {}
     private final void notifyDelete(Node g, Node s, Node p, Node o) {}
 
-    public GraphTDB getDefaultGraphTDB() 
-    { return (GraphTDB)getDefaultGraph() ; }
-
-    public GraphTDB getGraphTDB(Node graphNode)
-    { return (GraphTDB)getGraph(graphNode) ; }
-
     @Override
-    protected void _close() {
+    public void close() {
         if ( closed )
             return ;
         closed = true ;
@@ -149,30 +145,44 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         return _containsGraph(graphNode) ; 
     }
 
-    @Override
-    protected boolean _containsGraph(Node graphNode) {
+    private boolean _containsGraph(Node graphNode) {
         // Have to look explicitly, which is a bit of a nuisance.
         // But does not normally happen for GRAPH <g> because that's rewritten to quads.
         // Only pattern with complex paths go via GRAPH. 
         Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().findAsNodeIds(graphNode, null, null, null) ;
         if ( x == null )
             return false ; 
-        
-//        NodeId graphNodeId = quadTable.getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
-//        Tuple<NodeId> pattern = Tuple.create(graphNodeId, null, null, null) ;
-//        Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().getTupleTable().find(pattern) ;
         boolean result = x.hasNext() ;
         return result ;
     }
+    
+    @Override
+    public void addGraph(Node graphName, Graph graph) {
+        removeGraph(graphName) ;
+        GraphUtil.addInto(getGraph(graphName), graph) ;
+    }
 
     @Override
-    protected Graph _createDefaultGraph()
-    { return new GraphTDB(this, null) ; }
+    public final void removeGraph(Node graphName) {
+        deleteAny(graphName, Node.ANY, Node.ANY, Node.ANY) ;
+    }
+
+    // XXX "this" must be the switching dataset.
+    @Override
+    public Graph getDefaultGraph() {
+        return new GraphTDB(this, null) ; 
+    }
+
+    public GraphTDB getDefaultGraphTDB() 
+    { return (GraphTDB)getDefaultGraph() ; }
 
     @Override
-    protected Graph _createNamedGraph(Node graphNode)
+    public Graph getGraph(Node graphNode)
     { return new GraphTDB(this, graphNode) ; }
 
+    public GraphTDB getGraphTDB(Node graphNode)
+    { return (GraphTDB)getGraph(graphNode) ; }
+    
     public StoreParams getConfig()                          { return config ; }
     
     public ReorderTransformation getReorderTransform()      { return transform ; }
