@@ -78,7 +78,8 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
     @Override
     final public void close() {
         sync() ;
-        super.close() ;
+        // Don't close the GraphBase.
+        //super.close() ;
     }
 
     protected static ExtendedIterator<Triple> graphBaseFindDft(DatasetGraphTDB dataset, Triple triple) {
