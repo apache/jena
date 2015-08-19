@@ -99,7 +99,7 @@ public class AcceptList
         return match(aItem) != null ;
     }
     
-    private List<MediaRange> entries()
+    public List<MediaRange> entries()
     {
         return Collections.unmodifiableList(ranges) ;
     }
