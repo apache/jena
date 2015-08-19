@@ -26,7 +26,12 @@ import org.apache.jena.sparql.core.Quad ;
 
 
 public class NOTES_TDB {
-    // See also NOTES_TDB
+    // Reaper.
+
+    // GraphTDB from 
+    // Needs to work with the switching DatasetGraphTDB.
+    //   Abstract DatasetGraphTDB as an interface!
+    //     Storage unit to have indexes and node table.
     
     
 
