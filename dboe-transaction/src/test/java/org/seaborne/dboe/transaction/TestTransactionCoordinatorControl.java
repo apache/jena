@@ -17,10 +17,9 @@
 
 package org.seaborne.dboe.transaction;
 
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.assertNotNull ;
-import static org.junit.Assert.assertNull ;
+import static org.junit.Assert.* ;
 
+import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
 import org.apache.jena.query.ReadWrite ;
@@ -84,10 +83,8 @@ public class TestTransactionCoordinatorControl {
     
 
     @Test public void txn_coord_special_4() {
-        AtomicInteger counter1 = new AtomicInteger(0) ;
-        AtomicInteger counter2 = new AtomicInteger(0) ;
 
-        txnMgr.beginExclusive();
+        txnMgr.startExclusiveMode();
         L.syncOtherThread(()->{
             Transaction txn1 = txnMgr.begin(ReadWrite.WRITE, false) ;
             assertNull(txn1) ;
@@ -95,7 +92,7 @@ public class TestTransactionCoordinatorControl {
             assertNull(txn2) ;
         }) ;
         
-        txnMgr.endExclusive();
+        txnMgr.finishExclusiveMode();
         L.syncOtherThread(()->{
             Transaction txn1 = txnMgr.begin(ReadWrite.WRITE, false) ;
             assertNotNull(txn1) ;
@@ -103,47 +100,21 @@ public class TestTransactionCoordinatorControl {
             assertNotNull(txn2) ;
         }) ;
     }
-
-//        
-//        
-//        
-//        L.async(()->{
-//            
-//            Txn.executeRead(unit, ()->counter1.incrementAndGet()) ;
-//        }) ;
-//        
-//        
-//        L.async(()->Txn.executeWrite(unit, ()->{
-//            counter2 .incrementAndGet() ;
-//        })) ;
-//        
-//        L.async(()->Txn.executeRead(unit, ()->{
-//            counter1.incrementAndGet() ;
-//        })) ;
-//        
-//        Lib.sleep(100);
-//        assertEquals(2, counter1.get()) ;
-//        assertEquals(0, counter2.get()) ;
-//        
-//        txnMgr.enableWriters();
-//        Lib.sleep(100);
-//        assertEquals(1, counter2.get()) ;
-//    }
-//    
-//    @Test public void txn_coord_special_2() {
-//        AtomicInteger counter1 = new AtomicInteger(0) ;
-//        AtomicInteger counter2 = new AtomicInteger(0) ;
-//        txnMgr.beginExclusive(); 
-//        L.async(()->Txn.executeWrite(unit, ()->counter1.incrementAndGet())) ;
-//        L.async(()->Txn.executeWrite(unit, ()->counter2.incrementAndGet())) ;
-//        Lib.sleep(100);
-//        assertEquals(0, counter1.get()) ;
-//        assertEquals(0, counter2.get()) ;
-//        txnMgr.endExclusive();
-//        Lib.sleep(10);
-//        assertEquals(1, counter1.get()) ;
-//        assertEquals(1, counter2.get()) ;
-//
-//    }
+    
+    @Test public void txn_coord_special_5() {
+        AtomicInteger counter1 = new AtomicInteger(0) ;
+        Semaphore finalSema = new Semaphore(0) ;
+        ThreadTxn ttxn = Txn.threadTxnWrite(unit, ()->{
+            counter1.incrementAndGet() ;
+        }) ;
+        boolean b = txnMgr.startExclusiveMode(false);
+        assertFalse(b) ;
+        assertEquals(0, counter1.get()) ;
+        ttxn.run(); // Now run thread
+        assertEquals(1, counter1.get()) ;
+        Txn.executeWrite(unit, ()->{});
+        b = txnMgr.startExclusiveMode(false);
+        assertTrue(b) ;
+    }
 }
 
