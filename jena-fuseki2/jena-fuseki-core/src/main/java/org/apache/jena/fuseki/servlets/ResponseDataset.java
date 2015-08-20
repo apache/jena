@@ -73,8 +73,7 @@ public class ResponseDataset
         
         String mimeType = null ;        // Header request type 
 
-        // TODO Use MediaType throughout.
-        MediaType i = ConNeg.chooseContentType(request, DEF.quadsOffer, DEF.acceptNQuads) ;
+        MediaType i = ConNeg.chooseContentType(request, DEF.constructOffer, DEF.acceptTurtle) ;
         if ( i != null )
             mimeType = i.getContentType() ;
 
@@ -109,26 +108,15 @@ public class ResponseDataset
         Lang lang = RDFLanguages.contentTypeToLang(contentType) ;
         if ( lang == null )
             ServletOps.errorBadRequest("Can't determine output content type: "+contentType) ;
-        
-//        if ( rdfw instanceof RDFXMLWriterI )
-//            rdfw.setProperty("showXmlDeclaration", "true") ;
-
-    //        // Write locally to check it's possible.
-    //        // Time/space tradeoff.
-    //        try {
-    //            OutputStream out = new NullOutputStream() ;
-    //            RDFDataMgr.write(out, model, lang) ;
-    //            IO.flush(out) ;
-    //        } catch (JenaException ex)
-    //        {
-    //            SPARQL_ServletBase.errorOccurred(ex) ;
-    //        }
 
         try {
             ResponseResultSet.setHttpResponse(action, contentType, charset) ; 
             response.setStatus(HttpSC.OK_200) ;
             ServletOutputStream out = response.getOutputStream() ;
-            RDFDataMgr.write(out, dataset, lang) ;
+            if ( RDFLanguages.isQuads(lang) )
+                RDFDataMgr.write(out, dataset, lang) ;
+            else
+                RDFDataMgr.write(out, dataset.getDefaultModel(), lang) ;
             out.flush() ;
         }
         catch (Exception ex) { 
