@@ -113,9 +113,8 @@ public class RiotReader
      * @param dest      Where to send the triples from the parser.
      */  
     public static void parse(InputStream in, Lang lang, String baseIRI, StreamRDF dest)
-    {
-        LangRIOT parser = RiotReader.createParser(in, lang, baseIRI, dest) ;
-        parser.parse() ;
+    { 
+        RDFDataMgr.parse(dest, in, baseIRI, lang);
     }
 
     // -------- Parsers
