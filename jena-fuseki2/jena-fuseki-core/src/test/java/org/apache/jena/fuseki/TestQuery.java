@@ -26,6 +26,7 @@ import java.net.URL ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -118,7 +119,6 @@ public class TestQuery extends BaseTest {
             }
         }
         {
-
             String query = "SELECT * FROM <" + gn1 + "> { ?s ?p ?o }" ;
             try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery + "?output=json", query)) {
                 ResultSet rs = qExec.execSelect() ;
@@ -190,31 +190,36 @@ public class TestQuery extends BaseTest {
         }
     }
     
+    private static final AcceptList rdfOfferTest = DEF.rdfOffer ;
+    private static final AcceptList quadsOfferTest = DEF.quadsOffer ;
+    
     @Test
-    public void query_construct_conneg()
-    {
+    public void query_construct_conneg() {
         String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}" ;
-        for (MediaType type: DEF.rdfOffer.entries()){
+        for (MediaType type: rdfOfferTest.entries()){
             String contentType = type.toHeaderString();
             try ( QueryEngineHTTP qExec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, query) ) {
-                qExec.setModelContentType(initConstructContentTypes( contentType ) );
-        	    qExec.execConstruct();
-                assertEquals( contentType , qExec.getHttpResponseContentType());
+                qExec.setModelContentType( contentType );
+                Iterator<Triple> iter = qExec.execConstructTriples();
+                assertTrue(iter.hasNext()) ;
+                String x = qExec.getHttpResponseContentType() ;
+                assertEquals( contentType , x ) ;
             }
         }
     }
     
     @Test
-    public void query_construct_quad_conneg()
-    {
+    public void query_construct_quad_conneg() {
         String queryString = " CONSTRUCT { GRAPH ?g {?s ?p ?o} } WHERE { GRAPH ?g {?s ?p ?o}}" ;
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        for (MediaType type: DEF.quadsOffer.entries()){
+        for (MediaType type: quadsOfferTest.entries()){
             String contentType = type.toHeaderString();
             try ( QueryEngineHTTP qExec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, query) ) {
-                qExec.setDatasetContentType(initConstructContentTypes( contentType ) );
-        	    qExec.execConstructQuads();
-                assertEquals( contentType , qExec.getHttpResponseContentType());
+                qExec.setDatasetContentType( contentType );
+                Iterator<Quad> iter = qExec.execConstructQuads();
+                assertTrue(iter.hasNext()) ;
+                String x = qExec.getHttpResponseContentType() ;
+                assertEquals( contentType , x ) ;
             }
         }
     }
@@ -232,22 +237,4 @@ public class TestQuery extends BaseTest {
         boolean b = ResultSetCompare.equalsByTerm(rs, expectedResultSet) ;
         assertTrue("Result sets different", b) ;
     }
-    
-    private static String initConstructContentTypes(String... contentTypes) {
-        // Or use WebContent.defaultGraphAcceptHeader which is slightly
-        // narrower. Here, we have a tuned setting for SPARQL operations.
-        StringBuilder sBuff = new StringBuilder() ;
-        for (int i=0;i<contentTypes.length;i++ ){
-        	accumulateContentTypeString(sBuff, contentTypes[i], 1- i*0.1);
-        }
-        return sBuff.toString();
-    }
-
-    private static void accumulateContentTypeString(StringBuilder sBuff, String str, double v) {
-        if ( sBuff.length() != 0 )
-            sBuff.append(", ") ;
-        sBuff.append(str) ;
-        if ( v < 1 )
-            sBuff.append(";q=").append(v) ;
-    } 
 }
