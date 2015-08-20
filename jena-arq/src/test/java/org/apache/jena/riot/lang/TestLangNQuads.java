@@ -20,75 +20,49 @@ package org.apache.jena.riot.lang;
 
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
-import org.apache.jena.riot.RiotReader ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
-import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.Lang ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.junit.Test ;
 
 /** Test of syntax by a quads parser (does not include node validitiy checking) */ 
 
 public class TestLangNQuads extends TestLangNTuples
 {
-    
-    @Test
-    public void quad_1()
-    {
-        parseCount("<x> <p> <s> <g> .") ; 
-    }
-    
-    @Test(expected=ExFatal.class)
-    public void quad_2()
-    {
-        parseCount("<x> <p> <s> <g>") ;        // No trailing DOT
-    }
-    
-
-    @Test(expected=ExFatal.class) 
-    public void nq_only_1()
-    {
-        parseCount("<x> <p> <s> <g> <c> .") ; 
-    }
-
-    @Test(expected=ExFatal.class) 
-    public void nq_only_2()
-    {
-        parseCount("@base <http://example/> . <x> <p> <s> .") ; 
-    }
-
-    
-    @Test
-    public void dataset_1()
-    {
-        // This must parse to <g> 
-        DatasetGraph dsg = parseToDataset("<x> <p> <s> <g> .") ;
-        assertEquals(1,dsg.size()) ;
-        assertEquals(1, dsg.getGraph(NodeFactory.createURI("g")).size()) ;
-        assertEquals(0, dsg.getDefaultGraph().size()) ;
-    }
-
     @Override
-    protected long parseCount(String... strings)
-    {
-        StreamRDFCounting sink = StreamRDFLib.count() ;
-        parse(sink, strings) ;
-        return sink.count() ;
-    }
-    
-    private DatasetGraph parseToDataset(String string)
-    {
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-        StreamRDF dest = StreamRDFLib.dataset(dsg) ;
-        parse(dest, string) ;
-        return dsg ;
+    protected Lang getLang() {
+        return Lang.NQUADS ;
     }
 
-    @Override
-    protected LangRIOT createParser(Tokenizer tokenizer, StreamRDF sink)
-    {
-        return RiotReader.createParserNQuads(tokenizer, sink) ;
+    @Test
+    public void quad_1() {
+        parseCount("<x> <p> <s> <g> .");
     }
-    
+
+    @Test(expected = ExFatal.class)
+    public void quad_2() {
+        parseCount("<x> <p> <s> <g>"); // No trailing DOT
+    }
+
+    @Test(expected = ExFatal.class)
+    public void nq_only_1() {
+        parseCount("<x> <p> <s> <g> <c> .");
+    }
+
+    @Test(expected = ExFatal.class)
+    public void nq_only_2() {
+        parseCount("@base <http://example/> . <x> <p> <s> .");
+    }
+
+    @Test
+    public void dataset_1() {
+        // This must parse to <g>
+        DatasetGraph dsg = parseToDataset("<x> <p> <s> <g> .");
+        assertEquals(1, dsg.size());
+        assertEquals(1, dsg.getGraph(NodeFactory.createURI("g")).size());
+        assertEquals(0, dsg.getDefaultGraph().size());
+    }
+
+    private DatasetGraph parseToDataset(String string) {
+        return ParserTestBaseLib.parseDataset(Lang.NQUADS, string);
+    }
 }

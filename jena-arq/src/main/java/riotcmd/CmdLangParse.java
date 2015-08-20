@@ -159,18 +159,15 @@ public abstract class CmdLangParse extends CmdGeneral
             }
             if ( postParse != null )
                 postParse.postParse();
+            if ( super.getPositional().size() > 1 && modTime.timingEnabled() )
+                output("Total", totalTuples, totalMillis, langHandlerOverall) ;
         } finally {
             if ( output != System.out )
                 IO.close(output) ;
             else
                 IO.flush(output);    
             System.err.flush() ;
-            if ( super.getPositional().size() > 1 && modTime.timingEnabled() )
-                output("Total", totalTuples, totalMillis, langHandlerOverall) ;
         }
-        
-        if ( postParse != null )
-            postParse.postParse() ;
     }
     
     public void parseFile(String filename) {

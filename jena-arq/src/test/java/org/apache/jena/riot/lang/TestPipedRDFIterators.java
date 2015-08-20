@@ -480,7 +480,6 @@ public class TestPipedRDFIterators {
     /**
      * Tests attempting to access the iterator after the producer dies
      */
-    @Test(expected = RiotException.class)
     public void streamed_state_bad_02() {
 
         final PipedRDFIterator<Triple> it = new PipedRDFIterator<>();
@@ -493,6 +492,7 @@ public class TestPipedRDFIterators {
                 out.triple(Triple.create(org.apache.jena.graph.NodeFactory.createURI("urn:s"),
                         org.apache.jena.graph.NodeFactory.createURI("urn:p"),
                         org.apache.jena.graph.NodeFactory.createURI("urn:o")));
+                out.finish() ;
                 throw new RuntimeException("die!");
             }
         });
@@ -510,9 +510,9 @@ public class TestPipedRDFIterators {
 
         Assert.assertTrue(it.hasNext());
         it.next();
-
-        // Should throw a RiotException
+        // Should not throw a RiotException
         it.hasNext();
+        
     }
 
     /**

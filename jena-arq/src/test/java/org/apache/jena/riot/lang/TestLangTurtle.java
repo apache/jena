@@ -25,23 +25,19 @@ import static org.apache.jena.riot.system.ErrorHandlerFactory.setDefaultErrorHan
 import java.io.StringReader ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
-import org.apache.jena.riot.* ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
-import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
-import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
@@ -131,19 +127,8 @@ public class TestLangTurtle extends BaseTest
     
     // Call parser directly.
     
-    private static Graph parse(String ...strings)
-    {
-        String string = StrUtils.strjoin("\n", strings) ;
-        StringReader reader = new StringReader(string) ;
-        String baseIRI = "http://base/" ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
-        
-        Graph graph = GraphFactory.createDefaultGraph() ;
-        StreamRDF sink = StreamRDFLib.graph(graph) ;
-        LangTurtle parser = RiotReader.createParserTurtle(tokenizer, "http://base/", sink) ;
-        parser.getProfile().setHandler(new ErrorHandlerEx()) ;
-        parser.parse() ; 
-        return graph ;
+    private static Graph parse(String ...strings) {
+        return ParserTestBaseLib.parseGraph(Lang.TURTLE, strings) ;
     }
     
     private static Triple parseOneTriple(String ...strings)
@@ -153,16 +138,6 @@ public class TestLangTurtle extends BaseTest
         return graph.find(null, null, null).next();
     }
     
-//    private static void parseSilent(String string)
-//    {
-//        Reader reader = new StringReader(string) ;
-//        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
-//        String baseIRI = "http://base/" ;
-//        LangTurtle parser = RiotReader.createParserTurtle(tokenizer, baseIRI, new SinkNull<Triple>()) ;
-//        parser.setProfile(RiotReader.profile(RDFLanguages.Turtle, baseIRI, ErrorHandlerLib.errorHandlerNoLogging)) ;
-//        parser.parse() ;
-//    }
-
     @Test
     public void triple()                    { parse("<s> <p> <o> .") ; }
     

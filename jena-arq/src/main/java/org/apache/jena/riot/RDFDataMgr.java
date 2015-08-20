@@ -640,6 +640,16 @@ public class RDFDataMgr
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Hint for the syntax
+     */
+    public static void parse(StreamRDF sink, String uri, String base, Lang hintLang) {
+        parse(sink, uri, base, hintLang, null) ;
+    }
+    
+    /** Read RDF data.
+     * @param sink     Destination for the RDF read.
+     * @param uri       URI to read from (includes file: and a plain file name).
+     * @param base      Base URI (defaults to uri).
+     * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
     public static void parse(StreamRDF sink, String uri, String base, Lang hintLang, Context context) {
@@ -677,13 +687,13 @@ public class RDFDataMgr
 
     /** Read RDF data.
      * @param sink      Destination for the RDF read.
-     * @param in        StringReader
+     * @param in        Bytes to read.
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
-    public static void parse(StreamRDF sink, StringReader in, String base, Lang hintLang, Context context) {
-        process(sink, in, base, hintLang, context) ;
+    public static void parse(StreamRDF sink, InputStream in, String base, Lang hintLang, Context context) {
+        process(sink, new TypedInputStream(in), base, hintLang, context) ;
     }
 
     /** Read RDF data.
@@ -707,14 +717,12 @@ public class RDFDataMgr
 
     /** Read RDF data.
      * @param sink      Destination for the RDF read.
-     * @param in        Reader
+     * @param in        StringReader
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
-     * @deprecated     Use an InputStream or a StringReader. 
      */
-    @Deprecated
-    public static void parse(StreamRDF sink, Reader in, String base, Lang hintLang, Context context) {
+    public static void parse(StreamRDF sink, StringReader in, String base, Lang hintLang, Context context) {
         process(sink, in, base, hintLang, context) ;
     }
 
@@ -743,13 +751,15 @@ public class RDFDataMgr
 
     /** Read RDF data.
      * @param sink      Destination for the RDF read.
-     * @param in        Bytes to read.
+     * @param in        Reader
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
+     * @deprecated     Use an InputStream or a StringReader. 
      */
-    public static void parse(StreamRDF sink, InputStream in, String base, Lang hintLang, Context context) {
-        process(sink, new TypedInputStream(in), base, hintLang, context) ;
+    @Deprecated
+    public static void parse(StreamRDF sink, Reader in, String base, Lang hintLang, Context context) {
+        process(sink, in, base, hintLang, context) ;
     }
 
     /** Read RDF data.

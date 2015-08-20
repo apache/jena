@@ -82,6 +82,7 @@ public class JsonLDReader implements ReaderRIOT
     }
     
     private void read$(Object jsonObject, String baseURI, ContentType ct, final StreamRDF output, Context context) {
+        output.start() ;
         try {       	
             JsonLdTripleCallback callback = new JsonLdTripleCallback() {
                 @Override
@@ -129,6 +130,7 @@ public class JsonLDReader implements ReaderRIOT
             errorHandler.error(e.getMessage(), -1, -1); 
             throw new RiotException(e) ;
         }
+        output.finish() ;
     }
 
     private LabelToNode  labels     = SyntaxLabels.createLabelToNode() ;

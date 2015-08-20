@@ -374,6 +374,8 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
      * and error out.
      */
     protected void finish() {
+        if ( closedByProducer )
+            return ;
         receive(endMarker);
         closedByProducer = true;
     }
