@@ -62,8 +62,8 @@ public interface ReaderRIOT
     public ErrorHandler getErrorHandler() ;
     public void setErrorHandler(ErrorHandler errorHandler) ;
     
-    /** Get the parser profile.  Not all parser have parser profiles so this may be null */
+    /** Get the parser profile.  Not all parsers have parser profiles so this may be null */
     public ParserProfile getParserProfile() ;
-    /** Set the parser profile.  Not all parser have parser profiles so this may be a no-op */
+    /** Set the parser profile.  Not all parsers have parser profiles so this may be a no-op */
     public void setParserProfile(ParserProfile profile) ;
 }
