@@ -114,8 +114,7 @@ public class RiotReader
      */  
     public static void parse(InputStream in, Lang lang, String baseIRI, StreamRDF dest)
     {
-        LangRIOT parser = RiotReader.createParser(in, lang, baseIRI, dest) ;
-        parser.parse() ;
+        RDFDataMgr.parse(dest, in, baseIRI, lang);
     }
 
     // -------- Parsers
@@ -284,7 +283,9 @@ public class RiotReader
                 @Override
                 public void run()
                 {
+                    out.start();
                     parse(input, lang, baseIRI, out);
+                    out.finish() ;
                 }
             });
             t.start();
@@ -318,7 +319,9 @@ public class RiotReader
                 @Override
                 public void run()
                 {
+                    out.start();
                     parse(input, lang, baseIRI, out);
+                    //out.finish() ;
                 }
             });
             t.start();
