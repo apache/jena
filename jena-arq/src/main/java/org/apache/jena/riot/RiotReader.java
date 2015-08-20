@@ -89,7 +89,9 @@ public class RiotReader
      * @param in        Source for bytes to parse.
      * @param lang      Language.
      * @param dest      Where to send the triples from the parser.
-     */  
+     * @deprecated     use {@link RDFDataMgr#parse(StreamRDF, InputStream, Lang)}
+     */
+    @Deprecated
     public static void parse(InputStream in, Lang lang, StreamRDF dest)
     {
         parse(in, lang, null, dest) ;
@@ -100,7 +102,9 @@ public class RiotReader
      * @param lang      Language.
      * @param baseIRI   Base IRI. 
      * @param dest      Where to send the triples from the parser.
-     */  
+     * @deprecated     use {@link RDFDataMgr#parse(StreamRDF, InputStream, String, Lang)}
+     */
+    @Deprecated
     public static void parse(InputStream in, Lang lang, String baseIRI, StreamRDF dest)
     {
         RDFDataMgr.parse(dest, in, baseIRI, lang);
@@ -112,8 +116,9 @@ public class RiotReader
      * Must be in a triples syntax.
      * @param filename 
      * @param sink  Where to send the triples from the parser.
-     * @see         RiotReader#parse(String,StreamRDF)
-     */  
+     * @deprecated Use an {@link StreamRDF} and {@link RDFDataMgr#parse(StreamRDF, String)}
+     */
+    @Deprecated
     public static void parseTriples(String filename, Sink<Triple> sink)
     { parseTriples(filename, null, null, sink) ; }
     
@@ -123,8 +128,9 @@ public class RiotReader
      * @param lang      Language, or null for "guess from URL" (e.g. file extension)
      * @param baseIRI   Base IRI, or null for based on input filename
      * @param sink      Where to send the triples from the parser.
-     * @see             RiotReader#parse
-     */  
+     * @deprecated Use an {@link StreamRDF} and {@link RDFDataMgr#parse(StreamRDF, String, String, Lang)}
+     */
+    @Deprecated
     public static void parseTriples(String filename, Lang lang, String baseIRI, Sink<Triple> sink)
     {
         StreamRDF dest = StreamRDFLib.sinkTriples(sink) ;
@@ -136,8 +142,9 @@ public class RiotReader
      * @param lang      Language.
      * @param baseIRI   Base IRI. 
      * @param sink      Where to send the triples from the parser.
-     * @see             RiotReader#parse
-     */  
+     * @deprecated Use an {@link StreamRDF} and {@link RDFDataMgr#parse(StreamRDF, InputStream, Lang)}
+     */
+    @Deprecated
     public static void parseTriples(InputStream in, Lang lang, String baseIRI, Sink<Triple> sink)
     {
         StreamRDF dest = StreamRDFLib.sinkTriples(sink) ;
@@ -149,8 +156,9 @@ public class RiotReader
     /** Parse a file, sending quads to a sink.
      * @param filename
      * @param sink  Where to send the quads from the parser.
-     * @see         RiotReader#parse
+     * @deprecated Use an {@link StreamRDF} and {@link RDFDataMgr#parse(StreamRDF, String)}  
      */
+    @Deprecated
     public static void parseQuads(String filename, Sink<Quad> sink)
     { parseQuads(filename, null, null, sink) ; }
     
@@ -159,8 +167,9 @@ public class RiotReader
      * @param lang      Language, or null for "guess from filename" (e.g. extension)
      * @param baseIRI   Base IRI, or null for base on input filename
      * @param sink      Where to send the quads from the parser.
-     * @see             RiotReader#parse
+     * @deprecated Use an {@link StreamRDF} and {@link RDFDataMgr#parse(StreamRDF, String, String, Lang)}
      */
+    @Deprecated
     public static void parseQuads(String filename, Lang lang, String baseIRI, Sink<Quad> sink)
     {
         StreamRDF dest = StreamRDFLib.sinkQuads(sink) ;
@@ -172,8 +181,9 @@ public class RiotReader
      * @param lang      Language.
      * @param baseIRI   Base IRI. 
      * @param sink      Where to send the quads from the parser.
-     * @see             RiotReader#parse
+     * @deprecated Use an {@link StreamRDF} and {@link RDFDataMgr#parse(StreamRDF, InputStream, String, Lang)}
      */
+    @Deprecated
     public static void parseQuads(InputStream in, Lang lang, String baseIRI, Sink<Quad> sink)
     {
         StreamRDF dest = StreamRDFLib.sinkQuads(sink) ;
