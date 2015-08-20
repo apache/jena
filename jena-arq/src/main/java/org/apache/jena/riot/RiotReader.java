@@ -215,9 +215,7 @@ public class RiotReader
                 @Override
                 public void run()
                 {
-                    out.start();
                     RDFDataMgr.parse(out, input, baseIRI, lang);
-                    out.finish() ;
                 }
             });
             t.start();
@@ -251,9 +249,7 @@ public class RiotReader
                 @Override
                 public void run()
                 {
-                    out.start();
                     RDFDataMgr.parse(out, input, baseIRI, lang);
-                    out.finish() ;
                 }
             });
             t.start();
