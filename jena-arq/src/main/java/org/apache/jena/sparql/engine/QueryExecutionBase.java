@@ -47,7 +47,6 @@ import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.describe.DescribeHandler;
 import org.apache.jena.sparql.core.describe.DescribeHandlerRegistry;
@@ -279,26 +278,23 @@ public class QueryExecutionBase implements QueryExecution
     
     @Override
     public Dataset execConstructDataset(){
-    	
-    	DatasetGraph graph = DatasetGraphFactory.createMem();
-    	
-        checkNotClosed() ;
-        try
-        {
-        	execConstructQuads().forEachRemaining(graph::add);
-        }
-        finally
-        {
+        return execConstructDataset(DatasetFactory.createMem()) ;
+    }
+
+    @Override
+    public Dataset execConstructDataset(Dataset dataset){
+        DatasetGraph dsg = dataset.asDatasetGraph() ; 
+        try {
+            execConstructQuads().forEachRemaining(dsg::add);
+        } finally {
             this.close();
         }
-        return DatasetFactory.create(graph);
-
+        return dataset ; 
     }
 
     @Override
     public Model execDescribe()
     { return execDescribe(GraphFactory.makeJenaDefaultModel()) ; }
-
 
     @Override
     public Model execDescribe(Model model)
