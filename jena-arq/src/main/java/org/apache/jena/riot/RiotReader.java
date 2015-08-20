@@ -285,7 +285,7 @@ public class RiotReader
                 {
                     out.start();
                     parse(input, lang, baseIRI, out);
-                    out.finish() ;
+                    // Unsafe: out.finish() ;
                 }
             });
             t.start();
@@ -321,7 +321,7 @@ public class RiotReader
                 {
                     out.start();
                     parse(input, lang, baseIRI, out);
-                    //out.finish() ;
+                    // Unsafe: out.finish() ;
                 }
             });
             t.start();
