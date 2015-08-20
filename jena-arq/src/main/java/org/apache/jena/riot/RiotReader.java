@@ -216,7 +216,7 @@ public class RiotReader
                 public void run()
                 {
                     out.start();
-                    parse(input, lang, baseIRI, out);
+                    RDFDataMgr.parse(out, input, baseIRI, lang);
                     out.finish() ;
                 }
             });
@@ -252,7 +252,7 @@ public class RiotReader
                 public void run()
                 {
                     out.start();
-                    parse(input, lang, baseIRI, out);
+                    RDFDataMgr.parse(out, input, baseIRI, lang);
                     out.finish() ;
                 }
             });
