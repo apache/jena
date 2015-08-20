@@ -28,6 +28,7 @@ public class DEF
     public static final MediaType acceptNQuads        = MediaType.create(contentTypeNQuads) ;
     public static final MediaType acceptRSXML         = MediaType.create(contentTypeResultsXML) ;
     public static final MediaType acceptJSON          = MediaType.create(contentTypeJSON) ;
+    public static final MediaType acceptTurtle        = MediaType.create(contentTypeTurtle) ;
     
     public static final AcceptList jsonOffer          = AcceptList.create(contentTypeJSON) ;
 
