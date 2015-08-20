@@ -113,7 +113,7 @@ public class RiotReader
      * @param dest      Where to send the triples from the parser.
      */  
     public static void parse(InputStream in, Lang lang, String baseIRI, StreamRDF dest)
-    { 
+    {
         RDFDataMgr.parse(dest, in, baseIRI, lang);
     }
 
@@ -283,7 +283,9 @@ public class RiotReader
                 @Override
                 public void run()
                 {
+                    out.start();
                     parse(input, lang, baseIRI, out);
+                    // Unsafe: out.finish() ;
                 }
             });
             t.start();
@@ -317,7 +319,9 @@ public class RiotReader
                 @Override
                 public void run()
                 {
+                    out.start();
                     parse(input, lang, baseIRI, out);
+                    // Unsafe: out.finish() ;
                 }
             });
             t.start();
