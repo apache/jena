@@ -642,7 +642,7 @@ public class RDFDataMgr
      * @param hintLang  Hint for the syntax
      */
     public static void parse(StreamRDF sink, String uri, String base, Lang hintLang) {
-        parse(sink, uri, uri, hintLang, null) ;
+        parse(sink, uri, base, hintLang, null) ;
     }
     
     /** Read RDF data.
