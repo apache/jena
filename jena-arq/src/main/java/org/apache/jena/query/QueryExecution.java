@@ -102,15 +102,29 @@ public interface QueryExecution extends AutoCloseable
     public Iterator<Triple> execConstructTriples();
     
     /**
-     * Similar to execConstructTriples(), except that constructing {@link Quad}.
+     * Execute a CONSTRUCT query, returning the results as an iterator of {@link Quad}.
+     * <p>
+     * <b>Caution:</b> This method may return duplicate Quads.  This method may be useful if you only
+     * need the results for stream processing, as it can avoid having to place the results in a Model.
+     * </p>
+     * @return An iterator of Quad objects (possibly containing duplicates) generated
+     * by applying the CONSTRUCT template of the query to the bindings in the WHERE clause.
+     * </p>
+     * <p>
+     * See {@link #execConstructTriples} for usage and features.
      */
     public Iterator<Quad> execConstructQuads();
     
-    /**
-     * Similar to execConstructTriples(), except that constructing {@link Dataset}.
+    /** Execute a CONSTRUCT query, putting the statements into 'dataset'.
+     *  This maybe an exetended synatx query (if supported).   
      */
     public Dataset execConstructDataset();
 
+    /** Execute a CONSTRUCT query, putting the statements into 'dataset'.
+     *  This maybe an exetended synatx query (if supported).   
+     */
+    public Dataset execConstructDataset(Dataset dataset);
+    
     /** Execute a DESCRIBE query */
     public Model execDescribe();
 
