@@ -18,12 +18,7 @@
 
 package org.apache.jena.fuseki ;
 
-import static org.apache.jena.fuseki.ServerTest.gn1 ;
-import static org.apache.jena.fuseki.ServerTest.gn2 ;
-import static org.apache.jena.fuseki.ServerTest.model1 ;
-import static org.apache.jena.fuseki.ServerTest.model2 ;
-import static org.apache.jena.fuseki.ServerTest.serviceQuery ;
-import static org.apache.jena.fuseki.ServerTest.serviceREST ;
+import static org.apache.jena.fuseki.ServerTest.* ;
 
 import java.io.IOException ;
 import java.net.HttpURLConnection ;
@@ -31,11 +26,11 @@ import java.net.URL ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -45,8 +40,6 @@ import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderResultSet ;
 import org.apache.jena.sparql.util.Convert ;
-import org.apache.jena.rdf.model.*;
-import org.apache.jena.riot.WebContent;
 import org.junit.AfterClass ;
 import org.junit.Assert ;
 import org.junit.BeforeClass ;
