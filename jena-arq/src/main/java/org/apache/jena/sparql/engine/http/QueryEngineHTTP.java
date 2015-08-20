@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit ;
 
 import org.apache.http.client.HttpClient ;
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
 import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
 import org.apache.jena.graph.Triple ;
@@ -36,8 +37,6 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.ResultSetCheckCondition ;
 import org.apache.jena.sparql.graph.GraphFactory ;
@@ -87,7 +86,9 @@ public class QueryEngineHTTP implements QueryExecution {
     private String selectContentType    = defaultSelectHeader();
     private String askContentType       = defaultAskHeader();
     private String modelContentType     = defaultConstructHeader();
-    private String datasetContentType   = WebContent.defaultDatasetAcceptHeader;
+    
+    private String constructContentType = defaultConstructHeader() ;
+    private String datasetContentType   = defaultConstructDatasetHeader() ;
     
     // Received content type 
     private String httpResponseContentType = null ;
@@ -411,14 +412,12 @@ public class QueryEngineHTTP implements QueryExecution {
     
     @Override
     public Dataset execConstructDataset(){
-        checkNotClosed() ;
-    	DatasetGraph dataset = DatasetGraphFactory.createMem();
-        try {
-        	execConstructQuads().forEachRemaining(dataset::add);
-        } finally {
-            this.close();
-        }
-        return DatasetFactory.create(dataset);
+        return execConstructDataset(DatasetFactory.createMem());
+    }
+
+    @Override
+    public Dataset execConstructDataset(Dataset dataset){
+        return execDataset(dataset) ;
     }
 
     @Override
@@ -437,64 +436,43 @@ public class QueryEngineHTTP implements QueryExecution {
     }
 
     private Model execModel(Model model) {
-        checkNotClosed() ;
-        HttpQuery httpQuery = makeHttpQuery();
-        httpQuery.setAccept(modelContentType);
-        InputStream in = httpQuery.exec();
-
-        // Don't assume the endpoint actually gives back the content type we
-        // asked for
-        String actualContentType = httpQuery.getContentType();
-        httpResponseContentType = actualContentType;
-
-        // If the server fails to return a Content-Type then we will assume
-        // the server returned the type we asked for
-        if (actualContentType == null || actualContentType.equals("")) {
-            actualContentType = modelContentType;
-        }
-
-        // Try to select language appropriately here based on the model content
-        // type
-        Lang lang = RDFLanguages.contentTypeToLang(actualContentType);
-        if (!RDFLanguages.isTriples(lang))
-            throw new QueryException("Endpoint returned Content Type: " + actualContentType
-                    + " which is not a valid RDF Graph syntax");
-        RDFDataMgr.read(model, in, lang);
-        this.close();
+        Pair<InputStream, Lang> p = execConstructWorker(modelContentType) ;
+        InputStream in = p.getLeft() ;
+        Lang lang = p.getRight() ;
+        try { RDFDataMgr.read(model, in, lang); }
+        finally { this.close(); }
         return model;
     }
 
+    private Dataset execDataset(Dataset dataset) {
+        Pair<InputStream, Lang> p = execConstructWorker(datasetContentType);
+        InputStream in = p.getLeft() ;
+        Lang lang = p.getRight() ;
+        try { RDFDataMgr.read(dataset, in, lang); }
+        finally { this.close(); }
+        return dataset;
+    }
+
     private Iterator<Triple> execTriples() {
-        checkNotClosed() ;
-        HttpQuery httpQuery = makeHttpQuery();
-        httpQuery.setAccept(modelContentType);
-        InputStream in = httpQuery.exec();
-
-        // Don't assume the endpoint actually gives back the content type we
-        // asked for
-        String actualContentType = httpQuery.getContentType();
-        httpResponseContentType = actualContentType;
-
-        // If the server fails to return a Content-Type then we will assume
-        // the server returned the type we asked for
-        if (actualContentType == null || actualContentType.equals("")) {
-            actualContentType = modelContentType;
-        }
-
-        // Try to select language appropriately here based on the model content
-        // type
-        Lang lang = RDFLanguages.contentTypeToLang(actualContentType);
-        if (!RDFLanguages.isTriples(lang))
-            throw new QueryException("Endpoint returned Content Type: " + actualContentType
-                    + " which is not a valid RDF Graph syntax");
-
+        Pair<InputStream, Lang> p = execConstructWorker(modelContentType) ;
+        InputStream in = p.getLeft() ;
+        Lang lang = p.getRight() ;
+        // Base URI?
         return RiotReader.createIteratorTriples(in, lang, null);
     }
     
     private Iterator<Quad> execQuads() {
+        Pair<InputStream, Lang> p = execConstructWorker(datasetContentType) ;
+        InputStream in = p.getLeft() ;
+        Lang lang = p.getRight() ;
+        // Base URI?
+        return RiotReader.createIteratorQuads(in, lang, null);
+    }
+
+    private Pair<InputStream, Lang> execConstructWorker(String contentType) {
         checkNotClosed() ;
         HttpQuery httpQuery = makeHttpQuery();
-        httpQuery.setAccept(datasetContentType);
+        httpQuery.setAccept(contentType);
         InputStream in = httpQuery.exec();
         
         // Don't assume the endpoint actually gives back the content type we
@@ -507,17 +485,14 @@ public class QueryEngineHTTP implements QueryExecution {
         if (actualContentType == null || actualContentType.equals("")) {
             actualContentType = WebContent.defaultDatasetAcceptHeader;
         }
-
-        // Try to select language appropriately here based on the model content
-        // type
         Lang lang = RDFLanguages.contentTypeToLang(actualContentType);
-        if (!RDFLanguages.isQuads(lang))
-            throw new QueryException("Endpoint returned Content Type: " + actualContentType
-                    + " which is not a valid RDF Dataset syntax");
-
-        return RiotReader.createIteratorQuads(in, lang, null);
+        if ( ! RDFLanguages.isQuads(lang) && ! RDFLanguages.isTriples(lang) )
+            throw new QueryException("Endpoint returned Content Type: "
+                                     + actualContentType 
+                                     + " which is not a valid RDF syntax");
+        return Pair.create(in, lang) ;
     }
-
+    
     @Override
     public boolean execAsk() {
         checkNotClosed() ;
@@ -813,10 +788,10 @@ public class QueryEngineHTTP implements QueryExecution {
         datasetContentType = contentType;
     }
     
-    private static final String selectContentTypeHeader = initSelectContentTypes() ;
+    private static final String dftSelectContentTypeHeader = initSelectContentTypes() ;
 
     public static String defaultSelectHeader() {
-        return selectContentTypeHeader ;
+        return dftSelectContentTypeHeader ;
     }
 
     private static String initSelectContentTypes() {
@@ -836,18 +811,18 @@ public class QueryEngineHTTP implements QueryExecution {
     private static final String askContentTypeHeader = initAskContentTypes() ;
 
     public static String defaultAskHeader() {
-        return selectContentTypeHeader ;
+        return dftSelectContentTypeHeader ;
     }
 
     // These happen to be the same.
     private static String initAskContentTypes() { return initSelectContentTypes(); }
 
-    private static final String constructContentTypeHeader = initConstructContentTypes() ;
+    private static final String dftConstructContentTypeHeader = initConstructContentTypes() ;
 
     public static String defaultConstructHeader() {
-        return constructContentTypeHeader ;
+        return dftConstructContentTypeHeader ;
     }
-
+    
     private static String initConstructContentTypes() {
         // Or use WebContent.defaultGraphAcceptHeader which is slightly
         // narrower. Here, we have a tuned setting for SPARQL operations.
@@ -869,6 +844,47 @@ public class QueryEngineHTTP implements QueryExecution {
         return sBuff.toString();
     }
 
+    private static final String dftConstructDatasetContentTypeHeader = initConstructDatasetContentTypes() ;
+
+    public static String defaultConstructDatasetHeader() {
+        return dftConstructDatasetContentTypeHeader ; 
+    }
+    
+    private static String initConstructDatasetContentTypes() {
+        // Or use WebContent.defaultDatasetAcceptHeader which is slightly
+        // narrower. Here, we have a tuned setting for SPARQL operations.
+        StringBuilder sBuff = new StringBuilder() ;
+        
+        accumulateContentTypeString(sBuff, WebContent.contentTypeTriG,         1.0) ;
+        accumulateContentTypeString(sBuff, WebContent.contentTypeTriGAlt1,     1.0) ;
+        accumulateContentTypeString(sBuff, WebContent.contentTypeTriGAlt2,     1.0) ;
+
+        accumulateContentTypeString(sBuff, WebContent.contentTypeNQuads,       1.0) ;
+        accumulateContentTypeString(sBuff, WebContent.contentTypeNQuadsAlt1,   1.0) ;
+        accumulateContentTypeString(sBuff, WebContent.contentTypeNQuadsAlt2,   1.0) ;
+        
+        accumulateContentTypeString(sBuff, WebContent.contentTypeJSONLD,       0.9) ;
+
+        // And triple formats (the case of execConstructDatasets but a regular triples CONSTRUCT). 
+        accumulateContentTypeString(sBuff, WebContent.contentTypeTurtle,       0.8);
+        accumulateContentTypeString(sBuff, WebContent.contentTypeNTriples,     0.8);
+        
+        accumulateContentTypeString(sBuff, WebContent.contentTypeRDFXML,       0.7);
+        
+        accumulateContentTypeString(sBuff, WebContent.contentTypeTurtleAlt1,   0.6);
+        accumulateContentTypeString(sBuff, WebContent.contentTypeTurtleAlt2,   0.6);
+        
+        accumulateContentTypeString(sBuff, WebContent.contentTypeN3,           0.5);
+        accumulateContentTypeString(sBuff, WebContent.contentTypeN3Alt1,       0.5);
+        accumulateContentTypeString(sBuff, WebContent.contentTypeN3Alt2,       0.5);
+        
+        accumulateContentTypeString(sBuff, WebContent.contentTypeNTriplesAlt,  0.4);
+        
+        accumulateContentTypeString(sBuff, "*/*",                              0.1) ;
+
+        return sBuff.toString();
+    }
+    
     private static void accumulateContentTypeString(StringBuilder sBuff, String str, double v) {
         if ( sBuff.length() != 0 )
             sBuff.append(", ") ;
