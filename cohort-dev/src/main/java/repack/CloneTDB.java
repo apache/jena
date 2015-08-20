@@ -56,14 +56,14 @@ public class CloneTDB {
         if ( ! newLocation.isMem() && ! FileOps.isEmpty(newLocation.getDirectoryPath()) )
             throw new TDBException("Attempt to clone into existing location") ;
         
-        StoreConnection sConn = StoreConnection.getExisting(newLocation) ;
+        StoreConnection sConn = StoreConnection.connectExisting(newLocation) ;
         if ( sConn != null )
             throw new TDBException("Attempt to clone into live location") ;
         
         StoreParams storeParams = dsgBase.getConfig() ;
         // Force 
         StoreConnection.make(newLocation, storeParams) ;
-        DatasetGraphTDB dsg2 = (DatasetGraphTDB)TDBFactory.createDatasetGraph(newLocation) ;
+        DatasetGraphTDB dsg2 = (DatasetGraphTDB)TDBFactory.connectDatasetGraph(newLocation) ;
         Txn.executeRead(dsgBase, () -> { 
             Txn.executeWrite(dsg2, () -> {
                 Iterator<Quad> iter = dsgBase.find();

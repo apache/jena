@@ -79,7 +79,7 @@ public class TDBGraphAssembler extends AssemblerBase implements Assembler
         if ( locationDir != null )
         {
             Location location = Location.create(locationDir) ;
-            ds = TDBFactory.createDataset(location) ;
+            ds = TDBFactory.connectDataset(location) ;
         }
         else
             ds = DatasetAssemblerTDB.make(dataset) ;

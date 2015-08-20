@@ -30,29 +30,29 @@ public class TDBFactory
 {
     private TDBFactory() {} 
     
-    public static DatasetGraph createDatasetGraph(Location location) {
-        StoreConnection sConn = StoreConnection.getCreate(location) ;
+    public static DatasetGraph connectDatasetGraph(Location location) {
+        StoreConnection sConn = StoreConnection.connectCreate(location) ;
         return sConn.getDatasetGraph() ; 
     }
 
-    public static Dataset createDataset(Location location) {
-        DatasetGraph dsg = createDatasetGraph(location) ;
+    public static Dataset connectDataset(Location location) {
+        DatasetGraph dsg = connectDatasetGraph(location) ;
         return DatasetFactory.create(dsg) ;
     }
 
-    public static DatasetGraph createDatasetGraph(String location) {
-        return createDatasetGraph(Location.create(location)) ;
+    public static DatasetGraph connectDatasetGraph(String location) {
+        return connectDatasetGraph(Location.create(location)) ;
     }
 
-    public static Dataset createDataset(String location) {
-        return createDataset(Location.create(location)) ;    }
+    public static Dataset connectDataset(String location) {
+        return connectDataset(Location.create(location)) ;    }
 
     public static DatasetGraph createDatasetGraph() {
-        return createDatasetGraph(Location.mem()) ;
+        return connectDatasetGraph(Location.mem()) ;
     }
 
     public static Dataset createDataset() {
-        return createDataset(Location.mem()) ;
+        return connectDataset(Location.mem()) ;
     }
 
 }

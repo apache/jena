@@ -295,6 +295,11 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     }
 
     @Override
+    public boolean promote() {
+        return txnSystem.promote() ;
+    }
+
+    @Override
     public void commit() {
         txnSystem.commit() ;
     }

@@ -27,6 +27,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestJournal.class
     , TestStateMgrData.class
     , TestTransactionLifecycle.class
+    , TestTransactionLifecycle2.class
     , TestTransactionCoordinator.class
     , TestTransactionCoordinatorControl.class
     , TestTxnLib.class

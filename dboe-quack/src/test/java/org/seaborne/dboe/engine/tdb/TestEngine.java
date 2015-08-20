@@ -56,7 +56,7 @@ public class TestEngine extends Assert {
         String x = Names.tripleIndexes[2] ;
         Names.tripleIndexes[2] = "PSO" ;
         try { 
-            Dataset ds = TDBFactory.createDataset(loc) ;
+            Dataset ds = TDBFactory.connectDataset(loc) ;
             SystemTDB.setNonTransactional(ds) ;
             
             if ( datafile != null )

@@ -43,7 +43,7 @@ public class Test_SPARQL_TDB extends BaseTest
     }
 
     private static Dataset create(Location location) {
-        return TDBFactory.createDataset(location) ;
+        return TDBFactory.connectDataset(location) ;
     }
 
     private static String graphName = "http://example/" ;

@@ -74,7 +74,7 @@ public class DevRepack {
         FileOps.clearDirectory("DB1");
         FileOps.clearDirectory("DB2");
 
-        DatasetGraphTDB dsgBase = (DatasetGraphTDB)TDBFactory.createDatasetGraph(loc1) ;
+        DatasetGraphTDB dsgBase = (DatasetGraphTDB)TDBFactory.connectDatasetGraph(loc1) ;
         Quad q1 = SSE.parseQuad("(_ <s> :p :o)") ;
         Quad q2 = SSE.parseQuad("(<g> <s> :q :o)") ;
 

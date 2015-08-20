@@ -484,14 +484,11 @@ public class TransactionCoordinator {
      * Current policy is to not support promotion.
      */
     
-    // Later ...
+     // Later ...
 //    * Current policy if a READ transaction can be promoted if intervening
 //    * writer has started or an existing one committed.  
     
-    /*package*/ boolean promote(Transaction transaction) {
-        if ( ! transaction.isActiveTxn() ) {
-            throw new TransactionException("Not in a transaction (on this thead)") ;
-        }
+    /*package*/ boolean promoteTxn(Transaction transaction) {
         if ( transaction.getMode() == WRITE )
             return true ;
         // Ok - we are a reader.
@@ -502,7 +499,7 @@ public class TransactionCoordinator {
             long currentEpoch = writerEpoch.get() ;  // Advanced as a writer starts 
             if ( dataEpoch != currentEpoch )
                 return false ;
-            try { transaction.promote() ; }
+            try { transaction.promoteComponents() ; }
             catch (TransactionException ex) {
                 transaction.abort();
                 return false ;

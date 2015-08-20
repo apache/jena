@@ -51,7 +51,7 @@ public class TestTransactionCoordinatorControl {
     }
     
     
-    @Test public void txn_coord_special_1() {
+    @Test public void txn_coord_disable_writers_1() {
         AtomicInteger counter1 = new AtomicInteger(0) ;
         AtomicInteger counter2 = new AtomicInteger(0) ;
 
@@ -61,7 +61,7 @@ public class TestTransactionCoordinatorControl {
         assertEquals(1, counter1.get()) ;
     }
 
-    @Test public void txn_coord_special_2() {
+    @Test public void txn_coord_disable_writers_2() {
         txnMgr.disableWriters() ;
         Transaction txn = L.syncCallThread(()->txnMgr.begin(ReadWrite.WRITE, false)) ;
         assertNull(txn) ;
@@ -70,7 +70,7 @@ public class TestTransactionCoordinatorControl {
         assertNotNull(txn1) ;
     }
     
-    @Test public void txn_coord_special_3() {
+    @Test public void txn_coord_disable_writers_3() {
         txnMgr.disableWriters() ;
         Transaction txn = L.syncCallThread(()->txnMgr.begin(ReadWrite.READ, false)) ;
         assertNotNull(txn) ;
@@ -82,8 +82,7 @@ public class TestTransactionCoordinatorControl {
     }
     
 
-    @Test public void txn_coord_special_4() {
-
+    @Test public void txn_coord_exclusive_1() {
         txnMgr.startExclusiveMode();
         L.syncOtherThread(()->{
             Transaction txn1 = txnMgr.begin(ReadWrite.WRITE, false) ;
@@ -101,7 +100,7 @@ public class TestTransactionCoordinatorControl {
         }) ;
     }
     
-    @Test public void txn_coord_special_5() {
+    @Test public void txn_coord_exclusive_2() {
         AtomicInteger counter1 = new AtomicInteger(0) ;
         Semaphore finalSema = new Semaphore(0) ;
         ThreadTxn ttxn = Txn.threadTxnWrite(unit, ()->{
@@ -116,5 +115,7 @@ public class TestTransactionCoordinatorControl {
         b = txnMgr.startExclusiveMode(false);
         assertTrue(b) ;
     }
+    
+    
 }
 

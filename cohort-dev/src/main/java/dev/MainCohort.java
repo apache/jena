@@ -18,9 +18,16 @@
 package dev;
 
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.sse.SSE ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.RecordFactory ;
+import org.seaborne.dboe.transaction.txn.Transaction ;
+import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
+import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.store.DatasetGraphTDB ;
 
 public class MainCohort {
     static { LogCtl.setLog4j() ; }
@@ -30,6 +37,26 @@ public class MainCohort {
     static Journal journal = Journal.create(Location.mem()) ;
 
     public static void main(String... args) {
+        DatasetGraphTDB dsg = (DatasetGraphTDB)TDBFactory.createDatasetGraph() ;
+        TransactionCoordinator coord = dsg.getTxnSystem().getTxnMgr() ;
+        dsg.begin(ReadWrite.READ);
+        
+        //Txn.threadTxnWrite(dsg, ()->{}).run(); 
+        
+        Transaction txn = dsg.getTxnSystem().getThreadTransaction() ;
+        boolean b = txn.promote() ;
+        if ( ! b )
+            System.out.println("Did not promote");
+        else {
+            txn.promote() ;
+            Quad q = SSE.parseQuad("(_ <s> <p> <o> )") ; 
+            dsg.add(q) ;
+            dsg.commit() ;
+        }
+        dsg.end() ;
+        
+        System.out.println("DONE") ;
+        
     }
 }
 

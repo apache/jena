@@ -59,6 +59,26 @@ public interface Transactional
    /** Start either a READ or WRITE transaction */ 
    public void begin(ReadWrite readWrite) ;
    
+   /** Attempt to prmote a read transaction to a write transaction.
+    * This is not guaranteed to succeed - any changes by another write transaction
+    * may restrict promotion.  
+    * <p>
+    * In the MR+SW implementation, any intervening write transaction will block promotion.
+    * <p>
+    * Promoting a tyransaction which is already a write trasnaction will return true. 
+    * <p>
+    * Consider also:
+    *  <pre>
+    *    .end() ;
+    *    .being(WRITE) ;
+    *  </pre>
+    *  to see any intermediate commits from another writer.
+    *  
+    * 
+    * @return boolean indciating whether the tranaction is now a write transaction or not.
+    */
+   public boolean promote() ;
+
    /** Commit a transaction - finish the transaction and make any changes permanent (if a "write" transaction) */  
    public void commit() ;
    

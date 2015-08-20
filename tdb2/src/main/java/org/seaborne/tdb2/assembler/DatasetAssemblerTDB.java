@@ -55,7 +55,7 @@ public class DatasetAssemblerTDB extends DatasetAssembler
 
         String dir = getStringValue(root, pLocation) ;
         Location loc = Location.create(dir) ;
-        DatasetGraph dsg = TDBFactory.createDatasetGraph(loc) ;
+        DatasetGraph dsg = TDBFactory.connectDatasetGraph(loc) ;
 
         if ( root.hasProperty(pUnionDefaultGraph) ) {
             Node b = root.getProperty(pUnionDefaultGraph).getObject().asNode() ;

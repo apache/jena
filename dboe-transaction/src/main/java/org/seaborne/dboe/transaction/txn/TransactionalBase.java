@@ -99,6 +99,13 @@ public class TransactionalBase implements TransactionalSystem {
         Transaction transaction = txnMgr.begin(readWrite) ;
         theTxn.set(transaction) ;
     }
+    
+    @Override
+    public boolean promote() {
+        checkActive() ;
+        Transaction txn = getValidTransaction() ;
+        return txn.promote() ;
+    }
 
     @Override
     public final void commit() {

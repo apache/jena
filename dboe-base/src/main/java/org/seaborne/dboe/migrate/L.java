@@ -72,7 +72,7 @@ public class L {
     }
     
     /**
-     * Run asynchronously another thread ; the therad has started when this
+     * Run asynchronously another thread ; the thread has started when this
      * function returns.
      */
     public static void async(Runnable r) {

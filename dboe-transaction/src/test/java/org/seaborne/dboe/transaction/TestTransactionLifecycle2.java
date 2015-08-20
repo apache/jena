@@ -17,19 +17,18 @@
 
 package org.seaborne.dboe.transaction;
 
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.assertNotNull ;
-import static org.junit.Assert.assertNull ;
+import static org.junit.Assert.* ;
+
+import org.apache.jena.query.ReadWrite ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.migrate.L ;
 import org.seaborne.dboe.transaction.txn.Transaction ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.dboe.transaction.txn.TransactionException ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
-
-import org.apache.jena.query.ReadWrite ;
 
 /**
  * Details tests of the transaction lifecycle in one JVM
@@ -47,6 +46,7 @@ public class TestTransactionLifecycle2 {
     @Before public void setup() {
         Journal jrnl = Journal.create(Location.mem()) ;
         txnMgr = new TransactionCoordinator(jrnl) ;
+        txnMgr.start() ;
     }
     
     @After public void clearup() {
@@ -75,8 +75,6 @@ public class TestTransactionLifecycle2 {
     public void txn_direct_03() {
         Transaction txn1 = txnMgr.begin(ReadWrite.WRITE) ;
         txn1.commit() ;
-        // FIXME
-        // commit should be implicit end.
         txn1.end() ; 
         checkClear() ;
     }
@@ -150,6 +148,7 @@ public class TestTransactionLifecycle2 {
         assertNotNull(txn2) ;
         txn1.commit();
         txn1.end() ;
+        txn2.abort();
         txn2.end();
         checkClear() ;
     }
@@ -167,5 +166,57 @@ public class TestTransactionLifecycle2 {
         txn2.end();
         checkClear() ;
     }
+    
+    @Test
+    public void txn_promote_1() {
+        Transaction txn1 = txnMgr.begin(ReadWrite.READ) ;
+        assertNotNull(txn1) ;
+        boolean b = txn1.promote() ;
+        assertTrue(b) ;
+        assertEquals(ReadWrite.WRITE, txn1.getMode()) ;
+        txn1.commit() ;
+        txn1.end() ;
+        checkClear() ;
+    }
+    
+    @Test
+    public void txn_promote_2() {
+        Transaction txn1 = txnMgr.begin(ReadWrite.READ) ;
+        boolean b = txn1.promote() ;
+        assertTrue(b) ;
+        b = txn1.promote() ;
+        assertTrue(b) ;
+        txn1.commit() ;
+        txn1.end() ;
+        checkClear() ;
+    }
+    
+    @Test
+    public void txn_promote_3() {
+        Transaction txn1 = txnMgr.begin(ReadWrite.READ) ;
+        Transaction txn2 = txnMgr.begin(ReadWrite.WRITE) ;
+        boolean b = txn1.promote() ;
+        assertFalse(b) ;
+        txn1.end() ;
+        txn2.commit(); 
+        txn2.end() ;
+        checkClear() ;
+    }
+
+    @Test
+    public void txn_promote_4() {
+        Transaction txn1 = txnMgr.begin(ReadWrite.READ) ;
+        L.syncOtherThread(()->{
+            Transaction txn2 = txnMgr.begin(ReadWrite.WRITE) ;
+            txn2.commit(); 
+            txn2.end() ;
+        }) ;
+            
+        boolean b = txn1.promote() ;
+        assertFalse(b) ;
+        txn1.end() ;
+        checkClear() ;
+    }
+    
 }
 

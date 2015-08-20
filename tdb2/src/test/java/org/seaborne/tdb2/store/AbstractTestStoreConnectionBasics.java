@@ -65,7 +65,7 @@ public abstract class AbstractTestStoreConnectionBasics extends BaseTest
         StoreConnection sConn = StoreConnection.make(location) ;
         assertNotNull(sConn);
         StoreConnection.release(location) ;
-        StoreConnection sConn2 = StoreConnection.getExisting(location) ;
+        StoreConnection sConn2 = StoreConnection.connectExisting(location) ;
         assertNull(sConn2);
         StoreConnection sConn3 = StoreConnection.make(location) ;
         assertNotNull(sConn3);

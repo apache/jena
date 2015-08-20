@@ -40,7 +40,7 @@ public class StoreConnection
 {
     private static Map<Location, StoreConnection> cache = new ConcurrentHashMap<>() ;
     
-    public synchronized static StoreConnection getCreate(Location location) {
+    public synchronized static StoreConnection connectCreate(Location location) {
         return make(location, StoreParams.getDftStoreParams()) ;
     }
 
@@ -48,7 +48,7 @@ public class StoreConnection
         return cache.containsKey(location) ;
     }
 
-    public synchronized static StoreConnection getExisting(Location location) {
+    public synchronized static StoreConnection connectExisting(Location location) {
         StoreConnection sConn = cache.get(location) ;
         return sConn ;
     }

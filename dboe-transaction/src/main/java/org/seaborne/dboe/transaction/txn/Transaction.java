@@ -94,8 +94,16 @@ public class Transaction {
         setState(ACTIVE) ;
     }
     
-    public void promote() {
+    public boolean promote() {
         checkState(ACTIVE);
+        boolean b = txnMgr.promoteTxn(this) ;
+        if ( !b )
+            return false ;
+        return true ;
+    }
+    
+    /*package*/ void promoteComponents() {
+        // Call back from the Trasnaction coordinator during promote.
         components.forEach((c) -> {
             if ( ! c.promote() )
                 throw new TransactionException("Failed to promote") ;
@@ -107,8 +115,7 @@ public class Transaction {
         checkState(ACTIVE) ;
         if ( mode == ReadWrite.READ ) {
             System.err.println("notifyUpdate - promote needed") ;
-            setState(ACTIVE) ;
-            txnMgr.promote(this) ;
+            promote() ;
             mode = ReadWrite.WRITE ;
         }
     }

@@ -51,8 +51,8 @@ public class TestTDBFactory extends BaseTest
     @Test public void testTDBFactory1()
     {
         StoreConnection.reset() ;
-        DatasetGraph dg1 = TDBFactory.createDatasetGraph(Location.mem("FOO")) ;
-        DatasetGraph dg2 = TDBFactory.createDatasetGraph(Location.mem("FOO")) ;
+        DatasetGraph dg1 = TDBFactory.connectDatasetGraph(Location.mem("FOO")) ;
+        DatasetGraph dg2 = TDBFactory.connectDatasetGraph(Location.mem("FOO")) ;
         TDBTxn.executeWrite(dg1, ()->{
             dg1.add(quad1) ;    
         }) ;
@@ -65,8 +65,8 @@ public class TestTDBFactory extends BaseTest
     {
         StoreConnection.reset() ;
         // The unnamed location is unique each time.
-        DatasetGraph dg1 = TDBFactory.createDatasetGraph(Location.mem()) ;
-        DatasetGraph dg2 = TDBFactory.createDatasetGraph(Location.mem()) ;
+        DatasetGraph dg1 = TDBFactory.connectDatasetGraph(Location.mem()) ;
+        DatasetGraph dg2 = TDBFactory.connectDatasetGraph(Location.mem()) ;
         TDBTxn.executeWrite(dg1, ()->{
             dg1.add(quad1) ;    
         }) ;

@@ -75,7 +75,7 @@ public class TestTransactions extends BaseTest
     
     @Before public void before() {
         location = Location.mem() ;
-        dataset = TDBFactory.createDataset(location) ;
+        dataset = TDBFactory.connectDataset(location) ;
     }
 
     @After public void after() {

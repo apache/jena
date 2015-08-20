@@ -62,7 +62,7 @@ public class TL {
 
     public static Dataset createTestDataset() {
         Location location = cleanLocation() ;
-        Dataset dataset = TDBFactory.createDataset(location) ;
+        Dataset dataset = TDBFactory.connectDataset(location) ;
         // Non-transactional tests
         dataset = SystemTDB.setNonTransactional(dataset) ;
         return dataset ;
