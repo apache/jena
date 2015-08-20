@@ -316,7 +316,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
 
         if ( query.isConstructType() ) {
             Dataset dataset = queryExecution.execConstructDataset();
-            action.log.info(format("[%d] exec/construct/dataset", action.id));
+            action.log.info(format("[%d] exec/construct", action.id));
             return new SPARQLResult(dataset);
         }
 
