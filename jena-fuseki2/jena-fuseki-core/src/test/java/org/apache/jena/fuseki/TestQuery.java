@@ -16,95 +16,142 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki;
+package org.apache.jena.fuseki ;
 
-import static org.apache.jena.fuseki.ServerTest.gn1;
-import static org.apache.jena.fuseki.ServerTest.model1;
-import static org.apache.jena.fuseki.ServerTest.model2;
-import static org.apache.jena.fuseki.ServerTest.serviceQuery;
-import static org.apache.jena.fuseki.ServerTest.serviceREST;
+import static org.apache.jena.fuseki.ServerTest.gn1 ;
+import static org.apache.jena.fuseki.ServerTest.gn2 ;
+import static org.apache.jena.fuseki.ServerTest.model1 ;
+import static org.apache.jena.fuseki.ServerTest.model2 ;
+import static org.apache.jena.fuseki.ServerTest.serviceQuery ;
+import static org.apache.jena.fuseki.ServerTest.serviceREST ;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Iterator;
+import java.io.IOException ;
+import java.net.HttpURLConnection ;
+import java.net.URL ;
+import java.util.Iterator ;
 
-import org.apache.jena.atlas.junit.BaseTest;
-import org.apache.jena.graph.Triple;
-import org.apache.jena.query.DatasetAccessor;
-import org.apache.jena.query.DatasetAccessorFactory;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.ResultSetFormatter;
-import org.apache.jena.query.Syntax;
-import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.resultset.ResultSetCompare;
-import org.apache.jena.sparql.sse.Item;
-import org.apache.jena.sparql.sse.SSE;
-import org.apache.jena.sparql.sse.builders.BuilderResultSet;
-import org.apache.jena.sparql.util.Convert;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.atlas.web.MediaType;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.* ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
+import org.apache.jena.sparql.resultset.ResultSetCompare ;
+import org.apache.jena.sparql.sse.Item ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.sse.builders.BuilderResultSet ;
+import org.apache.jena.sparql.util.Convert ;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.riot.WebContent;
+import org.junit.AfterClass ;
+import org.junit.Assert ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
 
-public class TestQuery extends BaseTest 
-{
-    protected static ResultSet rs1 = null ; 
+public class TestQuery extends BaseTest {
+    protected static ResultSet rs1 = null ;
     static {
         Item item = SSE.parseItem("(resultset (?s ?p ?o) (row (?s <x>)(?p <p>)(?o 1)))") ;
         rs1 = BuilderResultSet.build(item) ;
     }
-    
-    @BeforeClass public static void beforeClass()
-    {
+
+    @BeforeClass
+    public static void beforeClass() {
         ServerTest.allocServer() ;
         ServerTest.resetServer() ;
         DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
         du.putModel(model1) ;
         du.putModel(gn1, model2) ;
     }
-    
-    @AfterClass public static void afterClass()
-    {
+
+    @AfterClass
+    public static void afterClass() {
         DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
         du.deleteDefault() ;
         ServerTest.freeServer() ;
     }
-    
-    @Test public void query_01()
-    {
+
+    @Test
+    public void query_01() {
         execQuery("SELECT * {?s ?p ?o}", 1) ;
     }
-    
-    @Test public void query_recursive_01()
-    {
-        String query = "SELECT * WHERE { SERVICE <" + serviceQuery + "> { ?s ?p ?o . BIND(?o AS ?x) } }";
-        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, query) ) {
-            ResultSet rs = qExec.execSelect();
-            Var x = Var.alloc("x");
+
+    @Test
+    public void query_recursive_01() {
+        String query = "SELECT * WHERE { SERVICE <" + serviceQuery + "> { ?s ?p ?o . BIND(?o AS ?x) } }" ;
+        try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, query)) {
+            ResultSet rs = qExec.execSelect() ;
+            Var x = Var.alloc("x") ;
             while (rs.hasNext()) {
-                Binding b = rs.nextBinding();
-                Assert.assertNotNull(b.get(x));
+                Binding b = rs.nextBinding() ;
+                Assert.assertNotNull(b.get(x)) ;
+            }
+        }
+    }
+
+    @Test
+    public void query_with_params_01() {
+        String query = "ASK { }" ;
+        try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery + "?output=json", query)) {
+            boolean result = qExec.execAsk() ;
+            Assert.assertTrue(result) ;
+        }
+    }
+
+    @Test
+    public void request_id_header_01() throws IOException {
+        String qs = Convert.encWWWForm("ASK{}") ;
+        URL u = new URL(serviceQuery + "?query=" + qs) ;
+        HttpURLConnection conn = (HttpURLConnection)u.openConnection() ;
+        Assert.assertTrue(conn.getHeaderField("Fuseki-Request-ID") != null) ;
+    }
+
+    @Test
+    public void query_dynamic_dataset_01() {
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        du.putModel(model1);
+        du.putModel(gn1, model2);
+        {
+            String query = "SELECT * { ?s ?p ?o }" ;
+            try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery + "?output=json", query)) {
+                ResultSet rs = qExec.execSelect() ;
+                Node o = rs.next().getLiteral("o").asNode() ;
+                Node n = SSE.parseNode("1") ;
+                assertEquals(n, o) ;
+            }
+        }
+        {
+
+            String query = "SELECT * FROM <" + gn1 + "> { ?s ?p ?o }" ;
+            try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery + "?output=json", query)) {
+                ResultSet rs = qExec.execSelect() ;
+                Node o = rs.next().getLiteral("o").asNode() ;
+                Node n = SSE.parseNode("2") ;
+                assertEquals(n, o) ;
             }
         }
     }
     
-    @Test public void query_with_params_01()
-    {
-        String query = "ASK { }";
-        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery + "?output=json", query) ) {
-            boolean result = qExec.execAsk();
-            Assert.assertTrue(result);
+    @Test
+    public void query_dynamic_dataset_02() {
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        du.putModel(model1);
+        du.putModel(gn1, model1);
+        du.putModel(gn2, model2);
+        String query = "SELECT * FROM <"+gn1+"> FROM <"+gn2+"> { ?s ?p ?o }" ;
+        try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery + "?output=json", query)) {
+            ResultSet rs = qExec.execSelect() ;
+            int n = ResultSetFormatter.consume(rs) ;
+            assertEquals(2, n) ;
         }
     }
     
-    @Test public void query_construct_quad_01()
+    @Test
+    public void query_construct_quad_01()
     {
         String queryString = " CONSTRUCT { GRAPH <http://eg/g> {?s ?p ?oq} } WHERE {?s ?p ?oq}" ;
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
@@ -117,7 +164,21 @@ public class TestQuery extends BaseTest
         }
     }
     
-    @Test public void query_construct_01()
+    @Test
+    public void query_construct_quad_02()
+    {
+        String queryString = " CONSTRUCT { GRAPH <http://eg/g> {?s ?p ?oq} } WHERE {?s ?p ?oq}" ;
+        Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
+               
+        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, query) ) {
+            Dataset result = qExec.execConstructDataset();
+            Assert.assertTrue(result.asDatasetGraph().find().hasNext());
+            Assert.assertEquals( "http://eg/g", result.asDatasetGraph().find().next().getGraph().getURI());
+        }
+    }
+    
+    @Test
+    public void query_construct_01()
     {
         String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}" ;
         try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, query) ) {
@@ -126,29 +187,74 @@ public class TestQuery extends BaseTest
         }
     }
     
-
-    
-    @Test public void request_id_header_01() throws IOException
+    @Test
+    public void query_construct_02()
     {
-        String qs = Convert.encWWWForm("ASK{}") ;
-        URL u = new URL(serviceQuery+"?query="+qs);
-        HttpURLConnection conn = (HttpURLConnection) u.openConnection();
-        Assert.assertTrue(conn.getHeaderField("Fuseki-Request-ID") != null);
+        String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}" ;
+        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, query) ) {
+            Model result = qExec.execConstruct();
+            assertEquals(1, result.size());
+        }
+    }
+    
+    @Test
+    public void query_construct_conneg()
+    {
+        String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}" ;
+        for (MediaType type: DEF.rdfOffer.entries()){
+            String contentType = type.toHeaderString();
+            try ( QueryEngineHTTP qExec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, query) ) {
+                qExec.setModelContentType(initConstructContentTypes( contentType ) );
+        	    qExec.execConstruct();
+                assertEquals( contentType , qExec.getHttpResponseContentType());
+            }
+        }
+    }
+    
+    @Test
+    public void query_construct_quad_conneg()
+    {
+        String queryString = " CONSTRUCT { GRAPH ?g {?s ?p ?o} } WHERE { GRAPH ?g {?s ?p ?o}}" ;
+        Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
+        for (MediaType type: DEF.quadsOffer.entries()){
+            String contentType = type.toHeaderString();
+            try ( QueryEngineHTTP qExec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, query) ) {
+                qExec.setDatasetContentType(initConstructContentTypes( contentType ) );
+        	    qExec.execConstructQuads();
+                assertEquals( contentType , qExec.getHttpResponseContentType());
+            }
+        }
     }
 
-    private void execQuery(String queryString, int exceptedRowCount)
-    {
+    private void execQuery(String queryString, int exceptedRowCount) {
         QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, queryString) ;
         ResultSet rs = qExec.execSelect() ;
         int x = ResultSetFormatter.consume(rs) ;
         assertEquals(exceptedRowCount, x) ;
     }
-    
-    private void execQuery(String queryString, ResultSet expectedResultSet)
-    {
+
+    private void execQuery(String queryString, ResultSet expectedResultSet) {
         QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, queryString) ;
         ResultSet rs = qExec.execSelect() ;
         boolean b = ResultSetCompare.equalsByTerm(rs, expectedResultSet) ;
         assertTrue("Result sets different", b) ;
     }
+    
+    private static String initConstructContentTypes(String... contentTypes) {
+        // Or use WebContent.defaultGraphAcceptHeader which is slightly
+        // narrower. Here, we have a tuned setting for SPARQL operations.
+        StringBuilder sBuff = new StringBuilder() ;
+        for (int i=0;i<contentTypes.length;i++ ){
+        	accumulateContentTypeString(sBuff, contentTypes[i], 1- i*0.1);
+        }
+        return sBuff.toString();
+    }
+
+    private static void accumulateContentTypeString(StringBuilder sBuff, String str, double v) {
+        if ( sBuff.length() != 0 )
+            sBuff.append(", ") ;
+        sBuff.append(str) ;
+        if ( v < 1 )
+            sBuff.append(";q=").append(v) ;
+    } 
 }

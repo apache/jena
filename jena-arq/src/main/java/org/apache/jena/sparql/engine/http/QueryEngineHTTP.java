@@ -36,6 +36,8 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.ARQException ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.ResultSetCheckCondition ;
 import org.apache.jena.sparql.graph.GraphFactory ;
@@ -85,6 +87,10 @@ public class QueryEngineHTTP implements QueryExecution {
     private String selectContentType    = defaultSelectHeader();
     private String askContentType       = defaultAskHeader();
     private String modelContentType     = defaultConstructHeader();
+    private String datasetContentType   = WebContent.defaultDatasetAcceptHeader;
+    
+    // Received content type 
+    private String httpResponseContentType = null ;
     /**
      * Supported content types for SELECT queries
      */
@@ -332,7 +338,12 @@ public class QueryEngineHTTP implements QueryExecution {
         this.authenticator = authenticator;
     }
 
-    @Override
+    /** The Content-Type response header received (null before the remote operation is attempted). */
+    public String getHttpResponseContentType() {
+		return httpResponseContentType;
+	}
+
+	@Override
     public ResultSet execSelect() {
         checkNotClosed() ;
         ResultSet rs = execResultSetInner() ;
@@ -355,9 +366,10 @@ public class QueryEngineHTTP implements QueryExecution {
         retainedConnection = in; // This will be closed on close()
         retainedClient = httpQuery.shouldShutdownClient() ? httpQuery.getClient() : null;
 
-        // Don't assume the endpoint actually gives back the content type we
-        // asked for
+        // Don't assume the endpoint actually gives back the
+        // content type we asked for
         String actualContentType = httpQuery.getContentType();
+        httpResponseContentType = actualContentType;
 
         // If the server fails to return a Content-Type then we will assume
         // the server returned the type we asked for
@@ -399,7 +411,14 @@ public class QueryEngineHTTP implements QueryExecution {
     
     @Override
     public Dataset execConstructDataset(){
-    	return null;
+        checkNotClosed() ;
+    	DatasetGraph dataset = DatasetGraphFactory.createMem();
+        try {
+        	execConstructQuads().forEachRemaining(dataset::add);
+        } finally {
+            this.close();
+        }
+        return DatasetFactory.create(dataset);
     }
 
     @Override
@@ -426,6 +445,7 @@ public class QueryEngineHTTP implements QueryExecution {
         // Don't assume the endpoint actually gives back the content type we
         // asked for
         String actualContentType = httpQuery.getContentType();
+        httpResponseContentType = actualContentType;
 
         // If the server fails to return a Content-Type then we will assume
         // the server returned the type we asked for
@@ -453,6 +473,7 @@ public class QueryEngineHTTP implements QueryExecution {
         // Don't assume the endpoint actually gives back the content type we
         // asked for
         String actualContentType = httpQuery.getContentType();
+        httpResponseContentType = actualContentType;
 
         // If the server fails to return a Content-Type then we will assume
         // the server returned the type we asked for
@@ -473,12 +494,13 @@ public class QueryEngineHTTP implements QueryExecution {
     private Iterator<Quad> execQuads() {
         checkNotClosed() ;
         HttpQuery httpQuery = makeHttpQuery();
-        httpQuery.setAccept(WebContent.defaultDatasetAcceptHeader);
+        httpQuery.setAccept(datasetContentType);
         InputStream in = httpQuery.exec();
         
         // Don't assume the endpoint actually gives back the content type we
         // asked for
         String actualContentType = httpQuery.getContentType();
+        httpResponseContentType = actualContentType;
 
         // If the server fails to return a Content-Type then we will assume
         // the server returned the type we asked for
@@ -505,6 +527,7 @@ public class QueryEngineHTTP implements QueryExecution {
             // Don't assume the endpoint actually gives back the content type we
             // asked for
             String actualContentType = httpQuery.getContentType();
+            httpResponseContentType = actualContentType;
 
             // If the server fails to return a Content-Type then we will assume
             // the server returned the type we asked for
@@ -778,6 +801,16 @@ public class QueryEngineHTTP implements QueryExecution {
         if (!RDFLanguages.isTriples(lang))
             throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not a RDF Graph format");
         modelContentType = contentType;
+    }
+    
+    public void setDatasetContentType(String contentType) {
+        // Check that this is a valid setting
+        Lang lang = RDFLanguages.contentTypeToLang(contentType);
+        if (lang == null)
+            throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not supported by RIOT");
+        if (!RDFLanguages.isQuads(lang))
+            throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not a RDF Dataset format");
+        datasetContentType = contentType;
     }
     
     private static final String selectContentTypeHeader = initSelectContentTypes() ;

@@ -18,7 +18,8 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import static org.apache.jena.riot.WebContent.charsetUTF8;
+import static org.apache.jena.riot.WebContent.* ;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,15 +42,26 @@ import org.apache.jena.web.HttpSC;
 public class ResponseDataset
 {
     // Short names for "output="
+    private static final String contentOutputJSONLD        = "json-ld" ;
+    private static final String contentOutputJSONRDF       = "json-rdf" ;
+    private static final String contentOutputJSON          = "json" ;
+    private static final String contentOutputXML           = "xml" ;
+    private static final String contentOutputText          = "text" ;
+    private static final String contentOutputTTL           = "ttl" ;
+    private static final String contentOutputNT            = "nt" ;
     private static final String contentOutputTriG          = "trig" ;
     private static final String contentOutputNQuads        = "n-quads" ;
 
-
     public static Map<String,String> shortNamesModel = new HashMap<String, String>() ;
     static {
-
         // Some short names.  keys are lowercase.
-        
+        ResponseOps.put(shortNamesModel, contentOutputJSONLD,   contentTypeJSONLD) ;
+        ResponseOps.put(shortNamesModel, contentOutputJSONRDF,  contentTypeRDFJSON) ;
+        ResponseOps.put(shortNamesModel, contentOutputJSON,     contentTypeJSONLD) ;
+        ResponseOps.put(shortNamesModel, contentOutputXML,      contentTypeRDFXML) ;
+        ResponseOps.put(shortNamesModel, contentOutputText,     contentTypeTurtle) ;
+        ResponseOps.put(shortNamesModel, contentOutputTTL,      contentTypeTurtle) ;
+        ResponseOps.put(shortNamesModel, contentOutputNT,       contentTypeNTriples) ;
         ResponseOps.put(shortNamesModel, contentOutputNQuads,  WebContent.contentTypeNQuads) ;
         ResponseOps.put(shortNamesModel, contentOutputTriG,     WebContent.contentTypeTriG) ;
     }
