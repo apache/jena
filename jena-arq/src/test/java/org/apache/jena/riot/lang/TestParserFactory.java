@@ -18,13 +18,15 @@
 
 package org.apache.jena.riot.lang;
 
+import java.io.StringReader ;
 import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
@@ -64,7 +66,7 @@ public class TestParserFactory extends BaseTest
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> .") ;
         CatchParserOutput sink = new CatchParserOutput() ;
         
-        LangRIOT parser = RiotReader.createParserNTriples(tokenizer, sink) ;
+        LangRIOT parser = RiotParsers.createParserNTriples(tokenizer, sink) ;
         parserSetup(parser) ;
         parser.parse();
         assertEquals(1, sink.startCalled) ;
@@ -78,7 +80,7 @@ public class TestParserFactory extends BaseTest
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> .") ; 
         CatchParserOutput sink = new CatchParserOutput() ;
-        LangRIOT parser = RiotReader.createParserTurtle(tokenizer, "http://base/", sink) ;
+        LangRIOT parser = RiotParsers.createParserTurtle(tokenizer, "http://base/", sink) ;
         parserSetup(parser) ;
         parser.parse();
         assertEquals(1, sink.startCalled) ;
@@ -92,7 +94,7 @@ public class TestParserFactory extends BaseTest
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> <g>.") ; 
         CatchParserOutput sink = new CatchParserOutput() ;
-        LangRIOT parser = RiotReader.createParserNQuads(tokenizer, sink) ;
+        LangRIOT parser = RiotParsers.createParserNQuads(tokenizer, sink) ;
         parserSetup(parser) ;
         parser.parse();
         assertEquals(1, sink.startCalled) ;
@@ -105,11 +107,8 @@ public class TestParserFactory extends BaseTest
 
     @Test public void trig_01() 
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("{ <x> <p> <q> }") ; 
-        CatchParserOutput sink = new CatchParserOutput() ;
-        LangRIOT parser = RiotReader.createParserTriG(tokenizer, "http://base/", sink) ;
-        parserSetup(parser) ;
-        parser.parse();
+        String s = "{ <x> <p> <q> }" ; 
+        CatchParserOutput sink = parseCapture(s) ;
         assertEquals(1, sink.startCalled) ;
         assertEquals(1, sink.finishCalled) ;
         assertEquals(0, sink.triples.size()) ;
@@ -122,18 +121,21 @@ public class TestParserFactory extends BaseTest
     
     @Test public void trig_02() 
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<g> { <x> <p> <q> }") ; 
-        CatchParserOutput sink = new CatchParserOutput() ;
-        LangRIOT parser = RiotReader.createParserTriG(tokenizer, "http://base/", sink) ;
-        parserSetup(parser) ;
-        parser.parse();
+        String s = "<g> { <x> <p> <q> }" ;
+        CatchParserOutput sink = parseCapture(s) ;
         assertEquals(1, sink.startCalled) ;
         assertEquals(1, sink.finishCalled) ;
         assertEquals(0, sink.triples.size()) ;
         assertEquals(1, sink.quads.size()) ;
-        
+
         Quad q = SSE.parseQuad("(<http://base/g> <http://base/x> <http://base/p> <http://base/q>)") ;
         assertEquals(q, last(sink.quads)) ;
+    }
+
+    private CatchParserOutput parseCapture(String s) {
+        CatchParserOutput sink = new CatchParserOutput() ;
+        RDFDataMgr.parse(sink, new StringReader(s), "http://base/", Lang.TRIG) ;
+        return sink ;
     }
 
     private static <T> T last(List<T> list) 
