@@ -114,6 +114,14 @@ public class TransMonitor implements TransactionalComponent {
     public void begin(Transaction transaction) {
         counterBegin.incrementAndGet() ;
     }
+    
+    public AtomicLong counterPromote = allocCounter("promote") ;
+    
+    @Override
+    public boolean promote(Transaction transaction) {
+        counterPromote.incrementAndGet() ;
+        return true ;
+    }
 
     public AtomicLong counterCommitPrepare = allocCounter("commitPrepare") ;
 

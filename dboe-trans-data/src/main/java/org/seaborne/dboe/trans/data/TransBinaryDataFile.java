@@ -26,10 +26,7 @@ import org.apache.jena.query.ReadWrite ;
 import org.seaborne.dboe.base.file.BinaryDataFile ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.objectfile.ObjectFile ;
-import org.seaborne.dboe.transaction.txn.ComponentId ;
-import org.seaborne.dboe.transaction.txn.StateMgrData ;
-import org.seaborne.dboe.transaction.txn.TransactionalComponentLifecycle ;
-import org.seaborne.dboe.transaction.txn.TxnId ;
+import org.seaborne.dboe.transaction.txn.* ;
 
 /** Transactional {@link ObjectFile}.
  *  An object file is append-only and allows only one writer at a time.
@@ -120,6 +117,12 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
         // TransactionCoordinator.begin$ where there is a lock.
         long xLength = committedLength.get() ;
         return new TxnBinFile(xLength) ;
+    }
+
+    @Override
+    protected boolean _promote(TxnId txnId, TxnBinFile state) {
+        // Our write state is the read state.
+        return true ;
     }
 
     @Override

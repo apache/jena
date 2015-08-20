@@ -53,6 +53,10 @@ public class TransactionalMRSW extends TransactionalComponentLifecycle<Object> {
     @Override 
     public void cleanStart() {}
     
+    private Lock getLock() {
+        return ( ReadWrite.WRITE.equals(getReadWriteMode()) ) ? lock.writeLock() : lock.readLock() ;
+    }
+    
     @Override
     protected Object _begin(ReadWrite readWrite, TxnId thisTxnId) {
         Lock lock = getLock() ;
@@ -65,10 +69,20 @@ public class TransactionalMRSW extends TransactionalComponentLifecycle<Object> {
         return new Object() ;                    
     }
 
-    private Lock getLock() {
-        return ( ReadWrite.WRITE.equals(getReadWriteMode()) ) ? lock.writeLock() : lock.readLock() ;
+    @Override
+    protected boolean _promote(TxnId txnId, Object state) {
+        // We have a read lock, the transaction coordinator has said 
+        // it's OK (from it's point-of-view) to promote so this should succeed.
+        // We have a read lock - theer are no other writers.
+        boolean b = lock.writeLock().tryLock() ;
+        if ( ! b ) {
+            Log.warn(this, "Failed to promote") ;  
+            return false ;
+        }
+        lock.readLock().unlock(); 
+        return true ; 
     }
-    
+
     // Checks.
     
     protected void startReadTxn()   {}

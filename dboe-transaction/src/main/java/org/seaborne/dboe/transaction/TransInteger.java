@@ -196,6 +196,11 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
     }
 
     @Override
+    protected boolean _promote(TxnId txnId, IntegerState state) {
+        return true ;
+    }
+
+    @Override
     protected ByteBuffer _commitPrepare(TxnId txnId, IntegerState state) {
         ByteBuffer x = ByteBuffer.allocate(Long.BYTES) ;
         x.putLong(state.txnValue) ;

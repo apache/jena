@@ -46,7 +46,8 @@ import org.apache.jena.query.ReadWrite ;
  *    Ronald L. Rivest and Clifford Stein 
  * </pre> 
  * Includes implementation of removal
- * then the B-Tree code converted to a B+Tree, then made MVCC/transactional.
+ * then the B-Tree code converted to a B+Tree,
+ * then made MVCC/transactional.
  * <p>
  * Notes:
  * <ul>
@@ -319,32 +320,6 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         throw new NotImplementedException("Mapping iterator") ;
     }
     
-//        // TODO Old code.  Link based iterator.
-//        startReadBlkMgr() ;
-//        BPTreeNode root = getRootRead() ;
-//        Iterator<X> iter = iterator(root, minRec, maxRec, mapper) ;
-//        releaseRootRead(root) ;
-//        finishReadBlkMgr() ;
-//        // Note that this end the read-part (find the start), not the iteration.
-//        // Iterator read blocks still get handled.
-//        return iter ;
-//    }
-//
-//    /** Iterate over a range of fromRec (inclusive) to toRec (exclusive) */ 
-//    private static <X> Iterator<X> iterator(BPTreeNode node, Record fromRec, Record toRec, RecordMapper<X> mapper) {
-//        // Look for starting RecordsBufferPage id.
-//        int id = BPTreeNode.recordsPageId(node, fromRec) ;
-//        if ( id < 0 )
-//            return Iter.nullIter() ;
-//        RecordBufferPageMgr pageMgr = node.bpTree.getRecordsMgr().getRecordBufferPageMgr() ;
-//        // No pages are active at this point.
-//        return RecordRangeIterator.iterator(id, fromRec, toRec, pageMgr, mapper) ;
-//    }
-//    
-//    private static <X> Iterator<X> iterator(BPTreeNode node, RecordMapper<X> mapper) { 
-//        return iterator(node, null, null, mapper) ; 
-//    }
-    
     // Internal calls.
     void startReadBlkMgr() {
         nodeManager.startRead() ;
@@ -515,6 +490,13 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
      * allocation limits of both block managers.
      */
     
+    @Override
+    protected boolean _promote(TxnId txnId, BptTxnState state) {
+        // Could check no changes.
+        // Or assume that the trasnaction coordinator did that.
+        return true ;
+    }
+
     @Override
     protected ByteBuffer _commitPrepare(TxnId txnId, BptTxnState state) {
         nodeManager.getBlockMgr().sync();

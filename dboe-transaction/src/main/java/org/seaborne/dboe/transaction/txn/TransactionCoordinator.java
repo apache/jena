@@ -17,7 +17,6 @@
 
 package org.seaborne.dboe.transaction.txn;
 
-import static org.apache.jena.query.ReadWrite.READ ;
 import static org.apache.jena.query.ReadWrite.WRITE ;
 import static org.seaborne.dboe.transaction.txn.journal.JournalEntryType.UNDO ;
 
@@ -64,7 +63,6 @@ public class TransactionCoordinator {
     private final ComponentGroup components = new ComponentGroup() ;
     // Components 
     private ComponentGroup txnComponents = null ;
-    //List<TransactionalComponent> elements ;
     private List<ShutdownHook> shutdownHooks ;
     private TxnIdGenerator txnIdGenerator = TxnIdFactory.txnIdGenSimple ;
     
@@ -424,7 +422,7 @@ public class TransactionCoordinator {
     
     // A read transaction can be promoted if writer does not start
     // This TransactionCoordinator provides Serializable, Read-lock-free
-    // execution.  With not item locking, a read can only be promoted
+    // execution.  With no item locking, a read can only be promoted
     // if no writer started since the reader started.
     
     private final AtomicLong writerEpoch = new AtomicLong(0) ;      // The leading edge of the epochs
@@ -485,14 +483,32 @@ public class TransactionCoordinator {
      * can not be done.
      * Current policy is to not support promotion.
      */
+    
     // Later ...
 //    * Current policy if a READ transaction can be promoted if intervening
 //    * writer has started or an existing one committed.  
     
-    /*package*/ void promote(Transaction transaction) {
-        if ( transaction.getMode() == READ) {
-            throw new TransactionException("Attempt to promote READ transaction") ;
+    /*package*/ boolean promote(Transaction transaction) {
+        if ( ! transaction.isActiveTxn() ) {
+            throw new TransactionException("Not in a transaction (on this thead)") ;
         }
+        if ( transaction.getMode() == WRITE )
+            return true ;
+        // Ok - we are a reader.
+        synchronized(lock) {
+            // Is there a writer active?
+            // Was there one since we started?
+            long dataEpoch = transaction.getDataEpoch() ;
+            long currentEpoch = writerEpoch.get() ;  // Advanced as a writer starts 
+            if ( dataEpoch != currentEpoch )
+                return false ;
+            try { transaction.promote() ; }
+            catch (TransactionException ex) {
+                transaction.abort();
+                return false ;
+            }
+        }
+        return true ;
     }
 
     // Called by Transaction once at the end of first

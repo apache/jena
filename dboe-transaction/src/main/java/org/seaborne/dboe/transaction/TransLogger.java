@@ -93,6 +93,12 @@ public class TransLogger implements TransactionalComponent {
     }
 
     @Override
+    public boolean promote(Transaction transaction) {
+        txnStep("promote", transaction) ;
+        return true ;
+    }
+
+    @Override
     public ByteBuffer commitPrepare(Transaction transaction) {
         if ( everyEvent )
             txnStep("commitPrepare", transaction) ;

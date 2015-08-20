@@ -119,6 +119,12 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
     }
 
     @Override
+    protected boolean _promote(TxnId txnId, BlobState state) {
+        // Our write state is the read state.
+        return true ;
+    }
+    
+    @Override
     protected ByteBuffer _commitPrepare(TxnId txnId, BlobState state) {
         return state.getByteBuffer() ;
     }

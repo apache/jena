@@ -129,6 +129,12 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
         long xPosition = position.get() ;
         return new TxnObjectFile(xLength, xPosition) ;
     }
+    
+    @Override
+    protected boolean _promote(TxnId txnId, TxnObjectFile state) {
+        // Our write state is the read state.
+        return true ;
+    }
 
     @Override
     protected ByteBuffer _commitPrepare(TxnId txnId, TxnObjectFile state) {

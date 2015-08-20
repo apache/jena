@@ -57,6 +57,11 @@ public class TransactionalComponentWrapper implements TransactionalComponent {
     }
 
     @Override
+    public boolean promote(Transaction transaction) {
+        return other.promote(transaction) ;
+    }
+
+    @Override
     public ByteBuffer commitPrepare(Transaction transaction) {
         return other.commitPrepare(transaction) ;
     }

@@ -69,5 +69,8 @@ public class TransactionalComponentBase<X> extends TransactionalComponentLifecyc
     @Override
     protected void _shutdown() {}
 
+    @Override
+    protected boolean _promote(TxnId txnId, X state) { return true ; }
+
 }
 

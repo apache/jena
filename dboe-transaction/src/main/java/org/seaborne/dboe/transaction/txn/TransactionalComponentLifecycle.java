@@ -77,6 +77,15 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
         setDataState(x);
     }
     
+    /** Promote a componet in a transaction */
+    @Override
+    final
+    public boolean promote(Transaction  transaction) {
+        Objects.requireNonNull(transaction) ;
+        checkState(ACTIVE) ;
+        return _promote(transaction.getTxnId(), getDataState());
+    }
+    
     /** Commit a transaction (make durable): prepare - commit - cleanup */  
     @Override
     final
@@ -364,6 +373,7 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
 //    protected abstract void        _shutdown() ;
 
     protected abstract X           _begin(ReadWrite readWrite, TxnId txnId) ;
+    protected abstract boolean     _promote(TxnId txnId, X  state) ;
     protected abstract ByteBuffer  _commitPrepare(TxnId txnId, X  state) ;
     protected abstract void        _commit(TxnId txnId, X state) ;
     protected abstract void        _commitEnd(TxnId txnId, X state) ;

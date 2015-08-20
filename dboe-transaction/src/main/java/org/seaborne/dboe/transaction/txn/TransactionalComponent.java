@@ -111,6 +111,11 @@ public interface TransactionalComponent
     /** Start a transaction; return an identifier for this components use. */ 
     public void begin(Transaction transaction) ;
     
+    /** Promote a component in a transaction.
+     * May return "false" for "can't do that".
+     */
+    public boolean promote(Transaction transaction) ;
+
     /** Prepare for a commit.
      *  Returns some bytes that will be written to the journal.
      *  The journal remains valid until {@link #commitEnd} is called.

@@ -84,7 +84,7 @@ public class Transaction {
      * over time as the data changes. Two readers can have the same
      * serialization point - they are working with the same view of the data.
      */
-    public long getSerilizationId() {
+    public long getDataEpoch() {
         return dataEpoch ;
     }
 
@@ -94,9 +94,19 @@ public class Transaction {
         setState(ACTIVE) ;
     }
     
+    public void promote() {
+        checkState(ACTIVE);
+        components.forEach((c) -> {
+            if ( ! c.promote() )
+                throw new TransactionException("Failed to promote") ;
+        }) ;
+        mode = ReadWrite.WRITE ;
+    }
+    
     public void notifyUpdate() {
         checkState(ACTIVE) ;
         if ( mode == ReadWrite.READ ) {
+            System.err.println("notifyUpdate - promote needed") ;
             setState(ACTIVE) ;
             txnMgr.promote(this) ;
             mode = ReadWrite.WRITE ;

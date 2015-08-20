@@ -25,8 +25,6 @@ class SysTrans {
     private final TransactionalComponent elt ;
     private final Transaction transaction ;
     private final TxnId txnId ;
-//    // Current mode - when promotable transaction are implemented, this will be resettable.
-//    private final ReadWrite mode ;
 
     public SysTrans(TransactionalComponent elt, Transaction transaction, TxnId txnId) { 
         this.elt = elt ;
@@ -35,6 +33,7 @@ class SysTrans {
     }
 
     public void begin()                 { }
+    public boolean promote()            { return elt.promote(transaction) ; }
 
     public ByteBuffer commitPrepare()   { return elt.commitPrepare(transaction) ; }
 
