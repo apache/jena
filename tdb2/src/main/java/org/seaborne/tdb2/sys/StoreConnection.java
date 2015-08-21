@@ -124,7 +124,7 @@ public class StoreConnection
 //        try { sConn.getDatasetGraphTDB().close() ; } catch (Throwable th ) {}
         
         sConn.getDatasetGraphTDB().getTxnSystem().getTxnMgr().shutdown();
-        sConn.getDatasetGraphTDB().close() ;
+        sConn.getDatasetGraphTDB().shutdown() ;
         
         sConn.isValid = false ;
         cache.remove(location) ;
