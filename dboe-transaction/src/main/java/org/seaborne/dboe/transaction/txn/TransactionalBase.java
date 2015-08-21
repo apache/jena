@@ -70,6 +70,8 @@ public class TransactionalBase implements TransactionalSystem {
         theTxn.remove() ; ///??????
         if ( trackAttachDetach )
             Log.info(this,  "<< detach");
+        if ( coordinatorState == null )
+            throw new TransactionException("Not attached") ;
         return coordinatorState ;
     }
     
