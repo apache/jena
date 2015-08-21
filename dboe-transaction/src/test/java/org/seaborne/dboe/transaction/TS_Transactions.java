@@ -33,6 +33,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestTxnLib.class
     , TestTxnLib2.class
     , TestThreadingTransactions.class
+    , TestTxnSwitching.class
     
     
 })

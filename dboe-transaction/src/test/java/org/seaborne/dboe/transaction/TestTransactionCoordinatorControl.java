@@ -30,6 +30,7 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.migrate.L ;
 import org.seaborne.dboe.transaction.txn.Transaction ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
+import org.seaborne.dboe.transaction.txn.TransactionException ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 
 public class TestTransactionCoordinatorControl {
@@ -81,7 +82,21 @@ public class TestTransactionCoordinatorControl {
         assertNotNull(txn2) ;
     }
     
+    @Test(expected=TransactionException.class)
+    public void txn_coord_disable_writers_4() {
+        txnMgr.disableWriters() ;
+        txnMgr.enableWriters();
+        txnMgr.enableWriters();
+    }
 
+    @Test
+    public void txn_coord_disable_writers_() {
+        txnMgr.disableWriters() ;
+        boolean b = txnMgr.tryDisableWriters() ;
+        assertFalse(b) ;
+        txnMgr.enableWriters();
+    }
+    
     @Test public void txn_coord_exclusive_1() {
         txnMgr.startExclusiveMode();
         L.syncOtherThread(()->{
@@ -106,13 +121,13 @@ public class TestTransactionCoordinatorControl {
         ThreadTxn ttxn = Txn.threadTxnWrite(unit, ()->{
             counter1.incrementAndGet() ;
         }) ;
-        boolean b = txnMgr.startExclusiveMode(false);
+        boolean b = txnMgr.tryExclusiveMode(false);
         assertFalse(b) ;
         assertEquals(0, counter1.get()) ;
         ttxn.run(); // Now run thread
         assertEquals(1, counter1.get()) ;
         Txn.executeWrite(unit, ()->{});
-        b = txnMgr.startExclusiveMode(false);
+        b = txnMgr.tryExclusiveMode(false);
         assertTrue(b) ;
     }
     

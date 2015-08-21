@@ -69,7 +69,8 @@ public class TransactionCoordinator {
     private QuorumGenerator quorumGenerator = null ;
     //private QuorumGenerator quorumGenerator = (m) -> components ;
 
-    // Semaphore to implement "Single Active Writer" - independent of readers 
+    // Semaphore to implement "Single Active Writer" - independent of readers
+    // This is not reentrant.
     private Semaphore writersWaiting = new Semaphore(1, true) ;
     
     // All transaction need a "read" lock through out their lifetime. 
@@ -281,7 +282,7 @@ public class TransactionCoordinator {
     private void releaseWriterLock() {
         int x = writersWaiting.availablePermits() ;
         if ( x != 0 )
-            throw new TransactionException("TransactionCoordinator: Inconsistent writersWaiting semaphore") ;
+            throw new TransactionException("TransactionCoordinator: Probably mismatch of enable/disableWriter calls") ;
         writersWaiting.release() ;
     }
     
@@ -294,7 +295,6 @@ public class TransactionCoordinator {
         } catch (InterruptedException e) { throw new TransactionException(e) ; }
     }
     
-    // Work in progress.
     /** Enter exclusive mode. 
      * There are no active transactions on return; new transactions will be held up in 'begin'.
      * Return to normal (release waiting transactions, allow new transactions)
@@ -304,7 +304,17 @@ public class TransactionCoordinator {
         startExclusiveMode(true);
     }
     
-    public boolean startExclusiveMode(boolean canBlock) {
+    /** Try to enter exclusive mode. 
+     *  If return is true, then are no active transactions on return and new transactions will be held up in 'begin'.
+     *  If alse, there were in-porgress transactions.
+     *  Return to normal (release waiting transactions, allow new transactions)
+     *  with {@link #finishExclusiveMode}.   
+     */
+    public boolean tryExclusiveMode(boolean canBlock) {
+        return startExclusiveMode(false);
+    }
+    
+    private boolean startExclusiveMode(boolean canBlock) {
         if ( canBlock ) {
             exclusivitylock.writeLock().lock() ;
             return true ;
@@ -336,19 +346,21 @@ public class TransactionCoordinator {
     }
     
     /** Block until no writers are active.
-     * Must call 
+     * Must call {@link #enableWriters} later.
      * Return 'true' if the writers semaphore was grabbed, else false.
+     * This operation must not be nested (will block).
+     * See {@link #tryDisableWriters}.
      */
-    public boolean disableWriters(boolean canBlock) {
-        return acquireWriterLock(canBlock) ;
+    public void disableWriters() {
+        acquireWriterLock(true) ;
     }
-    
-    /** Block until no writers are active.
+
+    /** Block until no writers are active or, optionally, return if can't at the moment. 
      * Must call {@link #enableWriters} later.
      * Return 'true' if the writers semaphore was grabbed, else false.
      */
-    public void disableWriters() {
-        disableWriters(true) ;
+    public boolean tryDisableWriters() {
+        return acquireWriterLock(false) ;
     }
 
     /** Allow writers.  

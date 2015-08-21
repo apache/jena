@@ -40,6 +40,7 @@ public class TestTxnSwitching {
     {
         txnMgr.add(integer) ;
         transactional = new TransactionalBase(txnMgr) ;
+        txnMgr.start() ;
     }
 
     
