@@ -456,7 +456,7 @@ public class QueryEngineHTTP implements QueryExecution {
             throw new QueryException("Endpoint returned Content Type: " + actualContentType
                     + " which is not a valid RDF Graph syntax");
 
-        return RiotReader.createIteratorTriples(in, lang, null);
+        return RDFDataMgr.createIteratorTriples(in, lang, null);
     }
 
     @Override

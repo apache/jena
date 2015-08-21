@@ -23,6 +23,7 @@ import java.util.Iterator ;
 import java.util.Objects ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.iterator.IteratorResourceClosing ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
@@ -32,6 +33,10 @@ import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.riot.lang.PipedQuadsStream ;
+import org.apache.jena.riot.lang.PipedRDFIterator ;
+import org.apache.jena.riot.lang.PipedTriplesStream ;
+import org.apache.jena.riot.lang.RiotParsers ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
@@ -1207,5 +1212,45 @@ public class RDFDataMgr
         WriterDatasetRIOT w = createDatasetWriter$(serialization);
         w.write(out, dataset, RiotLib.prefixMap(dataset), null, null);
     }
-}
 
+    /**
+     * Create an iterator over parsing of triples
+     * @param input Input Stream
+     * @param lang Language
+     * @param baseIRI Base IRI
+     * @return Iterator over the triples
+     */
+    public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseIRI)
+    {
+        // Special case N-Triples, because the RIOT reader has a pull interface
+        if ( RDFLanguages.sameLang(RDFLanguages.NTRIPLES, lang) )
+            return new IteratorResourceClosing<>(RiotParsers.createParserNTriples(input, null), input);
+        // Otherwise, we have to spin up a thread to deal with it
+        PipedRDFIterator<Triple> it = new PipedRDFIterator<>();
+        PipedTriplesStream out = new PipedTriplesStream(it);
+        Thread t = new Thread(()->parse(out, input, baseIRI, lang)) ;
+        t.start();
+        return it;
+    }
+
+    /**
+     * Creates an iterator over parsing of quads
+     * @param input Input Stream
+     * @param lang Language
+     * @param baseIRI Base IRI
+     * @return Iterator over the quads
+     */
+    public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseIRI)
+    {
+        // Special case N-Quads, because the RIOT reader has a pull interface
+        if ( RDFLanguages.sameLang(RDFLanguages.NQUADS, lang) )
+            return new IteratorResourceClosing<>(RiotParsers.createParserNQuads(input, null), input);
+        // Otherwise, we have to spin up a thread to deal with it
+        final PipedRDFIterator<Quad> it = new PipedRDFIterator<>();
+        final PipedQuadsStream out = new PipedQuadsStream(it);
+
+        Thread t = new Thread(()->parse(out, input, baseIRI, lang)) ;
+        t.start();
+        return it;
+    }
+}
