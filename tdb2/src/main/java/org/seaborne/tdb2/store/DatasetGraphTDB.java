@@ -35,9 +35,11 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.txn.TransactionalSystem ;
+import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.lib.NodeLib ;
 import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
+import org.seaborne.tdb2.sys.StoreConnection ;
 
 /** This is the class that provides creates a dataset over the storage via
  *  TripleTable, QuadTable and prefixes.
@@ -53,67 +55,83 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     private TripleTable tripleTable ;
     private QuadTable quadTable ;
     private DatasetPrefixStorage prefixes ;
-    private final Location location ;
+    private Location location ;
     // SWITCHING.
     private final ReorderTransformation transform ;
-    private final StoreParams config ;
+    private StoreParams config ;
     
     private GraphTDB defaultGraphTDB ;
     private boolean closed = false ;
-    private final TransactionalSystem txnSystem ;
+    private TransactionalSystem txnSystem ;
 
     public DatasetGraphTDB(TransactionalSystem txnSystem, 
                            TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes,
                            ReorderTransformation transform, Location location, StoreParams params) {
+        reset(txnSystem,tripleTable, quadTable, prefixes, location, params) ;
+        this.transform = transform ;
+        this.defaultGraphTDB = getDefaultGraphTDB() ;
+    }
+
+    public void reset(TransactionalSystem txnSystem, 
+                      TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes,
+                      Location location, StoreParams params) {
         this.txnSystem = txnSystem ;
         this.tripleTable = tripleTable ;
         this.quadTable = quadTable ;
         this.prefixes = prefixes ;
-        this.transform = transform ;
+        this.defaultGraphTDB = getDefaultGraphTDB() ;
         this.config = params ;
         this.location = location ;
-        this.defaultGraphTDB = getDefaultGraphTDB() ;
     }
-
-    public QuadTable getQuadTable()         { return quadTable ; }
-    public TripleTable getTripleTable()     { return tripleTable ; }
+    
+    public QuadTable getQuadTable()         { checkNotClosed() ; return quadTable ; }
+    public TripleTable getTripleTable()     { checkNotClosed() ; return tripleTable ; }
     
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
+        checkNotClosed() ;
         return triples2quadsDftGraph(getTripleTable().find(s, p, o)) ;
     }
 
     @Override
-    protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o)
-    { return getQuadTable().find(g, s, p, o) ; }
+    protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
+        checkNotClosed();
+        return getQuadTable().find(g, s, p, o);
+    }
 
     @Override
-    protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o)
-    { return getQuadTable().find(Node.ANY, s, p, o) ; }
+    protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o) {
+        checkNotClosed();
+        return getQuadTable().find(Node.ANY, s, p, o);
+    }
 
     protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
     { return triples2quads(Quad.defaultGraphIRI, iter) ; }
  
     @Override
     protected void addToDftGraph(Node s, Node p, Node o) { 
+        checkNotClosed() ;
         notifyAdd(null, s, p, o) ;
         getTripleTable().add(s,p,o) ;
     }
 
     @Override
     protected void addToNamedGraph(Node g, Node s, Node p, Node o) {
+        checkNotClosed() ;
         notifyAdd(g, s, p, o) ;
         getQuadTable().add(g, s, p, o) ; 
     }
 
     @Override
     protected void deleteFromDftGraph(Node s, Node p, Node o) {
+        checkNotClosed() ;
         notifyDelete(null, s, p, o) ;
         getTripleTable().delete(s, p, o) ;
     }
 
     @Override
     protected void deleteFromNamedGraph(Node g, Node s, Node p, Node o) {
+        checkNotClosed() ;
         notifyDelete(g, s, p, o) ;
         getQuadTable().delete(g, s, p, o) ;
     }
@@ -121,12 +139,27 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     private final void notifyAdd(Node g, Node s, Node p, Node o) {}
     private final void notifyDelete(Node g, Node s, Node p, Node o) {}
 
+    /** No-op. There is no need to close datasets.
+     *  Use {@link StoreConnection#release(Location)}.
+     *  (Datasets can not be reopened on MS Windows). 
+     */
     @Override
     public void close() {
         if ( closed )
             return ;
         closed = true ;
-        
+    }
+    
+    private void checkNotClosed() {
+        if ( closed )
+            throw new TDBException("dataset closed") ;
+    }
+    
+    /** Release resources.
+     *  Do not call directly - this is called from StoreConnection.
+     *  Use {@link StoreConnection#release(Location)}. 
+     */
+    public void shutdown() {
         tripleTable.close() ;
         quadTable.close() ;
         prefixes.close();
@@ -139,7 +172,8 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     
     @Override
     // Empty graphs don't "exist" 
-    public boolean containsGraph(Node graphNode) { 
+    public boolean containsGraph(Node graphNode) {
+        checkNotClosed() ; 
         if ( Quad.isDefaultGraphExplicit(graphNode) || Quad.isUnionGraph(graphNode)  )
             return true ;
         return _containsGraph(graphNode) ; 
@@ -158,61 +192,86 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     
     @Override
     public void addGraph(Node graphName, Graph graph) {
+        checkNotClosed() ; 
         removeGraph(graphName) ;
         GraphUtil.addInto(getGraph(graphName), graph) ;
     }
 
     @Override
     public final void removeGraph(Node graphName) {
+        checkNotClosed() ; 
         deleteAny(graphName, Node.ANY, Node.ANY, Node.ANY) ;
     }
 
     // XXX "this" must be the switching dataset.
     @Override
     public Graph getDefaultGraph() {
+        checkNotClosed() ; 
         return new GraphTDB(this, null) ; 
     }
 
-    public GraphTDB getDefaultGraphTDB() 
-    { return (GraphTDB)getDefaultGraph() ; }
-
-    @Override
-    public Graph getGraph(Node graphNode)
-    { return new GraphTDB(this, graphNode) ; }
-
-    public GraphTDB getGraphTDB(Node graphNode)
-    { return (GraphTDB)getGraph(graphNode) ; }
-    
-    public StoreParams getConfig()                          { return config ; }
-    
-    public ReorderTransformation getReorderTransform()      { return transform ; }
-    
-    public DatasetPrefixStorage getPrefixes()                 { return prefixes ; }
-    
-    @Override
-    public Iterator<Node> listGraphNodes()
-    {
-        Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().findAll() ;
-        Iterator<NodeId> z =  Iter.iter(x).map(t -> t.get(0)).distinct() ;
-        return NodeLib.nodes(quadTable.getNodeTupleTable().getNodeTable(), z) ;
+    public GraphTDB getDefaultGraphTDB() {
+        checkNotClosed();
+        return (GraphTDB)getDefaultGraph();
     }
 
     @Override
-    public long size()                   { return Iter.count(listGraphNodes()) ; }
+    public Graph getGraph(Node graphNode) {
+        checkNotClosed();
+        return new GraphTDB(this, graphNode);
+    }
+
+    public GraphTDB getGraphTDB(Node graphNode) {
+        checkNotClosed();
+        return (GraphTDB)getGraph(graphNode);
+    }
+
+    public StoreParams getConfig() {
+        checkNotClosed();
+        return config;
+    }
+
+    public ReorderTransformation getReorderTransform() {
+        checkNotClosed();
+        return transform;
+    }
+
+    public DatasetPrefixStorage getPrefixes() {
+        checkNotClosed();
+        return prefixes;
+    }
 
     @Override
-    public boolean isEmpty()            { return getTripleTable().isEmpty() && getQuadTable().isEmpty() ; }
+    public Iterator<Node> listGraphNodes() {
+        checkNotClosed();
+        Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().findAll();
+        Iterator<NodeId> z = Iter.iter(x).map(t -> t.get(0)).distinct();
+        return NodeLib.nodes(quadTable.getNodeTupleTable().getNodeTable(), z);
+    }
 
     @Override
-    public void clear()
-    {
+    public long size() {
+        checkNotClosed();
+        return Iter.count(listGraphNodes());
+    }
+
+    @Override
+    public boolean isEmpty() {
+        checkNotClosed();
+        return getTripleTable().isEmpty() && getQuadTable().isEmpty();
+    }
+
+    @Override
+    public void clear() {
+        checkNotClosed() ; 
         // Leave the node table alone.
         getTripleTable().clearTriples() ;
         getQuadTable().clearQuads() ;
     }
     
-    public NodeTupleTable chooseNodeTupleTable(Node graphNode)
-    {
+    public NodeTupleTable chooseNodeTupleTable(Node graphNode) {
+        checkNotClosed() ; 
+
         if ( graphNode == null || Quad.isDefaultGraph(graphNode) )
             return getTripleTable().getNodeTupleTable() ;
         else
@@ -227,7 +286,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         // Delete in batches.
         // That way, there is no active iterator when a delete
         // from the indexes happens.
-
+        checkNotClosed() ; 
         NodeTupleTable t = chooseNodeTupleTable(g) ;
         @SuppressWarnings("unchecked")
         Tuple<NodeId>[] array = (Tuple<NodeId>[])new Tuple<?>[sliceSize] ;
@@ -272,11 +331,11 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     public Location getLocation()       { return location ; }
 
     @Override
-    public void sync()
-    {
-        tripleTable.sync() ;
-        quadTable.sync() ;
-        prefixes.sync() ;
+    public void sync() {
+        checkNotClosed();
+        tripleTable.sync();
+        quadTable.sync();
+        prefixes.sync();
     }
     
     @Override
