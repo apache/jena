@@ -279,6 +279,9 @@ public class TransactionCoordinator {
     }
 
     private void releaseWriterLock() {
+        int x = writersWaiting.availablePermits() ;
+        if ( x != 0 )
+            throw new TransactionException("TransactionCoordinator: Inconsistent writersWaiting semaphore") ;
         writersWaiting.release() ;
     }
     
@@ -407,7 +410,6 @@ public class TransactionCoordinator {
                 return null ;
             }
         }
-
         Transaction transaction = begin$(readWrite) ;
         startActiveTransaction(transaction) ;
         transaction.begin();
@@ -491,7 +493,7 @@ public class TransactionCoordinator {
     /*package*/ boolean promoteTxn(Transaction transaction) {
         if ( transaction.getMode() == WRITE )
             return true ;
-        // Ok - we are a reader.
+        // We're a reader. Try to be a writer.
         synchronized(lock) {
             // Is there a writer active?
             // Was there one since we started?
@@ -499,11 +501,17 @@ public class TransactionCoordinator {
             long currentEpoch = writerEpoch.get() ;  // Advanced as a writer starts 
             if ( dataEpoch != currentEpoch )
                 return false ;
+            // Should not block - we checked the read/write epochs
+            // and they said "no writer" all inside 'lock' 
+            boolean b = acquireWriterLock(false) ;
+            if ( !b )
+                throw new TransactionException("Promote: Inconistent: Failed to get the writer lock");
             try { transaction.promoteComponents() ; }
             catch (TransactionException ex) {
                 transaction.abort();
                 return false ;
             }
+            writerEpoch.incrementAndGet() ;
         }
         return true ;
     }

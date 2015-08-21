@@ -19,6 +19,8 @@ package org.seaborne.dboe.transaction;
 
 import static org.junit.Assert.* ;
 
+import java.util.concurrent.atomic.AtomicReference ;
+
 import org.apache.jena.query.ReadWrite ;
 import org.junit.After ;
 import org.junit.Before ;
@@ -218,5 +220,47 @@ public class TestTransactionLifecycle2 {
         checkClear() ;
     }
     
+    @Test
+    public void txn_promote_5() {
+        Transaction txn1 = txnMgr.begin(ReadWrite.READ) ;
+        boolean b = txn1.promote() ;
+        assertTrue(b) ;
+        AtomicReference<Transaction> ref = new AtomicReference<>(txn1) ;
+        L.syncOtherThread(()->{
+            // Should fail.
+            Transaction txn2 = txnMgr.begin(ReadWrite.WRITE, false) ;
+            ref.set(txn2);
+        }) ;
+        assertNull(ref.get()) ;
+        txn1.abort() ;
+        txn1.end() ;
+    }
+    
+    @Test
+    public void txn_promote_6() {
+        Transaction txn1 = txnMgr.begin(ReadWrite.READ) ;
+        boolean b = txn1.promote() ;
+        assertTrue(b) ;
+        AtomicReference<Transaction> ref = new AtomicReference<>(txn1) ;
+        L.syncOtherThread(()->{
+            // Should fail.
+            Transaction txn2 = txnMgr.begin(ReadWrite.WRITE, false) ;
+            ref.set(txn2);
+        }) ;
+        assertNull(ref.get()) ;
+        txn1.abort() ;
+        txn1.end() ;
+
+        L.syncOtherThread(()->{
+            // Should suceed
+            Transaction txn2 = txnMgr.begin(ReadWrite.WRITE, false) ;
+            ref.set(txn2);
+            txn2.abort() ;
+            txn2.end() ;
+        }) ;
+        assertNotNull(ref.get()) ;
+        checkClear() ;
+    }
+
 }
 
