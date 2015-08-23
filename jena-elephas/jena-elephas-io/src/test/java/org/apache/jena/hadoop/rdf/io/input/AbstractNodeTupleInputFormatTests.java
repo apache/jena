@@ -43,12 +43,7 @@ import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.jena.hadoop.rdf.io.HadoopIOConstants;
 import org.apache.jena.hadoop.rdf.io.RdfIOConstants;
 import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.* ;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -429,6 +424,8 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      */
     @Test(expected = IOException.class)
     public final void fail_on_bad_input_02() throws IOException, InterruptedException {
+        Assume.assumeFalse("fail_on_bad_input_02: See JENA-1013 (JSON-LD tests)", this.getFileExtension().contains("jsonld")) ;
+        
         Configuration config = this.prepareConfiguration();
         config.setBoolean(RdfIOConstants.INPUT_IGNORE_BAD_TUPLES, false);
         Assert.assertFalse(config.getBoolean(RdfIOConstants.INPUT_IGNORE_BAD_TUPLES, true));

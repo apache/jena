@@ -458,7 +458,7 @@ public class QueryEngineHTTP implements QueryExecution {
         InputStream in = p.getLeft() ;
         Lang lang = p.getRight() ;
         // Base URI?
-        return RiotReader.createIteratorTriples(in, lang, null);
+        return RDFDataMgr.createIteratorTriples(in, lang, null);
     }
     
     private Iterator<Quad> execQuads() {
@@ -466,7 +466,7 @@ public class QueryEngineHTTP implements QueryExecution {
         InputStream in = p.getLeft() ;
         Lang lang = p.getRight() ;
         // Base URI?
-        return RiotReader.createIteratorQuads(in, lang, null);
+        return RDFDataMgr.createIteratorQuads(in, lang, null);
     }
 
     private Pair<InputStream, Lang> execConstructWorker(String contentType) {
