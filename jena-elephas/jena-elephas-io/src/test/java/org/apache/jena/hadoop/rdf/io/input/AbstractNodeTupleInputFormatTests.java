@@ -424,8 +424,6 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      */
     @Test(expected = IOException.class)
     public final void fail_on_bad_input_02() throws IOException, InterruptedException {
-        Assume.assumeFalse("fail_on_bad_input_02: See JENA-1013 (JSON-LD tests)", this.getFileExtension().contains("jsonld")) ;
-        
         Configuration config = this.prepareConfiguration();
         config.setBoolean(RdfIOConstants.INPUT_IGNORE_BAD_TUPLES, false);
         Assert.assertFalse(config.getBoolean(RdfIOConstants.INPUT_IGNORE_BAD_TUPLES, true));
