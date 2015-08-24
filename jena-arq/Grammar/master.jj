@@ -1075,7 +1075,7 @@ Expr FunctionCall() : { String fname ; ExprList a ; }
          // aggregates
          if ( ! allowAggregatesInExpressions )
             throwParseException("Aggregate expression not legal at this point : "+fname, -1, -1) ;
-         Aggregator agg = AggregatorFactory.createCustom(fname, a) ;
+         Aggregator agg = AggregatorFactory.createCustom(true, false, fname, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
          return exprAgg ;
      }
@@ -2044,13 +2044,19 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
     { agg = AggregatorFactory.createGroupConcat(distinct, expr, sep, ordered) ; }
 
 #ifdef ARQ
-    /* Explciit syntax (aggregate even if not registered) */
+    /* Explicit syntax (aggregate even if not registered) */
     | t = <AGG>
           { String iri ; }
-          iri = iri() a = ExpressionList()
-      { agg = AggregatorFactory.createCustom(iri, a) ; }
+          iri = iri()
+          <LPAREN>
+          ( <DISTINCT> { distinct = true ; } )?
+          (
+             expr = Expression() { a.add(expr) ; } 
+             (<COMMA> expr = Expression() { a.add(expr) ; } )*            
+          )?
+          <RPAREN>
+      { agg = AggregatorFactory.createCustom(false, distinct, iri, a) ; }
 #endif
-
    )
 
    {
@@ -2078,7 +2084,7 @@ Expr iriOrFunction() : { String iri ; ExprList a = null ;
          // aggregates
          if ( ! allowAggregatesInExpressions )
             throwParseException("Aggregate expression not legal at this point : "+iri, -1, -1) ;
-         Aggregator agg = AggregatorFactory.createCustom(iri, a) ;
+         Aggregator agg = AggregatorFactory.createCustom(true, false, iri, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
          return exprAgg ;
       }
