@@ -651,7 +651,7 @@ public class RDFDataMgr
     }
     
     /** Read RDF data.
-     * @param sink     Destination for the RDF read.
+     * @param sink      Destination for the RDF read.
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Hint for the syntax
