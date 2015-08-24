@@ -179,8 +179,12 @@ public class WebContent
     /** Accept header when looking for a dataset */
     public static final String defaultDatasetAcceptHeader   =  defaultDatasetAccept+",*/*;q=0.5" ;
     
+    // This is  defaultGraphAccept+","+defaultDatasetAccept+",*/*;q=0.5" ; but cleaned for duplicate JSON-LD.
     /** Accept header when looking for a graph or dataset */
-    public static final String defaultRDFAcceptHeader       =  defaultGraphAccept+","+defaultDatasetAccept+",*/*;q=0.5" ;
+    public static final String defaultRDFAcceptHeader       =  
+            "text/turtle,application/n-triples;q=0.9,application/rdf+xml;q=0.7," +
+            "application/trig,application/n-quads;q=0.9,text/x-nquads;q=0.8,application/x-trig;q=0.7,application/ld+json;q=0.6," +
+            "*/*;q=0.5" ;
     
     /** Return our "canonical" name for a Content Type.
      * This should be the standard one, no X-*
