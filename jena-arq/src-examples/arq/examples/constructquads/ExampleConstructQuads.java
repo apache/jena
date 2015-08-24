@@ -18,22 +18,11 @@
 
 package arq.examples.constructquads;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FilenameFilter;
-import java.io.IOException;
+import java.io.* ;
 import java.util.Iterator;
 
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.Syntax;
+import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
@@ -176,13 +165,11 @@ public class ExampleConstructQuads {
 		// run-construct-quad-test
 		System.out.println("run-construct-quad-test:");
 		File[] tests = new File("testing/ARQ/Syntax/Syntax-ARQ")
-				.listFiles(new FilenameFilter() {
-					public boolean accept(File dir, String fname) {
+				.listFiles((dir, fname)->{
 						if (fname.startsWith("syntax-quad-construct-")) {
 							return true;
 						}
 						return false;
-					}
 				});
 		for (File test : tests) {
 			System.out.println("======== File: "+test.getName());
