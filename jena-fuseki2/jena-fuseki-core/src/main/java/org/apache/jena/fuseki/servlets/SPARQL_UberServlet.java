@@ -205,6 +205,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
                     restQuads_R.executeLifecycle(action) ;
                 else
                     ServletOps.errorForbidden("Forbidden: "+method+" on dataset") ;
+                return ; 
             }
             if ( allowREST_W(action) )
                 restQuads_RW.executeLifecycle(action) ;
