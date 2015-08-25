@@ -317,7 +317,7 @@ public abstract class CmdLangParse extends CmdGeneral
                 // Try as dataset, then as graph.
                 WriterDatasetRIOTFactory w = RDFWriterRegistry.getWriterDatasetFactory(fmt) ;
                 if ( w != null ) {
-                    RDFDataMgr.write(output, dsg.getDefaultGraph(), fmt) ;
+                    RDFDataMgr.write(output, dsg, fmt) ;
                     return ;
                 }
                 WriterGraphRIOTFactory wg = RDFWriterRegistry.getWriterGraphFactory(fmt) ;
