@@ -24,14 +24,14 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 
 public abstract class CmdUpdate extends CmdARQ
 {
-    protected ModDataset modGraphStore = null ;
+    protected ModDataset modDataset = null ;
     protected Syntax updateSyntax = Syntax.defaultUpdateSyntax ;
 
     protected CmdUpdate(String[] argv)
     {
         super(argv) ;
-        modGraphStore = setModGraphStore() ;
-        addModule(modGraphStore) ;
+        modDataset = setModGraphStore() ;
+        addModule(modDataset) ;
     }
     
     protected ModDataset setModGraphStore() {
@@ -49,10 +49,10 @@ public abstract class CmdUpdate extends CmdARQ
     
     @Override
     protected final void exec() {
-        DatasetGraph graphStore = modGraphStore.getDatasetGraph() ;
-        if ( graphStore.getDefaultGraph() == null )
-            graphStore.setDefaultGraph(ModelFactory.createDefaultModel().getGraph()) ;
-        execUpdate(graphStore) ;
+        DatasetGraph dataset = modDataset.getDatasetGraph() ;
+        if ( dataset.getDefaultGraph() == null )
+            dataset.setDefaultGraph(ModelFactory.createDefaultModel().getGraph()) ;
+        execUpdate(dataset) ;
     }
 
     protected abstract void execUpdate(DatasetGraph graphStore) ;
