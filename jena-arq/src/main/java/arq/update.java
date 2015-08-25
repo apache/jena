@@ -82,9 +82,11 @@ public class update extends CmdUpdate
                 execOneFile(filename, graphStore) ;
                 transactional.commit() ;
             }
-            finally {
-                transactional.end() ;
+            catch (Throwable ex) { 
+                try { transactional.abort() ; } catch (Exception ex2) {}
+                throw ex ;
             }
+            finally { transactional.end() ; }
         }
 
         for ( String requestString : super.getPositional() ) {
@@ -95,10 +97,11 @@ public class update extends CmdUpdate
                 execOne(requestString, graphStore) ;
                 transactional.commit() ;
             }
-            finally {
-                transactional.end() ;
+            catch (Throwable ex) { 
+                try { transactional.abort() ; } catch (Exception ex2) {}
+                throw ex ;
             }
-
+            finally { transactional.end() ; }
         }
         SystemARQ.sync(graphStore) ;
 
