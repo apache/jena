@@ -38,8 +38,11 @@ public abstract class ModDataset extends ModBase
         return dataset ;
     }
     
-    public DatasetGraph getDatasetGraph() { 
-        return getDataset().asDatasetGraph() ;
+    public DatasetGraph getDatasetGraph() {
+        Dataset ds = getDataset() ;
+        if ( ds == null )
+            return null ;
+        return ds.asDatasetGraph() ;
     }
 
     public abstract Dataset createDataset() ; 

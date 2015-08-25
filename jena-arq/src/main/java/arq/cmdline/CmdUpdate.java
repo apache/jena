@@ -30,14 +30,13 @@ public abstract class CmdUpdate extends CmdARQ
     protected CmdUpdate(String[] argv)
     {
         super(argv) ;
-        modDataset = setModGraphStore() ;
+        modDataset = setModeDataset() ;
         addModule(modDataset) ;
     }
     
-    protected ModDataset setModGraphStore() {
+    protected ModDataset setModeDataset() {
         return new ModDatasetGeneralAssembler() ;
     }
-    
 
     @Override
     protected void processModulesAndArgs()
@@ -50,10 +49,15 @@ public abstract class CmdUpdate extends CmdARQ
     @Override
     protected final void exec() {
         DatasetGraph dataset = modDataset.getDatasetGraph() ;
+        if ( dataset == null )
+            dataset = dealWithNoDataset() ;
+        
         if ( dataset.getDefaultGraph() == null )
             dataset.setDefaultGraph(ModelFactory.createDefaultModel().getGraph()) ;
         execUpdate(dataset) ;
     }
+
+    protected abstract DatasetGraph dealWithNoDataset() ;
 
     protected abstract void execUpdate(DatasetGraph graphStore) ;
 }
