@@ -28,21 +28,8 @@ import org.apache.jena.atlas.lib.AlarmClock;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.ARQ;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryCancelledException;
-import org.apache.jena.query.QueryExecException;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.Syntax;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQConstants;
@@ -265,9 +252,6 @@ public class QueryExecutionBase implements QueryExecution
             throw new QueryExecException("Attempt to get a CONSTRUCT model from a "+labelForQuery(query)+" query") ;
         // This causes there to be no PROJECT around the pattern.
         // That in turn, exposes the initial bindings.  
-        if ( ! Syntax.syntaxARQ.equals( query.getSyntax() ) )
-        	throw new QueryExecException("Attempt to CONSTRUCT quads from a "+labelForQuery(query)+" query, which is not ARQ Syntax") ;
-        	
         query.setQueryResultStar(true) ;
 
         startQueryIterator() ;
