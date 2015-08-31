@@ -40,19 +40,20 @@ public class VarFinder
     // See also VarUtils and OpVars.
     // This class is specific to the needs of the main query engine and scoping of variables
     
-    public static Set<Var> optDefined(Op op)
-    {
-        return VarUsageVisitor.apply(op).optDefines ;
+    public static Set<Var> optDefined(Op op) {
+        return VarUsageVisitor.apply(op).optDefines;
     }
-    
-    public static Set<Var> fixed(Op op)
-    {
-        return VarUsageVisitor.apply(op).defines ;
+
+    public static Set<Var> fixed(Op op) {
+        return VarUsageVisitor.apply(op).defines;
     }
-    
-    public static Set<Var> filter(Op op)
-    {
-        return VarUsageVisitor.apply(op).filterMentions ;
+
+    public static Set<Var> filter(Op op) {
+        return VarUsageVisitor.apply(op).filterMentions;
+    }
+
+    public static Set<Var> assignMention(Op op) {
+        return VarUsageVisitor.apply(op).assignMentions;
     }
 
     VarUsageVisitor varUsageVisitor ;
@@ -65,196 +66,172 @@ public class VarFinder
     public Set<Var> getAssign() { return varUsageVisitor.assignMentions ; }
     public Set<Var> getFixed() { return varUsageVisitor.defines ; }
     
-    private static class VarUsageVisitor extends OpVisitorBase //implements OpVisitor
+    private static class VarUsageVisitor extends OpVisitorBase // implements
+                                                               // OpVisitor
     {
-        static VarUsageVisitor apply(Op op)
-        {
-            VarUsageVisitor v = new VarUsageVisitor() ;
-            op.visit(v) ;
-            return v ;
+        static VarUsageVisitor apply(Op op) {
+            VarUsageVisitor v = new VarUsageVisitor();
+            op.visit(v);
+            return v;
         }
 
-        Set<Var> defines = null ;
-        Set<Var> optDefines = null ;
-        Set<Var> filterMentions = null ;
-        Set<Var> assignMentions = null ;
+        Set<Var> defines        = null;
+        Set<Var> optDefines     = null;
+        Set<Var> filterMentions = null;
+        Set<Var> assignMentions = null;
 
-        VarUsageVisitor()
-        {
-            defines = new HashSet<>() ;
-            optDefines = new HashSet<>() ;
-            filterMentions = new HashSet<>() ;
-            assignMentions = new HashSet<>() ;
+        VarUsageVisitor() {
+            defines = new HashSet<>();
+            optDefines = new HashSet<>();
+            filterMentions = new HashSet<>();
+            assignMentions = new HashSet<>();
         }
-        
-        VarUsageVisitor(Set<Var> _defines, Set<Var> _optDefines, Set<Var> _filterMentions, Set<Var> _assignMentions)
-        {
-            defines = _defines ;
-            optDefines = _optDefines ;
-            filterMentions = _filterMentions ;
-            assignMentions = _assignMentions ;
-        }
-        
-        @Override
-        public void visit(OpQuadPattern quadPattern)
-        {
-            addVar(defines, quadPattern.getGraphNode()) ;
-            BasicPattern triples = quadPattern.getBasicPattern() ;
-            addVars(defines, triples) ;
+
+        VarUsageVisitor(Set<Var> _defines, Set<Var> _optDefines, Set<Var> _filterMentions, Set<Var> _assignMentions) {
+            defines = _defines;
+            optDefines = _optDefines;
+            filterMentions = _filterMentions;
+            assignMentions = _assignMentions;
         }
 
         @Override
-        public void visit(OpBGP opBGP)
-        {
-            BasicPattern triples = opBGP.getPattern() ;
-            addVars(defines, triples) ;
+        public void visit(OpQuadPattern quadPattern) {
+            addVar(defines, quadPattern.getGraphNode());
+            BasicPattern triples = quadPattern.getBasicPattern();
+            addVars(defines, triples);
         }
-        
+
         @Override
-        public void visit(OpExt opExt)
-        {
-            opExt.effectiveOp().visit(this) ;
+        public void visit(OpBGP opBGP) {
+            BasicPattern triples = opBGP.getPattern();
+            addVars(defines, triples);
         }
-        
+
         @Override
-        public void visit(OpJoin opJoin)
-        {
-            joinAcc(opJoin.getLeft()) ;
-            joinAcc(opJoin.getRight()) ;
+        public void visit(OpExt opExt) {
+            opExt.effectiveOp().visit(this);
         }
-        
+
         @Override
-        public void visit(OpSequence opSequence)
-        {
+        public void visit(OpJoin opJoin) {
+            joinAcc(opJoin.getLeft());
+            joinAcc(opJoin.getRight());
+        }
+
+        @Override
+        public void visit(OpSequence opSequence) {
             for ( Op op : opSequence.getElements() )
-                joinAcc(op) ;    
+                joinAcc(op);
         }
-        
-        private void joinAcc(Op op)
-        {
-            VarUsageVisitor usage = VarUsageVisitor.apply(op) ;
-            
-            defines.addAll(usage.defines) ;
-            optDefines.addAll(usage.optDefines) ;
-            filterMentions.addAll(usage.filterMentions) ;
+
+        private void joinAcc(Op op) {
+            VarUsageVisitor usage = VarUsageVisitor.apply(op);
+            defines.addAll(usage.defines);
+            optDefines.addAll(usage.optDefines);
+            filterMentions.addAll(usage.filterMentions);
         }
 
         @Override
-        public void visit(OpLeftJoin opLeftJoin)
-        {
-            leftJoin(opLeftJoin.getLeft(), opLeftJoin.getRight(), opLeftJoin.getExprs()) ;
-        }
-        
-        @Override
-        public void visit(OpConditional opLeftJoin)
-        { 
-            leftJoin(opLeftJoin.getLeft(), opLeftJoin.getRight(), null) ;
+        public void visit(OpLeftJoin opLeftJoin) {
+            leftJoin(opLeftJoin.getLeft(), opLeftJoin.getRight(), opLeftJoin.getExprs());
         }
 
-        private void leftJoin(Op left, Op right, ExprList exprs)
-        {
-            VarUsageVisitor leftUsage = VarUsageVisitor.apply(left) ;
-            VarUsageVisitor rightUsage = VarUsageVisitor.apply(right) ;
-            
-            defines.addAll(leftUsage.defines) ;
-            optDefines.addAll(leftUsage.optDefines) ;
-            filterMentions.addAll(leftUsage.filterMentions) ;
-            assignMentions.addAll(leftUsage.assignMentions) ;
-            
-            optDefines.addAll(rightUsage.defines) ;     // Asymmetric.
-            optDefines.addAll(rightUsage.optDefines) ;
-            filterMentions.addAll(rightUsage.filterMentions) ;
-            assignMentions.addAll(rightUsage.assignMentions) ;
-            
-            // Remove any definites that are in the optionals 
-            // as, overall, they are definites 
-            optDefines.removeAll(leftUsage.defines) ;
+        @Override
+        public void visit(OpConditional opLeftJoin) {
+            leftJoin(opLeftJoin.getLeft(), opLeftJoin.getRight(), null);
+        }
+
+        private void leftJoin(Op left, Op right, ExprList exprs) {
+            VarUsageVisitor leftUsage = VarUsageVisitor.apply(left);
+            VarUsageVisitor rightUsage = VarUsageVisitor.apply(right);
+
+            defines.addAll(leftUsage.defines);
+            optDefines.addAll(leftUsage.optDefines);
+            filterMentions.addAll(leftUsage.filterMentions);
+            assignMentions.addAll(leftUsage.assignMentions);
+
+            optDefines.addAll(rightUsage.defines); // Asymmetric.
+            optDefines.addAll(rightUsage.optDefines);
+            filterMentions.addAll(rightUsage.filterMentions);
+            assignMentions.addAll(rightUsage.assignMentions);
+
+            // Remove any definites that are in the optionals
+            // as, overall, they are definites
+            optDefines.removeAll(leftUsage.defines);
 
             // And the associated filter.
             if ( exprs != null )
                 exprs.varsMentioned(filterMentions);
         }
-        
+
         @Override
-        public void visit(OpUnion opUnion)
-        {
-            VarUsageVisitor leftUsage = VarUsageVisitor.apply(opUnion.getLeft()) ;
-            VarUsageVisitor rightUsage = VarUsageVisitor.apply(opUnion.getRight()) ;
-            
+        public void visit(OpUnion opUnion) {
+            VarUsageVisitor leftUsage = VarUsageVisitor.apply(opUnion.getLeft());
+            VarUsageVisitor rightUsage = VarUsageVisitor.apply(opUnion.getRight());
+
             // defines = union(left.define, right.define) ??
             // Can be both definite and optional (different sides).
-            defines.addAll(leftUsage.defines) ;
-            optDefines.addAll(leftUsage.optDefines) ;
-            filterMentions.addAll(leftUsage.filterMentions) ;
-            assignMentions.addAll(leftUsage.assignMentions) ;
-            defines.addAll(rightUsage.defines) ;
-            optDefines.addAll(rightUsage.optDefines) ;
-            filterMentions.addAll(rightUsage.filterMentions) ;
-            assignMentions.addAll(rightUsage.assignMentions) ;
+            defines.addAll(leftUsage.defines);
+            optDefines.addAll(leftUsage.optDefines);
+            filterMentions.addAll(leftUsage.filterMentions);
+            assignMentions.addAll(leftUsage.assignMentions);
+            defines.addAll(rightUsage.defines);
+            optDefines.addAll(rightUsage.optDefines);
+            filterMentions.addAll(rightUsage.filterMentions);
+            assignMentions.addAll(rightUsage.assignMentions);
         }
 
         @Override
-        public void visit(OpGraph opGraph)
-        {
-            addVar(defines, opGraph.getNode()) ;
-            opGraph.getSubOp().visit(this) ;
+        public void visit(OpGraph opGraph) {
+            addVar(defines, opGraph.getNode());
+            opGraph.getSubOp().visit(this);
         }
-        
-        // @Override
+
         @Override
-        public void visit(OpFilter opFilter)
-        {
+        public void visit(OpFilter opFilter) {
             opFilter.getExprs().varsMentioned(filterMentions);
-            opFilter.getSubOp().visit(this) ;
+            opFilter.getSubOp().visit(this);
         }
-        
+
         @Override
-        public void visit(OpAssign opAssign)
-        {
-            opAssign.getSubOp().visit(this) ;
-            processVarExprList(opAssign.getVarExprList()) ;
+        public void visit(OpAssign opAssign) {
+            opAssign.getSubOp().visit(this);
+            processVarExprList(opAssign.getVarExprList());
         }
-        
+
         @Override
-        public void visit(OpExtend opExtend)
-        {
-            opExtend.getSubOp().visit(this) ;
-            processVarExprList(opExtend.getVarExprList()) ;
+        public void visit(OpExtend opExtend) {
+            opExtend.getSubOp().visit(this);
+            processVarExprList(opExtend.getVarExprList());
         }
-        
-        private void processVarExprList(VarExprList varExprList)
-        {
-            Map<Var, Expr> map = varExprList.getExprs() ;
-            for ( Entry<Var, Expr> e : map.entrySet() )
-            {
-                defines.add(e.getKey()) ;
+
+        private void processVarExprList(VarExprList varExprList) {
+            Map<Var, Expr> map = varExprList.getExprs();
+            for ( Entry<Var, Expr> e : map.entrySet() ) {
+                defines.add(e.getKey());
                 e.getValue().varsMentioned(assignMentions);
             }
         }
-        
+
         @Override
-        public void visit(OpProject opProject)
-        {
-            List<Var> vars = opProject.getVars() ;
-            VarUsageVisitor subUsage = VarUsageVisitor.apply(opProject.getSubOp()) ;
-            
-            subUsage.defines.retainAll(vars) ;
-            subUsage.optDefines.retainAll(vars) ;
-            subUsage.optDefines.retainAll(vars) ;
-            defines.addAll(subUsage.defines) ;
-            optDefines.addAll(subUsage.optDefines) ;
-            filterMentions.addAll(subUsage.filterMentions) ;
-            assignMentions.addAll(subUsage.assignMentions) ;
+        public void visit(OpProject opProject) {
+            List<Var> vars = opProject.getVars();
+            VarUsageVisitor subUsage = VarUsageVisitor.apply(opProject.getSubOp());
+            subUsage.defines.retainAll(vars);
+            subUsage.optDefines.retainAll(vars);
+            subUsage.optDefines.retainAll(vars);
+            defines.addAll(subUsage.defines);
+            optDefines.addAll(subUsage.optDefines);
+            filterMentions.addAll(subUsage.filterMentions);
+            assignMentions.addAll(subUsage.assignMentions);
         }
 
         @Override
-        public void visit(OpTable opTable)
-        { 
-            defines.addAll(opTable.getTable().getVars()) ;
+        public void visit(OpTable opTable) {
+            defines.addAll(opTable.getTable().getVars());
         }
 
         @Override
-        public void visit(OpNull opNull)
-        { }
+        public void visit(OpNull opNull) {}
     }
 }
