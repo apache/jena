@@ -129,6 +129,7 @@ public class VarFinder
             defines.addAll(usage.defines);
             optDefines.addAll(usage.optDefines);
             filterMentions.addAll(usage.filterMentions);
+            assignMentions.addAll(usage.assignMentions);
         }
 
         @Override
@@ -219,7 +220,8 @@ public class VarFinder
             VarUsageVisitor subUsage = VarUsageVisitor.apply(opProject.getSubOp());
             subUsage.defines.retainAll(vars);
             subUsage.optDefines.retainAll(vars);
-            subUsage.optDefines.retainAll(vars);
+            subUsage.filterMentions.retainAll(vars) ;
+            subUsage.assignMentions.retainAll(vars) ;
             defines.addAll(subUsage.defines);
             optDefines.addAll(subUsage.optDefines);
             filterMentions.addAll(subUsage.filterMentions);
