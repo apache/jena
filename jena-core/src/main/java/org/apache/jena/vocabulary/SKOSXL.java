@@ -31,7 +31,7 @@ public class SKOSXL {
 	/**
 	 * The RDF model that holds the SKOS-XL entities
 	 */
-	public static Model m = ModelFactory.createDefaultModel();
+	private static final Model m = ModelFactory.createDefaultModel();
 	/**
 	 * The namespace of the SKOS-XL vocabulary as a string
 	 */

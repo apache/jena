@@ -32,7 +32,7 @@ public class SKOS {
 	/**
 	 * The RDF model that holds the SKOS entities
 	 */
-	public static Model m = ModelFactory.createDefaultModel();
+	private static final Model m = ModelFactory.createDefaultModel();
 	/**
 	 * The namespace of the SKOS vocabulary as a string
 	 */
