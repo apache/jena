@@ -18,12 +18,15 @@
 
 package org.apache.jena.sparql.algebra.op;
 
+import java.util.List ;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVisitor ;
 import org.apache.jena.sparql.algebra.Transform ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
 import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.util.Iso ;
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
 /** Property functions (or any OpBGP replacement)
@@ -83,11 +86,25 @@ public class OpPropFunc extends Op1
     {
         if ( ! ( other instanceof OpPropFunc ) ) return false ;
         OpPropFunc procFunc = (OpPropFunc)other ;
-        
-        
+        if ( ! isomorphic(getSubjectArgs(), procFunc.getSubjectArgs(), labelMap) )
+            return false ;
+        if ( ! isomorphic(getObjectArgs(), procFunc.getObjectArgs(), labelMap) )
+            return false ;
         return getSubOp().equalTo(procFunc.getSubOp(), labelMap) ;
     }
 
+    private static boolean isomorphic(PropFuncArg pfa1, PropFuncArg pfa2, NodeIsomorphismMap labelMap) {
+        if ( pfa1 == null && pfa2 == null )
+            return true ;
+        if ( pfa1 == null ) return false ;
+        if ( pfa2 == null ) return false ;
+        
+        List<Node> list1 = pfa1.getArgList() ;
+        List<Node> list2 = pfa2.getArgList() ;
+                
+        return Iso.isomorphicNodes(list1, list2, labelMap) ;
+    }
+    
     @Override
     public String getName()
     {
