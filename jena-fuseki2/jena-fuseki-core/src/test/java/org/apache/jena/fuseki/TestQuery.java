@@ -18,7 +18,12 @@
 
 package org.apache.jena.fuseki ;
 
-import static org.apache.jena.fuseki.ServerTest.* ;
+import static org.apache.jena.fuseki.ServerTest.gn1 ;
+import static org.apache.jena.fuseki.ServerTest.gn2 ;
+import static org.apache.jena.fuseki.ServerTest.model1 ;
+import static org.apache.jena.fuseki.ServerTest.model2 ;
+import static org.apache.jena.fuseki.ServerTest.serviceQuery ;
+import static org.apache.jena.fuseki.ServerTest.serviceREST ;
 
 import java.io.IOException ;
 import java.net.HttpURLConnection ;
@@ -190,6 +195,24 @@ public class TestQuery extends BaseTest {
         }
     }
     
+    @Test
+    public void query_describe_01() {
+        String query = "DESCRIBE ?s WHERE {?s ?p ?o}" ;
+        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, query) ) {
+            Model result = qExec.execDescribe();
+            assertFalse(result.isEmpty()) ;
+        }
+    }
+
+    @Test
+    public void query_describe_02() {
+        String query = "DESCRIBE <http://example/somethingelse> WHERE { }" ;
+        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, query) ) {
+            Model result = qExec.execDescribe();
+            assertTrue(result.isEmpty()) ;
+        }
+    }
+
     private static final AcceptList rdfOfferTest = DEF.rdfOffer ;
     private static final AcceptList quadsOfferTest = DEF.quadsOffer ;
     
@@ -223,6 +246,22 @@ public class TestQuery extends BaseTest {
             }
         }
     }
+    
+    @Test
+    public void query_describe_conneg() {
+        String query = "DESCRIBE ?s WHERE {?s ?p ?o}" ;
+        for (MediaType type: rdfOfferTest.entries()){
+            String contentType = type.toHeaderString();
+            try ( QueryEngineHTTP qExec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, query) ) {
+                qExec.setModelContentType( contentType );
+                Model m = qExec.execDescribe() ;
+                String x = qExec.getHttpResponseContentType() ;
+                assertEquals( contentType , x ) ;
+                assertFalse(m.isEmpty()) ;
+            }
+        }
+    }
+
 
     private void execQuery(String queryString, int exceptedRowCount) {
         QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, queryString) ;
