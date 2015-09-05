@@ -18,56 +18,72 @@
 
 package org.apache.jena.sparql.util;
 
-import java.util.Collection ;
-import java.util.HashSet ;
-import java.util.Set ;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.BasicPattern ;
-import org.apache.jena.sparql.core.TriplePath ;
-import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.* ;
 
-public class VarUtils
-{
-    public static Set<Var> getVars(Triple triple)
-    {
-        Set<Var> x = new HashSet<>() ;
-        addVarsFromTriple(x, triple) ;
-        return x ;
-    }
-    
-    public static void addVarsFromTriple(Collection<Var> acc, Triple t)
-    {
-        addVar(acc, t.getSubject()) ;
-        addVar(acc, t.getPredicate()) ;
-        addVar(acc, t.getObject()) ;
+public class VarUtils {
+    public static Set<Var> getVars(Triple triple) {
+        Set<Var> x = new HashSet<>();
+        addVarsFromTriple(x, triple);
+        return x;
     }
 
-    public static void addVarsFromTriplePath(Collection<Var> acc, TriplePath tpath)
-    {
-        addVar(acc, tpath.getSubject()) ;
-        addVar(acc, tpath.getObject()) ;
+    public static void addVarsFromTriple(Collection<Var> acc, Triple triple) {
+        addVar(acc, triple.getSubject());
+        addVar(acc, triple.getPredicate());
+        addVar(acc, triple.getObject());
     }
 
-    public static void addVar(Collection<Var> acc, Node n)
-    {
+    public static void addVarsFromQuad(Collection<Var> acc, Quad quad) {
+        addVar(acc, quad.getGraph());
+        addVar(acc, quad.getSubject());
+        addVar(acc, quad.getPredicate());
+        addVar(acc, quad.getObject());
+    }
+
+    public static void addVarsFromTriplePath(Collection<Var> acc, TriplePath tpath) {
+        addVar(acc, tpath.getSubject());
+        addVar(acc, tpath.getObject());
+    }
+
+    public static void addVar(Collection<Var> acc, Node n) {
         if ( n == null )
-            return ;
+            return;
 
         if ( n.isVariable() )
-            acc.add(Var.alloc(n)) ;
+            acc.add(Var.alloc(n));
     }
 
-    public static void addVars(Collection<Var> acc, BasicPattern pattern)
-    {
-        addVars(acc, pattern.getList()) ;
+    // Name to avoid erasure clash
+    public static void addVarNodes(Collection<Var> acc, Collection<Node> nodes) {
+        for ( Node n : nodes )
+            addVar(acc, n) ;
     }
 
-    public static void addVars(Collection<Var> acc, Collection<Triple> triples)
-    {
+    public static void addVarsTriples(Collection<Var> acc, Collection<Triple> triples) {
         for ( Triple triple : triples )
-            addVarsFromTriple(acc, triple) ;
+            addVarsFromTriple(acc, triple);
     }
+
+    public static void addVars(Collection<Var> acc, BasicPattern pattern) {
+        addVarsTriples(acc, pattern.getList());
+    }
+
+    public static void addVars(Collection<Var> acc, Node graphNode, BasicPattern triples) {
+        addVar(acc, graphNode) ;
+        addVars(acc, triples) ; 
+    }
+    
+    public static void addVars(Collection<Var> acc, QuadPattern quadPattern) {
+        for ( Quad quad : quadPattern.getList() ) {
+            addVarsFromQuad(acc, quad) ;
+        }
+    }
+
 
 }
