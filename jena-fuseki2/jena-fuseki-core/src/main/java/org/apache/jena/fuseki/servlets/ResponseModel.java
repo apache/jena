@@ -37,7 +37,7 @@ import org.apache.jena.riot.RDFLanguages ;
 import static org.apache.jena.riot.WebContent.* ;
 import org.apache.jena.web.HttpSC ;
 
-// REPLACED by RssponseDataset
+// REPLACED by ResponseDataset
 // Kept here in case we need to revert it (Aug 2015)
 // Delete after release of Fusek 2.3.1 or earlier if specific confirmation
 // the new code is OK.
