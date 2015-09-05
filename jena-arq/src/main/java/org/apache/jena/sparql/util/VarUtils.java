@@ -61,6 +61,8 @@ public class VarUtils {
 
     // Name to avoid erasure clash
     public static void addVarNodes(Collection<Var> acc, Collection<Node> nodes) {
+        if ( nodes == null )
+            return ;
         for ( Node n : nodes )
             addVar(acc, n) ;
     }
