@@ -34,14 +34,14 @@ public class OpPropFunc extends Op1
     // Safer to have two (Ops are mainly abstract syntax, not executional).
     private Node uri ;
     private PropFuncArg subjectArgs ;
-    private PropFuncArg objectArgs2 ;
+    private PropFuncArg objectArgs ;
 
     public OpPropFunc(Node uri, PropFuncArg args1 , PropFuncArg args2, Op op)
     {
         super(op) ;
         this.uri = uri ;
         this.subjectArgs = args1 ;
-        this.objectArgs2 = args2 ;
+        this.objectArgs = args2 ;
     }
     
     public PropFuncArg getSubjectArgs()
@@ -51,7 +51,7 @@ public class OpPropFunc extends Op1
     
     public PropFuncArg getObjectArgs()
     {
-        return objectArgs2 ;
+        return objectArgs ;
     } 
     
     @Override
@@ -69,7 +69,7 @@ public class OpPropFunc extends Op1
     @Override
     public Op1 copy(Op op)
     {
-        return new OpPropFunc(uri, subjectArgs, objectArgs2, op) ;
+        return new OpPropFunc(uri, subjectArgs, objectArgs, op) ;
     }
 
     @Override
