@@ -159,7 +159,12 @@ public class JoinClassifier
             System.err.println("Case 3 = " + bad3) ;
 
         // Linear if all conditions are false
-        return !bad1 && !bad2 && !bad3 ;
+        boolean result = !bad1 && !bad2 && !bad3 ;
+        
+        if ( print ) {
+            System.err.println("Result: "+result) ;
+        }
+        return result ;
     }
 
     /** Find the "effective op" - ie. the one that may be sensitive to linearization */
