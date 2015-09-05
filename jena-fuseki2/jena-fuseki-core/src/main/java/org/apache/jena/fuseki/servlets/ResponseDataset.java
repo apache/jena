@@ -33,6 +33,8 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.conneg.ConNeg;
 import org.apache.jena.fuseki.conneg.WebLib;
 import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
@@ -66,8 +68,12 @@ public class ResponseDataset
         ResponseOps.put(shortNamesModel, contentOutputTriG,     WebContent.contentTypeTriG) ;
     }
 
-    public static void doResponseDataset(HttpAction action, Dataset dataset) 
-    {
+    public static void doResponseModel(HttpAction action, Model model) { 
+        Dataset ds = DatasetFactory.create(model) ;
+        ResponseDataset.doResponseDataset(action, ds);
+    }
+    
+    public static void doResponseDataset(HttpAction action, Dataset dataset) {
         HttpServletRequest request = action.request ;
         HttpServletResponse response = action.response ;
         
