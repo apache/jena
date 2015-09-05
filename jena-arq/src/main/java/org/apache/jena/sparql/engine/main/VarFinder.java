@@ -18,7 +18,11 @@
 
 package org.apache.jena.sparql.engine.main;
 
-import static org.apache.jena.sparql.util.VarUtils.* ;
+import static org.apache.jena.sparql.util.VarUtils.addVar ;
+import static org.apache.jena.sparql.util.VarUtils.addVars ;
+import static org.apache.jena.sparql.util.VarUtils.addVarsFromQuad ;
+import static org.apache.jena.sparql.util.VarUtils.addVarsFromTriple ;
+import static org.apache.jena.sparql.util.VarUtils.addVarsFromTriplePath ;
 
 import java.util.HashSet ;
 import java.util.List ;
@@ -26,14 +30,16 @@ import java.util.Map ;
 import java.util.Map.Entry ;
 import java.util.Set ;
 
+import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitorBase ;
+import org.apache.jena.sparql.algebra.OpVisitor ;
 import org.apache.jena.sparql.algebra.op.* ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.util.VarUtils ;
 
 public class VarFinder
 {
@@ -66,8 +72,9 @@ public class VarFinder
     public Set<Var> getAssign() { return varUsageVisitor.assignMentions ; }
     public Set<Var> getFixed() { return varUsageVisitor.defines ; }
     
-    private static class VarUsageVisitor extends OpVisitorBase // implements
-                                                               // OpVisitor
+    private static class VarUsageVisitor 
+        //extends OpVisitorBase
+        implements OpVisitor
     {
         static VarUsageVisitor apply(Op op) {
             VarUsageVisitor v = new VarUsageVisitor();
@@ -96,15 +103,33 @@ public class VarFinder
 
         @Override
         public void visit(OpQuadPattern quadPattern) {
-            addVar(defines, quadPattern.getGraphNode());
-            BasicPattern triples = quadPattern.getBasicPattern();
-            addVars(defines, triples);
+            addVars(defines, quadPattern.getGraphNode(), quadPattern.getBasicPattern());
         }
 
         @Override
         public void visit(OpBGP opBGP) {
             BasicPattern triples = opBGP.getPattern();
             addVars(defines, triples);
+        }
+
+        @Override
+        public void visit(OpQuadBlock quadBlock) {
+            addVars(defines, quadBlock.getPattern()) ;
+        }
+
+        @Override
+        public void visit(OpTriple opTriple) {
+            addVarsFromTriple(defines, opTriple.getTriple()) ;
+        }
+
+        @Override
+        public void visit(OpQuad opQuad) {
+            addVarsFromQuad(defines, opQuad.getQuad()) ;
+        }
+
+        @Override
+        public void visit(OpPath opPath) {
+            addVarsFromTriplePath(defines, opPath.getTriplePath()); 
         }
 
         @Override
@@ -235,5 +260,61 @@ public class VarFinder
 
         @Override
         public void visit(OpNull opNull) {}
+
+        @Override
+        public void visit(OpPropFunc opPropFunc) {
+            VarUtils.addVarNodes(defines, opPropFunc.getSubjectArgs().getArgList()) ;
+            VarUtils.addVarNodes(defines, opPropFunc.getObjectArgs().getArgList()) ;
+        }
+        
+        // Not implemented: with checking. 
+
+        private void no() { 
+            throw new NotImplemented() ;
+        }
+        
+        @Override
+        public void visit(OpProcedure opProc) { no() ; }
+
+
+        @Override
+        public void visit(OpService opService) { no(); }
+
+        @Override
+        public void visit(OpDatasetNames dsNames) { no(); }
+
+        @Override
+        public void visit(OpLabel opLabel) { no(); }
+
+        @Override
+        public void visit(OpDiff opDiff) { no(); }
+
+        @Override
+        public void visit(OpMinus opMinus) { no(); }
+
+        @Override
+        public void visit(OpDisjunction opDisjunction) { no(); }
+
+        @Override
+        public void visit(OpList opList) { no(); }
+
+        @Override
+        public void visit(OpOrder opOrder) { no(); }
+
+        @Override
+        public void visit(OpReduced opReduced) { no(); }
+
+        @Override
+        public void visit(OpDistinct opDistinct) { no(); }
+
+        @Override
+        public void visit(OpSlice opSlice) { no(); }
+
+        @Override
+        public void visit(OpGroup opGroup) { no(); }
+
+        @Override
+        public void visit(OpTopN opTop) { no(); }
     }
+
 }
