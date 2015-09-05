@@ -128,9 +128,6 @@ public class TestClassify extends BaseTest
         String qs = qs1+"SELECT * "+pattern;
         Query query = QueryFactory.create(qs, Syntax.syntaxARQ) ;
         Op op = Algebra.compile(query.getQueryPattern()) ;
-        
-        System.out.println(op) ;
-        
         if ( ! ( op instanceof OpJoin ) )
             fail("Not a join: "+pattern) ;
 
