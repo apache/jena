@@ -33,7 +33,7 @@ import org.apache.jena.rdf.model.* ;
  */
 public class OntEventsVocab {
     /** <p>The ontology model that holds the vocabulary terms</p> */
-    private static OntModel m_model = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null );
+    private static final OntModel m_model = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null );
     
     /** <p>The namespace of the vocabulary as a string ({@value})</p> */
     public static final String NS = "http://jena.hpl.hp.com/schemas/2003/03/ont-event#";
