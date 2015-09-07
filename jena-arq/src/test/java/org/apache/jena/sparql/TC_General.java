@@ -30,6 +30,7 @@ import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.TS_Expr ;
 import org.apache.jena.sparql.function.user.TS_UserFunctions ;
 import org.apache.jena.sparql.graph.TS_Graph ;
+import org.apache.jena.sparql.join.TS_Join ;
 import org.apache.jena.sparql.lang.TS_Lang ;
 import org.apache.jena.sparql.modify.TS_Update ;
 import org.apache.jena.sparql.negation.TS_Negation ;
@@ -61,6 +62,7 @@ import org.junit.runners.Suite ;
     , TS_Negation.class
     , TS_Solver.class
     , TS_Algebra.class
+    , TS_Join.class
     , TS_Optimization.class
     , TS_ResultSet.class
     , TS_Syntax.class
