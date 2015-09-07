@@ -40,7 +40,7 @@
 #
 # FUSEKI_RUN
 #   Where the fuseki.pid file should be stored.  It defaults
-#   first available of /var/run, /usr/var/run, and /tmp if not set.
+#   first available of /var/run, /usr/var/run, $FUSEKI_HOME and /tmp if not set.
 #
 # FUSEKI_PID
 #   The FUSEKI PID file, defaults to $FUSEKI_RUN/fuseki.pid
@@ -476,7 +476,6 @@ case $CMD in
     run
   ;;
   status)
-    FUSEKI_PID=$(findFile fuseki.pid /var/run /usr/var/run $FUSEKI_HOME /tmp)
     if running $FUSEKI_PID
     then
       PID=`cat "$FUSEKI_PID"`
