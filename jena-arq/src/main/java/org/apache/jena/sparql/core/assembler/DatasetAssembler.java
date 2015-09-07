@@ -63,7 +63,7 @@ public class DatasetAssembler extends AssemblerBase implements Assembler {
         if ( dftGraph != null )
             dftModel = a.openModel(dftGraph) ;
         else
-            // Assembler description did not define one - make a dummy.
+            // Assembler description did not define one.
             dftModel = GraphFactory.makeDefaultModel() ;
 
         ds.setDefaultModel(dftModel) ;
