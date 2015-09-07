@@ -163,6 +163,17 @@ public class VarFinder
         }
 
         @Override
+        public void visit(OpMinus opMinus) {
+            joinAcc(opMinus.getLeft()) ;
+            VarUsageVisitor usage = VarUsageVisitor.apply(opMinus.getRight());
+            // Everything in the right side is really a filter.  
+            filterMentions.addAll(usage.defines) ;
+            filterMentions.addAll(usage.optDefines) ;
+            filterMentions.addAll(usage.filterMentions) ;
+            filterMentions.addAll(usage.assignMentions) ;
+        }
+        
+        @Override
         public void visit(OpConditional opLeftJoin) {
             leftJoin(opLeftJoin.getLeft(), opLeftJoin.getRight(), null);
         }
@@ -201,6 +212,7 @@ public class VarFinder
             optDefines.addAll(leftUsage.optDefines);
             filterMentions.addAll(leftUsage.filterMentions);
             assignMentions.addAll(leftUsage.assignMentions);
+            
             defines.addAll(rightUsage.defines);
             optDefines.addAll(rightUsage.optDefines);
             filterMentions.addAll(rightUsage.filterMentions);
@@ -288,9 +300,6 @@ public class VarFinder
 
         @Override
         public void visit(OpDiff opDiff) { no(); }
-
-        @Override
-        public void visit(OpMinus opMinus) { no(); }
 
         @Override
         public void visit(OpDisjunction opDisjunction) { no(); }
