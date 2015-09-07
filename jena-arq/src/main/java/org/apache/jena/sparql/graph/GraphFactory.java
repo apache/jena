@@ -71,7 +71,7 @@ public class GraphFactory
     /** Guaranteed call-through to Jena's ModelFactory operation */
     public static Model makeJenaDefaultModel() { return ModelFactory.createDefaultModel() ; }
     
-    /** Create a model over a default graph (ARQ-wide for degault graph type) */ 
+    /** Create a model over a default graph (ARQ-wide for default graph type) */ 
     public static Model makeDefaultModel()
     {
         return ModelFactory.createModelForGraph(createDefaultGraph()) ;
