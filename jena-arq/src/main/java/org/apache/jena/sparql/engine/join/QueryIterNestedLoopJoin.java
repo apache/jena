@@ -32,7 +32,7 @@ import org.apache.jena.sparql.engine.iterator.QueryIter2;
  * Nested Loop Join (materializing on the left, streaming on the right)
  * A simple, dependable join.
  * <p>
- * See {@link Join#innerLoopJoinBasic} for a very simple implementation for 
+ * See {@link Join#nestedLoopLeftJoinBasic} for a very simple implementation for 
  * testing purposes only. 
  */
 public class QueryIterNestedLoopJoin extends QueryIter2 {
@@ -50,9 +50,8 @@ public class QueryIterNestedLoopJoin extends QueryIter2 {
 
     public QueryIterNestedLoopJoin(QueryIterator left, QueryIterator right, ExecutionContext cxt) {
         super(left, right, cxt);
-        List<Binding> rowsLeftList = Iter.toList(left);
-        leftRows = rowsLeftList;
-        s_countLHS = rowsLeftList.size();
+        leftRows = Iter.toList(left);
+        s_countLHS = leftRows.size();
         this.right = right;
     }
 
@@ -98,9 +97,6 @@ public class QueryIterNestedLoopJoin extends QueryIter2 {
                 if ( r != null ) {
                     s_countResults++;
                     return r;
-                } else {
-                    // XXX LeftJoin
-                    //return rowLeft ;
                 }
             }
             // Nothing more for this rowRight.
