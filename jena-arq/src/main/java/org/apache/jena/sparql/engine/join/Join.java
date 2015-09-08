@@ -18,13 +18,11 @@
 
 package org.apache.jena.sparql.engine.join;
 
-import static org.apache.jena.sparql.algebra.JoinType.LEFT ;
-import static org.apache.jena.sparql.algebra.JoinType.INNER ;
-
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.DS ;
+import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.algebra.JoinType ;
 import org.apache.jena.sparql.algebra.Table ;
@@ -43,11 +41,10 @@ import org.apache.jena.sparql.expr.ExprList ;
 public class Join {
     // See also package org.apache.jena.sparql.engine.index
     // The anti-join code for MINUS
-
-    // *******************
-    // USES OLD TableJoin CODE AT THE MOMENT
-    // *******************
     
+    private final static boolean useNestedLoopJoin = false ;
+    private final static boolean useNestedLoopLeftJoin = false ;
+
     /**
      * Standard entry point to a join of two streams.
      * This is not a substitution/index join.
@@ -58,7 +55,9 @@ public class Join {
      * @return QueryIterator
      */
     public static QueryIterator join(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
-        return joinWorker(left, right, INNER, null, execCxt) ;
+        if ( useNestedLoopJoin )
+            return nestedLoopJoin(left, right, execCxt) ;
+        return hashJoin(left, right, execCxt) ;
     }
    
     /** Standard entry point to a left join of two streams.
@@ -72,7 +71,10 @@ public class Join {
      * @return QueryIterator
      */
     public static QueryIterator leftJoin(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
-        return joinWorker(left, right, LEFT, conditions, execCxt) ;
+//        if ( useNestedLoopJoin )
+//            return nestedLoopLeftJoin(left, right, conditions, execCxt) ;
+//        return hashLeftJoin(left, right, execCxt) ;
+        return nestedLoopLeftJoin(left, right, conditions, execCxt) ;
     }
    
 
@@ -80,6 +82,8 @@ public class Join {
      * Standard entry point to a join of two streams.
      * This is not a substitution/index join.
      * (See {@link OpExecutor} for streamed execution using substitution).
+     * @deprecated Do not use directly.
+     * 
      * @param left
      * @param right
      * @param joinType
@@ -87,67 +91,85 @@ public class Join {
      * @param execCxt
      * @return QueryIterator
      */
+    @Deprecated
     public static QueryIterator joinWorker(QueryIterator left, QueryIterator right, 
                                            JoinType joinType, ExprList conditions,
                                            ExecutionContext execCxt) {
-        // Catch easy cases.
-        // If left or right is a root, do fast.
-//        if ( right.isEmpty() ) {
-//            if ( joinType == PLAIN ) {
-//                // No rows - no match
-//                left.close() ;
-//                return QueryIterNullIterator.create(execCxt) ;
-//            }
-//            else
-//                // Left join - pass out left rows regardless of conditions.
-//                return left ;
-//        }
-//        
-//        if ( TableUnit.isTableUnit(right) )
-//            return applyConditions(left, conditions, execCxt) ;
-//        return joinWorkerN(left, right, joinType, conditions, execCxt) ;
-        // XXX TEMPORARY!
-        //throw new NotImplemented() ;
-        Table t = TableFactory.create(right) ;
-        return TableJoin.joinWorker(left, t, joinType, conditions, execCxt) ;
-    }
-    
-    
-    /** Inner loop join.
-     *  Cancellable.
-     * @param left      Left hand side
-     * @param right     Right hand side
-     * @param cxt       ExecutionContext
-     * @return          QueryIterator
-     */ 
-    public static QueryIterator nestedLoopJoin(QueryIterator left, QueryIterator right, ExecutionContext cxt) {
-        return new QueryIterNestedLoopJoin(left, right, cxt) ;
+        if ( false ) {
+            // Safe, and slow.
+            switch(joinType) {
+                case INNER: return nestedLoopJoin(left, right, execCxt) ;
+                case LEFT:  return nestedLoopLeftJoin(left, right, conditions, execCxt) ;
+                default:    throw new NotImplemented("JoinType "+joinType+" not implemented") ;
+            }
+        }
+        if ( false ) {
+            // Very safe, and slow.
+            switch(joinType) {
+                case INNER: return nestedLoopJoinBasic(left, right, execCxt) ;
+                case LEFT:  return nestedLoopLeftJoinBasic(left, right, conditions, execCxt) ;
+                default:    throw new NotImplemented("JoinType "+joinType+" not implemented") ;
+            }
+        }
+
+        if ( false ) {
+            // Very safe, well used old code.  And slow.
+            Table t = TableFactory.create(right) ;
+            return TableJoin.joinWorker(left, t, joinType, conditions, execCxt) ;
+        }
+        
+        // Normal.
+        switch(joinType) {
+            case INNER: return join(left, right, execCxt) ;
+            case LEFT:  return leftJoin(left, right, conditions, execCxt) ;
+            default:    throw new NotImplemented("JoinType "+joinType+" not implemented") ;
+        }
     }
 
     /** Inner loop join.
      *  Cancellable.
      * @param left      Left hand side
      * @param right     Right hand side
-     * @param cxt       ExecutionContext
+     * @param execCxt       ExecutionContext
      * @return          QueryIterator
      */ 
-    public static QueryIterator nestedLoopLeftJoin(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext cxt) {
-        return new QueryIterNestedLoopLeftJoin(left, right, conditions, cxt) ;
+    public static QueryIterator nestedLoopJoin(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
+        return new QueryIterNestedLoopJoin(left, right, execCxt) ;
+    }
+
+    /** Inner loop join.
+     *  Cancellable.
+     * @param left      Left hand side
+     * @param right     Right hand side
+     * @param execCxt       ExecutionContext
+     * @return          QueryIterator
+     */ 
+    public static QueryIterator nestedLoopLeftJoin(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
+        return new QueryIterNestedLoopLeftJoin(left, right, conditions, execCxt) ;
     }
 
 
-    /** Evaluate a hash join.  This code materializes the left into a probe table
-     * then hash joins from the right.  
-     *  No cancelation, no stats.
+    /** Evaluate using a hash join.
+     * 
+     * @param left      Left hand side
+     * @param right     Right hand side
+     * @param execCxt   ExecutionContext
+     * @return          QueryIterator
+     */
+    public static QueryIterator hashJoin(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
+        return QueryIterHashJoin.create(left, right, execCxt) ;
+    }
+
+    /** Evaluate using a hash join.
      * 
      * @param joinKey   The key for the probe table.
      * @param left      Left hand side
      * @param right     Right hand side
-     * @param cxt       ExecutionContext
+     * @param execCxt   ExecutionContext
      * @return          QueryIterator
      */
-    public static QueryIterator hashJoin(JoinKey joinKey, QueryIterator left, QueryIterator right, ExecutionContext cxt) {
-        return new QueryIterHashJoin(joinKey, left, right, cxt) ;
+    public static QueryIterator hashJoin(JoinKey joinKey, QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
+        return QueryIterHashJoin.create(joinKey, left, right, execCxt) ;
     }
 
     /** Very simple, materializing version - useful for debugging.
@@ -157,7 +179,7 @@ public class Join {
      * 
      * @see #nestedLoopJoin
      */
-    public static QueryIterator nestedLoopJoinBasic(QueryIterator left, QueryIterator right, ExecutionContext cxt) {
+    public static QueryIterator nestedLoopJoinBasic(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
         List<Binding> leftRows = Iter.toList(left) ;
         List<Binding> output = DS.list() ;
         for ( ; right.hasNext() ; ) {
@@ -168,14 +190,14 @@ public class Join {
                     output.add(r) ;
             }
         }
-        return new QueryIterPlainWrapper(output.iterator(), cxt) ;
+        return new QueryIterPlainWrapper(output.iterator(), execCxt) ;
     }
 
     /** Very simple, materializing version for leftjoin - useful for debugging.
      *  Builds output early. Materializes right, streams left.
      *  Does <b>not</b> scale. 
      */
-    public static QueryIterator nestedLoopLeftJoinBasic(QueryIterator left, QueryIterator right, ExprList condition, ExecutionContext cxt) {
+    public static QueryIterator nestedLoopLeftJoinBasic(QueryIterator left, QueryIterator right, ExprList condition, ExecutionContext execCxt) {
         // Stream from left, materialize right.
         List<Binding> rightRows = Iter.toList(right) ;
         List<Binding> output = DS.list() ;
@@ -193,8 +215,8 @@ public class Join {
             if ( ! match )
                 output.add(row1) ;
         }
-        QueryIterator qIter = new QueryIterPlainWrapper(output.iterator(), cxt) ;
-        qIter = applyConditions(qIter, condition, cxt) ;
+        QueryIterator qIter = new QueryIterPlainWrapper(output.iterator(), execCxt) ;
+        qIter = applyConditions(qIter, condition, execCxt) ;
         return qIter ;
     }
 
