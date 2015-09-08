@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.join;
+package org.apache.jena.sparql.engine.join;
 
-import org.apache.jena.sparql.algebra.Table ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.TableJoin ;
-import org.apache.jena.sparql.engine.join.JoinKey ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+import org.junit.runners.Suite.SuiteClasses ;
 
-public class TestJoinSimple extends AbstractTestJoin {
+@RunWith(Suite.class)
+@SuiteClasses( {
+    TestJoinSimple.class
+    , TestJoinNestedLoopSimple.class    // Real simple materializing version.
+    , TestJoinNestedLoop.class
+    , TestHashJoin.class
+})
 
-    @Override
-    public QueryIterator join(JoinKey joinKey, Table left, Table right) {
-        return TableJoin.join(left.iterator(null), right, null, null) ;
-    }
-
-}
+public class TS_Join { }
 
