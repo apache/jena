@@ -44,7 +44,7 @@ import org.apache.jena.sparql.expr.ExprList ;
 public class TableJoin
 {
     public static QueryIterator join(QueryIterator left, Table right, ExprList condition, ExecutionContext execCxt) {
-        return joinWorker(left, right, PLAIN, condition, execCxt) ;
+        return joinWorker(left, right, INNER, condition, execCxt) ;
     }
     
     public static QueryIterator leftJoin(QueryIterator left, Table right, ExprList condition, ExecutionContext execCxt) {
@@ -53,7 +53,7 @@ public class TableJoin
 
     public static QueryIterator joinWorker(QueryIterator left, Table right, JoinType joinType, ExprList conditions, ExecutionContext execCxt) {
         if ( right.isEmpty() ) {
-            if ( joinType == PLAIN ) {
+            if ( joinType == INNER ) {
                 // No rows - no match
                 left.close() ;
                 return QueryIterNullIterator.create(execCxt) ;
