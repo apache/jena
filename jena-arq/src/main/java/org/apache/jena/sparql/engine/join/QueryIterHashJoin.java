@@ -19,12 +19,17 @@
 package org.apache.jena.sparql.engine.join;
 
 import java.util.Iterator ;
+import java.util.List ;
 
+import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.sparql.algebra.Algebra ;
+import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.iterator.QueryIter2 ;
+import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator ;
+import org.apache.jena.sparql.engine.iterator.QueryIterPeek ;
 
 /** Hash join.  This code materializes the left into a probe table
  * then hash joins from the right.
@@ -49,8 +54,53 @@ public class QueryIterHashJoin extends QueryIter2 {
     private Binding slot = null ;
     private boolean finished = false ; 
 
-    public QueryIterHashJoin(JoinKey joinKey, QueryIterator left, QueryIterator right, ExecutionContext cxt) {
-        super(left, right, cxt) ;
+    /**
+     * Create a hashjoin QueryIterator.
+     * @param joinKey  Join key - if null, one is guessed by snooping the input QueryIterators
+     * @param left
+     * @param right
+     * @param execCxt
+     * @return QueryIterator
+     */
+    public static QueryIterator create(JoinKey joinKey, QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
+        // Easy cases.
+        if ( ! left.hasNext() || ! right.hasNext() ) {
+            left.close() ;
+            right.close() ;
+            return QueryIterNullIterator.create(execCxt) ;
+        }
+        return new QueryIterHashJoin(joinKey, left, right, execCxt) ; 
+    }
+    
+    /**
+     * Create a hashjoin QueryIterator.
+     * @param left
+     * @param right
+     * @param execCxt
+     * @return QueryIterator
+     */
+ 
+    public static QueryIterator create(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
+        return create(null, left, right, execCxt) ;
+    }
+    
+    private QueryIterHashJoin(JoinKey joinKey, QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
+        super(left, right, execCxt) ;
+        
+        if ( joinKey == null ) {
+            QueryIterPeek pLeft = QueryIterPeek.create(left, execCxt) ;
+            QueryIterPeek pRight = QueryIterPeek.create(right, execCxt) ;
+            
+            Binding bLeft = pLeft.peek() ;
+            Binding bRight = pRight.peek() ;
+            
+            List<Var> varsLeft = Iter.toList(bLeft.vars()) ;
+            List<Var> varsRight = Iter.toList(bRight.vars()) ;
+            joinKey = JoinKey.create(varsLeft, varsRight) ;
+            left = pLeft ;
+            right = pRight ;
+        }
+        
         this.joinKey = joinKey ;
         this.iterRight = right ;
         this.hashTable = new HashProbeTable(joinKey) ;
@@ -119,9 +169,6 @@ public class QueryIterHashJoin extends QueryIter2 {
             if (r != null) {
                 s_countResults ++ ;
                 return r ;
-            } else {
-                // XXX LeftJoin
-                // return rowLeft ;
             }
         }
     }        
