@@ -22,18 +22,13 @@ import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.DS ;
-import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.sparql.algebra.Algebra ;
-import org.apache.jena.sparql.algebra.JoinType ;
-import org.apache.jena.sparql.algebra.Table ;
-import org.apache.jena.sparql.algebra.TableFactory ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.iterator.QueryIterFilterExpr ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.engine.main.OpExecutor ;
-import org.apache.jena.sparql.engine.ref.TableJoin ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 
@@ -76,55 +71,6 @@ public class Join {
 //        return hashLeftJoin(left, right, execCxt) ;
         return nestedLoopLeftJoin(left, right, conditions, execCxt) ;
     }
-   
-
-    /**
-     * Standard entry point to a join of two streams.
-     * This is not a substitution/index join.
-     * (See {@link OpExecutor} for streamed execution using substitution).
-     * @deprecated Do not use directly.
-     * 
-     * @param left
-     * @param right
-     * @param joinType
-     * @param conditions
-     * @param execCxt
-     * @return QueryIterator
-     */
-    @Deprecated
-    public static QueryIterator joinWorker(QueryIterator left, QueryIterator right, 
-                                           JoinType joinType, ExprList conditions,
-                                           ExecutionContext execCxt) {
-        if ( false ) {
-            // Safe, and slow.
-            switch(joinType) {
-                case INNER: return nestedLoopJoin(left, right, execCxt) ;
-                case LEFT:  return nestedLoopLeftJoin(left, right, conditions, execCxt) ;
-                default:    throw new NotImplemented("JoinType "+joinType+" not implemented") ;
-            }
-        }
-        if ( false ) {
-            // Very safe, and slow.
-            switch(joinType) {
-                case INNER: return nestedLoopJoinBasic(left, right, execCxt) ;
-                case LEFT:  return nestedLoopLeftJoinBasic(left, right, conditions, execCxt) ;
-                default:    throw new NotImplemented("JoinType "+joinType+" not implemented") ;
-            }
-        }
-
-        if ( false ) {
-            // Very safe, well used old code.  And slow.
-            Table t = TableFactory.create(right) ;
-            return TableJoin.joinWorker(left, t, joinType, conditions, execCxt) ;
-        }
-        
-        // Normal.
-        switch(joinType) {
-            case INNER: return join(left, right, execCxt) ;
-            case LEFT:  return leftJoin(left, right, conditions, execCxt) ;
-            default:    throw new NotImplemented("JoinType "+joinType+" not implemented") ;
-        }
-    }
 
     /** Inner loop join.
      *  Cancellable.
@@ -147,7 +93,6 @@ public class Join {
     public static QueryIterator nestedLoopLeftJoin(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
         return new QueryIterNestedLoopLeftJoin(left, right, conditions, execCxt) ;
     }
-
 
     /** Evaluate using a hash join.
      * 
@@ -229,4 +174,3 @@ public class Join {
         return qIter ;
     }
 }
-
