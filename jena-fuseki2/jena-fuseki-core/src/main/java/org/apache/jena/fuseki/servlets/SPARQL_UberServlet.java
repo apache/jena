@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
+import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DataAccessPoint ;
@@ -97,14 +98,11 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         }
     }
     
-    /*  This can be used for a single servlet for everything (über-servlet)
+    /* This can be used for a single servlet for everything (über-servlet)
      *  
-     *  It can check for a request that looks like a service request and passes it on.
+     * It can check for a request that looks like a service request and passes it on.
      * This takes precedence over direct naming.
      */
-    
-    // Refactor? Extract the direct naming handling.
-    // To test: enable in SPARQLServer.configureOneDataset
     
     private final ActionSPARQL queryServlet    = new SPARQL_QueryDataset() ;
     private final ActionSPARQL updateServlet   = new SPARQL_Update() ;
@@ -272,7 +270,10 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
             ServletOps.errorNotFound("Not found: dataset='"+printName(desc.getName())+"' service='"+printName(trailing)+"'");
 
         // There is a trailing part - not a service, no params ==> GSP direct naming.
-        doGraphStoreProtocol(action) ;
+        if ( ! Fuseki.GSP_DIRECT_NAMING )
+            ServletOps.errorNotFound("Not found: dataset='"+printName(desc.getName())+"' trailing='"+printName(trailing)+"'");
+        
+        doGraphStoreProtocol(action);
     }
     
     /** See if the operation is enabled for this setup.
@@ -313,7 +314,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         {
             // Graphs Store Protocol, indirect naming, read operations
             // Try to send to the R service, else drop through to RW service dispatch.
-            if ( allowREST_R(action)) 
+            if ( ! allowREST_R(action)) 
                 ServletOps.errorForbidden("Forbidden: SPARQL Graph Store Protocol : Read operation : "+method) ;
             executeRequest(action, gspServlet_R) ;
             return ;
