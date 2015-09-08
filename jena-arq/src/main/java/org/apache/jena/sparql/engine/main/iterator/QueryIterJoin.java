@@ -27,6 +27,6 @@ public class QueryIterJoin extends QueryIterJoinBase
 {
     public QueryIterJoin(QueryIterator left, QueryIterator right, ExecutionContext qCxt)
     {
-        super(left, right, JoinType.PLAIN, null, qCxt) ;
+        super(left, right, JoinType.INNER, null, qCxt) ;
     }
 }
