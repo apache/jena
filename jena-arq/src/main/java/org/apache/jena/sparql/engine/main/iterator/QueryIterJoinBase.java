@@ -18,62 +18,59 @@
 
 package org.apache.jena.sparql.engine.main.iterator;
 
-import org.apache.jena.sparql.algebra.JoinType ;
-import org.apache.jena.sparql.algebra.Table ;
-import org.apache.jena.sparql.algebra.TableFactory ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.TableJoin ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.iterator.QueryIter ;
-import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.algebra.JoinType;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.iterator.QueryIter;
+import org.apache.jena.sparql.engine.join.Join;
+import org.apache.jena.sparql.expr.ExprList;
 
-/** Join or LeftJoin by calculating both sides, then doing the join
- *  It usually better to use substitute algorithm (not this
- *  QueryIterator in other words) as that is effectively indexing
- *  from one side into the other. */ 
-public class QueryIterJoinBase extends QueryIter
-{
+/**
+ * Join or LeftJoin by calculating both sides, then doing the join It usually
+ * better to use substitute algorithm (not this QueryIterator in other words) as
+ * that is effectively indexing from one side into the other.
+ */
+public class QueryIterJoinBase extends QueryIter {
     // This should be converted to a hash or sort-merge join.
-    private final QueryIterator left ;
-    private final QueryIterator right ;
-    private final QueryIterator result ;
-    
-    protected QueryIterJoinBase(QueryIterator left, QueryIterator right, JoinType joinType, ExprList exprs, ExecutionContext execCxt)
-    {
-        super(execCxt) ;
-        this.left = left ;
-        this.right = right ;
-        this.result = calc(left, right, joinType, exprs, execCxt) ; 
+    private final QueryIterator left;
+    private final QueryIterator right;
+    private final QueryIterator result;
+
+    protected QueryIterJoinBase(QueryIterator left, QueryIterator right, JoinType joinType, ExprList exprs, ExecutionContext execCxt) {
+        super(execCxt);
+        this.left = left;
+        this.right = right;
+        this.result = calc(left, right, joinType, exprs, execCxt);
     }
 
-    private static QueryIterator calc(QueryIterator left, QueryIterator right, JoinType joinType, ExprList exprs, ExecutionContext execCxt) {
-        Table tableRight = TableFactory.create(right) ;
-        return TableJoin.joinWorker(left, tableRight, joinType, exprs, execCxt) ;
-
+    private static QueryIterator calc(QueryIterator left, QueryIterator right,
+                                      JoinType joinType, ExprList exprs,
+                                      ExecutionContext execCxt) {
+        return Join.joinWorker(left, right, joinType, exprs, execCxt);
     }
-    
+
     @Override
     protected boolean hasNextBinding() {
-        return result.hasNext() ;
+        return result.hasNext();
     }
 
     @Override
     protected Binding moveToNextBinding() {
-        return result.nextBinding() ;
+        return result.nextBinding();
     }
 
     @Override
     protected void closeIterator() {
-        left.close() ;
-        right.close() ;
-        result.close() ;
+        left.close();
+        right.close();
+        result.close();
     }
 
     @Override
     protected void requestCancel() {
-        left.cancel() ;
-        right.cancel() ;
-        result.cancel() ;
+        left.cancel();
+        right.cancel();
+        result.cancel();
     }
 }
