@@ -39,6 +39,7 @@ import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.iterator.* ;
+import org.apache.jena.sparql.engine.join.Join ;
 import org.apache.jena.sparql.engine.main.iterator.* ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
@@ -218,14 +219,14 @@ public class OpExecutor
         }
         QueryIterator left = exec(opJoin.getLeft(), input) ;
         QueryIterator right = exec(opJoin.getRight(), root()) ;
-        QueryIterator qIter = new QueryIterJoin(left, right, execCxt) ;
+        // Join key.
+        QueryIterator qIter = Join.join(left, right, execCxt) ;
         return qIter ;
     }
 
     // Pass iterator from one step directly into the next.
     protected QueryIterator execute(OpSequence opSequence, QueryIterator input) {
         QueryIterator qIter = input ;
-
         for (Iterator<Op> iter = opSequence.iterator(); iter.hasNext();) {
             Op sub = iter.next() ;
             qIter = exec(sub, qIter) ;
@@ -236,7 +237,7 @@ public class OpExecutor
     protected QueryIterator execute(OpLeftJoin opLeftJoin, QueryIterator input) {
         QueryIterator left = exec(opLeftJoin.getLeft(), input) ;
         QueryIterator right = exec(opLeftJoin.getRight(), root()) ;
-        QueryIterator qIter = new QueryIterLeftJoin(left, right, opLeftJoin.getExprs(), execCxt) ;
+        QueryIterator qIter = Join.leftJoin(left, right, opLeftJoin.getExprs(), execCxt) ;
         return qIter ;
     }
 
