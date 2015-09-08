@@ -28,6 +28,11 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestJoinNestedLoopSimple.class    // Real simple materializing version.
     , TestJoinNestedLoop.class
     , TestHashJoin.class
+    
+    , TestLeftJoinSimple.class
+    , TestLeftJoinNestedLoopSimple.class    // Real simple materializing version.
+    , TestLeftJoinNestedLoop.class
+    //, TestLeftHashJoin.class
 })
 
 public class TS_Join { }

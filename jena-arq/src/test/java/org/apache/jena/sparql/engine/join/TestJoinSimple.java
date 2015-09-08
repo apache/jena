@@ -22,11 +22,12 @@ import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.join.JoinKey ;
 import org.apache.jena.sparql.engine.ref.TableJoin ;
+import org.apache.jena.sparql.expr.ExprList ;
 
 public class TestJoinSimple extends AbstractTestInnerJoin {
 
     @Override
-    public QueryIterator join(JoinKey joinKey, Table left, Table right) {
+    public QueryIterator join(JoinKey joinKey, Table left, Table right, ExprList conditions) {
         return TableJoin.join(left.iterator(null), right, null, null) ;
     }
 
