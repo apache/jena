@@ -44,13 +44,14 @@ public class TestTableJoin extends BaseTest
     Table zero = new TableEmpty() ;
     Table zeroData = SSE.parseTable("(table)") ;
     Table unitData = SSE.parseTable("(table (row))") ;
+    
     Table data1 = SSE.parseTable("(table (row (?a 1) (?b 2)))") ;
     Table data2 = SSE.parseTable("(table (row (?a 1) (?c 3)) (row (?a 9) (?c 5))  )") ;
     Table data3 = SSE.parseTable("(table (row (?a 1) (?c 3)) (row (?a 1) (?c 4)) (row (?a 9) (?c 5))  )") ;
-    
+
     Table data1J2 = SSE.parseTable("(table (row (?a 1) (?b 2) (?c 3)) )") ;
-    Table data1LJ2 = SSE.parseTable("(table (row (?a 1) (?b 2) (?c 3)) (row (?a 9) (?c 5)) )") ;
-    Table data2LJ1 = SSE.parseTable("(table (row (?a 1) (?b 2) (?c 3)) )") ;
+    Table data1LJ2 = SSE.parseTable("(table (row (?a 1) (?b 2) (?c 3)) )") ;
+    Table data2LJ1 = SSE.parseTable("(table (row (?a 1) (?b 2) (?c 3)) (row (?a 9) (?c 5)) )") ;
     
     Table data1J3 = SSE.parseTable("(table (row (?a 1) (?b 2) (?c 3)) (row (?a 1) (?b 2) (?c 4)) )") ;
     
