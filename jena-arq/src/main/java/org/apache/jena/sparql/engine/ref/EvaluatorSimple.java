@@ -35,7 +35,6 @@ import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.ResultSetStream ;
-import org.apache.jena.sparql.engine.TableJoin ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.iterator.* ;
 import org.apache.jena.sparql.engine.main.QC ;
