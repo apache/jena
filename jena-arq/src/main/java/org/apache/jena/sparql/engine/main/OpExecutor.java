@@ -214,7 +214,7 @@ public class OpExecutor
 
             QueryIterator left = exec(opJoin.getLeft(), qIter1) ;
             QueryIterator right = exec(opJoin.getRight(), qIter2) ;
-            QueryIterator qIter = new QueryIterJoin(left, right, execCxt) ;
+            QueryIterator qIter = Join.join(left, right, execCxt) ;
             return qIter ;
         }
         QueryIterator left = exec(opJoin.getLeft(), input) ;
@@ -329,7 +329,7 @@ public class OpExecutor
             return opTable.getTable().iterator(execCxt) ;
         }
         QueryIterator qIterT = opTable.getTable().iterator(execCxt) ;
-        QueryIterator qIter = new QueryIterJoin(input, qIterT, execCxt) ;
+        QueryIterator qIter = Join.join(input, qIterT, execCxt) ;
         return qIter ;
     }
 
