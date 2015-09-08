@@ -26,11 +26,12 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.engine.join.Join ;
 import org.apache.jena.sparql.engine.join.JoinKey ;
+import org.apache.jena.sparql.expr.ExprList ;
 
 public class TestHashJoin extends AbstractTestInnerJoin {
 
     @Override
-    public QueryIterator join(JoinKey joinKey, Table left, Table right) {
+    public QueryIterator join(JoinKey joinKey, Table left, Table right, ExprList conditions) {
         Iterator<Binding> data = Join.hashJoin(joinKey, left.iterator(null), right.iterator(null), null) ;
         QueryIterator qIter = new QueryIterPlainWrapper(data) ;
         return qIter ;

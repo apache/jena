@@ -24,11 +24,11 @@ import org.apache.jena.sparql.engine.join.Join ;
 import org.apache.jena.sparql.engine.join.JoinKey ;
 import org.apache.jena.sparql.expr.ExprList ;
 
-public class TestJoinNestedLoop extends AbstractTestInnerJoin {
+public class TestLeftJoinNestedLoop extends AbstractTestLeftJoin {
 
     @Override
     public QueryIterator join(JoinKey joinKey, Table left, Table right, ExprList conditions) {
-        return Join.nestedLoopJoin(left.iterator(null), right.iterator(null), null) ;
+        return Join.nestedLoopLeftJoin(left.iterator(null), right.iterator(null), conditions, null) ;
     }
 
 }

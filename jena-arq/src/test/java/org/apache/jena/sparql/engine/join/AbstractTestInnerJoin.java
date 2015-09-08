@@ -19,123 +19,29 @@
 package org.apache.jena.sparql.engine.join;
 
 import org.apache.jena.sparql.algebra.Table ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.join.JoinKey ;
+import org.apache.jena.sparql.expr.ExprList ;
 import org.junit.Test ;
 
 /** Tests for inner/equi joins */ 
 public abstract class AbstractTestInnerJoin extends AbstractTestJoin {
     
     @Override
-    protected void executeTest(JoinKey joinKey, Table left, Table right, Table expectedResults) {
-        executeTestJoin("1", joinKey, left, right, expectedResults) ;
-        executeTestJoin("2", joinKey, right, left, expectedResults) ;
+    protected void executeTest(JoinKey joinKey, Table left, Table right, ExprList conditions, Table expectedResults) {
+        if ( conditions != null )
+            fail("Conditions on inner join are meaningless (currently)") ;
+        // No conditions.
+        // Commutative.
+        executeTestJoin("1", joinKey, left, right, null, expectedResults) ;
+        executeTestJoin("2", joinKey, right, left, null, expectedResults) ;
     }
     
-    static Var var_a = Var.alloc("a") ; 
-    static Var var_b = Var.alloc("b") ; 
-    static Var var_c = Var.alloc("c") ; 
-    static Var var_d = Var.alloc("d") ; 
-
-    static Table table0() { return parseTableInt("(table)") ; } 
-
-    // Table of one row and no colums.
-    static Table table1() { 
-        return parseTableInt("(table (row))") ; }
-
-    static Table tableD1() { 
-        return parseTableInt("(table", 
-                             "   (row (?a 1) (?b 2))",
-                             "   (row (?a 1) (?b 3))",
-                             "   (row (?a 1) (?b 2))",
-            ")") ;
-    }
-
-    static Table tableD2() { 
-        return parseTableInt("(table", 
-                             "   (row (?a 0) (?d 8))",
-                             "   (row (?a 1) (?c 9))",
-            ")") ;
-    }
-
-    static Table tableD3() {
-        return parseTableInt("(table", 
-                             "   (row (?a 1) (?c 9) (?b 2))",
-                             "   (row (?a 1) (?c 9) (?b 3))",
-                             "   (row (?a 1) (?c 9) (?b 2))",
-            ")") ;
-    }
-
-    static Table tableD4() {
-        return parseTableInt("(table", 
-                             "   (row (?a 1) (?b 2))",
-                             "   (row (?a 1) (?b 3))",
-                             "   (row (?a 4) (?b 4))",
-                             "   (row (?a 4) (?b 5))",
-            ")") ;
-    }
-
-    static Table tableD5() {
-        return parseTableInt("(table", 
-                             "   (row (?a 4) (?c 4))",
-                             "   (row (?a 4) (?c 5))",
-                             "   (row (?a 6) (?c 5))",
-            ")") ;
-    }
-
-    static Table tableD6() {
-        return parseTableInt("(table", 
-                             "   (row (?a 1) (?c 2))",
-                             "   (row (?a 1) (?c 3))",
-                             "   (row (?a 4) (?c 4))",
-                             "   (row (?a 4) (?c 5))",
-            ")") ;
-    }
-
-    static Table tableD4x5() {
-        return parseTableInt("(table", 
-                             "   (row (?a 4) (?c 4) (?b 4))",
-                             "   (row (?a 4) (?c 4) (?b 5))",
-                             "   (row (?a 4) (?c 5) (?b 4))",
-                             "   (row (?a 4) (?c 5) (?b 5))",
-            ")") ;
-    }
-
-    static Table tableD4x6() {
-        return parseTableInt("(table", 
-                             "   (row (?a 1) (?c 2) (?b 2))",
-                             "   (row (?a 1) (?c 2) (?b 3))",
-                             "   (row (?a 1) (?c 3) (?b 2))",
-                             "   (row (?a 1) (?c 3) (?b 3))",
-                             "   (row (?a 4) (?c 4) (?b 4))",
-                             "   (row (?a 4) (?c 4) (?b 5))",
-                             "   (row (?a 4) (?c 5) (?b 4))",
-                             "   (row (?a 4) (?c 5) (?b 5))",
-            ")") ;
-    }
-
-    // Disjoint.
-    static Table tableD8() {
-        return parseTableInt("(table",
-                             "  (row (?x 10))",
-                             "  (row (?z 11))",
-            ")") ; 
-    }
-
-    // Table8 crossproduct table2
-    static Table tableD8x2() {
-        return parseTableInt("(table",
-                             "  (row (?a 0) (?d 8) (?z 11))",
-                             "  (row (?a 0) (?d 8) (?x 10))",
-                             "  (row (?a 1) (?c 9) (?z 11))",
-                             "  (row (?a 1) (?c 9) (?x 10))",
-            ")") ;
-    }
-
-    @Test public void join_00()  { testJoin("a", table0(), table0(), table0()) ; }
-    @Test public void join_00a() { testJoin("a", table1(), table0(), table0()) ; }
-    @Test public void join_00b() { testJoin("a", tableD1(), table1(), tableD1()) ; }
-    @Test public void join_00c() { testJoin("z", tableD1(), table1(), tableD1()) ; }
+    @Test public void join_basic_1()    { testJoin("a", table0(), table0(), table0()) ; }
+    @Test public void join_basic_2()    { testJoin("a", table1(), table0(), table0()) ; }
+    @Test public void join_basic_3()    { testJoin("a", tableD1(), table1(), tableD1()) ; }
+    @Test public void join_basic_4()    { testJoin("z", tableD1(), table1(), tableD1()) ; }
+    
+    @Test public void join_basic_5() { testJoin("a", table0(), table1(), table0()) ; }
+    @Test public void join_basic_6() { testJoin("a", table1(), table0(), table0()) ; }
 
     @Test public void join_01() { testJoin("a", table0(), tableD2(), table0()) ; }
     @Test public void join_02() { testJoin("a", tableD1(), table0(), table0()) ; }
