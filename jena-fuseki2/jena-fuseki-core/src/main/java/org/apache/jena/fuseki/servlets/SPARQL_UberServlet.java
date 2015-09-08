@@ -267,11 +267,13 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         if ( hasParams )
             // ?? Revisit to include query-on-one-graph 
             //errorBadRequest("Can't invoke a query-string service on a direct named graph") ;
-            ServletOps.errorNotFound("Not found: dataset='"+printName(desc.getName())+"' service='"+printName(trailing)+"'");
+            ServletOps.errorNotFound("Not found: dataset='"+printName(desc.getName())+
+                                     "' service='"+printName(trailing)+
+                                     "' query string=?"+qs);
 
         // There is a trailing part - not a service, no params ==> GSP direct naming.
         if ( ! Fuseki.GSP_DIRECT_NAMING )
-            ServletOps.errorNotFound("Not found: dataset='"+printName(desc.getName())+"' trailing='"+printName(trailing)+"'");
+            ServletOps.errorNotFound("Not found: dataset='"+printName(desc.getName())+"' service='"+printName(trailing)+"'");
         
         doGraphStoreProtocol(action);
     }
