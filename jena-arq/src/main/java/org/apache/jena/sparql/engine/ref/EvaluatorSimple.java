@@ -270,7 +270,7 @@ public class EvaluatorSimple implements Evaluator
     private Table joinWorker(Table tableLeft, Table tableRight, boolean leftJoin, ExprList conditions)
     {
         QueryIterator left = tableLeft.iterator(execCxt) ;
-        JoinType joinType = (leftJoin? JoinType.LEFT : JoinType.PLAIN ) ;
+        JoinType joinType = (leftJoin? JoinType.LEFT : JoinType.INNER ) ;
         QueryIterator qIter = TableJoin.joinWorker(left, tableRight, joinType, conditions, execCxt) ;
         tableLeft.close() ;
         tableRight.close() ;

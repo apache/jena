@@ -18,4 +18,11 @@
 
 package org.apache.jena.sparql.algebra;
 
-public enum JoinType { PLAIN, LEFT /*, RIGHT , /*FULL* /OUTER*/}
+public enum JoinType {
+    INNER /* Normal, plain equijoin*/ 
+    , LEFT 
+    //, RIGHT
+    //, OUTER   // Full outer join
+    //, ANTI    // Anti-join: rows in LHS where there is no matching tuple in RHS 
+    //, SEMI    // All tuples in LHS where there is a matching tuple in RHS
+}
