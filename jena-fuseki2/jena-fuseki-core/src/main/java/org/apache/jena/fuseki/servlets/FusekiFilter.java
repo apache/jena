@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.slf4j.Logger ;
 
@@ -71,6 +72,23 @@ public class FusekiFilter implements Filter {
                     überServlet.doCommon(req, resp) ;
                     return ;
                 }
+
+                // Not found. Last possibility is a GSP direct name.
+                // This is a registry scan so if not supported, we can skip the scan and
+                // not rely on the überServlet. 
+                if ( Fuseki.GSP_DIRECT_NAMING ) {
+                    // Not a dataset name ; may be a direct GSP direct name that does not look like a service name.
+                    for ( String dsKey : DataAccessPointRegistry.get().keys() ) {
+                        DataAccessPoint dap = DataAccessPointRegistry.get().get(dsKey) ;
+                        String dsName = dap.getName() ;
+                        if ( datasetUri.startsWith(dsName) ) {
+                            if ( LogFilter )
+                                log.info("Filter: dispatch (GSP direct name)") ;
+                            überServlet.doCommon(req, resp) ;
+                            return ;
+                        }
+                    }
+                } 
             }
         } catch (Exception ex) {}
         
