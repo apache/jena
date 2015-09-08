@@ -235,8 +235,10 @@ public abstract class AbstractTestJoin extends Assert {
             joinKey = JoinKey.create(Var.alloc(var)) ;
         }
         else {
-            // No vars in join key.  Legal, albeit silly.
-            joinKey = new JoinKey.Builder().build() ;
+            // No vars in join key.  Allow implementation to decide
+            // if needed.  Join keys are only needed for hash join
+            // (and related algorithms).
+            joinKey = null ;
         }
 
         executeTest(joinKey, left, right, null, tableOut) ;
