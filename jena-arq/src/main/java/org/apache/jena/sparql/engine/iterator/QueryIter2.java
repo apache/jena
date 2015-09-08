@@ -64,7 +64,7 @@ public abstract class QueryIter2 extends QueryIter
     /** Cancellation of the query execution is happening */
     protected abstract void requestSubCancel() ;
     
-    /** Pass on the close method - no need to close the left or right QueryIterators passed to the QueryIter1 constructor */
+    /** Pass on the close method - no need to close the left or right QueryIterators passed to the QueryIter2 constructor */
     protected abstract void closeSubIterator() ;
     
     // Do better
