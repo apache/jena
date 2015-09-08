@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.join;
+package org.apache.jena.sparql.engine.join;
 
 import java.util.Iterator ;
 
@@ -27,7 +27,7 @@ import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.engine.join.Join ;
 import org.apache.jena.sparql.engine.join.JoinKey ;
 
-public class TestHashJoin extends AbstractTestJoin {
+public class TestHashJoin extends AbstractTestInnerJoin {
 
     @Override
     public QueryIterator join(JoinKey joinKey, Table left, Table right) {
