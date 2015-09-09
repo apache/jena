@@ -220,7 +220,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
     }
 
     protected final String targetDefault() {
-        return remote + "?" + HttpNames.paramGraphDefault + "=" ;
+        return remote + "?" + HttpNames.paramGraphDefault ;
     }
 
     protected final String target(Node name) {
