@@ -28,10 +28,23 @@ import org.apache.jena.sparql.core.Var ;
 /** JoinKey for hash joins */
 public final class JoinKey implements Iterable<Var>
 {
+    private static final JoinKey emptyKey = new JoinKey(DS.listOfNone()) ;
+
     // Common way to make a JoinKey
     /** Make a JoinKey from the intersection of two sets **/  
-    
     public static JoinKey create(Collection<Var> vars1, Collection<Var> vars2) {
+        // JoinKeys are generally small so short loops are best.
+        // vars2 may be smallest e.g. from triple and running accumulator (vars1) 
+        List<Var> intersection = DS.list() ;
+        for ( Var v : vars1 ) {
+            if ( vars2.contains(v) )
+                intersection.add(v) ;  
+        }
+        return new JoinKey(intersection) ;
+    }
+    
+    /** Make a JoinKey of single variable from the intersection of two sets **/  
+    public static JoinKey createVarKey(Collection<Var> vars1, Collection<Var> vars2) {
         // JoinKeys are generally small so short loops are best.
         // vars2 may be smallest e.g. from triple and running accumulator (vars1) 
         List<Var> intersection = DS.list() ;
@@ -43,7 +56,7 @@ public final class JoinKey implements Iterable<Var>
                 // i.e. some rows only have part of the join key?
                 //intersection.add(v) ;  
         }
-        return new JoinKey(intersection) ;
+        return emptyKey ;
     }
     
     public static JoinKey create(Var var) {
@@ -87,9 +100,11 @@ public final class JoinKey implements Iterable<Var>
     
     private JoinKey(List<Var> _keys) { keys = _keys ; }
     
-    private JoinKey(Var var)     { keys = DS.listOfOne(var) ; }
+    private JoinKey(Var var)        { keys = DS.listOfOne(var) ; }
     
-    public boolean isEmpty()    { return keys.isEmpty() ; }
+    public boolean isEmpty()        { return keys.isEmpty() ; }
+    
+    public int length()             { return keys.size() ; }
 
     /** Get a single variable for this key. 
      *  For any one key, it always returns the same var */ 
@@ -107,6 +122,3 @@ public final class JoinKey implements Iterable<Var>
         return keys.toString() ;
     }
 }
-
-
-

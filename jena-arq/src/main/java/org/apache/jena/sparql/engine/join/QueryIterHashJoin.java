@@ -22,6 +22,7 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
@@ -69,6 +70,9 @@ public class QueryIterHashJoin extends QueryIter2 {
             right.close() ;
             return QueryIterNullIterator.create(execCxt) ;
         }
+        if ( joinKey != null && joinKey.length() > 1 )
+            Log.warn(QueryIterHashJoin.class, "Multivariable join key") ; 
+        
         return new QueryIterHashJoin(joinKey, left, right, execCxt) ; 
     }
     
@@ -96,7 +100,7 @@ public class QueryIterHashJoin extends QueryIter2 {
             
             List<Var> varsLeft = Iter.toList(bLeft.vars()) ;
             List<Var> varsRight = Iter.toList(bRight.vars()) ;
-            joinKey = JoinKey.create(varsLeft, varsRight) ;
+            joinKey = JoinKey.createVarKey(varsLeft, varsRight) ;
             left = pLeft ;
             right = pRight ;
         }

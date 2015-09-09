@@ -216,6 +216,24 @@ public abstract class AbstractTestJoin extends Assert {
             ")") ;
     }
     
+    // Skew tables for join testing.
+    // Join keys of ?x ?w and [?x , ?w]
+    
+    protected static Table tableS1() {
+        return parseTableInt("(table"
+                             ,"  (row (?z <http://example/z1>) (?x <http://example/x>) (?w 'w11-1'))"
+                             ,"  (row (?z <http://example/z4>) (?x <http://example/x>)))"
+                            ); }
+    protected static Table tableS2() {
+        return parseTableInt("(table (row (?x <http://example/x>) (?w <http://example/z1>)))") ;
+    }
+    
+    protected static Table tableS1J2() {
+        return parseTableInt("(table" 
+                             ,"  (row (?z <http://example/z4>) (?x <http://example/x>) (?w <http://example/z1>) ))" 
+                            ); 
+    }
+    
     // Code
 
     protected static Table parseTableInt(String... strings) {
@@ -242,6 +260,14 @@ public abstract class AbstractTestJoin extends Assert {
         }
 
         executeTest(joinKey, left, right, null, tableOut) ;
+    }
+
+    protected void testJoinWithKey(JoinKey joinKey, Table left, Table right, Table tableOut) {
+        executeTest(joinKey, left, right, null, tableOut) ;
+    }
+
+    protected void testJoinWithKey(JoinKey joinKey, Table left, Table right, ExprList conditions, Table tableOut) {
+        executeTest(joinKey, left, right, conditions, tableOut) ;
     }
 
     // Any kind of join (choose by abstract join() operation).

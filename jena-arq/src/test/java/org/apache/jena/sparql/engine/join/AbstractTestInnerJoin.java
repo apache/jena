@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.engine.join;
 
 import org.apache.jena.sparql.algebra.Table ;
+import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.junit.Test ;
 
@@ -67,10 +68,23 @@ public abstract class AbstractTestInnerJoin extends AbstractTestJoin {
     // No key.
     @Test public void join_14() { testJoin(null, tableD1(), tableD2(), tableD3()) ; }
 
-
+    @Test public void join_skew_01() { testJoin("x", tableS1(), tableS2(), tableS1J2()) ; }
+    @Test public void join_skew_02() { testJoin("w", tableS1(), tableS2(), tableS1J2()) ; }
+    @Test public void join_skew_03() { testJoin(null, tableS1(), tableS2(), tableS1J2()) ; }
+    //@Test
+    // Multiple variable join keys on skew data don't work. 
+    public void join_skew_04() { 
+        JoinKey joinKey = new JoinKey.Builder()
+            .add(Var.alloc("x"))
+            .add(Var.alloc("w"))
+            .build() ;
+        testJoinWithKey(joinKey, tableS1(), tableS2(), tableS1J2()) ; 
+    }
+    
     // Disjoint tables.
     @Test public void join_disjoint_01() { testJoin("a", tableD2(), tableD8(), tableD8x2()) ; }
     @Test public void join_disjoint_02() { testJoin("z", tableD2(), tableD8(), tableD8x2()) ; }
+    @Test public void join_disjoint_03() { testJoin(null, tableD2(), tableD8(), tableD8x2()) ; }
 }
 
 

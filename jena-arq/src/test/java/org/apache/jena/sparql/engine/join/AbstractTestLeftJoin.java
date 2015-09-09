@@ -66,7 +66,6 @@ public abstract class AbstractTestLeftJoin extends AbstractTestJoin {
     @Test public void leftjoin_J13()        { testJoin("z", tableD2(), tableD1(), tableD3_LJ()) ; }
 
     // No key.
-    
     @Test public void leftjoin_14()         { testJoin(null, tableD1(), tableD2(), tableD3()) ; }
 
 
