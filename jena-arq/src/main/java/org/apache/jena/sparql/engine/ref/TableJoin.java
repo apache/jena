@@ -69,8 +69,6 @@ public class TableJoin
     }
             
     private static QueryIterator joinWorkerN(QueryIterator left, Table right, JoinType joinType, ExprList conditions, ExecutionContext execCxt) {       
-        // We could hash the right except we don't know much about columns.
-        
         List<Binding> out = new ArrayList<>() ;
         for ( ; left.hasNext() ; ) {
             Binding bindingLeft = left.next() ;
@@ -92,7 +90,6 @@ public class TableJoin
                 // Conditions on left?
                 out.add(bindingLeft) ;
         }
-        
         return new QueryIterPlainWrapper(out.iterator(), execCxt) ;
     }
     

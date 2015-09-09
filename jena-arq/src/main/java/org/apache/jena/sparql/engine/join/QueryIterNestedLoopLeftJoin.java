@@ -109,7 +109,7 @@ public class QueryIterNestedLoopLeftJoin extends QueryIter2 {
             if ( ! foundMatch ) {
                 s_countResults++;
                 Binding r = rowLeft ;
-                rowLeft = null;    
+                rowLeft = null; 
                 return r ;
             }
             rowLeft = null;

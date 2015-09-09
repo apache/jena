@@ -28,10 +28,8 @@ import org.apache.jena.sparql.algebra.TableFactory ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.iterator.QueryIterFilterExpr ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.engine.main.OpExecutor ;
-import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 
 /** API to various join algorithms */
@@ -159,7 +157,7 @@ public class Join {
      *  Builds output early. Materializes right, streams left.
      *  Does <b>not</b> scale. 
      */
-    public static QueryIterator nestedLoopLeftJoinBasic(QueryIterator left, QueryIterator right, ExprList condition, ExecutionContext execCxt) {
+    public static QueryIterator nestedLoopLeftJoinBasic(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
         // Stream from left, materialize right.
         List<Binding> rightRows = Iter.toList(right) ;
         List<Binding> output = DS.list() ;
@@ -169,7 +167,7 @@ public class Join {
             boolean match = false ;
             for ( Binding row2 : rightRows ) {
                 Binding r = Algebra.merge(row1, row2) ;
-                if ( r != null ) {
+                if ( r != null && applyConditions(r, conditions, execCxt)) {
                     output.add(r) ;
                     match = true ;
                 }
@@ -177,18 +175,14 @@ public class Join {
             if ( ! match )
                 output.add(row1) ;
         }
-        QueryIterator qIter = new QueryIterPlainWrapper(output.iterator(), execCxt) ;
-        qIter = applyConditions(qIter, condition, execCxt) ;
-        return qIter ;
+        return new QueryIterPlainWrapper(output.iterator(), execCxt) ;
     }
 
     // apply conditions.
-    private static QueryIterator applyConditions(QueryIterator qIter, ExprList conditions, ExecutionContext execCxt) {
+    private static boolean applyConditions(Binding row, ExprList conditions, ExecutionContext execCxt) {
         if ( conditions == null )
-            return qIter ;
-        for (Expr expr : conditions)
-            qIter = new QueryIterFilterExpr(qIter, expr, execCxt) ;
-        return qIter ;
+            return true ;
+        return conditions.isSatisfied(row, execCxt) ;
     }
 
     private static QueryIterator debug(QueryIterator left, QueryIterator right, ExecutionContext execCxt, JoinOp action) {
