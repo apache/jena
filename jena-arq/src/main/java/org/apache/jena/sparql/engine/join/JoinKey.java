@@ -28,13 +28,12 @@ import org.apache.jena.sparql.core.Var ;
 /** JoinKey for hash joins */
 public final class JoinKey implements Iterable<Var>
 {
+    /** Key of no variables */
     private static final JoinKey emptyKey = new JoinKey(DS.listOfNone()) ;
 
-    // Common way to make a JoinKey
     /** Make a JoinKey from the intersection of two sets **/  
     public static JoinKey create(Collection<Var> vars1, Collection<Var> vars2) {
-        // JoinKeys are generally small so short loops are best.
-        // vars2 may be smallest e.g. from triple and running accumulator (vars1) 
+        // JoinKeys and choices for keys are generally small so short loops are best.
         List<Var> intersection = DS.list() ;
         for ( Var v : vars1 ) {
             if ( vars2.contains(v) )
@@ -45,16 +44,9 @@ public final class JoinKey implements Iterable<Var>
     
     /** Make a JoinKey of single variable from the intersection of two sets **/  
     public static JoinKey createVarKey(Collection<Var> vars1, Collection<Var> vars2) {
-        // JoinKeys are generally small so short loops are best.
-        // vars2 may be smallest e.g. from triple and running accumulator (vars1) 
-        List<Var> intersection = DS.list() ;
         for ( Var v : vars1 ) {
             if ( vars2.contains(v) )
-                // First and single key.
                 return create(v) ;
-                // Compound keys needs validation : what if they are partial
-                // i.e. some rows only have part of the join key?
-                //intersection.add(v) ;  
         }
         return emptyKey ;
     }
