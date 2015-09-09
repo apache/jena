@@ -23,6 +23,8 @@ import java.util.List ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.sparql.algebra.Algebra ;
+import org.apache.jena.sparql.algebra.Table ;
+import org.apache.jena.sparql.algebra.TableFactory ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -37,8 +39,8 @@ public class Join {
     // See also package org.apache.jena.sparql.engine.index
     // The anti-join code for MINUS
     
-    private final static boolean useNestedLoopJoin = false ;
-    private final static boolean useNestedLoopLeftJoin = false ;
+    private final static boolean useNestedLoopJoin      = false ;
+    private final static boolean useNestedLoopLeftJoin  = false ;
 
     /**
      * Standard entry point to a join of two streams.
@@ -50,6 +52,9 @@ public class Join {
      * @return QueryIterator
      */
     public static QueryIterator join(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
+        if ( false )
+            return debug(left, right, execCxt,
+                         (_left, _right)->hashJoin(_left, _right, execCxt)) ;
         if ( useNestedLoopJoin )
             return nestedLoopJoin(left, right, execCxt) ;
         return hashJoin(left, right, execCxt) ;
@@ -66,12 +71,24 @@ public class Join {
      * @return QueryIterator
      */
     public static QueryIterator leftJoin(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
+        if ( false )
+            return debug(left, right, execCxt, 
+                         (_left, _right)->nestedLoopLeftJoin(_left, _right, conditions, execCxt)) ;
+        // XXX When had left join ready ...
 //        if ( useNestedLoopJoin )
 //            return nestedLoopLeftJoin(left, right, conditions, execCxt) ;
 //        return hashLeftJoin(left, right, execCxt) ;
         return nestedLoopLeftJoin(left, right, conditions, execCxt) ;
     }
 
+    /* Debug.
+     * Print inputs and outputs.
+     * This involves materializing the iterators.   
+     */
+    interface JoinOp { 
+        public QueryIterator exec(QueryIterator left, QueryIterator right) ;
+    }
+    
     /** Inner loop join.
      *  Cancellable.
      * @param left      Left hand side
@@ -173,4 +190,28 @@ public class Join {
             qIter = new QueryIterFilterExpr(qIter, expr, execCxt) ;
         return qIter ;
     }
+
+    private static QueryIterator debug(QueryIterator left, QueryIterator right, ExecutionContext execCxt, JoinOp action) {
+            Table t1 = TableFactory.create(left) ;
+            Table t2 = TableFactory.create(right) ;
+    
+            left = t1.iterator(execCxt) ;
+            right = t2.iterator(execCxt) ;
+    
+            QueryIterator qIter = action.exec(left, right) ;
+            Table t3 = TableFactory.create(qIter) ;
+            System.out.println("** Left") ;
+            System.out.println(t1) ;
+            System.out.println("** Right") ;
+            System.out.println(t2) ;
+            System.out.println("** ") ;
+            System.out.println(t3) ;
+    //        // Could do again here, different algoithm for comparison.
+    //        left = t1.iterator(execCxt) ;
+    //        right = t2.iterator(execCxt) ;
+    //        System.out.println("** nestedLoopJoin") ;
+    //        Table t4 = TableFactory.create(?????) ;
+    //        System.out.println(t4) ;
+            return t3.iterator(execCxt) ;
+        }
 }
