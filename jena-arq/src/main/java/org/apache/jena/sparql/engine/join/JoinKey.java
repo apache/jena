@@ -37,7 +37,11 @@ public final class JoinKey implements Iterable<Var>
         List<Var> intersection = DS.list() ;
         for ( Var v : vars1 ) {
             if ( vars2.contains(v) )
-                intersection.add(v) ;
+                // First and single key.
+                return create(v) ;
+                // Compound keys needs validation : what if they are partial
+                // i.e. some rows only have part of the join key?
+                //intersection.add(v) ;  
         }
         return new JoinKey(intersection) ;
     }
