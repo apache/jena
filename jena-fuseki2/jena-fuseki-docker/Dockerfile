@@ -13,7 +13,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-FROM maven:3.3-jdk-7
+FROM maven:3.3-jdk-8
 
 # Config and data
 VOLUME /fuseki
