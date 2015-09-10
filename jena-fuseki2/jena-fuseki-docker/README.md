@@ -1,9 +1,11 @@
 # Apache Jena Fuseki 2 docker image
 
-**Docker image:** [stain/jena-fuseki](https://registry.hub.docker.com/u/stain/jena-fuseki/)
+**Docker image:** [stain/jena-fuseki](https://hub.docker.com/r/stain/jena-fuseki/)
 
-This is a [Docker](http://docker.io/) image for running 
-[Apache Jena Fuseki](http://jena.apache.org/documentation/serving_data/) 2,
+(*TODO*: Register as official image on Docker Hub)
+
+This is a [Docker](https://www.docker.com/) image for running 
+[Apache Jena Fuseki](http://jena.apache.org/documentation/fuseki2/) 2,
 which is a [SPARQL 1.1](http://www.w3.org/TR/sparql11-overview/) server with a
 web interface, backed by the 
 [Apache Jena TDB](http://jena.apache.org/documentation/tdb/) RDF triple store.
