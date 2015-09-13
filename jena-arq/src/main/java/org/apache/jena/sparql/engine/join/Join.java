@@ -72,11 +72,13 @@ public class Join {
         if ( false )
             return debug(left, right, execCxt, 
                          (_left, _right)->nestedLoopLeftJoin(_left, _right, conditions, execCxt)) ;
-        // XXX When had left join ready ...
-//        if ( useNestedLoopJoin )
-//            return nestedLoopLeftJoin(left, right, conditions, execCxt) ;
-//        return hashLeftJoin(left, right, execCxt) ;
-        return nestedLoopLeftJoin(left, right, conditions, execCxt) ;
+        if ( useNestedLoopLeftJoin )
+            return nestedLoopLeftJoin(left, right, conditions, execCxt) ;
+        return hashLeftJoin(left, right, conditions, execCxt) ;
+    }
+
+    private static QueryIterator hashLeftJoin(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
+        return QueryIterHashLeftJoin_Right.create(left, right, conditions, execCxt) ;
     }
 
     /* Debug.
@@ -117,6 +119,7 @@ public class Join {
      * @return          QueryIterator
      */
     public static QueryIterator hashJoin(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
+        //return new QueryIterNestedLoopJoin(left, right, conditions, execCxt) ;
         return QueryIterHashJoin.create(left, right, execCxt) ;
     }
 
