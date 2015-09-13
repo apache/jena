@@ -43,6 +43,7 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     @Override
     protected Dataset decideDataset(HttpAction action, Query query, String queryStringLog) 
     { 
+        log.info("queryStringLog "+queryStringLog);
         DatasetGraph dsg = action.getActiveDSG() ;
         
         // query.getDatasetDescription() ;
