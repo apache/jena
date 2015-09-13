@@ -71,14 +71,10 @@ public class Join {
     public static QueryIterator leftJoin(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
         if ( false )
             return debug(left, right, execCxt, 
-                         (_left, _right)->nestedLoopLeftJoin(_left, _right, conditions, execCxt)) ;
+                         (_left, _right)->hashLeftJoin(_left, _right, conditions, execCxt)) ;
         if ( useNestedLoopLeftJoin )
             return nestedLoopLeftJoin(left, right, conditions, execCxt) ;
         return hashLeftJoin(left, right, conditions, execCxt) ;
-    }
-
-    private static QueryIterator hashLeftJoin(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
-        return QueryIterHashLeftJoin_Right.create(left, right, conditions, execCxt) ;
     }
 
     /* Debug.
@@ -133,6 +129,35 @@ public class Join {
      */
     public static QueryIterator hashJoin(JoinKey joinKey, QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
         return QueryIterHashJoin.create(joinKey, left, right, execCxt) ;
+    }
+
+    /**
+     * Left outer join by using hash join. Normally, this is
+     * hashing the right hand side and streaming the left.  The reverse
+     * implementation (hash left, stream right) is also available.   
+     * @param left
+     * @param right
+     * @param conditions
+     * @param execCxt
+     * @return QueryIterator
+     */
+    public static QueryIterator hashLeftJoin(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
+        return QueryIterHashLeftJoin_Right.create(left, right, conditions, execCxt) ;
+    }
+
+    /**
+     * Left outer join by using hash join. Normally, this is
+     * hashing the right hand side and streaming the left.  The reverse
+     * implementation (hash left, stream right) is also available.   
+     * @param joinKey
+     * @param left
+     * @param right
+     * @param conditions
+     * @param execCxt
+     * @return QueryIterator
+     */
+    public static QueryIterator hashLeftJoin(JoinKey joinKey, QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
+        return QueryIterHashLeftJoin_Right.create(joinKey, left, right, conditions, execCxt) ;
     }
 
     /** Very simple, materializing version - useful for debugging.
