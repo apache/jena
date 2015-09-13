@@ -24,35 +24,50 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator ;
 import org.apache.jena.sparql.engine.join.JoinKey ;
+import org.apache.jena.sparql.expr.ExprList ;
 
-/** Hash left join. 
- * This code materializes the right into a probe table
- * then hash joins from the left.
+/**
+ * Hash left join.
+ * 
+ * This code materializes the right hand side into a probe table then hash joins
+ * from the left.
+ * 
+ * See {@link QueryIterHashLeftJoin_Left} for one that uses the right hand side
+ * to make the probe table.
  */
 
 //* This code materializes the left into a probe table
 //* then hash joins from the right.
 
-public class QueryIterHashJoin extends AbstractIterHashJoin {
+public class QueryIterHashLeftJoin_Right extends AbstractIterHashJoin {
+    // Left join conditions
+    private final ExprList conditions;   
     
     /**
      * Create a hashjoin QueryIterator.
      * @param joinKey  Join key - if null, one is guessed by snooping the input QueryIterators
      * @param left
      * @param right
+     * @param conditions 
      * @param execCxt
      * @return QueryIterator
      */
-    public static QueryIterator create(JoinKey joinKey, QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
+    public static QueryIterator create(JoinKey joinKey, QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
         // Easy cases.
-        if ( ! left.hasNext() || ! right.hasNext() ) {
+        if ( ! left.hasNext() ) {
             left.close() ;
             right.close() ;
             return QueryIterNullIterator.create(execCxt) ;
         }
+        if ( ! right.hasNext() ) {
+            right.close() ;
+            return left ;
+        }
+
         if ( joinKey != null && joinKey.length() > 1 )
-            Log.warn(QueryIterHashJoin.class, "Multivariable join key") ; 
-        return new QueryIterHashJoin(joinKey, left, right, execCxt) ; 
+            Log.warn(QueryIterHashLeftJoin_Right.class, "Multivariable join key") ; 
+        
+        return new QueryIterHashLeftJoin_Right(joinKey, left, right, conditions, execCxt) ; 
     }
     
     /**
@@ -62,28 +77,32 @@ public class QueryIterHashJoin extends AbstractIterHashJoin {
      * @param execCxt
      * @return QueryIterator
      */
- 
-    public static QueryIterator create(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
-        return create(null, left, right, execCxt) ;
+    public static QueryIterator create(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
+        return create(null, left, right, conditions, execCxt) ;
     }
     
-    private QueryIterHashJoin(JoinKey joinKey, QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
-        super(joinKey, left, right, execCxt) ;
+    private QueryIterHashLeftJoin_Right(JoinKey joinKey, QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
+        // NB Right. Left
+        super(joinKey, right, left, execCxt) ;
+        this.conditions = conditions ;
     }
 
     @Override
     protected Binding yieldOneResult(Binding rowCurrentProbe, Binding rowStream, Binding rowResult) {
-        return rowResult ;
+        if ( conditions != null && ! conditions.isSatisfied(rowResult, getExecContext()) )
+            return null ;
+        return rowResult ; 
     }
 
     @Override
     protected Binding noYieldedRows(Binding rowCurrentProbe) {
-        return null;
+        return rowCurrentProbe;
     }
     
     @Override
     protected QueryIterator joinFinished() {
-        return null;
+        return null ;
     }
-
 }
+
+
