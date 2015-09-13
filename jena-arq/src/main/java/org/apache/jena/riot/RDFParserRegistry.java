@@ -31,6 +31,7 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.lang.JsonLDReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.ReaderTriX ;
+import org.apache.jena.riot.lang.RiotParsers ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.ParserProfile ;
@@ -167,7 +168,7 @@ public class RDFParserRegistry
         @Override
         public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
             @SuppressWarnings("deprecation")
-            LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
+            LangRIOT parser = RiotParsers.createParser(in, lang, baseURI, output) ;
             if ( parserProfile != null )
                 parser.setProfile(parserProfile);
             if ( errorHandler != null )
@@ -178,7 +179,7 @@ public class RDFParserRegistry
         @Override
         public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
             @SuppressWarnings("deprecation")
-            LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
+            LangRIOT parser = RiotParsers.createParser(in, lang, baseURI, output) ;
             parser.getProfile().setHandler(errorHandler) ; 
             parser.parse() ;
         }
@@ -187,7 +188,10 @@ public class RDFParserRegistry
         @Override public void setErrorHandler(ErrorHandler errorHandler)    { this.errorHandler = errorHandler ; }
 
         @Override public ParserProfile getParserProfile()                   { return parserProfile ; } 
-        @Override public void setParserProfile(ParserProfile parserProfile) { this.parserProfile = parserProfile ; }
+        @Override public void setParserProfile(ParserProfile parserProfile) { 
+            this.parserProfile = parserProfile ;
+            this.errorHandler = parserProfile.getHandler() ;
+        }
     }
 
     private static class ReaderRIOTFactoryJSONLD implements ReaderRIOTFactory {

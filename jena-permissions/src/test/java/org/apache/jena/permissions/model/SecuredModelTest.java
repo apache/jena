@@ -412,11 +412,11 @@ public class SecuredModelTest {
 		final List<RDFNode> nodeList = new ArrayList<RDFNode>();
 		try {
 			securedModel.createList();
-			if (!securityEvaluator.evaluate(Action.Update)) {
+			if ( ! securityEvaluator.evaluate(CU))  {
 				Assert.fail("Should have thrown UpdateDeniedException Exception");
 			}
-		} catch (final UpdateDeniedException e) {
-			if (securityEvaluator.evaluate(Action.Update)) {
+		} catch (final AccessDeniedException e) {
+			if (securityEvaluator.evaluate(CU))  {
 				Assert.fail(String
 						.format("Should not have thrown UpdateDeniedException Exception: %s - %s",
 								e, e.getTriple()));

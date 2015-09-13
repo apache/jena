@@ -1,0 +1,6 @@
+PREFIX : <http://example/>
+
+CONSTRUCT {
+   GRAPH <urn:x-arq:DefaultGraphNode> {:s :p :o .}
+   }
+WHERE {}

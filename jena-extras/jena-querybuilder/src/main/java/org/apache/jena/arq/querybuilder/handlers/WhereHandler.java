@@ -250,12 +250,22 @@ public class WhereHandler implements Handler {
 			{
 				union = (ElementUnion) lastElement;
 			}
-		}	
-		if (union == null)
+			else 
+			{
+				// clauses is not empty and is not a union so it is the left side of the union.
+				union = new ElementUnion();
+				union.addElement( clause );
+				query.setQueryPattern( union );
+			}
+		}
+		else
 		{
+			// add the union as the first element in the clause.
 			union = new ElementUnion();
 			clause.addElement( union );
 		}
+		// if there are projected vars then do a full blown subquery
+		// otherwise just add the clause.
 		if (subQuery.getVars().size() > 0) {
 			union.addElement(makeSubQuery(subQuery));
 		} else {

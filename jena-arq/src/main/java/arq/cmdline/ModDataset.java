@@ -31,15 +31,19 @@ public abstract class ModDataset extends ModBase
     public ModDataset() {}
     
     final
-    public Dataset getDataset()
-    { if ( ! createAttempted )
+    public Dataset getDataset() { 
+        if ( ! createAttempted )
             dataset = createDataset() ;
         createAttempted = true ;
         return dataset ;
     }
     
-    public DatasetGraph getDatasetGraph()
-    { return dataset.asDatasetGraph() ; }
+    public DatasetGraph getDatasetGraph() {
+        Dataset ds = getDataset() ;
+        if ( ds == null )
+            return null ;
+        return ds.asDatasetGraph() ;
+    }
 
     public abstract Dataset createDataset() ; 
 }

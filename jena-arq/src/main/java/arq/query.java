@@ -174,11 +174,20 @@ public class query extends CmdARQ
     protected String getSummary() { return getCommandName()+" --data=<file> --query=<query>" ; }
     
     protected Dataset getDataset()  { 
-        try { return modDataset.getDataset() ; }
+        try { 
+            Dataset ds = modDataset.getDataset() ;
+            if ( ds == null )
+                ds = dealWithNoDataset() ;
+            return ds ;
+        } 
         catch ( RiotException ex ) { 
             System.err.println("Failed to load data") ;
             throw new TerminationException(1) ;
         }
+    }
+    
+    protected Dataset dealWithNoDataset()  {
+        throw new CmdException("No dataset provided") ; 
     }
     
     protected long totalTime = 0 ;

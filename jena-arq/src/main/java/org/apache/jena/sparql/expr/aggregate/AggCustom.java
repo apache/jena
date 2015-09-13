@@ -55,7 +55,7 @@ public class AggCustom extends AggregatorBase
         IndentedLineBuffer x = new IndentedLineBuffer() ;
         if ( ! AggregateRegistry.isRegistered(iri) ) {
             // If not registered and if parsed in again not registered, it becomes a function.
-            // AGG <iri>(...) syntax.  It can;'t have been legal SPARQL 1.1 unless it got
+            // AGG <iri>(...) syntax.  It can't have been legal SPARQL 1.1 unless it got
             // unregistered in which case all bets are off anyway.
             x.append(getName()) ;
             x.append(" ") ;
@@ -63,11 +63,12 @@ public class AggCustom extends AggregatorBase
         x.append("<") ;
         x.append(iri);
         x.append(">") ;
-        if ( isDistinct )
-            x.append(" DISTINCT ") ;
-        x.incIndent(); 
         x.append("(") ;
+        if ( isDistinct )
+            x.append("DISTINCT ") ;
+        x.incIndent(); 
         ExprUtils.fmtSPARQL(x, getExprList(), sCxt) ;
+        x.decIndent(); 
         x.append(")") ;
         return x.asString() ;
     }

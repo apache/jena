@@ -315,9 +315,9 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         }
 
         if ( query.isConstructType() ) {
-            Model model = queryExecution.execConstruct() ;
-            action.log.info(format("[%d] exec/construct", action.id)) ;
-            return new SPARQLResult(model) ;
+            Dataset dataset = queryExecution.execConstructDataset();
+            action.log.info(format("[%d] exec/construct", action.id));
+            return new SPARQLResult(dataset);
         }
 
         if ( query.isDescribeType() ) {
@@ -364,7 +364,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
 
     /** Choose the dataset for this SPARQL Query request. 
      * @param action
-     * @param query
+     * @param query  Query - this may be modified to remove a DatasetDescription.
      * @param queryStringLog 
      * @return {@link Dataset}
      */
@@ -378,8 +378,12 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     protected void sendResults(HttpAction action, SPARQLResult result, Prologue qPrologue) {
         if ( result.isResultSet() )
             ResponseResultSet.doResponseResultSet(action, result.getResultSet(), qPrologue) ;
-        else if ( result.isGraph() )
-            ResponseModel.doResponseModel(action, result.getModel()) ;
+        else if ( result.isDataset() )
+            // CONSTRUCT is processed as a extended CONSTRUCT - result is a dataset. 
+            ResponseDataset.doResponseDataset(action, result.getDataset());
+        else if ( result.isModel() )
+            // DESCRIBE results are models
+            ResponseDataset.doResponseModel(action, result.getModel());
         else if ( result.isBoolean() )
             ResponseResultSet.doResponseResultSet(action, result.getBooleanResult()) ;
         else

@@ -18,35 +18,36 @@
 
 package org.apache.jena.sparql.engine;
 
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Set ;
-import java.util.concurrent.TimeUnit ;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.jena.atlas.lib.AlarmClock ;
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.atlas.lib.AlarmClock;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.riot.system.IRIResolver ;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.describe.DescribeHandler ;
-import org.apache.jena.sparql.core.describe.DescribeHandlerRegistry ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingRoot ;
-import org.apache.jena.sparql.engine.binding.BindingUtils ;
-import org.apache.jena.sparql.engine.iterator.QueryIteratorWrapper ;
-import org.apache.jena.sparql.graph.GraphFactory ;
-import org.apache.jena.sparql.modify.TemplateLib ;
-import org.apache.jena.sparql.syntax.ElementGroup ;
-import org.apache.jena.sparql.syntax.Template ;
-import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.sparql.util.DatasetUtils ;
-import org.apache.jena.sparql.util.ModelUtils ;
+import org.apache.jena.riot.system.IRIResolver;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.describe.DescribeHandler;
+import org.apache.jena.sparql.core.describe.DescribeHandlerRegistry;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingRoot;
+import org.apache.jena.sparql.engine.binding.BindingUtils;
+import org.apache.jena.sparql.engine.iterator.QueryIteratorWrapper;
+import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.sparql.modify.TemplateLib;
+import org.apache.jena.sparql.syntax.ElementGroup;
+import org.apache.jena.sparql.syntax.Template;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.DatasetUtils;
+import org.apache.jena.sparql.util.ModelUtils;
 
 /** All the SPARQL query result forms made from a graph-level execution object */ 
 
@@ -242,11 +243,42 @@ public class QueryExecutionBase implements QueryExecution
         Template template = query.getConstructTemplate() ;
         return TemplateLib.calcTriples(template.getTriples(), queryIterator);
     }
+    
+    @Override
+    public Iterator<Quad> execConstructQuads()
+    {
+        checkNotClosed() ;
+        if ( ! query.isConstructType() )
+            throw new QueryExecException("Attempt to get a CONSTRUCT model from a "+labelForQuery(query)+" query") ;
+        // This causes there to be no PROJECT around the pattern.
+        // That in turn, exposes the initial bindings.  
+        query.setQueryResultStar(true) ;
+
+        startQueryIterator() ;
+        
+        Template template = query.getConstructTemplate() ;
+        return TemplateLib.calcQuads(template.getQuads(), queryIterator);
+    }
+    
+    @Override
+    public Dataset execConstructDataset(){
+        return execConstructDataset(DatasetFactory.createMem()) ;
+    }
+
+    @Override
+    public Dataset execConstructDataset(Dataset dataset){
+        DatasetGraph dsg = dataset.asDatasetGraph() ; 
+        try {
+            execConstructQuads().forEachRemaining(dsg::add);
+        } finally {
+            this.close();
+        }
+        return dataset ; 
+    }
 
     @Override
     public Model execDescribe()
     { return execDescribe(GraphFactory.makeJenaDefaultModel()) ; }
-
 
     @Override
     public Model execDescribe(Model model)

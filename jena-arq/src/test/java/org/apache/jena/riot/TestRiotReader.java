@@ -36,7 +36,7 @@ public class TestRiotReader
     @Test
     public void testCreateIteratorTriples_01()
     {
-        Iterator<Triple> it = RiotReader.createIteratorTriples(new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8)), RDFLanguages.NTRIPLES, "http://example/");
+        Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8)), RDFLanguages.NTRIPLES, "http://example/");
         
         assertFalse(it.hasNext());
     }
@@ -44,7 +44,7 @@ public class TestRiotReader
     @Test
     public void testEncodedUTF8()
     {
-        Iterator<Triple> it = RiotReader.createIteratorTriples(new ByteArrayInputStream("<a> <b> \"\\u263A\" .".getBytes(StandardCharsets.UTF_8)), RDFLanguages.NTRIPLES, null);
+        Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream("<a> <b> \"\\u263A\" .".getBytes(StandardCharsets.UTF_8)), RDFLanguages.NTRIPLES, null);
         
         assertTrue(it.hasNext());
         assertEquals("☺", it.next().getObject().getLiteralLexicalForm());
@@ -53,7 +53,7 @@ public class TestRiotReader
     @Test
     public void testRawUTF8()
     {
-        Iterator<Triple> it = RiotReader.createIteratorTriples(new ByteArrayInputStream("<a> <b> \"☺\" .".getBytes(StandardCharsets.UTF_8)), RDFLanguages.NTRIPLES, null);
+        Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream("<a> <b> \"☺\" .".getBytes(StandardCharsets.UTF_8)), RDFLanguages.NTRIPLES, null);
         
         assertTrue(it.hasNext());
         assertEquals("☺", it.next().getObject().getLiteralLexicalForm());
@@ -71,7 +71,7 @@ public class TestRiotReader
                 "   </rdf:Description>" ,
                 "</rdf:RDF>") ;
         
-        Iterator<Triple> it = RiotReader.createIteratorTriples(new ByteArrayInputStream(x.getBytes()), RDFLanguages.RDFXML, "http://example/");
+        Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream(x.getBytes()), RDFLanguages.RDFXML, "http://example/");
         
         assertTrue(it.hasNext());
         Triple t = it.next();

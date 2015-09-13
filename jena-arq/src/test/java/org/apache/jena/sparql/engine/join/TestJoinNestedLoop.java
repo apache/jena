@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,17 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.engine.main.iterator;
+package org.apache.jena.sparql.engine.join;
 
-import org.apache.jena.sparql.algebra.JoinType ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.join.Join ;
+import org.apache.jena.sparql.engine.join.JoinKey ;
 import org.apache.jena.sparql.expr.ExprList ;
 
-/** Left join by materializing the RHS */
-public class QueryIterLeftJoin extends QueryIterJoinBase
-{
-    public QueryIterLeftJoin(QueryIterator left, QueryIterator right, ExprList exprs, ExecutionContext qCxt) {
-        super(left, right, JoinType.LEFT, exprs, qCxt) ;
+public class TestJoinNestedLoop extends AbstractTestInnerJoin {
+
+    @Override
+    public QueryIterator join(JoinKey joinKey, Table left, Table right, ExprList conditions) {
+        return Join.nestedLoopJoin(left.iterator(null), right.iterator(null), null) ;
     }
+
 }
+

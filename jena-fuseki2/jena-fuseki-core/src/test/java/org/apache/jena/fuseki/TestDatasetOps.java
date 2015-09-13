@@ -122,7 +122,7 @@ public class TestDatasetOps extends AbstractFusekiTest
         HttpEntity e = datasetToHttpEntity(data) ;
         HttpOp.execHttpPut(urlDataset, e);
         TypedInputStream in = HttpOp.execHttpGet(urlDataset, acceptheader) ;
-        assertEqualsIgnoreCase(in.getContentType(), contentTypeResponse) ;
+        assertEqualsIgnoreCase(contentTypeResponse, in.getContentType()) ;
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         StreamRDF dest = StreamRDFLib.dataset(dsg) ;
         RDFDataMgr.parse(dest, in) ;

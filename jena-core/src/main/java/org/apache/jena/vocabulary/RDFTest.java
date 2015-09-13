@@ -28,7 +28,7 @@ import org.apache.jena.rdf.model.* ;
 public class RDFTest {
     
     /** <p>The RDF model that holds the vocabulary terms</p> */
-    private static Model m_model = ModelFactory.createDefaultModel();
+    private static final Model m_model = ModelFactory.createDefaultModel();
     
     /** <p>The namespace of the vocabalary as a string ({@value})</p> */
     public static final String NS = "http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#";

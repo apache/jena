@@ -20,20 +20,19 @@ package org.apache.jena.permissions;
 import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.shared.AuthenticationRequiredException;
 
 /**
  * The secured item interface is mixed into instances of secured objects by the
  * proxy. It provides the security context for the security checks as well as
  * several useful shorthand methods for common checks.
  */
-public interface SecuredItem
-{
-	
+public interface SecuredItem {
+
 	/**
 	 * Utilities for SecuredItem implementations.
 	 */
-	public static class Util
-	{
+	public static class Util {
 		/**
 		 * Secured items are equivalent if their security evaluators and
 		 * modelIRIs are equal.
@@ -44,48 +43,45 @@ public interface SecuredItem
 		 *            A second secured item to check
 		 * @return true if si1 is equivalent to si2.
 		 */
-		public static boolean isEquivalent( final SecuredItem si1,
-				final SecuredItem si2 )
-		{
+		public static boolean isEquivalent(final SecuredItem si1,
+				final SecuredItem si2) {
 			return si1.getSecurityEvaluator()
 					.equals(si2.getSecurityEvaluator())
 					&& si1.getModelIRI().equals(si2.getModelIRI());
 		}
-		
-		public static String modelPermissionMsg( final Node modelURI )
-		{
+
+		public static String modelPermissionMsg(final Node modelURI) {
 			return String.format("Model permissions violation: %s", modelURI);
 		}
-		
-		public static String triplePermissionMsg( final Node modelURI )
-		{
+
+		public static String triplePermissionMsg(final Node modelURI) {
 			return String.format("Triple permissions violation: %s", modelURI);
 		}
 	}
 
 	/**
 	 * @return true if the securedModel allows items to to be created.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean canCreate();
+	public boolean canCreate() throws AuthenticationRequiredException;
 
 	/**
-	 * Return true if the triple can be created.
-	 * If any s,p or o is SecNode.ANY then this method must return false if
-	 * there
-	 * are
-	 * any restrictions where the remaining nodes and held constant and the ANY
-	 * node
-	 * is allowed to vary.
+	 * Return true if the triple can be created. If any s,p or o is SecNode.ANY
+	 * then this method must return false if there are any restrictions where
+	 * the remaining nodes and held constant and the ANY node is allowed to
+	 * vary.
 	 * 
 	 * See canRead(Triple t)
 	 * 
 	 * @param t
 	 *            The triple to check
 	 * @return true if the triple can be created.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean canCreate( Triple t );
+	public boolean canCreate(Triple t) throws AuthenticationRequiredException;
 
-	
 	/**
 	 * Return true if the fronted triple can be created.
 	 * 
@@ -94,31 +90,35 @@ public interface SecuredItem
 	 * @param t
 	 *            The fronted triple to check
 	 * @return true if the triple can be created.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean canCreate( FrontsTriple t );
-	
-	/**
-	 * @return true if the securedModel allows items to to be deleted.
-	 */
-	public boolean canDelete();
+	public boolean canCreate(FrontsTriple t)
+			throws AuthenticationRequiredException;
 
 	/**
-	 * Return true if the triple can be deleted.
-	 * If any s,p or o is SecNode.ANY then this method must return false if
-	 * there
-	 * are
-	 * any restrictions where the remaining nodes and held constant and the ANY
-	 * node
-	 * is allowed to vary.
+	 * @return true if the securedModel allows items to to be deleted.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
+	 */
+	public boolean canDelete() throws AuthenticationRequiredException;
+
+	/**
+	 * Return true if the triple can be deleted. If any s,p or o is SecNode.ANY
+	 * then this method must return false if there are any restrictions where
+	 * the remaining nodes and held constant and the ANY node is allowed to
+	 * vary.
 	 * 
 	 * See canRead(Triple t)
 	 * 
 	 * @param t
 	 *            The triple to check
 	 * @return true if the triple can be deleted.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean canDelete( Triple t );
-	
+	public boolean canDelete(Triple t) throws AuthenticationRequiredException;
+
 	/**
 	 * Return true if the fronted triple can be deleted.
 	 * 
@@ -127,33 +127,37 @@ public interface SecuredItem
 	 * @param t
 	 *            The fronted triple to check
 	 * @return true if the triple can be deleted.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean canDelete( FrontsTriple t );
+	public boolean canDelete(FrontsTriple t)
+			throws AuthenticationRequiredException;
 
 	/**
 	 * @return true if the securedModel allows items to to be read.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean canRead();
+	public boolean canRead() throws AuthenticationRequiredException;
 
 	/**
-	 * Return true if the triple can be read.
-	 * If any s,p or o is SecNode.ANY then this method must return false if
-	 * there
-	 * are
-	 * any restrictions where the remaining nodes and held constant and the ANY
-	 * node
-	 * is allowed to vary.
+	 * Return true if the triple can be read. If any s,p or o is SecNode.ANY
+	 * then this method must return false if there are any restrictions where
+	 * the remaining nodes and held constant and the ANY node is allowed to
+	 * vary.
 	 * 
-	 * (S, P, O) check if S,P,O can be read.
-	 * (S, P, ANY) check if there are any S,P,x restrictions.
-	 * (S, ANY, P) check if there are any S,x,P restrictions.
-	 * (ANY, ANY, ANY) check if there are any restricitons on reading.
+	 * (S, P, O) check if S,P,O can be read. (S, P, ANY) check if there are any
+	 * S,P,x restrictions. (S, ANY, P) check if there are any S,x,P
+	 * restrictions. (ANY, ANY, ANY) check if there are any restricitons on
+	 * reading.
 	 * 
 	 * @param t
 	 *            The triple to check
 	 * @return true if the triple can be read.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean canRead( Triple t );
+	public boolean canRead(Triple t) throws AuthenticationRequiredException;
 
 	/**
 	 * Return true if the fronted triple can be read.
@@ -161,22 +165,24 @@ public interface SecuredItem
 	 * @param t
 	 *            The frontedtriple to check
 	 * @return true if the triple can be read.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean canRead( FrontsTriple t );
-	
-	/**
-	 * @return true if the securedModel allows items to to be updated.
-	 */
-	public boolean canUpdate();
+	public boolean canRead(FrontsTriple t)
+			throws AuthenticationRequiredException;
 
 	/**
-	 * Return true if the triple can be updated.
-	 * If any s,p or o is SecNode.ANY then this method must return false if
-	 * there
-	 * are
-	 * any restrictions where the remaining nodes and held constant and the ANY
-	 * node
-	 * is allowed to vary.
+	 * @return true if the securedModel allows items to to be updated.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
+	 */
+	public boolean canUpdate() throws AuthenticationRequiredException;
+
+	/**
+	 * Return true if the triple can be updated. If any s,p or o is SecNode.ANY
+	 * then this method must return false if there are any restrictions where
+	 * the remaining nodes and held constant and the ANY node is allowed to
+	 * vary.
 	 * 
 	 * See canRead(Triple t)
 	 * 
@@ -185,8 +191,11 @@ public interface SecuredItem
 	 * @param to
 	 *            The resulting triple.
 	 * @return true if the from triple can be updated as the to triple.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean canUpdate( Triple from, Triple to );
+	public boolean canUpdate(Triple from, Triple to)
+			throws AuthenticationRequiredException;
 
 	/**
 	 * Return true if the fronted triple can be updated.
@@ -199,11 +208,14 @@ public interface SecuredItem
 	 * @param to
 	 *            The resulting fronted triple.
 	 * @return true if the from triple can be updated as the to triple.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean canUpdate( FrontsTriple from, FrontsTriple to );
-	
+	public boolean canUpdate(FrontsTriple from, FrontsTriple to)
+			throws AuthenticationRequiredException;
+
 	@Override
-	public boolean equals( Object o );
+	public boolean equals(Object o);
 
 	/**
 	 * @return the base item that is being secured.
@@ -236,6 +248,6 @@ public interface SecuredItem
 	 *            the other secured item.
 	 * @return True if they are equivalent, false otherwise.
 	 */
-	public boolean isEquivalent( SecuredItem securedItem );
+	public boolean isEquivalent(SecuredItem securedItem);
 
 }

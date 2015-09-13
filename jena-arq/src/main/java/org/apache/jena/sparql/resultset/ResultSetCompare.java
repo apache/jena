@@ -133,11 +133,12 @@ public class ResultSetCompare
         ResultSetRewindable rs1a = ResultSetFactory.makeRewindable(rs1) ;
         ResultSetRewindable rs2a = ResultSetFactory.makeRewindable(rs2) ;
         
+        // Aligned rows
         if ( equivalent(convert(rs1a), convert(rs2a), new BNodeIso(NodeUtils.sameTerm)) )
             return true ;
         rs1a.reset() ;    
         rs2a.reset() ;
-        return isomorphic(rs1, rs2) ;
+        return isomorphic(rs1a, rs2a) ;
     }
 
     

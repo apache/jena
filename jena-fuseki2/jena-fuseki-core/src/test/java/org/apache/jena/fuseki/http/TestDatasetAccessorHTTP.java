@@ -108,14 +108,14 @@ public class TestDatasetAccessorHTTP extends BaseTest
 
     @Test public void head_01()
     {
-        DatasetAccessor du = create() ;
+        DatasetAccessor du = connectToService() ;
         boolean b = du.containsModel(gn1) ;
         assertFalse("Blank remote dataset as a named graph", b) ;
     }
 
     @Test public void head_02()
     {
-        DatasetAccessor du = create() ;
+        DatasetAccessor du = connectToService() ;
         du.putModel(gn1, model1) ;
         boolean exists = du.containsModel(gn1) ;
         assertTrue(exists) ;
@@ -130,27 +130,56 @@ public class TestDatasetAccessorHTTP extends BaseTest
 
     @Test public void get_01()
     {
-        DatasetAccessor du = create() ;
+        DatasetAccessor du = connectToService() ;
         Model graph = du.getModel() ;
         assertTrue(graph.isEmpty()) ;
     }
     
     @Test public void get_02()
     {
-        DatasetAccessor du = create() ;
+        DatasetAccessor du = connectToService() ;
+        Model graph = du.getModel(gn1) ;
+        assertNull(graph) ;
+    }
+    
+    // Dataset direct, not using the service endpoint.  
+    @Test public void get_03()
+    {
+        DatasetAccessor du = connectToDataset() ;
+        Model graph = du.getModel() ;
+        assertTrue(graph.isEmpty()) ;
+    }
+
+    @Test public void get_04()
+    {
+        DatasetAccessor du = connectToDataset() ;
         Model graph = du.getModel(gn1) ;
         assertNull(graph) ;
     }
 
     @Test public void delete_01()
     {
-        DatasetAccessor du = create() ;
+        DatasetAccessor du = connectToService() ;
         du.deleteDefault() ;
     }
 
     @Test public void delete_02()
     {
-        DatasetAccessor du = create() ;
+        DatasetAccessor du = connectToService() ;
+        du.deleteModel(gn1) ;
+        boolean exists = du.containsModel(gn1) ;
+        assertFalse("Expected gn1 not to exist", exists) ;
+    }
+
+    @Test public void delete_03()
+    {
+        DatasetAccessor du = connectToDataset() ;
+        du.deleteDefault() ;
+    }
+
+    @Test public void delete_04()
+    {
+        DatasetAccessor du = connectToDataset() ;
         du.deleteModel(gn1) ;
         boolean exists = du.containsModel(gn1) ;
         assertFalse("Expected gn1 not to exist", exists) ;
@@ -158,7 +187,7 @@ public class TestDatasetAccessorHTTP extends BaseTest
 
     @Test public void put_01()
     {
-        DatasetAccessor du = create() ;
+        DatasetAccessor du = connectToService() ;
         du.putModel(model1) ;
         Model graph = du.getModel() ;
         assertTrue(graph.isIsomorphicWith(model1)) ;
@@ -170,7 +199,7 @@ public class TestDatasetAccessorHTTP extends BaseTest
     
     @Test public void put_02()
     {
-        DatasetAccessor du = create() ;
+        DatasetAccessor du = connectToService() ;
         du.putModel(gn1, model1) ;
         boolean exists = du.containsModel(gn1) ;
         assertTrue(exists) ;
@@ -192,7 +221,7 @@ public class TestDatasetAccessorHTTP extends BaseTest
 
     @Test public void put_03()
     {
-        DatasetAccessor du = create() ;
+        DatasetAccessor du = connectToService() ;
         du.putModel(model1) ;
         du.putModel(model2) ;  // PUT overwrites
         Model graph = du.getModel() ;
@@ -203,10 +232,23 @@ public class TestDatasetAccessorHTTP extends BaseTest
         graph = du.getModel() ;
         assertTrue(graph.isEmpty()) ;
     }
+    
+    @Test public void put_04()
+    {
+        DatasetAccessor du = connectToDataset() ;
+        du.putModel(model1) ;
+        Model graph = du.getModel() ;
+        assertTrue(graph.isIsomorphicWith(model1)) ;
+        // Empty it.
+        du.deleteDefault() ;
+        graph = du.getModel() ;
+        assertTrue(graph.isEmpty()) ;
+    }
+
 
     @Test public void post_01()
     {
-        DatasetAccessor du = create() ;
+        DatasetAccessor du = connectToService() ;
         du.putModel(model1) ;
         du.add(model2) ;  // POST appends
         Model graph = du.getModel() ;
@@ -226,7 +268,7 @@ public class TestDatasetAccessorHTTP extends BaseTest
 
     @Test public void post_02()
     {
-        DatasetAccessor du = create() ;
+        DatasetAccessor du = connectToService() ;
         du.add(model1) ;
         du.add(model2) ;
         Model graph = du.getModel() ;
@@ -244,17 +286,43 @@ public class TestDatasetAccessorHTTP extends BaseTest
         assertTrue(graph.isEmpty()) ;
     }
     
+    @Test public void post_03()
+    {
+        DatasetAccessor du = connectToDataset() ;
+        du.putModel(model1) ;
+        du.add(model2) ;  // POST appends
+        Model graph = du.getModel() ;
+        
+        Model graph3 = ModelFactory.createDefaultModel() ;
+        graph3.add(model1) ;
+        graph3.add(model2) ;
+        
+        assertFalse(graph.isIsomorphicWith(model1)) ;
+        assertFalse(graph.isIsomorphicWith(model2)) ;
+        assertTrue(graph.isIsomorphicWith(graph3)) ;
+        // Empty it.
+        du.deleteDefault() ;
+        graph = du.getModel() ;
+        assertTrue(graph.isEmpty()) ;
+    }
+    
     @Test public void clearup_1()
     {
-        DatasetAccessor du = create() ;
+        DatasetAccessor du = connectToService() ;
         du.deleteDefault() ;
         du.deleteModel(gn1) ;
         du.deleteModel(gn2) ;
         du.deleteModel(gn99) ;
     }
 
-    static DatasetAccessor create()
+    static DatasetAccessor connectToService()
     {
         return DatasetAccessorFactory.createHTTP(ServerTest.serviceREST) ;
     }
+    
+    static DatasetAccessor connectToDataset()
+    {
+        return DatasetAccessorFactory.createHTTP(ServerTest.urlDataset) ;
+    }
+
 }

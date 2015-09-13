@@ -25,7 +25,7 @@ import java.util.Set;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.NodeFactory;
-
+import org.apache.jena.shared.AuthenticationRequiredException;
 
 /**
  * SecurityEvaluator.
@@ -76,8 +76,8 @@ import org.apache.jena.graph.NodeFactory;
  * the user can execute the CRUD action against any arbitrary triple the system
  * should return <code>false</code>. </li>
  * <li>See <code>Node.ANY</code>, <code>SecurityEvaluator.FUTURE</code>, and
- * <code>SecurityEvaluator.VARIABLE</code> for discussion of specifics of their respective
- * usages.</li>
+ * <code>SecurityEvaluator.VARIABLE</code> for discussion of specifics of their
+ * respective usages.</li>
  * </ul>
  * </p>
  * </dd>
@@ -143,8 +143,7 @@ public interface SecurityEvaluator {
 		public static Set<Action> asSet(final Collection<Action> actions) {
 			if (actions instanceof Set) {
 				return (Set<Action>) actions;
-			}
-			else {
+			} else {
 				return new LinkedHashSet<Action>(actions);
 			}
 		}
@@ -154,62 +153,63 @@ public interface SecurityEvaluator {
 	 * Indicates a variable in the triple.
 	 * <p>
 	 * </p>
-	 * This differs from <code>ANY</code> in that the system is asking if
-	 * there are any prohibitions not if the user may perform. Thus queries
-	 * with the VARIABLE type node should return <code>true</code> where
-	 * <code>ANY</code> returns <code>false</code>. In general this type is
-	 * used in the query to determine if triple level filtering of results
-	 * must be performed.
+	 * This differs from <code>ANY</code> in that the system is asking if there
+	 * are any prohibitions not if the user may perform. Thus queries with the
+	 * VARIABLE type node should return <code>true</code> where <code>ANY</code>
+	 * returns <code>false</code>. In general this type is used in the query to
+	 * determine if triple level filtering of results must be performed.
 	 * <p>
 	 * </p>
 	 * <p>
 	 * <dl>
 	 * <dt><code>(VARIABLE, X, Y )</code></dt>
 	 * <dd>
-	 * Asks if there are any prohibitions against the user seeing all
-	 * subjects that have property X and object Y.</dd>
+	 * Asks if there are any prohibitions against the user seeing all subjects
+	 * that have property X and object Y.</dd>
 	 * <dt>
 	 * <code>(X, VARIABLE, Y )</code></dt>
 	 * <dd>
-	 * Asks if there are any prohibitions against the user seeing all
-	 * predicates that have subject X and object Y.</dd>
+	 * Asks if there are any prohibitions against the user seeing all predicates
+	 * that have subject X and object Y.</dd>
 	 * <dt>
 	 * <code>(X, Y, VARIABLE)</code></dt>
 	 * <dd>
-	 * Asks if there are any prohibitions against the user seeing all
-	 * objects that have subject X and predicate Y.</dd>
+	 * Asks if there are any prohibitions against the user seeing all objects
+	 * that have subject X and predicate Y.</dd>
 	 * </dl>
-	 * The <code>VARIABLE</code> may occur multiple times and may occur with
-	 * the <code>ANY</code> node.
+	 * The <code>VARIABLE</code> may occur multiple times and may occur with the
+	 * <code>ANY</code> node.
 	 * </p>
 	 * 
 	 */
-	public static final Node VARIABLE = NodeFactory.createBlankNode( "urn:jena-permissions:VARIABLE");
+	public static final Node VARIABLE = NodeFactory
+			.createBlankNode("urn:jena-permissions:VARIABLE");
 
 	/**
 	 * This is a blank (anonymous) node that will be created in the future.
 	 * <p>
-	 * FUTURE is used to check that a blank node may be created in as
-	 * specific position in a triple.
+	 * FUTURE is used to check that a blank node may be created in as specific
+	 * position in a triple.
 	 * </p>
 	 * <p>
 	 * <dl>
 	 * <dt><code>(FUTURE, X, Y )</code></dt>
 	 * <dd>
-	 * Asks if there the user may create a blank node that has property
-	 * X and object Y.</dd>
+	 * Asks if there the user may create a blank node that has property X and
+	 * object Y.</dd>
 	 * <dt>
 	 * <code>(X, Y, FUTURE)</code></dt>
 	 * <dd>
-	 * Asks if there the user may create a blank node that has subject
-	 * X and property Y.</dd>
+	 * Asks if there the user may create a blank node that has subject X and
+	 * property Y.</dd>
 	 * </dl>
-	 * The <code>FUTURE</code> may occur multiple times and may occur with
-	 * the <code>ANY</code> node.
+	 * The <code>FUTURE</code> may occur multiple times and may occur with the
+	 * <code>ANY</code> node.
 	 * </p>
 	 */
-	public static final Node FUTURE = NodeFactory.createBlankNode( "urn:jena-permissions:FUTURE");
-	
+	public static final Node FUTURE = NodeFactory
+			.createBlankNode("urn:jena-permissions:FUTURE");
+
 	/**
 	 * Determine if the action is allowed on the graph.
 	 *
@@ -221,9 +221,11 @@ public interface SecurityEvaluator {
 	 * @param graphIRI
 	 *            The IRI of the graph to check
 	 * @return true if the action is allowed, false otherwise.
-	 * 
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean evaluate(Object principal, Action action, Node graphIRI);
+	public boolean evaluate(Object principal, Action action, Node graphIRI)
+			throws AuthenticationRequiredException;
 
 	/**
 	 * Determine if the action is allowed on the triple within the graph.
@@ -268,9 +270,11 @@ public interface SecurityEvaluator {
 	 * @return true if the action is allowed, false otherwise.
 	 * @throws IllegalArgumentException
 	 *             if any argument is null.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	public boolean evaluate(Object principal, Action action, Node graphIRI,
-			Triple triple);
+			Triple triple) throws AuthenticationRequiredException;
 
 	/**
 	 * Determine if all actions are allowed on the graph.
@@ -286,9 +290,11 @@ public interface SecurityEvaluator {
 	 * @return true if all the actions are allowed, false otherwise.
 	 * @throws IllegalArgumentException
 	 *             if any argument is null.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean evaluate(Object principal, Set<Action> actions,
-			Node graphIRI);
+	public boolean evaluate(Object principal, Set<Action> actions, Node graphIRI)
+			throws AuthenticationRequiredException;
 
 	/**
 	 * Determine if all the actions are allowed on the triple within the graph.
@@ -307,9 +313,12 @@ public interface SecurityEvaluator {
 	 * @return true if all the actions are allowed, false otherwise.
 	 * @throws IllegalArgumentException
 	 *             if any argument is null.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	public boolean evaluate(Object principal, Set<Action> actions,
-			Node graphIRI, Triple triple);
+			Node graphIRI, Triple triple)
+			throws AuthenticationRequiredException;
 
 	/**
 	 * Determine if any of the actions are allowed on the graph.
@@ -325,9 +334,11 @@ public interface SecurityEvaluator {
 	 * @return true true if any the actions are allowed, false otherwise.
 	 * @throws IllegalArgumentException
 	 *             if any argument is null.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	public boolean evaluateAny(Object principal, Set<Action> actions,
-			Node graphIRI);
+			Node graphIRI) throws AuthenticationRequiredException;
 
 	/**
 	 * Determine if any of the actions are allowed on the triple within the
@@ -350,9 +361,12 @@ public interface SecurityEvaluator {
 	 * @return true if any the actions are allowed, false otherwise.
 	 * @throws IllegalArgumentException
 	 *             if any argument is null.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	public boolean evaluateAny(Object principal, Set<Action> actions,
-			Node graphIRI, Triple triple);
+			Node graphIRI, Triple triple)
+			throws AuthenticationRequiredException;
 
 	/**
 	 * Determine if the user is allowed to update the "from" triple to the "to"
@@ -374,9 +388,11 @@ public interface SecurityEvaluator {
 	 * @return true if the user may make the change, false otherwise.
 	 * @throws IllegalArgumentException
 	 *             if any argument is null.
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean evaluateUpdate(Object principal, Node graphIRI,
-			Triple from, Triple to);
+	public boolean evaluateUpdate(Object principal, Node graphIRI, Triple from,
+			Triple to) throws AuthenticationRequiredException;
 
 	/**
 	 * returns the current principal or null if there is no current principal.
@@ -389,4 +405,20 @@ public interface SecurityEvaluator {
 	 * @return The current principal
 	 */
 	public Object getPrincipal();
+
+	/**
+	 * Returns true if the principal is recognized as an authenticated principal
+	 * by the underlying authentication mechanism.
+	 * 
+	 * This is to handle the case where an authentication mechanism returns a
+	 * non-null object to indicate a non-authenticated principal. (e.g. Shiro).
+	 * 
+	 * The principal is guaranteed to have been the return value from an earlier
+	 * getPrincipal() call.
+	 * 
+	 * @param principal
+	 *            The principal to check.
+	 * @return true if authenticated, false if not.
+	 */
+	public boolean isPrincipalAuthenticated(Object principal);
 }

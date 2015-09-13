@@ -16,7 +16,9 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.apache.jena</groupId>
@@ -645,9 +647,10 @@
               <link>http://jena.apache.org/documentation/javadoc/tdb/</link>
               <link>http://jena.apache.org/documentation/javadoc/text/</link>
               <link>http://jena.apache.org/documentation/javadoc/spatial/</link>
-              <link>http://jena.apache.org/documentation/javadoc/fuseki/</link>
+              <link>http://jena.apache.org/documentation/javadoc/fuseki2/</link>
               <link>http://jena.apache.org/documentation/javadoc/permissions/</link>
               <link>http://jena.apache.org/documentation/javadoc/jdbc/</link>
+              <link>http://jena.apache.org/documentation/javadoc/elephas/</link>
             </links>
           </configuration>
         </plugin>

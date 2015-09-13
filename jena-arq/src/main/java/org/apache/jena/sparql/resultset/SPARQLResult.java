@@ -18,12 +18,13 @@
 
 package org.apache.jena.sparql.resultset;
 
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.graph.Node;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.BindingMap;
 
 /**
  * The class "ResultSet" is reserved for the SELECT result format.
@@ -37,6 +38,7 @@ public class SPARQLResult
     private ResultSet resultSet = null ;
     private Boolean booleanResult = null ;
     private Model model = null ;
+    private Dataset dataset = null ;
     
     // Delayed choice of result type.
     protected SPARQLResult() {}
@@ -44,6 +46,7 @@ public class SPARQLResult
     public SPARQLResult(Model model)            { set(model) ; }
     public SPARQLResult(ResultSet resultSet)    { set(resultSet) ;}
     public SPARQLResult(boolean booleanResult)  { set(booleanResult) ; }
+    public SPARQLResult(Dataset dataset)        { set(dataset) ; }
     
     public boolean isResultSet()
     {
@@ -60,6 +63,13 @@ public class SPARQLResult
         if ( ! hasBeenSet )
             throw new ResultSetException("Not set") ;
         return model != null ;
+    }
+    
+    public boolean isDataset()
+    {
+        if ( ! hasBeenSet )
+            throw new ResultSetException("Not set") ;
+        return dataset != null ;
     }
 
     public boolean isBoolean()
@@ -96,6 +106,14 @@ public class SPARQLResult
         return model ;
     }
     
+    public Dataset getDataset() { 
+        if ( ! hasBeenSet )
+            throw new ResultSetException("Not set") ;
+        if ( ! isDataset() )
+            throw new ResultSetException("Not a dataset result") ;
+        return dataset ;
+    }
+    
     public boolean isHasBeenSet() { return hasBeenSet; }
     
     protected void set(ResultSet rs)
@@ -106,6 +124,9 @@ public class SPARQLResult
 
     protected void set(Model m)
     { model = m ; hasBeenSet = true ; }
+    
+    protected void set(Dataset d)
+    { dataset = d ; hasBeenSet = true ; }
     
     protected void set(boolean r)
     { set (new Boolean(r)) ; } 

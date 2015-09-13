@@ -28,9 +28,30 @@ public class DEF
     public static final MediaType acceptNQuads        = MediaType.create(contentTypeNQuads) ;
     public static final MediaType acceptRSXML         = MediaType.create(contentTypeResultsXML) ;
     public static final MediaType acceptJSON          = MediaType.create(contentTypeJSON) ;
+    public static final MediaType acceptTurtle        = MediaType.create(contentTypeTurtle) ;
     
     public static final AcceptList jsonOffer          = AcceptList.create(contentTypeJSON) ;
 
+    public static final AcceptList constructOffer     = AcceptList.create(contentTypeTurtle, 
+                                                                          contentTypeTurtleAlt1,
+                                                                          contentTypeTurtleAlt2,
+                                                                          contentTypeNTriples,
+                                                                          contentTypeNTriplesAlt,
+                                                                          contentTypeRDFXML,
+                                                                          contentTypeTriX,
+                                                                          contentTypeTriXxml,
+                                                                          contentTypeJSONLD,
+                                                                          contentTypeRDFJSON,
+                                                                          contentTypeRDFThrift,
+                                                                          
+                                                                          contentTypeTriG,
+                                                                          contentTypeTriGAlt1,
+                                                                          contentTypeTriGAlt2,
+                                                                          contentTypeNQuads,
+                                                                          contentTypeNQuadsAlt1,
+                                                                          contentTypeNQuadsAlt2
+                                                                          ) ;
+    
     public static final AcceptList rdfOffer           = AcceptList.create(contentTypeTurtle, 
                                                                           contentTypeTurtleAlt1,
                                                                           contentTypeTurtleAlt2,

@@ -24,7 +24,7 @@ import org.apache.jena.rdf.model.* ;
  */
 public class DCTerms {
     /** <p>The RDF model that holds the vocabulary terms</p> */
-    private static Model m_model = ModelFactory.createDefaultModel();
+    private static final Model m_model = ModelFactory.createDefaultModel();
     
     /** <p>The namespace of the vocabulary as a string</p> */
     public static final String NS = "http://purl.org/dc/terms/";

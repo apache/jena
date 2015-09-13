@@ -23,8 +23,8 @@ package jena.examples.ontology.classHierarchy;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+import org.apache.jena.ontology.*;
+import org.apache.jena.rdf.model.ModelFactory;
 
 
 /**

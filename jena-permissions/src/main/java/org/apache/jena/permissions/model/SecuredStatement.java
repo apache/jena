@@ -17,10 +17,10 @@
  */
 package org.apache.jena.permissions.model;
 
-
 import org.apache.jena.permissions.SecuredItem;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.shared.ReadDeniedException;
 import org.apache.jena.shared.UpdateDeniedException;
@@ -30,106 +30,127 @@ import org.apache.jena.shared.UpdateDeniedException;
  * 
  * Use the SecuredStatement.Factory to create instances
  */
-public interface SecuredStatement extends Statement, SecuredItem
-{
+public interface SecuredStatement extends Statement, SecuredItem {
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update
 	 * @throws UpdateDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement changeLiteralObject( boolean o )
-			throws UpdateDeniedException;
+	public SecuredStatement changeLiteralObject(boolean o)
+			throws UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update
 	 * @throws UpdateDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement changeLiteralObject( char o )
-			throws UpdateDeniedException;
+	public SecuredStatement changeLiteralObject(char o)
+			throws UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update
 	 * @throws UpdateDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement changeLiteralObject( double o )
-			throws UpdateDeniedException;
+	public SecuredStatement changeLiteralObject(double o)
+			throws UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update
 	 * @throws UpdateDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement changeLiteralObject( float o )
-			throws UpdateDeniedException;
+	public SecuredStatement changeLiteralObject(float o)
+			throws UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update
 	 * @throws UpdateDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement changeLiteralObject( int o )
-			throws UpdateDeniedException;
+	public SecuredStatement changeLiteralObject(int o)
+			throws UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update
 	 * @throws UpdateDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement changeLiteralObject( long o )
-			throws UpdateDeniedException;
+	public SecuredStatement changeLiteralObject(long o)
+			throws UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update
 	 * @throws UpdateDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement changeObject( RDFNode o )
-			throws UpdateDeniedException;
+	public SecuredStatement changeObject(RDFNode o)
+			throws UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update
 	 * @throws UpdateDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement changeObject( String o )
-			throws UpdateDeniedException;
+	public SecuredStatement changeObject(String o)
+			throws UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update
 	 * @throws UpdateDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement changeObject( String o, boolean wellFormed )
-			throws UpdateDeniedException;
+	public SecuredStatement changeObject(String o, boolean wellFormed)
+			throws UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update
 	 * @throws UpdateDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement changeObject( String o, String l )
-			throws UpdateDeniedException;
+	public SecuredStatement changeObject(String o, String l)
+			throws UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Update
 	 * @throws UpdateDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement changeObject( String o, String l, boolean wellFormed )
-			throws UpdateDeniedException;
+	public SecuredStatement changeObject(String o, String l, boolean wellFormed)
+			throws UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read, Update
@@ -137,10 +158,13 @@ public interface SecuredStatement extends Statement, SecuredItem
 	 * @throws ReadDeniedException
 	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
 	public SecuredReifiedStatement createReifiedStatement()
-			throws ReadDeniedException, UpdateDeniedException, AddDeniedException;
+			throws ReadDeniedException, UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read, Update
@@ -148,10 +172,13 @@ public interface SecuredStatement extends Statement, SecuredItem
 	 * @throws ReadDeniedException
 	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredReifiedStatement createReifiedStatement( String uri )
-			throws ReadDeniedException, UpdateDeniedException, AddDeniedException;
+	public SecuredReifiedStatement createReifiedStatement(String uri)
+			throws ReadDeniedException, UpdateDeniedException,
+			AddDeniedException, AuthenticationRequiredException;
 
 	@Override
 	public SecuredAlt getAlt();
@@ -162,51 +189,72 @@ public interface SecuredStatement extends Statement, SecuredItem
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean getBoolean() throws ReadDeniedException;
+	public boolean getBoolean() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public byte getByte() throws ReadDeniedException;
+	public byte getByte() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public char getChar() throws ReadDeniedException;
+	public char getChar() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public double getDouble() throws ReadDeniedException;
+	public double getDouble() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public float getFloat() throws ReadDeniedException;
+	public float getFloat() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public int getInt() throws ReadDeniedException;
+	public int getInt() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public String getLanguage() throws ReadDeniedException;
+	public String getLanguage() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	@Override
 	public SecuredLiteral getLiteral();
@@ -214,9 +262,12 @@ public interface SecuredStatement extends Statement, SecuredItem
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public long getLong() throws ReadDeniedException;
+	public long getLong() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	@Override
 	public SecuredModel getModel();
@@ -228,14 +279,14 @@ public interface SecuredStatement extends Statement, SecuredItem
 	public SecuredProperty getPredicate();
 
 	@Override
-	public SecuredStatement getProperty( Property p );
+	public SecuredStatement getProperty(Property p);
 
 	@Override
 	public SecuredResource getResource();
 
 	@Override
 	@Deprecated
-	public SecuredResource getResource( ResourceF f );
+	public SecuredResource getResource(ResourceF f);
 
 	@Override
 	public SecuredSeq getSeq();
@@ -243,19 +294,25 @@ public interface SecuredStatement extends Statement, SecuredItem
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public short getShort() throws ReadDeniedException;
+	public short getShort() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	@Override
-	public SecuredStatement getStatementProperty( Property p );
+	public SecuredStatement getStatementProperty(Property p);
 
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public String getString() throws ReadDeniedException;
+	public String getString() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	@Override
 	public SecuredResource getSubject();
@@ -264,42 +321,57 @@ public interface SecuredStatement extends Statement, SecuredItem
 	 * @sec.graph Read
 	 * @sec.triple Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean hasWellFormedXML() throws ReadDeniedException;
+	public boolean hasWellFormedXML() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean isReified() throws ReadDeniedException;
+	public boolean isReified() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
 	 * @sec.triple Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public RSIterator listReifiedStatements() throws ReadDeniedException;
+	public RSIterator listReifiedStatements() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete
 	 * @throws UpdateDeniedException
 	 * @throws DeleteDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement remove() throws UpdateDeniedException, DeleteDeniedException;
+	public SecuredStatement remove() throws UpdateDeniedException,
+			DeleteDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete
 	 * @throws UpdateDeniedException
 	 * @throws DeleteDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public void removeReification() throws UpdateDeniedException, DeleteDeniedException;
+	public void removeReification() throws UpdateDeniedException,
+			DeleteDeniedException, AuthenticationRequiredException;
 
 }

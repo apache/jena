@@ -18,23 +18,25 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import org.apache.jena.atlas.web.MediaType;
-import org.apache.jena.fuseki.DEF;
-import org.apache.jena.fuseki.FusekiException;
-import org.apache.jena.fuseki.conneg.ConNeg;
-import org.apache.jena.fuseki.server.DataAccessPoint;
-import org.apache.jena.fuseki.server.DataService;
-import org.apache.jena.fuseki.server.Endpoint;
-import org.apache.jena.fuseki.server.OperationName;
-import org.apache.jena.riot.web.HttpNames;
+import static java.lang.String.format ;
+import static org.apache.jena.riot.WebContent.contentTypeSPARQLQuery ;
+import static org.apache.jena.riot.WebContent.contentTypeSPARQLUpdate ;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import java.util.List ;
 
-import static java.lang.String.format;
-import static org.apache.jena.riot.WebContent.contentTypeSPARQLQuery;
-import static org.apache.jena.riot.WebContent.contentTypeSPARQLUpdate;
+import javax.servlet.http.HttpServletRequest ;
+import javax.servlet.http.HttpServletResponse ;
+
+import org.apache.jena.atlas.web.MediaType ;
+import org.apache.jena.fuseki.DEF ;
+import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.fuseki.conneg.ConNeg ;
+import org.apache.jena.fuseki.server.DataAccessPoint ;
+import org.apache.jena.fuseki.server.DataService ;
+import org.apache.jena.fuseki.server.Endpoint ;
+import org.apache.jena.fuseki.server.OperationName ;
+import org.apache.jena.riot.web.HttpNames ;
 
 /** This servlet can be attached to a dataset location
  *  and acts as a router for all SPARQL operations
@@ -96,14 +98,11 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         }
     }
     
-    /*  This can be used for a single servlet for everything (über-servlet)
+    /* This can be used for a single servlet for everything (über-servlet)
      *  
-     *  It can check for a request that looks like a service request and passes it on.
+     * It can check for a request that looks like a service request and passes it on.
      * This takes precedence over direct naming.
      */
-    
-    // Refactor? Extract the direct naming handling.
-    // To test: enable in SPARQLServer.configureOneDataset
     
     private final ActionSPARQL queryServlet    = new SPARQL_QueryDataset() ;
     private final ActionSPARQL updateServlet   = new SPARQL_Update() ;
@@ -204,6 +203,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
                     restQuads_R.executeLifecycle(action) ;
                 else
                     ServletOps.errorForbidden("Forbidden: "+method+" on dataset") ;
+                return ; 
             }
             if ( allowREST_W(action) )
                 restQuads_RW.executeLifecycle(action) ;
@@ -267,10 +267,15 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         if ( hasParams )
             // ?? Revisit to include query-on-one-graph 
             //errorBadRequest("Can't invoke a query-string service on a direct named graph") ;
-            ServletOps.errorNotFound("Not found: dataset='"+printName(desc.getName())+"' service='"+printName(trailing)+"'");
+            ServletOps.errorNotFound("Not found: dataset='"+printName(desc.getName())+
+                                     "' service='"+printName(trailing)+
+                                     "' query string=?"+qs);
 
         // There is a trailing part - not a service, no params ==> GSP direct naming.
-        doGraphStoreProtocol(action) ;
+        if ( ! Fuseki.GSP_DIRECT_NAMING )
+            ServletOps.errorNotFound("Not found: dataset='"+printName(desc.getName())+"' service='"+printName(trailing)+"'");
+        
+        doGraphStoreProtocol(action);
     }
     
     /** See if the operation is enabled for this setup.
@@ -311,7 +316,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         {
             // Graphs Store Protocol, indirect naming, read operations
             // Try to send to the R service, else drop through to RW service dispatch.
-            if ( allowREST_R(action)) 
+            if ( ! allowREST_R(action)) 
                 ServletOps.errorForbidden("Forbidden: SPARQL Graph Store Protocol : Read operation : "+method) ;
             executeRequest(action, gspServlet_R) ;
             return ;

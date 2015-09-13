@@ -42,9 +42,6 @@ import org.junit.runners.Suite ;
     , TestAdmin.class
 })
 
-
-
-
 public class TS_Fuseki extends ServerTest
 {
     public static final String FusekiTestHome = "target/FusekiHome" ;

@@ -119,13 +119,15 @@ public class TestClassify extends BaseTest
     @Test public void testClassify_Join_43() 
     { classifyJ("{ ?x ?y ?z { LET(?A := ?z+2) } UNION { }}", false) ; }
     
+    @Test public void testClassify_Join_44() 
+    { classifyJ("{ BIND(<x> AS ?typeX) { BIND(?typeX AS ?type) ?s ?p ?o FILTER(?o=?type) } }", false) ; }
+    
     private void classifyJ(String pattern, boolean expected)
     {
         String qs1 = "PREFIX : <http://example/>\n" ;
         String qs = qs1+"SELECT * "+pattern;
         Query query = QueryFactory.create(qs, Syntax.syntaxARQ) ;
         Op op = Algebra.compile(query.getQueryPattern()) ;
-        
         if ( ! ( op instanceof OpJoin ) )
             fail("Not a join: "+pattern) ;
 

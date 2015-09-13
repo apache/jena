@@ -39,7 +39,7 @@ public class LocatorHTTP extends LocatorURL {
     @Override
     public TypedInputStream performOpen(String uri) {
         if ( uri.startsWith("http://") || uri.startsWith("https://") )
-            return HttpOp.execHttpGet(uri, WebContent.defaultGraphAcceptHeader) ;
+            return HttpOp.execHttpGet(uri, WebContent.defaultRDFAcceptHeader) ;
         return null ;
     }
 

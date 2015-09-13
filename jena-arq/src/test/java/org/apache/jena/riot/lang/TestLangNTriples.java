@@ -24,14 +24,10 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RiotException;
-import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.out.CharSpace;
-import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.sparql.sse.SSE ;
@@ -42,87 +38,79 @@ import org.junit.Test ;
 public class TestLangNTriples extends TestLangNTuples
 {
     // Test streaming interface.
-    
-    @Test public void nt_reader_twice()
-    {
-        String s = "_:a <p> 'foo' . " ;
-        StringReader r = new StringReader(s) ;
-        Model m = ModelFactory.createDefaultModel() ;
-        
-        RDFDataMgr.read(m, r, null, RDFLanguages.NTRIPLES) ;
-        assertEquals(1, m.size()) ;
-        
-        String x = m.listStatements().next().getSubject().getId().getLabelString() ;
-        assertNotEquals(x, "a") ;
-        
-        // reset - reread -  new bNode.
-        r = new StringReader(s) ;
-        RDFDataMgr.read(m, r, null, RDFLanguages.NTRIPLES) ;
-        assertEquals(2, m.size()) ;
+
+    @Override
+    protected Lang getLang() {
+        return Lang.NTRIPLES ;
     }
 
     @Test
-    public void nt_model_1()
-    {
-        Model m1 = parseToModel("<x> <p> \"abc-\\u00E9\". ") ;
-        assertEquals(1, m1.size()) ;
-        Model m2 = parseToModel("<x> <p> \"abc-\\u00E9\". ") ;
-        assertTrue(m1.isIsomorphicWith(m2)) ;
-        Graph g1 = SSE.parseGraph("(graph (triple <x> <p> \"abc-é\"))") ;
-        assertTrue(g1.isIsomorphicWith(m1.getGraph())) ;
-    }
+    public void nt_reader_twice() {
+        String s = "_:a <p> 'foo' . ";
+        StringReader r = new StringReader(s);
+        Model m = ModelFactory.createDefaultModel();
 
-    @Test(expected=ExFatal.class) 
-    public void nt_only_1()
-    {
-        parseCount("<x> <p> <s> <g> .") ; 
-    }
+        RDFDataMgr.read(m, r, null, RDFLanguages.NTRIPLES);
+        assertEquals(1, m.size());
 
-    @Test(expected=ExFatal.class) 
-    public void nt_only_2()
-    {
-        parseCount("@base <http://example/> . <x> <p> <s> .") ; 
+        String x = m.listStatements().next().getSubject().getId().getLabelString();
+        assertNotEquals(x, "a");
+
+        // reset - reread - new bNode.
+        r = new StringReader(s);
+        RDFDataMgr.read(m, r, null, RDFLanguages.NTRIPLES);
+        assertEquals(2, m.size());
     }
 
     @Test
-    public void nt_only_5()
-    {
-        parseCount("<x> <p> \"é\" .") ; 
+    public void nt_model_1() {
+        Model m1 = parseToModel("<x> <p> \"abc-\\u00E9\". ");
+        assertEquals(1, m1.size());
+        Model m2 = parseToModel("<x> <p> \"abc-\\u00E9\". ");
+        assertTrue(m1.isIsomorphicWith(m2));
+        Graph g1 = SSE.parseGraph("(graph (triple <x> <p> \"abc-é\"))");
+        assertTrue(g1.isIsomorphicWith(m1.getGraph()));
     }
-    
+
+    @Test(expected = ExFatal.class)
+    public void nt_only_1() {
+        parseCount("<x> <p> <s> <g> .");
+    }
+
+    @Test(expected = ExFatal.class)
+    public void nt_only_2() {
+        parseCount("@base <http://example/> . <x> <p> <s> .");
+    }
+
+    @Test
+    public void nt_only_5() {
+        parseCount("<x> <p> \"é\" .");
+    }
+
+    @Override
+    protected long parseCount(String... strings) {
+        return ParserTestBaseLib.parseCount(Lang.NTRIPLES, strings) ;
+    }
+
     @Test(expected = RiotException.class)
-    public void nt_only_5b()
-    {
-        parseCount(CharSpace.ASCII, "<x> <p> \"é\" .") ; 
-    }
-    
-    @Override
-    protected long parseCount(String... strings) {
-        return parseCount(CharSpace.UTF8, strings);
-    }
-    
-    private long parseCount(CharSpace charSpace, String... strings)
-    {
-        String string = StrUtils.strjoin("\n", strings) ;
-        Tokenizer tokenizer = tokenizer(charSpace, string) ;
-        StreamRDFCounting sink = StreamRDFLib.count() ;
-        LangNTriples x = RiotReader.createParserNTriples(tokenizer, sink) ;
-        x.getProfile().setHandler(new ErrorHandlerEx()) ;
-        x.parse() ;
-        return sink.count() ;
+    public void nt_only_5b() {
+        parseCount(CharSpace.ASCII, "<x> <p> \"é\" .");
     }
 
-    @Override
-    protected LangRIOT createParser(Tokenizer tokenizer, StreamRDF sink)
-    {
-        return RiotReader.createParserNTriples(tokenizer, sink) ;
-    } 
+    private long parseCount(CharSpace charSpace, String... strings) {
+        String string = StrUtils.strjoin("\n", strings);
+        Tokenizer tokenizer = tokenizer(charSpace, string);
+        StreamRDFCounting sink = StreamRDFLib.count();
+        LangNTriples x = RiotParsers.createParserNTriples(tokenizer, sink);
+        x.getProfile().setHandler(new ErrorHandlerEx());
+        x.parse();
+        return sink.count();
+    }
 
-    protected Model parseToModel(String string)
-    {
-        StringReader r = new StringReader(string) ;
-        Model model = ModelFactory.createDefaultModel() ;
-        RDFDataMgr.read(model, r, null, RDFLanguages.NTRIPLES) ;
-        return model ;
+    protected Model parseToModel(String string) {
+        StringReader r = new StringReader(string);
+        Model model = ModelFactory.createDefaultModel();
+        RDFDataMgr.read(model, r, null, RDFLanguages.NTRIPLES);
+        return model;
     }
 }

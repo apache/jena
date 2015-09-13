@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.engine;
+package org.apache.jena.sparql.engine.ref;
 
 import static org.apache.jena.sparql.algebra.JoinType.* ;
 
@@ -28,6 +28,8 @@ import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.algebra.JoinType ;
 import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.algebra.table.TableUnit ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.iterator.QueryIterFilterExpr ;
 import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator ;
@@ -35,11 +37,14 @@ import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 
-/** Table join - this only happens if the patterns can not be streamed. */  
+/** Table join - this only happens if the patterns can not be streamed.
+ * This code is simple! 
+ * Primarily for use in testing and also the reference query engine which is designed for simplicity, not performance.
+ */  
 public class TableJoin
 {
     public static QueryIterator join(QueryIterator left, Table right, ExprList condition, ExecutionContext execCxt) {
-        return joinWorker(left, right, PLAIN, condition, execCxt) ;
+        return joinWorker(left, right, INNER, condition, execCxt) ;
     }
     
     public static QueryIterator leftJoin(QueryIterator left, Table right, ExprList condition, ExecutionContext execCxt) {
@@ -48,27 +53,22 @@ public class TableJoin
 
     public static QueryIterator joinWorker(QueryIterator left, Table right, JoinType joinType, ExprList conditions, ExecutionContext execCxt) {
         if ( right.isEmpty() ) {
-            if ( joinType == PLAIN ) {
+            if ( joinType == INNER ) {
                 // No rows - no match
                 left.close() ;
                 return QueryIterNullIterator.create(execCxt) ;
             }
             else
+                // Left join - pass out left rows regardless of conditions.
                 return left ;
         }
         
-        if ( TableUnit.isTableUnit(right) ) {
-            if ( joinType == PLAIN )
-                return applyConditions(left, conditions, execCxt) ;
-            else
-                return left ;
-        }
+        if ( TableUnit.isTableUnit(right) )
+            return applyConditions(left, conditions, execCxt) ;
         return joinWorkerN(left, right, joinType, conditions, execCxt) ;
     }
             
     private static QueryIterator joinWorkerN(QueryIterator left, Table right, JoinType joinType, ExprList conditions, ExecutionContext execCxt) {       
-        // We could hash the right except we don't know much about columns.
-        
         List<Binding> out = new ArrayList<>() ;
         for ( ; left.hasNext() ; ) {
             Binding bindingLeft = left.next() ;
@@ -90,7 +90,6 @@ public class TableJoin
                 // Conditions on left?
                 out.add(bindingLeft) ;
         }
-        
         return new QueryIterPlainWrapper(out.iterator(), execCxt) ;
     }
     

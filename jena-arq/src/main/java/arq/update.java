@@ -29,6 +29,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.sparql.core.TransactionalNull ;
 import org.apache.jena.update.UpdateExecutionFactory ;
@@ -58,7 +59,6 @@ public class update extends CmdUpdate
     protected void processModulesAndArgs() {
         requestFiles = getValues(updateArg) ; // ????
         dump = contains(dumpArg) ;
-
         super.processModulesAndArgs() ;
     }
 
@@ -82,9 +82,11 @@ public class update extends CmdUpdate
                 execOneFile(filename, graphStore) ;
                 transactional.commit() ;
             }
-            finally {
-                transactional.end() ;
+            catch (Throwable ex) { 
+                try { transactional.abort() ; } catch (Exception ex2) {}
+                throw ex ;
             }
+            finally { transactional.end() ; }
         }
 
         for ( String requestString : super.getPositional() ) {
@@ -95,10 +97,11 @@ public class update extends CmdUpdate
                 execOne(requestString, graphStore) ;
                 transactional.commit() ;
             }
-            finally {
-                transactional.end() ;
+            catch (Throwable ex) { 
+                try { transactional.abort() ; } catch (Exception ex2) {}
+                throw ex ;
             }
-
+            finally { transactional.end() ; }
         }
         SystemARQ.sync(graphStore) ;
 
@@ -114,5 +117,10 @@ public class update extends CmdUpdate
     private void execOne(String requestString, DatasetGraph store) {
         UpdateRequest req = UpdateFactory.create(requestString, updateSyntax) ;
         UpdateExecutionFactory.create(req, store).execute() ;
+    }
+
+    @Override
+    protected DatasetGraph dealWithNoDataset() {
+        return DatasetGraphFactory.createMem() ;
     }
 }

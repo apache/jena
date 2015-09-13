@@ -92,7 +92,9 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
     @Override
     final public void close() {
         sync() ;
-        super.close() ;
+        // Ignore - graphs are projectsion of the overlying database.
+        // "Close graph" is messy in this projection world. 
+        //super.close() ;
     }
 
     protected static ExtendedIterator<Triple> graphBaseFindDft(DatasetGraphTDB dataset, Triple triple) {

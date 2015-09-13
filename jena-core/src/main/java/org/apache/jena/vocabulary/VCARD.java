@@ -41,7 +41,7 @@ public class VCARD {
           return uri;
     }
 
-    private static Model m = ModelFactory.createDefaultModel();
+    private static final Model m = ModelFactory.createDefaultModel();
     
     public static final Resource ORGPROPERTIES = m.createResource(uri + "ORGPROPERTIES" );
     public static final Resource ADRTYPES = m.createResource(uri + "ADRTYPES" );

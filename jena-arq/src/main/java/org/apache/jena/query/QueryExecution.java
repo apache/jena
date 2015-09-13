@@ -18,16 +18,15 @@
 
 package org.apache.jena.query;
 
-import java.util.Iterator ;
-import java.util.concurrent.TimeUnit ;
+import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.util.Context;
 
 /** A interface for a single execution of a query. */
-
-
 public interface QueryExecution extends AutoCloseable 
 {
     /** Set the initial association of variables and values.
@@ -101,7 +100,31 @@ public interface QueryExecution extends AutoCloseable
      * by applying the CONSTRUCT template of the query to the bindings in the WHERE clause.
      */
     public Iterator<Triple> execConstructTriples();
+    
+    /**
+     * Execute a CONSTRUCT query, returning the results as an iterator of {@link Quad}.
+     * <p>
+     * <b>Caution:</b> This method may return duplicate Quads.  This method may be useful if you only
+     * need the results for stream processing, as it can avoid having to place the results in a Model.
+     * </p>
+     * @return An iterator of Quad objects (possibly containing duplicates) generated
+     * by applying the CONSTRUCT template of the query to the bindings in the WHERE clause.
+     * </p>
+     * <p>
+     * See {@link #execConstructTriples} for usage and features.
+     */
+    public Iterator<Quad> execConstructQuads();
+    
+    /** Execute a CONSTRUCT query, putting the statements into 'dataset'.
+     *  This maybe an exetended synatx query (if supported).   
+     */
+    public Dataset execConstructDataset();
 
+    /** Execute a CONSTRUCT query, putting the statements into 'dataset'.
+     *  This maybe an exetended synatx query (if supported).   
+     */
+    public Dataset execConstructDataset(Dataset dataset);
+    
     /** Execute a DESCRIBE query */
     public Model execDescribe();
 

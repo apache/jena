@@ -2260,7 +2260,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
      if ( AggregateRegistry.isRegistered(fname) ) {
          if ( ! allowAggregatesInExpressions )
             throwParseException("Aggregate expression not legal at this point : "+fname, -1, -1) ;
-         Aggregator agg = AggregatorFactory.createCustom(fname, a) ;
+         Aggregator agg = AggregatorFactory.createCustom(true, false, fname, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
          {if (true) return exprAgg ;}
      }
@@ -4653,7 +4653,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     if ( AggregateRegistry.isRegistered(iri) ) {
          if ( ! allowAggregatesInExpressions )
             throwParseException("Aggregate expression not legal at this point : "+iri, -1, -1) ;
-         Aggregator agg = AggregatorFactory.createCustom(iri, a) ;
+         Aggregator agg = AggregatorFactory.createCustom(true, false, iri, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
          {if (true) return exprAgg ;}
       }

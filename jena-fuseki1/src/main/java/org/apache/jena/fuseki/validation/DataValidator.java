@@ -36,8 +36,8 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.lang.RiotParsers ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.StreamRDF ;
@@ -167,7 +167,7 @@ public class DataValidator extends ValidatorBase
 
         StreamRDF dest = StreamRDFLib.sinkQuads(sink) ;
         @SuppressWarnings("deprecation")
-        LangRIOT parser = RiotReader.createParser(tokenizer, language, null, dest) ;
+        LangRIOT parser = RiotParsers.createParser(tokenizer, language, null, dest) ;
         // Don't resolve IRIs.  Do checking.
         parser.setProfile(RiotLib.profile(null, false, true, errorHandler)) ;
         return parser ;

@@ -17,8 +17,8 @@
  */
 package org.apache.jena.permissions.model;
 
-
-import org.apache.jena.rdf.model.ReifiedStatement ;
+import org.apache.jena.rdf.model.ReifiedStatement;
+import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.jena.shared.ReadDeniedException;
 
 /**
@@ -27,13 +27,15 @@ import org.apache.jena.shared.ReadDeniedException;
  * Use the SecuredReifiedStatement.Factory to create instances
  */
 public interface SecuredReifiedStatement extends ReifiedStatement,
-		SecuredResource
-{
+		SecuredResource {
 	/**
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement getStatement() throws ReadDeniedException;
+	public SecuredStatement getStatement() throws ReadDeniedException,
+			AuthenticationRequiredException;
 
 }

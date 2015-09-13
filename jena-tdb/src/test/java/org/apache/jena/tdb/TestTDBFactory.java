@@ -40,6 +40,7 @@ public class TestTDBFactory extends BaseTest
     
     @Before public void before()
     {
+        StoreConnection.reset() ;
         FileOps.clearDirectory(DIR) ; 
     }
     
@@ -104,5 +105,51 @@ public class TestTDBFactory extends BaseTest
         
         assertNotSame(dgBase1, dgBase2) ;
     }
+    
+    @Test public void testTDBFresh01() {
+        boolean b = TDBFactory.inUseLocation(DIR) ;
+        assertFalse("Expect false before any creation attempted", b) ;
+    }
+    
+    @Test public void testTDBFresh02() {
+        boolean b = TDBFactory.inUseLocation(DIR) ;
+        assertFalse("Expect false before any creation attempted", b) ;
+        TDBFactory.createDataset(DIR) ;
+        b = TDBFactory.inUseLocation(DIR) ;
+        assertTrue("Expected true after creation attempted", b) ;
+        StoreConnection.expel(Location.create(DIR), true); 
+    }
+    
+    @Test public void testTDBFresh03() {
+        boolean b = TDBFactory.inUseLocation(DIR) ;
+        assertFalse("Expect true before any creation attempted", b) ;
+        TDBFactory.createDataset(DIR) ;
+        b = TDBFactory.inUseLocation(DIR) ;
+        assertTrue("Expected true after creation attempted", b) ;
+        StoreConnection.expel(Location.create(DIR), true);
+        b = TDBFactory.inUseLocation(DIR) ;
+        assertTrue("Expected true even after StoreConenction reset", b) ;
+    }
 
+    @Test public void testTDBFresh11() {
+        Location loc = Location.mem() ;
+        boolean b = TDBFactory.inUseLocation(loc) ;
+        assertFalse("Expect false before any creation attempted", b) ;
+    }
+    
+    @Test public void testTDBFresh22() {
+        Location loc = Location.mem() ;
+        boolean b = TDBFactory.inUseLocation(loc) ;
+        TDBFactory.createDataset(loc) ;
+        b = TDBFactory.inUseLocation(loc) ;
+        assertFalse("Expected false for a unique memory location", b) ;
+    }
+    
+    @Test public void testTDBFresh23() {
+        Location loc = Location.mem("FOO") ;
+        boolean b = TDBFactory.inUseLocation(loc) ;
+        TDBFactory.createDataset(loc) ;
+        b = TDBFactory.inUseLocation(loc) ;
+        assertTrue("Expected true for a named memory location", b) ;
+    }
 }

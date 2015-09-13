@@ -18,8 +18,8 @@
 
 package jena.examples.rdf ;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.FileManager;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.util.FileManager;
 
 import java.io.*;
 

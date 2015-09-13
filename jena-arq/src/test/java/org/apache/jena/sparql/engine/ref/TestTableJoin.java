@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.engine;
+package org.apache.jena.sparql.engine.ref;
 
 import java.util.HashSet ;
 import java.util.Set ;
@@ -31,25 +31,27 @@ import org.apache.jena.sparql.algebra.table.TableN ;
 import org.apache.jena.sparql.algebra.table.TableUnit ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.TableJoin ;
+import org.apache.jena.sparql.engine.ref.TableJoin ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
-public class TestTableLib extends BaseTest
+/** Tests on tables and the simple nest loop join (TableJoin) used by the reference query engine */ 
+public class TestTableJoin extends BaseTest
 {
     Table unit = new TableUnit() ; 
     Table zero = new TableEmpty() ;
     Table zeroData = SSE.parseTable("(table)") ;
     Table unitData = SSE.parseTable("(table (row))") ;
+    
     Table data1 = SSE.parseTable("(table (row (?a 1) (?b 2)))") ;
     Table data2 = SSE.parseTable("(table (row (?a 1) (?c 3)) (row (?a 9) (?c 5))  )") ;
     Table data3 = SSE.parseTable("(table (row (?a 1) (?c 3)) (row (?a 1) (?c 4)) (row (?a 9) (?c 5))  )") ;
-    
+
     Table data1J2 = SSE.parseTable("(table (row (?a 1) (?b 2) (?c 3)) )") ;
-    Table data1LJ2 = SSE.parseTable("(table (row (?a 1) (?b 2) (?c 3)) (row (?a 9) (?c 5)) )") ;
-    Table data2LJ1 = SSE.parseTable("(table (row (?a 1) (?b 2) (?c 3)) )") ;
+    Table data1LJ2 = SSE.parseTable("(table (row (?a 1) (?b 2) (?c 3)) )") ;
+    Table data2LJ1 = SSE.parseTable("(table (row (?a 1) (?b 2) (?c 3)) (row (?a 9) (?c 5)) )") ;
     
     Table data1J3 = SSE.parseTable("(table (row (?a 1) (?b 2) (?c 3)) (row (?a 1) (?b 2) (?c 4)) )") ;
     

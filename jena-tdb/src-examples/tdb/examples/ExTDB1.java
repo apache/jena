@@ -18,10 +18,10 @@
 
 package tdb.examples;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.rdf.model.Model;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.rdf.model.Model;
 
-import com.hp.hpl.jena.tdb.TDBFactory;
+import org.apache.jena.tdb.TDBFactory;
 
 /** Example of creating a TDB-backed model.
  *  The preferred way is to create a dataset then get the mode required from the dataset.
