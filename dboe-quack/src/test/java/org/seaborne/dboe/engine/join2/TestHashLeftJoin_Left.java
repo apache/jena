@@ -18,16 +18,16 @@
 
 package org.seaborne.dboe.engine.join2;
 
-import org.apache.jena.sparql.algebra.Table ;
-import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.seaborne.dboe.engine.JoinKey ;
+import org.seaborne.dboe.engine.RowList ;
+import org.seaborne.dboe.engine.row.RowBuilderBase ;
 
 /** Left outer join where the left hand side used to create the hash probe table */
 public class TestHashLeftJoin_Left extends AbstractTestLeftJoin {
     @Override
-    public QueryIterator join(JoinKey joinKey, Table left, Table right, ExprList conditions) {
-        return QueryIterHashLeftJoin_Left.create(joinKey, left.iterator(null), right.iterator(null), conditions, null) ;
+    public RowList<Integer> join(JoinKey joinKey, RowList<Integer> left, RowList<Integer> right, ExprList conditions) {
+        return QueryIterHashLeftJoin_Left.create(joinKey, left, right, conditions, new RowBuilderBase<>()) ;
     }
 }
 

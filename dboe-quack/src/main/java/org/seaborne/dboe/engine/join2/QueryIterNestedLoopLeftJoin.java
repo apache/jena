@@ -20,13 +20,13 @@ package org.seaborne.dboe.engine.join2;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.sparql.algebra.Algebra;
-import org.apache.jena.sparql.engine.ExecutionContext;
-import org.apache.jena.sparql.engine.QueryIterator;
-import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.iterator.QueryIter2;
+import org.apache.jena.atlas.iterator.IteratorSlotted ;
+import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.sparql.expr.ExprList ;
+import org.seaborne.dboe.engine.Row ;
+import org.seaborne.dboe.engine.RowBuilder ;
+import org.seaborne.dboe.engine.RowLib ;
+import org.seaborne.dboe.engine.RowList ;
 
 /**
  * Nested Loop left Join (materializing on the right, streaming on the left)
@@ -35,53 +35,38 @@ import org.apache.jena.sparql.expr.ExprList ;
  * See {@link Join#nestedLoopLeftJoinBasic} for a very simple implementation for 
  * testing purposes only. 
  */
-public class QueryIterNestedLoopLeftJoin extends QueryIter2 {
+public class QueryIterNestedLoopLeftJoin<X> extends IteratorSlotted<Row<X>> {
     // XXX Can we materialise left instead?
     
     private long s_countLHS     = 0;
     private long s_countRHS     = 0;
     private long s_countResults = 0;
 
-    private final ExprList conditions;
-    private final List<Binding> rightRows;
-    private Iterator<Binding>   right     = null;
-    private QueryIterator       left;
-    private Binding             rowLeft = null;
+    private final ExprList      conditions;
+    private final List<Row<X>>  rightRows;
+    private Iterator<Row<X>>    right     = null;
+    private Iterator<Row<X>>    left;
+    private Row<X>              rowLeft = null;
     private boolean foundMatch ;
+    private RowBuilder<X> builder;
 
-    private Binding slot     = null;
-    private boolean finished = false;
-
-    public QueryIterNestedLoopLeftJoin(QueryIterator left, QueryIterator right, ExprList exprList, ExecutionContext cxt) {
-        super(left, right, cxt);
+    public QueryIterNestedLoopLeftJoin(RowList<X> left, RowList<X> right, ExprList exprList, RowBuilder<X> builder) {
         conditions = exprList ;
-        rightRows =  Iter.toList(right);
+        rightRows =  right.toList() ;
         s_countRHS = rightRows.size();
-        this.left = left;
+        this.left = left.iterator();
+        this.builder = builder ;
     }
 
     @Override
-    protected boolean hasNextBinding() {
-        if ( finished )
+    protected boolean hasMore() {
+        if ( isFinished() )
             return false;
-        if ( slot == null ) {
-            slot = moveToNextBindingOrNull();
-            if ( slot == null ) {
-                close();
-                return false;
-            }
-        }
         return true;
     }
 
     @Override
-    protected Binding moveToNextBinding() {
-        Binding r = slot;
-        slot = null;
-        return r;
-    }
-
-    protected Binding moveToNextBindingOrNull() {
+    protected Row<X> moveToNext() {
         if ( isFinished() )
             return null;
 
@@ -97,8 +82,8 @@ public class QueryIterNestedLoopLeftJoin extends QueryIter2 {
             }
 
             while (right.hasNext()) {
-                Binding rowRight = right.next();
-                Binding r = Algebra.merge(rowLeft, rowRight);
+                Row<X> rowRight = right.next();
+                Row<X> r = RowLib.mergeRows(rowLeft, rowRight, builder);
                 if ( r != null && applyConditions(r) ) {
                     s_countResults++;
                     foundMatch = true ;
@@ -107,7 +92,7 @@ public class QueryIterNestedLoopLeftJoin extends QueryIter2 {
             }
             if ( ! foundMatch ) {
                 s_countResults++;
-                Binding r = rowLeft ;
+                Row<X> r = rowLeft ;
                 rowLeft = null; 
                 return r ;
             }
@@ -115,17 +100,15 @@ public class QueryIterNestedLoopLeftJoin extends QueryIter2 {
         }
     }
     
-    private boolean applyConditions(Binding binding) {
+    private boolean applyConditions(Row<X>  row) {
         if ( conditions == null )
             return true ;
-        return conditions.isSatisfied(binding, getExecContext()) ;
+        throw new NotImplemented() ;
+        //return conditions.isSatisfied(binding, getExecContext()) ;
     }
     
     @Override
-    protected void requestSubCancel() {}
-
-    @Override
-    protected void closeSubIterator() {
+    protected void closeIterator() {
         if ( JoinLib.JOIN_EXPLAIN ) {
             String x = String.format("InnerLoopJoin: LHS=%d RHS=%d Results=%d", s_countLHS, s_countRHS, s_countResults);
             System.out.println(x);

@@ -21,7 +21,6 @@ import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.seaborne.dboe.engine.join.TS_Join ;
-import org.seaborne.dboe.engine.join2.TS_Join2 ;
 import org.seaborne.dboe.engine.tdb.TS_Engine2 ;
 import org.seaborne.tdb2.TDB ;
 
@@ -29,7 +28,7 @@ import org.seaborne.tdb2.TDB ;
 @Suite.SuiteClasses( {
     
     TS_Join.class
-    , TS_Join2.class // Second pahse code - to be intergated.
+    //, TS_Join2.class // Second phase code - to be intergated.
     , TS_Access.class
     // Node space
     

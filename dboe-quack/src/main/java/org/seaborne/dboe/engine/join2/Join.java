@@ -80,7 +80,6 @@ public class Join {
     }
     
     /** Inner loop join.
-     *  Cancellable.
      * @param left      Left hand side
      * @param right     Right hand side
      * @param builder       ExecutionContext
@@ -90,17 +89,16 @@ public class Join {
         return create(left, right, new QueryIterNestedLoopJoin<>(left, right, builder)) ;
     }
     
-//    
-//    /** Inner loop join.
-//     *  Cancellable.
-//     * @param left      Left hand side
-//     * @param right     Right hand side
-//     * @param builder       ExecutionContext
-//     * @return          QueryIterator
-//     */ 
-//    public static <X> RowList<X> nestedLoopLeftJoin(RowList<X> left, RowList<X> right, ExprList conditions, RowBuilder<X> builder) {
-//        return new QueryIterNestedLoopLeftJoin(left, right, conditions, builder) ;
-//    }
+    
+    /** Left loop join.
+     * @param left      Left hand side
+     * @param right     Right hand side
+     * @param builder       ExecutionContext
+     * @return          QueryIterator
+     */ 
+    public static <X> RowList<X> nestedLoopLeftJoin(RowList<X> left, RowList<X> right, ExprList conditions, RowBuilder<X> builder) {
+        return create(left, right, new QueryIterNestedLoopLeftJoin<X>(left, right, conditions, builder)) ;
+    }
 
     /** Evaluate using a hash join.
      * 

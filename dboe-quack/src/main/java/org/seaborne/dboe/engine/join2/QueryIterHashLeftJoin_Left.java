@@ -22,6 +22,7 @@ import java.util.Iterator ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
@@ -30,6 +31,10 @@ import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.seaborne.dboe.engine.JoinKey ;
+import org.seaborne.dboe.engine.Row ;
+import org.seaborne.dboe.engine.RowBuilder ;
+import org.seaborne.dboe.engine.RowList ;
+import org.seaborne.dboe.engine.join.Hasher ;
 
 /**
  * Hash left join.
@@ -41,73 +46,98 @@ import org.seaborne.dboe.engine.JoinKey ;
  * to make the probe table.
  */
 
-public class QueryIterHashLeftJoin_Left extends AbstractIterHashJoin {
-    // Left join conditions
-    private final ExprList conditions;    
-    /**
-     * Create a hashjoin QueryIterator.
-     * @param joinKey  Join key - if null, one is guessed by snooping the input QueryIterators
-     * @param left
-     * @param right
-     * @param conditions 
-     * @param execCxt
-     * @return QueryIterator
-     */
-    public static QueryIterator create(JoinKey joinKey, QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
-        // Easy cases.
-        if ( ! left.hasNext() ) {
-            left.close() ;
-            right.close() ;
-            return QueryIterNullIterator.create(execCxt) ;
-        }
-        if ( ! right.hasNext() ) {
-            right.close() ;
-            return left ;
-        }
+public class QueryIterHashLeftJoin_Left<X> extends AbstractIterHashJoin<X> {
 
-        if ( joinKey != null && joinKey.length() > 1 )
-            Log.warn(QueryIterHashLeftJoin_Left.class, "Multivariable join key") ; 
-        
-        return new QueryIterHashLeftJoin_Left(joinKey, left, right, conditions, execCxt) ; 
-    }
-    
-    /**
-     * Create a hashjoin QueryIterator.
-     * @param left
-     * @param right
-     * @param execCxt
-     * @return QueryIterator
-     */
-    public static QueryIterator create(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
-        return create(null, left, right, conditions, execCxt) ;
-    }
-    
-    private QueryIterHashLeftJoin_Left(JoinKey joinKey, QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
-        super(joinKey, left, right, execCxt) ;
-        this.conditions = conditions ;
+    protected QueryIterHashLeftJoin_Left(JoinKey joinKey, RowList<X> probe, RowList<X> stream, Hasher<X> hasher, RowBuilder<X> builder) {
+        super(joinKey, probe, stream, hasher, builder);
     }
 
-    private Set<Binding> leftHits = new HashSet<>() ; 
-    
     @Override
-    protected Binding yieldOneResult(Binding rowCurrentProbe, Binding rowStream, Binding rowResult) {
-        if ( conditions != null && ! conditions.isSatisfied(rowResult, getExecContext()) )
-            return null ;
-        leftHits.add(rowCurrentProbe) ;
-        return rowResult ; 
+    protected Row<X> yieldOneResult(Row<X> rowCurrentProbe, Row<X> rowStream, Row<X> rowResult) {
+        return null;
     }
-    
-    // Right is stream, left is the probe table.
+
     @Override
-    protected Binding noYieldedRows(Binding rowCurrentProbe) {
+    protected Row<X> noYieldedRows(Row<X> rowStream) {
+        return null;
+    }
+
+    @Override
+    protected Iterator<Row<X>> joinFinished() {
         return null;
     }
     
-    @Override
-    protected QueryIterator joinFinished() {
-        Iterator<Binding> iter = Iter.filter(hashTable.values(), b-> ! leftHits.contains(b) )  ;
-        return new QueryIterPlainWrapper(iter, getExecContext()) ;
+    public static RowList<Integer> create(JoinKey joinKey, RowList<Integer> left, RowList<Integer> right, ExprList conditions, RowBuilder<Integer> builder) {
+        throw new NotImplemented() ; 
     }
+
+    
+//    // Left join conditions
+//    private final ExprList conditions;    
+//    /**
+//     * Create a hashjoin QueryIterator.
+//     * @param joinKey  Join key - if null, one is guessed by snooping the input QueryIterators
+//     * @param left
+//     * @param right
+//     * @param conditions 
+//     * @param execCxt
+//     * @return QueryIterator
+//     */
+//    public static QueryIterator create(JoinKey joinKey, QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
+//        // Easy cases.
+//        if ( ! left.hasNext() ) {
+//            left.close() ;
+//            right.close() ;
+//            return QueryIterNullIterator.create(execCxt) ;
+//        }
+//        if ( ! right.hasNext() ) {
+//            right.close() ;
+//            return left ;
+//        }
+//
+//        if ( joinKey != null && joinKey.length() > 1 )
+//            Log.warn(QueryIterHashLeftJoin_Left.class, "Multivariable join key") ; 
+//        
+//        return new QueryIterHashLeftJoin_Left(joinKey, left, right, conditions, execCxt) ; 
+//    }
+//    
+//    /**
+//     * Create a hashjoin QueryIterator.
+//     * @param left
+//     * @param right
+//     * @param execCxt
+//     * @return QueryIterator
+//     */
+//    public static QueryIterator create(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
+//        return create(null, left, right, conditions, execCxt) ;
+//    }
+//    
+//    private QueryIterHashLeftJoin_Left(JoinKey joinKey, QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
+//        super(joinKey, left, right, execCxt) ;
+//        this.conditions = conditions ;
+//    }
+//
+//    private Set<Binding> leftHits = new HashSet<>() ; 
+//    
+//    @Override
+//    protected Binding yieldOneResult(Binding rowCurrentProbe, Binding rowStream, Binding rowResult) {
+//        if ( conditions != null && ! conditions.isSatisfied(rowResult, getExecContext()) )
+//            return null ;
+//        leftHits.add(rowCurrentProbe) ;
+//        return rowResult ; 
+//    }
+//    
+//    // Right is stream, left is the probe table.
+//    @Override
+//    protected Binding noYieldedRows(Binding rowCurrentProbe) {
+//        return null;
+//    }
+//    
+//    @Override
+//    protected QueryIterator joinFinished() {
+//        Iterator<Binding> iter = Iter.filter(hashTable.values(), b-> ! leftHits.contains(b) )  ;
+//        return new QueryIterPlainWrapper(iter, getExecContext()) ;
+//    }
 }
 
 
