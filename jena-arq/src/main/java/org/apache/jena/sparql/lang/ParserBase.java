@@ -484,7 +484,6 @@ public class ParserBase
         
         for ( int i = 0 ; i < len ; i++ )
         {
-            // Copied form unescape abobve - share!
             char ch = s.charAt(i) ;
             // Keep line and column numbers.
             switch (ch)
@@ -513,7 +512,8 @@ public class ParserBase
             i = i + 1 ;
 
            switch (ch2)
-           {
+           {   // PN_LOCAL_ESC
+               case '_' :
                case '~' :
                case '.' : 
                case '-' : 
