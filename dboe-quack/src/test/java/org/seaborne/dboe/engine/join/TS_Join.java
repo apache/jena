@@ -15,40 +15,23 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.engine;
+package org.seaborne.dboe.engine.join;
 
-import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-import org.seaborne.dboe.engine.Quack ;
-import org.seaborne.dboe.engine.Quack2 ;
-import org.seaborne.dboe.engine.join.TS_Join ;
-import org.seaborne.dboe.engine.tdb.TS_Engine2 ;
-
-import org.seaborne.tdb2.TDB ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    
-    TS_Join.class
-    , TS_Access.class
-    // Node space
-    
-    // TDB
-    , TS_Engine2.class
-    // From TDB directly.
-    , TS_AsTDB.class 
-    , TS_QuackEngines.class
-    
+    TestJoinMisc.class
+    , TestNestedLoopJoinConcrete.class 
+    , TestNestedLoopJoinStream.class
+    , TestHashJoinConcrete.class
+    , TestHashJoinStream.class
+    , TestPipelineHashJoin.class
+    , TestMergeJoinConcrete.class
+    , TestMergeJoinStream.class
 } )
 
-public class TC_Quack {
-    
-    @BeforeClass static public void beforeClass() {
-        TDB.init();
-        Quack.init() ;
-        // Assumes POS, PSO
-        Quack.hardRewire() ;
-        Quack2.init() ;
-    }
-}
+public class TS_Join
+{ }
+

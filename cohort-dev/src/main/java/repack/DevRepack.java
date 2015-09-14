@@ -17,14 +17,9 @@
  
 package repack;
 
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.query.ReadWrite ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.dboe.migrate.L ;
-import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.tdb2.TDBFactory ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
@@ -32,60 +27,67 @@ import org.seaborne.tdb2.store.DatasetGraphTDB ;
 public class DevRepack {
     static { LogCtl.setLog4j(); }
 
-    public static void main(String ... argv) {
-        DatasetGraphTDB dsg = (DatasetGraphTDB)TDBFactory.createDatasetGraph() ;
-        TransactionCoordinator coord = dsg.getTxnSystem().getTxnMgr() ;
-        coord.disableWriters() ;
-        
-        L.async(()->Txn.executeRead(dsg, ()->{
-            System.out.println("R11") ;
-            Lib.sleep(100);
-            System.out.println("R12") ;
-        })) ;
-        L.async(()->Txn.executeWrite(dsg, ()->{
-            System.out.println("W1") ;
-            Lib.sleep(100);
-            System.out.println("W2") ;
-        })) ;
-        L.async(()->Txn.executeRead(dsg, ()->{
-            System.out.println("R21") ;
-            Lib.sleep(100);
-            System.out.println("R22") ;
-        })) ;
-        
-        Lib.sleep(500);
-        coord.enableWriters();
-        
-        coord.startExclusiveMode(); 
-        L.async(()->Txn.executeWrite(dsg, ()->System.out.println("W")));
-        Lib.sleep(10);
-        System.out.println("E") ;
-        Lib.sleep(10);
-        coord.finishExclusiveMode();
-        Lib.sleep(10);
-    }
+    // Turn on transaction logging.
+    // Copy at current generation
+    // replay logs (still recording!)
+    // Go single mode
+    // replay later logs
+    // switch over
     
-    public static void main1(String ... argv) {
-//        Location loc1 = Location.mem() ;
-//        Location loc2 = Location.mem();
-        Location loc1 = Location.create("DB1") ;
-        Location loc2 = Location.create("DB2") ;
+    // 1 - How to capture several transactions.
+    // 2 - 
+    
+    public static void main(String... argv) {
+        DatasetGraphTDB dsg = (DatasetGraphTDB)TDBFactory.createDatasetGraph();
+        repack(dsg);
+    }
 
-        FileOps.clearDirectory("DB1");
-        FileOps.clearDirectory("DB2");
+    // TestTransactionCoordinatorControl ++ start writer -- go no writers --
+    // test.
+    
+    /** Safe repack - go into "no writer" mode, clone the  
+     */
+    private static void repackSafe(DatasetGraphTDB dsg, Location newLocation) {
+        TransactionCoordinator txnMgr = dsg.getTxnSystem().getTxnMgr() ; 
+        txnMgr.execAsWriter(()->{
+            // No writers.
+            dsg.begin(ReadWrite.READ);
+            DatasetGraphTDB dsg2 = CloneTDB.cloneDatasetSimple(dsg, newLocation) ;
+            txnMgr.execExclusive(null);
+            switchDatasets(dsg, dsg2) ;
+            // New transactions go to dsg2 ;
+        }) ;
+        // Drain all old R transactions.
+        txnMgr.startExclusiveMode();
+        txnMgr.finishExclusiveMode();
+        // dsg is now free.
+    }
 
-        DatasetGraphTDB dsgBase = (DatasetGraphTDB)TDBFactory.connectDatasetGraph(loc1) ;
-        Quad q1 = SSE.parseQuad("(_ <s> :p :o)") ;
-        Quad q2 = SSE.parseQuad("(<g> <s> :q :o)") ;
+    private static void switchDatasets(DatasetGraphTDB dsg, DatasetGraphTDB dsg2) {}
 
-        Txn.executeWrite(dsgBase, ()->{dsgBase.add(q1); dsgBase.add(q2);} );
-        Txn.executeRead(dsgBase, ()->System.out.println(dsgBase)) ;
+    private static void repack(DatasetGraphTDB dsg) {
+        // Clonign requires a consistent 
         
-        //DatasetGraphTDB dsg2 = CloneTDB.cloneDataset(dsgBase, loc2) ;
-        DatasetGraphTDB dsg2 =  CloneTDB.cloneDatasetSimple(dsgBase, loc2) ;
+        // transaction
+        TransactionCoordinator txnMgr = dsg.getTxnSystem().getTxnMgr() ;
         
-        Txn.executeRead(dsg2, ()->System.out.println(dsg2)) ;
-        System.exit(0) ;
+        txnMgr.execAsWriter(()->{
+            // Start collecting replay logs.
+            
+            // Start read transaction for this timepoint for the clone.
+            dsg.begin(ReadWrite.READ);
+        }) ;
+    
+        // clone
+        
+        txnMgr.execAsWriter(()->{
+            // replay logs.
+            // ???
+            // Set up switch
+            // Switch (for new transactions).
+            // End clone transaction.
+            dsg.end() ;
+        }) ;
     }
 
 

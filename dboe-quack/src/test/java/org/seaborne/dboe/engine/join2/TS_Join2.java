@@ -15,40 +15,25 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.engine;
+package org.seaborne.dboe.engine.join2;
 
-import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-import org.seaborne.dboe.engine.Quack ;
-import org.seaborne.dboe.engine.Quack2 ;
-import org.seaborne.dboe.engine.join.TS_Join ;
-import org.seaborne.dboe.engine.tdb.TS_Engine2 ;
-
-import org.seaborne.tdb2.TDB ;
+import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@SuiteClasses( {
+    TestJoinSimple.class
+    , TestJoinNestedLoopSimple.class    // Real simple materializing version.
+    , TestJoinNestedLoop.class
+    , TestHashJoin.class
     
-    TS_Join.class
-    , TS_Access.class
-    // Node space
-    
-    // TDB
-    , TS_Engine2.class
-    // From TDB directly.
-    , TS_AsTDB.class 
-    , TS_QuackEngines.class
-    
-} )
+    , TestLeftJoinSimple.class
+    , TestLeftJoinNestedLoopSimple.class    // Real simple materializing version.
+    , TestLeftJoinNestedLoop.class
+    , TestHashLeftJoin_Left.class           // Left hash, stream right 
+    , TestHashLeftJoin_Right.class          // Normal implementation.
+})
 
-public class TC_Quack {
-    
-    @BeforeClass static public void beforeClass() {
-        TDB.init();
-        Quack.init() ;
-        // Assumes POS, PSO
-        Quack.hardRewire() ;
-        Quack2.init() ;
-    }
-}
+public class TS_Join2 { }
+

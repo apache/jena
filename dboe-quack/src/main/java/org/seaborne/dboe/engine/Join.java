@@ -58,7 +58,7 @@ public class Join
     
     /** Inner loop join */ 
     public static <X> RowList<X> innerLoopJoin(/*JoinKey joinKey,*/ RowList<X> leftTable, RowList<X> rightTable, RowBuilder<X> builder) {
-        return materialize(InnerLoopJoin.innerLoopJoin(leftTable, rightTable, builder));
+        return materialize(NestedLoopJoin.nestedLoopJoin(leftTable, rightTable, builder));
     }
 
     /** Test whether two rows are (SPARQL) compatible */ 

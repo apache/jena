@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package dev ;
+package extra_test ;
 
 import static java.lang.String.format ;
 import static org.apache.jena.atlas.lib.ListUtils.asList ;

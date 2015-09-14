@@ -147,7 +147,7 @@ public class PipelineHashJoin {
                     if (r != null) {
                         s_countResults ++ ;
                         return r ;
-                    }
+                    } // else { LeftJoin } XXX
                 }
                 iterCurrent = null ;
                 rowCurrent = null ;

@@ -17,23 +17,33 @@
 
 package dev;
 
-import java.util.Iterator ;
-
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.core.Quad ;
-
+import org.apache.jena.sparql.core.DatasetPrefixStorage ;
+import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.tdb2.store.QuadTable ;
+import org.seaborne.tdb2.store.TripleTable ;
 
 public class NOTES_TDB {
-    // Reaper.
+    int foo ;
+    // ** Reaper.
+    // ** Or time-based, commit keeping.  benefit!
+    
+    // Also per index reaping.
+    // Long term: break into parts: separate processes? At least threads.
+    
+    // see package txnlog
 
     // GraphTDB from 
     // Needs to work with the switching DatasetGraphTDB.
     //   Abstract DatasetGraphTDB as an interface!
     //     Storage unit to have indexes and node table.
     
-    
+    static class StorageTDB {
+        private TripleTable tripleTable ;
+        private QuadTable quadTable ;
+        private DatasetPrefixStorage prefixes ;
+        private Location location ;
+    }
 
     // Loader: Try with StreamRDFBatchSplit and a parallel index update.
     //   Needs multi-threaded transaction control.
@@ -47,44 +57,37 @@ public class NOTES_TDB {
     // Abort notification.
     // Or NodeTableCache part of the transaction.
 
-    // DatasetGraphTDB has begin/commit/abort/end --> Not used?
-    
     // Quack clean / split into general and TDB
     // Quack and SPO, POS (fast load mode)
     //   Index to index copy pogram.
-    //   Work wit Lizard?
+    //   Work with Lizard?
     
     // DatasetGraph.exec(op)
     //   Interface ExecuteOp + generic registration.
     // DatasetGraph.getBaseDatasetGraph
     
     // ++ DatasetGraphTriplesQuads
-}
 
-interface StorageRDF {
-    void add(Triple triple) ; // addToDftGraph -- DatasetGraphTriplesQuads
-    void addTriple(Node s, Node p, Node o) ; // addToDftGraph -- DatasetGraphTriplesQuads
-    
-    void add(Quad quad) ;     // addToNamedGraph
-    void addQuad(Node g, Node s, Node p, Node o) ;
-    
-    void delete(Triple triple) ;
-    void delete(Quad quad) ;
-    Iterator<Triple> find(Node s, Node p, Node o) ;
-    Iterator<Quad> find(Node g, Node s, Node p, Node o) ;
-}
 
-// Like Transactional(System) except not part of the transaction.  Called after main calls.
-interface TxnEvent {
-    default void startBegin(ReadWrite mode) {}
-    default void finishBegin(ReadWrite mode) {}
+    // really simple - quads/triples only - no 3 or 4 way forms.
+    // Or vice versa - 
 
-    default void startCommit()  {}
-    default void finishCommit() {}
+    // Like Transactional(System) except not part of the transaction.  Called after main calls.
+    interface TxnEvent {
+        default void startBegin(ReadWrite mode)     {}
+        default void finishBegin(ReadWrite mode)    {}
 
-    default void startAbort()   {}
-    default void finishAbort()  {}
+        default void startPromote()     {}
+        default void finishPromote()    {}
 
-    default void startEnd()     {}
-    default void finishEnd()    {}
+        default void startCommit()      {}
+        default void finishCommit()     {}
+
+        default void startAbort()       {}
+        default void finishAbort()      {}
+
+        default void startEnd()         {}
+        default void finishEnd()        {}
+    }
+
 }

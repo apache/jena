@@ -15,23 +15,21 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.engine;
+package org.seaborne.dboe.engine.join;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.seaborne.dboe.engine.AbstractTestJoin1 ;
+import org.seaborne.dboe.engine.JoinKey ;
+import org.seaborne.dboe.engine.RowList ;
+import org.seaborne.dboe.engine.join.NestedLoopJoin ;
+import org.seaborne.dboe.engine.join.RowOrder ;
+import org.seaborne.dboe.engine.row.RowBuilderBase ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestJoinMisc.class
-    , TestInnerLoopJoinConcrete.class 
-    , TestInnerLoopJoinStream.class
-    , TestHashJoinConcrete.class
-    , TestHashJoinStream.class
-    , TestPipelineHashJoin.class
-    , TestMergeJoinConcrete.class
-    , TestMergeJoinStream.class
-} )
+/** Tests the naive(est) materialing inner loop join */ 
+public class TestNestedLoopJoinConcrete extends AbstractTestJoin1 {
 
-public class TS_Join
-{ }
+    @Override
+    public <X> RowList<X> join(JoinKey joinKey , RowList<X> left , RowList<X> right , RowOrder<X> comparator ) {
+        return NestedLoopJoin.nestedLoopJoinBasic(left, right, new RowBuilderBase<X>()) ;
+    }
 
+}

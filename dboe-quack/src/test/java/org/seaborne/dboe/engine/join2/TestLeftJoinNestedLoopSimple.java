@@ -15,20 +15,20 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.engine;
+package org.seaborne.dboe.engine.join2;
 
+import org.apache.jena.sparql.algebra.Table ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.join.Join ;
+import org.apache.jena.sparql.expr.ExprList ;
 import org.seaborne.dboe.engine.JoinKey ;
-import org.seaborne.dboe.engine.RowList ;
-import org.seaborne.dboe.engine.join.HashJoinConcrete ;
-import org.seaborne.dboe.engine.join.RowOrder ;
-import org.seaborne.dboe.engine.row.RowBuilderBase ;
 
-/** Tests hash join where the code calculates the entire join at once */  
-public class TestHashJoinConcrete extends AbstractTestJoin1 {
+public class TestLeftJoinNestedLoopSimple extends AbstractTestLeftJoin {
 
     @Override
-    public <X> RowList<X> join(JoinKey joinKey , RowList<X> left , RowList<X> right , RowOrder<X> comparator ) {
-        return HashJoinConcrete.hashJoinConcrete(joinKey, left, right, new RowBuilderBase<X>()) ;
+    public QueryIterator join(JoinKey joinKey, Table left, Table right, ExprList conditions) {
+        return Join.nestedLoopLeftJoinBasic(left.iterator(null), right.iterator(null), conditions,null) ;
     }
 
 }
+

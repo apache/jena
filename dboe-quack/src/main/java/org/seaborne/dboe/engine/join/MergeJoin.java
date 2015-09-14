@@ -143,6 +143,8 @@ public class MergeJoin {
                         log.warn("RHS not sorted : "+ row2 + " --" +row2a ) ;  
                 }
                 
+                // LeftJoin XXX
+                
                 int x = comparator.compare(joinKey, row1, row2) ;
                 if ( x > 0 )
                 {   // Discard smaller 

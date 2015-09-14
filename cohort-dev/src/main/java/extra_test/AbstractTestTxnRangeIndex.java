@@ -15,10 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package dev;
-
-//import static org.seaborne.dboe.test.RecordLib.* ;
-import static dev.RecordLib.r ;
+package extra_test;
 
 import java.util.List ;
 
@@ -26,6 +23,8 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
+
+import static extra_test.RecordLib.r ;
 import static org.junit.Assert.* ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.index.RangeIndex ;

@@ -15,19 +15,21 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.engine;
+package org.seaborne.dboe.engine.join;
 
+import org.seaborne.dboe.engine.AbstractTestJoin1 ;
 import org.seaborne.dboe.engine.JoinKey ;
 import org.seaborne.dboe.engine.RowList ;
-import org.seaborne.dboe.engine.join.MergeJoinConcrete ;
+import org.seaborne.dboe.engine.join.HashJoin ;
 import org.seaborne.dboe.engine.join.RowOrder ;
 import org.seaborne.dboe.engine.row.RowBuilderBase ;
 
-/** Tests the naive(est) materialing inner loop join */ 
-public class TestMergeJoinConcrete extends AbstractTestJoin1 {
+/** Tests hash join where the right is streaming */ 
+public class TestHashJoinStream extends AbstractTestJoin1 {
 
     @Override
     public <X> RowList<X> join(JoinKey joinKey , RowList<X> left , RowList<X> right , RowOrder<X> comparator ) {
-        return MergeJoinConcrete.mergeJoinBasic(joinKey, left, right, comparator, new RowBuilderBase<X>()) ;
+        return HashJoin.hashJoin(joinKey, left, right, new RowBuilderBase<X>()) ;
     }
+
 }

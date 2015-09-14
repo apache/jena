@@ -21,6 +21,19 @@ public class PROJECT_Quack {
     // Java 8 cleanups.
     // AccessorParallel
     
+    // QueryIterator as a wrapper always on a normal Iterator.
+    
+    // Backport LeftJoin code.
+    // Conditions for plain join : push down makes unnecessary? 
+    
+    // Sophisticated iterator handling.
+    //   Peek and push back.
+    //   Is empty.
+    //   Is one row.
+    //   RowIterator c.f QueryIteratorBase
+    //   Cheap and easy to wrap an existing Iterator.
+    //   Back and forth to streams.
+    
     /*
      * Where should filter placement happen? BGP reordering?
      * 

@@ -15,20 +15,21 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.engine;
+package org.seaborne.dboe.engine.join;
 
+import org.seaborne.dboe.engine.AbstractTestJoin1 ;
 import org.seaborne.dboe.engine.JoinKey ;
 import org.seaborne.dboe.engine.RowList ;
-import org.seaborne.dboe.engine.join.HashJoin ;
+import org.seaborne.dboe.engine.join.HashJoinConcrete ;
 import org.seaborne.dboe.engine.join.RowOrder ;
 import org.seaborne.dboe.engine.row.RowBuilderBase ;
 
-/** Tests hash join where the right is streaming */ 
-public class TestHashJoinStream extends AbstractTestJoin1 {
+/** Tests hash join where the code calculates the entire join at once */  
+public class TestHashJoinConcrete extends AbstractTestJoin1 {
 
     @Override
     public <X> RowList<X> join(JoinKey joinKey , RowList<X> left , RowList<X> right , RowOrder<X> comparator ) {
-        return HashJoin.hashJoin(joinKey, left, right, new RowBuilderBase<X>()) ;
+        return HashJoinConcrete.hashJoinConcrete(joinKey, left, right, new RowBuilderBase<X>()) ;
     }
 
 }

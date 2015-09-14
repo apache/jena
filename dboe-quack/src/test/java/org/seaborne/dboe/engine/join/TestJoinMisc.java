@@ -15,12 +15,13 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.engine;
+package org.seaborne.dboe.engine.join;
 
 import org.junit.Assert ;
 import org.junit.Test ;
 import org.seaborne.dboe.engine.Join ;
 import org.seaborne.dboe.engine.JoinKey ;
+import org.seaborne.dboe.engine.QJT ;
 import org.seaborne.dboe.engine.Row ;
 import org.seaborne.dboe.engine.join.HashJoin ;
 import org.seaborne.dboe.engine.join.HashJoin.Hasher ;

@@ -22,11 +22,12 @@ import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.IteratorSlotted ;
 import org.apache.jena.atlas.lib.SetUtils ;
+import org.apache.jena.atlas.logging.*;
 import org.seaborne.dboe.engine.* ;
 
 import org.apache.jena.sparql.core.Var ;
 
-/** General hash join (creates the rpobe table from the left hand side) */
+/** General hash join (creates the probe table from the left hand side) */
 public class HashJoin
 {
     // No hash key marker.
@@ -40,6 +41,11 @@ public class HashJoin
     
     /** Evaluate a hash join. */
     public static <X> RowList<X> hashJoin(JoinKey joinKey, RowList<X> left, RowList<X> right, Hasher<X> hasher, RowBuilder<X> builder) {
+        // Easy cases.
+        if ( left.isEmpty() || right.isEmpty() )
+            return RowLib.emptyRowList() ;
+        if ( joinKey != null && joinKey.length() > 1 )
+            Log.warn(HashJoin.class, "Multivariable join key") ; 
         Set<Var> vars = SetUtils.union(left.vars(), right.vars()) ;
         Iterator<Row<X>> r = new RowsHashJoin<X>(joinKey, left, right, hasher, builder) ;
         return RowLib.createRowList(vars, r) ;
@@ -121,7 +127,7 @@ public class HashJoin
                 if (r != null) {
                     s_countResults ++ ;
                     return r ;
-                }
+                } // else { LeftJoin } XXX
             }
         }        
 

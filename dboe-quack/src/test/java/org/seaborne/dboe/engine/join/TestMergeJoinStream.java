@@ -15,8 +15,9 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.engine;
+package org.seaborne.dboe.engine.join;
 
+import org.seaborne.dboe.engine.AbstractTestJoin1 ;
 import org.seaborne.dboe.engine.JoinKey ;
 import org.seaborne.dboe.engine.RowList ;
 import org.seaborne.dboe.engine.join.MergeJoin ;

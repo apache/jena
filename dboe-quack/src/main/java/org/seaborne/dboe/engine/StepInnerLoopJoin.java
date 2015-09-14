@@ -21,7 +21,7 @@ import java.util.Set ;
 
 import org.apache.jena.atlas.lib.Tuple ;
 import org.seaborne.dboe.engine.access.AccessRows ;
-import org.seaborne.dboe.engine.join.InnerLoopJoin ;
+import org.seaborne.dboe.engine.join.NestedLoopJoin ;
 import org.seaborne.dboe.engine.row.RowListBase ;
 
 import org.apache.jena.sparql.core.Var ;
@@ -43,7 +43,7 @@ public class StepInnerLoopJoin<X> implements Step<X> {
     @Override
     public RowList<X> execute(RowList<X> left) {
         RowList<X> right = new RowListBase<X>(vars, accessor.accessRows(pattern)) ;
-        return InnerLoopJoin.innerLoopJoin(left, right, builder) ;
+        return NestedLoopJoin.nestedLoopJoin(left, right, builder) ;
     }
 
     @Override

@@ -87,8 +87,9 @@ public class HashJoinConcrete {
                     Row<X> rLeft = iter.next() ;
                     builder.reset() ;
                     Row<X> r = Join.merge(rLeft, row2, builder) ;
-                    if (r != null)
+                    if (r != null) {
                         results.add(r) ;
+                    }  // else { LeftJoin } XXX
                 }
                 continue ;
             }

@@ -15,20 +15,18 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.engine;
+package org.seaborne.dboe.engine.join2;
 
+import org.apache.jena.sparql.algebra.Table ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.expr.ExprList ;
 import org.seaborne.dboe.engine.JoinKey ;
-import org.seaborne.dboe.engine.RowList ;
-import org.seaborne.dboe.engine.join.InnerLoopJoin ;
-import org.seaborne.dboe.engine.join.RowOrder ;
-import org.seaborne.dboe.engine.row.RowBuilderBase ;
 
-/** Tests the naive(est) materialing inner loop join */ 
-public class TestInnerLoopJoinConcrete extends AbstractTestJoin1 {
-
+/** Left outer join where the left hand side used to create the hash probe table */
+public class TestHashLeftJoin_Left extends AbstractTestLeftJoin {
     @Override
-    public <X> RowList<X> join(JoinKey joinKey , RowList<X> left , RowList<X> right , RowOrder<X> comparator ) {
-        return InnerLoopJoin.innerLoopJoinBasic(left, right, new RowBuilderBase<X>()) ;
+    public QueryIterator join(JoinKey joinKey, Table left, Table right, ExprList conditions) {
+        return QueryIterHashLeftJoin_Left.create(joinKey, left.iterator(null), right.iterator(null), conditions, null) ;
     }
-
 }
+

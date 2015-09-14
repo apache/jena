@@ -32,10 +32,10 @@ import org.apache.jena.sparql.core.Var ;
  * Two versions: one materializing the whole results, then returning a RowList and
  * one that streams the right-hand-side.  
  */
-public class InnerLoopJoin
+public class NestedLoopJoin
 {
     /** Simple, materializing version - useful for debugging */ 
-    public static <X> RowList<X> innerLoopJoinBasic(RowList<X> leftTable, RowList<X> rightTable, RowBuilder<X> builder) {
+    public static <X> RowList<X> nestedLoopJoinBasic(RowList<X> leftTable, RowList<X> rightTable, RowBuilder<X> builder) {
         Set<Var> vars = SetUtils.union(leftTable.vars(), rightTable.vars()) ;
         Iterable<Row<X>> leftRows = leftTable.toList() ;
         List<Row<X>> output = DS.list() ;
@@ -51,13 +51,13 @@ public class InnerLoopJoin
     }
     
     /** Streams on the right table, having materialised the left */ 
-    public static <X> RowList<X> innerLoopJoin(RowList<X> leftTable, RowList<X> rightTable, RowBuilder<X> builder) {
-        Iterator<Row<X>> r = new RowsInnerLoopJoin<X>(leftTable, rightTable, builder) ;
+    public static <X> RowList<X> nestedLoopJoin(RowList<X> leftTable, RowList<X> rightTable, RowBuilder<X> builder) {
+        Iterator<Row<X>> r = new RowsNestedLoopJoin<X>(leftTable, rightTable, builder) ;
         Set<Var> vars = SetUtils.union(leftTable.vars(), rightTable.vars()) ;
         return RowLib.createRowList(vars, r) ;
     }
 
-    private static class RowsInnerLoopJoin<X> extends IteratorSlotted<Row<X>> implements Iterator<Row<X>> {
+    private static class RowsNestedLoopJoin<X> extends IteratorSlotted<Row<X>> implements Iterator<Row<X>> {
         private long s_countLHS = 0 ;
         private long s_countRHS = 0 ;
         private long s_countResults = 0 ;
@@ -68,7 +68,7 @@ public class InnerLoopJoin
         private Row<X> rowRight = null ;
         private final RowBuilder<X> builder ;
     
-        public RowsInnerLoopJoin(RowList<X> leftTable, RowList<X> rightTable, RowBuilder<X> builder) {
+        public RowsNestedLoopJoin(RowList<X> leftTable, RowList<X> rightTable, RowBuilder<X> builder) {
             List<Row<X>> rowsLeftList = leftTable.toList() ;
             leftRows = rowsLeftList ;
             s_countLHS = rowsLeftList.size() ;
