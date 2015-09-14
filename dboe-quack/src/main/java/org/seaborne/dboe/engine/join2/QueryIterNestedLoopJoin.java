@@ -21,61 +21,45 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.sparql.algebra.Algebra;
-import org.apache.jena.sparql.engine.ExecutionContext;
-import org.apache.jena.sparql.engine.QueryIterator;
-import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.iterator.QueryIter2;
+import org.apache.jena.atlas.iterator.IteratorSlotted ;
+import org.seaborne.dboe.engine.Row ;
+import org.seaborne.dboe.engine.RowBuilder ;
+import org.seaborne.dboe.engine.RowLib ;
+import org.seaborne.dboe.engine.RowList ;
 
 /**
  * Nested Loop Join (materializing on the left, streaming on the right)
  * A simple, dependable join.
  * <p>
- * See {@link Join#nestedLoopLeftJoinBasic} for a very simple implementation for 
- * testing purposes only. 
  */
-public class QueryIterNestedLoopJoin extends QueryIter2 {
+
+public class QueryIterNestedLoopJoin<X> extends IteratorSlotted<Row<X>> {
     private long s_countLHS     = 0;
     private long s_countRHS     = 0;
     private long s_countResults = 0;
 
-    private final List<Binding> leftRows;
-    private Iterator<Binding>   left     = null;
-    private QueryIterator       right;
-    private Binding             rowRight = null;
+    private final List<Row<X>> leftRows;
+    private Iterator<Row<X>>   left     = null;
+    private Iterator<Row<X>>   right;
+    private Row<X>             rowRight = null;
+    private RowBuilder<X> builder;
 
-    private Binding slot     = null;
-    private boolean finished = false;
-
-    public QueryIterNestedLoopJoin(QueryIterator left, QueryIterator right, ExecutionContext cxt) {
-        super(left, right, cxt);
-        leftRows = Iter.toList(left);
+    public QueryIterNestedLoopJoin(RowList<X> left, RowList<X> right, RowBuilder<X> builder) {
+        leftRows = Iter.toList(left.iterator());
         s_countLHS = leftRows.size();
-        this.right = right;
+        this.right = right.iterator() ;
+        this.builder = builder ;
     }
 
     @Override
-    protected boolean hasNextBinding() {
-        if ( finished )
+    protected boolean hasMore() {
+        if ( isFinished() )
             return false;
-        if ( slot == null ) {
-            slot = moveToNextBindingOrNull();
-            if ( slot == null ) {
-                close();
-                return false;
-            }
-        }
         return true;
     }
 
     @Override
-    protected Binding moveToNextBinding() {
-        Binding r = slot;
-        slot = null;
-        return r;
-    }
-
-    protected Binding moveToNextBindingOrNull() {
+    protected Row<X> moveToNext() {
         if ( isFinished() )
             return null;
 
@@ -91,8 +75,8 @@ public class QueryIterNestedLoopJoin extends QueryIter2 {
 
             // There is a rowRight
             while (left.hasNext()) {
-                Binding rowLeft = left.next();
-                Binding r = Algebra.merge(rowLeft, rowRight);
+                Row<X> rowLeft = left.next();
+                Row<X> r = RowLib.mergeRows(rowLeft, rowRight, builder);
                 if ( r != null ) {
                     s_countResults++;
                     return r;
@@ -104,10 +88,7 @@ public class QueryIterNestedLoopJoin extends QueryIter2 {
     }
 
     @Override
-    protected void requestSubCancel() {}
-
-    @Override
-    protected void closeSubIterator() {
+    protected void closeIterator() {
         if ( JoinLib.JOIN_EXPLAIN ) {
             String x = String.format("InnerLoopJoin: LHS=%d RHS=%d Results=%d", s_countLHS, s_countRHS, s_countResults);
             System.out.println(x);

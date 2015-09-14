@@ -18,17 +18,16 @@
 package org.seaborne.dboe.engine.join2;
 
 import java.util.Iterator ;
-import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.sparql.algebra.Algebra ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.iterator.QueryIter2 ;
-import org.apache.jena.sparql.engine.iterator.QueryIterPeek ;
+import org.apache.jena.atlas.iterator.IteratorSlotted ;
+import org.seaborne.dboe.engine.Join ;
 import org.seaborne.dboe.engine.JoinKey ;
+import org.seaborne.dboe.engine.Row ;
+import org.seaborne.dboe.engine.RowBuilder ;
+import org.seaborne.dboe.engine.RowList ;
+import org.seaborne.dboe.engine.join.HashProbeTable ;
+import org.seaborne.dboe.engine.join.Hasher ;
 
 /** Hash join algorithm
  *  
@@ -36,7 +35,7 @@ import org.seaborne.dboe.engine.JoinKey ;
  * then hash joins the other input from the stream side.
  */
 
-public abstract class AbstractIterHashJoin extends QueryIter2 {
+public abstract class AbstractIterHashJoin<X> extends IteratorSlotted<Row<X>> {
     protected long s_countProbe           = 0 ;       // Count of the probe data size
     protected long s_countScan            = 0 ;       // Count of the scan data size
     protected long s_countResults         = 0 ;       // Overall result size.
@@ -44,78 +43,54 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
     // See also stats in the probe table.
     
     protected final JoinKey               joinKey ;
-    protected final HashProbeTable        hashTable ;
+    protected final HashProbeTable<X>     hashTable ;
 
-    private Iterator<Binding>           iterStream ;
-    private Binding                     rowStream       = null ;
-    private Iterator<Binding>           iterCurrent ;
+    private Iterator<Row<X>>           iterStream ;
+    private Row<X>                     rowStream       = null ;
+    private Iterator<Row<X>>           iterCurrent ;
     private boolean                     yielded ;       // Flag to note when current probe causes a result. 
     // Hanlde any "post join" additions.
-    private Iterator<Binding>           iterTail        = null ;
+    private Iterator<Row<X>>           iterTail        = null ;
     
     enum Phase { INIT, HASH , STREAM, TRAILER, DONE }
-    Phase state = Phase.INIT ;
+    protected Phase state = Phase.INIT ;
+    private final RowBuilder<X> builder;
     
-    private Binding slot = null ;
-
-    protected AbstractIterHashJoin(JoinKey joinKey, QueryIterator probeIter, QueryIterator streamIter, ExecutionContext execCxt) {
-        super(probeIter, streamIter, execCxt) ;
-        
-        if ( joinKey == null ) {
-            QueryIterPeek pProbe = QueryIterPeek.create(probeIter, execCxt) ;
-            QueryIterPeek pStream = QueryIterPeek.create(streamIter, execCxt) ;
-            
-            Binding bLeft = pProbe.peek() ;
-            Binding bRight = pStream.peek() ;
-            
-            List<Var> varsLeft = Iter.toList(bLeft.vars()) ;
-            List<Var> varsRight = Iter.toList(bRight.vars()) ;
-            joinKey = JoinKey.createVarKey(varsLeft, varsRight) ;
-            probeIter = pProbe ;
-            streamIter = pStream ;
-        }
+    protected AbstractIterHashJoin(JoinKey joinKey, RowList<X> probe, RowList<X> stream, Hasher<X> hasher, RowBuilder<X> builder) {
+        Iterator<Row<X>> probeIter = probe.iterator() ;
+        Iterator<Row<X>> streamIter = stream.iterator() ;
+        if ( joinKey == null )
+            joinKey = JoinKey.createVarKey(probe.vars(), stream.vars()) ;
         
         this.joinKey = joinKey ;
         this.iterStream = streamIter ;
-        this.hashTable = new HashProbeTable(joinKey) ;
+        this.hashTable = new HashProbeTable<>(hasher, joinKey) ;
         this.iterCurrent = null ;
+        this.builder = builder ;
         buildHashTable(probeIter) ;
         
     }
         
-    private void buildHashTable(QueryIterator iter1) {
+    private void buildHashTable(Iterator<Row<X>> iter1) {
         state = Phase.HASH ;
         for (; iter1.hasNext();) {
-            Binding row1 = iter1.next() ;
+            Row<X> row1 = iter1.next() ;
             s_countProbe ++ ;
             hashTable.put(row1) ;
         }
-        iter1.close() ;
+        Iter.close(iter1) ;
         state = Phase.STREAM ;
     }
 
     @Override
-    protected boolean hasNextBinding() {
+    protected boolean hasMore() {
         if ( isFinished() ) 
             return false ;
-        if ( slot == null ) {
-            slot = moveToNextBindingOrNull() ;
-            if ( slot == null ) {
-                close() ;
-                return false;
-            }
-        }
         return true ;
     }
 
     @Override
-    protected Binding moveToNextBinding() {
-        Binding r = slot ;
-        slot = null ;
-        return r ;
-    }
-
-    protected Binding moveToNextBindingOrNull() {
+    protected Row<X> moveToNext() {
         // iterCurrent is the iterator of entries in the
         // probe hashed table for the current stream row.     
         // iterStream is the stream of incoming rows.
@@ -151,7 +126,7 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
             if ( ! iterCurrent.hasNext() ) {
                 iterCurrent = null ;
                 if ( ! yielded ) {
-                    Binding b = noYieldedRows(rowStream) ;
+                    Row<X> b = noYieldedRows(rowStream) ;
                     if ( b != null ) {
                         s_countScan ++ ;
                         return b ;
@@ -161,11 +136,12 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
             }
 
             // Nested loop join, only on less.
-            //Iterator<Binding> iter = nestedLoop(iterCurrent, rowStream) ;
+            //Iterator<Row<X>> iter = nestedLoop(iterCurrent, rowStream) ;
             
-            Binding rowCurrentProbe = iterCurrent.next() ;
-            Binding r = Algebra.merge(rowCurrentProbe, rowStream) ;
-            Binding r2 = null ;
+            builder.reset() ;
+            Row<X> rowCurrentProbe = iterCurrent.next() ;
+            Row<X> r = Join.merge(rowCurrentProbe, rowStream, builder) ;
+            Row<X> r2 = null ;
             
             if (r != null)
                 r2 = yieldOneResult(rowCurrentProbe, rowStream, r) ;
@@ -180,7 +156,7 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
     }    
     
     
-    private Binding doOneTail() {
+    private Row<X> doOneTail() {
         // Only in TRAILING
         if ( iterTail.hasNext() ) {
             s_countResults ++ ;
@@ -200,25 +176,25 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
      * @param rowResult
      * @return 
      */
-    protected abstract Binding yieldOneResult(Binding rowCurrentProbe, Binding rowStream, Binding rowResult) ;
+    protected abstract Row<X> yieldOneResult(Row<X> rowCurrentProbe, Row<X> rowStream, Row<X> rowResult) ;
 
     /** Signal a row that yields no matches.
-     *  This method can return a binding (the outer join case)
+     *  This method can return a Row<X> (the outer join case)
      *  which will then be yielded. {@code yieldOneResult} will <em>not</em> be called. 
      * @param rowStream
      * @return
      */
-    protected abstract Binding noYieldedRows(Binding rowStream) ;
+    protected abstract Row<X> noYieldedRows(Row<X> rowStream) ;
 
     /**
      * Signal the end of the hash join.
      * Outer joins can now add any "no matche" results.
      * @return QueryIterator or null
      */
-    protected abstract QueryIterator joinFinished() ;
+    protected abstract Iterator<Row<X>> joinFinished() ;
         
     @Override
-    protected void closeSubIterator() {
+    protected void closeIterator() {
         if ( JoinLib.JOIN_EXPLAIN ) {
             String x = String.format(
                          "HashJoin: LHS=%d RHS=%d Results=%d RightMisses=%d MaxBucket=%d NoKeyBucket=%d",
@@ -229,10 +205,10 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
         hashTable.clear(); 
     }
 
-    @Override
-    protected void requestSubCancel() {
-        hashTable.clear(); 
-    }
+//    @Override
+//    protected void requestSubCancel() {
+//        hashTable.clear(); 
+//    }
 }
 
 

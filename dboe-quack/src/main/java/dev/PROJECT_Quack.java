@@ -24,7 +24,8 @@ public class PROJECT_Quack {
     // QueryIterator as a wrapper always on a normal Iterator.
     
     // Backport LeftJoin code.
-    // Conditions for plain join : push down makes unnecessary? 
+    // Conditions for plain join
+    // 
     
     // Sophisticated iterator handling.
     //   Peek and push back.

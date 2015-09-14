@@ -1,50 +1,42 @@
-/*
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- *  See the NOTICE file distributed with this work for additional
- *  information regarding copyright ownership.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.seaborne.dboe.engine.join2;
 
-import java.util.List ;
-
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.query.ResultSetFactory ;
-import org.apache.jena.sparql.algebra.Table ;
-import org.apache.jena.sparql.algebra.TableFactory ;
 import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Assert ;
 import org.seaborne.dboe.engine.JoinKey ;
+import org.seaborne.dboe.engine.QJT;
+import org.seaborne.dboe.engine.RowList ;
 
 /** Tests for inner/equi joins */ 
 public abstract class AbstractTestJoin extends Assert {
 
-    protected static Table table0() { return parseTableInt("(table)") ; } 
+    protected static RowList<Integer> table0() { return parseTableInt("(table)") ; } 
 
-    // Table of one row and no colums.
-    protected static Table table1() { 
+    // RowList<Integer> of one row and no colums.
+    protected static RowList<Integer> table1() { 
         return parseTableInt("(table (row))") ; }
 
-    protected static Table tableD1() { 
+    protected static RowList<Integer> tableD1() { 
         return parseTableInt("(table", 
                              "   (row (?a 1) (?b 2))",
                              "   (row (?a 1) (?b 3))",
@@ -52,14 +44,14 @@ public abstract class AbstractTestJoin extends Assert {
             ")") ;
     }
 
-    protected static Table tableD2() { 
+    protected static RowList<Integer> tableD2() { 
         return parseTableInt("(table", 
                              "   (row (?a 0) (?d 8))",
                              "   (row (?a 1) (?c 9))",
             ")") ;
     }
 
-    protected static Table tableD3() {
+    protected static RowList<Integer> tableD3() {
         return parseTableInt("(table",
                              "   (row (?a 1) (?c 9) (?b 2))",
                              "   (row (?a 1) (?c 9) (?b 3))",
@@ -67,7 +59,7 @@ public abstract class AbstractTestJoin extends Assert {
             ")") ;
     }
 
-    protected static Table tableD3_LJ() {
+    protected static RowList<Integer> tableD3_LJ() {
         return parseTableInt("(table", 
                              "   (row (?d 8) (?a 0))",
                              "   (row (?a 1) (?c 9) (?b 2))",
@@ -77,7 +69,7 @@ public abstract class AbstractTestJoin extends Assert {
             ")") ;
     }
 
-    protected static Table tableD4() {
+    protected static RowList<Integer> tableD4() {
         return parseTableInt("(table", 
                              "   (row (?a 1) (?b 2))",
                              "   (row (?a 1) (?b 3))",
@@ -86,7 +78,7 @@ public abstract class AbstractTestJoin extends Assert {
             ")") ;
     }
 
-    protected static Table tableD5() {
+    protected static RowList<Integer> tableD5() {
         return parseTableInt("(table", 
                              "   (row (?a 4) (?c 4))",
                              "   (row (?a 4) (?c 5))",
@@ -94,7 +86,7 @@ public abstract class AbstractTestJoin extends Assert {
             ")") ;
     }
 
-    protected static Table tableD6() {
+    protected static RowList<Integer> tableD6() {
         return parseTableInt("(table", 
                              "   (row (?a 1) (?c 2))",
                              "   (row (?a 1) (?c 3))",
@@ -103,7 +95,7 @@ public abstract class AbstractTestJoin extends Assert {
             ")") ;
     }
 
-    protected static Table tableD4x5() {
+    protected static RowList<Integer> tableD4x5() {
         return parseTableInt("(table", 
                              "   (row (?a 4) (?c 4) (?b 4))",
                              "   (row (?a 4) (?c 4) (?b 5))",
@@ -112,7 +104,7 @@ public abstract class AbstractTestJoin extends Assert {
             ")") ;
     }
 
-    protected static Table tableD4x5_LJ() {
+    protected static RowList<Integer> tableD4x5_LJ() {
         return parseTableInt("(table",
                              "   (row (?a 4) (?c 4) (?b 4))",
                              "   (row (?a 4) (?c 4) (?b 5))",
@@ -123,7 +115,7 @@ public abstract class AbstractTestJoin extends Assert {
             ")") ;
     }
 
-    protected static Table tableD5x4_LJ() {
+    protected static RowList<Integer> tableD5x4_LJ() {
         return parseTableInt("(table", 
                              "   (row (?a 4) (?c 4) (?b 4))",
                              "   (row (?a 4) (?c 4) (?b 5))",
@@ -133,7 +125,7 @@ public abstract class AbstractTestJoin extends Assert {
             ")") ;
     }
 
-    protected static Table tableD4x6() {
+    protected static RowList<Integer> tableD4x6() {
         return parseTableInt("(table", 
                              "   (row (?a 1) (?c 2) (?b 2))",
                              "   (row (?a 1) (?c 2) (?b 3))",
@@ -147,7 +139,7 @@ public abstract class AbstractTestJoin extends Assert {
     }
 
     // Disjoint.
-    protected static Table tableD8() {
+    protected static RowList<Integer> tableD8() {
         return parseTableInt("(table",
                              "  (row (?x 10))",
                              "  (row (?z 11))",
@@ -155,7 +147,7 @@ public abstract class AbstractTestJoin extends Assert {
     }
 
     // Table8 crossproduct table2
-    protected static Table tableD8x2() {
+    protected static RowList<Integer> tableD8x2() {
         return parseTableInt("(table",
                              "  (row (?a 0) (?d 8) (?z 11))",
                              "  (row (?a 0) (?d 8) (?x 10))",
@@ -165,14 +157,14 @@ public abstract class AbstractTestJoin extends Assert {
     }
     
     // Left join data tables.
-    protected static Table tableL1() {
+    protected static RowList<Integer> tableL1() {
         return parseTableInt("(table",
                              "  (row (?a 0) (?d 8))",
                              "  (row (?a 3) (?d 9))",
             ")") ;
     }
 
-    protected static Table tableL2() {
+    protected static RowList<Integer> tableL2() {
         return parseTableInt("(table",
                              "  (row (?a 0) (?z 11))",
                              "  (row (?a 1) (?c 9) (?z 11))",
@@ -180,14 +172,14 @@ public abstract class AbstractTestJoin extends Assert {
     }
 
     // L3 := L1 leftjoin L2 
-    protected static Table table1LJ2() {
+    protected static RowList<Integer> table1LJ2() {
         return parseTableInt("(table",
                              "  (row (?a 0) (?d 8) (?z 11))",
                              "  (row (?a 3) (?d 9))",
             ")") ;
     }
     
-    protected static Table tableL4() {
+    protected static RowList<Integer> tableL4() {
         return parseTableInt("(table",
                              "  (row (?a 0) (?z 11))",
                              "  (row (?a 0) (?z 12))",
@@ -196,7 +188,7 @@ public abstract class AbstractTestJoin extends Assert {
             ")") ;
     }
 
-    protected static Table tableL5() {
+    protected static RowList<Integer> tableL5() {
         return parseTableInt("(table",
                              "  (row (?a 0) (?d 8))",
                              "  (row (?a 1) (?c 9) (?z 11))",
@@ -204,7 +196,7 @@ public abstract class AbstractTestJoin extends Assert {
     }
 
     // L3 := L1 leftjoin L2 
-    protected static Table table4LJ5() {
+    protected static RowList<Integer> table4LJ5() {
         return parseTableInt("(table",
                              "  (row (?a 0) (?d 8) (?z 11))",
                              "  (row (?a 0) (?d 8) (?z 12))",
@@ -220,33 +212,32 @@ public abstract class AbstractTestJoin extends Assert {
     // Skew tables for join testing.
     // Join keys of ?x ?w and [?x , ?w]
     
-    protected static Table tableS1() {
+    protected static RowList<Integer> tableS1() {
         return parseTableInt("(table"
-                             ,"  (row (?z <http://example/z1>) (?x <http://example/x>) (?w 'w11-1'))"
-                             ,"  (row (?z <http://example/z4>) (?x <http://example/x>)))"
+                             ,"  (row (?z 1) (?x 9) (?w 11))"
+                             ,"  (row (?z 4) (?x 9)) )"
                             ); }
-    protected static Table tableS2() {
-        return parseTableInt("(table (row (?x <http://example/x>) (?w <http://example/z1>)))") ;
+    protected static RowList<Integer> tableS2() {
+        return parseTableInt("(table (row (?x 9) (?w 1)))") ;
     }
     
-    protected static Table tableS1J2() {
+    protected static RowList<Integer> tableS1J2() {
         return parseTableInt("(table" 
-                             ,"  (row (?z <http://example/z4>) (?x <http://example/x>) (?w <http://example/z1>) ))" 
+                             ,"  (row (?z 4) (?x 9) (?w 1) ))" 
                             ); 
     }
     
     // Code
 
-    protected static Table parseTableInt(String... strings) {
-        String x = StrUtils.strjoinNL(strings) ;
-        return SSE.parseTable(x) ;
+    protected static RowList<Integer> parseTableInt(String... strings) {
+        return QJT.parseTableInt(strings) ;
     }
 
-    protected void testJoin(String var, Table left, Table right, Table tableOut) {
+    protected void testJoin(String var, RowList<Integer> left, RowList<Integer> right, RowList<Integer> tableOut) {
         testJoin(var, left, right, null, tableOut); 
     }
     
-    protected void testJoin(String var, Table left, Table right, String conditions, Table tableOut) {
+    protected void testJoin(String var, RowList<Integer> left, RowList<Integer> right, String conditions, RowList<Integer> tableOut) {
         JoinKey joinKey ;
         if ( var != null ) {
             if ( var.startsWith("?") )
@@ -266,44 +257,39 @@ public abstract class AbstractTestJoin extends Assert {
         executeTest(joinKey, left, right, exprs, tableOut) ;
     }
 
-    protected void testJoinWithKey(JoinKey joinKey, Table left, Table right, Table tableOut) {
+    protected void testJoinWithKey(JoinKey joinKey, RowList<Integer> left, RowList<Integer> right, RowList<Integer> tableOut) {
         executeTest(joinKey, left, right, null, tableOut) ;
     }
 
-    protected void testJoinWithKey(JoinKey joinKey, Table left, Table right, ExprList conditions, Table tableOut) {
+    protected void testJoinWithKey(JoinKey joinKey, RowList<Integer> left, RowList<Integer> right, ExprList conditions, RowList<Integer> tableOut) {
         executeTest(joinKey, left, right, conditions, tableOut) ;
     }
 
     // Any kind of join (choose by abstract join() operation).
-    protected abstract void executeTest(JoinKey joinKey, Table left, Table right, ExprList conditions, Table expectedResults) ;
+    protected abstract void executeTest(JoinKey joinKey, RowList<Integer> left, RowList<Integer> right, ExprList conditions, RowList<Integer> expectedResults) ;
     
-    private List<Binding> toList(Table table) {
-        return Iter.toList(table.rows()) ;
-    }
-
-    protected void executeTestJoin(String msg, JoinKey joinKey, Table left, Table right, ExprList conditions, Table expectedResults) {
-        Table x1 = joinMaterialize(joinKey, left, right, conditions) ;
-        assertNotNull("Null table from join ("+msg+")", x1) ;
+    protected void executeTestJoin(String msg, JoinKey joinKey, RowList<Integer> left, RowList<Integer> right, ExprList conditions, RowList<Integer> expectedResults) {
+        RowList<Integer> x1 = joinMaterialize(joinKey, left, right, conditions) ;
+        assertNotNull("Null RowList<Integer> from join ("+msg+")", x1) ;
         if ( false )
             print(msg, joinKey, left, right, conditions, expectedResults, x1) ;
         check("Results not equal ("+msg+")", joinKey, left, right, conditions, expectedResults, x1) ;
     }
 
-    private Table joinMaterialize(JoinKey joinKey, Table left, Table right, ExprList conditions) {
-        QueryIterator qIter = join(joinKey, left , right, conditions) ;
-        return TableFactory.create(qIter) ;
+    private RowList<Integer> joinMaterialize(JoinKey joinKey, RowList<Integer> left, RowList<Integer> right, ExprList conditions) {
+        return join(joinKey, left , right, conditions) ;
     }
 
-    public abstract QueryIterator join(JoinKey joinKey, Table left , Table right, ExprList conditions) ;
+    public abstract RowList<Integer> join(JoinKey joinKey, RowList<Integer> left , RowList<Integer> right, ExprList conditions) ;
 
-    private static void check(String msg, JoinKey joinKey, Table left, Table right, ExprList conditions, Table expected, Table actual) {
-        boolean b = equalTables(expected, actual) ;
+    private static void check(String msg, JoinKey joinKey, RowList<Integer> left, RowList<Integer> right, ExprList conditions, RowList<Integer> expected, RowList<Integer> actual) {
+        boolean b = QJT.equal(expected.toList(), actual.toList()) ;
         if ( ! b ) 
             print(msg, joinKey, left, right, conditions, expected, actual); 
         assertTrue(msg, b) ;
     }
 
-    protected static void print(String msg, JoinKey joinKey, Table left, Table right, ExprList conditions, Table expected, Table actual) {
+    protected static void print(String msg, JoinKey joinKey, RowList<Integer> left, RowList<Integer> right, ExprList conditions, RowList<Integer> expected, RowList<Integer> actual) {
         System.err.flush() ;
         System.out.flush() ;
         IndentedWriter out = IndentedWriter.stderr ;
@@ -320,19 +306,12 @@ public abstract class AbstractTestJoin extends Assert {
         out.flush() ;
     }
     
-    protected static void print(IndentedWriter out, String label, Table table) {
+    protected static void print(IndentedWriter out, String label, RowList<Integer> table) {
         out.println(label) ;
         out.incIndent();
         out.println(table.toString()) ;
         out.decIndent();
     }
-    
-    private static boolean equalTables(Table table1, Table table2) {
-        ResultSet rs1 =  ResultSetFactory.create(table1.iterator(null), table1.getVarNames()) ;
-        ResultSet rs2 =  ResultSetFactory.create(table2.iterator(null), table2.getVarNames()) ;
-        return ResultSetCompare.equalsByTerm(rs1, rs2) ;
-    }
-
 }
 
 

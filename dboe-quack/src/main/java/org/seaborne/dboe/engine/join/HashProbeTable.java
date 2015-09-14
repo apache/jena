@@ -27,22 +27,22 @@ import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap ;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap ;
 import org.seaborne.dboe.engine.JoinKey ;
 import org.seaborne.dboe.engine.Row ;
-import org.seaborne.dboe.engine.join.HashJoin.Hasher ;
 
 // Use in Hashjoin.
-class HashProbeTable<X> {
-    private long s_count                = 0 ;
-    private long s_bucketCount          = 0 ;
-    private long s_maxBucketSize        = 0 ;
-    private long s_noKeyBucketSize      = 0 ;
-    private long s_maxMatchGroup        = 0 ;
+public class HashProbeTable<X> {
+    public /*package*/ long s_count                = 0 ;
+    public /*package*/ long s_bucketCount          = 0 ;
+    public /*package*/ long s_maxBucketSize        = 0 ;
+    public /*package*/ long s_noKeyBucketSize      = 0 ;
+    public /*package*/ long s_maxMatchGroup        = 0 ;
+    public /*package*/ long s_countScanMiss        = 0;
 
     private final List <Row<X>> noKeyBucket = new ArrayList<>() ;
     private final ListMultimap<Object, Row<X>> buckets ;
     private final Hasher<X> hasher ;
     private final JoinKey   joinKey ;
     
-    HashProbeTable(Hasher<X> hasher, JoinKey joinKey) {
+    public HashProbeTable(Hasher<X> hasher, JoinKey joinKey) {
         this.hasher = hasher ;
         this.joinKey = joinKey ;
         buckets = ArrayListMultimap.create() ;
@@ -50,8 +50,8 @@ class HashProbeTable<X> {
     
     public void put(Row<X> row) {
         s_count++ ;
-        Object longHash = PipelineHashJoin.hash(hasher, joinKey, row) ;
-        if ( longHash == PipelineHashJoin.noKeyHash ) {
+        Object longHash = JL.hash(hasher, joinKey, row) ;
+        if ( longHash == JL.noKeyHash ) {
             noKeyBucket.add(row) ;
             return ;
         }
@@ -60,14 +60,16 @@ class HashProbeTable<X> {
     
     public Iterator<Row<X>> getCandidates(Row<X> row) {
         Iterator<Row<X>> iter = null ;
-        Object longHash = PipelineHashJoin.hash(hasher, joinKey, row) ;
-        if ( longHash == PipelineHashJoin.noKeyHash )
+        Object longHash = JL.hash(hasher, joinKey, row) ;
+        if ( longHash == JL.noKeyHash )
             iter = buckets.values().iterator() ;
         else {
             Collection<Row<X>> x = buckets.get(longHash) ;
             if ( x != null ) {
                 s_maxMatchGroup = Math.max(s_maxMatchGroup, x.size()) ;
                 iter = x.iterator() ;
+            } else {
+                s_countScanMiss ++ ;
             }
         }
         // And the rows with no common hash key
@@ -90,6 +92,11 @@ class HashProbeTable<X> {
         // What to do with them?
     }
     
+    public Iterator<Row<X>> values() {
+        return Iter.concat(buckets.values().iterator(),
+                           noKeyBucket.iterator()) ;
+    }
+    
     // Should not need these operations.
     public Collection<Row<X>> getNoKey$() {
         if ( noKeyBucket == null )
@@ -98,8 +105,8 @@ class HashProbeTable<X> {
     }
     
     public Collection<Row<X>> getHashMatch$(Row<X> row) {
-        Object longHash = PipelineHashJoin.hash(hasher, joinKey, row) ;
-        if ( longHash == PipelineHashJoin.noKeyHash )
+        Object longHash = JL.hash(hasher, joinKey, row) ;
+        if ( longHash == JL.noKeyHash )
             return noKeyBucket ;
         Collection<Row<X>> list = buckets.get(longHash) ;
         return list ;

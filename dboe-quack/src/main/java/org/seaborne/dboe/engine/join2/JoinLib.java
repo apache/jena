@@ -21,6 +21,8 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.seaborne.dboe.engine.JoinKey ;
+import org.seaborne.dboe.engine.Row ;
+import org.seaborne.dboe.engine.join.Hasher ;
 
 /** Internal operations in support of join algorithms. */
 class JoinLib {
@@ -40,26 +42,62 @@ class JoinLib {
             h = h ^ x.hashCode();
         return h;
     }
+    
+    public static <X> Hasher<X> hash() { 
+        return new Hasher<X>(){ 
+            @Override 
+            public long hash(Var v, X x) 
+            { 
+                long h = 17 ;
+                if ( v != null )
+                    h = h ^ v.hashCode() ;
+                if ( x != null )  
+                    h = h ^ x.hashCode() ;
+                return h ;
+            }
+        } ;
+    }
 
     public static Object hash(JoinKey joinKey, Binding row) {
-          long x = 31 ;
-          boolean seenJoinKeyVar = false ; 
-          // Neutral to order in the set.
-          for ( Var v : joinKey ) {
-              Node value = row.get(v) ;
-              long h = nullHashCode ;
-              if ( value != null ) {
-                  seenJoinKeyVar = true ;
-                  h = hash(v, value) ;
-              } else {
-                  // In join key, not in row.
-              }
-                  
-              x = x ^ h ;
-          }
-          if ( ! seenJoinKeyVar )
-              return noKeyHash ;
-          return x ;
-      }
+        long x = 31 ;
+        boolean seenJoinKeyVar = false ; 
+        // Neutral to order in the set.
+        for ( Var v : joinKey ) {
+            Node value = row.get(v) ;
+            long h = nullHashCode ;
+            if ( value != null ) {
+                seenJoinKeyVar = true ;
+                h = hash(v, value) ;
+            } else {
+                // In join key, not in row.
+            }
+                
+            x = x ^ h ;
+        }
+        if ( ! seenJoinKeyVar )
+            return noKeyHash ;
+        return x ;
+    }
+    
+    public static <X> Object hash(Hasher<X> hasher, JoinKey joinKey, Row<X> row) {
+        long x = 31 ;
+        boolean seenJoinKeyVar = false ; 
+        // Neutral to order in the set.
+        for ( Var v : joinKey ) {
+            X value = row.get(v) ;
+            long h = nullHashCode ;
+            if ( value != null ) {
+                seenJoinKeyVar = true ;
+                h = hasher.hash(v, value) ;
+            } else {
+                // In join key, not in row.
+            }
+
+            x = x ^ h ;
+        }
+        if ( ! seenJoinKeyVar )
+            return noKeyHash ;
+        return x ;
+    }
 }
 

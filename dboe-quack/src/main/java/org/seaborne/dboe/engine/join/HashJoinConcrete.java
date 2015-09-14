@@ -30,7 +30,6 @@ import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap ;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap ;
 import org.apache.jena.sparql.core.Var ;
 import org.seaborne.dboe.engine.* ;
-import org.seaborne.dboe.engine.join.HashJoin.Hasher ;
 
 /** Implmentation of HashJoin that materizes its results and then returns an iterator.
  *  As much a test of the algorithm.  
@@ -41,7 +40,7 @@ public class HashJoinConcrete {
     // used that by inheritance simply materializing the RHS
     // then passing RowList to the parent.
     public static <X> RowList<X> hashJoinConcrete(JoinKey joinKey, RowList<X> left, RowList<X> right, RowBuilder<X> builder) {
-        Hasher<X> hasher = HashJoin.hash() ;
+        Hasher<X> hasher = JL.hash() ;
         return hashJoinConcrete(joinKey, left, right, hasher, builder) ;
     }
 
@@ -58,7 +57,7 @@ public class HashJoinConcrete {
         for (; iter1.hasNext();) {
             Row<X> row1 = iter1.next() ;
             count1++ ;
-            Object longHash = HashJoin.hash(hasher, joinKey, row1) ;
+            Object longHash = JL.hash(hasher, joinKey, row1) ;
             if ( Quack.JOIN_EXPLAIN ) FmtLog.info(Quack.joinStatsLog, "Hash = 0x%08Xd", longHash) ;
             buckets.put(longHash, row1) ;
         }
@@ -70,16 +69,16 @@ public class HashJoinConcrete {
         List<Row<X>> results = DS.list() ;
         
         // Left table, no overlap.
-        Collection<Row<X>> leftNoKey = buckets.get(HashJoin.noKeyHash) ;
+        Collection<Row<X>> leftNoKey = buckets.get(JL.noKeyHash) ;
         
         Iterator<Row<X>> iter2 = right.iterator() ;
         for (; iter2.hasNext();) {
             Row<X> row2 = iter2.next() ;
             count2 ++ ;
-            Object longHash = HashJoin.hash(hasher, joinKey, row2) ;
+            Object longHash = JL.hash(hasher, joinKey, row2) ;
             if ( Quack.JOIN_EXPLAIN ) FmtLog.info(Quack.joinStatsLog, "Hash = 0x%04X", longHash) ;
             
-            if ( longHash == HashJoin.noKeyHash ) {
+            if ( longHash == JL.noKeyHash ) {
                 // No key on the right.
                 // Need to cross product with the left.
                 Iterator<Row<X>> iter = buckets.values().iterator() ;
@@ -95,7 +94,7 @@ public class HashJoinConcrete {
             }
             
             Iterator<Row<X>> iter ; 
-            if ( longHash == HashJoin.noKeyHash ) {
+            if ( longHash == JL.noKeyHash ) {
                 // No shared vars with the JoinKey; iterator over the whole of the left.
                 iter = buckets.values().iterator() ;
             } else {

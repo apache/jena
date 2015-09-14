@@ -22,15 +22,10 @@ import java.util.* ;
 import org.apache.jena.atlas.iterator.IteratorSlotted ;
 import org.apache.jena.atlas.lib.SetUtils ;
 import org.seaborne.dboe.engine.* ;
-import org.seaborne.dboe.engine.join.HashJoin.Hasher ;
-
 import org.apache.jena.sparql.core.Var ;
 
 /** Symmetric hash join that can read from either inputs */  
 public class PipelineHashJoin {
-    // No hash key marker.
-    public static final Object noKeyHash = new Object() ;
-
     public static <X> Iterator<Row<X>> hashJoinDev(JoinKey joinKey, RowList<X> left, RowList<X> right, RowBuilder<X> builder) {
         Set<Var> vars = SetUtils.union(left.vars(), right.vars()) ;
         Hasher<X> hasher = hash() ;
@@ -177,29 +172,6 @@ public class PipelineHashJoin {
                 return h ;
             }
         } ;
-    }
-    
-    // Share with HashJoin
-    public static final long nullHashCode = 5 ; 
-    public static <X> Object hash(Hasher<X> hasher, JoinKey joinKey, Row<X> row) {
-        long x = 31 ;
-        boolean seenJoinKeyVar = false ; 
-        // Neutral to order in the set.
-        for ( Var v : joinKey ) {
-            X value = row.get(v) ;
-            long h = nullHashCode ;
-            if ( value != null ) {
-                seenJoinKeyVar = true ;
-                h = hasher.hash(v, value) ;
-            } else {
-                // In join key, not in row.
-            }
-
-            x = x ^ h ;
-        }
-        if ( ! seenJoinKeyVar )
-            return noKeyHash ;
-        return x ;
     }
 }
 

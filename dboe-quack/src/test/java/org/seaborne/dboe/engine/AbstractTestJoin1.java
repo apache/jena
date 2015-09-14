@@ -167,7 +167,6 @@ public abstract class AbstractTestJoin1 extends Assert {
     @Test public void join_disjoint_01() { testJoin("a", tableD2(), tableD8(), tableD8x2()) ; }
     @Test public void join_disjoint_02() { testJoin("z", tableD2(), tableD8(), tableD8x2()) ; }
     
-    
     private void testJoin(String var, RowList<Integer> left, RowList<Integer> right, RowList<Integer> tableOut) {
         JoinKey joinKey ;
         if ( var != null ) {

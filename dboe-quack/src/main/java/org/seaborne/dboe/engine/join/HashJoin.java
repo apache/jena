@@ -30,12 +30,9 @@ import org.apache.jena.sparql.core.Var ;
 /** General hash join (creates the probe table from the left hand side) */
 public class HashJoin
 {
-    // No hash key marker.
-    public static final Object noKeyHash = new Object() ;
-
     /** Evaluate a hash join. */
     public static <X> RowList<X> hashJoin(JoinKey joinKey, RowList<X> left, RowList<X> right, RowBuilder<X> builder) {
-        Hasher<X> hasher = hash() ;
+        Hasher<X> hasher = JL.hash() ;
         return hashJoin(joinKey, left, right, hasher, builder) ;
     }
     
@@ -149,49 +146,5 @@ public class HashJoin
             return ! isFinished() ;
         }
     }
-    
-    public interface Hasher<X>
-    {
-        /** Must cope with null in either slot */ 
-        public long hash(Var v, X x) ;
-        
-    }
-    
-    public static <X> Hasher<X> hash() { 
-        return new Hasher<X>(){ 
-            @Override 
-            public long hash(Var v, X x) 
-            { 
-                long h = 17 ;
-                if ( v != null )
-                    h = h ^ v.hashCode() ;
-                if ( x != null )  
-                    h = h ^ x.hashCode() ;
-                return h ;
-            }
-        } ;
-    }
-
-    public static final long nullHashCode = 5 ; 
-    public static <X> Object hash(Hasher<X> hasher, JoinKey joinKey, Row<X> row) {
-          long x = 31 ;
-          boolean seenJoinKeyVar = false ; 
-          // Neutral to order in the set.
-          for ( Var v : joinKey ) {
-              X value = row.get(v) ;
-              long h = nullHashCode ;
-              if ( value != null ) {
-                  seenJoinKeyVar = true ;
-                  h = hasher.hash(v, value) ;
-              } else {
-                  // In join key, not in row.
-              }
-                  
-              x = x ^ h ;
-          }
-          if ( ! seenJoinKeyVar )
-              return noKeyHash ;
-          return x ;
-      }
 }
 

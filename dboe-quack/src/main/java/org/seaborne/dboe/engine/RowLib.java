@@ -22,6 +22,7 @@ import java.util.Set ;
 import java.util.function.Function ;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.SetUtils ;
 import org.apache.jena.sparql.core.Var ;
 import org.seaborne.dboe.engine.row.* ;
 
@@ -34,6 +35,11 @@ public class RowLib {
 
     public static <X> RowList<X> createRowList(Set<Var> varsLeft, Iterator<Row<X>> iterator) {
         return new RowListBase<>(varsLeft, iterator) ;
+    }
+
+    public static <X> RowList<X> createRowList(Set<Var> varsLeft, Set<Var> varsRight, Iterator<Row<X>> r) {
+        Set<Var> vars = SetUtils.union(varsLeft, varsRight) ;
+        return createRowList(vars, r) ;
     }
 
     public static <X> Row<X> mergeRows(Row<X> row1, Row<X> row2, RowBuilder<X> builder) {

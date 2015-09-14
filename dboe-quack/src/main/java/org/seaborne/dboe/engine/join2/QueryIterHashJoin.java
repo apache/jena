@@ -17,12 +17,12 @@
 
 package org.seaborne.dboe.engine.join2;
 
+import java.util.Iterator ;
+
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator ;
-import org.seaborne.dboe.engine.JoinKey ;
+import org.seaborne.dboe.engine.* ;
+import org.seaborne.dboe.engine.join.Hasher ;
+import org.seaborne.dboe.engine.join.JL ;
 
 /** Hash left join. 
  * This code materializes the right into a probe table
@@ -32,56 +32,57 @@ import org.seaborne.dboe.engine.JoinKey ;
 //* This code materializes the left into a probe table
 //* then hash joins from the right.
 
-public class QueryIterHashJoin extends AbstractIterHashJoin {
+public class QueryIterHashJoin<X> extends AbstractIterHashJoin<X> {
     
     /**
      * Create a hashjoin QueryIterator.
      * @param joinKey  Join key - if null, one is guessed by snooping the input QueryIterators
      * @param left
      * @param right
-     * @param execCxt
+     * @param builder
      * @return QueryIterator
      */
-    public static QueryIterator create(JoinKey joinKey, QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
-        // Easy cases.
-        if ( ! left.hasNext() || ! right.hasNext() ) {
-            left.close() ;
-            right.close() ;
-            return QueryIterNullIterator.create(execCxt) ;
-        }
+    public static <X> RowList<X> create(JoinKey joinKey, RowList<X> left, RowList<X> right, RowBuilder<X> builder) {
+//        // Easy cases.
+//        if ( ! left.hasNext() || ! right.hasNext() ) {
+//            left.close() ;
+//            right.close() ;
+//            return QueryIterNullIterator.create(execCxt) ;
+//        }
         if ( joinKey != null && joinKey.length() > 1 )
             Log.warn(QueryIterHashJoin.class, "Multivariable join key") ; 
-        return new QueryIterHashJoin(joinKey, left, right, execCxt) ; 
+        Iterator<Row<X>> r = new QueryIterHashJoin<>(joinKey, left, right, JL.hash(), builder) ;
+        return RowLib.createRowList(left.vars(), right.vars(), r) ;
     }
     
     /**
      * Create a hashjoin QueryIterator.
      * @param left
      * @param right
-     * @param execCxt
+     * @param builder
      * @return QueryIterator
      */
  
-    public static QueryIterator create(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
-        return create(null, left, right, execCxt) ;
+    public static <X> RowList<X> create(RowList<X> left, RowList<X> right, RowBuilder<X> builder) {
+        return create(null, left, right, builder) ;
     }
     
-    private QueryIterHashJoin(JoinKey joinKey, QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
-        super(joinKey, left, right, execCxt) ;
+    private QueryIterHashJoin(JoinKey joinKey, RowList<X> left, RowList<X> right, Hasher<X> hasher, RowBuilder<X> builder) {
+        super(joinKey, left, right, hasher, builder) ;
     }
 
     @Override
-    protected Binding yieldOneResult(Binding rowCurrentProbe, Binding rowStream, Binding rowResult) {
+    protected Row<X> yieldOneResult(Row<X> rowCurrentProbe, Row<X> rowStream, Row<X> rowResult) {
         return rowResult ;
     }
 
     @Override
-    protected Binding noYieldedRows(Binding rowCurrentProbe) {
+    protected Row<X> noYieldedRows(Row<X> rowCurrentProbe) {
         return null;
     }
     
     @Override
-    protected QueryIterator joinFinished() {
+    protected Iterator<Row<X>> joinFinished() {
         return null;
     }
 

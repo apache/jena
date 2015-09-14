@@ -16,16 +16,13 @@
  * limitations under the License.
  */
 
-package org.seaborne.dboe.engine.join2;
+package org.seaborne.dboe.engine.join;
 
-import org.apache.jena.sparql.expr.ExprList ;
-import org.seaborne.dboe.engine.JoinKey ;
-import org.seaborne.dboe.engine.RowList ;
-import org.seaborne.dboe.engine.row.RowBuilderBase ;
+import org.apache.jena.sparql.core.Var ;
 
-public class TestHashJoin extends AbstractTestInnerJoin {
-    @Override
-    public RowList<Integer> join(JoinKey joinKey, RowList<Integer> left, RowList<Integer> right, ExprList conditions) {
-        return Join.hashJoin(joinKey, left, right, new RowBuilderBase<>()) ;
-    }
+public interface Hasher<X>
+{
+    /** Must cope with null in either slot */ 
+    public long hash(Var v, X x) ;
+    
 }

@@ -1,32 +1,33 @@
-/*
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- *  See the NOTICE file distributed with this work for additional
- *  information regarding copyright ownership.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.seaborne.dboe.engine.join2;
 
-import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 import org.seaborne.dboe.engine.JoinKey ;
+import org.seaborne.dboe.engine.RowList ;
 
 public abstract class AbstractTestLeftJoin extends AbstractTestJoin {
     
     @Override
-    protected void executeTest(JoinKey joinKey, Table left, Table right, ExprList conditions, Table expectedResults) {
+    protected void executeTest(JoinKey joinKey, RowList<Integer> left, RowList<Integer> right, ExprList conditions, RowList<Integer> expectedResults) {
         executeTestJoin("LJ", joinKey, left, right, conditions, expectedResults) ;
     }
 
@@ -75,15 +76,15 @@ public abstract class AbstractTestLeftJoin extends AbstractTestJoin {
     
     // Conditions.
     @Test public void leftjoin_condition_01() {
-        Table tableD1c = parseTableInt("(table", 
-                                       "   (row (?a 1) (?b 3))",
-                                       ")") ;
+        RowList<Integer> tableD1c = parseTableInt("(table", 
+                                                  "   (row (?a 1) (?b 3))",
+                                                  ")") ;
         testJoin("a", table1(), tableD1(), "((= ?b 3))", tableD1c) ; 
     }
     
 
     @Test public void leftjoin_condition_02() {
-        Table tableD3_LJc = parseTableInt("(table",
+        RowList<Integer> tableD3_LJc = parseTableInt("(table",
                                        "   (row (?d 8) (?a 0))",
                                        "   (row (?a 1) (?c 9) (?b 2))",
                                        "   (row (?a 1) (?c 9) (?b 2))",

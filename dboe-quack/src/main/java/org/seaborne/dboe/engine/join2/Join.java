@@ -17,20 +17,14 @@
 
 package org.seaborne.dboe.engine.join2;
 
+import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.DS ;
-import org.apache.jena.sparql.algebra.Algebra ;
-import org.apache.jena.sparql.algebra.Table ;
-import org.apache.jena.sparql.algebra.TableFactory ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
+import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.sparql.engine.main.OpExecutor ;
 import org.apache.jena.sparql.expr.ExprList ;
-import org.seaborne.dboe.engine.JoinKey ;
+import org.seaborne.dboe.engine.* ;
 
 /** API to various join algorithms */
 public class Join {
@@ -46,77 +40,77 @@ public class Join {
      * (See {@link OpExecutor} for streamed execution using substitution).
      * @param left
      * @param right
-     * @param execCxt
+     * @param builder
      * @return QueryIterator
      */
-    public static QueryIterator join(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
+    public static <X> RowList<X> join(RowList<X> left, RowList<X> right, RowBuilder<X> builder) {
         if ( false )
-            return debug(left, right, execCxt,
-                         (_left, _right)->hashJoin(_left, _right, execCxt)) ;
+            return debug(left, right, builder,
+                         (_left, _right)->hashJoin(_left, _right, builder)) ;
         if ( useNestedLoopJoin )
-            return nestedLoopJoin(left, right, execCxt) ;
-        return hashJoin(left, right, execCxt) ;
+            return nestedLoopJoin(left, right, builder) ;
+        return hashJoin(left, right, builder) ;
     }
    
-    /** Standard entry point to a left join of two streams.
-     * This is not a substitution/index join.
-     * (See {@link OpExecutor} for streamed execution using substitution).
-     *
-     * @param left
-     * @param right
-     * @param conditions
-     * @param execCxt
-     * @return QueryIterator
-     */
-    public static QueryIterator leftJoin(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
-        if ( false )
-            return debug(left, right, execCxt, 
-                         (_left, _right)->hashLeftJoin(_left, _right, conditions, execCxt)) ;
-        if ( useNestedLoopLeftJoin )
-            return nestedLoopLeftJoin(left, right, conditions, execCxt) ;
-        return hashLeftJoin(left, right, conditions, execCxt) ;
-    }
+//    /** Standard entry point to a left join of two streams.
+//     * This is not a substitution/index join.
+//     * (See {@link OpExecutor} for streamed execution using substitution).
+//     *
+//     * @param left
+//     * @param right
+//     * @param conditions
+//     * @param builder
+//     * @return QueryIterator
+//     */
+//    public static <X> RowList<X> leftJoin(RowList<X> left, RowList<X> right, ExprList conditions, RowBuilder<X> builder) {
+//        if ( false )
+//            return debug(left, right, builder, 
+//                         (_left, _right)->hashLeftJoin(_left, _right, conditions, builder)) ;
+//        if ( useNestedLoopLeftJoin )
+//            return nestedLoopLeftJoin(left, right, conditions, builder) ;
+//        return hashLeftJoin(left, right, conditions, builder) ;
+//    }
 
     /* Debug.
      * Print inputs and outputs.
      * This involves materializing the iterators.   
      */
-    interface JoinOp { 
-        public QueryIterator exec(QueryIterator left, QueryIterator right) ;
+    private interface JoinOp<X> { 
+        public RowList<X> exec(RowList<X> left, RowList<X> right) ;
     }
     
     /** Inner loop join.
      *  Cancellable.
      * @param left      Left hand side
      * @param right     Right hand side
-     * @param execCxt       ExecutionContext
+     * @param builder       ExecutionContext
      * @return          QueryIterator
      */ 
-    public static QueryIterator nestedLoopJoin(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
-        return new QueryIterNestedLoopJoin(left, right, execCxt) ;
+    public static <X> RowList<X> nestedLoopJoin(RowList<X> left, RowList<X> right, RowBuilder<X> builder) {
+        return create(left, right, new QueryIterNestedLoopJoin<>(left, right, builder)) ;
     }
-
-    /** Inner loop join.
-     *  Cancellable.
-     * @param left      Left hand side
-     * @param right     Right hand side
-     * @param execCxt       ExecutionContext
-     * @return          QueryIterator
-     */ 
-    public static QueryIterator nestedLoopLeftJoin(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
-        return new QueryIterNestedLoopLeftJoin(left, right, conditions, execCxt) ;
-    }
+    
+//    
+//    /** Inner loop join.
+//     *  Cancellable.
+//     * @param left      Left hand side
+//     * @param right     Right hand side
+//     * @param builder       ExecutionContext
+//     * @return          QueryIterator
+//     */ 
+//    public static <X> RowList<X> nestedLoopLeftJoin(RowList<X> left, RowList<X> right, ExprList conditions, RowBuilder<X> builder) {
+//        return new QueryIterNestedLoopLeftJoin(left, right, conditions, builder) ;
+//    }
 
     /** Evaluate using a hash join.
      * 
      * @param left      Left hand side
      * @param right     Right hand side
-     * @param execCxt   ExecutionContext
+     * @param builder   Row builder  
      * @return          QueryIterator
      */
-    public static QueryIterator hashJoin(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
-        //return new QueryIterNestedLoopJoin(left, right, conditions, execCxt) ;
-        return QueryIterHashJoin.create(left, right, execCxt) ;
+    public static <X> RowList<X> hashJoin(RowList<X> left, RowList<X> right, RowBuilder<X> builder) {
+        return QueryIterHashJoin.create(left, right, builder) ;
     }
 
     /** Evaluate using a hash join.
@@ -124,41 +118,41 @@ public class Join {
      * @param joinKey   The key for the probe table.
      * @param left      Left hand side
      * @param right     Right hand side
-     * @param execCxt   ExecutionContext
+     * @param builder   Row builder
      * @return          QueryIterator
      */
-    public static QueryIterator hashJoin(JoinKey joinKey, QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
-        return QueryIterHashJoin.create(joinKey, left, right, execCxt) ;
+    public static <X> RowList<X> hashJoin(JoinKey joinKey, RowList<X> left, RowList<X> right, RowBuilder<X> builder) {
+        return QueryIterHashJoin.create(joinKey, left, right, builder) ;
     }
 
-    /**
-     * Left outer join by using hash join. Normally, this is
-     * hashing the right hand side and streaming the left.  The reverse
-     * implementation (hash left, stream right) is also available.   
-     * @param left
-     * @param right
-     * @param conditions
-     * @param execCxt
-     * @return QueryIterator
-     */
-    public static QueryIterator hashLeftJoin(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
-        return QueryIterHashLeftJoin_Right.create(left, right, conditions, execCxt) ;
-    }
-
-    /**
-     * Left outer join by using hash join. Normally, this is
-     * hashing the right hand side and streaming the left.  The reverse
-     * implementation (hash left, stream right) is also available.   
-     * @param joinKey
-     * @param left
-     * @param right
-     * @param conditions
-     * @param execCxt
-     * @return QueryIterator
-     */
-    public static QueryIterator hashLeftJoin(JoinKey joinKey, QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
-        return QueryIterHashLeftJoin_Right.create(joinKey, left, right, conditions, execCxt) ;
-    }
+//    /**
+//     * Left outer join by using hash join. Normally, this is
+//     * hashing the right hand side and streaming the left.  The reverse
+//     * implementation (hash left, stream right) is also available.   
+//     * @param left
+//     * @param right
+//     * @param conditions
+//     * @param builder
+//     * @return QueryIterator
+//     */
+//    public static <X> RowList<X> hashLeftJoin(RowList<X> left, RowList<X> right, ExprList conditions, RowBuilder<X> builder) {
+//        return QueryIterHashLeftJoin_Right.create(left, right, conditions, builder) ;
+//    }
+//
+//    /**
+//     * Left outer join by using hash join. Normally, this is
+//     * hashing the right hand side and streaming the left.  The reverse
+//     * implementation (hash left, stream right) is also available.   
+//     * @param joinKey
+//     * @param left
+//     * @param right
+//     * @param conditions
+//     * @param builder
+//     * @return QueryIterator
+//     */
+//    public static <X> RowList<X> hashLeftJoin(JoinKey joinKey, RowList<X> left, RowList<X> right, ExprList conditions, RowBuilder<X> builder) {
+//        return QueryIterHashLeftJoin_Right.create(joinKey, left, right, conditions, builder) ;
+//    }
 
     /** Very simple, materializing version - useful for debugging.
      *  Builds output early. Materializes left, streams right.
@@ -167,35 +161,35 @@ public class Join {
      * 
      * @see #nestedLoopJoin
      */
-    public static QueryIterator nestedLoopJoinBasic(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
-        List<Binding> leftRows = Iter.toList(left) ;
-        List<Binding> output = DS.list() ;
-        for ( ; right.hasNext() ; ) {
-            Binding row2 = right.next() ;
-            for ( Binding row1 : leftRows ) {
-                Binding r = Algebra.merge(row1, row2) ;
+    public static <X> RowList<X> nestedLoopJoinBasic(RowList<X> left, RowList<X> right, RowBuilder<X> builder) {
+        List<Row<X>> leftRows = left.toList() ;
+        List<Row<X>> output = DS.list() ;
+        for ( Row<X> row2 : right) {
+            for ( Row<X> row1 : leftRows ) {
+                Row<X> r = RowLib.mergeRows(row1, row2, builder) ;
                 if ( r != null )
                     output.add(r) ;
             }
         }
-        return new QueryIterPlainWrapper(output.iterator(), execCxt) ;
+        return create(left, right, output.iterator()) ;
     }
-
+    
+//
     /** Very simple, materializing version for leftjoin - useful for debugging.
      *  Builds output early. Materializes right, streams left.
      *  Does <b>not</b> scale. 
      */
-    public static QueryIterator nestedLoopLeftJoinBasic(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
+    public static <X> RowList<X> nestedLoopLeftJoinBasic(RowList<X> left, RowList<X> right, ExprList conditions, RowBuilder<X> builder) {
         // Stream from left, materialize right.
-        List<Binding> rightRows = Iter.toList(right) ;
-        List<Binding> output = DS.list() ;
+        List<Row<X>> rightRows = right.toList() ;
+        
+        List<Row<X>> output = DS.list() ;
         long count = 0 ;
-        for ( ; left.hasNext() ; ) {
-            Binding row1 = left.next() ;
+        for ( Row<X> row1 : left ) {
             boolean match = false ;
-            for ( Binding row2 : rightRows ) {
-                Binding r = Algebra.merge(row1, row2) ;
-                if ( r != null && applyConditions(r, conditions, execCxt)) {
+            for ( Row<X> row2 : rightRows ) {
+                Row<X> r = RowLib.mergeRows(row1, row2, builder) ;
+                if ( r != null && applyConditions(r, conditions)) {
                     output.add(r) ;
                     match = true ;
                 }
@@ -203,37 +197,43 @@ public class Join {
             if ( ! match )
                 output.add(row1) ;
         }
-        return new QueryIterPlainWrapper(output.iterator(), execCxt) ;
+        return create(left, right, output.iterator()) ;
+    }
+
+    private static <X> RowList<X> create(RowList<X> left, RowList<X> right, Iterator<Row<X>> rows) {
+        return RowLib.createRowList(left.vars(), right.vars(), rows) ; 
     }
 
     // apply conditions.
-    private static boolean applyConditions(Binding row, ExprList conditions, ExecutionContext execCxt) {
+    private static <X> boolean applyConditions(Row<X> row, ExprList conditions) {
         if ( conditions == null )
             return true ;
-        return conditions.isSatisfied(row, execCxt) ;
+        //return conditions.isSatisfied(row, null) ;
+        throw new NotImplemented() ;
     }
 
-    private static QueryIterator debug(QueryIterator left, QueryIterator right, ExecutionContext execCxt, JoinOp action) {
-            Table t1 = TableFactory.create(left) ;
-            Table t2 = TableFactory.create(right) ;
-    
-            left = t1.iterator(execCxt) ;
-            right = t2.iterator(execCxt) ;
-    
-            QueryIterator qIter = action.exec(left, right) ;
-            Table t3 = TableFactory.create(qIter) ;
-            System.out.println("** Left") ;
-            System.out.println(t1) ;
-            System.out.println("** Right") ;
-            System.out.println(t2) ;
-            System.out.println("** ") ;
-            System.out.println(t3) ;
-    //        // Could do again here, different algoithm for comparison.
-    //        left = t1.iterator(execCxt) ;
-    //        right = t2.iterator(execCxt) ;
-    //        System.out.println("** nestedLoopJoin") ;
-    //        Table t4 = TableFactory.create(?????) ;
-    //        System.out.println(t4) ;
-            return t3.iterator(execCxt) ;
+    private static <X> RowList<X> debug(RowList<X> left, RowList<X> right, RowBuilder<X> builder, JoinOp<X> action) {
+        return null ;
+//            Table t1 = TableFactory.create(left) ;
+//            Table t2 = TableFactory.create(right) ;
+//    
+//            left = t1.iterator(builder) ;
+//            right = t2.iterator(builder) ;
+//    
+//            QueryIterator qIter = action.exec(left, right) ;
+//            Table t3 = TableFactory.create(qIter) ;
+//            System.out.println("** Left") ;
+//            System.out.println(t1) ;
+//            System.out.println("** Right") ;
+//            System.out.println(t2) ;
+//            System.out.println("** ") ;
+//            System.out.println(t3) ;
+//    //        // Could do again here, different algoithm for comparison.
+//    //        left = t1.iterator(builder) ;
+//    //        right = t2.iterator(builder) ;
+//    //        System.out.println("** nestedLoopJoin") ;
+//    //        Table t4 = TableFactory.create(?????) ;
+//    //        System.out.println(t4) ;
+//            return t3.iterator(builder) ;
         }
 }

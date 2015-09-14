@@ -17,17 +17,14 @@
 
 package org.seaborne.dboe.engine.join;
 
+import org.apache.jena.sparql.core.Var ;
 import org.junit.Assert ;
 import org.junit.Test ;
 import org.seaborne.dboe.engine.Join ;
 import org.seaborne.dboe.engine.JoinKey ;
 import org.seaborne.dboe.engine.QJT ;
 import org.seaborne.dboe.engine.Row ;
-import org.seaborne.dboe.engine.join.HashJoin ;
-import org.seaborne.dboe.engine.join.HashJoin.Hasher ;
 import org.seaborne.dboe.engine.row.RowBuilderBase ;
-
-import org.apache.jena.sparql.core.Var ;
 
 public class TestJoinMisc extends Assert {
     // Various of these tests check to see if two unrelated hashes
@@ -35,19 +32,19 @@ public class TestJoinMisc extends Assert {
     // may require test tweaking. 
     
     @Test public void hash_01() {
-        Hasher<Integer> hasher = HashJoin.hash() ;
+        Hasher<Integer> hasher = JL.hash() ;
         long x = hasher.hash(null, 1) ;
     }
     
     @Test public void hash_02() {
-        Hasher<Integer> hasher = HashJoin.hash() ;
+        Hasher<Integer> hasher = JL.hash() ;
         long x1 = hasher.hash(null, 1) ;
         long x2 = hasher.hash(null, 2) ;
         assertNotEquals(x1, x2);
     }
 
     @Test public void hash_04() {
-        Hasher<Integer> hasher = HashJoin.hash() ;
+        Hasher<Integer> hasher = JL.hash() ;
         Var v = Var.alloc("a") ;
         long x1 = hasher.hash(null, 1) ;
         long x2 = hasher.hash(v, 1) ;
@@ -55,7 +52,7 @@ public class TestJoinMisc extends Assert {
     }
 
     @Test public void hash_05() {
-        Hasher<Integer> hasher = HashJoin.hash() ;
+        Hasher<Integer> hasher = JL.hash() ;
         Var v1 = Var.alloc("a") ;
         Var v2 = Var.alloc("b") ;
         long x1 = hasher.hash(v1, 1) ;
@@ -64,7 +61,7 @@ public class TestJoinMisc extends Assert {
     }
 
     @Test public void hash_06() {
-        Hasher<Integer> hasher = HashJoin.hash() ;
+        Hasher<Integer> hasher = JL.hash() ;
         Var v1 = Var.alloc("a") ;
         Var v2 = Var.alloc("b") ;
         long x1 = hasher.hash(v1, 1) ;
@@ -85,58 +82,58 @@ public class TestJoinMisc extends Assert {
     static JoinKey jk_ab =   QJT.parseJoinKey("(key ?a ?b)") ;
     
     @Test public void hash_10() {
-        Hasher<String> hasher = HashJoin.hash() ;
-        Object h1 = HashJoin.hash(hasher, jk_a, row1) ;
+        Hasher<String> hasher = JL.hash() ;
+        Object h1 = JL.hash(hasher, jk_a, row1) ;
         assertNotNull(h1) ;
     }
     
     @Test public void hash_11() {
         // The "?b" in the join key perturbs the hash. 
-        Hasher<String> hasher = HashJoin.hash() ;
-        Object h1 = HashJoin.hash(hasher, jk_a, row1) ;
-        Object h2 = HashJoin.hash(hasher, jk_ab, row1) ;
+        Hasher<String> hasher = JL.hash() ;
+        Object h1 = JL.hash(hasher, jk_a, row1) ;
+        Object h2 = JL.hash(hasher, jk_ab, row1) ;
         assertNotNull(h1);
         assertNotNull(h2);
         assertNotEquals(h1, h2);
     }
 
     @Test public void hash_12() {
-        Hasher<String> hasher = HashJoin.hash() ;
-        Object h1 = HashJoin.hash(hasher, jk_a, row1) ;
-        Object h2 = HashJoin.hash(hasher, jk_a, row2) ;
+        Hasher<String> hasher = JL.hash() ;
+        Object h1 = JL.hash(hasher, jk_a, row1) ;
+        Object h2 = JL.hash(hasher, jk_a, row2) ;
         assertNotNull(h1);
         assertNotNull(h2);
         assertEquals(h1, h2);
     }
 
     @Test public void hash_13() {
-        Hasher<String> hasher = HashJoin.hash() ;
-        Object h1 = HashJoin.hash(hasher, jk_ab, row1) ;
-        Object h2 = HashJoin.hash(hasher, jk_ab, row2) ;
+        Hasher<String> hasher = JL.hash() ;
+        Object h1 = JL.hash(hasher, jk_ab, row1) ;
+        Object h2 = JL.hash(hasher, jk_ab, row2) ;
         assertNotNull(h1);
         assertNotNull(h2);
         assertNotEquals(h1, h2);
     }
 
     @Test public void hash_20() {
-        Hasher<String> hasher = HashJoin.hash() ;
-        Object h1 = HashJoin.hash(hasher, jk_null, row1) ;
+        Hasher<String> hasher = JL.hash() ;
+        Object h1 = JL.hash(hasher, jk_null, row1) ;
         assertNotNull(h1);
-        assertEquals(HashJoin.noKeyHash, h1) ;
+        assertEquals(JL.noKeyHash, h1) ;
     }
     
     @Test public void hash_21() {
-        Hasher<String> hasher = HashJoin.hash() ;
-        Object h1 = HashJoin.hash(hasher, jk_null, row0) ;
+        Hasher<String> hasher = JL.hash() ;
+        Object h1 = JL.hash(hasher, jk_null, row0) ;
         assertNotNull(h1);
-        assertEquals(HashJoin.noKeyHash, h1) ;
+        assertEquals(JL.noKeyHash, h1) ;
     }
     
     @Test public void hash_22() {
-        Hasher<String> hasher = HashJoin.hash() ;
-        Object h1 = HashJoin.hash(hasher, jk_a, row0) ;
+        Hasher<String> hasher = JL.hash() ;
+        Object h1 = JL.hash(hasher, jk_a, row0) ;
         assertNotNull(h1);
-        assertEquals(HashJoin.noKeyHash, h1) ;
+        assertEquals(JL.noKeyHash, h1) ;
     }
     
     private static void compatible(String s1, String s2, boolean expected) {
