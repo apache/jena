@@ -21,6 +21,7 @@ package org.apache.jena.atlas.lib;
 import java.util.Collection ;
 import java.util.Map ;
 import java.util.concurrent.ConcurrentHashMap ;
+import java.util.function.BiConsumer ;
 
 public class Registry<K,T>
 {
@@ -36,4 +37,7 @@ public class Registry<K,T>
     //public Iterator<String> keys()      { return registry.keySet().iterator() ; }
     public int size()                   { return registry.size() ; }
     public boolean isEmpty()            { return registry.isEmpty() ; }
+    public void forEach(BiConsumer<K, T> action) {
+        registry.forEach(action); 
+    }
 }
