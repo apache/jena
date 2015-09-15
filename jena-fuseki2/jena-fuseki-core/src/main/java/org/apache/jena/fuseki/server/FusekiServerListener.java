@@ -23,6 +23,7 @@ import javax.servlet.ServletContextEvent ;
 import javax.servlet.ServletContextListener ;
 
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.tdb.StoreConnection ;
 
 public class FusekiServerListener implements ServletContextListener {
 
@@ -46,7 +47,10 @@ public class FusekiServerListener implements ServletContextListener {
     }
 
     @Override
-    public void contextDestroyed(ServletContextEvent sce) {}
+    public void contextDestroyed(ServletContextEvent sce) {
+        // But in flight-transactions?
+        StoreConnection.reset();
+    }
 
     public synchronized void init() {
         if ( initialized )
