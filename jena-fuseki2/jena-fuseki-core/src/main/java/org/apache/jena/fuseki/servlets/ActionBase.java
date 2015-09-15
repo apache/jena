@@ -201,10 +201,10 @@ public abstract class ActionBase extends ServletBase
                 String h = en.nextElement() ;
                 Enumeration<String> vals = action.request.getHeaders(h) ;
                 if ( !vals.hasMoreElements() )
-                    log.info(format("[%d]   %s", action.id, h)) ;
+                    log.info(format("[%d]   => %s", action.id, h+":")) ;
                 else {
                     for (; vals.hasMoreElements();)
-                        log.info(format("[%d]   %-20s %s", action.id, h, vals.nextElement())) ;
+                        log.info(format("[%d]   => %-20s %s", action.id, h+":", vals.nextElement())) ;
                 }
             }
         }
@@ -224,11 +224,11 @@ public abstract class ActionBase extends ServletBase
         HttpServletResponseTracker response = action.response ;
         if ( action.verbose ) {
             if ( action.contentType != null )
-                log.info(format("[%d]   %-20s %s", action.id, HttpNames.hContentType, action.contentType)) ;
+                log.info(format("[%d]   <= %-20s %s", action.id, HttpNames.hContentType+":", action.contentType)) ;
             if ( action.contentLength != -1 )
-                log.info(format("[%d]   %-20s %d", action.id, HttpNames.hContentLengh, action.contentLength)) ;
+                log.info(format("[%d]   <= %-20s %d", action.id, HttpNames.hContentLengh+":", action.contentLength)) ;
             for (Map.Entry<String, String> e : action.headers.entrySet())
-                log.info(format("[%d]   %-20s %s", action.id, e.getKey(), e.getValue())) ;
+                log.info(format("[%d]   <= %-20s %s", action.id, e.getKey()+":", e.getValue())) ;
         }
 
         String timeStr = fmtMillis(time) ;
