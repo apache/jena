@@ -96,7 +96,7 @@ public class Join {
         return new QueryIterNestedLoopJoin(left, right, execCxt) ;
     }
 
-    /** Inner loop join.
+    /** Left loop join.
      *  Cancellable.
      * @param left      Left hand side
      * @param right     Right hand side
