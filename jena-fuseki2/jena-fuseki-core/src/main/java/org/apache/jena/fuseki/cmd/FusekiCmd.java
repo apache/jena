@@ -156,6 +156,11 @@ public class FusekiCmd {
         protected void processModulesAndArgs() {
             int x = 0 ;
 
+            if ( super.isVerbose() || super.isDebug() ) {
+                jettyServerConfig.verboseLogging = true ;
+                // Output is still at level INFO (currently) 
+            }
+            
             Logger log = Fuseki.serverLog ;
 
             if ( contains(argFusekiConfig) )
