@@ -48,6 +48,9 @@ public class FusekiServerListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
+//        DataAccessPointRegistry.get().forEach((key, dap) -> {
+//            ??
+//        }) ;
         // But in flight-transactions?
         StoreConnection.reset();
     }
