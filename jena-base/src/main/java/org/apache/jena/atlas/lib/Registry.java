@@ -37,6 +37,7 @@ public class Registry<K,T>
     //public Iterator<String> keys()      { return registry.keySet().iterator() ; }
     public int size()                   { return registry.size() ; }
     public boolean isEmpty()            { return registry.isEmpty() ; }
+    public void clear()                 { registry.clear() ; }
     public void forEach(BiConsumer<K, T> action) {
         registry.forEach(action); 
     }
