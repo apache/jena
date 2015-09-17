@@ -20,11 +20,12 @@ package arq;
 
 import java.io.File ;
 
+import arq.cmdline.CmdARQ ;
+import arq.cmdline.ModEngine ;
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
 import jena.cmd.TerminationException;
 import junit.framework.TestSuite ;
-
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ARQ ;
@@ -45,9 +46,6 @@ import org.apache.jena.vocabulary.DC ;
 import org.apache.jena.vocabulary.DCTerms ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.XSD ;
-
-import arq.cmdline.CmdARQ ;
-import arq.cmdline.ModEngine ;
 
 
 /** A program to execute query test suites
@@ -80,7 +78,6 @@ public class qtest extends CmdARQ
     
     public static void main (String... argv)
     {
-        ARQ.init();
         try {
             new qtest(argv).mainRun() ;
         }

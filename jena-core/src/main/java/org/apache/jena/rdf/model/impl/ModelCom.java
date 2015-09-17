@@ -35,6 +35,7 @@ import org.apache.jena.graph.impl.LiteralLabelFactory ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.* ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.util.CollectionFactory ;
 import org.apache.jena.util.iterator.* ;
 import org.apache.jena.vocabulary.RDF ;
@@ -59,7 +60,7 @@ implements Model, PrefixMapping, Lock
         // This forces RIOT (in ARQ) to initialize but after Jena readers/writers
         // have cleanly initialized from the calls of  RDFReaderFImpl and RDFWriterFImpl
         // above.  RIOT initialization happens before model.read can be called.
-        IO_Ctl.init();
+        JenaSystem.init() ;
     }
     
     /**

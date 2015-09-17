@@ -28,7 +28,7 @@ import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
-import org.apache.jena.sparql.ARQConstants ;
+import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpAsQuery ;
 import org.apache.jena.sparql.algebra.OpVars ;
@@ -51,22 +51,22 @@ public class Service {
     /**
      * Use to set the HttpQuery.allowDeflate flag.
      */
-    public static final Symbol queryDeflate = ARQConstants.allocSymbol(base, "queryDeflate");
+    public static final Symbol queryDeflate = SystemARQ.allocSymbol(base, "queryDeflate");
 
     /**
      * Use to set the HttpQuery.allowGZip flag.
      */
-    public static final Symbol queryGzip = ARQConstants.allocSymbol(base, "queryGzip");
+    public static final Symbol queryGzip = SystemARQ.allocSymbol(base, "queryGzip");
 
     /**
      * Use to set the user id for basic auth.
      */
-    public static final Symbol queryAuthUser = ARQConstants.allocSymbol(base, "queryAuthUser");
+    public static final Symbol queryAuthUser = SystemARQ.allocSymbol(base, "queryAuthUser");
 
     /**
      * Use to set the user password for basic auth.
      */
-    public static final Symbol queryAuthPwd = ARQConstants.allocSymbol(base, "queryAuthPwd");
+    public static final Symbol queryAuthPwd = SystemARQ.allocSymbol(base, "queryAuthPwd");
 
     /**
      * Use this Symbol to allow passing additional service context variables
@@ -77,7 +77,7 @@ public class Service {
      * 
      * @see org.apache.jena.sparql.engine.http.Service
      */
-    public static final Symbol serviceContext = ARQConstants.allocSymbol(base, "serviceContext");
+    public static final Symbol serviceContext = SystemARQ.allocSymbol(base, "serviceContext");
 
     /**
      * Control whether SERVICE processing is allowed.
@@ -85,7 +85,7 @@ public class Service {
      * then SERVICE is not allowed.
      */
     
-    public static final Symbol serviceAllowed = ARQConstants.allocSymbol(base, "serviceAllowed");
+    public static final Symbol serviceAllowed = SystemARQ.allocSymbol(base, "serviceAllowed");
     
     /**
      * Set timeout. The value of this symbol gives the value of the timeout in
@@ -99,7 +99,7 @@ public class Service {
      * The first value is passed to HttpQuery.setConnectTimeout() the second, if
      * it exists, is passed to HttpQuery.setReadTimeout()
      */
-    public static final Symbol queryTimeout = ARQConstants.allocSymbol(base, "queryTimeout");
+    public static final Symbol queryTimeout = SystemARQ.allocSymbol(base, "queryTimeout");
 
     /**
      * Executes a service operator

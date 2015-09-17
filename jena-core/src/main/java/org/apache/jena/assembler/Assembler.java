@@ -28,6 +28,7 @@ import org.apache.jena.rdf.model.* ;
 */
 public interface Assembler
     {
+    
     /**
         The core operation: answer a new object constructed according to the
         object description hanging from <code>root</code>, using the assembler

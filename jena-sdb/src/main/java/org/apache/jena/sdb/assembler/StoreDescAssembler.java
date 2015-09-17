@@ -24,7 +24,6 @@ import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.Mode ;
 import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.SDBException ;
 import org.apache.jena.sdb.StoreDesc ;
 import org.apache.jena.sdb.sql.MySQLEngineType ;
@@ -38,8 +37,6 @@ import org.slf4j.LoggerFactory;
 
 public class StoreDescAssembler extends AssemblerBase implements Assembler
 {
-    static { SDB.init() ; }
-    
     private static Logger log = LoggerFactory.getLogger(StoreDescAssembler.class) ;
     
     @Override

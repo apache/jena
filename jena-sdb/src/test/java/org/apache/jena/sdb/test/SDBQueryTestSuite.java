@@ -22,6 +22,7 @@ import junit.framework.TestSuite;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.test.junit.QueryTestSDBFactory ;
+import org.apache.jena.system.JenaSystem ;
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
 
@@ -40,14 +41,14 @@ public class SDBQueryTestSuite extends TestSuite
     
     private SDBQueryTestSuite()
     {
-        super("SDB") ;
-        
+        super("SDB Query") ;
+        SDB.init();
         if ( true )
             // PostgreSQL gets upset with comments in comments??
             ARQ.getContext().setFalse(SDB.annotateGeneratedSQL) ;
 
         QueryTestSDBFactory.make(this, SDBTestSetup.storeList, SDBTestSetup.manifestMain) ;
-        QueryTestSDBFactory.make(this, SDBTestSetup.storeListSimple, SDBTestSetup.manifestSimple) ;
+        //QueryTestSDBFactory.make(this, SDBTestSetup.storeListSimple, SDBTestSetup.manifestSimple) ;
     }
     
  

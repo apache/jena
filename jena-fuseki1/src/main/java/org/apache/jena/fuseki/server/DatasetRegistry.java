@@ -18,9 +18,9 @@
 
 package org.apache.jena.fuseki.server;
 
-import org.apache.jena.fuseki.migrate.Registry ;
+import org.apache.jena.atlas.lib.Registry ;
 
-public class DatasetRegistry extends Registry<DatasetRef>
+public class DatasetRegistry extends Registry<String, DatasetRef>
 {
     private static DatasetRegistry singleton = new DatasetRegistry() ;
 

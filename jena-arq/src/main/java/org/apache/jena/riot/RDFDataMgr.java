@@ -49,6 +49,7 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.system.JenaSystem ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -78,10 +79,7 @@ import org.slf4j.LoggerFactory ;
 
 public class RDFDataMgr
 {
-    static { RIOT.init() ; }
-    /* Maybe:
-     * static for global (singleton) and locally tailored. 
-     */
+    static { JenaSystem.init() ; }
     
     static Logger log = LoggerFactory.getLogger(RDFDataMgr.class) ;
     private static String riotBase = "http://jena.apache.org/riot/" ;

@@ -153,7 +153,7 @@
           <includes>
             <!-- 
 	      The test collections TC_General, TC_Riot, TC_Atlas 
-	      are development support that collect the relavent 
+	      are development support that collect the relevant 
 	      tests for partial testing during development. 
 	    -->
             <include>**/TS_*.java</include>

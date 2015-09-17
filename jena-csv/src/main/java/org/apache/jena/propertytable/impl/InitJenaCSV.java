@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,27 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.migrate;
+package org.apache.jena.propertytable.impl;
 
-import java.util.Collection ;
-import java.util.HashMap ;
-import java.util.Map ;
+import org.apache.jena.propertytable.lang.CSV2RDF ;
+import org.apache.jena.system.JenaSubsystemLifecycle ;
 
-public class Registry<T>
-{
-    protected Map<String, T> registry = new HashMap<String, T>() ;
-    
-    public Registry() {}
-    
-    public void put(String key, T value) { registry.put(key, value) ; }
-    
-    public T get(String key) { return registry.get(key) ; }
-    
-    public boolean isRegistered(String key) { return registry.containsKey(key) ; }
-    public void remove(String key) { registry.remove(key) ; } 
-    public Collection<String> keys() { return registry.keySet() ; }
-    //public Iterator<String> keys() { return registry.keySet().iterator() ; }
-    
-    public int size() { return registry.size() ; }
-    public boolean isEmpty() { return registry.isEmpty() ; }
+public class InitJenaCSV implements JenaSubsystemLifecycle {
+
+    @Override
+    public void start() {
+        CSV2RDF.init() ;
+    }
+
+    @Override
+    public void stop() {
+    }
 }

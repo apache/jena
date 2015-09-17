@@ -35,6 +35,7 @@ import org.apache.jena.sdb.store.DatasetStore ;
 import org.apache.jena.sdb.store.StoreFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.modify.GraphStoreBasic ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.update.GraphStore ;
 
 /** Various operations to create or connect objects to do with SDB:
@@ -45,6 +46,7 @@ import org.apache.jena.update.GraphStore ;
 @SuppressWarnings("deprecation")
 public class SDBFactory
 {
+    static { JenaSystem.init() ; }
     // ---- Connections
     /**
      * Create a connection to a database.

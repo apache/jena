@@ -47,7 +47,7 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
     protected final JoinKey               joinKey ;
     protected final HashProbeTable        hashTable ;
 
-    private Iterator<Binding>           iterStream ;
+    private QueryIterator               iterStream ;
     private Binding                     rowStream       = null ;
     private Iterator<Binding>           iterCurrent ;
     private boolean                     yielded ;       // Flag to note when current probe causes a result. 
@@ -227,11 +227,14 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
                          hashTable.s_countScanMiss, hashTable.s_maxBucketSize, hashTable.s_noKeyBucketSize) ;
             System.out.println(x) ;
         }
+        // In case it's a peek iterator.
+        iterStream.close() ;
         hashTable.clear(); 
     }
 
     @Override
     protected void requestSubCancel() {
+        iterStream.close() ;
         hashTable.clear(); 
     }
 }

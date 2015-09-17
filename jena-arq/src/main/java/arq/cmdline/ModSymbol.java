@@ -30,11 +30,14 @@ import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.system.JenaSystem ;
 
 public class ModSymbol extends ModBase
 {
+    static { JenaSystem.init(); }
+
     protected final ArgDecl setDecl = new ArgDecl(ArgDecl.HasValue, "set", "define", "defn", "def") ;
-    Context context = new Context() ;
+private Context context = new Context() ;
 
     @Override
     public void registerWith(CmdGeneral cmdLine)
@@ -49,7 +52,6 @@ public class ModSymbol extends ModBase
     @Override
     public void processArgs(CmdArgModule cmdLine)
     {
-        ARQ.init();
         
         if ( cmdLine.getValues(setDecl) == null || cmdLine.getValues(setDecl).size() == 0 )
             return ;

@@ -33,6 +33,7 @@ import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.sparql.util.TypeNotUniqueException ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
+import org.apache.jena.system.JenaSystem ;
 
 public class AssemblerUtils
 {
@@ -45,7 +46,7 @@ public class AssemblerUtils
     
     private static boolean initialized = false ; 
     
-    static { ARQ.init(); init() ; } 
+    static { JenaSystem.init() ; init() ; } 
     
     static public void init()
     {
