@@ -20,19 +20,18 @@ package jena;
 
 import java.util.Iterator;
 
+import arq.cmdline.CmdARQ;
+import jena.cmd.ArgDecl ;
+import jena.cmd.CmdException ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.spatial.DatasetGraphSpatial;
 import org.apache.jena.query.spatial.SpatialDatasetFactory;
 import org.apache.jena.query.spatial.SpatialIndex;
 import org.apache.jena.query.spatial.SpatialIndexContext;
-import org.apache.jena.query.spatial.SpatialQuery;
 import org.apache.jena.sparql.core.Quad ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import jena.cmd.ArgDecl ;
-import jena.cmd.CmdException ;
-import arq.cmdline.CmdARQ;
 
 /**
  * Spatial indexer application that will read a dataset and index its triples in
@@ -51,7 +50,6 @@ public class spatialindexer extends CmdARQ {
 	protected ProgressMonitor progressMonitor;
 		
 	static public void main(String... argv) {
-		SpatialQuery.init();
 		new spatialindexer(argv).mainRun();
 	}
 

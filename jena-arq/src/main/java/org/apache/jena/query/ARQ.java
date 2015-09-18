@@ -530,7 +530,6 @@ public class ARQ
 
     /** Ensure things have started - applications do not need call this.
      * The method is public so any part of ARQ can call it.
-     * Note the final static initializer call 
      */
     
     static { JenaSystem.init(); }

@@ -220,15 +220,6 @@ public class Fuseki {
         FusekiLogging.setLogging() ;
         SystemInfo sysInfo = new SystemInfo(FusekiIRI, PATH, VERSION, BUILD_DATE) ;
         SystemARQ.registerSubSystem(sysInfo) ;
-        TDB.init() ;
-        // Initialize anyway (e.g. not to rely on assembler magic).
-        try { 
-            TextQuery.init() ;
-            SpatialQuery.init() ;
-        } catch ( Exception ex ) {
-            // In case jars are missing.
-        }
-        
         MappingRegistry.addPrefixMapping("fuseki", FusekiSymbolIRI) ;
 
         TDB.setOptimizerWarningFlag(false) ;

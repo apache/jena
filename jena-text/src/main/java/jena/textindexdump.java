@@ -49,7 +49,6 @@ public class textindexdump extends CmdARQ {
     protected TextIndex        textIndex    = null ;
 
     static public void main(String... argv) {
-        TextQuery.init() ;
         new textindexdump(argv).mainRun() ;
     }
 

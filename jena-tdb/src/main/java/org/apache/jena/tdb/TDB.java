@@ -205,7 +205,7 @@ public class TDB {
 
     /**
      * TDB System initialization - normally, this is not explicitly called
-     * because all routes to use TDB will cause initialization to occur.
+     * because Jena system wide initialization occurs automatically.
      * However, calling it repeatedly is safe and low cost.
      */
     public static void init() {
@@ -223,7 +223,7 @@ public class TDB {
             initialized = true ;
             if ( JenaSystem.DEBUG_INIT )
                 System.err.println("TDB.init - start") ;
-            ARQ.init() ;
+            // ARQ.init() ; // Init level settings mean this is already done. 
             SystemTDB.init() ;
             LangRDFXML.RiotUniformCompatibility = true ;
             EnvTDB.processGlobalSystemProperties() ;

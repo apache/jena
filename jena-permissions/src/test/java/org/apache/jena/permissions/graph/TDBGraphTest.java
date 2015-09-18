@@ -36,7 +36,6 @@ public class TDBGraphTest extends MemGraphTest {
 
 	@Override
 	protected Graph createGraph() throws IOException {
-		TDB.init();
 		dsGraph = TDBFactory.createDataset().asDatasetGraph();
 		return dsGraph.getDefaultGraph();
 	}

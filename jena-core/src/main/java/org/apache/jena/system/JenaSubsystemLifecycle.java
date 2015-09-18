@@ -20,10 +20,13 @@ package org.apache.jena.system;
 
 /** Lifecycle interface for jena modules and subsystems. */ 
 public interface JenaSubsystemLifecycle {
+    
     /** start - a module should be ready to oeprate when this returns */  
     public void start() ;
+    
     /** stop - a module should have preformed any shutdown operations by the time this returns */   
     public void stop() ;
+    
     /** Provide a marker as to the level to order initialization, 10,20,30,... 
      * See {@link JenaSystem} for details.
      */

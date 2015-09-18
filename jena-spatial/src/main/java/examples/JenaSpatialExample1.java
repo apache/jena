@@ -95,14 +95,12 @@ public class JenaSpatialExample1 {
     }
     
     private static Dataset initInMemoryDatasetWithLuceneSpatitalIndex(File indexDir) throws IOException{
-		SpatialQuery.init();
 		deleteOldFiles(indexDir);
 		indexDir.mkdirs();
 		return createDatasetByCode(indexDir);
     }
     
     private static Dataset initTDBDatasetWithLuceneSpatitalIndex(File indexDir, File TDBDir) throws IOException{
-		SpatialQuery.init();
 		deleteOldFiles(indexDir);
 		deleteOldFiles(TDBDir);
 		indexDir.mkdirs();

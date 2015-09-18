@@ -18,11 +18,13 @@
 
 package jena ;
 
+import arq.cmdline.CmdARQ ;
+import jena.cmd.ArgDecl ;
+import jena.cmd.CmdException ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.spatial.SpatialIndex ;
 import org.apache.jena.query.spatial.SpatialIndexException ;
 import org.apache.jena.query.spatial.SpatialIndexLucene ;
-import org.apache.jena.query.spatial.SpatialQuery ;
 import org.apache.jena.query.spatial.assembler.SpatialVocab ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.lucene.analysis.Analyzer ;
@@ -37,9 +39,6 @@ import org.apache.lucene.search.ScoreDoc ;
 import org.apache.lucene.store.Directory ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-import jena.cmd.ArgDecl ;
-import jena.cmd.CmdException ;
-import arq.cmdline.CmdARQ ;
 
 /**
  * Text index development tool - dump the index.
@@ -52,7 +51,6 @@ public class spatialindexdump extends CmdARQ {
     protected SpatialIndex        spatialIndex    = null ;
 
     static public void main(String... argv) {
-        SpatialQuery.init() ;
         new spatialindexdump(argv).mainRun() ;
     }
 
