@@ -48,11 +48,12 @@ import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.system.JenaSystem ;
 
 /** Common framework for running RIOT parsers */
 public abstract class CmdLangParse extends CmdGeneral
 {
-    static { RIOT.init(); }
+    static { JenaSystem.init(); }
     protected ModTime modTime                   = new ModTime() ;
     protected ModLangParse modLangParse         = new ModLangParse() ;
     protected ModLangOutput modLangOutput       = new ModLangOutput() ;

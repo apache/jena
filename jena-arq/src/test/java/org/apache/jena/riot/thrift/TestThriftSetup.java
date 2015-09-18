@@ -19,15 +19,13 @@
 package org.apache.jena.riot.thrift;
 
 import static org.apache.jena.riot.RDFLanguages.THRIFT ;
+
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.* ;
-import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 public class TestThriftSetup extends BaseTest {
 
-    @BeforeClass public static void beforeClass() { RIOT.init() ; }
-    
     @Test public void setup_01() {
         assertTrue(RDFLanguages.isRegistered(THRIFT)) ;
     }

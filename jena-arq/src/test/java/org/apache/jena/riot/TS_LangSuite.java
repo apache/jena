@@ -20,6 +20,7 @@ package org.apache.jena.riot;
 
 import junit.framework.TestSuite ;
 import org.apache.jena.riot.langsuite.FactoryTestRiot ;
+import org.apache.jena.system.JenaSystem ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.AllTests ;
 
@@ -32,7 +33,7 @@ public class TS_LangSuite
 
     static public TestSuite suite()
     {
-        RIOT.init() ;
+        JenaSystem.init() ;
         TestSuite ts = new TestSuite("RIOT Lang") ;
         ts.addTest(FactoryTestRiot.make(manifest1, null, null)) ;
         return ts ;

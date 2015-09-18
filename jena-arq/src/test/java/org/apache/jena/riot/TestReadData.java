@@ -31,8 +31,6 @@ import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 /* Tests of RDFDataMgr.
@@ -44,16 +42,6 @@ public class TestReadData extends BaseTest
 
     private static Context context = new Context() ;
     
-    @BeforeClass static public void beforeClass()
-    { 
-        RIOT.init() ;
-    }
-    
-    @AfterClass static public void afterClass()
-    { 
-        // Unwire?
-    }
-
     // Model, graph
     
     @Test public void read_01() { read("D.nq") ; }

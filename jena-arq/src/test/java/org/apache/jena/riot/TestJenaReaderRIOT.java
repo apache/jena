@@ -31,8 +31,6 @@ import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.adapters.RDFReaderFactoryRIOT ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.util.FileUtils ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 /* Test of integration with Jena via model.read.
@@ -43,16 +41,6 @@ public class TestJenaReaderRIOT extends BaseTest
 
     private static Context context = new Context() ;
     
-    @BeforeClass static public void beforeClass()
-    { 
-        RIOT.init() ;
-    }
-    
-    @AfterClass static public void afterClass()
-    { 
-        // Unwire?
-    }
-
     @Test public void read_01() { jenaread("D.nt") ; }
     @Test public void read_02() { jenaread("D.ttl") ; }
     @Test public void read_03() { jenaread("D.rdf") ; }

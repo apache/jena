@@ -26,26 +26,17 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.riot.* ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
-import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 public class TestLangRdfJson extends BaseTest
 {
-	@BeforeClass
-	public static void setup()
-	{
-	    RIOT.init();
-	}
-	
-//	@AfterClass
-//	public static void teardown()
-//	{ }
-	
 	@Test
 	public void rdfjson_get_jena_reader()
 	{

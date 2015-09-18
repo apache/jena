@@ -38,8 +38,6 @@ public class ExRIOT_out3
     // See also ExRIOT_5
     public static void main(String[] args)
     {
-        RIOT.init() ;
-        
         System.out.println("## Example of a registering a new language with RIOT") ; 
         System.out.println() ;
         

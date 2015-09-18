@@ -25,7 +25,6 @@ import java.util.List ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.system.IO_JenaWriters ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
@@ -37,7 +36,6 @@ public class TestJenaWriters extends AbstractWriterTest
 {
     @Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> data() {
-        RIOT.init();
         List<Object[]> x = new ArrayList<>() ;
         for ( String wname : IO_JenaWriters.getJenaWriterNames() )
             x.add(new Object[]{wname}) ;

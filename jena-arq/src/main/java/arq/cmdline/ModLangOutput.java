@@ -50,7 +50,7 @@ public class ModLangOutput extends ModBase
         cmdLine.add(argOutput,    "--output=FMT",     "Output in the given format, streaming if possible.") ;
         cmdLine.add(argPretty,    "--formatted=FMT",  "Output, using pretty printing (consumes memory)") ;
         cmdLine.add(argStream,    "--stream=FMT",     "Output, using a streaming format") ;
-        cmdLine.add(argCompress,  "--compress=FMT",   "Compress the output with gzip") ;
+        cmdLine.add(argCompress,  "--compress",       "Compress the output with gzip") ;
     }
 
     @Override
