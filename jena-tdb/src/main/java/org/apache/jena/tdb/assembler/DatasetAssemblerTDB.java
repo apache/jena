@@ -34,17 +34,17 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.core.assembler.DatasetAssembler ;
 import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.base.file.Location ;
 
 public class DatasetAssemblerTDB extends DatasetAssembler
 {
-    static { TDB.init(); }
+    static { JenaSystem.init(); }
     
     @Override
     public Dataset createDataset(Assembler a, Resource root, Mode mode) {
-        TDB.init() ;
         return make(root) ;
     }
 

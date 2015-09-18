@@ -52,7 +52,6 @@ public abstract class CmdTDB extends CmdARQ
         // attempt once.
         initialized = true ;
         LogCtl.setCmdLogging() ;
-        TDB.init() ;
         DatasetBuilderStd.setOptimizerWarningFlag(false) ;
     }
 
