@@ -46,7 +46,7 @@ public class JenaSystem {
      * initialization. Output to {@code System.err}, not a logger
      * to avoid the risk of recursive initialization.   
      */
-    public static final boolean DEBUG_INIT = false ;
+    public static boolean DEBUG_INIT = false ;
     
     // A correct way to manage without synchonized using the double checked locking pattern.
     //   http://en.wikipedia.org/wiki/Double-checked_locking
@@ -109,26 +109,6 @@ public class JenaSystem {
         }
     }
     
-    /** The level 0 subsystem - inserted without using 
-     * should be only one such level 0 handler. */
-    private static class JenaInitLevel0 implements JenaSubsystemLifecycle {
-        private static Logger log = Logger.getLogger("Jena") ; 
-        @Override
-        public void start() {
-            log.debug("Jena initialization");
-        }
-
-        @Override
-        public void stop() {
-            log.debug("Jena shutdown");
-        }
-
-        @Override
-        public int level() {
-            return 0;
-        }
-    }
-    
     private static JenaSubsystemRegistry singleton = null;
 
     /**
@@ -146,11 +126,6 @@ public class JenaSystem {
         return singleton;
     }
 
-    // Order by level (increasing)
-    private static Comparator<JenaSubsystemLifecycle> comparator = (obj1, obj2) -> Integer.compare(obj1.level(), obj2.level()) ;
-    // Order by level (decreasing)
-    private static Comparator<JenaSubsystemLifecycle> reverseComparator = (obj1, obj2) -> -1 * Integer.compare(obj1.level(), obj2.level()) ;
-    
     /**
      * Call an action on each item in the registry. Calls are made sequentially
      * and in increasing level order. The exact order within a level is not
@@ -174,12 +149,34 @@ public class JenaSystem {
         forEach(action, reverseComparator);
     }
 
+    // Order by level (increasing)
+    private static Comparator<JenaSubsystemLifecycle> comparator = (obj1, obj2) -> Integer.compare(obj1.level(), obj2.level()) ;
+    // Order by level (decreasing)
+    private static Comparator<JenaSubsystemLifecycle> reverseComparator = (obj1, obj2) -> -1 * Integer.compare(obj1.level(), obj2.level()) ;
+
     private synchronized static void forEach(Consumer<JenaSubsystemLifecycle> action, Comparator<JenaSubsystemLifecycle> ordering) {
         List<JenaSubsystemLifecycle> x = get().snapshot() ;
         Collections.sort(x, ordering);
         x.forEach(action);
     }
 
-
+    /** The level 0 subsystem - inserted without using 
+     * should be only one such level 0 handler. */
+    private static class JenaInitLevel0 implements JenaSubsystemLifecycle {
+        private static Logger log = Logger.getLogger("Jena") ; 
+        @Override
+        public void start() {
+            log.debug("Jena initialization");
+        }
+    
+        @Override
+        public void stop() {
+            log.debug("Jena shutdown");
+        }
+    
+        @Override
+        public int level() {
+            return 0;
+        }
+    }
 }
-
