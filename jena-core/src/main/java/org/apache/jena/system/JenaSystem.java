@@ -33,7 +33,7 @@ import org.apache.log4j.Logger ;
  * This is achieved by "levels": levels less than 100 are considered "jena system levels" 
  * and are reserved. 
  * 
- * <li>0 - here
+ * <li>0 - reserved
  * <li>10 - jena-core
  * <li>20 - RIOT
  * <li>30 - ARQ
@@ -41,7 +41,11 @@ import org.apache.log4j.Logger ;
  * <li>9999 - other
  */
 public class JenaSystem {
-    
+
+    /** Development support - flag to enable output during
+     * initialization. Output to {@code System.err}, not a logger
+     * to avoid the risk of recursive initialization.   
+     */
     public static final boolean DEBUG_INIT = false ;
     
     // A correct way to manage without synchonized using the double checked locking pattern.
@@ -50,10 +54,12 @@ public class JenaSystem {
     private static volatile boolean initialized = false ;
     private static Object initLock = new Object() ;
     
-    /** Initialize.
+    /** Initialize Jena.
+     * <p>
      * This function is cheap to call when already initialized so can be called to be sure.
      * By default, initialization happens by using {@code ServiceLoader.load} to find
      * {@link JenaSubsystemLifecycle} objects.
+     * See {@link #set} to intercept that choice.
      */
     public static void init() {
         if ( initialized )
@@ -73,6 +79,7 @@ public class JenaSystem {
                 set(new JenaSubsystemRegistryBasic()) ;
             
             get().load() ;
+            get().add(new JenaInitLevel0());
             
             JenaSystem.forEach( module -> {
                 if ( DEBUG_INIT )
@@ -94,11 +101,13 @@ public class JenaSystem {
         }
     }
     
-    private static class JenaInitLogger implements JenaSubsystemLifecycle {
+    /** The level 0 subsystem - inserted without using 
+     * should be only one such level 0 handler. */
+    private static class JenaInitLevel0 implements JenaSubsystemLifecycle {
         private static Logger log = Logger.getLogger("Jena") ; 
         @Override
         public void start() {
-            log.info/*debug*/("Jena intialization");
+            log.debug("Jena initialization");
         }
 
         @Override
@@ -114,50 +123,43 @@ public class JenaSystem {
     
     private static JenaSubsystemRegistry singleton = null;
 
+    /**
+     * Set the {@link JenaSubsystemRegistry}.
+     * To have any effect, this function
+     * must be called before any other Jena code,
+     * and especially before calling {@code JenaSystem.init()}.
+     */
     public static void set(JenaSubsystemRegistry thing) {
         singleton = thing;
     }
 
+    /** The current JenaSubsystemRegistry */
     public static JenaSubsystemRegistry get() {
         return singleton;
     }
-    
+
+    // Order by level (increasing)
     private static Comparator<JenaSubsystemLifecycle> comparator = (obj1, obj2) -> Integer.compare(obj1.level(), obj2.level()) ;
+    // Order by level (decreasing)
     private static Comparator<JenaSubsystemLifecycle> reverseComparator = (obj1, obj2) -> -1 * Integer.compare(obj1.level(), obj2.level()) ;
     
-    public static void add(JenaSubsystemLifecycle module) {
-       get().add(module) ;
-    }
-
-    public static boolean isRegistered(JenaSubsystemLifecycle module) {
-        return get().isRegistered(module);
-    }
-
-    public static void remove(JenaSubsystemLifecycle module) {
-        get().remove(module);
-    }
-
-    public static int size() {
-        return get().size();
-    }
-
-    public static boolean isEmpty() {
-        return get().isEmpty();
-    }
-
-    /** Call an action on each item in the registry.
-     * Calls are made sequentially and in level order.
-     * The exact order within a level is not specified; it is not registration order. 
+    /**
+     * Call an action on each item in the registry. Calls are made sequentially
+     * and in increasing level order. The exact order within a level is not
+     * specified; it is not registration order.
+     * 
      * @param action
      */
     public static void forEach(Consumer<JenaSubsystemLifecycle> action) {
         forEach(action, comparator);
     }
 
-    /** Call an action on each item in the registry but in the reverse enumeration order.
-     * The exact order is not specified but call are made sequentially.
-     * The "reverse" is opposite order to {@link #forEach}, which may not be stable.
-     * It is not related to registration order.
+    /**
+     * Call an action on each item in the registry but in the reverse
+     * enumeration order. Calls are made sequentially and in decreasing level
+     * order. The "reverse" is opposite order to {@link #forEach}, which may not
+     * be stable within a level. It is not related to registration order.
+     * 
      * @param action
      */
     public static void forEachReverse(Consumer<JenaSubsystemLifecycle> action) {
