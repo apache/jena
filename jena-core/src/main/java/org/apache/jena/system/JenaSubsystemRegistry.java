@@ -21,7 +21,7 @@ package org.apache.jena.system;
 import java.util.List ;
 
 /**
- * A {@code JenaSubsystemCollector} is a set of objects implementing {@link JenaSubsystemLifecycle}.
+ * A {@code JenaSubsystemRegistry} is a set of objects implementing {@link JenaSubsystemLifecycle}.
  * <p>
  * It is a set - at most one entry.
  * <p>Discovered in some way.

@@ -176,8 +176,9 @@ public class JenaSystem {
         x.forEach(action);
     }
 
-    /** The level 0 subsystem - inserted without using 
-     * should be only one such level 0 handler. */
+    /** The level 0 subsystem - inserted without using the Registry load function. 
+     *  There should be only one such level 0 handler. 
+     */
     private static class JenaInitLevel0 implements JenaSubsystemLifecycle {
         private static Logger log = Logger.getLogger("Jena") ; 
         @Override
