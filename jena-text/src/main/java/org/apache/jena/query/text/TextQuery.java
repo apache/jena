@@ -59,7 +59,6 @@ public class TextQuery
             initialized = true ;
             if ( JenaSystem.DEBUG_INIT )
                 System.err.println("TextQuery.init - start") ;
-            initialized = true ;
             TextAssembler.init() ;
             
             SystemInfo sysInfo = new SystemInfo(IRI, PATH, VERSION, BUILD_DATE) ;

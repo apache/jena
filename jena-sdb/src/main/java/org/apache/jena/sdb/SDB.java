@@ -95,9 +95,6 @@ public class SDB
             initialized = true ;
             if ( JenaSystem.DEBUG_INIT )
                 System.err.println("SDB.init - start") ;
-            // Set this immediately in case code below causes init() to be called.
-            // (It's better if there are no dependences but ...)
-            initialized = true ;
 
             // Better not to break up BGPs too much.
             ARQ.getContext().set(ARQ.optFilterPlacement, false) ;

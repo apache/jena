@@ -545,7 +545,6 @@ public class ARQ
                     System.err.println("ARQ.init - skip") ;
                 return ;
             }
-             
             initialized = true ;
             if ( JenaSystem.DEBUG_INIT )
                 System.err.println("ARQ.init - start") ;

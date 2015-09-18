@@ -22,7 +22,6 @@ import junit.framework.TestSuite;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.test.junit.QueryTestSDBFactory ;
-import org.apache.jena.system.JenaSystem ;
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
 
