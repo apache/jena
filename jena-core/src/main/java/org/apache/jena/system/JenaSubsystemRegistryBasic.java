@@ -23,7 +23,10 @@ import java.util.List ;
 import java.util.ServiceLoader ;
 
 /** Implementation of {@link JenaSubsystemRegistry} for use in the simple 
- * but common case of runing a a collection (classpath) of jars. 
+ *  but common case of running Jena as a collection of jars
+ *  on the classpath. 
+ *  <p>
+ *  Uses {@link ServiceLoader} to find sub-systems. 
  */
 public class JenaSubsystemRegistryBasic implements JenaSubsystemRegistry {
     
@@ -38,11 +41,7 @@ public class JenaSubsystemRegistryBasic implements JenaSubsystemRegistry {
         synchronized (registryLock) {
             // Find subsystems asking for initialization. 
             ServiceLoader<JenaSubsystemLifecycle> sl = ServiceLoader.load(JenaSubsystemLifecycle.class) ;
-            sl.forEach(life-> {
-                if ( JenaSystem.DEBUG_INIT )
-                    System.err.println("  "+life.getClass().getSimpleName()) ;
-                add(life);
-            }) ;
+            sl.forEach(this::add) ;
         }
     }
 

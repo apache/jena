@@ -57,6 +57,8 @@ public class JenaSystem {
     /** Initialize Jena.
      * <p>
      * This function is cheap to call when already initialized so can be called to be sure.
+     * A commonly used idom in jena is in static initailizers in key classes.
+     * <p> 
      * By default, initialization happens by using {@code ServiceLoader.load} to find
      * {@link JenaSubsystemLifecycle} objects.
      * See {@link #set} to intercept that choice.
@@ -79,8 +81,14 @@ public class JenaSystem {
                 set(new JenaSubsystemRegistryBasic()) ;
             
             get().load() ;
-            get().add(new JenaInitLevel0());
             
+            // Debug : what did we find?
+            if ( JenaSystem.DEBUG_INIT ) {
+                get().snapshot().forEach(mod->
+                    System.err.println("  "+mod.getClass().getSimpleName())) ;
+            }
+            get().add(new JenaInitLevel0()) ;
+
             JenaSystem.forEach( module -> {
                 if ( DEBUG_INIT )
                     System.err.println("Init: "+module.getClass().getSimpleName());
