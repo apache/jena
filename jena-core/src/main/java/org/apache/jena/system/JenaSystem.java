@@ -61,7 +61,7 @@ public class JenaSystem {
      * <p> 
      * By default, initialization happens by using {@code ServiceLoader.load} to find
      * {@link JenaSubsystemLifecycle} objects.
-     * See {@link #set} to intercept that choice.
+     * See {@link #setSubsystemRegistry} to intercept that choice.
      */
     public static void init() {
         if ( initialized )
@@ -78,7 +78,7 @@ public class JenaSystem {
                 System.err.println("JenaSystem.init - start");
             
             if ( get() == null )
-                set(new JenaSubsystemRegistryBasic()) ;
+                setSubsystemRegistry(new JenaSubsystemRegistryBasic()) ;
             
             get().load() ;
             
@@ -117,7 +117,7 @@ public class JenaSystem {
      * must be called before any other Jena code,
      * and especially before calling {@code JenaSystem.init()}.
      */
-    public static void set(JenaSubsystemRegistry thing) {
+    public static void setSubsystemRegistry(JenaSubsystemRegistry thing) {
         singleton = thing;
     }
 
