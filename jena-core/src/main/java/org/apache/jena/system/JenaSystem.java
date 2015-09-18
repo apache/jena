@@ -64,6 +64,22 @@ public class JenaSystem {
      * See {@link #setSubsystemRegistry} to intercept that choice.
      */
     public static void init() {
+        // Any other thread attempting to initialize as well will
+        // first test the volatile outside the lock; if it's 
+        // not INITIALIZED, the thread will attempt to grab the lock
+        // and hence wait, then see initialized as true.
+
+        // But we need to cope with recursive calls of JenaSystem.init() as well.
+        // The same thread will not stop at the lock.
+        // Set initialized to true before a recursive call is possible
+        // handles this.  The recursive call will see initialized true and
+        // and returnn on the first test.
+
+        // Net effect:
+        // After a top level call of JenaSystem.init() returns, tjena has
+        // finishes initialization.
+        // Rececursive calls do not have this property.
+
         if ( initialized )
             return ;
         synchronized(initLock) {
@@ -72,7 +88,7 @@ public class JenaSystem {
                     System.err.println("JenaSystem.init - return");
                 return ;
             } 
-            // Catchs recursive calls, same thread.
+            // Catches recursive calls, same thread.
             initialized = true ;
             if ( DEBUG_INIT )
                 System.err.println("JenaSystem.init - start");
