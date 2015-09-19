@@ -22,24 +22,21 @@ import java.util.List ;
 
 /**
  * A {@code JenaSubsystemRegistry} is a set of objects implementing {@link JenaSubsystemLifecycle}.
- * <p>
- * It is a set - at most one entry.
- * <p>Discovered in some way.
  */
 public interface JenaSubsystemRegistry {
     
     /** Load - peform some kinds of search for {@link JenaSubsystemLifecycle} implementations.
-     * This is called once only.
+     * This is called once in the initialization process.
      */
     public void load();
     
-    /** Add to the colection. */
+    /** Add to the collection. */
     public void add(JenaSubsystemLifecycle module);
 
     /** check whether registered */
     public boolean isRegistered(JenaSubsystemLifecycle module);
 
-    /** Remove from the colection. */
+    /** Remove from the collection. */
     public void remove(JenaSubsystemLifecycle module);
 
     public int size();
@@ -47,9 +44,10 @@ public interface JenaSubsystemRegistry {
     public boolean isEmpty();
 
     /**
-     * Return the registered items a copied list.
+     * Return the registered items in a copied list.
      * The list is detached from the
      * registry and the caller can mutate it.
+     * There is no specific ordering requirement. 
      */
     public List<JenaSubsystemLifecycle> snapshot();
 
