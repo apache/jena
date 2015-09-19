@@ -50,5 +50,4 @@ public interface JenaSubsystemRegistry {
      * There is no specific ordering requirement. 
      */
     public List<JenaSubsystemLifecycle> snapshot();
-
 }
