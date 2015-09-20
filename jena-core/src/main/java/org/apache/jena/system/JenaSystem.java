@@ -80,7 +80,7 @@ public class JenaSystem {
         // Net effect:
         // After a top level call of JenaSystem.init() returns, tjena has
         // finishes initialization.
-        // Rececursive calls do not have this property.
+        // Recursive calls do not have this property.
 
         if ( initialized )
             return ;
