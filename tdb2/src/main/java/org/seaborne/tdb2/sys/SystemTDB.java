@@ -33,6 +33,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.system.JenaSystem ;
 import org.seaborne.dboe.base.block.FileMode ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.tdb2.TDB ;
@@ -44,6 +45,8 @@ import org.slf4j.LoggerFactory ;
 
 public class SystemTDB
 {
+    static { JenaSystem.init(); }
+    
     // NB Same logger as the TDB class because this class is the system info but kept out of TDB javadoc.
     // It's visibility is TDB, not really public. 
     private static final Logger log = LoggerFactory.getLogger(TDB.class) ;

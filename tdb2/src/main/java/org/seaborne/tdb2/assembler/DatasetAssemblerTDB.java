@@ -35,13 +35,14 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.core.assembler.DatasetAssembler ;
 import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.system.JenaSystem ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.TDB ;
 import org.seaborne.tdb2.TDBFactory ;
 
 public class DatasetAssemblerTDB extends DatasetAssembler
 {
-    static { TDB.init(); }
+    static { JenaSystem.init(); }
     
     @Override
     public Dataset createDataset(Assembler a, Resource root, Mode mode) {

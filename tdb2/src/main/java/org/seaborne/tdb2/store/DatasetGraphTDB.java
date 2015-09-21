@@ -22,6 +22,7 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.graph.Graph ;
@@ -29,9 +30,7 @@ import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.core.DatasetGraphTriplesQuads ;
-import org.apache.jena.sparql.core.DatasetPrefixStorage ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.txn.TransactionalSystem ;
@@ -136,9 +135,32 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         getQuadTable().delete(g, s, p, o) ;
     }
     
-    private final void notifyAdd(Node g, Node s, Node p, Node o) {}
-    private final void notifyDelete(Node g, Node s, Node p, Node o) {}
+    private DatasetChanges monitor = null ;
+    private final boolean checkForChange = false ; 
+    
+    // XXX Optimize by integrating with add/delete operations.
+    private final void notifyAdd(Node g, Node s, Node p, Node o) {
+        if ( monitor == null )
+            return ;
+        QuadAction action = QuadAction.ADD ;
+        if ( checkForChange ) {
+            if ( contains(g,s,p,o) )
+                action = QuadAction.NO_ADD ;
+        }
+        monitor.change(action, g, s, p, o);
+    }
 
+    private final void notifyDelete(Node g, Node s, Node p, Node o) {
+        if ( monitor == null )
+            return ;
+        QuadAction action = QuadAction.DELETE ;
+        if ( checkForChange ) {
+            if ( ! contains(g,s,p,o) )
+                action = QuadAction.NO_DELETE ;
+        }
+        monitor.change(action, g, s, p, o);
+    }
+    
     /** No-op. There is no need to close datasets.
      *  Use {@link StoreConnection#release(Location)}.
      *  (Datasets can not be reopened on MS Windows). 
@@ -203,7 +225,6 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         deleteAny(graphName, Node.ANY, Node.ANY, Node.ANY) ;
     }
 
-    // XXX "this" must be the switching dataset.
     @Override
     public Graph getDefaultGraph() {
         checkNotClosed() ; 
@@ -316,6 +337,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
             // Delete them.
             for (int i = 0; i < len; i++) {
                 if ( false ) {
+                    // ****
                     // Need to resolve :-(
                 }
                 
@@ -375,5 +397,17 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
 
     public TransactionalSystem getTxnSystem() {
         return txnSystem ;
+    }
+
+    // Must be inside a W transaction.
+    
+    public void setMonitor(DatasetChanges changes) {
+        monitor = changes ;
+    }
+
+    public void removeMonitor(DatasetChanges changes) {
+        if ( monitor != changes )
+            throw new InternalErrorException() ;
+        monitor = null ;
     }
 }

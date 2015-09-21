@@ -25,7 +25,6 @@ import org.apache.jena.ontology.impl.OntModelImpl ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.reasoner.InfGraph ;
-import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.lang.LangRDFXML ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
@@ -36,6 +35,7 @@ import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.system.JenaSystem ;
 import org.seaborne.tdb2.assembler.VocabTDB ;
 import org.seaborne.tdb2.modify.UpdateEngineTDB ;
 import org.seaborne.tdb2.solver.QueryEngineTDB ;
@@ -93,15 +93,6 @@ public class TDB {
     public static Context getContext() {
         return ARQ.getContext() ;
     }
-
-    // Called on assembler loading.
-    // Real initializtion happnes due to class static blocks.
-    /**
-     * TDB System initialization - normally, this is not explicitly called
-     * because all routes to use TDB will cause initialization to occur.
-     * However, calling it repeatedly is safe and low cost.
-     */
-    public static void init() {}
 
     /**
      * Release any and all system resources held by TDB. This does NOT close or
@@ -192,39 +183,51 @@ public class TDB {
             ((Sync)object).sync() ;
     }
 
-    private static boolean initialized = false ;
-    static {
-        initialization1() ;
-    }
-
-    private static synchronized void initialization1() {
-        // Called at start.
+    private static final Object initLock = new Object() ;
+    private static volatile boolean initialized = false ;
+    static { JenaSystem.init(); }
+    
+    /**
+     * TDB System initialization - normally, this is not explicitly called
+     * because all routes to use TDB will cause initialization to occur.
+     * However, calling it repeatedly is safe and low cost.
+     */
+    public static void init() {
         if ( initialized )
             return ;
-        initialized = true ;
+        synchronized(initLock) {
+            if ( initialized ) {
+                if ( JenaSystem.DEBUG_INIT )
+                    System.err.println("TDB.init - return") ;
+                return ;
+            }
+            initialized = true ;
+            if ( JenaSystem.DEBUG_INIT )
+                System.err.println("TDB.init - start") ;
 
-        RIOT.init() ;
-        SystemTDB.init() ;
-        ARQ.init() ;
-        LangRDFXML.RiotUniformCompatibility = true ;
-        EnvTDB.processGlobalSystemProperties() ;
+            SystemTDB.init() ;
+            ARQ.init() ;
+            LangRDFXML.RiotUniformCompatibility = true ;
+            EnvTDB.processGlobalSystemProperties() ;
 
-        MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
-        AssemblerUtils.init() ;
-        VocabTDB.init() ;
-        QueryEngineTDB.register() ;
-        UpdateEngineTDB.register() ;
-        MappingRegistry.addPrefixMapping(TDB.tdbSymbolPrefix, TDB.tdbParamNS) ;
+            MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
+            AssemblerUtils.init() ;
+            VocabTDB.init() ;
+            QueryEngineTDB.register() ;
+            UpdateEngineTDB.register() ;
+            MappingRegistry.addPrefixMapping(TDB.tdbSymbolPrefix, TDB.tdbParamNS) ;
 
-        wireIntoExecution() ;
-
-        if ( log.isDebugEnabled() )
-            log.debug("\n" + ARQ.getContext()) ;
+            wireIntoExecution() ;
+            if ( JenaSystem.DEBUG_INIT )
+                System.err.println("TDB.init - finish") ;
+        }
     }
 
     private static void wireIntoExecution() {
         // Globally change the stage generator to intercept BGP on TDB
-        StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
+        // Globally change the stage generator to intercept BGP on TDB
+        Context cxt = ARQ.getContext() ;
+        StageGenerator orig = StageBuilder.chooseStageGenerator(cxt) ; 
 
         // Wire in the TDB stage generator which will make TDB work whether
         // or not the TDB executor is used. This means that datasets of mixed
