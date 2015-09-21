@@ -71,11 +71,11 @@ import org.slf4j.LoggerFactory ;
 public class FileManager
 {
     // The case of the FileManager used first.
-    static { JenaSystem.init(); }
+    private static Logger log = LoggerFactory.getLogger(FileManager.class) ;
+    
     /** Delimiter between path entries : because URI scheme names use : we only allow ; */
     public static final String PATH_DELIMITER = ";";
     public static final String filePathSeparator = java.io.File.separator ;
-    private static Logger log = LoggerFactory.getLogger(FileManager.class) ;
 
     static FileManager fmInstance = null ;
 
@@ -83,6 +83,8 @@ public class FileManager
     protected List<Locator> fmHandlers = new ArrayList<>() ;
     protected LocationMapper fmMapper = null ;
     
+    static { JenaSystem.init(); }
+
     /** Get the global file manager.
      * @return the global file manager
      */
