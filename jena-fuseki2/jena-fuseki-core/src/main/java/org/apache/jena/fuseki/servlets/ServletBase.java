@@ -82,6 +82,7 @@ public abstract class ServletBase extends HttpServlet {
         httpResponse.setHeader(HttpNames.hVary, varyHeaderSetting) ;
     }
 
+    /** Done via web.xml */ 
     public static boolean CORS_ENABLED = false ;
     
     public static void setCommonHeadersForOptions(HttpServletResponse httpResponse) {
@@ -94,5 +95,7 @@ public abstract class ServletBase extends HttpServlet {
         if ( CORS_ENABLED )
             httpResponse.setHeader(HttpNames.hAccessControlAllowOrigin, "*") ;
         httpResponse.setHeader(HttpNames.hServer, Fuseki.serverHttpName) ;
+        if ( Fuseki.serverHttpNameDev != null )
+            httpResponse.setHeader("X-"+HttpNames.hServer, Fuseki.serverHttpNameDev) ;
     }
 }

@@ -24,8 +24,6 @@ import java.util.concurrent.TimeUnit ;
 
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.query.spatial.SpatialQuery ;
-import org.apache.jena.query.text.TextQuery ;
 import org.apache.jena.riot.system.stream.LocatorFTP ;
 import org.apache.jena.riot.system.stream.LocatorHTTP ;
 import org.apache.jena.riot.system.stream.StreamManager ;
@@ -113,8 +111,20 @@ public class Fuseki {
 
     /** An identifier for the HTTP Fuseki server instance */
     static public final String        serverHttpName    = NAME + " (" + VERSION + ")" ;
-
-    /** Loger name for operations */
+    /** An additional identifier for the HTTP Fuseki server instance in a develoment build 
+     */
+    static public final String        serverHttpNameDev   ;
+    static {
+        // (See ServletBase.setCommonheaders
+        // If it look like a SNAPSHOT, print build date. Not perfect, but better.  
+        System.err.println(">>"+BUILD_DATE);
+        System.err.println(">>"+VERSION);
+        if ( VERSION.contains("SNAPSHOT") && ! BUILD_DATE.startsWith("\\${") )
+            serverHttpNameDev = NAME + " (" + VERSION + " / " + BUILD_DATE +")" ;
+        else 
+            serverHttpNameDev = null ;
+    }
+    /** Logger name for operations */
     public static final String        actionLogName     = PATH + ".Fuseki" ;
 
     /** Instance of log for operations */
