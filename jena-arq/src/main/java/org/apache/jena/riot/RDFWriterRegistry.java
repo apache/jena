@@ -20,6 +20,7 @@ package org.apache.jena.riot;
 
 import java.util.* ;
 
+import org.apache.jena.n3.N3JenaWriter ;
 import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.out.JsonLDWriter ;
 import org.apache.jena.riot.system.RiotLib ;
@@ -36,10 +37,11 @@ public class RDFWriterRegistry
     // UTF-8 is universal - but UTF-8 is not the default in Java ("platform encoding" is).
     
     static { JenaSystem.init() ; }
-
+    
     private static Map<RDFFormat, WriterGraphRIOTFactory> registryGraph     = new HashMap<>() ;
     private static Map<RDFFormat, WriterDatasetRIOTFactory> registryDataset = new HashMap<>() ;
     private static Map<Lang, RDFFormat> langToFormat                        = new HashMap<>() ;
+    private static Map<String, RDFFormat> mapJenaNameToFormat               = new HashMap<>() ;
     
     // Writing a graph
     static WriterGraphRIOTFactory wgfactory = new WriterGraphRIOTFactory() {
@@ -208,6 +210,41 @@ public class RDFWriterRegistry
          register(RDFFormat.TRIX, wdsTriXFactory) ;
      }
     
+     // ---- Compatibility
+     
+     /** return the RDFFormat for the existing Jena writer name, or null */
+     public static RDFFormat getFormatForJenaWriter(String jenaName) {
+         return mapJenaNameToFormat.get(jenaName);
+     }
+
+     /** Register an RDFFormat for a Jena writer name */
+     private /*public*/ static void setFormatForJenaWriter(String jenaName, RDFFormat format) {
+         mapJenaNameToFormat.put(jenaName, format);
+     }
+
+     /** Return a collection of Jena writer names */
+     public static Collection<String> getJenaWriterNames() {
+         return mapJenaNameToFormat.keySet();
+     }
+
+     private static void setup() {
+         setFormatForJenaWriter("RDF/XML",                           RDFFormat.RDFXML_PLAIN) ;
+         setFormatForJenaWriter("RDF/XML-ABBREV",                    RDFFormat.RDFXML_ABBREV) ;
+         setFormatForJenaWriter("N-TRIPLE",                          RDFFormat.NTRIPLES) ;
+         setFormatForJenaWriter("NT",                                RDFFormat.NTRIPLES) ;
+         setFormatForJenaWriter("N-TRIPLES",                         RDFFormat.NTRIPLES) ;
+         setFormatForJenaWriter("N-Triples",                         RDFFormat.NTRIPLES) ;
+         setFormatForJenaWriter("N3",                                RDFFormat.TURTLE) ;
+         setFormatForJenaWriter(N3JenaWriter.n3WriterPrettyPrinter,  RDFFormat.TURTLE_PRETTY) ;
+         setFormatForJenaWriter(N3JenaWriter.n3WriterPlain,          RDFFormat.TURTLE_BLOCKS) ;
+         setFormatForJenaWriter(N3JenaWriter.n3WriterTriples,        RDFFormat.TURTLE_FLAT) ;
+         setFormatForJenaWriter(N3JenaWriter.n3WriterTriplesAlt,     RDFFormat.TURTLE_FLAT) ;
+         setFormatForJenaWriter(N3JenaWriter.turtleWriter,           RDFFormat.TURTLE) ;
+         setFormatForJenaWriter(N3JenaWriter.turtleWriterAlt1,       RDFFormat.TURTLE) ;
+         setFormatForJenaWriter(N3JenaWriter.turtleWriterAlt2,       RDFFormat.TURTLE) ;
+     }
+
+     
     /** Register the serialization for graphs and it's associated factory
      * @param serialization         RDFFormat for the output format.
      * @param graphWriterFactory    Source of writer engines

@@ -22,6 +22,7 @@ import java.io.OutputStream ;
 import java.io.Writer ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.* ;
@@ -35,6 +36,8 @@ import org.apache.jena.sparql.util.Context ;
 /** Example of registering a new writer with RIOT */
 public class ExRIOT_out3
 {
+    static { LogCtl.setCmdLogging(); }
+    
     // See also ExRIOT_5
     public static void main(String[] args)
     {
@@ -55,7 +58,7 @@ public class ExRIOT_out3
         RDFWriterRegistry.register(format, new SSEWriterFactory()) ;
 
         // ---- Use the register writer
-        Model model = RDFDataMgr.loadModel("D.ttl") ;
+        Model model = RDFDataMgr.loadModel("/home/afs/tmp/D.ttl") ;
         // Write
         System.out.println("## Write by format") ;
         RDFDataMgr.write(System.out, model, format) ;
@@ -63,11 +66,8 @@ public class ExRIOT_out3
         System.out.println("## Write by language") ;
         RDFDataMgr.write(System.out, model, lang) ;
         
-        // ---- Register for use with Model.read
-        // because naming is explicit, need to register an adapter.  
-        IO_Jena.registerForModelWrite("SSE", RDFWriterSSE.class) ;
-        
-        // and use it
+        // ---- Or use Model.write
+        System.out.println("## Write by Model.write") ;
         model.write(System.out, "SSE") ;
     }
     

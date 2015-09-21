@@ -50,7 +50,6 @@ import org.apache.jena.vocabulary.RDF ;
 public class ModelCom extends EnhGraph
 implements Model, PrefixMapping, Lock
 {
-
     private static final RDFReaderF readerFactory = new RDFReaderFImpl();
     private static final RDFWriterF writerFactory = new RDFWriterFImpl();
     private Lock modelLock = null ;
@@ -58,7 +57,7 @@ implements Model, PrefixMapping, Lock
 
     static {
         // This forces RIOT (in ARQ) to initialize but after Jena readers/writers
-        // have cleanly initialized from the calls of  RDFReaderFImpl and RDFWriterFImpl
+        // have cleanly initialized from the calls of RDFReaderFImpl and RDFWriterFImpl
         // above.  RIOT initialization happens before model.read can be called.
         JenaSystem.init() ;
     }
@@ -213,6 +212,8 @@ implements Model, PrefixMapping, Lock
         return readerFactory.getReader(lang);
     }
 
+    /** @deprecated Use {@code org.apache.jena.riot.RDFParserRegistry.register}
+     */
     @Override
     @Deprecated
     public String setReaderClassName(String lang, String className) {
@@ -300,6 +301,8 @@ implements Model, PrefixMapping, Lock
     }
 
 
+    /** @deprecated Use {@code org.apache.jena.riot.RDFWriterRegistry.register}
+     */
     @Override
     @Deprecated
     public String setWriterClassName(String lang, String className) {

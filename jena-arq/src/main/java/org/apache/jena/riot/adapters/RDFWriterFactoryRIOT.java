@@ -18,37 +18,36 @@
 
 package org.apache.jena.riot.adapters;
 
-import org.apache.jena.rdf.model.RDFReader;
-import org.apache.jena.rdf.model.RDFReaderF;
-import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
+import org.apache.jena.rdf.model.RDFWriter;
+import org.apache.jena.rdf.model.RDFWriterF;
 
-/** Adapter to old style Jena reader factory */
-public class RDFReaderFactoryRIOT implements RDFReaderF {
-    public RDFReaderFactoryRIOT() {}
+/** Adapter to old style Jena writer factory */
+public class RDFWriterFactoryRIOT implements RDFWriterF {
+    public RDFWriterFactoryRIOT() {}
 
     @Override
-    public RDFReader getReader() {
-        return getReader(RDFReaderFImpl.DEFAULTLANG);
+    public RDFWriter getWriter() {
+        return getWriter(null);
     }
 
     @Override
-    public RDFReader getReader(String langname) {
-        // For RIOT, the language name is a hint.
-        return new RDFReaderRIOT(langname);
+    public RDFWriter getWriter(String langname) {
+        return new RDFWriterRIOT(langname);
     }
 
     @Override
-    public String setReaderClassName(String lang, String className) {
+    public String setWriterClassName(String lang, String className) {
         return null;
     }
 
     @Override
-    public void resetRDFReaderF() {
+    public void resetRDFWriterF() {
         // does nothing as the reader can not be modified.
+
     }
 
     @Override
-    public String removeReader(String lang) throws IllegalArgumentException {
+    public String removeWriter(String lang) {
         return null;
     }
 }

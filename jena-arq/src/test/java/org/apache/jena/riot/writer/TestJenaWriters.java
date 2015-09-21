@@ -25,7 +25,7 @@ import java.util.List ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.system.IO_JenaWriters ;
+import org.apache.jena.riot.RDFWriterRegistry ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
@@ -37,7 +37,7 @@ public class TestJenaWriters extends AbstractWriterTest
     @Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> data() {
         List<Object[]> x = new ArrayList<>() ;
-        for ( String wname : IO_JenaWriters.getJenaWriterNames() )
+        for ( String wname :  RDFWriterRegistry.getJenaWriterNames())
             x.add(new Object[]{wname}) ;
         return x ; 
     }
@@ -58,7 +58,7 @@ public class TestJenaWriters extends AbstractWriterTest
     private void test(String filename) {
         Model m = readModel(filename) ;
         ByteArrayOutputStream out2 = new ByteArrayOutputStream() ;
-        RDFDataMgr.write(out2, m, IO_JenaWriters.getFormatForJenaWriter(jenaFormatName)) ;
+        RDFDataMgr.write(out2, m, RDFWriterRegistry.getFormatForJenaWriter(jenaFormatName)) ;
 
         ByteArrayOutputStream out1 = new ByteArrayOutputStream() ;
         m.write(out1, jenaFormatName) ;

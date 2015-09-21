@@ -18,134 +18,144 @@
 
 package org.apache.jena.rdf.model.impl;
 
-import java.util.Arrays;
-import java.util.Properties;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import org.apache.jena.* ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.shared.* ;
+import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.rdf.model.RDFReader;
+import org.apache.jena.rdf.model.RDFReaderF;
+import org.apache.jena.shared.ConfigException;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.shared.NoReaderForLangException;
 
-/**
- */
 public class RDFReaderFImpl extends Object implements RDFReaderF {
-    // ** The setting in this class are overrided by RIOT **
-    private static final String TURTLEREADER = org.apache.jena.n3.turtle.TurtleReader.class.getName() ;
-    
-	protected static Properties langToClassName = null;
-
-    // predefined languages - these should probably go in a properties file
-
-    protected static final String LANGS[] = { "RDF" ,
-                                              "RDF/XML",
-                                              "RDF/XML-ABBREV",
-                                              "N-TRIPLE",
-                                              "N-TRIPLES",
-                                              "N-Triples",
-                                              "N3",
-                                              "TURTLE",
-                                              "Turtle",
-                                              "TTL",
-                                              "CSV"};
-    // default readers for each language
-
-    protected static final String DEFAULTREADERS[] = {
-        org.apache.jena.rdfxml.xmlinput.JenaReader.class.getName(),
-        org.apache.jena.rdfxml.xmlinput.JenaReader.class.getName(),
-        org.apache.jena.rdfxml.xmlinput.JenaReader.class.getName(),
-        org.apache.jena.rdf.model.impl.NTripleReader.class.getName(),
-        org.apache.jena.rdf.model.impl.NTripleReader.class.getName(),
-        org.apache.jena.rdf.model.impl.NTripleReader.class.getName(),
-        TURTLEREADER,  // N3 replaced by a Turtle-based parser 
-        TURTLEREADER,
-        TURTLEREADER,
-        TURTLEREADER,
-        "org.apache.jena.riot.adapters.RDFReaderRIOT_CSV",
-        
-    };
-
-    protected static final String DEFAULTLANG = LANGS[0];
-
-    protected static final String PROPNAMEBASE = Jena.PATH + ".reader.";
-
-    static { // static initializer - set default readers
-        reset();
+    public static final String DEFAULTLANG = "RDF/XML" ;
+    private static Map<String, Class<? extends RDFReader>> custom = new LinkedHashMap<>();
+    private static RDFReaderF rewiredAlternative = null ;
+    /** Rewire to use an external RDFReaderF (typically, RIOT).
+     * Set to null to use old jena-core setup.
+     * @param other
+     */
+    public static void alternative(RDFReaderF other) {
+        rewiredAlternative = other ;
     }
     
-    private static void reset()
-    {
-    	Properties newLangToClassName = new Properties();
-        for (int i = 0; i<LANGS.length; i++) {
-        	newLangToClassName.setProperty(
-                               LANGS[i],
-                               JenaRuntime.getSystemProperty(PROPNAMEBASE + LANGS[i],
-                                                  DEFAULTREADERS[i]));
-        }
-        // reset all at once
-        langToClassName = newLangToClassName;
-    }
-
-    private static String remove(String lang )
-    {
-    	if (Arrays.asList( LANGS ).contains(lang))
-		{
-			throw new IllegalArgumentException( lang+" is an initial language and may not be removed");
-		}
-		Object prev = langToClassName.remove(lang);
-		return prev==null?null:prev.toString();
-    }
-
     /** Creates new RDFReaderFImpl */
-    public  RDFReaderFImpl() {
-    }
-
+    public RDFReaderFImpl() {}
+    
     @Override
     public RDFReader getReader()  {
-        return getReader(DEFAULTLANG);
+        return getReader(null);
     }
-
+    
     @Override
-    public RDFReader getReader(String lang)  {
+    public RDFReader getReader(String lang) {
+        // Jena model.read rule for defaulting.
+        if (lang==null || lang.equals(""))
+            lang = DEFAULTLANG ;
+        // if RIOT ->
+        if ( rewiredAlternative != null )
+            return rewiredAlternative.getReader(lang) ;
+        Class<? extends RDFReader> c = custom.get(lang);
+        if ( c == null )
+            throw new NoReaderForLangException("Reader not found: " + lang);
 
-        // setup default language
-        if (lang==null || lang.equals("")) {
-            lang = LANGS[0];
-        }
-
-        String className = langToClassName.getProperty(lang);
-        if (className == null || className.equals("")) {
-            throw new NoReaderForLangException( lang );
-        }
         try {
-          return (RDFReader) Class.forName(className)
-                                  .newInstance();
-        } catch (ClassNotFoundException e) {
-        	throw new ConfigException("Reader not found on classpath",e);
-        } catch (Exception e) {
+            return c.newInstance();
+        }
+        catch (InstantiationException | IllegalAccessException e) {
             throw new JenaException(e);
         }
     }
 
+    /**
+     * Use RIOT to add custom RDF parsers. See
+     * {@code RDFParserRegistry.registerLangTriples} and
+     * {@code RDFParserRegistry.registerLangQuads}
+     * 
+     * @deprecated Register with RIOT.
+     */
+    @Override
+    @Deprecated
+    public String setReaderClassName(String lang, String className) {
+        return setBaseReaderClassName(lang, className);
+    }
+
+    /**
+     * Use RIOT to add custom RDF parsers. See
+     * {@code RDFParserRegistry.registerLang}
+     * 
+     * @deprecated Register with RIOT.
+     */
+    @Deprecated
+    public static String setBaseReaderClassName(String lang, String className) {
+        if ( rewiredAlternative != null )
+            Log.fatal(RDFReaderFImpl.class, "Rewired RDFReaderFImpl - configuration changes have no effect on reading");
+            
+        String oldClassName = currentEntry(lang);
+        try {
+            @SuppressWarnings("unchecked")
+            Class<? extends RDFReader> newClass = (Class<? extends RDFReader>)Class.forName(className, false,
+                                                                                            Thread.currentThread().getContextClassLoader());
+            custom.put(lang, newClass);
+            return oldClassName;
+        }
+        catch (ClassNotFoundException e) {
+            throw new ConfigException("Reader not found on classpath", e);
+        }
+        catch (Exception e) {
+            throw new JenaException(e);
+        }
+    }
 
     @Override
-    public String setReaderClassName( String lang,String className ) {
-        return setBaseReaderClassName( lang, className );
+    public void resetRDFReaderF() {
+        reset();
     }
-    
-    public static String setBaseReaderClassName( String lang, String className ) {
-        String oldClassName = langToClassName.getProperty(lang);
-        langToClassName.setProperty(lang, className);
+
+    @Override
+    public String removeReader(String lang) throws IllegalArgumentException {
+        return remove(lang);
+    }
+
+    static { 
+        // static initializer - set default readers
+        reset();
+    }
+
+    private static void reset() {
+        Class<? extends RDFReader> rdfxmlReader = org.apache.jena.rdfxml.xmlinput.JenaReader.class;
+        Class<? extends RDFReader> ntReader = org.apache.jena.rdf.model.impl.NTripleReader.class;
+        Class<? extends RDFReader> turtleReader = org.apache.jena.n3.turtle.TurtleReader.class;
+
+        custom.put("RDF", rdfxmlReader);
+        custom.put("RDF/XML", rdfxmlReader);
+        custom.put("RDF/XML-ABBREV", rdfxmlReader);
+
+        custom.put("N-TRIPLE", ntReader);
+        custom.put("N-TRIPLES", ntReader);
+        custom.put("N-Triples", ntReader);
+
+        custom.put("N3", turtleReader);
+        custom.put("TURTLE", turtleReader);
+        custom.put("Turtle", turtleReader);
+        custom.put("TTL", turtleReader);
+    }
+
+    private static String currentEntry(String lang) {
+        Class<? extends RDFReader> oldClass = custom.get(lang);
+        if ( oldClass != null )
+            return oldClass.getName();
+        else
+            return null;
+    }
+
+    private static String remove(String lang) {
+        if ( rewiredAlternative != null )
+            Log.fatal(RDFReaderFImpl.class, "Rewired RDFReaderFImpl - configuration changes have no effect on reading");
+
+        String oldClassName = currentEntry(lang);
+        custom.remove(lang);
         return oldClassName;
     }
-
-
-	@Override
-	public void resetRDFReaderF() {
-		reset();
-	}
-
-
-	@Override
-	public String removeReader(String lang) throws IllegalArgumentException {
-		return remove( lang );
-	}
 }
