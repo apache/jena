@@ -111,14 +111,12 @@ public class Fuseki {
 
     /** An identifier for the HTTP Fuseki server instance */
     static public final String        serverHttpName    = NAME + " (" + VERSION + ")" ;
-    /** An additional identifier for the HTTP Fuseki server instance in a develoment build 
-     */
+    
+    /** An additional identifier for the HTTP Fuseki server instance in a development build */
     static public final String        serverHttpNameDev   ;
     static {
-        // (See ServletBase.setCommonheaders
+        // See ServletBase.setCommonheaders
         // If it look like a SNAPSHOT, print build date. Not perfect, but better.  
-        System.err.println(">>"+BUILD_DATE);
-        System.err.println(">>"+VERSION);
         if ( VERSION.contains("SNAPSHOT") && ! BUILD_DATE.startsWith("\\${") )
             serverHttpNameDev = NAME + " (" + VERSION + " / " + BUILD_DATE +")" ;
         else 
