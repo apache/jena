@@ -291,6 +291,29 @@ public class VarFinder
         @Override
         public void visit(OpList opList)            { mergeVars(opList.getSubOp()) ; }
         
+        @Override
+        public void visit(OpOrder opOrder) { 
+            mergeVars(opOrder.getSubOp()) ;
+            opOrder.getConditions().forEach(sc-> {
+                sc.getExpression()    ;
+            });
+        }
+
+        @Override
+        public void visit(OpGroup opGroup) {
+            // Not subOp.
+            VarExprList varExprs = opGroup.getGroupVars() ;
+            varExprs.getExprs().forEach((v,expr)->{
+                addVar(defines, v) ;
+                // Not the expressions.
+            }) ;
+        }
+
+        @Override
+        public void visit(OpDatasetNames dsNames) {
+            addVar(defines, dsNames.getGraphNode()) ;
+        }
+
         // Not implemented: with checking. 
 
         private void no() { 
@@ -304,19 +327,9 @@ public class VarFinder
         public void visit(OpService opService) { no(); }
 
         @Override
-        public void visit(OpDatasetNames dsNames) { no(); }
-
-        @Override
         public void visit(OpDiff opDiff) { no(); }
-
-        @Override
-        public void visit(OpOrder opOrder) { no(); }
         
-        @Override
-        public void visit(OpGroup opGroup) { no(); }
-
         @Override
         public void visit(OpTopN opTop) { no(); }
     }
-
 }
