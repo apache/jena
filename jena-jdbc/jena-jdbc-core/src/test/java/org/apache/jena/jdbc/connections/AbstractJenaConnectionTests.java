@@ -37,6 +37,7 @@ import org.apache.jena.jdbc.results.metadata.TripleResultsMetadata ;
 import org.apache.jena.jdbc.utils.TestUtils ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;
 import org.junit.Assert ;
@@ -50,7 +51,7 @@ import org.junit.Test ;
 public abstract class AbstractJenaConnectionTests {
 
     static {
-        ARQ.init();
+        JenaSystem.init() ;
     }
 
     /**

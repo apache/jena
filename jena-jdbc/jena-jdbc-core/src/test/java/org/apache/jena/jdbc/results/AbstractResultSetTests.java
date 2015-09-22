@@ -30,12 +30,12 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.jdbc.JdbcCompatibility ;
 import org.apache.jena.jdbc.results.metadata.AskResultsMetadata ;
 import org.apache.jena.jdbc.results.metadata.TripleResultsMetadata ;
-import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.Statement ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.vocabulary.XSD ;
 import org.junit.* ;
 
@@ -48,7 +48,7 @@ import org.junit.* ;
 public abstract class AbstractResultSetTests {
 
     static {
-        ARQ.init();
+        JenaSystem.init();
     }
 
     private static Dataset empty, ds;
