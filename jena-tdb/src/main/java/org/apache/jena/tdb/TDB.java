@@ -223,8 +223,6 @@ public class TDB {
             initialized = true ;
             if ( JenaSystem.DEBUG_INIT )
                 System.err.println("TDB.init - start") ;
-            // ARQ.init() ; // Init level settings mean this is already done. 
-            SystemTDB.init() ;
             LangRDFXML.RiotUniformCompatibility = true ;
             EnvTDB.processGlobalSystemProperties() ;
 

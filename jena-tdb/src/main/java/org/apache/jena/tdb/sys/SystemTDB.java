@@ -134,9 +134,6 @@ public class SystemTDB
 
     private static Properties properties = readPropertiesFile() ;
 
-    // To make the class initialize
-    static public void init() {}
-    
     /** Size, in bytes, of a block */
     public static final int BlockSize               = 8*1024 ; // intValue("BlockSize", 8*1024) ;
 
