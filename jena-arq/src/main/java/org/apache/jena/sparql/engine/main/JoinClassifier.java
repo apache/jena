@@ -22,6 +22,9 @@ import java.util.Set ;
 
 import org.apache.jena.atlas.lib.SetUtils ;
 import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.OpVisitor ;
+import org.apache.jena.sparql.algebra.OpVisitorBase ;
+import org.apache.jena.sparql.algebra.OpWalker ;
 import org.apache.jena.sparql.algebra.op.* ;
 import org.apache.jena.sparql.core.Var ;
 
@@ -45,11 +48,15 @@ public class JoinClassifier
         Op left = effectiveOp(_left) ;
         Op right = effectiveOp(_right) ;
 
+        if ( ! isSafeForLinear(left) || ! isSafeForLinear(right) )
+            return false ;
+        
+        // Modifiers.
         if ( right instanceof OpExtend )    return false ;
         if ( right instanceof OpAssign )    return false ;
         if ( right instanceof OpGroup )     return false ;
-        if ( right instanceof OpDiff )      return false ;
-        if ( right instanceof OpMinus )     return false ;
+//        if ( right instanceof OpDiff )      return false ;
+//        if ( right instanceof OpMinus )     return false ;
         
         if ( right instanceof OpSlice )     return false ;
         if ( right instanceof OpTopN )      return false ;
@@ -59,6 +66,20 @@ public class JoinClassifier
         return check(left, right) ;
     }
 
+    // -- pre check for ops we can't handle in a linear fashion.
+    // These are the negation patterns (minus and diff)
+    // FILTER NOT EXISTS is safe - it's defined by iteration like the linear execution algorithm. 
+    private static class UnsafeLineraOpException extends RuntimeException {}
+    private static OpVisitor checkForUnsafeVisitor = new OpVisitorBase() {
+        @Override public void visit(OpMinus opMinus) { throw new UnsafeLineraOpException(); }
+        @Override public void visit(OpDiff opDiff)   { throw new UnsafeLineraOpException(); }
+    };
+    private static boolean isSafeForLinear(Op op) {
+        try { OpWalker.walk(op, checkForUnsafeVisitor); return true; }
+        catch (UnsafeLineraOpException e) { return false; }
+    }
+    // --
+    
     // Check left can stream into right
     static private boolean check(Op leftOp, Op rightOp) {
         if ( print ) {
@@ -149,11 +170,12 @@ public class JoinClassifier
         // Case 3 : an assign in the RHS uses a variable not introduced
         // Scoping means we must hide the LHS value from the RHS
 
-        // TODO Think this may be slightly relaxed, using variables in an
+        // Think this may be slightly relaxed, using variables in an
         // assign on the RHS is in principal fine if they're also available on
         // the RHS
         // vRightAssign.removeAll(vRightFixed);
         // boolean bad3 = vRightAssign.size() > 0;
+        
         boolean bad3 = SetUtils.intersectionP(vRightAssign, vLeftFixed) ;
         if ( print )
             System.err.println("Case 3 = " + bad3) ;
