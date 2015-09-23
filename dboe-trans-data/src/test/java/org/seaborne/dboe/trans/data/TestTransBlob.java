@@ -17,14 +17,9 @@
 
 package org.seaborne.dboe.trans.data;
 
-import java.nio.ByteBuffer ;
-import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicReference ;
 
 import org.apache.jena.query.ReadWrite ;
-
-import org.apache.jena.atlas.lib.Bytes ;
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.After ;
 import org.junit.Assert ;
 import org.junit.Before ;
@@ -32,6 +27,7 @@ import org.junit.Test ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.file.BufferChannelMem ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.transaction.ThreadTxn ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.Txn ;
@@ -56,31 +52,22 @@ public class TestTransBlob extends Assert {
     
     public static void write(Transactional transactional, TransBlob transBlob, String data) {
         Txn.executeWrite(transactional, ()->{
-            byte[] d = StrUtils.asUTF8bytes(data) ;
-            ByteBuffer bb = ByteBuffer.wrap(d) ;
-            transBlob.setBlob(bb); 
+            transBlob.setString(data);
         }) ;
     }
     
     public static String read(Transactional transactional, TransBlob transBlob) {
         return Txn.executeReadReturn(transactional, ()->{
-            ByteBuffer bb = transBlob.getBlob() ;
-            if ( bb == null )
-                return null ;
-            return Bytes.fromByteBuffer(bb) ;
+            return transBlob.getString() ;
         }) ;
     }
-
     
     void threadRead(String expected) {
         AtomicReference<String> result = new AtomicReference<>() ;
-        Semaphore testSemaImmediate = new Semaphore(0, true) ;
-        new Thread( ()-> {
-            String s = Txn.executeReadReturn(transactional, ()-> StrUtils.fromUTF8bytes(transBlob.getBlob().array())) ;
+        Txn.threadTxnRead(transactional, ()-> {
+            String s = transBlob.getString() ;
             result.set(s);
-            testSemaImmediate.release(1) ;
-        }).start() ;
-        testSemaImmediate.acquireUninterruptibly();
+        }).run(); 
         Assert.assertEquals(expected, result.get());
     }
     
@@ -91,20 +78,52 @@ public class TestTransBlob extends Assert {
         write(transactional, transBlob, str) ;
         String str2 = read(transactional, transBlob) ;
         assertEquals(str, str2) ;
+        String str3 = transBlob.getString() ;
+        assertEquals(str, str3) ;
+
     }
 
-    @Test public void transBlob_3() {
+    // Verify visibility and transactions.
+    @Test public void transBlob_2() {
         String str1 = "one" ; 
         String str2 = "two" ;
         write(transactional, transBlob, str1) ;
         transactional.begin(ReadWrite.WRITE);
-        byte[] d = StrUtils.asUTF8bytes(str2) ;
-        ByteBuffer bb = ByteBuffer.wrap(d) ;
-        transBlob.setBlob(bb); 
+        transBlob.setString(str2); 
+        
+        // Difefrent therad and transaction.
         threadRead(str1) ;
+        
         transactional.commit() ;
         transactional.end() ;
         threadRead(str2) ;
+    }
+    
+    // Verify visibility and transactions.
+    @Test public void transBlob_3() {
+        String str1 = "one" ; 
+        String str2 = "two" ;
+        write(transactional, transBlob, str1) ;
+        String s1 = transBlob.getString() ;
+        assertEquals(str1, s1) ;
+        String s2 = read(transactional, transBlob) ;
+        assertEquals(str1, s2) ;
+        
+        // Start now.
+        ThreadTxn tt = Txn.threadTxnRead(transactional, ()-> {
+            String sr = transBlob.getString() ;
+            Assert.assertEquals(str1, sr) ;
+        }) ;
+        
+        write(transactional, transBlob, str2) ;
+        
+        Txn.executeWrite(transactional, ()->{
+            transBlob.setString(str2) ; 
+            String s = transBlob.getString() ;
+            assertEquals(str2, s) ;
+        }) ;
+        // Run later, after W transaction.
+        tt.run();
     }
 }
 

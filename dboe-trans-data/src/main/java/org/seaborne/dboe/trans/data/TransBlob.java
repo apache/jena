@@ -21,6 +21,7 @@ import java.nio.ByteBuffer ;
 import java.util.concurrent.atomic.AtomicReference ;
 
 import org.apache.jena.atlas.RuntimeIOException ;
+import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.query.ReadWrite ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
@@ -79,6 +80,11 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
         blob.rewind() ;
     }
 
+    /** Set the byte buffer.
+     * The byte buffer should not be accessed except by {@link #getBlob}.
+     * We avoid a copy in and copy out - we trust the caller.
+     * The byte buffer should be configured for read if used with {@link #getString}.
+     */
     public void setBlob(ByteBuffer bb) {
         checkWriteTxn();
         getDataState().setByteBuffer(bb);
@@ -88,6 +94,42 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
         if ( isActiveTxn() )
             return getDataState().getByteBuffer() ;
         return blobRef.get() ;
+    }
+
+    /**  Set data from string - convenience operation */ 
+    public void setString(String dataStr) {
+        checkWriteTxn();
+        if ( dataStr == null ) {
+            setBlob(null);
+            return ;
+        }
+
+        // Attempt to reuse the write-transaction byte buffer
+        // We can't reuse if it's the blobRef (shared by other transactions)
+        // but if it's a new to this write transaction buffer we can reuse.
+        
+        int maxNeeded = dataStr.length()*4 ;
+        ByteBuffer bb = getDataState().getByteBuffer() ;
+        if ( bb == blobRef.get() )
+            bb = ByteBuffer.allocate(maxNeeded) ;
+        else if ( bb.capacity() >= maxNeeded )
+            bb.clear() ;
+        else
+            bb = ByteBuffer.allocate(maxNeeded) ;
+        Bytes.toByteBuffer(dataStr, bb) ;
+        bb.flip() ;
+        setBlob(bb);
+    }
+    
+    /**  Get data as string - convenience operation */ 
+    public String getString() {
+        ByteBuffer bb = getBlob() ;
+        if (bb == null )
+            return null ;
+        int x = bb.position() ;
+        String s = Bytes.fromByteBuffer(bb) ;
+        bb.position(x) ;
+        return s ;
     }
 
     private boolean recoveryChange = false ; 
