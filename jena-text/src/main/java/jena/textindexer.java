@@ -48,7 +48,6 @@ public class textindexer extends CmdARQ {
     protected ProgressMonitor  progressMonitor ;
 
     static public void main(String... argv) {
-        TextQuery.init() ;
         new textindexer(argv).mainRun() ;
     }
 

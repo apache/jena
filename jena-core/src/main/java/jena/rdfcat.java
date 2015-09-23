@@ -31,9 +31,9 @@ import java.util.* ;
 import java.util.function.BiConsumer;
 
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.impl.IO_Ctl ;
 import org.apache.jena.rdf.model.impl.RDFWriterFImpl ;
 import org.apache.jena.shared.NoWriterForLangException ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.FileUtils ;
 import org.apache.jena.vocabulary.OWL ;
@@ -211,7 +211,7 @@ public class rdfcat
 
     /* main loop */
     protected void go( String[] args ) {
-    	
+    	JenaSystem.init();
         if ( ! suppressDeprecationBanner ) {
             System.err.println("------------------------------------------------------------------");
     		System.err.println("   DEPRECATED: Please use 'riot' instead.");
@@ -220,9 +220,6 @@ public class rdfcat
     		System.err.println() ;
         }
     	
-        // ensure we use the new RIOT parser subsystem
-        enableRIOTParser();
-
         m_cmdLine.process( args );
 
         // process any stored items
@@ -397,13 +394,6 @@ public class rdfcat
     /** Answer a URL string from a resource or literal */
     protected String getURL( RDFNode n ) {
         return n.isLiteral() ? ((Literal) n).getLexicalForm() : ((Resource) n).getURI();
-    }
-
-    /**
-     * Enable the new RIOT parser subsystem if it is available
-     */
-    private void enableRIOTParser() {
-        IO_Ctl.init(); 
     }
 
     //==============================================================================

@@ -42,6 +42,7 @@ import org.apache.jena.sparql.junit.SimpleTestRunner ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.sparql.vocabulary.DOAP ;
 import org.apache.jena.sparql.vocabulary.FOAF ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.vocabulary.DC ;
 import org.apache.jena.vocabulary.DCTerms ;
 import org.apache.jena.vocabulary.RDF ;
@@ -60,6 +61,7 @@ import arq.cmdline.ModSymbol ;
 
 public class rdflangtest extends CmdGeneral
 {
+    static { JenaSystem.init() ; }
     protected ModSymbol modSymbol       = new ModSymbol() ;
     protected ArgDecl  strictDecl       = new ArgDecl(ArgDecl.NoValue, "strict") ;
     protected boolean  cmdStrictMode    = false ; 
@@ -71,7 +73,6 @@ public class rdflangtest extends CmdGeneral
     
     public static void main (String... argv)
     {
-        RIOT.init() ;
         try { new rdflangtest(argv).mainRun() ; }
         catch (TerminationException ex) { System.exit(ex.getCode()) ; }
     }

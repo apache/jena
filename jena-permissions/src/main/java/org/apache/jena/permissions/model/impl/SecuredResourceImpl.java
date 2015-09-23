@@ -129,7 +129,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * one constructed by using
 	 * <code>this.getModel().createTypedLiteral(o)</code>.
 	 * 
-	 * @throws UpdadeDeniedException
+	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
 	 * @throws AuthenticationRequiredException
 	 */
@@ -147,7 +147,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * one constructed by using
 	 * <code>this.getModel().createTypedLiteral(o)</code>.
 	 * 
-	 * @throws UpdadeDeniedException
+	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
 	 * @throws AuthenticationRequiredException
 	 */
@@ -165,7 +165,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * one constructed by using
 	 * <code>this.getModel().createTypedLiteral(o)</code>.
 	 * 
-	 * @throws UpdadeDeniedException
+	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
 	 * @throws AuthenticationRequiredException
 	 */
@@ -183,7 +183,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * one constructed by using
 	 * <code>this.getModel().createTypedLiteral(o)</code>.
 	 * 
-	 * @throws UpdadeDeniedException
+	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
 	 * @throws AuthenticationRequiredException
 	 */
@@ -201,7 +201,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * from the other addLiteral methods in that the Literal is not turned into
 	 * a Literal.
 	 * 
-	 * @throws UpdadeDeniedException
+	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
 	 * @throws AuthenticationRequiredException
 	 */
@@ -219,7 +219,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * one constructed by using
 	 * <code>this.getModel().createTypedLiteral(o)</code>.
 	 * 
-	 * @throws UpdadeDeniedException
+	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
 	 * @throws AuthenticationRequiredException
 	 */
@@ -237,7 +237,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * one constructed by using
 	 * <code>this.getModel().createTypedLiteral(o)</code>.
 	 * 
-	 * @throws UpdadeDeniedException
+	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
 	 * @throws AuthenticationRequiredException
 	 */
@@ -261,7 +261,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @param o
 	 *            The value of the property to be added.
 	 * @return This resource to allow cascading calls.
-	 * @throws UpdadeDeniedException
+	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
 	 * @throws AuthenticationRequiredException
 	 */
@@ -289,7 +289,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @param o
 	 *            The value of the property to be added.
 	 * @return This resource to allow cascading calls.
-	 * @throws UpdadeDeniedException
+	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
 	 * @throws AuthenticationRequiredException
 	 */
@@ -315,7 +315,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @param datatype
 	 *            The datatype
 	 * @return This resource to allow cascading calls.
-	 * @throws UpdadeDeniedException
+	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
 	 * @throws AuthenticationRequiredException
 	 */
@@ -348,7 +348,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @param l
 	 *            the language of the property
 	 * @return This resource to allow cascading calls.
-	 * @throws UpdadeDeniedException
+	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
 	 * @throws AuthenticationRequiredException
 	 */

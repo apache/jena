@@ -53,10 +53,13 @@ import org.apache.jena.sparql.sse.writers.WriterGraph ;
 import org.apache.jena.sparql.sse.writers.WriterNode ;
 import org.apache.jena.sparql.sse.writers.WriterOp ;
 import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.util.FileUtils ;
 
 public class SSE
 {
+    static { JenaSystem.init(); }
+    
     private SSE() {}
     
     // Short prefix map for convenience (used in parsing, not in writing).

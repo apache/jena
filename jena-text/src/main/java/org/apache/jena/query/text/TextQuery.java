@@ -26,11 +26,11 @@ import org.apache.jena.sparql.pfunction.PropertyFunction ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionFactory ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.tdb.TDB ;
+import org.apache.jena.system.JenaSystem ;
 
 public class TextQuery
 {
-    private static boolean initialized = false ;
+    private static volatile boolean initialized = false ;
     private static Object lock = new Object() ;
     public static String NS = "http://jena.apache.org/text#" ;
     public static String IRI = "http://jena.apache.org/#text" ;
@@ -44,16 +44,21 @@ public class TextQuery
     public static final String VERSION      = metadata.get(PATH+".version", "unknown") ;
     public static final String BUILD_DATE   = metadata.get(PATH+".build.datetime", "unset") ;
     
-    static { init() ; }
+    static { JenaSystem.init(); }
     
     public static void init() 
     {
-        if ( initialized ) return ;
-        synchronized(lock)
-        {
-            if ( initialized ) return ;
+        if ( initialized ) 
+            return ;
+        synchronized(lock) {
+            if ( initialized ) {
+                if ( JenaSystem.DEBUG_INIT )
+                    System.err.println("TextQuery.init - skip") ;
+                return ; 
+            }
             initialized = true ;
-            TDB.init() ;
+            if ( JenaSystem.DEBUG_INIT )
+                System.err.println("TextQuery.init - start") ;
             TextAssembler.init() ;
             
             SystemInfo sysInfo = new SystemInfo(IRI, PATH, VERSION, BUILD_DATE) ;
@@ -65,6 +70,8 @@ public class TextQuery
                     return new TextQueryPF() ;
                 }
             });
+            if ( JenaSystem.DEBUG_INIT )
+                System.err.println("TextQuery.init - finish") ;
         }
     }
 }

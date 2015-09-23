@@ -49,7 +49,6 @@ public abstract class CmdArgsDB extends CmdARQ
         addModule(modStore) ;
         addModule(modLogSQL) ;
         addModule(modTime) ;
-        ARQ.init() ;
         modVersion.addClass(Jena.class) ;
         modVersion.addClass(ARQ.class) ;
         modVersion.addClass(SDB.class) ;

@@ -69,6 +69,7 @@ public class ReorderFixed extends ReorderTransformationSubstitution {
     static { init() ; }
     
     private static void init() {
+        //ype = Item.createNode(NodeConst.nodeRDFType) ;
         // rdf:type can be a bad choice e.g rdf:type rdf:Resource
         // with inference enabled.
         // Weight use of rdf:type worse then the general pattern

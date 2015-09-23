@@ -35,6 +35,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.sys.Names ;
 import org.apache.jena.tdb.transaction.TransactionManager ;
@@ -89,9 +90,8 @@ public class FusekiCmd {
         // fuseki [--mem|--desc assembler.ttl] [--port PORT] **** /datasetURI
 
         static public void innerMain(String... argv) {
-            // Just to make sure ...
-            ARQ.init() ;
-            TDB.init() ;
+            JenaSystem.init() ;
+            // Do explicitly so it happens after subsystem initialization. 
             Fuseki.init() ;
             new FusekiCmdInner(argv).mainRun() ;
         }

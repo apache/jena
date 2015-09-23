@@ -24,9 +24,6 @@ import java.util.concurrent.TimeUnit ;
 
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.query.spatial.SpatialQuery ;
-import org.apache.jena.query.text.TextQuery ;
-import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.system.stream.LocatorFTP ;
 import org.apache.jena.riot.system.stream.LocatorHTTP ;
 import org.apache.jena.riot.system.stream.StreamManager ;
@@ -35,6 +32,7 @@ import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.slf4j.Logger ;
@@ -113,8 +111,18 @@ public class Fuseki {
 
     /** An identifier for the HTTP Fuseki server instance */
     static public final String        serverHttpName    = NAME + " (" + VERSION + ")" ;
-
-    /** Loger name for operations */
+    
+    /** An additional identifier for the HTTP Fuseki server instance in a development build */
+    static public final String        serverHttpNameDev   ;
+    static {
+        // See ServletBase.setCommonheaders
+        // If it look like a SNAPSHOT, print build date. Not perfect, but better.  
+        if ( VERSION.contains("SNAPSHOT") && ! BUILD_DATE.startsWith("\\${") )
+            serverHttpNameDev = NAME + " (" + VERSION + " / " + BUILD_DATE +")" ;
+        else 
+            serverHttpNameDev = null ;
+    }
+    /** Logger name for operations */
     public static final String        actionLogName     = PATH + ".Fuseki" ;
 
     /** Instance of log for operations */
@@ -215,22 +223,11 @@ public class Fuseki {
         if ( initialized )
             return ;
         initialized = true ;
-        // FusekiEnv.setEnvironment() ;
+        JenaSystem.init() ;
+        // Do explicitly so it happens after subsystem initialization. 
         FusekiLogging.setLogging() ;
-        ARQ.init() ;
         SystemInfo sysInfo = new SystemInfo(FusekiIRI, PATH, VERSION, BUILD_DATE) ;
         SystemARQ.registerSubSystem(sysInfo) ;
-        RIOT.init() ;
-        
-        TDB.init() ;
-        // Initialize anyway (e.g. not to rely on assembler magic).
-        try { 
-            TextQuery.init() ;
-            SpatialQuery.init() ;
-        } catch ( Exception ex ) {
-            // In case jars are missing.
-        }
-        
         MappingRegistry.addPrefixMapping("fuseki", FusekiSymbolIRI) ;
 
         TDB.setOptimizerWarningFlag(false) ;

@@ -38,7 +38,9 @@ import org.apache.jena.sparql.core.Quad ;
  *  <p>
  *
  *  @see RDFDataMgr for reading from a location, including web access and content negotation.
+ *  @deprecated
  */
+@Deprecated
 public class RiotReader
 {
     /** Parse a file, sending output to a StreamRDF sink.

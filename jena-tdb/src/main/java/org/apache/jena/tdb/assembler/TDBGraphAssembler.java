@@ -18,8 +18,15 @@
 
 package org.apache.jena.tdb.assembler;
 
-import static org.apache.jena.sparql.util.graph.GraphUtils.* ;
-import static org.apache.jena.tdb.assembler.VocabTDB.* ;
+import static org.apache.jena.sparql.util.graph.GraphUtils.getAsStringValue ;
+import static org.apache.jena.sparql.util.graph.GraphUtils.getResourceValue ;
+import static org.apache.jena.sparql.util.graph.GraphUtils.getStringValue ;
+import static org.apache.jena.tdb.assembler.VocabTDB.pDataset ;
+import static org.apache.jena.tdb.assembler.VocabTDB.pGraphName1 ;
+import static org.apache.jena.tdb.assembler.VocabTDB.pGraphName2 ;
+import static org.apache.jena.tdb.assembler.VocabTDB.pIndex ;
+import static org.apache.jena.tdb.assembler.VocabTDB.pLocation ;
+
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.Mode ;
 import org.apache.jena.assembler.assemblers.AssemblerBase ;
@@ -28,10 +35,8 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.out.NodeFmtLib ;
-import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.TDBFactory ;
-import org.apache.jena.tdb.assembler.IndexAssembler ;
 import org.apache.jena.tdb.base.file.Location ;
 
 public class TDBGraphAssembler extends AssemblerBase implements Assembler
@@ -41,11 +46,6 @@ public class TDBGraphAssembler extends AssemblerBase implements Assembler
     @Override
     public Model open(Assembler a, Resource root, Mode mode)
     {
-        // In case we go via explicit index construction,
-        // although given we got here, the assembler is wired in
-        // and that probably means TDB.init
-        TDB.init() ;
-        
         // Make a model - the default model of the TDB dataset
         // [] rdf:type tdb:GraphTDB ;
         //    tdb:location "dir" ;

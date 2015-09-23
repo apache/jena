@@ -19,7 +19,6 @@
 package org.apache.jena.sparql;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.query.ARQ ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.util.Symbol ;
@@ -28,7 +27,8 @@ import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
 
 /**
- * Internal constants - configuration is in class ARQ */
+ * Internal constants - configuration is in class ARQ
+ */
 public class ARQConstants
 {
     /** The prefix of XQuery/Xpath functions and operator */
@@ -104,20 +104,6 @@ public class ARQConstants
     }
     public static PrefixMapping getGlobalPrefixMap() { return globalPrefixMap ; }
     
-    public static Symbol allocSymbol(String shortName)
-    { 
-        if ( shortName.startsWith(ARQ.arqSymbolPrefix)) 
-            throw new ARQInternalErrorException("Symbol short name begins with the ARQ namespace prefix: "+shortName) ;
-        if ( shortName.startsWith("http:")) 
-            throw new ARQInternalErrorException("Symbol short name begins with http: "+shortName) ;
-        return allocSymbol(ARQ.arqParamNS, shortName) ;
-    }
-    
-    public static Symbol allocSymbol(String base, String shortName)
-    {
-        return Symbol.create(base+shortName) ;
-    }
-
     /* Variable names and allocated variables.
      * NB Must agree with the variable parsing rules in SSE 
      * Allocated variables use names that are not legal in SPARQL.
@@ -247,33 +233,33 @@ public class ARQConstants
     public static final Symbol sysVarAllocAnon          = Symbol.create(systemVarNS+"namedVarAnon") ;
     
     /** Graphs forming the default graph (List&lt;String&gt;) (Dynamic dataset) */
-    public static final Symbol symDatasetDefaultGraphs     = allocSymbol("datasetDefaultGraphs") ;
+    public static final Symbol symDatasetDefaultGraphs     = SystemARQ.allocSymbol("datasetDefaultGraphs") ;
     
     /** Graphs forming the named graphs (List&lt;String&gt;) (Dynamic dataset) */
-    public static final Symbol symDatasetNamedGraphs       = allocSymbol("datasetNamedGraphs") ;
+    public static final Symbol symDatasetNamedGraphs       = SystemARQ.allocSymbol("datasetNamedGraphs") ;
     
     /** Context key for making all SELECT queries have DISTINCT applied, whether stated ot not */
-    public static final Symbol autoDistinct             = ARQConstants.allocSymbol("autoDistinct") ;
+    public static final Symbol autoDistinct             = SystemARQ.allocSymbol("autoDistinct") ;
     
     // Context keys : some here, some in ARQ - sort out
     
     /** The property function registry key */
     public static final Symbol registryPropertyFunctions =
-        ARQConstants.allocSymbol("registryPropertyFunctions") ;
+        SystemARQ.allocSymbol("registryPropertyFunctions") ;
     
     /** The describe handler registry key */
     public static final Symbol registryDescribeHandlers =
-        ARQConstants.allocSymbol("registryDescribeHandlers") ;
+        SystemARQ.allocSymbol("registryDescribeHandlers") ;
 
     /** The function library registry key */
     public static final Symbol registryFunctions =
-        ARQConstants.allocSymbol("registryFunctions") ;
+        SystemARQ.allocSymbol("registryFunctions") ;
     
     /** The function library registry key */
     public static final Symbol registryProcedures =
-        ARQConstants.allocSymbol("registryProcedures") ;
+        SystemARQ.allocSymbol("registryProcedures") ;
     
     /** The extension library registry key */
     public static final Symbol registryExtensions =
-        ARQConstants.allocSymbol("registryExtensions") ;
+        SystemARQ.allocSymbol("registryExtensions") ;
 }

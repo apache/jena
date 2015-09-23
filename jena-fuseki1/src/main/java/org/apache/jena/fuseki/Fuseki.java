@@ -20,7 +20,6 @@ package org.apache.jena.fuseki;
 
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.system.stream.LocatorFTP ;
 import org.apache.jena.riot.system.stream.LocatorHTTP ;
 import org.apache.jena.riot.system.stream.StreamManager ;
@@ -29,6 +28,7 @@ import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.slf4j.Logger ;
@@ -137,11 +137,9 @@ public class Fuseki
         if ( initialized )
             return ;
         initialized = true ;
-        ARQ.init() ;
+        JenaSystem.init();
         SystemInfo sysInfo = new SystemInfo(FusekiIRI, PATH, VERSION, BUILD_DATE) ;
         SystemARQ.registerSubSystem(sysInfo) ;
-        RIOT.init() ;
-        TDB.init() ;
         MappingRegistry.addPrefixMapping("fuseki", FusekiSymbolIRI) ;
         
         TDB.setOptimizerWarningFlag(false) ;

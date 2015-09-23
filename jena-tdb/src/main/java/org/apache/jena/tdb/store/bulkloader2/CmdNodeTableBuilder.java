@@ -41,6 +41,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.setup.DatasetBuilderStd ;
@@ -61,7 +62,8 @@ import tdb.cmdline.CmdTDB ;
 public class CmdNodeTableBuilder extends CmdGeneral
 {
     static { LogCtl.setLog4j() ; }
-    private static Logger cmdLog =TDB.logLoader ;
+    static { JenaSystem.init(); }
+    private static Logger cmdLog = TDB.logLoader ;
 
     private static ArgDecl argLocation      = new ArgDecl(ArgDecl.HasValue, "loc", "location") ;
     private static ArgDecl argTriplesOut    = new ArgDecl(ArgDecl.HasValue, "triples") ;
@@ -77,6 +79,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
     
     public static void main(String...argv)
     {
+        System.err.println("CmdNodeTableBuilder");
         CmdTDB.init() ;
         DatasetBuilderStd.setOptimizerWarningFlag(false) ;
         new CmdNodeTableBuilder(argv).mainRun() ;
@@ -142,8 +145,6 @@ public class CmdNodeTableBuilder extends CmdGeneral
         // so close indexes and the prefix table.
         dsg.getTripleTable().getNodeTupleTable().getTupleTable().close();
         dsg.getQuadTable().getNodeTupleTable().getTupleTable().close();
-        // Later - attach prefix table to parser.
-        dsg.getPrefixes().close() ;
         
         ProgressLogger monitor = new ProgressLogger(cmdLog, "Data", BulkLoader.DataTickPoint, BulkLoader.superTick) ;
         OutputStream outputTriples = null ;
@@ -222,6 +223,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
             writerTriples.flush() ;
             writerQuads.flush() ;
             nodeTable.sync() ;
+            dsg.getPrefixes().sync() ;
         }
             
         @Override
@@ -284,7 +286,9 @@ public class CmdNodeTableBuilder extends CmdGeneral
 
         @Override
         public void prefix(String prefix, String iri)
-        {}
+        {
+            dsg.getPrefixes().getPrefixMapping().setNsPrefix(prefix, iri) ;
+        }
     }
 
     @Override

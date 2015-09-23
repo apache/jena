@@ -37,7 +37,6 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.core.DatasetGraphReadOnly ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
-import org.apache.jena.tdb.TDB ;
 import org.apache.jena.util.FileManager ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
@@ -103,9 +102,7 @@ public class FusekiConfig
     public static ServerConfig configure(String filename)
     {
         // Be absolutely sure everything has initialized.
-        // Some initialization registers assemblers and sets abbreviation vocabulary. 
-        ARQ.init();
-        TDB.init() ;
+        // Some initialization registers assemblers and sets abbreviation vocabulary.
         Fuseki.init() ;
         Model m = FileManager.get().loadModel(filename) ;
 

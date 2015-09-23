@@ -20,6 +20,7 @@ package org.apache.jena.sparql.algebra.optimize;
 
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.ARQConstants ;
+import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.* ;
 import org.apache.jena.sparql.algebra.op.OpLabel ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
@@ -116,7 +117,7 @@ public class Optimize implements Rewrite
     }
 
     /** Alternative name for compatibility only */
-    public static final Symbol filterPlacementOldName = ARQConstants.allocSymbol("filterPlacement") ;
+    public static final Symbol filterPlacementOldName = SystemARQ.allocSymbol("filterPlacement") ;
     
     @Override
     public Op rewrite(Op op)

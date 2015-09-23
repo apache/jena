@@ -37,6 +37,7 @@ import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.reasoner.Reasoner ;
 import org.apache.jena.reasoner.ReasonerRegistry ;
 import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.system.JenaSystem ;
 
 /**
     ModelFactory provides methods for creating standard kinds of Model.
@@ -45,6 +46,7 @@ import org.apache.jena.shared.PrefixMapping ;
 
 public class ModelFactory extends ModelFactoryBase
 {
+    static { JenaSystem.init(); }
     /**
         No-one can make instances of this.
     */

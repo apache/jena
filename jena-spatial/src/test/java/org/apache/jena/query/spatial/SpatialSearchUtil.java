@@ -76,7 +76,6 @@ public class SpatialSearchUtil {
     public static Dataset initInMemoryDatasetWithSolrSpatitalIndex() {
 	    SpatialSearchUtil.deleteOldFiles(SOLR_DATA_DIR  );
 	    SOLR_INDEX_DIR.mkdirs();
-	    SpatialQuery.init() ;
 	    SpatialSearchUtil.createEmptyIndex(SOLR_INDEX_DIR);
 	    return SpatialDatasetFactory.create(SOLR_TEST_ASSEM) ;
     }
@@ -86,14 +85,12 @@ public class SpatialSearchUtil {
     }
     
     public static Dataset initInMemoryDatasetWithLuceneSpatitalIndex(File indexDir) throws IOException{
-		SpatialQuery.init();
 		deleteOldFiles(indexDir);
 		indexDir.mkdirs();
 		return createDatasetByCode(indexDir);
     }
     
     public static Dataset initTDBDatasetWithLuceneSpatitalIndex(File indexDir, File TDBDir) throws IOException{
-		SpatialQuery.init();
 		deleteOldFiles(indexDir);
 		deleteOldFiles(TDBDir);
 		indexDir.mkdirs();

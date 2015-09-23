@@ -425,7 +425,8 @@
         </executions>
         <configuration>
            <excludeSubProjects>true</excludeSubProjects>
-             <excludes>
+ 	     <excludes>
+	       <exclude>**/META-INF/services/*</exclude>
                <!--
                jena-core exclusions
                -->

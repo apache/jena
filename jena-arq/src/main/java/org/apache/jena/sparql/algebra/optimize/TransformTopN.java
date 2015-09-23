@@ -24,7 +24,7 @@ import java.util.Set ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.SortCondition ;
-import org.apache.jena.sparql.ARQConstants ;
+import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.TransformCopy ;
 import org.apache.jena.sparql.algebra.op.* ;
@@ -43,7 +43,7 @@ public class TransformTopN extends TransformCopy {
     // This must be less than ARQ.spillToDiskThreshold.
     // Otherwise DISTINCT ends up reordering. 
 	private static final int defaultTopNSortingThreshold = 1000;
-	public static final Symbol externalSortBufferSize = ARQConstants.allocSymbol("topNSortingThreshold") ;
+	public static final Symbol externalSortBufferSize = SystemARQ.allocSymbol("topNSortingThreshold") ;
 
 	/* For reference: from the algebra generation of a query, the order of operations is: 
 	 *  Limit/Offset

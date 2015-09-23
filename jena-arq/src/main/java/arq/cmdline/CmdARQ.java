@@ -25,10 +25,11 @@ import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorBase ;
+import org.apache.jena.system.JenaSystem ;
 
 public abstract class CmdARQ extends CmdGeneral
 {
-	static { ARQ.init() ; }
+	static { JenaSystem.init() ; }
 
     protected ModSymbol modSymbol = new ModSymbol() ;
     ArgDecl  strictDecl = new ArgDecl(ArgDecl.NoValue, "strict") ;

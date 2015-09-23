@@ -122,6 +122,11 @@ public class TestClassify extends BaseTest
     @Test public void testClassify_Join_44() 
     { classifyJ("{ BIND(<x> AS ?typeX) { BIND(?typeX AS ?type) ?s ?p ?o FILTER(?o=?type) } }", false) ; }
     
+    // Unsafe - deep MINUS
+    // JENA-1021
+    @Test public void testClassify_Join_50() 
+    { classifyJ("{ ?x ?y ?z { ?x1 ?y1 ?z1 MINUS { ?a ?b ?c } } UNION {} }", false) ; }
+    
     private void classifyJ(String pattern, boolean expected)
     {
         String qs1 = "PREFIX : <http://example/>\n" ;

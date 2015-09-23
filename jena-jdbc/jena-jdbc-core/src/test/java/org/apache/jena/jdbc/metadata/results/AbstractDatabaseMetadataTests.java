@@ -26,6 +26,7 @@ import java.util.List ;
 
 import org.apache.jena.jdbc.connections.JenaConnection ;
 import org.apache.jena.query.ARQ ;
+import org.apache.jena.system.JenaSystem ;
 import org.junit.Assert ;
 import org.junit.Test ;
 
@@ -48,7 +49,7 @@ public abstract class AbstractDatabaseMetadataTests {
             Connection.TRANSACTION_READ_UNCOMMITTED, Connection.TRANSACTION_REPEATABLE_READ, Connection.TRANSACTION_SERIALIZABLE };
 
     static {
-        ARQ.init();
+        JenaSystem.init() ;
     }
 
     /**

@@ -27,19 +27,12 @@ import org.apache.jena.tdb.TDB ;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.store.Directory ;
 import org.apache.lucene.store.RAMDirectory ;
-import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 /** Test the examples of building a test dataset */
 public class TestBuildTextDataset extends BaseTest
 {
     static final String DIR = "testing/TextQuery" ;
-
-    // Ensure assembler initialized.
-    @BeforeClass
-    public static void setupClass() {
-        TextQuery.init() ;
-    }
 
     @Test
     public void buildText_01() {
