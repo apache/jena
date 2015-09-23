@@ -121,6 +121,13 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder> implements
 		whereHandler.addOptional(t);
 		return this;
 	}
+	
+	@Override
+	public AskBuilder addOptional(SelectBuilder t)
+	{
+		whereHandler.addOptional(t.getWhereHandler());
+		return this;
+	}
 
 	@Override
 	public AskBuilder addOptional(FrontsTriple t) {

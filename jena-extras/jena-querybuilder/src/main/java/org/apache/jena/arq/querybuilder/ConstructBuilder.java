@@ -168,6 +168,13 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder>
 		whereHandler.addOptional(t);
 		return this;
 	}
+	
+	@Override
+	public ConstructBuilder addOptional(SelectBuilder t)
+	{
+		whereHandler.addOptional(t.getWhereHandler());
+		return this;
+	}
 
 	@Override
 	public ConstructBuilder addOptional(FrontsTriple t) {

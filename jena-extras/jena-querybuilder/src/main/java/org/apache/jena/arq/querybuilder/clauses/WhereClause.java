@@ -68,7 +68,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	public T addWhere(Object s, Object p, Object o);
 
 	/**
-	 * Adds an optional triple as to the where clause.
+	 * Adds an optional triple to the where clause.
 	 * 
 	 * @param t
 	 *            The triple to add
@@ -99,6 +99,15 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * @return The Builder for chaining.
 	 */
 	public T addOptional(Object s, Object p, Object o);
+	
+	/**
+	 * Adds an optional group pattern to the where clause.
+	 * 
+	 * @param t
+	 *            The select builder to add as a group pattern
+	 * @return The Builder for chaining.
+	 */
+	public T addOptional(SelectBuilder t);
 
 	/**
 	 * Adds a filter to the where clause

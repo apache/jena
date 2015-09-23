@@ -266,6 +266,13 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder>
 	}
 
 	@Override
+	public SelectBuilder addOptional(SelectBuilder t)
+	{
+		whereHandler.addOptional(t.getWhereHandler());
+		return this;
+	}
+	
+	@Override
 	public SelectBuilder addFilter(String s) throws ParseException {
 		whereHandler.addFilter(s);
 		return this;

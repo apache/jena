@@ -21,10 +21,13 @@ import java.util.List;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
+import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
@@ -32,6 +35,7 @@ import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock;
 import org.junit.After;
+import org.junit.Assert;
 
 import static org.junit.Assert.*;
 
@@ -106,6 +110,28 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
 				+ uri("three") + OPT_SPACE + CLOSE_CURLY,
 				builder.buildString());
+	}
+	
+	@ContractTest
+	public void testAddOptionalGroupPattern() throws ParseException {
+		
+		Var s = Var.alloc("s" );
+		Node q = NodeFactory.createURI( "urn:q" );
+		Node v = NodeFactory.createURI( "urn:v" );
+		Var x = Var.alloc("x");
+		Node n123 = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(123));	
+		
+		SelectBuilder pattern = new SelectBuilder();
+		pattern.addWhere( new Triple( s, q,  n123 ) );
+		pattern.addWhere( new Triple( s, v, x));
+		pattern.addFilter( "?x>56");
+		
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addOptional( pattern );
+		
+		Query expected = QueryFactory.create( "SELECT * WHERE { OPTIONAL { ?s <urn:q> '123'^^<http://www.w3.org/2001/XMLSchema#int> . ?s <urn:v> ?x . FILTER(?x>56) }}");
+		
+		Assert.assertEquals( expected.getQueryPattern(), builder.build().getQueryPattern());	
 	}
 
 	@ContractTest

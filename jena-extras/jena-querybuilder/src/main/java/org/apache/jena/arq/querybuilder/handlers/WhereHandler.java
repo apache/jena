@@ -34,7 +34,8 @@ import org.apache.jena.sparql.syntax.* ;
 import org.apache.jena.sparql.util.ExprUtils ;
 
 /**
- * The where handler
+ * The where handler.  Generally handles GroupGraphPattern.
+ * @see http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rGroupGraphPattern
  *
  */
 public class WhereHandler implements Handler {
@@ -151,16 +152,19 @@ public class WhereHandler implements Handler {
 		ElementGroup eg = getClause();
 		List<Element> lst = eg.getElements();
 		if (lst.isEmpty()) {
-			ElementTriplesBlock etb = new ElementTriplesBlock();
-			etb.addTriple(t);
-			eg.addElement(etb);
+			ElementPathBlock epb = new ElementPathBlock();
+			epb.addTriple(t);
+			eg.addElement(epb);
 		} else {
 			Element e = lst.get(lst.size() - 1);
 			if (e instanceof ElementTriplesBlock) {
 				ElementTriplesBlock etb = (ElementTriplesBlock) e;
 				etb.addTriple(t);
+			} else if (e instanceof ElementPathBlock) {
+				ElementPathBlock epb = (ElementPathBlock) e;
+				epb.addTriple(t);
 			} else {
-				ElementTriplesBlock etb = new ElementTriplesBlock();
+				ElementPathBlock etb = new ElementPathBlock();
 				etb.addTriple(t);
 				eg.addElement(etb);
 			}
@@ -175,10 +179,14 @@ public class WhereHandler implements Handler {
 	 */
 	public void addOptional(Triple t) throws IllegalArgumentException {
 		testTriple(t);
-		ElementTriplesBlock etb = new ElementTriplesBlock();
-		etb.addTriple(t);
-		ElementOptional opt = new ElementOptional(etb);
+		ElementPathBlock epb = new ElementPathBlock();
+		epb.addTriple(t);
+		ElementOptional opt = new ElementOptional(epb);
 		getClause().addElement(opt);
+	}
+	
+	public void addOptional(WhereHandler whereHandler) {
+		getClause().addElement( new ElementOptional( whereHandler.getClause()));
 	}
 
 	/**

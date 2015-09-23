@@ -27,11 +27,13 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.vocabulary.RDF;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -107,6 +109,29 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				query.toString());
 	}
 
+	
+	@Test
+	public void testAddOptionalWhereHandler() throws ParseException {
+		
+		WhereHandler pattern = new WhereHandler(new Query());
+		Var s = Var.alloc("s" );
+		Node q = NodeFactory.createURI( "urn:q" );
+		Node v = NodeFactory.createURI( "urn:v" );
+		Var x = Var.alloc("x");
+		Node n123 = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(123));	
+		
+		pattern.addWhere( new Triple( s, q,  n123 ) );
+		pattern.addWhere( new Triple( s, v, x));
+		pattern.addFilter( "?x>56");
+		
+		handler.addOptional( pattern );
+		
+		Query expected = QueryFactory.create( "SELECT * WHERE { OPTIONAL { ?s <urn:q> '123'^^<http://www.w3.org/2001/XMLSchema#int> . ?s <urn:v> ?x . FILTER(?x>56) }}");
+		
+		Assert.assertEquals( expected.getQueryPattern(), query.getQueryPattern());
+
+	}
+	
 	@Test
 	public void testAddOptionalObjects() {
 		handler.addOptional(new Triple(NodeFactory.createURI("one"),
