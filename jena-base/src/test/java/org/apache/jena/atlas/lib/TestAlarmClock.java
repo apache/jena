@@ -27,12 +27,7 @@ import org.junit.Test ;
 
 public class TestAlarmClock extends BaseTest {
     AtomicInteger count    = new AtomicInteger(0) ;
-    Runnable      callback = new Runnable() {
-                               @Override
-                               public void run() {
-                                   count.getAndIncrement() ;
-                               }
-                           } ;
+    Runnable      callback = ()->count.getAndIncrement() ;
 
     @Test
     public void alarm_01() {
