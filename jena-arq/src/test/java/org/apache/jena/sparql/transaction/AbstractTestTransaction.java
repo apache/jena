@@ -31,7 +31,7 @@ public abstract class AbstractTestTransaction extends BaseTest
     protected abstract Dataset create() ;
     
     @Test
-    public void transaction_err_00() {
+    public void transaction_00() {
         Dataset ds = create() ;
         assertTrue(ds.supportsTransactions()) ;
     }
