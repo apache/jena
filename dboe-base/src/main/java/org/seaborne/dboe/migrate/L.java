@@ -122,19 +122,59 @@ public class L {
         }
     }
 
+    /** Execute. Preform the "before" action, then main action.
+     *  Always call the "after" runnable if the "bafore" succeeded.
+     *  Becareful about argument order. 
+     * @param action
+     * @param before
+     * @param after
+     */
+    public static void withBeforeAfter(Runnable action, Runnable before, Runnable after) {
+        before.run(); 
+        try { action.run(); }
+        finally { after.run();  }
+    }
+
+    /** Execute. Preform the "before" action, then main action.
+     *  Always call the "after" runnable if the "bafore" succeeded.
+     *  Becareful about argument order. 
+     * @param action
+     * @param before
+     * @param after
+     */
+    public static <V> V callWithBeforeAfter(Supplier<V> action, Runnable before, Runnable after) {
+        before.run(); 
+        try { return action.get() ; } 
+        finally { after.run();  }
+    }
+
+    /** Execute; always call the "after" runnable */
+    public static void withAfter(Runnable action, Runnable after) {
+        try { action.run(); } 
+        finally { after.run();  }
+    }
+
+    /** Execute and return a value; always call the "after" runnable */
+    public static <V> V callWithAfter(Supplier<V> action, Runnable after) {
+        try { return action.get() ; }
+        finally { after.run();  }
+    }
+
     /** Run inside a Lock */
     public static  <V> V callWithLock(Lock lock, Supplier<V> r) {
-        lock.lock();
-        try { return r.get() ; }
-        finally { lock.unlock() ; }
+        return callWithBeforeAfter(r, ()->lock.lock(), ()->lock.unlock()) ;  
+//        lock.lock();
+//        try { return r.get() ; }
+//        finally { lock.unlock() ; }
     }
     
     /** Run inside a Lock */
     // Surely there is a utility in the std library to do this?
     public static void withLock(Lock lock, Runnable r) {
-        lock.lock();
-        try { r.run(); } 
-        finally { lock.unlock() ; }
+        withBeforeAfter(r, ()->lock.lock(), ()->lock.unlock()) ;
+//        lock.lock();
+//        try { r.run(); } 
+//        finally { lock.unlock() ; }
     }
     
     // ==> IO.writeWholeFileAsUTF8
