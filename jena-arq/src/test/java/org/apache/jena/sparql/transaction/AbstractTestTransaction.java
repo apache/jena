@@ -131,7 +131,24 @@ public abstract class AbstractTestTransaction extends BaseTest
         write(ds) ;
         read2(ds) ;
     }
-
+    
+    // Cycle misalignment.
+    // test : commit
+    // test : abort
+    // Permit explain .end() - the case of "end" when not sure:  begin...end.end. 
+    
+    @Test(expected=JenaTransactionException.class)
+    public void transaction_err_nontxn_commit()    { 
+        Dataset ds = create() ;
+        ds.commit() ;
+    }    
+    
+    @Test(expected=JenaTransactionException.class)
+    public void transaction_err_nontxn_abort()    { 
+        Dataset ds = create() ;
+        ds.abort() ;
+    }    
+    
     @Test
     public void transaction_err_01()    { testBeginBegin(WRITE, WRITE) ; }
 
