@@ -33,6 +33,7 @@ import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.transaction.TransactionalMonitor ;
 import org.seaborne.dboe.transaction.txn.TransactionalSystem ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.lib.NodeLib ;
@@ -60,6 +61,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     private StoreParams config ;
     
     private GraphTDB defaultGraphTDB ;
+    private final boolean checkForChange = false ;
     private boolean closed = false ;
     private TransactionalSystem txnSystem ;
 
@@ -134,9 +136,6 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         notifyDelete(g, s, p, o) ;
         getQuadTable().delete(g, s, p, o) ;
     }
-    
-    private DatasetChanges monitor = null ;
-    private final boolean checkForChange = false ; 
     
     // XXX Optimize by integrating with add/delete operations.
     private final void notifyAdd(Node g, Node s, Node p, Node o) {
@@ -307,7 +306,15 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         // Delete in batches.
         // That way, there is no active iterator when a delete
         // from the indexes happens.
-        checkNotClosed() ; 
+        checkNotClosed() ;
+        
+        if ( monitor != null ) {
+            // Need to do by nodes because we will log the deletes.
+            super.deleteAny(g, s, p, o); 
+            return ;
+        }
+
+        // Not logging - do by working as NodeIds.
         NodeTupleTable t = chooseNodeTupleTable(g) ;
         @SuppressWarnings("unchecked")
         Tuple<NodeId>[] array = (Tuple<NodeId>[])new Tuple<?>[sliceSize] ;
@@ -321,7 +328,6 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
                 iter = t.findAsNodeIds(g, s, p, o) ;
 
             if ( iter == null )
-                // Finished?
                 return ;
 
             // Get a slice
@@ -331,16 +337,9 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
                     break ;
                 array[len] = iter.next() ;
             }
-
-            //boolean tripleTable = t.getTupleTable().getTupleLen() == 3 ;
             
-            // Delete them.
+            // Delete the NodeId Tuples
             for (int i = 0; i < len; i++) {
-                if ( false ) {
-                    // ****
-                    // Need to resolve :-(
-                }
-                
                 t.getTupleTable().delete(array[i]) ;
                 array[i] = null ;
             }
@@ -370,37 +369,51 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         return txnSystem.isInTransaction() ;
     }
 
+    // txnSystem with monitor?
     @Override
     public void begin(ReadWrite readWrite) {
+        if ( txnMonitor != null ) txnMonitor.startBegin(readWrite); 
         txnSystem.begin(readWrite) ;
+        if ( txnMonitor != null ) txnMonitor.finishBegin(readWrite); 
     }
 
     @Override
     public boolean promote() {
-        return txnSystem.promote() ;
+        
+        if ( txnMonitor != null ) txnMonitor.startPromote();
+        try { 
+            return txnSystem.promote() ;
+        } finally { if ( txnMonitor != null ) txnMonitor.finishPromote(); }
     }
 
     @Override
     public void commit() {
+        if ( txnMonitor != null ) txnMonitor.startCommit();
         txnSystem.commit() ;
+        if ( txnMonitor != null ) txnMonitor.finishCommit();  
     }
 
     @Override
     public void abort() {
+        if ( txnMonitor != null ) txnMonitor.startAbort() ; 
         txnSystem.abort() ;
+        if ( txnMonitor != null ) txnMonitor.finishAbort() ;  
     }
 
     @Override
     public void end() {
+        if ( txnMonitor != null ) txnMonitor.startEnd(); 
         txnSystem.end() ;
+        if ( txnMonitor != null ) txnMonitor.finishEnd(); 
     }
 
     public TransactionalSystem getTxnSystem() {
         return txnSystem ;
     }
 
-    // Must be inside a W transaction.
+    // Watching changes (add, delete, deleteAny) 
     
+    private DatasetChanges monitor = null ;
     public void setMonitor(DatasetChanges changes) {
         monitor = changes ;
     }
@@ -410,4 +423,18 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
             throw new InternalErrorException() ;
         monitor = null ;
     }
+    
+    // Watching Transactional
+    
+    private TransactionalMonitor txnMonitor = null ;
+    public void setTransactionalMonitor(TransactionalMonitor changes) {
+        txnMonitor = changes ;
+    }
+
+    public void removeTransactionalMonitor(TransactionalMonitor changes) {
+        if ( txnMonitor != changes )
+            throw new InternalErrorException() ;
+        txnMonitor = null ;
+    }
+    
 }
