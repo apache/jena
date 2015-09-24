@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package txnlog;
+package txnlog.notused;
 
 import java.util.Iterator ;
 

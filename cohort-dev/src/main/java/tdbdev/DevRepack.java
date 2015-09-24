@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
  
-package repack;
+package tdbdev;
 
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.ReadWrite ;
@@ -23,6 +23,7 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.tdb2.TDBFactory ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
+import repack.CloneTDB ;
 
 public class DevRepack {
     static { LogCtl.setLog4j(); }

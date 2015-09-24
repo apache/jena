@@ -20,44 +20,23 @@ package txnlog;
 import static txnlog.TxnLog.END ;
 import static txnlog.TxnLog.byteToQuadAction ;
 
-import java.io.BufferedInputStream ;
 import java.io.InputStream ;
-import java.io.OutputStream ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.thrift.TRDF ;
 import org.apache.jena.riot.thrift.ThriftConvert ;
 import org.apache.jena.riot.thrift.wire.RDF_Term ;
 import org.apache.jena.sparql.core.DatasetChanges ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphMonitor ;
 import org.apache.jena.sparql.core.QuadAction ;
 import org.apache.thrift.TException ;
 import org.apache.thrift.protocol.TProtocol ;
-import org.seaborne.dboe.transaction.Txn ;
-import org.seaborne.tdb2.store.DatasetGraphTDB ;
+import org.seaborne.dboe.DBOpEnvException ;
 
-/** Record changes to a dataset.
- *  Replay
- *  API class
- */
-public class TxnLogger {
+public class TxnLoggerThrift {
 
-    /** Log/execute a write transaction. */
-    public static void logWriteTxn(DatasetGraphTDB dsgBase, OutputStream logStream, Runnable r) {
-        DatasetChanges changes = new ThriftChangeLog(logStream) ;
-        DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, changes, false) ;
-        
-        // dsg needs to be transactional
-        
-        changes.start();
-        Txn.executeWrite(dsgBase, r);
-        changes.finish() ;
-    }
-    
     /** Replay a write transaction. */
-    public static void replay(InputStream in, DatasetChanges processor)  throws TException {
-        in = new BufferedInputStream(in, 1024*1024) ;
+    public static void replay(InputStream in, DatasetChanges processor) {
+        try { 
         TProtocol protocol = TRDF.protocol(in) ;
         
         for(;;) {
@@ -71,6 +50,7 @@ public class TxnLogger {
             Node o = read(protocol) ;
             processor.change(quadAction, g, s, p, o); 
         }
+        } catch (TException ex) { throw new DBOpEnvException(ex) ; } 
     }
 
     static RDF_Term rdfTerm = new RDF_Term() ;

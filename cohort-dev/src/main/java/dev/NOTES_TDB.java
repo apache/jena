@@ -17,14 +17,12 @@
 
 package dev;
 
-import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetPrefixStorage ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.store.QuadTable ;
 import org.seaborne.tdb2.store.TripleTable ;
 
 public class NOTES_TDB {
-    int foo ;
     // ** Reaper.
     // ** Or time-based, commit keeping.  benefit!
     
@@ -72,22 +70,5 @@ public class NOTES_TDB {
     // really simple - quads/triples only - no 3 or 4 way forms.
     // Or vice versa - 
 
-    // Like Transactional(System) except not part of the transaction.  Called after main calls.
-    interface TxnEvent {
-        default void startBegin(ReadWrite mode)     {}
-        default void finishBegin(ReadWrite mode)    {}
-
-        default void startPromote()     {}
-        default void finishPromote()    {}
-
-        default void startCommit()      {}
-        default void finishCommit()     {}
-
-        default void startAbort()       {}
-        default void finishAbort()      {}
-
-        default void startEnd()         {}
-        default void finishEnd()        {}
-    }
 
 }

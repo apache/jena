@@ -22,10 +22,10 @@ import org.apache.jena.sparql.core.DatasetChanges ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.QuadAction ;
 
-class ChangeLogApply implements DatasetChanges {
+public class ChangeLogApply implements DatasetChanges {
     private final DatasetGraph dsg;
 
-    ChangeLogApply(DatasetGraph dsg) { this.dsg = dsg ; }
+    public ChangeLogApply(DatasetGraph dsg) { this.dsg = dsg ; }
 
     @Override
     public void start() {}
