@@ -54,9 +54,10 @@ import org.apache.jena.query.ReadWrite ;
  * Exceptions will not be thrown.
  * If any do occur, this indicates serious internal problems with the transaction system.
  */
-public interface Transactional //extends org.apache.jena.sparql.core.Transactional
+public interface Transactional extends org.apache.jena.sparql.core.Transactional
 {
    /** Start either a READ or WRITE transaction */ 
+   @Override
    public void begin(ReadWrite readWrite) ;
    
    /** Attempt to prmote a read transaction to a write transaction.
@@ -78,12 +79,15 @@ public interface Transactional //extends org.apache.jena.sparql.core.Transaction
     */
    public boolean promote() ;
 
-   /** Commit a transaction - finish the transaction and make any changes permanent (if a "write" transaction) */  
+   /** Commit a transaction - finish the transaction and make any changes permanent (if a "write" transaction) */
+   @Override
    public void commit() ;
    
    /** Abort a transaction - finish the transaction and undo any changes (if a "write" transaction) */  
+   @Override
    public void abort() ;
    
    /** Finish the transaction - if a write transaction and commit() has not been called, then abort. */
+   @Override
    public void end() ;
 }

@@ -178,6 +178,8 @@ public class DatasetGraphWrapperTxn implements DatasetGraph, Transactional
     @Override
     public void end()
     { transactional.end() ; }
-    
-}
 
+    @Override
+    public boolean isInTransaction()
+    { return transactional.isInTransaction() ; }
+}

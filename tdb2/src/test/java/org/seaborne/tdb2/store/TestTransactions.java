@@ -38,7 +38,7 @@ import org.seaborne.tdb2.sys.StoreConnection ;
 /** Transactions and store connections - extended tests assuming the
  * basics work. Hence these tests use memory databases. 
  * 
- * For tests of StoreConenction basics:
+ * For tests of StoreConnection basics:
  * @see AbstractTestStoreConnectionBasics
  * @see TestStoreConnectionsDirect
  * @see TestStoreConnectionsMapped
@@ -68,7 +68,6 @@ public class TestTransactions extends BaseTest
         ,":s :p 'CCC-"+x+"' ."
         ,":s :p 'DDD-"+x+"' ."
         ) ;
-
     
     Dataset dataset ; 
     Location location ;

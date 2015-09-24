@@ -17,8 +17,9 @@
 
 package org.seaborne.dboe.transaction.txn;
 
+import org.apache.jena.sparql.JenaTransactionException ;
 
-public class TransactionException extends RuntimeException {
+public class TransactionException extends JenaTransactionException {
     public TransactionException()                                  { super(); }
     public TransactionException(String message)                    { super(message); }
     public TransactionException(Throwable cause)                   { super(cause) ; }
