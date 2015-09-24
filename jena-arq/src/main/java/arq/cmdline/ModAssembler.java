@@ -39,7 +39,7 @@ public class ModAssembler extends ModBase
     
     public ModAssembler()
     { 
-        // Wire in assmebler implementations
+        // Wire in assembler implementations
         AssemblerUtils.init() ;
     }
     
