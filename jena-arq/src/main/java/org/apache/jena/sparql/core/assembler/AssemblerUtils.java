@@ -46,7 +46,7 @@ public class AssemblerUtils
     
     private static boolean initialized = false ; 
     
-    static { JenaSystem.init() ; init() ; } 
+    static { JenaSystem.init() ; } 
     
     static public void init()
     {

@@ -21,6 +21,7 @@ package org.apache.jena.query;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.optimize.TransformOrderByDistinctApplication ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.engine.http.Service ;
 import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.ARQMgt ;
@@ -563,7 +564,7 @@ public class ARQ
             // This is the pattern for any subsystem to register. 
             SystemInfo sysInfo = new SystemInfo(ARQ.arqIRI, ARQ.PATH, ARQ.VERSION, ARQ.BUILD_DATE) ;
             SystemARQ.registerSubSystem(sysInfo) ;
-
+            AssemblerUtils.init() ;
             // Register RIOT details here, not earlier, to avoid
             // initialization loops with RIOT.init() called directly.
             RIOT.register() ;
