@@ -138,16 +138,49 @@ public abstract class AbstractTestTransaction extends BaseTest
     // Permit explain .end() - the case of "end" when not sure:  begin...end.end. 
     
     @Test(expected=JenaTransactionException.class)
-    public void transaction_err_nontxn_commit()    { 
+    public void transaction_err_nontxn_commit_1() { 
         Dataset ds = create() ;
         ds.commit() ;
     }    
     
     @Test(expected=JenaTransactionException.class)
-    public void transaction_err_nontxn_abort()    { 
+    public void transaction_err_nontxn_commit_2() { 
+        Dataset ds = create() ;
+        ds.begin(READ) ;
+        ds.end() ;
+        ds.commit() ;
+    }    
+    
+    @Test(expected=JenaTransactionException.class)
+    public void transaction_err_nontxn_commit_3() { 
+        Dataset ds = create() ;
+        ds.begin(WRITE) ;
+        ds.end() ;
+        ds.commit() ;
+    }    
+
+    @Test(expected=JenaTransactionException.class)
+    public void transaction_err_nontxn_abort_1() { 
         Dataset ds = create() ;
         ds.abort() ;
     }    
+
+    @Test(expected=JenaTransactionException.class)
+    public void transaction_err_nontxn_abort_2() { 
+        Dataset ds = create() ;
+        ds.begin(READ) ;
+        ds.end() ;
+        ds.abort() ;
+    }    
+
+    @Test(expected=JenaTransactionException.class)
+    public void transaction_err_nontxn_abort_3() { 
+        Dataset ds = create() ;
+        ds.begin(WRITE) ;
+        ds.end() ;
+        ds.abort() ;
+    }    
+
     
     @Test
     public void transaction_err_01()    { testBeginBegin(WRITE, WRITE) ; }
