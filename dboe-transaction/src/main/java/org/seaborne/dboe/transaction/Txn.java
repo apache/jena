@@ -29,8 +29,9 @@ public class Txn {
      */
     public static <T extends Transactional> void executeRead(T txn, Runnable r) {
         txn.begin(ReadWrite.READ) ;
-        r.run(); 
-        txn.end() ;
+        try {  
+            r.run(); 
+        } finally { txn.end() ; } 
     }
 
     /** Execute and return a value in a read transaction
@@ -38,10 +39,10 @@ public class Txn {
      */
 
     public static <T extends Transactional, X> X executeReadReturn(T txn, Supplier<X> r) {
-        txn.begin(ReadWrite.READ) ;
-        X x = r.get() ;
-        txn.end() ;
-        return x ;
+        try {  
+            txn.begin(ReadWrite.READ) ;
+            return r.get() ;
+        } finally { txn.end() ; } 
     }
 
     /** Execute the Runnable in a write transaction 
@@ -49,14 +50,13 @@ public class Txn {
      */
     public static <T extends Transactional> void executeWrite(T txn, Runnable r) {
         txn.begin(ReadWrite.WRITE) ;
-        try { r.run(); }
-        catch (Throwable th) {
+        try {
+            r.run();
+            txn.commit();
+        } catch (Throwable th) {
             txn.abort();
-            txn.end();
             throw th ; 
-        }
-        txn.commit() ;
-        txn.end() ;
+        } finally { txn.end(); }
     }
     
     /** Execute the Runnable in a write transaction 
@@ -64,10 +64,14 @@ public class Txn {
      */
     public static <T extends Transactional, X> X executeWriteReturn(Transactional txn, Supplier<X> r) {
         txn.begin(ReadWrite.WRITE) ;
-        X x = r.get() ;
-        txn.commit() ;
-        txn.end() ;
-        return x ;
+        try { 
+            X x = r.get() ;
+            txn.commit() ;
+            return x ;
+        } catch (Throwable th) {
+            txn.abort();
+            throw th ; 
+        } finally { txn.end(); }
     }
     
     // ---- Thread
@@ -89,7 +93,5 @@ public class Txn {
     public static ThreadTxn threadTxnWriteAbort(Transactional trans, Runnable action) {
         return ThreadTxn.create(trans, ReadWrite.WRITE, action, false) ;
     }
-    
-
 }
 
