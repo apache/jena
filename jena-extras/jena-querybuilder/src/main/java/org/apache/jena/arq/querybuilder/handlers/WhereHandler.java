@@ -35,7 +35,7 @@ import org.apache.jena.sparql.util.ExprUtils ;
 
 /**
  * The where handler.  Generally handles GroupGraphPattern.
- * @see http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rGroupGraphPattern
+ * @see <a href="http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rGroupGraphPattern">SPARQL 11 Query Language - Group Graph Pattern</a>
  *
  */
 public class WhereHandler implements Handler {
