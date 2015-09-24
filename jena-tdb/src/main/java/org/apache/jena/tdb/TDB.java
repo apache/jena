@@ -33,7 +33,6 @@ import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.riot.lang.LangRDFXML ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.engine.main.StageBuilder ;
 import org.apache.jena.sparql.engine.main.StageGenerator ;
 import org.apache.jena.sparql.lib.Metadata ;
@@ -251,7 +250,6 @@ public class TDB {
             EnvTDB.processGlobalSystemProperties() ;
 
             MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
-            AssemblerUtils.init() ;
             AssemblerTDB.init() ;
             QueryEngineTDB.register() ;
             UpdateEngineTDB.register() ;
