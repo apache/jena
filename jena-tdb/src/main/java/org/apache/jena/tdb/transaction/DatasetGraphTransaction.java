@@ -109,7 +109,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive implements 
     @Override
     protected void checkActive() {
         checkNotClosed() ;
-        if ( sConn.haveUsedInTransaction() && !isInTransaction() )
+        if ( !isInTransaction() )
             throw new JenaTransactionException("Not in a transaction (" + getLocation() + ")") ;
     }
 
