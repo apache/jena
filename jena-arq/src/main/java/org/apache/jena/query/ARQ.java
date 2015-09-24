@@ -38,18 +38,26 @@ import org.slf4j.LoggerFactory ;
 
 public class ARQ
 {
+    // Initialization statics must be first in the class to avoid
+    // problems with recursive initialization.  Specifcally,
+    // initLock being null because elsewhere started the initialization
+    // and is calling into the TDB class. 
+    // The best order is:
+    //    Initialization controls
+    //    All calculated constants
+    //    static { JenaSystem.init() ; }
+    // Otherwise, using constants after JenaSystem.init can lead to null being seen.
+    
     private static volatile boolean initialized = false ;
-    // Must be initialized early for reentrant initialization.
     private static final Object initLock = new Object() ;
     
     // Initialization notes:
-    //    No use of ARQConstants before the initialization block. (Can be afterwards.)
+    // 1/   No use of ARQConstants before the initialization block. (Can be afterwards.)
     // Risk is 
     //   ARQConstants -> OWL -> ModelFactory -> jena initialization  
     //     -> ARQ.init while initializing -> StageBuilder.init -> NodeConst -> rdf.type -> OWL 
     // recursing initialization, hits NPE via OWL.
-    
-    // And stageGenerator must be set before call ARQ.init.
+    // 2/ stageGenerator constant must be set before the call to ARQ.init.
 
     /** Name of the execution logger */
     public static final String logExecName = "com.hp.hpl.jena.arq.exec" ;

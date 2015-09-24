@@ -24,6 +24,8 @@ import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
 
 public class InitJenaCore  implements JenaSubsystemLifecycle {
+    private static volatile boolean initialized = false ;
+    private static Object           initLock    = new Object() ;
 
     @Override
     public void start() {
@@ -38,9 +40,6 @@ public class InitJenaCore  implements JenaSubsystemLifecycle {
         return 10 ;
     }
     
-    private static volatile boolean initialized = false ;
-    private static Object           initLock    = new Object() ;
-
     public static void init() {
         if ( initialized )
             return ;

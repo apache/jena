@@ -24,6 +24,11 @@ import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.system.JenaSystem ;
 
 public class RIOT {
+    // Initialization statics must be first in the class to avoid
+    // problems with recursive initialization.
+    private static volatile boolean initialized = false ;
+    private static Object           initLock    = new Object() ;
+    
     /** IRI for RIOT */
     public static final String riotIRI = "http://jena.apache.org/#riot" ;
 
@@ -45,9 +50,6 @@ public class RIOT {
         SysRIOT.strictMode = state ;
         SysRIOT.StrictXSDLexicialForms = state ;
     }
-
-    private static volatile boolean initialized = false ;
-    private static Object           initLock    = new Object() ;
 
     public static void init() {
         if ( initialized )

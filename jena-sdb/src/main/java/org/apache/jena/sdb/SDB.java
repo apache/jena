@@ -41,6 +41,10 @@ import org.apache.jena.vocabulary.RDFS ;
 
 public class SDB
 {
+    // Must be first, especially the initLock setup.
+    private static volatile boolean initialized = false ;
+    private static Object initLock = new Object() ;
+
     /** IRI for SDB */  
     public static final String sdbIRI = "http://jena.hpl.hp.com/#sdb" ;
     
@@ -79,9 +83,6 @@ public class SDB
 //        AssemblerUtils.init() ;         // ARQ 
 //        AssemblerVocab.register(g) ;    // SDB
 //    }
-    
-    private static volatile boolean initialized = false ;
-    private static Object initLock = new Object() ;
     
     public static void init() {
         if ( initialized ) 
