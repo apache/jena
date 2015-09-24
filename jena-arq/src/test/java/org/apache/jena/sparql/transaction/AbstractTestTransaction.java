@@ -241,6 +241,10 @@ public abstract class AbstractTestTransaction extends BaseTest
         ds.end() ;
     }
 
+    private static void safeEnd(Dataset ds) {
+        try { ds.end() ; } catch (JenaTransactionException ex) {}
+    }
+    
     // Error conditions that should be detected.
 
     private void testBeginBegin(ReadWrite mode1, ReadWrite mode2) {
@@ -251,7 +255,7 @@ public abstract class AbstractTestTransaction extends BaseTest
             fail("Expected transaction exception - begin-begin (" + mode1 + ", " + mode2 + ")") ;
         }
         catch (JenaTransactionException ex) {
-            ds.end() ;
+            safeEnd(ds) ;
         }
     }
     
@@ -264,7 +268,7 @@ public abstract class AbstractTestTransaction extends BaseTest
             fail("Expected transaction exception - commit-commit(" + mode + ")") ;
         }
         catch (JenaTransactionException ex) {
-            ds.end() ;
+            safeEnd(ds) ;
         }
     }
 
@@ -277,7 +281,7 @@ public abstract class AbstractTestTransaction extends BaseTest
             fail("Expected transaction exception - commit-abort(" + mode + ")") ;
         }
         catch (JenaTransactionException ex) {
-            ds.end() ;
+            safeEnd(ds) ;
         }
     }
 
@@ -303,7 +307,7 @@ public abstract class AbstractTestTransaction extends BaseTest
             fail("Expected transaction exception - abort-commit(" + mode + ")") ;
         }
         catch (JenaTransactionException ex) {
-            ds.end() ;
+            safeEnd(ds) ;
         }
     }    
 }
