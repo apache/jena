@@ -44,7 +44,7 @@ public class TestAlarmClock extends BaseTest {
         AlarmClock alarmClock = new AlarmClock() ;
         // Short - happens.
         alarmClock.add(callback, 10) ;
-        sleep(150) ;
+        sleep(200) ;
         assertEquals(1, count.get()) ;
         // try to cancel anyway.
         alarmClock.cancel(callback) ;
@@ -56,7 +56,7 @@ public class TestAlarmClock extends BaseTest {
         AlarmClock alarmClock = new AlarmClock() ;
         alarmClock.add(callback, 10) ;
         alarmClock.add(callback, 1000000) ;
-        sleep(150) ;
+        sleep(200) ;
         // ping1 went off.
         assertEquals(1, count.get()) ;
         alarmClock.cancel(callback) ;
