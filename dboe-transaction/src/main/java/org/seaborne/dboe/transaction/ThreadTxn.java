@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicReference ;
 import org.apache.jena.query.ReadWrite ;
 
 import org.seaborne.dboe.sys.SystemBase ;
+import org.apache.jena.sparql.core.Transactional ;
 
 /**
  * An action that will happen on a different thread later when {@link #run} is

@@ -20,6 +20,7 @@ package org.seaborne.dboe.transaction;
 import java.util.function.Supplier ;
 
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.core.Transactional ;
 
 /** Application utilities for transactions. */
 public class Txn {
