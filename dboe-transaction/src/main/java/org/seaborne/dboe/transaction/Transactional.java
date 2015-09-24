@@ -54,7 +54,7 @@ import org.apache.jena.query.ReadWrite ;
  * Exceptions will not be thrown.
  * If any do occur, this indicates serious internal problems with the transaction system.
  */
-public interface Transactional 
+public interface Transactional //extends org.apache.jena.sparql.core.Transactional
 {
    /** Start either a READ or WRITE transaction */ 
    public void begin(ReadWrite readWrite) ;
@@ -73,7 +73,6 @@ public interface Transactional
     *    .being(WRITE) ;
     *  </pre>
     *  to see any intermediate commits from another writer.
-    *  
     * 
     * @return boolean indciating whether the tranaction is now a write transaction or not.
     */
