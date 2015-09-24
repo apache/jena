@@ -18,7 +18,6 @@
 
 package org.apache.jena.system;
 
-import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.vocabulary.OWL ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
@@ -60,10 +59,6 @@ public class InitJenaCore  implements JenaSubsystemLifecycle {
             RDF.getURI() ;
             RDFS.getURI() ;
             OWL.getURI() ;
-            // Necessary. for the case of Jena first used via Assemblers
-            // Can't delay because ARQ, TDB touch Assembler for initialization.
-            // Assembler is an interface with statics final constants.
-            Assembler.general.hashCode() ;
             if ( JenaSystem.DEBUG_INIT )
                 System.err.println("JenaCore.init - finish") ;
         }

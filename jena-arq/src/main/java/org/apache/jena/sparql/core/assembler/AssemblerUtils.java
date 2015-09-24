@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.core.assembler;
 
 import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.ConstAssembler ;
 import org.apache.jena.assembler.JA ;
 import org.apache.jena.assembler.assemblers.AssemblerGroup ;
 import org.apache.jena.query.* ;
@@ -54,7 +55,8 @@ public class AssemblerUtils
             return ;
         initialized = true ;
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
-        registerWith(Assembler.general) ;
+        // Do NOT use Assembler.gemneral here (may not be initialized).  
+        registerWith(ConstAssembler.general()) ;
     }
     
     static public void registerWith(AssemblerGroup g)

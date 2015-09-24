@@ -60,50 +60,40 @@ public interface Assembler
     */
     public Model openModel( Resource root, Mode mode );
     
-    public static final Assembler defaultModel = new DefaultModelAssembler();
+    // This slightly bizarre way to initial "constants" is because Assembler is
+    // an interface. Interfaces inside class intialization processes do not have
+    // their computer static fields initialized yet. To keep that, for
+    // compatibility, initialization code must use the ConstAssembler functions
+    // and not use constants here.  Assembler.general is the key field used
+    // in ARQ.init (AssemblerUtils) and TDB.init (VocabTDB).
     
-    public static final Assembler memoryModel = new MemoryModelAssembler();
-
-    public static final Assembler infModel = new InfModelAssembler();
-
-    public static final Assembler ontModel = new OntModelAssembler();
-
-    public static final Assembler reasonerFactory = new ReasonerFactoryAssembler();
-
-    public static final Assembler content = new ContentAssembler();
+    public static final Assembler defaultModel = ConstAssembler.defaultModel() ;
     
-    public static final Assembler prefixMapping = new PrefixMappingAssembler();
+    public static final Assembler memoryModel = ConstAssembler.memoryModel() ;
 
-    public static final Assembler unionModel = new UnionModelAssembler();
+    public static final Assembler infModel = ConstAssembler.infModel();
 
-    public static final Assembler ontModelSpec = new OntModelSpecAssembler();
-    
-    public static final Assembler ruleSet = new RuleSetAssembler();
-    
-    public static final Assembler modelSource = new ModelSourceAssembler();
-    
-    public static final Assembler locationMapper = new LocationMapperAssembler();
+    public static final Assembler ontModel = ConstAssembler.ontModel();
 
-    public static final Assembler fileManager = new FileManagerAssembler();
+    public static final Assembler reasonerFactory = ConstAssembler.reasonerFactory();
 
-    public static final Assembler documentManager = new DocumentManagerAssembler();
+    public static final Assembler content = ConstAssembler.content();
     
-    public static final AssemblerGroup general = AssemblerGroup.create()
-        .implementWith( JA.DefaultModel, defaultModel )
-        .implementWith( JA.MemoryModel, memoryModel )
-        .implementWith( JA.InfModel, infModel )
-        .implementWith( JA.ReasonerFactory, reasonerFactory )
-        .implementWith( JA.ModelSource, modelSource )
-        .implementWith( JA.Content, content )
-        .implementWith( JA.ContentItem, content )
-        .implementWith( JA.UnionModel, unionModel )
-        .implementWith( JA.PrefixMapping, prefixMapping )
-        .implementWith( JA.SinglePrefixMapping, prefixMapping )
-        .implementWith( JA.OntModel, ontModel )
-        .implementWith( JA.OntModelSpec, ontModelSpec )
-        .implementWith( JA.RuleSet, ruleSet )
-        .implementWith( JA.LocationMapper, locationMapper )
-        .implementWith( JA.FileManager, fileManager )
-        .implementWith( JA.DocumentManager, documentManager )
-        ;
+    public static final Assembler prefixMapping = ConstAssembler.prefixMapping();
+
+    public static final Assembler unionModel = ConstAssembler.unionModel();
+
+    public static final Assembler ontModelSpec = ConstAssembler.ontModelSpec();
+    
+    public static final Assembler ruleSet = ConstAssembler.ruleSet();
+    
+    public static final Assembler modelSource = ConstAssembler.modelSource();
+    
+    public static final Assembler locationMapper = ConstAssembler.locationMapper();
+
+    public static final Assembler fileManager = ConstAssembler.fileManager();
+
+    public static final Assembler documentManager = ConstAssembler.documentManager();
+    
+    public static final AssemblerGroup general = ConstAssembler.general() ;
     }

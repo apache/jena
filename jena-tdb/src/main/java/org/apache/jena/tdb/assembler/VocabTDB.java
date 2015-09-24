@@ -20,6 +20,7 @@ package org.apache.jena.tdb.assembler;
 
 
 import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.ConstAssembler ;
 import org.apache.jena.assembler.assemblers.AssemblerGroup ;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
@@ -69,8 +70,9 @@ public class VocabTDB
     {
         if ( initialized )
             return ;
-        registerWith(Assembler.general) ;
         initialized = true ;
+        // Do NOT use Assembler.gemneral here (may not be initialized).  
+        registerWith(ConstAssembler.general()) ;
     }
     
     static void registerWith(AssemblerGroup g)
@@ -88,7 +90,7 @@ public class VocabTDB
     public static void assemblerClass(AssemblerGroup group, Resource r, Assembler a)
     {
         if ( group == null )
-            group = Assembler.general ;
+            group = ConstAssembler.general() ;
         group.implementWith(r, a) ;
         //assemblerAssertions.add(r, RDFS.subClassOf, JA.Object) ;
     }
