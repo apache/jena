@@ -71,7 +71,7 @@ public class TestQueryExecutionTimeout1 extends BaseTest
         QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
         qExec.setTimeout(50, TimeUnit.MILLISECONDS) ;
         ResultSet rs = qExec.execSelect() ;
-        sleep(120) ;
+        sleep(200) ;
         exceptionExpected(rs) ; 
     }
 
@@ -239,7 +239,11 @@ public class TestQueryExecutionTimeout1 extends BaseTest
 
     private static void exceptionExpected(ResultSet rs)
     {
-        try { ResultSetFormatter.consume(rs) ; fail("QueryCancelledException expected") ; } catch (QueryCancelledException ex) {}
+        try {
+            ResultSetFormatter.consume(rs);
+            fail("QueryCancelledException expected");
+        }
+        catch (QueryCancelledException ex) {}
     }
     
 }
