@@ -39,15 +39,22 @@ public class ProfileRegistry {
     // Constants
     //////////////////////////////////
 
+    // Note: To avoid JENA-1039 race condition, the OWL constants are
+    // duplicated as Strings below rather than accessing OWL.FULL_LANG and
+    // friends
+
     /** The URI that maps to the language profile for OWL-Full */
-    public static final String OWL_LANG = OWL.FULL_LANG.getURI();
+    //public static final String OWL_LANG = OWL.FULL_LANG.getURI();
+    public static final String OWL_LANG = OWL.NS;
 
     /** The URI that maps to the language profile for OWL-DL */
-    public static final String OWL_DL_LANG = OWL.DL_LANG.getURI();
+    //public static final String OWL_DL_LANG = OWL.DL_LANG.getURI();
+    public static final String OWL_DL_LANG = "http://www.w3.org/TR/owl-features/#term_OWLDL";
 
     /** The URI that maps to the language profile for OWL-Lite */
-    public static final String OWL_LITE_LANG = OWL.LITE_LANG.getURI();
-
+    //public static final String OWL_LITE_LANG = OWL.LITE_LANG.getURI();
+    public static final String OWL_LITE_LANG = "http://www.w3.org/TR/owl-features/#term_OWLLite";
+    
     /** The URI that maps to the language profile for RDFS */
     public static final String RDFS_LANG = RDFS.getURI();
 
