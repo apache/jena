@@ -24,6 +24,7 @@ package org.apache.jena.vocabulary;
 // Imports
 ///////////////////////////////////////
 import org.apache.jena.rdf.model.* ;
+//import org.apache.jena.system.JenaSystem ;
 
 
 
@@ -32,6 +33,7 @@ import org.apache.jena.rdf.model.* ;
  * Vocabulary definitions from file:vocabularies/owl.owl
  */
 public class OWL {
+    // ModelFactory.createDefaultModel calls JenaSystem.init
     /** <p>The RDF model that holds the vocabulary terms</p> */
     private static final Model m_model = ModelFactory.createDefaultModel();
     
