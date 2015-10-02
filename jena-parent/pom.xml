@@ -54,13 +54,13 @@
     <ver.junit>4.12</ver.junit>
     <ver.xerces>2.11.0</ver.xerces>
 
-    <ver.jsonldjava>0.5.1</ver.jsonldjava>
+    <ver.jsonldjava>0.7.0</ver.jsonldjava>
     <!-- Used by jena-osgi and must be in-step with jsonldjava -->
     <ver.jackson>2.3.3</ver.jackson>
 
     <!-- These are connected because solr4j depends on httpclient as well -->
     <ver.httpclient>4.2.6</ver.httpclient>
-    <ver.httpcore>4.2.6</ver.httpcore>
+    <ver.httpcore>4.2.5</ver.httpcore>
     <!-- Normally, these are the same as the above
 	 In the case of 4.2.6, there isn't a httpcore-osgi.
     -->
