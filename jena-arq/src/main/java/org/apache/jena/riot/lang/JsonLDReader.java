@@ -23,9 +23,10 @@ import java.io.InputStream ;
 import java.io.Reader ;
 import java.util.List ;
 import java.util.Map ;
-import java.util.Objects;
 import java.util.Map.Entry;
-import java.util.function.Consumer ;
+import java.util.Objects;
+import com.github.jsonldjava.core.* ;
+import com.github.jsonldjava.utils.JsonUtils ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
@@ -41,11 +42,6 @@ import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.* ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.util.FileUtils ;
-
-import com.fasterxml.jackson.core.* ;
-import com.fasterxml.jackson.databind.ObjectMapper ;
-import com.github.jsonldjava.core.* ;
 
 public class JsonLDReader implements ReaderRIOT
 {
@@ -58,109 +54,108 @@ public class JsonLDReader implements ReaderRIOT
     @Override public ParserProfile getParserProfile()                   { return parserProfile ; }
     @Override public void setParserProfile(ParserProfile parserProfile) { this.parserProfile = parserProfile ; }
     
-    // pre jsonld-java issue #144 code.
-    // Remove at any point.
-//    @Override
-//    public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
-//        try {
-//            Object jsonObject = JsonUtils.fromReader(reader) ;
-//            read$(jsonObject, baseURI, ct, output, context) ;
-//        }
-//        catch (IOException e) {
-//            IO.exception(e) ;
-//        }
-//    }
-//
-//    @Override
-//    public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-//        try {
-//            Object jsonObject = JsonUtils.fromInputStream(in) ;
-//            read$(jsonObject, baseURI, ct, output, context) ;
-//        }
-//        catch (IOException e) {
-//            IO.exception(e) ;
-//        }
-//    }
-    
-    // This addresses jsonld-java issue #144 so that we get triples/quads out
-    // then there is a parse error. Even if it is fixed in jsonld-java, it would
-    // mean that no triples would be produced - all the JSON parsing is done
-    // before JSON-LD processing. Here we process the first JSON object, whch
-    // causes triples to be generated then decide whether to throw a parse
-    // error.  This is more in the style of other syntaxes and stream parsing.
-    
     @Override
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
         try {
-            readProcess(reader, 
-                       (jsonObject)->read$(jsonObject, baseURI, ct, output, context)) ;
-        }
-        catch (JsonProcessingException ex) {    
-            // includes JsonParseException
-            // The Jackson JSON parser, or addition JSON-level check, throws up something.
-            JsonLocation loc = ex.getLocation() ;
-            errorHandler.error(ex.getOriginalMessage(), loc.getLineNr(), loc.getColumnNr()); 
-            throw new RiotException(ex.getOriginalMessage()) ;
+            Object jsonObject = JsonUtils.fromReader(reader) ;
+            read$(jsonObject, baseURI, ct, output, context) ;
         }
         catch (IOException e) {
-            errorHandler.error(e.getMessage(), -1, -1); 
             IO.exception(e) ;
         }
     }
 
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        Reader r = FileUtils.asBufferedUTF8(in) ;
-        read(r, baseURI, ct, output, context) ;
+        try {
+            Object jsonObject = JsonUtils.fromInputStream(in) ;
+            read$(jsonObject, baseURI, ct, output, context) ;
+        }
+        catch (IOException e) {
+            IO.exception(e) ;
+        }
     }
-
-    // From JsonUtils.fromReader in the jsonld-java codebase.
-    // Note that jsonld-java always uses a reader.
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
-    private static final JsonFactory JSON_FACTORY = new JsonFactory(JSON_MAPPER);
     
-    /** Read a JSON object from the reader, acall the prcoessing function, then
-     * check for trailing content. For Jena, this means tripes/quads are generated
-     * from a valid JSON object, then there is a  parse error for trailing junk.   
-     * @param reader
-     * @param function
-     * @throws IOException
-     */
-    private static void readProcess(Reader reader, Consumer<Object> function) throws IOException {
-        final JsonParser jp = JSON_FACTORY.createParser(reader);
-        Object rval ;
-        final JsonToken initialToken = jp.nextToken();
-
-        if (initialToken == JsonToken.START_ARRAY) {
-            rval = jp.readValueAs(List.class);
-        } else if (initialToken == JsonToken.START_OBJECT) {
-            rval = jp.readValueAs(Map.class);
-        } else if (initialToken == JsonToken.VALUE_STRING) {
-            rval = jp.readValueAs(String.class);
-        } else if (initialToken == JsonToken.VALUE_FALSE || initialToken == JsonToken.VALUE_TRUE) {
-            rval = jp.readValueAs(Boolean.class);
-        } else if (initialToken == JsonToken.VALUE_NUMBER_FLOAT
-                || initialToken == JsonToken.VALUE_NUMBER_INT) {
-            rval = jp.readValueAs(Number.class);
-        } else if (initialToken == JsonToken.VALUE_NULL) {
-            rval = null;
-        } else {
-            throw new JsonParseException("document doesn't start with a valid json element : "
-                    + initialToken, jp.getCurrentLocation());
-        }
-        
-        function.accept(rval);
-        
-        JsonToken t ;
-        try { t = jp.nextToken(); }
-        catch (JsonParseException ex) {
-            throw new JsonParseException("Document contains more content after json-ld element - (possible mismatched {}?)",
-                                         jp.getCurrentLocation());
-        }
-        if ( t != null )
-            throw new JsonParseException("Document contains possible json content after the json-ld element - (possible mismatched {}?)",
-                                             jp.getCurrentLocation());
-    }
+    // This addresses jsonld-java issue #144 pre jsonld-java relase 0.6.0 in
+    // Jena code so that we get triples/quads out then there is a parse error.
+    // Even if it is fixed in jsonld-java, it would mean that no triples would
+    // be produced - all the JSON parsing is done before JSON-LD processing.
+    // Here we process the first JSON object, which causes triples to be
+    // generated then decide whether to throw a parse error. This is more in the
+    // style of other syntaxes and stream parsing.
+    
+//    @Override
+//    public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
+//        try {
+//            readProcess(reader, 
+//                       (jsonObject)->read$(jsonObject, baseURI, ct, output, context)) ;
+//        }
+//        catch (JsonProcessingException ex) {    
+//            // includes JsonParseException
+//            // The Jackson JSON parser, or addition JSON-level check, throws up something.
+//            JsonLocation loc = ex.getLocation() ;
+//            errorHandler.error(ex.getOriginalMessage(), loc.getLineNr(), loc.getColumnNr()); 
+//            throw new RiotException(ex.getOriginalMessage()) ;
+//        }
+//        catch (IOException e) {
+//            errorHandler.error(e.getMessage(), -1, -1); 
+//            IO.exception(e) ;
+//        }
+//    }
+//
+//    @Override
+//    public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
+//        Reader r = FileUtils.asBufferedUTF8(in) ;
+//        read(r, baseURI, ct, output, context) ;
+//    }
+//
+//    // From JsonUtils.fromReader in the jsonld-java codebase.
+//    // Note that jsonld-java always uses a reader.
+//    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+//    private static final JsonFactory JSON_FACTORY = new JsonFactory(JSON_MAPPER);
+//    
+//    /** Read a JSON object from the reader, acall the prcoessing function, then
+//     * check for trailing content. For Jena, this means tripes/quads are generated
+//     * from a valid JSON object, then there is a  parse error for trailing junk.   
+//     * @param reader
+//     * @param function
+//     * @throws IOException
+//     */
+//    private static void readProcess(Reader reader, Consumer<Object> function) throws IOException {
+//        final JsonParser jp = JSON_FACTORY.createParser(reader);
+//        Object rval ;
+//        final JsonToken initialToken = jp.nextToken();
+//
+//        if (initialToken == JsonToken.START_ARRAY) {
+//            rval = jp.readValueAs(List.class);
+//        } else if (initialToken == JsonToken.START_OBJECT) {
+//            rval = jp.readValueAs(Map.class);
+//        } else if (initialToken == JsonToken.VALUE_STRING) {
+//            rval = jp.readValueAs(String.class);
+//        } else if (initialToken == JsonToken.VALUE_FALSE || initialToken == JsonToken.VALUE_TRUE) {
+//            rval = jp.readValueAs(Boolean.class);
+//        } else if (initialToken == JsonToken.VALUE_NUMBER_FLOAT
+//                || initialToken == JsonToken.VALUE_NUMBER_INT) {
+//            rval = jp.readValueAs(Number.class);
+//        } else if (initialToken == JsonToken.VALUE_NULL) {
+//            rval = null;
+//        } else {
+//            throw new JsonParseException("document doesn't start with a valid json element : "
+//                    + initialToken, jp.getCurrentLocation());
+//        }
+//        
+//        function.accept(rval);
+//        
+//        JsonToken t ;
+//        try { t = jp.nextToken(); }
+//        catch (JsonParseException ex) {
+//            throw new JsonParseException("Document contains more content after json-ld element - (possible mismatched {}?)",
+//                                         jp.getCurrentLocation());
+//        }
+//        if ( t != null )
+//            throw new JsonParseException("Document contains possible json content after the json-ld element - (possible mismatched {}?)",
+//                                             jp.getCurrentLocation());
+//    }
     
     private void read$(Object jsonObject, String baseURI, ContentType ct, final StreamRDF output, Context context) {
         if ( parserProfile == null )
