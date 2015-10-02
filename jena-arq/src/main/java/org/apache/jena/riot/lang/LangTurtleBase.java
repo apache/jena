@@ -32,6 +32,7 @@ import static org.apache.jena.riot.tokens.TokenType.PREFIXED_NAME ;
 import static org.apache.jena.riot.tokens.TokenType.RBRACKET ;
 import static org.apache.jena.riot.tokens.TokenType.RPAREN ;
 import static org.apache.jena.riot.tokens.TokenType.SEMICOLON ;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.iri.IRI ;
@@ -41,7 +42,6 @@ import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.sparql.graph.NodeConst ;
-import org.apache.jena.vocabulary.OWL ;
 
 /** The main engine for all things Turtle-ish (Turtle, TriG). */
 public abstract class LangTurtleBase extends LangBase {
@@ -287,7 +287,7 @@ public abstract class LangTurtleBase extends LangBase {
         objectList(subject, predicate) ;
     }
 
-    static protected final Node nodeSameAs     = OWL.sameAs.asNode() ;
+    static protected final Node nodeSameAs     = NodeConst.nodeOwlSameAs ;
     static protected final Node nodeLogImplies = NodeFactory.createURI("http://www.w3.org/2000/10/swap/log#implies") ;
 
     /** Get predicate - maybe null for "illegal" */
