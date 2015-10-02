@@ -26,6 +26,7 @@
 #
 # JAVA
 #   Command to invoke Java. If not set, java (from the PATH) will be used.
+#   JAVA_HOME can also be used to set JAVA.
 #
 # JAVA_OPTIONS
 #   Extra options to pass to the JVM.
@@ -70,6 +71,7 @@
 # FUSEKI_LOGS_STDERROUT
 #   Log file with stderr and stdout log output from Fuseki. 
 #   Defaults to $FUSEKI_LOGS/stderrout.log
+
 
 ### BEGIN INIT INFO
 # Provides:          fuseki
@@ -248,12 +250,21 @@ fi
 # Set up JAVA if not set
 if [ -z "$JAVA" ]
 then
-  JAVA=$(which java)
+    if [ -z "$JAVA_HOME" ]
+    then
+       JAVA=$(which java)
+    else
+        JAVA=$JAVA_HOME/bin/java
+    fi
 fi
+
 if [ -z "$JAVA" ]
 then
-  echo "Cannot find a Java JDK. Please set either set JAVA or put java (>=1.8) in your PATH." 1>&2
-  exit 1
+    (
+	echo "Cannot find a Java JDK."
+	echo "Please set either set JAVA or JAVA_HOME and put java (>=1.8) in your PATH."
+    ) 1>&2
+    exit 1
 fi
 
 # The location of the start up JAR
