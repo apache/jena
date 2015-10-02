@@ -57,12 +57,15 @@ import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.graph.NodeTransform ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.util.* ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.vocabulary.RDF ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 public abstract class NodeValue extends ExprNode
 {
+    static { JenaSystem.init() ; }
+
     // Maybe:: NodeValueStringLang - strings with language tag
     
     /* Naming:

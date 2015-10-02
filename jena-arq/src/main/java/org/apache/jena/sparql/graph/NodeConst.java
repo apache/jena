@@ -22,12 +22,14 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.vocabulary.OWL ;
 import org.apache.jena.vocabulary.RDF ;
 
 /** Some node constants */
 public class NodeConst
 {
+    static { JenaSystem.init(); }
     public static final Node nodeTrue       = NodeFactory.createLiteral("true", XSDDatatype.XSDboolean) ; 
     public static final Node nodeFalse      = NodeFactory.createLiteral("false",XSDDatatype.XSDboolean) ; 
     public static final Node nodeZero       = NodeFactory.createLiteral("0",    XSDDatatype.XSDinteger) ;
@@ -42,7 +44,8 @@ public class NodeConst
     public static final Node nodeNil        = RDF.Nodes.nil ;
     public static final Node nodeANY        = Node.ANY ;
     
-    public static final Node nodeOwlSameAs          = OWL.sameAs.asNode() ;
+    // Avoid OWL.sameAs.asNode() ;
+    public static final Node nodeOwlSameAs          = OWL.sameAs.asNode() ; // NodeFactory.createURI("http://www.w3.org/2002/07/owl#sameAs") ;
     public static final Node rdfLangString          = RDF.Nodes.langString ;
     public static final RDFDatatype dtLangString    = RDF.dtLangString ;
 }

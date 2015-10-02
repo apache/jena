@@ -22,6 +22,7 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.vocabulary.OWL ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
@@ -31,6 +32,8 @@ import org.apache.jena.vocabulary.RDFS ;
  */
 public class ARQConstants
 {
+    static { JenaSystem.init() ; }
+    
     /** The prefix of XQuery/Xpath functions and operator */
     public static final String fnPrefix = "http://www.w3.org/2005/xpath-functions#" ;
     
