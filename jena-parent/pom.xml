@@ -601,6 +601,20 @@
                   </action>
                 </pluginExecution>
 
+		<pluginExecution>
+		  <pluginExecutionFilter>
+		    <groupId>org.xenei</groupId>
+		    <artifactId>contract-test-maven-plugin</artifactId>
+		    <versionRange>[0.1.5,)</versionRange>
+		    <goals>
+		      <goal>contract-test</goal>
+		    </goals>
+		  </pluginExecutionFilter>
+		  <action>
+		    <ignore></ignore>
+		  </action>
+		</pluginExecution>
+		
               </pluginExecutions>
             </lifecycleMappingMetadata>
           </configuration>
