@@ -25,6 +25,9 @@ import java.util.List ;
 import java.util.Map ;
 import java.util.Map.Entry;
 import java.util.Objects;
+
+import com.fasterxml.jackson.core.JsonLocation ;
+import com.fasterxml.jackson.core.JsonProcessingException ;
 import com.github.jsonldjava.core.* ;
 import com.github.jsonldjava.utils.JsonUtils ;
 
@@ -60,6 +63,13 @@ public class JsonLDReader implements ReaderRIOT
             Object jsonObject = JsonUtils.fromReader(reader) ;
             read$(jsonObject, baseURI, ct, output, context) ;
         }
+        catch (JsonProcessingException ex) {    
+            // includes JsonParseException
+            // The Jackson JSON parser, or addition JSON-level check, throws up something.
+            JsonLocation loc = ex.getLocation() ;
+            errorHandler.error(ex.getOriginalMessage(), loc.getLineNr(), loc.getColumnNr()); 
+            throw new RiotException(ex.getOriginalMessage()) ;
+        }
         catch (IOException e) {
             IO.exception(e) ;
         }
@@ -71,18 +81,26 @@ public class JsonLDReader implements ReaderRIOT
             Object jsonObject = JsonUtils.fromInputStream(in) ;
             read$(jsonObject, baseURI, ct, output, context) ;
         }
+        catch (JsonProcessingException ex) {    
+            // includes JsonParseException
+            // The Jackson JSON parser, or addition JSON-level check, throws up something.
+            JsonLocation loc = ex.getLocation() ;
+            errorHandler.error(ex.getOriginalMessage(), loc.getLineNr(), loc.getColumnNr()); 
+            throw new RiotException(ex.getOriginalMessage()) ;
+        }
         catch (IOException e) {
             IO.exception(e) ;
         }
     }
     
-    // This addresses jsonld-java issue #144 pre jsonld-java relase 0.6.0 in
+    // This addresses jsonld-java issue #144 prior to jsonld-java release 0.6.0 in
     // Jena code so that we get triples/quads out then there is a parse error.
     // Even if it is fixed in jsonld-java, it would mean that no triples would
     // be produced - all the JSON parsing is done before JSON-LD processing.
     // Here we process the first JSON object, which causes triples to be
     // generated then decide whether to throw a parse error. This is more in the
     // style of other syntaxes and stream parsing.
+    // This fix is in jsonld-java itself release 0.6.0 and later.
     
 //    @Override
 //    public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
