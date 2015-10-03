@@ -20,21 +20,21 @@ package org.apache.jena.query.text;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.jena.atlas.lib.StrUtils;
-
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ReadWrite;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.update.UpdateExecutionFactory;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateProcessor;
+import org.apache.jena.update.UpdateRequest;
 
 /*
  * This abstract class defines a collection of test methods for testing
@@ -43,54 +43,119 @@ import com.hp.hpl.jena.rdf.model.Model;
  * the actual tests.
  */
 public abstract class AbstractTestDatasetWithTextIndexBase {
-	protected static final String RESOURCE_BASE = "http://example.org/data/resource/";
-	protected static final String QUERY_PROLOG = 
-			StrUtils.strjoinNL(
-				"PREFIX text: <http://jena.apache.org/text#>",
-				"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
-				);
-	
-	protected static final String TURTLE_PROLOG = 
-				StrUtils.strjoinNL(
-						"@prefix text: <http://jena.apache.org/text#> .",
-						"@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ."
-						);
-	
-	protected Dataset dataset;
-	
-	protected void doTestSearch(String turtle, String queryString, Set<String> expectedEntityURIs) {
-		doTestSearch("", turtle, queryString, expectedEntityURIs);
-	}
-	
-	protected void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs) {
-		doTestSearch(label, turtle, queryString, expectedEntityURIs, expectedEntityURIs.size());
-	}
-	
-	protected void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs, int expectedNumResults) {
-		Model model = dataset.getDefaultModel();
-		Reader reader = new StringReader(turtle);
-		dataset.begin(ReadWrite.WRITE);
-		model.read(reader, "", "TURTLE");
-		dataset.commit();
-		doTestQuery(dataset, label, queryString, expectedEntityURIs, expectedNumResults);
-	}
-	
-	public static void doTestQuery(Dataset dataset, String label, String queryString, Set<String> expectedEntityURIs, int expectedNumResults) {
-		Query query = QueryFactory.create(queryString) ;
-		dataset.begin(ReadWrite.READ);
-		try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
-		    ResultSet results = qexec.execSelect() ;
-		    
-		    assertEquals(label, expectedNumResults > 0, results.hasNext());
-		    int count;
-		    for (count=0; results.hasNext(); count++) {
-		    	String entityURI = results.next().getResource("s").getURI();
-		        assertTrue(label + ": unexpected result: " + entityURI, expectedEntityURIs.contains(entityURI));
-		    }
-		    assertEquals(label, expectedNumResults, count);
-		}
-		finally {
-		    dataset.end() ;
-	    }		
-	}
+    protected static final String RESOURCE_BASE = "http://example.org/data/resource/";
+    protected static final String QUERY_PROLOG = 
+            StrUtils.strjoinNL(
+                "PREFIX text: <http://jena.apache.org/text#>",
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+                );
+    
+    protected static final String TURTLE_PROLOG = 
+                StrUtils.strjoinNL(
+                        "@prefix text: <http://jena.apache.org/text#> .",
+                        "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ."
+                        );
+    
+    protected Dataset dataset;
+    
+    protected void doTestSearch(String turtle, String queryString, Set<String> expectedEntityURIs) {
+        doTestSearch("", turtle, queryString, expectedEntityURIs);
+    }
+    
+    protected void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs) {
+        doTestSearch(label, turtle, queryString, expectedEntityURIs, expectedEntityURIs.size());
+    }
+    
+    protected void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs, int expectedNumResults) {
+        loadData(turtle);
+        doTestQuery(dataset, label, queryString, expectedEntityURIs, expectedNumResults);
+    }
+
+    protected Map<String,Float> doTestSearchWithScores(String turtle, String queryString, Set<String> expectedEntityURIs) {
+        loadData(turtle);
+        return doTestQueryWithScores(queryString, expectedEntityURIs);
+    }
+
+    protected void doTestSearchNoResult(String turtle, String queryString) {
+        doTestSearchNoResult("", turtle, queryString);
+    }
+
+    protected void doTestSearchNoResult(String label, String turtle, String queryString) {
+        loadData(turtle);
+        doTestNoResult(dataset, label, queryString);
+    }
+
+    protected void loadData(String turtle) {
+        Model model = dataset.getDefaultModel();
+        Reader reader = new StringReader(turtle);
+        dataset.begin(ReadWrite.WRITE);
+        model.read(reader, "", "TURTLE");
+        dataset.commit();
+    }
+
+    public static void doTestQuery(Dataset dataset, String label, String queryString, Set<String> expectedEntityURIs, int expectedNumResults) {
+        Query query = QueryFactory.create(queryString) ;
+        dataset.begin(ReadWrite.READ);
+        try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
+            ResultSet rs = qexec.execSelect() ;
+            ResultSetRewindable results = ResultSetFactory.makeRewindable(rs) ;
+//            ResultSetFormatter.out(results); 
+//            results.reset(); 
+            assertEquals(label, expectedNumResults > 0, results.hasNext());
+            int count;
+            for (count=0; results.hasNext(); count++) {
+                String entityURI = results.next().getResource("s").getURI();
+                assertTrue(label + ": unexpected result: " + entityURI, expectedEntityURIs.contains(entityURI));
+            }
+            assertEquals(label, expectedNumResults, count);
+        }
+        finally {
+            dataset.end() ;
+        }        
+    }
+    
+    protected Map<String,Float> doTestQueryWithScores(String queryString, Set<String> expectedEntityURIs) {
+        Map<String,Float> scores = new HashMap<>();
+
+        Query query = QueryFactory.create(queryString) ;
+        dataset.begin(ReadWrite.READ);
+        try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
+            ResultSet results = qexec.execSelect() ;
+            
+            assertEquals(expectedEntityURIs.size() > 0, results.hasNext());
+            int count;
+            for (count=0; results.hasNext(); count++) {
+                QuerySolution soln = results.nextSolution();
+                String entityUri = soln.getResource("s").getURI();
+                assertTrue(expectedEntityURIs.contains(entityUri));
+                float score = soln.getLiteral("score").getFloat();
+                scores.put(entityUri, score);
+            }
+            assertEquals(expectedEntityURIs.size(), count);
+        }
+        finally {
+            dataset.end() ;
+        }
+        return scores;
+    }
+
+    public static void doTestNoResult(Dataset dataset, String label, String queryString) {
+        Query query = QueryFactory.create(queryString) ;
+        dataset.begin(ReadWrite.READ);
+        try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
+            ResultSet results = qexec.execSelect() ;
+            assertFalse(label, results.hasNext());
+        }
+        finally {
+            dataset.end() ;
+        }
+    }
+
+    protected void doUpdate(String updateString) {
+        dataset.begin(ReadWrite.WRITE);
+        UpdateRequest request = UpdateFactory.create(updateString);
+        UpdateProcessor proc = UpdateExecutionFactory.create(request, dataset);
+        proc.execute();
+        dataset.commit();
+    }
 }

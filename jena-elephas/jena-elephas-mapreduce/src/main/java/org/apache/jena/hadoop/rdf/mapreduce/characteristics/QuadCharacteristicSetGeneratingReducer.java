@@ -20,8 +20,7 @@ package org.apache.jena.hadoop.rdf.mapreduce.characteristics;
 
 import org.apache.jena.hadoop.rdf.types.NodeWritable;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
-
-import com.hp.hpl.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Quad ;
 
 /**
  * A reducer which converts quads grouped by some node into characteristic sets

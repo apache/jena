@@ -37,8 +37,7 @@ import org.apache.jena.atlas.lib.FileOps ;
  * added was known to be distinct.  This will normally only work until the first spill.  After that,
  * the system may not be able to tell for sure, and will thus return false.  When you are finished
  * adding items, you may call {@link #netIterator()} to get any distinct items that are in the
- * spill files but were not indicated as distinct previously.  This is useful for a distinct
- * operator that streams results until it exceeds the spill threshold.
+ * spill files but were not indicated as distinct previously.
  */
 public class DistinctDataNet<E> extends DistinctDataBag<E>
 {
@@ -114,7 +113,7 @@ public class DistinctDataNet<E> extends DistinctDataBag<E>
         // If we havn't spilled, then we have already indicated all distinct values via .netAdd()
         if (!spilled)
         {
-            return Iter.nullIter();
+            return Iter.nullIterator();
         }
         
         Iterator<E> blacklist;

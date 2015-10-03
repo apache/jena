@@ -28,8 +28,7 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.atlas.web.TypedOutputStream ;
 import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.riot.* ;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 
 /**
  * Servlet for operations directly on a dataset - REST(ish) behaviour on the

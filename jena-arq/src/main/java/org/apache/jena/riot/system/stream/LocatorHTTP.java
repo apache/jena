@@ -24,6 +24,7 @@ import org.apache.jena.riot.web.HttpOp ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+/** Support for resources using the "http:" and "https" schemes */
 public class LocatorHTTP extends LocatorURL {
     private static Logger         log         = LoggerFactory.getLogger(LocatorHTTP.class) ;
     private static final String[] schemeNames = {"http", "https"} ;
@@ -38,7 +39,7 @@ public class LocatorHTTP extends LocatorURL {
     @Override
     public TypedInputStream performOpen(String uri) {
         if ( uri.startsWith("http://") || uri.startsWith("https://") )
-            return HttpOp.execHttpGet(uri, WebContent.defaultGraphAcceptHeader) ;
+            return HttpOp.execHttpGet(uri, WebContent.defaultRDFAcceptHeader) ;
         return null ;
     }
 

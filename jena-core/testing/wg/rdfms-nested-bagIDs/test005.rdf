@@ -2,7 +2,6 @@
 <!-- 	Issue: rdfms-nested-bagIDs
         Test:  5
         Author: Jeremy Carroll, HP
-        $Header: /home/afs/SourceForge/Jena-CVS/jena2/testing/wg/rdfms-nested-bagIDs/test005.rdf,v 1.2 2005-08-04 09:53:15 jeremy_carroll Exp $
 
         Two property elements showing document order rules.
         

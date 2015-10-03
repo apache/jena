@@ -1,0 +1,14 @@
+PREFIX :   <http://example.org/ns#>
+
+CONSTRUCT {
+   GRAPH ?g { :s :p :o }
+   ?s ?p ?o .
+   ?s ?p ?o .
+   GRAPH ?g { ?s ?p ?o }
+   ?s ?p ?o .
+   ?s ?p ?o
+   GRAPH ?g { ?s ?p ?o }
+   }
+WHERE
+   { GRAPH ?g { ?s ?p ?o } }
+

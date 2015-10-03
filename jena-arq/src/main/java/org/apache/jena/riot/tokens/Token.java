@@ -18,48 +18,30 @@
 
 package org.apache.jena.riot.tokens;
 
-import static org.apache.jena.atlas.lib.Chars.CH_COMMA ;
-import static org.apache.jena.atlas.lib.Chars.CH_DOT ;
-import static org.apache.jena.atlas.lib.Chars.CH_LBRACE ;
-import static org.apache.jena.atlas.lib.Chars.CH_LBRACKET ;
-import static org.apache.jena.atlas.lib.Chars.CH_LPAREN ;
-import static org.apache.jena.atlas.lib.Chars.CH_RBRACE ;
-import static org.apache.jena.atlas.lib.Chars.CH_RBRACKET ;
-import static org.apache.jena.atlas.lib.Chars.CH_RPAREN ;
-import static org.apache.jena.atlas.lib.Chars.CH_SEMICOLON ;
-import static org.apache.jena.atlas.lib.Lib.equal ;
+import static org.apache.jena.atlas.lib.Chars.* ;
 import static org.apache.jena.atlas.lib.Lib.hashCodeObject ;
-import static org.apache.jena.riot.tokens.TokenType.BNODE ;
-import static org.apache.jena.riot.tokens.TokenType.DECIMAL ;
-import static org.apache.jena.riot.tokens.TokenType.DOUBLE ;
-import static org.apache.jena.riot.tokens.TokenType.INTEGER ;
-import static org.apache.jena.riot.tokens.TokenType.IRI ;
-import static org.apache.jena.riot.tokens.TokenType.LITERAL_DT ;
-import static org.apache.jena.riot.tokens.TokenType.LITERAL_LANG ;
-import static org.apache.jena.riot.tokens.TokenType.STRING ;
-import static org.apache.jena.riot.tokens.TokenType.VAR ;
+import static org.apache.jena.riot.tokens.TokenType.* ;
 
 import java.util.ArrayList ;
 import java.util.List ;
+import java.util.Objects ;
 
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.datatypes.TypeMapper ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.Prologue ;
-
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.datatypes.TypeMapper ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.graph.NodeConst ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.sparql.util.NodeUtils ;
-import com.hp.hpl.jena.vocabulary.XSD ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.graph.NodeConst ;
+import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.sparql.util.NodeUtils ;
+import org.apache.jena.vocabulary.XSD ;
 
 public final class Token
 {
@@ -429,7 +411,7 @@ public final class Token
         switch(tokenType)
         {
             // Assumes that bnode labels have been sorted out already.
-            case BNODE : return NodeFactory.createAnon(new AnonId(tokenImage)) ;
+            case BNODE : return NodeFactory.createBlankNode(tokenImage) ;
             case IRI :
                 // RiotLib.createIRIorBNode(tokenImage) includes processing <_:label>
                 return NodeFactory.createURI(tokenImage) ; 
@@ -499,10 +481,10 @@ public final class Token
     {
         if ( ! ( other instanceof Token ) ) return false ;
         Token t = (Token)other ;
-        return  equal(tokenType, t.tokenType) &&
-                equal(tokenImage, t.tokenImage) &&
-                equal(tokenImage2, t.tokenImage2) &&
-                equal(cntrlCode, t.cntrlCode) ;
+        return  Objects.equals(tokenType, t.tokenType) &&
+        		Objects.equals(tokenImage, t.tokenImage) &&
+        		Objects.equals(tokenImage2, t.tokenImage2) &&
+        		Objects.equals(cntrlCode, t.cntrlCode) ;
     }
     
     public static Token tokenForChar(char character)

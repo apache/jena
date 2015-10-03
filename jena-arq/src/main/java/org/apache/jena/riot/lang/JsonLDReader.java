@@ -24,25 +24,28 @@ import java.io.Reader ;
 import java.util.List ;
 import java.util.Map ;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.function.Consumer ;
+
+import com.fasterxml.jackson.core.* ;
+import com.fasterxml.jackson.databind.ObjectMapper ;
+import com.github.jsonldjava.core.* ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.ReaderRIOT ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.* ;
-
-import com.github.jsonldjava.core.* ;
-import com.github.jsonldjava.utils.JsonUtils ;
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.util.FileUtils ;
 
 public class JsonLDReader implements ReaderRIOT
 {
@@ -55,33 +58,139 @@ public class JsonLDReader implements ReaderRIOT
     @Override public ParserProfile getParserProfile()                   { return parserProfile ; }
     @Override public void setParserProfile(ParserProfile parserProfile) { this.parserProfile = parserProfile ; }
     
+//    @Override
+//    public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
+//        try {
+//            Object jsonObject = JsonUtils.fromReader(reader) ;
+//            read$(jsonObject, baseURI, ct, output, context) ;
+//        }
+//        catch (JsonProcessingException ex) {    
+//            // includes JsonParseException
+//            // The Jackson JSON parser, or addition JSON-level check, throws up something.
+//            JsonLocation loc = ex.getLocation() ;
+//            errorHandler.error(ex.getOriginalMessage(), loc.getLineNr(), loc.getColumnNr()); 
+//            throw new RiotException(ex.getOriginalMessage()) ;
+//        }
+//        catch (IOException e) {
+//            errorHandler.error(e.getMessage(), -1, -1); 
+//            IO.exception(e) ;
+//        }
+//    }
+//
+//    @Override
+//    public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
+//        try {
+//            Object jsonObject = JsonUtils.fromInputStream(in) ;
+//            read$(jsonObject, baseURI, ct, output, context) ;
+//        }
+//        catch (JsonProcessingException ex) {    
+//            // includes JsonParseException
+//            // The Jackson JSON parser, or addition JSON-level check, throws up something.
+//            JsonLocation loc = ex.getLocation() ;
+//            errorHandler.error(ex.getOriginalMessage(), loc.getLineNr(), loc.getColumnNr()); 
+//            throw new RiotException(ex.getOriginalMessage()) ;
+//        }
+//        catch (IOException e) {
+//            errorHandler.error(e.getMessage(), -1, -1); 
+//            IO.exception(e) ;
+//        }
+//    }
+    
+    // This addresses jsonld-java issue #144 prior to jsonld-java release 0.6.0 in
+    // Jena code so that we get triples/quads out then there is a parse error.
+    // Even if it is fixed in jsonld-java, it would mean that no triples would
+    // be produced - all the JSON parsing is done before JSON-LD processing.
+    // Here we process the first JSON object, which causes triples to be
+    // generated then decide whether to throw a parse error. This is more in the
+    // style of other syntaxes and stream parsing.
+    //
+    // This fix is in jsonld-java itself release 0.6.0 and later.
+    // But.
+    // The fix in jsonld-java is the "readProcess" code JsonUtils.fromReader
+    // without the Consumer. It parses all the JSON, checks for trailing junk,
+    // then returns an object that is converted to RDF objects.  All bad JSON
+    // causes no triples or quads.
+    //
+    // The code here extracts the JSON object, generates RDF, then checks for
+    // trailing junk so produces triples/quads then an exception.
+    
     @Override
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        if ( parserProfile == null )
-            parserProfile = RiotLib.profile(RDFLanguages.JSONLD, baseURI, errorHandler) ;
         try {
-            Object jsonObject = JsonUtils.fromReader(reader) ;
-            read$(jsonObject, baseURI, ct, output, context) ;
+            readProcess(reader, 
+                       (jsonObject)->read$(jsonObject, baseURI, ct, output, context)) ;
+        }
+        catch (JsonProcessingException ex) {    
+            // includes JsonParseException
+            // The Jackson JSON parser, or addition JSON-level check, throws up something.
+            JsonLocation loc = ex.getLocation() ;
+            errorHandler.error(ex.getOriginalMessage(), loc.getLineNr(), loc.getColumnNr()); 
+            throw new RiotException(ex.getOriginalMessage()) ;
         }
         catch (IOException e) {
+            errorHandler.error(e.getMessage(), -1, -1); 
             IO.exception(e) ;
         }
     }
 
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        if ( parserProfile == null )
-            parserProfile = RiotLib.profile(RDFLanguages.JSONLD, baseURI, errorHandler) ;
-        try {
-            Object jsonObject = JsonUtils.fromInputStream(in) ;
-            read$(jsonObject, baseURI, ct, output, context) ;
+        Reader r = FileUtils.asBufferedUTF8(in) ;
+        read(r, baseURI, ct, output, context) ;
+    }
+
+    // From JsonUtils.fromReader in the jsonld-java codebase.
+    // Note that jsonld-java always uses a reader.
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+    private static final JsonFactory JSON_FACTORY = new JsonFactory(JSON_MAPPER);
+    
+    /** Read a JSON object from the reader, acall the prcoessing function, then
+     * check for trailing content. For Jena, this means tripes/quads are generated
+     * from a valid JSON object, then there is a  parse error for trailing junk.   
+     * @param reader
+     * @param function
+     * @throws IOException
+     */
+    private static void readProcess(Reader reader, Consumer<Object> function) throws IOException {
+        final JsonParser jp = JSON_FACTORY.createParser(reader);
+        Object rval ;
+        final JsonToken initialToken = jp.nextToken();
+
+        if (initialToken == JsonToken.START_ARRAY) {
+            rval = jp.readValueAs(List.class);
+        } else if (initialToken == JsonToken.START_OBJECT) {
+            rval = jp.readValueAs(Map.class);
+        } else if (initialToken == JsonToken.VALUE_STRING) {
+            rval = jp.readValueAs(String.class);
+        } else if (initialToken == JsonToken.VALUE_FALSE || initialToken == JsonToken.VALUE_TRUE) {
+            rval = jp.readValueAs(Boolean.class);
+        } else if (initialToken == JsonToken.VALUE_NUMBER_FLOAT
+                || initialToken == JsonToken.VALUE_NUMBER_INT) {
+            rval = jp.readValueAs(Number.class);
+        } else if (initialToken == JsonToken.VALUE_NULL) {
+            rval = null;
+        } else {
+            throw new JsonParseException("document doesn't start with a valid json element : "
+                    + initialToken, jp.getCurrentLocation());
         }
-        catch (IOException e) {
-            IO.exception(e) ;
+        
+        function.accept(rval);
+        
+        JsonToken t ;
+        try { t = jp.nextToken(); }
+        catch (JsonParseException ex) {
+            throw new JsonParseException("Document contains more content after json-ld element - (possible mismatched {}?)",
+                                         jp.getCurrentLocation());
         }
+        if ( t != null )
+            throw new JsonParseException("Document contains possible json content after the json-ld element - (possible mismatched {}?)",
+                                             jp.getCurrentLocation());
     }
     
     private void read$(Object jsonObject, String baseURI, ContentType ct, final StreamRDF output, Context context) {
+        if ( parserProfile == null )
+            parserProfile = RiotLib.profile(RDFLanguages.JSONLD, baseURI, errorHandler) ;
+        output.start() ;
         try {       	
             JsonLdTripleCallback callback = new JsonLdTripleCallback() {
                 @Override
@@ -129,6 +238,7 @@ public class JsonLDReader implements ReaderRIOT
             errorHandler.error(e.getMessage(), -1, -1); 
             throw new RiotException(e) ;
         }
+        output.finish() ;
     }
 
     private LabelToNode  labels     = SyntaxLabels.createLabelToNode() ;
@@ -155,7 +265,7 @@ public class JsonLDReader implements ReaderRIOT
         else if ( type.equals(LITERAL) ) {
             String lang = (String)map.get("language") ;
             String datatype = (String)map.get("datatype") ;
-            if ( Lib.equal(xsdString, datatype) )
+            if ( Objects.equals(xsdString, datatype) )
                 // In RDF 1.1, simple literals and xsd:string are the same.
                 // During migration, we prefer simple literals to xsd:strings. 
                 datatype = null ;
@@ -184,5 +294,4 @@ public class JsonLDReader implements ReaderRIOT
         RDFDatatype dt = NodeFactory.getType(datatype) ;
         return NodeFactory.createLiteral(lex, dt) ;
     }
-
 }

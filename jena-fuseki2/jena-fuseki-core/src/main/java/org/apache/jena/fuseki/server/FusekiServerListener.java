@@ -23,6 +23,7 @@ import javax.servlet.ServletContextEvent ;
 import javax.servlet.ServletContextListener ;
 
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.tdb.StoreConnection ;
 
 public class FusekiServerListener implements ServletContextListener {
 
@@ -46,7 +47,13 @@ public class FusekiServerListener implements ServletContextListener {
     }
 
     @Override
-    public void contextDestroyed(ServletContextEvent sce) {}
+    public void contextDestroyed(ServletContextEvent sce) {
+//        DataAccessPointRegistry.get().forEach((key, dap) -> {
+//            ??
+//        }) ;
+        // But in flight-transactions?
+        StoreConnection.reset();
+    }
 
     public synchronized void init() {
         if ( initialized )
@@ -59,11 +66,12 @@ public class FusekiServerListener implements ServletContextListener {
                 Fuseki.serverLog.error("Failed to initialize : Server not running") ;
                 return ;
             }
-
+            // The command line code sets initialSetup. In a non-commandline startup,
+            // initialSetup is null. Set to include a possible config.ttl in the BASE area.
             if ( initialSetup == null ) {
                 initialSetup = new ServerInitialConfig() ;
                 String cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiServer.DFT_CONFIG).toAbsolutePath().toString() ;
-                initialSetup.fusekiConfigFile = cfg ;
+                initialSetup.fusekiServerConfigFile = cfg ;
             }
 
             if ( initialSetup != null ) {

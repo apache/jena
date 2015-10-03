@@ -1,0 +1,289 @@
+#!/usr/bin/env bash
+
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##     http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+
+# The environment for this sub-script is setup by "tdbloader2"
+
+function resolveLink() {
+  local NAME=$1
+
+  if [ -L "$NAME" ]; then
+    case "$OSTYPE" in
+      darwin*|bsd*)
+        # BSD style readlink behaves differently to GNU readlink
+        # Have to manually follow links
+        while [ -L "$NAME" ]; do
+          NAME=$(readlink -- "$NAME")
+        done
+        ;;
+      *)
+        # Assuming standard GNU readlink with -f for
+        # canonicalize
+        NAME=$(readlink -f -- "$NAME")
+        ;;
+    esac
+  fi
+
+  echo "$NAME"
+}
+
+# Pull in common functions
+if [ -z "$JENA_HOME" ]; then
+  echo "JENA_HOME is not set"
+  exit 1
+fi
+# If JENA_HOME is a symbolic link need to resolve
+if [ -L "${JENA_HOME}" ]; then
+  JENA_HOME=$(resolveLink "$JENA_HOME")
+  # If link is relative
+  case "$JENA_HOME" in
+    /*)
+      # Already absolute
+      ;;
+    *)
+      # Relative, make absolute
+      JENA_HOME=$(dirname "$JENA_HOME")
+      ;;
+  esac
+  export JENA_HOME
+  echo "Resolved symbolic links for JENA_HOME to $JENA_HOME"
+fi
+
+if [ -e "${JENA_HOME}/bin/tdbloader2common" ]; then
+  # Can source common functions
+  source "${JENA_HOME}/bin/tdbloader2common"
+else
+  echo "Unable to locate common functions script tdbloader2common"
+  exit 1
+fi
+
+function printUsage() {
+  cat << EOF
+tdbloader2data - TDB Bulk Loader - Data Phase
+
+Usage tdbloader2data --loc <Directory> [Options] <Data> ...
+
+Bulk Loader for TDB which generates the Node Table.  This command
+relies on POSIX utilities so will only work on POSIX operating
+systems.
+
+This command can only be used to create new database. If you wish to
+bulk load to an existing database please use tdbloader instead.
+
+Required options are as follows:
+
+  -l <DatabaseDirectory>
+  --loc <DatabaseDirectory>
+    Sets the location in which the database should be created.
+
+    This location must be a directory and must be empty, if a
+    non-existent path is specified it will be created as a new
+    directory.
+
+  <Data>
+    Specifies the path to one/more data files to load
+
+Common additional options are as follows:
+
+  -h
+  --help
+    Prints this help summary and exits
+
+Advanced additional options are as follows:
+
+  -d
+  --debug
+    Enable debug mode, adds extra debug output
+
+  -j <JvmArgs>
+  --jvm-args <JvmArgs>
+    Sets the arguments that should be passed to the JVM for the
+    JVM based portions of the build.
+
+    Generally it is best to not change these unless you have been
+    specifically advised to.  The scripts will use appropriate
+    defaults if this is not specified.
+
+    In particular be careful increasing the heap size since many
+    parts of TDB actually use memory mapped files that live
+    outside the heap so if the heap is too large the heap may
+    conflict with the memory mapped files for memory space.
+
+  -k
+  --keep-work
+    Keeps the temporary work files around after they are no longer
+    needed.  May be useful for debugging.
+
+  -t
+  --trace
+    Enable trace mode, essentially sets -x within the scripts
+
+EOF
+}
+
+# Exit on error.
+set -e
+
+# Process Arguments
+LOC=
+KEEP_WORK=0
+DEBUG=0
+
+while [ $# -gt 0 ]
+do
+  ARG=$1
+  case "$ARG" in
+    -d|--debug)
+      # Debug Mode
+      shift
+      DEBUG=1
+      ;;
+    -h|--help)
+      printUsage
+      exit 0
+      ;;
+    -j|--jvm-args)
+      # JVM Arguments
+      shift
+      JVM_ARGS="$1"
+      shift
+      ;;
+    -k|--keep-work)
+      # Keep work files
+      # This option is actually not used by this script but may be passed in
+      # by the parent tdbloader2 script
+      shift
+      KEEP_WORK=1
+      ;;
+    -l|--loc|-loc)
+      # Location space separated
+      shift
+      LOC="$1"
+      shift
+      ;;
+    -*loc=*)
+      # Location = separated
+      LOC=${ARG/-*loc=/}
+      shift
+      ;;
+    -t|--trace)
+      # Trace mode
+      shift
+      set -x
+      ;;
+    --)
+      # Arguments separator
+      # All further arguments are treated as data files
+      shift
+      break
+      ;;
+    -*)
+      # Unrecognized
+      abort 1 "Unrecognized option $ARG, if this was meant to be a data file separate options from data files with --"
+      ;;
+    *)
+      # Any further arguments are treated as data files
+      break
+      ;;
+  esac
+done
+
+# Verify arguments
+if [ -z "$LOC" ]; then
+  abort 1 "Required database location not specified"
+fi
+if [ $# = 0 ]; then
+  abort 1 "No data files specified, one/more data files must be specified"
+fi
+
+# Make LOC absolute
+ABS_LOC=$(makeAbsolute "$LOC")
+if [ "$ABS_LOC" != "$LOC" ]; then
+  LOC="$ABS_LOC"
+  debug "Absolute database location is $LOC"
+fi
+
+# Make sure LOC is a valid directory
+if [ ! -e "$LOC" ] ; then
+  # If non-existent try to create
+  debug "Trying to create new database directory: $LOC"
+  mkdir "$LOC"
+  if [ $? != 0 ]; then
+    abort 1 "Failed to create new directory: $LOC"
+  fi
+  debug "New database directory created: $LOC"
+fi
+if [ ! -d "$LOC" ]; then
+  abort 1 "Database location is not a directory: $LOC"
+fi
+
+# Look for any index and data files in the directory.
+# Skip a possible configuration file
+if test -n "$(find "$LOC" -maxdepth 1 -type f ! -name 'this.*' -print -quit)"
+then 
+    abort 1 "Database location is not empty: $LOC"
+fi
+
+# Prepare JVM Arguments
+JVM_ARGS=${JVM_ARGS:--Xmx1200M}
+debug "JVM Arguments are $JVM_ARGS"
+
+# Classpath set in "tdbloader2"
+if [ -z "$JENA_CP" ]; then
+  abort 1 "Classpath not provided : set JENA_CP"
+fi
+
+# ---- Data loading phase
+info "Data Load Phase"
+
+# Prepare Files
+FILES=()
+F=0
+while [ $# -gt 0 ]; do
+  FILE=$1
+  shift
+
+  ABS_FILE=$(makeAbsolute "$FILE")
+  if [ "$FILE" != "$ABS_FILE" ]; then
+    # Relative path was resolved
+    FILES[$F]="$ABS_FILE"
+    debug "Relative data file $FILE was resolved to absolute data file $ABS_FILE"
+  else
+    # Already absolute
+    FILES[$F]="$FILE"
+  fi
+
+  F=$(($F + 1))
+done
+info "Got ${#FILES[@]} data files to load"
+F=1
+for file in ${FILES[@]}; do
+  info "Data file $F: $file"
+  F=$(($F + 1))
+done
+
+# Produce nodes file and triples/quads text file.
+DATA_TRIPLES="$LOC/data-triples.tmp"
+DATA_QUADS="$LOC/data-quads.tmp"
+
+debug "Triples text files is $DATA_TRIPLES"
+debug "Quads text file is $DATA_QUADS"
+
+java $JVM_ARGS -cp "$JENA_CP" "$PKG".CmdNodeTableBuilder \
+    "--loc=$LOC" "--triples=$DATA_TRIPLES" "--quads=$DATA_QUADS" -- "${FILES[@]}"
+
+info "Data Load Phase Completed"

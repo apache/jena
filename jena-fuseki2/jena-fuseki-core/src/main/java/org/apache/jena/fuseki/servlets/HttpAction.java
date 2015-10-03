@@ -18,8 +18,8 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import static com.hp.hpl.jena.query.ReadWrite.READ ;
-import static com.hp.hpl.jena.query.ReadWrite.WRITE ;
+import static org.apache.jena.query.ReadWrite.READ ;
+import static org.apache.jena.query.ReadWrite.WRITE ;
 
 import java.util.HashMap ;
 import java.util.Map ;
@@ -31,14 +31,13 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.server.* ;
+import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.SystemARQ ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphWithLock ;
+import org.apache.jena.sparql.core.DatasetGraphWrapper ;
+import org.apache.jena.sparql.core.Transactional ;
 import org.slf4j.Logger ;
-
-import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphWithLock ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
-import com.hp.hpl.jena.sparql.core.Transactional ;
 
 /**
  * HTTP action that represents the user request lifecycle. Its state is handled in the
@@ -138,28 +137,64 @@ public class HttpAction
         if ( dService == null || dService.getDataset() == null )
             // Null does not happens for service requests, (it does for admin requests - call setControlRequest) 
             throw new FusekiException("Null DataService in the request action") ;
-        
-        this.dsg = dService.getDataset() ;
+        setDataset(dService.getDataset()) ;
+    }
+    
+    /** Minimum initialization using just a dataset.
+     * <p>
+     * the HTTP Action will change its transactional state and
+     * {@link Transactional} instance according to its base dataset graph.
+     * </p>
+     * <p>There is no associated DataAccessPoint or DataService set by this operation.</p>
+     *  
+     * @param dsg DatasetGraph
+     */
+    private void setDataset(DatasetGraph dsg) {
+        this.dsg = dsg ;
+        if ( dsg == null )
+            return ;
         DatasetGraph basedsg = unwrap(dsg) ;
 
-        if ( isTransactional(basedsg) && isTransactional(dsg) ) {
+        if ( isTransactional(dsg) ) {
             // Use transactional if it looks safe - abort is necessary.
+            // It is the responsibility of dsg to manage the basedsg
+            // if the basedsg is not transactional.
             transactional = (Transactional)dsg ;
             isTransactional = true ;
+        } else if ( isTransactional(basedsg) ) {
+            transactional = (Transactional)basedsg ;
+            // Intermediates may be stateful so there is no real abort. 
+            isTransactional = false ;
         } else {
-            // Unsure if safesetControlRef
             transactional = new DatasetGraphWithLock(dsg) ;
             // No real abort.
             isTransactional = false ;
         }
     }
     
+    /** Return the dataset, if any (may be null) */
+    public DatasetGraph getDataset() {
+        return dsg ;
+    }
+
     public void setControlRequest(DataAccessPoint dataAccessPoint, String datasetUri) {
         this.dataAccessPoint = dataAccessPoint ;
         this.dataService = null ;
+        if ( dataAccessPoint != null )
+            this.dataService = dataAccessPoint.getDataService() ;
         this.datasetName = datasetUri ;
+        if ( dataService != null )
+            setDataset(dataAccessPoint.getDataService().getDataset()) ; 
     }
     
+    /**
+     * Return the "Transactional" for this HttpAction.
+     */
+    
+    public Transactional getTransactional() {
+        return transactional ;
+    }
+
     /**
      * Returns <code>true</code> iff the given {@link DatasetGraph} is an instance of {@link Transactional},
      * <code>false otherwise</code>.
@@ -363,6 +398,8 @@ public class HttpAction
         finishTimeIsSet = true ;
         this.finishTime = System.nanoTime() ;
     }
+
+    public String getMethod()                           { return request.getMethod() ; }
 
     public HttpServletRequest getRequest()              { return request ; }
 

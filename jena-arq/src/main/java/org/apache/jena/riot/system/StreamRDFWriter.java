@@ -26,6 +26,8 @@ import java.util.Map ;
 
 import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.thrift.BinRDF ;
@@ -33,11 +35,8 @@ import org.apache.jena.riot.writer.StreamWriterTriX ;
 import org.apache.jena.riot.writer.WriterStreamRDFBlocks ;
 import org.apache.jena.riot.writer.WriterStreamRDFFlat ;
 import org.apache.jena.riot.writer.WriterStreamRDFPlain ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Quad ;
 
 /** Write RDF in a streaming fashion.
  *  {@link RDFDataMgr} operations do not provide this guaranttee.

@@ -19,19 +19,22 @@
 package jena;
 
 
-import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
+import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.reasoner.Reasoner;
-import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.reasoner.rulesys.builtins.BaseBuiltin;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.FileUtils;
-
-import jena.cmdline.*;
 import java.util.*;
 import java.io.*;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.jena.graph.* ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.reasoner.Reasoner ;
+import org.apache.jena.reasoner.rulesys.* ;
+import org.apache.jena.reasoner.rulesys.builtins.BaseBuiltin ;
+import org.apache.jena.util.FileManager ;
+import org.apache.jena.util.FileUtils ;
 
 /**
  * General command line utility to process one RDF file into another
@@ -50,7 +53,7 @@ import java.io.*;
  * </p>
  */
 public class RuleMap {
-    static { setLog4jConfiguration() ; }
+    static { setCmdLogging() ; }
     
     /**
      * Load a set of rule definitions including processing of
@@ -137,22 +140,19 @@ public class RuleMap {
     	try {
 
             // Parse the command line
-            CommandLine cl = new CommandLine();
             String usage = "Usage:  RuleMap [-il inlang] [-ol outlang] [-d] rulefile infile (- for stdin)"; 
-            cl.setUsage(usage);
-            cl.add("il", true);
-            cl.add("ol", true);
-            cl.add("d", false);
-            cl.process(args);
-            if (cl.numItems() != 2) {
+            final CommandLineParser parser = new DefaultParser();
+			Options options = new Options().addOption("il", "inputLang", true, "input language")
+					.addOption("ol", "outputLang", true, "output language").addOption("d", "Deductions only?");
+			CommandLine cl = parser.parse(options, args);
+			final List<String> filenameArgs = cl.getArgList();
+            if (filenameArgs.size() != 2) {
                 System.err.println(usage);
                 System.exit(1);
             }
             
-            // Load the input data
-            Arg il = cl.getArg("il");
-            String inLang = (il == null) ? null : il.getValue();
-            String fname = cl.getItem(1);
+            String inLang = cl.getOptionValue("inputLang");
+            String fname = filenameArgs.get(1);
             Model inModel = null;
             if (fname.equals("-")) {
                 inModel = ModelFactory.createDefaultModel();
@@ -161,17 +161,14 @@ public class RuleMap {
                 inModel = FileManager.get().loadModel(fname, inLang);
             }
             
-            // Determine the type of the output
-            Arg ol = cl.getArg("ol");
-            String outLang =  (ol == null) ? "N3" : ol.getValue();
+            String outLang = cl.hasOption("outputLang") ? cl.getOptionValue("outputLang") : "N3";            
             
-            Arg d = cl.getArg("d");
-            boolean deductionsOnly = (d != null);
+            boolean deductionsOnly = cl.hasOption('d');
             
             // Fetch the rule set and create the reasoner
             BuiltinRegistry.theRegistry.register(new Deduce());
             Map<String, String> prefixes = new HashMap<>();
-            List<Rule> rules = loadRules(cl.getItem(0), prefixes);
+            List<Rule> rules = loadRules(filenameArgs.get(0), prefixes);
             Reasoner reasoner = new GenericRuleReasoner(rules);
             
             // Process

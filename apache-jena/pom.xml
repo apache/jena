@@ -29,7 +29,7 @@
   <packaging>pom</packaging>
   <name>Apache Jena - Distribution</name>
   <url>http://jena.apache.org/</url>
-  <version>2.13.0-SNAPSHOT</version>
+  <version>3.0.1-SNAPSHOT</version>
   <description>
     Apache Jena is a API and toolkit for working with semantic web technologies such as RDF and SPARQL using Java.  This artifact represents the source and binary distribution packages generated for releases.
   </description>
@@ -37,9 +37,9 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>12-SNAPSHOT</version>
+    <version>15-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
-  </parent> 
+  </parent>
 
   <organization>
     <name>Apache Jena</name>
@@ -60,74 +60,61 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.13.0-SNAPSHOT</version>
+      <version>3.0.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.13.0-SNAPSHOT</version>
+      <version>3.0.1-SNAPSHOT</version>
       <classifier>sources</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.13.0-SNAPSHOT</version>
+      <version>3.0.1-SNAPSHOT</version>
       <classifier>javadoc</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.13.0-SNAPSHOT</version>
+      <version>3.0.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.13.0-SNAPSHOT</version>
+      <version>3.0.1-SNAPSHOT</version>
       <classifier>sources</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.13.0-SNAPSHOT</version>
+      <version>3.0.1-SNAPSHOT</version>
       <classifier>javadoc</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>3.0.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>3.0.1-SNAPSHOT</version>
       <classifier>sources</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>3.0.1-SNAPSHOT</version>
       <classifier>javadoc</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-iri</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-iri</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
-      <classifier>sources</classifier>
     </dependency>
 
   </dependencies>
@@ -136,23 +123,62 @@
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-	<configuration>
-	  <tarLongFileMode>gnu</tarLongFileMode>    
-	</configuration>
-	<executions>
-	  <execution>
-	    <id>create-jena-download</id>
-	    <phase>package</phase>
-	    <goals><goal>single</goal></goals>
-	    <configuration>
-	      <appendAssemblyId>false</appendAssemblyId>
-	      <descriptors>
-		<descriptor>assembly-jena-zip.xml</descriptor>
-	      </descriptors>
-	      <tarLongFileFormat>gnu</tarLongFileFormat>
-	    </configuration>
-	  </execution>
-	</executions>
+        <configuration>
+          <tarLongFileMode>gnu</tarLongFileMode>
+        </configuration>
+        <executions>
+          <execution>
+            <id>create-jena-download</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <appendAssemblyId>false</appendAssemblyId>
+              <descriptors>
+                <descriptor>assembly-jena-zip.xml</descriptor>
+              </descriptors>
+              <tarLongFileFormat>gnu</tarLongFileFormat>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <!-- 
+      Use the dependencies plugin to copy the dependencies into the lib/ directory which makes the scripts work in dev enivronments 
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-libs-for-scripts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <includeScope>runtime</includeScope>
+              <includeTypes>jar</includeTypes>
+              <outputDirectory>lib/</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- 
+      As we copy dependencies into lib/ to make scripts work in dev environments we also need to clean up that directory
+      -->
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>lib/</directory>
+            </fileset>
+          </filesets>
+        </configuration>
       </plugin>
     </plugins>
   </build>

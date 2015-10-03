@@ -17,7 +17,6 @@
  */
 package org.apache.jena.hadoop.rdf.io.registry.writers;
 
-import java.io.IOException;
 import java.io.Writer;
 
 import org.apache.hadoop.conf.Configuration;
@@ -38,14 +37,12 @@ public class JsonLDWriterFactory extends AbstractWriterFactory {
     }
 
     @Override
-    public <TKey> RecordWriter<TKey, QuadWritable> createQuadWriter(Writer writer, Configuration config)
-            throws IOException {
+    public <TKey> RecordWriter<TKey, QuadWritable> createQuadWriter(Writer writer, Configuration config) {
         return new JsonLDQuadWriter<>(writer);
     }
 
     @Override
-    public <TKey> RecordWriter<TKey, TripleWritable> createTripleWriter(Writer writer, Configuration config)
-            throws IOException {
+    public <TKey> RecordWriter<TKey, TripleWritable> createTripleWriter(Writer writer, Configuration config) {
         return new JsonLDTripleWriter<>(writer);
     }
 

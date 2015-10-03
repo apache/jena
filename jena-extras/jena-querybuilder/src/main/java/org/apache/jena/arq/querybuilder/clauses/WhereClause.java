@@ -20,10 +20,10 @@ package org.apache.jena.arq.querybuilder.clauses;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
-
-import com.hp.hpl.jena.graph.FrontsTriple;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.lang.sparql_11.ParseException;
+import org.apache.jena.graph.FrontsTriple ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 
 /**
  * Interface that defines the WhereClause as per
@@ -68,7 +68,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	public T addWhere(Object s, Object p, Object o);
 
 	/**
-	 * Adds an optional triple as to the where clause.
+	 * Adds an optional triple to the where clause.
 	 * 
 	 * @param t
 	 *            The triple to add
@@ -99,6 +99,15 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * @return The Builder for chaining.
 	 */
 	public T addOptional(Object s, Object p, Object o);
+	
+	/**
+	 * Adds an optional group pattern to the where clause.
+	 * 
+	 * @param t
+	 *            The select builder to add as a group pattern
+	 * @return The Builder for chaining.
+	 */
+	public T addOptional(SelectBuilder t);
 
 	/**
 	 * Adds a filter to the where clause
@@ -143,7 +152,26 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * @return This builder for chaining.
 	 */
 	public T addGraph(Object graph, SelectBuilder subQuery);
+	
+	/**
+	 * Add a bind statement to the query
+	 * * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rGraphGraphPattern.
+	 * @param expression The expression to bind to the var.
+	 * @param var The variable to bind to.
+	 * @return This builder for chaining.
+	 */
+	public T addBind( Expr expression, Object var);
 
+	/**
+	 * Add a bind statement to the query
+	 * * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rGraphGraphPattern.
+	 * @param expression The expression to bind to the var.
+	 * @param var The variable to bind to.
+	 * @return This builder for chaining.
+	 * @throws ParseException 
+	 */
+	public T addBind( String expression, Object var) throws ParseException;
+	
 	/**
 	 * Get the Where handler for this clause.
 	 * @return The WhereHandler used by this clause.

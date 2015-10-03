@@ -18,15 +18,6 @@
 
 package org.apache.jena.riot;
 
-import static org.apache.jena.riot.RDFLanguages.CSV ;
-import static org.apache.jena.riot.RDFLanguages.JSONLD ;
-import static org.apache.jena.riot.RDFLanguages.N3 ;
-import static org.apache.jena.riot.RDFLanguages.NQUADS ;
-import static org.apache.jena.riot.RDFLanguages.NTRIPLES ;
-import static org.apache.jena.riot.RDFLanguages.RDFJSON ;
-import static org.apache.jena.riot.RDFLanguages.RDFXML ;
-import static org.apache.jena.riot.RDFLanguages.THRIFT ;
-import static org.apache.jena.riot.RDFLanguages.TRIG ;
 import static org.apache.jena.riot.RDFLanguages.* ;
 
 import java.io.InputStream ;
@@ -40,13 +31,13 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.lang.JsonLDReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.ReaderTriX ;
+import org.apache.jena.riot.lang.RiotParsers ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.thrift.BinRDF ;
-
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Context ;
 
 /** The registry of languages and parsers.
  * To register a new parser:
@@ -177,7 +168,7 @@ public class RDFParserRegistry
         @Override
         public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
             @SuppressWarnings("deprecation")
-            LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
+            LangRIOT parser = RiotParsers.createParser(in, lang, baseURI, output) ;
             if ( parserProfile != null )
                 parser.setProfile(parserProfile);
             if ( errorHandler != null )
@@ -188,7 +179,7 @@ public class RDFParserRegistry
         @Override
         public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
             @SuppressWarnings("deprecation")
-            LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
+            LangRIOT parser = RiotParsers.createParser(in, lang, baseURI, output) ;
             parser.getProfile().setHandler(errorHandler) ; 
             parser.parse() ;
         }
@@ -197,7 +188,10 @@ public class RDFParserRegistry
         @Override public void setErrorHandler(ErrorHandler errorHandler)    { this.errorHandler = errorHandler ; }
 
         @Override public ParserProfile getParserProfile()                   { return parserProfile ; } 
-        @Override public void setParserProfile(ParserProfile parserProfile) { this.parserProfile = parserProfile ; }
+        @Override public void setParserProfile(ParserProfile parserProfile) { 
+            this.parserProfile = parserProfile ;
+            this.errorHandler = parserProfile.getHandler() ;
+        }
     }
 
     private static class ReaderRIOTFactoryJSONLD implements ReaderRIOTFactory {

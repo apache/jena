@@ -54,27 +54,24 @@ public class AcceptList
      * @param acceptItems
      */
     
-    public static AcceptList create(MediaType...acceptItems)
-    { 
-        AcceptList accepList = new AcceptList() ;
+    public static AcceptList create(MediaType... acceptItems) {
+        AcceptList accepList = new AcceptList();
         for ( MediaType mtype : acceptItems )
-            accepList.ranges.add(new MediaRange(mtype)) ;
-        return accepList ;
-    }        
+            accepList.ranges.add(new MediaRange(mtype));
+        return accepList;
+    }
 
     /**
      * Create a list of accept items from strings.
      * @param acceptStrings
      */
     
-    public static AcceptList create(String... acceptStrings)
-    {
-        AcceptList accepList = new AcceptList() ;
-        for ( String acceptString : acceptStrings )
-        {
-            accepList.ranges.add( new MediaRange( acceptString ) );
+    public static AcceptList create(String... acceptStrings) {
+        AcceptList accepList = new AcceptList();
+        for ( String acceptString : acceptStrings ) {
+            accepList.ranges.add(new MediaRange(acceptString));
         }
-        return accepList ;
+        return accepList;
     }
     
     /**
@@ -82,26 +79,23 @@ public class AcceptList
      * @param headerString
      */
     
-    public AcceptList(String headerString)
-    {
+    public AcceptList(String headerString) {
         try {
-            ranges = stringToAcceptList(headerString) ;
-        } catch (Exception ex)
-        {
-            ex.printStackTrace(System.err) ;
-            Log.warn(this, "Unrecognized accept string (ignored): "+headerString) ;
-            ranges = new ArrayList<>() ;
+            ranges = stringToAcceptList(headerString);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace(System.err);
+            Log.warn(this, "Unrecognized accept string (ignored): " + headerString);
+            ranges = new ArrayList<>();
         }
     }
-    
-    private /*public*/ boolean accepts(MediaRange aItem)
-    {
-        return match(aItem) != null ;
+
+    private /* public */ boolean accepts(MediaRange aItem) {
+        return match(aItem) != null;
     }
     
-    private List<MediaRange> entries()
-    {
-        return Collections.unmodifiableList(ranges) ;
+    public List<MediaRange> entries() {
+        return Collections.unmodifiableList(ranges);
     }
 
     private final static MediaRangeCompare comparator = new MediaRangeCompare() ;
@@ -119,11 +113,9 @@ public class AcceptList
         double weight = -1 ;
         int exact = -1 ;
         
-        for ( MediaRange acceptItem : ranges )
-        {
-            if ( acceptItem.accepts(offer) )
-            {
-                boolean newChoice = false; 
+        for ( MediaRange acceptItem : ranges ) {
+            if ( acceptItem.accepts(offer) ) {
+                boolean newChoice = false;
                 if ( choice == null ) 
                     // First possibility.
                     newChoice = true ;
@@ -134,12 +126,11 @@ public class AcceptList
                     // New possibility has same weight but better exactness.
                     newChoice = true ;
                 
-                if ( newChoice )
-                {
-                    choice = acceptItem ;
-                    weight = acceptItem.get_q() ;
-                    exact = acceptItem.subweight() ;
-                    continue ;
+                if ( newChoice ) {
+                    choice = acceptItem;
+                    weight = acceptItem.get_q();
+                    exact = acceptItem.subweight();
+                    continue;
                 }
                 //if ( weight == acceptItem.get_q() && !exact &&  
             }
@@ -157,19 +148,17 @@ public class AcceptList
      * @return MediaType
      */
     
-    static public MediaType match(AcceptList proposalList, AcceptList offerList)
-    {
-        MediaRange cause = null ;
+    static public MediaType match(AcceptList proposalList, AcceptList offerList) {
+        MediaRange cause = null;
         MediaRange choice = null ;  // From the proposalList
         double weight = -1 ;
         int exactness = -1 ;
 
-        for ( MediaRange offer : offerList.entries() )
-        {
-            MediaRange m = proposalList.match(offer) ;
+        for ( MediaRange offer : offerList.entries() ) {
+            MediaRange m = proposalList.match(offer);
             if ( m == null )
-                continue ;
-            boolean newChoice = false ;
+                continue;
+            boolean newChoice = false;
             
             if ( choice == null )
                 newChoice = true ;
@@ -185,51 +174,43 @@ public class AcceptList
             }
         }
         
-        
         if ( choice == null )
             return null ;
         return new MediaType(choice);
     }
     
-    public MediaRange first()
-    {
-        MediaRange choice = null ;
-        for ( MediaRange acceptItem : ranges )
-        {
+    public MediaRange first() {
+        MediaRange choice = null;
+        for ( MediaRange acceptItem : ranges ) {
             if ( choice != null && choice.get_q() >= acceptItem.get_q() )
-                continue ;
-            choice = acceptItem ;
+                continue;
+            choice = acceptItem;
         }
-        return choice ;
+        return choice;
     }
-    
+
     @Override
     public String toString() { return ranges.toString() ; }
     
-    private static List<MediaRange> stringToAcceptList(String s)
-    {
-        List<MediaRange> ranges = new ArrayList<>() ;
+    private static List<MediaRange> stringToAcceptList(String s) {
+        List<MediaRange> ranges = new ArrayList<>();
         if ( s == null )
-            return ranges ;
+            return ranges;
 
-        String[] x = s.split(",") ;
-        for ( String aX : x )
-        {
-            if ( aX.equals( "" ) )
-            {
+        String[] x = s.split(",");
+        for ( String aX : x ) {
+            if ( aX.equals("") ) {
                 continue;
             }
-            MediaRange mType = new MediaRange( aX );
-            ranges.add( mType );
+            MediaRange mType = new MediaRange(aX);
+            ranges.add(mType);
         }
-        return ranges ;
+        return ranges;
     }
     
-    private static class MediaRangeCompare implements Comparator<MediaRange>
-    {
+    private static class MediaRangeCompare implements Comparator<MediaRange> {
         @Override
-        public int compare(MediaRange mType1, MediaRange mType2)
-        {
+        public int compare(MediaRange mType1, MediaRange mType2) {
             int r = Double.compare(mType1.get_q(), mType2.get_q()) ;
             
             if ( r == 0 )
@@ -238,8 +219,7 @@ public class AcceptList
             if ( r == 0 )
                 r = subCompare(mType1.getSubType(), mType2.getSubType()) ;
             
-//            if ( r == 0 )
-//            {
+//            if ( r == 0 ) {
 //                // This reverses the input order so that the rightmost elements is the
 //                // greatest and hence is the first mentioned in the accept range.
 //                
@@ -254,19 +234,18 @@ public class AcceptList
             return r ;
         }
         
-        public int subCompare(String a, String b)
-        {
+        public int subCompare(String a, String b) {
             if ( a == null )
-                return 1 ;
+                return 1;
             if ( b == null )
-                return -1 ;
+                return -1;
             if ( a.equals("*") && b.equals("*") )
-                return 0 ;
+                return 0;
             if ( a.equals("*") )
-                return -1 ;
+                return -1;
             if ( b.equals("*") )
-                return 1 ;
-            return 0 ;
+                return 1;
+            return 0;
         }
     }
 }

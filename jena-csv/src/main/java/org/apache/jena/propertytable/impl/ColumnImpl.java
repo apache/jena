@@ -21,10 +21,9 @@ package org.apache.jena.propertytable.impl;
 
 import java.util.List;
 
+import org.apache.jena.graph.Node ;
 import org.apache.jena.propertytable.Column;
 import org.apache.jena.propertytable.PropertyTable;
-
-import com.hp.hpl.jena.graph.Node;
 
 /**
  * The simple implementation of Column

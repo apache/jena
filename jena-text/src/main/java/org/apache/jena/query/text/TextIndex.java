@@ -22,8 +22,7 @@ import java.util.List ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.lib.Closeable ;
-
-import com.hp.hpl.jena.graph.Node ;
+import org.apache.jena.graph.Node ;
 
 /** TextIndex abstraction */ 
 public interface TextIndex extends Closeable //, Transactional 
@@ -36,19 +35,20 @@ public interface TextIndex extends Closeable //, Transactional
     
     // Update operations
     void addEntity(Entity entity) ;
+    void updateEntity(Entity entity) ;
+    void deleteEntity(Entity entity) ;
     
     
     // read operations
     /** Get all entries for uri */
     Map<String, Node> get(String uri) ;
 
-    //** score
-    // Need to have more complex results.
+    /** Access the index - limit if -1 for as many as possible 
+     * Throw QueryParseException for syntax errors in the query string.
+     */ 
+    List<TextHit> query(Node property, String qs, int limit) ;
     
-    /** Access the index - limit if -1 for as many as possible */ 
-    List<Node> query(String qs, int limit) ;
-    
-    List<Node> query(String qs) ;
+    List<TextHit> query(Node property, String qs) ;
 
     EntityDefinition getDocDef() ;
 }

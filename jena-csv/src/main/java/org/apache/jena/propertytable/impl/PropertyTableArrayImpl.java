@@ -26,14 +26,13 @@ import java.util.Map;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.iterator.IteratorConcat;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.propertytable.Column;
 import org.apache.jena.propertytable.PropertyTable;
 import org.apache.jena.propertytable.Row;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
+import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.util.iterator.WrappedIterator ;
 
 /**
  * A PropertyTable Implementation using a two dimension array.

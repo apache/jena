@@ -20,12 +20,10 @@ package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
 
-import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.PrintWriter ;
 import java.util.zip.GZIPInputStream ;
 
-import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -36,6 +34,8 @@ import org.apache.commons.fileupload.util.Streams ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
@@ -44,13 +44,10 @@ import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.web.HttpNames ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.web.HttpSC ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 
 public class SPARQL_Upload extends ActionSPARQL 
 {
@@ -60,24 +57,19 @@ public class SPARQL_Upload extends ActionSPARQL
 
     // Methods to respond to.
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException
-    {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         doCommon(request, response) ;
     }
-    
+
     @Override
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
-    {
-        setCommonHeaders(response);
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) {
         setCommonHeadersForOptions(response) ;
-        response.setHeader(HttpNames.hAllow, "OPTIONS,POST");
+        response.setHeader(HttpNames.hAllow, "OPTIONS,POST") ;
         response.setHeader(HttpNames.hContentLengh, "0") ;
     }
     
     @Override
-    protected void perform(HttpAction action)
-    {
+    protected void perform(HttpAction action) {
         // Only allows one file in the upload.
         boolean isMultipart = ServletFileUpload.isMultipartContent(action.request);
         if ( ! isMultipart )
@@ -111,10 +103,9 @@ public class SPARQL_Upload extends ActionSPARQL
         }
         catch (Exception ex) { ServletOps.errorOccurred(ex) ; }
     }
-    
+
     // Also used by SPARQL_REST
-    static public long upload(HttpAction action, String base)
-    {
+    static public long upload(HttpAction action, String base) {
         if ( action.isTransactional() )
             return uploadTxn(action, base) ;
         else
@@ -190,59 +181,53 @@ public class SPARQL_Upload extends ActionSPARQL
     
     // ?? Combine with Upload.fileUploadWorker
     // Difference is the handling of names for graphs.  
-    static private UploadDetails uploadWorker(HttpAction action, String base)
-    {
+    static private UploadDetails uploadWorker(HttpAction action, String base) {
         DatasetGraph dsgTmp = DatasetGraphFactory.createMem() ;
-        ServletFileUpload upload = new ServletFileUpload();
+        ServletFileUpload upload = new ServletFileUpload() ;
         String graphName = null ;
         boolean isQuads = false ;
         long count = -1 ;
-        
-        String name = null ;  
+
+        String name = null ;
         ContentType ct = null ;
         Lang lang = null ;
 
         try {
-            FileItemIterator iter = upload.getItemIterator(action.request);
+            FileItemIterator iter = upload.getItemIterator(action.request) ;
             while (iter.hasNext()) {
-                FileItemStream item = iter.next();
-                String fieldName = item.getFieldName();
-                InputStream stream = item.openStream();
-                if (item.isFormField())
-                {
+                FileItemStream item = iter.next() ;
+                String fieldName = item.getFieldName() ;
+                InputStream stream = item.openStream() ;
+                if ( item.isFormField() ) {
                     // Graph name.
                     String value = Streams.asString(stream, "UTF-8") ;
-                    if ( fieldName.equals(HttpNames.paramGraph) )
-                    {
+                    if ( fieldName.equals(HttpNames.paramGraph) ) {
                         graphName = value ;
-                        if ( graphName != null && ! graphName.equals("") && ! graphName.equals(HttpNames.valueDefault) )
-                        {
+                        if ( graphName != null && !graphName.equals("") && !graphName.equals(HttpNames.valueDefault) ) {
                             IRI iri = IRIResolver.parseIRI(value) ;
                             if ( iri.hasViolation(false) )
-                                ServletOps.errorBadRequest("Bad IRI: "+graphName) ;
+                                ServletOps.errorBadRequest("Bad IRI: " + graphName) ;
                             if ( iri.getScheme() == null )
-                                ServletOps.errorBadRequest("Bad IRI: no IRI scheme name: "+graphName) ;
-                            if ( iri.getScheme().equalsIgnoreCase("http") || iri.getScheme().equalsIgnoreCase("https")) 
-                            {
+                                ServletOps.errorBadRequest("Bad IRI: no IRI scheme name: " + graphName) ;
+                            if ( iri.getScheme().equalsIgnoreCase("http") || iri.getScheme().equalsIgnoreCase("https") ) {
                                 // Redundant??
-                                if ( iri.getRawHost() == null ) 
-                                    ServletOps.errorBadRequest("Bad IRI: no host name: "+graphName) ;
+                                if ( iri.getRawHost() == null )
+                                    ServletOps.errorBadRequest("Bad IRI: no host name: " + graphName) ;
                                 if ( iri.getRawPath() == null || iri.getRawPath().length() == 0 )
-                                    ServletOps.errorBadRequest("Bad IRI: no path: "+graphName) ;
+                                    ServletOps.errorBadRequest("Bad IRI: no path: " + graphName) ;
                                 if ( iri.getRawPath().charAt(0) != '/' )
-                                    ServletOps.errorBadRequest("Bad IRI: Path does not start '/': "+graphName) ;
-                            } 
+                                    ServletOps.errorBadRequest("Bad IRI: Path does not start '/': " + graphName) ;
+                            }
                         }
-                    }
-                    else if ( fieldName.equals(HttpNames.paramDefaultGraphURI) )
+                    } else if ( fieldName.equals(HttpNames.paramDefaultGraphURI) )
                         graphName = null ;
                     else
                         // Add file type?
                         action.log.info(format("[%d] Upload: Field=%s ignored", action.id, fieldName)) ;
                 } else {
                     // Process the input stream
-                    name = item.getName() ; 
-                    if ( name == null || name.equals("") || name.equals("UNSET FILE NAME") ) 
+                    name = item.getName() ;
+                    if ( name == null || name.equals("") || name.equals("UNSET FILE NAME") )
                         ServletOps.errorBadRequest("No name for content - can't determine RDF syntax") ;
 
                     String contentTypeHeader = item.getContentType() ;
@@ -252,30 +237,31 @@ public class SPARQL_Upload extends ActionSPARQL
                     if ( lang == null ) {
                         lang = RDFLanguages.filenameToLang(name) ;
 
-                        //JENA-600 filenameToLang() strips off certain extensions such as .gz and 
-                        //we need to ensure that if there was a .gz extension present we wrap the stream accordingly
-                        if (name.endsWith(".gz") )
-                            stream = new GZIPInputStream(stream);
+                        // JENA-600 filenameToLang() strips off certain
+                        // extensions such as .gz and
+                        // we need to ensure that if there was a .gz extension
+                        // present we wrap the stream accordingly
+                        if ( name.endsWith(".gz") )
+                            stream = new GZIPInputStream(stream) ;
                     }
-                    
-                    
+
                     if ( lang == null )
                         // Desperate.
                         lang = RDFLanguages.RDFXML ;
-                    
-                    isQuads = RDFLanguages.isQuads(lang) ; 
 
-                    action.log.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => %s", 
-                                    action.id, name,  ct.getContentType(), ct.getCharset(), lang.getName())) ;
-                    
+                    isQuads = RDFLanguages.isQuads(lang) ;
+
+                    action.log.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => %s", action.id, name,
+                                           ct.getContentType(), ct.getCharset(), lang.getName())) ;
+
                     StreamRDF x = StreamRDFLib.dataset(dsgTmp) ;
-                    StreamRDFCounting dest =  StreamRDFLib.count(x) ;
-                    ActionSPARQL.parse(action, dest, stream, lang, base);
+                    StreamRDFCounting dest = StreamRDFLib.count(x) ;
+                    ActionSPARQL.parse(action, dest, stream, lang, base) ;
                     count = dest.count() ;
                 }
-            }    
+            }
 
-            if ( graphName == null || graphName.equals("") ) 
+            if ( graphName == null || graphName.equals("") )
                 graphName = HttpNames.valueDefault ;
             if ( isQuads )
                 graphName = null ;

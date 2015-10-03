@@ -19,11 +19,10 @@
 package org.apache.jena.riot.process;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.process.normalize.CanonicalizeLiteral ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 public class TestNormalization extends BaseTest
 {
@@ -104,7 +103,7 @@ public class TestNormalization extends BaseTest
         Node n1 = NodeFactoryExtra.parseNode(input) ;
         assertTrue("Invalid lexical form", n1.getLiteralDatatype().isValid(n1.getLiteralLexicalForm()));
         
-        Node n2 = CanonicalizeLiteral.get().convert(n1) ;
+        Node n2 = CanonicalizeLiteral.get().apply(n1) ;
         Node n3 = NodeFactoryExtra.parseNode(expected) ;
         assertEquals("Invalid canonicalization (lex)", n3.getLiteralLexicalForm(), n2.getLiteralLexicalForm()) ;
         assertEquals("Invalid canonicalization (node)", n3, n2) ;
@@ -116,7 +115,7 @@ public class TestNormalization extends BaseTest
     private static void normalizeLang(String input, String expected, boolean correct)
     {
         Node n1 = NodeFactoryExtra.parseNode(input) ;
-        Node n2 = CanonicalizeLiteral.get().convert(n1) ;
+        Node n2 = CanonicalizeLiteral.get().apply(n1) ;
         Node n3 = NodeFactoryExtra.parseNode(expected) ;
         if ( correct )
         {

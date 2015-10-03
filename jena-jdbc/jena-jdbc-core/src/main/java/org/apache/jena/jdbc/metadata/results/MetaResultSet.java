@@ -164,12 +164,12 @@ public class MetaResultSet implements ResultSet {
     }
 
     @Override
-    public void clearWarnings() throws SQLException {
+    public void clearWarnings() {
         // No-op
     }
 
     @Override
-    public void close() throws SQLException {
+    public void close() {
         this.closed = true;
     }
 
@@ -350,7 +350,7 @@ public class MetaResultSet implements ResultSet {
     }
 
     @Override
-    public int getConcurrency() throws SQLException {
+    public int getConcurrency() {
         return ResultSet.CONCUR_READ_ONLY;
     }
 
@@ -390,12 +390,12 @@ public class MetaResultSet implements ResultSet {
     }
 
     @Override
-    public int getFetchDirection() throws SQLException {
+    public int getFetchDirection() {
         return ResultSet.FETCH_FORWARD;
     }
 
     @Override
-    public int getFetchSize() throws SQLException {
+    public int getFetchSize() {
         // Not supported
         return 0;
     }
@@ -411,7 +411,7 @@ public class MetaResultSet implements ResultSet {
     }
 
     @Override
-    public int getHoldability() throws SQLException {
+    public int getHoldability() {
         return ResultSet.HOLD_CURSORS_OVER_COMMIT;
     }
 
@@ -436,7 +436,7 @@ public class MetaResultSet implements ResultSet {
     }
 
     @Override
-    public ResultSetMetaData getMetaData() throws SQLException {
+    public ResultSetMetaData getMetaData() {
         return this.metadata;
     }
 
@@ -471,7 +471,7 @@ public class MetaResultSet implements ResultSet {
     }
 
     @Override
-    public Object getObject(int columnIndex) throws SQLException {
+    public Object getObject(int columnIndex) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -502,7 +502,7 @@ public class MetaResultSet implements ResultSet {
     }
 
     @Override
-    public int getRow() throws SQLException {
+    public int getRow() {
         // Remember JDBC used a 1 based index
         if (this.currRow >= 0 && this.currRow < this.rows.length) {
             return this.currRow + 1;
@@ -542,7 +542,7 @@ public class MetaResultSet implements ResultSet {
     }
 
     @Override
-    public Statement getStatement() throws SQLException {
+    public Statement getStatement() {
         return null;
     }
 
@@ -597,7 +597,7 @@ public class MetaResultSet implements ResultSet {
     }
 
     @Override
-    public int getType() throws SQLException {
+    public int getType() {
         return ResultSet.TYPE_SCROLL_INSENSITIVE;
     }
 
@@ -633,13 +633,13 @@ public class MetaResultSet implements ResultSet {
     }
 
     @Override
-    public SQLWarning getWarnings() throws SQLException {
+    public SQLWarning getWarnings() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void insertRow() throws SQLException {
+    public void insertRow() {
         // TODO Auto-generated method stub
 
     }
@@ -659,7 +659,7 @@ public class MetaResultSet implements ResultSet {
     }
 
     @Override
-    public boolean isClosed() throws SQLException {
+    public boolean isClosed() {
         return this.closed;
     }
 
@@ -762,30 +762,30 @@ public class MetaResultSet implements ResultSet {
     }
 
     @Override
-    public boolean rowDeleted() throws SQLException {
+    public boolean rowDeleted() {
         // Results are read-only
         return false;
     }
 
     @Override
-    public boolean rowInserted() throws SQLException {
+    public boolean rowInserted() {
         // Results are read-only
         return false;
     }
 
     @Override
-    public boolean rowUpdated() throws SQLException {
+    public boolean rowUpdated() {
         // Results are read-only
         return false;
     }
 
     @Override
-    public void setFetchDirection(int direction) throws SQLException {
+    public void setFetchDirection(int direction) {
         // Not supported
     }
 
     @Override
-    public void setFetchSize(int rows) throws SQLException {
+    public void setFetchSize(int rows) {
         // Not supported
     }
 
@@ -1205,7 +1205,7 @@ public class MetaResultSet implements ResultSet {
     }
 
     @Override
-    public boolean wasNull() throws SQLException {
+    public boolean wasNull() {
         return this.wasNull;
     }
 }

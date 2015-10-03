@@ -21,17 +21,17 @@ package org.apache.jena.jdbc.remote.results;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.utils.TestUtils;
+import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.WebContent;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-
-import com.hp.hpl.jena.query.Dataset;
 
 /**
  * Tests result sets from a remote endpoint
@@ -55,20 +55,18 @@ public class TestRemoteEndpointResultsWithResultSetTypes extends AbstractRemoteE
     
     /**
      * Clean up after each test by resetting the Fuseki instance
-     * @throws InterruptedException 
      */
     @After
-    public void cleanupTest() throws InterruptedException {
+    public void cleanupTest() {
         ServerTest.resetServer();
     }
     
     /**
      * Clean up after tests by de-allocating the Fuseki instance
      * @throws SQLException 
-     * @throws InterruptedException 
      */
     @AfterClass
-    public static void cleanup() throws SQLException, InterruptedException {
+    public static void cleanup() throws SQLException {
         
         // Sleep attempts to avoid a intermittent timing issue on the build server that can result in hung builds
         

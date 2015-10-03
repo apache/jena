@@ -18,15 +18,14 @@
 
 package tdb.cmdline;
 
-import arq.cmdline.ArgDecl;
-import arq.cmdline.ArgModuleGeneral;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.CmdGeneral;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
 
-import com.hp.hpl.jena.tdb.base.file.Location;
+import org.apache.jena.tdb.base.file.Location ;
 
-
-public class ModLocation implements ArgModuleGeneral
+public class ModLocation extends ModBase
 {
     public ModLocation() {}
     

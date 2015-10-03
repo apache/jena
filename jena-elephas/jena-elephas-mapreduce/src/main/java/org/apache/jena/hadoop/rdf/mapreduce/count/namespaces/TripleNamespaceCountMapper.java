@@ -18,11 +18,10 @@
 
 package org.apache.jena.hadoop.rdf.mapreduce.count.namespaces;
 
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.mapreduce.TextCountReducer;
 import org.apache.jena.hadoop.rdf.types.NodeWritable;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
-
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * A mapper for counting namespace usages within triples designed primarily for

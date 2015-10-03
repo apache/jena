@@ -18,9 +18,8 @@
 
 package arq.examples.riot;
 
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.* ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
 
 /** Example writing a model with RIOT */
 public class ExRIOT_out1

@@ -25,8 +25,8 @@ package jena.examples.ontology.describeClass;
 ///////////////
 import java.util.Iterator;
 
-import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+import org.apache.jena.ontology.*;
+import org.apache.jena.rdf.model.ModelFactory;
 
 
 /**

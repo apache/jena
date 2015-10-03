@@ -18,15 +18,15 @@
 
 package sdb.cmd;
 
-import arq.cmd.TerminationException;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.CmdGeneral;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.TerminationException;
+
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.sdb.SDBFactory ;
+
 import arq.cmdline.ModDataset;
-
-import com.hp.hpl.jena.query.Dataset;
-
-import com.hp.hpl.jena.sdb.SDBFactory;
 
 public class ModDatasetStore extends ModDataset
 {

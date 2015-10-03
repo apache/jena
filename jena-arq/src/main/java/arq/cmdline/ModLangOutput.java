@@ -22,18 +22,25 @@ import java.io.PrintStream ;
 import java.util.HashSet ;
 import java.util.Set ;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RDFWriterRegistry ;
 import org.apache.jena.riot.system.StreamRDFWriter ;
-import arq.cmd.CmdException ;
 
-public class ModLangOutput implements ArgModuleGeneral
+public class ModLangOutput extends ModBase
 {
     protected ArgDecl argOutput       = new ArgDecl(ArgDecl.HasValue, "out", "output") ;
     protected ArgDecl argPretty       = new ArgDecl(ArgDecl.HasValue, "formatted", "pretty", "fmt") ;
     protected ArgDecl argStream       = new ArgDecl(ArgDecl.HasValue, "stream") ;
+    protected ArgDecl argCompress     = new ArgDecl(ArgDecl.NoValue, "compress") ;
+    private boolean compressedOutput = false ;
     private RDFFormat streamOutput    = null ;
     private RDFFormat formattedOutput = null ;
 
@@ -43,6 +50,7 @@ public class ModLangOutput implements ArgModuleGeneral
         cmdLine.add(argOutput,    "--output=FMT",     "Output in the given format, streaming if possible.") ;
         cmdLine.add(argPretty,    "--formatted=FMT",  "Output, using pretty printing (consumes memory)") ;
         cmdLine.add(argStream,    "--stream=FMT",     "Output, using a streaming format") ;
+        cmdLine.add(argCompress,  "--compress",       "Compress the output with gzip") ;
     }
 
     @Override
@@ -91,6 +99,9 @@ public class ModLangOutput implements ArgModuleGeneral
             }
         }
         
+        if ( cmdLine.contains(argCompress))
+            compressedOutput = true ;
+        
         if ( streamOutput == null && formattedOutput == null )
             streamOutput = RDFFormat.NQUADS ;
     }
@@ -124,33 +135,16 @@ public class ModLangOutput implements ArgModuleGeneral
             out.println("   "+lang.getLabel()) ;
         }
     }
-            // Stream-only code.
-//            if ( ! StreamRDFWriter.registered(output) ) {
-//                // ** Java8
-////                StreamRDFWriter.registered().stream()
-////                    .map(fmt -> fmt.getLang()) 
-////                    .distinct()
-////                    .forEach(x -> System.err.println("   "+x.getLabel())) ;
-//                
-//                System.err.println("Language '"+output.getLabel()+"' can not be used for streamed out (try rdfcat)") ;
-//                System.err.println("Streaming languages are:") ;
-//                Set<Lang> seen = new HashSet<>() ;
-//                for ( RDFFormat fmt : StreamRDFWriter.registered()) {
-//                    if ( seen.contains(fmt.getLang()) )
-//                        continue ;
-//                    seen.add(fmt.getLang()) ;
-//                    System.err.println("   "+fmt.getLang().getLabel()) ;
-//                }
-//                
-//                throw new CmdException("Not a streaming RDF language : '"+langName+"'") ;
-//            }
-//            format = StreamRDFWriter.defaultSerialization(output) ;
-
+    
     public RDFFormat getOutputStreamFormat() {
         return streamOutput ;
     }
     
     public RDFFormat getOutputFormatted() {
         return formattedOutput ;
+    }
+    
+    public boolean compressedOutput() {
+        return compressedOutput ;
     }
 }

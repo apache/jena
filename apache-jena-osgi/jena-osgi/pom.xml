@@ -16,15 +16,13 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>apache-jena-osgi</artifactId>
-    <version>2.13.0-SNAPSHOT</version>
+    <version>3.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>jena-osgi</artifactId>
   <packaging>bundle</packaging>
@@ -79,7 +77,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.13.0-SNAPSHOT</version>
+      <version>3.0.1-SNAPSHOT</version>
       <scope>provided</scope>
       <exclusions>
 	<!-- These are all embedded within httpclient-osgi -->
@@ -109,21 +107,27 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.13.0-SNAPSHOT</version>
+      <version>3.0.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-shaded-guava</artifactId>
+      <version>3.0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>3.0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>3.0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
@@ -131,7 +135,7 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient-osgi</artifactId>
-      <version>${ver.httpclient}</version>
+      <version>${ver.httpclient-osgi}</version>
       <exclusions>
 	<!-- These are all embedded within httpclient-osgi -->
 	<exclusion>
@@ -159,7 +163,7 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore-osgi</artifactId>
-      <version>${ver.httpcore}</version> 
+      <version>${ver.httpcore-osgi}</version> 
       <exclusions>
         <exclusion>
           <groupId>org.apache.httpcomponents</groupId>
@@ -215,12 +219,15 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <!-- re-enable extensions here for older Mavens -->
+        <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Export-Package>com.hp.hpl.jena.*,org.apache.jena.*</Export-Package>
+            <Export-Package>org.apache.jena.*,!org.apache.jena.ext.*</Export-Package>
             <Embed-Dependency>artifactId=jena*;inline=true,artifactId=xercesImpl;inline=true,artifactId=xml-apis;inline=true</Embed-Dependency>
             <Embed-Transitive>true</Embed-Transitive>
-            <Import-Package>!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.xml.*,!org.apache.xerces.*,*</Import-Package>
+            <Import-Package>!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.xml.*,!org.apache.xerces.*,!org.apache.jena.ext.*,sun.misc;resolution:=optional,*</Import-Package>
+            <Private-Package>org.apache.jena.ext.*</Private-Package>
           </instructions>
         </configuration>
       </plugin>

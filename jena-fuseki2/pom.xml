@@ -21,15 +21,18 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>12-SNAPSHOT</version>
+    <version>15-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
-  <name>Apache Jena - Fuseki</name>
+  <name>Apache Jena - Fuseki - A SPARQL 1.1 Server</name>
   <artifactId>jena-fuseki</artifactId>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>2.3.1-SNAPSHOT</version>
 
-  <description>Apache Jena Fuseki</description>
+  <description>Fuseki is a SPARQL 1.1 Server which provides the SPARQL query, 
+  SPARQL update and SPARQL graph store protocols.
+  </description>
+
   <packaging>pom</packaging>
   
   <url>http://jena.apache.org/</url>
@@ -58,13 +61,9 @@
   </licenses>
 
   <properties>
-    <this.root>${project.artifactId}-${project.version}</this.root>
-    
-    <server.jar.name>${this.root}-server</server.jar.name>
-    <!-- Eventually, move to jena-parent -->
-    <ver.jetty>9.1.1.v20140108</ver.jetty>
+    <!--<ver.jetty>9.1.1.v20140108</ver.jetty>-->
+    <ver.jetty>9.3.3.v20150827</ver.jetty>
     <ver.shiro>1.2.2</ver.shiro>
-
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>  
   </properties>

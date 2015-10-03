@@ -16,22 +16,24 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-parent</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>12-SNAPSHOT</version>
+  <version>15-SNAPSHOT</version>
   <name>Apache Jena - Parent</name>
 
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>14</version>
-    <relativePath /> <!-- MNG-4687 Avoid warning -->
+    <!-- This version number is also in the top POM -->
+    <version>16</version>
+    <relativePath />
   </parent>
 
   <licenses>
@@ -40,34 +42,42 @@
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
     </license>
   </licenses>
-
+ 	
   <organization>
     <name>The Apache Software Foundation</name>
     <url>http://www.apache.org/</url>
   </organization>
 
   <properties>
-    <ver.slf4j>1.7.6</ver.slf4j>
+    <ver.slf4j>1.7.12</ver.slf4j>
     <ver.log4j>1.2.17</ver.log4j>
-    <ver.junit>4.11</ver.junit>
+    <ver.junit>4.12</ver.junit>
     <ver.xerces>2.11.0</ver.xerces>
 
-    <ver.jsonldjava>0.5.1</ver.jsonldjava>
+    <ver.jsonldjava>0.7.0</ver.jsonldjava>
     <!-- Used by jena-osgi and must be in-step with jsonldjava -->
     <ver.jackson>2.3.3</ver.jackson>
 
     <!-- These are connected because solr4j depends on httpclient as well -->
     <ver.httpclient>4.2.6</ver.httpclient>
     <ver.httpcore>4.2.5</ver.httpcore>
-    <ver.lucene>4.6.1</ver.lucene>
-    <ver.solr>4.6.1</ver.solr>
-    <ver.spatial4j>0.4</ver.spatial4j>
+    <!-- Normally, these are the same as the above
+	 In the case of 4.2.6, there isn't a httpcore-osgi.
+    -->
+    <ver.httpcore-osgi>4.2.5</ver.httpcore-osgi>
+    <ver.httpclient-osgi>4.2.6</ver.httpclient-osgi>
 
-    <jdk.version>1.7</jdk.version>
+    <ver.commons-codec>1.9</ver.commons-codec>
+    <ver.lucene>4.9.1</ver.lucene>
+    <ver.solr>4.9.1</ver.solr>
+    <ver.spatial4j>0.4.1</ver.spatial4j>
+
+    <jdk.version>1.8</jdk.version>
     <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
+    <ver.contract.tests>0.1.5</ver.contract.tests>
   </properties>
 
   <profiles>
@@ -135,6 +145,12 @@
       </dependency>
 
       <dependency>
+	<groupId>commons-codec</groupId>
+	<artifactId>commons-codec</artifactId>
+	<version>${ver.commons-codec}</version>
+      </dependency>
+      
+      <dependency>
 	<groupId>org.apache.thrift</groupId>
 	<artifactId>libthrift</artifactId>
 	<version>0.9.2</version>
@@ -192,7 +208,15 @@
           <exclusion>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-          </exclusion>
+	  </exclusion>
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient-osgi</artifactId>
+	  </exclusion>
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore-osgi</artifactId>
+	  </exclusion>
           <exclusion>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -298,7 +322,40 @@
           </exclusion>
         </exclusions>
       </dependency>
+      <dependency>
+        <groupId>commons-cli</groupId>
+        <artifactId>commons-cli</artifactId>
+        <version>1.3</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.xenei</groupId>
+        <artifactId>junit-contracts</artifactId>
+        <version>${ver.contract.tests}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <artifactId>commons-cli</artifactId>
+            <groupId>commons-cli</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+   
+      <dependency>
+        <groupId>org.xenei</groupId>
+        <artifactId>contract-test-maven-plugin</artifactId>
+        <version>${ver.contract.tests}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>1.9.5</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
+
   </dependencyManagement>
 
   <dependencies>
@@ -341,7 +398,7 @@
             <configuration combine.self="override">
               <rules>
                 <requireJavaVersion>
-                  <version>1.7.0</version>
+                  <version>1.8.0</version>
                 </requireJavaVersion>
                 <requirePluginVersions>
                   <message>Best practice is to always define plugin versions!</message>
@@ -368,7 +425,7 @@
         <executions>
           <execution>
             <id>rat-checks</id>
-            <phase>verify</phase>
+            <phase>validate</phase>
             <goals>
               <goal>check</goal>
             </goals>
@@ -376,7 +433,8 @@
         </executions>
         <configuration>
            <excludeSubProjects>true</excludeSubProjects>
-             <excludes>
+ 	     <excludes>
+	       <exclude>**/META-INF/services/*</exclude>
                <!--
                jena-core exclusions
                -->
@@ -453,8 +511,9 @@
 	       <exclude>**/*.classpath</exclude>
 
 	       <!-- Exclude anything created during the build (plugin generated files) ->-->
-         <exclude>**/target/**/*</exclude>
-
+	       <exclude>**/target/**/*</exclude>
+	       <!-- MSHADE-124 -->
+	       <exclude>**/dependency-reduced-pom.xml</exclude>
             </excludes>
         </configuration>
       </plugin>
@@ -481,9 +540,7 @@
           </configuration>
         </plugin>
 
-        <!-- Avoid the warning from m2e: 
-	     "maven-remote-resources-plugin (goal "process") is ignored by m2e." 
-	-->
+        <!-- Avoid the warnings and errors from m2e -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
@@ -492,8 +549,8 @@
             <lifecycleMappingMetadata>
               <pluginExecutions>
                 <pluginExecution>
-                  <!-- 
-		    Warning: 
+                  <!--
+		    Warning:
 		    "maven-remote-resources-plugin (goal "process") is ignored by m2e." 
 		  -->
                   <pluginExecutionFilter>
@@ -509,7 +566,10 @@
                   </action>
                 </pluginExecution>
                 <pluginExecution>
-                  <!-- Warning: "maven-enforcer-plugin (goal "enforce") is ignored by m2e." -->
+                  <!-- 
+		    Warning:
+		    "maven-enforcer-plugin (goal "enforce") is ignored by m2e." 
+		  -->
                   <pluginExecutionFilter>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-remote-resources-plugin</artifactId>
@@ -523,6 +583,38 @@
                   </action>
                 </pluginExecution>
 
+		<pluginExecution>
+                  <!--
+		    Error:
+		    Plugin execution not covered by lifecycle configuration
+		  -->
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.rat</groupId>
+                    <artifactId>apache-rat-plugin</artifactId>
+                    <versionRange>[0.11,)</versionRange>
+                    <goals>
+                      <goal>check</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+
+		<pluginExecution>
+		  <pluginExecutionFilter>
+		    <groupId>org.xenei</groupId>
+		    <artifactId>contract-test-maven-plugin</artifactId>
+		    <versionRange>[0.1.5,)</versionRange>
+		    <goals>
+		      <goal>contract-test</goal>
+		    </goals>
+		  </pluginExecutionFilter>
+		  <action>
+		    <ignore></ignore>
+		  </action>
+		</pluginExecution>
+		
               </pluginExecutions>
             </lifecycleMappingMetadata>
           </configuration>
@@ -578,9 +670,10 @@
               <link>http://jena.apache.org/documentation/javadoc/tdb/</link>
               <link>http://jena.apache.org/documentation/javadoc/text/</link>
               <link>http://jena.apache.org/documentation/javadoc/spatial/</link>
-              <link>http://jena.apache.org/documentation/javadoc/fuseki/</link>
-              <link>http://jena.apache.org/documentation/javadoc/security/</link>
+              <link>http://jena.apache.org/documentation/javadoc/fuseki2/</link>
+              <link>http://jena.apache.org/documentation/javadoc/permissions/</link>
               <link>http://jena.apache.org/documentation/javadoc/jdbc/</link>
+              <link>http://jena.apache.org/documentation/javadoc/elephas/</link>
             </links>
           </configuration>
         </plugin>
@@ -664,6 +757,12 @@
           <version>2.5.3</version>
           <extensions>true</extensions>
         </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+
 
       </plugins>
     </pluginManagement>
@@ -677,7 +776,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>2.17</version>
+        <version>2.18.1</version>
         <configuration>
           <outputDirectory>${project.basedir}/target/surefire-reports-html</outputDirectory>
         </configuration>
@@ -686,7 +785,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.5.1</version>
+        <version>2.7</version>
         <configuration>
           <instrumentation>
             <ignores>
@@ -699,19 +798,19 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.7</version>
+        <version>2.15</version>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
-        <version>2.3</version>
+        <version>2.5</version>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>2.5</version>
+        <version>3.4</version>
         <configuration>
           <linkXref>true</linkXref>
           <sourceEncoding>utf-8</sourceEncoding>
@@ -722,7 +821,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.0.1</version>
       </plugin>
 
     </plugins>

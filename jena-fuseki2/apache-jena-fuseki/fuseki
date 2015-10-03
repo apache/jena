@@ -26,6 +26,7 @@
 #
 # JAVA
 #   Command to invoke Java. If not set, java (from the PATH) will be used.
+#   JAVA_HOME can also be used to set JAVA.
 #
 # JAVA_OPTIONS
 #   Extra options to pass to the JVM.
@@ -40,7 +41,7 @@
 #
 # FUSEKI_RUN
 #   Where the fuseki.pid file should be stored.  It defaults
-#   first available of /var/run, /usr/var/run, and /tmp if not set.
+#   first available of /var/run, /usr/var/run, $FUSEKI_HOME and /tmp if not set.
 #
 # FUSEKI_PID
 #   The FUSEKI PID file, defaults to $FUSEKI_RUN/fuseki.pid
@@ -52,7 +53,11 @@
 #
 # FUSEKI_START
 #   Path to the jar file. Defaults to $FUSEKI_HOME/fuseki-server.jar 
-
+#
+# FUSEKI_CLASSES
+#   Path to extra jars to add to the class path.  Defaults to none
+#   Should be of the form path/class.jar:path/class2.jar
+#
 # FUSEKI_CONF
 #   The Fuseki configuration file, usually in RDF Turtle notation.
 #
@@ -66,6 +71,7 @@
 # FUSEKI_LOGS_STDERROUT
 #   Log file with stderr and stdout log output from Fuseki. 
 #   Defaults to $FUSEKI_LOGS/stderrout.log
+
 
 ### BEGIN INIT INFO
 # Provides:          fuseki
@@ -94,7 +100,7 @@ else
     echo $1
   }
   log_end_msg() {
-    if [ $1 -eq 0]; then
+    if [ $1 -eq 0 ]; then
       echo '[OK]'
     else
       echo '[failed]'
@@ -244,12 +250,21 @@ fi
 # Set up JAVA if not set
 if [ -z "$JAVA" ]
 then
-  JAVA=$(which java)
+    if [ -z "$JAVA_HOME" ]
+    then
+       JAVA=$(which java)
+    else
+        JAVA=$JAVA_HOME/bin/java
+    fi
 fi
+
 if [ -z "$JAVA" ]
 then
-  echo "Cannot find a Java JDK. Please set either set JAVA or put java (>=1.7) in your PATH." 2>&2
-  exit 1
+    (
+	echo "Cannot find a Java JDK."
+	echo "Please set either set JAVA or JAVA_HOME and put java (>=1.8) in your PATH."
+    ) 1>&2
+    exit 1
 fi
 
 # The location of the start up JAR
@@ -281,16 +296,15 @@ then
   fi
 fi
 
-if [ ! -z "$FUSEKI_HOME" ]
-then
-    FUSEKI_ADDITIONAL_ARGS=(--home "$FUSEKI_HOME")
-fi
-
 # Run command
 
-RUN_ARGS=(${JAVA_OPTIONS[@]} -jar "$FUSEKI_START" "${FUSEKI_ADDITIONAL_ARGS[@]}" $FUSEKI_ARGS)
+if [ -z "$FUSEKI_CLASSES" ]
+then
+  RUN_ARGS=(${JAVA_OPTIONS[@]} -jar "$FUSEKI_START" "${FUSEKI_ADDITIONAL_ARGS[@]}" $FUSEKI_ARGS)
+else
+  RUN_ARGS=(${JAVA_OPTIONS[@]} -cp "$FUSEKI_START:$FUSEKI_CLASSES" org.apache.jena.fuseki.cmd.FusekiCmd "${FUSEKI_ADDITIONAL_ARGS[@]}" $FUSEKI_ARGS)
+fi
 RUN_CMD=("$JAVA" "${RUN_ARGS[@]}")
-
 
 #####################################################
 # Comment these out after you're happy with what
@@ -304,6 +318,7 @@ then
   log_daemon_msg "FUSEKI_PID     =  $FUSEKI_PID"
   log_daemon_msg "FUSEKI_ARGS    =  $FUSEKI_ARGS"
   log_daemon_msg "FUSEKI_START   =  $FUSEKI_START"
+  log_daemon_msg "FUSEKI_CLASSES =  $FUSEKI_CLASSES"
   log_daemon_msg "CONFIGS        =  ${CONFIGS[*]}"
   log_daemon_msg "JAVA           =  $JAVA"
   log_daemon_msg "JAVA_OPTIONS   =  ${JAVA_OPTIONS[*]}"
@@ -367,6 +382,8 @@ start() {
       rm -f "$FUSEKI_PID"
     fi
 
+# use subshell to cd to FUSKEI_HOME directory and execute
+    (cd "$FUSEKI_HOME"
     if [ "$FUSEKI_USER" ]
     then
       touch "$FUSEKI_PID"
@@ -382,7 +399,8 @@ start() {
       disown $!
       echo $! > "$FUSEKI_PID"
     fi
-
+)
+    
     log_end_msg 0
     print_started
   fi
@@ -469,7 +487,6 @@ case $CMD in
     run
   ;;
   status)
-    FUSEKI_PID=$(findFile fuseki.pid /var/run /usr/var/run $FUSEKI_HOME /tmp)
     if running $FUSEKI_PID
     then
       PID=`cat "$FUSEKI_PID"`

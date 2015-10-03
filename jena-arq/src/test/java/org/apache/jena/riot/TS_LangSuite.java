@@ -20,19 +20,20 @@ package org.apache.jena.riot;
 
 import junit.framework.TestSuite ;
 import org.apache.jena.riot.langsuite.FactoryTestRiot ;
+import org.apache.jena.system.JenaSystem ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.AllTests ;
 
 /** The test suites - these are driven by a manifest file and use external files for tests */
 
 @RunWith(AllTests.class)
-public class TS_LangSuite extends TestSuite
+public class TS_LangSuite
 {
     private static final String manifest1 = "testing/RIOT/Lang/manifest-all.ttl" ;
 
     static public TestSuite suite()
     {
-        RIOT.init() ;
+        JenaSystem.init() ;
         TestSuite ts = new TestSuite("RIOT Lang") ;
         ts.addTest(FactoryTestRiot.make(manifest1, null, null)) ;
         return ts ;

@@ -28,17 +28,16 @@ import java.util.Set ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.json.io.JSWriter ;
 import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.GraphUtil ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.GraphUtil ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.NodeUtils ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.NodeUtils ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
 
 public class RDFJSONWriter extends WriterGraphRIOTBase
 {

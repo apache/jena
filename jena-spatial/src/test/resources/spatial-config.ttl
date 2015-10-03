@@ -8,7 +8,7 @@
 @prefix spatial: <http://jena.apache.org/spatial#> .
 
 # TDB
-[] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
+[] ja:loadClass "org.apache.jena.tdb.TDB" .
 tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
 tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 

@@ -1,5 +1,5 @@
 PREFIX  :        <http://example.org/ns#>
-PREFIX  jfn:     <http://jena.hpl.hp.com/ARQ/function#>
+PREFIX  jfn:     <http://jena.apache.org/ARQ/function#>
 
 SELECT  ?z
 WHERE

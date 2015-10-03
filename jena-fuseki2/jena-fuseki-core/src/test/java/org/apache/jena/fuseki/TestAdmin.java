@@ -21,6 +21,7 @@ package org.apache.jena.fuseki;
 import static org.apache.jena.fuseki.ServerTest.datasetPath ;
 import static org.apache.jena.fuseki.ServerTest.urlRoot ;
 import static org.apache.jena.fuseki.mgt.MgtConst.opDatasets ;
+import static org.apache.jena.fuseki.mgt.MgtConst.opListBackups ;
 import static org.apache.jena.fuseki.mgt.MgtConst.opPing ;
 import static org.apache.jena.fuseki.mgt.MgtConst.opServer ;
 import static org.apache.jena.fuseki.mgt.MgtConst.opStats ;
@@ -31,15 +32,10 @@ import static org.apache.jena.riot.web.HttpOp.execHttpPost ;
 import java.io.File ;
 import java.io.IOException ;
 import java.io.InputStream ;
-import java.util.ArrayList ;
-import java.util.List ;
 
 import org.apache.http.HttpEntity ;
 import org.apache.http.HttpResponse ;
-import org.apache.http.NameValuePair ;
-import org.apache.http.client.entity.UrlEncodedFormEntity ;
 import org.apache.http.entity.FileEntity ;
-import org.apache.http.message.BasicNameValuePair ;
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonArray ;
 import org.apache.jena.atlas.json.JsonObject ;
@@ -53,9 +49,9 @@ import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.riot.web.HttpResponseHandler ;
 import org.apache.jena.web.HttpSC ;
+import org.junit.After ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
-import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 /** Tests of the admin functionality */
@@ -64,21 +60,19 @@ public class TestAdmin extends BaseTest {
     // Name of the dataset in the assembler file.
     static String dsTest = "test-ds2" ;
     
-    @BeforeClass
-    public static void beforeClass() {
+    @Before public void beforeTest() {
         ServerTest.allocServer() ;
         ServerTest.resetServer() ;
     }
-
-    @AfterClass
-    public static void afterClass() {
+    
+    @After public void afterTest() {
         ServerTest.freeServer() ;
     }
-    
-    @Before public void beforeTest() {
-        ServerTest.resetServer() ;
+
+    @AfterClass public static void afterClass() {
+        ServerTest.teardownServer() ;
     }
-    
+  
     // --- Ping 
     
     @Test public void ping_1() {
@@ -139,27 +133,6 @@ public class TestAdmin extends BaseTest {
         checkJsonDatasetsOne(v.getAsObject()) ;
     }
 
-    private static JsonValue getDatasetDescription(String dsName) {
-        try ( TypedInputStream in = execHttpGet(urlRoot+"$/"+opDatasets+"/"+dsName) ) {
-            assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType()) ;
-            JsonValue v = JSON.parse(in) ;
-            return v ;
-        }
-    }
-
-    // -- Add
-    
-    private static void addTestDataset() {
-        File f = new File("testing/config-ds-1.ttl") ;
-        org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8) ;
-        HttpEntity e = new FileEntity(f, ct) ;
-        execHttpPost(ServerTest.urlRoot+"$/"+opDatasets, e) ;
-    }
-    
-    private static void deleteDataset(String name) {
-        execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+name) ;
-    }
-
     // Specific dataset
     @Test public void add_delete_dataset_1() {
         checkNotThere(dsTest) ;
@@ -199,17 +172,14 @@ public class TestAdmin extends BaseTest {
     }
     
     @Test public void add_delete_dataset_3() throws Exception {
-        String name = "MEMTEST" ;
-        //String args = "dbType=mem&dbName="+name ;
-        
-        List<NameValuePair> args = new ArrayList<NameValuePair>() ;
-        args.add(new BasicNameValuePair("dbType", "mem")) ;
-        args.add(new BasicNameValuePair("dbName", name)) ;
-        
-        HttpEntity e = new UrlEncodedFormEntity(args) ;
-        execHttpPost(ServerTest.urlRoot+"$/"+opDatasets, e) ;
-        checkExists(name) ;
-        deleteDataset(name) ;
+        checkNotThere(dsTest) ;
+        addTestDataset() ;
+        checkExists(dsTest) ;
+        deleteDataset(dsTest) ;
+        checkNotThere(dsTest) ;
+        addTestDataset() ;
+        checkExists(dsTest) ;
+        deleteDataset(dsTest) ;
     }
     
     @Test public void delete_dataset_1() {
@@ -338,16 +308,45 @@ public class TestAdmin extends BaseTest {
     }
     
     @Test public void task_5() {
-        // Short ruuning task - still in info API call.
+        // Short running task - still in info API call.
         String x = execSleepTask(null, 1) ;
         checkInTasks(x) ;
+    }
+
+    @Test public void list_backups_1() {
+        try ( TypedInputStream in = execHttpGet(urlRoot+"$/"+opListBackups) ) {
+            assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType()) ;
+            JsonValue v = JSON.parseAny(in) ;
+            assertNotNull(v.getAsObject().get("backups")) ; 
+        }
     }
 
     private JsonValue getTask(String taskId) {
         String url = urlRoot+"$/tasks/"+taskId ;
         return httpGetJson(url) ;
     }
-    
+
+    private static JsonValue getDatasetDescription(String dsName) {
+    try ( TypedInputStream in = execHttpGet(urlRoot+"$/"+opDatasets+"/"+dsName) ) {
+        assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType()) ;
+        JsonValue v = JSON.parse(in) ;
+        return v ;
+    }
+}
+
+// -- Add
+
+private static void addTestDataset() {
+    File f = new File("testing/config-ds-1.ttl") ;
+    org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8) ;
+    HttpEntity e = new FileEntity(f, ct) ;
+    execHttpPost(ServerTest.urlRoot+"$/"+opDatasets, e) ;
+}
+
+private static void deleteDataset(String name) {
+    execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+name) ;
+}
+
 
     static class JsonResponseHandler implements HttpResponseHandler {
 

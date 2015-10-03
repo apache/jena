@@ -21,11 +21,11 @@ package org.apache.jena.riot.system;
 import java.util.Iterator ;
 import java.util.Map.Entry ;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Quad ;
 
 /* TODO
  * Split up StreamRDFLib into factory and operations

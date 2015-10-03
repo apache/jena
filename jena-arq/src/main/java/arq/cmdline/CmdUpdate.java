@@ -18,28 +18,25 @@
 
 package arq.cmdline;
 
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.update.GraphStore ;
+import org.apache.jena.query.Syntax ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 
 public abstract class CmdUpdate extends CmdARQ
 {
-    protected ModGraphStore modGraphStore = new ModGraphStore() ;
+    protected ModDataset modDataset = null ;
     protected Syntax updateSyntax = Syntax.defaultUpdateSyntax ;
 
     protected CmdUpdate(String[] argv)
     {
         super(argv) ;
-        modGraphStore = setModGraphStore() ;
-        addModule(modGraphStore) ;
-        
+        modDataset = setModeDataset() ;
+        addModule(modDataset) ;
     }
     
-    protected ModGraphStore setModGraphStore()
-    {
-        return new ModGraphStore() ;
+    protected ModDataset setModeDataset() {
+        return new ModDatasetGeneralAssembler() ;
     }
-    
 
     @Override
     protected void processModulesAndArgs()
@@ -50,13 +47,17 @@ public abstract class CmdUpdate extends CmdARQ
     }
     
     @Override
-    protected final void exec()
-    {
-        GraphStore graphStore = modGraphStore.getGraphStore() ;
-        if ( graphStore.getDefaultGraph() == null )
-            graphStore.setDefaultGraph(ModelFactory.createDefaultModel().getGraph()); 
-        execUpdate(graphStore) ;
+    protected final void exec() {
+        DatasetGraph dataset = modDataset.getDatasetGraph() ;
+        if ( dataset == null )
+            dataset = dealWithNoDataset() ;
+        
+        if ( dataset.getDefaultGraph() == null )
+            dataset.setDefaultGraph(ModelFactory.createDefaultModel().getGraph()) ;
+        execUpdate(dataset) ;
     }
 
-    protected abstract void execUpdate(GraphStore graphStore) ;
+    protected abstract DatasetGraph dealWithNoDataset() ;
+
+    protected abstract void execUpdate(DatasetGraph graphStore) ;
 }

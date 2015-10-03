@@ -22,8 +22,7 @@ import java.util.Map ;
 
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.iri.IRI ;
-
-import com.hp.hpl.jena.shared.PrefixMapping ;
+import org.apache.jena.shared.PrefixMapping ;
 
 //private static PrefixMap empty = new PrefixMapNull() ; 
     /**

@@ -21,22 +21,12 @@ package arq.examples;
 
 // The ARQ application API.
 import org.apache.jena.atlas.io.IndentedWriter ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.rdf.model.Literal ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
-import com.hp.hpl.jena.vocabulary.DC ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.syntax.ElementGroup ;
+import org.apache.jena.vocabulary.DC ;
 
 /** Example : Build a query syntax programmatically.
  * 

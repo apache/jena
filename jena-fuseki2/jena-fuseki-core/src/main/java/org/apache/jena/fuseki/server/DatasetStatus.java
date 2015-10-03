@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.server;
 
-import com.hp.hpl.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.Resource ;
 
 public enum DatasetStatus {
     UNINITIALIZED("Uninitialized"), ACTIVE("Active"), OFFLINE("Offline"), CLOSING("Closing"), CLOSED("Closed") ;

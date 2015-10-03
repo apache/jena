@@ -18,14 +18,14 @@
 
 package tdb.examples;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.query.QueryExecution ;
+import org.apache.jena.query.QueryExecutionFactory ;
+import org.apache.jena.query.QueryFactory ;
+import org.apache.jena.query.ResultSet ;
+import org.apache.jena.query.ResultSetFormatter ;
+import org.apache.jena.tdb.TDBFactory ;
 
 /** Example of creating a TDB-backed model.
  *  The preferred way is to create a dataset then get the mode required from the dataset.

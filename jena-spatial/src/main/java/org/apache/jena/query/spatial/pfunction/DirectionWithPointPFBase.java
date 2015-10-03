@@ -20,19 +20,18 @@ package org.apache.jena.query.spatial.pfunction;
 
 import java.util.List;
 
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.impl.LiteralLabel ;
+import org.apache.jena.query.QueryBuildException ;
 import org.apache.jena.query.spatial.SpatialIndexException;
 import org.apache.jena.query.spatial.SpatialValueUtil;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.pfunction.PropFuncArg ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.lucene.spatial.query.SpatialOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
-import com.hp.hpl.jena.query.QueryBuildException;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
 
 public abstract class DirectionWithPointPFBase extends SpatialOperationPFBase {
 	

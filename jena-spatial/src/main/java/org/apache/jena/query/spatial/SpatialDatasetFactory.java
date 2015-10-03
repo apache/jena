@@ -18,19 +18,19 @@
 
 package org.apache.jena.query.spatial;
 
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.query.spatial.assembler.SpatialVocab;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.lucene.store.Directory;
 import org.apache.solr.client.solrj.SolrServer;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
-import com.hp.hpl.jena.sparql.util.Context;
-
 public class SpatialDatasetFactory
 {
-    static { SpatialQuery.init(); }
+    static { JenaSystem.init(); }
     
     /** Use an assembler file to build a dataset with spatial search capabilities */ 
     public static Dataset create(String assemblerFile)

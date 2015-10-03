@@ -30,30 +30,30 @@ import org.junit.Test ;
  * This class defines a setup configuration for a dataset that uses a lowercase keyword analyzer with a Lucene index.
  */
 public class TestDatasetWithLowerCaseKeywordAnalyzer extends TestDatasetWithKeywordAnalyzer {
-	@Override
+    @Override
     @Before
-	public void before() {
-		init("text:LowerCaseKeywordAnalyzer");
-	}	
-	
-	@Test
-	public void testLowerCaseKeywordAnalyzerIsCaseInsensitive() {
-		final String testName = "testLowerCaseKeywordAnalyzerIsCaseInsensitive";
-		final String turtle = StrUtils.strjoinNL(
-				TURTLE_PROLOG,
-				"<" + RESOURCE_BASE + testName + ">",
-				"  rdfs:label 'F;riM at&/ped9'",
-				"."
-				);
-		String queryString = StrUtils.strjoinNL(
-				QUERY_PROLOG,
-				"SELECT ?s",
-				"WHERE {",
-				"    ?s text:query ( rdfs:label 'f;ri*' 10 ) .",
-				"}"
-				);
-		Set<String> expectedURIs = new HashSet<>() ;
-		expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + testName)) ;
-		doTestSearch(turtle, queryString, expectedURIs);
-	}
+    public void before() {
+        init("text:LowerCaseKeywordAnalyzer");
+    }    
+    
+    @Test
+    public void testLowerCaseKeywordAnalyzerIsCaseInsensitive() {
+        final String testName = "testLowerCaseKeywordAnalyzerIsCaseInsensitive";
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + testName + ">",
+                "  rdfs:label 'F;riM at&/ped9'",
+                "."
+                );
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:label 'f;ri*' 10 ) .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + testName)) ;
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
 }

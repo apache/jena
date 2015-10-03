@@ -25,8 +25,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.graph.Node ;
 
-import com.hp.hpl.jena.graph.Node;
 import com.spatial4j.core.shape.Shape;
 
 public class SpatialIndexContext {

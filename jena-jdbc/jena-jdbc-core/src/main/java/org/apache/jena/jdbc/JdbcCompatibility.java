@@ -22,6 +22,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import org.apache.jena.graph.Node ;
 import org.apache.jena.jdbc.results.metadata.columns.BooleanColumn;
 import org.apache.jena.jdbc.results.metadata.columns.ByteColumn;
 import org.apache.jena.jdbc.results.metadata.columns.ColumnInfo;
@@ -34,8 +35,7 @@ import org.apache.jena.jdbc.results.metadata.columns.LongIntegerColumn;
 import org.apache.jena.jdbc.results.metadata.columns.IntegerColumn;
 import org.apache.jena.jdbc.results.metadata.columns.StringColumn;
 import org.apache.jena.jdbc.results.metadata.columns.TimeColumn;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.vocabulary.XSD;
+import org.apache.jena.vocabulary.XSD ;
 
 /**
  * <p>

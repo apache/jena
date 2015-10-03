@@ -21,14 +21,13 @@ package org.apache.jena.riot.lang;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
 
 public class TestCollectorStream  {
 	
@@ -36,7 +35,7 @@ public class TestCollectorStream  {
 		List<Triple> results = new ArrayList<>();
 		out.start();
         for (int i = 1; i <= size; i++) {
-            Triple t = new Triple(NodeFactory.createAnon(),
+            Triple t = new Triple(NodeFactory.createBlankNode(),
                     NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
             out.triple(t);
             results.add(t);
@@ -58,7 +57,7 @@ public class TestCollectorStream  {
 		out.start();
         for (int i = 1; i <= size; i++) {
         	Quad q = new Quad(NodeFactory.createURI("http://graph"),
-                    NodeFactory.createAnon(),
+                    NodeFactory.createBlankNode(),
                     NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
             out.quad(q);
             results.add(q);

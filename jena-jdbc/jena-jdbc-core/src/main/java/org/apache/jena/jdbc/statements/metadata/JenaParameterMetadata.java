@@ -24,10 +24,9 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Types;
 
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.jdbc.statements.JenaPreparedStatement;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ParameterizedSparqlString;
+import org.apache.jena.query.ParameterizedSparqlString ;
 
 /**
  * Implementation of {@link ParameterMetaData} for {@link ParameterizedSparqlString} instances to support {@link JenaPreparedStatement}
@@ -68,7 +67,7 @@ public class JenaParameterMetadata implements ParameterMetaData {
     }
 
     @Override
-    public int getParameterCount() throws SQLException {
+    public int getParameterCount() {
         return this.paramCount;
     }
 

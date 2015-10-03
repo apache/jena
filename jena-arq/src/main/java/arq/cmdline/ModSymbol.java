@@ -19,20 +19,26 @@
 package arq.cmdline;
 
 import java.io.PrintStream ;
+
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdArgModule;
+import jena.cmd.CmdGeneral;
+import jena.cmd.ModBase;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.MappingRegistry ;
+import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.system.JenaSystem ;
 
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.MappingRegistry ;
-import com.hp.hpl.jena.sparql.util.Symbol ;
-
-public class ModSymbol implements ArgModuleGeneral
+public class ModSymbol extends ModBase
 {
+    static { JenaSystem.init(); }
+
     protected final ArgDecl setDecl = new ArgDecl(ArgDecl.HasValue, "set", "define", "defn", "def") ;
-    Context context = new Context() ;
-    
-    public ModSymbol() { }
-    
+private Context context = new Context() ;
+
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
@@ -46,7 +52,6 @@ public class ModSymbol implements ArgModuleGeneral
     @Override
     public void processArgs(CmdArgModule cmdLine)
     {
-        ARQ.init();
         
         if ( cmdLine.getValues(setDecl) == null || cmdLine.getValues(setDecl).size() == 0 )
             return ;

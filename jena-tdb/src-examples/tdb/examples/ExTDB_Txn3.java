@@ -18,10 +18,10 @@
 
 package tdb.examples;
 
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
+import org.apache.jena.query.* ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
 /** Illustraion of working at the DatasetGraph level.
  *  Normally, applications work with {@link Dataset}.
@@ -51,7 +51,7 @@ public class ExTDB_Txn3
     public static void execQuery(String sparqlQueryString, DatasetGraph dsg)
     {
         // Add a datset wrapper to conform with the query interface.
-        // This shoudl not be very expensive.
+        // This should not be very expensive.
         Dataset dataset = DatasetFactory.create(dsg) ;
         
         Query query = QueryFactory.create(sparqlQueryString) ;

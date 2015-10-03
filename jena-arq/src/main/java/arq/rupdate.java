@@ -20,15 +20,16 @@ package arq;
 
 import java.util.List ;
 
-import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+
+import org.apache.jena.update.UpdateExecutionFactory ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateProcessor ;
+import org.apache.jena.update.UpdateRequest ;
+
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModRemote ;
-
-import com.hp.hpl.jena.update.UpdateExecutionFactory ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateProcessor ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class rupdate extends CmdARQ
 {

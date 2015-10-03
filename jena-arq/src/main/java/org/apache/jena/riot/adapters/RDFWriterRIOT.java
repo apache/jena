@@ -22,21 +22,20 @@ import java.io.OutputStream ;
 import java.io.Writer ;
 import java.util.Locale ;
 
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.RDFErrorHandler ;
+import org.apache.jena.rdf.model.RDFWriter ;
+import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
 import org.apache.jena.riot.* ;
-import org.apache.jena.riot.system.IO_JenaWriters ;
 import org.apache.jena.riot.system.RiotLib ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
-import com.hp.hpl.jena.rdf.model.RDFWriter ;
-import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.Symbol ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Symbol ;
 
 /** Adapter from RIOT to old style Jena RDFWriter. */
 public class RDFWriterRIOT implements RDFWriter 
 {
+    // ---- Compatibility
     private final String basename ; 
     private final String jenaName ; 
     private Context context = new Context() ;
@@ -49,71 +48,63 @@ public class RDFWriterRIOT implements RDFWriter
 //        writer = writer() ;
 //    }
     
-    public RDFWriterRIOT(String jenaName)
-    { 
-        this.basename = "org.apache.jena.riot.writer."+jenaName.toLowerCase(Locale.ROOT) ;
-        this.jenaName = jenaName ;
+    public RDFWriterRIOT(String jenaName) {
+        this.basename = "org.apache.jena.riot.writer." + jenaName.toLowerCase(Locale.ROOT);
+        this.jenaName = jenaName;
     }
-    
-    //Initialize late to avoid confusing exceptions during newInstance. 
-    private WriterGraphRIOT writer()
-    {
-        if ( writer != null ) 
-            return writer ;
+
+    // Initialize late to avoid confusing exceptions during newInstance.
+    private WriterGraphRIOT writer() {
+        if ( writer != null )
+            return writer;
         if ( jenaName == null )
-            throw new IllegalArgumentException("Jena writer name is null") ;
-        writer = setWriter() ;
-        return writer ;
+            throw new IllegalArgumentException("Jena writer name is null");
+        writer = setWriter();
+        return writer;
     }
-    
-    // Delayed lookup (avoid problems in newInstance). 
-    private WriterGraphRIOT setWriter()
-    {
-        if ( writer != null ) 
-            return writer ;
+
+    private WriterGraphRIOT setWriter() {
+        if ( writer != null )
+            return writer;
         if ( jenaName == null )
-            throw new IllegalArgumentException("Jena writer name is null") ;
-        RDFFormat format = IO_JenaWriters.getFormatForJenaWriter(jenaName) ;
+            throw new IllegalArgumentException("Jena writer name is null");
+        // For writing via model.write(), use the old names for jena writers.
+        RDFFormat format = RDFWriterRegistry.getFormatForJenaWriter(jenaName) ;
         if ( format != null )
             return RDFDataMgr.createGraphWriter(format) ;
-        // Try lang instead.
-        Lang lang = RDFLanguages.nameToLang(jenaName) ;
+        Lang lang = RDFLanguages.nameToLang(jenaName);
         if ( lang != null )
-            return RDFDataMgr.createGraphWriter(lang) ;
-        throw new RiotException("No graph writer for '"+jenaName+"'") ;
-    }
-    
-    @Override
-    public void write(Model model, Writer out, String base)
-    {
-        if (  base != null && base.equals("") )
-            base = null ;
-        Graph graph = model.getGraph() ;
-        writer().write(out, graph, RiotLib.prefixMap(graph), base, context) ;
+            return RDFDataMgr.createGraphWriter(lang);
+        throw new RiotException("No graph writer for '" + jenaName + "'");
     }
 
     @Override
-    public void write(Model model, OutputStream out, String base)
-    {
+    public void write(Model model, Writer out, String base) {
         if ( base != null && base.equals("") )
-            base = null ;
-        Graph graph = model.getGraph() ;
-        writer().write(out, graph, RiotLib.prefixMap(graph), base, context) ;
-    }
-
-    @Override
-    public Object setProperty(String propName, Object propValue)
-    {
-        Symbol sym = Symbol.create(basename+propName) ;
-        Object oldObj = context.get(sym) ;
-        return oldObj ;
+            base = null;
+        Graph graph = model.getGraph();
+        writer().write(out, graph, RiotLib.prefixMap(graph), base, context);
     }
     
     @Override
-    public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler)
-    {
-        RDFErrorHandler old = errorHandler ;
-        errorHandler = errHandler ;
-        return old ;
+    public void write(Model model, OutputStream out, String base) {
+        if ( base != null && base.equals("") )
+            base = null;
+        Graph graph = model.getGraph();
+        writer().write(out, graph, RiotLib.prefixMap(graph), base, context);
+    }
+
+    @Override
+    public Object setProperty(String propName, Object propValue) {
+        Symbol sym = Symbol.create(basename + propName);
+        Object oldObj = context.get(sym);
+        return oldObj;
+    }
+
+    @Override
+    public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler) {
+        RDFErrorHandler old = errorHandler;
+        errorHandler = errHandler;
+        return old;
     }
 }

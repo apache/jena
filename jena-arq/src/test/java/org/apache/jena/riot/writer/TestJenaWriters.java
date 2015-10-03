@@ -23,24 +23,21 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.Bytes ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RIOT ;
-import org.apache.jena.riot.system.IO_JenaWriters ;
+import org.apache.jena.riot.RDFWriterRegistry ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
 
 @RunWith(Parameterized.class)
 public class TestJenaWriters extends AbstractWriterTest
 {
     @Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> data() {
-        RIOT.init();
         List<Object[]> x = new ArrayList<>() ;
-        for ( String wname : IO_JenaWriters.getJenaWriterNames() )
+        for ( String wname :  RDFWriterRegistry.getJenaWriterNames())
             x.add(new Object[]{wname}) ;
         return x ; 
     }
@@ -58,28 +55,10 @@ public class TestJenaWriters extends AbstractWriterTest
     // We are not testing the correctness of the writers,
     // only the wiring up of the writers to model.write.
 
-//    @Test public void jwrite_01() { test("writer-rt-00.ttl") ; }
-//    @Test public void jwrite_01() { test("writer-rt-01.ttl") ; }
-//    @Test public void jwrite_02() { test("writer-rt-02.ttl") ; }
-//    @Test public void jwrite_03() { test("writer-rt-03.ttl") ; }
-//    @Test public void jwrite_04() { test("writer-rt-04.ttl") ; }
-//    @Test public void jwrite_05() { test("writer-rt-05.ttl") ; }
-//    @Test public void jwrite_06() { test("writer-rt-06.ttl") ; }
-//    @Test public void jwrite_07() { test("writer-rt-07.ttl") ; }
-//    @Test public void jwrite_08() { test("writer-rt-08.ttl") ; }
-//    @Test public void jwrite_09() { test("writer-rt-09.ttl") ; }
-//    @Test public void jwrite_10() { test("writer-rt-10.ttl") ; }
-//    @Test public void jwrite_11() { test("writer-rt-11.ttl") ; }
-//    @Test public void jwrite_12() { test("writer-rt-12.ttl") ; }
-//    @Test public void jwrite_13() { test("writer-rt-13.ttl") ; }
-//    @Test public void jwrite_14() { test("writer-rt-14.ttl") ; }
-//    @Test public void jwrite_15() { test("writer-rt-15.ttl") ; }
-//    @Test public void jwrite_16() { test("writer-rt-16.ttl") ; }
-    
     private void test(String filename) {
         Model m = readModel(filename) ;
         ByteArrayOutputStream out2 = new ByteArrayOutputStream() ;
-        RDFDataMgr.write(out2, m, IO_JenaWriters.getFormatForJenaWriter(jenaFormatName)) ;
+        RDFDataMgr.write(out2, m, RDFWriterRegistry.getFormatForJenaWriter(jenaFormatName)) ;
 
         ByteArrayOutputStream out1 = new ByteArrayOutputStream() ;
         m.write(out1, jenaFormatName) ;

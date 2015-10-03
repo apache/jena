@@ -23,24 +23,24 @@ import java.util.List ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.query.* ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.store.Directory ;
 import org.apache.lucene.store.RAMDirectory ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class TestTextTDB extends BaseTest
 {
     private static Dataset create() {
         Dataset ds1 = TDBFactory.createDataset() ;
         Directory dir = new RAMDirectory() ;
-        EntityDefinition eDef = new EntityDefinition("iri", "text", RDFS.label) ;
-        TextIndex tidx = new TextIndexLucene(dir, eDef, null) ;
+        EntityDefinition eDef = new EntityDefinition("iri", "text");
+        eDef.setPrimaryPredicate(RDFS.label);
+        TextIndex tidx = new TextIndexLucene(dir, new TextIndexConfig(eDef)) ;
         Dataset ds = TextDatasetFactory.create(ds1, tidx) ;
         return ds ;
     }
@@ -172,6 +172,32 @@ public class TestTextTDB extends BaseTest
         List<QuerySolution> x = Iter.toList(rs) ;
         ds.end() ;
         assertEquals(2,x.size());
+    }
+    
+    @Test public void textDB_7_subject_bound_first() {
+        Dataset ds = create() ;
+        data(ds, 
+            "(<ex:g1> <s1> rdfs:label 'foo')",
+            "(<ex:g1> <s1> rdf:type <http://example.org/Entity>)",
+            "(<ex:g1> <s2> rdfs:label 'apple')",
+            "(<ex:g1> <s2> rdf:type <http://example.org/Entity>)",
+            "(<ex:g2> <s3> rdfs:label 'food')",
+            "(<ex:g2> <s3> rdf:type <http://example.org/Entity>)");
+        
+        ds.begin(ReadWrite.READ) ;
+        String qs = StrUtils.strjoinNL(
+            "PREFIX text:   <http://jena.apache.org/text#>",
+            "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+            "SELECT *",
+            "FROM <ex:g1>",
+            "{ ?s a <http://example.org/Entity> . ?s text:query 'foo' }"
+            ) ;
+        Query q = QueryFactory.create(qs) ;
+        QueryExecution qexec = QueryExecutionFactory.create(q, ds) ;
+        ResultSet rs = qexec.execSelect() ;
+        List<QuerySolution> x = Iter.toList(rs) ;
+        ds.end() ;
+        assertEquals(1,x.size());
     }
 
     private static void data(Dataset ds, String... quadStrs) {

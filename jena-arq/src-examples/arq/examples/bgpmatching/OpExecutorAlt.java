@@ -18,14 +18,14 @@
 
 package arq.examples.bgpmatching;
 
-import com.hp.hpl.jena.sparql.ARQNotImplemented ;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
-import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames ;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutor ;
-import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory ;
+import org.apache.jena.sparql.ARQNotImplemented ;
+import org.apache.jena.sparql.algebra.op.OpBGP ;
+import org.apache.jena.sparql.algebra.op.OpDatasetNames ;
+import org.apache.jena.sparql.algebra.op.OpQuadPattern ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.main.OpExecutor ;
+import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
 
 /** Example of an alternative OpExecutor */
 public class OpExecutorAlt extends OpExecutor {

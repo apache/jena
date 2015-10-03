@@ -16,18 +16,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>12-SNAPSHOT</version>
+    <version>15-SNAPSHOT</version>
     <relativePath>../../jena-parent</relativePath>
   </parent> 
 
   <artifactId>jena-osgi-test</artifactId>
-  <version>2.13.0-SNAPSHOT</version>
+  <version>3.0.1-SNAPSHOT</version>
   <name>Apache Jena - OSGi integration tests</name>
   <description>Tests for jena-osgi as a bundle</description>
   <packaging>bundle</packaging>
@@ -135,26 +134,11 @@ limitations under the License.
 
   <build>
     <plugins>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <classpathDependencyExcludes>
-            <classpathDependencyExclude>org.slf4j:slf4j-log4j12</classpathDependencyExclude>
-          </classpathDependencyExcludes>
-          <systemPropertyVariables>
-            <!-- So the test can find the current version of jena-osgi -->
-            <jena-osgi.version>${project.version}</jena-osgi.version>
-            <!-- not so noisy OSGi logging -->
-            <org.ops4j.pax.logging.DefaultServiceLog.level>WARN</org.ops4j.pax.logging.DefaultServiceLog.level>
-          </systemPropertyVariables>
-        </configuration>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <!-- re-enable extensions here for older Mavens -->
+        <extensions>true</extensions>
       </plugin>
       <plugin>
         <!-- generate target/pax-exam-links -->
@@ -186,8 +170,35 @@ limitations under the License.
         </executions>
         <configuration>
         </configuration>
-      </plugin>
 
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <classpathDependencyExcludes>
+            <classpathDependencyExclude>org.slf4j:slf4j-log4j12</classpathDependencyExclude>
+          </classpathDependencyExcludes>
+          <systemPropertyVariables>
+            <!-- So the test can find the current version of jena-osgi -->
+            <jena-osgi.version>${project.version}</jena-osgi.version>
+            <!-- not so noisy OSGi logging -->
+            <org.ops4j.pax.logging.DefaultServiceLog.level>WARN</org.ops4j.pax.logging.DefaultServiceLog.level>
+          </systemPropertyVariables>
+        </configuration>
+        <!-- Explicit execution to run in a phase after the OSGi bundle
+             has been created -->
+        <executions>
+          <execution>
+            <id>default-test</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <!-- delay until integration-test phase -->
+            <phase>integration-test</phase>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 

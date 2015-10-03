@@ -22,7 +22,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import com.hp.hpl.jena.graph.Node;
+import org.apache.jena.graph.Node ;
 
 /**
  * Abstract class for representing column information

@@ -19,21 +19,14 @@
 package org.apache.jena.riot.lang;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.ErrorHandlerTestLib ;
-import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
-import org.apache.jena.riot.RiotReader ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
-import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 
 /** Test the behaviour of the RIOT reader for TriG.  TriG includes checking of terms */
 public class TestLangTrig extends BaseTest
@@ -73,30 +66,20 @@ public class TestLangTrig extends BaseTest
     // Also need to check that the RiotExpection is called in normal use. 
     
     // Bad terms.
-    @Test (expected=ExWarning.class)
+    @Test (expected=ExFatal.class)
     public void trig_20()     { parse("@prefix ex:  <bad iri> .", "{ ex:s ex:p 123 }") ; }
     
-    @Test (expected=ExWarning.class)
+    @Test (expected=ExFatal.class)
     public void trig_21()     { parse("@prefix ex:  <http://example/> .", "{ ex:s <http://example/broken p> 123 }") ; }
     
-    @Test (expected=ExWarning.class)
+    @Test (expected=ExFatal.class)
     public void trig_22()     { parse("{ <x> <p> 'number'^^<bad uri> }") ; }
 
     @Test (expected=ExWarning.class)
     public void trig_23()     { parse("@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .", "{ <x> <p> 'number'^^xsd:byte }") ; }
 
-    //Check reading into a dataset.
-    
-    private static DatasetGraph parse(String... strings)
-    {
-        String string = StrUtils.strjoin("\n", strings) ;
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-        StreamRDF sink = StreamRDFLib.dataset(dsg) ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
-        LangTriG parser = RiotReader.createParserTriG(tokenizer, "http://base/", sink) ;
-        parser.getProfile().setHandler(new ErrorHandlerEx()) ;
-        parser.parse();
-        return dsg ;
+    private static DatasetGraph parse(String... strings) {
+        return ParserTestBaseLib.parseDataset(Lang.TRIG, strings) ;
     }
     
 }

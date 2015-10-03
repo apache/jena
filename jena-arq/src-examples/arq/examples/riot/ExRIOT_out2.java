@@ -18,11 +18,10 @@
 
 package arq.examples.riot;
 
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.rdf.model.Model ;
 
 /** Other writer examples */
 public class ExRIOT_out2

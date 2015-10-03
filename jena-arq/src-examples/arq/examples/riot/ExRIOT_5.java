@@ -22,26 +22,28 @@ import java.io.InputStream ;
 import java.io.Reader ;
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.adapters.RDFReaderRIOT ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.sparql.sse.Item ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.sse.builders.BuilderGraph ;
+import org.apache.jena.sparql.util.Context ;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.sse.Item ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph ;
-import com.hp.hpl.jena.sparql.util.Context ;
-
-/** Example of using RIOT : register a new language */
+/** Example of using RIOT : register a new input language */
 public class ExRIOT_5
 {
+    static { LogCtl.setCmdLogging(); }
+    
     public static void main(String... argv) {
         Lang lang = LangBuilder.create("SSE", "text/x-sse").addFileExtensions("rsse").build() ;
         // This just registers the name, not the parser.
@@ -52,21 +54,18 @@ public class ExRIOT_5
         RDFParserRegistry.registerLangTriples(lang, factory) ;
 
         // use it ...
-        String filename = "data.rsse" ;
+        String filename = "/home/afs/tmp/data.rsse" ;
         // model.read(filename)
+        System.out.println("## -- RDFDataMgr.loadModel") ;
         Model model = RDFDataMgr.loadModel(filename) ;
 
         // print results.
-        model.write(System.out, "TTL") ;
+        RDFDataMgr.write(System.out, model, Lang.TTL) ;
 
-        // Optional extra:
-        // If needed to set or override the syntax, register the name explicitly
-        // ...
-        System.out.println("## --") ;
-        IO_Jena.registerForModelRead("SSE", RDFReaderSSE.class) ;
-        // and use read( , "SSE")
+        System.out.println("## -- Model.read") ;
+        // Model.read( , "SSE")
         Model model2 = ModelFactory.createDefaultModel().read(filename, "SSE") ;
-        model2.write(System.out, "TTL") ;
+        RDFDataMgr.write(System.out, model2, Lang.TTL) ;
     }
 
     static class SSEReaderFactory implements ReaderRIOTFactory

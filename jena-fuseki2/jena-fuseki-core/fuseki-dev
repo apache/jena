@@ -40,13 +40,13 @@ export FUSEKI_BASE="${FUSEKI_BASE:-$FUSEKI_HOME/run}"
 check_dir "FUSEKI_BASE" "$FUSEKI_BASE"
 
 CPF="$FUSEKI_HOME/fuseki.classpath"
-
 if [ ! -e "$CPF" ]; then
     echo "Need to create Fuseki classpath file"
+    echo "Ensure maven is upto date with the latest snapshots and then run"
+    echo -e "( cd $FUSEKI_HOME ; \n  mvn dependency:build-classpath -Dmdep.outputFile=fuseki.classpath )"
     exit 1
 fi
-
-CP="$(. $CPF)"
+CP="$(cat $CPF)"
 
 # Add development directories.
 if [ -e "$FUSEKI_HOME/classes" ]
@@ -61,17 +61,40 @@ fi
 DEVDIRS="jena-core jena-tdb jena-arq jena-text"
 for X in $DEVDIRS
 do
-    CPX="$FUSEKI_HOME/../$X/target/classes"
+    CPX="$FUSEKI_HOME/../../$X/target/classes"
     if [ -e "$CPX" ]
     then
 	CP="$CPX:$CP"
     fi
 done
 
-FUSEKI_LOG="" #${FUSEKI_LOG:-}
-JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
+## echo "$CP"
+## exit
 
-exec java -cp "$CP" $JVM_ARGS $FUSEKI_LOG org.apache.jena.fuseki.cmd.FusekiCmd "$@"
+FUSEKI_LOG="" #${FUSEKI_LOG:-}
+
+if [ -z "$JAVA" ]
+then
+    if [ -z "$JAVA_HOME" ]
+    then
+       JAVA=$(which java)
+    else
+        JAVA=$JAVA_HOME/bin/java
+    fi
+fi
+
+if [ -z "$JAVA" ]
+then
+    (
+	echo "Cannot find a Java JDK."
+	echo "Please set either set JAVA or JAVA_HOME and put java (>=1.8) in your PATH."
+    ) 1>&2
+  exit 1
+fi
+
+JVM_ARGS=${JVM_ARGS:--Xmx1200M}
+
+exec "$JAVA" -cp "$CP" $JVM_ARGS $FUSEKI_LOG org.apache.jena.fuseki.cmd.FusekiCmd "$@"
 
 # Run as war file.
 # java -jar jetty-runner.jar fuseki-server.war

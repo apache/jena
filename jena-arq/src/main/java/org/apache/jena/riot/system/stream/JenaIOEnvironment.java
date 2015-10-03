@@ -20,16 +20,15 @@ package org.apache.jena.riot.system.stream;
 
 import java.util.StringTokenizer ;
 
+import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.adapters.AdapterFileManager ;
+import org.apache.jena.shared.JenaException ;
+import org.apache.jena.util.FileUtils ;
+import org.apache.jena.vocabulary.LocationMappingVocab ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.JenaRuntime ;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.util.FileUtils ;
-import com.hp.hpl.jena.vocabulary.LocationMappingVocab ;
 
 /** Code for using the general facilities of the location mapper/ filemanager subsystem
  *  and set up for Jena usage. e.g. find a location mapper with RDf description. 

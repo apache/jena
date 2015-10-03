@@ -21,6 +21,8 @@ package org.apache.jena.query.spatial;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.lucene.spatial.SpatialStrategy ;
 import org.apache.lucene.spatial.prefix.RecursivePrefixTreeStrategy ;
 import org.apache.lucene.spatial.prefix.tree.GeohashPrefixTree ;
@@ -36,8 +38,6 @@ import org.apache.solr.common.SolrInputDocument ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.spatial4j.core.shape.Shape ;
 
 public class SpatialIndexSolr implements SpatialIndex {

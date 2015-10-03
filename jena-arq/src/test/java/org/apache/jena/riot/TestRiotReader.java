@@ -24,37 +24,36 @@ import static org.junit.Assert.assertNotNull ;
 import static org.junit.Assert.assertTrue ;
 
 import java.io.ByteArrayInputStream ;
-import java.io.UnsupportedEncodingException ;
+import java.nio.charset.StandardCharsets ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.graph.Triple ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.graph.Triple ;
 
 public class TestRiotReader
 {
     @Test
-    public void testCreateIteratorTriples_01() throws UnsupportedEncodingException
+    public void testCreateIteratorTriples_01()
     {
-        Iterator<Triple> it = RiotReader.createIteratorTriples(new ByteArrayInputStream("".getBytes("UTF-8")), RDFLanguages.NTRIPLES, "http://example/");
+        Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8)), RDFLanguages.NTRIPLES, "http://example/");
         
         assertFalse(it.hasNext());
     }
     
     @Test
-    public void testEncodedUTF8() throws UnsupportedEncodingException
+    public void testEncodedUTF8()
     {
-        Iterator<Triple> it = RiotReader.createIteratorTriples(new ByteArrayInputStream("<a> <b> \"\\u263A\" .".getBytes("UTF-8")), RDFLanguages.NTRIPLES, null);
+        Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream("<a> <b> \"\\u263A\" .".getBytes(StandardCharsets.UTF_8)), RDFLanguages.NTRIPLES, null);
         
         assertTrue(it.hasNext());
         assertEquals("☺", it.next().getObject().getLiteralLexicalForm());
     }
     
     @Test
-    public void testRawUTF8() throws UnsupportedEncodingException
+    public void testRawUTF8()
     {
-        Iterator<Triple> it = RiotReader.createIteratorTriples(new ByteArrayInputStream("<a> <b> \"☺\" .".getBytes("UTF-8")), RDFLanguages.NTRIPLES, null);
+        Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream("<a> <b> \"☺\" .".getBytes(StandardCharsets.UTF_8)), RDFLanguages.NTRIPLES, null);
         
         assertTrue(it.hasNext());
         assertEquals("☺", it.next().getObject().getLiteralLexicalForm());
@@ -72,7 +71,7 @@ public class TestRiotReader
                 "   </rdf:Description>" ,
                 "</rdf:RDF>") ;
         
-        Iterator<Triple> it = RiotReader.createIteratorTriples(new ByteArrayInputStream(x.getBytes()), RDFLanguages.RDFXML, "http://example/");
+        Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream(x.getBytes()), RDFLanguages.RDFXML, "http://example/");
         
         assertTrue(it.hasNext());
         Triple t = it.next();

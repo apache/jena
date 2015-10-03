@@ -55,7 +55,8 @@ require.config({
       exports: 'YASQE'
     },
     'yasr': {
-        deps: ['pivottable', 'jquery', 'lib/codemirror', 'datatables'],
+//        deps: ['pivottable', 'jquery', 'lib/codemirror', 'datatables'],
+        deps: ['jquery', 'lib/codemirror', 'datatables'],
         exports: 'YASR'
     },
     'pivottable': {

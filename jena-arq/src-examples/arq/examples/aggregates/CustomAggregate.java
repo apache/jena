@@ -19,22 +19,21 @@
 package arq.examples.aggregates;
 
 import org.apache.jena.atlas.logging.LogCtl ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.expr.aggregate.Accumulator ;
-import com.hp.hpl.jena.sparql.expr.aggregate.AccumulatorFactory ;
-import com.hp.hpl.jena.sparql.expr.aggregate.AggCustom ;
-import com.hp.hpl.jena.sparql.expr.aggregate.AggregateRegistry ;
-import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.graph.NodeConst ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.ExprEvalException ;
+import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.sparql.expr.aggregate.Accumulator ;
+import org.apache.jena.sparql.expr.aggregate.AccumulatorFactory ;
+import org.apache.jena.sparql.expr.aggregate.AggCustom ;
+import org.apache.jena.sparql.expr.aggregate.AggregateRegistry ;
+import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.sparql.graph.NodeConst ;
+import org.apache.jena.sparql.sse.SSE ;
 
 /**
  * Custom aggregate example.

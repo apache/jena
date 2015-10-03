@@ -33,6 +33,11 @@ import java.util.* ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.SysRIOT ;
@@ -42,19 +47,12 @@ import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.apache.jena.riot.writer.WriterGraphRIOTBase ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
-import com.hp.hpl.jena.sparql.ARQConstants ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.sparql.ARQConstants ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /** Misc RIOT code */
 public class RiotLib
@@ -72,7 +70,7 @@ public class RiotLib
         if ( isBNodeIRI(iri) )
         {
             String s = iri.substring(bNodeLabelStart.length()) ;
-            Node n = NodeFactory.createAnon(new AnonId(s)) ;
+            Node n = NodeFactory.createBlankNode(s) ;
             return n ;
         }
         return NodeFactory.createURI(iri) ;
@@ -257,7 +255,7 @@ public class RiotLib
         return PrefixMapFactory.create(dsg.getDefaultGraph().getPrefixMapping()) ;
     }
 
-    private static int calcWidth(PrefixMap prefixMap, String baseURI, Node p)
+    public static int calcWidth(PrefixMap prefixMap, String baseURI, Node p)
     {
         if ( ! prefixMap.contains(rdfNS) && RDF_type.equals(p) )
             return 1 ;

@@ -18,26 +18,25 @@
 
 package org.apache.jena.fuseki ;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.SystemARQ;
-import com.hp.hpl.jena.sparql.lib.Metadata;
-import com.hp.hpl.jena.sparql.mgt.SystemInfo;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.MappingRegistry;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.transaction.TransactionManager;
-import org.apache.jena.fuseki.cache.CacheStore;
-import org.apache.jena.riot.RIOT;
-import org.apache.jena.riot.system.stream.LocatorFTP;
-import org.apache.jena.riot.system.stream.LocatorHTTP;
-import org.apache.jena.riot.system.stream.StreamManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Calendar ;
+import java.util.TimeZone ;
+import java.util.concurrent.TimeUnit ;
 
-import java.util.Calendar;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
+import org.apache.jena.atlas.lib.DateTimeUtils ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.riot.system.stream.LocatorFTP ;
+import org.apache.jena.riot.system.stream.LocatorHTTP ;
+import org.apache.jena.riot.system.stream.StreamManager ;
+import org.apache.jena.sparql.SystemARQ ;
+import org.apache.jena.sparql.lib.Metadata ;
+import org.apache.jena.sparql.mgt.SystemInfo ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.MappingRegistry ;
+import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.transaction.TransactionManager ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 public class Fuseki {
     // General fixed constants.
@@ -91,11 +90,39 @@ public class Fuseki {
 
     /** Date when Fuseki was built */
     static public final String        BUILD_DATE        = metadata.get(PATH + ".build.datetime", "unknown") ;
+    
+    /** Supporting Graph Store Protocol direct naming.
+     * <p>
+     *  A GSP "direct name" is a request, not using ?default or ?graph=, that names the graph
+     *  by the request URL so it is of the form {@code http://server/dataset/graphname...}.
+     *  There are two cases: looking like a service {@code http://server/dataset/service} and
+     *  a longer URL that can't be a service {@code http://server/dataset/segment/segment/...}.
+     *  <p>
+     *  GSP "direct name" is usually off.  It is a rare feature and because of hard wiring to the URL
+     *  quite sensitive to request route. 
+     *  <p>
+     *  The following places use this switch:
+     *  <li>{@code FusekiFilter} for the "clearly not a service" case 
+     *  <li>{@code SPARQL_UberServlet}, end of dispatch (after checking for http://server/dataset/service)
+     *  <li>{@code SPARQL_GSP.determineTarget} This is all-purpose code - should not get there because of other checks.
+     * 
+     */
+    static public final boolean       GSP_DIRECT_NAMING = false ; 
 
     /** An identifier for the HTTP Fuseki server instance */
     static public final String        serverHttpName    = NAME + " (" + VERSION + ")" ;
-
-    /** Loger name for operations */
+    
+    /** An additional identifier for the HTTP Fuseki server instance in a development build */
+    static public final String        serverHttpNameDev   ;
+    static {
+        // See ServletBase.setCommonheaders
+        // If it look like a SNAPSHOT, print build date. Not perfect, but better.  
+        if ( VERSION.contains("SNAPSHOT") && ! BUILD_DATE.startsWith("\\${") )
+            serverHttpNameDev = NAME + " (" + VERSION + " / " + BUILD_DATE +")" ;
+        else 
+            serverHttpNameDev = null ;
+    }
+    /** Logger name for operations */
     public static final String        actionLogName     = PATH + ".Fuseki" ;
 
     /** Instance of log for operations */
@@ -142,12 +169,6 @@ public class Fuseki {
     /** Instance of log for config server messages. */
     public static final Logger        configLog         = LoggerFactory.getLogger(configLogName) ;
 
-    /** Actual log file for cache messages. */
-    public static final String        cacheLogName      = PATH + ".Cache" ;
-
-    /** Instance of log for cache messages. */
-    public static final Logger        cacheLog          = LoggerFactory.getLogger(cacheLogName);
-
     /** Instance of log for config server message s */
     public static boolean             verboseLogging    = false ;
 
@@ -171,13 +192,13 @@ public class Fuseki {
     
     private static boolean            initialized       = false ;
     
-    // Serevr start time and uptime.
+    // Server start time and uptime.
     private static final long startMillis = System.currentTimeMillis() ;
     // Hide server locale
     private static final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("00:00")) ; 
     static { cal.setTimeInMillis(startMillis) ; }  // Exactly the same start point!
     
-    private static final String startDateTime = Utils.calendarToXSDDateTimeString(cal) ; 
+    private static final String startDateTime = DateTimeUtils.calendarToXSDDateTimeString(cal) ; 
     
     /** Return the number of milliseconds since the server started */  
     public static long serverUptimeMillis() {
@@ -202,14 +223,11 @@ public class Fuseki {
         if ( initialized )
             return ;
         initialized = true ;
-        // FusekiEnv.setEnvironment() ;
+        JenaSystem.init() ;
+        // Do explicitly so it happens after subsystem initialization. 
         FusekiLogging.setLogging() ;
-        ARQ.init() ;
         SystemInfo sysInfo = new SystemInfo(FusekiIRI, PATH, VERSION, BUILD_DATE) ;
         SystemARQ.registerSubSystem(sysInfo) ;
-        RIOT.init() ;
-        TDB.init() ;
-        CacheStore.init();
         MappingRegistry.addPrefixMapping("fuseki", FusekiSymbolIRI) ;
 
         TDB.setOptimizerWarningFlag(false) ;
@@ -219,9 +237,9 @@ public class Fuseki {
     }
     
     /**
-     * Get server global {@link com.hp.hpl.jena.sparql.util.Context}.
+     * Get server global {@link org.apache.jena.sparql.util.Context}.
      * 
-     * @return {@link com.hp.hpl.jena.query.ARQ#getContext()}
+     * @return {@link org.apache.jena.query.ARQ#getContext()}
      */
     public static Context getContext() {
         return ARQ.getContext() ;

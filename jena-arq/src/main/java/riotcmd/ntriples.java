@@ -18,11 +18,10 @@
 
 package riotcmd;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Run the N-triples parser - and produce N-triples */
 public class ntriples extends CmdLangParse
@@ -40,7 +39,7 @@ public class ntriples extends CmdLangParse
     @Override
     protected String getCommandName()
     {
-        return Utils.classShortName(ntriples.class) ;
+        return Lib.classShortName(ntriples.class) ;
     }
     
     @Override

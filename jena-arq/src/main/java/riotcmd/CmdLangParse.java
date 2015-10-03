@@ -18,14 +18,25 @@
 
 package riotcmd;
 
+import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.OutputStream ;
+import java.util.zip.GZIPOutputStream ;
 
+import arq.cmdline.ModLangOutput ;
+import arq.cmdline.ModLangParse ;
+import arq.cmdline.ModSymbol ;
+import arq.cmdline.ModTime ;
+import jena.cmd.ArgDecl ;
+import jena.cmd.CmdException;
+import jena.cmd.CmdGeneral ;
+import org.apache.jena.Jena ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
@@ -35,44 +46,41 @@ import org.apache.jena.riot.process.inf.InferenceSetupRDFS ;
 import org.apache.jena.riot.system.* ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
-import arq.cmd.CmdException ;
-import arq.cmdline.* ;
-
-import com.hp.hpl.jena.Jena ;
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.system.JenaSystem ;
 
 /** Common framework for running RIOT parsers */
 public abstract class CmdLangParse extends CmdGeneral
 {
+    static { JenaSystem.init(); }
     protected ModTime modTime                   = new ModTime() ;
     protected ModLangParse modLangParse         = new ModLangParse() ;
     protected ModLangOutput modLangOutput       = new ModLangOutput() ;
-    protected ModSymbol modSymbol               = new ModSymbol() ;
     protected InferenceSetupRDFS setup          = null ; 
+    protected ModSymbol modSymbol               = new ModSymbol() ;
+    protected ArgDecl strictDecl                = new ArgDecl(ArgDecl.NoValue, "strict") ;
+
+    protected boolean cmdStrictMode = false ; 
     
     interface LangHandler {
         String getItemsName() ;
         String getRateName() ;
     }
 
-    static LangHandler langHandlerQuads = new LangHandler()
-    {
+    static LangHandler langHandlerQuads = new LangHandler() {
         @Override
         public String getItemsName()        { return "quads" ; }
         @Override
         public String getRateName()         { return "QPS" ; }
     } ;
-    static LangHandler langHandlerTriples = new LangHandler()
-    {
+    static LangHandler langHandlerTriples = new LangHandler() {
         @Override
         public String getItemsName()        { return "triples" ; }
         @Override
         public String getRateName()         { return "TPS" ; }
     } ;
-    static LangHandler langHandlerAny = new LangHandler()
-    {
+    static LangHandler langHandlerAny = new LangHandler() {
         @Override
         public String getItemsName()        { return "tuples" ; }
         @Override
@@ -84,24 +92,23 @@ public abstract class CmdLangParse extends CmdGeneral
     protected CmdLangParse(String[] argv)
     {
         super(argv) ;
-        
-        super.addModule(modSymbol) ;
-        super.addModule(modTime) ;
-        super.addModule(modLangOutput) ;
-        super.addModule(modLangParse) ;
+        addModule(modSymbol) ;
+        addModule(modTime) ;
+        addModule(modLangOutput) ;
+        addModule(modLangParse) ;
         
         super.modVersion.addClass(Jena.class) ;
-        super.modVersion.addClass(ARQ.class) ;
+        // Force - sometimes initialization does not cause these
+        // to initialized early enough for reflection.
+        String x1 = ARQ.VERSION ;
+        String x2 = ARQ.BUILD_DATE ;
         super.modVersion.addClass(RIOT.class) ;
-        
         
     }
 
     @Override
-    protected String getSummary()
-    {
-        //return getCommandName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] [--skip | --stopOnError] file ..." ;
-        return getCommandName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] [--out=FORMAT] file ..." ;
+    protected String getSummary() {
+        return getCommandName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] [--out=FORMAT] [--compress] file ..." ;
     }
 
     protected long totalMillis = 0 ; 
@@ -109,22 +116,27 @@ public abstract class CmdLangParse extends CmdGeneral
     
     OutputStream output = System.out ;
     StreamRDF outputStream = null ;
-    
 
     @Override
-    protected void processModulesAndArgs() {}
+    protected void processModulesAndArgs() {
+        cmdStrictMode = super.contains(strictDecl) ;
+    }
     
     protected interface PostParseHandler { void postParse(); }
     
     @Override
-    protected void exec()
-    {
+    protected void exec() {
         if ( modLangParse.strictMode() )
             RIOT.setStrictMode(true) ; 
         
         if ( modLangParse.getRDFSVocab() != null )
             setup = new InferenceSetupRDFS(modLangParse.getRDFSVocab()) ;
      
+        if ( modLangOutput.compressedOutput() ) {
+            try { output = new GZIPOutputStream(output, true) ; }
+            catch (IOException e) { IO.exception(e);}
+        }
+            
         outputStream = null ;
         PostParseHandler postParse = null ;
 
@@ -137,30 +149,29 @@ public abstract class CmdLangParse extends CmdGeneral
         
         try {
             if ( super.getPositional().isEmpty() )
-                parseFile("-") ;
-            else
-            {
-                boolean b = super.getPositional().size() > 1 ;
-                for ( String fn : super.getPositional() )
-                {
-                    if ( b && ! super.isQuiet() )
-                        SysRIOT.getLogger().info("File: "+fn) ;
-                    parseFile(fn) ;
+                parseFile("-");
+            else {
+                boolean b = super.getPositional().size() > 1;
+                for ( String fn : super.getPositional() ) {
+                    if ( b && !super.isQuiet() )
+                        SysRIOT.getLogger().info("File: " + fn);
+                    parseFile(fn);
                 }
             }
-        } finally {
-            System.err.flush() ;
-            System.out.flush() ;
+            if ( postParse != null )
+                postParse.postParse();
             if ( super.getPositional().size() > 1 && modTime.timingEnabled() )
                 output("Total", totalTuples, totalMillis, langHandlerOverall) ;
+        } finally {
+            if ( output != System.out )
+                IO.close(output) ;
+            else
+                IO.flush(output);    
+            System.err.flush() ;
         }
-        
-        if ( postParse != null )
-            postParse.postParse() ;
     }
     
-    public void parseFile(String filename)
-    {
+    public void parseFile(String filename) {
         TypedInputStream in = null ;
         if ( filename.equals("-") ) {
             in = new TypedInputStream(System.in) ;
@@ -174,11 +185,11 @@ public abstract class CmdLangParse extends CmdGeneral
             }
             parseFile(null, filename, in) ;
             IO.close(in) ;
+            
         }
     }
 
-    public void parseFile(String defaultBaseURI, String filename, TypedInputStream in)
-    {   
+    public void parseFile(String defaultBaseURI, String filename, TypedInputStream in) {   
         String baseURI = modLangParse.getBaseIRI() ;
         if ( baseURI == null )
             baseURI = defaultBaseURI ;
@@ -187,8 +198,7 @@ public abstract class CmdLangParse extends CmdGeneral
     
     protected abstract Lang selectLang(String filename, ContentType contentType, Lang dftLang  ) ;
 
-    protected void parseRIOT(String baseURI, String filename, TypedInputStream in)
-    {
+    protected void parseRIOT(String baseURI, String filename, TypedInputStream in) {
         ContentType ct = in.getMediaType() ;
         
         baseURI = SysRIOT.chooseBaseIRI(baseURI, filename) ;
@@ -285,8 +295,7 @@ public abstract class CmdLangParse extends CmdGeneral
         totalTuples += n ;
     }
     
-    
-    /** Create a streaming outoput sink if possible */
+    /** Create a streaming output sink if possible */
     protected StreamRDF createStreamSink() {
         if ( modLangParse.toBitBucket() )
             return StreamRDFLib.sinkNull() ;
@@ -294,7 +303,8 @@ public abstract class CmdLangParse extends CmdGeneral
         RDFFormat fmt = modLangOutput.getOutputStreamFormat() ;
         if ( fmt == null )
             return null ;
-        return StreamRDFWriter.getWriterStream(System.out, fmt) ;
+        /** Create an accumulating output stream for later pretty printing */        
+        return StreamRDFWriter.getWriterStream(output, fmt) ;
     }
     
     /** Create an accumulating output stream for later pretty printing */
@@ -308,7 +318,7 @@ public abstract class CmdLangParse extends CmdGeneral
                 // Try as dataset, then as graph.
                 WriterDatasetRIOTFactory w = RDFWriterRegistry.getWriterDatasetFactory(fmt) ;
                 if ( w != null ) {
-                    RDFDataMgr.write(System.out, dsg, fmt) ;
+                    RDFDataMgr.write(output, dsg, fmt) ;
                     return ;
                 }
                 WriterGraphRIOTFactory wg = RDFWriterRegistry.getWriterGraphFactory(fmt) ;
@@ -322,14 +332,12 @@ public abstract class CmdLangParse extends CmdGeneral
         return Pair.create(sink, handler) ;
     }
     
-    protected Tokenizer makeTokenizer(InputStream in)
-    {
+    protected Tokenizer makeTokenizer(InputStream in) {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in) ;
         return tokenizer ;
     }
     
-    protected void output(String label, long numberTriples, long timeMillis, LangHandler handler)
-    {
+    protected void output(String label, long numberTriples, long timeMillis, LangHandler handler) {
         double timeSec = timeMillis/1000.0 ;
         
         System.out.flush() ;
@@ -341,8 +349,7 @@ public abstract class CmdLangParse extends CmdGeneral
                           handler.getRateName()) ;
     }
     
-    protected void output(String label)
-    {
+    protected void output(String label) {
         System.err.printf("%s : \n", label) ;
     }
 }

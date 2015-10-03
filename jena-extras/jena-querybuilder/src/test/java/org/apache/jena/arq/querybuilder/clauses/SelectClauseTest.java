@@ -21,15 +21,16 @@ import static org.junit.Assert.*;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.handlers.SelectHandler;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.VarExprList ;
+import org.apache.jena.sparql.expr.E_Random;
+import org.apache.jena.sparql.expr.Expr;
 import org.junit.After;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractTest;
 import org.xenei.junit.contract.IProducer;
-
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarExprList;
 
 @Contract(SelectClause.class)
 public class SelectClauseTest<T extends SelectClause<?>> extends
@@ -155,6 +156,7 @@ public class SelectClauseTest<T extends SelectClause<?>> extends
 		AbstractQueryBuilder<?> builder = selectClause.addVar(NodeFactory
 				.createVariable("foo"));
 		String[] s = byLine(builder);
+		assertContainsRegex( SELECT+var("foo"), s );
 	}
 
 	@ContractTest
@@ -167,4 +169,29 @@ public class SelectClauseTest<T extends SelectClause<?>> extends
 		assertTrue(query.isQueryResultStar());
 	}
 
+	@ContractTest
+	public void testAddExprVar() throws Exception {
+		SelectClause<?> selectClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> aqb = selectClause.addVar( new E_Random(), Var.alloc( "foo"));
+		
+		Query query = getQuery(aqb);
+		VarExprList expr = query.getProject();
+		assertEquals(1, expr.size());
+		Expr e = expr.getExpr( Var.alloc( "foo" ));
+		assertNotNull( "expression should not be null", e );
+		assertTrue( "Should be an E_Random", e instanceof E_Random);
+	}
+	
+	@ContractTest
+	public void testAddStringVar() throws Exception {
+		SelectClause<?> selectClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> aqb = selectClause.addVar( "rand()", Var.alloc( "foo"));
+		
+		Query query = getQuery(aqb);
+		VarExprList expr = query.getProject();
+		assertEquals(1, expr.size());
+		Expr e = expr.getExpr( Var.alloc( "foo" ));
+		assertNotNull( "expression should not be null", e );
+		assertTrue( "Should be an E_Random", e instanceof E_Random);
+	}
 }

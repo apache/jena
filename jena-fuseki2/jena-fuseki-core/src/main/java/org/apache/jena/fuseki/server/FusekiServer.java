@@ -18,37 +18,33 @@
 
 package org.apache.jena.fuseki.server;
 
-import arq.cmd.CmdException;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.tdb.sys.Names;
-import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.lib.DS;
-import org.apache.jena.atlas.lib.FileOps;
-import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.atlas.lib.Lib;
-import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.fuseki.FusekiConfigException;
-import org.apache.jena.fuseki.build.Builder;
-import org.apache.jena.fuseki.build.FusekiConfig;
-import org.apache.jena.fuseki.build.Template;
-import org.apache.jena.fuseki.build.TemplateFunctions;
-import org.apache.jena.fuseki.servlets.ServletOps;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RDFLanguages;
+import java.io.File ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.io.StringReader ;
+import java.nio.file.Files ;
+import java.nio.file.Path ;
+import java.nio.file.StandardCopyOption ;
+import java.util.* ;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import jena.cmd.CmdException ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.DS ;
+import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.FusekiConfigException ;
+import org.apache.jena.fuseki.build.Builder ;
+import org.apache.jena.fuseki.build.FusekiConfig ;
+import org.apache.jena.fuseki.build.Template ;
+import org.apache.jena.fuseki.build.TemplateFunctions ;
+import org.apache.jena.fuseki.servlets.ServletOps ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.tdb.sys.Names ;
 
 public class FusekiServer
 {
@@ -81,7 +77,7 @@ public class FusekiServer
     public static final String     DFT_SHIRO_INI            = "shiro.ini" ; 
     // In FUSEKI_BASE
     public static final String     DFT_CONFIG               = "config.ttl" ;
-
+    
     /** Directory for TDB databases - this is known to the assembler templates */
     public static Path        dirDatabases       = null ;
     
@@ -241,22 +237,22 @@ public class FusekiServer
         if ( params == null )
             return datasets ;
 
-        if ( params.fusekiConfigFile != null ) {
-            if ( FileOps.exists(params.fusekiConfigFile ) ) {
-                Fuseki.configLog.info("Configuration file: " + params.fusekiConfigFile) ;
-                List<DataAccessPoint> cmdLineDatasets = FusekiConfig.readConfigFile(params.fusekiConfigFile) ;
-                datasets.addAll(cmdLineDatasets) ;
-            } else {
-                Fuseki.configLog.info("Configuration file '" + params.fusekiConfigFile+"' does not exist") ;
-            }
-        } else if ( params.dsg != null ) {
+        if ( params.fusekiCmdLineConfigFile != null ) {
+            List<DataAccessPoint> confDatasets = processConfigFile(params.fusekiCmdLineConfigFile) ;
+            datasets.addAll(confDatasets) ;
+        }
+        else if ( params.fusekiServerConfigFile != null ) {
+            List<DataAccessPoint> confDatasets = processConfigFile(params.fusekiServerConfigFile) ;
+            datasets.addAll(confDatasets) ;
+        }
+        else if ( params.dsg != null ) {
             DataAccessPoint dap = defaultConfiguration(params.datasetPath, params.dsg, params.allowUpdate) ;
             datasets.add(dap) ;
-        } else if ( params.templateFile != null ) {
-            Fuseki.configLog.info("Template file: " + params.templateFile) ;
+        } else if ( params.argTemplateFile != null ) {
+            Fuseki.configLog.info("Template file: " + params.argTemplateFile) ;
             String dir = params.params.get(Template.DIR) ;
             if ( dir != null ) {
-                if ( Lib.equal(dir, Names.memName) ) {
+                if ( Objects.equals(dir, Names.memName) ) {
                     Fuseki.configLog.info("TDB dataset: in-memory") ;
                 } else {
                     if ( !FileOps.exists(dir) )
@@ -264,11 +260,20 @@ public class FusekiServer
                     Fuseki.configLog.info("TDB dataset: directory=" + dir) ;
                 }
             }
-            DataAccessPoint dap = configFromTemplate(params.templateFile, params.datasetPath, params.params) ;
+            DataAccessPoint dap = configFromTemplate(params.argTemplateFile, params.datasetPath, params.params) ;
             datasets.add(dap) ;
         }
         // No datasets is valid.
         return datasets ;
+    }
+    
+    private static List<DataAccessPoint> processConfigFile(String configFilename) {
+        if ( ! FileOps.exists(configFilename) ) {
+            Fuseki.configLog.warn("Configuration file '" + configFilename+"' does not exist") ;
+            return Collections.emptyList(); 
+        }
+        Fuseki.configLog.info("Configuration file: " + configFilename) ;
+        return FusekiConfig.readConfigFile(configFilename) ;
     }
     
     private static DataAccessPoint configFromTemplate(String templateFile, 

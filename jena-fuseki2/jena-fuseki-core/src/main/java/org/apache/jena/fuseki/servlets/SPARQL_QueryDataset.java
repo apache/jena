@@ -18,12 +18,12 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.sparql.core.DatasetDescription ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DynamicDatasets ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.query.Query ;
+import org.apache.jena.sparql.core.DatasetDescription ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DynamicDatasets ;
 
 public class SPARQL_QueryDataset extends SPARQL_Query
 {
@@ -40,19 +40,19 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     protected void validateQuery(HttpAction action, Query query) 
     { }
    
+    /** Decide the datset - this modifies the query 
+     *  If the query has a dataset description.   
+     */
     @Override
-    protected Dataset decideDataset(HttpAction action, Query query, String queryStringLog) 
-    { 
+    protected Dataset decideDataset(HttpAction action, Query query, String queryStringLog) { 
         DatasetGraph dsg = action.getActiveDSG() ;
-        
-        // query.getDatasetDescription() ;
-        
-        // Protocol.
-        DatasetDescription dsDesc = getDatasetDescription(action) ;
-        if (dsDesc != null )
-        {
-            //errorBadRequest("SPARQL Query: Dataset description in the protocol request") ;
+        DatasetDescription dsDesc = getDatasetDescription(action, query) ;
+        if ( dsDesc != null ) {
             dsg = DynamicDatasets.dynamicDataset(dsDesc, dsg, false) ;
+            if ( query.hasDatasetDescription() ) {
+                query.getGraphURIs().clear() ;
+                query.getNamedGraphURIs().clear() ;
+            }
         }
         
         return DatasetFactory.create(dsg) ;

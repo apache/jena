@@ -18,7 +18,6 @@
 
 package jena;
 
-import jena.cmdline.CmdLineUtils ;
 
 
 public class query
@@ -29,6 +28,6 @@ public class query
         // Do this by reflection so it is not assumed that ARQ is available
         // at compile time.
         
-        CmdLineUtils.invokeCmd("arq.query", args) ;
+        InvokingUtil.invokeCmd("arq.query", args) ;
     }
 }

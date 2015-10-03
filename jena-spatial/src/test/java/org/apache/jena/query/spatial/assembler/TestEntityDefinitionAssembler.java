@@ -23,13 +23,8 @@ import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.spatial.EntityDefinition;
 import org.apache.jena.query.spatial.SpatialIndexException;
 import org.apache.jena.query.spatial.SpatialQuery;
+import org.apache.jena.rdf.model.* ;
 import org.junit.Test;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 /**
  * Test assembler for EntityDefinition

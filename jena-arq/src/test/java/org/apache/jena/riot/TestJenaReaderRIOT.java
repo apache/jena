@@ -25,16 +25,13 @@ import java.io.StringReader ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.adapters.RDFReaderFactoryRIOT ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.util.FileUtils ;
 import org.junit.Test ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 /* Test of integration with Jena via model.read.
  * Also tests triples format reading of RDFDataMgr */
@@ -44,27 +41,19 @@ public class TestJenaReaderRIOT extends BaseTest
 
     private static Context context = new Context() ;
     
-    @BeforeClass static public void beforeClass()
-    { 
-        RIOT.init() ;
-    }
-    
-    @AfterClass static public void afterClass()
-    { 
-        // Unwire?
-    }
-
     @Test public void read_01() { jenaread("D.nt") ; }
     @Test public void read_02() { jenaread("D.ttl") ; }
     @Test public void read_03() { jenaread("D.rdf") ; }
     @Test public void read_04() { jenaread("D.rdf") ; }
-    @Test public void read_05() { jenaread("D.json") ; }
+    @Test public void read_05() { jenaread("D.rj") ; }
+    @Test public void read_06() { jenaread("D.jsonld") ; }
 
     @Test public void read_11() { jenaread("D.nt",   "N-TRIPLES") ; }
     @Test public void read_12() { jenaread("D.ttl",  "TTL") ; }
     @Test public void read_13() { jenaread("D.rdf",  "RDF/XML") ; }
     @Test public void read_14() { jenaread("D.rdf",  "RDF/XML-ABBREV") ; }
-    @Test public void read_15() { jenaread("D.json", "RDF/JSON") ; }
+    @Test public void read_15() { jenaread("D.rj", "RDF/JSON") ; }
+    @Test public void read_16() { jenaread("D.jsonld", "JSON-LD") ; }
 
     @Test public void read_21a() { jenaread("D-nt",  "N-TRIPLES") ; }
     @Test public void read_21b() { jenaread("D-nt",  "NTRIPLES") ; }

@@ -18,12 +18,11 @@
 
 package org.apache.jena.riot.langsuite;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.legacy.BaseTest2 ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
-
-import com.hp.hpl.jena.sparql.junit.EarlReport ;
-import com.hp.hpl.jena.sparql.junit.EarlTestCase ;
+import org.apache.jena.sparql.junit.EarlReport ;
+import org.apache.jena.sparql.junit.EarlTestCase ;
 
 public abstract class LangTestCase extends EarlTestCase
 {
@@ -41,7 +40,7 @@ public abstract class LangTestCase extends EarlTestCase
     {        
         // The W3C Turtle and TriG test suites contain IRIs that generate warnings.
         // They are bad NFC for the version of UTF-8 that Java6 understands.
-        BaseTest.setTestLogging(ErrorHandlerFactory.errorHandlerNoWarnings) ;
+        BaseTest2.setTestLogging(ErrorHandlerFactory.errorHandlerNoWarnings) ;
 
         // If the test suite is sloppy, with IRIs that are not good practice, you may need
         // to run with warnings as not-errors ....
@@ -60,7 +59,7 @@ public abstract class LangTestCase extends EarlTestCase
         _tearDown() ;
         SysRIOT.strictMode = sysRIOT_strictMode ;
         SysRIOT.StrictXSDLexicialForms = sysRIOT_strictXSDLexicialForms ;
-        BaseTest.unsetTestLogging() ; 
+        BaseTest2.unsetTestLogging() ; 
     }
 
 }

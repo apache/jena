@@ -18,14 +18,13 @@
 
 package org.apache.jena.jdbc.remote.metadata;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.Connection ;
+import java.sql.SQLException ;
 
-import org.apache.jena.jdbc.JenaJDBC;
-import org.apache.jena.jdbc.metadata.JenaMetadata;
-import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
-
-import com.hp.hpl.jena.sparql.util.Version;
+import org.apache.jena.atlas.lib.Version ;
+import org.apache.jena.jdbc.JenaJDBC ;
+import org.apache.jena.jdbc.metadata.JenaMetadata ;
+import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection ;
 
 /**
  * Represents metadata about connections to remote endpoints
@@ -52,7 +51,7 @@ public class RemoteEndpointMetadata extends JenaMetadata {
     }
 
     @Override
-    public boolean supportsTransactionIsolationLevel(int isolationLevel) throws SQLException {
+    public boolean supportsTransactionIsolationLevel(int isolationLevel) {
         // No transactions supported for remote endpoints
         switch (isolationLevel) {
         case Connection.TRANSACTION_NONE:
@@ -63,24 +62,24 @@ public class RemoteEndpointMetadata extends JenaMetadata {
     }
 
     @Override
-    public int getDatabaseMajorVersion() throws SQLException {
+    public int getDatabaseMajorVersion() {
         // Underlying database is unknown
         return 0;
     }
 
     @Override
-    public int getDatabaseMinorVersion() throws SQLException {
+    public int getDatabaseMinorVersion() {
         // Underlying database is unknown
         return 0;
     }
 
     @Override
-    public String getDatabaseProductName() throws SQLException {
+    public String getDatabaseProductName() {
         return "";
     }
 
     @Override
-    public String getDatabaseProductVersion() throws SQLException {
+    public String getDatabaseProductVersion() {
         // Underlying database is unknown
         return "";
     }
@@ -96,23 +95,23 @@ public class RemoteEndpointMetadata extends JenaMetadata {
     }
 
     @Override
-    public String getDriverName() throws SQLException {
+    public String getDriverName() {
         return "Apache Jena - JDBC - Remote Endpoint Driver";
     }
 
     @Override
-    public String getDriverVersion() throws SQLException {
+    public String getDriverVersion() {
         return jdbc.toString();
     }
 
     @Override
-    public String getURL() throws SQLException {
+    public String getURL() {
         // Underlying database is unknown
         return null;
     }
 
     @Override
-    public String getUserName() throws SQLException {
+    public String getUserName() {
         // Even though we may be using a HTTP authenticator that may not be
         // using a user name based login method and regardless for security
         // reasons the authenticator APIs don't expose the underlying
@@ -121,13 +120,13 @@ public class RemoteEndpointMetadata extends JenaMetadata {
     }
 
     @Override
-    public boolean usesLocalFilePerTable() throws SQLException {
+    public boolean usesLocalFilePerTable() {
         // Remote endpoints don't use local files
         return false;
     }
 
     @Override
-    public boolean usesLocalFiles() throws SQLException {
+    public boolean usesLocalFiles() {
         // Remote endpoints don't use local files
         return false;
     }

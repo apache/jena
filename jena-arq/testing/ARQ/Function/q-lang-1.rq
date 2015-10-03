@@ -1,4 +1,4 @@
-PREFIX  jfn:  <http://jena.hpl.hp.com/ARQ/function#>
+PREFIX  jfn:  <http://jena.apache.org/ARQ/function#>
 PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?v

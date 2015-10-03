@@ -25,14 +25,13 @@ import java.util.List;
 import java.util.Stack;
 
 import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.jdbc.results.metadata.SelectResultsMetadata;
 import org.apache.jena.jdbc.statements.JenaStatement;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.ResultSetRewindable;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import org.apache.jena.query.QueryExecution ;
+import org.apache.jena.query.ResultSetRewindable ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.binding.Binding ;
 
 /**
  * Represents SPARQL SELECT results
@@ -72,7 +71,7 @@ public class MaterializedSelectResults extends MaterializedResults<Binding> {
     }
 
     @Override
-    public void closeStreamInternal() throws SQLException {
+    public void closeStreamInternal() {
         if (this.innerResults != null) {
             if (this.innerResults instanceof Closeable) {
                 ((Closeable) this.innerResults).close();
@@ -117,7 +116,7 @@ public class MaterializedSelectResults extends MaterializedResults<Binding> {
     }
 
     @Override
-    public ResultSetMetaData getMetaData() throws SQLException {
+    public ResultSetMetaData getMetaData() {
         return this.metadata;
     }
 
@@ -125,7 +124,7 @@ public class MaterializedSelectResults extends MaterializedResults<Binding> {
      * Gets whether there are further rows in the underlying SELECT results
      */
     @Override
-    protected boolean hasNext() throws SQLException {
+    protected boolean hasNext() {
         // No null check here because superclass will not call us after we are
         // closed and set to null
         return !this.nextResults.isEmpty() || this.innerResults.hasNext();
@@ -135,7 +134,7 @@ public class MaterializedSelectResults extends MaterializedResults<Binding> {
      * Gets the next row from the underlying SELECT results
      */
     @Override
-    protected Binding moveNext() throws SQLException {
+    protected Binding moveNext() {
         // No null check here because superclass will not call us after we are
         // closed and set to null
 
@@ -150,12 +149,12 @@ public class MaterializedSelectResults extends MaterializedResults<Binding> {
     }
 
     @Override
-    protected boolean hasPrevious() throws SQLException {
+    protected boolean hasPrevious() {
         return this.previousResults.size() > 0;
     }
 
     @Override
-    protected Binding movePrevious() throws SQLException {
+    protected Binding movePrevious() {
         this.nextResults.push(this.previousResults.pop());
         return this.nextResults.peek();
     }

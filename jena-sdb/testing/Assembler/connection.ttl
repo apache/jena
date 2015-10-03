@@ -5,7 +5,7 @@
 @prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix sdb:    <http://jena.hpl.hp.com/2007/sdb#> .
 
-[] ja:loadClass "com.hp.hpl.jena.sdb.SDB" .
+[] ja:loadClass "org.apache.jena.sdb.SDB" .
 
 [ rdf:type sdb:SDBConnection ;
   sdb:sdbType      "hsqldb" ;

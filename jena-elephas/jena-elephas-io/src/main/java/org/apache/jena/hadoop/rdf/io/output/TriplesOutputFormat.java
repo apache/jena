@@ -23,12 +23,11 @@ import java.io.Writer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.io.registry.HadoopRdfIORegistry;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
-
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * An output format for RDF triples that dynamically selects the appropriate triple

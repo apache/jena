@@ -21,16 +21,16 @@ package tdb.examples;
 import org.apache.jena.atlas.iterator.Filter ;
 import org.apache.jena.atlas.lib.Tuple ;
 
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.tdb.sys.TDBInternal ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.query.* ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb.store.NodeId ;
+import org.apache.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.tdb.sys.TDBInternal ;
 
 /** Example of how to filter quads as they are accessed at the lowest level.
  * Can be used to exclude daat from specific graphs.   

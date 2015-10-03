@@ -25,8 +25,7 @@ import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.mem.connections.MemConnection;
 import org.apache.jena.jdbc.statements.AbstractJenaStatementTests;
-
-import com.hp.hpl.jena.query.DatasetFactory;
+import org.apache.jena.query.DatasetFactory ;
 
 /**
  * Tests for statements produced by {@link MemConnection} instances

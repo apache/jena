@@ -47,44 +47,40 @@ public class TokenizerJSON implements Tokenizer
     }
     
     @Override
-    public final boolean hasNext()
-    {
+    public final boolean hasNext() {
         if ( finished )
             return false ;
         if ( token != null )
             return true ;
         skip() ;
-        if (reader.eof())
+        if ( reader.eof() )
             return false ;
         token = parseToken() ;
         return token != null ;
     }
-    
+
     @Override
-    public final boolean eof()
-    {
+    public final boolean eof() {
         return hasNext() ;
     }
 
     /** Move to next token */
     @Override
-    public final Token next()
-    {
-        if ( ! hasNext() )
+    public final Token next() {
+        if ( !hasNext() )
             throw new NoSuchElementException() ;
         Token t = token ;
         token = null ;
         return t ;
     }
 
-    
     @Override
-    public final Token peek()
-    {
-        if ( ! hasNext() ) return null ;
-        return token ; 
+    public final Token peek() {
+        if ( !hasNext() )
+            return null ;
+        return token ;
     }
-    
+
     @Override
     public void remove()
     { throw new UnsupportedOperationException() ; }
@@ -98,50 +94,46 @@ public class TokenizerJSON implements Tokenizer
     // Keys (restricted strings, used as keys in maps)
     //  ALPHA (ALPHA,NUMERIC,_,...)
     
-    private Token parseToken()
-        {
-            token = new Token(getLine(), getColumn()) ;
-            
-            int ch = reader.peekChar() ;
-    
-            // ---- String
-            // Support both "" and '' strings (only "" is legal JSON)
-            if ( ch == CH_QUOTE1 || ch == CH_QUOTE2 )
-            {
-                reader.readChar() ;
-                int ch2 = reader.peekChar() ;
-                if (ch2 == ch )
-                {
-                    // Maybe """-strings/'''-strings
-                    reader.readChar() ; // Read potential second quote.
-                    int ch3 = reader.peekChar() ;
-                    if ( ch3 == ch )
-                    {
-                        // """-strings/'''-strings
-                        reader.readChar() ;
-                        token.setImage(readLong(ch, false)) ;
-                        TokenType tt = (ch == CH_QUOTE1) ? TokenType.LONG_STRING1 : TokenType.LONG_STRING2 ;
-                        token.setType(tt) ;
-                        return token ;
-                    }
-                    // Two quotes then a non-quote.
-                    // Must be '' or ""
-    
-                    // No need to pushback characters as we know the lexical form is the empty string.
-                    //if ( ch2 != EOF ) reader.pushbackChar(ch2) ;
-                    //if ( ch1 != EOF ) reader.pushbackChar(ch1) ;    // Must be '' or ""
-                    token.setImage("") ;
+    private Token parseToken() {
+        token = new Token(getLine(), getColumn()) ;
+
+        int ch = reader.peekChar() ;
+
+        // ---- String
+        // Support both "" and '' strings (only "" is legal JSON)
+        if ( ch == CH_QUOTE1 || ch == CH_QUOTE2 ) {
+            reader.readChar() ;
+            int ch2 = reader.peekChar() ;
+            if ( ch2 == ch ) {
+                // Maybe """-strings/'''-strings
+                reader.readChar() ; // Read potential second quote.
+                int ch3 = reader.peekChar() ;
+                if ( ch3 == ch ) {
+                    // """-strings/'''-strings
+                    reader.readChar() ;
+                    token.setImage(readLong(ch, false)) ;
+                    TokenType tt = (ch == CH_QUOTE1) ? TokenType.LONG_STRING1 : TokenType.LONG_STRING2 ;
+                    token.setType(tt) ;
+                    return token ;
                 }
-                else
-                    // Single quote character.
-                    token.setImage(allBetween(ch, ch, true, false)) ;
-                // Single quoted string.
-                token.setType( (ch == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2 ) ;
-                return token ;
-            }
-    
-            switch(ch)
-            { 
+                // Two quotes then a non-quote.
+                // Must be '' or ""
+
+                // No need to pushback characters as we know the lexical form is
+                // the empty string.
+                // if ( ch2 != EOF ) reader.pushbackChar(ch2) ;
+                // if ( ch1 != EOF ) reader.pushbackChar(ch1) ; // Must be '' or
+                // ""
+                token.setImage("") ;
+            } else
+                // Single quote character.
+                token.setImage(allBetween(ch, ch, true, false)) ;
+            // Single quoted string.
+            token.setType((ch == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2) ;
+            return token ;
+        }
+
+        switch (ch) {
                 // DOT can't start a decimal in JSON.  Check for digit.
                 case CH_DOT:    
     //                reader.readChar() ;
@@ -155,98 +147,123 @@ public class TokenizerJSON implements Tokenizer
     //                }
                     token.setType(TokenType.DOT) ;
                     return token ;
-                    
-                
-                case CH_SEMICOLON:  reader.readChar() ; token.setType(TokenType.SEMICOLON) ; return token ;
-                case CH_COMMA:      reader.readChar() ; token.setType(TokenType.COMMA) ;     return token ;
-                case CH_LBRACE:     reader.readChar() ; token.setType(TokenType.LBRACE) ;    return token ;
-                case CH_RBRACE:     reader.readChar() ; token.setType(TokenType.RBRACE) ;    return token ;
-                case CH_LPAREN:     reader.readChar() ; token.setType(TokenType.LPAREN) ;    return token ;
-                case CH_RPAREN:     reader.readChar() ; token.setType(TokenType.RPAREN) ;    return token ;
-                case CH_LBRACKET:   reader.readChar() ; token.setType(TokenType.LBRACKET) ;  return token ;
-                case CH_RBRACKET:   reader.readChar() ; token.setType(TokenType.RBRACKET) ;  return token ;
-    
-                // Some interesting characters
-                case CH_COLON:      reader.readChar() ; token.setType(TokenType.COLON) ; return token ;
-    //            case CH_UNDERSCORE: reader.readChar() ; token.setType(TokenType.UNDERSCORE) ; return token ;
-                case CH_LT:         reader.readChar() ; token.setType(TokenType.LT) ; return token ;
-                case CH_GT:         reader.readChar() ; token.setType(TokenType.GT) ; return token ;
-                // GE, LE
-            }
-            
-            if ( ch == CH_PLUS || ch == CH_MINUS || range(ch, '0', '9'))
-            {
-                readNumber() ;
+
+            case CH_SEMICOLON :
+                reader.readChar() ;
+                token.setType(TokenType.SEMICOLON) ;
                 return token ;
-            }
-    
-            // Plain words and prefixes.
-            //   Can't start with a number due to numeric test above.
-            //   Can start with a '_' (no blank node test above)
-    
-            readKeyWord(token) ;
+            case CH_COMMA :
+                reader.readChar() ;
+                token.setType(TokenType.COMMA) ;
+                return token ;
+            case CH_LBRACE :
+                reader.readChar() ;
+                token.setType(TokenType.LBRACE) ;
+                return token ;
+            case CH_RBRACE :
+                reader.readChar() ;
+                token.setType(TokenType.RBRACE) ;
+                return token ;
+            case CH_LPAREN :
+                reader.readChar() ;
+                token.setType(TokenType.LPAREN) ;
+                return token ;
+            case CH_RPAREN :
+                reader.readChar() ;
+                token.setType(TokenType.RPAREN) ;
+                return token ;
+            case CH_LBRACKET :
+                reader.readChar() ;
+                token.setType(TokenType.LBRACKET) ;
+                return token ;
+            case CH_RBRACKET :
+                reader.readChar() ;
+                token.setType(TokenType.RBRACKET) ;
+                return token ;
+
+                // Some interesting characters
+            case CH_COLON :
+                reader.readChar() ;
+                token.setType(TokenType.COLON) ;
+                return token ;
+                // case CH_UNDERSCORE: reader.readChar() ;
+                // token.setType(TokenType.UNDERSCORE) ; return token ;
+            case CH_LT :
+                reader.readChar() ;
+                token.setType(TokenType.LT) ;
+                return token ;
+            case CH_GT :
+                reader.readChar() ;
+                token.setType(TokenType.GT) ;
+                return token ;
+                // GE, LE
+        }
+
+        if ( ch == CH_PLUS || ch == CH_MINUS || range(ch, '0', '9') ) {
+            readNumber() ;
             return token ;
         }
 
-    private void skip()
-    {
+        // Plain words and prefixes.
+        // Can't start with a number due to numeric test above.
+        // Can start with a '_' (no blank node test above)
+
+        readKeyWord(token) ;
+        return token ;
+    }
+
+    private void skip() {
         int ch = EOF ;
-        for ( ;; )
-        {
+        for ( ; ; ) {
             if ( reader.eof() )
                 return ;
-    
+
             ch = reader.peekChar() ;
-            if ( ch == CH_HASH )
-            {
+            if ( ch == CH_HASH ) {
                 reader.readChar() ;
-                // Comment.  Skip to NL
-                for ( ;; )
-                {
+                // Comment. Skip to NL
+                for ( ; ; ) {
                     ch = reader.peekChar() ;
                     if ( ch == EOF || isNewlineChar(ch) )
                         break ;
                     reader.readChar() ;
                 }
             }
-            
+
             // Including excess newline chars from comment.
-            if ( ! isWhitespace(ch) )
+            if ( !isWhitespace(ch) )
                 break ;
             reader.readChar() ;
         }
     }
 
-    private void readKeyWord(Token token2)
-    {
+    private void readKeyWord(Token token2) {
         long posn = reader.getPosition() ;
         token2.setImage(readWord(false)) ;
         token2.setType(TokenType.KEYWORD) ;
         int ch = reader.peekChar() ;
 
-        // If we made no progress, nothing found, not even a keyword -- it's an error.
-        if ( posn == reader.getPosition() )  
-            exception(String.format("Unknown char: %c(%d)",ch,ch)) ;
+        // If we made no progress, nothing found, not even a keyword -- it's an
+        // error.
+        if ( posn == reader.getPosition() )
+            exception(String.format("Unknown char: %c(%d)", ch, ch)) ;
     }
-    
-    private String readLong(int quoteChar, boolean endNL)
-    {
+
+    private String readLong(int quoteChar, boolean endNL) {
         sb.setLength(0) ;
-        for ( ;; )
-        {
+        for ( ; ; ) {
             int ch = reader.readChar() ;
-            if ( ch == EOF )
-            {
-                if ( endNL ) return sb.toString() ; 
+            if ( ch == EOF ) {
+                if ( endNL )
+                    return sb.toString() ;
                 exception("Broken long string") ;
             }
-            
-            if ( ch == quoteChar )
-            {
+
+            if ( ch == quoteChar ) {
                 if ( threeQuotes(quoteChar) )
                     return sb.toString() ;
             }
-            
+
             if ( ch == '\\' )
                 ch = readLiteralEscape() ;
             insertLiteralChar(sb, ch) ;
@@ -259,57 +276,49 @@ public class TokenizerJSON implements Tokenizer
     // On return:
     //   If false, have moved over no more characters (due to pushbacks) 
     //   If true, at end of 3 quotes
-    private boolean threeQuotes(int ch)
-    {
+    private boolean threeQuotes(int ch) { 
         //reader.readChar() ;         // Read first quote.
         int ch2 = reader.peekChar() ;
-        if (ch2 != ch )
-        {
-            //reader.pushbackChar(ch2) ;
+        if ( ch2 != ch ) {
+            // reader.pushbackChar(ch2) ;
             return false ;
         }
-        
-        reader.readChar() ;         // Read second quote.
+
+        reader.readChar() ; // Read second quote.
         int ch3 = reader.peekChar() ;
-        if ( ch3 != ch )
-        {
-            //reader.pushbackChar(ch3) ;
+        if ( ch3 != ch ) {
+            // reader.pushbackChar(ch3) ;
             reader.pushbackChar(ch2) ;
             return false ;
         }
-            
+
         // Three quotes.
-        reader.readChar() ;         // Read third quote.
+        reader.readChar() ; // Read third quote.
         return true ;
     }
-    
+
     // Read a "word": alphanumerics, "_", ".", "-"
-    private String readWord(boolean leadingDigitAllowed)
-    {
+    private String readWord(boolean leadingDigitAllowed) {
         sb.setLength(0) ;
         int idx = 0 ;
-        if ( ! leadingDigitAllowed )
-        {
+        if ( !leadingDigitAllowed ) {
             int ch = reader.peekChar() ;
             if ( Character.isDigit(ch) )
                 return "" ;
         }
-        
-        for ( ;; idx++ )
-        {
+
+        for ( ; ; idx++ ) {
             int ch = reader.peekChar() ;
-            
-            if ( Character.isLetterOrDigit(ch) || ch == '_' || ch == '.' || ch == '-' )
-            {
+
+            if ( Character.isLetterOrDigit(ch) || ch == '_' || ch == '.' || ch == '-' ) {
                 reader.readChar() ;
                 sb.append((char)ch) ;
                 continue ;
-            }
-            else
+            } else
                 break ;
-            
+
         }
-        
+
 //        // Trailing DOT?
 //        // BAD : assumes pushbackChar is infinite.
 //        // Check is ends in "."
@@ -334,32 +343,25 @@ public class TokenizerJSON implements Tokenizer
     []      hex             ::=     0x0123456789ABCDEFG
     
     */
-    private void readNumber()
-    {
+    private void readNumber() {
         // One entry, definitely a number.
         // Beware of '.' as a (non) decimal.
         /*
-        maybeSign()
-        digits()
-        if dot ==> decimal, digits
-        if e   ==> double, maybeSign, digits
-        else
-            check not "." for decimal.
-        */
+         * maybeSign() digits() if dot ==> decimal, digits if e ==> double,
+         * maybeSign, digits else check not "." for decimal.
+         */
         boolean isDouble = false ;
         boolean isDecimal = false ;
         sb.setLength(0) ;
-        
+
         int x = 0 ; // Digits before a dot.
         int ch = reader.peekChar() ;
-        if ( ch == '0' )
-        {
+        if ( ch == '0' ) {
             x++ ;
             reader.readChar() ;
             sb.append((char)ch) ;
             ch = reader.peekChar() ;
-            if ( ch == 'x' || ch == 'X' )
-            {
+            if ( ch == 'x' || ch == 'X' ) {
                 reader.readChar() ;
                 sb.append((char)ch) ;
                 readHex(reader, sb) ;
@@ -367,12 +369,9 @@ public class TokenizerJSON implements Tokenizer
                 token.setType(TokenType.HEX) ;
                 return ;
             }
-        }
-        else if ( ch == '-' || ch == '+' )
-        {
+        } else if ( ch == '-' || ch == '+' ) {
             readPossibleSign(sb) ;
         }
-        
         
         x += readDigits(sb) ;
 //        if ( x == 0 )
@@ -380,25 +379,24 @@ public class TokenizerJSON implements Tokenizer
 //            
 //        }
         ch = reader.peekChar() ;
-        if ( ch == CH_DOT )
-        {
+        if ( ch == CH_DOT ) {
             reader.readChar() ;
             sb.append(CH_DOT) ;
-            isDecimal = true ;  // Includes things that will be doubles.
+            isDecimal = true ; // Includes things that will be doubles.
             readDigits(sb) ;
         }
-        
-        if ( x == 0 && ! isDecimal )
-            // Possible a tokenizer error - should not have entered readNumber in the first place.
+
+        if ( x == 0 && !isDecimal )
+            // Possible a tokenizer error - should not have entered readNumber
+            // in the first place.
             exception("Unrecognized as number") ;
-        
-        if ( exponent(sb) )
-        {
+
+        if ( exponent(sb) ) {
             isDouble = true ;
             isDecimal = false ;
-            
+
         }
-        
+
         token.setImage(sb.toString()) ;
         if ( isDouble )
             token.setType(TokenType.DOUBLE) ;
@@ -408,27 +406,23 @@ public class TokenizerJSON implements Tokenizer
             token.setType(TokenType.INTEGER) ;
     }
 
-    
-    private static void readHex(PeekReader reader, StringBuilder sb)
-    {
+    private static void readHex(PeekReader reader, StringBuilder sb) {
         // Just after the 0x, which are in sb
         int x = 0 ;
-        for(;;)
-        {
+        for ( ; ; ) {
             int ch = reader.peekChar() ;
 
-            if ( ! range(ch, '0', '9') && ! range(ch, 'a', 'f') && ! range(ch, 'A', 'F') )
+            if ( !range(ch, '0', '9') && !range(ch, 'a', 'f') && !range(ch, 'A', 'F') )
                 break ;
             reader.readChar() ;
             sb.append((char)ch) ;
             x++ ;
         }
         if ( x == 0 )
-            exception(reader, "No hex characters after "+sb.toString()) ;
+            exception(reader, "No hex characters after " + sb.toString()) ;
     }
 
-    private boolean exponent(StringBuilder sb)
-    {
+    private boolean exponent(StringBuilder sb) {
         int ch = reader.peekChar() ;
         if ( ch != 'e' && ch != 'E' )
             return false ;
@@ -437,116 +431,95 @@ public class TokenizerJSON implements Tokenizer
         readPossibleSign(sb) ;
         int x = readDigits(sb) ;
         if ( x == 0 )
-            exception("Malformed double: "+sb) ;
+            exception("Malformed double: " + sb) ;
         return true ;
     }
 
-    private void readPossibleSign(StringBuilder sb)
-    {
+    private void readPossibleSign(StringBuilder sb) {
         int ch = reader.peekChar() ;
-        if ( ch == '-' || ch == '+' )
-        {
+        if ( ch == '-' || ch == '+' ) {
             reader.readChar() ;
             sb.append((char)ch) ;
         }
     }
 
-    private int readDigits(StringBuilder buffer)
-    {
+    private int readDigits(StringBuilder buffer) {
         int count = 0 ;
-        for(;;)
-        {
+        for ( ; ; ) {
             int ch = reader.peekChar() ;
-            if ( ! range(ch, '0', '9' ) )
+            if ( !range(ch, '0', '9') )
                 break ;
             reader.readChar() ;
             buffer.append((char)ch) ;
-            count ++ ;
+            count++ ;
         }
         return count ;
     }
-    
-    private String langTag()
-    {
+
+    private String langTag() {
         sb.setLength(0) ;
         a2z(sb) ;
         if ( sb.length() == 0 )
             exception("Bad language tag") ;
-        for ( ;; )
-        {
+        for ( ; ; ) {
             int ch = reader.peekChar() ;
-            if ( ch == '-' )
-            {
+            if ( ch == '-' ) {
                 reader.readChar() ;
                 sb.append('-') ;
-                int x = sb.length();
+                int x = sb.length() ;
                 a2zN(sb) ;
                 if ( sb.length() == x )
                     exception("Bad language tag") ;
-            }
-            else
+            } else
                 break ;
         }
-        return sb.toString();
+        return sb.toString() ;
     }
-    
-    private void a2z(StringBuilder sb2)
-    {
-        for ( ;; )
-        {
+
+    private void a2z(StringBuilder sb2) {
+        for ( ; ; ) {
             int ch = reader.peekChar() ;
-            if ( isA2Z(ch) )
-            {
+            if ( isA2Z(ch) ) {
                 reader.readChar() ;
                 sb.append((char)ch) ;
-            }
-            else
+            } else
                 return ;
         }
     }
-    
-    private void a2zN(StringBuilder sb2)
-    {
-        for ( ;; )
-        {
+
+    private void a2zN(StringBuilder sb2) {
+        for ( ; ; ) {
             int ch = reader.peekChar() ;
-            if ( isA2ZN(ch) )
-            {
+            if ( isA2ZN(ch) ) {
                 reader.readChar() ;
                 sb.append((char)ch) ;
-            }
-            else
+            } else
                 return ;
         }
     }
 
     // Blank node label: A-Z,a-z0-9 and '-'
-    private String blankNodeLabel()
-    {
+    private String blankNodeLabel() {
         sb.setLength(0) ;
         boolean seen = false ;
-        for(;;)
-        {
+        for ( ; ; ) {
             int ch = reader.readChar() ;
             if ( ch == EOF )
                 break ;
-            if ( ! isA2ZN(ch) && ch != '-' )
+            if ( !isA2ZN(ch) && ch != '-' )
                 break ;
             sb.append((char)ch) ;
             seen = true ;
         }
-        if ( ! seen )
+        if ( !seen )
             exception("Blank node label missing") ;
-        return sb.toString() ; 
+        return sb.toString() ;
     }
 
-    
     // Get characters between two markers.
     // strEscapes may be processed
     // endNL end of line as an ending is OK
-    private String allBetween(int startCh, int endCh,
-                              boolean strEscapes, boolean endNL)
-    {
+    private String allBetween(int startCh, int endCh, boolean strEscapes, boolean endNL) {
         long y = getLine() ;
         long x = getColumn() ;
         sb.setLength(0) ;
@@ -555,45 +528,43 @@ public class TokenizerJSON implements Tokenizer
 //        int ch0 = reader.readChar() ;
 //        if ( ch0 != startCh )
 //            exception("Broken parser", y, x) ;
-
         
-        for(;;)
-        {
+        for ( ; ; ) {
             int ch = reader.readChar() ;
-            if ( ch == EOF )
-            {
-                if ( endNL ) return sb.toString() ; 
-                exception("Broken token: "+sb.toString(), y, x) ;
+            if ( ch == EOF ) {
+                if ( endNL )
+                    return sb.toString() ;
+                exception("Broken token: " + sb.toString(), y, x) ;
             }
 
             if ( ch == '\n' )
-                exception("Broken token (newline): "+sb.toString(), y, x) ;
-            
-            if ( ch == endCh )
-            {
-                //sb.append(((char)ch)) ;
+                exception("Broken token (newline): " + sb.toString(), y, x) ;
+
+            if ( ch == endCh ) {
+                // sb.append(((char)ch)) ;
                 return sb.toString() ;
             }
-            
-            if ( ch == '\\' )
-            {
+
+            if ( ch == '\\' ) {
                 if ( strEscapes )
                     ch = readLiteralEscape() ;
-                else
-                {
+                else {
                     ch = reader.readChar() ;
-                    if ( ch == EOF )
-                    {
-                        if ( endNL ) return sb.toString() ; 
-                        exception("Broken token: "+sb.toString(), y, x) ;
+                    if ( ch == EOF ) {
+                        if ( endNL )
+                            return sb.toString() ;
+                        exception("Broken token: " + sb.toString(), y, x) ;
                     }
-    
-                    switch (ch)
-                    {
-                        case 'u': ch = readUnicode4Escape(); break ;
-                        case 'U': ch = readUnicode4Escape(); break ;
-                        default:
-                            exception(String.format("illegal escape sequence value: %c (0x%02X)", ch, ch));
+
+                    switch (ch) {
+                        case 'u' :
+                            ch = readUnicode4Escape() ;
+                            break ;
+                        case 'U' :
+                            ch = readUnicode4Escape() ;
+                            break ;
+                        default :
+                            exception(String.format("illegal escape sequence value: %c (0x%02X)", ch, ch)) ;
                             break ;
                     }
                 }
@@ -601,16 +572,14 @@ public class TokenizerJSON implements Tokenizer
             insertLiteralChar(sb, ch) ;
         }
     }
-    
-    private void insertLiteralChar(StringBuilder buffer, int ch)
-    {
+
+    private void insertLiteralChar(StringBuilder buffer, int ch) {
         if ( Character.charCount(ch) == 1 )
             buffer.append((char)ch) ;
-        else
-        {
-            // Convert to UTF-16.  Note that the rest of any systemn this is used
-            // in must also respect codepoints and surrogate pairs. 
-            if ( ! Character.isDefined(ch) && ! Character.isSupplementaryCodePoint(ch) )
+        else {
+            // Convert to UTF-16. Note that the rest of any systemn this is used
+            // in must also respect codepoints and surrogate pairs.
+            if ( !Character.isDefined(ch) && !Character.isSupplementaryCodePoint(ch) )
                 exception(String.format("Illegal codepoint: 0x%04X", ch)) ;
             char[] chars = Character.toChars(ch) ;
             buffer.append(chars) ;
@@ -618,175 +587,165 @@ public class TokenizerJSON implements Tokenizer
     }
 
     @Override
-    public long getColumn()
-    {
+    public long getColumn() {
         return reader.getColNum() ;
     }
 
     @Override
-    public long getLine()
-    {
+    public long getLine() {
         return reader.getLineNum() ;
     }
 
-    // ---- Character classes 
-    
+    // ---- Character classes
+
     @Override
-    public void close()
-    {
-        try { reader.close() ; }
-        catch (IOException ex) { IO.exception(ex) ; }
+    public void close() {
+        try {
+            reader.close() ;
+        }
+        catch (IOException ex) {
+            IO.exception(ex) ;
+        }
     }
 
-    private boolean isA2Z(int ch)
-    {
+    private boolean isA2Z(int ch) {
         return range(ch, 'a', 'z') || range(ch, 'A', 'Z') ;
     }
 
-    private boolean isA2ZN(int ch)
-    {
+    private boolean isA2ZN(int ch) {
         return range(ch, 'a', 'z') || range(ch, 'A', 'Z') || range(ch, '0', '9') ;
     }
 
-    private boolean isNumeric(int ch)
-    {
+    private boolean isNumeric(int ch) {
         return range(ch, '0', '9') ;
     }
-    
-    private static boolean isWhitespace(int ch)
-    {
-        return ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '\f' ;    
+
+    private static boolean isWhitespace(int ch) {
+        return ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '\f' ;
     }
-    
-    private static boolean isNewlineChar(int ch)
-    {
+
+    private static boolean isNewlineChar(int ch) {
         return ch == '\r' || ch == '\n' ;
     }
 
     // ---- Escape sequences
-    
-    private final
-    int readLiteralEscape()
-    {
-        int c = reader.readChar();
-        if ( c==EOF )
+
+    private final int readLiteralEscape() {
+        int c = reader.readChar() ;
+        if ( c == EOF )
             exception("Escape sequence not completed") ;
 
-        switch (c)
-        {
-            case 'n':   return NL ; 
-            case 'r':   return CR ;
-            case 't':   return '\t' ;
-            case 'b':   return '\b' ;
-            case '"':   return '"' ;
-            case '/':   return '/' ;    // JSON requires / escapes.
-            case '\'':  return '\'' ;
-            case '\\':  return '\\' ;
-            case 'u':   return readUnicode4Escape();
-            case 'U':   return readUnicode8Escape();
-            default:
-                exception(String.format("illegal escape sequence value: %c (0x%02X)", c, c));
+        switch (c) {
+            case 'n' :
+                return NL ;
+            case 'r' :
+                return CR ;
+            case 't' :
+                return '\t' ;
+            case 'b' :
+                return '\b' ;
+            case '"' :
+                return '"' ;
+            case '/' :
+                return '/' ; // JSON requires / escapes.
+            case '\'' :
+                return '\'' ;
+            case '\\' :
+                return '\\' ;
+            case 'u' :
+                return readUnicode4Escape() ;
+            case 'U' :
+                return readUnicode8Escape() ;
+            default :
+                exception(String.format("illegal escape sequence value: %c (0x%02X)", c, c)) ;
                 return 0 ;
         }
     }
-    
-    
-    private final
-    int readUnicodeEscape()
-    {
+
+    private final int readUnicodeEscape() {
         int ch = reader.readChar() ;
         if ( ch == EOF )
             exception("Broken escape sequence") ;
 
-        switch (ch)
-        {
-            case 'u': return readUnicode4Escape(); 
-            case 'U': return readUnicode8Escape(); 
-            default:
-                exception(String.format("illegal escape sequence value: %c (0x%02X)", ch, ch));
+        switch (ch) {
+            case 'u' :
+                return readUnicode4Escape() ;
+            case 'U' :
+                return readUnicode8Escape() ;
+            default :
+                exception(String.format("illegal escape sequence value: %c (0x%02X)", ch, ch)) ;
         }
         return 0 ;
     }
-    
-    private final
-    int readUnicode4Escape() { return readUnicodeEscape(4) ; }
-    
-    private final
-    int readUnicode8Escape()
-    {
+
+    private final int readUnicode4Escape() {
+        return readUnicodeEscape(4) ;
+    }
+
+    private final int readUnicode8Escape() {
         int ch8 = readUnicodeEscape(8) ;
         if ( ch8 > Character.MAX_CODE_POINT )
-            exception(String.format("illegal code point in \\U sequence value: 0x%08X", ch8));
+            exception(String.format("illegal code point in \\U sequence value: 0x%08X", ch8)) ;
         return ch8 ;
     }
-    
-    private final
-    int readUnicodeEscape(int N)
-    {
+
+    private final int readUnicodeEscape(int N) {
         int x = 0 ;
-        for ( int i = 0 ; i < N ; i++ )
-        {
+        for ( int i = 0 ; i < N ; i++ ) {
             int d = readHexChar() ;
             if ( d < 0 )
                 return -1 ;
-            x = (x<<4)+d ;
+            x = (x << 4) + d ;
         }
-        return x ; 
+        return x ;
     }
-    
-    private final
-    int readHexChar()
-    {
+
+    private final int readHexChar() {
         int ch = reader.readChar() ;
         if ( ch == EOF )
             exception("Not a hexadecimal character (end of file)") ;
 
         if ( range(ch, '0', '9') )
-            return ch-'0' ;
+            return ch - '0' ;
         if ( range(ch, 'a', 'f') )
-            return ch-'a'+10 ;
+            return ch - 'a' + 10 ;
         if ( range(ch, 'A', 'F') )
-            return ch-'A'+10 ;
-        
-        exception("Not a hexadecimal character: "+(char)ch) ;
-        return -1 ; 
+            return ch - 'A' + 10 ;
+
+        exception("Not a hexadecimal character: " + (char)ch) ;
+        return -1 ;
     }
-    
-    private static boolean range(int ch, char a, char b)
-    {
-        return ( ch >= a && ch <= b ) ;
+
+    private static boolean range(int ch, char a, char b) {
+        return (ch >= a && ch <= b) ;
     }
 
     private boolean expect(String str) {
-        for (int i = 0; i < str.length(); i++) {
-            char want = str.charAt(i);
-            if (reader.eof())
-            {
-                exception("End of input during expected string: "+str) ;
+        for ( int i = 0 ; i < str.length() ; i++ ) {
+            char want = str.charAt(i) ;
+            if ( reader.eof() ) {
+                exception("End of input during expected string: " + str) ;
                 return false ;
             }
-            int inChar = reader.readChar();
-            if (inChar != want) {
-                //System.err.println("N-triple reader error");
-                exception("expected \"" + str + "\"");
-                return false;
+            int inChar = reader.readChar() ;
+            if ( inChar != want ) {
+                // System.err.println("N-triple reader error");
+                exception("expected \"" + str + "\"") ;
+                return false ;
             }
         }
-        return true;
+        return true ;
     }
 
-    private void exception(String message)
-    {
-        exception(message, reader.getLineNum(), reader.getColNum()) ;
-    }
-    
-    private static void exception(PeekReader reader, String message)
-    {
+    private void exception(String message) {
         exception(message, reader.getLineNum(), reader.getColNum()) ;
     }
 
-    private static void exception(String message, long line, long col)
-    {
+    private static void exception(PeekReader reader, String message) {
+        exception(message, reader.getLineNum(), reader.getColNum()) ;
+    }
+
+    private static void exception(String message, long line, long col) {
         throw new JsonParseException(message, (int)line, (int)col) ;
     }
 }

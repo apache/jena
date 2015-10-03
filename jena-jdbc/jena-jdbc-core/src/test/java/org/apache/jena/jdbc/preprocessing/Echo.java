@@ -18,11 +18,10 @@
 
 package org.apache.jena.jdbc.preprocessing;
 
-import java.sql.SQLException;
 import java.util.Properties;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.update.UpdateRequest;
+import org.apache.jena.query.Query ;
+import org.apache.jena.update.UpdateRequest ;
 
 /**
  * A trivial command pre-processor that simply returns the input
@@ -49,17 +48,17 @@ public class Echo implements CommandPreProcessor {
     }
 
     @Override
-    public String preProcessCommandText(String text) throws SQLException {
+    public String preProcessCommandText(String text) {
         return text;
     }
 
     @Override
-    public Query preProcessQuery(Query q) throws SQLException {
+    public Query preProcessQuery(Query q) {
         return q;
     }
 
     @Override
-    public UpdateRequest preProcessUpdate(UpdateRequest u) throws SQLException {
+    public UpdateRequest preProcessUpdate(UpdateRequest u) {
         return u;
     }
 

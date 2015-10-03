@@ -24,6 +24,8 @@ import java.sql.Types;
 import java.util.Iterator;
 
 import org.apache.jena.atlas.iterator.PeekIterator;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.results.JenaResultSet;
 import org.apache.jena.jdbc.results.TripleIteratorResults;
@@ -32,9 +34,6 @@ import org.apache.jena.jdbc.results.metadata.columns.SparqlColumnInfo;
 import org.apache.jena.jdbc.results.metadata.columns.StringColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 
 /**
  * Result set metadata for {@link TripleIteratorResults} instances

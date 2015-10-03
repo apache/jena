@@ -25,10 +25,11 @@ import java.sql.RowIdLifetime;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Types;
+
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.metadata.results.MetaResultSet;
-import com.hp.hpl.jena.vocabulary.XSD;
+import org.apache.jena.vocabulary.XSD ;
 
 /**
  * Database metadata for Jena JDBC connections
@@ -115,55 +116,55 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public boolean isWrapperFor(Class<?> arg0) throws SQLException {
+    public boolean isWrapperFor(Class<?> arg0) throws SQLFeatureNotSupportedException {
         throw new SQLFeatureNotSupportedException();
     }
 
     @Override
-    public <T> T unwrap(Class<T> arg0) throws SQLException {
+    public <T> T unwrap(Class<T> arg0) throws SQLFeatureNotSupportedException {
         throw new SQLFeatureNotSupportedException();
     }
 
     @Override
-    public boolean allProceduresAreCallable() throws SQLException {
+    public boolean allProceduresAreCallable() {
         // Callable procedures not supported in SPARQL
         return false;
     }
 
     @Override
-    public boolean allTablesAreSelectable() throws SQLException {
+    public boolean allTablesAreSelectable() {
         // There is a single table in RDF (the quads table) and it is selectable
         return true;
     }
 
     @Override
-    public boolean autoCommitFailureClosesAllResultSets() throws SQLException {
+    public boolean autoCommitFailureClosesAllResultSets() {
         // Auto-commit failure does not close all result sets
         return false;
     }
 
     @Override
-    public boolean dataDefinitionCausesTransactionCommit() throws SQLException {
+    public boolean dataDefinitionCausesTransactionCommit() {
         // SPARQL Update causes a commit by default for non-transactional
         // connections
         return true;
     }
 
     @Override
-    public boolean dataDefinitionIgnoredInTransactions() throws SQLException {
+    public boolean dataDefinitionIgnoredInTransactions() {
         // SPARQL Update is not ignored for non-transactional connections
         return false;
     }
 
     @Override
-    public boolean deletesAreDetected(int arg0) throws SQLException {
+    public boolean deletesAreDetected(int arg0) {
         // Since modification of result sets is not supported we can report
         // true for the ability to detect row deletes
         return true;
     }
 
     @Override
-    public boolean doesMaxRowSizeIncludeBlobs() throws SQLException {
+    public boolean doesMaxRowSizeIncludeBlobs() {
         // There is no max row size in RDF/SPARQL
         return true;
     }
@@ -179,13 +180,13 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public String getCatalogSeparator() throws SQLException {
+    public String getCatalogSeparator() {
         // Use an empty string to indicate not applicable
         return "";
     }
 
     @Override
-    public String getCatalogTerm() throws SQLException {
+    public String getCatalogTerm() {
         return CATALOG_TERM;
     }
 
@@ -210,7 +211,7 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public final Connection getConnection() throws SQLException {
+    public final Connection getConnection() {
         return this.connection;
     }
 
@@ -221,19 +222,19 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public abstract int getDatabaseMajorVersion() throws SQLException;
+    public abstract int getDatabaseMajorVersion();
 
     @Override
-    public abstract int getDatabaseMinorVersion() throws SQLException;
+    public abstract int getDatabaseMinorVersion();
 
     @Override
-    public abstract String getDatabaseProductName() throws SQLException;
+    public abstract String getDatabaseProductName();
 
     @Override
-    public abstract String getDatabaseProductVersion() throws SQLException;
+    public abstract String getDatabaseProductVersion();
 
     @Override
-    public int getDefaultTransactionIsolation() throws SQLException {
+    public int getDefaultTransactionIsolation() {
         return Connection.TRANSACTION_NONE;
     }
 
@@ -244,10 +245,10 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     public abstract int getDriverMinorVersion();
 
     @Override
-    public abstract String getDriverName() throws SQLException;
+    public abstract String getDriverName();
 
     @Override
-    public abstract String getDriverVersion() throws SQLException;
+    public abstract String getDriverVersion();
 
     @Override
     public ResultSet getExportedKeys(String arg0, String arg1, String arg2) throws SQLException {
@@ -255,7 +256,7 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public String getExtraNameCharacters() throws SQLException {
+    public String getExtraNameCharacters() {
         // Since SPARQL doesn't really have a notion of identifiers like SQL
         // does we return that there are no extra name characters
         return "";
@@ -272,7 +273,7 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public String getIdentifierQuoteString() throws SQLException {
+    public String getIdentifierQuoteString() {
         // Not supported in SPARQL so return space per the JDBC javadoc
         return " ";
     }
@@ -288,140 +289,140 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public final int getJDBCMajorVersion() throws SQLException {
+    public final int getJDBCMajorVersion() {
         return 4;
     }
 
     @Override
-    public final int getJDBCMinorVersion() throws SQLException {
+    public final int getJDBCMinorVersion() {
         return 0;
     }
 
     @Override
-    public int getMaxBinaryLiteralLength() throws SQLException {
+    public int getMaxBinaryLiteralLength() {
         // No limit on RDF term sizes
         return NO_LIMIT;
     }
 
     @Override
-    public int getMaxCatalogNameLength() throws SQLException {
+    public int getMaxCatalogNameLength() {
         // No limit on catalog name lengths because we don't
         // really support catalogs
         return NO_LIMIT;
     }
 
     @Override
-    public int getMaxCharLiteralLength() throws SQLException {
+    public int getMaxCharLiteralLength() {
         // No limit on RDF term sizes
         return NO_LIMIT;
     }
 
     @Override
-    public int getMaxColumnNameLength() throws SQLException {
+    public int getMaxColumnNameLength() {
         // No limit on column name lengths
         return NO_LIMIT;
     }
 
     @Override
-    public int getMaxColumnsInGroupBy() throws SQLException {
+    public int getMaxColumnsInGroupBy() {
         // SPARQL allows arbitrarily many columns in a GROUP BY
         return NO_LIMIT;
     }
 
     @Override
-    public int getMaxColumnsInIndex() throws SQLException {
+    public int getMaxColumnsInIndex() {
         // RDF stores typically index on up to 4 columns since that is all we
         // have
         return 4;
     }
 
     @Override
-    public int getMaxColumnsInOrderBy() throws SQLException {
+    public int getMaxColumnsInOrderBy() {
         // SPARQL allows arbitrarily many columns in ORDER BY
         return NO_LIMIT;
     }
 
     @Override
-    public int getMaxColumnsInSelect() throws SQLException {
+    public int getMaxColumnsInSelect() {
         // SPARQL allows arbitrarily many columns in SELECT clause
         return NO_LIMIT;
     }
 
     @Override
-    public int getMaxColumnsInTable() throws SQLException {
+    public int getMaxColumnsInTable() {
         // RDF stores have up to 4 columns
         return 4;
     }
 
     @Override
-    public int getMaxConnections() throws SQLException {
+    public int getMaxConnections() {
         // Max connections will typically be unlimited
         return NO_LIMIT;
     }
 
     @Override
-    public int getMaxCursorNameLength() throws SQLException {
+    public int getMaxCursorNameLength() {
         // Named cursors aren't supported so there is no limit
         return UNKNOWN_LIMIT;
     }
 
     @Override
-    public int getMaxIndexLength() throws SQLException {
+    public int getMaxIndexLength() {
         // RDF stores typically have no limit on index size, they are as big as
         // they need to be
         return NO_LIMIT;
     }
 
     @Override
-    public int getMaxProcedureNameLength() throws SQLException {
+    public int getMaxProcedureNameLength() {
         // Procedures aren't supported so unknown
         return UNKNOWN_LIMIT;
     }
 
     @Override
-    public int getMaxRowSize() throws SQLException {
+    public int getMaxRowSize() {
         // No limit on triple size
         return NO_LIMIT;
     }
 
     @Override
-    public int getMaxSchemaNameLength() throws SQLException {
+    public int getMaxSchemaNameLength() {
         // We don't really support schemas so there is no limit
         return NO_LIMIT;
     }
 
     @Override
-    public int getMaxStatementLength() throws SQLException {
+    public int getMaxStatementLength() {
         // SPARQL Queries/Updates may be arbitrarily large
         return NO_LIMIT;
     }
 
     @Override
-    public int getMaxStatements() throws SQLException {
+    public int getMaxStatements() {
         // We don't impose any limit on this
         return NO_LIMIT;
     }
 
     @Override
-    public int getMaxTableNameLength() throws SQLException {
+    public int getMaxTableNameLength() {
         // We don't support tables so there is no limit
         return NO_LIMIT;
     }
 
     @Override
-    public int getMaxTablesInSelect() throws SQLException {
+    public int getMaxTablesInSelect() {
         // No limit
         return NO_LIMIT;
     }
 
     @Override
-    public int getMaxUserNameLength() throws SQLException {
+    public int getMaxUserNameLength() {
         // Authentication is an implementation specific detail so unknown
         return UNKNOWN_LIMIT;
     }
 
     @Override
-    public String getNumericFunctions() throws SQLException {
+    public String getNumericFunctions() {
         return StrUtils.strjoin(",", SPARQL_NUMERIC_FUNCTIONS);
     }
 
@@ -436,7 +437,7 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public String getProcedureTerm() throws SQLException {
+    public String getProcedureTerm() {
         // Not supported
         return null;
     }
@@ -447,30 +448,30 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public int getResultSetHoldability() throws SQLException {
+    public int getResultSetHoldability() {
         return JenaConnection.DEFAULT_HOLDABILITY;
     }
 
     @Override
-    public RowIdLifetime getRowIdLifetime() throws SQLException {
+    public RowIdLifetime getRowIdLifetime() {
         // Not supported
         return RowIdLifetime.ROWID_UNSUPPORTED;
     }
 
     @Override
-    public String getSQLKeywords() throws SQLException {
+    public String getSQLKeywords() {
         // TODO Use http://developer.mimer.com/validator/sql-reserved-words.tml
         // as a reference to remove those that also count as SQL Keywords
         return StrUtils.strjoin(",", SPARQL_KEYWORDS);
     }
 
     @Override
-    public int getSQLStateType() throws SQLException {
+    public int getSQLStateType() {
         return sqlStateXOpen;
     }
 
     @Override
-    public String getSchemaTerm() throws SQLException {
+    public String getSchemaTerm() {
         return SCHEMA_TERM;
     }
 
@@ -493,13 +494,13 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public String getSearchStringEscape() throws SQLException {
+    public String getSearchStringEscape() {
         // Does not apply to SPARQL
         return "";
     }
 
     @Override
-    public String getStringFunctions() throws SQLException {
+    public String getStringFunctions() {
         return StrUtils.strjoin(",", SPARQL_STR_FUNCTIONS);
     }
 
@@ -514,7 +515,7 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public String getSystemFunctions() throws SQLException {
+    public String getSystemFunctions() {
         // No system functions supported
         return "";
     }
@@ -535,7 +536,7 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public String getTimeDateFunctions() throws SQLException {
+    public String getTimeDateFunctions() {
         return StrUtils.strjoin(",", SPARQL_DATETIME_FUNCTIONS);
     }
 
@@ -634,10 +635,10 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public abstract String getURL() throws SQLException;
+    public abstract String getURL();
 
     @Override
-    public String getUserName() throws SQLException {
+    public String getUserName() {
         // No authentication used by default
         return null;
     }
@@ -648,13 +649,13 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public boolean insertsAreDetected(int arg0) throws SQLException {
+    public boolean insertsAreDetected(int arg0) {
         // We can't detect inserts that happen while streaming results
         return false;
     }
 
     @Override
-    public boolean isCatalogAtStart() throws SQLException {
+    public boolean isCatalogAtStart() {
         // We don't really support catalogs so we'll say yes
         return true;
     }
@@ -665,402 +666,402 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public boolean locatorsUpdateCopy() throws SQLException {
+    public boolean locatorsUpdateCopy() {
         // SPARQL doesn't support the LOB types so return false
         return false;
     }
 
     @Override
-    public boolean nullPlusNonNullIsNull() throws SQLException {
+    public boolean nullPlusNonNullIsNull() {
         // Concatenating nulls (i.e. unbound/type error) in SPARQL results
         // leads to nulls
         return true;
     }
 
     @Override
-    public boolean nullsAreSortedAtEnd() throws SQLException {
+    public boolean nullsAreSortedAtEnd() {
         // SPARQL sort order puts nulls (i.e. unbound) first
         return false;
     }
 
     @Override
-    public boolean nullsAreSortedAtStart() throws SQLException {
+    public boolean nullsAreSortedAtStart() {
         // SPARQL sort order puts nulls (i.e. unbound) first
         return true;
     }
 
     @Override
-    public boolean nullsAreSortedHigh() throws SQLException {
+    public boolean nullsAreSortedHigh() {
         // SPARQL sort order puts nulls (i.e. unbound) first
         return false;
     }
 
     @Override
-    public boolean nullsAreSortedLow() throws SQLException {
+    public boolean nullsAreSortedLow() {
         // SPARQL sort order puts nulls (i.e. unbound) first
         return true;
     }
 
     @Override
-    public boolean othersDeletesAreVisible(int arg0) throws SQLException {
+    public boolean othersDeletesAreVisible(int arg0) {
         // Since results are streamed it may be possible to see deletes from
         // others depending on the underlying implementation
         return true;
     }
 
     @Override
-    public boolean othersInsertsAreVisible(int arg0) throws SQLException {
+    public boolean othersInsertsAreVisible(int arg0) {
         // Since results are streamed it may be possible to see inserts from
         // others depending on the underlying implementation
         return true;
     }
 
     @Override
-    public boolean othersUpdatesAreVisible(int arg0) throws SQLException {
+    public boolean othersUpdatesAreVisible(int arg0) {
         // Since results are streamed it may be possible to see updates from
         // others depending on the underlying implementation
         return true;
     }
 
     @Override
-    public boolean ownDeletesAreVisible(int arg0) throws SQLException {
+    public boolean ownDeletesAreVisible(int arg0) {
         // Since results are streamed it may be possible to see deletes from
         // ourselves depending on the underlying implementation
         return true;
     }
 
     @Override
-    public boolean ownInsertsAreVisible(int arg0) throws SQLException {
+    public boolean ownInsertsAreVisible(int arg0) {
         // Since results are streamed it may be possible to see inserts from
         // ourselves depending on the underlying implementation
         return true;
     }
 
     @Override
-    public boolean ownUpdatesAreVisible(int arg0) throws SQLException {
+    public boolean ownUpdatesAreVisible(int arg0) {
         // Since results are streamed it may be possible to see deletes from
         // others depending on the underlying implementation
         return true;
     }
 
     @Override
-    public boolean storesLowerCaseIdentifiers() throws SQLException {
+    public boolean storesLowerCaseIdentifiers() {
         // We don't support identifiers in the way that JDBC means so we say
         // false
         return false;
     }
 
     @Override
-    public boolean storesLowerCaseQuotedIdentifiers() throws SQLException {
+    public boolean storesLowerCaseQuotedIdentifiers() {
         // We don't support identifiers in the way that JDBC means so we say
         // false
         return false;
     }
 
     @Override
-    public boolean storesMixedCaseIdentifiers() throws SQLException {
+    public boolean storesMixedCaseIdentifiers() {
         // We don't support identifiers in the way that JDBC means so we say
         // false
         return false;
     }
 
     @Override
-    public boolean storesMixedCaseQuotedIdentifiers() throws SQLException {
+    public boolean storesMixedCaseQuotedIdentifiers() {
         // We don't support identifiers in the way that JDBC means so we say
         // false
         return false;
     }
 
     @Override
-    public boolean storesUpperCaseIdentifiers() throws SQLException {
+    public boolean storesUpperCaseIdentifiers() {
         // We don't support identifiers in the way that JDBC means so we say
         // false
         return false;
     }
 
     @Override
-    public boolean storesUpperCaseQuotedIdentifiers() throws SQLException {
+    public boolean storesUpperCaseQuotedIdentifiers() {
         // We don't support identifiers in the way that JDBC means so we say
         // false
         return false;
     }
 
     @Override
-    public boolean supportsANSI92EntryLevelSQL() throws SQLException {
+    public boolean supportsANSI92EntryLevelSQL() {
         // We don't support SQL
         return false;
     }
 
     @Override
-    public boolean supportsANSI92FullSQL() throws SQLException {
+    public boolean supportsANSI92FullSQL() {
         // We don't support SQL
         return false;
     }
 
     @Override
-    public boolean supportsANSI92IntermediateSQL() throws SQLException {
+    public boolean supportsANSI92IntermediateSQL() {
         // We don't support SQL
         return false;
     }
 
     @Override
-    public boolean supportsAlterTableWithAddColumn() throws SQLException {
+    public boolean supportsAlterTableWithAddColumn() {
         // Schema alteration is not supported
         return false;
     }
 
     @Override
-    public boolean supportsAlterTableWithDropColumn() throws SQLException {
+    public boolean supportsAlterTableWithDropColumn() {
         // Schema alteration is not supported
         return false;
     }
 
     @Override
-    public boolean supportsBatchUpdates() throws SQLException {
+    public boolean supportsBatchUpdates() {
         // Batch updates are implemented
         return true;
     }
 
     @Override
-    public boolean supportsCatalogsInDataManipulation() throws SQLException {
+    public boolean supportsCatalogsInDataManipulation() {
         // We don't really support catalogs so using them in SPARQL Update is
         // not permitted
         return false;
     }
 
     @Override
-    public boolean supportsCatalogsInIndexDefinitions() throws SQLException {
+    public boolean supportsCatalogsInIndexDefinitions() {
         // Custom indexes are not supported
         return false;
     }
 
     @Override
-    public boolean supportsCatalogsInPrivilegeDefinitions() throws SQLException {
+    public boolean supportsCatalogsInPrivilegeDefinitions() {
         // SPARQL has no privilege definition statements
         return false;
     }
 
     @Override
-    public boolean supportsCatalogsInProcedureCalls() throws SQLException {
+    public boolean supportsCatalogsInProcedureCalls() {
         // SPARQL has no procedure calls
         return false;
     }
 
     @Override
-    public boolean supportsCatalogsInTableDefinitions() throws SQLException {
+    public boolean supportsCatalogsInTableDefinitions() {
         // SPARQL has no table definition statements
         return false;
     }
 
     @Override
-    public boolean supportsColumnAliasing() throws SQLException {
+    public boolean supportsColumnAliasing() {
         // SPARQL requires aliasing for computed columns
         return true;
     }
 
     @Override
-    public boolean supportsConvert() throws SQLException {
+    public boolean supportsConvert() {
         // JDBC convert is not supported
         return false;
     }
 
     @Override
-    public boolean supportsConvert(int arg0, int arg1) throws SQLException {
+    public boolean supportsConvert(int arg0, int arg1) {
         // JDBC convert is not supported
         return false;
     }
 
     @Override
-    public boolean supportsCoreSQLGrammar() throws SQLException {
+    public boolean supportsCoreSQLGrammar() {
         // We don't support SQL
         return false;
     }
 
     @Override
-    public boolean supportsCorrelatedSubqueries() throws SQLException {
+    public boolean supportsCorrelatedSubqueries() {
         // SPARQL supports sub-queries
         return true;
     }
 
     @Override
-    public boolean supportsDataDefinitionAndDataManipulationTransactions() throws SQLException {
+    public boolean supportsDataDefinitionAndDataManipulationTransactions() {
         // SPARQL update may be used within a transaction
         return true;
     }
 
     @Override
-    public boolean supportsDataManipulationTransactionsOnly() throws SQLException {
+    public boolean supportsDataManipulationTransactionsOnly() {
         // Transactions may consist only of SPARQL updates
         return true;
     }
 
     @Override
-    public boolean supportsDifferentTableCorrelationNames() throws SQLException {
+    public boolean supportsDifferentTableCorrelationNames() {
         // We don't support tables as such so no
         return false;
     }
 
     @Override
-    public boolean supportsExpressionsInOrderBy() throws SQLException {
+    public boolean supportsExpressionsInOrderBy() {
         // SPARQL allows expressions in ORDER BY
         return true;
     }
 
     @Override
-    public boolean supportsExtendedSQLGrammar() throws SQLException {
+    public boolean supportsExtendedSQLGrammar() {
         // We don't support SQL
         return false;
     }
 
     @Override
-    public boolean supportsFullOuterJoins() throws SQLException {
+    public boolean supportsFullOuterJoins() {
         // SPARQL supports all sorts of joins
         return true;
     }
 
     @Override
-    public boolean supportsGetGeneratedKeys() throws SQLException {
+    public boolean supportsGetGeneratedKeys() {
         // SPARQL has no notion of auto-generated keys (you can argue that
         // UUID() counts) but we certainly can't return them
         return false;
     }
 
     @Override
-    public boolean supportsGroupBy() throws SQLException {
+    public boolean supportsGroupBy() {
         // SPARQL supports GROUP BY
         return true;
     }
 
     @Override
-    public boolean supportsGroupByBeyondSelect() throws SQLException {
+    public boolean supportsGroupByBeyondSelect() {
         // You can GROUP BY a column that you don't select in SPARQL
         return true;
     }
 
     @Override
-    public boolean supportsGroupByUnrelated() throws SQLException {
+    public boolean supportsGroupByUnrelated() {
         // You can GROUP BY a column that you don't select in SPARQL
         return true;
     }
 
     @Override
-    public boolean supportsIntegrityEnhancementFacility() throws SQLException {
+    public boolean supportsIntegrityEnhancementFacility() {
         // Integrity Enhancement SQL is not supported
         return false;
     }
 
     @Override
-    public boolean supportsLikeEscapeClause() throws SQLException {
+    public boolean supportsLikeEscapeClause() {
         // No LIKE in SPARQL
         return false;
     }
 
     @Override
-    public boolean supportsLimitedOuterJoins() throws SQLException {
+    public boolean supportsLimitedOuterJoins() {
         // SPARQL supports all kinds of joins
         return true;
     }
 
     @Override
-    public boolean supportsMinimumSQLGrammar() throws SQLException {
+    public boolean supportsMinimumSQLGrammar() {
         // We don't support SQL
         return false;
     }
 
     @Override
-    public boolean supportsMixedCaseIdentifiers() throws SQLException {
+    public boolean supportsMixedCaseIdentifiers() {
         // We have no direct equivalent to SQL identifiers
         return false;
     }
 
     @Override
-    public boolean supportsMixedCaseQuotedIdentifiers() throws SQLException {
+    public boolean supportsMixedCaseQuotedIdentifiers() {
         // We have no direct equivalent to SQL identifiers
         return false;
     }
 
     @Override
-    public boolean supportsMultipleOpenResults() throws SQLException {
+    public boolean supportsMultipleOpenResults() {
         // We support multiple open results
         return true;
     }
 
     @Override
-    public boolean supportsMultipleResultSets() throws SQLException {
+    public boolean supportsMultipleResultSets() {
         // We don't support multiple result sets from a single execute() call,
         // we do support this from executeBatch()
         return false;
     }
 
     @Override
-    public boolean supportsMultipleTransactions() throws SQLException {
+    public boolean supportsMultipleTransactions() {
         // In principle yes this is possible though exact behaviour may vary by
         // underlying implementation
         return true;
     }
 
     @Override
-    public boolean supportsNamedParameters() throws SQLException {
+    public boolean supportsNamedParameters() {
         // We don't support callable statements
         return false;
     }
 
     @Override
-    public boolean supportsNonNullableColumns() throws SQLException {
+    public boolean supportsNonNullableColumns() {
         // All columns in a RDF store are non-nullable
         return true;
     }
 
     @Override
-    public boolean supportsOpenCursorsAcrossCommit() throws SQLException {
+    public boolean supportsOpenCursorsAcrossCommit() {
         // Cursors may be closed depending on the type of commit
         return false;
     }
 
     @Override
-    public boolean supportsOpenCursorsAcrossRollback() throws SQLException {
+    public boolean supportsOpenCursorsAcrossRollback() {
         // Cursors may be closed depending on the type of commit
         return false;
     }
 
     @Override
-    public boolean supportsOpenStatementsAcrossCommit() throws SQLException {
+    public boolean supportsOpenStatementsAcrossCommit() {
         // Statements remain open across commits
         return true;
     }
 
     @Override
-    public boolean supportsOpenStatementsAcrossRollback() throws SQLException {
+    public boolean supportsOpenStatementsAcrossRollback() {
         // Statements remain open across rollbacks
         return true;
     }
 
     @Override
-    public boolean supportsOrderByUnrelated() throws SQLException {
+    public boolean supportsOrderByUnrelated() {
         // SPARQL allows ORDER BY on a column that you don't SELECT
         return true;
     }
 
     @Override
-    public boolean supportsOuterJoins() throws SQLException {
+    public boolean supportsOuterJoins() {
         // SPARQL supports all kinds of joins
         return true;
     }
 
     @Override
-    public boolean supportsPositionedDelete() throws SQLException {
+    public boolean supportsPositionedDelete() {
         // We don't support deleting from result set
         return false;
     }
 
     @Override
-    public boolean supportsPositionedUpdate() throws SQLException {
+    public boolean supportsPositionedUpdate() {
         // We don't support updating from result set
         return false;
     }
 
     @Override
-    public boolean supportsResultSetConcurrency(int type, int concurrency) throws SQLException {
+    public boolean supportsResultSetConcurrency(int type, int concurrency) {
         // We only support read-only result sets
         if (concurrency != ResultSet.CONCUR_READ_ONLY)
             return false;
@@ -1068,13 +1069,13 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public boolean supportsResultSetHoldability(int holdability) throws SQLException {
+    public boolean supportsResultSetHoldability(int holdability) {
         // Both kinds of holdability are supported
         return true;
     }
 
     @Override
-    public boolean supportsResultSetType(int type) throws SQLException {
+    public boolean supportsResultSetType(int type) {
         // FORWARD_ONLY and SCROLL_INSENSITIVE are supported
         switch (type) {
         case ResultSet.TYPE_FORWARD_ONLY:
@@ -1086,99 +1087,99 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public boolean supportsSavepoints() throws SQLException {
+    public boolean supportsSavepoints() {
         // No notion of savepoints
         return false;
     }
 
     @Override
-    public boolean supportsSchemasInDataManipulation() throws SQLException {
+    public boolean supportsSchemasInDataManipulation() {
         // We don't really support schemas
         return false;
     }
 
     @Override
-    public boolean supportsSchemasInIndexDefinitions() throws SQLException {
+    public boolean supportsSchemasInIndexDefinitions() {
         // RDF stores don't allow custom indices
         return false;
     }
 
     @Override
-    public boolean supportsSchemasInPrivilegeDefinitions() throws SQLException {
+    public boolean supportsSchemasInPrivilegeDefinitions() {
         // SPARQL has no privilege definition statements
         return false;
     }
 
     @Override
-    public boolean supportsSchemasInProcedureCalls() throws SQLException {
+    public boolean supportsSchemasInProcedureCalls() {
         // SPARQL has no procedure calls
         return false;
     }
 
     @Override
-    public boolean supportsSchemasInTableDefinitions() throws SQLException {
+    public boolean supportsSchemasInTableDefinitions() {
         // We don't really support schemas
         return false;
     }
 
     @Override
-    public boolean supportsSelectForUpdate() throws SQLException {
+    public boolean supportsSelectForUpdate() {
         // No SPARQL equivalent
         return false;
     }
 
     @Override
-    public boolean supportsStatementPooling() throws SQLException {
+    public boolean supportsStatementPooling() {
         // We don't do pooling
         return false;
     }
 
     @Override
-    public boolean supportsStoredFunctionsUsingCallSyntax() throws SQLException {
+    public boolean supportsStoredFunctionsUsingCallSyntax() {
         // Stored procedures are not supported in SPARQL
         return false;
     }
 
     @Override
-    public boolean supportsStoredProcedures() throws SQLException {
+    public boolean supportsStoredProcedures() {
         // Stored procedures are not supported in SPARQL
         return false;
     }
 
     @Override
-    public boolean supportsSubqueriesInComparisons() throws SQLException {
+    public boolean supportsSubqueriesInComparisons() {
         // Can't use subqueries in this way in SPARQL
         return false;
     }
 
     @Override
-    public boolean supportsSubqueriesInExists() throws SQLException {
+    public boolean supportsSubqueriesInExists() {
         // SPARQL does allow sub-queries in EXISTS though strictly speaking our
         // EXISTS has no relation to the SQL equivalent
         return true;
     }
 
     @Override
-    public boolean supportsSubqueriesInIns() throws SQLException {
+    public boolean supportsSubqueriesInIns() {
         // Can't use subqueries in this way in SPARQL
         return false;
     }
 
     @Override
-    public boolean supportsSubqueriesInQuantifieds() throws SQLException {
+    public boolean supportsSubqueriesInQuantifieds() {
         // I have no idea what this mean so assume we can't use sub-queries this
         // way in SPARQL
         return false;
     }
 
     @Override
-    public boolean supportsTableCorrelationNames() throws SQLException {
+    public boolean supportsTableCorrelationNames() {
         // We don't really support tables
         return false;
     }
 
     @Override
-    public boolean supportsTransactionIsolationLevel(int arg0) throws SQLException {
+    public boolean supportsTransactionIsolationLevel(int arg0) {
         // Currently only None or Serializable is supported
         switch (arg0) {
         case Connection.TRANSACTION_NONE:
@@ -1190,34 +1191,34 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     }
 
     @Override
-    public boolean supportsTransactions() throws SQLException {
+    public boolean supportsTransactions() {
         // Currently transactions are not supported
         return false;
     }
 
     @Override
-    public boolean supportsUnion() throws SQLException {
+    public boolean supportsUnion() {
         // SPARQL supports UNION
         return true;
     }
 
     @Override
-    public boolean supportsUnionAll() throws SQLException {
+    public boolean supportsUnionAll() {
         // No SPARQL equivalent of UNION ALL
         return false;
     }
 
     @Override
-    public boolean updatesAreDetected(int arg0) throws SQLException {
+    public boolean updatesAreDetected(int arg0) {
         // Updates are never detectable
         return false;
     }
 
     @Override
-    public abstract boolean usesLocalFilePerTable() throws SQLException;
+    public abstract boolean usesLocalFilePerTable();
 
     @Override
-    public abstract boolean usesLocalFiles() throws SQLException;
+    public abstract boolean usesLocalFiles();
 
     @SuppressWarnings("javadoc")
     public ResultSet getPseudoColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern)
@@ -1227,7 +1228,7 @@ public abstract class JenaMetadata implements DatabaseMetaData {
 
     // Java 6/7 compatibility
     @SuppressWarnings("javadoc")
-    public boolean generatedKeyAlwaysReturned() throws SQLException {
+    public boolean generatedKeyAlwaysReturned() {
         // We don't support returning keys
         return false;
     }

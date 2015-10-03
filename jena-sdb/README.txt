@@ -1,8 +1,6 @@
 SDB - SPARQL Database 
 =====================
 
-A database subsystem for Jena, optimized for SPARQL.
-
 Note that SDB is currently in maintenance only mode, the Jena
 developers are releasing it as a component and accepting patches
 contributed to it but there is no active development.  This

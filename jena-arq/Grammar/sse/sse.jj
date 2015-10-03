@@ -47,9 +47,9 @@ PARSER_BEGIN(SSE_ParserCore)
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.sse.lang.parser ;
+package org.apache.jena.sparql.sse.lang.parser ;
 
-import com.hp.hpl.jena.sparql.sse.lang.ParserSSEBase ;
+import org.apache.jena.sparql.sse.lang.ParserSSEBase ;
     
 
 public class SSE_ParserCore extends ParserSSEBase
@@ -234,7 +234,6 @@ void NumericLiteral() : { Token t ; }
 // No whitespace skipping.
 #undef SKIP
 #include "tokens.inc"
-#include "copyright.inc"
 
 /*
 # Local Variables:

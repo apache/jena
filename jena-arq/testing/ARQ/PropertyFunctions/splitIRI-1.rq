@@ -1,5 +1,5 @@
 PREFIX :    <http://example.org/>
-PREFIX apf: <http://jena.hpl.hp.com/ARQ/property#>
+PREFIX apf: <http://jena.apache.org/ARQ/property#>
 
 SELECT ?ns ?ln
 { :x ?p 1 .

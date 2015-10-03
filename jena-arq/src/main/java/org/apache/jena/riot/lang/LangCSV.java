@@ -24,18 +24,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.atlas.csv.CSVParser;
+import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.ErrorHandler;
-import org.apache.jena.riot.system.IRILib;
 import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDF;
-
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
 
 public class LangCSV implements LangRIOT {
 
@@ -145,7 +144,7 @@ public class LangCSV implements LangRIOT {
 	}
 	
 	public static Node caculateSubject(int rowNum, String filename){
-		Node subject = NodeFactory.createAnon();
+		Node subject = NodeFactory.createBlankNode();
 //		String uri = IRIResolver.resolveString(filename) + "#Row_" + rowNum; 
 //		Node subject =  NodeFactory.createURI(uri);
 		return subject;

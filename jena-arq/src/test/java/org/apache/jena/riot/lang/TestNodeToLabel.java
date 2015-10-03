@@ -22,15 +22,14 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.out.NodeToLabel ;
 import org.apache.jena.riot.system.SyntaxLabels ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
 
 @RunWith(Parameterized.class)
 public class TestNodeToLabel extends BaseTest
@@ -90,7 +89,7 @@ public class TestNodeToLabel extends BaseTest
     @Test public void node2label_02()
     {
         NodeToLabel mapper = factory.create() ;
-        Node x = NodeFactory.createAnon() ;
+        Node x = NodeFactory.createBlankNode() ;
         String s1 = mapper.get(null, x) ;
         String s2 = mapper.get(null, x) ;
         assertNotNull(s1) ;
@@ -101,8 +100,8 @@ public class TestNodeToLabel extends BaseTest
     @Test public void node2label_03()
     {
         NodeToLabel mapper = factory.create() ;
-        Node x1 = NodeFactory.createAnon() ;
-        Node x2 = NodeFactory.createAnon() ;
+        Node x1 = NodeFactory.createBlankNode() ;
+        Node x2 = NodeFactory.createBlankNode() ;
         String s1 = mapper.get(null, x1) ;
         String s2 = mapper.get(null, x2) ;
         assertNotNull(s1) ;

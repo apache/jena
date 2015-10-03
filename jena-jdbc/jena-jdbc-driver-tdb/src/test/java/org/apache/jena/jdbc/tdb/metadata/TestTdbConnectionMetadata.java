@@ -28,11 +28,10 @@ import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.metadata.results.AbstractDatabaseMetadataTests;
 import org.apache.jena.jdbc.tdb.connections.TDBConnection;
+import org.apache.jena.tdb.StoreConnection ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb.base.file.Location ;
 import org.junit.After;
-
-import com.hp.hpl.jena.tdb.StoreConnection;
-import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.base.file.Location;
 
 /**
  * Tests database metadata for TDB connections

@@ -23,18 +23,17 @@ import java.io.IOException ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.query.* ;
 import org.apache.jena.query.spatial.* ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ResourceFactory ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.sparql.util.QueryExecUtils ;
+import org.apache.jena.tdb.TDBFactory ;
 import org.apache.lucene.store.Directory ;
 import org.apache.lucene.store.FSDirectory ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ResourceFactory ;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
 
 /** Build a spatial search dataset */
 public class JenaSpatialExample1 {
@@ -96,14 +95,12 @@ public class JenaSpatialExample1 {
     }
     
     private static Dataset initInMemoryDatasetWithLuceneSpatitalIndex(File indexDir) throws IOException{
-		SpatialQuery.init();
 		deleteOldFiles(indexDir);
 		indexDir.mkdirs();
 		return createDatasetByCode(indexDir);
     }
     
     private static Dataset initTDBDatasetWithLuceneSpatitalIndex(File indexDir, File TDBDir) throws IOException{
-		SpatialQuery.init();
 		deleteOldFiles(indexDir);
 		deleteOldFiles(TDBDir);
 		indexDir.mkdirs();

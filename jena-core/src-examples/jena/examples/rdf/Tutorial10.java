@@ -18,9 +18,9 @@
 
 package jena.examples.rdf ;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.*;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.util.FileManager;
+import org.apache.jena.vocabulary.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

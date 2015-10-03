@@ -32,15 +32,14 @@ import java.util.Map ;
 import java.util.Objects ;
 
 import org.apache.jena.atlas.lib.NotImplemented ;
+import org.apache.jena.query.ResultSet ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.thrift.BinRDF ;
-
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.sparql.core.Prologue ;
-import com.hp.hpl.jena.sparql.resultset.* ;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.Context ;
+import org.apache.jena.sparql.core.Prologue ;
+import org.apache.jena.sparql.resultset.* ;
+import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.sparql.util.Context ;
 
 public class ResultSetWriterRegistry {
 

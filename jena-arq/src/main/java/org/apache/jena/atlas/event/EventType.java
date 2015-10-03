@@ -18,7 +18,7 @@
 
 package org.apache.jena.atlas.event;
 
-import com.hp.hpl.jena.sparql.util.Symbol ;
+import org.apache.jena.sparql.util.Symbol ;
 
 public class EventType extends Symbol
 {

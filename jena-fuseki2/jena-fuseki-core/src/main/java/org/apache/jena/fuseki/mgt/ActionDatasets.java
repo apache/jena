@@ -20,50 +20,49 @@ package org.apache.jena.fuseki.mgt;
 
 import static java.lang.String.format ;
 
-import java.io.* ;
-import java.util.HashMap ;
-import java.util.Iterator ;
-import java.util.Map ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.io.OutputStream ;
+import java.io.StringReader ;
+import java.util.* ;
 
-import javax.servlet.ServletException ;
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
+import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.build.Builder ;
 import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.build.TemplateFunctions ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.* ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.shared.uuid.JenaUUID ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
+import org.apache.jena.update.UpdateAction ;
+import org.apache.jena.update.UpdateFactory ;
+import org.apache.jena.update.UpdateRequest ;
 import org.apache.jena.web.HttpSC ;
-
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.shared.uuid.JenaUUID ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
-import com.hp.hpl.jena.update.UpdateAction ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class ActionDatasets extends ActionContainerItem {
     
@@ -79,21 +78,6 @@ public class ActionDatasets extends ActionContainerItem {
     private static final String tDatabasetMem       = "mem" ;
 
     public ActionDatasets() { super() ; }
-    
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        doCommon(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        doCommon(request, response);
-    }
-    
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doCommon(request, response);
-    }
     
     // ---- GET : return details of dataset or datasets.
     @Override
@@ -120,6 +104,7 @@ public class ActionDatasets extends ActionContainerItem {
     
     // ---- POST 
     
+    // DB less version
     @Override
     protected JsonValue execPostContainer(HttpAction action) {
         JenaUUID uuid = JenaUUID.generate() ;
@@ -129,9 +114,14 @@ public class ActionDatasets extends ActionContainerItem {
         ContentType ct = FusekiLib.getContentType(action) ;
         
         boolean committed = false ;
+        // Also acts as a concurrency lock
         system.begin(ReadWrite.WRITE) ;
+        String systemFileCopy = null ;
+        String configFile = null ;
+            
         try {
-            Model model = system.getNamedModel(gn.getURI()) ;
+            // Where to build the templated service/database. 
+            Model model = ModelFactory.createDefaultModel() ;
             StreamRDF dest = StreamRDFLib.graph(model.getGraph()) ;
     
             if ( WebContent.isHtmlForm(ct) )
@@ -141,12 +131,16 @@ public class ActionDatasets extends ActionContainerItem {
             else
                 assemblerFromBody(action, dest) ;
             
-            // Keep a persistent copy.
-            String filename = FusekiServer.dirFileArea.resolve(uuid.asString()).toString() ;
-            try ( OutputStream outCopy = new FileOutputStream(filename) ) {
+            // ----
+            // Keep a persistent copy immediately.  This is not used for
+            // anything other than being "for the record".
+            systemFileCopy = FusekiServer.dirFileArea.resolve(uuid.asString()).toString() ;
+            try ( OutputStream outCopy = IO.openOutputFile(systemFileCopy) ) {
                 RDFDataMgr.write(outCopy, model, Lang.TURTLE) ;
             }
-            
+            // ----
+
+            // Process configuration.
             Statement stmt = getOne(model, null, pServiceName, null) ;
             if ( stmt == null ) {
                 StmtIterator sIter = model.listStatements(null, pServiceName, (RDFNode)null ) ;
@@ -160,42 +154,59 @@ public class ActionDatasets extends ActionContainerItem {
                 
             if ( ! stmt.getObject().isLiteral() )
                 ServletOps.errorBadRequest("Found "+FmtUtils.stringForRDFNode(stmt.getObject())+" : Service names are strings, then used to build the external URI") ;
-            
+
             Resource subject = stmt.getSubject() ;
             Literal object = stmt.getObject().asLiteral() ;
             
             if ( object.getDatatype() != null && ! object.getDatatype().equals(XSDDatatype.XSDstring) )
                 action.log.warn(format("[%d] Service name '%s' is not a string", action.id, FmtUtils.stringForRDFNode(object)));
-    
+            
             String datasetName = object.getLexicalForm() ;
             String datasetPath = DataAccessPoint.canonical(datasetName) ;
             action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
             
+            // ---- Check whether ti already exists 
             if ( DataAccessPointRegistry.get().isRegistered(datasetPath) )
                 // And abort.
                 ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetPath) ;
-                
-            model.removeAll(null, pStatus, null) ;
-            model.add(subject, pStatus, FusekiVocab.stateActive) ;
+            
+            configFile = FusekiEnv.generateConfigurationFilename(datasetPath) ;
+            List<String> existing = FusekiEnv.existingConfigurationFile(datasetPath) ;
+            if ( ! existing.isEmpty() )
+                ServletOps.error(HttpSC.CONFLICT_409, "Configuration file for "+datasetPath+" already exists") ;
+
+            // Write to configuration directory.
+            try ( OutputStream outCopy = IO.openOutputFile(configFile) ) {
+                RDFDataMgr.write(outCopy, model, Lang.TURTLE) ;
+            }
+
+            // Currently do nothing with the system database.
+            // In the future ... maybe ...
+//            Model modelSys = system.getNamedModel(gn.getURI()) ;
+//            modelSys.removeAll(null, pStatus, null) ;
+//            modelSys.add(subject, pStatus, FusekiVocab.stateActive) ;
             
             // Need to be in Resource space at this point.
             DataAccessPoint ref = Builder.buildDataAccessPoint(subject) ;
             DataAccessPointRegistry.register(datasetPath, ref) ;
             action.getResponse().setContentType(WebContent.contentTypeTextPlain); 
             ServletOutputStream out = action.getResponse().getOutputStream() ;
-            out.println("That went well") ;
             ServletOps.success(action) ;
             system.commit();
             committed = true ;
             
         } catch (IOException ex) { IO.exception(ex); }
         finally { 
-            if ( ! committed ) system.abort() ; 
+            if ( ! committed ) {
+                if ( systemFileCopy != null ) FileOps.deleteSilent(systemFileCopy);
+                if ( configFile != null ) FileOps.deleteSilent(configFile);
+                system.abort() ; 
+            }
             system.end() ; 
         }
         return null ;
     }
-
+    
     @Override
     protected JsonValue execPostItem(HttpAction action) {
         String name = action.getDatasetName() ;
@@ -249,13 +260,18 @@ public class ActionDatasets extends ActionContainerItem {
     private void assemblerFromForm(HttpAction action, StreamRDF dest) {
         String dbType = action.getRequest().getParameter(paramDatasetType) ;
         String dbName = action.getRequest().getParameter(paramDatasetName) ;
+        if ( dbType == null || dbName == null )
+            ServletOps.errorBadRequest("Required parameters: dbName and dbType");
+        
         Map<String, String> params = new HashMap<>() ;
-        params.put(Template.NAME, dbName) ;
+        
+        if ( dbName.startsWith("/") )
+            params.put(Template.NAME, dbName.substring(1)) ;
+        else
+            params.put(Template.NAME, dbName) ;
         FusekiServer.addGlobals(params); 
         
         //action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType )) ;
-        if ( dbType == null || dbName == null )
-            ServletOps.errorBadRequest("Required parameters: dbName and dbType");
         if ( ! dbType.equals(tDatabasetTDB) && ! dbType.equals(tDatabasetMem) )
             ServletOps.errorBadRequest(format("dbType can be only '%s' or '%s'", tDatabasetTDB, tDatabasetMem)) ;
         
@@ -279,7 +295,6 @@ public class ActionDatasets extends ActionContainerItem {
 //      ServletOps.errorBadRequest("DELETE only applies to a specific dataset.") ;
 //      return ;
 //  }
-  
         // Does not exist?
         String name = action.getDatasetName() ;
         if ( name == null )
@@ -303,10 +318,15 @@ public class ActionDatasets extends ActionContainerItem {
 
             // Make it invisible to the outside.
             DataAccessPointRegistry.get().remove(name) ;
+            // Delete configuration file.
+            // Should be only one, undo damage if multiple.
+            FusekiEnv.existingConfigurationFile(name).stream().forEach(FileOps::deleteSilent);
             
-            // Name to graph
-            // Statically configured databases aren't in the system database.
-            Quad q = getOne(systemDSG, null, null, pServiceName.asNode(), null) ;
+            // Find graph associated with this dataset name.
+            // (Statically configured databases aren't in the system database.)
+            
+            Node n = NodeFactory.createLiteral(DataAccessPoint.canonical(name)) ;
+            Quad q = getOne(systemDSG, null, null, pServiceName.asNode(), n) ;
 //            if ( q == null )
 //                ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
             if ( q != null ) {
@@ -321,6 +341,9 @@ public class ActionDatasets extends ActionContainerItem {
             if ( ! committed ) systemDSG.abort() ; 
             systemDSG.end() ; 
         }
+        
+        // Remove the configuration file (if any).
+        DataAccessPointRegistry.get().remove(name) ;
     }
 
     // Persistent state change.
@@ -352,7 +375,7 @@ public class ActionDatasets extends ActionContainerItem {
         }
     }
     
-    // ---- Auxilary functions
+    // ---- Auxiliary functions
 
     private static Quad getOne(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
         Iterator<Quad> iter = dsg.findNG(g, s, p, o) ;

@@ -21,9 +21,9 @@ package org.apache.jena.jdbc.results;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
-import org.apache.jena.jdbc.statements.JenaStatement;
 
-import com.hp.hpl.jena.query.QueryExecution;
+import org.apache.jena.jdbc.statements.JenaStatement;
+import org.apache.jena.query.QueryExecution ;
 
 /**
  * Represents a set of materialized results backed by some
@@ -245,24 +245,24 @@ public abstract class MaterializedResults<T> extends QueryExecutionResults {
     }
 
     @Override
-    public final int getFetchDirection() throws SQLException {
+    public final int getFetchDirection() {
         return ResultSet.FETCH_FORWARD;
     }
 
     @Override
-    public final int getFetchSize() throws SQLException {
+    public final int getFetchSize() {
         // TODO Need a buffering wrapper around ResultSet to make this
         // configurable
         return 0;
     }
 
     @Override
-    public final int getRow() throws SQLException {
+    public final int getRow() {
         return this.currRow;
     }
 
     @Override
-    public final int getType() throws SQLException {
+    public final int getType() {
         return ResultSet.TYPE_SCROLL_INSENSITIVE;
     }
 

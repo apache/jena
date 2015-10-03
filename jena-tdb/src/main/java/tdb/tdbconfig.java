@@ -22,26 +22,27 @@ package tdb;
 import java.util.List ;
 import java.util.Map ;
 
+import jena.cmd.ModVersion;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.DateTimeUtils ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.sparql.core.DatasetPrefixStorage ;
+import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.base.file.FileFactory ;
+import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.base.objectfile.StringFile ;
+import org.apache.jena.tdb.setup.Build ;
+import org.apache.jena.tdb.solver.stats.Stats ;
+import org.apache.jena.tdb.solver.stats.StatsResults ;
+import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.tdb.sys.DatasetControlNone ;
+
 import tdb.cmdline.CmdSub ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.CmdTDBGraph ;
 import arq.cmdline.CmdARQ ;
-import arq.cmdline.ModVersion ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
-import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.base.file.FileFactory ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
-import com.hp.hpl.jena.tdb.setup.Build ;
-import com.hp.hpl.jena.tdb.solver.stats.Stats ;
-import com.hp.hpl.jena.tdb.solver.stats.StatsResults ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.sys.DatasetControlNone ;
 
 /** Tools to manage a TDB store.  Subcommand based. */
 public class tdbconfig extends CmdSub
@@ -233,7 +234,7 @@ public class tdbconfig extends CmdSub
         @Override
         protected void exec()
         {
-            System.out.println("-- "+Utils.nowAsString()+" --") ;
+            System.out.println("-- "+DateTimeUtils.nowAsString()+" --") ;
             ModVersion v = new ModVersion(true) ;
             v.addClass(TDB.class) ;
             v.printVersionAndExit() ;

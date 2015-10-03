@@ -21,28 +21,24 @@ package arq;
 import java.io.PrintStream ;
 import java.util.Iterator ;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
-import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
+import org.apache.jena.query.* ;
+import org.apache.jena.shared.JenaException ;
+import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.core.QueryCheckException ;
+import org.apache.jena.sparql.lang.ParserBase ;
+import org.apache.jena.sparql.resultset.ResultSetException ;
+import org.apache.jena.sparql.util.QueryOutputUtils ;
+import org.apache.jena.sparql.util.QueryUtils ;
+
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModEngine ;
 import arq.cmdline.ModQueryIn ;
 import arq.cmdline.ModQueryOut ;
-
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryException ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.core.QueryCheckException ;
-import com.hp.hpl.jena.sparql.lang.ParserBase ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetException ;
-import com.hp.hpl.jena.sparql.util.QueryOutputUtils ;
-import com.hp.hpl.jena.sparql.util.QueryUtils ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** A program to parse and print a query. */
 
@@ -236,7 +232,7 @@ public class qparse extends CmdARQ
     }
 
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
 
 //    static String usage = qparse.class.getName()+
 //            " [--in syntax] [--out syntax] [\"query\" | --query <file>\n"+

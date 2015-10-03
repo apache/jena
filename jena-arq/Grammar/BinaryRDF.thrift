@@ -70,7 +70,7 @@ struct RDF_REPEAT { }
 union RDF_Term {
 1: RDF_IRI          iri
 2: RDF_BNode        bnode
-3: RDF_Literal      literal     # Full form lexical form/datattype/langtag
+3: RDF_Literal      literal     # Full form lexical form/datatype/langtag
 4: RDF_PrefixName   prefixName 
 5: RDF_VAR          variable
 6: RDF_ANY          any

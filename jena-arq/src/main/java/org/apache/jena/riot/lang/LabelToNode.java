@@ -21,12 +21,11 @@ import java.util.HashMap ;
 import java.util.Map ;
 import java.util.UUID;
 
+import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.riot.out.NodeToLabel ;
 import org.apache.jena.riot.system.MapWithScope ;
 import org.apache.jena.riot.system.SyntaxLabels ;
-
-import com.hp.hpl.jena.graph.Node ;
 
 /** Allocation Nodes (Bnodes usually) based on the graph and label 
  * Various different policies.

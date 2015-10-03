@@ -23,14 +23,13 @@ import java.io.ByteArrayOutputStream ;
 import java.util.Arrays ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.* ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 @RunWith(Parameterized.class)
 public class TestRiotWriterGraph extends AbstractWriterTest
@@ -106,6 +105,7 @@ public class TestRiotWriterGraph extends AbstractWriterTest
     @Test public void writer15() { test("writer-rt-15.ttl") ; }
     @Test public void writer16() { test("writer-rt-16.ttl") ; }
     @Test public void writer17() { test("writer-rt-17.ttl") ; }
+    @Test public void writer18() { test("writer-rt-18.ttl") ; }
 
     private void test(String filename)
     {

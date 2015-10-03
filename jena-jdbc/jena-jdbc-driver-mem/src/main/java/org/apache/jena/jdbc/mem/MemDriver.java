@@ -27,11 +27,11 @@ import java.util.Properties;
 import org.apache.jena.jdbc.JenaDriver;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.mem.connections.MemConnection;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.riot.RDFDataMgr;
-
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
+import org.apache.jena.system.JenaSystem ;
 
 /**
  * <p>
@@ -89,7 +89,7 @@ public class MemDriver extends JenaDriver {
      */
     static {
         try {
-            ARQ.init();
+            JenaSystem.init() ;
             register();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to register Jena In-Memory JDBC Driver", e);

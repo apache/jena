@@ -30,12 +30,42 @@
 
   <!-- Apache Shiro setup -->
   <listener>
-    <!--<listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>-->
-    <!-- Support multiple locations, looks in Fuseki-relevant places -->
+    <!-- This replaces org.apache.shiro.web.env.EnvironmentLoaderListener
+         Support multiple locations and looks in Fuseki-relevant places.
+     -->
     <listener-class>org.apache.jena.fuseki.server.ShiroEnvironmentLoader</listener-class>
   </listener>
 
-  <!-- First filter -->
+  <!-- CORS -->
+  <filter>
+    <filter-name>cross-origin</filter-name>
+    <!-- Ported and standalone version of org.eclipse.jetty.servlets.CrossOriginFilter -->
+    <filter-class>org.apache.jena.fuseki.servlets.CrossOriginFilter</filter-class>
+    <!-- Defaults may be fine --> 
+    <init-param>
+      <param-name>allowedOrigins</param-name>
+      <param-value>*</param-value>
+    </init-param>
+    <init-param>
+      <param-name>allowedMethods</param-name>
+      <param-value>GET,POST,DELETE,PUT,HEAD,OPTIONS,PATCH</param-value>
+    </init-param>
+    <init-param>
+      <param-name>allowedHeaders</param-name>
+      <param-value>Accept, Origin, X-Requested-With, Content-Type, Last-Modified, Authorization</param-value>
+    </init-param>
+    <init-param>
+      <param-name>exposedHeaders</param-name>
+      <param-value>Access-Control-Allow-Origin,Access-Control-Allow-Credentials</param-value>
+    </init-param>
+  </filter>
+  
+  <filter-mapping>
+    <filter-name>cross-origin</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!-- Before FusekiFilter -->
   <filter>
     <filter-name>ShiroFilter</filter-name>
     <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
@@ -57,13 +87,14 @@
     -->
     <param-value>shiro.ini</param-value>
   </context-param>
-
+  
   <!-- Apache Jena Fuseki setup -->
 
   <listener>
     <listener-class>org.apache.jena.fuseki.server.FusekiServerListener</listener-class>
   </listener>
 
+  <!-- Fuseki datatset serviced calls -->
   <filter>
     <filter-name>Fuseki</filter-name>
     <filter-class>org.apache.jena.fuseki.servlets.FusekiFilter</filter-class>
@@ -135,6 +166,16 @@
     <servlet-name>PingServlet</servlet-name>
     <servlet-class>org.apache.jena.fuseki.mgt.ActionPing</servlet-class>
   </servlet>
+  
+  <servlet>
+    <servlet-name>BackupListServlet</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionBackupList</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>BackupListServlet</servlet-name>
+    <url-pattern>/$/backups-list</url-pattern>
+  </servlet-mapping>
 
   <servlet-mapping>
    <servlet-name>DumpServlet</servlet-name>

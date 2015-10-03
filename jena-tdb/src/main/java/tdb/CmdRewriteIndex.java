@@ -21,21 +21,20 @@ package tdb;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.FileOps ;
-
-import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
-import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.base.record.Record ;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.index.SetupIndex ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeRewriter ;
-import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.tdb.base.block.BlockMgr ;
+import org.apache.jena.tdb.base.block.BlockMgrFactory ;
+import org.apache.jena.tdb.base.file.FileSet ;
+import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.base.record.Record ;
+import org.apache.jena.tdb.base.record.RecordFactory ;
+import org.apache.jena.tdb.index.RangeIndex ;
+import org.apache.jena.tdb.index.SetupIndex ;
+import org.apache.jena.tdb.index.bplustree.BPlusTree ;
+import org.apache.jena.tdb.index.bplustree.BPlusTreeParams ;
+import org.apache.jena.tdb.index.bplustree.BPlusTreeRewriter ;
+import org.apache.jena.tdb.sys.Names ;
+import org.apache.jena.tdb.sys.SystemTDB ;
 
 /** Rewrite one index */
 public class CmdRewriteIndex
@@ -45,7 +44,7 @@ public class CmdRewriteIndex
         // Usage: srcLocation dstLocation indexName
         if ( argv.length != 3 )
         {
-            System.err.println("Usage: "+Utils.classShortName(CmdRewriteIndex.class)+" SrcLocation DstLocation IndexName") ;
+            System.err.println("Usage: "+Lib.classShortName(CmdRewriteIndex.class)+" SrcLocation DstLocation IndexName") ;
             System.exit(1) ;
         }
         

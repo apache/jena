@@ -18,12 +18,18 @@
 
 package org.apache.jena.riot ;
 
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.sparql.SystemARQ ;
+import org.apache.jena.sparql.mgt.SystemInfo ;
+import org.apache.jena.system.JenaSystem ;
 
 public class RIOT {
-    /** IRI for ARQ */
+    // Initialization statics must be first in the class to avoid
+    // problems with recursive initialization.
+    private static volatile boolean initialized = false ;
+    private static Object           initLock    = new Object() ;
+    
+    /** IRI for RIOT */
     public static final String riotIRI = "http://jena.apache.org/#riot" ;
 
     /** The product name */
@@ -45,17 +51,19 @@ public class RIOT {
         SysRIOT.StrictXSDLexicialForms = state ;
     }
 
-    private static volatile boolean initialized = false ;
-    private static Object           initLock    = new Object() ;
-
     public static void init() {
         if ( initialized )
             return ;
         synchronized (initLock) {
-            if ( initialized )
+            if ( initialized ) {
+                if ( JenaSystem.DEBUG_INIT )
+                    System.err.println("RIOT.init - skip") ;
                 return ;
+            }
             initialized = true ;
-            // Becareful with what this touches - don't touch ARQ.*
+            if ( JenaSystem.DEBUG_INIT )
+                System.err.println("RIOT.init - start") ;
+            // Be careful with what this touches - don't touch ARQ.*
             // because that depends on Jena core and we may be
             // initializing because IO_Ctl (ie. Jena core)
             // called RIOT.init.
@@ -68,6 +76,8 @@ public class RIOT {
             // Don't register JMX info with ARQ as it may not be initialized
             // itself and we can get into a circularity.
             // This is done in ARQ.init at the proper moment.
+            if ( JenaSystem.DEBUG_INIT )
+                System.err.println("RIOT.init - finish") ;
         }
     }
 

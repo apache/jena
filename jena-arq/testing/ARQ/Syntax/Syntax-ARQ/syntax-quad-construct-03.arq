@@ -1,0 +1,3 @@
+PREFIX : <http://example/>
+
+CONSTRUCT { :s :p :o } WHERE {}

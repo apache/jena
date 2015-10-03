@@ -21,9 +21,8 @@ import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.Resource;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.rdf.model.Resource ;
 
 /**
  * Interface that defines the PrologClause as per

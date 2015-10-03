@@ -22,24 +22,16 @@ import static org.apache.jena.query.spatial.assembler.SpatialVocab.NS;
 
 import java.util.List;
 
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.Mode ;
+import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.query.* ;
 import org.apache.jena.query.spatial.EntityDefinition;
 import org.apache.jena.query.spatial.SpatialIndexException;
-
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.query.ParameterizedSparqlString;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Resource ;
 
 public class EntityDefinitionAssembler extends AssemblerBase implements Assembler
 {
@@ -62,7 +54,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
     @Override
     public EntityDefinition open(Assembler a, Resource root, Mode mode)
     {
-        String prologue = "PREFIX : <"+NS+">   PREFIX list: <http://jena.hpl.hp.com/ARQ/list#> " ;
+        String prologue = "PREFIX : <"+NS+">   PREFIX list: <http://jena.apache.org/ARQ/list#> " ;
         Model model = root.getModel() ;
 
         String qs1 = StrUtils.strjoinNL(prologue,

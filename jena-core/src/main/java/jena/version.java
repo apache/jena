@@ -18,10 +18,11 @@
 
 package jena;
 
-import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
+import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
 
-import com.hp.hpl.jena.Jena;
 import java.lang.reflect.*;
+
+import org.apache.jena.Jena ;
 
 /**
  * jena.version
@@ -29,7 +30,7 @@ import java.lang.reflect.*;
  */
 public class version implements Jena {
 
-    static { setLog4jConfiguration() ; }
+    static { setCmdLogging(); }
 
     /**
 	 * Print out jena version information and exit.

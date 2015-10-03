@@ -21,16 +21,16 @@ import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.clauses.PrologClause;
 import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.rdf.model.ResourceFactory ;
 import org.junit.After;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractTest;
 import org.xenei.junit.contract.IProducer;
-
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 @Contract(PrologClause.class)
 public class PrologClauseTest<T extends PrologClause<?>> extends

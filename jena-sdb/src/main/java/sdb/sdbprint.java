@@ -20,22 +20,23 @@ package sdb;
 
 import java.util.List;
 
-import sdb.cmd.CmdArgsDB;
-import arq.cmd.CmdException;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.ModQueryIn;
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
-import com.hp.hpl.jena.sdb.sql.JDBC;
-import com.hp.hpl.jena.sdb.store.LayoutType;
-import com.hp.hpl.jena.sdb.util.PrintSDB;
+import org.apache.jena.query.Query ;
+import org.apache.jena.query.Syntax ;
+import org.apache.jena.sdb.SDB ;
+import org.apache.jena.sdb.Store ;
+import org.apache.jena.sdb.StoreDesc ;
+import org.apache.jena.sdb.engine.QueryEngineSDB ;
+import org.apache.jena.sdb.sql.JDBC ;
+import org.apache.jena.sdb.store.LayoutType ;
+import org.apache.jena.sdb.util.PrintSDB ;
+import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.atlas.lib.Lib ;
+
+import sdb.cmd.CmdArgsDB;
+import arq.cmdline.ModQueryIn;
 
 
 /**
@@ -170,5 +171,5 @@ public class sdbprint extends CmdArgsDB
     }
 
     @Override
-    protected String getCommandName() { return Utils.className(this) ; }
+    protected String getCommandName() { return Lib.className(this) ; }
 }

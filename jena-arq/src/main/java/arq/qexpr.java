@@ -18,30 +18,30 @@
 
 package arq;
 
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
+import jena.cmd.CmdLineArgs;
+import jena.cmd.TerminationException;
+
+import org.apache.jena.Jena ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.ARQ ;
+import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.riot.out.NodeFmtLib ;
-import arq.cmd.CmdException ;
-import arq.cmd.TerminationException ;
-import arq.cmdline.ArgDecl ;
-import arq.cmdline.CmdLineArgs ;
-
-import com.hp.hpl.jena.Jena ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.QueryParseException ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.ARQConstants ;
-import com.hp.hpl.jena.sparql.core.Prologue ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
-import com.hp.hpl.jena.sparql.expr.ExprLib ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.sse.WriterSSE ;
-import com.hp.hpl.jena.sparql.util.ExprUtils ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.sparql.ARQConstants ;
+import org.apache.jena.sparql.core.Prologue ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.ExprEvalException ;
+import org.apache.jena.sparql.expr.ExprLib ;
+import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.sparql.sse.WriterSSE ;
+import org.apache.jena.sparql.util.ExprUtils ;
+import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
 /** A program to execute expressions from the command line. */
 

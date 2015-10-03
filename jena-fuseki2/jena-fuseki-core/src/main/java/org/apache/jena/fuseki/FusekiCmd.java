@@ -18,32 +18,11 @@
 
 package org.apache.jena.fuseki;
 
-import java.lang.reflect.Method ;
-
 public class FusekiCmd {
     public static void main(String[] args) {
         // Must NOT use any logging.  The command processor sets that up.
         System.err.println("Deprecated: Use org.apache.jena.fuseki.cmd.FusekiCmd") ;
-        try {
-            // A
-            callByRefection("org.apache.jena.fuseki.cmd.FusekiCmd", "main", args) ;
-        } catch (ClassNotFoundException | NoSuchMethodException ex) {
-            System.err.println("Failed to find the command processor: "+ ex.getMessage()) ;
-        } catch (Exception ex) {
-            System.err.println("Failed to invoke the command processor: "+ ex.getMessage()) ;
-            ex.printStackTrace(System.err) ;
-        }
-    }
-
-    // Call a static of no arguments by reflection.
-    private static void callByRefection(String className, String staticMethod, String[] args) 
-        throws Exception
-    {
-        Class<? > cls = Class.forName(className) ;
-        // Pass up : ClassNotFoundException
-
-        Method m = cls.getMethod(staticMethod, String[].class) ;
-        m.invoke(null, (Object)args) ;
+        org.apache.jena.fuseki.cmd.FusekiCmd.main(args);
     }
 }
 

@@ -22,13 +22,13 @@ import java.util.Enumeration ;
 
 import javax.servlet.http.HttpServletRequest ;
 
+import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.riot.system.IRIResolver ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 
 public abstract class SPARQL_GSP extends ActionREST
 {
@@ -41,16 +41,18 @@ public abstract class SPARQL_GSP extends ActionREST
         String uri = getOneOnly(action.request, HttpNames.paramGraph) ;
         
         if ( !dftGraph && uri == null ) {
-            ServletOps.errorBadRequest("Neither default graph nor named graph specified; no direct name") ;
+            // No params - direct naming.
+            if ( ! Fuseki.GSP_DIRECT_NAMING )
+                ServletOps.errorBadRequest("Neither default graph nor named graph specified") ;
             
-            // Direct naming or error.
-            uri = action.request.getRequestURL().toString() ;
+            // Direct naming.
+            String directName = action.request.getRequestURL().toString() ;
             if ( action.request.getRequestURI().equals(action.getDatasetName()) )
-                // No name 
-                ServletOps.errorBadRequest("Neither default graph nor named graph specified; no direct name") ;
+                // No name (should have been a quads operations).
+                ServletOps.errorBadRequest("Neither default graph nor named graph specified and no direct name") ;
+            Node gn = NodeFactory.createURI(directName) ;
+            return namedTarget(action, directName) ;
         }
-        
-        String dsTarget = action.getDatasetName() ;
         
         if ( dftGraph )
             return Target.createDefault(action.getActiveDSG()) ;
@@ -71,8 +73,12 @@ public abstract class SPARQL_GSP extends ActionREST
             base = base + "/" ;
         
         String absUri = IRIResolver.resolveString(uri, base) ;
-        Node gn = NodeFactory.createURI(absUri) ;
-        return Target.createNamed(action.getActiveDSG(), absUri, gn) ;
+        return namedTarget(action, absUri) ;
+    }
+    
+    private static Target namedTarget(HttpAction action, String graphName) {
+        Node gn = NodeFactory.createURI(graphName) ;
+        return Target.createNamed(action.getActiveDSG(), graphName, gn) ;
     }
 
     // struct for target

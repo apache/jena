@@ -25,10 +25,9 @@ import java.sql.Statement;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.mem.connections.DebugMemConnection;
 import org.apache.jena.jdbc.results.AbstractResultSetTests;
+import org.apache.jena.query.Dataset ;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-
-import com.hp.hpl.jena.query.Dataset;
 
 /**
  * Abstract
