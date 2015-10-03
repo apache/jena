@@ -28,7 +28,7 @@ import java.util.concurrent.TimeoutException;
 public class GuavaCacheClient extends CacheClient{
 
     /** The cache for storing SPARQL Query results **/
-    private Cache<Object, Object> cache;
+    private Cache<String, String> cache;
 
     /** Maximum size of cache data **/
     private static int MAX_SIZE = 1000;
@@ -44,26 +44,26 @@ public class GuavaCacheClient extends CacheClient{
                 .build();
     }
 
-    public Object get(Object key) throws InterruptedException, ExecutionException, TimeoutException {
-        return cache.getIfPresent(key);
+    public String get(String key) throws InterruptedException, ExecutionException, TimeoutException {
+        return (String) cache.getIfPresent(key);
    }
 
-    public boolean set(Object key, Object value) throws InterruptedException, ExecutionException, TimeoutException {
+    public boolean set(String key, String value) throws InterruptedException, ExecutionException, TimeoutException {
         cache.put(key,value);
         return true;
     }
 
-    public boolean unset(Object key) throws InterruptedException, ExecutionException, TimeoutException {
+    public boolean unset(String key) throws InterruptedException, ExecutionException, TimeoutException {
         cache.invalidate(key);
         return true;
     }
 
     /** Getters / Setters */
-    public Cache<Object, Object> getCache() {
+    public Cache<String, String> getCache() {
         return cache;
     }
 
-    public void setCache(Cache<Object, Object> cache) {
+    public void setCache(Cache<String, String> cache) {
         this.cache = cache;
     }
     /** Getters / Setters */

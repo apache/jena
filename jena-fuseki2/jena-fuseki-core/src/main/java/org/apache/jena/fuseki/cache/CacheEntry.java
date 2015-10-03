@@ -16,24 +16,31 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system;
+package org.apache.jena.fuseki.cache;
 
-import org.apache.jena.riot.RIOT ;
-import org.apache.jena.system.JenaSubsystemLifecycle ;
 
-/** RIOT initialization. Used by {@code JenaSystem} */
-public class InitRIOT implements JenaSubsystemLifecycle {
+import org.apache.jena.sparql.resultset.SPARQLResult;
 
-    @Override
-    public void start() {
-        RIOT.init();
+public class CacheEntry {
+
+    String Key;
+    String Value;
+
+
+    public String getKey() {
+        return Key;
     }
 
-    @Override
-    public void stop() {}
-    
-    @Override
-    public int level() {
-        return 20 ;
+    public void setKey(String key) {
+        Key = key;
     }
+
+    public String getValue() {
+        return Value;
+    }
+
+    public void setValue(String value) {
+        Value = value;
+    }
+
 }
