@@ -24,7 +24,6 @@ import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.op.OpAssign ;
 import org.apache.jena.sparql.algebra.op.OpExtend ;
 import org.apache.jena.sparql.algebra.op.OpTable ;
-import org.apache.jena.sparql.algebra.optimize.TransformExtendCombine ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.ExprVar ;
@@ -292,7 +291,7 @@ public class TestOptimizer extends AbstractTestTransform
         // JENA-809 : check no changes to input.
         String x = "(project (?x) (extend ((?bar 2)) (extend ((?foo 1)) (table unit))))" ;
         String y = "(project (?x) (extend ((?foo 1) (?bar 2)) (table unit)))" ;
-        AbstractTestTransform.checkAlgebra(x, new TransformExtendCombine(), y);
+        checkAlgebra(x, new TransformExtendCombine(), y);
     }
 
         
@@ -362,5 +361,51 @@ public class TestOptimizer extends AbstractTestTransform
         AbstractTestTransform.checkAlgebra(x, new TransformExtendCombine(), y);
     }
 
+    // Nested
+/*
+ *    String qs = StrUtils.strjoinNL
+            ("select *",  
+             "where {",  
+             "  { select * { ?id ?p ?label } order by ?label limit 5 }",  
+             "  OPTIONAL { OPTIONAL { ?s ?p ?label }}",   
+             "}"
+                );    
+ */
+    // Derived from JENA-1041 (inner TopN)
+    @Test public void subselect_01() {
+        String qs = StrUtils.strjoinNL
+            ("select *",  
+             "where {",  
+             "  { select * { ?id ?p ?label } order by ?label limit 5 }",  
+             "  ?s ?p ?label",   
+             "}"
+                );
+        String expected = StrUtils.strjoinNL
+            ("(sequence"
+            ,"  (top (5 ?label)"
+            ,"    (bgp (triple ?id ?p ?label)))"
+            ,"  (bgp (triple ?s ?p ?label)))") ;
+        check(qs, expected) ;
+    }
+    
+    // Derived from JENA-1041 (inner TopN)
+    @Test public void subselect_02() {
+        // Has a blocking optional pattern for the join strategy.
+        String qs = StrUtils.strjoinNL
+            ("select *",  
+             "where {",  
+             "  { select * { ?id ?p ?label } order by ?label limit 5 }",  
+             "  OPTIONAL { OPTIONAL { ?s ?p ?label }}",   
+             "}"
+                );
+        String expected = StrUtils.strjoinNL
+            ("(leftjoin"
+            ,"  (top (5 ?label)"
+            ,"    (bgp (triple ?id ?p ?label)))"
+            ,"  (conditional"
+            ,"    (table unit)"
+            ,"    (bgp (triple ?s ?p ?label))))") ;
+        check(qs, expected) ;
+    }
 
 }

@@ -30,7 +30,6 @@ import java.util.Map ;
 import java.util.Map.Entry ;
 import java.util.Set ;
 
-import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVisitor ;
 import org.apache.jena.sparql.algebra.op.* ;
@@ -164,15 +163,24 @@ public class VarFinder
 
         @Override
         public void visit(OpMinus opMinus) {
-            mergeVars(opMinus.getLeft()) ;
-            VarUsageVisitor usage = VarUsageVisitor.apply(opMinus.getRight());
+            mergeMinusDiff(opMinus.getLeft(), opMinus.getRight()) ;
+        }
+
+        @Override
+        public void visit(OpDiff opDiff) { 
+            mergeMinusDiff(opDiff.getLeft(), opDiff.getRight()) ;
+        }
+        
+        private void mergeMinusDiff(Op left, Op right) {
+            mergeVars(left) ;
+            VarUsageVisitor usage = VarUsageVisitor.apply(right);
             // Everything in the right side is really a filter.  
             filterMentions.addAll(usage.defines) ;
             filterMentions.addAll(usage.optDefines) ;
             filterMentions.addAll(usage.filterMentions) ;
             filterMentions.addAll(usage.assignMentions) ;
         }
-        
+
         @Override
         public void visit(OpConditional opLeftJoin) {
             leftJoin(opLeftJoin.getLeft(), opLeftJoin.getRight(), null);
@@ -292,6 +300,12 @@ public class VarFinder
         public void visit(OpList opList)            { mergeVars(opList.getSubOp()) ; }
         
         @Override
+        public void visit(OpService opService)      { mergeVars(opService.getSubOp()) ; }
+        
+        @Override
+        public void visit(OpTopN opTop)             { mergeVars(opTop.getSubOp()) ; }
+        
+        @Override
         public void visit(OpOrder opOrder) { 
             mergeVars(opOrder.getSubOp()) ;
             opOrder.getConditions().forEach(sc-> {
@@ -314,22 +328,12 @@ public class VarFinder
             addVar(defines, dsNames.getGraphNode()) ;
         }
 
-        // Not implemented: with checking. 
-
-        private void no() { 
-            throw new NotImplemented() ;
+        @Override
+        public void visit(OpProcedure opProc) { 
+            for ( Expr expr :  opProc.getArgs() ) {
+                Set<Var> vars = expr.getVarsMentioned() ;
+                defines.addAll(vars) ;
+            }
         }
-        
-        @Override
-        public void visit(OpProcedure opProc) { no() ; }
-
-        @Override
-        public void visit(OpService opService) { no(); }
-
-        @Override
-        public void visit(OpDiff opDiff) { no(); }
-        
-        @Override
-        public void visit(OpTopN opTop) { no(); }
     }
 }
