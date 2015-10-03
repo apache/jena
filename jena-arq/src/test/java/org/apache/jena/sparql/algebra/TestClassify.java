@@ -22,8 +22,6 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
 import org.apache.jena.query.Syntax ;
-import org.apache.jena.sparql.algebra.Algebra ;
-import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.op.OpJoin ;
 import org.apache.jena.sparql.algebra.op.OpLeftJoin ;
 import org.apache.jena.sparql.engine.main.JoinClassifier ;
