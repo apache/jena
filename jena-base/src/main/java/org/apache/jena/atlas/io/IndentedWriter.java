@@ -59,18 +59,23 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     
     protected boolean flatMode = false ;
     private boolean flushOnNewline = false ;
-    
+    private StringBuilder cacheWriter;
+
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
 
-    public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
+    public IndentedWriter(OutputStream outStream, StringBuilder cacheBuilder) { this(outStream, cacheBuilder ,false) ; }
 
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream, boolean withLineNumbers)
     {
         this(makeWriter(outStream), withLineNumbers) ;
     }
-    
+
+    public IndentedWriter(OutputStream outStream, StringBuilder cacheBuilder, boolean withLineNumbers)
+    {
+        this(makeWriter(outStream), cacheBuilder, withLineNumbers) ;
+    }
     private static Writer makeWriter(OutputStream out)
     {
         // return BufferingWriter.create(out) ;
@@ -84,6 +89,14 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     protected IndentedWriter(Writer writer, boolean withLineNumbers)
     {
         out = writer ;
+        lineNumbers = withLineNumbers ;
+        startingNewLine = true ;
+    }
+
+    protected IndentedWriter(Writer writer, StringBuilder cacheBuilder , boolean withLineNumbers)
+    {
+        out = writer ;
+        cacheWriter = cacheBuilder;
         lineNumbers = withLineNumbers ;
         startingNewLine = true ;
     }
@@ -167,10 +180,10 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     }
 
     private void write$(char ch) 
-    { try { out.write(ch) ; } catch (IOException ex) { IO.exception(ex); } }
+    { try { out.write(ch) ; cacheWriter.append(ch) ; } catch (IOException ex) { IO.exception(ex); } }
     
     private void write$(String s) 
-    { try { out.write(s) ; } catch (IOException ex) { IO.exception(ex); } }
+    { try { out.write(s) ; cacheWriter.append(s) ; } catch (IOException ex) { IO.exception(ex); } }
     
     public void newline()
     {
