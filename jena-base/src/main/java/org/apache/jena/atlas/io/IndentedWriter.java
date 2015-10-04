@@ -62,7 +62,9 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
-    
+
+    public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
+
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream, boolean withLineNumbers)
     {

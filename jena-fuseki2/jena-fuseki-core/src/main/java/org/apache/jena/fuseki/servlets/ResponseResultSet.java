@@ -44,6 +44,9 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.fuseki.cache.CacheAction;
+import org.apache.jena.fuseki.cache.CacheEntry;
+import org.apache.jena.fuseki.cache.CacheStore;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.query.QueryCancelledException ;
 import org.apache.jena.query.ResultSet ;
@@ -83,16 +86,20 @@ public class ResponseResultSet
         ResponseOps.put(shortNamesResultSet, contentOutputThrift, contentTypeResultsThrift) ;
     }
     
-    interface OutputContent { void output(ServletOutputStream out) ; }
-
-    public static void doResponseResultSet(HttpAction action, Boolean booleanResult)
-    {
-        doResponseResultSet$(action, null, booleanResult, null, DEF.rsOfferBoolean) ;
+    interface OutputContent {
+        void output(ServletOutputStream out) ;
+        void output(ServletOutputStream out, StringBuilder cacheBuilder) ;
     }
 
-    public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue)
+
+    public static void doResponseResultSet(HttpAction action, Boolean booleanResult, CacheAction cacheAction, CacheEntry cacheEntry)
     {
-        doResponseResultSet$(action, resultSet, null, qPrologue, DEF.rsOfferTable) ;
+        doResponseResultSet$(action, null, booleanResult, null, DEF.rsOfferBoolean, CacheAction cacheAction, CacheEntry cacheEntry) ;
+    }
+
+    public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue, CacheAction cacheAction, CacheEntry cacheEntry)
+    {
+        doResponseResultSet$(action, resultSet, null, qPrologue, DEF.rsOfferTable, CacheAction cacheAction, CacheEntry cacheEntry) ;
     }
 
     // If we refactor the conneg into a single function, we can split boolean and result set handling. 
@@ -101,7 +108,9 @@ public class ResponseResultSet
     private static void doResponseResultSet$(HttpAction action,
                                              ResultSet resultSet, Boolean booleanResult, 
                                              Prologue qPrologue, 
-                                             AcceptList contentTypeOffer) 
+                                             AcceptList contentTypeOffer,
+                                             CacheAction cacheAction,
+                                             CacheEntry cacheEntry)
     {
         HttpServletRequest request = action.request ;
         HttpServletResponse response = action.response ;
@@ -146,17 +155,17 @@ public class ResponseResultSet
 
         // Better : dispatch on MediaType
         if ( Objects.equals(serializationType, contentTypeResultsXML) )
-            sparqlXMLOutput(action, contentType, resultSet, stylesheetURL, booleanResult) ;
+            sparqlXMLOutput(action, contentType, resultSet, stylesheetURL, booleanResult, cacheAction, cacheEntry) ;
         else if ( Objects.equals(serializationType, contentTypeResultsJSON) )
-            jsonOutput(action, contentType, resultSet, booleanResult) ;
+            jsonOutput(action, contentType, resultSet, booleanResult, cacheAction, cacheEntry) ;
         else if ( Objects.equals(serializationType, contentTypeTextPlain) )
-            textOutput(action, contentType, resultSet, qPrologue, booleanResult) ;
+            textOutput(action, contentType, resultSet, qPrologue, booleanResult, cacheAction, cacheEntry) ;
         else if ( Objects.equals(serializationType, contentTypeTextCSV) ) 
-            csvOutput(action, contentType, resultSet, booleanResult) ;
-        else if (Objects.equals(serializationType, contentTypeTextTSV) )
+            csvOutput(action, contentType, resultSet, booleanResult, cacheAction, cacheEntry) ;
+        else if ( Objects.equals(serializationType, contentTypeTextTSV) )
             tsvOutput(action, contentType, resultSet, booleanResult) ;
-        else if (Objects.equals(serializationType, WebContent.contentTypeResultsThrift) )
-            thriftOutput(action, contentType, resultSet, booleanResult) ;
+        else if ( Objects.equals(serializationType, WebContent.contentTypeResultsThrift) )
+            thriftOutput(action, contentType, resultSet, booleanResult, cacheAction, cacheEntry) ;
         else
             ServletOps.errorBadRequest("Can't determine output serialization: "+serializationType) ;
     }
@@ -203,7 +212,7 @@ public class ResponseResultSet
             output(action, contentType, null, proc) ;
         }
 
-    private static void jsonOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult)
+    private static void jsonOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult, final CacheAction cacheAction, CacheEntry cacheEntry)
     {
         OutputContent proc = new OutputContent(){
             @Override
@@ -214,24 +223,52 @@ public class ResponseResultSet
                 if (  booleanResult != null )
                     ResultSetFormatter.outputAsJSON(out, booleanResult.booleanValue()) ;
             }
+            @Override
+            public void output(ServletOutputStream out, StringBuilder cacheBuilder)
+            {
+                if ( resultSet != null ){
+                    ResultSetFormatter.outputAsJSON(out, resultSet, cacheBuilder) ;
+                }
+                if (  booleanResult != null ) {
+                    ResultSetFormatter.outputAsJSON(out, booleanResult.booleanValue(), cacheBuilder);
+                }
+            }
         } ;
 
         try {
             String callback = ResponseOps.paramCallback(action.request) ;
             ServletOutputStream out = action.response.getOutputStream() ;
 
-            if ( callback != null )
-            {
-                callback = callback.replace("\r", "") ;
-                callback = callback.replace("\n", "") ;
-                out.print(callback) ;
-                out.println("(") ;
+            CacheStore cacheStore = CacheStore.getInstance();
+
+            if(CacheAction.Type.WRITE_CACHE == cacheAction.type) {
+
+                StringBuilder cacheBuilder = new StringBuilder();
+
+                if (callback != null) {
+                    callback = callback.replace("\r", "");
+                    callback = callback.replace("\n", "");
+                    cacheBuilder.append(callback);
+                    cacheBuilder.append("(");
+                    out.print(callback);
+                    out.println("(");
+                }
+                output(action, contentType, charsetUTF8, proc, cacheBuilder, cacheAction);
+
+                if (callback != null) {
+                    cacheBuilder.append(")");
+                    out.println(")");
+                }
+                log.info("cacheBuilder prepared for storing in cacheStore " + cacheBuilder.toString());
+                cacheEntry.initialized();
+                cacheEntry.setCacheBuilder(cacheBuilder);
+                cacheStore.doSet(cacheAction.getKey(), cacheEntry);
+            }else{
+
+                CacheEntry cacheValue =  (CacheEntry)cacheStore.doGet(cacheAction.getKey());
+                StringBuilder cacheBuilder = cacheValue.getCacheBuilder();
+                output(action, contentType, charsetUTF8, proc, cacheBuilder, cacheAction);
             }
-
-            output(action, contentType, charsetUTF8, proc) ;
-
-            if ( callback != null )
-                out.println(")") ;
         } catch (IOException ex) { IO.exception(ex) ; }
     }
 
@@ -294,7 +331,7 @@ public class ResponseResultSet
         output(action, contentType, WebContent.charsetUTF8, proc) ; 
     }
 
-    private static void output(HttpAction action, String contentType, String charset, OutputContent proc) 
+    private static void output(HttpAction action, String contentType, String charset, OutputContent proc, StringBuilder cacheBuilder, CacheAction cacheAction)
     {
         try {
             setHttpResponse(action, contentType, charset) ; 
@@ -302,8 +339,14 @@ public class ResponseResultSet
             ServletOutputStream out = action.response.getOutputStream() ;
             try
             {
-                proc.output(out) ;
-                out.flush() ;
+                if(CacheAction.Type.WRITE_CACHE == cacheAction.type) {
+                    proc.output(out,cacheBuilder);
+                    out.flush();
+                }else{
+                    log.info("cacheBuilder in cacheStore "+cacheBuilder);
+                    out.println(cacheBuilder.toString());
+                    out.flush();
+                }
             } catch (QueryCancelledException ex) {
                 // Bother.  Status code 200 already sent.
                 action.log.info(format("[%d] Query Cancelled - results truncated (but 200 already sent)", action.id)) ;

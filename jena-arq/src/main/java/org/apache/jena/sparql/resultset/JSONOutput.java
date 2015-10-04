@@ -37,9 +37,22 @@ public class JSONOutput extends OutputBase
     }
 
     @Override
+    public void format(OutputStream out, ResultSet resultSet, StringBuilder cacheBuilder) {
+        JSONOutputResultSet jsonOut =  new JSONOutputResultSet(out, cacheBuilder) ;
+        ResultSetApply a = new ResultSetApply(resultSet, jsonOut) ;
+        a.apply() ;
+    }
+
+    @Override
     public void format(OutputStream out, boolean booleanResult)
     {
         JSONOutputASK jsonOut = new JSONOutputASK(out) ;
+        jsonOut.exec(booleanResult) ;
+    }
+
+    @Override
+    public void format(OutputStream out, boolean booleanResult, StringBuilder cacheBuilder) {
+        JSONOutputASK jsonOut = new JSONOutputASK(out, cacheBuilder) ;
         jsonOut.exec(booleanResult) ;
     }
 }

@@ -501,6 +501,21 @@ public class ResultSetFormatter {
     }
 
     /** Output a result set in the JSON format
+     *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a>
+     *  JSON: <a href="http://json.org">http://json.org/</a>
+     *
+     * @param outStream     output stream
+     * @param resultSet     result set
+     * @param cacheBuilder cache builder
+     */
+
+    static public void outputAsJSON(OutputStream outStream, ResultSet resultSet, StringBuilder cacheBuilder)
+    {
+        JSONOutput jOut = new JSONOutput() ;
+        jOut.format(outStream, resultSet, cacheBuilder) ;
+    }
+
+    /** Output a result set in the JSON format
      *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a> 
      *  JSON: <a href="http://json.org">http://json.org/</a>
      *  
@@ -508,7 +523,7 @@ public class ResultSetFormatter {
      */
 
     static public void outputAsJSON(boolean booleanResult)
-    { outputAsJSON(System.out, booleanResult ) ; }
+    { outputAsJSON(System.out, booleanResult) ; }
     
     /** Output a result set in the JSON format
      *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a> 
@@ -523,7 +538,22 @@ public class ResultSetFormatter {
         JSONOutput jOut = new JSONOutput() ;
         jOut.format(outStream, booleanResult) ; 
     }
-    
+
+    /** Output a result set in the JSON format
+     *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a>
+     *  JSON: <a href="http://json.org">http://json.org/</a>
+     *
+     * @param outStream     output stream
+     * @param booleanResult The boolean result to encode
+     * @param cacheBuilder cache builder
+     */
+
+    static public void outputAsJSON(OutputStream outStream, boolean booleanResult, StringBuilder cacheBuilder)
+    {
+        JSONOutput jOut = new JSONOutput() ;
+        jOut.format(outStream, booleanResult, cacheBuilder) ;
+    }
+
     // ---- SSE
     
     /** Output a boolean result in the SSE format

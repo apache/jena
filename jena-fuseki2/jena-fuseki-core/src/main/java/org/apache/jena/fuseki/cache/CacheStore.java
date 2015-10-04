@@ -88,7 +88,7 @@ public class CacheStore {
      * @param key Cache store key
      * @param data SPARQL Query results set object
      */
-    public boolean doSet(String key, String data) throws CacheStoreException{
+    public boolean doSet(String key, Object data) throws CacheStoreException{
         try{
           if(client.set(key,data))
               return true;
