@@ -49,6 +49,9 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.cache.CacheAction;
+import org.apache.jena.fuseki.cache.CacheEntry;
+import org.apache.jena.fuseki.cache.CacheStore;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.web.HttpNames ;
@@ -249,11 +252,27 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         // Assumes finished whole thing by end of sendResult.
         try {
             action.beginRead() ;
-            Dataset dataset = decideDataset(action, query, queryStringLog) ;
+                Dataset dataset = decideDataset(action, query, queryStringLog) ;
             try ( QueryExecution qExec = createQueryExecution(query, dataset) ; ) {
-                SPARQLResult result = executeQuery(action, qExec, query, queryStringLog) ;
-                // Deals with exceptions itself.
-                sendResults(action, result, query.getPrologue()) ;
+
+                CacheStore cacheStore = CacheStore.getInstance();
+                String key = generateKey(action,queryString);
+                CacheEntry cacheEntry = (CacheEntry) cacheStore.doGet();
+                if(cacheEntry == null || !cacheEntry.isInitialized()) {
+                    log.info("cache is null or cache data is not initialized ");
+                    SPARQLResult result = executeQuery(action, qExec, query, queryStringLog);
+                    cacheEntry = new CacheEntry();
+                    cacheEntry.setResult(result);
+                    cacheStore.doSet(key, cacheEntry);
+                    cacheAction = new CacheAction(key, CacheAction.Type.WRITE_CACHE);
+                }else {
+                    log.info("cache is not null so read cache");
+                    result = cacheEntry.getResult();
+                    cacheAction = new CacheAction(key,CacheAction.Type.READ_CACHE);
+                    // Deals with exceptions itself.
+
+                }
+                sendResults(action, result, query.getPrologue(), cacheAction, cacheEntry);
             }
         } 
         catch (QueryParseException ex) {
@@ -401,4 +420,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         return HttpOp.execHttpGetString(queryURI) ;
     }
 
+    private String generateKey(HttpAction action , String queryString){
+        return CacheStore.generateKey(action, queryString);
+    }
 }
