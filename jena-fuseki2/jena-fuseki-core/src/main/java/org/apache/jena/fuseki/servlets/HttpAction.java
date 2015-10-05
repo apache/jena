@@ -216,9 +216,8 @@ public class HttpAction
      * @return the first found {@link DatasetGraph} that is not an instance of {@link DatasetGraphWrapper}
      */
    private static DatasetGraph unwrap(DatasetGraph dsg) {
-        while (dsg instanceof DatasetGraphWrapper) {
-            dsg = ((DatasetGraphWrapper)dsg).getWrapped() ;
-        }
+       if ( dsg instanceof DatasetGraphWrapper)
+            dsg = ((DatasetGraphWrapper)dsg).getBase() ;
         return dsg ;
     }
         
