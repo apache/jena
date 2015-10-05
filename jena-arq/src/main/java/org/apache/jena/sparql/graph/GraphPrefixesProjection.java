@@ -29,7 +29,7 @@ import org.apache.jena.sparql.core.DatasetPrefixStorage ;
 
 public class GraphPrefixesProjection extends PrefixMappingImpl
 {
-    // Own cache and complete replace PrefixMappingImpl?
+    // Own cache and completely replace PrefixMappingImpl?
 
     private String graphName ;
     private DatasetPrefixStorage prefixes ; 
