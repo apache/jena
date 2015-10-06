@@ -89,9 +89,16 @@ public class GraphView extends GraphBase implements Sync
     protected static final boolean isDefaultGraph(Node gn) { return gn == null || Quad.isDefaultGraph(gn) ; }
     protected static final boolean isUnionGraph(Node gn)   { return Quad.isUnionGraph(gn) ; }
     
+    // TODO Unsatisfactory - need PrefixMap support by DSGs 
+    // and sort out PrefixMap/PrefixMapping.
+    
     @Override
     protected PrefixMapping createPrefixMapping() {
-        // TODO Unsatisfactory - need PrefixMap support by DSGs then PrefixMap -> PrefixMapping
+        // Unwrap if possible, else put in an in-memroy placeholder. 
+        if ( dsg instanceof DatasetGraphWrapper ) {
+            DatasetGraph dsg2 = ((DatasetGraphWrapper)dsg).getBase() ;
+            return dsg2.getDefaultGraph().getPrefixMapping() ;    
+        }
         return new PrefixMappingImpl() ;
     }
 
