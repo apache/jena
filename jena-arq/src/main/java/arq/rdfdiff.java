@@ -31,11 +31,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.io.FileInputStream;
 
-import org.apache.jena.graph.BlankNodeId;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.util.Closure;
-
-import com.google.common.collect.ComparisonChain;
 
 /**
  * A program which read two RDF models and provides a basic triple level diff
