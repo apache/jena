@@ -157,6 +157,24 @@ public class ResultSetFormatter {
         tFmt.format(out, qresults) ;
     }
 
+    /**
+     * Output a result set in a text format.  The result set is consumed.
+     * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
+     * <p>
+     *  This caches the entire results in memory in order to determine the appropriate
+     *  column widths and therefore may exhaust memory for large results
+     *  </p>
+     * @param out       OutputStream
+     * @param qresults  result set
+     * @param prologue  Prologue, used to abbreviate IRIs
+     * @param cacheBuilder The cacheBuilder object to cache the result
+     */
+    public static void out(OutputStream out, ResultSet qresults, Prologue prologue, StringBuilder cacheBuilder)
+    {
+        TextOutput tFmt = new TextOutput(prologue) ;
+        tFmt.format(out, qresults, cacheBuilder) ;
+    }
+
 
     /**
      * Output an ASK answer
@@ -174,6 +192,12 @@ public class ResultSetFormatter {
     {
         TextOutput tFmt = new TextOutput((SerializationContext)null) ;
         tFmt.format(out, answer) ;
+    }
+
+    public static void out(OutputStream out, boolean answer, StringBuilder cacheBuilder)
+    {
+        TextOutput tFmt = new TextOutput((SerializationContext)null) ;
+        tFmt.format(out, answer, cacheBuilder) ;
     }
     
     /** Return a string that has the result set serialized as a text table
@@ -364,6 +388,21 @@ public class ResultSetFormatter {
         XMLOutput xOut = new XMLOutput(stylesheet) ;
         xOut.format(outStream, qresults) ;
     }
+
+    /** Output a result set in the XML format, inserting a style sheet in the XMl output
+     *
+     * @param outStream     output stream
+     * @param qresults      result set
+     * @param stylesheet    The URL of the stylsheet
+     * @param cacheBuilder  The cacheBuilder object to cache the result
+     */
+
+    static public void outputAsXML(OutputStream outStream, ResultSet qresults, String stylesheet, StringBuilder cacheBuilder)
+    {
+        XMLOutput xOut = new XMLOutput(stylesheet) ;
+        xOut.format(outStream, qresults, cacheBuilder) ;
+    }
+
     
     // ----  XML output: ASK
     
@@ -404,6 +443,20 @@ public class ResultSetFormatter {
     public static void outputAsXML(OutputStream outStream, boolean booleanResult, String stylesheet)
     {
         XMLOutputASK fmt = new XMLOutputASK(outStream, stylesheet) ;
+        fmt.exec(booleanResult) ;
+    }
+
+    /** Output a boolean result in the XML format
+     *
+     * @param outStream     output stream
+     * @param booleanResult
+     * @param stylesheet    The URL of the stylesheet
+     * @param cacheBuilder  The cacheBuilder object to cache the result
+     */
+
+    public static void outputAsXML(OutputStream outStream, boolean booleanResult, String stylesheet, StringBuilder cacheBuilder)
+    {
+        XMLOutputASK fmt = new XMLOutputASK(outStream, stylesheet, cacheBuilder) ;
         fmt.exec(booleanResult) ;
     }
 
@@ -636,6 +689,11 @@ public class ResultSetFormatter {
         fmt.format(outStream, booleanResult) ;
     }
 
+    static public void outputAsCSV(OutputStream outStream, boolean booleanResult, StringBuilder cacheBuilder)
+    {
+        CSVOutput fmt = new CSVOutput() ;
+        fmt.format(outStream, booleanResult, cacheBuilder) ;
+    }
     /** Output a result set in CSV format
      *  @param resultSet     result set
      */
@@ -652,6 +710,12 @@ public class ResultSetFormatter {
     {
         CSVOutput fmt = new CSVOutput() ;
         fmt.format(outStream, resultSet) ;
+    }
+
+    static public void outputAsCSV(OutputStream outStream, ResultSet resultSet, StringBuilder cacheBuilder)
+    {
+        CSVOutput fmt = new CSVOutput() ;
+        fmt.format(outStream, resultSet, cacheBuilder) ;
     }
 
     // ---- TSV
@@ -675,6 +739,11 @@ public class ResultSetFormatter {
         TSVOutput fmt = new TSVOutput() ;
         fmt.format(outStream, booleanResult) ;
     }
+    static public void outputAsTSV(OutputStream outStream, boolean booleanResult, StringBuilder cacheBuilder)
+    {
+        TSVOutput fmt = new TSVOutput() ;
+        fmt.format(outStream, booleanResult, cacheBuilder) ;
+    }
 
     /** Output a result set in TSV format
      *  @param resultSet     result set
@@ -692,6 +761,11 @@ public class ResultSetFormatter {
     {
         TSVOutput fmt = new TSVOutput() ;
         fmt.format(outStream, resultSet) ;
+    }
+    static public void outputAsTSV(OutputStream outStream, ResultSet resultSet, StringBuilder cacheBuilder)
+    {
+        TSVOutput fmt = new TSVOutput() ;
+        fmt.format(outStream, resultSet, cacheBuilder) ;
     }
     
     /** Output a result set in BIO format 

@@ -46,6 +46,7 @@ public class XMLOutputResultSet
     boolean xmlInst = true ;
 
     IndentedWriter  out ;
+    StringBuilder cacheWriter;
     int bNodeCounter = 0 ;
     Map<Resource, String> bNodeMap = new HashMap<>() ;
     
@@ -53,12 +54,24 @@ public class XMLOutputResultSet
     {
         this(new IndentedWriter(outStream)) ;
     }
-    
+
+    XMLOutputResultSet(OutputStream outStream, StringBuilder cacheBuilder)
+    {
+        this(new IndentedWriter(outStream,cacheBuilder)) ;
+    }
+
     XMLOutputResultSet(IndentedWriter indentedOut)
     {
         out = indentedOut ;
     }
-    
+
+    XMLOutputResultSet(IndentedWriter indentedOut, StringBuilder cacheBuilder)
+    {
+        out = indentedOut ;
+        cacheWriter = cacheBuilder;
+    }
+
+
     @Override
     public void start(ResultSet rs)
     {

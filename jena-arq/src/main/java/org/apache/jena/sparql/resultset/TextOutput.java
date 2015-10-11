@@ -29,6 +29,7 @@ import org.apache.jena.query.ResultSetRewindable ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.Prologue ;
+import org.apache.jena.sparql.engine.main.StageBuilder;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.util.FileUtils ;
@@ -54,7 +55,7 @@ public class TextOutput extends OutputBase
     
     public TextOutput(Prologue prologue)
     { context = new SerializationContext(prologue) ; }
-    
+
     public TextOutput(PrefixMapping pMap)
     { context = new SerializationContext(pMap) ; }
 
@@ -64,6 +65,10 @@ public class TextOutput extends OutputBase
     @Override
     public void format(OutputStream outs, ResultSet resultSet)
     { write(outs, resultSet) ; }
+
+    @Override
+    public void format(OutputStream outs, ResultSet resultSet, StringBuilder cacheBuilder)
+    { write(outs, resultSet, cacheBuilder) ; }
 
     /** Writer should be UTF-8 encoded - better to an OutputStream */ 
     public void format(Writer w, ResultSet resultSet)
@@ -119,7 +124,10 @@ public class TextOutput extends OutputBase
      */
     public void write(OutputStream outs, ResultSet resultSet)
     { write(outs, resultSet, "| ", " | ", " |") ; }
-    
+
+    public void write(OutputStream outs, ResultSet resultSet, StringBuilder cacheBuilder)
+    { write(outs, resultSet, "| ", " | ", " |", cacheBuilder) ; }
+
     /** Output a result set. 
      * @param outs       OutputStream
      * @param resultSet  ResultSet
@@ -133,7 +141,14 @@ public class TextOutput extends OutputBase
         write(pw, resultSet, colStart, colSep, colEnd) ;
         pw.flush() ;
     }
-    
+
+    public void write(OutputStream outs, ResultSet resultSet, String colStart, String colSep, String colEnd, StringBuilder cachebuilder)
+    {
+        PrintWriter pw = FileUtils.asPrintWriterUTF8(outs) ;
+        write(pw, resultSet, colStart, colSep, colEnd, cachebuilder) ;
+        pw.flush() ;
+    }
+
     /** Textual representation : layout using given separator.
      *  Ensure the PrintWriter can handle UTF-8.
      *  @param pw         PrintWriter
@@ -193,6 +208,74 @@ public class TextOutput extends OutputBase
         resultSetRewindable = null ;
     }
 
+    public void write(PrintWriter pw, ResultSet resultSet, String colStart, String colSep, String colEnd, StringBuilder cacheBuilder)
+    {
+        if ( resultSet.getResultVars().size() == 0 )
+        {
+            pw.println("==== No variables ====") ;
+            cacheBuilder.append("==== No variables ====");
+            cacheBuilder.append("\n");
+            //return ;
+        }
+
+        ResultSetRewindable resultSetRewindable = ResultSetFactory.makeRewindable(resultSet) ;
+
+        int numCols = resultSetRewindable.getResultVars().size() ;
+        int[] colWidths = colWidths(resultSetRewindable) ;
+
+        String row[] = new String[numCols] ;
+        int lineWidth = 0 ;
+        for ( int col = 0 ; col < numCols ; col++ )
+        {
+            String rVar = resultSet.getResultVars().get(col) ;
+            row[col] = rVar ;
+            lineWidth += colWidths[col] ;
+            if ( col > 0 )
+                lineWidth += colSep.length() ;
+        }
+        if ( colStart != null )
+            lineWidth += colStart.length() ;
+        if ( colEnd != null )
+            lineWidth += colEnd.length() ;
+
+        for ( int i = 0 ; i < lineWidth ; i++ ){
+            pw.print('-') ;
+            cacheBuilder.append('-');
+        }
+        pw.println() ;
+        cacheBuilder.append("\n");
+
+
+        printRow(pw, row, colWidths, colStart, colSep, colEnd, cacheBuilder) ;
+
+        for ( int i = 0 ; i < lineWidth ; i++ ) {
+            pw.print('=');
+            cacheBuilder.append('=');
+        }
+        pw.println() ;
+        cacheBuilder.append("\n");
+
+        for ( ; resultSetRewindable.hasNext() ; )
+        {
+            QuerySolution rBind = resultSetRewindable.nextSolution() ;
+            for ( int col = 0 ; col < numCols ; col++ )
+            {
+                String rVar = resultSet.getResultVars().get(col) ;
+                row[col] = this.getVarValueAsString(rBind, rVar );
+            }
+            printRow(pw, row, colWidths, colStart, colSep, colEnd) ;
+        }
+        for ( int i = 0 ; i < lineWidth ; i++ ){
+            pw.print('-') ;
+            cacheBuilder.append('-');
+        }
+        pw.println() ;
+        cacheBuilder.append("\n");
+
+        resultSetRewindable = null ;
+    }
+
+
 
     private void printRow(PrintWriter out, String[] row, int[] colWidths, String rowStart, String colSep, String rowEnd)
     {
@@ -216,6 +299,32 @@ public class TextOutput extends OutputBase
         out.println() ;
     }
 
+    private void printRow(PrintWriter out, String[] row, int[] colWidths, String rowStart, String colSep, String rowEnd, StringBuilder cacheBuilder)
+    {
+        out.print(rowStart) ;
+        cacheBuilder.append(rowStart);
+        for ( int col = 0 ; col < colWidths.length ; col++ )
+        {
+            String s = row[col] ;
+            int pad = colWidths[col] ;
+            StringBuffer sbuff = new StringBuffer(120) ;
+
+            if ( col > 0 )
+                sbuff.append(colSep) ;
+
+            sbuff.append(s) ;
+            for ( int j = 0 ; j < pad-s.length() ; j++ )
+                sbuff.append(' ') ;
+
+            out.print(sbuff) ;
+            cacheBuilder.append(sbuff);
+        }
+        out.print(rowEnd) ;
+        cacheBuilder.append(rowEnd);
+        out.println() ;
+        cacheBuilder.append("\n");
+    }
+
     protected String getVarValueAsString(QuerySolution rBind, String varName)
     {
         RDFNode obj = rBind.get(varName) ;
@@ -235,5 +344,20 @@ public class TextOutput extends OutputBase
       else
           pw.write("no") ;
       pw.flush() ;
+    }
+
+    @Override
+    public void format(OutputStream out, boolean answer, StringBuilder cacheBuilder)
+    {
+        PrintWriter pw = FileUtils.asPrintWriterUTF8(out) ;
+        if ( answer ){
+            pw.write("yes") ;
+            cacheBuilder.append("yes");
+        }
+        else{
+            pw.write("no") ;
+            cacheBuilder.append("no");
+        }
+        pw.flush() ;
     }
 }

@@ -41,11 +41,20 @@ public class XMLOutput extends OutputBase
         setIncludeXMLinst(includeXMLinst) ;
     }
 
-    
     @Override
     public void format(OutputStream out, ResultSet resultSet)
     {
         XMLOutputResultSet xOut =  new XMLOutputResultSet(out) ;
+        xOut.setStylesheetURL(stylesheetURL) ;
+        xOut.setXmlInst(includeXMLinst) ;
+        ResultSetApply a = new ResultSetApply(resultSet, xOut) ;
+        a.apply() ;
+    }
+
+    @Override
+    public void format(OutputStream out, ResultSet resultSet, StringBuilder cacheBuilder)
+    {
+        XMLOutputResultSet xOut =  new XMLOutputResultSet(out, cacheBuilder) ;
         xOut.setStylesheetURL(stylesheetURL) ;
         xOut.setXmlInst(includeXMLinst) ;
         ResultSetApply a = new ResultSetApply(resultSet, xOut) ;
@@ -72,6 +81,13 @@ public class XMLOutput extends OutputBase
     public void format(OutputStream out, boolean booleanResult)
     {
         XMLOutputASK xOut = new XMLOutputASK(out) ;
+        xOut.exec(booleanResult) ;
+    }
+
+    @Override
+    public void format(OutputStream out, boolean booleanResult, StringBuilder cacheBuilder)
+    {
+        XMLOutputASK xOut = new XMLOutputASK(out, stylesheetURL, cacheBuilder) ;
         xOut.exec(booleanResult) ;
     }
 }

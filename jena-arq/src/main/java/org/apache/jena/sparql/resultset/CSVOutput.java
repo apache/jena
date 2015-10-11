@@ -102,6 +102,62 @@ public class CSVOutput extends OutputBase
         }
     }
 
+    @Override
+    public void format(OutputStream out, ResultSet resultSet, StringBuilder cacheBuilder)
+    {
+        try {
+            Writer w = FileUtils.asUTF8(out) ;
+            NodeToLabelMap bnodes = new NodeToLabelMap() ;
+            w = new BufferedWriter(w) ;
+
+            String sep = null ;
+            List<String> varNames = resultSet.getResultVars() ;
+            List<Var> vars = new ArrayList<>(varNames.size()) ;
+
+            // Convert to Vars and output the header line.
+            for( String v : varNames )
+            {
+                if ( sep != null ){
+                    w.write(sep) ;
+                    cacheBuilder.append(sep);
+                }
+                else
+                    sep = "," ;
+                w.write(csvSafe(v)) ;
+                cacheBuilder.append(csvSafe(v));
+                vars.add(Var.alloc(v)) ;
+            }
+            w.write(NL) ;
+            cacheBuilder.append(NL);
+
+            // Data output
+            for ( ; resultSet.hasNext() ; )
+            {
+                sep = null ;
+                Binding b = resultSet.nextBinding() ;
+
+                for( Var v : vars )
+                {
+                    if ( sep != null ){
+                        w.write(sep) ;
+                        cacheBuilder.append(sep);
+                    }
+                    sep = "," ;
+
+                    Node n = b.get(v) ;
+                    if ( n != null )
+                        output(w, n, bnodes, cacheBuilder) ;
+                }
+                w.write(NL) ;
+                cacheBuilder.append(NL);
+            }
+            w.flush() ;
+        } catch (IOException ex)
+        {
+            throw new ARQException(ex) ;
+        }
+    }
+
     private void output(Writer w, Node n, NodeToLabelMap bnodes) throws IOException 
     {
         //String str = FmtUtils.stringForNode(n) ;
@@ -114,7 +170,19 @@ public class CSVOutput extends OutputBase
         str = csvSafe(str) ;
         w.write(str) ;
     }
+    private void output(Writer w, Node n, NodeToLabelMap bnodes, StringBuilder cacheBuilder) throws IOException
+    {
+        //String str = FmtUtils.stringForNode(n) ;
+        String str = "?" ;
+        if ( n.isLiteral() ) str = n.getLiteralLexicalForm() ;
+        else if ( n.isURI() ) str = n.getURI() ;
+        else if ( n.isBlank() )
+            str = bnodes.asString(n) ;
 
+        str = csvSafe(str) ;
+        w.write(str) ;
+        cacheBuilder.append(str);
+    }
     private String csvSafe(String str)
     {
         // Apparently, there are CSV parsers that only accept "" as an escaped quote if inside a "..."  
@@ -151,4 +219,26 @@ public class CSVOutput extends OutputBase
         }
     }
 
+    @Override
+    public void format(OutputStream out, boolean booleanResult, StringBuilder cacheBuilder)
+    {
+        try
+        {
+            out.write(headerBytes);
+            cacheBuilder.append(headerBytes);
+            if (booleanResult){
+                out.write(yesBytes) ;
+                cacheBuilder.append(yesBytes);
+            }
+            else{
+                out.write(noBytes) ;
+                cacheBuilder.append(noBytes);
+            }
+            out.write(NLBytes) ;
+            cacheBuilder.append(NLBytes);
+        } catch (IOException ex)
+        {
+            throw new ARQException(ex) ;
+        }
+    }
 }
