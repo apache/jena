@@ -35,11 +35,11 @@ import org.apache.jena.sparql.expr.ExprException ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 
-public class CastXSD2 extends FunctionBase1 implements FunctionFactory {
+public class CastXSD extends FunctionBase1 implements FunctionFactory {
     
     protected final XSDDatatype castType ;
     
-    public CastXSD2(XSDDatatype dt)
+    public CastXSD(XSDDatatype dt)
     {
         this.castType = dt ; 
     }
