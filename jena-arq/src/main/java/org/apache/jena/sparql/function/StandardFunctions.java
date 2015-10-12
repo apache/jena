@@ -54,21 +54,21 @@ public class StandardFunctions
         addCastNumeric(registry, XSDDatatype.XSDdouble) ;
         addCastNumeric(registry, XSDDatatype.XSDfloat) ;
         
-        addCastBoolean(registry, XSDDatatype.XSDboolean) ;
-
-        addCast(registry, XSDDatatype.XSDduration) ;
-        addCast(registry, XSDDatatype.XSDstring) ;
-        addCast(registry, XSDDatatype.XSDanyURI) ;
+        addCastXSD(registry, XSDDatatype.XSDboolean) ;
+        addCastXSD(registry, XSDDatatype.XSDduration) ;
+        addCastXSD(registry, XSDDatatype.XSDdayTimeDuration) ;
+        addCastXSD(registry, XSDDatatype.XSDyearMonthDuration) ;
+        addCastXSD(registry, XSDDatatype.XSDstring) ;
+        addCastXSD(registry, XSDDatatype.XSDanyURI) ;
         
-        // Specialized casting rules
-        addCastDT(registry, XSDDatatype.XSDdateTime) ;
-        addCastDT(registry, XSDDatatype.XSDdate) ;
-        addCastDT(registry, XSDDatatype.XSDtime) ;
-        addCastDT(registry, XSDDatatype.XSDgYear) ;
-        addCastDT(registry, XSDDatatype.XSDgYearMonth) ;
-        addCastDT(registry, XSDDatatype.XSDgMonth) ;
-        addCastDT(registry, XSDDatatype.XSDgMonthDay) ;
-        addCastDT(registry, XSDDatatype.XSDgDay) ;
+        addCastTemporal(registry, XSDDatatype.XSDdateTime) ;
+        addCastTemporal(registry, XSDDatatype.XSDdate) ;
+        addCastTemporal(registry, XSDDatatype.XSDtime) ;
+        addCastTemporal(registry, XSDDatatype.XSDgYear) ;
+        addCastTemporal(registry, XSDDatatype.XSDgYearMonth) ;
+        addCastTemporal(registry, XSDDatatype.XSDgMonth) ;
+        addCastTemporal(registry, XSDDatatype.XSDgMonthDay) ;
+        addCastTemporal(registry, XSDDatatype.XSDgDay) ;
 
         //TODO op:numeric-greater-than etc.
         
@@ -114,24 +114,19 @@ public class StandardFunctions
         add(registry, xfn+"seconds-from-duration",  FN_SecondsFromDuration.class) ;
     }
     
-    private static void addCast(FunctionRegistry registry, XSDDatatype dt)
+    private static void addCastXSD(FunctionRegistry registry, XSDDatatype dt)
     {
-        registry.put(dt.getURI(), new CastXSD(dt) ) ;
+        registry.put(dt.getURI(), new CastXSD2(dt) ) ;
     }
     
     private static void addCastNumeric(FunctionRegistry registry, XSDDatatype dt)
     {
-        registry.put(dt.getURI(), new CastXSD_Numeric(dt) ) ;
+        registry.put(dt.getURI(), new CastXSD2(dt) ) ;
     }
 
-    private static void addCastBoolean(FunctionRegistry registry, XSDDatatype dt)
+    private static void addCastTemporal(FunctionRegistry registry, XSDDatatype dt)
     {
-        registry.put(dt.getURI(), new CastXSD_Boolean(dt) ) ;
-    }
-
-    private static void addCastDT(FunctionRegistry registry, XSDDatatype dt)
-    {
-        registry.put(dt.getURI(), new CastXSD_DateTime(dt) ) ;
+        registry.put(dt.getURI(), new CastXSD2(dt) ) ;
     }
 
     private static void add(FunctionRegistry registry, String uri, Class<?> funcClass)

@@ -32,6 +32,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestExpressions.class
     , TestExpressions2.class
     , TestExpressions3.class
+    , TestCastXSD.class
     , TestNodeFunctions.class
     , TestExpressions2.class
     , TestFunctions.class

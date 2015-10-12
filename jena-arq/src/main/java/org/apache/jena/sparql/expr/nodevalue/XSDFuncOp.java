@@ -1071,7 +1071,13 @@ public class XSDFuncOp
      */
     
     public static NodeValue dateTimeCast(NodeValue nv, XSDDatatype xsd) {
-        // http://www.w3.org/TR/xpath-functions/#casting-to-datetimes
+        if ( nv.isString() ) {
+            String s = nv.getString() ;
+            if ( ! xsd.isValid(s) )
+                throw new ExprEvalTypeException("Invalid lexical form: '"+s+"' for "+xsd.getURI()) ;
+            return NodeValue.makeNode(s, xsd) ;
+        }
+        
         if ( !nv.hasDateTime() )
             throw new ExprEvalTypeException("Not a date/time type: " + nv) ;
 
