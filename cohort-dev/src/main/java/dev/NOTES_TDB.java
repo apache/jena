@@ -25,6 +25,7 @@ import org.seaborne.tdb2.store.TripleTable ;
 public class NOTES_TDB {
     // ** Reaper.
     // ** Or time-based, commit keeping.  benefit!
+    // Autocommit (if we must!)
     
     // Also per index reaping.
     // Long term: break into parts: separate processes? At least threads.

@@ -19,6 +19,9 @@ package dev;
 
 public class NOTES_Mantis {
     // See also NOTES_TDB
+    // Log<X> over BinaryDataFile
+    //   TransLog<X>
+    // BDF -- update javadoc
     
     // NodeCache and abort
     
