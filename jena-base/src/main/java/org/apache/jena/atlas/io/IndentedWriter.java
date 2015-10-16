@@ -59,7 +59,7 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     
     protected boolean flatMode = false ;
     private boolean flushOnNewline = false ;
-    private StringBuilder cacheWriter;
+    protected StringBuilder cacheWriter;
 
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }

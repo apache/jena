@@ -28,12 +28,14 @@ import java.io.StringWriter ;
 public class IndentedLineBuffer extends IndentedWriter
 {
     StringWriter sw ;
+    StringBuilder cacheBuilder;
     public IndentedLineBuffer() { this(false) ; }
     
     public IndentedLineBuffer(boolean withLineNumbers)
     {
-        super(new StringWriter(), withLineNumbers) ;
+        super(new StringWriter(), new StringBuilder() ,withLineNumbers) ;
         sw = (StringWriter)super.out ;
+        cacheBuilder = (StringBuilder)super.cacheWriter;
     }
     
     public StringBuffer getBuffer() { return sw.getBuffer(); }
