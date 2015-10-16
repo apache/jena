@@ -89,23 +89,25 @@ if [ -f /etc/default/$NAME ]; then
   . /etc/default/$NAME
 fi
 
-if [ -f /lib/lsb/init-functions ]; then
-  . /lib/lsb/init-functions
-else
-  # simple replacements for LSB daemon logging functions if not defined
-  log_daemon_msg() {
+# simple replacements for LSB daemon logging functions if not defined
+# Centos 6 has init-functions but not log_daemon_msg/log_begin_msg/log_end_msg
+# Define simple version - attempt to replace with /lib/lsb/init-functions
+log_daemon_msg() {
     echo $1
-  }
-  log_begin_msg() {
+}
+log_begin_msg() {
     echo $1
-  }
-  log_end_msg() {
+}
+log_end_msg() {
     if [ $1 -eq 0 ]; then
-      echo '[OK]'
+	echo '[OK]'
     else
-      echo '[failed]'
+	echo '[failed]'
     fi
-  }
+}
+
+if [ -f /lib/lsb/init-functions ]; then
+    . /lib/lsb/init-functions
 fi
 
 usage()

@@ -35,7 +35,6 @@ import org.junit.Test ;
 */
 public class TestExpressions2 extends BaseTest
 {
-    
     @Test public void gregorian_eq_01()         { eval("'1999'^^xsd:gYear = '1999'^^xsd:gYear", true) ; }
     @Test public void gregorian_eq_02()         { eval("'1999'^^xsd:gYear != '1999'^^xsd:gYear", false) ; }
     

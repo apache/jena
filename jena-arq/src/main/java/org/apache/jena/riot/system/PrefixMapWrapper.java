@@ -24,80 +24,73 @@ import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.shared.PrefixMapping ;
 
-//private static PrefixMap empty = new PrefixMapNull() ; 
-    /**
-     * Creates an always-empty prefix map, which can not be changed.
-     */
-//    public static PrefixMap nullPrefixMap() {
-//    }
-    
-    public class PrefixMapWrapper implements PrefixMap
-    {
-        protected final PrefixMap other ;
+public class PrefixMapWrapper implements PrefixMap
+{
+    protected final PrefixMap other ;
 
-        public PrefixMapWrapper(PrefixMap other) { this.other = other ; }
-        
-        @Override
-        public Map<String, IRI> getMapping()
-        { return other.getMapping() ; }
+    public PrefixMapWrapper(PrefixMap other) { this.other = other ; }
 
-        @Override
-        public Map<String, IRI> getMappingCopy()
-        { return other.getMappingCopy() ; }
+    @Override
+    public Map<String, IRI> getMapping()
+    { return other.getMapping() ; }
 
-        @Override
-        public Map<String, String> getMappingCopyStr()
-        { return other.getMappingCopyStr() ; } 
+    @Override
+    public Map<String, IRI> getMappingCopy()
+    { return other.getMappingCopy() ; }
 
-        @Override
-        public void add(String prefix, String iriString)
-        { other.add(prefix, iriString) ; }
+    @Override
+    public Map<String, String> getMappingCopyStr()
+    { return other.getMappingCopyStr() ; } 
 
-        @Override
-        public void add(String prefix, IRI iri)
-        { other.add(prefix, iri) ; }
+    @Override
+    public void add(String prefix, String iriString)
+    { other.add(prefix, iriString) ; }
 
-        @Override
-        public void putAll(PrefixMap pmap)
-        { other.putAll(pmap) ; }
+    @Override
+    public void add(String prefix, IRI iri)
+    { other.add(prefix, iri) ; }
 
-        @Override
-        public void putAll(PrefixMapping pmap)
-        { other.putAll(pmap) ; }
+    @Override
+    public void putAll(PrefixMap pmap)
+    { other.putAll(pmap) ; }
 
-        @Override
-        public void putAll(Map<String, String> mapping)
-        { other.putAll(mapping) ; }
+    @Override
+    public void putAll(PrefixMapping pmap)
+    { other.putAll(pmap) ; }
 
-        @Override
-        public void delete(String prefix)
-        { other.delete(prefix) ; }
+    @Override
+    public void putAll(Map<String, String> mapping)
+    { other.putAll(mapping) ; }
 
-        @Override
-        public boolean contains(String prefix)
-        { return other.contains(prefix) ; }
+    @Override
+    public void delete(String prefix)
+    { other.delete(prefix) ; }
 
-        @Override
-        public String abbreviate(String uriStr)
-        { return other.abbreviate(uriStr) ; }
+    @Override
+    public boolean contains(String prefix)
+    { return other.contains(prefix) ; }
 
-        @Override
-        public Pair<String, String> abbrev(String uriStr)
-        { return other.abbrev(uriStr) ; }
+    @Override
+    public String abbreviate(String uriStr)
+    { return other.abbreviate(uriStr) ; }
 
-        @Override
-        public String expand(String prefixedName)
-        { return other.expand(prefixedName) ; }
+    @Override
+    public Pair<String, String> abbrev(String uriStr)
+    { return other.abbrev(uriStr) ; }
 
-        @Override
-        public String expand(String prefix, String localName)
-        { return other.expand(prefix, localName) ; }
+    @Override
+    public String expand(String prefixedName)
+    { return other.expand(prefixedName) ; }
 
-        @Override
-        public boolean isEmpty()
-        { return other.isEmpty() ; }
+    @Override
+    public String expand(String prefix, String localName)
+    { return other.expand(prefix, localName) ; }
 
-        @Override
-        public int size()
-        { return other.size() ; }
-    }
+    @Override
+    public boolean isEmpty()
+    { return other.isEmpty() ; }
+
+    @Override
+    public int size()
+    { return other.size() ; }
+}

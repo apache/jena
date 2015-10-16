@@ -35,10 +35,21 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     
     /** Return the DatasetGraph being wrapped. */
     public final DatasetGraph getWrapped() { 
-        // Maybe should be "getQueryExecutionDatasetGraph"
         return get() ;
     }
     
+    /** Recursively unwrap a DatasetGraphWrapped.
+     * 
+     * @return the first found {@link DatasetGraph} that is not an instance of {@link DatasetGraphWrapper}
+     */
+    public final DatasetGraph getBase() { 
+        DatasetGraph dsgw = dsg ;
+        while (dsgw instanceof DatasetGraphWrapper) {
+            dsgw = ((DatasetGraphWrapper)dsg).getWrapped() ;
+        }
+        return dsgw ;
+    }
+
     /** The dataset to use for redirection - can be overridden.
      *  It is also guarantee that this is called only once per
      *  delegated call.  Changes to the wrapped object can be

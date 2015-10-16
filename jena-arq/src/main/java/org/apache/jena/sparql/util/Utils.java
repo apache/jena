@@ -20,27 +20,9 @@ package org.apache.jena.sparql.util ;
 
 import java.math.BigDecimal ;
 
-import org.apache.jena.atlas.lib.Lib ;
-
 /** Miscellaneous operations - not query specific */
 
 public class Utils {
-    /**
-     * @deprecated Use {@link Lib#className(Object)} instead
-     */
-    @Deprecated
-    static public String className(Object obj) {
-        return Lib.className(obj) ;
-    }
-
-    /**
-     * @deprecated Use {@link Lib#classShortName(Class)} instead
-     */
-    @Deprecated
-    static public String classShortName(Class<? > cls) {
-        return Lib.classShortName(cls) ;
-    }
-
     static public String stringForm(BigDecimal decimal) {
         return decimal.toPlainString() ;
     }
@@ -64,6 +46,12 @@ public class Utils {
     }
 
     static public String stringForm(float f) {
+        if ( Float.isInfinite(f) ) {
+            if ( f < 0 )
+                return "-INF" ;
+            return "INF" ;
+        }
+        
         // No SPARQL short form.
         return Float.toString(f) ;
     }

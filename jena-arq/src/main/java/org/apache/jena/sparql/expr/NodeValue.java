@@ -914,7 +914,12 @@ public abstract class NodeValue extends ExprNode
     public boolean isTime()         { return false ; }
     public boolean isDuration()     { return false ; }
 
-    public boolean isYearMonth()
+    @Deprecated
+    public boolean isYearMonth() {
+        return isYearMonthDuration() ;
+    }
+    
+    public boolean isYearMonthDuration()
     {
         if ( ! isDuration() ) return false ;
         Duration dur = getDuration() ;
@@ -922,7 +927,7 @@ public abstract class NodeValue extends ExprNode
                ! dur.isSet(DAYS) && ! dur.isSet(HOURS) && ! dur.isSet(MINUTES) && ! dur.isSet(SECONDS) ;
     }
 
-    boolean isDayTime()
+    public boolean isDayTimeDuration()
     {
         if ( ! isDuration() ) return false ;
         Duration dur = getDuration() ;

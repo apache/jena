@@ -29,7 +29,7 @@ import org.apache.jena.shared.PrefixMapping ;
 
 public interface DatasetPrefixStorage extends Closeable, Sync
 {
-    /** Return the set of graph names for which their might be prefix mappings */ 
+    /** Return the set of graph names for which there might be prefix mappings */ 
     public Set<String> graphNames() ;
     
     /** Get the URI string associated with a prefix string for a specific graph (or null) */ 
