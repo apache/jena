@@ -88,13 +88,13 @@ public class RDFParserRegistry
         registerLangTriples(CSV,        parserFactory) ;
         registerLangTriples(THRIFT,     parserFactoryThrift) ;
         registerLangTriples(TRIX,       parserFactoryTriX) ;
+        registerLangTriples(RDFNULL,    parserFactoryRDFNULL) ;
         
         registerLangQuads(JSONLD,       parserFactoryJsonLD) ;
         registerLangQuads(NQUADS,       parserFactory) ;
         registerLangQuads(TRIG,         parserFactory) ;
         registerLangQuads(THRIFT,       parserFactoryThrift) ;
         registerLangQuads(TRIX,         parserFactoryTriX) ;
-        
         registerLangQuads(RDFNULL,      parserFactoryRDFNULL) ;
     }
 
