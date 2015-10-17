@@ -187,34 +187,13 @@ abstract public class TestLangNTuples extends BaseTest
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in) ;
         return tokenizer ;
     }
-//    
-//    protected void parse(StreamRDF sink, String... strings ) {
-//        ParserTestBaseLib.parse(getLang(), sink, strings);
-//    }
-//
-//    protected void parseASCII(StreamRDF sink, String string) {
-//        Tokenizer tokenizer = tokenizer(CharSpace.ASCII, string) ;
-//        LangRIOT parser = RiotParsers.createParserNTriples(tokenizer, sink) ;
-//        parser.getProfile().setHandler(new ErrorHandlerEx()) ;
-//        parser.parse() ;
-//    }
-//
-//    
-//    {
-//        String string = StrUtils.strjoin("\n", strings) ;
-//        Tokenizer tokenizer = tokenizer(string) ;
-//        LangRIOT parser = createParser(tokenizer(string), sink) ;
-//        parser.getProfile().setHandler(new ErrorHandlerEx()) ;
-//        parser.parse() ;
-//    }
-//    
-////   protected abstract LangRIOT createParser(Tokenizer tokenizer, StreamRDF sink) ;
-//
+
     final protected void parseCheck(String... strings)
     {
         String string = StrUtils.strjoin("\n", strings) ;
         Tokenizer tokenizer = tokenizer(string) ;
         StreamRDFCounting sink = StreamRDFLib.count() ;
+        @SuppressWarnings("deprecation")
         LangRIOT x = RiotParsers.createParserNQuads(tokenizer, sink) ;
         x.setProfile(RiotLib.profile(null, false, true, new ErrorHandlerEx())) ;
         x.parse() ;

@@ -446,6 +446,7 @@ public class TestLangRdfJson extends BaseTest
 		ByteArrayInputStream in = new ByteArrayInputStream(b);
 		Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in) ;
         StreamRDFCounting sink = StreamRDFLib.count() ;
+        @SuppressWarnings("deprecation")
 		LangRDFJSON parser = RiotParsers.createParserRdfJson(tokenizer, sink) ;
 	}
 

@@ -63,9 +63,21 @@ public class TestParserFactory extends BaseTest
     
     @Test public void ntriples_01() 
     {
+        {
+            String s = "<http://base/x> <http://base/p> <http://base/q> ." ;
+            CatchParserOutput sink = parseCapture(s, Lang.NT) ;
+            assertEquals(1, sink.startCalled) ;
+            assertEquals(1, sink.finishCalled) ;
+            assertEquals(1, sink.triples.size()) ;
+            assertEquals(0, sink.quads.size()) ;
+            Triple t = SSE.parseTriple("(<http://base/x> <http://base/p> <http://base/q>)") ;
+            assertEquals(t, last(sink.triples)) ;
+        }
+
+        // Old style, deprecated.
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> .") ;
         CatchParserOutput sink = new CatchParserOutput() ;
-        
+        @SuppressWarnings("deprecation")
         LangRIOT parser = RiotParsers.createParserNTriples(tokenizer, sink) ;
         parserSetup(parser) ;
         parser.parse();
@@ -78,8 +90,21 @@ public class TestParserFactory extends BaseTest
     
     @Test public void turtle_01() 
     {
+        {
+            String s = "<x> <p> <q> ." ;
+            CatchParserOutput sink = parseCapture(s, Lang.TTL) ;
+            assertEquals(1, sink.startCalled) ;
+            assertEquals(1, sink.finishCalled) ;
+            assertEquals(1, sink.triples.size()) ;
+            assertEquals(0, sink.quads.size()) ;
+            Triple t = SSE.parseTriple("(<http://base/x> <http://base/p> <http://base/q>)") ;
+            assertEquals(t, last(sink.triples)) ;
+        }
+
+        // Old style, deprecated.
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> .") ; 
         CatchParserOutput sink = new CatchParserOutput() ;
+        @SuppressWarnings("deprecation")
         LangRIOT parser = RiotParsers.createParserTurtle(tokenizer, "http://base/", sink) ;
         parserSetup(parser) ;
         parser.parse();
@@ -92,8 +117,20 @@ public class TestParserFactory extends BaseTest
     
     @Test public void nquads_01() 
     {
+        {
+            String s = "<x> <p> <q> <g> ." ;
+            CatchParserOutput sink = parseCapture(s, Lang.NQ) ;
+            assertEquals(1, sink.startCalled) ;
+            assertEquals(1, sink.finishCalled) ;
+            assertEquals(0, sink.triples.size()) ;
+            assertEquals(1, sink.quads.size()) ;
+            Quad q = SSE.parseQuad("(<g> <x> <p> <q>)") ;
+            assertEquals(q, last(sink.quads)) ;
+        }
+        // Old style, deprecated.
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> <g>.") ; 
         CatchParserOutput sink = new CatchParserOutput() ;
+        @SuppressWarnings("deprecation")
         LangRIOT parser = RiotParsers.createParserNQuads(tokenizer, sink) ;
         parserSetup(parser) ;
         parser.parse();
@@ -108,7 +145,7 @@ public class TestParserFactory extends BaseTest
     @Test public void trig_01() 
     {
         String s = "{ <x> <p> <q> }" ; 
-        CatchParserOutput sink = parseCapture(s) ;
+        CatchParserOutput sink = parseCapture(s, Lang.TRIG) ;
         assertEquals(1, sink.startCalled) ;
         assertEquals(1, sink.finishCalled) ;
         assertEquals(0, sink.triples.size()) ;
@@ -122,7 +159,7 @@ public class TestParserFactory extends BaseTest
     @Test public void trig_02() 
     {
         String s = "<g> { <x> <p> <q> }" ;
-        CatchParserOutput sink = parseCapture(s) ;
+        CatchParserOutput sink = parseCapture(s, Lang.TRIG) ;
         assertEquals(1, sink.startCalled) ;
         assertEquals(1, sink.finishCalled) ;
         assertEquals(0, sink.triples.size()) ;
@@ -132,9 +169,9 @@ public class TestParserFactory extends BaseTest
         assertEquals(q, last(sink.quads)) ;
     }
 
-    private CatchParserOutput parseCapture(String s) {
+    private CatchParserOutput parseCapture(String s, Lang lang) {
         CatchParserOutput sink = new CatchParserOutput() ;
-        RDFDataMgr.parse(sink, new StringReader(s), "http://base/", Lang.TRIG) ;
+        RDFDataMgr.parse(sink, new StringReader(s), "http://base/", lang) ;
         return sink ;
     }
 
