@@ -147,7 +147,7 @@ public class RDFLanguages
     
     /** The "null" language */
     public static final Lang RDFNULL    = LangBuilder.create("rdf/null", "null/rdf")
-                                                     .addAltNames("NULL", "null")  
+                                                     .addAltNames("NULL", "null")
                                                      .build() ;
     
     // ---- Central registry
