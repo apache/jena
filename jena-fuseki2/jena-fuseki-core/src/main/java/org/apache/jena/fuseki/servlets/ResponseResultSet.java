@@ -223,7 +223,7 @@ public class ResponseResultSet
             StringBuilder cacheBuilder = new StringBuilder();
             output(action, contentType, null, proc, cacheBuilder, cacheAction);
 
-            log.info("cacheBuilder prepared for storing in cacheStore " + cacheBuilder.toString());
+            log.debug("cacheBuilder prepared for storing in cacheStore " + cacheBuilder.toString());
             cacheEntry.initialized();
             cacheEntry.setCacheBuilder(cacheBuilder);
             cacheStore.doSet(cacheAction.getKey(), cacheEntry);
@@ -281,7 +281,7 @@ public class ResponseResultSet
                     cacheBuilder.append(")");
                     out.println(")");
                 }
-                log.info("cacheBuilder prepared for storing in cacheStore " + cacheBuilder.toString());
+                log.debug("cacheBuilder prepared for storing in cacheStore " + cacheBuilder.toString());
                 cacheEntry.initialized();
                 cacheEntry.setCacheBuilder(cacheBuilder);
                 cacheStore.doSet(cacheAction.getKey(), cacheEntry);
@@ -321,7 +321,7 @@ public class ResponseResultSet
             StringBuilder cacheBuilder = new StringBuilder();
             output(action, contentType, charsetUTF8, proc, cacheBuilder, cacheAction);
 
-            log.info("cacheBuilder prepared for storing in cacheStore " + cacheBuilder.toString());
+            log.debug("cacheBuilder prepared for storing in cacheStore " + cacheBuilder.toString());
             cacheEntry.initialized();
             cacheEntry.setCacheBuilder(cacheBuilder);
             cacheStore.doSet(cacheAction.getKey(), cacheEntry);
@@ -358,7 +358,7 @@ public class ResponseResultSet
             StringBuilder cacheBuilder = new StringBuilder();
             output(action, contentType, charsetUTF8, proc, cacheBuilder, cacheAction);
 
-            log.info("cacheBuilder prepared for storing in cacheStore " + cacheBuilder.toString());
+            log.debug("cacheBuilder prepared for storing in cacheStore " + cacheBuilder.toString());
             cacheEntry.initialized();
             cacheEntry.setCacheBuilder(cacheBuilder);
             cacheStore.doSet(cacheAction.getKey(), cacheEntry);
@@ -394,7 +394,7 @@ public class ResponseResultSet
             StringBuilder cacheBuilder = new StringBuilder();
             output(action, contentType, charsetUTF8, proc, cacheBuilder, cacheAction);
 
-            log.info("cacheBuilder prepared for storing in cacheStore " + cacheBuilder.toString());
+            log.debug("cacheBuilder prepared for storing in cacheStore " + cacheBuilder.toString());
             cacheEntry.initialized();
             cacheEntry.setCacheBuilder(cacheBuilder);
             cacheStore.doSet(cacheAction.getKey(), cacheEntry);
@@ -466,7 +466,7 @@ public class ResponseResultSet
                     proc.output(out,cacheBuilder);
                     out.flush();
                 }else{
-                    log.info("cacheBuilder in cacheStore "+cacheBuilder);
+                    log.debug("cacheBuilder in cacheStore "+cacheBuilder);
                     out.println(cacheBuilder.toString());
                     out.flush();
                 }

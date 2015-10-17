@@ -260,14 +260,14 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                 String key = generateKey(action,queryString);
                 CacheEntry cacheEntry = (CacheEntry) cacheStore.doGet(key);
                 if(cacheEntry == null || !cacheEntry.isInitialized()) {
-                    log.info("Cache is null or cache data is not initialized ");
+                    log.debug("Cache is null or cache data is not initialized");
                     result = executeQuery(action, qExec, query, queryStringLog);
                     cacheEntry = new CacheEntry();
                     cacheEntry.setResult(result);
                     cacheStore.doSet(key, cacheEntry);
                     cacheAction = new CacheAction(key, CacheAction.Type.WRITE_CACHE);
                 }else {
-                    log.info("Cache is not null so read cache");
+                    log.debug("Cache is not null so read from cache");
                     result = cacheEntry.getResult();
                     cacheAction = new CacheAction(key,CacheAction.Type.READ_CACHE);
                     // Deals with exceptions itself.
