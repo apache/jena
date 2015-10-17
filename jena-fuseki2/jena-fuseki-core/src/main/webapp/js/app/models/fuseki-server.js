@@ -137,9 +137,22 @@ define(
       /** Extract the server root path from the current window href */
       currentRootPath: function() {
         var path = window.location.pathname.replace( /\/[^/]*$/, "" );
- 	// Need some kind of relative URL
- 	// return path ; - See JENA-868 breaks the "info"
-	return sprintf( "%s//%s:%s%s",  window.location.protocol, window.location.hostname, window.location.port, path );
+      /*
+	    console.log("window.location="+window.location) ;
+	    console.log("window.location.href="+window.location.href) ;
+	    console.log("window.location.protocol="+window.location.protocol) ;
+	    console.log("window.location.host="+window.location.host) ;
+	    console.log("window.location.hostname="+window.location.hostname) ;
+	    console.log("window.location.port="+window.location.port) ;
+	    console.log("window.location.pathname="+window.location.pathname) ;
+	    console.log("window.location.origin="+window.location.origin) ;
+	    console.log("window.location.hash="+window.location.hash) ;
+	    console.log("window.location.search="+window.location.search) ;
+        console.log("path='"+path+"'") ;
+      */
+	    var path2=sprintf( "%s//%s:%s%s",  window.location.protocol, window.location.hostname, window.location.port, path );
+	    return path2 ;
+		   // See JENA-868 : port remapping.  
       }
     } );
 
