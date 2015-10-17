@@ -16,15 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.cache;
+package org.apache.jena.riot.system;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
+import org.apache.jena.riot.RIOT ;
+import org.apache.jena.system.JenaSubsystemLifecycle ;
 
-public abstract class CacheClient {
+/** RIOT initialization. Used by {@code JenaSystem} */
+public class InitRIOT implements JenaSubsystemLifecycle {
 
-    public abstract Object get(String key) throws InterruptedException, ExecutionException, TimeoutException ;
-    public abstract boolean set(String key, Object value) throws InterruptedException, ExecutionException, TimeoutException ;
-    public abstract boolean unset(String key) throws InterruptedException, ExecutionException, TimeoutException ;
+    @Override
+    public void start() {
+        RIOT.init();
+    }
 
+    @Override
+    public void stop() {}
+
+    @Override
+    public int level() {
+        return 20 ;
+    }
 }

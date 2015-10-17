@@ -180,10 +180,26 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     }
 
     private void write$(char ch) 
-    { try { out.write(ch) ; cacheWriter.append(ch) ; } catch (IOException ex) { IO.exception(ex); } }
+    {
+        try {
+            out.write(ch) ;
+            if(cacheWriter!=null)
+                cacheWriter.append(ch) ;
+        }
+        catch (IOException ex) {
+            IO.exception(ex); }
+    }
     
     private void write$(String s) 
-    { try { out.write(s) ; cacheWriter.append(s) ; } catch (IOException ex) { IO.exception(ex); } }
+    {
+        try {
+            out.write(s) ;
+            if(cacheWriter != null)
+                cacheWriter.append(s) ;
+        }
+        catch (IOException ex) {
+            IO.exception(ex); }
+    }
     
     public void newline()
     {
