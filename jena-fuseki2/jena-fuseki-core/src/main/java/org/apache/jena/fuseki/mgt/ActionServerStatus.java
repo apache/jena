@@ -90,11 +90,11 @@ public class ActionServerStatus extends ActionCtl
 //            .startObject()
 //            .key(JsonConst.port).value(port)
 //            .finishObject() ;
-        builder
-            .key(JsonConst.admin)
-            .startObject()
-            .key(JsonConst.port).value(requestPort)
-            .finishObject() ;
+//        builder
+//            .key(JsonConst.admin)
+//            .startObject()
+//            .key(JsonConst.port).value(requestPort)
+//            .finishObject() ;
 
         builder
             .key(JsonConst.version).value(versionStr)

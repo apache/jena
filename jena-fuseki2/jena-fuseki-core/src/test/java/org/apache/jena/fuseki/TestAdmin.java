@@ -88,7 +88,7 @@ public class TestAdmin extends BaseTest {
     @Test public void server_1() {
         JsonValue jv = httpGetJson(ServerTest.urlRoot+"$/"+opServer) ;
         JsonObject obj = jv.getAsObject() ;
-        assertTrue(obj.hasKey(JsonConst.admin)) ;
+        // Now optional : assertTrue(obj.hasKey(JsonConst.admin)) ;
         assertTrue(obj.hasKey(JsonConst.datasets)) ;
         assertTrue(obj.hasKey(JsonConst.uptime)) ;
         assertTrue(obj.hasKey(JsonConst.startDT)) ;
