@@ -91,6 +91,14 @@ public class StreamRDFWriter {
             return new StreamWriterTriX(output) ;
         }
     } ;
+
+    private static StreamRDFWriterFactory streamWriterFactoryNull = new StreamRDFWriterFactory() {
+        @Override
+        public StreamRDF create(OutputStream output, RDFFormat format) {
+            return StreamRDFLib.sinkNull() ;
+        }
+    } ;
+    
     
     private static WriterRegistry<StreamRDFWriterFactory> registry = new WriterRegistry<>() ;
 
@@ -122,6 +130,7 @@ public class StreamRDFWriter {
         register(Lang.NQUADS,       RDFFormat.NQUADS) ;
         register(Lang.RDFTHRIFT,    RDFFormat.RDF_THRIFT) ;
         register(Lang.TRIX,         RDFFormat.TRIX) ;
+        register(Lang.RDFNULL,      RDFFormat.RDFNULL) ;
         
         register(RDFFormat.TURTLE_BLOCKS,   streamWriterFactoryBlocks) ;
         register(RDFFormat.TURTLE_FLAT,     streamWriterFactoryFlat) ;
@@ -140,6 +149,7 @@ public class StreamRDFWriter {
         register(RDFFormat.RDF_THRIFT_VALUES,   streamWriterFactoryThrift) ;
         
         register(RDFFormat.TRIX,            streamWriterFactoryTriX) ;
+        register(RDFFormat.RDFNULL,         streamWriterFactoryNull) ;
     }
 
     /** Get a StreamRDF destination that will output in syntax <tt>Lang</tt>

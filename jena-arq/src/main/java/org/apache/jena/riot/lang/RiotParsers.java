@@ -23,7 +23,6 @@ import static org.apache.jena.riot.RDFLanguages.N3 ;
 import static org.apache.jena.riot.RDFLanguages.NQUADS ;
 import static org.apache.jena.riot.RDFLanguages.NTRIPLES ;
 import static org.apache.jena.riot.RDFLanguages.RDFJSON ;
-import static org.apache.jena.riot.RDFLanguages.RDFNULL ;
 import static org.apache.jena.riot.RDFLanguages.RDFXML ;
 import static org.apache.jena.riot.RDFLanguages.TRIG ;
 import static org.apache.jena.riot.RDFLanguages.TURTLE ;
@@ -42,6 +41,8 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 
+/** @deprecated Use RDFDataMgr operations */
+@Deprecated
 public class RiotParsers {
 
     /** Create a parser for Turtle
@@ -54,7 +55,10 @@ public class RiotParsers {
         return createParserTurtle(tokenizer, baseIRI, dest) ;
     }
 
-    /** Create a parser for Turtle */
+    /** Create a parser for Turtle
+     * @deprecated use an RDFDataMgr operation with argument Lang.Turtle
+     */
+    @Deprecated
     public static LangTurtle createParserTurtle(Tokenizer tokenizer, String baseIRI, StreamRDF dest)
     {
         RiotLib.profile(RDFLanguages.TURTLE, baseIRI) ;
@@ -74,7 +78,10 @@ public class RiotParsers {
         return parser ;
     }
 
-    /** Create parsers for RDF/JSON */
+    /** Create parsers for RDF/JSON
+     * @deprecated use an RDFDataMgr operation with argument Lang.RDFJSON
+     */
+    @Deprecated
     public static LangRDFJSON createParserRdfJson(Tokenizer tokenizer, StreamRDF dest)
     {
     	LangRDFJSON parser = new LangRDFJSON(tokenizer, RiotLib.profile(RDFLanguages.RDFJSON, null), dest) ;
@@ -112,23 +119,28 @@ public class RiotParsers {
     }
 
     /** Create a parser for N-Triples
-     * Normally, use an RDFDataMgr operation with argument Lang.NTRIPLES
+     *  @deprecated Use an RDFDataMgr operation with argument Lang.NTRIPLES
      */
+    @Deprecated
     public static LangNTriples createParserNTriples(InputStream input, StreamRDF dest)
     {
         return createParserNTriples(input, CharSpace.UTF8, dest) ;
     }
 
     /** Create a parser for N-Triples
-     * Normally, use an RDFDataMgr operation with argument Lang.NTRIPLES
+     *  @deprecated Use an RDFDataMgr operation with argument Lang.NTRIPLES
      */
+    @Deprecated
     public static LangNTriples createParserNTriples(InputStream input, CharSpace charSpace, StreamRDF dest)
     {
         Tokenizer tokenizer = charSpace == CharSpace.ASCII ? TokenizerFactory.makeTokenizerASCII(input) : TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserNTriples(tokenizer, dest) ;
     }
 
-    /** Create a parser for N-Triples */
+    /** Create a parser for N-Triples
+     *  @deprecated Use an RDFDataMgr operation with argument Lang.NTRIPLES
+     */
+    @Deprecated
     public static LangNTriples createParserNTriples(Tokenizer tokenizer, StreamRDF dest)
     {
         LangNTriples parser = new LangNTriples(tokenizer, RiotLib.profile(RDFLanguages.NTRIPLES, null), dest) ;
@@ -136,23 +148,28 @@ public class RiotParsers {
     }
 
     /** Create a parser for NQuads
-     * Normally, use an RDFDataMgr operation with argument Lang.NQUADS
+     *  @deprecated Use an RDFDataMgr operation with argument Lang.NQUADS.
      */
+    @Deprecated
     public static LangNQuads createParserNQuads(InputStream input, StreamRDF dest)
     {
         return createParserNQuads(input, CharSpace.UTF8, dest) ;
     }
 
     /** Create a parser for NQuads
-     * Normally, use an RDFDataMgr operation with argument Lang.NQUADS
+     *  @deprecated Use an RDFDataMgr operation with argument Lang.NQUADS.
      */
+    @Deprecated
     public static LangNQuads createParserNQuads(InputStream input, CharSpace charSpace, StreamRDF dest)
     {
         Tokenizer tokenizer = charSpace == CharSpace.ASCII ? TokenizerFactory.makeTokenizerASCII(input) : TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserNQuads(tokenizer, dest) ;
     }
 
-    /** Create a parser for NQuads */
+    /** Create a parser for NQuads
+     *  @deprecated Use an RDFDataMgr operation with argument Lang.NQUADS.
+     */
+    @Deprecated
     public static LangNQuads createParserNQuads(Tokenizer tokenizer, StreamRDF dest)
     {
         LangNQuads parser = new LangNQuads(tokenizer, RiotLib.profile(RDFLanguages.NQUADS, null), dest) ;
@@ -219,10 +236,6 @@ public class RiotParsers {
             return createParserNQuads(tokenizer, dest) ;
         if ( RDFLanguages.sameLang(TRIG, lang) )
             return createParserTriG(tokenizer, baseIRI, dest) ;
-        
-        if ( RDFLanguages.sameLang(RDFNULL, lang) )
-            return new LangNull() ;
-        
         return null ;
     }
 

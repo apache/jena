@@ -28,10 +28,7 @@ import java.util.Set ;
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.riot.lang.JsonLDReader ;
-import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.ReaderTriX ;
-import org.apache.jena.riot.lang.RiotParsers ;
+import org.apache.jena.riot.lang.* ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.ParserProfile ;
@@ -66,7 +63,8 @@ public class RDFParserRegistry
     private static ReaderRIOTFactory parserFactoryJsonLD    = new ReaderRIOTFactoryJSONLD() ;
     private static ReaderRIOTFactory parserFactoryThrift    = new ReaderRIOTFactoryThrift() ;
     private static ReaderRIOTFactory parserFactoryTriX      = new ReaderRIOTFactoryTriX() ;
-    
+    private static ReaderRIOTFactory parserFactoryRDFNULL   = new ReaderRIOTFactoryRDFNULL() ;
+        
     private static boolean initialized = false ;
     static { init() ; }
     public static void init()
@@ -90,12 +88,14 @@ public class RDFParserRegistry
         registerLangTriples(CSV,        parserFactory) ;
         registerLangTriples(THRIFT,     parserFactoryThrift) ;
         registerLangTriples(TRIX,       parserFactoryTriX) ;
+        registerLangTriples(RDFNULL,    parserFactoryRDFNULL) ;
         
         registerLangQuads(JSONLD,       parserFactoryJsonLD) ;
         registerLangQuads(NQUADS,       parserFactory) ;
         registerLangQuads(TRIG,         parserFactory) ;
         registerLangQuads(THRIFT,       parserFactoryThrift) ;
         registerLangQuads(TRIX,         parserFactoryTriX) ;
+        registerLangQuads(RDFNULL,      parserFactoryRDFNULL) ;
     }
 
     /** Register a language and it's parser factory.
@@ -242,6 +242,13 @@ public class RDFParserRegistry
         @Override
         public ReaderRIOT create(Lang language) {
             return new ReaderTriX() ;
+        }
+    }
+
+    private static class ReaderRIOTFactoryRDFNULL implements ReaderRIOTFactory {
+        @Override
+        public ReaderRIOT create(Lang language) {
+            return new ReaderRDFNULL() ;
         }
     }
 }
