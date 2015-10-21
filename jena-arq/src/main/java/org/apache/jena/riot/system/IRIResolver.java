@@ -452,20 +452,6 @@ public abstract class IRIResolver
                 return resolveSilentNoCache(uriStr) ;
         }
         
-//        @Override
-//        public IRI resolveSilent(final String relURI) {
-//            if ( resolvedIRIs == null ) 
-//                return iriFactory.create(relURI) ;
-//            Callable<IRI> filler = new Callable<IRI>() {
-//                @Override
-//                public IRI call() throws Exception {
-//                    return base.create(relURI) ;
-//                }
-//            } ;
-//            return resolvedIRIs.getOrFill(relURI, filler) ;
-//        }
-
-        
         private IRI resolveSilentNoCache(String uriStr) {
             IRI x = IRIResolver.iriFactory.create(uriStr) ;
             if ( SysRIOT.StrictAbsURINoNormalization ) {
