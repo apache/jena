@@ -68,7 +68,7 @@ public abstract class IRIResolver
         // setErrorWarning(iriFactory, ViolationCodes.PERCENT_ENCODING_SHOULD_BE_UPPERCASE, false, false) ;
         // setErrorWarning(iriFactory, ViolationCodes.SCHEME_PATTERN_MATCH_FAILED, false, false) ;
         
-        // NFC tests are not well understood and these cause confusion.
+        // NFC tests are not well understood by general developers and these cause confusion.
         // See JENA-864
         //iriFactory.setIsError(ViolationCodes.NOT_NFC, false) ;
         //iriFactory.setIsError(ViolationCodes.NOT_NFKC, false) ;
@@ -76,8 +76,11 @@ public abstract class IRIResolver
         // ** Applies to various unicode blocks. 
         // setErrorWarning(iriFactory, ViolationCodes.COMPATIBILITY_CHARACTER, false, false) ;
 
-        // Moderate it -- allow unwise chars.
-        setErrorWarning(iriFactory, ViolationCodes.UNWISE_CHARACTER, false, false) ;
+        // This causes test failures.
+        // The tests catch warnings and a warning is expected.
+        // testing/RIOT/Lang/TurtleStd/turtle-eval-bad-02.ttl and 03 and TriG
+        //   > as \u003C  and < \u003E 
+        // setErrorWarning(iriFactory, ViolationCodes.UNWISE_CHARACTER, false, false) ;
         setErrorWarning(iriFactory, ViolationCodes.UNDEFINED_UNICODE_CHARACTER, false, false) ;
 
         if ( ShowResolverSetup ) {
@@ -448,6 +451,20 @@ public abstract class IRIResolver
             else
                 return resolveSilentNoCache(uriStr) ;
         }
+        
+//        @Override
+//        public IRI resolveSilent(final String relURI) {
+//            if ( resolvedIRIs == null ) 
+//                return iriFactory.create(relURI) ;
+//            Callable<IRI> filler = new Callable<IRI>() {
+//                @Override
+//                public IRI call() throws Exception {
+//                    return base.create(relURI) ;
+//                }
+//            } ;
+//            return resolvedIRIs.getOrFill(relURI, filler) ;
+//        }
+
         
         private IRI resolveSilentNoCache(String uriStr) {
             IRI x = IRIResolver.iriFactory.create(uriStr) ;
