@@ -51,6 +51,10 @@ public class RIOT {
         SysRIOT.StrictXSDLexicialForms = state ;
     }
 
+    public static boolean isStrictMode() {
+        return SysRIOT.strictMode ;
+    }
+
     public static void init() {
         if ( initialized )
             return ;
