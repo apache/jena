@@ -185,7 +185,7 @@ public class RiotParsers {
         if ( lang == RDFXML )
         {
             if ( baseIRI != null )
-                baseIRI = IRIResolver.resolveString(baseIRI) ;
+                baseIRI = SysRIOT.chooseBaseIRI(baseIRI) ;
             return LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(), dest) ;
         } else if ( lang == CSV){
         	return new LangCSV (input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(),  dest);
