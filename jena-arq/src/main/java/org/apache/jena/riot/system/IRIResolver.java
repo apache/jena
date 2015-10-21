@@ -18,6 +18,7 @@
 
 package org.apache.jena.riot.system ;
 
+import java.io.PrintStream ;
 import java.util.concurrent.Callable ;
 
 import org.apache.jena.atlas.lib.Cache ;
@@ -27,6 +28,7 @@ import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIException ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.ViolationCodes ;
+import org.apache.jena.iri.impl.PatternCompiler ;
 import org.apache.jena.riot.RiotException ;
 
 /** IRI handling */
@@ -38,8 +40,10 @@ public abstract class IRIResolver
      *  
      *  @see IRIFactory
      */
-    public static final IRIFactory iriFactory     = new IRIFactory() ;
-    private static boolean         showExceptions = true ;
+    public static final IRIFactory iriFactory        = new IRIFactory();
+    private static boolean         showExceptions    = true;
+    
+    private static final boolean   ShowResolverSetup = false;
     static {
         // These two are from IRIFactory.iriImplementation() ...
         iriFactory.useSpecificationIRI(true) ;
@@ -48,30 +52,42 @@ public abstract class IRIResolver
         // Allow relative references for file: URLs.
         iriFactory.setSameSchemeRelativeReferences("file") ;
 
+        // Convert "SHOULD" to warning (default is "error").
+        // iriFactory.shouldViolation(false,true);
+
+        if ( ShowResolverSetup ) {
+            System.out.println("---- Default settings ----") ;
+            printSetting(iriFactory) ;
+        }
+        
         setErrorWarning(iriFactory, ViolationCodes.UNREGISTERED_IANA_SCHEME, false, false) ;
 
-        // XXX Default?
-        // TODO turn off?? (ignored in CheckerIRI.iriViolations anyway).
-        //set(iriFactory, ViolationCodes.LOWERCASE_PREFERRED, false, false) ;
-        //set(iriFactory, ViolationCodes.PERCENT_ENCODING_SHOULD_BE_UPPERCASE, false, false) ;
-        //set(iriFactory, ViolationCodes.SCHEME_PATTERN_MATCH_FAILED, false, false) ;
+        // Turn off?? (ignored in CheckerIRI.iriViolations anyway).
+        // setErrorWarning(iriFactory, ViolationCodes.LOWERCASE_PREFERRED, false, false) ;
+        // setErrorWarning(iriFactory, ViolationCodes.PERCENT_ENCODING_SHOULD_BE_UPPERCASE, false, false) ;
+        // setErrorWarning(iriFactory, ViolationCodes.SCHEME_PATTERN_MATCH_FAILED, false, false) ;
         
-        // iriFactory.shouldViolation(false,true);
-        
-        //  NFC tests are not well understood and these cause confusion.
+        // NFC tests are not well understood and these cause confusion.
+        // See JENA-864
         //iriFactory.setIsError(ViolationCodes.NOT_NFC, false) ;
         //iriFactory.setIsError(ViolationCodes.NOT_NFKC, false) ;
 
         // ** Applies to various unicode blocks. 
-        // XXX Default?
-        // set(iriFactory, ViolationCodes.COMPATIBILITY_CHARACTER, false, false) ;
+        // setErrorWarning(iriFactory, ViolationCodes.COMPATIBILITY_CHARACTER, false, false) ;
 
-        // XXX Default?
-        // Moderate it -- allow unwise chars and any scheme name.
-        //set(iriFactory, ViolationCodes.UNWISE_CHARACTER, false, false) ;
-        //set(iriFactory, ViolationCodes.UNDEFINED_UNICODE_CHARACTER, false, false) ;
+        // Moderate it -- allow unwise chars.
+        setErrorWarning(iriFactory, ViolationCodes.UNWISE_CHARACTER, false, false) ;
+        setErrorWarning(iriFactory, ViolationCodes.UNDEFINED_UNICODE_CHARACTER, false, false) ;
+
+        if ( ShowResolverSetup ) {
+            System.out.println("---- After initialization ----") ;
+            printSetting(iriFactory) ;
+        }
+
     }
 
+    // ---- Initialization support
+    
     /** Set the error/warnign state of a violation code.
      * @param factory   IRIFactory
      * @param code      ViolationCodes constant
@@ -82,6 +98,27 @@ public abstract class IRIResolver
         factory.setIsError(code, isError);
         factory.setIsWarning(code, isWarning);
     }
+    
+    private static void printSetting(IRIFactory factory) {
+        PrintStream ps = System.out ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.UNREGISTERED_IANA_SCHEME) ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.NOT_NFC) ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.NOT_NFKC) ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.UNWISE_CHARACTER) ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.UNDEFINED_UNICODE_CHARACTER) ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.COMPATIBILITY_CHARACTER) ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.LOWERCASE_PREFERRED) ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.PERCENT_ENCODING_SHOULD_BE_UPPERCASE) ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.SCHEME_PATTERN_MATCH_FAILED) ;
+        ps.println() ;
+    }
+    
+    private static void printErrorWarning(PrintStream ps, IRIFactory factory, int code) {
+        String x = PatternCompiler.errorCodeName(code);
+        ps.printf("%-40s : E:%-5s W:%-5s\n", x, factory.isError(code), factory.isWarning(code)) ;
+    }
+
+    // ---- System-wide operations.
     
     /** Check an IRI string (does not resolve it) */
     public static boolean checkIRI(String iriStr) {
