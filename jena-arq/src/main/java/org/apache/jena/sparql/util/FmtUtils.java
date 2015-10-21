@@ -27,11 +27,11 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Node_Literal ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.IRIRelativize ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -462,7 +462,7 @@ public class FmtUtils
     {
         if ( hasScheme(uri) )
             return uri ;
-        IRI baseIRI = IRIFactory.jenaImplementation().construct(base) ;
+        IRI baseIRI = IRIResolver.iriFactory.construct(base) ;
         IRI rel = baseIRI.relativize(uri, relFlags) ;
         String r = rel.toString() ;
         return r ;
