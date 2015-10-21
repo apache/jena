@@ -30,6 +30,7 @@ import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.ViolationCodes ;
 import org.apache.jena.iri.impl.PatternCompiler ;
 import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.SysRIOT ;
 
 /** IRI handling */
 public abstract class IRIResolver
@@ -450,6 +451,12 @@ public abstract class IRIResolver
         
         private IRI resolveSilentNoCache(String uriStr) {
             IRI x = IRIResolver.iriFactory.create(uriStr) ;
+            if ( SysRIOT.StrictBaseURINoResolve ) {
+                // Always process "file:", even in strict mode.
+                // file: is widely used in irregular forms.
+                if ( x.isAbsolute() && ! uriStr.startsWith("file:") )
+                    return x ;
+            }
             return base.create(x) ;
         }
 
