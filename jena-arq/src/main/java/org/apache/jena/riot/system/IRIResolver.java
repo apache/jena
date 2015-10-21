@@ -341,12 +341,7 @@ public abstract class IRIResolver
         public IRI resolveSilent(final String uriStr) {
             if ( resolvedIRIs == null ) 
                 return iriFactory.create(uriStr) ;
-            Callable<IRI> filler = new Callable<IRI>() {
-                @Override
-                public IRI call() throws Exception {
-                    return iriFactory.create(uriStr) ;
-                }
-            } ;
+            Callable<IRI> filler = () -> iriFactory.create(uriStr) ;
             IRI iri = resolvedIRIs.getOrFill(uriStr, filler) ;
             return iri ;
         }
@@ -432,12 +427,8 @@ public abstract class IRIResolver
         public IRI resolveSilent(final String relURI) {
             if ( resolvedIRIs == null ) 
                 return iriFactory.create(relURI) ;
-            Callable<IRI> filler = new Callable<IRI>() {
-                @Override
-                public IRI call() throws Exception {
-                    return base.create(relURI) ;
-                }
-            } ;
+            IRI x = IRIResolver.iriFactory.create(relURI) ;
+            Callable<IRI> filler = () -> base.create(x) ;
             return resolvedIRIs.getOrFill(relURI, filler) ;
         }
     }
