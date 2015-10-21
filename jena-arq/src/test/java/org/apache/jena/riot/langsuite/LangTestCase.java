@@ -19,7 +19,7 @@
 package org.apache.jena.riot.langsuite;
 
 import org.apache.jena.atlas.legacy.BaseTest2 ;
-import org.apache.jena.riot.RIOT ;
+import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.sparql.junit.EarlReport ;
 import org.apache.jena.sparql.junit.EarlTestCase ;
@@ -44,8 +44,8 @@ public abstract class LangTestCase extends EarlTestCase
         // If the test suite is sloppy, with IRIs that are not good practice, you may need
         // to run with warnings as not-errors ....
         //BaseTest.setTestLogging(ErrorHandlerFactory.errorHandlerStd) ;
-        sysRIOT_strictMode = RIOT.isStrictMode() ;
-        RIOT.setStrictMode(true) ;
+        sysRIOT_strictMode = SysRIOT.isStrictMode() ;
+        SysRIOT.setStrictMode(true) ;
         _setUp() ;
     }
     
@@ -53,7 +53,7 @@ public abstract class LangTestCase extends EarlTestCase
     final public void tearDownTest()
     {
         _tearDown() ;
-        RIOT.setStrictMode(sysRIOT_strictMode) ;
+        SysRIOT.setStrictMode(sysRIOT_strictMode) ;
         BaseTest2.unsetTestLogging() ; 
     }
 

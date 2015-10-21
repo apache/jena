@@ -24,8 +24,8 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.iri.IRI ;
-import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
@@ -39,7 +39,7 @@ public class ParserProfileBase implements ParserProfile {
     protected ErrorHandler errorHandler ;
     protected Prologue     prologue ;
     protected LabelToNode  labelMapping ;
-    protected boolean      strictMode = RIOT.isStrictMode() ;
+    protected boolean      strictMode = SysRIOT.isStrictMode() ;
 
     public ParserProfileBase(Prologue prologue, ErrorHandler errorHandler) {
         this(prologue, errorHandler, SyntaxLabels.createLabelToNode()) ;

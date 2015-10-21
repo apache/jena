@@ -38,7 +38,10 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.riot.* ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.SysRIOT ;
+import org.apache.jena.riot.WriterDatasetRIOT ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -114,7 +117,7 @@ public class RiotLib
     {
         if ( sameLang(NTRIPLES, lang) || sameLang(NQUADS, lang) )
         {
-            boolean checking = RIOT.isStrictMode() ;
+            boolean checking = SysRIOT.isStrictMode() ;
             // If strict mode, do checking e.g. URIs
             return profile(baseIRI, false, checking, handler) ;
         }

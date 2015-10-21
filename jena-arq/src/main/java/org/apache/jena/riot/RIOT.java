@@ -46,15 +46,6 @@ public class RIOT {
     /** The root package name for RIOT */
     public static final String PATH    = "org.apache.jena.riot" ;
 
-    public static void setStrictMode(boolean state) {
-        SysRIOT.strictMode = state ;
-        SysRIOT.StrictXSDLexicialForms = state ;
-    }
-
-    public static boolean isStrictMode() {
-        return SysRIOT.strictMode ;
-    }
-
     public static void init() {
         if ( initialized )
             return ;

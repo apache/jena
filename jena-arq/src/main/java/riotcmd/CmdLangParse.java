@@ -126,11 +126,11 @@ public abstract class CmdLangParse extends CmdGeneral
     
     @Override
     protected void exec() {
-        boolean oldStrictValue = RIOT.isStrictMode() ;
+        boolean oldStrictValue = SysRIOT.isStrictMode() ;
         if ( modLangParse.strictMode() )
-            RIOT.setStrictMode(true) ;
+            SysRIOT.setStrictMode(true) ;
         try { exec$() ; }
-        finally { RIOT.setStrictMode(oldStrictValue) ; } 
+        finally { SysRIOT.setStrictMode(oldStrictValue) ; } 
     }
     
     protected void exec$() {
