@@ -126,8 +126,14 @@ public abstract class CmdLangParse extends CmdGeneral
     
     @Override
     protected void exec() {
+        boolean oldStrictValue = RIOT.isStrictMode() ;
         if ( modLangParse.strictMode() )
-            RIOT.setStrictMode(true) ; 
+            RIOT.setStrictMode(true) ;
+        try { exec$() ; }
+        finally { RIOT.setStrictMode(oldStrictValue) ; } 
+    }
+    
+    protected void exec$() {
         
         if ( modLangParse.getRDFSVocab() != null )
             setup = new InferenceSetupRDFS(modLangParse.getRDFSVocab()) ;
