@@ -76,15 +76,12 @@ public class TestErrorMessages extends TestCase
         return rslt.toString();
     }
 
-
-   
-
 	private void printErrorMessages(Violation v) {
 			System.err.println(v.getShortMessage());
 		
 	}
 
-
+    @SuppressWarnings("deprecation")
     static public IRIFactory f = IRIFactory.jenaImplementation();
    
     @Override

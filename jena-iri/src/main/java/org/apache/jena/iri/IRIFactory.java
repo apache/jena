@@ -154,17 +154,30 @@ public class IRIFactory extends IRIFactoryImpl
      * not in error, can be used 
      * interoperably in RDF/XML, SPARQL, N3
      * and N-Triple.
+     * <p>
+     * This is the support for RDF 1.0 / RDF 2004 which includes "RDF URI References" 
+     * (they are very broad and allow spaces, for example; the IRI RFC was not finalized
+     * when the RDF 1.1 specs were published).
+     * Nowadays, IRIs are strongly preferred by the semantic web standards.
+ 
      * @return A factory suitable for Semantic Web applications.
+     * @deprecated Use {@link #iriImplementation()}
      */
+    @Deprecated
     static public IRIFactory semanticWebImplementation() {
         return theSemWebFactory;
     }
     /** 
-     * For use by Jena team only.
-     * This method reflects the current IRI support
-     * in Jena, which is a moving target at present.
+     * For use by Jena intenal use only.
+     * <p>
+     * This is the support for RDF 1.0 / RDF 2004 which includes "RDF URI References" 
+     * (they are very broad and allow spaces, for example; the IRI RFC was not finalized
+     * when the RDF 1.1 specs were published).
+     * Nowadays, IRIs are strongly preferred by the semantic web standards.
      * @return A factory suitable for Jena.
+     * @deprecated Use {@link #iriImplementation()}
      */
+    @Deprecated
     static public IRIFactory jenaImplementation() {
         return jenaFactory;
     }
