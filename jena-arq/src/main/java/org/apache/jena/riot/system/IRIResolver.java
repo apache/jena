@@ -451,7 +451,7 @@ public abstract class IRIResolver
         
         private IRI resolveSilentNoCache(String uriStr) {
             IRI x = IRIResolver.iriFactory.create(uriStr) ;
-            if ( SysRIOT.StrictBaseURINoResolve ) {
+            if ( SysRIOT.StrictAbsURINoNormalization ) {
                 // Always process "file:", even in strict mode.
                 // file: is widely used in irregular forms.
                 if ( x.isAbsolute() && ! uriStr.startsWith("file:") )
