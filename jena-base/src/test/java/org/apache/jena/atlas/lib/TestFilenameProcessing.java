@@ -155,6 +155,12 @@ public class TestFilenameProcessing extends BaseTest
         filenameToIRI("file:..", "file://"+x ) ;
     }
     
+    // Windows + URL.toString().
+    // Should be stable on all systems. 
+    @Test public void fileURL_15() {
+        filenameToIRI("file:/C:/path/file", "file:///C:/path/file") ;
+    }
+
     private static void encodeComponent(String string, String result) {
         String r = IRILib.encodeUriComponent(string) ;
         assertEquals(result, r) ;

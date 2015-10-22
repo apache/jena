@@ -126,7 +126,15 @@ public class IRILib
     private static String plainFilenameToURL(String fn) {
         // No "file:"
         // Make Absolute filename.
+
         boolean trailingSlash = fn.endsWith("/") ;
+        if ( Sys.isWindows ) {
+            // Can be "/C:/" on windows :-(
+            // This happens because of URL.toString.
+            if ( fn.length() >= 3 && fn.charAt(0) == '/' && windowsDrive(fn, 1))
+                fn = fn.substring(1) ;
+        }
+        
         fn = Paths.get(fn).toAbsolutePath().normalize().toString() ;
         
         if ( trailingSlash && ! fn.endsWith("/") )
@@ -135,7 +143,7 @@ public class IRILib
         if ( Sys.isWindows )
         {
             // C:\ => file:///C:/... 
-            if ( fn.length() >= 2 && fn.charAt(1) == ':' )
+            if ( windowsDrive(fn, 0) )
                 // Windows drive letter - already absolute path.
                 // Make "URI" absolute path
                 fn = "/"+fn ;
@@ -146,6 +154,17 @@ public class IRILib
         
         fn = encodeFileURL(fn) ;
         return "file://"+fn ;
+    }
+    
+    private static boolean windowsDrive(String fn, int i) {
+        return 
+            fn.length() >= 2+i && 
+            fn.charAt(1+i) == ':' && 
+            isA2Z(fn.charAt(i)) ;    
+    }
+    
+    private static boolean isA2Z(char ch) {
+        return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') ;  
     }
     
     /** Sanitize a "file:" URL. Must start "file:" */
