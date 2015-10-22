@@ -232,12 +232,13 @@ public abstract class IRIResolver
     /**
      * Resolve a URI against a base. If baseStr is a relative file IRI
      * then it is first resolved against the current working directory.
+     * If it is an absolute URI, it is normalized.
      * 
-     * @param relStr
+     * @param uriStr
      * @return String An absolute URI
      */
-    static public String resolveStringSilent(String relStr) throws RiotException {
-        return globalResolver.resolveSilent(relStr).toString() ;
+    static public String resolveStringSilent(String uriStr) throws RiotException {
+        return globalResolver.resolveSilent(uriStr).toString() ;
     }
 
     /**
