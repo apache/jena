@@ -80,6 +80,8 @@ public abstract class IRIResolver
         // The tests catch warnings and a warning is expected.
         // testing/RIOT/Lang/TurtleStd/turtle-eval-bad-02.ttl and 03 and TriG
         //   > as \u003C  and < \u003E 
+        // Default is error=true, warning=false.
+        // Test pass with error=false, warning=true.
         // setErrorWarning(iriFactory, ViolationCodes.UNWISE_CHARACTER, false, false) ;
         setErrorWarning(iriFactory, ViolationCodes.UNDEFINED_UNICODE_CHARACTER, false, false) ;
 
