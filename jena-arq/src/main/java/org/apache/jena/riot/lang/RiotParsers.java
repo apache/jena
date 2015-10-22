@@ -128,8 +128,8 @@ public class RiotParsers {
         if ( baseIRI == null )
             return SysRIOT.chooseBaseIRI() ;
         else {
-            return IRIResolver.resolveStringSilent(baseIRI) ;
-            //return SysRIOT.chooseBaseIRI(baseIRI) ;
+            // Absolute compatibility.  This normalizes the URI.
+            return IRIResolver.resolveString(baseIRI) ;
         }
     }
 
