@@ -148,11 +148,9 @@ public class IRILib
         return "file://"+fn ;
     }
     
-    
     /** Sanitize a "file:" URL. Must start "file:" */
     private static String normalizeFilenameURI(String fn) {
-        if ( ! fn.startsWith("file:/") )
-        {
+        if ( ! fn.startsWith("file:/") ) {
             // Relative path.
             String fn2 = fn.substring("file:".length()) ;
             return plainFilenameToURL(fn2) ;
@@ -163,8 +161,7 @@ public class IRILib
             // Assume it's good and return as-is.
             return fn ;
 
-        if ( fn.startsWith("file://") )
-        {
+        if ( fn.startsWith("file://") ) {
             String fn2 = fn.substring("file:/".length()) ;  // Leave one "/"
             return plainFilenameToURL(fn2) ;
         }
@@ -209,11 +206,9 @@ public class IRILib
         
         byte[] bytes = StrUtils.asUTF8bytes(string) ;
         StringBuilder sw = new StringBuilder() ;
-        for ( byte b : bytes )
-        {
+        for ( byte b : bytes ) {
             // Signed bytes ...
-            if ( b > 0 )
-            {
+            if ( b > 0 ) {
                 sw.append( (char) b );
                 continue;
             }
@@ -228,8 +223,7 @@ public class IRILib
     }
 
     public static boolean containsNonASCII(String string){
-        for ( int i = 0 ; i < string.length() ; i++ )
-        {
+        for ( int i = 0 ; i < string.length() ; i++ ) {
             char ch = string.charAt(i) ;
             if ( ch >= 127 )
                 return true;
