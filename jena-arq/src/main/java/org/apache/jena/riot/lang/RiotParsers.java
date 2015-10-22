@@ -127,10 +127,9 @@ public class RiotParsers {
         // LangRIOT derived from LangEngine do this in ParserProfile 
         if ( baseIRI == null )
             return SysRIOT.chooseBaseIRI() ;
-        else {
-            // Absolute compatibility.  This normalizes the URI.
-            return IRIResolver.resolveString(baseIRI) ;
-        }
+        else
+            // This normalizes the URI.
+            return SysRIOT.chooseBaseIRI(baseIRI) ;
     }
 
     /** Create parsers for RDF/JSON
