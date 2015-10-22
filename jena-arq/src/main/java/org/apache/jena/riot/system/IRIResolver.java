@@ -202,8 +202,7 @@ public abstract class IRIResolver
     }
 
     /**
-     * Resolve a URI against a base. If baseStr is a relative file IRI
-     * then it is first resolved against the current working directory.
+     * Resolve a URI against a base.
      * 
      * @param relStr
      * @param baseStr
@@ -219,14 +218,15 @@ public abstract class IRIResolver
     /**
      * Resolve a URI against a base. If baseStr is a relative file IRI
      * then it is first resolved against the current working directory.
+     * If it is an absolute URI, it is normalized.
      * 
-     * @param relStr
+     * @param uriStr
      * @return String An absolute URI
      * @throws RiotException
      *             If result would not be legal, absolute IRI
      */
-    static public String resolveString(String relStr) throws RiotException {
-        return exceptions(resolveIRI(relStr)).toString() ;
+    static public String resolveString(String uriStr) throws RiotException {
+        return exceptions(resolveIRI(uriStr)).toString() ;
     }
 
     /**
