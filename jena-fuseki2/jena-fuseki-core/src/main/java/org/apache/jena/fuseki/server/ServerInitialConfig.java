@@ -28,20 +28,18 @@ public class ServerInitialConfig {
     // Priority order : --conf, templated  
     // through the command line processing should not allow --conf and a templated /dataset.
     
-    // Either this ...
-    public String    argTemplateFile     = null ;           // Command list args --mem, --loc, --memtdb
+    // Either this ... command line ...
+    public String    argTemplateFile  = null ;              // Command list args --mem, --loc, --memtdb
     public String    datasetPath      = null ;              // Dataset name on the command line.
     public boolean   allowUpdate      = false ;             // Command line --update.
-    // Special case - directly pass in the dataset graphs - datasetPath must be given.
-    public DatasetGraph dsg           = null ;              // Command line --file.
+    // Special case - prebuilt dataset.  Uses datasetPath.
+    public DatasetGraph dsg           = null ;             // Embedded or command line --file)
     
-    // Or this ... 
+    // Or configuration file from command line 
     public String    fusekiCmdLineConfigFile = null ;       // Command line --conf.
-    // Or this ... (lowest priority)
+    // Or configuration from run area (lowest priority)
     public String    fusekiServerConfigFile = null ;        // "run" area
-    
     
     // Additional information.
     public Map<String,String> params  = new HashMap<>() ;
-    
 }
