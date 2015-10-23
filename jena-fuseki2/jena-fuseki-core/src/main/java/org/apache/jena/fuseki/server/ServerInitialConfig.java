@@ -42,4 +42,13 @@ public class ServerInitialConfig {
     
     // Additional information.
     public Map<String,String> params  = new HashMap<>() ;
+    
+    public void reset() {
+        argTemplateFile  = null ;
+        datasetPath = null ;
+        allowUpdate = false ;
+        dsg = null ;
+        fusekiCmdLineConfigFile = null ;       // Command line --conf.
+        fusekiServerConfigFile = null ;    
+    }
 }
