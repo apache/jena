@@ -24,16 +24,10 @@ package org.apache.jena.fuseki.servlets ;
  * dataset URI.
  */
 
-public abstract class REST_Quads extends SPARQL_GSP {
-    // Not supported: GSP direct naming.
-
+public abstract class REST_Quads extends SPARQL_GSP
+{
     public REST_Quads() {
         super() ;
-    }
-
-    @Override
-    protected void validate(HttpAction action) {
-        // Check in the operations itself.
     }
 
     @Override

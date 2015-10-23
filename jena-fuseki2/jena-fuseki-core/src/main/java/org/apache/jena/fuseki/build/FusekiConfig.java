@@ -245,6 +245,7 @@ public class FusekiConfig {
         }
 
         Resource service = services.get(0) ;
+        // Configuration file determines read-only status.
         DataAccessPoint acc = Builder.buildDataAccessPoint(service) ; 
         return acc ;
     }

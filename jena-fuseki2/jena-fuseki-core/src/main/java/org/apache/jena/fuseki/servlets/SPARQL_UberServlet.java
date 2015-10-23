@@ -22,8 +22,10 @@ import static java.lang.String.format ;
 import static org.apache.jena.riot.WebContent.contentTypeSPARQLQuery ;
 import static org.apache.jena.riot.WebContent.contentTypeSPARQLUpdate ;
 
+import java.io.IOException ;
 import java.util.List ;
 
+import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -80,11 +82,10 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         public AccessByConfig()    { super() ; }
         @Override protected boolean allowQuery(HttpAction action)    { return isEnabled(action, OperationName.Query) ; }
         @Override protected boolean allowUpdate(HttpAction action)   { return isEnabled(action, OperationName.Update) ; }
-        @Override protected boolean allowREST_R(HttpAction action)   { return isEnabled(action, OperationName.GSP_R) || isEnabled(action, OperationName.GSP) ; }
-        @Override protected boolean allowREST_W(HttpAction action)   { return isEnabled(action, OperationName.GSP) ; }
-        // Quad operations tied to presence/absence of GSP.
-        @Override protected boolean allowQuadsR(HttpAction action)   { return isEnabled(action, OperationName.GSP_R) || isEnabled(action, OperationName.GSP) ; }
-        @Override protected boolean allowQuadsW(HttpAction action)   { return isEnabled(action, OperationName.GSP) ; }
+        @Override protected boolean allowREST_R(HttpAction action)   { return isEnabled(action, OperationName.GSP_R) || isEnabled(action, OperationName.GSP_RW) ; }
+        @Override protected boolean allowREST_W(HttpAction action)   { return isEnabled(action, OperationName.GSP_RW) ; }
+        @Override protected boolean allowQuadsR(HttpAction action)   { return isEnabled(action, OperationName.Quads_R) || isEnabled(action, OperationName.Quads_RW) ; }
+        @Override protected boolean allowQuadsW(HttpAction action)   { return isEnabled(action, OperationName.Quads_RW) ; }
 
         // Test whether there is a configuration that allows this action as the operation given.
         // Ignores the operation in the action (set due to parsing - it might be "quads"
@@ -109,7 +110,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     private final ActionSPARQL uploadServlet   = new SPARQL_Upload() ;
     private final ActionSPARQL gspServlet_R    = new SPARQL_GSP_R() ;
     private final ActionSPARQL gspServlet_RW   = new SPARQL_GSP_RW() ;
-    private final ActionSPARQL restQuads_R     = new REST_Quads_R() ;
+    private final ActionSPARQL restQuads_R     = new REST_Quads_R() ; // XXX
     private final ActionSPARQL restQuads_RW    = new REST_Quads_RW() ;
     
     public SPARQL_UberServlet() { super(); }
@@ -151,6 +152,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         String method = request.getMethod() ;
         
         DataAccessPoint desc = action.getDataAccessPoint() ;
+        System.err.println("**** SET READONLY ****") ;
         DataService dSrv = action.getDataService() ;
 
 //        if ( ! dSrv.isActive() )
@@ -184,15 +186,6 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         boolean hasTrailing = ( trailing.length() != 0 ) ;
         
         if ( !hasTrailing && !hasParams ) {
-            // REST quads operations.
-//            if ( serviceDispatch(action, OperationName.GSP_R, restQuads_R) ) return ;
-//            if ( serviceDispatch(action, OperationName.GSP, restQuads_RW) ) return ;
-            
-//            boolean isPOST = method.equals(HttpNames.METHOD_POST) ;
-//            if ( isPOST ) {
-//                // Differentiate SPARQL query, SPARQL update by content type.
-//            }
-            
             // REST dataset.
             boolean isGET = method.equals(HttpNames.METHOD_GET) ;
             boolean isHEAD = method.equals(HttpNames.METHOD_HEAD) ;
@@ -202,13 +195,16 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
                 if ( allowREST_R(action) )
                     restQuads_R.executeLifecycle(action) ;
                 else
-                    ServletOps.errorForbidden("Forbidden: "+method+" on dataset") ;
+                    ServletOps.errorMethodNotAllowed("Read-only dataset : "+method) ;
                 return ; 
             }
+            // If the read-only server has the same name as the writable server, 
+            // and the default fro a read-only server is "/data", like a writable dataset,
+            // this test is insufficient.
             if ( allowREST_W(action) )
                 restQuads_RW.executeLifecycle(action) ;
             else
-                ServletOps.errorForbidden("Forbidden: "+method+" on dataset") ;
+                ServletOps.errorMethodNotAllowed("Read-only dataset : "+method) ;
             return ;
         }
         
@@ -221,7 +217,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
             if ( hasParamQuery || ( isPOST && contentTypeSPARQLQuery.equalsIgnoreCase(ct) ) ) {
                 // SPARQL Query
                 if ( !allowQuery(action) )
-                    ServletOps.errorForbidden("Forbidden: SPARQL query") ;
+                    ServletOps.errorMethodNotAllowed("SPARQL query : "+method) ;
                 executeRequest(action, queryServlet) ;
                 return ;
             }
@@ -231,7 +227,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
             if ( isPOST && ( hasParamUpdate || contentTypeSPARQLUpdate.equalsIgnoreCase(ct) ) ) {
                 // SPARQL Update
                 if ( !allowUpdate(action) )
-                    ServletOps.errorForbidden("Forbidden: SPARQL update") ;
+                    ServletOps.errorMethodNotAllowed("SPARQL update : "+method) ; 
                 executeRequest(action, updateServlet) ;
                 return ;
             }
@@ -243,7 +239,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
             }
             
             ServletOps.errorBadRequest("Malformed request") ;
-            ServletOps.errorForbidden("Forbidden: SPARQL Graph Store Protocol : Read operation : "+method) ;
+            ServletOps.errorMethodNotAllowed("SPARQL Graph Store Protocol : "+method) ;
         }
         
         final boolean checkForPossibleService = true ;
@@ -256,11 +252,11 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
             if ( serviceDispatch(action, OperationName.Upload, uploadServlet) ) return ;
             if ( hasParams ) {
                 if ( serviceDispatch(action, OperationName.GSP_R, gspServlet_R) ) return ; 
-                if ( serviceDispatch(action, OperationName.GSP, gspServlet_RW) ) return ;
+                if ( serviceDispatch(action, OperationName.GSP_RW, gspServlet_RW) ) return ;
             } else {
                 // No parameters - do as a quads operation on the dataset.
                 if ( serviceDispatch(action, OperationName.GSP_R, restQuads_R) ) return ;
-                if ( serviceDispatch(action, OperationName.GSP, restQuads_RW) ) return ;
+                if ( serviceDispatch(action, OperationName.GSP_RW, restQuads_RW) ) return ;
             }
         }
         // There is a trailing part - params are illegal by this point.
@@ -331,18 +327,21 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     }
 
     private void executeRequest(HttpAction action, ActionSPARQL servlet) {
-        servlet.executeLifecycle(action) ;
-        // A call to "doCommon" or a forwarded dispatch looses "action".
-//      try
-//      {
-//          String target = getEPName(desc.name, endpointList) ;
-//          if ( target == null )
-//              errorMethodNotAllowed(request.getMethod()) ;
-//          // ** relative servlet forward
-//          request.getRequestDispatcher(target).forward(request, response) ;    
-//          // ** absolute srvlet forward
-//          // getServletContext().getRequestDispatcher(target) ;
-//      } catch (Exception e) { errorOccurred(e) ; }        
+        if ( true ) {
+            // Execute an ActionSPARQL.
+            // Bypasses HttpServlet.service to doMethod dispatch.
+            servlet.executeLifecycle(action) ;
+            return ;
+        }
+        if ( false )  {
+            // Execute by calling the whole servlet mechanism.
+            // This causes HttpServlet.service to call the appropriate doMethod. 
+            // but the action, and the id, are not passed on and a ne one is created.
+            try { servlet.service(action.request, action.response) ; }
+            catch (ServletException | IOException e) {
+                ServletOps.errorOccurred(e); 
+            }
+        }
     }
 
     protected static MediaType contentNegotationQuads(HttpAction action) {

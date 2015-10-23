@@ -154,6 +154,8 @@ public class ServletOps {
     }
 
     public static String formatForLog(String string) {
+        if ( string == null )
+            return "<null>" ;
         string = string.replace('\n', ' ') ;
         string = string.replace('\r', ' ') ;
         return string ;

@@ -44,8 +44,9 @@ public class Builder
 {
     private static Logger log = Fuseki.builderLog ;
     
-    /** Build a DataAccessPoint, including DataServiceat Resource svc */
+    /** Build a DataAccessPoint, including DataService at Resource svc */ 
     public static DataAccessPoint buildDataAccessPoint(Resource svc) {
+        // XXX
         RDFNode n = FusekiLib.getOne(svc, "fu:name") ;
         if ( ! n.isLiteral() )
             throw new FusekiConfigException("Not a literal for access point name: "+FmtUtils.stringForRDFNode(n));
@@ -63,7 +64,7 @@ public class Builder
     }
 
     /** Build a DatasetRef starting at Resource svc */
-    public static DataService buildDataService(Resource svc) {
+    private static DataService buildDataService(Resource svc) {
         //log.debug("Service: " + nodeLabel(svc)) ;
         // DO REAL WORK
         Resource datasetDesc = ((Resource)getOne(svc, "fu:dataset")) ;
@@ -78,12 +79,12 @@ public class Builder
         addServiceEP(dataService, OperationName.Update, svc,    "fu:serviceUpdate") ;
         addServiceEP(dataService, OperationName.Upload, svc,    "fu:serviceUpload") ;
         addServiceEP(dataService, OperationName.GSP_R,  svc,    "fu:serviceReadGraphStore") ;
-        addServiceEP(dataService, OperationName.GSP,    svc,    "fu:serviceReadWriteGraphStore") ;
+        addServiceEP(dataService, OperationName.GSP_RW, svc,    "fu:serviceReadWriteGraphStore") ;
         
-        if ( ! dataService.getOperation(OperationName.GSP).isEmpty() )
-            dataService.addEndpoint(OperationName.Quads, "") ;
+        if ( ! dataService.getOperation(OperationName.GSP_RW).isEmpty() )
+            dataService.addEndpoint(OperationName.Quads_RW, "") ;
         else if ( ! dataService.getOperation(OperationName.GSP_R).isEmpty() )
-            dataService.addEndpoint(OperationName.Quads, "") ;
+            dataService.addEndpoint(OperationName.Quads_R, "") ;
         
         // XXX 
 //        // Extract timeout overriding configuration if present.
@@ -103,14 +104,15 @@ public class Builder
         addServiceEP(dataService, OperationName.Query, "query") ;
         addServiceEP(dataService, OperationName.Query, "sparql") ;
         if ( ! allowUpdate ) {
-            addServiceEP(dataService, OperationName.Quads, "quads") ;
             addServiceEP(dataService, OperationName.GSP_R, "data") ;
+            addServiceEP(dataService, OperationName.Quads_R, "") ;
             return dataService ;
         }
-        addServiceEP(dataService, OperationName.GSP,    "data") ;
+        addServiceEP(dataService, OperationName.GSP_RW,    "data") ;
+        addServiceEP(dataService, OperationName.GSP_R,  "get") ;
         addServiceEP(dataService, OperationName.Update, "update") ;
         addServiceEP(dataService, OperationName.Upload, "upload") ;
-        addServiceEP(dataService, OperationName.Quads,  "") ;
+        addServiceEP(dataService, OperationName.Quads_RW,  "") ;
         return dataService ;
     }
 

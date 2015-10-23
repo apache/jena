@@ -106,17 +106,17 @@ public class SPARQL_GSP_R extends SPARQL_GSP
 
     @Override
     protected void doPost(HttpAction action)
-    { ServletOps.errorMethodNotAllowed("POST") ; }
+    { ServletOps.errorMethodNotAllowed("POST : Read-only") ; }
 
     @Override
     protected void doDelete(HttpAction action)
-    { ServletOps.errorMethodNotAllowed("DELETE") ; }
+    { ServletOps.errorMethodNotAllowed("DELETE : Read-only") ; }
 
     @Override
     protected void doPut(HttpAction action)
-    { ServletOps.errorMethodNotAllowed("PUT") ; }
+    { ServletOps.errorMethodNotAllowed("PUT : Read-only") ; }
 
     @Override
     protected void doPatch(HttpAction action)
-    { ServletOps.errorMethodNotAllowed("PATCH") ; }
+    { ServletOps.errorMethodNotAllowed("PATCH : Read-only") ; }
 }

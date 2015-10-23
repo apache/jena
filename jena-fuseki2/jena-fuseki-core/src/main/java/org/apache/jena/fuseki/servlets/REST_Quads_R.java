@@ -41,7 +41,18 @@ public class REST_Quads_R extends REST_Quads {
     }
 
     @Override
-    protected void validate(HttpAction action) { }
+    protected void validate(HttpAction action) { 
+        // Allowed methods controlled by ActionREST.dispatch
+        String method = action.getRequest().getMethod() ;
+        switch(method) {
+            case HttpNames.METHOD_GET:
+            case HttpNames.METHOD_HEAD:
+            case HttpNames.METHOD_OPTIONS:
+                break ;
+            default:
+                ServletOps.errorMethodNotAllowed(method+" : Read-only dataset");
+        }
+    }
 
     @Override
     protected void doGet(HttpAction action) {
