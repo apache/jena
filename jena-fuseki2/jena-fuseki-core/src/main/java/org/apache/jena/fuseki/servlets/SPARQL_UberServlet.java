@@ -152,7 +152,6 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         String method = request.getMethod() ;
         
         DataAccessPoint desc = action.getDataAccessPoint() ;
-        System.err.println("**** SET READONLY ****") ;
         DataService dSrv = action.getDataService() ;
 
 //        if ( ! dSrv.isActive() )
