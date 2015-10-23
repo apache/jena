@@ -23,7 +23,7 @@ import static org.apache.jena.fuseki.ServerTest.gn2 ;
 import static org.apache.jena.fuseki.ServerTest.model1 ;
 import static org.apache.jena.fuseki.ServerTest.model2 ;
 import static org.apache.jena.fuseki.ServerTest.serviceQuery ;
-import static org.apache.jena.fuseki.ServerTest.serviceREST ;
+import static org.apache.jena.fuseki.ServerTest.serviceGSP ;
 
 import java.io.IOException ;
 import java.net.HttpURLConnection ;
@@ -61,15 +61,14 @@ public class TestQuery extends BaseTest {
     @BeforeClass
     public static void beforeClass() {
         ServerTest.allocServer() ;
-        ServerTest.resetServer() ;
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP) ;
         du.putModel(model1) ;
         du.putModel(gn1, model2) ;
     }
 
     @AfterClass
     public static void afterClass() {
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP) ;
         du.deleteDefault() ;
         ServerTest.freeServer() ;
     }
@@ -111,7 +110,7 @@ public class TestQuery extends BaseTest {
 
     @Test
     public void query_dynamic_dataset_01() {
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP) ;
         du.putModel(model1);
         du.putModel(gn1, model2);
         {
@@ -136,7 +135,7 @@ public class TestQuery extends BaseTest {
     
     @Test
     public void query_dynamic_dataset_02() {
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP) ;
         du.putModel(model1);
         du.putModel(gn1, model1);
         du.putModel(gn2, model2);

@@ -59,7 +59,7 @@ public class ServerTest {
     public static final String  urlDataset    = "http://localhost:" + port + datasetPath ;
     public static final String  serviceUpdate = urlDataset + "/update" ;
     public static final String  serviceQuery  = urlDataset + "/query" ;
-    public static final String  serviceREST   = urlDataset + "/data" ;
+    public static final String  serviceGSP    = urlDataset + "/data" ;
 
     public static final String  gn1           = "http://graph/1" ;
     public static final String  gn2           = "http://graph/2" ;
@@ -85,8 +85,12 @@ public class ServerTest {
     // static { allocServer() ; }
 
     static public void allocServer() {
+        allocServer(true) ;
+    }
+    
+    static public void allocServer(boolean updateable) {
         if ( countServer == 0 )
-            setupServer() ;
+            setupServer(updateable) ;
         countServer++ ;
     }
 
@@ -98,16 +102,16 @@ public class ServerTest {
         }
     }
 
-    protected static void setupServer() {
+    protected static void setupServer(boolean updateable) {
         FusekiEnv.FUSEKI_HOME = Paths.get(TS_Fuseki.FusekiTestHome).toAbsolutePath() ;
         FileOps.ensureDir("target");
         FileOps.ensureDir(TS_Fuseki.FusekiTestHome);
         FileOps.ensureDir(TS_Fuseki.FusekiTestBase) ;
         FusekiEnv.FUSEKI_BASE = Paths.get(TS_Fuseki.FusekiTestBase).toAbsolutePath() ;
-        setupServer(ServerTest.port, null, ServerTest.datasetPath) ;
+        setupServer(ServerTest.port, null, ServerTest.datasetPath, updateable) ;
     }
     
-    protected static void setupServer(int port, String authConfigFile, String datasetPath) {
+    protected static void setupServer(int port, String authConfigFile, String datasetPath, boolean updateable) {
         SystemState.location = Location.mem() ;
         SystemState.init$() ;
         
@@ -115,7 +119,8 @@ public class ServerTest {
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         params.dsg = dsg ;
         params.datasetPath = datasetPath ;
-        params.allowUpdate = true ;
+        params.allowUpdate = updateable ;
+        
         FusekiServerListener.initialSetup = params ;
         
         JettyServerConfig config = make(port, true, true) ;
