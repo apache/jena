@@ -71,6 +71,8 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     }
 
     // Choose REST verbs to support.
+    
+    // doMethod : Not used with UberServlet dispatch.
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
@@ -82,40 +84,15 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         doCommon(request, response) ;
     }
 
-    // HEAD
-
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response) {
         setCommonHeadersForOptions(response) ;
         response.setHeader(HttpNames.hAllow, "GET,OPTIONS,POST") ;
         response.setHeader(HttpNames.hContentLengh, "0") ;
     }
-
-    @Override
-    protected final void perform(HttpAction action) {
-        // GET
-        if ( action.request.getMethod().equals(HttpNames.METHOD_GET) ) {
-            executeWithParameter(action) ;
-            return ;
-        }
-
-        ContentType ct = FusekiLib.getContentType(action) ;
-
-        // POST application/x-www-form-url
-        // POST ?query= and no Content-Type
-        if ( ct == null || isHtmlForm(ct) ) {
-            // validation checked that if no Content-type, then its a POST with ?query=
-            executeWithParameter(action) ;
-            return ;
-        }
-
-        // POST application/sparql-query
-        if ( matchContentType(ct, ctSPARQLQuery) ) {
-            executeBody(action) ;
-            return ;
-        }
-
-        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + ct.getContentType()) ;
+    
+    protected void doOptions(HttpAction action) {
+        doOptions(action.request, action.response) ;
     }
 
     // All the params we support
@@ -131,6 +108,9 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     @Override
     protected void validate(HttpAction action) {
         String method = action.request.getMethod().toUpperCase(Locale.ROOT) ;
+        
+        if ( HttpNames.METHOD_OPTIONS.equals(method) )
+            return ;
 
         if ( !HttpNames.METHOD_POST.equals(method) && !HttpNames.METHOD_GET.equals(method) )
             ServletOps.errorMethodNotAllowed("Not a GET or POST request") ;
@@ -205,6 +185,40 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                     ServletOps.warning(action, "SPARQL Query: Unrecognize request parameter (ignored): " + name) ;
             }
         }
+    }
+
+    @Override
+    protected final void perform(HttpAction action) {
+        // OPTIONS
+        if ( action.request.getMethod().equals(HttpNames.METHOD_OPTIONS) ) {
+            // Share with update via SPARQL_Protocol.
+            doOptions(action) ;
+            return ;
+        }
+        
+        // GET
+        if ( action.request.getMethod().equals(HttpNames.METHOD_GET) ) {
+            executeWithParameter(action) ;
+            return ;
+        }
+
+        ContentType ct = FusekiLib.getContentType(action) ;
+    
+        // POST application/x-www-form-url
+        // POST ?query= and no Content-Type
+        if ( ct == null || isHtmlForm(ct) ) {
+            // validation checked that if no Content-type, then its a POST with ?query=
+            executeWithParameter(action) ;
+            return ;
+        }
+    
+        // POST application/sparql-query
+        if ( matchContentType(ct, ctSPARQLQuery) ) {
+            executeBody(action) ;
+            return ;
+        }
+    
+        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + ct.getContentType()) ;
     }
 
     private void executeWithParameter(HttpAction action) {

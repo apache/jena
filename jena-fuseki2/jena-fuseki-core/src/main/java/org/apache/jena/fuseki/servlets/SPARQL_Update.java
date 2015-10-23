@@ -72,6 +72,8 @@ public class SPARQL_Update extends SPARQL_Protocol
     public SPARQL_Update()
     { super() ; }
 
+    // doMethod : Not used with UberServlet dispatch.
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
@@ -89,6 +91,10 @@ public class SPARQL_Update extends SPARQL_Protocol
         setCommonHeadersForOptions(response) ;
         response.setHeader(HttpNames.hAllow, "OPTIONS,POST") ;
         response.setHeader(HttpNames.hContentLengh, "0") ;
+    }
+    
+    protected void doOptions(HttpAction action) {
+        doOptions(action.request, action.response) ;
     }
 
     @Override
@@ -115,8 +121,11 @@ public class SPARQL_Update extends SPARQL_Protocol
     @Override
     protected void validate(HttpAction action) {
         HttpServletRequest request = action.request ;
+        
+        if ( HttpNames.METHOD_OPTIONS.equals(request.getMethod()) )
+            return ;
 
-        if ( !HttpNames.METHOD_POST.equalsIgnoreCase(request.getMethod()) )
+        if ( ! HttpNames.METHOD_POST.equalsIgnoreCase(request.getMethod()) )
             ServletOps.errorMethodNotAllowed("SPARQL Update : use POST") ;
 
         ContentType ct = FusekiLib.getContentType(action) ;
@@ -198,6 +207,13 @@ public class SPARQL_Update extends SPARQL_Protocol
     }
     
     private void execute(HttpAction action, InputStream input) {
+        // OPTIONS
+        if ( action.request.getMethod().equals(HttpNames.METHOD_OPTIONS) ) {
+            // Share with update via SPARQL_Protocol.
+            doOptions(action) ;
+            return ;
+        }
+        
         UsingList usingList = processProtocol(action.request) ;
         
         // If the dsg is transactional, then we can parse and execute the update in a streaming fashion.
