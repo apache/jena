@@ -90,7 +90,7 @@ public class DataService { //implements DatasetMXBean {
     }
 
     /** Return the OperationNames available here.
-     *  @see #getOperation(OperationName) to ge the endpoint list
+     *  @see #getOperation(OperationName) to get the endpoint list
      */
     public Collection<OperationName> getOperations() {
         return operations.keySet() ;
