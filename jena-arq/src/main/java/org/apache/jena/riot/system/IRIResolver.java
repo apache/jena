@@ -443,7 +443,7 @@ public abstract class IRIResolver
         }
 
         @Override
-        public IRI getBaseIRI() {
+        protected IRI getBaseIRI() {
             return base ;
         }
 
