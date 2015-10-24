@@ -126,7 +126,15 @@ public class IRILib
     private static String plainFilenameToURL(String fn) {
         // No "file:"
         // Make Absolute filename.
+
         boolean trailingSlash = fn.endsWith("/") ;
+        if ( Sys.isWindows ) {
+            // Can be "/C:/" on windows :-(
+            // This happens because of URL.toString.
+            if ( fn.length() >= 3 && fn.charAt(0) == '/' && windowsDrive(fn, 1))
+                fn = fn.substring(1) ;
+        }
+        
         fn = Paths.get(fn).toAbsolutePath().normalize().toString() ;
         
         if ( trailingSlash && ! fn.endsWith("/") )
@@ -135,7 +143,7 @@ public class IRILib
         if ( Sys.isWindows )
         {
             // C:\ => file:///C:/... 
-            if ( fn.length() >= 2 && fn.charAt(1) == ':' )
+            if ( windowsDrive(fn, 0) )
                 // Windows drive letter - already absolute path.
                 // Make "URI" absolute path
                 fn = "/"+fn ;
@@ -148,11 +156,20 @@ public class IRILib
         return "file://"+fn ;
     }
     
+    private static boolean windowsDrive(String fn, int i) {
+        return 
+            fn.length() >= 2+i && 
+            fn.charAt(1+i) == ':' && 
+            isA2Z(fn.charAt(i)) ;    
+    }
+    
+    private static boolean isA2Z(char ch) {
+        return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') ;  
+    }
     
     /** Sanitize a "file:" URL. Must start "file:" */
     private static String normalizeFilenameURI(String fn) {
-        if ( ! fn.startsWith("file:/") )
-        {
+        if ( ! fn.startsWith("file:/") ) {
             // Relative path.
             String fn2 = fn.substring("file:".length()) ;
             return plainFilenameToURL(fn2) ;
@@ -163,8 +180,7 @@ public class IRILib
             // Assume it's good and return as-is.
             return fn ;
 
-        if ( fn.startsWith("file://") )
-        {
+        if ( fn.startsWith("file://") ) {
             String fn2 = fn.substring("file:/".length()) ;  // Leave one "/"
             return plainFilenameToURL(fn2) ;
         }
@@ -209,11 +225,9 @@ public class IRILib
         
         byte[] bytes = StrUtils.asUTF8bytes(string) ;
         StringBuilder sw = new StringBuilder() ;
-        for ( byte b : bytes )
-        {
+        for ( byte b : bytes ) {
             // Signed bytes ...
-            if ( b > 0 )
-            {
+            if ( b > 0 ) {
                 sw.append( (char) b );
                 continue;
             }
@@ -228,8 +242,7 @@ public class IRILib
     }
 
     public static boolean containsNonASCII(String string){
-        for ( int i = 0 ; i < string.length() ; i++ )
-        {
+        for ( int i = 0 ; i < string.length() ; i++ ) {
             char ch = string.charAt(i) ;
             if ( ch >= 127 )
                 return true;

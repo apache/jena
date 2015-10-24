@@ -39,7 +39,7 @@ public class ParserProfileBase implements ParserProfile {
     protected ErrorHandler errorHandler ;
     protected Prologue     prologue ;
     protected LabelToNode  labelMapping ;
-    protected boolean      strictMode = SysRIOT.strictMode ;
+    protected boolean      strictMode = SysRIOT.isStrictMode() ;
 
     public ParserProfileBase(Prologue prologue, ErrorHandler errorHandler) {
         this(prologue, errorHandler, SyntaxLabels.createLabelToNode()) ;

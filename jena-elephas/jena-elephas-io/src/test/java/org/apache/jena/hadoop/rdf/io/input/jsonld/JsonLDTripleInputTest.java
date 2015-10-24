@@ -46,5 +46,20 @@ public class JsonLDTripleInputTest extends AbstractWholeFileTripleInputFormatTes
     protected InputFormat<LongWritable, TripleWritable> getInputFormat() {
         return new JsonLDTripleInputFormat();
     }
-
+    
+    /** JSON_LD does not produce any triples from a bad document (no partial streaming).
+     * @see #single_input_05()
+    */
+    @Override
+    protected int single_input_05_expected() {
+        return 0 ;
+    }
+    
+    /** JSON_LD does not produce any triples from a bad document (no partial streaming).
+     * @see #multiple_inputs_02()
+     */
+    @Override
+    protected int multiple_inputs_02_expected() {
+        return EMPTY_SIZE + SMALL_SIZE + LARGE_SIZE ;
+    }
 }

@@ -18,6 +18,8 @@
 
 package riotcmd;
 
+import arq.cmdline.ModEngine ;
+import arq.cmdline.ModSymbol ;
 import jena.cmd.ArgDecl ;
 import jena.cmd.CmdException ;
 import jena.cmd.CmdGeneral ;
@@ -32,7 +34,6 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.langsuite.FactoryTestRiot ;
 import org.apache.jena.riot.langsuite.VocabLangRDF ;
 import org.apache.jena.sparql.expr.E_Function ;
@@ -46,8 +47,6 @@ import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.vocabulary.DC ;
 import org.apache.jena.vocabulary.DCTerms ;
 import org.apache.jena.vocabulary.RDF ;
-import arq.cmdline.ModEngine ;
-import arq.cmdline.ModSymbol ;
 
 /** A program to execute RDF language test suites
  * 
@@ -114,13 +113,13 @@ public class rdflangtest extends CmdGeneral
         // Paradoxical naming - the boolean is a visibility flag.
         BaseTest2.setTestLogging() ;
         
-        if ( contains(strictDecl) )
-        {
-            cmdStrictMode = true ;
-            // Which will apply to reading the manifest!
-            ARQ.setStrictMode() ;
-            RIOT.setStrictMode(true) ;
-        }
+//        if ( contains(strictDecl) ) {
+//            // Always done in test setups.
+//            cmdStrictMode = true ;
+//            // Which will apply to reading the manifest!
+//            ARQ.setStrictMode() ;
+//            SysRIOT.setStrictMode(true) ;
+//        }
         
         NodeValue.VerboseWarnings = false ;
         E_Function.WarnOnUnknownFunction = false ;

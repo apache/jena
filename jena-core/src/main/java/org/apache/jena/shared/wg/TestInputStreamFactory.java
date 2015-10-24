@@ -36,7 +36,7 @@ import org.apache.jena.shared.JenaException ;
  * 2: do not actually open until the first read
  */
 public class TestInputStreamFactory {
-    
+    @SuppressWarnings("deprecation")
     final IRIFactory iriFactory = IRIFactory.jenaImplementation();
 
 	final private IRI base;

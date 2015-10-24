@@ -40,7 +40,6 @@ import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonArray ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.atlas.json.JsonValue ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
@@ -49,30 +48,14 @@ import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.riot.web.HttpResponseHandler ;
 import org.apache.jena.web.HttpSC ;
-import org.junit.After ;
-import org.junit.AfterClass ;
-import org.junit.Before ;
 import org.junit.Test ;
 
 /** Tests of the admin functionality */
-public class TestAdmin extends BaseTest {
+public class TestAdmin extends AbstractFusekiTest {
     
     // Name of the dataset in the assembler file.
     static String dsTest = "test-ds2" ;
     
-    @Before public void beforeTest() {
-        ServerTest.allocServer() ;
-        ServerTest.resetServer() ;
-    }
-    
-    @After public void afterTest() {
-        ServerTest.freeServer() ;
-    }
-
-    @AfterClass public static void afterClass() {
-        ServerTest.teardownServer() ;
-    }
-  
     // --- Ping 
     
     @Test public void ping_1() {
@@ -120,11 +103,7 @@ public class TestAdmin extends BaseTest {
     
     // Specific dataset
     @Test public void list_datasets_4() {
-        try {
-            getDatasetDescription("does-not-exist") ;
-        } catch (HttpException ex) {
-            assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
-        }
+        FusekiTest.exec404( () -> getDatasetDescription("does-not-exist") ) ;
     }
     
     // Specific dataset
@@ -184,12 +163,7 @@ public class TestAdmin extends BaseTest {
     
     @Test public void delete_dataset_1() {
         String name = "NoSuchDataset" ;
-        try {
-            execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+name) ;
-            fail("delete did not cause an Http Exception") ;
-        } catch ( HttpException ex ) {
-            assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
-        }
+        FusekiTest.exec404( ()-> execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+name) ) ;
     }
 
     // ---- Active/Offline.
@@ -218,9 +192,7 @@ public class TestAdmin extends BaseTest {
 
     @Test public void state_3() {
         addTestDataset() ;
-        try {
-            execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/DoesNotExist?state=offline", null) ;
-        } catch (HttpException ex) { assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ; }
+        FusekiTest.exec404(()->execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/DoesNotExist?state=offline", null)) ;
         deleteDataset(dsTest) ;
     }
     
@@ -244,10 +216,9 @@ public class TestAdmin extends BaseTest {
 
     @Test public void stats_3() {
         addTestDataset() ;
-        try {
+        FusekiTest.exec404(()->{
             JsonValue v = execGetJSON(urlRoot+"$/"+opStats+"/DoesNotExist") ;
-            checkJsonStatsAll(v);
-        } catch (HttpException ex) { assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()); }
+        }) ;
         deleteDataset(dsTest) ;
     }
 
@@ -262,11 +233,7 @@ public class TestAdmin extends BaseTest {
     @Test public void task_2() {
         String x = "NoSuchTask" ;
         String url = urlRoot+"$/tasks/"+x ;
-        try {
-            httpGetJson(url) ;
-        } catch (HttpException ex) {
-            assertEquals(404, ex.getResponseCode()) ;
-        }
+        FusekiTest.exec404(()->httpGetJson(url) ) ;
         try { 
             checkInTasks(x) ;
             fail("No failure!") ;
@@ -454,18 +421,10 @@ private static void deleteDataset(String name) {
     }
 
     private static void checkNotThere(String name) {
-        if ( name.startsWith("/") )
-            name = name.substring(1) ;
+        String n = (name.startsWith("/")) ? name.substring(1) : name ;
         // Check gone exists.
-        try { adminPing(name) ; }
-        catch (HttpException ex) {
-            assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
-        }
-        
-        try { askPing(name) ; }
-        catch (HttpException ex) {
-            assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
-        }
+        FusekiTest.exec404(()->  adminPing(n) ) ;
+        FusekiTest.exec404(() -> askPing(n) ) ;
     }
 
     private static void checkJsonDatasetsAll(JsonValue v) {

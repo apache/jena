@@ -187,7 +187,7 @@ public class ActionStats extends ActionContainerItem
     }
     
     private long gspValue(DataService dSrv, CounterName cn) {
-        return  counter(dSrv, OperationName.GSP, cn) +
+        return  counter(dSrv, OperationName.GSP_RW, cn) +
                 counter(dSrv, OperationName.GSP_R, cn) ;
     }
 

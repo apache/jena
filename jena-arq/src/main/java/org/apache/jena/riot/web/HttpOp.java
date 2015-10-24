@@ -1114,7 +1114,6 @@ public class HttpOp {
         }
     }
 
-
 	public static String readPayload(HttpEntity entity) throws IOException {
 		if (entity == null) {
 			return null;

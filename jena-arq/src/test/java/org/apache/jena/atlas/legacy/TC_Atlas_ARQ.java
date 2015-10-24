@@ -28,11 +28,7 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    // Library
-//      TS_Lib.class
-//    , TS_Iterator.class
     TS_Event.class
-//    , TS_IO.class
     , TS_JSON.class
     , TS_Data.class
     , TS_Web.class

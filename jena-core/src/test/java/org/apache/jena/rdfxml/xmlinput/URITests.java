@@ -51,6 +51,7 @@ public class URITests
 		super(s);
 	}
 
+    @SuppressWarnings("deprecation")
     static IRIFactory factory = IRIFactory.jenaImplementation();
 //    static {
 //        factory.useSpecificationRDF(false);

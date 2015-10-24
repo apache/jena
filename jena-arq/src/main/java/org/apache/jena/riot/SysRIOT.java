@@ -31,13 +31,24 @@ public class SysRIOT
     public static final String riotLoggerName = "org.apache.jena.riot" ;
     private static Logger riotLogger = LoggerFactory.getLogger(riotLoggerName) ;
     
-    public static boolean StrictXSDLexicialForms = false ;
-    public static boolean strictMode             = false ;
+    public static boolean StrictXSDLexicialForms      = false ;
+    public static boolean StrictAbsURINoNormalization = false ;
+    public static boolean strictMode                  = false ;
     
-    public static final String BNodeGenIdPrefix = "genid" ;
+    public static final String BNodeGenIdPrefix     = "genid" ;
     
     public static final boolean isWindows = (File.pathSeparatorChar == ';' ) ;
     
+    public static void setStrictMode(boolean state) {
+        SysRIOT.strictMode = state ;
+        SysRIOT.StrictXSDLexicialForms = state ;
+        SysRIOT.StrictAbsURINoNormalization = state ;
+    }
+
+    public static boolean isStrictMode() {
+        return SysRIOT.strictMode ;
+    }
+
     static public String fmtMessage(String message, long line, long col)
     {
         if ( col == -1 && line == -1 )

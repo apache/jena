@@ -117,7 +117,7 @@ public class RiotLib
     {
         if ( sameLang(NTRIPLES, lang) || sameLang(NQUADS, lang) )
         {
-            boolean checking = SysRIOT.strictMode ;
+            boolean checking = SysRIOT.isStrictMode() ;
             // If strict mode, do checking e.g. URIs
             return profile(baseIRI, false, checking, handler) ;
         }

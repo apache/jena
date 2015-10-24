@@ -436,6 +436,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * WARN_* ditto<br/>
      * iri-rules (String), "Jena", "IRI", "strict", "lax"
      */
+    @SuppressWarnings("deprecation")
     static Object processArpOptions(ARPOptions options, String str, Object v,
             RDFErrorHandler eh) {
         // ARPOptions options = arpf.getOptions();

@@ -126,7 +126,10 @@ define(
 
       /** Return the GSP write URL for this dataset, if it has one, or null */
       graphStoreProtocolURL: function() {
-        return this.endpointURL( "GSP" ) ;
+        if ( this.endpointURL( "GSP" ) )
+            // Old name
+            return this.endpointURL( "GSP" ) ;
+        return this.endpointURL( "GSP_RW" ) ;
       },
 
       /** Return the GSP read URL for this dataset, if it has one, or null */

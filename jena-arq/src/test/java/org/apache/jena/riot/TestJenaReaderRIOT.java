@@ -21,8 +21,10 @@ package org.apache.jena.riot;
 import java.io.FileInputStream ;
 import java.io.IOException ;
 import java.io.StringReader ;
+import java.nio.file.Paths ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.rdf.model.Model ;
@@ -127,70 +129,117 @@ public class TestJenaReaderRIOT extends BaseTest
     @Test public void read_input_2() throws IOException
     { jenaread_stream("D.rdf", "RDF/XML") ; }
     
+    private static String plainRelFnTTL = directory+"/D.ttl" ; 
+    private static String plainRelFnRDFXML = directory+"/D.rdf" ; 
+    
+    // Ways to pass in the filename.
+    // The RDF/XML path is slightly different so test it as well.
+    
+    @Test public void read_url_1() {
+        modelRead(plainRelFnTTL) ;
+    }
+    
+    @Test public void read_url_1x() {
+        modelRead(plainRelFnRDFXML) ;
+    }
+    
+    @Test public void read_url_2() {
+        modelRead("file:"+plainRelFnTTL) ;
+    }
+
+    @Test public void read_url_2x() {
+        modelRead("file:"+plainRelFnRDFXML) ;
+    }
+
+    @Test public void read_url_3() {
+        String cwd = Paths.get(".").toAbsolutePath().normalize().toString() ;
+        modelRead("file:"+cwd+"/"+plainRelFnTTL) ;
+    }
+    
+    @Test public void read_url_3x() {
+        String cwd = Paths.get(".").toAbsolutePath().normalize().toString() ;
+        modelRead("file:"+cwd+"/"+plainRelFnRDFXML) ;
+    }
+    
+    @Test public void read_url_4() {
+        String cwd = Paths.get(".").toAbsolutePath().normalize().toString() ;
+        String fn = "file:"+cwd+"/"+plainRelFnTTL ;
+        String fn2 = IRILib.filenameToIRI(fn) ;
+        modelRead(fn2) ;
+    }
+    
+    @Test public void read_url_4x() {
+        String cwd = Paths.get(".").toAbsolutePath().normalize().toString() ;
+        String fn = "file:"+cwd+"/"+plainRelFnRDFXML ;
+        String fn2 = IRILib.filenameToIRI(fn) ;
+        modelRead(fn2) ;
+    }
+
+    private static Model modelRead(String fn) {
+        Model m = ModelFactory.createDefaultModel();
+        m.read(fn) ;
+        return m ; 
+    }
+    
+    // -----------------------------------------
+    
     private static String filename(String filename) { return directory+"/"+filename ; }
     
-    private static void jenaread_stream(String filename, String lang) throws IOException
-    {
-        filename = filename(filename) ;
-        
+    private static void jenaread_stream(String filename, String lang) throws IOException {
+        filename = filename(filename);
+
         // Read with a base
-        try(FileInputStream in0 = new FileInputStream(filename)) {
-            Model m0 = ModelFactory.createDefaultModel() ;
-            RDFDataMgr.read(m0, in0, "http://example/base2", RDFLanguages.nameToLang(lang)) ;
+        try (FileInputStream in0 = new FileInputStream(filename)) {
+            Model m0 = ModelFactory.createDefaultModel();
+            RDFDataMgr.read(m0, in0, "http://example/base2", RDFLanguages.nameToLang(lang));
         }
 
         // Read again, but without base
-        try(FileInputStream in1 = new FileInputStream(filename)) {
-            Model m1 = ModelFactory.createDefaultModel() ;
-            RDFDataMgr.read(m1, in1, RDFLanguages.nameToLang(lang)) ;
+        try (FileInputStream in1 = new FileInputStream(filename)) {
+            Model m1 = ModelFactory.createDefaultModel();
+            RDFDataMgr.read(m1, in1, RDFLanguages.nameToLang(lang));
         }
-        
-        // Fail because Jena core does a look up of lang with ModelCom builtin in RDFReaderF, then calls RIOReader().
-        // 1/ Fix Jena - remove RDFReaderF
-        // 2/ Change RDFReaderF to pass in the language name. 
-        
+
         // Read via Jena API.
-        Model m2 = ModelFactory.createDefaultModel() ;
-        try(FileInputStream in2 = new FileInputStream(filename)) {
-            m2.read(in2, "http://example/base3", lang) ;
+        Model m2 = ModelFactory.createDefaultModel();
+        try (FileInputStream in2 = new FileInputStream(filename)) {
+            m2.read(in2, "http://example/base3", lang);
         }
-        
-        String x = FileUtils.readWholeFileAsUTF8(filename) ;
-        Model m3 = ModelFactory.createDefaultModel() ;
-        m2.read(new StringReader(x), "http://example/base4", lang) ;
+
+        String x = FileUtils.readWholeFileAsUTF8(filename);
+        Model m3 = ModelFactory.createDefaultModel();
+        m2.read(new StringReader(x), "http://example/base4", lang);
     }
 
-    private static void jenaread(String dataurl)
-    {
-        dataurl = filename(dataurl) ; 
-        Model m = ModelFactory.createDefaultModel() ;
-        m.read(dataurl) ;
-        assertTrue(m.size() != 0 ) ;
+    private static void jenaread(String dataurl) {
+        dataurl = filename(dataurl);
+        Model m = ModelFactory.createDefaultModel();
+        m.read(dataurl);
+        assertTrue(m.size() != 0);
     }
     
-    private static void jenaread(String dataurl, String lang)
-    {
+    private static void jenaread(String dataurl, String lang) {
         // read via WebReader to make sure the test setup is right.
-        dataurl = filename(dataurl) ;
-        
-        Model m0 = ModelFactory.createDefaultModel() ;
-        RDFDataMgr.read(m0, dataurl, RDFLanguages.nameToLang(lang)) ;
-        assertTrue(m0.size() != 0 ) ;
-        
-        Model m1 = ModelFactory.createDefaultModel() ;
-        new RDFReaderFactoryRIOT().getReader(lang).read(m1, dataurl) ;
-        assertTrue(m1.size() != 0 ) ;
-        
+        dataurl = filename(dataurl);
+
+        Model m0 = ModelFactory.createDefaultModel();
+        RDFDataMgr.read(m0, dataurl, RDFLanguages.nameToLang(lang));
+        assertTrue(m0.size() != 0);
+
+        Model m1 = ModelFactory.createDefaultModel();
+        new RDFReaderFactoryRIOT().getReader(lang).read(m1, dataurl);
+        assertTrue(m1.size() != 0);
+
         // Read via Jena model API.
-        Model m2 = ModelFactory.createDefaultModel() ;
-        // The range of names for mode.read is less - canonicalise the language name.
-        String x = RDFLanguages.nameToLang(lang).getName() ;
-        m2.read(dataurl, x) ;
-        assertTrue(m2.size() != 0 ) ;
+        Model m2 = ModelFactory.createDefaultModel();
+        // The range of names for mode.read is less - canonicalise the language
+        // name.
+        String x = RDFLanguages.nameToLang(lang).getName();
+        m2.read(dataurl, x);
+        assertTrue(m2.size() != 0);
     }
 
-    private static void jenaread(String dataurl, String lang, String base)
-    {
+    private static void jenaread(String dataurl, String lang, String base) {
         dataurl = filename(dataurl) ;
         Model m1 = ModelFactory.createDefaultModel() ;
         Model m2 = ModelFactory.createDefaultModel() ;

@@ -25,9 +25,8 @@ import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.IRIRelativize ;
-import org.apache.jena.riot.out.NodeToLabel ;
+import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.system.RiotChars ;
@@ -51,7 +50,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
         this.prefixMap = prefixMap ;
         this.baseIRI = baseIRI ;
         this.iriResolver = 
-            baseIRI != null ? IRIFactory.jenaImplementation().construct(baseIRI) : null ;
+            baseIRI != null ? IRIResolver.iriFactory.construct(baseIRI) : null ;
     }
 
     @Override

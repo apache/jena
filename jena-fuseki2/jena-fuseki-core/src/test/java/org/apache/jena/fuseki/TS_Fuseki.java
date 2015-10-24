@@ -33,6 +33,7 @@ import org.junit.runners.Suite ;
 @Suite.SuiteClasses( {
     TestHttpOp.class
     , TestSPARQLProtocol.class
+    , TestHttpOptions.class
     , TestDatasetGraphAccessorHTTP.class
     , TestDatasetAccessorHTTP.class
     , TestQuery.class
@@ -40,6 +41,7 @@ import org.junit.runners.Suite ;
     , TestDatasetOps.class
     , TestFileUpload.class
     , TestAdmin.class
+    , TestServerReadOnly.class
 })
 
 public class TS_Fuseki extends ServerTest

@@ -22,6 +22,7 @@ import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 
@@ -37,8 +38,17 @@ public class REST_Quads_RW extends REST_Quads_R {
     }
 
     @Override
-    protected void validate(HttpAction action) { }
-
+    protected void validate(HttpAction action) { 
+    }
+    
+    @Override
+    protected void doOptions(HttpAction action) {
+        setCommonHeadersForOptions(action.response) ;
+        action.response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS,PUT,POST");
+        action.response.setHeader(HttpNames.hContentLengh, "0") ;
+        ServletOps.success(action) ;
+    }
+    
     @Override
     protected void doPost(HttpAction action) {
         if ( !action.getDataService().allowUpdate() )

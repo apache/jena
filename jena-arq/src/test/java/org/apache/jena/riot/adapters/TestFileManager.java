@@ -20,17 +20,17 @@ package org.apache.jena.riot.adapters;
 
 import java.io.InputStream ;
 
-import junit.framework.TestCase ;
-import junit.framework.TestSuite ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.stream.TestLocationMapper ;
 import org.apache.jena.shared.NotFoundException ;
 import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.LocationMapper ;
+import org.junit.Test ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-public class TestFileManager extends TestCase
+public class TestFileManager extends BaseTest
 {
     static Logger log = LoggerFactory.getLogger(TestFileManager.class) ;
     public static final String testingDir = "testing/RIOT/FileManager" ;
@@ -39,18 +39,7 @@ public class TestFileManager extends TestCase
     static final String fileModel = "foo.ttl" ;
     static final String zipname = testingDir+"/fmgr-test.zip" ;
     
-    public TestFileManager( String name )
-    {
-        super(name);
-    }
-    
-    public static TestSuite suite()
-    {
-        return new TestSuite( TestFileManager.class );
-    }
-
-    public void testFileManagerFileLocator()
-    {
+    @Test public void testFileManagerFileLocator() {
         FileManager fileManager = new FileManager() ;
         fileManager.addLocatorFile() ;
         InputStream in = fileManager.open(testingDir+"/"+filename) ;
@@ -58,8 +47,7 @@ public class TestFileManager extends TestCase
         closeInputStream(in) ;
     }
 
-    public void testFileManagerFileLocatorWithDir()
-    {
+    @Test public void testFileManagerFileLocatorWithDir() {
         FileManager fileManager = new FileManager() ;
         fileManager.addLocatorFile(testingDir) ;
         InputStream in = fileManager.open(filename) ;
@@ -68,8 +56,7 @@ public class TestFileManager extends TestCase
     }
 
 
-    public void testFileManagerNoFile()
-    {
+    @Test public void testFileManagerNoFile() {
         FileManager fileManager = new FileManager() ;
         fileManager.addLocatorFile() ;
         try {
@@ -80,8 +67,7 @@ public class TestFileManager extends TestCase
         } catch (NotFoundException ex) {}
     }
     
-    public void testFileManagerLocatorClassLoader()
-    {
+    @Test public void testFileManagerLocatorClassLoader() {
         FileManager fileManager = new FileManager() ;
         fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader()) ;
         InputStream in = fileManager.open("java/lang/String.class") ;
@@ -89,8 +75,7 @@ public class TestFileManager extends TestCase
         closeInputStream(in) ;
     }
 
-    public void testFileManagerLocatorClassLoaderNotFound()
-    {
+    @Test public void testFileManagerLocatorClassLoaderNotFound() {
         FileManager fileManager = new FileManager() ;
         fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader()) ;
         try {
@@ -100,8 +85,7 @@ public class TestFileManager extends TestCase
         } catch (NotFoundException ex) {}
     }
 
-    public void testFileManagerLocatorZip()
-    {
+    @Test public void testFileManagerLocatorZip() {
         FileManager fileManager = new FileManager() ;
         try {
             fileManager.addLocatorZip(zipname) ;
@@ -114,8 +98,7 @@ public class TestFileManager extends TestCase
         closeInputStream(in) ;
     }
 
-    public void testFileManagerLocatorZipNonFound()
-    {
+    @Test public void testFileManagerLocatorZipNonFound() {
         FileManager fileManager = new FileManager() ;
         try {
             fileManager.addLocatorZip(zipname) ;
@@ -128,8 +111,7 @@ public class TestFileManager extends TestCase
         } catch (NotFoundException ex) {}
     }
     
-    public void testFileManagerClone()
-    {
+    @Test public void testFileManagerClone() {
         FileManager fileManager1 = new FileManager() ;
         FileManager fileManager2 = fileManager1.clone() ;
         
@@ -149,8 +131,7 @@ public class TestFileManager extends TestCase
     }
     
     
-    public void testLocationMappingURLtoFileOpen()
-    {
+    @Test public void testLocationMappingURLtoFileOpen() {
         LocationMapper locMap = new LocationMapper(TestLocationMapper.mapping) ;
         FileManager fileManager = new FileManager(locMap) ;
         fileManager.addLocatorFile() ;
@@ -159,8 +140,7 @@ public class TestFileManager extends TestCase
         closeInputStream(in) ;
     }
 
-    public void testLocationMappingURLtoFileOpenNotFound()
-    {
+    @Test public void testLocationMappingURLtoFileOpenNotFound() {
         LocationMapper locMap = new LocationMapper(TestLocationMapper.mapping) ;
         FileManager fileManager = new FileManager(locMap) ;
         fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader()) ;
@@ -171,8 +151,7 @@ public class TestFileManager extends TestCase
         } catch (NotFoundException ex) {}
     }
 
-    public void testCache1()
-    {
+    @Test public void testCache1() {
         FileManager fileManager = new FileManager() ;
         fileManager.addLocatorFile(testingDir) ;
         Model m1 = fileManager.loadModel(fileModel) ;
@@ -180,8 +159,7 @@ public class TestFileManager extends TestCase
         assertNotSame(m1, m2) ;
     }
     
-    public void testCache2()
-    {
+    @Test public void testCache2() {
         FileManager.setGlobalFileManager(AdapterFileManager.get()) ;
         
         FileManager fileManager = FileManager.get() ;
@@ -192,8 +170,7 @@ public class TestFileManager extends TestCase
         assertSame(m1, m2) ;
     }
     
-    public void testCache3()
-    {
+    @Test public void testCache3() {
         FileManager fileManager = FileManager.get() ;
         fileManager.addLocatorFile(testingDir) ;
         fileManager.setModelCaching(true) ;
@@ -214,29 +191,13 @@ public class TestFileManager extends TestCase
         assertNotSame(m3, m4) ;
     }
     
-//    public void testFileManagerLocatorURL()
-//    {
-//        FileManager fileManager = new FileManager() ;
-//        fileManager.addLocatorURL() ;
-//        InputStream in = fileManager.open("http:///www.bbc.co.uk/") ;
-//        //assertNotNull(in) ;
-//        // Proxies matter.
-//        if ( in == null )
-//            log.warn("Failed to contact http:///www.bbc.co.uk/: maybe due to proxy issues") ;
-//        
-//        try { if ( in != null ) in.close() ; }
-//        catch (Exception ex) {}
-//    }
-
-    
     // -------- Helpers
     
-    private void closeInputStream(InputStream in)
-    {
-      try {
-          if ( in != null )
-              in.close() ;
-      }
-      catch (Exception ex) {}
+    private void closeInputStream(InputStream in) {
+        try {
+            if ( in != null )
+                in.close();
+        }
+        catch (Exception ex) {}
     }
 }

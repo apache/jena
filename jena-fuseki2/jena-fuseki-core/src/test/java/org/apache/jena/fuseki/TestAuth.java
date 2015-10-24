@@ -82,7 +82,7 @@ public class TestAuth {
         LogCtl.logLevel(Fuseki.actionLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
         LogCtl.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
 
-        ServerTest.setupServer(authPort, realmFile.getAbsolutePath(), authDatasetPath);
+        ServerTest.setupServer(authPort, realmFile.getAbsolutePath(), authDatasetPath, true);
     }
 
     /**

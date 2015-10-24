@@ -34,16 +34,50 @@ import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.out.CharSpace ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
-import org.apache.jena.riot.system.IRIResolver ;
-import org.apache.jena.riot.system.RiotLib ;
-import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.* ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 
-/** @deprecated Use RDFDataMgr operations */
+/** @deprecated Use RDFDataMgr operations.
+ * This class will become internal to RIOT.
+ */
 @Deprecated
 public class RiotParsers {
+    private RiotParsers() {}
+    
+    /** Create a parser 
+     * @deprecated Use {@link RDFDataMgr#createReader(Lang)}
+     */
+    @Deprecated
+    public static LangRIOT createParser(InputStream input, Lang lang, String baseIRI, StreamRDF dest)
+    {
+        if ( lang == RDFXML )
+            return createParserRDFXML(input, baseIRI, dest) ;
+        if ( lang == CSV )
+            return new LangCSV (input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(),  dest);
+            
+        Tokenizer tokenizer = ( lang == RDFJSON ) ?
+            new TokenizerJSON(PeekReader.makeUTF8(input)) :
+                TokenizerFactory.makeTokenizerUTF8(input) ;
+        return createParser(tokenizer, lang, baseIRI, dest) ;
+    }
+
+    /** Create a parser 
+     * @deprecated Use {@link RDFDataMgr#createReader(Lang)}
+     */
+    @Deprecated
+    public static LangRIOT createParser(Reader input, Lang lang, String baseIRI, StreamRDF dest)
+    {
+        if ( lang == RDFXML )
+            return createParserRDFXML(input, baseIRI, dest) ;
+        if ( lang == CSV)
+            return new LangCSV (input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(),  dest);
+        
+        Tokenizer tokenizer = ( lang == RDFJSON ) ?
+            new TokenizerJSON(PeekReader.make(input)) :
+                TokenizerFactory.makeTokenizer(input) ;
+        return createParser(tokenizer, lang, baseIRI, dest) ;
+    }
 
     /** Create a parser for Turtle
      * @deprecated use an RDFDataMgr operation with argument Lang.Turtle
@@ -61,8 +95,8 @@ public class RiotParsers {
     @Deprecated
     public static LangTurtle createParserTurtle(Tokenizer tokenizer, String baseIRI, StreamRDF dest)
     {
-        RiotLib.profile(RDFLanguages.TURTLE, baseIRI) ;
-        LangTurtle parser = new LangTurtle(tokenizer, RiotLib.profile(RDFLanguages.TURTLE, baseIRI), dest) ;
+        ParserProfile profile = RiotLib.profile(RDFLanguages.TURTLE, baseIRI) ;
+        LangTurtle parser = new LangTurtle(tokenizer, profile, dest) ;
         return parser ;
     }
 
@@ -72,10 +106,30 @@ public class RiotParsers {
     @Deprecated
     public static LangRDFXML createParserRDFXML(InputStream input, String baseIRI, StreamRDF dest)
     {
-        if ( baseIRI == null )
-            baseIRI = SysRIOT.chooseBaseIRI() ;
+        baseIRI = baseURI_RDFXML(baseIRI) ;
         LangRDFXML parser = LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(), dest) ;
         return parser ;
+    }
+
+    /** Create a parser for RDF/XML
+     * @deprecated use an RDFDataMgr operation with argument Lang.RDFXML
+     */
+    @Deprecated
+    public static LangRDFXML createParserRDFXML(Reader input, String baseIRI, StreamRDF dest)
+    {
+        baseIRI = baseURI_RDFXML(baseIRI) ;
+        LangRDFXML parser = LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(), dest) ;
+        return parser ;
+    }
+    
+    /** Sort out the base URi fo RDF/XML parsing. */
+    private static String baseURI_RDFXML(String baseIRI) {
+        // LangRIOT derived from LangEngine do this in ParserProfile 
+        if ( baseIRI == null )
+            return SysRIOT.chooseBaseIRI() ;
+        else
+            // This normalizes the URI.
+            return SysRIOT.chooseBaseIRI(baseIRI) ;
     }
 
     /** Create parsers for RDF/JSON
@@ -84,7 +138,8 @@ public class RiotParsers {
     @Deprecated
     public static LangRDFJSON createParserRdfJson(Tokenizer tokenizer, StreamRDF dest)
     {
-    	LangRDFJSON parser = new LangRDFJSON(tokenizer, RiotLib.profile(RDFLanguages.RDFJSON, null), dest) ;
+        ParserProfile profile =  RiotLib.profile(RDFLanguages.RDFJSON, null) ;
+    	LangRDFJSON parser = new LangRDFJSON(tokenizer, profile, dest) ;
     	return parser;
     }
 
@@ -114,7 +169,8 @@ public class RiotParsers {
     @Deprecated
     public static LangTriG createParserTriG(Tokenizer tokenizer, String baseIRI, StreamRDF dest)
     {
-        LangTriG parser = new LangTriG(tokenizer, RiotLib.profile(RDFLanguages.TRIG, baseIRI), dest) ;
+        ParserProfile profile = RiotLib.profile(RDFLanguages.TRIG, baseIRI) ;
+        LangTriG parser = new LangTriG(tokenizer, profile, dest) ;
         return parser ;
     }
 
@@ -143,7 +199,8 @@ public class RiotParsers {
     @Deprecated
     public static LangNTriples createParserNTriples(Tokenizer tokenizer, StreamRDF dest)
     {
-        LangNTriples parser = new LangNTriples(tokenizer, RiotLib.profile(RDFLanguages.NTRIPLES, null), dest) ;
+        ParserProfile profile = RiotLib.profile(RDFLanguages.NTRIPLES, null) ;
+        LangNTriples parser = new LangNTriples(tokenizer, profile, dest) ;
         return parser ;
     }
 
@@ -172,48 +229,9 @@ public class RiotParsers {
     @Deprecated
     public static LangNQuads createParserNQuads(Tokenizer tokenizer, StreamRDF dest)
     {
-        LangNQuads parser = new LangNQuads(tokenizer, RiotLib.profile(RDFLanguages.NQUADS, null), dest) ;
+        ParserProfile profile = RiotLib.profile(RDFLanguages.NQUADS, null) ;
+        LangNQuads parser = new LangNQuads(tokenizer, profile, dest) ;
         return parser ;
-    }
-
-    /** Create a parser 
-     * @deprecated Use {@link RDFDataMgr#createReader(Lang)}
-     */
-    @Deprecated
-    public static LangRIOT createParser(InputStream input, Lang lang, String baseIRI, StreamRDF dest)
-    {
-        if ( lang == RDFXML )
-        {
-            if ( baseIRI != null )
-                baseIRI = IRIResolver.resolveString(baseIRI) ;
-            return LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(), dest) ;
-        } else if ( lang == CSV){
-        	return new LangCSV (input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(),  dest);
-        }
-        Tokenizer tokenizer = ( lang == RDFJSON ) ?
-            new TokenizerJSON(PeekReader.makeUTF8(input)) :
-                TokenizerFactory.makeTokenizerUTF8(input) ;
-        return createParser(tokenizer, lang, baseIRI, dest) ;
-    }
-
-    /** Create a parser 
-     * @deprecated Use {@link RDFDataMgr#createReader(Lang)}
-     */
-    @Deprecated
-    public static LangRIOT createParser(Reader input, Lang lang, String baseIRI, StreamRDF dest)
-    {
-        if ( lang == RDFXML )
-        {
-            if ( baseIRI != null )
-                baseIRI = IRIResolver.resolveStringSilent(baseIRI) ;
-            return LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(), dest) ;
-        } else if ( lang == CSV){
-        	return new LangCSV (input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(),  dest);
-        }
-        Tokenizer tokenizer = ( lang == RDFJSON ) ?
-            new TokenizerJSON(PeekReader.make(input)) :
-                TokenizerFactory.makeTokenizer(input) ;
-        return createParser(tokenizer, lang, baseIRI, dest) ;
     }
 
     /** Create a parser 
