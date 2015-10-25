@@ -44,14 +44,15 @@ public class TestPrintUtil extends TestCase
          String name = "r1";
          String uri = NS + name;
          String shortform = "p:" + name;
+         String longform = "<" + uri + ">";
          Resource r = ResourceFactory.createResource(uri);
-         assertEquals(uri, PrintUtil.print(r));
+         assertEquals(longform, PrintUtil.print(r));
          
          PrintUtil.registerPrefix("p", NS);
          assertEquals(shortform, PrintUtil.print(r));
          
          PrintUtil.removePrefix("p");
-         assertEquals(uri, PrintUtil.print(r));
+         assertEquals(longform, PrintUtil.print(r));
          
          Map<String, String> map = new HashMap<>();
          map.put("p", NS);
@@ -59,6 +60,6 @@ public class TestPrintUtil extends TestCase
          assertEquals(shortform, PrintUtil.print(r));
 
          PrintUtil.removePrefixMap( map );
-         assertEquals(uri, PrintUtil.print(r));
+         assertEquals(longform, PrintUtil.print(r));
      }
 }

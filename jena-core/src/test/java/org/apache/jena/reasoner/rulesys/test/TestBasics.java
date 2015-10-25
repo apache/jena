@@ -101,7 +101,7 @@ public class TestBasics extends TestCase  {
             "[ (?a rdf:type ?_) -> (?a rdf:type '42') ]",
             "[ (?a rdf:type ?_) -> (?a rdf:type '4.2'^^http://www.w3.org/2001/XMLSchema#float) ]",
             "[ (?a rdf:type ?_) -> (?a rdf:type ' fool that,I(am)') ]",
-            "[ rule1: (?a rdf:type ?_) -> (?a rdf:type a) ]",
+            "[ rule1: (?a rdf:type ?_) -> (?a rdf:type <a>) ]",
             "[ -> print(' ') ]",
             "[ -> print(' literal with embedded ' characters ') ]",
             "[ -> print(' literal characters ') ]",
@@ -109,7 +109,7 @@ public class TestBasics extends TestCase  {
             "[ -> print('42'^^http://www.w3.org/2001/XMLSchema#byte) ]",
             "[ -> print('42'^^http://www.w3.org/2001/XMLSchema#int) ]",
             "[ -> print('42'^^http://foobar#byte) ]",
-            "[ -> print(foo://a/file) ]",
+            "[ -> print(<foo://a/file>) ]",
         };
         
         PrintUtil.registerPrefix("foobar", "http://foobar#");
@@ -309,11 +309,11 @@ public class TestBasics extends TestCase  {
         }
         out.flush();
         
-        String testString = TestUtil.normalizeWhiteSpace("Rule testRule3 concluded (res p n3) <-\n" +
-                "    Rule testRule1 concluded (n2 p n3) <-\n" +
-                "        Fact (n1 p n3)\r\n" +
-                "    Rule testRule2 concluded (n2 q n3) <-\n" +
-                "        Fact (n1 q n3)\r\n");
+        String testString = TestUtil.normalizeWhiteSpace("Rule testRule3 concluded (<res> <p> <n3>) <-\n" +
+                "    Rule testRule1 concluded (<n2> <p> <n3>) <-\n" +
+                "        Fact (<n1> <p> <n3>)\r\n" +
+                "    Rule testRule2 concluded (<n2> <q> <n3>) <-\n" +
+                "        Fact (<n1> <q> <n3>)\r\n");
         assertEquals(testString, TestUtil.normalizeWhiteSpace(outString.getBuffer().toString()));
     }
     
