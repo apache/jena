@@ -19,6 +19,8 @@
 package org.apache.jena.sparql.api;
 
 import static org.apache.jena.atlas.lib.Lib.sleep ;
+
+import org.apache.jena.base.Sys ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -63,21 +65,27 @@ public class TestQueryExecutionTimeout2
     }
 
 
-    @Test public void timeout_30()  { test2(200, 20, 50, true) ; }
+    // Loaded CI.
+    private static boolean mayBeErratic = Sys.isWindows ;
+    
+    private int timeout(int time1, int time2) {
+        return mayBeErratic ? time2 : time1 ;
+    }
+    
+    @Test public void timeout_30()  { test2(200, 20, timeout(50, 250), true) ; }
     @Test public void timeout_31()  { test2(200, 50, 20, false) ; }
 
     // Make sure it isn't timeout1 - delay longer than timeout1
     @Test public void timeout_32()  { test2(100, 500, 200, false) ; }
     @Test public void timeout_33()  { test2(150, -1,  200, false) ; }
 
-    @Test public void timeout_34()  { test2(10, 40, 100, true) ; }
+    @Test public void timeout_34()  { test2(10, 40, timeout(100, 250), true) ; }
 
-    @Test public void timeout_35()  { test2(-1, 20, 50, true) ; }
+    @Test public void timeout_35()  { test2(-1, 20, timeout(50, 250), true) ; }
     @Test public void timeout_36()  { test2(-1, 50, 20, false) ; }
 
     @Test public void timeout_37()  { test2(200, 200, 50, false) ; }
     @Test public void timeout_38()  { test2(200, -1, 50, false) ; }
-
 
     private static void test2(long timeout1, long timeout2, int delay, boolean exceptionExpected)
     {

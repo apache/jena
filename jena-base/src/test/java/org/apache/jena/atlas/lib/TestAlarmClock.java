@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.base.Sys ;
-import org.junit.Assume ;
 import org.junit.Test ;
 
 public class TestAlarmClock extends BaseTest {
@@ -51,7 +50,13 @@ public class TestAlarmClock extends BaseTest {
 
     private AtomicInteger count    = new AtomicInteger(0) ;
     private Runnable      callback = ()->count.getAndIncrement() ;
-
+    
+    // Loaded CI.
+    private static boolean mayBeErratic = Sys.isWindows ;
+    
+    private int timeout(int time1, int time2) {
+        return mayBeErratic ? time2 : time1 ;
+    }
     @Test
     public void alarm_01() {
         AlarmClock alarmClock = new AlarmClock() ;
@@ -64,12 +69,10 @@ public class TestAlarmClock extends BaseTest {
 
     @Test
     public void alarm_02() {
-        Assume.assumeTrue( ! Sys.isWindows );
-
         AlarmClock alarmClock = new AlarmClock() ;
         // Short - happens.
         alarmClock.add(callback, 10) ;
-        sleep(120) ;
+        sleep(timeout(100, 250)) ;
         assertEquals(1, count.get()) ;
         // try to cancel anyway.
         alarmClock.cancel(callback) ;
@@ -78,12 +81,10 @@ public class TestAlarmClock extends BaseTest {
 
     @Test
     public void alarm_03() {
-        Assume.assumeTrue( ! Sys.isWindows );
-        
         AlarmClock alarmClock = new AlarmClock() ;
         alarmClock.add(callback, 10) ;
         alarmClock.add(callback, 1000000) ;
-        sleep(150) ;
+        sleep(timeout(100, 300)) ;
         // ping1 went off.
         assertEquals(1, count.get()) ;
         alarmClock.cancel(callback) ;
@@ -92,12 +93,10 @@ public class TestAlarmClock extends BaseTest {
 
     @Test
     public void alarm_04() {
-        Assume.assumeTrue( ! Sys.isWindows );
-        
         AlarmClock alarmClock = new AlarmClock() ;
         alarmClock.add(callback, 10) ;
         alarmClock.add(callback, 20) ;
-        sleep(100) ;
+        sleep(timeout(75, 300)) ;
         // ping1 went off. ping2 went off.
         assertEquals(2, count.get()) ;
         alarmClock.release() ;
