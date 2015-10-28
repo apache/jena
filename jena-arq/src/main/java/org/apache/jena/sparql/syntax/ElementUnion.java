@@ -64,7 +64,7 @@ public class ElementUnion extends Element
             Element e1 = getElements().get(i) ;
             Element e2 = eu2.getElements().get(i) ;
             if ( ! e1.equalTo(e2, isoMap) )
-                return true ;
+                return false ;
         }
         return true ;
     }
