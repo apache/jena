@@ -68,7 +68,7 @@ public class AbstractQueryBuilderTest {
 		n = builder.makeNode(RDF.type);
 		assertEquals(RDF.type.asNode(), n);
 
-		Node n2 = NodeFactory.createAnon();
+		Node n2 = NodeFactory.createBlankNode();
 		n = builder.makeNode(n2);
 		assertEquals(n2, n);
 

@@ -314,4 +314,9 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder>
 	public SelectHandler getSelectHandler() {
 		return selectHandler;
 	}
+
+	@Override
+	public Node list(Object... objs) {
+		return whereHandler.list(objs);
+	}
 }

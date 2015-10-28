@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
-import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
@@ -319,5 +318,24 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		assertTrue( "Should have an ElementTriplesBlock", lst.get(0) instanceof ElementTriplesBlock );
 		ElementTriplesBlock etb = (ElementTriplesBlock)lst.get(0);
 		assertTrue( "ElementGroup should be empty", etb.isEmpty() );
+	}
+	
+	@ContractTest
+	public void testList() {
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addWhere(whereClause.list( "<one>", "?two", "'three'"),
+				"<foo>", "<bar>");
+	
+		assertContainsRegex(
+				"_:b0"+SPACE+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE	+ uri("one") + SEMI 
+				+ SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE+"_:b1"+ DOT
+				+ SPACE + "_:b1"+SPACE+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE + var("two") + SEMI
+				+ SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE+"_:b2"+ DOT
+				+ SPACE + "_:b2"+SPACE+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE + quote("three") + SEMI
+				+ SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE +uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil") 
+				, builder.buildString());
+		
+		assertContainsRegex(
+				 "_:b0"+SPACE+ uri("foo") + SPACE	+ uri("bar"), builder.buildString());
 	}
 }

@@ -21,6 +21,7 @@ import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsTriple ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
@@ -164,7 +165,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 
 	/**
 	 * Add a bind statement to the query
-	 * * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rGraphGraphPattern.
+	 * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rGraphGraphPattern.
 	 * @param expression The expression to bind to the var.
 	 * @param var The variable to bind to.
 	 * @return This builder for chaining.
@@ -177,5 +178,25 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * @return The WhereHandler used by this clause.
 	 */
 	public WhereHandler getWhereHandler();
+	
+	/**
+	 * Create a list node from a list of objects as per RDF Collections.
+	 * 
+	 * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#collections 
+	 * 
+	 * See {@link AbstractQueryBuilder#makeNode} for conversion of the param values.
+	 * <p>
+	 * usage:
+	 * <ul>
+	 * <li>list( param1, param2, param3, ... )</li>
+	 * <li>addWhere( list( param1, param2, param3, ... ), p, o )</li>
+	 * <li>addOptional( list( param1, param2, param3, ... ), p, o )</li>
+	 * </ul>
+	 * </p>
+	 * 
+	 * @param objs the list of objects for the list.
+	 * @return the first blank node in the list.
+	 */
+	public Node list( Object ... objs );
 
 }

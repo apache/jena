@@ -17,6 +17,8 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -382,5 +384,41 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				OPEN_CURLY + BIND + OPEN_PAREN + "rand\\(\\)" + SPACE + "AS"
 						+ SPACE + var("foo") + CLOSE_PAREN + CLOSE_CURLY,
 				query.toString());
+	}
+	
+	@Test
+	public void testList() {
+		Node n = handler.list( "<one>", "?var", "'three'" );
+
+		assertContainsRegex(WHERE + OPEN_CURLY 
+				+ "_:b0"+SPACE+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE	+ uri("one") + SEMI 
+				+ SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE+"_:b1"+ DOT
+				+ SPACE + "_:b1"+SPACE+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE + var("var") + SEMI
+				+ SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE+"_:b2"+ DOT
+				+ SPACE + "_:b2"+SPACE+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE + quote("three") + SEMI
+				+ SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE +uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil") 
+				+ CLOSE_CURLY, query.toString());
+		
+	 	assertTrue( n.isBlank() );
+	}
+	
+	@Test
+	public void testListInTriple() {
+		handler.addWhere( new Triple(handler.list( "<one>", "?var", "'three'" ), ResourceFactory.createResource("foo").asNode(), 
+				ResourceFactory.createResource("bar").asNode()));
+
+		assertContainsRegex(
+				 "_:b0"+SPACE+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE	+ uri("one") + SEMI 
+				+ SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE+"_:b1"+ DOT
+				+ SPACE + "_:b1"+SPACE+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE + var("var") + SEMI
+				+ SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE+"_:b2"+ DOT
+				+ SPACE + "_:b2"+SPACE+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE + quote("three") + SEMI
+				+ SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE +uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil") 
+				, query.toString());
+		
+		assertContainsRegex(
+				 "_:b0"+SPACE+ uri("foo") + SPACE	+ uri("bar"), query.toString());
+
+	 
 	}
 }
