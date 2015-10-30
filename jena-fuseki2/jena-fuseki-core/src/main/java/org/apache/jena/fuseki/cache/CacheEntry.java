@@ -24,10 +24,9 @@ import org.apache.jena.sparql.resultset.SPARQLResult;
 public class CacheEntry {
 
     private boolean initialized = false;
-
     private SPARQLResult result;
-
     private StringBuilder cacheBuilder;
+    private byte[] data;
 
     public SPARQLResult getResult() {
         return result;
@@ -45,6 +44,14 @@ public class CacheEntry {
         this.cacheBuilder = cacheBuilder;
     }
 
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
     public void initialized(){
         if ( this.initialized )
             return ;
@@ -54,4 +61,5 @@ public class CacheEntry {
     public boolean isInitialized(){
         return this.initialized;
     }
+
 }

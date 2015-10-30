@@ -25,20 +25,13 @@ import org.apache.jena.query.ResultSet ;
 public class JSONOutput extends OutputBase
 {
     public JSONOutput() {}
-    
+
     @Override
     public void format(OutputStream out, ResultSet resultSet)
     {
         // Use direct string output - more control
-    
-        JSONOutputResultSet jsonOut =  new JSONOutputResultSet(out) ;
-        ResultSetApply a = new ResultSetApply(resultSet, jsonOut) ;
-        a.apply() ;
-    }
 
-    @Override
-    public void format(OutputStream out, ResultSet resultSet, StringBuilder cacheBuilder) {
-        JSONOutputResultSet jsonOut =  new JSONOutputResultSet(out, cacheBuilder) ;
+        JSONOutputResultSet jsonOut =  new JSONOutputResultSet(out) ;
         ResultSetApply a = new ResultSetApply(resultSet, jsonOut) ;
         a.apply() ;
     }
@@ -47,12 +40,6 @@ public class JSONOutput extends OutputBase
     public void format(OutputStream out, boolean booleanResult)
     {
         JSONOutputASK jsonOut = new JSONOutputASK(out) ;
-        jsonOut.exec(booleanResult) ;
-    }
-
-    @Override
-    public void format(OutputStream out, boolean booleanResult, StringBuilder cacheBuilder) {
-        JSONOutputASK jsonOut = new JSONOutputASK(out, cacheBuilder) ;
         jsonOut.exec(booleanResult) ;
     }
 }

@@ -37,32 +37,29 @@ import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.rdf.model.impl.Util ;
 
 /**
- * A JSON writer for SPARQL Result Sets.  Uses Jena Atlas JSON support. 
- * 
- * Format: <a href="http://www.w3.org/TR/sparql11-results-json/">SPARQL 1.1 Query Results JSON Format</a> 
- */ 
+ * A JSON writer for SPARQL Result Sets.  Uses Jena Atlas JSON support.
+ *
+ * Format: <a href="http://www.w3.org/TR/sparql11-results-json/">SPARQL 1.1 Query Results JSON Format</a>
+ */
 
 public class JSONOutputResultSet implements ResultSetProcessor
 {
     static boolean multiLineValues = false ;
     static boolean multiLineVarNames = false ;
-    
+
     private boolean outputGraphBNodeLabels = false ;
     private IndentedWriter out ;
     private int bNodeCounter = 0 ;
     private Map<Resource, String> bNodeMap = new HashMap<>() ;
-    
+
     JSONOutputResultSet(OutputStream outStream)
     { this(new IndentedWriter(outStream)) ; }
-
-    JSONOutputResultSet(OutputStream outStream, StringBuilder cacheBuilder)
-    { this(new IndentedWriter(outStream, cacheBuilder)) ; }
 
     JSONOutputResultSet(IndentedWriter indentedOut)
     {   out = indentedOut ;
         outputGraphBNodeLabels = ARQ.isTrue(ARQ.outputGraphBNodeLabels) ;
     }
-    
+
     @Override
     public void start(ResultSet rs)
     {
@@ -81,7 +78,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
     {
         // Close last binding.
         out.println() ;
-        
+
         out.decIndent() ;       // bindings
         out.println("]") ;
         out.decIndent() ;
@@ -100,13 +97,13 @@ public class JSONOutputResultSet implements ResultSetProcessor
         out.decIndent() ;
         out.println("} ,") ;
     }
-    
+
     private void doLink(ResultSet rs)
     {
         // ---- link
         //out.println("\"link\": []") ;
     }
-    
+
     private void doVars(ResultSet rs)
     {
         // On one line.
@@ -127,7 +124,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
 
     boolean firstSolution = true ;
     boolean firstBindingInSolution = true ;
-    
+
     // NB assumes are on end of previous line.
     @Override
     public void start(QuerySolution qs)
@@ -153,7 +150,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
     {
         if ( value == null )
             return ;
-        
+
         if ( !firstBindingInSolution )
             out.println(" ,") ;
         firstBindingInSolution = false ;
@@ -161,7 +158,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
         // Do not use quoteName - varName may not be JSON-safe as a bare name.
         out.print(quote(varName)+": { ") ;
         if ( multiLineValues ) out.println() ;
-        
+
         out.incIndent() ;
         // Old, explicit unbound
 //        if ( value == null )
@@ -171,14 +168,14 @@ public class JSONOutputResultSet implements ResultSetProcessor
             printLiteral((Literal)value) ;
         else if ( value.isResource() )
             printResource((Resource)value) ;
-        else 
+        else
             Log.warn(this, "Unknown RDFNode type in result set: "+value.getClass()) ;
         out.decIndent() ;
-        
-        if ( !multiLineValues ) out.print(" ") ; 
+
+        if ( !multiLineValues ) out.print(" ") ;
         out.print("}") ;        // NB No newline
     }
-    
+
 //    private void printUnbound()
 //    {
 //        out.print(quoteName(kType)+ ": "+quote(kUnbound)+" , ") ;
@@ -191,12 +188,12 @@ public class JSONOutputResultSet implements ResultSetProcessor
     {
         String datatype = literal.getDatatypeURI() ;
         String lang = literal.getLanguage() ;
-        
+
         if ( Util.isSimpleString(literal) || Util.isLangString(literal) )
         {
             out.print(quoteName(kType)+": "+quote(kLiteral)+" , ") ;
             if ( multiLineValues ) out.println() ;
-            
+
             if ( lang != null && !lang.equals("") )
             {
                 out.print(quoteName(kXmlLang)+": "+quote(lang)+" , ") ;
@@ -205,11 +202,11 @@ public class JSONOutputResultSet implements ResultSetProcessor
         } else {
             out.print(quoteName(kDatatype)+": "+quote(datatype)+" , ") ;
             if ( multiLineValues ) out.println() ;
-            
+
             out.print(quoteName(kType)+": "+quote(kTypedLiteral)+" , ") ;
             if ( multiLineValues ) out.println() ;
         }
-            
+
         out.print(quoteName(kValue)+": "+quote(literal.getLexicalForm())) ;
         if ( multiLineValues ) out.println() ;
     }
@@ -218,7 +215,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
     {
         if ( resource.isAnon() )
         {
-            String label ; 
+            String label ;
             if ( outputGraphBNodeLabels )
                 label = resource.getId().getLabelString() ;
             else
@@ -227,12 +224,12 @@ public class JSONOutputResultSet implements ResultSetProcessor
                     bNodeMap.put(resource, "b"+(bNodeCounter++)) ;
                 label = bNodeMap.get(resource) ;
             }
-            
+
             out.print(quoteName(kType)+": "+quote(kBnode)+" , ") ;
             if ( multiLineValues ) out.println() ;
-            
+
             out.print(quoteName(kValue)+": "+quote(label)) ;
-            
+
             if ( multiLineValues ) out.println() ;
         }
         else
@@ -244,29 +241,29 @@ public class JSONOutputResultSet implements ResultSetProcessor
             return ;
         }
     }
-    
+
     private static String quote(String string)
     {
         return JSWriter.outputQuotedString(string) ;
     }
-    
+
     // Quote a name (known to be JSON-safe)
     // Never the RHS of a member entry (for example "false")
     // Some (the Java JSON code for one) JSON parsers accept an unquoted
     // string as a name of a name/value pair.
-    
+
     private static String quoteName(String string)
     {
         // Safest to quote anyway.
         return quote(string) ;
-        
+
         // Assumes only called with safe names
         //return string ;
-        
+
         // Better would be:
         // starts a-z, constains a-z,0-9, not a keyword(true, false, null)
 //        if ( string.contains(something not in a-z0-9)
-//        and         
+//        and
 //        //return "\""+string+"\"" ;
 //        return JSONObject.quote(string) ;
     }

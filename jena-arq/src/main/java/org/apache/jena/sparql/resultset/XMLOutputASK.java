@@ -29,23 +29,15 @@ public class XMLOutputASK implements XMLResults
 {
     String stylesheetURL = null ;
     IndentedWriter  out ;
-    StringBuilder cacheWriter;
     int bNodeCounter = 0 ;
     boolean xmlInst = true ;
 
     public XMLOutputASK(OutputStream outStream)
-    {
-        this(outStream, null) ;
-    }
+    { this(outStream, null) ; }
 
     public XMLOutputASK(OutputStream outStream, String stylesheetURL)
     {
         this(new IndentedWriter(outStream), stylesheetURL) ;
-    }
-
-    public XMLOutputASK(OutputStream outStream, String stylesheetURL, StringBuilder cacheBuilder)
-    {
-        this(new IndentedWriter(outStream, cacheBuilder), stylesheetURL) ;
     }
 
     public XMLOutputASK(IndentedWriter indentedOut, String stylesheetURL)
@@ -54,25 +46,17 @@ public class XMLOutputASK implements XMLResults
         this.stylesheetURL = stylesheetURL ;
     }
 
-    public XMLOutputASK(IndentedWriter indentedOut, String stylesheetURL, StringBuilder cacheBuilder)
-    {
-        out = indentedOut ;
-        this.stylesheetURL = stylesheetURL ;
-        cacheWriter = cacheBuilder;
-
-    }
-
     public void exec(boolean result)
     {
         if ( xmlInst)
             out.println("<?xml version=\"1.0\"?>") ;
-        
+
         if ( stylesheetURL != null )
             out.println("<?xml-stylesheet type=\"text/xsl\" href=\""+stylesheetURL+"\"?>") ;
-        
+
         out.println("<"+dfRootTag+" xmlns=\""+dfNamespace+"\">") ;
         out.incIndent(INDENT) ;
-        
+
         // Head
         out.println("<"+dfHead+">") ;
         out.incIndent(INDENT) ;
@@ -83,7 +67,7 @@ public class XMLOutputASK implements XMLResults
         }
         out.decIndent(INDENT) ;
         out.println("</"+dfHead+">") ;
-        
+
 //        // Results
 //        out.println("<"+dfResults+">") ;
 //        out.incIndent(INDENT) ;

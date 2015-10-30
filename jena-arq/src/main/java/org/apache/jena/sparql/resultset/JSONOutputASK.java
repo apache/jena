@@ -31,22 +31,16 @@ import org.apache.jena.atlas.json.io.JSWriter ;
 public class JSONOutputASK
 {
     private OutputStream outStream ;
-    private StringBuilder cacheBuilder;
 
     public JSONOutputASK(OutputStream outStream) {
         this.outStream = outStream;
-    }
 
-    public JSONOutputASK(OutputStream outStream, StringBuilder cacheBuilder) {
-        this.outStream = outStream;
-        this.cacheBuilder = cacheBuilder;
-        
     }
 
     public void exec(boolean result)
     {
-        JSWriter out = new JSWriter(outStream, cacheBuilder) ;
-        
+        JSWriter out = new JSWriter(outStream) ;
+
         out.startOutput() ;
 
         out.startObject() ;
@@ -55,7 +49,7 @@ public class JSONOutputASK
         out.finishObject() ;
         out.pair(kBoolean, result) ;
         out.finishObject() ;
-        
+
         out.finishOutput() ;
 
         IO.flush(outStream) ;

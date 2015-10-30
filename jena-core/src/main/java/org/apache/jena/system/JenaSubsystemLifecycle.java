@@ -27,7 +27,7 @@ public interface JenaSubsystemLifecycle {
     /** stop - a module should have preformed any shutdown operations by the time this returns */
     public void stop() ;
 
-    /** Provide a marker as to the level to order initialization, 10,20,30,... 
+    /** Provide a marker as to the level to order initialization, 10,20,30,...
      * See {@link JenaSystem} for details.
      */
     default public int level() { return 9999 ; }

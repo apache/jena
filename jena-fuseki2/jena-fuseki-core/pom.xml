@@ -23,8 +23,8 @@
     <artifactId>jena-fuseki</artifactId>
     <version>2.3.1-SNAPSHOT</version>
     <relativePath>../</relativePath>
-  </parent> 
-  
+  </parent>
+
   <name>Apache Jena - Fuseki Server Engine</name>
   <artifactId>jena-fuseki-core</artifactId>
 
@@ -79,7 +79,7 @@
       <artifactId>jena-text</artifactId>
       <version>3.0.1-SNAPSHOT</version>
       <exclusions>
-        <!-- 
+        <!--
           Get this via commons-fileupload and also via jena-text/sol4j
         -->
         <exclusion>
@@ -96,11 +96,17 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-shaded-guava</artifactId>
+      <version>3.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-core</artifactId>
       <version>${ver.shiro}</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-web</artifactId>
@@ -140,14 +146,14 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
       <version>${ver.jetty}</version>
-    </dependency>    
+    </dependency>
 
     <!--
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-runner</artifactId>
       <version>${ver.jetty}</version>
-    </dependency>    
+    </dependency>
     -->
 
     <!-- Development and standalone jar (if built) -->
@@ -156,8 +162,8 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlets</artifactId>
       <version>${ver.jetty}</version>
-    </dependency>    
-    
+    </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -195,7 +201,7 @@
           <groupId>javax.mail</groupId>
           <artifactId>mail</artifactId>
         </exclusion>
-      </exclusions> 
+      </exclusions>
     </dependency>
   </dependencies>
 
@@ -216,7 +222,7 @@
         </includes>
       </resource>
     </resources>
-    
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -280,5 +286,5 @@
     </plugins>
 
   </build>
-  
+
 </project>

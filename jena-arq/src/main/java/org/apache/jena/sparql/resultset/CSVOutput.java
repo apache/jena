@@ -36,23 +36,23 @@ import org.apache.jena.util.FileUtils ;
 
 /** Convenient comma separated values - see also TSV (tab separated values)
  *  which outputs full RDF terms (in Turtle-style).
- *  
+ *
  *  The CSV format supported is:
  *  <ul>
  *  <li>First row is variable names without '?'</li>
  *  <li>Strings, quoted if necessary and numbers output only.
  *  No language tags, or datatypes.
- *  URIs are send without $lt;&gt;  
+ *  URIs are send without $lt;&gt;
  *  </li>
- *  CSV is RFC 4180, but there are many variations. 
- *  </ul> 
+ *  CSV is RFC 4180, but there are many variations.
+ *  </ul>
  */
 public class CSVOutput extends OutputBase
 {
     // RFC for CSV : http://www.ietf.org/rfc/rfc4180.txt
-    
+
     static String NL = "\r\n" ;
-    
+
     @Override
     public void format(OutputStream out, ResultSet resultSet)
     {
@@ -60,11 +60,11 @@ public class CSVOutput extends OutputBase
             Writer w = FileUtils.asUTF8(out) ;
             NodeToLabelMap bnodes = new NodeToLabelMap() ;
             w = new BufferedWriter(w) ;
-            
+
             String sep = null ;
             List<String> varNames = resultSet.getResultVars() ;
             List<Var> vars = new ArrayList<>(varNames.size()) ;
-            
+
             // Convert to Vars and output the header line.
             for( String v : varNames )
             {
@@ -72,23 +72,23 @@ public class CSVOutput extends OutputBase
                     w.write(sep) ;
                 else
                     sep = "," ;
-                w.write(csvSafe(v)) ; 
+                w.write(csvSafe(v)) ;
                 vars.add(Var.alloc(v)) ;
             }
             w.write(NL) ;
-            
+
             // Data output
             for ( ; resultSet.hasNext() ; )
             {
                 sep = null ;
                 Binding b = resultSet.nextBinding() ;
-                
+
                 for( Var v : vars )
                 {
                     if ( sep != null )
                         w.write(sep) ;
                     sep = "," ;
-                    
+
                     Node n = b.get(v) ;
                     if ( n != null )
                         output(w, n, bnodes) ;
@@ -102,75 +102,7 @@ public class CSVOutput extends OutputBase
         }
     }
 
-    @Override
-    public void format(OutputStream out, ResultSet resultSet, StringBuilder cacheBuilder)
-    {
-        try {
-            Writer w = FileUtils.asUTF8(out) ;
-            NodeToLabelMap bnodes = new NodeToLabelMap() ;
-            w = new BufferedWriter(w) ;
-
-            String sep = null ;
-            List<String> varNames = resultSet.getResultVars() ;
-            List<Var> vars = new ArrayList<>(varNames.size()) ;
-
-            // Convert to Vars and output the header line.
-            for( String v : varNames )
-            {
-                if ( sep != null ){
-                    w.write(sep) ;
-                    cacheBuilder.append(sep);
-                }
-                else
-                    sep = "," ;
-                w.write(csvSafe(v)) ;
-                cacheBuilder.append(csvSafe(v));
-                vars.add(Var.alloc(v)) ;
-            }
-            w.write(NL) ;
-            cacheBuilder.append(NL);
-
-            // Data output
-            for ( ; resultSet.hasNext() ; )
-            {
-                sep = null ;
-                Binding b = resultSet.nextBinding() ;
-
-                for( Var v : vars )
-                {
-                    if ( sep != null ){
-                        w.write(sep) ;
-                        cacheBuilder.append(sep);
-                    }
-                    sep = "," ;
-
-                    Node n = b.get(v) ;
-                    if ( n != null )
-                        output(w, n, bnodes, cacheBuilder) ;
-                }
-                w.write(NL) ;
-                cacheBuilder.append(NL);
-            }
-            w.flush() ;
-        } catch (IOException ex)
-        {
-            throw new ARQException(ex) ;
-        }
-    }
-
-    private void output(Writer w, Node n, NodeToLabelMap bnodes) throws IOException 
-    {
-        //String str = FmtUtils.stringForNode(n) ;
-        String str = "?" ;
-        if ( n.isLiteral() ) str = n.getLiteralLexicalForm() ;
-        else if ( n.isURI() ) str = n.getURI() ;
-        else if ( n.isBlank() )
-            str = bnodes.asString(n) ;
-        
-        str = csvSafe(str) ;
-        w.write(str) ;
-    }
-    private void output(Writer w, Node n, NodeToLabelMap bnodes, StringBuilder cacheBuilder) throws IOException
+    private void output(Writer w, Node n, NodeToLabelMap bnodes) throws IOException
     {
         //String str = FmtUtils.stringForNode(n) ;
         String str = "?" ;
@@ -181,18 +113,18 @@ public class CSVOutput extends OutputBase
 
         str = csvSafe(str) ;
         w.write(str) ;
-        cacheBuilder.append(str);
     }
+
     private String csvSafe(String str)
     {
-        // Apparently, there are CSV parsers that only accept "" as an escaped quote if inside a "..."  
+        // Apparently, there are CSV parsers that only accept "" as an escaped quote if inside a "..."
         if (str.contains("\"")
             || str.contains(",")
             || str.contains("\r")
             || str.contains("\n") )
             str = "\"" + str.replaceAll("\"", "\"\"") + "\"";
         else if ( str.isEmpty() )
-            // Return the quoted empty string. 
+            // Return the quoted empty string.
             str = "\"\"" ;
         return str;
     }
@@ -201,14 +133,14 @@ public class CSVOutput extends OutputBase
     static final byte[] yesBytes = StrUtils.asUTF8bytes("true") ;
     static final byte[] noBytes = StrUtils.asUTF8bytes("false") ;
     static final byte[] NLBytes = StrUtils.asUTF8bytes(NL) ;
-    
+
     @Override
     public void format(OutputStream out, boolean booleanResult)
     {
         try
         {
         	out.write(headerBytes);
-            if (booleanResult) 
+            if (booleanResult)
                 out.write(yesBytes) ;
             else
                 out.write(noBytes) ;
@@ -219,26 +151,4 @@ public class CSVOutput extends OutputBase
         }
     }
 
-    @Override
-    public void format(OutputStream out, boolean booleanResult, StringBuilder cacheBuilder)
-    {
-        try
-        {
-            out.write(headerBytes);
-            cacheBuilder.append(headerBytes);
-            if (booleanResult){
-                out.write(yesBytes) ;
-                cacheBuilder.append(yesBytes);
-            }
-            else{
-                out.write(noBytes) ;
-                cacheBuilder.append(noBytes);
-            }
-            out.write(NLBytes) ;
-            cacheBuilder.append(NLBytes);
-        } catch (IOException ex)
-        {
-            throw new ARQException(ex) ;
-        }
-    }
 }

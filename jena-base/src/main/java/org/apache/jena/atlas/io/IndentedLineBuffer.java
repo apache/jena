@@ -20,7 +20,7 @@ package org.apache.jena.atlas.io;
 
 import java.io.StringWriter ;
 
-/** IndentLineBuffer is a buffer that records an indent level 
+/** IndentLineBuffer is a buffer that records an indent level
  *  and uses that to insert a prefix at each line.
  *  It can also insert line numbers at the beginning of lines.
  */
@@ -28,18 +28,16 @@ import java.io.StringWriter ;
 public class IndentedLineBuffer extends IndentedWriter
 {
     StringWriter sw ;
-    StringBuilder cacheBuilder;
     public IndentedLineBuffer() { this(false) ; }
-    
+
     public IndentedLineBuffer(boolean withLineNumbers)
     {
-        super(new StringWriter(), new StringBuilder() ,withLineNumbers) ;
+        super(new StringWriter(), withLineNumbers) ;
         sw = (StringWriter)super.out ;
-        cacheBuilder = (StringBuilder)super.cacheWriter;
     }
-    
+
     public StringBuffer getBuffer() { return sw.getBuffer(); }
-    
+
     public String asString() { return sw.toString() ; }
     @Override
     public String toString() { return asString() ; }
@@ -47,6 +45,6 @@ public class IndentedLineBuffer extends IndentedWriter
     // Names more usually used for a buffer.
     public void append(String fmt, Object... args) { printf(fmt, args) ; }
     public void append(char ch)  { print(ch) ;}
-    
+
     public void clear() { sw.getBuffer().setLength(0) ; }
 }

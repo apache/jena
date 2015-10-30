@@ -22,7 +22,7 @@ import java.io.OutputStream ;
 
 import org.apache.jena.query.ResultSet ;
 
-/** 
+/**
  * Interface for all formatters of result sets. */
 
 public interface OutputFormatter
@@ -31,35 +31,16 @@ public interface OutputFormatter
      * @param out
      * @param resultSet
      */
-    
+
     public void format(OutputStream out, ResultSet resultSet) ;
 
-    /** Format a result set - output on the given stream
-     * @param out
-     * @param resultSet
-     * @param cacheBuilder
-     */
-
-    public void format(OutputStream out, ResultSet resultSet, StringBuilder cacheBuilder) ;
-
     /** Format a boolean result - output on the given stream
      * @param out
      * @param booleanResult
      */
-    
+
     public void format(OutputStream out, boolean booleanResult) ;
-
-    /** Format a boolean result - output on the given stream
-     * @param out
-     * @param booleanResult
-     * @param cacheBuilder
-     */
-    public void format(OutputStream out, boolean booleanResult, StringBuilder cacheBuilder) ;
-
 
     /** Turn into a string */
     public String asString(ResultSet resultSet) ;
-
-
-
 }
