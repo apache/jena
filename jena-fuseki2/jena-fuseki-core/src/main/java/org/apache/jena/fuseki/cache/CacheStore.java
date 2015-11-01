@@ -121,11 +121,19 @@ public class CacheStore {
         }
     }
 
+    public void clear() throws CacheStoreException{
+        try{
+        client.clear();
+        }catch (Exception e){
+            throw new CacheStoreException("CACHE INVALIDATION FAILED", e);
+        }
+    }
+
     public static String generateKey(HttpAction action, String queryString, ResponseType responseType) {
         HttpServletRequest req = action.getRequest();
         String uri = ActionLib.actionURI(req);
         String dataSetUri = ActionLib.mapActionRequestToDataset(uri);
-        log.info("CacheStore Key " +dataSetUri+" "+queryString+" "+responseType.getContentType());
+        log.info("CacheStore Key " + dataSetUri + " " + queryString + " " + responseType.getContentType());
         return dataSetUri+" "+queryString;
     }
 

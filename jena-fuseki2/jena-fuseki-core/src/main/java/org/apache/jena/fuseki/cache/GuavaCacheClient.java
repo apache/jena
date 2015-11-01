@@ -58,6 +58,9 @@ public class GuavaCacheClient extends CacheClient{
         return true;
     }
 
+    public void clear(){
+        cache.invalidateAll();
+    }
     /** Getters / Setters */
     public Cache<String, Object> getCache() {
         return cache;

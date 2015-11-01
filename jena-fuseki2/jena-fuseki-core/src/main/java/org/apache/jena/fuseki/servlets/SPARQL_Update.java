@@ -48,6 +48,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.cache.CacheStore;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.iri.IRI ;
@@ -63,25 +64,25 @@ import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;
 import org.apache.jena.web.HttpSC ;
 
-public class SPARQL_Update extends SPARQL_Protocol 
+public class SPARQL_Update extends SPARQL_Protocol
 {
-    // Base URI used to isolate parsing from the current directory of the server. 
+    // Base URI used to isolate parsing from the current directory of the server.
     private static final String UpdateParseBase = Fuseki.BaseParserSPARQL ;
     private static final IRIResolver resolver = IRIResolver.create(UpdateParseBase) ;
-    
+
     public SPARQL_Update()
     { super() ; }
 
     // doMethod : Not used with UberServlet dispatch.
-    
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.sendError(HttpSC.BAD_REQUEST_400, "Attempt to perform SPARQL update by GET.  Use POST") ;
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doCommon(request, response) ;
     }
@@ -92,13 +93,15 @@ public class SPARQL_Update extends SPARQL_Protocol
         response.setHeader(HttpNames.hAllow, "OPTIONS,POST") ;
         response.setHeader(HttpNames.hContentLengh, "0") ;
     }
-    
+
     protected void doOptions(HttpAction action) {
         doOptions(action.request, action.response) ;
     }
 
     @Override
     protected void perform(HttpAction action) {
+        CacheStore cacheStore = CacheStore.getInstance();
+        cacheStore.clear();
         ContentType ct = FusekiLib.getContentType(action) ;
         if ( ct == null )
             ct = ctSPARQLUpdate ;
@@ -114,14 +117,14 @@ public class SPARQL_Update extends SPARQL_Protocol
         ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + action.request.getContentType()) ;
     }
 
-    protected static List<String> paramsForm = Arrays.asList(paramRequest, paramUpdate, 
+    protected static List<String> paramsForm = Arrays.asList(paramRequest, paramUpdate,
                                                              paramUsingGraphURI, paramUsingNamedGraphURI) ;
     protected static List<String> paramsPOST = Arrays.asList(paramUsingGraphURI, paramUsingNamedGraphURI) ;
-    
+
     @Override
     protected void validate(HttpAction action) {
         HttpServletRequest request = action.request ;
-        
+
         if ( HttpNames.METHOD_OPTIONS.equals(request.getMethod()) )
             return ;
 
@@ -158,7 +161,7 @@ public class SPARQL_Update extends SPARQL_Protocol
 
         ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+contentTypeSPARQLUpdate+" or "+contentTypeHTMLForm+" (got "+ct.getContentType()+")") ;
     }
-    
+
     protected void validate(HttpAction action, Collection<String> params) {
         if ( params != null ) {
             Enumeration<String> en = action.request.getParameterNames() ;
@@ -176,16 +179,16 @@ public class SPARQL_Update extends SPARQL_Protocol
         catch (IOException ex) { ServletOps.errorOccurred(ex) ; }
 
         if ( action.verbose ) {
-            // Verbose mode only .... capture request for logging (does not scale). 
+            // Verbose mode only .... capture request for logging (does not scale).
             String requestStr = null ;
             try { requestStr = IO.readWholeFileAsUTF8(input) ; }
             catch (IOException ex) { IO.exception(ex) ; }
             action.log.info(format("[%d] Update = %s", action.id, ServletOps.formatForLog(requestStr))) ;
-            
+
             input = new ByteArrayInputStream(requestStr.getBytes());
             requestStr = null;
         }
-        
+
         execute(action, input) ;
         ServletOps.successNoContent(action) ;
     }
@@ -194,7 +197,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         String requestStr = action.request.getParameter(paramUpdate) ;
         if ( requestStr == null )
             requestStr = action.request.getParameter(paramRequest) ;
-        
+
         if ( action.verbose )
             action.log.info(format("[%d] Form update = \n%s", action.id, requestStr)) ;
         // A little ugly because we are taking a copy of the string, but hopefully shouldn't be too big if we are in this code-path
@@ -205,7 +208,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         execute(action, input);
         ServletOps.successPage(action,"Update succeeded") ;
     }
-    
+
     private void execute(HttpAction action, InputStream input) {
         // OPTIONS
         if ( action.request.getMethod().equals(HttpNames.METHOD_OPTIONS) ) {
@@ -213,14 +216,14 @@ public class SPARQL_Update extends SPARQL_Protocol
             doOptions(action) ;
             return ;
         }
-        
+
         UsingList usingList = processProtocol(action.request) ;
-        
+
         // If the dsg is transactional, then we can parse and execute the update in a streaming fashion.
         // If it isn't, we need to read the entire update request before performing any updates, because
         // we have to attempt to make the request atomic in the face of malformed queries
         UpdateRequest req = null ;
-        if (!action.isTransactional()) { 
+        if (!action.isTransactional()) {
             try {
                 // TODO implement a spill-to-disk version of this
                 req = UpdateFactory.read(usingList, input, UpdateParseBase, Syntax.syntaxARQ);
@@ -228,7 +231,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             catch (UpdateException ex) { ServletOps.errorBadRequest(ex.getMessage()) ; return ; }
             catch (QueryParseException ex) { ServletOps.errorBadRequest(messageForQueryException(ex)) ; return ; }
         }
-        
+
         action.beginWrite() ;
         try {
             if (req == null )
@@ -253,10 +256,10 @@ public class SPARQL_Update extends SPARQL_Protocol
         } finally { action.endWrite(); }
     }
 
-    /* [It is an error to supply the using-graph-uri or using-named-graph-uri parameters 
-     * when using this protocol to convey a SPARQL 1.1 Update request that contains an 
+    /* [It is an error to supply the using-graph-uri or using-named-graph-uri parameters
+     * when using this protocol to convey a SPARQL 1.1 Update request that contains an
      * operation that uses the USING, USING NAMED, or WITH clause.]
-     * 
+     *
      * We will simply capture any using parameters here and pass them to the parser, which will be
      * responsible for throwing an UpdateException if the query violates the above requirement,
      * and will also be responsible for adding the using parameters to update queries that can
@@ -264,7 +267,7 @@ public class SPARQL_Update extends SPARQL_Protocol
      */
     private UsingList processProtocol(HttpServletRequest request) {
         UsingList toReturn = new UsingList();
-        
+
         String[] usingArgs = request.getParameterValues(paramUsingGraphURI) ;
         String[] usingNamedArgs = request.getParameterValues(paramUsingNamedGraphURI) ;
         if ( usingArgs == null && usingNamedArgs == null )
@@ -276,7 +279,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         // Impossible.
 //        if ( usingArgs.length == 0 && usingNamedArgs.length == 0 )
 //            return ;
-        
+
         for ( String nodeUri : usingArgs ) {
             toReturn.addUsing(createNode(nodeUri)) ;
         }
@@ -286,7 +289,7 @@ public class SPARQL_Update extends SPARQL_Protocol
 
         return toReturn ;
     }
-    
+
     private static Node createNode(String x) {
         try {
             IRI iri = resolver.resolve(x) ;
@@ -296,6 +299,6 @@ public class SPARQL_Update extends SPARQL_Protocol
             ServletOps.errorBadRequest("SPARQL Update: bad IRI: "+x) ;
             return null ;
         }
-        
+
     }
 }

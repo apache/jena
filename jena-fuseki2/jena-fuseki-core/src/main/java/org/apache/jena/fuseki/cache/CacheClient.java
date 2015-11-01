@@ -26,5 +26,5 @@ public abstract class CacheClient {
     public abstract Object get(String key) throws InterruptedException, ExecutionException, TimeoutException ;
     public abstract boolean set(String key, Object value) throws InterruptedException, ExecutionException, TimeoutException ;
     public abstract boolean unset(String key) throws InterruptedException, ExecutionException, TimeoutException ;
-
+    public abstract void clear() throws InterruptedException, ExecutionException, TimeoutException ;
 }
