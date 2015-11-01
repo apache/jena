@@ -45,7 +45,9 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.web.AcceptList;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.fuseki.DEF;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
@@ -271,7 +273,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                 SPARQLResult result = null;
                 CacheAction cacheAction;
                 CacheStore cacheStore = CacheStore.getInstance();
-                String key = generateKey(action,queryString);
+                String key = generateKey(action, query, queryString);
                 CacheEntry cacheEntry = (CacheEntry) cacheStore.doGet(key);
                 if(cacheEntry == null || !cacheEntry.isInitialized()) {
                     log.info("Cache is null or cache data is not initialized");
@@ -435,7 +437,17 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         return HttpOp.execHttpGetString(queryURI) ;
     }
 
-    private String generateKey(HttpAction action , String queryString){
-        return CacheStore.generateKey(action, queryString);
+    private String generateKey(HttpAction action, Query query ,String queryString){
+        ResponseType responseType = null;
+        if(query.isAskType())
+            responseType = ResponseResultSet.getResponseType(action.getRequest(), DEF.rsOfferBoolean);
+        else if(query.isSelectType())
+            responseType = ResponseResultSet.getResponseType(action.getRequest(), DEF.rsOfferTable);
+        else if(query.isConstructType())
+            responseType = ResponseDataset.getResponseType(action.getRequest());
+        else if(query.isDescribeType())
+            responseType = ResponseDataset.getResponseType(action.getRequest());
+
+        return CacheStore.generateKey(action, queryString, responseType);
     }
 }

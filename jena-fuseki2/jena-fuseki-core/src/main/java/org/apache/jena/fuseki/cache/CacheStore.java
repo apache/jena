@@ -22,6 +22,7 @@ package org.apache.jena.fuseki.cache;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.ResponseType;
 import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -120,11 +121,11 @@ public class CacheStore {
         }
     }
 
-    public static String generateKey(HttpAction action, String queryString) {
+    public static String generateKey(HttpAction action, String queryString, ResponseType responseType) {
         HttpServletRequest req = action.getRequest();
         String uri = ActionLib.actionURI(req);
         String dataSetUri = ActionLib.mapActionRequestToDataset(uri);
-        log.debug("CacheStore Key " +dataSetUri+" "+queryString);
+        log.debug("CacheStore Key " +dataSetUri+" "+queryString+" "+responseType.getContentType());
         return dataSetUri+" "+queryString;
     }
 

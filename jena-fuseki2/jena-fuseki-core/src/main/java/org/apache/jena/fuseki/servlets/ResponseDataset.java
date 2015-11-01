@@ -27,6 +27,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.jena.atlas.web.AcceptList;
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.fuseki.DEF;
 import org.apache.jena.fuseki.Fuseki;
@@ -68,16 +69,50 @@ public class ResponseDataset
         ResponseOps.put(shortNamesModel, contentOutputTriG,     WebContent.contentTypeTriG) ;
     }
 
-    public static void doResponseModel(HttpAction action, Model model) { 
+    public static void doResponseModel(HttpAction action, Model model) {
         Dataset ds = DatasetFactory.create(model) ;
         ResponseDataset.doResponseDataset(action, ds);
     }
-    
+
     public static void doResponseDataset(HttpAction action, Dataset dataset) {
         HttpServletRequest request = action.request ;
         HttpServletResponse response = action.response ;
-        
-        String mimeType = null ;        // Header request type 
+
+
+        ResponseType responseType = getResponseType(request);
+        String contentType = responseType.getContentType();
+
+        String charset =     charsetUTF8 ;
+
+        String forceAccept = ResponseOps.paramForceAccept(request) ;
+        if ( forceAccept != null )
+        {
+            contentType = forceAccept ;
+            charset = charsetUTF8 ;
+        }
+
+        Lang lang = RDFLanguages.contentTypeToLang(contentType) ;
+        if ( lang == null )
+            ServletOps.errorBadRequest("Can't determine output content type: "+contentType) ;
+
+        try {
+            ResponseResultSet.setHttpResponse(action, contentType, charset) ;
+            response.setStatus(HttpSC.OK_200) ;
+            ServletOutputStream out = response.getOutputStream() ;
+            if ( RDFLanguages.isQuads(lang) )
+                RDFDataMgr.write(out, dataset, lang) ;
+            else
+                RDFDataMgr.write(out, dataset.getDefaultModel(), lang) ;
+            out.flush() ;
+        }
+        catch (Exception ex) {
+            action.log.info("Exception while writing the response model: "+ex.getMessage(), ex) ;
+            ServletOps.errorOccurred("Exception while writing the response model: "+ex.getMessage(), ex) ;
+        }
+    }
+
+    public static ResponseType getResponseType(HttpServletRequest request){
+        String mimeType = null ;        // Header request type
 
         MediaType i = ConNeg.chooseContentType(request, DEF.constructOffer, DEF.acceptTurtle) ;
         if ( i != null )
@@ -102,33 +137,7 @@ public class ResponseDataset
         }
 
         String contentType = mimeType ;
-        String charset =     charsetUTF8 ;
-
-        String forceAccept = ResponseOps.paramForceAccept(request) ;
-        if ( forceAccept != null )
-        {
-            contentType = forceAccept ;
-            charset = charsetUTF8 ;
-        }
-
-        Lang lang = RDFLanguages.contentTypeToLang(contentType) ;
-        if ( lang == null )
-            ServletOps.errorBadRequest("Can't determine output content type: "+contentType) ;
-
-        try {
-            ResponseResultSet.setHttpResponse(action, contentType, charset) ; 
-            response.setStatus(HttpSC.OK_200) ;
-            ServletOutputStream out = response.getOutputStream() ;
-            if ( RDFLanguages.isQuads(lang) )
-                RDFDataMgr.write(out, dataset, lang) ;
-            else
-                RDFDataMgr.write(out, dataset.getDefaultModel(), lang) ;
-            out.flush() ;
-        }
-        catch (Exception ex) { 
-            action.log.info("Exception while writing the response model: "+ex.getMessage(), ex) ;
-            ServletOps.errorOccurred("Exception while writing the response model: "+ex.getMessage(), ex) ;
-        }
+        return new ResponseType(contentType);
     }
 }
 

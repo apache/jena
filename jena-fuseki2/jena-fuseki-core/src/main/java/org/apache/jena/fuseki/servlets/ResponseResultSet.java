@@ -132,31 +132,10 @@ public class ResponseResultSet
             throw new FusekiException("Both result set and boolean result are set") ;
         }
 
-        String mimeType = null ;
-        MediaType i = ConNeg.chooseContentType(request, contentTypeOffer, DEF.acceptRSXML) ;
-        if ( i != null )
-            mimeType = i.getContentType() ;
-
-        // Override content type
-        // Does &output= override?
-        // Requested output type by the web form or &output= in the request.
-        String outputField = ResponseOps.paramOutput(request, shortNamesResultSet) ;    // Expands short names
-        if ( outputField != null )
-            mimeType = outputField ;
-
-        String serializationType = mimeType ;           // Choose the serializer based on this.
-        String contentType = mimeType ;                 // Set the HTTP respose header to this.
-
-        // Stylesheet - change to application/xml.
-        final String stylesheetURL = ResponseOps.paramStylesheet(request) ;
-        if ( stylesheetURL != null && Objects.equals(serializationType,contentTypeResultsXML) )
-            contentType = contentTypeXML ;
-
-        // Force to text/plain?
-        String forceAccept = ResponseOps.paramForceAccept(request) ;
-        if ( forceAccept != null )
-            contentType = contentTypeTextPlain ;
-
+        ResponseType responseType = getResponseType(request,contentTypeOffer);
+        String contentType = responseType.getContentType();
+        String serializationType = responseType.getSerializationType();
+        String stylesheetURL = responseType.getStylesheetURL();
         // Better : dispatch on MediaType
         if ( Objects.equals(serializationType, contentTypeResultsXML) )
             sparqlXMLOutput(action, contentType, resultSet, stylesheetURL, booleanResult, cacheAction) ;
@@ -378,5 +357,33 @@ public class ResponseResultSet
         { ServletOps.errorOccurred(ex) ; }
         // Do not call httpResponse.flushBuffer(); here - Jetty closes the stream if it is a gzip stream
         // then the JSON callback closing details can't be added.
+    }
+
+    public static ResponseType getResponseType(HttpServletRequest request, AcceptList contentTypeOffer){
+        String mimeType = null ;
+        MediaType i = ConNeg.chooseContentType(request, contentTypeOffer, DEF.acceptRSXML) ;
+        if ( i != null )
+            mimeType = i.getContentType() ;
+
+        // Override content type
+        // Does &output= override?
+        // Requested output type by the web form or &output= in the request.
+        String outputField = ResponseOps.paramOutput(request, shortNamesResultSet) ;    // Expands short names
+        if ( outputField != null )
+            mimeType = outputField ;
+
+        String serializationType = mimeType ;           // Choose the serializer based on this.
+        String contentType = mimeType ;                 // Set the HTTP respose header to this.
+
+        // Stylesheet - change to application/xml.
+        final String stylesheetURL = ResponseOps.paramStylesheet(request) ;
+        if ( stylesheetURL != null && Objects.equals(serializationType,contentTypeResultsXML) )
+            contentType = contentTypeXML ;
+
+        // Force to text/plain?
+        String forceAccept = ResponseOps.paramForceAccept(request) ;
+        if ( forceAccept != null )
+            contentType = contentTypeTextPlain ;
+        return new ResponseType(contentType, serializationType, stylesheetURL);
     }
 }
