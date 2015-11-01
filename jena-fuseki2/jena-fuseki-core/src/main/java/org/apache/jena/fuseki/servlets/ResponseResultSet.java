@@ -331,6 +331,7 @@ public class ResponseResultSet
                     data = outCache.toByteArray();
                     CacheEntry cacheEntry = (CacheEntry) cacheStore.doGet(cacheAction.getKey());
                     cacheEntry.setData(data);
+                    cacheEntry.initialized();
                     cacheStore.doSet(cacheAction.getKey(), cacheEntry);
                     action.log.info("Writing cache "+ new String(data));
                     out.flush();

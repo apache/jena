@@ -125,7 +125,7 @@ public class CacheStore {
         HttpServletRequest req = action.getRequest();
         String uri = ActionLib.actionURI(req);
         String dataSetUri = ActionLib.mapActionRequestToDataset(uri);
-        log.debug("CacheStore Key " +dataSetUri+" "+queryString+" "+responseType.getContentType());
+        log.info("CacheStore Key " +dataSetUri+" "+queryString+" "+responseType.getContentType());
         return dataSetUri+" "+queryString;
     }
 
