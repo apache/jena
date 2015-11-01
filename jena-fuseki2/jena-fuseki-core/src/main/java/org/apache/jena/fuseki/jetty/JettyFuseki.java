@@ -281,12 +281,9 @@ public class JettyFuseki {
         
         ServerConnector connector = new ServerConnector(server, f1) ; //, f2) ;
         connector.setPort(port) ;
-        
         server.addConnector(connector);
-        
         if ( loopback )
             connector.setHost("localhost");
-        connector.setPort(port) ;
         serverConnector = connector ;
     }
 }
