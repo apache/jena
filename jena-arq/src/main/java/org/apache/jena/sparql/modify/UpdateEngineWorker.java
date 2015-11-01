@@ -506,6 +506,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         return el ;
     }
 
+    // JENA-1059
     // execDelete ; execInsert
     // Quads involving only IRIs and literals do not change from binding to
     // binding so any inserts, rather than repeatedly if they are going to be
@@ -513,8 +514,11 @@ public class UpdateEngineWorker implements UpdateVisitor
     // instantiation to instantiation.
 
     private static Pair<List<Quad>, List<Quad>> split(List<Quad> quads) {
+        // Guess size.
+        //    Pre-size in case large (i.e. 10K+). 
         List<Quad> constQuads = new ArrayList<>(quads.size()) ;
-        List<Quad> templateQuads = new ArrayList<>(quads.size()) ;
+        //    ... in which case we assume the templated triples are small / non-existent.
+        List<Quad> templateQuads = new ArrayList<>() ;
         quads.forEach((q)-> {
             if ( constQuad(q))
                 constQuads.add(q) ;
