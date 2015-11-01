@@ -270,26 +270,14 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             action.beginRead() ;
                 Dataset dataset = decideDataset(action, query, queryStringLog) ;
             try ( QueryExecution qExec = createQueryExecution(query, dataset) ; ) {
-                SPARQLResult result = null;
-                CacheAction cacheAction;
                 CacheStore cacheStore = CacheStore.getInstance();
                 String key = generateKey(action, query, queryString);
-                CacheEntry cacheEntry = (CacheEntry) cacheStore.doGet(key);
-                if(cacheEntry == null || !cacheEntry.isInitialized()) {
-                    log.info("Cache is null or cache data is not initialized");
-                    result = executeQuery(action, qExec, query, queryStringLog);
-                    cacheEntry = new CacheEntry();
-                    cacheEntry.setResult(result);
-                    cacheStore.doSet(key, cacheEntry);
-                    cacheAction = new CacheAction(key, CacheAction.Type.WRITE_CACHE);
-                }else {
-                    log.info("Cache is not null so read from cache");
-                    result = cacheEntry.getResult();
-                    cacheAction = new CacheAction(key,CacheAction.Type.READ_CACHE);
-                    // Deals with exceptions itself.
-
-                }
-                sendResults(action, result, query.getPrologue(), cacheAction, cacheEntry);
+                SPARQLResult result = executeQuery(action, qExec, query, queryStringLog);
+                CacheEntry cacheEntry = new CacheEntry();
+                cacheEntry.setResult(result);
+                cacheStore.doSet(key, cacheEntry);
+                CacheAction cacheAction = new CacheAction(key, CacheAction.Type.WRITE_CACHE);
+                sendResults(action, result, query.getPrologue(), cacheAction);
             }
         }
         catch (QueryParseException ex) {
@@ -411,9 +399,9 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
      * @param result
      * @param qPrologue
      */
-    protected void sendResults(HttpAction action, SPARQLResult result, Prologue qPrologue, CacheAction cacheAction, CacheEntry cacheEntry) {
+    protected void sendResults(HttpAction action, SPARQLResult result, Prologue qPrologue, CacheAction cacheAction) {
         if ( result.isResultSet() )
-            ResponseResultSet.doResponseResultSet(action, result.getResultSet(), qPrologue, cacheAction, cacheEntry) ;
+            ResponseResultSet.doResponseResultSet(action, result.getResultSet(), qPrologue, cacheAction) ;
         else if ( result.isDataset() )
             // CONSTRUCT is processed as a extended CONSTRUCT - result is a dataset.
             ResponseDataset.doResponseDataset(action, result.getDataset());
@@ -421,7 +409,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             // DESCRIBE results are models
             ResponseDataset.doResponseModel(action, result.getModel());
         else if ( result.isBoolean() )
-            ResponseResultSet.doResponseResultSet(action, result.getBooleanResult(), cacheAction, cacheEntry) ;
+            ResponseResultSet.doResponseResultSet(action, result.getBooleanResult(), cacheAction) ;
         else
             ServletOps.errorOccurred("Unknown or invalid result type") ;
     }

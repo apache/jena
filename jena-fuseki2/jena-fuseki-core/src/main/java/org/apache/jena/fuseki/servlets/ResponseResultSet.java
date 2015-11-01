@@ -96,14 +96,14 @@ public class ResponseResultSet
     }
 
 
-    public static void doResponseResultSet(HttpAction action, Boolean booleanResult, CacheAction cacheAction, CacheEntry cacheEntry)
+    public static void doResponseResultSet(HttpAction action, Boolean booleanResult, CacheAction cacheAction)
     {
-        doResponseResultSet$(action, null, booleanResult, null, DEF.rsOfferBoolean, cacheAction, cacheEntry) ;
+        doResponseResultSet$(action, null, booleanResult, null, DEF.rsOfferBoolean, cacheAction) ;
     }
 
-    public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue, CacheAction cacheAction, CacheEntry cacheEntry)
+    public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue, CacheAction cacheAction)
     {
-        doResponseResultSet$(action, resultSet, null, qPrologue, DEF.rsOfferTable, cacheAction, cacheEntry) ;
+        doResponseResultSet$(action, resultSet, null, qPrologue, DEF.rsOfferTable, cacheAction) ;
     }
 
     // If we refactor the conneg into a single function, we can split boolean and result set handling.
@@ -113,8 +113,7 @@ public class ResponseResultSet
                                              ResultSet resultSet, Boolean booleanResult,
                                              Prologue qPrologue,
                                              AcceptList contentTypeOffer,
-                                             CacheAction cacheAction,
-                                             CacheEntry cacheEntry)
+                                             CacheAction cacheAction)
     {
         HttpServletRequest request = action.request ;
         HttpServletResponse response = action.response ;
