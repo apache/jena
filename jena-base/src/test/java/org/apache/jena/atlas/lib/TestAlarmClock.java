@@ -61,8 +61,8 @@ public class TestAlarmClock extends BaseTest {
     public void alarm_01() {
         AlarmClock alarmClock = new AlarmClock() ;
         // Very long - never happens.
-        alarmClock.add(callback, 10000000) ;
-        alarmClock.cancel(callback) ;
+        Alarm a = alarmClock.add(callback, 10000000) ;
+        alarmClock.cancel(a) ;
         assertEquals(0, count.get()) ;
         alarmClock.release() ;
     }
@@ -71,31 +71,31 @@ public class TestAlarmClock extends BaseTest {
     public void alarm_02() {
         AlarmClock alarmClock = new AlarmClock() ;
         // Short - happens.
-        alarmClock.add(callback, 10) ;
+        Alarm a = alarmClock.add(callback, 10) ;
         sleep(timeout(100, 250)) ;
         assertEquals(1, count.get()) ;
         // try to cancel anyway.
-        alarmClock.cancel(callback) ;
+        alarmClock.cancel(a) ;
         alarmClock.release() ;
     }
 
     @Test
     public void alarm_03() {
         AlarmClock alarmClock = new AlarmClock() ;
-        alarmClock.add(callback, 10) ;
-        alarmClock.add(callback, 1000000) ;
+        Alarm a1 = alarmClock.add(callback, 10) ;
+        Alarm a2 = alarmClock.add(callback, 1000000) ;
         sleep(timeout(100, 300)) ;
         // ping1 went off.
         assertEquals(1, count.get()) ;
-        alarmClock.cancel(callback) ;
+        alarmClock.cancel(a2) ;
         alarmClock.release() ;
     }
 
     @Test
     public void alarm_04() {
         AlarmClock alarmClock = new AlarmClock() ;
-        alarmClock.add(callback, 10) ;
-        alarmClock.add(callback, 20) ;
+        Alarm a1 = alarmClock.add(callback, 10) ;
+        Alarm a2 = alarmClock.add(callback, 20) ;
         sleep(timeout(150, 300)) ;
         // ping1 went off. ping2 went off.
         assertEquals(2, count.get()) ;
@@ -105,11 +105,10 @@ public class TestAlarmClock extends BaseTest {
     @Test
     public void alarm_05() {
         AlarmClock alarmClock = new AlarmClock() ;
-        alarmClock.add(callback, 10) ;
-        alarmClock.reset(callback, 2000) ;
-        sleep(timeout(100,200)) ;
-        // The reset should have removed the callback before it happened.
-        assertEquals(0, count.get()) ;
+        Alarm a = alarmClock.add(callback, 50) ;
+        alarmClock.reset(a, 20000) ;
+        sleep(timeout(100, 250)) ;
+        alarmClock.cancel(a);
         alarmClock.release() ;
     }
 }
