@@ -52,6 +52,7 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDateTime ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.expr.* ;
@@ -583,10 +584,8 @@ public class XSDFuncOp
         Node n = v.asNode() ;
         if ( !n.isLiteral() )
             throw new ExprEvalException("Not a literal") ;
-        if ( n.getLiteralDatatype() != null ) {
-            if ( !n.getLiteralDatatype().equals(XSDDatatype.XSDstring) )
-                throw new ExprEvalException("Not a string literal") ;
-        }
+        if ( ! Util.isSimpleString(n) && ! Util.isLangString(n) )  
+            throw new ExprEvalException("Not a string literal") ;
 
         String str = n.getLiteralLexicalForm() ;
         String encStr = IRILib.encodeUriComponent(str) ;
