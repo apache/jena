@@ -266,23 +266,6 @@ debug "Jena Classpath is $JENA_CP"
 # All files are written S P O / G S P O columns per row but in different sort orders.
 info "Index Building Phase"
 
-# Check whether Pipe Viewer is available
-# Needs to temporarily disable exit on error as which produces an error
-# if the given command is not found
-#set +e
-#which pv >/dev/null 2>&1
-#HAS_PV=$?
-#set -e
-#if [ $HAS_PV = 0 ]; then
-#  debug "pv (Pipe Viewer) available on your system so sorts will show progres"
-#else
-#  debug "No pv (Pipe Viewer) on your system so sorts will show no progress"
-#fi
-
-# TODO Pipe Viewer causes hangs in some terminals so currently disabled by default
-# May be manually enabled by setting HAS_PV to zero in your environment
-HAS_PV=${HAS_PV:-1}
-
 # Check where we are storing temporary sort files
 debug "Sort Arguments: $SORT_ARGS"
 SORT_TEMP_DIR=
@@ -355,10 +338,12 @@ generate_index()
         debug "Insufficient free memory to sort data in-memory, sort will need to perform an external sort using Temp Directory ${SORT_TEMP_DIR}"
 
         # Check for disk space on temporary disk
-        SORT_DRIVE_INFO=($(getDriveInfo "${SORT_TEMP_DIR}"))
-        if [ "${#SORT_DRIVE_INFO[@]}" -gt 0 ]; then
-          if [ "$SIZE" -ge "${SORT_DRIVE_INFO[3]}" ]; then
-            warn "There may be insufficient for sort to perform an external sort using Tempo Directory ${SORT_TEMP_DIR} (${SIZE} bytes required but only ${SORT_DRIVE_INFO[3]} bytes free)"
+        if [ -n "${SORT_TEMP_DIR}" ]; then
+          SORT_DRIVE_INFO=($(getDriveInfo "${SORT_TEMP_DIR}"))
+          if [ "${#SORT_DRIVE_INFO[@]}" -gt 0 ]; then
+            if [ "$SIZE" -ge "${SORT_DRIVE_INFO[3]}" ]; then
+              warn "There may be insufficient for sort to perform an external sort using Temp Directory ${SORT_TEMP_DIR} (${SIZE} bytes required but only ${SORT_DRIVE_INFO[3]} bytes free)"
+            fi
           fi
         fi
       else
@@ -371,26 +356,7 @@ generate_index()
     # Sort the input data
     info "Sort $IDX"
     debug "Sorting $DATA into work file $WORK"
-    if [ $HAS_PV = 0 ]; then
-      # Use pv (pipe viewer) to monitor sort progress
-      # Note that progress data will only be seen if running in the foreground
-
-      pv -c -N data < "$DATA" | sort $SORT_ARGS -u $KEYS | pv -c -N sort -s $SIZE > $WORK
-
-      # CAUTION
-      # If sort errors here then the piping through pv will stop us from seeing the error
-      # and we'll continue onwards
-      # Therefore we need to check that the output size is same as input size as this is
-      # the only way to tell if sort suceeded
-      local OUTPUT_SIZE=$(getSize "$WORK")
-      debug "Size of sorted data is $OUTPUT_SIZE bytes"
-      if [ $SIZE != $OUTPUT_SIZE ]; then
-        abort 1 "Aborting due to sort error, see preceding output for error from sort"
-      fi
-    else
-      # Use sort without any progress monitoring
-      sort $SORT_ARGS -u $KEYS < "$DATA" > $WORK
-    fi
+    sort $SORT_ARGS -u $KEYS < "$DATA" > $WORK
     info "Sort $IDX Completed"
 
     # Build into an index
