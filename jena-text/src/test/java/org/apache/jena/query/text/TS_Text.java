@@ -48,6 +48,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestDatasetWithStandardAnalyzer.class
     , TestDatasetWithKeywordAnalyzer.class
     , TestDatasetWithLowerCaseKeywordAnalyzer.class
+    , TestDatasetWithASCIIFoldingLowerCaseKeywordAnalyzer.class
     , TestLuceneWithMultipleThreads.class
     , TestDatasetWithLocalizedAnalyzer.class
 })
