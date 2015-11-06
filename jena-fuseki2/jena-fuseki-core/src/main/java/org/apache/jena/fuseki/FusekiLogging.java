@@ -64,7 +64,7 @@ public class FusekiLogging
         logLogging("log4j.configuration = %s", x) ;
 
         if ( x != null ) { 
-            // log4j wil initialize in the usual way. This includes avalue of
+            // log4j will initialize in the usual way. This includes a value of
             // "set", which indicates that logging was set before by some other Jena code.
             if ( x.equals("set") )
                 Fuseki.serverLog.warn("Fuseki logging: Unexpected: Log4j was setup by someother part of Jena") ;
