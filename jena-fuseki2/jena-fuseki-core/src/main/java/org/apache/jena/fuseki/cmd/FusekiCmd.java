@@ -201,8 +201,14 @@ public class FusekiCmd {
             boolean cmdlineConfigPresent = ( x != 0 ) ;
             if ( cmdlineConfigPresent && getPositional().size() == 0 )
                 throw new CmdException("Missing service name") ;
+
+            if ( cmdLineConfig.fusekiCmdLineConfigFile != null && getPositional().size() > 0 )
+                throw new CmdException("Service name will come from --conf; no command line service name allowed") ;
+
+            
             if ( !cmdlineConfigPresent && getPositional().size() > 0 )
                 throw new CmdException("Service name given but no configuration argument to match (e.g. --mem, --loc/--tdb, --file)") ;
+            
             if ( cmdlineConfigPresent && getPositional().size() > 1 )
                 throw new CmdException("Multiple dataset path names given") ;
             
