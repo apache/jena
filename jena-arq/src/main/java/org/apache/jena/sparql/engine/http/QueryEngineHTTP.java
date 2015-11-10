@@ -710,7 +710,7 @@ public class QueryEngineHTTP implements QueryExecution {
             try {
                 retainedClient.getConnectionManager().shutdown();
             } catch (RuntimeException e) {
-                log.warn("Failed to shutdown HTTP client", e);
+                log.debug("Failed to shutdown HTTP client", e);
             } finally {
                 retainedClient = null;
             }
@@ -733,9 +733,9 @@ public class QueryEngineHTTP implements QueryExecution {
                 // the close() can result in a IOException.  Unfortunately our TypedInputStream
                 // catches and re-wraps that and we want to suppress it when we are cleaning up
                 // and so we catch the wrapped exception and log it instead
-                log.warn("Failed to close connection", e);
+                log.debug("Failed to close connection", e);
             } catch (java.io.IOException e) {
-                log.warn("Failed to close connection", e);
+                log.debug("Failed to close connection", e);
             } finally {
                 retainedConnection = null;
             }
