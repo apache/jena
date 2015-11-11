@@ -36,35 +36,33 @@ import org.apache.jena.atlas.lib.Sink ;
  */
 public class Iter<T> implements Iterator<T> {
     
-    // Most Iterable<T> operations have been removed - use streams instad.
+    // Most Iterable<T> operations have been removed - use streams instead.
     
     public static <T> Stream<T> asStream(Iterator<T> iterator) {
-        // Why isn't there a JDK operation for iterator -> (sequential) stream?
         return asStream(iterator, false);
     }
 
     public static <T> Stream<T> asStream(Iterator<T> iterator, boolean parallel) {
-        // Why isn't there a JDK operation for iterator -> (sequential) stream?  
-        Iterable<T> iterable = () -> iterator;
-        return StreamSupport.stream(iterable.spliterator(), parallel);
+        // Why isn't there a JDK operation for Iterator -> (sequential) stream?  
+        int characteristics = 0 ; //Spliterator.IMMUTABLE;
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, characteristics), parallel);
     }
 
-    // First part : the static function library.
-    // Often with both Iterator<? extends T> and Iterable<? extends T>
+    // First part : the static library acting on Iterators.
 
     public static <T> Iterator<T> singleton(T item) {
         return new SingletonIterator<>(item) ;
     }
 
-    @SuppressWarnings("rawtypes")
-    private static final Iterator iter0 = new NullIterator() ;
-    
-    @SuppressWarnings({"unchecked"})
-    public static <T> Iterator<T> nullIterator() { return iter0 ; }
+//    @SuppressWarnings("rawtypes")
+//    private static final Iterator iter0 = new NullIterator() ;
+//    
+//    @SuppressWarnings({"unchecked"})
+//    public static <T> Iterator<T> nullIterator() { return iter0 ; }
 
-//    public static <T> Iterator<T> nullIterator() {
-//        return new NullIterator<T>() ;
-//    }
+    public static <T> Iterator<T> nullIterator() {
+        return new NullIterator<T>() ;
+    }
     
     public static <T> Set<T> toSet(Iterator<? extends T> stream) {
         Accumulate<T, Set<T>> action = new Accumulate<T, Set<T>>() {
