@@ -80,6 +80,22 @@ public class XSDDouble extends XSDDatatype {
          return super.parse(lexicalForm);
      }
 
+     @Override
+     public String unparse(Object value) {
+         if ( value instanceof Double ) {
+             // Java has "Infinity" and -"Infinity" but XSD has "INF" and "-INF"
+             Double d = (Double) value ;
+             if ( Double.isInfinite(d) ) {
+                 if ( d < 0 )
+                     return "-INF" ;
+                 return "INF" ;
+             }
+             return d.toString() ;
+         }
+         return super.unparse(value) ;
+     }
+
+     
     /**
      * Parse a validated lexical form. Subclasses which use the default
      * parse implementation and are not convered by the explicit convertValidatedData
