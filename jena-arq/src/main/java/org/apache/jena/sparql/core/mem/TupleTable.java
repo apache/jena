@@ -16,22 +16,38 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shared;
+package org.apache.jena.sparql.core.mem;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.apache.jena.sparql.core.Transactional;
 
-public class TestSharedPackage extends TestCase
-    {
-    public TestSharedPackage()
-        { super(); }
+/**
+ * A mutable table of tuples. The expectation is that some kind of query functionality will be provided by subtypes.
+ *
+ * @param <TupleType> the type of tuple stored herein
+ */
+public interface TupleTable<TupleType> extends Transactional {
 
-    public static TestSuite suite()
-        {
-        final TestSuite result = new TestSuite();
-        result.addTest( TestPrefixMapping.suite() );
-        result.addTest( TestJenaException.suite() );
-        result.addTest( TestLockMRPlusSW.suite() );
-        return result;
-        }
-    }
+	/**
+	 * Add a tuple to the table
+	 *
+	 * @param t the tuple to add
+	 */
+	void add(TupleType t);
+
+	/**
+	 * Remove a tuple from the table
+	 *
+	 * @param t the tuple to remove
+	 */
+	void delete(TupleType t);
+
+	@Override
+	default void abort() {
+		end();
+	}
+
+	/**
+	 * Clear all tuples from this table.
+	 */
+	void clear();
+}

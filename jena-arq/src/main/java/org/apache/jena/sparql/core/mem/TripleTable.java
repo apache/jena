@@ -16,22 +16,31 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shared;
+package org.apache.jena.sparql.core.mem;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.util.stream.Stream;
 
-public class TestSharedPackage extends TestCase
-    {
-    public TestSharedPackage()
-        { super(); }
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 
-    public static TestSuite suite()
-        {
-        final TestSuite result = new TestSuite();
-        result.addTest( TestPrefixMapping.suite() );
-        result.addTest( TestJenaException.suite() );
-        result.addTest( TestLockMRPlusSW.suite() );
-        return result;
-        }
-    }
+/**
+ * A simplex or multiplex table of {@link Triple}s.
+ *
+ */
+public interface TripleTable extends TupleTable<Triple> {
+
+	/**
+	 * Search the table using a pattern of slots. {@link Node#ANY} or <code>null</code> will work as a wildcard.
+	 *
+	 * @param s the subject node of the pattern
+	 * @param p the predicate node of the pattern
+	 * @param o the object node of the pattern
+	 * @return an {@link Stream} of matched triples
+	 */
+	Stream<Triple> find(Node s, Node p, Node o);
+
+	@Override
+	default void clear() {
+		find(null, null, null).forEach(this::delete);
+	}
+}

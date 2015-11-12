@@ -22,29 +22,30 @@ import java.util.Iterator ;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.mem.DatasetGraphInMemory;
 import org.apache.jena.sparql.graph.GraphFactory ;
 
 public class DatasetGraphFactory
 {
     /** Create a DatasetGraph based on an existing one;
-     *  this is a structure copy of the dataset struture 
-     *  but graphs are shared 
-     */ 
-    public static DatasetGraph create(DatasetGraph dsg)
-    { 
+     *  this is a structure copy of the dataset struture
+     *  but graphs are shared
+     */
+    public static DatasetGraph create(final DatasetGraph dsg)
+    {
         // Fixed - requires explicit "add graph"
         return new DatasetGraphMap(dsg) ;
 //        DatasetGraph dsg2 = createMem() ;
 //        copyOver(dsg2, dsg2) ;
 //        return dsg2 ;
     }
-    
-    private static void copyOver(DatasetGraph dsgDest, DatasetGraph dsgSrc)
+
+    private static void copyOver(final DatasetGraph dsgDest, final DatasetGraph dsgSrc)
     {
         dsgDest.setDefaultGraph(dsgSrc.getDefaultGraph()) ;
-        for ( Iterator<Node> names = dsgSrc.listGraphNodes() ; names.hasNext() ; )
+        for ( final Iterator<Node> names = dsgSrc.listGraphNodes() ; names.hasNext() ; )
         {
-            Node gn = names.next() ;
+            final Node gn = names.next() ;
             dsgDest.addGraph(gn, dsgSrc.getGraph(gn)) ;
         }
     }
@@ -53,45 +54,38 @@ public class DatasetGraphFactory
      * Create a DatasetGraph starting with a single graph.
      * New graphs must be explicitly added.
      */
-    public static DatasetGraph create(Graph graph)
+    public static DatasetGraph create(final Graph graph)
     {
-        DatasetGraph dsg2 = createMemFixed() ;
+        final DatasetGraph dsg2 = createMemFixed() ;
         dsg2.setDefaultGraph(graph) ;
         return dsg2 ;
     }
-    
+
     /**
      * Create a DatasetGraph which only ever has a single default graph.
      */
-    public static DatasetGraph createOneGraph(Graph graph) { return new DatasetGraphOne(graph) ; }
+    public static DatasetGraph createOneGraph(final Graph graph) { return new DatasetGraphOne(graph) ; }
 
     /** Interface for makign graphs when a dataset needs to add a new graph.
      *  Return null for no graph created.
-     */ 
+     */
     public interface GraphMaker { public Graph create() ; }
 
     /** A graph maker that doesn't make graphs */
-    public static GraphMaker graphMakerNull = new GraphMaker() {
-        @Override
-        public Graph create()
-        {
-            return null ;
-        } } ;
-    
-    private static GraphMaker memGraphMaker = new GraphMaker()
-    {
-        @Override
-        public Graph create()
-        {
-            return GraphFactory.createDefaultGraph() ;
-        }
-    } ;
-    
+    public static GraphMaker graphMakerNull = () -> null ;
+
+    private static GraphMaker memGraphMaker = () -> GraphFactory.createDefaultGraph() ;
+
+    /**
+     * @return a DatasetGraph which features transactional in-memory operation
+     */
+    public static DatasetGraph createTxnMem() { return new DatasetGraphInMemory(); }
+
     /**
      * Create a DatasetGraph which has all graphs in memory.
      */
 
     public static DatasetGraph createMem() { return new DatasetGraphMaker(memGraphMaker) ; }
-    
+
     public static DatasetGraph createMemFixed() { return new DatasetGraphMap(GraphFactory.createDefaultGraph()) ; }
 }

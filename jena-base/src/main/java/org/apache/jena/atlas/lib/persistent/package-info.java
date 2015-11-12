@@ -16,22 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shared;
-
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-public class TestSharedPackage extends TestCase
-    {
-    public TestSharedPackage()
-        { super(); }
-
-    public static TestSuite suite()
-        {
-        final TestSuite result = new TestSuite();
-        result.addTest( TestPrefixMapping.suite() );
-        result.addTest( TestJenaException.suite() );
-        result.addTest( TestLockMRPlusSW.suite() );
-        return result;
-        }
-    }
+/**
+ * Types for managing <a href="https://en.wikipedia.org/wiki/Persistent_data_structure">persistent</a> data structures.
+ */
+package org.apache.jena.atlas.lib.persistent;
