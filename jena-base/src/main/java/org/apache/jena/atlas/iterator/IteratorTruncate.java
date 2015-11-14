@@ -19,61 +19,44 @@
 package org.apache.jena.atlas.iterator;
 
 import java.util.Iterator ;
-import java.util.NoSuchElementException ;
+import java.util.function.Predicate ;
 
-/** Iterate while a condition return true, then stop */
-public class IteratorTruncate<T> implements Iterator<T>
-{
-    static public interface Test { boolean accept(Object object) ; }
-    private Test test ;
-    private T slot = null ;
-    private boolean active = true ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.IteratorSlotted ;
+
+/** Iterate while a condition is true, then stop. 
+ *  This iterator does not touch any elements after the first
+ *  where the predicate is false.
+ */
+final
+public class IteratorTruncate<T> extends IteratorSlotted<T> {
+    private final Predicate<T> predicate ;
     private Iterator<T> iter ;
 
-    public IteratorTruncate (Test test, Iterator<T> iter)
-    { this.test = test ; this.iter = iter ; }
+    public IteratorTruncate(Iterator<T> iter, Predicate<T> predicate) {
+        this.iter = iter ;
+        this.predicate = predicate ;
+    }
 
     @Override
-    public boolean hasNext()
-    {
-        if ( ! active ) return false ;
-        if ( slot != null )
-            return true ;
+    protected boolean hasMore() {
+        // OK to return true then deny it in moveToNext by returning null.
+        return iter.hasNext() ;
+    }
 
+    @Override
+    protected T moveToNext() {
+        // Add IteratorSlotted.inspect(element).
         if ( ! iter.hasNext() )
-        {
-            active = false ;
-            return false ;
-        }
-
-        slot = iter.next() ;
-        if ( test.accept(slot) )
-            return true ;
-        // Once the test goes false, no longer yield anything.
-        Iter.close(iter) ;
-        active = false ;
-        iter = null ;
-        slot = null ;
-        return false ;
+            return null ;
+        T item = iter.next() ;
+        if ( ! predicate.test(item) )
+            return null ;
+        return item ;
     }
 
     @Override
-    public T next()
-    {
-        if ( ! hasNext() )
-            throw new NoSuchElementException("IteratorTruncate.next") ;    
-        T x = slot ;
-        slot = null ;
-        return x ;
+    protected void closeIterator() {
+        Iter.close(iter);
     }
-
-    @Override
-    public void remove()
-    { throw new UnsupportedOperationException("IteratorTruncate.remove"); }
-
-    public void close() {
-        if ( iter != null )
-            Iter.close(iter) ; 
-    }
-
 }
