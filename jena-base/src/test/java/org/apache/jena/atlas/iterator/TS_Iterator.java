@@ -30,6 +30,7 @@ import org.junit.runners.Suite ;
     , TestIteratorWithHistory.class
     , TestIteratorWithBuffer.class
     , TestIteratorSlotted.class
+    , TestIteratorTruncate.class
 } )
 
 public class TS_Iterator
