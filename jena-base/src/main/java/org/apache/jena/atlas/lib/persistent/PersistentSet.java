@@ -16,22 +16,44 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shared;
+package org.apache.jena.atlas.lib.persistent;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.util.stream.Stream;
 
-public class TestSharedPackage extends TestCase
-    {
-    public TestSharedPackage()
-        { super(); }
+/**
+ * A persistent set data structure.
+ *
+ * @param <E> the type of element in this set
+ */
+public interface PersistentSet<E> {
 
-    public static TestSuite suite()
-        {
-        final TestSuite result = new TestSuite();
-        result.addTest( TestPrefixMapping.suite() );
-        result.addTest( TestJenaException.suite() );
-        result.addTest( TestLockMRPlusSW.suite() );
-        return result;
-        }
-    }
+	/**
+	 * @return an empty set
+	 */
+	static <T> PersistentSet<T> empty() {
+		return PSet.empty();
+	}
+
+	/**
+	 * @param e an element
+	 * @return a new set with the elements of this set and {@code e}
+	 */
+	PersistentSet<E> plus(E e);
+
+	/**
+	 * @param e an element
+	 * @return a new set with the elements of this set except {@code e}
+	 */
+	PersistentSet<E> minus(E e);
+
+	/**
+	 * @param e an element
+	 * @return whether this set contains {@code e}
+	 */
+	boolean contains(E e);
+
+	/**
+	 * @return a {@link Stream} of the elements in this set
+	 */
+	Stream<E> stream();
+}

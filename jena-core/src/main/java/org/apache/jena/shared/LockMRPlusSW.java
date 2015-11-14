@@ -18,20 +18,22 @@
 
 package org.apache.jena.shared;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class TestSharedPackage extends TestCase
-    {
-    public TestSharedPackage()
-        { super(); }
+/**
+ * A multiple-reader plus single-writer lock. This lock permits readers to obtain their locks under any condition, but
+ * allows only one writer at a time. Writers can acquire a read lock, and readers can acquire the write lock.
+ *
+ */
+public class LockMRPlusSW extends ReentrantLock implements Lock {
 
-    public static TestSuite suite()
-        {
-        final TestSuite result = new TestSuite();
-        result.addTest( TestPrefixMapping.suite() );
-        result.addTest( TestJenaException.suite() );
-        result.addTest( TestLockMRPlusSW.suite() );
-        return result;
-        }
-    }
+	@Override
+	public void enterCriticalSection(final boolean readLockRequested) {
+		if (!readLockRequested) lock();
+	}
+
+	@Override
+	public void leaveCriticalSection() {
+		if (isHeldByCurrentThread()) unlock();
+	}
+}

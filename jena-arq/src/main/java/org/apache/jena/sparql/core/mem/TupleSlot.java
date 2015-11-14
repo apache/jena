@@ -16,22 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shared;
+package org.apache.jena.sparql.core.mem;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-public class TestSharedPackage extends TestCase
-    {
-    public TestSharedPackage()
-        { super(); }
-
-    public static TestSuite suite()
-        {
-        final TestSuite result = new TestSuite();
-        result.addTest( TestPrefixMapping.suite() );
-        result.addTest( TestJenaException.suite() );
-        result.addTest( TestLockMRPlusSW.suite() );
-        return result;
-        }
-    }
+/**
+ * The various possible positions of a node in a tuple.
+ *
+ */
+public enum TupleSlot {
+	GRAPH, SUBJECT, PREDICATE, OBJECT;
+}

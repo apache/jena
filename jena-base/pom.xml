@@ -51,7 +51,13 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-csv</artifactId>
     </dependency> 
-
+    
+    <!-- supports persistent data structures -->
+    <dependency>
+      <groupId>com.github.andrewoma.dexx</groupId>
+      <artifactId>dexx-collections</artifactId>
+    </dependency>
+    
     <!-- Remove when jena-base is used -->
     <dependency>
       <groupId>org.apache.commons</groupId>

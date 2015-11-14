@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,8 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shared;
-
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-public class TestSharedPackage extends TestCase
-    {
-    public TestSharedPackage()
-        { super(); }
-
-    public static TestSuite suite()
-        {
-        final TestSuite result = new TestSuite();
-        result.addTest( TestPrefixMapping.suite() );
-        result.addTest( TestJenaException.suite() );
-        result.addTest( TestLockMRPlusSW.suite() );
-        return result;
-        }
-    }
+/**
+ * Types for journaling {@link org.apache.jena.query.Dataset} operation.
+ *
+ */
+package org.apache.jena.sparql.core.journaling;

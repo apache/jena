@@ -16,22 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shared;
+package org.apache.jena.sparql.core.assembler;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class TestSharedPackage extends TestCase
-    {
-    public TestSharedPackage()
-        { super(); }
-
-    public static TestSuite suite()
-        {
-        final TestSuite result = new TestSuite();
-        result.addTest( TestPrefixMapping.suite() );
-        result.addTest( TestJenaException.suite() );
-        result.addTest( TestLockMRPlusSW.suite() );
-        return result;
-        }
-    }
+@RunWith(Suite.class)
+@SuiteClasses({ TestInMemDatasetAssembler.class })
+public class TestAssembler {}

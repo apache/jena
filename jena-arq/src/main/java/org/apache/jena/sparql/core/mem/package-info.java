@@ -16,22 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shared;
-
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-public class TestSharedPackage extends TestCase
-    {
-    public TestSharedPackage()
-        { super(); }
-
-    public static TestSuite suite()
-        {
-        final TestSuite result = new TestSuite();
-        result.addTest( TestPrefixMapping.suite() );
-        result.addTest( TestJenaException.suite() );
-        result.addTest( TestLockMRPlusSW.suite() );
-        return result;
-        }
-    }
+/**
+ * Types to support efficient in-memory dataset operations
+ */
+package org.apache.jena.sparql.core.mem;
