@@ -66,7 +66,7 @@ public abstract class PMapTupleTable<TupleMapType, TupleType> implements TupleTa
 	@Override
 	public boolean isInTransaction() {
 		return isInTransaction.get();
-	};
+	}
 
 	protected void isInTransaction(final boolean b) {
 		isInTransaction.set(b);

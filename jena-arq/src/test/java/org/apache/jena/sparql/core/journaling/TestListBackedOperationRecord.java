@@ -71,7 +71,7 @@ public class TestListBackedOperationRecord extends Assert {
 
 	@Test
 	public void testConsume() {
-		class MarkerException extends RuntimeException {};
+		class MarkerException extends RuntimeException {}
 		ListBackedOperationRecord<MockOp> testRecord = new ListBackedOperationRecord<>(ops);
 		testRecord.consume(op -> {}); // /dev/null
 		assertTrue(ops.isEmpty());
@@ -97,7 +97,7 @@ public class TestListBackedOperationRecord extends Assert {
 		try {
 			testRecord.consume(MockOp::inverse);
 			fail("Should not have been able to consume the last op!");
-		} catch (@SuppressWarnings("unused") final MarkerException e) {
+		} catch (MarkerException e) {
 			// should be one op left
 			assertEquals(1, ops.size());
 			// and it should be mockOp3

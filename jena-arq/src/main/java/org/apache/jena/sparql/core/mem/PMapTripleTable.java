@@ -66,7 +66,8 @@ public abstract class PMapTripleTable extends PMapTupleTable<ThreeTupleMap, Trip
 	 * @param third the value in the third slot of the tuple
 	 * @return a <code>Stream</code> of tuples matching the pattern
 	 */
-	public Stream<Triple> _find(final Node first, final Node second, final Node third) {
+	@SuppressWarnings("unchecked") // Because of (Stream<Triple>) -- but why is that needed?
+    public Stream<Triple> _find(final Node first, final Node second, final Node third) {
 		debug("Querying on three-tuple pattern: {} {} {} .", first, second, third);
 		final ThreeTupleMap threeTuples = local().get();
 		if (isConcrete(first)) {

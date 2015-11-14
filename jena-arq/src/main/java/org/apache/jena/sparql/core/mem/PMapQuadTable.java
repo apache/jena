@@ -69,7 +69,8 @@ public abstract class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad>im
 	 * @param fourth the value in the fourth slot of the tuple
 	 * @return a <code>Stream</code> of tuples matching the pattern
 	 */
-	protected Stream<Quad> _find(final Node first, final Node second, final Node third, final Node fourth) {
+	@SuppressWarnings("unchecked") // Because of (Stream<Quad>) -- but why is that needed?
+    protected Stream<Quad> _find(final Node first, final Node second, final Node third, final Node fourth) {
 		debug("Querying on four-tuple pattern: {} {} {} {} .", first, second, third, fourth);
 		final FourTupleMap fourTuples = local().get();
 		if (isConcrete(first)) {

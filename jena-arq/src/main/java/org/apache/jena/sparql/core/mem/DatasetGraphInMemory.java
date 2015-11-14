@@ -192,7 +192,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 	private Iterator<Quad> quadsFinder(final Node g, final Node s, final Node p, final Node o) {
 		if (isUnionGraph(g)) return findInUnionGraph(s, p, o);
 		return quadsIndex().find(g, s, p, o).iterator();
-	};
+	}
 
 	/**
 	 * Union graph is the merge of named graphs.
@@ -203,7 +203,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 
 	private Iterator<Quad> triplesFinder(final Node s, final Node p, final Node o) {
 		return triples2quadsDftGraph(defaultGraph().find(s, p, o).iterator());
-	};
+	}
 
 	@Override
 	public void setDefaultGraph(final Graph g) {
