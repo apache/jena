@@ -14,7 +14,13 @@ SLF4J : http://www.slf4j.org/
 
 JUnit : http://junit.org/
   Common Public License - v 1.0
-  
+
+Testing:
 Awaitility : https://github.com/jayway/awaitility/
   Apache Software License - v 2.0
 
+cglib : Apache License v2
+https://github.com/cglib/cglib/blob/master/LICENSE
+
+objenesis : Apache License v2
+https://github.com/easymock/objenesis/blob/master/LICENSE.txt
