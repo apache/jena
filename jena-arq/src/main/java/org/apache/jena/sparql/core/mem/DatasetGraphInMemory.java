@@ -190,14 +190,15 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 	}
 
 	private Iterator<Quad> quadsFinder(final Node g, final Node s, final Node p, final Node o) {
-		if (isUnionGraph(g)) return findInUnionGraph(s, p, o);
+		if (isUnionGraph(g)) return findInUnionGraph$(s, p, o);
 		return quadsIndex().find(g, s, p, o).iterator();
 	}
 
 	/**
 	 * Union graph is the merge of named graphs.
 	 */
-	public Iterator<Quad> findInUnionGraph(final Node s, final Node p, final Node o) {
+	// Temp - Should this be replaced by DatasetGraphBaseFind code?
+	private Iterator<Quad> findInUnionGraph$(final Node s, final Node p, final Node o) {
 		return access(() -> quadsIndex().findInUnionGraph(s, p, o).iterator());
 	}
 
