@@ -239,15 +239,17 @@ public class TestDatasetGraphInMemory {
 
 		@Test
 		public void unionGraphWorksProperly() {
-			final DatasetGraph dsg = emptyDataset();
+		    DatasetGraph dsg = emptyDataset();
 			// quads from named graphs should appear in union
-			final Quad q = Quad.create(createBlankNode(), createBlankNode(), createBlankNode(), createBlankNode());
+			Quad q = Quad.create(createBlankNode(), createBlankNode(), createBlankNode(), createBlankNode());
 			dsg.add(q);
-			assertTrue(iter(dsg.find(unionGraph, ANY, ANY, ANY)).some(q::equals));
+			// Expected in the union graph
+			Quad q2 = Quad.create(unionGraph, q.asTriple());
+			assertTrue(iter(dsg.find(unionGraph, ANY, ANY, ANY)).some(q2::equals));
 			// no triples from default graph should appear in union
-			final Triple t = Triple.create(createBlankNode(), createBlankNode(), createBlankNode());
+			Triple t = Triple.create(createBlankNode(), createBlankNode(), createBlankNode());
 			dsg.getDefaultGraph().add(t);
-			assertFalse(iter(dsg.find(unionGraph, ANY, ANY, ANY)).some(t::equals));
+			assertFalse(iter(dsg.find(unionGraph, ANY, ANY, ANY)).some(Quad::isDefaultGraph)) ;
 		}
 
 		@Override

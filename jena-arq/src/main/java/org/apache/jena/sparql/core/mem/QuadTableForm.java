@@ -135,11 +135,10 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
 
 				@Override
 				public Stream<Quad> findInUnionGraph(final Node s, final Node p, final Node o) {
-					final AtomicReference<Triple> mostRecentlySeen = new AtomicReference<>();
-					return find(ANY, s, p, o).filter(currentQuad -> {
-						final Triple currentTriple = currentQuad.asTriple();
-						return !mostRecentlySeen.getAndSet(currentTriple).equals(currentTriple);
-					});
+				    final AtomicReference<Triple> mostRecentlySeen = new AtomicReference<>();
+				    return find(ANY, s, p, o).map(Quad::asTriple).filter(t->{
+				        return !mostRecentlySeen.getAndSet(t).equals(t);
+				    }).map(t->Quad.create(Quad.unionGraph, t)) ;
 				}
 
 				@Override
@@ -238,10 +237,9 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
 				@Override
 				public Stream<Quad> findInUnionGraph(final Node s, final Node p, final Node o) {
 					final AtomicReference<Triple> mostRecentlySeen = new AtomicReference<>();
-					return find(ANY, s, p, o).filter(currentQuad -> {
-						final Triple currentTriple = currentQuad.asTriple();
-						return !mostRecentlySeen.getAndSet(currentTriple).equals(currentTriple);
-					});
+					return find(ANY, s, p, o).map(Quad::asTriple).filter(t->{
+						return !mostRecentlySeen.getAndSet(t).equals(t);
+					}).map(t->Quad.create(Quad.unionGraph, t)) ;
 				}
 
 				@Override

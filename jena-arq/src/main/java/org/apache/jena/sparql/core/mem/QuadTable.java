@@ -62,6 +62,10 @@ public interface QuadTable extends TupleTable<Quad> {
 
 	default Stream<Quad> findInUnionGraph(final Node s, final Node p, final Node o) {
 		final Set<Triple> seen = new HashSet<>();
-		return find(ANY, s, p, o).filter(q -> !q.isDefaultGraph() && seen.add(q.asTriple()));
+		return find(ANY, s, p, o).sequential()
+		    .filter(q -> !q.isDefaultGraph())
+		    .map(Quad::asTriple)
+		    .filter(seen::add)
+		    .map(t -> Quad.create(Quad.unionGraph, t)) ;
 	}
 }
