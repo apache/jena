@@ -45,6 +45,11 @@ public enum TripleTableForm implements Supplier<TripleTable>,Predicate<Set<Tuple
 			return new PMapTripleTable(name()) {
 
 				@Override
+				protected Triple triple(final Node s, final Node p, final Node o) {
+					return Triple.create(s, p, o);
+				}
+
+				@Override
 				public Stream<Triple> find(final Node s, final Node p, final Node o) {
 					return _find(s, p, o);
 				}
@@ -73,6 +78,11 @@ public enum TripleTableForm implements Supplier<TripleTable>,Predicate<Set<Tuple
 			return new PMapTripleTable(name()) {
 
 				@Override
+				protected Triple triple(final Node p, final Node o, final Node s) {
+					return Triple.create(s, p, o);
+				}
+
+				@Override
 				public Stream<Triple> find(final Node s, final Node p, final Node o) {
 					return _find(p, o, s);
 				}
@@ -98,6 +108,11 @@ public enum TripleTableForm implements Supplier<TripleTable>,Predicate<Set<Tuple
 		@Override
 		public TripleTable get() {
 			return new PMapTripleTable(name()) {
+
+				@Override
+				protected Triple triple(final Node o, final Node s, final Node p) {
+					return Triple.create(s, p, o);
+				}
 
 				@Override
 				public Stream<Triple> find(final Node s, final Node p, final Node o) {

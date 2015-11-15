@@ -19,7 +19,9 @@
 package org.apache.jena.sparql.core.mem;
 
 import static com.jayway.awaitility.Awaitility.await;
+import static java.lang.System.err;
 import static org.apache.jena.atlas.iterator.Iter.iter;
+import static org.apache.jena.atlas.iterator.Iter.some;
 import static org.apache.jena.graph.Node.ANY;
 import static org.apache.jena.graph.NodeFactory.createBlankNode;
 import static org.apache.jena.graph.NodeFactory.createURI;
@@ -27,11 +29,14 @@ import static org.apache.jena.query.ReadWrite.READ;
 import static org.apache.jena.query.ReadWrite.WRITE;
 import static org.apache.jena.sparql.core.Quad.unionGraph;
 import static org.apache.jena.sparql.graph.GraphFactory.createGraphMem;
+import static org.apache.jena.sparql.sse.SSE.*;
 import static org.junit.Assert.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Dataset;
@@ -192,6 +197,27 @@ public class TestDatasetGraphInMemory {
 	}
 
 	public static class TestDatasetGraphInMemoryBasic extends AbstractDatasetGraphTests {
+
+		@Test
+		public void orderingOfNodesFromFindIsCorrect() {
+			final DatasetGraph dsg = DatasetGraphFactory.createTxnMem() ;
+
+	        final Node p = parseNode(":p") ;
+	        final Triple triple = parseTriple("(:s :p :o)");
+			dsg.getDefaultGraph().add(triple);
+	        final Iterator<Triple> iter = dsg.getDefaultGraph().find(null, p, null) ;
+	        assertTrue(some(iter, triple::equals));
+
+
+	        final Node p1 = parseNode(":p1") ;
+	        final Quad quad = parseQuad("(:g1 :s1 :p1 :o1)");
+			dsg.add(quad) ;
+
+	        final Iterator<Quad> iter2 = dsg.find(null, null, p1, null) ;
+
+	        assertTrue(some(iter2, quad::equals));
+	        Iter.print(err,iter2);
+		}
 
 		@Test
 		public void prefixesAreManaged() {

@@ -54,6 +54,12 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
 		@Override
 		public PMapQuadTable get() {
 			return new PMapQuadTable(name()) {
+
+				@Override
+				protected Quad quad(final Node g, final Node s, final Node p, final Node o) {
+					return Quad.create(g, s, p, o);
+				}
+
 				@Override
 				public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
 					return _find(g, s, p, o);
@@ -86,6 +92,11 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
 			return new PMapQuadTable(name()) {
 
 				@Override
+				protected Quad quad(final Node g, final Node o, final Node p, final Node s) {
+					return Quad.create(g, s, p, o);
+				}
+
+				@Override
 				public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
 					return _find(g, o, p, s);
 				}
@@ -111,6 +122,11 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
 		@Override
 		public PMapQuadTable get() {
 			return new PMapQuadTable(name()) {
+
+				@Override
+				protected Quad quad(final Node s, final Node p, final Node o, final Node g) {
+					return Quad.create(g, s, p, o);
+				}
 
 				@Override
 				public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
@@ -148,6 +164,11 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
 			return new PMapQuadTable(name()) {
 
 				@Override
+				protected Quad quad(final Node o, final Node s, final Node p, final Node g) {
+					return Quad.create(g, s, p, o);
+				}
+
+				@Override
 				public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
 					return _find(o, s, g, p);
 				}
@@ -174,6 +195,11 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
 			return new PMapQuadTable(name()) {
 
 				@Override
+				protected Quad quad(final Node p, final Node g, final Node s, final Node o) {
+					return Quad.create(g, s, p, o);
+				}
+
+				@Override
 				public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
 					return _find(p, g, s, o);
 				}
@@ -198,6 +224,11 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
 		@Override
 		public PMapQuadTable get() {
 			return new PMapQuadTable(name()) {
+
+				@Override
+				protected Quad quad(final Node o, final Node p, final Node s, final Node g) {
+					return Quad.create(g, s, p, o);
+				}
 
 				@Override
 				public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {

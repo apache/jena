@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.core.mem;
 
 import static java.util.stream.Stream.empty;
-import static org.apache.jena.graph.Triple.create;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.stream.Stream;
@@ -78,21 +77,23 @@ public abstract class PMapTripleTable extends PMapTupleTable<ThreeTupleMap, Trip
 					return twoTuples.get(second).map(oneTuples -> {
 						if (isConcrete(third)) {
 							debug("Using a specific third slot value.");
-							return oneTuples.contains(third) ? Stream.of(create(first, second, third)) : empty();
+							return oneTuples.contains(third) ? Stream.of(triple(first, second, third)) : empty();
 						}
 						debug("Using a wildcard third slot value.");
-						return oneTuples.stream().map(slot3 -> create(first, second, slot3));
+						return oneTuples.stream().map(slot3 -> triple(first, second, slot3));
 					}).orElse(empty());
 				}
 				debug("Using wildcard second and third slot values.");
 				return twoTuples
-						.flatten((slot2, oneTuples) -> oneTuples.stream().map(slot3 -> create(first, slot2, slot3)));
+						.flatten((slot2, oneTuples) -> oneTuples.stream().map(slot3 -> triple(first, slot2, slot3)));
 			}).orElse(empty());
 		}
 		debug("Using a wildcard for all slot values.");
 		return threeTuples.flatten((slot1, twoTuples) -> twoTuples
-				.flatten((slot2, oneTuples) -> oneTuples.stream().map(slot3 -> create(slot1, slot2, slot3))));
+				.flatten((slot2, oneTuples) -> oneTuples.stream().map(slot3 -> triple(slot1, slot2, slot3))));
 	}
+
+	protected abstract Triple triple(final Node first, final Node second, final Node third);
 
 	protected void _add(final Node first, final Node second, final Node third) {
 		debug("Adding three-tuple {} {} {}", first, second, third);

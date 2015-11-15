@@ -20,7 +20,6 @@ package org.apache.jena.sparql.core.mem;
 
 import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
-import static org.apache.jena.sparql.core.Quad.create;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.stream.Stream;
@@ -59,6 +58,8 @@ public abstract class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad>im
 		return new FourTupleMap();
 	}
 
+	protected abstract Quad quad(final Node first, final Node second, final Node third, final Node fourth);
+
 	/**
 	 * We descend through the nested {@link PMap}s building up {@link Stream}s of partial tuples from which we develop a
 	 * {@link Stream} of full tuples which is our result. Use {@link Node#ANY} or <code>null</code> for a wildcard.
@@ -85,26 +86,26 @@ public abstract class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad>im
 								if (isConcrete(fourth)) {
 									debug("Using a specific fourth slot value.");
 									return oneTuples
-											.contains(fourth) ? of(create(first, second, third, fourth)) : empty();
+											.contains(fourth) ? of(quad(first, second, third, fourth)) : empty();
 								}
 								debug("Using a wildcard fourth slot value.");
-								return oneTuples.stream().map(slot4 -> create(first, second, third, slot4));
+								return oneTuples.stream().map(slot4 -> quad(first, second, third, slot4));
 							}).orElse(empty());
 
 						}
 						debug("Using wildcard third and fourth slot values.");
 						return twoTuples.flatten((slot3, oneTuples) -> oneTuples.stream()
-								.map(slot4 -> create(first, second, slot3, slot4)));
+								.map(slot4 -> quad(first, second, slot3, slot4)));
 					}).orElse(empty());
 				}
 				debug("Using wildcard second, third and fourth slot values.");
 				return threeTuples.flatten((slot2, twoTuples) -> twoTuples.flatten(
-						(slot3, oneTuples) -> oneTuples.stream().map(slot4 -> create(first, slot2, slot3, slot4))));
+						(slot3, oneTuples) -> oneTuples.stream().map(slot4 -> quad(first, slot2, slot3, slot4))));
 			}).orElse(empty());
 		}
 		debug("Using a wildcard for all slot values.");
 		return fourTuples.flatten((slot1, threeTuples) -> threeTuples.flatten((slot2, twoTuples) -> twoTuples
-				.flatten((slot3, oneTuples) -> oneTuples.stream().map(slot4 -> create(slot1, slot2, slot3, slot4)))));
+				.flatten((slot3, oneTuples) -> oneTuples.stream().map(slot4 -> quad(slot1, slot2, slot3, slot4)))));
 	}
 
 	protected void _add(final Node first, final Node second, final Node third, final Node fourth) {
