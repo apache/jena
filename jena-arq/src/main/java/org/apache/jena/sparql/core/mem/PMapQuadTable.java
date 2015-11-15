@@ -58,6 +58,16 @@ public abstract class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad>im
 		return new FourTupleMap();
 	}
 
+	/**
+	 * Constructs a {@link Quad} from the nodes given, using the appropriate order for this table. E.g. a OPSG table
+	 * should return a {@code Quad} using ({@code fourth}, {@code third}, {@code second}, {@code first}).
+	 *
+	 * @param first
+	 * @param second
+	 * @param third
+	 * @param fourth
+	 * @return a {@code Quad}
+	 */
 	protected abstract Quad quad(final Node first, final Node second, final Node third, final Node fourth);
 
 	/**

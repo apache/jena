@@ -93,6 +93,15 @@ public abstract class PMapTripleTable extends PMapTupleTable<ThreeTupleMap, Trip
 				.flatten((slot2, oneTuples) -> oneTuples.stream().map(slot3 -> triple(slot1, slot2, slot3))));
 	}
 
+	/**
+	 * Constructs a {@link Triple} from the nodes given, using the appropriate order for this table. E.g. a POS table
+	 * should return a {@code Triple} using ({@code second}, {@code third}, {@code first}).
+	 *
+	 * @param first
+	 * @param second
+	 * @param third
+	 * @return a {@code Triple}
+	 */
 	protected abstract Triple triple(final Node first, final Node second, final Node third);
 
 	protected void _add(final Node first, final Node second, final Node third) {
