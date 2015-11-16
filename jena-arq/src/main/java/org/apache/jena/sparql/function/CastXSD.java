@@ -300,17 +300,17 @@ public class CastXSD extends FunctionBase1 implements FunctionFactory {
 
     // Return the decimal lexical form for a double value.
     // Java big decimal allows "E" forms, XSD does not.
+    // For RDF purposes, return ".0" forms (which are 
+    // short-forms in Turtle and SPARQL).
     private static String doubleToDecimalString(double d) {
         // BigDecimal.valueOf(d) can lead to trailing zeros.
         String lex = BigDecimal.valueOf(d).toPlainString() ;
         // Clean the string. 
         int i = lex.indexOf('.') ;
         if ( i < 0 )
-            return lex ;
-        // Often one or two
-        while(lex.endsWith("00"))
-            lex = lex.substring(0,  lex.length()-2) ;
-        while(lex.endsWith("0"))
+            return lex+".0" ;
+        // BigDecimal.toPlainString returns 
+        while((i < lex.length()-2) && lex.endsWith("0"))
             lex = lex.substring(0,  lex.length()-1) ;
         return lex ;
     }
