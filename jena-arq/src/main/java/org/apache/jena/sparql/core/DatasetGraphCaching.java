@@ -19,16 +19,13 @@
 package org.apache.jena.sparql.core;
 
 
-import java.util.Iterator ;
 import java.util.concurrent.Callable ;
 
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
 
 /** 
  * DatasetGraph that <em>caches</em> calls to make graph implementations.  
@@ -132,44 +129,6 @@ abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
             namedGraphs.clear() ;
             _close() ;
             super.close() ;
-        }
-    }
-    
-    // Helper implementations of operations.
-    // Not necessarily efficient.
-    protected static class Helper {
-        public static void addToDftGraph(DatasetGraphCaching dsg, Node s, Node p, Node o) {
-            dsg.getDefaultGraph().add(new Triple(s, p, o)) ;
-        }
-
-        public static void addToNamedGraph(DatasetGraphCaching dsg, Node g, Node s, Node p, Node o) {
-            dsg.getGraph(g).add(new Triple(s, p, o)) ;
-        }
-
-        public static void deleteFromDftGraph(DatasetGraphCaching dsg, Node s, Node p, Node o) {
-            dsg.getDefaultGraph().delete(new Triple(s, p, o)) ;
-        }
-
-        public static void deleteFromNamedGraph(DatasetGraphCaching dsg, Node g, Node s, Node p, Node o) {
-            dsg.getGraph(g).delete(new Triple(s, p, o)) ;
-        }
-
-        public static Iterator<Quad> findInAnyNamedGraphs(DatasetGraphCaching dsg, Node s, Node p, Node o) {
-            Iterator<Node> iter = dsg.listGraphNodes() ;
-            Iterator<Quad> quads = null ;
-            for ( ; iter.hasNext() ; ) {
-                Node gn = iter.next() ;
-                quads = Iter.append(quads, findInSpecificNamedGraph(dsg, gn, s, p, o)) ;
-            }
-            return quads ;
-        }
-
-        public static Iterator<Quad> findInDftGraph(DatasetGraphCaching dsg, Node s, Node p, Node o) {
-            return triples2quadsDftGraph(dsg.getDefaultGraph().find(s, p, o)) ;
-        }
-
-        public static Iterator<Quad> findInSpecificNamedGraph(DatasetGraphCaching dsg, Node g, Node s, Node p, Node o) {
-            return triples2quadsDftGraph(dsg.getGraph(g).find(s, p, o)) ;
         }
     }
 }

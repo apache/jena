@@ -20,9 +20,11 @@ package org.apache.jena.sdb.store;
 
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.graph.GraphSDB ;
 import org.apache.jena.sdb.util.StoreUtils ;
@@ -112,4 +114,42 @@ public class DatasetGraphSDB extends DatasetGraphCaching
     protected void _close()
     { store.close() ; }
 
+    // Helper implementations of operations.
+    // Not necessarily efficient.
+    
+    private static class Helper {
+        public static void addToDftGraph(DatasetGraph dsg, Node s, Node p, Node o) {
+            dsg.getDefaultGraph().add(new Triple(s, p, o)) ;
+        }
+
+        public static void addToNamedGraph(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
+            dsg.getGraph(g).add(new Triple(s, p, o)) ;
+        }
+
+        public static void deleteFromDftGraph(DatasetGraph dsg, Node s, Node p, Node o) {
+            dsg.getDefaultGraph().delete(new Triple(s, p, o)) ;
+        }
+
+        public static void deleteFromNamedGraph(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
+            dsg.getGraph(g).delete(new Triple(s, p, o)) ;
+        }
+
+        public static Iterator<Quad> findInAnyNamedGraphs(DatasetGraph dsg, Node s, Node p, Node o) {
+            Iterator<Node> iter = dsg.listGraphNodes() ;
+            Iterator<Quad> quads = null ;
+            for ( ; iter.hasNext() ; ) {
+                Node gn = iter.next() ;
+                quads = Iter.append(quads, findInSpecificNamedGraph(dsg, gn, s, p, o)) ;
+            }
+            return quads ;
+        }
+
+        public static Iterator<Quad> findInDftGraph(DatasetGraph dsg, Node s, Node p, Node o) {
+            return triples2quadsDftGraph(dsg.getDefaultGraph().find(s, p, o)) ;
+        }
+
+        public static Iterator<Quad> findInSpecificNamedGraph(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
+            return triples2quadsDftGraph(dsg.getGraph(g).find(s, p, o)) ;
+        }
+    }
 }
