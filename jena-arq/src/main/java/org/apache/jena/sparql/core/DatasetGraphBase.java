@@ -178,15 +178,16 @@ abstract public class DatasetGraphBase implements DatasetGraph
 
     // Helpers
     
-    protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
-    {
-        //return triples2quads(Quad.defaultGraphIRI, iter) ;
-        return triples2quads(Quad.defaultGraphNodeGenerated, iter) ;
-        //return triples2quads(Quad.tripleInQuad, iter) ;
+    /** Convert an iterator of triples into quads for the default graph.
+     * This is {@link Quad#defaultGraphIRI}, not {@link Quad#defaultGraphNodeGenerated},
+     * which is for quads outside a dataset, usually the output of parsers. 
+     */
+    protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter) {
+        return triples2quads(Quad.defaultGraphIRI, iter) ;
     }
 
-    protected static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter)
-    {
+    /** Convert an iterator of triples into quads for the specificed graph name. */
+    protected static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter) {
         return Iter.iter(iter).map(t -> new Quad(graphNode, t)) ;
     }
 
