@@ -34,21 +34,22 @@ import org.apache.jena.graph.Node ;
  * 
  * The cache is finite and graphs will be dropped as needed. 
  *  
- * {@link DatasetGraphMap} provides an implementation which is an extensable collection of graphs.
+ * @deprecated This class will be removed.
  */
+@Deprecated
 abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
 {
     private final boolean caching = true ;
     private boolean closed = false ;
 
     // read synchronised in this class, not needed for a sync wrapper.
-    protected Graph defaultGraph = null ;
-    protected Cache<Node, Graph> namedGraphs = CacheFactory.createCache(100) ;
+    private Graph defaultGraph = null ;
+    private Cache<Node, Graph> namedGraphs = CacheFactory.createCache(100) ;
     
-    abstract protected void _close() ;
-    abstract protected Graph _createNamedGraph(Node graphNode) ;
-    abstract protected Graph _createDefaultGraph() ;
-    abstract protected boolean _containsGraph(Node graphNode) ;
+    @Deprecated abstract protected void _close() ;
+    @Deprecated abstract protected Graph _createNamedGraph(Node graphNode) ;
+    @Deprecated abstract protected Graph _createDefaultGraph() ;
+    @Deprecated abstract protected boolean _containsGraph(Node graphNode) ;
     
     protected DatasetGraphCaching() { this(100) ; }
     
@@ -104,7 +105,7 @@ abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
 
     @Override
     public final void removeGraph(Node graphName) {
-        deleteAny(graphName, Node.ANY, Node.ANY, Node.ANY) ;
+        super.removeGraph(graphName);
         synchronized (this) {
             namedGraphs.remove(graphName) ;
         }
