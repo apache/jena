@@ -37,8 +37,12 @@ public abstract class AbstractTestUpdateGraphMgt extends AbstractTestUpdateBase
     {
         DatasetGraph gStore = getEmptyDatasetGraph() ;
         Update u = new UpdateCreate(graphIRI) ;
+        
         UpdateAction.execute(u, gStore) ;
-        assertTrue(gStore.containsGraph(graphIRI)) ;
+        // Only true if a graph caching layer exists.
+        // JENA-1068 removed that layer 
+        // (which wasn't safe anyway - it only "existed" in the memory cache) 
+//        assertTrue(gStore.containsGraph(graphIRI)) ;
         assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
 
         // With "auto SILENT" then these aren't errors.
@@ -77,8 +81,8 @@ public abstract class AbstractTestUpdateGraphMgt extends AbstractTestUpdateBase
         
         u = new UpdateCreate(graphIRI, true) ;
         UpdateAction.execute(u, gStore) ;
-        
-        assertTrue(gStore.containsGraph(graphIRI)) ;
+        // JENA-1068
+//        assertTrue(gStore.containsGraph(graphIRI)) ;
         assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
         
         u = new UpdateDrop(graphIRI) ;
@@ -93,7 +97,8 @@ public abstract class AbstractTestUpdateGraphMgt extends AbstractTestUpdateBase
     {
         DatasetGraph gStore = getEmptyDatasetGraph() ;
         script(gStore, "create-1.ru") ;
-        assertTrue(gStore.containsGraph(graphIRI)) ;
+        // JENA-1068
+//        assertTrue(gStore.containsGraph(graphIRI)) ;
         assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
     }
 
