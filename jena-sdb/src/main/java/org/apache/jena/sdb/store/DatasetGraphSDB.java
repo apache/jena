@@ -31,20 +31,21 @@ import org.apache.jena.sdb.util.StoreUtils ;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.shared.LockMRSW ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphCaching ;
+import org.apache.jena.sparql.core.DatasetGraphTriplesQuads ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.Context ;
 
-public class DatasetGraphSDB extends DatasetGraphCaching
+public class DatasetGraphSDB extends DatasetGraphTriplesQuads
     implements DatasetGraph, Closeable 
 {
     private final Store store ;
     private Lock lock = new LockMRSW() ;
     private final Context context ;
+    private GraphSDB defaultGraph;
     
     public DatasetGraphSDB(Store store, Context context)
     {
-        this(store, null, context) ;
+        this(store, new GraphSDB(store), context) ;
     }
     
     public DatasetGraphSDB(Store store, GraphSDB graph, Context context)
@@ -64,23 +65,23 @@ public class DatasetGraphSDB extends DatasetGraphCaching
     }
 
     @Override
-    protected boolean _containsGraph(Node graphNode)
+    public boolean containsGraph(Node graphNode)
     {
         return StoreUtils.containsGraph(store, graphNode) ;
     }
 
     @Override
-    protected Graph _createDefaultGraph()
+    public Graph getDefaultGraph()
     {
-        return new GraphSDB(store) ;
+        return defaultGraph ;
     }
 
     @Override
-    protected Graph _createNamedGraph(Node graphNode)
+    public Graph getGraph(Node graphNode)
     {
         return new GraphSDB(store, graphNode) ;
     }
-
+    
     // Use unsubtle helper versions (the bulk loader copes with large additions).
     @Override
     protected void addToDftGraph(Node s, Node p, Node o)
@@ -111,7 +112,7 @@ public class DatasetGraphSDB extends DatasetGraphCaching
     { return Helper.findInSpecificNamedGraph(this, g, s, p, o) ; }
 
     @Override
-    protected void _close()
+    public void close()
     { store.close() ; }
 
     // Helper implementations of operations.
