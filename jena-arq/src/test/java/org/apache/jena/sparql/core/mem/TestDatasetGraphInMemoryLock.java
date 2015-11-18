@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,15 +18,13 @@
 
 package org.apache.jena.sparql.core.mem;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.sparql.core.TestDatasetGraphWithLock ;
 
-/**
- * Tests for in-memory Dataset and its default implementation.
- *
- */
-@RunWith(Suite.class)
-@SuiteClasses({ TestDatasetGraphInMemory.class, TestQuadTableForms.class, TestTripleTableForms.class,
-		TestHexTable.class, TestTriTable.class })
-public class TestInMemory {}
+public class TestDatasetGraphInMemoryLock extends TestDatasetGraphWithLock {
+	@Override
+	protected Dataset createFixed() {
+		return DatasetFactory.createTxnMem();
+	}
+}

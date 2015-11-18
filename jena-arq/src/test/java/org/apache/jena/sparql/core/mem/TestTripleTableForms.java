@@ -31,11 +31,11 @@ import java.util.stream.Stream;
 import org.apache.jena.graph.Triple;
 import org.junit.Test;
 
-public class TestTripleTableForms extends TupleTableFormsTest<TripleTableForm> {
+public class TestTripleTableForms extends AbstractTestTupleTableForms<TripleTableForm> {
 
 	@Override
 	public Stream<Set<TupleSlot>> queryPatterns() {
-		return TripleTableTest.tripleQueryPatterns();
+		return AbstractTestTripleTable.tripleQueryPatterns();
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class TestTripleTableForms extends TupleTableFormsTest<TripleTableForm> {
 
 	@Test
 	public void addAndRemoveSomeTriples() {
-		tableForms().map(TripleTableForm::get).map(table -> new TripleTableTest() {
+		tableForms().map(TripleTableForm::get).map(table -> new AbstractTestTripleTable() {
 
 			@Override
 			protected TripleTable table() {
@@ -56,7 +56,7 @@ public class TestTripleTableForms extends TupleTableFormsTest<TripleTableForm> {
 			protected Stream<Triple> tuples() {
 				return table.find(ANY, ANY, ANY);
 			}
-		}).forEach(TupleTableTest::addAndRemoveSomeTuples);
+		}).forEach(AbstractTestTupleTable::addAndRemoveSomeTuples);
 	}
 
 	@Override

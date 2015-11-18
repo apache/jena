@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.core.mem;
 
-public class TestTriTable extends TripleTableTest {
+public class TestTriTable extends AbstractTestTripleTable {
 
 	TriTable testTable = new TriTable();
 

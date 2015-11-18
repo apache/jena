@@ -32,7 +32,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Quad;
 import org.junit.Test;
 
-public class TestHexTable extends QuadTableTest {
+public class TestHexTable extends AbstractTestQuadTable {
 
 	@Test
 	public void testListGraphNodes() {
