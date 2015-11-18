@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,33 +18,14 @@
 
 package org.apache.jena.sparql.core.mem;
 
-import static java.util.EnumSet.allOf;
-import static org.apache.jena.ext.com.google.common.collect.Sets.powerSet;
-import static org.apache.jena.graph.NodeFactory.createURI;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.TestDatasetGraphViewGraphs ;
 
-import java.util.Set;
-import java.util.stream.Stream;
-
-import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.core.Quad;
-
-public abstract class QuadTableTest extends TupleTableTest<Quad, QuadTable> {
-
-	protected static final Node sampleNode = createURI("info:test");
-	private static final Quad q = Quad.create(sampleNode, sampleNode, sampleNode, sampleNode);
+public class TestDatasetGraphInMemoryViews extends TestDatasetGraphViewGraphs {
 
 	@Override
-	protected Quad testTuple() {
-		return q;
+	protected DatasetGraph createBaseDSG() {
+		return DatasetGraphFactory.createTxnMem();
 	}
-
-	@Override
-	public Stream<Set<TupleSlot>> queryPatterns() {
-		return quadQueryPatterns();
-	}
-
-	static Stream<Set<TupleSlot>> quadQueryPatterns() {
-		return powerSet(allOf(TupleSlot.class)).stream();
-	}
-
 }

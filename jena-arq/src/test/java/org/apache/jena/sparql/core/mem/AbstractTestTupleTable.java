@@ -30,7 +30,7 @@ import org.apache.jena.ext.com.google.common.collect.ImmutableSet;
 import org.junit.Assert;
 import org.junit.Test;
 
-public abstract class TupleTableTest<TupleType, TupleTableType extends TupleTable<TupleType>> extends Assert {
+public abstract class AbstractTestTupleTable<TupleType, TupleTableType extends TupleTable<TupleType>> extends Assert {
 
 	protected abstract TupleType testTuple();
 

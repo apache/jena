@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 import org.apache.jena.sparql.core.Quad;
 import org.junit.Test;
 
-public class TestQuadTableForms extends TupleTableFormsTest<QuadTableForm> {
+public class TestQuadTableForms extends AbstractTestTupleTableForms<QuadTableForm> {
 
 	@Override
 	protected Stream<QuadTableForm> tableForms() {
@@ -40,7 +40,7 @@ public class TestQuadTableForms extends TupleTableFormsTest<QuadTableForm> {
 
 	@Override
 	protected Stream<Set<TupleSlot>> queryPatterns() {
-		return QuadTableTest.quadQueryPatterns();
+		return AbstractTestQuadTable.quadQueryPatterns();
 	}
 
 	private static Map<Set<TupleSlot>, Set<QuadTableForm>> answerKey = new HashMap<Set<TupleSlot>, Set<QuadTableForm>>() {
@@ -66,7 +66,7 @@ public class TestQuadTableForms extends TupleTableFormsTest<QuadTableForm> {
 
 	@Test
 	public void addAndRemoveSomeQuads() {
-		tableForms().map(QuadTableForm::get).map(table -> new QuadTableTest() {
+		tableForms().map(QuadTableForm::get).map(table -> new AbstractTestQuadTable() {
 
 			@Override
 			protected QuadTable table() {
@@ -77,7 +77,7 @@ public class TestQuadTableForms extends TupleTableFormsTest<QuadTableForm> {
 			protected Stream<Quad> tuples() {
 				return table.find(ANY, ANY, ANY, ANY);
 			}
-		}).forEach(TupleTableTest::addAndRemoveSomeTuples);
+		}).forEach(AbstractTestTupleTable::addAndRemoveSomeTuples);
 	}
 
 	@Override

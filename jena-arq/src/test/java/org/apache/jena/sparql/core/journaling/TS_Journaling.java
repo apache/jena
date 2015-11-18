@@ -24,4 +24,4 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ TestQuadOperation.class, TestListBackedOperationRecord.class, TestDatasetGraphWithRecord.class })
-public class TestJournaling {}
+public class TS_Journaling {}
