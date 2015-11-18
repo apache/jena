@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,28 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core;
+package org.apache.jena.sparql.core.mem;
 
-import org.apache.jena.sparql.core.assembler.TS_Assembler;
-import org.apache.jena.sparql.core.journaling.TS_Journaling;
-import org.apache.jena.sparql.core.mem.TS_DatasetTxnMem;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
+/**
+ * Tests for in-memory Dataset and its default implementation.
+ *
+ */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestContext.class
-    , TestDatasetGraphMem.class
-    , TestDatasetGraphMemTriplesQuads.class
-    , TestDatasetMem.class
-    // Not ready , TestDynamicDatasetMem.class
-    , TestDatasetGraphsRegular.class
-    , TestGraphOverDatasetMem.class
-    , TestDatasetGraphViewGraphs.class
-    , TestDatasetMonitor.class
-    , TestDatasetGraphWithLock.class
-})
-
-public class TS_Core
-{}
-
+@SuiteClasses({ TestQuadTableForms.class, TestTripleTableForms.class,
+		TestHexTable.class, TestTriTable.class, TestDatasetGraphInMemoryBasic.class, TestDatasetGraphInMemoryViews.class,
+        TestDatasetGraphInMemoryLock.class, TestDatasetGraphInMemoryThreading.class,
+        TestDatasetGraphInMemoryTransactions.class })
+public class TS_DatasetTxnMem {}

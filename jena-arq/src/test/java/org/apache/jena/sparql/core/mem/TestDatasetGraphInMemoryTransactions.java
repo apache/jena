@@ -16,28 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core;
+package org.apache.jena.sparql.core.mem;
 
-import org.apache.jena.sparql.core.assembler.TS_Assembler;
-import org.apache.jena.sparql.core.journaling.TS_Journaling;
-import org.apache.jena.sparql.core.mem.TS_DatasetTxnMem;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.sparql.transaction.AbstractTestTransaction ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestContext.class
-    , TestDatasetGraphMem.class
-    , TestDatasetGraphMemTriplesQuads.class
-    , TestDatasetMem.class
-    // Not ready , TestDynamicDatasetMem.class
-    , TestDatasetGraphsRegular.class
-    , TestGraphOverDatasetMem.class
-    , TestDatasetGraphViewGraphs.class
-    , TestDatasetMonitor.class
-    , TestDatasetGraphWithLock.class
-})
+public class TestDatasetGraphInMemoryTransactions extends AbstractTestTransaction {
 
-public class TS_Core
-{}
-
+	@Override
+	protected Dataset create() {
+		return DatasetFactory.createTxnMem();
+	}
+}
