@@ -18,9 +18,6 @@
 
 package org.apache.jena.sparql.core;
 
-import org.apache.jena.sparql.core.assembler.TS_Assembler;
-import org.apache.jena.sparql.core.journaling.TS_Journaling;
-import org.apache.jena.sparql.core.mem.TS_DatasetTxnMem;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
