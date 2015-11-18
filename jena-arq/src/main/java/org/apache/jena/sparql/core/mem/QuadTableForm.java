@@ -163,7 +163,7 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
 			return new PMapQuadTable(name()) {
 
 				@Override
-				protected Quad quad(final Node o, final Node s, final Node p, final Node g) {
+				protected Quad quad(final Node o, final Node s, final Node g, final Node p) {
 					return Quad.create(g, s, p, o);
 				}
 
