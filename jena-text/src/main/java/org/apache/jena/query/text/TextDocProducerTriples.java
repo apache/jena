@@ -18,6 +18,8 @@
 
 package org.apache.jena.query.text ;
 
+import static java.lang.ThreadLocal.withInitial;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.QuadAction ;
 import org.slf4j.Logger ;
@@ -30,12 +32,7 @@ public class TextDocProducerTriples implements TextDocProducer {
     
     // Have to have a ThreadLocal here to keep track of whether or not we are in a transaction,
     // therefore whether or not we have to do autocommit
-    private final ThreadLocal<Boolean> inTransaction = new ThreadLocal<Boolean>() {
-        @Override
-        protected Boolean initialValue() {
-            return Boolean.FALSE ;
-        }
-    } ;
+    private final ThreadLocal<Boolean> inTransaction =  withInitial(() -> false);
     
     public TextDocProducerTriples(TextIndex indexer) {
         this.defn = indexer.getDocDef() ;

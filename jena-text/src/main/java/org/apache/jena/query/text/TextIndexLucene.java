@@ -18,9 +18,15 @@
 
 package org.apache.jena.query.text ;
 
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toConcurrentMap;
+import static java.util.stream.Collectors.toMap;
+import static org.apache.jena.ext.com.google.common.base.Strings.isNullOrEmpty;
+import static org.apache.lucene.index.DirectoryReader.open;
+
 import java.io.IOException ;
 import java.util.* ;
-import java.util.Map.Entry ;
+import java.util.stream.Collectors;
 
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
@@ -87,18 +93,12 @@ public class TextIndexLucene implements TextIndex {
 
         // create the analyzer as a wrapper that uses KeywordAnalyzer for
         // entity and graph fields and StandardAnalyzer for all other
-        Map<String, Analyzer> analyzerPerField = new HashMap<>() ;
+		Map<String, Analyzer> analyzerPerField = docDef.fields().stream()
+				.filter(field -> docDef.getAnalyzer(field) != null)
+				.collect(toConcurrentMap(field -> field, field -> docDef.getAnalyzer(field)));
         analyzerPerField.put(docDef.getEntityField(), new KeywordAnalyzer()) ;
-        if ( docDef.getGraphField() != null )
-            analyzerPerField.put(docDef.getGraphField(), new KeywordAnalyzer()) ;
-
-        for (String field : docDef.fields()) {
-            Analyzer _analyzer = docDef.getAnalyzer(field);
-            if (_analyzer != null) {
-                analyzerPerField.put(field, _analyzer);
-            }
-        }
-
+		if (docDef.getGraphField() != null) analyzerPerField.put(docDef.getGraphField(), new KeywordAnalyzer());
+        
         this.analyzer = new PerFieldAnalyzerWrapper(
                 (null != config.getAnalyzer()) ? config.getAnalyzer() : new StandardAnalyzer(VER), analyzerPerField) ;
         this.queryAnalyzer = (null != config.getQueryAnalyzer()) ? config.getQueryAnalyzer() : this.analyzer ;
@@ -225,9 +225,8 @@ public class TextIndexLucene implements TextIndex {
         if ( log.isDebugEnabled() )
             log.debug("Delete entity: "+entity) ;
         try {
-            Map<String, Object> map = entity.getMap();
-            String property = map.keySet().iterator().next();
-            String value = (String)map.get(property);
+            String property = entity.keySet().iterator().next();
+            String value = (String)entity.get(property);
             String hash = entity.getChecksum(property, value);
             Term uid = new Term(docDef.getUidField(), hash);
             indexWriter.deleteDocuments(uid);
@@ -250,37 +249,29 @@ public class TextIndexLucene implements TextIndex {
 
         String langField = docDef.getLangField() ;
         String uidField = docDef.getUidField() ;
-
-        for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
-            doc.add( new Field(e.getKey(), (String) e.getValue(), ftText) );
-            if (langField != null) {
-                String lang = entity.getLanguage();
-                RDFDatatype datatype = entity.getDatatype();
-                if (lang != null && !"".equals(lang)) {
-                    doc.add(new Field(langField, lang, StringField.TYPE_STORED));
-                } else if (datatype != null && !datatype.equals(XSDDatatype.XSDstring)) {
-                    // for non-string and non-langString datatypes, store the datatype in langField
-                    doc.add(new Field(langField, DATATYPE_PREFIX + datatype.getURI(), StringField.TYPE_STORED));
-                }
-            }
-            if (uidField != null) {
-                String hash = entity.getChecksum(e.getKey(), (String) e.getValue());
-                doc.add(new Field(uidField, hash, StringField.TYPE_STORED));
-            }
-        }
+		entity.forEach((k, v) -> {
+			doc.add(new Field(k, (String) v, ftText));
+			if (langField != null) {
+				String lang = entity.getLanguage();
+				RDFDatatype datatype = entity.getDatatype();
+				if (!isNullOrEmpty(lang)) {
+					doc.add(new Field(langField, lang, StringField.TYPE_STORED));
+				} else if (datatype != null && !datatype.equals(XSDDatatype.XSDstring)) {
+					// for non-string and non-langString datatypes, store the datatype in langField
+					doc.add(new Field(langField, DATATYPE_PREFIX + datatype.getURI(), StringField.TYPE_STORED));
+				}
+			}
+        if (uidField != null) {
+            String hash = entity.getChecksum(k, (String) v);
+            doc.add(new Field(uidField, hash, StringField.TYPE_STORED));
+        }});
         return doc ;
     }
 
     @Override
     public Map<String, Node> get(String uri) {
         try {
-            IndexReader indexReader = DirectoryReader.open(directory);
-            List<Map<String, Node>> x = get$(indexReader, uri) ;
-            if ( x.size() == 0 )
-                return null ;
-            // if ( x.size() > 1)
-            // throw new TextIndexException("Multiple entires for "+uri) ;
-            return x.get(0) ;
+            return get$(open(directory), uri).stream().findFirst().orElse(null);
         }
         catch (Exception ex) {
             throw new TextIndexException(ex) ;
@@ -315,16 +306,8 @@ public class TextIndexLucene implements TextIndex {
             Map<String, Node> record = new HashMap<>() ;
             Node entity = NodeFactory.createURI(uriStr) ;
             record.put(docDef.getEntityField(), entity) ;
-
-            for ( String f : docDef.fields() ) {
-                // log.info("Field: "+f) ;
-                String[] values = doc.getValues(f) ;
-                for ( String v : values ) {
-                    Node n = entryToNode(v) ;
-                    record.put(f, n) ;
-                }
-                records.add(record) ;
-            }
+			for (final String field : docDef.fields())
+				stream(doc.getValues(field)).collect(toMap(f -> f, v -> entryToNode(v), (v1, v2) -> v1, () -> record));
         }
         return records ;
     }
@@ -361,7 +344,7 @@ public class TextIndexLucene implements TextIndex {
             Document doc = indexSearcher.doc(sd.doc) ;
             String[] values = doc.getValues(docDef.getEntityField()) ;
 
-            Node literal = null;
+            final Node literal;
             String field = (property != null) ? docDef.getField(property) : docDef.getPrimaryField();
             String[] lexicals = doc.getValues(field) ;
             if (lexicals.length > 0) {
@@ -379,13 +362,9 @@ public class TextIndexLucene implements TextIndex {
                 } else {
                     literal = NodeFactory.createLiteral(lexical);
                 }
-            }
-
-            for ( String v : values ) {
-                Node n = TextQueryFuncs.stringToNode(v) ;
-                TextHit hit = new TextHit(n, sd.score, literal);
-                results.add(hit) ;
-            }
+            } else literal = null;
+			stream(values).map(TextQueryFuncs::stringToNode).map(n -> new TextHit(n, sd.score, literal))
+					.forEach(results::add);
         }
         return results ;
     }

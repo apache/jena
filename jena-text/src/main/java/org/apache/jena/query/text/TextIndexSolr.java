@@ -128,10 +128,7 @@ public class TextIndexSolr implements TextIndex
         // and
         // https://svn.apache.org/repos/asf/lucene/dev/trunk/solr/solrj/src/test/org/apache/solr/client/solrj/SolrExampleTests.java
         HashMap<String, Object> map = new HashMap<>() ;
-        for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
-            map.put("add", e.getValue()) ;
-            doc.addField(e.getKey(), map) ;
-        }
+        entity.forEach((k, v) -> { map.put("add", v); doc.addField(k, map); });
         return doc ;
     }
 

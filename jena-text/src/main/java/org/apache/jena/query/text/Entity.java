@@ -18,25 +18,23 @@
 
 package org.apache.jena.query.text;
 
+import java.util.HashMap ;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.jena.datatypes.RDFDatatype;
 
-import java.util.HashMap ;
-import java.util.Map ;
-
-public class Entity
+public class Entity extends HashMap<String, Object>
 {
     private final String id ;
     private final String graph ;
     private final String language ;
     private final RDFDatatype datatype ;
-    private final Map<String, Object> map = new HashMap<>() ;
 
-    public Entity(String entityId, String entityGraph) {
+    public Entity(final String entityId, final String entityGraph) {
         this(entityId, entityGraph, null, null);
     }
 
-    public Entity(String entityId, String entityGraph, String lang, RDFDatatype datatype) {
+    public Entity(final String entityId, final String entityGraph, final String lang, final RDFDatatype datatype) {
         this.id = entityId ;
         this.graph = entityGraph;
         this.language = lang;
@@ -45,8 +43,8 @@ public class Entity
 
     /** @deprecated Use {@linkplain #Entity(String, String)} */
     @Deprecated
-    public Entity(String entityId)          { this(entityId, null) ; }
-    
+    public Entity(final String entityId)          { this(entityId, null) ; }
+
     public String getId()                   { return id ; }
 
     public String getGraph()                { return graph ; }
@@ -55,22 +53,14 @@ public class Entity
 
     public RDFDatatype getDatatype()        { return datatype ; }
 
-    public void put(String key, Object value)
-    { map.put(key, value) ; }
-    
-    public Object get(String key)
-    { return map.get(key) ; }
-
-    public Map<String, Object> getMap()     { return map ; }
-
-    public String getChecksum(String property, String value) {
-        String key = getGraph() + "-" + getId() + "-" + property + "-" + value + "-" + getLanguage();
+    public String getChecksum(final String property, final String value) {
+        final String key = getGraph() + "-" + getId() + "-" + property + "-" + value + "-" + getLanguage();
         return DigestUtils.sha256Hex(key);
     }
 
     @Override
     public String toString() {
-        return id+" : "+map ;
+        return id+" : " + super.toString() ;
     }
 }
 

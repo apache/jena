@@ -55,9 +55,8 @@ public class StandardAnalyzerAssembler extends AssemblerBase {
     public Analyzer open(Assembler a, Resource root, Mode mode) {
         if (root.hasProperty(TextVocab.pStopWords)) {
             return analyzerWithStopWords(root);
-        } else {
-            return new StandardAnalyzer(TextIndexLucene.VER);
         }
+		return new StandardAnalyzer(TextIndexLucene.VER);
     }
 
     private Analyzer analyzerWithStopWords(Resource root) {

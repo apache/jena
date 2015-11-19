@@ -54,7 +54,8 @@ public class Loader {
         return loadClass(classNameOrURI, null);
     }
 
-    static public Class<?> loadClass(String classNameOrURI, Class<?> requiredClass) {
+    @SuppressWarnings("unchecked")
+	static public <T> Class<T> loadClass(String classNameOrURI, Class<T> requiredClass) {
         if (classNameOrURI == null)
             throw new ARQInternalErrorException("Null classNameorIRI");
 
@@ -95,7 +96,7 @@ public class Loader {
             Log.warn(Loader.class, "Class '" + className + "' found but not a " + Lib.classShortName(requiredClass));
             return null;
         }
-        return classObj;
+        return (Class<T>) classObj;
     }
 
     static public Object loadAndInstantiate(String uri, Class<?> requiredClass) {

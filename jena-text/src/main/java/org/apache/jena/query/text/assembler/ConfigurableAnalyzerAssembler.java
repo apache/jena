@@ -57,7 +57,7 @@ public class ConfigurableAnalyzerAssembler extends AssemblerBase {
         if (root.hasProperty(TextVocab.pTokenizer)) {
             Resource tokenizerResource = root.getPropertyResourceValue(TextVocab.pTokenizer);
             String tokenizer = tokenizerResource.getLocalName();
-            List<String> filters;
+            final List<String> filters;
             if (root.hasProperty(TextVocab.pFilters)) {
                 Resource filtersResource = root.getPropertyResourceValue(TextVocab.pFilters);
                 filters = toFilterList(filtersResource);
@@ -65,9 +65,8 @@ public class ConfigurableAnalyzerAssembler extends AssemblerBase {
                 filters = new ArrayList<>();
             }
             return new ConfigurableAnalyzer(TextIndexLucene.VER, tokenizer, filters);
-        } else {
-            throw new TextIndexException("text:tokenizer setting is required by ConfigurableAnalyzer");
         }
+		throw new TextIndexException("text:tokenizer setting is required by ConfigurableAnalyzer");
     }
 
     private List<String> toFilterList(Resource list) {

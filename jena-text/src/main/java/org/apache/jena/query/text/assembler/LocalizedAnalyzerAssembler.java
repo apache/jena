@@ -52,9 +52,8 @@ public class LocalizedAnalyzerAssembler extends AssemblerBase {
                 throw new TextIndexException("text:language property must be a string : " + node);
             }
             String lang = node.toString();
-            return Util.getLocalizedAnalyzer(lang, TextIndexLucene.VER);
-        } else {
-            return new StandardAnalyzer(TextIndexLucene.VER);
+            return Util.getLocalizedAnalyzer(lang);
         }
+		return new StandardAnalyzer(TextIndexLucene.VER);
     }
 }
