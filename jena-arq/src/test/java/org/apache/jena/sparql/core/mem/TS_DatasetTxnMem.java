@@ -27,8 +27,18 @@ import org.junit.runners.Suite.SuiteClasses;
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({ TestQuadTableForms.class, TestTripleTableForms.class,
-		TestHexTable.class, TestTriTable.class, TestDatasetGraphInMemoryBasic.class, TestDatasetGraphInMemoryViews.class,
-        TestDatasetGraphInMemoryLock.class, TestDatasetGraphInMemoryThreading.class,
-        TestDatasetGraphInMemoryTransactions.class })
+@SuiteClasses({
+    TestQuadTableForms.class,
+    TestTripleTableForms.class,
+    TestHexTable.class,
+    TestTriTable.class,
+    TestDatasetGraphInMemoryBasic.class,
+    TestDatasetGraphInMemoryViews.class,
+    TestDatasetGraphInMemoryLock.class, 
+    TestDatasetGraphInMemoryThreading.class,
+    TestDatasetGraphInMemoryTransactions.class,
+    
+    TestDatasetGraphInMemoryFind.class,
+    TestDatasetGraphInMemoryFindPattern.class
+ })
 public class TS_DatasetTxnMem {}

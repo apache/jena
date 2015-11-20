@@ -16,28 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core;
+package org.apache.jena.tdb.store;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.jena.sparql.core.AbstractDatasetGraphFindPatterns ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestContext.class
-    , TestDatasetGraphMem.class
-    , TestDatasetGraphMemTriplesQuads.class
-    , TestDatasetMem.class
-    // Not ready , TestDynamicDatasetMem.class
-    , TestDatasetGraphsRegular.class
-    , TestGraphOverDatasetMem.class
-    , TestDatasetGraphViewGraphs.class
-    , TestDatasetMonitor.class
-    , TestDatasetGraphWithLock.class
-    
-    , TestDatasetGraphBaseFind_General.class
-    , TestDatasetGraphBaseFindPattern_General.class
-})
+public class TestDatasetGraphTDBFindPattern extends AbstractDatasetGraphFindPatterns {
 
-public class TS_Core
-{}
-
+    @Override
+    public DatasetGraph create() {
+        // Get the underlying storage, not the transactional support. 
+        return ((DatasetGraphTransaction)TDBFactory.createDatasetGraph()).get();
+    }
+}

@@ -16,28 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core;
+package org.apache.jena.sparql.core.mem;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.jena.sparql.core.AbstractDatasetGraphFind ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestContext.class
-    , TestDatasetGraphMem.class
-    , TestDatasetGraphMemTriplesQuads.class
-    , TestDatasetMem.class
-    // Not ready , TestDynamicDatasetMem.class
-    , TestDatasetGraphsRegular.class
-    , TestGraphOverDatasetMem.class
-    , TestDatasetGraphViewGraphs.class
-    , TestDatasetMonitor.class
-    , TestDatasetGraphWithLock.class
-    
-    , TestDatasetGraphBaseFind_General.class
-    , TestDatasetGraphBaseFindPattern_General.class
-})
-
-public class TS_Core
-{}
-
+public class TestDatasetGraphInMemoryFind extends AbstractDatasetGraphFind {
+    @Override
+    public DatasetGraph create() {
+        return DatasetGraphFactory.createTxnMem() ;
+    }
+}
