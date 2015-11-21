@@ -167,8 +167,6 @@ public class SPARQL_Query_Cache extends SPARQL_Protocol {
 
         // Assumes finished whole thing by end of sendResult.
         try {
-                SPARQLResult result = null;
-                CacheAction cacheAction = null;
                 String key = generateKey(action, query, queryString);
                 CacheEntry cacheEntry = (CacheEntry) cache.getIfPresent(key);
 
@@ -178,8 +176,8 @@ public class SPARQL_Query_Cache extends SPARQL_Protocol {
                     queryServlet.executeLifecycle(action) ;
                 }else {
                     log.info("Cache is not null so read from cache");
-                    result = cacheEntry.getResult();
-                    cacheAction = new CacheAction(key,CacheAction.Type.READ_CACHE);
+                    SPARQLResult result = cacheEntry.getResult();
+                    CacheAction cacheAction = new CacheAction(key,CacheAction.Type.READ_CACHE);
                     sendResults(action, result, query.getPrologue(), cacheAction);
                 }
 
