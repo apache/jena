@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.base.Sys ;
-import org.junit.Assume ;
 import org.junit.Test ;
 
 public class TestAlarmClock extends BaseTest {
@@ -51,53 +50,53 @@ public class TestAlarmClock extends BaseTest {
 
     private AtomicInteger count    = new AtomicInteger(0) ;
     private Runnable      callback = ()->count.getAndIncrement() ;
-
+    
+    // Loaded CI.
+    private static boolean mayBeErratic = Sys.isWindows ;
+    
+    private int timeout(int time1, int time2) {
+        return mayBeErratic ? time2 : time1 ;
+    }
     @Test
     public void alarm_01() {
         AlarmClock alarmClock = new AlarmClock() ;
         // Very long - never happens.
-        alarmClock.add(callback, 10000000) ;
-        alarmClock.cancel(callback) ;
+        Alarm a = alarmClock.add(callback, 10000000) ;
+        alarmClock.cancel(a) ;
         assertEquals(0, count.get()) ;
         alarmClock.release() ;
     }
 
     @Test
     public void alarm_02() {
-        Assume.assumeTrue( ! Sys.isWindows );
-
         AlarmClock alarmClock = new AlarmClock() ;
         // Short - happens.
-        alarmClock.add(callback, 10) ;
-        sleep(120) ;
+        Alarm a = alarmClock.add(callback, 10) ;
+        sleep(timeout(100, 250)) ;
         assertEquals(1, count.get()) ;
         // try to cancel anyway.
-        alarmClock.cancel(callback) ;
+        alarmClock.cancel(a) ;
         alarmClock.release() ;
     }
 
     @Test
     public void alarm_03() {
-        Assume.assumeTrue( ! Sys.isWindows );
-        
         AlarmClock alarmClock = new AlarmClock() ;
-        alarmClock.add(callback, 10) ;
-        alarmClock.add(callback, 1000000) ;
-        sleep(150) ;
+        Alarm a1 = alarmClock.add(callback, 10) ;
+        Alarm a2 = alarmClock.add(callback, 1000000) ;
+        sleep(timeout(100, 300)) ;
         // ping1 went off.
         assertEquals(1, count.get()) ;
-        alarmClock.cancel(callback) ;
+        alarmClock.cancel(a2) ;
         alarmClock.release() ;
     }
 
     @Test
     public void alarm_04() {
-        Assume.assumeTrue( ! Sys.isWindows );
-        
         AlarmClock alarmClock = new AlarmClock() ;
-        alarmClock.add(callback, 10) ;
-        alarmClock.add(callback, 20) ;
-        sleep(100) ;
+        Alarm a1 = alarmClock.add(callback, 10) ;
+        Alarm a2 = alarmClock.add(callback, 20) ;
+        sleep(timeout(150, 300)) ;
         // ping1 went off. ping2 went off.
         assertEquals(2, count.get()) ;
         alarmClock.release() ;
@@ -106,11 +105,10 @@ public class TestAlarmClock extends BaseTest {
     @Test
     public void alarm_05() {
         AlarmClock alarmClock = new AlarmClock() ;
-        alarmClock.add(callback, 1000) ;
-        alarmClock.reset(callback, 2000) ;
-        sleep(50) ;
-        // The reset should have removed the callback before it happened.
-        assertEquals(0, count.get()) ;
+        Alarm a = alarmClock.add(callback, 50) ;
+        alarmClock.reset(a, 20000) ;
+        sleep(timeout(100, 250)) ;
+        alarmClock.cancel(a);
         alarmClock.release() ;
     }
 }

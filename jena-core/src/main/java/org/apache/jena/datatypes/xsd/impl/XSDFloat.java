@@ -52,7 +52,7 @@ public class XSDFloat extends XSDDatatype {
     
 //     /**
 //      * Test whether the given LiteralLabel is a valid instance
-//      * of this datatype. This takes into accound typing information
+//      * of this datatype. This takes into account typing information
 //      * as well as lexical form - for example an xsd:string is
 //      * never considered valid as an xsd:integer (even if it is
 //      * lexically legal like "1").
@@ -80,6 +80,21 @@ public class XSDFloat extends XSDDatatype {
          return super.parse(lexicalForm);
      }
 
+     @Override
+     public String unparse(Object value) {
+         if ( value instanceof Float ) {
+             // Java has "Infinity" and -"Infinity" but XSD has "INF" and "-INF"
+             Float f = (Float) value ;
+             if ( Float.isInfinite(f) ) {
+                 if ( f < 0 )
+                     return "-INF" ;
+                 return "INF" ;
+             }
+             return f.toString() ;
+         }
+         return super.unparse(value) ;
+     }
+     
     /**
      * Parse a validated lexical form. Subclasses which use the default
      * parse implementation and are not convered by the explicit convertValidatedData

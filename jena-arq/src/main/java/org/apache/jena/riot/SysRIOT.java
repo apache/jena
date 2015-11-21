@@ -18,9 +18,8 @@
 
 package org.apache.jena.riot;
 
-import java.io.File ;
-
 import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.base.Sys ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.util.FileUtils ;
 import org.slf4j.Logger ;
@@ -37,7 +36,11 @@ public class SysRIOT
     
     public static final String BNodeGenIdPrefix     = "genid" ;
     
-    public static final boolean isWindows = (File.pathSeparatorChar == ';' ) ;
+    /**
+     * @deprecated Use Sys.isWindows
+     */
+    @Deprecated
+    public static final boolean isWindows = Sys.isWindows ;
     
     public static void setStrictMode(boolean state) {
         SysRIOT.strictMode = state ;

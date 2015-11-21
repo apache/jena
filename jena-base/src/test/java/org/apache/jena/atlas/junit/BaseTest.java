@@ -38,13 +38,23 @@ public class BaseTest extends Assert {
     }
 
     public static <T> void assertEqualsUnordered(List<T> list1, List<T> list2) {
+        assertEqualsUnordered(null, list1, list2) ;
+    }
+    
+    public static <T> void assertEqualsUnordered(String msg, List<T> list1, List<T> list2) {
         if ( list1.size() != list2.size() )
-            fail("Expected: " + list1 + " : Actual: " + list2) ;
+            fail(msg(msg, list1, list2)) ;
         List<T> list2a = new ArrayList<>(list2) ;
         for ( T elt : list1 )
             list2a.remove(elt) ;
         if ( list2a.size() != 0 )
-            fail("Expected: " + list1 + " : Actual: " + list2) ;
+            fail(msg(msg, list1, list2)) ;
+    }
+    
+    private static <T> String msg(String msg, List<T> list1, List<T> list2) {
+        String x = ( msg == null ) ? "" : msg+": " ;
+        x = x +"Expected: " + list1 + " : Actual: " + list2 ;
+        return x ;
     }
 
 }

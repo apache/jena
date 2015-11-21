@@ -191,6 +191,13 @@
         <version>4.0</version>
       </dependency>
       
+      <!-- supports persistent data structures -->
+      <dependency>
+        <groupId>com.github.andrewoma.dexx</groupId>
+        <artifactId>dexx-collections</artifactId>
+        <version>0.2</version>
+      </dependency>
+      
       <dependency>
         <groupId>com.github.jsonld-java</groupId>
         <artifactId>jsonld-java</artifactId>
@@ -353,6 +360,11 @@
         <artifactId>mockito-all</artifactId>
         <version>1.9.5</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.jayway.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>1.6.4</version>
       </dependency>
     </dependencies>
 

@@ -34,6 +34,8 @@ import org.junit.runners.Suite ;
     , TestGraphNamedTDB.class
     , TestDatasetTDBPersist.class
     , TestDatasetTDB.class
+    , TestDatasetGraphTDBFind.class
+    , TestDatasetGraphTDBFindPattern.class
     , TestLoader.class
     // The script suite
     , TestSuiteGraphTDB.class

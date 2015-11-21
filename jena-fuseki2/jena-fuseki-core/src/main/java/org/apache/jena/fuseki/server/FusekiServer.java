@@ -246,21 +246,10 @@ public class FusekiServer
             datasets.addAll(confDatasets) ;
         }
         else if ( params.dsg != null ) {
-            DataAccessPoint dap = defaultConfiguration(params.datasetPath, params.dsg, params.allowUpdate) ;
+            DataAccessPoint dap = datasetDefaultConfiguration(params.datasetPath, params.dsg, params.allowUpdate) ;
             datasets.add(dap) ;
         } else if ( params.argTemplateFile != null ) {
-            Fuseki.configLog.info("Template file: " + params.argTemplateFile) ;
-            String dir = params.params.get(Template.DIR) ;
-            if ( dir != null ) {
-                if ( Objects.equals(dir, Names.memName) ) {
-                    Fuseki.configLog.info("TDB dataset: in-memory") ;
-                } else {
-                    if ( !FileOps.exists(dir) )
-                        throw new CmdException("Directory not found: " + dir) ;
-                    Fuseki.configLog.info("TDB dataset: directory=" + dir) ;
-                }
-            }
-            DataAccessPoint dap = configFromTemplate(params.argTemplateFile, params.datasetPath, params.params) ;
+            DataAccessPoint dap = configFromTemplate(params.argTemplateFile, params.datasetPath, params.allowUpdate, params.params) ;
             datasets.add(dap) ;
         }
         // No datasets is valid.
@@ -276,12 +265,9 @@ public class FusekiServer
         return FusekiConfig.readConfigFile(configFilename) ;
     }
     
-    private static DataAccessPoint configFromTemplate(String templateFile, 
-                                                      String datasetPath, 
-                                                      Map<String, String> params) {
-        datasetPath = DataAccessPoint.canonical(datasetPath) ;
-        
-        // DRY -- ActionDatasets (and others?)
+    private static DataAccessPoint configFromTemplate(String templateFile, String datasetPath, 
+                                                      boolean allowUpdate, Map<String, String> params) {
+        // ---- Setup
         if ( params == null ) {
             params = new HashMap<>() ;
             params.put(Template.NAME, datasetPath) ;
@@ -291,7 +277,23 @@ public class FusekiServer
                 params.put(Template.NAME, datasetPath) ;   
             }
         }
+        //-- Logging
+        Fuseki.configLog.info("Template file: " + templateFile) ;
+        String dir = params.get(Template.DIR) ;
+        if ( dir != null ) {
+            if ( Objects.equals(dir, Names.memName) ) {
+                Fuseki.configLog.info("TDB dataset: in-memory") ;
+            } else {
+                if ( !FileOps.exists(dir) )
+                    throw new CmdException("Directory not found: " + dir) ;
+                Fuseki.configLog.info("TDB dataset: directory=" + dir) ;
+            }
+        }
+        //-- Logging
         
+        datasetPath = DataAccessPoint.canonical(datasetPath) ;
+        
+        // DRY -- ActionDatasets (and others?)
         addGlobals(params); 
 
         String str = TemplateFunctions.templateFile(templateFile, params, Lang.TTL) ;
@@ -300,7 +302,7 @@ public class FusekiServer
         Model model = ModelFactory.createDefaultModel() ;
         RDFDataMgr.read(model, sr, datasetPath, lang);
         
-        // Find DataAccessPoint
+        // ---- DataAccessPoint
         Statement stmt = getOne(model, null, FusekiVocab.pServiceName, null) ;
         if ( stmt == null ) {
             StmtIterator sIter = model.listStatements(null, FusekiVocab.pServiceName, (RDFNode)null ) ;
@@ -312,6 +314,11 @@ public class FusekiServer
             throw new InternalErrorException("Inconsistent: getOne didn't fail the second time") ;
         }
         Resource subject = stmt.getSubject() ;
+        if ( ! allowUpdate ) {
+            // Opportunity for more sophisticated "read-only" mode.
+            //  1 - clean model, remove "fu:serviceUpdate", "fu:serviceUpload", "fu:serviceReadGraphStore", "fu:serviceReadWriteGraphStore"
+            //  2 - set a flag on DataAccessPoint
+        }
         DataAccessPoint dap = Builder.buildDataAccessPoint(subject) ;
         return dap ;
     }
@@ -345,10 +352,10 @@ public class FusekiServer
         return stmt ;
     }
     
-    private static DataAccessPoint defaultConfiguration( String name, DatasetGraph dsg, boolean updatable) {
+    private static DataAccessPoint datasetDefaultConfiguration( String name, DatasetGraph dsg, boolean allowUpdate) {
         name = DataAccessPoint.canonical(name) ;
         DataAccessPoint dap = new DataAccessPoint(name) ;
-        DataService ds = Builder.buildDataService(dsg, updatable) ;
+        DataService ds = Builder.buildDataService(dsg, allowUpdate) ;
         dap.setDataService(ds) ;
         return dap ;
     }

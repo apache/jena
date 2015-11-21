@@ -26,6 +26,7 @@ import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsTriple ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
@@ -213,4 +214,8 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder> implements
 		return solutionModifier;
 	}
 
+	@Override
+	public Node list(Object... objs) {
+		return whereHandler.list(objs);
+	}
 }

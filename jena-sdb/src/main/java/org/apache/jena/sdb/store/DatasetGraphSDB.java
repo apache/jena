@@ -20,29 +20,32 @@ package org.apache.jena.sdb.store;
 
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.graph.GraphSDB ;
 import org.apache.jena.sdb.util.StoreUtils ;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.shared.LockMRSW ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphCaching ;
+import org.apache.jena.sparql.core.DatasetGraphTriplesQuads ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.Context ;
 
-public class DatasetGraphSDB extends DatasetGraphCaching
+public class DatasetGraphSDB extends DatasetGraphTriplesQuads
     implements DatasetGraph, Closeable 
 {
     private final Store store ;
     private Lock lock = new LockMRSW() ;
     private final Context context ;
+    private GraphSDB defaultGraph;
     
     public DatasetGraphSDB(Store store, Context context)
     {
-        this(store, null, context) ;
+        this(store, new GraphSDB(store), context) ;
     }
     
     public DatasetGraphSDB(Store store, GraphSDB graph, Context context)
@@ -62,23 +65,23 @@ public class DatasetGraphSDB extends DatasetGraphCaching
     }
 
     @Override
-    protected boolean _containsGraph(Node graphNode)
+    public boolean containsGraph(Node graphNode)
     {
         return StoreUtils.containsGraph(store, graphNode) ;
     }
 
     @Override
-    protected Graph _createDefaultGraph()
+    public Graph getDefaultGraph()
     {
-        return new GraphSDB(store) ;
+        return defaultGraph ;
     }
 
     @Override
-    protected Graph _createNamedGraph(Node graphNode)
+    public Graph getGraph(Node graphNode)
     {
         return new GraphSDB(store, graphNode) ;
     }
-
+    
     // Use unsubtle helper versions (the bulk loader copes with large additions).
     @Override
     protected void addToDftGraph(Node s, Node p, Node o)
@@ -109,7 +112,45 @@ public class DatasetGraphSDB extends DatasetGraphCaching
     { return Helper.findInSpecificNamedGraph(this, g, s, p, o) ; }
 
     @Override
-    protected void _close()
+    public void close()
     { store.close() ; }
 
+    // Helper implementations of operations.
+    // Not necessarily efficient.
+    
+    private static class Helper {
+        public static void addToDftGraph(DatasetGraph dsg, Node s, Node p, Node o) {
+            dsg.getDefaultGraph().add(new Triple(s, p, o)) ;
+        }
+
+        public static void addToNamedGraph(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
+            dsg.getGraph(g).add(new Triple(s, p, o)) ;
+        }
+
+        public static void deleteFromDftGraph(DatasetGraph dsg, Node s, Node p, Node o) {
+            dsg.getDefaultGraph().delete(new Triple(s, p, o)) ;
+        }
+
+        public static void deleteFromNamedGraph(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
+            dsg.getGraph(g).delete(new Triple(s, p, o)) ;
+        }
+
+        public static Iterator<Quad> findInAnyNamedGraphs(DatasetGraph dsg, Node s, Node p, Node o) {
+            Iterator<Node> iter = dsg.listGraphNodes() ;
+            Iterator<Quad> quads = null ;
+            for ( ; iter.hasNext() ; ) {
+                Node gn = iter.next() ;
+                quads = Iter.append(quads, findInSpecificNamedGraph(dsg, gn, s, p, o)) ;
+            }
+            return quads ;
+        }
+
+        public static Iterator<Quad> findInDftGraph(DatasetGraph dsg, Node s, Node p, Node o) {
+            return triples2quadsDftGraph(dsg.getDefaultGraph().find(s, p, o)) ;
+        }
+
+        public static Iterator<Quad> findInSpecificNamedGraph(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
+            return triples2quadsDftGraph(dsg.getGraph(g).find(s, p, o)) ;
+        }
+    }
 }

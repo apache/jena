@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.jena.atlas.lib.Alarm ;
 import org.apache.jena.atlas.lib.AlarmClock;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
@@ -57,20 +58,20 @@ public class QueryExecutionBase implements QueryExecution
     // Initial bindings.
     // Split : QueryExecutionGraph already has the dataset.
 
-    private Query               query ;
-    private Dataset             dataset ;
-    private QueryEngineFactory  qeFactory ;
-    private QueryIterator       queryIterator = null ;
-    private Plan                plan = null ;
-    private Context             context ;
-    private QuerySolution       initialBinding = null ; 
-    
-    // Set if QueryIterator.cancel has been called 
-    private volatile boolean    isCancelled = false ;
-    private boolean closed ;
-    private volatile TimeoutCallback expectedCallback = null ;    
-    private TimeoutCallback timeout1Callback = null ;
-    private TimeoutCallback timeout2Callback = null ;
+    private Query                    query;
+    private Dataset                  dataset;
+    private QueryEngineFactory       qeFactory;
+    private QueryIterator            queryIterator    = null;
+    private Plan                     plan             = null;
+    private Context                  context;
+    private QuerySolution            initialBinding   = null;
+
+    // Set if QueryIterator.cancel has been called
+    private volatile boolean         isCancelled      = false;
+    private boolean                  closed;
+    private volatile TimeoutCallback expectedCallback = null;
+    private Alarm                    timeout1Alarm    = null;
+    private Alarm                    timeout2Alarm    = null;
     
     private final Object        lockTimeout = new Object() ;     // synchronization.  
     private static final long   TIMEOUT_UNSET = -1 ;
@@ -142,10 +143,10 @@ public class QueryExecutionBase implements QueryExecution
             queryIterator.close() ;
         if ( plan != null )
             plan.close() ;
-        if ( timeout1Callback != null )
-            alarmClock.cancel(timeout1Callback) ;
-        if ( timeout2Callback != null )
-            alarmClock.cancel(timeout2Callback) ;
+        if ( timeout1Alarm != null )
+            alarmClock.cancel(timeout1Alarm) ;
+        if ( timeout2Alarm != null )
+            alarmClock.cancel(timeout2Alarm) ;
     }
 
     @Override
@@ -461,8 +462,9 @@ public class QueryExecutionBase implements QueryExecution
                 // So nearly not needed.
                 synchronized(lockTimeout)
                 {
-                    expectedCallback = timeout2Callback ;
-                    // Lock against calls of .abort() nor of timeout1Callback. 
+                    TimeoutCallback callback = new TimeoutCallback() ;
+                    expectedCallback = callback ;
+                    // Lock against calls of .abort() or of timeout1Callback. 
                     
                     // Update/check the volatiles in a careful order.
                     // This cause timeout1 not to call .abort and hence not set isCancelled 
@@ -473,14 +475,16 @@ public class QueryExecutionBase implements QueryExecution
                         // timeout1 went off after the binding was yielded but 
                         // before we got here.
                         throw new QueryCancelledException() ;
-                    if ( timeout1Callback != null )
-                        alarmClock.cancel(timeout1Callback) ;
-                        timeout1Callback = null ;
+                    if ( timeout1Alarm != null ) {
+                        alarmClock.cancel(timeout1Alarm) ;
+                        timeout1Alarm = null ;
+                    }
 
                     // Now arm the second timeout, if any.
-                    if ( timeout2 > 0 )
+                    if ( timeout2 > 0 ) {
                         // Not first timeout - finite second timeout. 
-                        alarmClock.add(timeout2Callback, timeout2) ;
+                        timeout2Alarm = alarmClock.add(callback, timeout2) ;
+                    }
                     resetDone = true ;
                 }
             }
@@ -526,9 +530,9 @@ public class QueryExecutionBase implements QueryExecution
         if ( ! isTimeoutSet(timeout1) && isTimeoutSet(timeout2) )
         {
             // Single overall timeout.
-            timeout2Callback = new TimeoutCallback() ; 
-            expectedCallback = timeout2Callback ; 
-            alarmClock.add(timeout2Callback, timeout2) ;
+            TimeoutCallback callback = new TimeoutCallback() ; 
+            expectedCallback = callback ; 
+            timeout2Alarm = alarmClock.add(callback, timeout2) ;
             // Start the query.
             queryIterator = getPlan().iterator() ;
             // But don't add resetter.
@@ -536,19 +540,19 @@ public class QueryExecutionBase implements QueryExecution
         }
 
         // Case isTimeoutSet(timeout1)
+        //   Whether timeout2 is set is determined by QueryIteratorTimer2
+        //   Subcase 2: ! isTimeoutSet(timeout2)
         // Add timeout to first row.
-        timeout1Callback = new TimeoutCallback() ; 
-        alarmClock.add(timeout1Callback, timeout1) ;
-        expectedCallback = timeout1Callback ;
+        TimeoutCallback callback = new TimeoutCallback() ; 
+        timeout1Alarm = alarmClock.add(callback, timeout1) ;
+        expectedCallback = callback ;
 
         // We don't know if getPlan().iterator() does a lot of work or not
         // (ideally it shouldn't start executing the query but in some sub-systems 
         // it might be necessary)
         queryIterator = getPlan().iterator() ;
         
-        // Add the timeout resetter wrapper.
-        timeout2Callback = new TimeoutCallback() ; 
-        // Wrap with a resetter.
+        // Add the timeout1 resetter wrapper.
         queryIterator = new QueryIteratorTimer2(queryIterator) ;
 
         // Minor optimization - the first call of hasNext() or next() will

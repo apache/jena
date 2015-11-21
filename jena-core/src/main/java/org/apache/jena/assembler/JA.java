@@ -18,25 +18,31 @@
 
 package org.apache.jena.assembler;
 
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 
 public class JA
     {
     public static final String uri = "http://jena.hpl.hp.com/2005/11/Assembler#";
-    
+
     public static String getURI()
         { return uri; }
 
     protected static Model schema;
-    
-    protected static Resource resource( String localName )
+
+    protected static Resource resource( final String localName )
         { return ResourceFactory.createResource( uri + localName ); }
-    
-    public static Property property( String localName )
+
+    public static Property property( final String localName )
         { return ResourceFactory.createProperty( uri + localName ); }
-    
+
     public static final Resource MemoryModel = resource( "MemoryModel" );
-    
+
+    public static final Resource MemoryDataset = resource( "MemoryDataset" );
+
     public static final Resource DefaultModel = resource( "DefaultModel" );
 
     public static final Resource InfModel = resource( "InfModel" );
@@ -46,11 +52,11 @@ public class JA
     public static final Property reasoner = property( "reasoner" );
 
     public static final Property reasonerURL = property( "reasonerURL" );
-    
+
     public static final Property baseModel = property( "baseModel" );
 
     public static final Property literalContent = property( "literalContent" );
-    
+
     public static final Property rules = property( "rules" );
 
     public static final Resource Model = resource( "Model" );
@@ -75,6 +81,8 @@ public class JA
 
     public static final Resource ModelSource = resource( "ModelSource" );
 
+    public static final Property data = property( "data" );
+
     public static final Property content = property( "content" );
 
     public static final Resource ExternalContent = resource( "ExternalContent" );
@@ -86,9 +94,9 @@ public class JA
     public static final Property ontModelSpec = property( "ontModelSpec" );
 
     public static final Resource This = resource( "this" );
-    
+
     public static final Resource True = resource( "true" );
-    
+
     public static final Resource False = resource( "false" );
 
     public static final Resource Expanded = resource( "Expanded" );
@@ -162,21 +170,21 @@ public class JA
     public static final Property fileEncoding = property( "fileEncoding" );
 
     public static final Property assembler = property( "assembler" );
-    
+
     public static final Property loadClass = property( "loadClass" );
-    
+
     public static final Property imports = property( "imports" );
 
     public static final Property reasonerFactory = property( "reasonerFactory" );
 
     public static final Property reasonerClass = property( "reasonerClass" );
-    
+
     public static final Property ja_schema = property( "schema" );
 
     public static final Property likeBuiltinSpec = property( "likeBuiltinSpec" );
 
     public static final Resource SinglePrefixMapping = resource( "SinglePrefixMapping");
-    
+
     public static final Property prefixMapping = property( "prefixMapping" );
 
     public static Model getSchema()
@@ -185,13 +193,13 @@ public class JA
         return schema;
         }
 
-    private static Model complete( Model m )
+    private static Model complete( final Model m )
         {
-        Model result = ModelFactory.createDefaultModel();
+        final Model result = ModelFactory.createDefaultModel();
         result.add( ModelFactory.createRDFSModel( m ) );
         return result;
         }
-    
+
     private static String getSchemaPath()
         { return "org/apache/jena/vocabulary/assembler.ttl"; }
     }

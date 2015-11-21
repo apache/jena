@@ -19,7 +19,9 @@
 package org.apache.jena.tdb.store.tupletable;
 
 import java.util.Iterator ;
+import java.util.function.Predicate ;
 
+import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.Sync ;
@@ -66,4 +68,27 @@ public interface TupleIndex extends Sync, Closeable
     
     /** Clear the index */
     public void clear() ;
+    
+    public static Iterator<Tuple<NodeId>> scan(Iterator<Tuple<NodeId>> iter, Tuple<NodeId> pattern) {
+        int tupleLength = pattern.size() ; 
+        Predicate<Tuple<NodeId>> filter = new Predicate<Tuple<NodeId>>()
+        {
+            @Override
+            public boolean test(Tuple<NodeId> item)
+            {
+                // Check on pattern and item (both in natural order)
+                for ( int i = 0 ; i < tupleLength ; i++ )
+                {
+                    NodeId n = pattern.get(i) ;
+                    // The pattern must be null/Any or match the tuple being tested.
+                    if ( ! NodeId.isAny(n) )
+                        if ( ! item.get(i).equals(n) ) 
+                            return false ;
+                }
+                return true ;
+            }
+        } ;
+        
+        return Iter.filter(iter, filter) ;
+    }
 }

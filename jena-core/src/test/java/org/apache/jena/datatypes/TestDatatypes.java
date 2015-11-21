@@ -22,7 +22,11 @@ import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertFalse ;
 import static org.junit.Assert.assertNotNull ;
 import static org.junit.Assert.assertTrue ;
+
+import java.math.BigDecimal ;
+
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.vocabulary.XSD ;
@@ -139,6 +143,43 @@ public class TestDatatypes {
     @Test public void dayTimeDuration_07() {
         invalid(xsdDuration, "P1DT") ;
         invalid(xsdDayTimeDuration, "P1DT") ;
+    }
+
+    @Test public void valueToLex_bigdecimal_01() {
+        testValueToLex(new BigDecimal("0.004"), XSDDatatype.XSDdecimal) ;
+    }
+
+    @Test public void valueToLex_bigdecimal_02() {
+        testValueToLex(new BigDecimal("1E21"), XSDDatatype.XSDdecimal) ;
+    }
+
+    @Test public void valueToLex_double_01() {
+        testValueToLex(new Double("1E21"), XSDDatatype.XSDdouble) ;
+    }
+
+    @Test public void valueToLex_double_02() {
+        testValueToLex(Double.POSITIVE_INFINITY, XSDDatatype.XSDdouble) ;
+    }
+
+    @Test public void valueToLex_double_03() {
+        testValueToLex(Double.NEGATIVE_INFINITY, XSDDatatype.XSDdouble) ;
+    }
+
+    @Test public void valueToLex_float_01() {
+        testValueToLex(new Float("1E21"), XSDDatatype.XSDfloat) ;
+    }
+
+    @Test public void valueToLex_float_02() {
+        testValueToLex(Float.POSITIVE_INFINITY, XSDDatatype.XSDfloat) ;
+    }
+
+    @Test public void valueToLex_float_03() {
+        testValueToLex(Float.NEGATIVE_INFINITY, XSDDatatype.XSDfloat) ;
+    }
+
+    private void testValueToLex(Object value, XSDDatatype datatype) {
+        Node node = NodeFactory.createLiteralByValue(value, datatype) ;
+        assertTrue("Not valid lexical form "+value+" -> "+node, datatype.isValid(node.getLiteralLexicalForm())) ;
     }
 
     private void valid(XSDDatatype xsddatatype, String string) {

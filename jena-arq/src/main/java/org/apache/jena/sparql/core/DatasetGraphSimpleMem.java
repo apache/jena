@@ -18,12 +18,7 @@
 
 package org.apache.jena.sparql.core;
 
-import java.util.ArrayList ;
-import java.util.Collection ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Set ;
+import java.util.* ;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -33,9 +28,10 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 
 /** Very simple, non-scalable DatasetGraph implementation 
- * of a triples+quads style for testing.
+ * of a triples+quads style for testing the {@link DatasetGraphTriplesQuads}
+ * style implementation framework. 
  */
-public class DatasetGraphSimpleMem extends DatasetGraphCaching
+public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads
 {
     private MiniSet<Triple> triples = new MiniSet<>() ;
     private MiniSet<Quad> quads = new MiniSet<>() ;
@@ -205,19 +201,19 @@ public class DatasetGraphSimpleMem extends DatasetGraphCaching
     }
     
     @Override
-    protected Graph _createDefaultGraph()
+    public Graph getDefaultGraph()
     {
         return new GraphDft() ;
     }
 
     @Override
-    protected Graph _createNamedGraph(Node graphNode)
+    public Graph getGraph(Node graphNode)
     {
         return new GraphNamed(graphNode) ;
     }
 
     @Override
-    protected boolean _containsGraph(Node graphNode)
+    public boolean containsGraph(Node graphNode)
     {
         return graphNodes().contains(graphNode) ;
     }
@@ -237,6 +233,6 @@ public class DatasetGraphSimpleMem extends DatasetGraphCaching
     }
 
     @Override
-    protected void _close()
+    public void close()
     {}
 }

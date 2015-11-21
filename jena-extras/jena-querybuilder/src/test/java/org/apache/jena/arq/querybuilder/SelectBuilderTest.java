@@ -127,4 +127,23 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
 		assertContainsRegex(SELECT + "\\*" + SPACE, query);
 	}
+	
+	@Test
+	public void testList() {
+		builder.addVar( "*" )
+		 .addWhere( builder.list( "<one>", "?two", "'three'"), "<foo>", "<bar>");
+		String query = builder.buildString();
+		
+		assertContainsRegex(
+				"_:b0"+SPACE+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE	+ uri("one") + SEMI 
+				+ SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE+"_:b1"+ DOT
+				+ SPACE + "_:b1"+SPACE+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE + var("two") + SEMI
+				+ SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE+"_:b2"+ DOT
+				+ SPACE + "_:b2"+SPACE+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE + quote("three") + SEMI
+				+ SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE +uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil") 
+				, query);
+		
+		assertContainsRegex(
+				 "_:b0"+SPACE+ uri("foo") + SPACE	+ uri("bar"), query);
+	}
 }

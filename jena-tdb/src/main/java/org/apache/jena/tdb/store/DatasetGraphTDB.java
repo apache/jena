@@ -20,6 +20,7 @@ package org.apache.jena.tdb.store;
 
 
 import java.util.Iterator ;
+
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
@@ -27,7 +28,7 @@ import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.DatasetGraphCaching ;
+import org.apache.jena.sparql.core.DatasetGraphTriplesQuads ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -47,7 +48,7 @@ import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
  *  </ul>
  */
 final
-public class DatasetGraphTDB extends DatasetGraphCaching
+public class DatasetGraphTDB extends DatasetGraphTriplesQuads
                              implements /*DatasetGraph,*/ Sync, Closeable, Session
 {
     private TripleTable tripleTable ;
@@ -73,9 +74,8 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     public TripleTable getTripleTable()     { return tripleTable ; }
     
     @Override
-    protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
-        return triples2quadsDftGraph(getTripleTable().find(s, p, o)) ;
-    }
+    protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o)
+    { return triples2quadsDftGraph(getTripleTable().find(s, p, o)) ; }
 
     @Override
     protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o)
@@ -111,7 +111,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     { return (GraphTDB)getGraph(graphNode) ; }
 
     @Override
-    protected void _close() {
+    public void close() {
         if ( closed )
             return ;
         closed = true ;
@@ -130,11 +130,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     public boolean containsGraph(Node graphNode) { 
         if ( Quad.isDefaultGraphExplicit(graphNode) || Quad.isUnionGraph(graphNode)  )
             return true ;
-        return _containsGraph(graphNode) ; 
-    }
-
-    @Override
-    protected boolean _containsGraph(Node graphNode) {
         // Have to look explicitly, which is a bit of a nuisance.
         // But does not normally happen for GRAPH <g> because that's rewritten to quads.
         // Only pattern with complex paths go via GRAPH. 
@@ -150,11 +145,11 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     }
 
     @Override
-    protected Graph _createDefaultGraph()
+    public Graph getDefaultGraph()
     { return new GraphTDB(this, null) ; }
 
     @Override
-    protected Graph _createNamedGraph(Node graphNode)
+    public Graph getGraph(Node graphNode)
     { return new GraphTDB(this, graphNode) ; }
 
     //public void setEffectiveDefaultGraph(GraphTDB g)       { effectiveDefaultGraph = g ; }

@@ -22,10 +22,7 @@ import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertFalse ;
 import static org.junit.Assert.assertTrue ;
 
-import java.util.ArrayList ;
-import java.util.Arrays ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.* ;
 import java.util.function.Predicate;
 
 import org.junit.Test ;
@@ -239,6 +236,7 @@ public class TestIter
         assertEquals(null, Iter.first(iter, filter)) ;
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void first_02()
     {
@@ -246,6 +244,7 @@ public class TestIter
         assertEquals("A", Iter.first(data, filter)) ;
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void first_03()
     {
@@ -260,6 +259,7 @@ public class TestIter
         assertEquals(-1, Iter.firstIndex(iter, filter)) ;
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void first_05()
     {
@@ -267,6 +267,7 @@ public class TestIter
         assertEquals(1, Iter.firstIndex(data, filter)) ;
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void first_06()
     {
@@ -281,6 +282,7 @@ public class TestIter
         assertEquals(null, Iter.last(iter, filter)) ;
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void last_02()
     {
@@ -288,6 +290,7 @@ public class TestIter
         assertEquals("C", Iter.last(data, filter)) ;
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void last_03()
     {
@@ -302,6 +305,7 @@ public class TestIter
         assertEquals(-1, Iter.lastIndex(iter, filter)) ;
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void last_05()
     {
@@ -309,6 +313,7 @@ public class TestIter
         assertEquals(3, Iter.lastIndex(data, filter)) ;
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void last_06()
     {
@@ -325,7 +330,6 @@ public class TestIter
         assertEquals("1", data2.get(0)) ;
         assertEquals("A", data2.get(1)) ;
     }
-    
     
     @Test
     public void take_02()
@@ -345,6 +349,53 @@ public class TestIter
         assertEquals("A", data2.get(1)) ;
         assertEquals("B", data2.get(2)) ;
         assertEquals("CC", data2.get(3)) ;
+    }
+    
+    @Test
+    public void take_04() {
+        List<String> data = Arrays.asList("a", "b", "b", "c", "c", "d");
+        Iterator<String> iter = Iter.takeWhile(data.iterator(), item -> !item.equals("c"));
+        List<String> x = Iter.toList(iter);
+        List<String> expected = Arrays.asList("a", "b", "b");
+        assertEquals(expected, x);
+    }
+
+    @Test
+    public void take_05() {
+        List<String> data = Arrays.asList("a", "b", "b", "c", "c", "d");
+        Iterator<String> iter = Iter.takeUntil(data.iterator(), item -> item.equals("c"));
+        List<String> x = Iter.toList(iter);
+        List<String> expected = Arrays.asList("a", "b", "b");
+        assertEquals(expected, x);
+    }
+
+    @Test
+    public void take_06() {
+        List<String> data = Arrays.asList("a", "b", "b", "c", "c", "d");
+        Iterator<String> iter = Iter.takeWhile(data.iterator(), item -> true);
+        List<String> x = Iter.toList(iter);
+        assertEquals(data, x);
+    }
+
+    @Test
+    public void take_07() {
+        List<String> data = Arrays.asList("a", "b", "b", "c", "c", "d");
+        Iterator<String> iter = Iter.takeWhile(data.iterator(), item -> false);
+        assertFalse(iter.hasNext());
+    }
+
+    @Test
+    public void take_08() {
+        List<String> data = Collections.emptyList();
+        Iterator<String> iter = Iter.takeWhile(data.iterator(), item -> false);
+        assertFalse(iter.hasNext());
+    }
+
+    @Test
+    public void take_09() {
+        List<String> data = Collections.emptyList();
+        Iterator<String> iter = Iter.takeWhile(data.iterator(), item -> true);
+        assertFalse(iter.hasNext());
     }
     
     @Test

@@ -42,6 +42,7 @@ import org.apache.jena.query.Query ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.system.PrefixMapFactory;
+import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.ExprVar ;
@@ -80,6 +81,10 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 * @return The Node value.
 	 */
 	public Node makeNode(Object o) {
+		return makeNode( o, query.getPrefixMapping() );
+	}
+	
+	public static Node makeNode(Object o, PrefixMapping pMapping) {
 		if (o == null) {
 			return Node.ANY;
 		}
@@ -93,7 +98,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		if (o instanceof String) {
 			try {
 				return NodeFactoryExtra.parseNode((String) o, PrefixMapFactory
-						.createForInput(query.getPrefixMapping()));
+						.createForInput(pMapping));
 			} catch (RiotException e) {
 				// expected in some cases -- do nothing
 			}
@@ -364,5 +369,4 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		new SelectHandler(q2).setVars(values);
 		return q2;
 	}
-	
 }

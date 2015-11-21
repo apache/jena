@@ -20,13 +20,16 @@ package org.apache.jena.sparql.modify;
 
 import static org.apache.jena.sparql.modify.TemplateLib.template ;
 
+import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
+
 import org.apache.jena.atlas.data.BagFactory ;
 import org.apache.jena.atlas.data.DataBag ;
 import org.apache.jena.atlas.data.ThresholdPolicy ;
 import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.graph.Graph ;
@@ -503,45 +506,65 @@ public class UpdateEngineWorker implements UpdateVisitor
         return el ;
     }
 
-    protected void execDelete(List<Quad> quads, Node dftGraph, Iterator<Binding> bindings)
-    {
-        Iterator<Quad> it = template(quads, dftGraph, bindings) ;
-        if ( it == null ) return ;
-        
-        while (it.hasNext())
-        {
-            Quad q = it.next();
-            datasetGraph.delete(q);
-        }
-        
-        
-        // Alternate implementation that can use the graph BulkUpdateHandler, but forces all quads into
-        // memory (we don't want that!).  The issue is that all of the quads can be mixed up based on the
-        // user supplied template.  If graph stores can benefit from bulk insert/delete operations, then we
-        // need to expose a bulk update interface on datasetGraph, not just Graph.
-//        MultiMap<Node, Triple> acc = MultiMap.createMapList() ;
-//        while (it.hasNext())
-//        {
-//            Quad q = it.next();
-//            acc.put(q.getGraph(), q.asTriple()) ;
-//        }
-//        for ( Node gn : acc.keys() )
-//        {
-//            Collection<Triple> triples = acc.get(gn) ;
-//            graph(datasetGraph, gn).getBulkUpdateHandler().delete(triples.iterator()) ;
-//        }
+    // JENA-1059
+    // execDelete ; execInsert
+    // Quads involving only IRIs and literals do not change from binding to
+    // binding so any inserts, rather than repeatedly if they are going to be
+    // done at all. Note bNodes (if legal at this point) change from template
+    // instantiation to instantiation.
+
+    private static Pair<List<Quad>, List<Quad>> split(List<Quad> quads) {
+        // Guess size.
+        //    Pre-size in case large (i.e. 10K+). 
+        List<Quad> constQuads = new ArrayList<>(quads.size()) ;
+        //    ... in which case we assume the templated triples are small / non-existent.
+        List<Quad> templateQuads = new ArrayList<>() ;
+        quads.forEach((q)-> {
+            if ( constQuad(q))
+                constQuads.add(q) ;
+            else
+                templateQuads.add(q) ;
+        }) ;
+        return Pair.create(constQuads, templateQuads);
     }
 
-    protected void execInsert(List<Quad> quads, Node dftGraph, Iterator<Binding> bindings)
-    {
-        Iterator<Quad> it = template(quads, dftGraph, bindings) ;
+    private static boolean constQuad(Quad quad) {
+        return  constTerm(quad.getGraph()) &&
+                constTerm(quad.getSubject()) &&
+                constTerm(quad.getPredicate()) &&
+                constTerm(quad.getObject()) ;
+    }
+    
+    private static boolean constTerm(Node n) {
+        return n.isURI() || n.isLiteral() ;
+    }
+
+    protected void execDelete(List<Quad> quads, Node dftGraph, Iterator<Binding> bindings) {
+        Pair<List<Quad>, List<Quad>> p = split(quads) ;
+        execDelete(p.getLeft(), p.getRight(), dftGraph, bindings) ;
+    }
+    
+    protected void execDelete(List<Quad> onceQuads, List<Quad> templateQuads, Node dftGraph, Iterator<Binding> bindings) {
+        if ( onceQuads != null && bindings.hasNext() )
+            // If at least once.
+            onceQuads.forEach(datasetGraph::delete);
+        Iterator<Quad> it = template(templateQuads, dftGraph, bindings) ;
         if ( it == null ) return ;
-        
-        while (it.hasNext())
-        {
-            Quad q = it.next();
-            addTodatasetGraph(datasetGraph, q);
-        }
+        it.forEachRemaining(datasetGraph::delete) ;
+    }
+
+    protected void execInsert(List<Quad> quads, Node dftGraph, Iterator<Binding> bindings) {
+        Pair<List<Quad>, List<Quad>> p = split(quads) ;
+        execInsert(p.getLeft(), p.getRight(), dftGraph, bindings) ;
+    }
+    
+    protected void execInsert(List<Quad> onceQuads, List<Quad> templateQuads, Node dftGraph, Iterator<Binding> bindings) {
+        if ( onceQuads != null && bindings.hasNext() )
+            // If at least once.
+            onceQuads.forEach((q)->addTodatasetGraph(datasetGraph, q)) ;
+        Iterator<Quad> it = template(templateQuads, dftGraph, bindings) ;
+        if ( it == null ) return ;
+        it.forEachRemaining((q)->addTodatasetGraph(datasetGraph, q)) ;
     }
     
     // Catch all individual adds of quads (and deletes - mainly for symmetry). 

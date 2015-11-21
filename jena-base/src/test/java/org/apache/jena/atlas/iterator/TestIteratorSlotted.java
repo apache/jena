@@ -70,7 +70,7 @@ public class TestIteratorSlotted extends BaseTest
         }
     }
     
-    /** hasMore ios always true, returns null in moveToNext */
+    /** hasMore is always true, returns null in moveToNext */
     static class IterStr2 extends IteratorSlotted<String>
     {
         private List<String>     array ;

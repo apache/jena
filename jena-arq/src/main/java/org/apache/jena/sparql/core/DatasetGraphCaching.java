@@ -19,16 +19,13 @@
 package org.apache.jena.sparql.core;
 
 
-import java.util.Iterator ;
 import java.util.concurrent.Callable ;
 
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
 
 /** 
  * DatasetGraph that <em>caches</em> calls to make graph implementations.  
@@ -37,21 +34,22 @@ import org.apache.jena.graph.Triple ;
  * 
  * The cache is finite and graphs will be dropped as needed. 
  *  
- * {@link DatasetGraphMap} provides an implementation which is an extensable collection of graphs.
+ * @deprecated This class will be removed.
  */
+@Deprecated
 abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
 {
     private final boolean caching = true ;
     private boolean closed = false ;
 
     // read synchronised in this class, not needed for a sync wrapper.
-    protected Graph defaultGraph = null ;
-    protected Cache<Node, Graph> namedGraphs = CacheFactory.createCache(100) ;
+    private Graph defaultGraph = null ;
+    private Cache<Node, Graph> namedGraphs = CacheFactory.createCache(100) ;
     
-    abstract protected void _close() ;
-    abstract protected Graph _createNamedGraph(Node graphNode) ;
-    abstract protected Graph _createDefaultGraph() ;
-    abstract protected boolean _containsGraph(Node graphNode) ;
+    @Deprecated abstract protected void _close() ;
+    @Deprecated abstract protected Graph _createNamedGraph(Node graphNode) ;
+    @Deprecated abstract protected Graph _createDefaultGraph() ;
+    @Deprecated abstract protected boolean _containsGraph(Node graphNode) ;
     
     protected DatasetGraphCaching() { this(100) ; }
     
@@ -107,7 +105,7 @@ abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
 
     @Override
     public final void removeGraph(Node graphName) {
-        deleteAny(graphName, Node.ANY, Node.ANY, Node.ANY) ;
+        super.removeGraph(graphName);
         synchronized (this) {
             namedGraphs.remove(graphName) ;
         }
@@ -132,44 +130,6 @@ abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
             namedGraphs.clear() ;
             _close() ;
             super.close() ;
-        }
-    }
-    
-    // Helper implementations of operations.
-    // Not necessarily efficient.
-    protected static class Helper {
-        public static void addToDftGraph(DatasetGraphCaching dsg, Node s, Node p, Node o) {
-            dsg.getDefaultGraph().add(new Triple(s, p, o)) ;
-        }
-
-        public static void addToNamedGraph(DatasetGraphCaching dsg, Node g, Node s, Node p, Node o) {
-            dsg.getGraph(g).add(new Triple(s, p, o)) ;
-        }
-
-        public static void deleteFromDftGraph(DatasetGraphCaching dsg, Node s, Node p, Node o) {
-            dsg.getDefaultGraph().delete(new Triple(s, p, o)) ;
-        }
-
-        public static void deleteFromNamedGraph(DatasetGraphCaching dsg, Node g, Node s, Node p, Node o) {
-            dsg.getGraph(g).delete(new Triple(s, p, o)) ;
-        }
-
-        public static Iterator<Quad> findInAnyNamedGraphs(DatasetGraphCaching dsg, Node s, Node p, Node o) {
-            Iterator<Node> iter = dsg.listGraphNodes() ;
-            Iterator<Quad> quads = null ;
-            for ( ; iter.hasNext() ; ) {
-                Node gn = iter.next() ;
-                quads = Iter.append(quads, findInSpecificNamedGraph(dsg, gn, s, p, o)) ;
-            }
-            return quads ;
-        }
-
-        public static Iterator<Quad> findInDftGraph(DatasetGraphCaching dsg, Node s, Node p, Node o) {
-            return triples2quadsDftGraph(dsg.getDefaultGraph().find(s, p, o)) ;
-        }
-
-        public static Iterator<Quad> findInSpecificNamedGraph(DatasetGraphCaching dsg, Node g, Node s, Node p, Node o) {
-            return triples2quadsDftGraph(dsg.getGraph(g).find(s, p, o)) ;
         }
     }
 }

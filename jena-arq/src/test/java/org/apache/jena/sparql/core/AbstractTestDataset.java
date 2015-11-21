@@ -90,7 +90,7 @@ public abstract class AbstractTestDataset extends BaseTest
         assertTrue(model1.isIsomorphicWith(m)) ;
         
         ds.removeNamedModel(graphName) ;
-        // Not getNamedModel and test for null as some dadasets are "auto graph creating"
+        // Not getNamedModel and test for null as some datasets are "auto graph creating"
         assertFalse(ds.containsNamedModel(graphName)) ;
     }
 

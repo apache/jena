@@ -18,8 +18,7 @@
 
 package org.apache.jena.atlas.lib ;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor ;
-import java.util.concurrent.TimeUnit ;
+import java.util.concurrent.* ;
 
 /**
  * An AlarmClock is an object that will make a callback (with a value) at a
@@ -39,28 +38,23 @@ public class AlarmClock {
     }
 
     /** Add a task to be called after a delay (in milliseconds) */
-    public void add(Runnable task, long delay) {
+    public Alarm add(Runnable task, long delay) {
         if ( task == null )
             throw new IllegalArgumentException("Task is null") ;
-        timer.schedule(task, delay, TimeUnit.MILLISECONDS) ;
+        ScheduledFuture<?> future = timer.schedule(task, delay, TimeUnit.MILLISECONDS) ;
+        return new Alarm(this, task, future) ;
     }
 
     /** Reschedule a task to now run after a different delay from now (in milliseconds) */
-    public void reset(Runnable task, long delay) {
-        if ( task == null )
-            throw new IllegalArgumentException("Task is null") ;
-        cancel(task) ;
-        add(task, delay) ;
+    public Alarm reset(Alarm alarm, long delay) {
+        cancel(alarm) ;
+        return add(alarm.task, delay) ;
     }
 
     /** Cancel a task  */
-    public void cancel(Runnable task) {
-        if ( task == null )
-            throw new IllegalArgumentException("Task is null") ;
-        timer.remove(task) ;
+    public void cancel(Alarm alarm) {
+        alarm.future.cancel(false) ;
     }
-
-    // public int getCount() { return timer.getQueue().size(); }
 
     /** Clean up */
     public void release() {

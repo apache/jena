@@ -27,7 +27,7 @@ import org.apache.jena.sparql.syntax.* ;
  *  They do matter for <code>OPTIONAL { { ?s ?p ?o FILTER(?foo) } }</code>.
  */
 public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
-    // Improvements: scan group elements to work out for non-reducable adjacents.
+    // Improvements: scan group elements to work out for non-reduceable adjacents.
     // These ones may clash with an adjeact one in the group above.
     // ElementTransformCleanGroupsOfOne -> ElementTransformCleanGroups
     
@@ -45,6 +45,25 @@ public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
         return elt ;
     }
 
+    // The ElementGroup transformation can be too strong.
+    // Ensure unions have ElementGroup (for compatibility with parsing;
+    // it is safe to have non-ElementGroup in a ElementUnion but it is
+    // a different query syntax tree).
+    @Override
+    public Element transform(ElementUnion eltUnion, List<Element> elts) {
+        ElementUnion el2 = new ElementUnion() ;
+        for ( int i = 0 ; i < elts.size() ; i++ ) {
+            Element el = elts.get(i) ;
+            if ( ! ( el instanceof ElementGroup ) ) {
+                ElementGroup elg = new ElementGroup() ;
+                elg.addElement(el);
+                el = elg ;
+            }
+            el2.addElement(el); 
+        }
+        return el2 ;
+    }
+    
     // Special case: If Optional, and the original had a {{}} protected filter, keep {{}}
     // transform/ElementGroup has already run so undo if necessary.
     @Override

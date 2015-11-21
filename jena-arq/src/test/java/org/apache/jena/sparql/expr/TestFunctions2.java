@@ -188,9 +188,11 @@ public class TestFunctions2 extends BaseTest
     @Test public void encodeURI_01()    { test("encode_for_uri('a:b cd/~')",  "'a%3Ab%20cd%2F~'") ; }
     @Test public void encodeURI_02()    { test("encode_for_uri('\\n')",  "'%0A'") ; }
     @Test public void encodeURI_03()    { test("encode_for_uri('\\t')",  "'%09'") ; }
+    @Test public void encodeURI_04()    { test("encode_for_uri('abc')",     "'abc'") ; }
+    @Test public void encodeURI_05()    { test("encode_for_uri('abc'@en)",  "'abc'") ; }
     
     @Test(expected=ExprEvalException.class)
-    public void encodeURI_04()          { test("encode_for_uri(1234)",  "'1234'") ; }
+    public void encodeURI_09()          { test("encode_for_uri(1234)",  "'1234'") ; }
     
     /* Compatibility rules
     # pairs of simple literals,

@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.modify;
 
+import java.util.concurrent.atomic.AtomicLong ;
+
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Node ;
@@ -28,6 +30,8 @@ import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.DatasetGraphWrapper ;
+import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.update.* ;
 import org.apache.jena.vocabulary.OWL ;
@@ -95,5 +99,38 @@ public class TestUpdateOperations extends BaseTest
         assertEquals(1, m.listStatements(anon, null, (RDFNode)null).toList().size());
         assertEquals(1, m.listStatements(null, null, anon).toList().size());
     }
+    
+    // Check constant and template quads 
+    @Test public void delete_insert_where_01() {
+        DatasetGraph dsg0 = DatasetGraphFactory.createMem() ;
+        UpdateRequest req = UpdateFactory.create("INSERT DATA { <x> <p> 2 . <z> <q> 2 . <z> <q> 3 . }") ;
+        UpdateAction.execute(req, dsg0);
+        assertEquals(3, dsg0.getDefaultGraph().size()) ;
+        
+        AtomicLong counterIns = new AtomicLong(0) ;
+        AtomicLong counterDel = new AtomicLong(0) ;
+        DatasetGraph dsg = new DatasetGraphWrapper(dsg0) {
+            @Override
+            public void add(Quad quad) { 
+                counterIns.incrementAndGet() ;
+                get().add(quad) ;
+            }
+
+            @Override
+            public void delete(Quad quad) {
+                counterDel.incrementAndGet() ;
+                get().delete(quad) ; 
+            }
+        } ;
+        
+        // WHERE clause doubles the effect.
+        String s = "DELETE { ?x <p> 2 . <z> <q> 2 } INSERT { ?x <p> 1 . <x> <q> 1  } WHERE { ?x <p> ?o {} UNION {} }" ;
+        req = UpdateFactory.create(s) ;
+        UpdateAction.execute(req, dsg);
+        assertEquals(3, counterIns.get()) ;   // 3 : 1 constant, 2 from template.
+        assertEquals(3, counterIns.get()) ;
+        assertEquals(3, dsg.getDefaultGraph().size()) ;
+    }
+
 }
 

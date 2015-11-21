@@ -20,6 +20,7 @@ package org.apache.jena.sparql.modify;
 
 import java.util.* ;
 import java.util.function.Function;
+import java.util.stream.Collectors ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.ext.com.google.common.collect.Iterators;
@@ -54,12 +55,12 @@ public class TemplateLib
     protected static List<Quad> remapDefaultGraph(List<Quad> quads, final Node dftGraph)
     {
         // The default graph has been set to something else.
-        if ( dftGraph != null )
-        {
-			quads = Iter
-					.map(quads,
-							q -> (!q.isDefaultGraph()) ? q :
-							new Quad(dftGraph, q.getSubject(), q.getPredicate(), q.getObject()));
+        if ( dftGraph != null ) {
+            quads = quads.stream()
+                .map(q -> (!q.isDefaultGraph())
+                     ? q
+                     : new Quad(dftGraph, q.getSubject(), q.getPredicate(), q.getObject()))
+                .collect(Collectors.toList()) ;
 		}
         return quads;
     }

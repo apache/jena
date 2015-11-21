@@ -33,6 +33,9 @@ import org.junit.runners.Suite ;
     , TestDatasetGraphViewGraphs.class
     , TestDatasetMonitor.class
     , TestDatasetGraphWithLock.class
+    
+    , TestDatasetGraphBaseFind_General.class
+    , TestDatasetGraphBaseFindPattern_General.class
 })
 
 public class TS_Core
