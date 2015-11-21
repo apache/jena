@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.NotImplemented;
+import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
@@ -49,7 +49,6 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.cache.CacheAction;
 import org.apache.jena.fuseki.cache.CacheEntry;
-import org.apache.jena.fuseki.cache.CacheStore;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.query.QueryCancelledException ;
 import org.apache.jena.query.ResultSet ;
@@ -90,9 +89,7 @@ public class ResponseResultSet
     }
 
     interface OutputContent {
-        //void output(ServletOutputStream out) ;
         void output(OutputStream out);
-        //void output(ServletOutputStream out, StringBuilder cacheBuilder) ;
     }
 
 
@@ -315,9 +312,8 @@ public class ResponseResultSet
             setHttpResponse(action, contentType, charset) ;
             action.response.setStatus(HttpSC.OK_200) ;
 
-            //ServletOutputStream out = action.response.getOutputStream() ;
             OutputStream outServlet = action.response.getOutputStream();
-            CacheStore cacheStore = CacheStore.getInstance();
+            Cache cache = SPARQL_Query_Cache.getCache();
             OutputStream out = null;
             try
             {
@@ -328,14 +324,14 @@ public class ResponseResultSet
                     out = new ResponseOutputStream(outServlet, outCache);
                     proc.output(out);
                     data = outCache.toByteArray();
-                    CacheEntry cacheEntry = (CacheEntry) cacheStore.doGet(cacheAction.getKey());
+                    CacheEntry cacheEntry = (CacheEntry) cache.getIfPresent(cacheAction.getKey());
                     cacheEntry.setData(data);
                     cacheEntry.initialized();
-                    cacheStore.doSet(cacheAction.getKey(), cacheEntry);
+                    cache.put(cacheAction.getKey(), cacheEntry);
                     action.log.info("Writing cache "+ new String(data));
                     out.flush();
                 }else{
-                    CacheEntry cacheEntry = (CacheEntry)cacheStore.doGet(cacheAction.getKey());
+                    CacheEntry cacheEntry = (CacheEntry)cache.getIfPresent(cacheAction.getKey());
                     data = cacheEntry.getData();
                     outServlet.write(data);
                     action.log.info("Reading cache "+ new String(data));
@@ -343,20 +339,11 @@ public class ResponseResultSet
                 }
 
             } catch (QueryCancelledException ex) {
-                // Bother.  Status code 200 already sent.
                 action.log.info(format("[%d] Query Cancelled - results truncated (but 200 already sent)", action.id)) ;
-                //out.println() ;
-                //out.println("##  Query cancelled due to timeout during execution   ##") ;
-                //out.println("##  ****          Incomplete results           ****   ##") ;
                 out.flush() ;
-                // No point raising an exception - 200 was sent already.
-                //errorOccurred(ex) ;
             }
-        // Includes client gone.
         } catch (IOException ex)
         { ServletOps.errorOccurred(ex) ; }
-        // Do not call httpResponse.flushBuffer(); here - Jetty closes the stream if it is a gzip stream
-        // then the JSON callback closing details can't be added.
     }
 
     public static ResponseType getResponseType(HttpServletRequest request, AcceptList contentTypeOffer){

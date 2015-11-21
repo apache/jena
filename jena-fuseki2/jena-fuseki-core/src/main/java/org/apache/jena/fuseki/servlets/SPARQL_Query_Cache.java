@@ -19,18 +19,16 @@ package org.apache.jena.fuseki.servlets;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.lib.Cache;
+import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.fuseki.DEF;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiLib;
 import org.apache.jena.fuseki.cache.CacheAction;
 import org.apache.jena.fuseki.cache.CacheEntry;
-import org.apache.jena.fuseki.cache.CacheStore;
 import org.apache.jena.query.*;
 import org.apache.jena.riot.web.HttpNames;
-import org.apache.jena.sparql.core.DatasetDescription;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DynamicDatasets;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.web.HttpSC;
@@ -51,8 +49,13 @@ public class SPARQL_Query_Cache extends SPARQL_Protocol {
 
     private static final String QueryParseBase = Fuseki.BaseParserSPARQL ;
 
+    private static Cache cache = null;
+    private int CACHE_SIZE = 10000;
     public SPARQL_Query_Cache() {
         super() ;
+        if(cache == null){
+            cache = CacheFactory.createCache(CACHE_SIZE);
+        }
     }
 
     // All the params we support
@@ -166,12 +169,12 @@ public class SPARQL_Query_Cache extends SPARQL_Protocol {
         try {
                 SPARQLResult result = null;
                 CacheAction cacheAction = null;
-                CacheStore cacheStore = CacheStore.getInstance();
                 String key = generateKey(action, query, queryString);
-                CacheEntry cacheEntry = (CacheEntry) cacheStore.doGet(key);
+                CacheEntry cacheEntry = (CacheEntry) cache.getIfPresent(key);
+
                 if(cacheEntry == null || !cacheEntry.isInitialized()) {
                     log.info("Cache is null or cache data is not initialized");
-                    ActionSPARQL queryServlet    = new SPARQL_QueryDataset() ;
+                    ActionSPARQL queryServlet = new SPARQL_QueryDataset() ;
                     queryServlet.executeLifecycle(action) ;
                 }else {
                     log.info("Cache is not null so read from cache");
@@ -211,7 +214,7 @@ public class SPARQL_Query_Cache extends SPARQL_Protocol {
             ServletOps.errorOccurred("Unknown or invalid result type") ;
     }
 
-    private String generateKey(HttpAction action, Query query ,String queryString){
+    public static String generateKey(HttpAction action, Query query ,String queryString){
         ResponseType responseType = null;
         if(query.isAskType())
             responseType = ResponseResultSet.getResponseType(action.getRequest(), DEF.rsOfferBoolean);
@@ -222,7 +225,7 @@ public class SPARQL_Query_Cache extends SPARQL_Protocol {
         else if(query.isDescribeType())
             responseType = ResponseDataset.getResponseType(action.getRequest());
 
-        return CacheStore.generateKey(action, queryString, responseType);
+        return getKey(action, queryString, responseType);
     }
 
     private String formatForLog(Query query) {
@@ -231,4 +234,16 @@ public class SPARQL_Query_Cache extends SPARQL_Protocol {
         query.serialize(out) ;
         return out.asString() ;
     }
+
+    private static String getKey(HttpAction action, String queryString, ResponseType responseType) {
+        HttpServletRequest req = action.getRequest();
+        String uri = ActionLib.actionURI(req);
+        String dataSetUri = ActionLib.mapActionRequestToDataset(uri);
+        return dataSetUri + " " + queryString + " " + responseType.getContentType();
+    }
+
+    public static Cache getCache() {
+        return cache;
+    }
+
 }

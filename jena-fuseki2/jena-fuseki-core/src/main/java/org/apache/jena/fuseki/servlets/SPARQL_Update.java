@@ -44,11 +44,11 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.cache.CacheStore;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.iri.IRI ;
@@ -100,8 +100,8 @@ public class SPARQL_Update extends SPARQL_Protocol
 
     @Override
     protected void perform(HttpAction action) {
-        CacheStore cacheStore = CacheStore.getInstance();
-        cacheStore.clear();
+        Cache cache = SPARQL_Query_Cache.getCache();
+        cache.clear();
         ContentType ct = FusekiLib.getContentType(action) ;
         if ( ct == null )
             ct = ctSPARQLUpdate ;

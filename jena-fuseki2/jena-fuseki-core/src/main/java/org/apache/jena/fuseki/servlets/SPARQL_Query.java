@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.web.AcceptList;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.DEF;
@@ -53,7 +54,6 @@ import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.cache.CacheAction;
 import org.apache.jena.fuseki.cache.CacheEntry;
-import org.apache.jena.fuseki.cache.CacheStore;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.web.HttpNames ;
@@ -270,12 +270,12 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             action.beginRead() ;
                 Dataset dataset = decideDataset(action, query, queryStringLog) ;
             try ( QueryExecution qExec = createQueryExecution(query, dataset) ; ) {
-                CacheStore cacheStore = CacheStore.getInstance();
-                String key = generateKey(action, query, queryString);
+                Cache cache = SPARQL_Query_Cache.getCache();
+                String key = SPARQL_Query_Cache.generateKey(action, query, queryString);
                 SPARQLResult result = executeQuery(action, qExec, query, queryStringLog);
                 CacheEntry cacheEntry = new CacheEntry();
                 cacheEntry.setResult(result);
-                cacheStore.doSet(key, cacheEntry);
+                cache.put(key, cacheEntry);
                 CacheAction cacheAction = new CacheAction(key, CacheAction.Type.WRITE_CACHE);
                 sendResults(action, result, query.getPrologue(), cacheAction);
             }
@@ -425,17 +425,4 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         return HttpOp.execHttpGetString(queryURI) ;
     }
 
-    private String generateKey(HttpAction action, Query query ,String queryString){
-        ResponseType responseType = null;
-        if(query.isAskType())
-            responseType = ResponseResultSet.getResponseType(action.getRequest(), DEF.rsOfferBoolean);
-        else if(query.isSelectType())
-            responseType = ResponseResultSet.getResponseType(action.getRequest(), DEF.rsOfferTable);
-        else if(query.isConstructType())
-            responseType = ResponseDataset.getResponseType(action.getRequest());
-        else if(query.isDescribeType())
-            responseType = ResponseDataset.getResponseType(action.getRequest());
-
-        return CacheStore.generateKey(action, queryString, responseType);
-    }
 }
