@@ -45,7 +45,7 @@ public interface Dataset extends Transactional
     public boolean containsNamedModel(String uri) ;
 
     /** Set a named graph. */
-    public void  addNamedModel(String uri, Model model) throws LabelExistsException ;
+    public void  addNamedModel(String uri, Model model) ;
 
     /** Remove a named graph. */
     public void  removeNamedModel(String uri) ;
