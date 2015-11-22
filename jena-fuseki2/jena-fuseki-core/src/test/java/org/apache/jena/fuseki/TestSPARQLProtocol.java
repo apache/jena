@@ -20,6 +20,9 @@ package org.apache.jena.fuseki;
 
 import static org.apache.jena.fuseki.ServerTest.*;
 import org.apache.jena.atlas.junit.BaseTest;
+import org.apache.jena.atlas.lib.Cache;
+import org.apache.jena.fuseki.cache.CacheEntry;
+import org.apache.jena.fuseki.servlets.SPARQL_Query_Cache;
 import org.apache.jena.query.*;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
@@ -31,6 +34,8 @@ import org.apache.jena.update.UpdateRequest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.Iterator;
 
 public class TestSPARQLProtocol extends BaseTest
 {
@@ -63,6 +68,23 @@ public class TestSPARQLProtocol extends BaseTest
     }
 
     @Test
+    public void cache_query_01() {
+        Query query = QueryFactory.create("SELECT * { ?s ?p ?o }");
+        QueryExecution qexec = QueryExecutionFactory.sparqlService(serviceQuery, query);
+        ResultSet rs = qexec.execSelect();
+        int x = ResultSetFormatter.consume(rs);
+        assertTrue(x != 0);
+        Cache cache = SPARQL_Query_Cache.getCache();
+        assertTrue(cache.size() == 1);
+        Iterator keysIter = cache.keys();
+        String key = (String) keysIter.next();
+        assertTrue(key.contains("?s  ?p  ?o"));
+        CacheEntry e = (CacheEntry) cache.getIfPresent(key);
+        assertTrue(e.isInitialized());
+        assertTrue(e.getData().length != 0);
+    }
+
+    @Test
     public void query_02() {
         Query query = QueryFactory.create("SELECT * { ?s ?p ?o }");
         QueryEngineHTTP engine = QueryExecutionFactory.createServiceRequest(serviceQuery, query);
@@ -70,6 +92,40 @@ public class TestSPARQLProtocol extends BaseTest
         ResultSet rs = engine.execSelect();
         int x = ResultSetFormatter.consume(rs);
         assertTrue(x != 0);
+    }
+
+    @Test
+    public void cache_query_02() {
+        Query query = QueryFactory.create("SELECT * { ?s ?p ?o }");
+        QueryEngineHTTP engine = QueryExecutionFactory.createServiceRequest(serviceQuery, query);
+        engine.setSelectContentType(WebContent.contentTypeResultsJSON);
+        ResultSet rs = engine.execSelect();
+        int x = ResultSetFormatter.consume(rs);
+        assertTrue(x != 0);
+        Cache cache = SPARQL_Query_Cache.getCache();
+        assertTrue(cache.size() == 1);
+        Iterator keysIter = cache.keys();
+        String key = (String) keysIter.next();
+        System.out.println("key " + key);
+        assertTrue(key.contains("?s  ?p  ?o"));
+        assertTrue(key.contains("application/sparql-results+json"));
+        CacheEntry e = (CacheEntry) cache.getIfPresent(key);
+        assertTrue(e.isInitialized());
+        assertTrue(e.getData().length != 0);
+    }
+
+    @Test
+    public void cache_query_03() {
+        Query query = QueryFactory.create("SELECT * { ?s ?p ?o }");
+        QueryEngineHTTP engine = QueryExecutionFactory.createServiceRequest(serviceQuery, query);
+        engine.setSelectContentType(WebContent.contentTypeResultsXML);
+        ResultSet rs = engine.execSelect();
+        String result = ResultSetFormatter.asXMLString(rs);
+        Cache cache = SPARQL_Query_Cache.getCache();
+        assertTrue(cache.size() == 1);
+        ResultSet rs2 = engine.execSelect();
+        String result2 = ResultSetFormatter.asXMLString(rs2);
+        assertEqualsIgnoreCase(result, result2);
     }
 
     @Test

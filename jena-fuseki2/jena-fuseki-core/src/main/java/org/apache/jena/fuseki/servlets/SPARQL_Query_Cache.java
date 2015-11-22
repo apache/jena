@@ -50,7 +50,9 @@ public class SPARQL_Query_Cache extends SPARQL_Protocol {
     private static final String QueryParseBase = Fuseki.BaseParserSPARQL ;
 
     private static Cache cache = null;
+
     private int CACHE_SIZE = 10000;
+
     public SPARQL_Query_Cache() {
         super() ;
         if(cache == null){
