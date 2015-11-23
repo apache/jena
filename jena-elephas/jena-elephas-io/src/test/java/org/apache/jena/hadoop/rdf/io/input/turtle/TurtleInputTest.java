@@ -18,11 +18,19 @@
 
 package org.apache.jena.hadoop.rdf.io.input.turtle;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.InputFormat;
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.hadoop.rdf.io.RdfIOConstants;
 import org.apache.jena.hadoop.rdf.io.input.AbstractWholeFileTripleInputFormatTests;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.Lang;
+import org.junit.Test;
 
 
 /**
@@ -46,5 +54,27 @@ public class TurtleInputTest extends AbstractWholeFileTripleInputFormatTests {
     @Override
     protected InputFormat<LongWritable, TripleWritable> getInputFormat() {
         return new TurtleInputFormat();
+    }
+    
+    @Test
+    public void turtle_with_prefixes_01() throws IOException, InterruptedException {
+        // Try to reproduce JENA-1075
+        
+        // Create test data
+        File f = new File("target/prefixes.ttl");
+        try (FileWriter writer = new FileWriter(f)) {
+            //@formatter:off
+            writer.write(StrUtils.strjoinNL("@prefix : <http://test/ns#> .",
+                                            ":s :p :o ."));
+            //@formatter:on
+            writer.close();
+        }
+        
+        Configuration config = this.prepareConfiguration();
+        config.setBoolean(RdfIOConstants.INPUT_IGNORE_BAD_TUPLES, false);
+        this.testSingleInput(config, f, 1, 1);
+        
+        // Clean up
+        if (f.exists()) f.delete();
     }
 }
