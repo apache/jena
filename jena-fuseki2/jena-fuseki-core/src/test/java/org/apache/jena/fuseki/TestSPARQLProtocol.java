@@ -75,7 +75,7 @@ public class TestSPARQLProtocol extends BaseTest
         int x = ResultSetFormatter.consume(rs);
         assertTrue(x != 0);
         Cache cache = SPARQL_Query_Cache.getCache();
-        assertTrue(cache.size() == 1);
+        assertTrue(cache.size() != 0);
         Iterator keysIter = cache.keys();
         String key = (String) keysIter.next();
         assertTrue(key.contains("?s  ?p  ?o"));
@@ -103,7 +103,7 @@ public class TestSPARQLProtocol extends BaseTest
         int x = ResultSetFormatter.consume(rs);
         assertTrue(x != 0);
         Cache cache = SPARQL_Query_Cache.getCache();
-        assertTrue(cache.size() == 1);
+        assertTrue(cache.size() != 0);
         Iterator keysIter = cache.keys();
         String key = (String) keysIter.next();
         System.out.println("key " + key);
@@ -122,7 +122,7 @@ public class TestSPARQLProtocol extends BaseTest
         ResultSet rs = engine.execSelect();
         String result = ResultSetFormatter.asXMLString(rs);
         Cache cache = SPARQL_Query_Cache.getCache();
-        assertTrue(cache.size() == 1);
+        assertTrue(cache.size() != 0);
         ResultSet rs2 = engine.execSelect();
         String result2 = ResultSetFormatter.asXMLString(rs2);
         assertEqualsIgnoreCase(result, result2);
@@ -133,6 +133,15 @@ public class TestSPARQLProtocol extends BaseTest
         UpdateRequest update = UpdateFactory.create("INSERT DATA {}");
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, serviceUpdate);
         proc.execute();
+    }
+
+    @Test
+    public void cache_update_01() {
+        UpdateRequest update = UpdateFactory.create("INSERT DATA {}");
+        UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, serviceUpdate);
+        proc.execute();
+        Cache cache = SPARQL_Query_Cache.getCache();
+        assertTrue(cache.size() == 0);
     }
 
     @Test
