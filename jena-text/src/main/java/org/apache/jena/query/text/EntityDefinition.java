@@ -18,10 +18,13 @@
 
 package org.apache.jena.query.text ;
 
+import static java.util.Optional.empty;
+
 import java.util.Collection ;
 import java.util.Collections ;
 import java.util.HashMap ;
 import java.util.Map ;
+import java.util.Optional;
 
 import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap;
@@ -151,7 +154,7 @@ public class EntityDefinition {
         return primaryField ;
     }
 
-    public Node getPrimaryPredicate() {
+    public Optional<Node> getPrimaryPredicate() {
         Collection<Node> c = fieldToPredicate.get(getPrimaryField()) ;
         return getOne(c) ;
     }
@@ -184,10 +187,8 @@ public class EntityDefinition {
         return fields ;
     }
     
-    private static <T> T getOne(Collection<T> collection) {
-        if ( collection.size() != 1 )
-            return null ;
-        return collection.iterator().next() ;
+    private static <T> Optional<T> getOne(Collection<T> collection) {
+         return collection.size() != 1 ? empty() : collection.stream().findFirst();
     }
     
     @Override

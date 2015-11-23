@@ -66,17 +66,17 @@ public class TextDatasetAssembler extends AssemblerBase implements Assembler
         // Null will use the default producer
         TextDocProducer textDocProducer = null ;
         if (null != textDocProducerNode) {
-            Class<?> c = Loader.loadClass(textDocProducerNode.getURI(), TextDocProducer.class) ;
+            Class<? extends TextDocProducer> c = Loader.loadClass(textDocProducerNode.getURI(), TextDocProducer.class);
 
             String className = textDocProducerNode.getURI().substring(ARQConstants.javaClassURIScheme.length()) ;
-            Constructor<?> dyadic = getConstructor(c, DatasetGraph.class, TextIndex.class);
-            Constructor<?> monadic = getConstructor(c, TextIndex.class);
+            Constructor<? extends TextDocProducer> dyadic = getConstructor(c, DatasetGraph.class, TextIndex.class);
+            Constructor<? extends TextDocProducer> monadic = getConstructor(c, TextIndex.class);
 
             try {
                 if (dyadic != null) {
-                    textDocProducer = (TextDocProducer) dyadic.newInstance(ds.asDatasetGraph(), textIndex) ;
+                    textDocProducer = dyadic.newInstance(ds.asDatasetGraph(), textIndex) ;
                 } else if (monadic != null) {
-                    textDocProducer = (TextDocProducer) monadic.newInstance(textIndex) ;
+                    textDocProducer = monadic.newInstance(textIndex) ;
                 } else {
                     Log.warn(Loader.class, "Exception during instantiation '"+className+"' no TextIndex or DatasetGraph,Index constructor" );
                 }
@@ -90,7 +90,7 @@ public class TextDatasetAssembler extends AssemblerBase implements Assembler
         return dst ;
     }
 
-    private Constructor<?> getConstructor(Class<?> c, Class<?> ...types) {
+    private <T> Constructor<T> getConstructor(Class<T> c, Class<?> ...types) {
         try {
             return c.getConstructor(types);
         } catch (NoSuchMethodException e) {

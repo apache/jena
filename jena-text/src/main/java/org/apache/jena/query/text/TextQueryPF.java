@@ -18,15 +18,17 @@
 
 package org.apache.jena.query.text;
 
+import static org.apache.jena.sparql.engine.binding.BindingFactory.binding;
+import static org.apache.jena.sparql.util.IterLib.*;
+import static org.apache.jena.sparql.util.NodeFactoryExtra.floatToNode;
+
 import java.util.Collection ;
-import java.util.Iterator ;
 import java.util.LinkedHashMap ;
 import java.util.List ;
 import java.util.Map ;
-import java.util.function.Function ;
+import java.util.stream.Stream;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
@@ -246,10 +248,15 @@ public class TextQueryPF implements PropertyFunction
         Var scoreVar = (score==null) ? null : Var.alloc(score) ;
         Var literalVar = (literal==null) ? null : Var.alloc(literal) ;
         Collection<TextHit> r = (null != textResults) ? textResults.values() : query(match.getProperty(), match.getQueryString(), match.getLimit(), execCxt) ;
-        Function<TextHit,Binding> converter = new TextHitConverter(binding, sVar, scoreVar, literalVar);
-        Iterator<Binding> bIter = Iter.map(r.iterator(), converter);
-        QueryIterator qIter = new QueryIterPlainWrapper(bIter, execCxt);
-        return qIter ;
+        Stream<Binding> bindings = r.stream().map(hit -> {
+			if (score == null && literal == null) return binding(binding, sVar, hit.getNode());
+			BindingMap bmap = BindingFactory.create(binding);
+			bmap.add(sVar, hit.getNode());
+			if (scoreVar != null) bmap.add(scoreVar, floatToNode(hit.getScore()));
+			if (literalVar != null) bmap.add(literalVar, hit.getLiteral());
+			return bmap;
+		});
+        return new QueryIterPlainWrapper(bindings.iterator(), execCxt);
     }
     
     private static final Symbol cacheSymbol = Symbol.create("TextQueryPF.cache");
@@ -298,34 +305,23 @@ public class TextQueryPF implements PropertyFunction
                     IterLib.result(binding, execCxt) :
                     IterLib.oneResult(binding, literalVar, hit.getLiteral(), execCxt) ;
             }
-            else
-            {
-                // If the score var is specified, then we have to issue the query and then perform an inefficient local join so that the score remains accurate
-                List<TextHit> x = query(match.getProperty(), match.getQueryString(), -1, execCxt) ;
-                
-                if ( x == null ) { // null return value - empty result
-                    return IterLib.noResults(execCxt) ;
-                }
-                
-                for (TextHit hit : x ) {
-                    if (hit.getNode().equals(s)) {
-                        // found the node among the hits
-                        if (literalVar == null) {
-                            return IterLib.oneResult(binding, scoreVar, NodeFactoryExtra.floatToNode(hit.getScore()), execCxt);
-                        }
-                        else {
-                            BindingMap bmap = BindingFactory.create(binding);
-                            bmap.add(scoreVar, NodeFactoryExtra.floatToNode(hit.getScore()));
-                            bmap.add(literalVar, hit.getLiteral());
-                            return IterLib.result(bmap, execCxt) ;
-                        }
-                    }
-                }
-            }
+			// If the score var is specified, then we have to issue the query and then perform an inefficient local join so that the score remains accurate
+			List<TextHit> x = query(match.getProperty(), match.getQueryString(), -1, execCxt) ;
+			
+			if ( x == null ) { // null return value - empty result
+			    return IterLib.noResults(execCxt) ;
+			}
+			return x.stream().filter(hit -> hit.getNode().equals(s)).findFirst().map(hit -> {																		// hits
+				if (literalVar == null) { return oneResult(binding, scoreVar, floatToNode(hit.getScore()), execCxt); }
+				BindingMap bmap = BindingFactory.create(binding);
+				bmap.add(scoreVar, floatToNode(hit.getScore()));
+				bmap.add(literalVar, hit.getLiteral());
+				return result(bmap, execCxt);
+			}).orElse(noResults(execCxt));
         }
         
         // node was not among the hits - empty result
-        return IterLib.noResults(execCxt) ;
+        return noResults(execCxt) ;
     }
 
     private List<TextHit> query(Node property, String queryString, int limit, ExecutionContext execCxt) {

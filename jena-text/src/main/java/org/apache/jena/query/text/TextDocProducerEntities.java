@@ -18,13 +18,17 @@
 
 package org.apache.jena.query.text ;
 
+import static java.lang.ThreadLocal.withInitial;
+import static org.apache.jena.sparql.util.FmtUtils.stringForNode;
+import static org.apache.jena.sparql.util.FmtUtils.stringForString;
+
 import java.util.List ;
+import java.util.Objects;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.DatasetChangesBatched ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.QuadAction ;
-import org.apache.jena.sparql.util.FmtUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -37,12 +41,7 @@ public class TextDocProducerEntities extends DatasetChangesBatched implements Te
     
     // Have to have a ThreadLocal here to keep track of whether or not we are in a transaction,
     // therefore whether or not we have to do autocommit
-    private final ThreadLocal<Boolean> inTransaction = new ThreadLocal<Boolean>() {
-        @Override
-        protected Boolean initialValue() {
-            return Boolean.FALSE ;
-        }
-    } ;
+	private final ThreadLocal<Boolean> inTransaction = withInitial(() -> false);
 
     public TextDocProducerEntities(TextIndex indexer) {
         this.defn = indexer.getDocDef() ;
@@ -91,31 +90,21 @@ public class TextDocProducerEntities extends DatasetChangesBatched implements Te
         for ( Quad quad : batch ) {
             Node p = quad.getPredicate() ;
             String field = defn.getField(p) ;
-            if ( field == null )
-                continue ;
+            if ( field == null ) continue ;
             Node o = quad.getObject() ;
-            String val = null ;
-            if ( o.isURI() )
-                val = o.getURI() ;
-            else if ( o.isLiteral() )
-                val = o.getLiteralLexicalForm() ;
-            else {
-                log.warn("Not a literal value for mapped field-predicate: " + field + " :: "
-                         + FmtUtils.stringForString(field)) ;
-                continue ;
-            }
-            entity.put(field, val) ;
+			if (!(o.isURI() || o.isLiteral())) {
+				log.warn("Not a literal value for mapped field-predicate: " + field + " :: " + stringForString(field));
+				continue;
+			}
+            entity.put(field, stringForNode(o)) ;
         }
         indexer.addEntity(entity) ;
     }
+    
+    private Entity entityFromQuad(Quad q) { return TextQueryFuncs.entityFromQuad(defn, q); }
 
     private void docQuads(List<Quad> batch) {
-
         // One document per triple/quad
-        for ( Quad quad : batch ) {
-            Entity entity = TextQueryFuncs.entityFromQuad(defn, quad) ;
-            if ( entity != null )
-                indexer.addEntity(entity) ;
-        }
+    		batch.stream().map(this::entityFromQuad).filter(Objects::nonNull).forEach(indexer::addEntity);
     }
 }
