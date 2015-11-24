@@ -37,7 +37,7 @@ public class ExRIOT_3
         RDFDataMgr.read(ds, "data2.trig") ;
         
         // Create a dataset,
-        Dataset ds2 = DatasetFactory.createMem() ;
+        Dataset ds2 = DatasetFactory.createTxnMem() ;
         // read in data, indicating the syntax in case the remote end does not
         // correctly provide the HTTP content type.
         RDFDataMgr.read(ds2, "http://host/data2.unknown", TRIG) ;
