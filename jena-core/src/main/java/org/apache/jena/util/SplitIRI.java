@@ -69,7 +69,7 @@ public class SplitIRI
      * legal for Turtle and goes with {@link #localnameTTL}
      */
     public static String namespaceTTL(String string) {
-        return namespaceTTL(string) ;
+        return namespace(string) ;
     }
 
     /** Calculate a localname - enforce legal Turle
