@@ -268,6 +268,11 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 	}
 
 	@Override
+    public long size() {
+	    return quadsIndex().listGraphNodes().count() ;
+	}
+	
+	@Override
 	public void clear() {
 		mutate(x -> {
 			defaultGraph().clear();
