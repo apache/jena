@@ -21,8 +21,8 @@ package org.apache.jena.sparql.core;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 
-public class TestDatasetMem extends AbstractTestDataset 
+public class TestDatasetGeneral extends AbstractTestDataset 
 {
     @Override
-    protected Dataset createFixed() { return DatasetFactory.createMem() ; }
+    protected Dataset createFixed() { return DatasetFactory.createGeneral() ; }
 }

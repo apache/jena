@@ -26,7 +26,7 @@ import org.junit.runners.Suite ;
     TestContext.class
     , TestDatasetGraphMem.class
     , TestDatasetGraphMemTriplesQuads.class
-    , TestDatasetMem.class
+    , TestDatasetGeneral.class
     // Not ready , TestDynamicDatasetMem.class
     , TestDatasetGraphsRegular.class
     , TestGraphOverDatasetMem.class

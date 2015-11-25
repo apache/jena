@@ -516,7 +516,7 @@ public class TestAPI extends BaseTest
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
         Dataset result = qExec.execConstructDataset();
         
-        Dataset expected = DatasetFactory.createMem();
+        Dataset expected = DatasetFactory.createTxnMem();
         expected.addNamedModel(g1.getURI(), m);
         
         assertTrue(IsoMatcher.isomorphic( expected.asDatasetGraph(), result.asDatasetGraph()) );
