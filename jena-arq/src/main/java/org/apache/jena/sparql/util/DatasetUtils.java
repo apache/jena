@@ -27,15 +27,17 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.core.DatasetDescription ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 
-/** Internal Dataset/DataSource factory + graph equivalents. */
+/** Internal Dataset factory + graph equivalents. */
 
 public class DatasetUtils
 {
@@ -81,6 +83,26 @@ public class DatasetUtils
     /** add graphs into an existing DataSource */
     public static Dataset addInGraphs(Dataset ds, List<String> uriList, List<String> namedSourceList, String baseURI)
     {
+        boolean transactionWrapper = ds.supportsTransactions() && ! ds.isInTransaction() ;
+        if ( ! transactionWrapper )
+            return addInGraphsWorker(ds, uriList, namedSourceList, baseURI) ;
+        
+        // TODO Replace with Txn.executeWrite when Txn code ready.
+        ds.begin(ReadWrite.WRITE) ;
+        try {        
+            return addInGraphsWorker(ds, uriList, namedSourceList, baseURI) ;
+        } catch ( JenaException ex) {
+            ds.abort();
+            throw ex ;
+        }
+        finally {
+            if ( ds.isInTransaction() )
+                ds.commit() ;
+            ds.end();
+        }
+    }
+    
+    private static Dataset addInGraphsWorker(Dataset ds, List<String> uriList, List<String> namedSourceList, String baseURI) {
         if ( ds.getDefaultModel() == null )
             // Merge into background graph
             ds.setDefaultModel(GraphFactory.makeDefaultModel()) ;
