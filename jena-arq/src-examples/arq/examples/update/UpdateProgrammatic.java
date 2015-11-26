@@ -18,6 +18,7 @@
 
 package arq.examples.update;
 
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.riot.Lang ;
@@ -37,23 +38,24 @@ import org.apache.jena.update.* ;
 
 public class UpdateProgrammatic
 {
+    static { LogCtl.setCmdLogging(); }
     public static void main(String []args)
     {
-        Dataset graphStore = DatasetFactory.createMem() ;
+        Dataset dataset = DatasetFactory.createTxnMem() ;
         
         UpdateRequest request = UpdateFactory.create() ;
         
         request.add(new UpdateDrop(Target.ALL)) ;
         request.add(new UpdateCreate("http://example/g2")) ;
         request.add(new UpdateLoad("file:etc/update-data.ttl", "http://example/g2")) ;
-        UpdateAction.execute(request, graphStore) ;
+        UpdateAction.execute(request, dataset) ;
         
         System.out.println("# Debug format");
-        SSE.write(graphStore) ;
+        SSE.write(dataset) ;
         
         System.out.println();
         
         System.out.println("# N-Quads: S P O G") ;
-        RDFDataMgr.write(System.out, graphStore, Lang.NQUADS) ;
+        RDFDataMgr.write(System.out, dataset, Lang.NQUADS) ;
     }
 }

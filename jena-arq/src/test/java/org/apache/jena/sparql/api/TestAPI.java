@@ -108,6 +108,19 @@ public class TestAPI extends BaseTest
         }
     }
 
+    // This test is slightly dubious. It is testing that the model for the
+    // resource in the result is the same object as the model supplied ot the
+    // query.
+    //
+    // It happens to be true for DatasetImpl and the default model but that's
+    // about it. It is not part of the contract of query/datasets.
+    //
+    // Left as an active test so the assumption is tested (it has been true for
+    // many years). 
+    //
+    // Using the Resource.getXXX and Resource.listXXX operations is dubious if
+    // there are named graphs and that has always been the case.
+    
     @Test public void test_API1()
     {
         try(QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}")) {
@@ -119,16 +132,6 @@ public class TestAPI extends BaseTest
         }
     }
     
-//    @Test public void test_OptRegex1()
-//    {
-//        execRegexTest(1, "SELECT * {?s ?p ?o . FILTER regex(?o, '^x')}") ;
-//    }
-//
-//    @Test public void test_OptRegex2()
-//    {
-//        execRegexTest(2, "SELECT * {?s ?p ?o . FILTER regex(?o, '^x', 'i')}") ;
-//    }
-
     @Test public void testInitialBindings0()
     {
         QuerySolutionMap smap1 = new QuerySolutionMap() ;
@@ -513,7 +516,7 @@ public class TestAPI extends BaseTest
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
         Dataset result = qExec.execConstructDataset();
         
-        Dataset expected = DatasetFactory.createMem();
+        Dataset expected = DatasetFactory.createTxnMem();
         expected.addNamedModel(g1.getURI(), m);
         
         assertTrue(IsoMatcher.isomorphic( expected.asDatasetGraph(), result.asDatasetGraph()) );

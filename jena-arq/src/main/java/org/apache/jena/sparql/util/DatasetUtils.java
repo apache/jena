@@ -27,164 +27,245 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.core.DatasetDescription ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 
-/** Internal Dataset/DataSource factory + graph equivalents. */
-
+/** Internal Dataset factory + graph equivalents. */
 public class DatasetUtils
 {
-    
-    public static Dataset createDataset(String uri, List<String> namedSourceList)
-    {
-        return createDataset(uri, namedSourceList, null) ;
-    }
-    
-    public static Dataset createDataset(String uri, List<String> namedSourceList, String baseURI)
-    {
-        List<String> uriList = Arrays.asList(uri) ;
-        return createDataset(uriList, namedSourceList, baseURI) ;
+    /** Create a general purpose, in-memory dataset, and load data into the default graph and
+     * also some named graphs.
+     * @param uri               Default graph
+     * @param namedSourceList   Named graphs
+     * @return Dataset
+     */
+    public static Dataset createDataset(String uri, List<String> namedSourceList) {
+        return createDataset(uri, namedSourceList, null);
     }
 
-    public static Dataset createDataset(List<String> uriList, List<String> namedSourceList)
-    {
-        return createDataset(uriList, namedSourceList, null) ;
+    /** Create a general purpose, in-memory dataset, and load data into the default graph and
+     * also some named graphs.
+     * @param uri               Default graph
+     * @param namedSourceList   Named graphs
+     * @param baseURI
+     * @return Dataset
+     */
+    public static Dataset createDataset(String uri, List<String> namedSourceList, String baseURI) {
+        List<String> uriList = Arrays.asList(uri);
+        return createDataset(uriList, namedSourceList, baseURI);
     }
 
-    public static Dataset createDataset(DatasetDescription datasetDesc)
-    {
-        return createDataset(datasetDesc, null) ;
+    /** Create a general purpose, in-memory dataset, and load some data
+     * 
+     * @param uriList           RDF for the default graph
+     * @param namedSourceList   Named graphs.
+     * @return Dataset
+     */
+    public static Dataset createDataset(List<String> uriList, List<String> namedSourceList) {
+        return createDataset(uriList, namedSourceList, null);
     }
 
-    public static Dataset createDataset(DatasetDescription datasetDesc, String baseURI)
-    {
-        return createDataset(datasetDesc.getDefaultGraphURIs(), datasetDesc.getNamedGraphURIs(), baseURI) ;
+    /** Create a general purpose, in-memory dataset, and load data.
+     * 
+     * @param datasetDesc   
+     * @return Dataset
+     */
+    public static Dataset createDataset(DatasetDescription datasetDesc) {
+        return createDataset(datasetDesc, null);
+    }
+
+    /** Create a general purpose, in-memory dataset, and load data.
+     * 
+     * @param datasetDesc   
+     * @return Dataset
+     */
+    public static Dataset createDataset(DatasetDescription datasetDesc, String baseURI) {
+        return createDataset(datasetDesc.getDefaultGraphURIs(), datasetDesc.getNamedGraphURIs(), baseURI);
+    }
+
+    /** Create a general purpose, in-memory dataset, and load data.
+     * @param uriList           Default graph
+     * @param namedSourceList   Named graphs
+     * @param baseURI
+     * @return Dataset
+     */
+    public static Dataset createDataset(List<String> uriList, List<String> namedSourceList, String baseURI) {
+        Dataset ds = DatasetFactory.createGeneral();
+        return addInGraphs(ds, uriList, namedSourceList, baseURI);
+    }
+
+    /** Add graphs into an existing DataSource */
+    public static Dataset addInGraphs(Dataset ds, List<String> uriList, List<String> namedSourceList) {
+        return addInGraphs(ds, uriList, namedSourceList, null);
     }
     
-    public static Dataset createDataset(List<String> uriList, List<String> namedSourceList, String baseURI)
-    {
-        Dataset ds = DatasetFactory.createMem() ;
-        return addInGraphs(ds, uriList, namedSourceList, baseURI) ;
+    /** Add graphs into a Dataset
+     * 
+     * @param ds
+     * @param uriList           Default graph
+     * @param namedSourceList   Named graphs
+     * @param baseURI
+     * @return Dataset, as passed in.
+     */
+    public static Dataset addInGraphs(Dataset ds, List<String> uriList, List<String> namedSourceList, String baseURI) {
+        boolean transactionWrapper = ds.supportsTransactions() && !ds.isInTransaction();
+        if ( !transactionWrapper )
+            return addInGraphsWorker(ds, uriList, namedSourceList, baseURI);
+
+        // TODO Replace with Txn.executeWrite when Txn code ready.
+        ds.begin(ReadWrite.WRITE);
+        try {
+            return addInGraphsWorker(ds, uriList, namedSourceList, baseURI);
+        }
+        catch (JenaException ex) {
+            ds.abort();
+            throw ex;
+        }
+        finally {
+            if ( ds.isInTransaction() )
+                ds.commit();
+            ds.end();
+        }
     }
-    
-    /** add graphs into an existing DataSource */
-    public static Dataset addInGraphs(Dataset ds, List<String> uriList, List<String> namedSourceList)
-    {
-        return addInGraphs(ds, uriList, namedSourceList, null) ;
-    }
-    
-    /** add graphs into an existing DataSource */
-    public static Dataset addInGraphs(Dataset ds, List<String> uriList, List<String> namedSourceList, String baseURI)
-    {
+
+    private static Dataset addInGraphsWorker(Dataset ds, List<String> uriList, List<String> namedSourceList, String baseURI) {
         if ( ds.getDefaultModel() == null )
-            // Merge into background graph
-            ds.setDefaultModel(GraphFactory.makeDefaultModel()) ;
-        
-        if ( uriList != null )
-        {
-            for (Iterator<String> iter = uriList.iterator() ; iter.hasNext() ; )
-            {
-                String sourceURI = iter.next() ;
-                String absURI = null ;
+            // Not that it should be null ...
+            ds.setDefaultModel(GraphFactory.makeDefaultModel());
+
+        if ( uriList != null ) {
+            for ( Iterator<String> iter = uriList.iterator() ; iter.hasNext() ; ) {
+                String sourceURI = iter.next();
+                String absURI = null;
                 if ( baseURI != null )
-                    absURI = IRIResolver.resolveString(sourceURI, baseURI) ;
+                    absURI = IRIResolver.resolveString(sourceURI, baseURI);
                 else
-                    absURI = IRIResolver.resolveString(sourceURI) ;
-                RDFDataMgr.read(ds.getDefaultModel(), sourceURI, absURI, null) ;
+                    absURI = IRIResolver.resolveString(sourceURI);
+                RDFDataMgr.read(ds.getDefaultModel(), sourceURI, absURI, null);
             }
         }
-        
-        if ( namedSourceList != null )
-        {
-            for (Iterator<String> iter = namedSourceList.iterator() ; iter.hasNext() ; )
-            {
-                String sourceURI = iter.next() ;
-                String absURI = null ;
+
+        if ( namedSourceList != null ) {
+            for ( Iterator<String> iter = namedSourceList.iterator() ; iter.hasNext() ; ) {
+                String sourceURI = iter.next();
+                String absURI = null;
                 if ( baseURI != null )
-                    absURI = IRIResolver.resolveString(sourceURI, baseURI) ;
+                    absURI = IRIResolver.resolveString(sourceURI, baseURI);
                 else
-                    absURI = IRIResolver.resolveString(sourceURI) ;
-                Model m = GraphFactory.makeDefaultModel() ;
-                RDFDataMgr.read(m, sourceURI, absURI, null) ;
-                ds.addNamedModel(absURI, m) ;
+                    absURI = IRIResolver.resolveString(sourceURI);
+                Model m = GraphFactory.makeDefaultModel();
+                RDFDataMgr.read(m, sourceURI, absURI, null);
+                ds.addNamedModel(absURI, m);
             }
         }
-        return ds ;
+        return ds;
     }
     
     // ---- DatasetGraph level.
     
-    public static DatasetGraph createDatasetGraph(DatasetDescription datasetDesc)
-    {
+    /** Create a general purpose, in-memory dataset, and load data.
+     * 
+     * @param datasetDesc   
+     * @return Dataset
+     */
+    public static DatasetGraph createDatasetGraph(DatasetDescription datasetDesc) {
         return createDatasetGraph(datasetDesc.getDefaultGraphURIs(), datasetDesc.getNamedGraphURIs(), null) ;
     }
 
-    public static DatasetGraph createDatasetGraph(DatasetDescription datasetDesc, String baseURI)
-    {
+    /** Create a general purpose, in-memory dataset, and load data.
+     * 
+     * @param datasetDesc   
+     * @param baseURI
+     * @return Dataset
+     */
+    public static DatasetGraph createDatasetGraph(DatasetDescription datasetDesc, String baseURI) {
         return createDatasetGraph(datasetDesc.getDefaultGraphURIs(), datasetDesc.getNamedGraphURIs(), baseURI) ;
     }
         
-    public static DatasetGraph createDatasetGraph(String uri, List<String> namedSourceList, String baseURI)
-    {
-        List<String> uriList = new ArrayList<String>() ;
-        uriList.add(uri) ;
-        return createDatasetGraph(uriList, namedSourceList, baseURI) ;
+    public static DatasetGraph createDatasetGraph(String uri, List<String> namedSourceList, String baseURI) {
+        List<String> uriList = new ArrayList<String>();
+        uriList.add(uri);
+        return createDatasetGraph(uriList, namedSourceList, baseURI);
     }
 
-    public static DatasetGraph createDatasetGraph(List<String> uriList, List<String> namedSourceList, String baseURI)
-    {
-        DatasetGraph ds = DatasetGraphFactory.createMem() ;
-        
-        // Merge into background graph
-        if ( uriList != null )
-        {
-            Model m = GraphFactory.makeDefaultModel() ;
-            for (Iterator<String> iter = uriList.iterator() ; iter.hasNext() ; )
-            {
-                String sourceURI = iter.next() ;
-                String absURI = null ;
-                if ( baseURI != null )
-                    absURI = IRIResolver.resolveString(sourceURI, baseURI) ;
-                else
-                    absURI = IRIResolver.resolveString(sourceURI) ;
-                // FileManager.readGraph?
-                RDFDataMgr.read(m, sourceURI, absURI, null) ;
-            }
-            ds.setDefaultGraph(m.getGraph()) ;
-        }
-        else
-        {
-            ds.setDefaultGraph(GraphFactory.createDefaultGraph()) ;
-        }
-        
-        if ( namedSourceList != null )
-        {
-            for (Iterator<String> iter = namedSourceList.iterator() ; iter.hasNext() ; )
-            {
-                String sourceURI = iter.next();
-                String absURI = null ;
-                if ( baseURI != null )
-                    absURI = IRIResolver.resolveString(baseURI, sourceURI) ;
-                else
-                    absURI = IRIResolver.resolveString(sourceURI) ;
-                Model m = GraphFactory.makeDefaultModel() ;
-                RDFDataMgr.read(m, sourceURI, absURI, null) ;
-                Node gn = NodeFactory.createURI(sourceURI) ;
-                ds.addGraph(gn, m.getGraph()) ;
-            }
-        }
-        return ds ;
+    public static DatasetGraph createDatasetGraph(List<String> uriList, List<String> namedSourceList, String baseURI) {
+        DatasetGraph dsg = DatasetGraphFactory.createMem();
+        return addInGraphs(dsg, uriList, namedSourceList, baseURI);
     }
     
-//    private static Node nodeOrStr(Object obj)
-//    {
-//        if ( obj instanceof Node) return (Node)obj ;
-//        if ( obj instanceof String) return Node.createURI((String)obj) ;
-//        throw new DataException("Not a string nor a Node: ("+Utils.className(obj)+") "+obj) ;
-//    }
+    /** Add graphs into a DatasetGraph
+     * 
+     * @param dsg
+     * @param uriList           Default graph
+     * @param namedSourceList   Named graphs
+     * @param baseURI
+     * @return Dataset, as passed in.
+     */
+    private static DatasetGraph addInGraphs(DatasetGraph dsg, List<String> uriList, List<String> namedSourceList, String baseURI) {
+        if ( ! (dsg instanceof Transactional) )
+            return addInGraphsWorker(dsg, uriList, namedSourceList, baseURI) ;
+        Transactional transactional = (Transactional)dsg ;
+        
+        if ( ! transactional.isInTransaction() )
+            return addInGraphsWorker(dsg, uriList, namedSourceList, baseURI);
+
+        // TODO Replace with Txn.executeWrite when Txn code ready.
+        transactional.begin(ReadWrite.WRITE);
+        try {
+            return addInGraphsWorker(dsg, uriList, namedSourceList, baseURI);
+        }
+        catch (JenaException ex) {
+            transactional.abort();
+            throw ex;
+        }
+        finally {
+            if ( transactional.isInTransaction() )
+                transactional.commit();
+            transactional.end();
+        }
+    }
+
+    private static DatasetGraph addInGraphsWorker(DatasetGraph dsg, List<String> uriList, List<String> namedSourceList, String baseURI) {
+        // Merge into background graph
+        if ( uriList != null ) {
+            Model m = GraphFactory.makeDefaultModel();
+            for ( Iterator<String> iter = uriList.iterator() ; iter.hasNext() ; ) {
+                String sourceURI = iter.next();
+                String absURI = null;
+                if ( baseURI != null )
+                    absURI = IRIResolver.resolveString(sourceURI, baseURI);
+                else
+                    absURI = IRIResolver.resolveString(sourceURI);
+                // FileManager.readGraph?
+                RDFDataMgr.read(m, sourceURI, absURI, null);
+            }
+            dsg.setDefaultGraph(m.getGraph());
+        } else {
+            dsg.setDefaultGraph(GraphFactory.createDefaultGraph());
+        }
+
+        if ( namedSourceList != null ) {
+            for ( Iterator<String> iter = namedSourceList.iterator() ; iter.hasNext() ; ) {
+                String sourceURI = iter.next();
+                String absURI = null;
+                if ( baseURI != null )
+                    absURI = IRIResolver.resolveString(baseURI, sourceURI);
+                else
+                    absURI = IRIResolver.resolveString(sourceURI);
+                Model m = GraphFactory.makeDefaultModel();
+                RDFDataMgr.read(m, sourceURI, absURI, null);
+                Node gn = NodeFactory.createURI(sourceURI);
+                dsg.addGraph(gn, m.getGraph());
+            }
+        }
+        return dsg;
+    }
 }

@@ -19,7 +19,10 @@
 package org.apache.jena.sparql.graph;
 
 import java.util.ArrayList ;
+import java.util.Arrays ;
+import java.util.Collection ;
 import java.util.List ;
+import java.util.function.Supplier ;
 
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -31,25 +34,41 @@ import org.apache.jena.update.UpdateRequest ;
 import org.junit.Assert ;
 import org.junit.Before ;
 import org.junit.Test ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Parameterized ;
+import org.junit.runners.Parameterized.Parameters ;
 
+@RunWith(Parameterized.class)
 public class TestDatasets {
-		
+    @Parameters(name = "{index}: {0}")
+    public static Collection<Object[]> data() {
+        Supplier<Dataset> datasetGeneralMaker = ()-> DatasetFactory.createGeneral() ; 
+        Supplier<Dataset> datasetTxnMemMaker = ()-> DatasetFactory.createTxnMem() ;
+        return Arrays.asList(new Object[][] { { "General",  datasetGeneralMaker },
+                                              { "TxnMem",   datasetTxnMemMaker} });
+    }	
+    
+    
 	private static final String data = "INSERT DATA { <ex:default> <ex:default> <ex:default>.\n"
 									   + "GRAPH <ex:from> { <ex:from> <ex:from> <ex:from> }\n"
 									   + "GRAPH <ex:named> { <ex:named> <ex:named> <ex:named> }\n"
 									   + "GRAPH <ex:other> { <ex:other> <ex:other> <ex:other> }\n"
 									   + "}";
 
-	private Dataset ds;
-	private DatasetGraph gs;
+    private final Supplier<Dataset> maker;
+	private final Dataset ds;
+	private final DatasetGraph dsg;
+	
+	public TestDatasets(String name, Supplier<Dataset> maker) {
+	    this.maker = maker ;
+        this.ds = maker.get() ;
+        this.dsg = ds.asDatasetGraph() ;
+	}
 	
 	@Before
 	public void setup() {
-		this.ds = DatasetFactory.createMem();
-		this.gs = ds.asDatasetGraph() ;
-		
 		UpdateRequest up = UpdateFactory.create(TestDatasets.data);
-		UpdateProcessor processor = UpdateExecutionFactory.create(up, this.gs);
+		UpdateProcessor processor = UpdateExecutionFactory.create(up, this.dsg);
 		processor.execute();
 	}
 	

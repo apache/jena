@@ -311,10 +311,10 @@ public class RDFDataMgr
         process(dest, in, base, lang, (Context)null) ;
     }
     
-    private static Model createModel() { return ModelFactory.createDefaultModel() ; } 
-    private static Graph createGraph() { return GraphFactory.createDefaultGraph() ; } 
-    private static Dataset createDataset() { return DatasetFactory.createMem() ; } 
-    private static DatasetGraph createDatasetGraph() { return DatasetGraphFactory.createMem() ; }
+    private static Model createModel()                  { return ModelFactory.createDefaultModel() ; } 
+    private static Graph createGraph()                  { return GraphFactory.createDefaultGraph() ; } 
+    private static Dataset createDataset()              { return DatasetFactory.createTxnMem() ; } 
+    private static DatasetGraph createDatasetGraph()    { return DatasetGraphFactory.createTxnMem() ; }
     
     // Load:
     /** Create a memory Model and read in some data

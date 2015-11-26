@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,26 +18,11 @@
 
 package org.apache.jena.sparql.core;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestContext.class
-    , TestDatasetGraphMem.class
-    , TestDatasetGraphMemTriplesQuads.class
-    , TestDatasetGeneral.class
-    // Not ready , TestDynamicDatasetMem.class
-    , TestDatasetGraphsRegular.class
-    , TestGraphOverDatasetMem.class
-    , TestDatasetGraphViewGraphs.class
-    , TestDatasetMonitor.class
-    , TestDatasetGraphWithLock.class
-    
-    , TestDatasetGraphBaseFind_General.class
-    , TestDatasetGraphBaseFindPattern_General.class
-})
-
-public class TS_Core
-{}
-
+public class TestDatasetGeneral extends AbstractTestDataset 
+{
+    @Override
+    protected Dataset createFixed() { return DatasetFactory.createGeneral() ; }
+}

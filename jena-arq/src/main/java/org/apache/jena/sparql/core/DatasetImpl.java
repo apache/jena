@@ -19,15 +19,11 @@
 package org.apache.jena.sparql.core;
 
 import java.util.Iterator ;
-import java.util.concurrent.Callable ;
 
-import org.apache.jena.atlas.lib.Cache ;
-import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.LabelExistsException ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -45,26 +41,12 @@ import org.apache.jena.sparql.util.NodeUtils ;
 
 public class DatasetImpl implements Dataset
 {
-    /* 
-     * We are cautious - SPARQL Update can change the graphs in a store
-     * so we assume DatasetGraph.getGraph is efficient and
-     * here cut the overhead of model wrappers.
-     */
-
     protected DatasetGraph dsg = null ;
     private Transactional transactional = null ;
-    // Cache of graph -> model so that we don't churn model creation.
-    private Cache<Graph, Model> cache = createCache() ;
-    private Object internalLock = new Object() ;
+    // Preserve ancient behaviour.
+    private Graph seenDftGraph = null ;
+    private Model dftModel = null ;
 
-    //private DatasetImpl() {}
-    
-    protected DatasetImpl(DatasetGraph dsg)
-    {
-        this.dsg = dsg ;
-        if ( dsg instanceof Transactional )
-            this.transactional = (Transactional)dsg ; 
-    }
     /** Wrap an existing DatasetGraph */
     public static Dataset wrap(DatasetGraph datasetGraph)
     {
@@ -81,29 +63,53 @@ public class DatasetImpl implements Dataset
         return new DatasetImpl(new DatasetGraphMap(datasetGraph)) ;
     }
 
+    protected DatasetImpl(DatasetGraph dsg)
+    {
+        this.dsg = dsg ;
+        if ( dsg instanceof Transactional )
+            this.transactional = (Transactional)dsg ; 
+    }
+    
     /** Create a Dataset with the model as default model.
      *  Named models must be explicitly added to identify the storage to be used.
      */
     public DatasetImpl(Model model)
     {
-        addToCache(model) ;
+        seenDftGraph = model.getGraph() ;
+        dftModel = model ;
         this.dsg = DatasetGraphFactory.create(model.getGraph()) ;
+        if ( dsg instanceof Transactional )
+            this.transactional = (Transactional)dsg ; 
     }
 
+    /** Create a Dataset with a copy of the structure of another one,
+     * while sharing the graphs themselves.  
+     */
     public DatasetImpl(Dataset ds)
     {
-        this.dsg = DatasetGraphFactory.create(ds.asDatasetGraph()) ;
+        this(DatasetGraphFactory.create(ds.asDatasetGraph())) ;
     }
 
     @Override
     public Model getDefaultModel() 
     { 
-        synchronized(internalLock)
-        {
-            return graph2model(dsg.getDefaultGraph()) ;
-        }
+        setDefaultModelSlots() ;
+        return dftModel ;
     }
 
+    private synchronized void setDefaultModelSlots() {
+        Graph g = dsg.getDefaultGraph() ;
+        if ( g != seenDftGraph ) {
+            seenDftGraph = g ;
+            dftModel = ModelFactory.createModelForGraph(g) ;
+        }
+    }
+    
+    private synchronized void clearDefaultModelSlots() {
+        seenDftGraph = null ;
+        dftModel = null ;
+    }
+    
     @Override
     public Lock getLock() { return dsg.getLock() ; }
     
@@ -120,8 +126,7 @@ public class DatasetImpl implements Dataset
 
     @Override public void begin(ReadWrite mode)     
     {
-        if ( transactional == null )
-            throw new UnsupportedOperationException("Transactions not supported") ;
+        checkTransactional() ;
         transactional.begin(mode) ;
     }
     
@@ -129,35 +134,39 @@ public class DatasetImpl implements Dataset
     @Override
     public boolean isInTransaction()
     {
-        if ( transactional == null )
-            throw new UnsupportedOperationException("Transactions not supported") ;
+        checkTransactional() ;
         return transactional.isInTransaction() ;
     }
 
     @Override
     public void commit()
     {
-        if ( transactional == null )
-            throw new UnsupportedOperationException("Transactions not supported") ;
+        checkTransactional() ;
         transactional.commit() ;
     }
 
     @Override
     public void abort()
     {
-        if ( transactional == null )
-            throw new UnsupportedOperationException("Transactions not supported") ;
+        checkTransactional() ;
         transactional.abort() ;
     }
 
     @Override
     public void end()
     {
-        if ( transactional == null )
-            throw new UnsupportedOperationException("Transactions not supported") ;
+        checkTransactional() ;
         transactional.end() ;
+        
+        seenDftGraph = null ;
+        dftModel = null ;
     }
 
+    private void checkTransactional() {
+        if ( ! supportsTransactions() )
+            throw new UnsupportedOperationException("Transactions not supported") ;
+    }
+    
     @Override
     public DatasetGraph asDatasetGraph() { return dsg ; }
 
@@ -166,21 +175,13 @@ public class DatasetImpl implements Dataset
     { 
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
-        synchronized(internalLock)
-        {
-            Graph g = dsg.getGraph(n) ;
-            if ( g == null )
-                return null ;
-            return graph2model(g) ;
-        }
+        return graph2model(dsg.getGraph(n)) ;
     }
 
     @Override
-    public void addNamedModel(String uri, Model model) throws LabelExistsException
+    public void addNamedModel(String uri, Model model)
     { 
         checkGraphName(uri) ;
-        // Assumes single writer.
-        addToCache(model) ;
         Node n = NodeFactory.createURI(uri) ;
         dsg.addGraph(n, model.getGraph()) ;
     }
@@ -190,8 +191,6 @@ public class DatasetImpl implements Dataset
     { 
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
-        // Assumes single writer.
-        removeFromCache(dsg.getGraph(n)) ;
         dsg.removeGraph(n) ;
     }
 
@@ -201,9 +200,7 @@ public class DatasetImpl implements Dataset
         // Assumes single writer.
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
-        removeFromCache(dsg.getGraph(n)) ;
         dsg.removeGraph(n) ;
-        addToCache(model) ;
         dsg.addGraph(n, model.getGraph() ) ;
     }
 
@@ -212,10 +209,8 @@ public class DatasetImpl implements Dataset
     { 
         if ( model == null )
             model = ModelFactory.createDefaultModel() ;
-        // Assumes single writer.
-        removeFromCache(dsg.getDefaultGraph()) ;
-        addToCache(model) ;
         dsg.setDefaultGraph(model.getGraph()) ;
+        clearDefaultModelSlots();
     }
 
     @Override
@@ -233,44 +228,17 @@ public class DatasetImpl implements Dataset
         return NodeUtils.nodesToURIs(dsg.listGraphNodes()) ;
     }
 
-
-    //  -------
-    //  Cache models wrapping graphs
-    // Assumes outser syncrhonization of necessary (multiple readers possible).
-    // Assume MRSW (Multiple Reader OR Single Writer)
-
     @Override
     public void close()
     {
         dsg.close() ;
-        cache = null ;
+        seenDftGraph = null ;
+        dftModel = null ;
     }
-
-    protected Cache<Graph, Model> createCache() { return CacheFactory.createCache(100) ; }
     
-    protected void removeFromCache(Graph graph)
-    {
-        // Assume MRSW - no synchronized needed.
-        if ( graph == null )
-            return ;
-        cache.remove(graph) ;
-    }
-
-    protected void addToCache(Model model)
-    {
-        // Assume MRSW - no synchronized needed.
-        cache.put(model.getGraph(), model) ;
-    }
-
     protected Model graph2model(final Graph graph)
     { 
-        Callable<Model> filler = new Callable<Model>() {
-            @Override
-            public Model call() {
-                return ModelFactory.createModelForGraph(graph) ;
-            }
-        } ;
-        return cache.getOrFill(graph, filler) ;
+        return ModelFactory.createModelForGraph(graph) ;
     }
     
     protected static void checkGraphName(String uri)
@@ -278,5 +246,4 @@ public class DatasetImpl implements Dataset
         if ( uri == null )
             throw new ARQException("null for graph name") ; 
     }
-
 }
