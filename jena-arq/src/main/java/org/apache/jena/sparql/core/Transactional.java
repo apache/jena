@@ -24,7 +24,8 @@ import org.apache.jena.query.ReadWrite ;
  * <p>The read lifcycle is:
  * <pre>  begin(READ) ... end()</pre>
  * <p>The write lifcycle is:
- * <pre>  begin(WRITE) ... abort() or commit() [end()is optional]</pre>
+ * <pre>  begin(WRITE) ... abort() or commit() [end()]</pre>
+ * <p>{@code end()} is optional, but encouraged; it performs checks and can be called multiple times.
  * 
  */
 public interface Transactional 
@@ -38,7 +39,7 @@ public interface Transactional
     /** Abort a transaction - finish the transaction and undo any changes (if a "write" transaction) */  
     public void abort() ;
 
-    /** Say whether a transaction is active */ 
+    /** Say whether inside a transaction. */ 
     public boolean isInTransaction() ;
     
     /** Finish the transaction - if a write transaction and commit() has not been called, then abort */  
