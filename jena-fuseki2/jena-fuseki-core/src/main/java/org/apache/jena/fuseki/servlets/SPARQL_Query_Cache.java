@@ -49,16 +49,9 @@ public class SPARQL_Query_Cache extends SPARQL_Protocol {
 
     private static final String QueryParseBase = Fuseki.BaseParserSPARQL ;
 
-    private static Cache cache = null;
+    private static final int CACHE_SIZE = 10000;
 
-    private int CACHE_SIZE = 10000;
-
-    public SPARQL_Query_Cache() {
-        super() ;
-        if(cache == null){
-            cache = CacheFactory.createCache(CACHE_SIZE);
-        }
-    }
+    private static Cache cache = CacheFactory.createCache(CACHE_SIZE);
 
     // All the params we support
     protected static List<String> allParams = Arrays.asList(paramQuery, paramDefaultGraphURI, paramNamedGraphURI,

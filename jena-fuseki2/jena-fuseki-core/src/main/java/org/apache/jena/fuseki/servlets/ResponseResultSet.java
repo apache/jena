@@ -40,6 +40,7 @@ import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.web.AcceptList ;
@@ -321,7 +322,7 @@ public class ResponseResultSet
                 byte[] data;
                 if(CacheAction.Type.WRITE_CACHE == cacheAction.type) {
                     outCache = new ByteArrayOutputStream();
-                    out = new ResponseOutputStream(outServlet, outCache);
+                    out = new TeeOutputStream(outServlet,outCache);
                     proc.output(out);
                     data = outCache.toByteArray();
                     CacheEntry cacheEntry = (CacheEntry) cache.getIfPresent(cacheAction.getKey());

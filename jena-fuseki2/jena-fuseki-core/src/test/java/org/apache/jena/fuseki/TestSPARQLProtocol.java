@@ -106,7 +106,6 @@ public class TestSPARQLProtocol extends BaseTest
         assertTrue(cache.size() != 0);
         Iterator keysIter = cache.keys();
         String key = (String) keysIter.next();
-        System.out.println("key " + key);
         assertTrue(key.contains("?s  ?p  ?o"));
         assertTrue(key.contains("application/sparql-results+json"));
         CacheEntry e = (CacheEntry) cache.getIfPresent(key);

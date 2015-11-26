@@ -27,8 +27,6 @@ public class CacheEntry {
 
     private SPARQLResult result;
 
-    private StringBuilder cacheBuilder;
-
     private byte[] data;
 
     public SPARQLResult getResult() {

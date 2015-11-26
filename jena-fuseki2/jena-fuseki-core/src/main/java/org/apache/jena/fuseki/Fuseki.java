@@ -176,7 +176,7 @@ public class Fuseki {
     public static final Logger        cacheLog         = LoggerFactory.getLogger(cacheLogName) ;
 
     /** Instance of log for config server message s */
-    public static boolean             verboseLogging    = true ;
+    public static boolean             verboseLogging    = false ;
 
     /**
      * An instance of management for stream opening, including redirecting

@@ -20,9 +20,9 @@ package org.apache.jena.fuseki.cache;
 
 public class CacheAction {
 
-    public CacheAction.Type type;
+    public final CacheAction.Type type;
 
-    private String key;
+    private final String key;
 
     public CacheAction(String key,CacheAction.Type type){
         this.key = key;
@@ -39,7 +39,4 @@ public class CacheAction {
         return key;
     }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
 }
