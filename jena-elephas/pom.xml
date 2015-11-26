@@ -41,7 +41,7 @@
   <properties>
     <plugin.compiler.version>2.6.0</plugin.compiler.version>
     <mrunit.version>1.0.0</mrunit.version>
-    <airline.version>0.9.2</airline.version>
+    <airline.version>2.1.0</airline.version>
   </properties>
 
 	<!-- Profiles to allow building for different Hadoop versions -->
@@ -81,6 +81,11 @@
       <dependency>
         <groupId>com.github.rvesse</groupId>
         <artifactId>airline</artifactId>
+        <version>${airline.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.rvesse</groupId>
+        <artifactId>airline-io</artifactId>
         <version>${airline.version}</version>
       </dependency>
 
