@@ -23,7 +23,7 @@ import org.apache.jena.system.JenaSubsystemLifecycle ;
 
 /** ARQ initialization. Used by {@code JenaSystem} */
 public class InitARQ implements JenaSubsystemLifecycle {
-
+    
     @Override
     public void start() {
         ARQ.init();

@@ -31,7 +31,7 @@ public class InitRIOT implements JenaSubsystemLifecycle {
 
     @Override
     public void stop() {}
-
+    
     @Override
     public int level() {
         return 20 ;

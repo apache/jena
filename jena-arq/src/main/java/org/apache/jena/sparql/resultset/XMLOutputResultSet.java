@@ -38,40 +38,40 @@ public class XMLOutputResultSet
     implements ResultSetProcessor, XMLResults
 {
     static boolean outputExplicitUnbound = false ;
-
+    
     boolean outputGraphBNodeLabels = ARQ.isTrue(ARQ.outputGraphBNodeLabels) ;
 
-    int index = 0 ;                     // First index is 1
+    int index = 0 ;                     // First index is 1 
     String stylesheetURL = null ;
     boolean xmlInst = true ;
 
     IndentedWriter  out ;
     int bNodeCounter = 0 ;
     Map<Resource, String> bNodeMap = new HashMap<>() ;
-
+    
     XMLOutputResultSet(OutputStream outStream)
     {
         this(new IndentedWriter(outStream)) ;
     }
-
+    
     XMLOutputResultSet(IndentedWriter indentedOut)
     {
         out = indentedOut ;
     }
-
+    
     @Override
     public void start(ResultSet rs)
     {
         if ( xmlInst )
             out.println("<?xml version=\"1.0\"?>") ;
-
+        
         if ( stylesheetURL != null )
         {
             out.print("<?xml-stylesheet type=\"text/xsl\" href=\"") ;
             out.print(stylesheetURL) ;
             out.println("\"?>") ;
         }
-
+        
         // ---- Root
         out.print("<") ;
         out.print(dfRootTag) ;
@@ -85,7 +85,7 @@ public class XMLOutputResultSet
         out.print("<") ;
         out.print(dfHead) ;
         out.println(">") ;
-
+        
         if ( false )
         {
             String link = "UNSET" ;
@@ -93,7 +93,7 @@ public class XMLOutputResultSet
             out.print(link) ;
             out.println("\"/>") ;
         }
-
+        
         for (String n : rs.getResultVars())
         {
             out.incIndent(INDENT) ;
@@ -111,7 +111,7 @@ public class XMLOutputResultSet
         out.print(dfHead) ;
         out.println(">") ;
         out.decIndent(INDENT) ;
-
+        
         // Start results proper
         out.incIndent(INDENT) ;
         out.print("<") ;
@@ -158,8 +158,8 @@ public class XMLOutputResultSet
     {
         if ( node == null && ! outputExplicitUnbound )
             return ;
-
-        out.print("<") ;
+        
+        out.print("<") ; 
         out.print(dfBinding) ;
         out.print(" name=\"") ;
         out.print(varName) ;
@@ -171,7 +171,7 @@ public class XMLOutputResultSet
         out.print(dfBinding) ;
         out.println(">") ;
     }
-
+        
     void printBindingValue(RDFNode node)
     {
         if ( node == null )
@@ -182,37 +182,37 @@ public class XMLOutputResultSet
             out.println("/>") ;
             return ;
         }
-
+        
         if ( node instanceof Literal )
         {
             printLiteral((Literal)node) ;
             return ;
         }
-
+        
         if ( node instanceof Resource )
         {
             printResource((Resource)node) ;
             return ;
         }
-
+        
         Log.warn(this,"Unknown RDFNode type in result set: "+node.getClass()) ;
     }
-
+    
     void printLiteral(Literal literal)
     {
         String datatype = literal.getDatatypeURI() ;
         String lang = literal.getLanguage() ;
-
+        
         out.print("<") ;
         out.print(dfLiteral) ;
-
+        
         if ( lang != null && !(lang.length()==0) )
         {
             out.print(" xml:lang=\"") ;
             out.print(lang) ;
             out.print("\"") ;
         }
-
+            
         if ( datatype != null && ! datatype.equals(""))
         {
 //            if ( datatype.startsWith(xsBaseURI) )
@@ -226,20 +226,20 @@ public class XMLOutputResultSet
             out.print(datatype) ;
             out.print("\"") ;
         }
-
+            
         out.print(">") ;
         out.print(xml_escape(literal.getLexicalForm())) ;
         out.print("</") ;
         out.print(dfLiteral) ;
         out.println(">") ;
     }
-
+    
     void printResource(Resource r)
     {
-        if ( r.isAnon() )
+        if ( r.isAnon() ) 
         {
             String label ;
-
+            
             if ( outputGraphBNodeLabels )
                 label = r.asNode().getBlankNodeId().getLabelString() ;
             else
@@ -267,17 +267,17 @@ public class XMLOutputResultSet
             out.println(">") ;
         }
     }
-
+    
     private static String xml_escape(String string)
     {
         final StringBuilder sb = new StringBuilder(string);
-
+        
         int offset = 0;
         String replacement;
         char found;
         for (int i = 0; i < string.length(); i++) {
             found = string.charAt(i);
-
+            
             switch (found) {
                 case '&' : replacement = "&amp;"; break;
                 case '<' : replacement = "&lt;"; break;
@@ -286,13 +286,13 @@ public class XMLOutputResultSet
                 case '\n': replacement = "&#x0A;"; break;
                 default  : replacement = null;
             }
-
+            
             if (replacement != null) {
                 sb.replace(offset + i, offset + i + 1, replacement);
                 offset += replacement.length() - 1; // account for added chars
             }
         }
-
+        
         return sb.toString();
     }
 

@@ -67,7 +67,7 @@ public class JSWriter {
     public static final String ObjectSep     = " ," ;
     public static final String ObjectPairSep = " : " ;
 
-    // Remember whether we are in the first element of a compound
+    // Remember whether we are in the first element of a compound 
     // (object or array).
     Deque<Ref<Boolean>> stack = new ArrayDeque<>() ;
 
@@ -114,7 +114,7 @@ public class JSWriter {
         key(key) ;
         value(val) ;
     }
-
+    
     public void pair(String key, Number val) {
         key(key) ;
         value(val) ;
@@ -169,9 +169,9 @@ public class JSWriter {
     }
 
     /*
-     * Output a JSON string with escaping.
+     * Output a JSON string with escaping. 
      * \" \\ \/ \b \f \n \r \t control
-     * characters (def?) \ u four-hex-digits
+     * characters (def?) \ u four-hex-digits 
      */
     public static void outputQuotedString(IndentedWriter out, String string) {
         outputQuotedString(out, string, false) ;
@@ -308,11 +308,11 @@ public class JSWriter {
         out.print(number.toString()) ;
     }
 
-    // Caution - assumes "Number" outputs legal JSON format
+    // Caution - assumes "Number" outputs legal JSON format 
     private void value(Number number) {
         out.print(number.toString()) ;
     }
-
+    
     // void valueString(String image) {}
     // void valueInteger(String image) {}
     // void valueDouble(String image) {}

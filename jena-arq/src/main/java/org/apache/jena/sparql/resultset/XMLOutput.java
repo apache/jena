@@ -27,21 +27,21 @@ public class XMLOutput extends OutputBase
 {
     String stylesheetURL = null ;
     boolean includeXMLinst = true ;
-
+    
     public XMLOutput() {}
     public XMLOutput(String stylesheetURL)
     { setStylesheetURL(stylesheetURL) ; }
 
     public XMLOutput(boolean includeXMLinst)
     { setIncludeXMLinst(includeXMLinst) ; }
-
+    
     public XMLOutput(boolean includeXMLinst, String stylesheetURL)
-    {
-        setStylesheetURL(stylesheetURL) ;
+    { 
+        setStylesheetURL(stylesheetURL) ; 
         setIncludeXMLinst(includeXMLinst) ;
     }
 
-
+    
     @Override
     public void format(OutputStream out, ResultSet resultSet)
     {
@@ -55,7 +55,7 @@ public class XMLOutput extends OutputBase
     /** @return Returns the includeXMLinst. */
     public boolean getIncludeXMLinst()
     { return includeXMLinst ; }
-
+    
     /** @param includeXMLinst The includeXMLinst to set. */
     public void setIncludeXMLinst(boolean includeXMLinst)
     { this.includeXMLinst = includeXMLinst ; }
@@ -63,11 +63,11 @@ public class XMLOutput extends OutputBase
     /** @return Returns the stylesheetURL. */
     public String getStylesheetURL()
     { return stylesheetURL ; }
-
+    
     /** @param stylesheetURL The stylesheetURL to set. */
     public void setStylesheetURL(String stylesheetURL)
     { this.stylesheetURL = stylesheetURL ; }
-
+    
     @Override
     public void format(OutputStream out, boolean booleanResult)
     {

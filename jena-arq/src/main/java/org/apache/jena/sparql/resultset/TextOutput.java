@@ -48,13 +48,13 @@ public class TextOutput extends OutputBase
     //?? ResultSetProcessor to find column widths over a ResultSetRewindable and to output text
 
     protected SerializationContext context = null ;
-
+    
     //static final String notThere = "<<unset>>" ;
     static final String notThere = " " ;
-
+    
     public TextOutput(Prologue prologue)
     { context = new SerializationContext(prologue) ; }
-
+    
     public TextOutput(PrefixMapping pMap)
     { context = new SerializationContext(pMap) ; }
 
@@ -65,9 +65,9 @@ public class TextOutput extends OutputBase
     public void format(OutputStream outs, ResultSet resultSet)
     { write(outs, resultSet) ; }
 
-    /** Writer should be UTF-8 encoded - better to an OutputStream */
+    /** Writer should be UTF-8 encoded - better to an OutputStream */ 
     public void format(Writer w, ResultSet resultSet)
-    {
+    { 
         PrintWriter pw = new PrintWriter(w) ;
         write(pw, resultSet) ;
         pw.flush() ;
@@ -112,15 +112,15 @@ public class TextOutput extends OutputBase
      */
     public void write(PrintWriter pw, ResultSet resultSet)
     { write(pw, resultSet, "| ", " | ", " |") ; }
-
-    /** Output a result set.
+    
+    /** Output a result set. 
      * @param outs       OutputStream
      * @param resultSet  ResultSet
      */
     public void write(OutputStream outs, ResultSet resultSet)
     { write(outs, resultSet, "| ", " | ", " |") ; }
-
-    /** Output a result set.
+    
+    /** Output a result set. 
      * @param outs       OutputStream
      * @param resultSet  ResultSet
      * @param colStart   Left column
@@ -133,7 +133,7 @@ public class TextOutput extends OutputBase
         write(pw, resultSet, colStart, colSep, colEnd) ;
         pw.flush() ;
     }
-
+    
     /** Textual representation : layout using given separator.
      *  Ensure the PrintWriter can handle UTF-8.
      *  @param pw         PrintWriter
@@ -147,8 +147,8 @@ public class TextOutput extends OutputBase
             //return ;
         }
 
-        ResultSetRewindable resultSetRewindable = ResultSetFactory.makeRewindable(resultSet) ;
-
+        ResultSetRewindable resultSetRewindable = ResultSetFactory.makeRewindable(resultSet) ; 
+        
         int numCols = resultSetRewindable.getResultVars().size() ;
         int[] colWidths = colWidths(resultSetRewindable) ;
 
@@ -165,12 +165,12 @@ public class TextOutput extends OutputBase
         if ( colStart != null )
             lineWidth += colStart.length() ;
         if ( colEnd != null )
-            lineWidth += colEnd.length() ;
+            lineWidth += colEnd.length() ; 
 
         for ( int i = 0 ; i < lineWidth ; i++ )
             pw.print('-') ;
         pw.println() ;
-
+        
         printRow(pw, row, colWidths, colStart, colSep, colEnd) ;
 
         for ( int i = 0 ; i < lineWidth ; i++ )
@@ -219,7 +219,7 @@ public class TextOutput extends OutputBase
     protected String getVarValueAsString(QuerySolution rBind, String varName)
     {
         RDFNode obj = rBind.get(varName) ;
-
+        
         if ( obj == null )
             return notThere ;
 

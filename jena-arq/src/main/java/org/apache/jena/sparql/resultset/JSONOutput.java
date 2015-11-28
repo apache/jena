@@ -25,12 +25,12 @@ import org.apache.jena.query.ResultSet ;
 public class JSONOutput extends OutputBase
 {
     public JSONOutput() {}
-
+    
     @Override
     public void format(OutputStream out, ResultSet resultSet)
     {
         // Use direct string output - more control
-
+    
         JSONOutputResultSet jsonOut =  new JSONOutputResultSet(out) ;
         ResultSetApply a = new ResultSetApply(resultSet, jsonOut) ;
         a.apply() ;
