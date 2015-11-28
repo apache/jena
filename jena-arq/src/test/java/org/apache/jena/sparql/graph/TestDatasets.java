@@ -22,8 +22,8 @@ import java.util.ArrayList ;
 import java.util.Arrays ;
 import java.util.Collection ;
 import java.util.List ;
-import java.util.function.Supplier ;
 
+import org.apache.jena.atlas.lib.Creator ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DynamicDatasets ;
@@ -42,12 +42,11 @@ import org.junit.runners.Parameterized.Parameters ;
 public class TestDatasets {
     @Parameters(name = "{index}: {0}")
     public static Collection<Object[]> data() {
-        Supplier<Dataset> datasetGeneralMaker = ()-> DatasetFactory.createGeneral() ; 
-        Supplier<Dataset> datasetTxnMemMaker = ()-> DatasetFactory.createTxnMem() ;
+        Creator<Dataset> datasetGeneralMaker = ()-> DatasetFactory.createGeneral() ; 
+        Creator<Dataset> datasetTxnMemMaker = ()-> DatasetFactory.createTxnMem() ;
         return Arrays.asList(new Object[][] { { "General",  datasetGeneralMaker },
                                               { "TxnMem",   datasetTxnMemMaker} });
-    }	
-    
+    }
     
 	private static final String data = "INSERT DATA { <ex:default> <ex:default> <ex:default>.\n"
 									   + "GRAPH <ex:from> { <ex:from> <ex:from> <ex:from> }\n"
@@ -55,13 +54,13 @@ public class TestDatasets {
 									   + "GRAPH <ex:other> { <ex:other> <ex:other> <ex:other> }\n"
 									   + "}";
 
-    private final Supplier<Dataset> maker;
+    private final Creator<Dataset> maker;
 	private final Dataset ds;
 	private final DatasetGraph dsg;
 	
-	public TestDatasets(String name, Supplier<Dataset> maker) {
+	public TestDatasets(String name, Creator<Dataset> maker) {
 	    this.maker = maker ;
-        this.ds = maker.get() ;
+        this.ds = maker.create() ;
         this.dsg = ds.asDatasetGraph() ;
 	}
 	

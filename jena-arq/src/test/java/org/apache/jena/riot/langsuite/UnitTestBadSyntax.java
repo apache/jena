@@ -96,7 +96,7 @@ public class UnitTestBadSyntax extends LangTestCase
     }
     
     private void run4() {
-        Dataset ds = DatasetFactory.createMem() ;
+        Dataset ds = DatasetFactory.createGeneral() ;
         try {
             RDFDataMgr.read(ds, uri, uri, lang) ;
         } catch (RiotException ex) { return ; }

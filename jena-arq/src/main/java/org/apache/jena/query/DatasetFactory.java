@@ -48,8 +48,17 @@ public class DatasetFactory {
 	}
 
 	/**
-	 * @return a transactional, in-memory, modifiable Dataset with MR+SW locking
-	 */
+     * Create an in-memory. transactional Dataset.
+     * <p> 
+     * This fully supports transactions, including abort to roll-back changes.
+     * It provides "autocommit" if operations are performed
+     * outside a transaction but with a performance impact
+     * (the implementation adds a begin/commit around each add or delete
+     * so overheads can accumulate).
+     * 
+     * @return a transactional, in-memory, modifiable Dataset which
+     * 
+     */
 	public static Dataset createTxnMem() {
 		return create(DatasetGraphFactory.createTxnMem());
 	}
