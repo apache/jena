@@ -18,10 +18,22 @@
 
 package org.apache.jena.fuseki.cache;
 
+/** This class act as a switch to perform operation on cache. Once the requests
+ *  reaches SPARQL_Query_Cache, the CacheAction type can be either READ_CACHE or
+ *  WRITE_CACHE based on cache hit or miss operation.
+ */
 public class CacheAction {
 
+    /** The cache operation action that need to be taken to serve the
+     * request. The cache operation can be READ_CACHE or WRITE_CACHE or
+     * IDLE.
+     */
     public final CacheAction.Type type;
 
+    /** The SPARQL Query cache key. The key is combination of dataset,
+     * query string and response content type.The key is generated in
+     * {@code SPARQL_Query_Cache}
+     */
     private final String key;
 
     public CacheAction(String key,CacheAction.Type type){

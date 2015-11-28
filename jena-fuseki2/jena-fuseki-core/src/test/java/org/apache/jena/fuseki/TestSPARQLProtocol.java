@@ -136,10 +136,17 @@ public class TestSPARQLProtocol extends BaseTest
 
     @Test
     public void cache_update_01() {
+        Query query = QueryFactory.create("SELECT * { ?s ?p ?o }");
+        QueryEngineHTTP engine = QueryExecutionFactory.createServiceRequest(serviceQuery, query);
+        engine.setSelectContentType(WebContent.contentTypeResultsXML);
+        ResultSet rs = engine.execSelect();
+        String result = ResultSetFormatter.asXMLString(rs);
+        Cache cache = SPARQL_Query_Cache.getCache();
+        assertTrue(cache.size() != 0);
         UpdateRequest update = UpdateFactory.create("INSERT DATA {}");
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, serviceUpdate);
         proc.execute();
-        Cache cache = SPARQL_Query_Cache.getCache();
+        cache = SPARQL_Query_Cache.getCache();
         assertTrue(cache.size() == 0);
     }
 
