@@ -166,11 +166,11 @@ public class SPARQL_Query_Cache extends SPARQL_Protocol {
                 CacheEntry cacheEntry = (CacheEntry) cache.getIfPresent(key);
 
                 if(cacheEntry == null || !cacheEntry.isInitialized()) {
-                    log.info("Cache is null or cache data is not initialized");
+                    log.debug("Cache is null or cache data is not initialized");
                     ActionSPARQL queryServlet = new SPARQL_QueryDataset() ;
                     queryServlet.executeLifecycle(action) ;
                 }else {
-                    log.info("Cache is not null so read from cache");
+                    log.debug("Cache is not null so read from cache");
                     SPARQLResult result = cacheEntry.getResult();
                     CacheAction cacheAction = new CacheAction(key,CacheAction.Type.READ_CACHE);
                     sendResults(action, result, query.getPrologue(), cacheAction);

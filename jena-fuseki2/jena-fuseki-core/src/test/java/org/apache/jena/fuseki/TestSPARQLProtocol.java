@@ -25,6 +25,8 @@ import org.apache.jena.fuseki.cache.CacheEntry;
 import org.apache.jena.fuseki.servlets.SPARQL_Query_Cache;
 import org.apache.jena.query.*;
 import org.apache.jena.riot.WebContent;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
 import org.apache.jena.sparql.util.Convert;
 import org.apache.jena.update.UpdateExecutionFactory;
@@ -32,10 +34,14 @@ import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Iterator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class TestSPARQLProtocol extends BaseTest
 {
@@ -83,7 +89,37 @@ public class TestSPARQLProtocol extends BaseTest
         assertTrue(e.isInitialized());
         assertTrue(e.getData().length != 0);
     }
-
+    @Test
+    public void cache_query_parallel_01() {
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        long startTimeMillis =  System.currentTimeMillis();
+        long endTimeMillis = startTimeMillis + 1000;
+        while( System.currentTimeMillis() < endTimeMillis ){
+        executorService.execute(new Runnable(){
+            public void run(){
+                Query query = QueryFactory.create("SELECT * { ?s ?p ?o }");
+                QueryExecution qexec = QueryExecutionFactory.sparqlService(serviceQuery, query);
+                ResultSet rs = qexec.execSelect();
+                int x = ResultSetFormatter.consume(rs);
+                assertTrue(x != 0);
+                Cache cache = SPARQL_Query_Cache.getCache();
+                assertTrue(cache.size() != 0);
+                Iterator keysIter = cache.keys();
+                String key = (String) keysIter.next();
+                assertTrue(key.contains("?s  ?p  ?o"));
+                CacheEntry e = (CacheEntry) cache.getIfPresent(key);
+                assertTrue(e.isInitialized());
+                assertTrue(e.getData().length != 0);
+            }
+        });
+        }
+        executorService.shutdownNow();
+        try {
+            executorService.awaitTermination(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            executorService.shutdownNow();
+        }
+    }
     @Test
     public void query_02() {
         Query query = QueryFactory.create("SELECT * { ?s ?p ?o }");

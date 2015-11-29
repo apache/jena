@@ -329,13 +329,13 @@ public class ResponseResultSet
                     cacheEntry.setData(data);
                     cacheEntry.initialized();
                     cache.put(cacheAction.getKey(), cacheEntry);
-                    action.log.info("Writing cache "+ new String(data));
+                    action.log.debug("Writing cache "+ new String(data));
                     out.flush();
                 }else{
                     CacheEntry cacheEntry = (CacheEntry)cache.getIfPresent(cacheAction.getKey());
                     data = cacheEntry.getData();
                     outServlet.write(data);
-                    action.log.info("Reading cache "+ new String(data));
+                    action.log.debug("Reading cache "+ new String(data));
                     outServlet.flush();
                 }
 

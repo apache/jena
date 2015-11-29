@@ -33,13 +33,13 @@
   </description>
 
   <dependencies>
-    
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shaded-guava</artifactId>
@@ -50,21 +50,29 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-csv</artifactId>
-    </dependency> 
-    
+    </dependency>
+
     <!-- supports persistent data structures -->
     <dependency>
       <groupId>com.github.andrewoma.dexx</groupId>
       <artifactId>dexx-collections</artifactId>
     </dependency>
-    
+
     <!-- Remove when jena-base is used -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+    </dependency><dependency><groupId>org.apache.jena</groupId>
+    <artifactId>jena-shaded-guava</artifactId>
+    <version>3.0.0</version>
+  </dependency>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-shaded-guava</artifactId>
+      <version>3.0.0</version>
     </dependency>
 
-    
+
   </dependencies>
 
   <build>
@@ -100,7 +108,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <executions> 
+        <executions>
           <execution>
             <id>attach-sources</id>
             <goals>
@@ -139,7 +147,7 @@
           <bottom>Licenced under the Apache License, Version 2.0</bottom>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -147,9 +155,9 @@
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
-      
+
     </plugins>
   </build>
-  
-  
+
+
 </project>
