@@ -741,20 +741,21 @@ void QuadsNotTriples(QuadAccSink acc) : {Node gn ; Node prev = acc.getGraph() ; 
     
 }
 #ifdef ARQ
+// See "/* TriG template :: ..... */" below.
 void ConstructQuads(QuadAcc acc) : {}
 {
-    (TriplesTemplate(acc))?
+    (/* TriG template: LOOKAHEAD(2) */TriplesTemplate(acc))?
     (
        ConstructQuadsNotTriples(acc)
        (<DOT>)?
-       (TriplesTemplate(acc))?
+       (/* TriG template: LOOKAHEAD(2) */TriplesTemplate(acc))?
     )*    
 }
 
 void ConstructQuadsNotTriples(QuadAccSink acc) : {Node gn = Quad.defaultGraphNodeGenerated ; Node prev = acc.getGraph() ; }
 {
     (
-  	 <GRAPH>
+  	 <GRAPH> /* TriG template :: (<GRAPH>)?*/
      gn = VarOrIri()
     )?
 
@@ -1178,7 +1179,7 @@ void TriplesSameSubject(TripleCollector acc) : { Node s ; }
 
 void PropertyList(Node s, TripleCollector acc) : { }
 {
-  ( PropertyListNotEmpty(s, acc) ) ?
+  ( /* TriG template: LOOKAHEAD(2) */ PropertyListNotEmpty(s, acc) ) ?
 }
 
 void PropertyListNotEmpty(Node s, TripleCollector acc) : 
@@ -1187,7 +1188,7 @@ void PropertyListNotEmpty(Node s, TripleCollector acc) :
     p = Verb()
     ObjectList(s, p, null, acc)
   ( <SEMICOLON> 
-    (
+    ( /* TriG template: LOOKAHEAD(2) */
        p = Verb()
       ObjectList(s, p, null, acc)
     )? 
