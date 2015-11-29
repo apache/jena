@@ -31,7 +31,7 @@ public class DatasetStore
     public static Dataset create(Store store)
     { 
         DatasetGraph dsg = createDatasetGraph(store) ;
-        return DatasetFactory.create(dsg) ;
+        return DatasetFactory.wrap(dsg) ;
     }
     
     public static DatasetGraph createDatasetGraph(Store store)

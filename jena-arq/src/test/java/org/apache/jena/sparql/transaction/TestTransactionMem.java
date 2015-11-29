@@ -33,7 +33,7 @@ public class TestTransactionMem extends AbstractTestTransaction
     { 
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         DatasetGraphWithLock dsgl = new  DatasetGraphWithLock(dsg) ;
-        return DatasetFactory.create(dsgl) ;
+        return DatasetFactory.wrap(dsgl) ;
     }
     
     // Tests that don't make sense because they abort a write transaction.

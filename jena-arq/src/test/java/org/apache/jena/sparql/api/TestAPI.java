@@ -362,7 +362,7 @@ public class TestAPI extends BaseTest
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
         
         Iterator<Quad> ts = qExec.execConstructQuads();
-        DatasetGraph result = DatasetGraphFactory.createMem();
+        DatasetGraph result = DatasetGraphFactory.create();
         long count = 0;
         while (ts.hasNext()) {
             count++;
@@ -370,7 +370,7 @@ public class TestAPI extends BaseTest
             result.add(qd);
         }
         
-        DatasetGraph expected = DatasetGraphFactory.createMem();
+        DatasetGraph expected = DatasetGraphFactory.create();
         expected.add(g1.asNode(), s.asNode(), p.asNode(), o.asNode());
         
         assertEquals(1, count); 
@@ -386,13 +386,13 @@ public class TestAPI extends BaseTest
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
         
         Iterator<Quad> ts = qExec.execConstructQuads();
-        DatasetGraph result = DatasetGraphFactory.createMem();
+        DatasetGraph result = DatasetGraphFactory.create();
         long count = 0;
         while (ts.hasNext()) {
             count++;
             result.add( ts.next() );
         }
-        DatasetGraph expected = DatasetGraphFactory.createMem();
+        DatasetGraph expected = DatasetGraphFactory.create();
         expected.add(Quad.defaultGraphNodeGenerated, s.asNode(), p.asNode(), o.asNode());
         assertEquals(1, count);
         assertTrue(IsoMatcher.isomorphic( expected, result) );
@@ -446,7 +446,7 @@ public class TestAPI extends BaseTest
         
         Dataset result = qExec.execConstructDataset();
 
-        DatasetGraph expected = DatasetGraphFactory.createMem();
+        DatasetGraph expected = DatasetGraphFactory.create();
         expected.add(g1.asNode(), s.asNode(), p.asNode(), o.asNode());
         assertEquals(1, result.asDatasetGraph().size());
         assertTrue(IsoMatcher.isomorphic( expected, result.asDatasetGraph()) );
@@ -478,7 +478,7 @@ public class TestAPI extends BaseTest
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
         
         Iterator<Quad> quads = qExec.execConstructQuads();
-        DatasetGraph result = DatasetGraphFactory.createMem();
+        DatasetGraph result = DatasetGraphFactory.create();
         long count = 0;
         while (quads.hasNext()) {
             count++;
@@ -486,7 +486,7 @@ public class TestAPI extends BaseTest
             result.add(qd);
         }
         
-        DatasetGraph expected = DatasetGraphFactory.createMem();
+        DatasetGraph expected = DatasetGraphFactory.create();
         expected.add(g1.asNode(), s.asNode(), p.asNode(), o.asNode());
         
         assertEquals(1, count); 

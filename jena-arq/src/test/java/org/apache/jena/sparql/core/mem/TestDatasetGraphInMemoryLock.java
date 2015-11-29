@@ -24,7 +24,7 @@ import org.apache.jena.sparql.core.TestDatasetGraphWithLock ;
 
 public class TestDatasetGraphInMemoryLock extends TestDatasetGraphWithLock {
 	@Override
-	protected Dataset createFixed() {
+	protected Dataset createDataset() {
 		return DatasetFactory.createTxnMem();
 	}
 }

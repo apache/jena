@@ -29,8 +29,6 @@ import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
@@ -47,11 +45,8 @@ public class DatasetAssembler extends AssemblerBase implements Assembler {
     }
 
     public Dataset createDataset(Assembler a, Resource root, Mode mode) {
-        // Expanding version.
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-        AssemblerUtils.setContext(root, dsg.getContext()) ;
-
-        Dataset ds = DatasetFactory.create(dsg) ;
+        Dataset ds = DatasetFactory.createGeneral() ;
+        AssemblerUtils.setContext(root, ds.getContext()) ;
 
         // -------- Default graph
         // Can use ja:graph or ja:defaultGraph

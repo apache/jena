@@ -76,7 +76,7 @@ public class TestDatasetGraphInMemoryBasic extends AbstractDatasetGraphTests {
 		final Node graphName = createURI("http://example/g");
 		final DatasetGraph dsg = emptyDataset();
 		dsg.addGraph(graphName, createGraphMem());
-		final Dataset dataset = DatasetFactory.create(dsg);
+		final Dataset dataset = DatasetFactory.wrap(dsg);
 		Model model = dataset.getNamedModel(graphName.getURI());
 		final String testPrefix = "example";
 		final String testURI = "http://example/";

@@ -38,7 +38,7 @@ public class TestDatasetMonitor extends BaseTest
     static Quad quad4 = SSE.parseQuad("(<g> <s> <p> 4)") ;
     
     @Test public void countChanges_01() {
-        DatasetGraph dsgBase = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsgBase = DatasetGraphFactory.create() ;
         DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
         DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
         
@@ -48,7 +48,7 @@ public class TestDatasetMonitor extends BaseTest
     }
     
     @Test public void countChanges_02() {
-        DatasetGraph dsgBase = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsgBase = DatasetGraphFactory.create() ;
         DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
         DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
         
@@ -59,7 +59,7 @@ public class TestDatasetMonitor extends BaseTest
     }
 
     @Test public void countChanges_03() {
-        DatasetGraph dsgBase = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsgBase = DatasetGraphFactory.create() ;
         DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
         DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
         
@@ -72,7 +72,7 @@ public class TestDatasetMonitor extends BaseTest
     }
     
     @Test public void countChanges_04() {
-        DatasetGraph dsgBase = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsgBase = DatasetGraphFactory.create() ;
         DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
         DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
         
@@ -85,7 +85,7 @@ public class TestDatasetMonitor extends BaseTest
     }
 
     @Test public void captureChanges_01() {
-        DatasetGraph dsgBase = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsgBase = DatasetGraphFactory.create() ;
         DatasetChangesCapture dsgCapture = new DatasetChangesCapture() ;
         DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgCapture) ;
         
@@ -103,7 +103,7 @@ public class TestDatasetMonitor extends BaseTest
     }
 
     @Test public void captureChanges_02() {
-        DatasetGraph dsgBase = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsgBase = DatasetGraphFactory.create() ;
         DatasetChangesCapture dsgCapture = new DatasetChangesCapture(true) ;
         DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgCapture) ;
         

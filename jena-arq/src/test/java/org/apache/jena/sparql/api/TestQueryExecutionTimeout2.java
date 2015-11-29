@@ -52,7 +52,7 @@ public class TestQueryExecutionTimeout2
         " (<s> <p> 12)" +
         ")") ;
     static DatasetGraph         dsg = DatasetGraphFactory.createOneGraph(g) ;
-    static Dataset              ds  = DatasetFactory.create(dsg) ;
+    static Dataset              ds  = DatasetFactory.wrap(dsg) ;
 
     private static void noException(ResultSet rs)
     {

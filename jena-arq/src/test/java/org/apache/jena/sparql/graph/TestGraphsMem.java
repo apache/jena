@@ -37,7 +37,7 @@ public class TestGraphsMem extends GraphsTests
         dsg.addGraph(NodeFactory.createURI(graph1), GraphFactory.createDefaultGraph()) ;
         dsg.addGraph(NodeFactory.createURI(graph2), GraphFactory.createDefaultGraph()) ;
         dsg.addGraph(NodeFactory.createURI(graph3), GraphFactory.createDefaultGraph()) ;
-        return DatasetFactory.create(dsg) ;
+        return DatasetFactory.wrap(dsg) ;
     }
     
     @Override

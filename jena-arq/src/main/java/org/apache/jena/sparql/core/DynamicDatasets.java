@@ -41,7 +41,7 @@ public class DynamicDatasets
         DatasetGraph dsg2 = dynamicDataset(description, dsg, defaultUnionGraph) ;
         if ( dsg == dsg2 )
             return ds ;
-        return DatasetFactory.create(dsg2) ;
+        return DatasetFactory.wrap(dsg2) ;
     }
 
     /** Given a DatasetGraph and a query, form a DatasetGraph that 

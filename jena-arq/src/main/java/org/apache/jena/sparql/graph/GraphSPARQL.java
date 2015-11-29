@@ -65,7 +65,7 @@ public class GraphSPARQL extends GraphBase implements Graph
 
     public GraphSPARQL(DatasetGraph dsg, Node gn)
     { 
-        this.dataset = DatasetGraphFactory.create(dsg) ;
+        this.dataset = DatasetGraphFactory.cloneStructure(dsg) ;
         dataset.setDefaultGraph(dsg.getGraph(gn)) ; 
         factory = null ;
     }

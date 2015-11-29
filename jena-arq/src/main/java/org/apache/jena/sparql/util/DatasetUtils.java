@@ -197,7 +197,7 @@ public class DatasetUtils
     }
 
     public static DatasetGraph createDatasetGraph(List<String> uriList, List<String> namedSourceList, String baseURI) {
-        DatasetGraph dsg = DatasetGraphFactory.createMem();
+        DatasetGraph dsg = DatasetGraphFactory.createGeneral();
         return addInGraphs(dsg, uriList, namedSourceList, baseURI);
     }
     

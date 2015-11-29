@@ -76,7 +76,7 @@ public class TestDatasetGraphWithRecord {
 			graph.add(q1.asTriple());
 			graph.add(q2.asTriple());
 
-			final Dataset dataset = DatasetFactory.create(emptyDataset());
+			final Dataset dataset = DatasetFactory.wrap(emptyDataset());
 			final DatasetGraph dsg = dataset.asDatasetGraph();
 
 			dataset.begin(WRITE);
@@ -101,7 +101,7 @@ public class TestDatasetGraphWithRecord {
 		 */
 		@Test
 		public void testSimpleAbort() {
-			final Dataset dataset = DatasetFactory.create(emptyDataset());
+			final Dataset dataset = DatasetFactory.wrap(emptyDataset());
 			final DatasetGraph dsg = dataset.asDatasetGraph();
 
 			dataset.begin(WRITE);
@@ -134,7 +134,7 @@ public class TestDatasetGraphWithRecord {
 		@Test
 		public void testRecordShouldBeCompact() {
 			final List<QuadOperation<?, ?>> record = new ArrayList<>();
-			final Dataset dataset = DatasetFactory.create(new DatasetGraphWithRecord(
+			final Dataset dataset = DatasetFactory.wrap(new DatasetGraphWithRecord(
 					new DatasetGraphMap(createGraphMem()), new ListBackedOperationRecord<>(record)));
 			final DatasetGraph dsg = dataset.asDatasetGraph();
 
@@ -166,7 +166,7 @@ public class TestDatasetGraphWithRecord {
 		 */
 		@Test(expected = JenaTransactionException.class)
 		public void testDatasetGraphWithRecordIsWriteTransactionalOnlyForGraphWrites() {
-			final Dataset dataset = DatasetFactory.create(emptyDataset());
+			final Dataset dataset = DatasetFactory.wrap(emptyDataset());
 			final DatasetGraph dsg = dataset.asDatasetGraph();
 
 			dataset.begin(READ);
@@ -183,7 +183,7 @@ public class TestDatasetGraphWithRecord {
 		 */
 		@Test(expected = JenaTransactionException.class)
 		public void testDatasetGraphWithRecordIsWriteTransactionalOnlyForTupleWrites() {
-			final Dataset dataset = DatasetFactory.create(emptyDataset());
+			final Dataset dataset = DatasetFactory.wrap(emptyDataset());
 			final DatasetGraph dsg = dataset.asDatasetGraph();
 
 			dataset.begin(READ);
@@ -200,7 +200,7 @@ public class TestDatasetGraphWithRecord {
 		@Test
 		public void testRemoveGraph() {
 			final List<QuadOperation<?, ?>> record = new ArrayList<>();
-			final Dataset dataset = DatasetFactory.create(new DatasetGraphWithRecord(
+			final Dataset dataset = DatasetFactory.wrap(new DatasetGraphWithRecord(
 					new DatasetGraphMap(createGraphMem()), new ListBackedOperationRecord<>(record)));
 			final DatasetGraph dsg = dataset.asDatasetGraph();
 
@@ -235,7 +235,7 @@ public class TestDatasetGraphWithRecord {
 		@Test
 		public void testClear() {
 			final List<QuadOperation<?, ?>> record = new ArrayList<>();
-			final Dataset dataset = DatasetFactory.create(new DatasetGraphWithRecord(
+			final Dataset dataset = DatasetFactory.wrap(new DatasetGraphWithRecord(
 					new DatasetGraphMap(createGraphMem()), new ListBackedOperationRecord<>(record)));
 			final DatasetGraph dsg = dataset.asDatasetGraph();
 
@@ -264,8 +264,8 @@ public class TestDatasetGraphWithRecord {
 
 	public static class TestDatasetGraphWithRecordConcurrency extends TestDatasetGraphWithLock {
 		@Override
-		protected Dataset createFixed() {
-			return DatasetFactory.create(new DatasetGraphWithRecord(createMem()));
+		protected Dataset createDataset() {
+			return DatasetFactory.wrap(new DatasetGraphWithRecord(createMem()));
 		}
 	}
 }

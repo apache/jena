@@ -169,7 +169,7 @@ public class UpdateTest extends EarlTestCase
         //DataSource ds = DatasetFactory.create() ;
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         // Growing. dataset.
-        Dataset ds = DatasetFactory.create(dsg) ;
+        Dataset ds = DatasetFactory.wrap(dsg) ;
         
         
         List<String> dftData = getAll(r,  TestManifestUpdate_11.data) ;

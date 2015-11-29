@@ -25,10 +25,12 @@ import org.apache.jena.graph.Node ;
  * content from the added graph data.
  */
 
-/*package*/ class DatasetGraphCopyAdd extends DatasetGraphWrapper {
+/*package*/ class DatasetGraphCopyAdd extends DatasetGraphWrapper 
+{
     public DatasetGraphCopyAdd(DatasetGraph dsg) {
         super(dsg);
     }
+    
     @Override
     public void addGraph(Node graphName, Graph graph) {
         graph.find(null,null,null).forEachRemaining(t-> {

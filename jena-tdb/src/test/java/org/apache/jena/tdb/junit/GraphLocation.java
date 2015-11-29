@@ -57,7 +57,7 @@ public class GraphLocation
     public Dataset getDataset()
     { 
         if ( dsg == null ) return null ;
-        return DatasetFactory.create(dsg) ;
+        return DatasetFactory.wrap(dsg) ;
     }
 
     public Dataset createDataset() 
@@ -65,7 +65,7 @@ public class GraphLocation
         if ( dsg != null )
             throw new TDBTestException("dataset already in use") ;
         dsg = TDBFactory.createDatasetGraph(loc) ;
-        return DatasetFactory.create(dsg) ;
+        return DatasetFactory.wrap(dsg) ;
     }
     
     public Graph createGraph()

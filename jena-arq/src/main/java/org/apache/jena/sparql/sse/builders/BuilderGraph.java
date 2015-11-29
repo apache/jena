@@ -94,12 +94,12 @@ public class BuilderGraph
 
     public static DatasetGraph buildDataset(Item item)
     {
-        return buildDataset(DatasetGraphFactory.createMem(), item) ; 
+        return buildDataset(DatasetGraphFactory.createTxnMem(), item) ; 
     }
     
     public static DatasetGraph buildDataset(ItemList list)
     {
-        return buildDataset(DatasetGraphFactory.createMem(), list) ; 
+        return buildDataset(DatasetGraphFactory.createTxnMem(), list) ; 
     }
 
     public static DatasetGraph buildDataset(DatasetGraph dsg, Item item)
