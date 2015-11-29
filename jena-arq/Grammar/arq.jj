@@ -508,7 +508,10 @@ void ConstructQuads(QuadAcc acc) : {}
        ( TriplesTemplate(acc))?
     )*
 }
-void ConstructQuadsNotTriples(QuadAccSink acc) : {Node gn = Quad.defaultGraphNodeGenerated ; Node prev = acc.getGraph() ; }
+void ConstructQuadsNotTriples(QuadAccSink acc) :
+     { Node gn = Quad.defaultGraphNodeGenerated ;
+       Node prev = acc.getGraph() ;
+     }
 {
     (
     <GRAPH>

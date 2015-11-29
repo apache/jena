@@ -1996,7 +1996,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void ConstructQuadsNotTriples(QuadAccSink acc) throws ParseException {
-                                                  Node gn = Quad.defaultGraphNodeGenerated ; Node prev = acc.getGraph() ;
+       Node gn = Quad.defaultGraphNodeGenerated ;
+       Node prev = acc.getGraph() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case GRAPH:
       jj_consume_token(GRAPH);
@@ -5641,23 +5642,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     finally { jj_save(4, xla); }
   }
 
-  private boolean jj_3R_72() {
-    if (jj_scan_token(MONTH)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_71() {
-    if (jj_scan_token(YEAR)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_158() {
-    if (jj_3R_169()) return true;
-    return false;
-  }
-
   private boolean jj_3R_157() {
     if (jj_3R_168()) return true;
     return false;
@@ -6132,11 +6116,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_42()) return true;
-    return false;
-  }
-
   private boolean jj_3R_122() {
     if (jj_scan_token(AVG)) return true;
     if (jj_scan_token(LPAREN)) return true;
@@ -6146,6 +6125,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   private boolean jj_3R_121() {
     if (jj_scan_token(MAX)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_3R_42()) return true;
     return false;
   }
 
@@ -6226,14 +6210,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_115() {
-    if (jj_3R_129()) return true;
-    return false;
-  }
-
   private boolean jj_3R_112() {
     if (jj_scan_token(EXISTS)) return true;
     if (jj_3R_127()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_115() {
+    if (jj_3R_129()) return true;
     return false;
   }
 
@@ -6250,6 +6234,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_110() {
+    if (jj_scan_token(REPLACE)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
   private boolean jj_3R_114() {
     if (jj_3R_128()) return true;
     return false;
@@ -6262,12 +6252,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_scanpos = xsp;
     if (jj_3R_115()) return true;
     }
-    return false;
-  }
-
-  private boolean jj_3R_110() {
-    if (jj_scan_token(REPLACE)) return true;
-    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
@@ -6773,6 +6757,23 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   private boolean jj_3R_73() {
     if (jj_scan_token(DAY)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_72() {
+    if (jj_scan_token(MONTH)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_71() {
+    if (jj_scan_token(YEAR)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_158() {
+    if (jj_3R_169()) return true;
     return false;
   }
 

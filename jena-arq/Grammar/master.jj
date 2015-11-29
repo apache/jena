@@ -738,10 +738,10 @@ void QuadsNotTriples(QuadAccSink acc) : {Node gn ; Node prev = acc.getGraph() ; 
     (TriplesTemplate(acc))?
     <RBRACE>
     { setAccGraph(acc, prev) ; }
-    
 }
 #ifdef ARQ
 // See "/* TriG template :: ..... */" below.
+// If not TriG like, check this is not "QuadPattern" 
 void ConstructQuads(QuadAcc acc) : {}
 {
     (/* TriG template: LOOKAHEAD(2) */TriplesTemplate(acc))?
@@ -752,7 +752,10 @@ void ConstructQuads(QuadAcc acc) : {}
     )*    
 }
 
-void ConstructQuadsNotTriples(QuadAccSink acc) : {Node gn = Quad.defaultGraphNodeGenerated ; Node prev = acc.getGraph() ; }
+void ConstructQuadsNotTriples(QuadAccSink acc) :
+     { Node gn = Quad.defaultGraphNodeGenerated ;
+       Node prev = acc.getGraph() ;
+     }
 {
     (
   	 <GRAPH> /* TriG template :: (<GRAPH>)?*/
