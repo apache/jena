@@ -18,15 +18,18 @@
 
 package org.apache.jena.fuseki.cache;
 
-
 import org.apache.jena.sparql.resultset.SPARQLResult;
 
+/** This class is a wrapper for SPARQL_Query SPARQLResult and data byte array */
 public class CacheEntry {
 
+    /** The flag to identify if SPARQL_Query data is initialized */
     private boolean initialized = false;
 
+    /** The SPARQLResult object **/
     private SPARQLResult result;
 
+    /** The byte array to store the SPARQL_Query result data. */
     private byte[] data;
 
     public SPARQLResult getResult() {
