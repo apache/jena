@@ -514,8 +514,8 @@ void ConstructQuadsNotTriples(QuadAccSink acc) :
      }
 {
     (
-    <GRAPH>
-     gn = VarOrIri()
+      <GRAPH>
+      gn = VarOrBlankNodeOrIri()
     )?
     { setAccGraph(acc, gn) ; }
     <LBRACE>

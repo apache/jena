@@ -266,23 +266,12 @@ void ConstructQuery() : { Template t ;
       getQuery().setQueryPattern(elg) ;
     }
  )
-//#endif
 }
 #else
-
+// Complete compatibility - this differs from the above at "new Template"
 void ConstructQuery() : { Template t ; 
                           TripleCollectorBGP acc = new TripleCollectorBGP() ; }
 {
-// #ifndef ARQ
-//   <CONSTRUCT>
-//      { getQuery().setQueryConstructType() ; }
-//   t = ConstructTemplate() 
-//     { getQuery().setConstructTemplate(t) ; }
-//   ( DatasetClause() )*
-//   WhereClause()
-//   SolutionModifier()
-// #else
-
  <CONSTRUCT>
    { getQuery().setQueryConstructType() ; }
  (
@@ -311,7 +300,6 @@ void ConstructQuery() : { Template t ;
       getQuery().setQueryPattern(elg) ;
     }
  )
-//#endif
 }
 #endif
 
@@ -758,8 +746,8 @@ void ConstructQuadsNotTriples(QuadAccSink acc) :
      }
 {
     (
-  	 <GRAPH> /* TriG template :: (<GRAPH>)?*/
-     gn = VarOrIri()
+   	  <GRAPH> /* TriG template :: (<GRAPH>)?*/
+      gn = VarOrBlankNodeOrIri()
     )?
 
     { setAccGraph(acc, gn) ; }
@@ -767,9 +755,9 @@ void ConstructQuadsNotTriples(QuadAccSink acc) :
     (TriplesTemplate(acc))?
     <RBRACE>
     { setAccGraph(acc, prev) ; }
-    
 }
 #endif
+
 void TriplesTemplate(TripleCollector acc) : { }
 {    // same as ConstructTriples
 #if SPARQL_11

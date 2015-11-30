@@ -2001,7 +2001,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case GRAPH:
       jj_consume_token(GRAPH);
-      gn = VarOrIri();
+      gn = VarOrBlankNodeOrIri();
       break;
     default:
       jj_la1[66] = jj_gen;
