@@ -78,7 +78,7 @@
       <artifactId>jena-shaded-guava</artifactId>
       <version>3.0.1-SNAPSHOT</version>
     </dependency>
-
+    
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
@@ -94,15 +94,15 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient-cache</artifactId>
     </dependency>
-
+    
     <dependency>
       <groupId>org.apache.thrift</groupId>
       <artifactId>libthrift</artifactId>
     </dependency>
 
-    <!--
-      Intercept any uses of Jakarta Commons Logging
-      e.g. Apache Common HTTP client.
+    <!-- 
+      Intercept any uses of Jakarta Commons Logging 
+      e.g. Apache Common HTTP client. 
     -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -124,7 +124,8 @@
       <artifactId>awaitility</artifactId>
       <scope>test</scope>
     </dependency>
-  </dependencies>
+
+ </dependencies>
 
   <build>
     <resources>
@@ -156,10 +157,10 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
-            <!--
-	      The test collections TC_General, TC_Riot, TC_Atlas
-	      are development support that collect the relevant
-	      tests for partial testing during development.
+            <!-- 
+	      The test collections TC_General, TC_Riot, TC_Atlas 
+	      are development support that collect the relevant 
+	      tests for partial testing during development. 
 	    -->
             <include>**/TS_*.java</include>
             <include>**/TC_Scripted.java</include>
