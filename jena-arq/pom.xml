@@ -123,17 +123,7 @@
       <groupId>com.jayway.awaitility</groupId>
       <artifactId>awaitility</artifactId>
       <scope>test</scope>
-    </dependency><dependency>
-    <groupId>org.apache.jena</groupId>
-    <artifactId>jena-shaded-guava</artifactId>
-    <version>3.0.0</version>
-  </dependency>
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-shaded-guava</artifactId>
-      <version>3.0.0</version>
     </dependency>
-
   </dependencies>
 
   <build>
