@@ -118,7 +118,7 @@ public class TestStreamRDFThrift extends BaseTest {
         
         byte[] bytes = out.toByteArray() ;
         ByteArrayInputStream in = new ByteArrayInputStream(bytes) ;
-        DatasetGraph dsg2 = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg2 = DatasetGraphFactory.create() ;
         StreamRDF stream2 = StreamRDFLib.dataset(dsg2) ;
         BinRDF.inputStreamToStream(in, stream2) ;
         
@@ -136,7 +136,7 @@ public class TestStreamRDFThrift extends BaseTest {
         
         byte[] bytes = out.toByteArray() ;
         ByteArrayInputStream in = new ByteArrayInputStream(bytes) ;
-        DatasetGraph dsg2 = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg2 = DatasetGraphFactory.create() ;
         
         StreamRDF stream2 = StreamRDFLib.dataset(dsg2) ;
         BinRDF.inputStreamToStream(in, stream2) ;

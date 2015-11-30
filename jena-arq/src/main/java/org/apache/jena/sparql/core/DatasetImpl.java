@@ -85,6 +85,7 @@ public class DatasetImpl implements Dataset
     /** Create a Dataset with a copy of the structure of another one,
      * while sharing the graphs themselves.  
      */
+    @SuppressWarnings("deprecation")
     public DatasetImpl(Dataset ds)
     {
         this(DatasetGraphFactory.create(ds.asDatasetGraph())) ;

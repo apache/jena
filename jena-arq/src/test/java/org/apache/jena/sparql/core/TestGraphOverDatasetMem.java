@@ -30,7 +30,7 @@ public class TestGraphOverDatasetMem extends AbstractTestGraphOverDataset
     @Override
     protected DatasetGraph createBaseDSG()
     { 
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         return new DatasetGraphViewGraphs(dsg) ;
     }
     

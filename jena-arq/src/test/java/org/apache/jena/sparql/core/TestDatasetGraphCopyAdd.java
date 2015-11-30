@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,15 +16,27 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core.mem;
+package org.apache.jena.sparql.core;
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.sparql.core.TestDatasetGraphWithLock ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.sse.SSE ;
+import static org.junit.Assert.*  ;
+import org.junit.Test ;
 
-public class TestDatasetGraphInMemoryLock extends TestDatasetGraphWithLock {
-	@Override
-	protected Dataset createDataset() {
-		return DatasetFactory.createTxnMem();
-	}
+public class TestDatasetGraphCopyAdd extends AbstractDatasetGraphTests 
+{
+    @Override
+    protected DatasetGraph emptyDataset() { return DatasetGraphFactory.create() ; }
+    
+    
+    @Test public void copyAdd_01() {
+        Graph graph = SSE.parseGraph("(graph (:s :p :o))") ;
+        Node g = SSE.parseNode(":g") ;
+        DatasetGraph dsg = emptyDataset() ;
+        dsg.addGraph(g, graph);
+        graph.clear(); 
+        assertTrue(graph.isEmpty()) ;
+        assertFalse(dsg.getGraph(g).isEmpty()) ;
+    }
 }

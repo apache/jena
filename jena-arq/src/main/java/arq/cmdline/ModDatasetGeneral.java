@@ -24,14 +24,11 @@ import jena.cmd.ArgDecl;
 import jena.cmd.CmdArgModule;
 import jena.cmd.CmdException;
 import jena.cmd.CmdGeneral;
-
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.query.LabelExistsException ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.shared.JenaException ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.util.DatasetUtils ;
 
 /** ModDataset: arguments to build a dataset - 
@@ -84,9 +81,7 @@ public class ModDatasetGeneral extends ModDataset
               (namedGraphURLs == null || namedGraphURLs.size() == 0 ) )
             return null ;
         
-        // This can auto-add graphs.
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-        Dataset ds = DatasetFactory.create(dsg) ;
+        Dataset ds = DatasetFactory.createTxnMem() ;
         addGraphs(ds) ;
         dataset = ds ;
         return dataset ;
@@ -95,7 +90,7 @@ public class ModDatasetGeneral extends ModDataset
     protected void addGraphs(Dataset ds)
     {
         try {
-            if ( dataURLs != null )
+            if ( dataURLs != null ) 
             {
                 for ( String url : dataURLs )
                     RDFDataMgr.read(ds, url) ;

@@ -56,6 +56,6 @@ public class DatasetNullAssembler extends AssemblerBase implements Assembler
         
         DatasetGraph dsg = transactional ? new GraphStoreNullTransactional() : new GraphStoreNull();
         
-        return DatasetFactory.create(dsg) ;
+        return DatasetFactory.wrap(dsg) ;
     }
 }

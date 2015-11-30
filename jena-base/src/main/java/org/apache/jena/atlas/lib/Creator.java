@@ -16,15 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core.mem;
+package org.apache.jena.atlas.lib;
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.sparql.core.TestDatasetGraphWithLock ;
+import java.util.function.Supplier ;
 
-public class TestDatasetGraphInMemoryLock extends TestDatasetGraphWithLock {
-	@Override
-	protected Dataset createDataset() {
-		return DatasetFactory.createTxnMem();
-	}
+/** Represents a creator of things.
+ * 
+ *  Unlike {@link Supplier}, this interface contract requres that the returned object
+ *  is a new, fresh instance on each call.  i.e.  two calls return objects that are
+ *  not {@code ==}.
+ */
+@FunctionalInterface
+public interface Creator<T> {
+    /** Return a fresh instance */ 
+    T create() ;
 }

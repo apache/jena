@@ -263,7 +263,7 @@ public class T_TransSystem
     {
         int counter = 0 ;
         Query query = QueryFactory.create(queryStr, Syntax.syntaxARQ) ;
-        try(QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg))) {
+        try(QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.wrap(dsg))) {
             qExec.setTimeout(abortTime);
             ResultSet rs = qExec.execSelect() ;
             for (; rs.hasNext() ; )
@@ -279,7 +279,7 @@ public class T_TransSystem
     {
         int counter = 0 ;
         Query query = QueryFactory.create(queryStr, Syntax.syntaxARQ) ;
-        try(QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg))) {
+        try(QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.wrap(dsg))) {
             qExec.setTimeout(abortTime);
             Model model = qExec.execDescribe();
             //ResultSet rs = qExec.execSelect() ;

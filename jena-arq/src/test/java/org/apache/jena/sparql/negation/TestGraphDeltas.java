@@ -151,7 +151,7 @@ public class TestGraphDeltas {
      *            Expected number of differences
      */
     private void testDeltas(Model a, Model b, int differences) {
-        Dataset ds = DatasetFactory.createMem();
+        Dataset ds = DatasetFactory.createGeneral();
         ds.addNamedModel("http://a", a);
         ds.addNamedModel("http://b", b);
 

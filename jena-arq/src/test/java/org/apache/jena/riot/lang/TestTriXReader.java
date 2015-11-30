@@ -79,7 +79,7 @@ public class TestTriXReader extends BaseTest {
     public void trix_direct() {
         ReaderRIOT r = new ReaderTriX() ;
         InputStream in = IO.openFile(fInput) ;
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         //StreamRDF stream = StreamRDFLib.writer(System.out) ;
         StreamRDF stream = StreamRDFLib.dataset(dsg) ;
         stream.start();

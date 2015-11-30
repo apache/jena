@@ -29,12 +29,19 @@ public class DatasetGraphMaker extends DatasetGraphMap
 {
     private GraphMaker graphMaker ;
 
+    public DatasetGraphMaker(DatasetGraph dsg, GraphMaker graphMaker)
+    {
+        super(dsg) ;
+        this.graphMaker = graphMaker ;
+    }
+
     public DatasetGraphMaker(GraphMaker graphMaker)
     {
         super(graphMaker.create()) ;
         this.graphMaker = graphMaker ;
     }
 
+    @Deprecated
     public DatasetGraphMaker(Graph graph)
     {
         super(graph) ;

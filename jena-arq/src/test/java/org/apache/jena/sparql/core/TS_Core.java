@@ -29,6 +29,7 @@ import org.junit.runners.Suite ;
     , TestDatasetGeneral.class
     // Not ready , TestDynamicDatasetMem.class
     , TestDatasetGraphsRegular.class
+    , TestDatasetGraphCopyAdd.class
     , TestGraphOverDatasetMem.class
     , TestDatasetGraphViewGraphs.class
     , TestDatasetMonitor.class

@@ -60,7 +60,7 @@ public class TDBFactory
 
     /** Create a dataset around a DatasetGraphTDB */ 
     private static Dataset createDataset(DatasetGraph datasetGraph)
-    { return DatasetFactory.create(datasetGraph) ; }
+    { return DatasetFactory.wrap(datasetGraph) ; }
     
     /** Create or connect to a TDB-backed dataset (graph-level) */
     public static DatasetGraph createDatasetGraph(String directory)

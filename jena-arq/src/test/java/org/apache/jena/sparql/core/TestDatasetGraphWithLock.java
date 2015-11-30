@@ -39,8 +39,8 @@ import org.junit.Test;
 public class TestDatasetGraphWithLock extends AbstractTestDataset {
 
     @Override
-    protected Dataset createFixed() {
-        return DatasetFactory.create(new DatasetGraphWithLock(DatasetGraphFactory.createMem()));
+    protected Dataset createDataset() {
+        return DatasetFactory.wrap(new DatasetGraphWithLock(DatasetGraphFactory.create()));
     }
 
     @Test
@@ -48,7 +48,7 @@ public class TestDatasetGraphWithLock extends AbstractTestDataset {
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
         try {
-            final DatasetGraphWithLock dsg = new DatasetGraphWithLock(DatasetGraphFactory.createMem());
+            final DatasetGraphWithLock dsg = new DatasetGraphWithLock(DatasetGraphFactory.create());
 
             Callable<Boolean> callable = new Callable<Boolean>() {
 
@@ -84,7 +84,7 @@ public class TestDatasetGraphWithLock extends AbstractTestDataset {
         ExecutorService executor = Executors.newCachedThreadPool();
 
         try {
-            final DatasetGraphWithLock dsg = new DatasetGraphWithLock(DatasetGraphFactory.createMem());
+            final DatasetGraphWithLock dsg = new DatasetGraphWithLock(DatasetGraphFactory.create());
 
             Callable<Boolean> callable = new Callable<Boolean>() {
 

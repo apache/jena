@@ -24,5 +24,5 @@ import org.apache.jena.query.DatasetFactory ;
 public class TestDatasetGeneral extends AbstractTestDataset 
 {
     @Override
-    protected Dataset createFixed() { return DatasetFactory.createGeneral() ; }
+    protected Dataset createDataset() { return DatasetFactory.createGeneral() ; }
 }

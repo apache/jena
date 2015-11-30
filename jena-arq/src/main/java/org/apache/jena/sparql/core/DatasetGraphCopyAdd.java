@@ -16,15 +16,26 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core.mem;
+package org.apache.jena.sparql.core;
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.sparql.core.TestDatasetGraphWithLock ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
 
-public class TestDatasetGraphInMemoryLock extends TestDatasetGraphWithLock {
-	@Override
-	protected Dataset createDataset() {
-		return DatasetFactory.createTxnMem();
-	}
+/** Override {@link DatasetGraph#addGraph} so that it always copies
+ * content from the added graph data.
+ */
+
+/*package*/ class DatasetGraphCopyAdd extends DatasetGraphWrapper 
+{
+    public DatasetGraphCopyAdd(DatasetGraph dsg) {
+        super(dsg);
+    }
+    
+    @Override
+    public void addGraph(Node graphName, Graph graph) {
+        graph.find(null,null,null).forEachRemaining(t-> {
+            Quad q = Quad.create(graphName, t) ;
+            super.add(q) ;
+        }) ;
+    }
 }

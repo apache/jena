@@ -501,18 +501,21 @@ void QuadsNotTriples(QuadAccSink acc) : {Node gn ; Node prev = acc.getGraph() ; 
 }
 void ConstructQuads(QuadAcc acc) : {}
 {
-    (TriplesTemplate(acc))?
+    ( TriplesTemplate(acc))?
     (
        ConstructQuadsNotTriples(acc)
        (<DOT>)?
-       (TriplesTemplate(acc))?
+       ( TriplesTemplate(acc))?
     )*
 }
-void ConstructQuadsNotTriples(QuadAccSink acc) : {Node gn = Quad.defaultGraphNodeGenerated ; Node prev = acc.getGraph() ; }
+void ConstructQuadsNotTriples(QuadAccSink acc) :
+     { Node gn = Quad.defaultGraphNodeGenerated ;
+       Node prev = acc.getGraph() ;
+     }
 {
     (
-    <GRAPH>
-     gn = VarOrIri()
+      <GRAPH>
+      gn = VarOrBlankNodeOrIri()
     )?
     { setAccGraph(acc, gn) ; }
     <LBRACE>

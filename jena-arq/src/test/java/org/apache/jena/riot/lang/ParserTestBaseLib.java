@@ -45,15 +45,15 @@ class ParserTestBaseLib {
         return graph ;
     }
 
-    /** Parse for a language - convert errors.wranigns to ErrorHandlerEx */
+    /** Parse for a language - convert errors and warning to ErrorHandlerEx */
     static DatasetGraph parseDataset(Lang lang, String ...strings) {
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         StreamRDF dest = StreamRDFLib.dataset(dsg) ;
         parse(lang, dest, strings) ;
         return dsg ;
     }
 
-    /** Parse strings to destination (chekcing on, URI resolution off) */ 
+    /** Parse strings to destination (checking on, URI resolution off) - convert errors and warning to ErrorHandlerEx */ 
     static void parse(Lang lang, StreamRDF dest, String... strings) {
         String string = StrUtils.strjoin("\n", strings) ;
         StringReader reader = new StringReader(string) ;

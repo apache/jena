@@ -54,7 +54,7 @@ public class UnitTestSyntax extends LangTestCase
     }
     
     private void run4() {
-        Dataset ds = DatasetFactory.createMem() ;
+        Dataset ds = DatasetFactory.createGeneral() ;
         RDFDataMgr.read(ds, uri, uri, lang) ;
     }
     

@@ -315,7 +315,7 @@ public abstract class CmdLangParse extends CmdGeneral
     
     /** Create an accumulating output stream for later pretty printing */
     protected Pair<StreamRDF, PostParseHandler> createAccumulateSink() {
-        final DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        final DatasetGraph dsg = DatasetGraphFactory.create() ;
         StreamRDF sink = StreamRDFLib.dataset(dsg) ;
         final RDFFormat fmt = modLangOutput.getOutputFormatted() ;
         PostParseHandler handler = new PostParseHandler() {

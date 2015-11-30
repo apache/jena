@@ -57,7 +57,7 @@ public class TestSemanticEquivalence {
     @BeforeClass
     public static void setup() {
         // Dataset for implicit join tests
-        implJoin = DatasetFactory.createMem();
+        implJoin = DatasetFactory.createTxnMem();
 
         Node a = NodeFactory.createURI("http://a");
         Node b = NodeFactory.createURI("http://b");

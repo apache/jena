@@ -165,7 +165,7 @@ public class UpdateEngineWorker implements UpdateVisitor
                 // Quads
                 if ( dest != null )
                     throw new UpdateException("Attempt to load quads into a graph") ;
-                DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+                DatasetGraph dsg = DatasetGraphFactory.create() ;
                 StreamRDF stream = StreamRDFLib.dataset(dsg) ;
                 RDFDataMgr.parse(stream, s, source) ;
                 Iterator<Quad>  iter = dsg.find() ; 

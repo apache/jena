@@ -38,37 +38,74 @@ import org.apache.jena.util.FileManager;
  */
 public class DatasetFactory {
 
-	/**
-	 * @return an in-memory, modifiable Dataset
-	 * @deprecated Prefer {@link #createGeneral()} or {@link #createTxnMem()}
+    /** Create an in-memory, non-transactional Dataset.
+     * <p>
+     * See also {@link #createTxnMem()} for a transactional dataset.
+     * <p>
+     * This implementation copies models when {@link Dataset#addNamedModel(String, Model)} is called.
+     */
+    public static Dataset create() {
+        return wrap(DatasetGraphFactory.create()) ;
+    }
+    
+	/** Create an in-memory, non-transactional Dataset.
+	 * <p>
+	 * See also {@link #createTxnMem()} for a transactional dataset.
+	 * <p>
+	 * Use {@link #createGeneral()} when needing to add graphs with mixed charcateristics, 
+	 * e.g. inference graphs, specific graphs from TDB.
+	 * <p>    
+     * <em>This operation is marked "deprecated" because the general purpose "add named graph of any implementation"
+     * feature will be removed; this feature is now provided by {@link #createGeneral()}.
+     * </em>
+	 * @deprecated Prefer {@link #createGeneral()} or {@link #createTxnMem()} or {@link #create()}
 	 */
 	@Deprecated
 	public static Dataset createMem() {
-		return create(DatasetGraphFactory.createMem());
+		return createGeneral() ;
 	}
 
 	/**
-	 * @return a transactional, in-memory, modifiable Dataset with MR+SW locking
-	 */
+     * Create an in-memory. transactional Dataset.
+     * <p> 
+     * This fully supports transactions, including abort to roll-back changes.
+     * It provides "autocommit" if operations are performed
+     * outside a transaction but with a performance impact
+     * (the implementation adds a begin/commit around each add or delete
+     * so overheads can accumulate).
+     * 
+     * @return a transactional, in-memory, modifiable Dataset which
+     * 
+     */
 	public static Dataset createTxnMem() {
-		return create(DatasetGraphFactory.createTxnMem());
+		return wrap(DatasetGraphFactory.createTxnMem());
 	}
 
 	/**
-	 * @return a general-purpose, in-memory, modifiable Dataset
+	 * Create a general-purpose Dataset.<br/>
+	 * Any graphs needed are in-memory unless explciitly added with {@link Dataset#addNamedModel}.
+	 * </p>
+	 * This dataset can contain graphs from any source when added via {@link Dataset#addNamedModel}.
+	 * These are held as links to the supplied graph and not copied.
+	 * <p> 
+	 * This dataset does not support transactions. 
+	 * <p>
+	 * 
+	 * @return a general-purpose Dataset
 	 */
 	public static Dataset createGeneral() {
-		return createMem();
+		return wrap(DatasetGraphFactory.createGeneral()); 
 	}
 
 	/**
-	 * @return an in-memory, modifiable Dataset. New graphs must be explicitly added using .addGraph.
+	 * @deprecated This operation may be removed.
 	 */
+	@Deprecated
 	public static Dataset createMemFixed() {
-		return create(DatasetGraphFactory.createMemFixed());
+		return wrap(DatasetGraphFactory.createMemFixed());
 	}
 
-	/**
+    /**
 	 * @param model The model for the default graph
 	 * @return a dataset with the given model as the default graph
 	 */
@@ -85,16 +122,28 @@ public class DatasetFactory {
 	}
 
 	/**
-	 * Wrap a {@link DatasetGraph} to make a mutable dataset
+	 * Wrap a {@link DatasetGraph} to make a dataset
 	 *
 	 * @param dataset DatasetGraph
 	 * @return Dataset
 	 */
-	public static Dataset create(final DatasetGraph dataset) {
+	public static Dataset wrap(final DatasetGraph dataset) {
 		return DatasetImpl.wrap(dataset);
 	}
 
 	/**
+	 * Wrap a {@link DatasetGraph} to make a dataset
+	 *
+	 * @param dataset DatasetGraph
+	 * @return Dataset
+	 * @dprecated Use {@link #wrap} 
+	 */
+	@Deprecated
+	public static Dataset create(final DatasetGraph dataset) {
+	    return DatasetImpl.wrap(dataset);
+	}
+
+    /**
 	 * @param uriList URIs merged to form the default dataset
 	 * @return a dataset based on a list of URIs : these are merged into the default graph of the dataset.
 	 */

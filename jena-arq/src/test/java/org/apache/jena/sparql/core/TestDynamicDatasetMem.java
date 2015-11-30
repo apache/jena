@@ -18,16 +18,43 @@
 
 package org.apache.jena.sparql.core;
 
+import java.util.Arrays ;
+import java.util.Collection ;
+
+import org.apache.jena.atlas.lib.Creator ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Parameterized ;
+import org.junit.runners.Parameterized.Parameters ;
 
+/** <b>This class is not in the test suite (it tests for currently unavailable features)</b>.
+ * TDB does support this feature and uses AbstractTestDynamicDatase
+ */
+@RunWith(Parameterized.class)
 public class TestDynamicDatasetMem extends AbstractTestDynamicDataset
 {
+    @Parameters(name = "{index}: {0}")
+    public static Collection<Object[]> data() {
+        Creator<Dataset> datasetGeneralMaker = ()-> DatasetFactory.createGeneral() ; 
+        Creator<Dataset> datasetTxnMemMaker = ()-> DatasetFactory.createTxnMem() ;
+        return Arrays.asList(new Object[][] {
+            { "General",  datasetGeneralMaker },
+            { "TxnMem",   datasetTxnMemMaker} });
+    }   
+
+    private final Creator<Dataset> maker;
+
+    public TestDynamicDatasetMem(String name, Creator<Dataset> maker) {
+        this.maker = maker ;
+    }
+    
     @Override
     protected Dataset createDataset()
     {
-        return DatasetFactory.createMem() ;
+        return maker.create() ;
     }
+    
     @Override
     protected void releaseDataset(Dataset ds) {}
 

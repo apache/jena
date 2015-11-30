@@ -20,26 +20,13 @@ package org.apache.jena.sparql.api;
 
 import java.util.Iterator;
 
+import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.QueryParseException;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.QuerySolutionMap;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.ResultSetFormatter;
-import org.apache.jena.query.Syntax;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
@@ -362,7 +349,7 @@ public class TestAPI extends BaseTest
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
         
         Iterator<Quad> ts = qExec.execConstructQuads();
-        DatasetGraph result = DatasetGraphFactory.createMem();
+        DatasetGraph result = DatasetGraphFactory.create();
         long count = 0;
         while (ts.hasNext()) {
             count++;
@@ -370,7 +357,7 @@ public class TestAPI extends BaseTest
             result.add(qd);
         }
         
-        DatasetGraph expected = DatasetGraphFactory.createMem();
+        DatasetGraph expected = DatasetGraphFactory.create();
         expected.add(g1.asNode(), s.asNode(), p.asNode(), o.asNode());
         
         assertEquals(1, count); 
@@ -386,13 +373,13 @@ public class TestAPI extends BaseTest
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
         
         Iterator<Quad> ts = qExec.execConstructQuads();
-        DatasetGraph result = DatasetGraphFactory.createMem();
+        DatasetGraph result = DatasetGraphFactory.create();
         long count = 0;
         while (ts.hasNext()) {
             count++;
             result.add( ts.next() );
         }
-        DatasetGraph expected = DatasetGraphFactory.createMem();
+        DatasetGraph expected = DatasetGraphFactory.create();
         expected.add(Quad.defaultGraphNodeGenerated, s.asNode(), p.asNode(), o.asNode());
         assertEquals(1, count);
         assertTrue(IsoMatcher.isomorphic( expected, result) );
@@ -403,9 +390,7 @@ public class TestAPI extends BaseTest
     @Test public void testARQConstructQuad_b_1() {
         String queryString = "CONSTRUCT { ?s ?p ?o GRAPH ?g1 { ?s1 ?p1 ?o1 } } WHERE { ?s ?p ?o. GRAPH ?g1 { ?s1 ?p1 ?o1 } }";
         Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
-        
         Iterator<Triple> ts = qExec.execConstructTriples();
         Model result = ModelFactory.createDefaultModel();
         while (ts.hasNext()) {
@@ -418,6 +403,18 @@ public class TestAPI extends BaseTest
         assertTrue(dft.isIsomorphicWith(result));
     }
     
+    @Test public void testARQConstructQuad_bnodes() {
+        String queryString = "PREFIX : <http://example/> CONSTRUCT { :s :p :o GRAPH _:a { :s :p :o1 } } WHERE { }";
+        Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
+        QueryExecution qExec = QueryExecutionFactory.create(q, d);
+        Dataset ds = qExec.execConstructDataset() ;
+        assertEquals(1, Iter.count(ds.asDatasetGraph().listGraphNodes())) ;
+        Node n = ds.asDatasetGraph().listGraphNodes().next();
+        assertTrue(n.isBlank());
+        Graph g = ds.asDatasetGraph().getGraph(n) ;
+        assertNotNull(g) ;
+        assertFalse(g.isEmpty()) ;
+   }
     
     // Allow duplicated quads in execConstructQuads()
     @Test public void testARQConstructQuad_Duplicate_1() {
@@ -446,7 +443,7 @@ public class TestAPI extends BaseTest
         
         Dataset result = qExec.execConstructDataset();
 
-        DatasetGraph expected = DatasetGraphFactory.createMem();
+        DatasetGraph expected = DatasetGraphFactory.create();
         expected.add(g1.asNode(), s.asNode(), p.asNode(), o.asNode());
         assertEquals(1, result.asDatasetGraph().size());
         assertTrue(IsoMatcher.isomorphic( expected, result.asDatasetGraph()) );
@@ -478,7 +475,7 @@ public class TestAPI extends BaseTest
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
         
         Iterator<Quad> quads = qExec.execConstructQuads();
-        DatasetGraph result = DatasetGraphFactory.createMem();
+        DatasetGraph result = DatasetGraphFactory.create();
         long count = 0;
         while (quads.hasNext()) {
             count++;
@@ -486,7 +483,7 @@ public class TestAPI extends BaseTest
             result.add(qd);
         }
         
-        DatasetGraph expected = DatasetGraphFactory.createMem();
+        DatasetGraph expected = DatasetGraphFactory.create();
         expected.add(g1.asNode(), s.asNode(), p.asNode(), o.asNode());
         
         assertEquals(1, count); 
