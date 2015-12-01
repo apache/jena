@@ -53,7 +53,7 @@ public class ModResultsOut extends ModBase
     {
         cmdLine.getUsage().startCategory("Results") ;
         cmdLine.add(resultsFmtDecl,
-                    "--results",
+                    "--results=",
                     "Results format (Result set: text, XML, JSON, CSV, TSV; Graph: RDF serialization)") ;  
     }
 
