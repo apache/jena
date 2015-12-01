@@ -87,7 +87,8 @@ public abstract class PMapTupleTable<TupleMapType, TupleType> implements TupleTa
 	 * Logs to DEBUG prepending the table name in order to distinguish amongst different indexes
 	 */
 	protected void debug(final String msg, final Object... values) {
-		log().debug(tableName + ": " + msg, values);
+	    if ( log().isDebugEnabled() )
+	        log().debug(tableName + ": " + msg, values);
 	}
 
 	@Override
