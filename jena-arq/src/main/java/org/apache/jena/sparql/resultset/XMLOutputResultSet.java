@@ -30,6 +30,7 @@ import org.apache.jena.query.ResultSet ;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.impl.Util ;
 
 /** XML Output (ResultSet format) */
 
@@ -200,33 +201,26 @@ public class XMLOutputResultSet
     
     void printLiteral(Literal literal)
     {
-        String datatype = literal.getDatatypeURI() ;
-        String lang = literal.getLanguage() ;
-        
         out.print("<") ;
         out.print(dfLiteral) ;
         
-        if ( lang != null && !(lang.length()==0) )
-        {
+        if ( Util.isLangString(literal)) {
+            String lang = literal.getLanguage() ;
             out.print(" xml:lang=\"") ;
-            out.print(lang) ;
+            out.print(literal.getLanguage()) ;
             out.print("\"") ;
-        }
-            
-        if ( datatype != null && ! datatype.equals(""))
-        {
-//            if ( datatype.startsWith(xsBaseURI) )
-//            {
-//                String r = datatype.substring(xsBaseURI.length()) ;
-//                out.print(" xsi:type=\"xsi:"+r+"\"") ;
-//            }
+        } else if ( ! Util.isSimpleString(literal) ) {
+            // Datatype
+            // (RDF 1.1) not xsd:string nor rdf:langString.
+            // (RDF 1.0) any datatype.
+            String datatype = literal.getDatatypeURI() ;
             out.print(" ") ;
             out.print(dfAttrDatatype) ;
             out.print("=\"") ;
             out.print(datatype) ;
             out.print("\"") ;
         }
-            
+        
         out.print(">") ;
         out.print(xml_escape(literal.getLexicalForm())) ;
         out.print("</") ;
@@ -251,7 +245,7 @@ public class XMLOutputResultSet
             out.print("<") ;
             out.print(dfBNode) ;
             out.print(">") ;
-            out.print(label) ;
+            out.print(xml_escape(label)) ;
             out.print("</") ;
             out.print(dfBNode) ;
             out.println(">") ;
