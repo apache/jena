@@ -48,75 +48,67 @@ public class TSVOutput extends OutputBase
     static String SEP  = "\t" ;
     
     @Override
-    public void format(OutputStream out, ResultSet resultSet)
-    {
-        //Use a Turtle formatter to format terms
+    public void format(OutputStream out, ResultSet resultSet) {
+        // Use a Turtle formatter to format terms
         NodeFormatterTTL formatter = new NodeFormatterTTL(null, null);
 
-        AWriter w = IO.wrapUTF8(out) ; 
+        AWriter w = IO.wrapUTF8(out);
 
-        String sep = null ;
-        List<String> varNames = resultSet.getResultVars() ;
-        List<Var> vars = new ArrayList<>(varNames.size()) ;
+        String sep = null;
+        List<String> varNames = resultSet.getResultVars();
+        List<Var> vars = new ArrayList<>(varNames.size());
 
         // writes the variables on the first line
-        for( String v : varNames )
-        {
+        for ( String v : varNames ) {
             if ( sep != null )
-                w.write(sep) ;
+                w.write(sep);
             else
-                sep = SEP ;
-            Var var = Var.alloc(v) ;
-            w.write(var.toString()) ; 
-            vars.add(var) ;
+                sep = SEP;
+            Var var = Var.alloc(v);
+            w.write(var.toString());
+            vars.add(var);
         }
-        w.write(NL) ;
+        w.write(NL);
 
         // writes one binding by line
-        for ( ; resultSet.hasNext() ; )
-        {
-            sep = null ;
-            Binding b = resultSet.nextBinding() ;
+        for ( ; resultSet.hasNext() ; ) {
+            sep = null;
+            Binding b = resultSet.nextBinding();
 
-            for( Var v : vars )
-            {
+            for ( Var v : vars ) {
                 if ( sep != null )
-                    w.write(sep) ;
-                sep = SEP ;
+                    w.write(sep);
+                sep = SEP;
 
-                Node n = b.get(v) ;
-                if ( n != null )
-                {
+                Node n = b.get(v);
+                if ( n != null ) {
                     // This will not include a raw tab.
                     formatter.format(w, n);
                 }
             }
-            w.write(NL) ;
+            w.write(NL);
         }
 
-        w.flush() ;
+        w.flush();
     }
 
     static final byte[] headerBytes = StrUtils.asUTF8bytes("?_askResult" + NL);
-    static final byte[] yesBytes = StrUtils.asUTF8bytes("true") ;
-    static final byte[] noBytes = StrUtils.asUTF8bytes("false") ;
-    static final byte[] NLBytes = StrUtils.asUTF8bytes(NL) ;
-    
+    static final byte[] yesBytes    = StrUtils.asUTF8bytes("true");
+    static final byte[] noBytes     = StrUtils.asUTF8bytes("false");
+    static final byte[] NLBytes     = StrUtils.asUTF8bytes(NL);
+
     @Override
-    public void format(OutputStream out, boolean booleanResult)
-    {
-        try
-        {
-        	out.write(headerBytes);
-            if (booleanResult) 
-                out.write(yesBytes) ;
+    public void format(OutputStream out, boolean booleanResult) {
+        try {
+            out.write(headerBytes);
+            if ( booleanResult )
+                out.write(yesBytes);
             else
-                out.write(noBytes) ;
-            out.write(NLBytes) ;
-        } catch (IOException ex)
-        {
-            throw new ARQException(ex) ;
+                out.write(noBytes);
+            out.write(NLBytes);
+        }
+        catch (IOException ex) {
+            throw new ARQException(ex);
         }
     }
-
 }

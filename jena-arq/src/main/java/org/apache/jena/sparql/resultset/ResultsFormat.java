@@ -102,83 +102,84 @@ public class ResultsFormat extends Symbol
 
     }
 
-    public static ResultsFormat guessSyntax(String url) 
-    {
-        return guessSyntax(url, FMT_RS_XML) ;
+    public static ResultsFormat guessSyntax(String url) {
+        return guessSyntax(url, FMT_RS_XML);
     }
-    
-    public static boolean isRDFGraphSyntax(ResultsFormat fmt)
-    {
-        if ( FMT_RDF_N3.equals(fmt) ) return true ;
-        if ( FMT_RDF_TURTLE.equals(fmt) ) return true ;
-        if ( FMT_RDF_XML.equals(fmt) ) return true ;
-        if ( FMT_RDF_NT.equals(fmt) ) return true ;
-        return false ;
+
+    public static boolean isRDFGraphSyntax(ResultsFormat fmt) {
+        if ( FMT_RDF_N3.equals(fmt) )
+            return true;
+        if ( FMT_RDF_TURTLE.equals(fmt) )
+            return true;
+        if ( FMT_RDF_XML.equals(fmt) )
+            return true;
+        if ( FMT_RDF_NT.equals(fmt) )
+            return true;
+        return false;
     }
-    
-    public static boolean isDatasetSyntax(ResultsFormat fmt){
-    	if ( FMT_TRIG.equals(fmt) ) return true ;
-    	return false;
+
+    public static boolean isDatasetSyntax(ResultsFormat fmt) {
+        if ( FMT_TRIG.equals(fmt) )
+            return true;
+        return false;
     }
-    
-    public static ResultsFormat guessSyntax(String url, ResultsFormat defaultFormat)
-    {
+
+    public static ResultsFormat guessSyntax(String url, ResultsFormat defaultFormat) {
         // -- XML
         if ( url.endsWith(".srx") )
-            return FMT_RS_XML ;
+            return FMT_RS_XML;
         if ( url.endsWith(".xml") )
-            return FMT_RS_XML ;
-        
+            return FMT_RS_XML;
+
         // -- Some kind of RDF
         if ( url.endsWith(".rdf") )
-            return FMT_RDF_XML ;
+            return FMT_RDF_XML;
         if ( url.endsWith(".n3") )
-            return FMT_RDF_N3 ;
+            return FMT_RDF_N3;
         if ( url.endsWith(".ttl") )
-            return FMT_RDF_TURTLE ;
-        
+            return FMT_RDF_TURTLE;
+
         // -- JSON
         if ( url.endsWith(".srj") )
-            return FMT_RS_JSON ;
+            return FMT_RS_JSON;
         if ( url.endsWith(".json") )
-            return FMT_RS_JSON ;
+            return FMT_RS_JSON;
         if ( url.endsWith(".yml") )
-            return FMT_RS_JSON ;
-        
+            return FMT_RS_JSON;
+
         // -- Thrift
         if ( url.endsWith(".srt") )
-            return FMT_RS_THRIFT ;
-        
+            return FMT_RS_THRIFT;
+
         // -- SSE : http://jena.apache.org/documentation/notes/sse.html
         if ( url.endsWith(".sse") )
-            return FMT_RS_SSE ;
+            return FMT_RS_SSE;
 
         if ( url.endsWith(".srb") ) // BindingsIO format.
-            return FMT_RS_BIO ;
+            return FMT_RS_BIO;
 
         // Likely to be something completely different!
         if ( url.endsWith(".csv") )
-            return FMT_RS_CSV ;
+            return FMT_RS_CSV;
         if ( url.endsWith(".tsv") )
-            return FMT_RS_TSV ;
-        
+            return FMT_RS_TSV;
+
         // Trig for Dataset
         if ( url.endsWith(".trig") )
-            return FMT_TRIG ;
-        
-        return defaultFormat ;
+            return FMT_TRIG;
+
+        return defaultFormat;
     }
-    
-    
-    /** Look up a short name for a result set FMT_
+
+    /**
+     * Look up a short name for a result set FMT_
      * 
-     * @param s  Short name
-     * @return  ResultSetFormat
+     * @param s
+     *            Short name
+     * @return ResultSetFormat
      */
- 
-    public static ResultsFormat lookup(String s)
-    {
-        return names.lookup(s) ;
+    public static ResultsFormat lookup(String s) {
+        return names.lookup(s);
     }
 
     static Map<ResultsFormat, Lang> mapResultsFormatToLang = new HashMap<>() ;

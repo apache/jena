@@ -18,67 +18,57 @@
 
 package org.apache.jena.sparql.resultset;
 
-import java.io.OutputStream ;
+import java.io.OutputStream;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter;
 
 /** XML Output (ASK format) */
 
+public class XMLOutputASK implements XMLResults {
+    String         stylesheetURL = null;
+    IndentedWriter out;
+    int            bNodeCounter  = 0;
+    boolean        xmlInst       = true;
 
-public class XMLOutputASK implements XMLResults
-{
-    String stylesheetURL = null ;
-    IndentedWriter  out ;
-    int bNodeCounter = 0 ;
-    boolean xmlInst = true ;
-    
-    public XMLOutputASK(OutputStream outStream)
-    { this(outStream, null) ; }
-    
-    public XMLOutputASK(OutputStream outStream, String stylesheetURL)
-    {
-        this(new IndentedWriter(outStream), stylesheetURL) ;
+    public XMLOutputASK(OutputStream outStream) {
+        this(outStream, null);
     }
-    
-    public XMLOutputASK(IndentedWriter indentedOut, String stylesheetURL)
-    {
-        out = indentedOut ;
-        this.stylesheetURL = stylesheetURL ;
+
+    public XMLOutputASK(OutputStream outStream, String stylesheetURL) {
+        this(new IndentedWriter(outStream), stylesheetURL);
     }
-    
-    public void exec(boolean result)
-    {
-        if ( xmlInst)
-            out.println("<?xml version=\"1.0\"?>") ;
-        
+
+    public XMLOutputASK(IndentedWriter indentedOut, String stylesheetURL) {
+        out = indentedOut;
+        this.stylesheetURL = stylesheetURL;
+    }
+
+    public void exec(boolean result) {
+        if ( xmlInst )
+            out.println("<?xml version=\"1.0\"?>");
+
         if ( stylesheetURL != null )
-            out.println("<?xml-stylesheet type=\"text/xsl\" href=\""+stylesheetURL+"\"?>") ;
-        
-        out.println("<"+dfRootTag+" xmlns=\""+dfNamespace+"\">") ;
-        out.incIndent(INDENT) ;
-        
+            out.println("<?xml-stylesheet type=\"text/xsl\" href=\"" + stylesheetURL + "\"?>");
+
+        out.println("<" + dfRootTag + " xmlns=\"" + dfNamespace + "\">");
+        out.incIndent(INDENT);
+
         // Head
-        out.println("<"+dfHead+">") ;
-        out.incIndent(INDENT) ;
-        if ( false )
-        {
-            String link = "UNSET" ;
-            out.println("<link href=\""+link+"\"/>") ;
+        out.println("<" + dfHead + ">");
+        out.incIndent(INDENT);
+        if ( false ) {
+            String link = "UNSET";
+            out.println("<link href=\"" + link + "\"/>");
         }
-        out.decIndent(INDENT) ;
-        out.println("</"+dfHead+">") ;
-        
-//        // Results
-//        out.println("<"+dfResults+">") ;
-//        out.incIndent(INDENT) ;
+        out.decIndent(INDENT);
+        out.println("</" + dfHead + ">");
+
         if ( result )
-            out.println("<boolean>true</boolean>") ;
+            out.println("<boolean>true</boolean>");
         else
-            out.println("<boolean>false</boolean>") ;
-//        out.decIndent(INDENT) ;
-//        out.println("</"+dfResults+">") ;
-        out.decIndent(INDENT) ;
-        out.println("</"+dfRootTag+">") ;
-        out.flush() ;
+            out.println("<boolean>false</boolean>");
+        out.decIndent(INDENT);
+        out.println("</" + dfRootTag + ">");
+        out.flush();
     }
 }
