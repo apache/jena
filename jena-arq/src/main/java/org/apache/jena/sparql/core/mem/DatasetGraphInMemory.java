@@ -133,6 +133,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 		commitLock().readLock().lock(); // if a commit is proceeding, wait so that we see a coherent index state
 		try {
 			quadsIndex().begin(readWrite);
+			defaultGraph().begin(readWrite);
 		} finally {
 			commitLock().readLock().unlock();
 		}
