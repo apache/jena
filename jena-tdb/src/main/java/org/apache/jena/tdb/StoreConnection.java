@@ -45,52 +45,44 @@ public class StoreConnection
     private boolean                  isValid = true ;
     private volatile boolean         haveUsedInTransaction = false ;
 
-    private StoreConnection(DatasetGraphTDB dsg)
-    {
-        baseDSG = dsg ;
-        transactionManager = new TransactionManager(baseDSG) ;
+    private StoreConnection(DatasetGraphTDB dsg) {
+        baseDSG = dsg;
+        transactionManager = new TransactionManager(baseDSG);
     }
 
-    private void checkValid()
-    {
+    private void checkValid() {
         if (!isValid) 
             throw new TDBTransactionException("StoreConnection inValid (issued before a StoreConnection.release?)") ;
     }
     
     // Ensure that a dataset used non-transactionally has been flushed to disk
-    private void checkTransactional()
-    {
+    private void checkTransactional() {
         // Access to booleans is atomic.
-        if ( ! haveUsedInTransaction )
-        {
+        if ( !haveUsedInTransaction ) {
             // See http://en.wikipedia.org/wiki/Double-checked_locking
             // Except we don't have the delayed constructor problem.
-            synchronized(this)
-            {
-                if ( ! haveUsedInTransaction )
-                {
+            synchronized (this) {
+                if ( !haveUsedInTransaction ) {
                     // Sync the underlying database in case used
                     // non-transactionally by the application.
-                    baseDSG.sync() ;
+                    baseDSG.sync();
                 }
-                haveUsedInTransaction = true ;
+                haveUsedInTransaction = true;
             }
         }
     }
 
     public boolean haveUsedInTransaction() { return haveUsedInTransaction ; }
     
-    public Location getLocation()
-    {
-        checkValid() ;
-        return baseDSG.getLocation() ;
+    public Location getLocation() {
+        checkValid();
+        return baseDSG.getLocation();
     }
 
     /** Return a description of the transaction manager state */
-    public SysTxnState getTransMgrState()
-    {
-        checkValid() ;
-        return transactionManager.state() ;
+    public SysTxnState getTransMgrState() {
+        checkValid();
+        return transactionManager.state();
     }
 
     /**
@@ -98,25 +90,22 @@ public class StoreConnection
      * {@link Transaction#commit()} or {@link Transaction#abort()}. Terminate a
      * write transaction with {@link Transaction#close()}.
      */
-    public DatasetGraphTxn begin(ReadWrite mode)
-    {
-        checkValid() ;
-        checkTransactional() ;
-        haveUsedInTransaction = true ;
-        return transactionManager.begin(mode) ;
+    public DatasetGraphTxn begin(ReadWrite mode) {
+        checkValid();
+        checkTransactional();
+        haveUsedInTransaction = true;
+        return transactionManager.begin(mode);
     }
-
 
     /**
      * Begin a transaction, giving it a label. Terminate a write transaction
      * with {@link Transaction#commit()} or {@link Transaction#abort()}.
      * Terminate a write transaction with {@link Transaction#close()}.
      */
-    public DatasetGraphTxn begin(ReadWrite mode, String label)
-    {
-        checkValid() ;
-        checkTransactional() ;
-        return transactionManager.begin(mode, label) ;
+    public DatasetGraphTxn begin(ReadWrite mode, String label) {
+        checkValid();
+        checkTransactional();
+        return transactionManager.begin(mode, label);
     }
 
     /**
@@ -125,57 +114,50 @@ public class StoreConnection
      * if pending commits are queued.
      * @see #flush
      */
-    public DatasetGraphTDB getBaseDataset()
-    {
-        checkValid() ;
-        return baseDSG ;
+    public DatasetGraphTDB getBaseDataset() {
+        checkValid();
+        return baseDSG;
     }
     
     /** Flush the delayed write queue to the base storage.
      *  This can only be done if there are no active transactions.
      *  If there are active transactions, nothing is done but this is safe to call. 
      */ 
-    public void flush()
-    {
-        if ( ! haveUsedInTransaction() )
-            return ;
-        checkValid() ;
-        transactionManager.flush() ;
+    public void flush() {
+        if ( !haveUsedInTransaction() )
+            return;
+        checkValid();
+        transactionManager.flush();
     }
     
     /** Indicate whether there are any active transactions.
      *  @see #getTransMgrState
      */
-    public boolean activeTransactions()
-    { 
-        checkValid() ;
-        return transactionManager.activeTransactions() ; 
+    public boolean activeTransactions() {
+        checkValid();
+        return transactionManager.activeTransactions();
     }
     
     /** Flush the journal regardless - use with great case - do not use when transactions may be active. */ 
-    public void forceRecoverFromJournal()
-    {
-        JournalControl.recoverFromJournal(getBaseDataset().getConfig(), transactionManager.getJournal()) ;
+    public void forceRecoverFromJournal() {
+        JournalControl.recoverFromJournal(getBaseDataset().getConfig(), transactionManager.getJournal());
     }
 
     /** Highly risky! */
-    public void printJournal()
-    {
-        JournalControl.print(transactionManager.getJournal()) ;
+    public void printJournal() {
+        JournalControl.print(transactionManager.getJournal());
     }
     
     private static Map<Location, StoreConnection> cache = new HashMap<>() ;
 
     // ---- statics managing the cache.
     /** Obtain a StoreConnection for a particular location */
-    public static StoreConnection make(String location)
-    {
-        return make(Location.create(location)) ;
+    public static StoreConnection make(String location) {
+        return make(Location.create(location));
     }
 
     /** Stop managing all locations. Use with great care. */
-    public static synchronized void reset()
-    {
+    public static synchronized void reset() {
         // Copy to avoid potential CME.
         Set<Location> x = new HashSet<>(cache.keySet()) ;
         for (Location loc : x)
@@ -184,14 +166,12 @@ public class StoreConnection
     }
 
     /** Stop managing a location. There should be no transactions running. */
-    public static synchronized void release(Location location)
-    {
-        expel(location, false) ;
+    public static synchronized void release(Location location) {
+        expel(location, false);
     }
 
     /** Stop managing a location. Use with great care (testing only). */
-    public static synchronized void expel(Location location, boolean force)
-    {
+    public static synchronized void expel(Location location, boolean force) {
         StoreConnection sConn = cache.get(location) ;
         if (sConn == null) return ;
         
@@ -220,8 +200,7 @@ public class StoreConnection
      * Return a StoreConnection for a particular connection. This is used to
      * create transactions for the database at the location.
      */
-    public static synchronized StoreConnection make(Location location, StoreParams params)
-    {
+    public static synchronized StoreConnection make(Location location, StoreParams params) {
         StoreConnection sConn = cache.get(location) ;
         if (sConn != null) 
             return sConn ;
@@ -239,21 +218,18 @@ public class StoreConnection
      * Return the StoreConnection if one already exists for this location, else
      * return null
      */
-    public static synchronized StoreConnection getExisting(Location location)
-    {
-        return cache.get(location) ;
+    public static synchronized StoreConnection getExisting(Location location) {
+        return cache.get(location);
     }
 
-    private static StoreConnection _makeAndCache(DatasetGraphTDB dsg)
-    {
+    private static StoreConnection _makeAndCache(DatasetGraphTDB dsg) {
         Location location = dsg.getLocation() ;
         StoreConnection sConn = cache.get(location) ;
         if (sConn == null)
         {
             sConn = new StoreConnection(dsg) ;
             
-            if (SystemTDB.DiskLocationMultiJvmUsagePrevention)
-            {
+            if ( SystemTDB.DiskLocationMultiJvmUsagePrevention ) {
                 // Obtain the lock ASAP
                 LocationLock lock = location.getLock();
                 if (lock.canLock()) {
@@ -271,16 +247,6 @@ public class StoreConnection
             }
             
             sConn.forceRecoverFromJournal() ;
-//            boolean actionTaken = JournalControl.recoverFromJournal(dsg.getConfig(), sConn.transactionManager.getJournal()) ;
-//            if ( false && actionTaken )
-//            {
-//                // This should be unnecessary because we wrote the journal replay
-//                // via the DSG storage configuration.  
-//                sConn.transactionManager.closedown() ;
-//                sConn.baseDSG.close() ;
-//                dsg = DatasetBuilderStd.build(location) ;
-//                sConn = new StoreConnection(dsg) ;
-//            }
             
             if (!location.isMemUnique())
                 // Don't cache use-once in-memory datasets.
@@ -293,13 +259,11 @@ public class StoreConnection
     }
 
     /**
-     * Return a StoreConnection backed by in-memory datastructures (for
-     * testing).
+     * Return a StoreConnection backed by in-memory
+     * datastructures (for testing).
      */
-    public static StoreConnection createMemUncached()
-    {
-        DatasetGraphTDB dsg = DatasetBuilderStd.create(Location.mem(), null) ;
-        return new StoreConnection(dsg) ;
+    public static StoreConnection createMemUncached() {
+        DatasetGraphTDB dsg = DatasetBuilderStd.create(Location.mem(), null);
+        return new StoreConnection(dsg);
     }
-
 }
