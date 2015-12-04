@@ -178,8 +178,7 @@ public class StoreConnection
         if (!force && sConn.transactionManager.activeTransactions()) 
             throw new TDBTransactionException("Can't expel: Active transactions for location: " + location) ;
 
-        // No transactions at this point (or we don't care and are clearing up
-        // forcefully.)
+        // No transactions at this point (or we don't care and are clearing up forcefully.)
         sConn.transactionManager.closedown() ;
         sConn.baseDSG.close() ;
         sConn.isValid = false ;
