@@ -109,7 +109,7 @@ public class HexTable implements QuadTable {
 	@Override
 	public void end() {
 		indexBlock().values().forEach(QuadTable::end);
-		isInTransaction(false);
+		isInTransaction.remove();
 	}
 
 	@Override

@@ -100,7 +100,7 @@ public abstract class PMapTupleTable<TupleMapType, TupleType> implements TupleTa
 	public void end() {
 		debug("Abandoning transactional reference.");
 		local.remove();
-		isInTransaction(false);
+		isInTransaction.remove();
 	}
 
 	@Override
