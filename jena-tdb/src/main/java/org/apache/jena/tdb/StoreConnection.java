@@ -54,7 +54,7 @@ public class StoreConnection
     private void checkValid()
     {
         if (!isValid) 
-            throw new TDBTransactionException("StoreConnection inValid (issued before a StoreConnection.release?") ;
+            throw new TDBTransactionException("StoreConnection inValid (issued before a StoreConnection.release?)") ;
     }
     
     // Ensure that a dataset used non-transactionally has been flushed to disk
