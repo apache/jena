@@ -100,7 +100,7 @@ public class TestBuildTextDataset extends BaseTest
 
     public static Dataset createCode() {
         // Base data
-        Dataset ds1 = DatasetFactory.createMem() ;
+        Dataset ds1 = DatasetFactory.create() ;
 
         // Define the index mapping
         EntityDefinition entDef = new EntityDefinition("uri", "text");

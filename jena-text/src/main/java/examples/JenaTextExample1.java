@@ -54,7 +54,7 @@ public class JenaTextExample1
         // Here , in-memory base data and in-memeory Lucene index
 
         // Base data
-        Dataset ds1 = DatasetFactory.createMem() ; 
+        Dataset ds1 = DatasetFactory.create() ; 
 
         // Define the index mapping 
         EntityDefinition entDef = new EntityDefinition("uri", "text");
