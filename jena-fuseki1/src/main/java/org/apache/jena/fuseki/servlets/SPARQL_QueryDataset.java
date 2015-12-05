@@ -55,6 +55,6 @@ public class SPARQL_QueryDataset extends SPARQL_Query
             dsg = DynamicDatasets.dynamicDataset(dsDesc, dsg, false) ;
         }
         
-        return DatasetFactory.create(dsg) ;
+        return DatasetFactory.wrap(dsg) ;
     }
 }
