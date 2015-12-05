@@ -28,11 +28,11 @@ import org.apache.jena.sparql.graph.GraphFactory ;
 
 public class DatasetGraphFactory
 {
-    /** Create an in-memory, non-transaction {@link DatasetGraph}.
-     * The implementation 
-     * 
+    /** Create an in-memory, non-transactional {@link DatasetGraph}.
+     * This implementation copies the triples of an added graph into the dataset. 
+     * <p>
      * See also {@link #createTxnMem()}
-     * 
+     * <br/>
      * See also {@link #createGeneral()}
      * 
      * @see #createTxnMem
