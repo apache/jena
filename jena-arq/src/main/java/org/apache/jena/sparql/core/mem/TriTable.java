@@ -77,7 +77,7 @@ public class TriTable implements TripleTable {
 	@Override
 	public void end() {
 		indexBlock().values().forEach(TripleTable::end);
-		isInTransaction(false);
+		isInTransaction.remove();
 	}
 
 	@Override
