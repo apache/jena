@@ -136,7 +136,7 @@ public class DatasetFactory {
 	 *
 	 * @param dataset DatasetGraph
 	 * @return Dataset
-	 * @dprecated Use {@link #wrap} 
+	 * @deprecated Use {@link #wrap} 
 	 */
 	@Deprecated
 	public static Dataset create(final DatasetGraph dataset) {
