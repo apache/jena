@@ -46,6 +46,7 @@ import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.ExprVar ;
+import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
 /**
@@ -76,6 +77,8 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 * any other object type.</li>
 	 * </ul>
 	 * 
+	 * Uses the internal query prefix mapping to resolve prefixes.
+	 * 
 	 * @param o
 	 *            The object to convert. (may be null)
 	 * @return The Node value.
@@ -84,6 +87,21 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		return makeNode( o, query.getPrefixMapping() );
 	}
 	
+	/**
+	 * Make a node from an object while using the associated prefix mapping.
+	 * <ul>
+	 * <li>Will return Node.ANY if object is null.</li>
+	 * <li>Will return the enclosed Node from a FrontsNode</li>
+	 * <li>Will return the object if it is a Node.</li>
+	 * <li>Will call NodeFactoryExtra.parseNode() using the currently defined
+	 * prefixes if the object is a String</li>
+	 * <li>Will create a literal representation if the parseNode() fails or for
+	 * any other object type.</li>
+	 * </ul>
+	 * @param o The object to convert (may be null).
+	 * @param pMapping The prefix mapping to use for prefix resolution.
+	 * @return The Node value.
+	 */
 	public static Node makeNode(Object o, PrefixMapping pMapping) {
 		if (o == null) {
 			return Node.ANY;
@@ -322,6 +340,11 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 			handlerStack.push(wh);
 		}
 
+		//  make sure we have a query pattern before we start building.
+		if (q.getQueryPattern() == null)
+		{
+			q.setQueryPattern( new ElementGroup() );
+		}
 		while (!handlerStack.isEmpty()) {
 			handlerStack.pop().build();
 		}
