@@ -66,7 +66,7 @@ public interface Transactional extends org.apache.jena.sparql.core.Transactional
     * <p>
     * In the MR+SW implementation, any intervening write transaction will block promotion.
     * <p>
-    * Promoting a tyransaction which is already a write trasnaction will return true. 
+    * Promoting a transaction which is already a write transaction will return true. 
     * <p>
     * Consider also:
     *  <pre>
@@ -75,7 +75,7 @@ public interface Transactional extends org.apache.jena.sparql.core.Transactional
     *  </pre>
     *  to see any intermediate commits from another writer.
     * 
-    * @return boolean indciating whether the tranaction is now a write transaction or not.
+    * @return boolean indicating whether the tranaction is now a write transaction or not.
     */
    public boolean promote() ;
 

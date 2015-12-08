@@ -29,7 +29,7 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.txn.* ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
-/** Tests of changing the therad state ... carefully */ 
+/** Tests of changing the thread state ... carefully */ 
 public class TestTxnSwitching {
     TransInteger integer = new TransInteger(100) ;
     Journal jrnl = Journal.create(Location.mem()) ;

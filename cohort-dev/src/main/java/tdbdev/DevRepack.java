@@ -28,7 +28,12 @@ import repack.CloneTDB ;
 public class DevRepack {
     static { LogCtl.setLog4j(); }
 
-    // Turn on transaction logging.
+    // Reset
+    // Components needed
+    
+    // logging/reply
+    
+    // Turn on transaction 
     // Copy at current generation
     // replay logs (still recording!)
     // Go single mode

@@ -87,14 +87,13 @@ public class TestTxnLib extends AbstractTestTxn {
         //Txn.executeWrite(unit, () -> {
 
         unit.begin(ReadWrite.WRITE); 
-
             counter1.inc() ;
             counter2.inc() ;
             assertEquals("Counter out of step", counter1.get(), counter2.get()); 
             assertNotEquals("Counter 1 can see wrong state", counter1.get(), counter1.value() ) ;
             assertNotEquals("Counter 2 can see wrong state", counter2.get(), counter2.value() ) ;
             counter2.inc() ;
-            assertNotEquals("Counter 1 and 2 shoudl differ", counter1.get(), counter2.get() ) ;
+            assertNotEquals("Counter 1 and 2 should differ", counter1.get(), counter2.get() ) ;
         unit.commit() ;
         unit.end() ;
         //}) ;

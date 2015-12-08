@@ -23,6 +23,11 @@ public class NOTES_Mantis {
     //   TransLog<X>
     // BDF -- update javadoc
     
+    // Transactions .getTxnState() -> READ, WRITE.
+    
+    // Iterators -> streams.
+    //   May wish to do higher level parallelism and retain control.
+    
     // NodeCache and abort
     
     // Reduce overheads

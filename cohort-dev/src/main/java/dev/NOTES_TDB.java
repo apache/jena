@@ -27,6 +27,8 @@ public class NOTES_TDB {
     // ** Or time-based, commit keeping.  benefit!
     // Autocommit (if we must!)
     
+    // GraphTDB - attach to version or attach to latest (latest) 
+    
     // Also per index reaping.
     // Long term: break into parts: separate processes? At least threads.
     
