@@ -23,6 +23,7 @@ import static org.apache.jena.graph.Node.ANY;
 import static org.apache.jena.query.ReadWrite.READ;
 import static org.apache.jena.query.ReadWrite.WRITE;
 import static org.apache.jena.sparql.core.Quad.isUnionGraph;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Iterator;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -41,6 +42,7 @@ import org.apache.jena.sparql.core.DatasetGraphTriplesQuads;
 import org.apache.jena.sparql.core.DatasetPrefixStorage;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Transactional;
+import org.slf4j.Logger;
 
 /**
  * A {@link DatasetGraph} backed by an {@link QuadTable}. By default, this is a {@link HexTable} designed for high-speed
@@ -49,6 +51,8 @@ import org.apache.jena.sparql.core.Transactional;
  */
 public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Transactional {
 
+    private static final Logger log = getLogger(DatasetGraphInMemory.class);
+    
 	private final DatasetPrefixStorage prefixes = new DatasetPrefixStorageInMemory();
 
 	private final Lock writeLock = new LockMRPlusSW();
@@ -103,11 +107,6 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 		return defaultGraph;
 	}
 
-	@Override
-	public Lock getLock() {
-		return writeLock();
-	}
-
 	/**
 	 * Default constructor.
 	 */
@@ -129,7 +128,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 		if (isInTransaction()) throw new JenaTransactionException("Transactions cannot be nested!");
 		transactionType(readWrite);
 		isInTransaction(true);
-		getLock().enterCriticalSection(readWrite.equals(READ)); // get the dataset write lock, if needed.
+		writeLock().enterCriticalSection(readWrite.equals(READ)); // get the dataset write lock, if needed.
 		commitLock().readLock().lock(); // if a commit is proceeding, wait so that we see a coherent index state
 		try {
 			quadsIndex().begin(readWrite);
@@ -149,7 +148,8 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 		} finally {
 			commitLock().writeLock().unlock();
 		}
-		end();
+        isInTransaction.remove();
+		writeLock().leaveCriticalSection();
 	}
 
 	@Override
@@ -161,17 +161,17 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 	@Override
 	public void close() {
 		if (isInTransaction()) abort();
-
 	}
 
 	@Override
 	public void end() {
         if (isInTransaction()) {
+            log.warn("Ending transaction without commit!");
             quadsIndex().end();
             defaultGraph().end();
             isInTransaction.remove();
             transactionType.remove();
-            getLock().leaveCriticalSection();
+            writeLock().leaveCriticalSection();
         }
 	}
 
