@@ -163,17 +163,17 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 		if (isInTransaction()) abort();
 	}
 
-	@Override
-	public void end() {
+    @Override
+    public void end() {
         if (isInTransaction()) {
-            log.warn("Ending transaction without commit!");
+            if (transactionType().equals(WRITE)) log.warn("Ending WRITE transaction without commit!");
             quadsIndex().end();
             defaultGraph().end();
             isInTransaction.remove();
             transactionType.remove();
             writeLock().leaveCriticalSection();
         }
-	}
+    }
 
 	private <T> Iterator<T> access(final Supplier<Iterator<T>> source) {
 		if (!isInTransaction()) {
