@@ -27,27 +27,40 @@ import org.apache.jena.sparql.core.Transactional;
  */
 public interface TupleTable<TupleType> extends Transactional {
 
-	/**
-	 * Add a tuple to the table
-	 *
-	 * @param t the tuple to add
-	 */
-	void add(TupleType t);
+    /**
+     * Add a tuple to the table
+     *
+     * @param t the tuple to add
+     */
+    void add(TupleType t);
 
-	/**
-	 * Remove a tuple from the table
-	 *
-	 * @param t the tuple to remove
-	 */
-	void delete(TupleType t);
+    /**
+     * Remove a tuple from the table
+     *
+     * @param t the tuple to remove
+     */
+    void delete(TupleType t);
 
-	@Override
-	default void abort() {
-		end();
-	}
+    @Override
+    default void abort() {
+        end();
+    }
 
-	/**
-	 * Clear all tuples from this table.
-	 */
-	void clear();
+    /**
+     * Clear all tuples from this table.
+     */
+    void clear();
+
+    /**
+     * @param t a tuple in canonical order
+     * @return a tuple in internal order
+     */
+    default TupleType tuple(final TupleType t) { return t; }
+
+    /**
+     * @param t a tuple in internal order
+     * @return a tuple in canonical order
+     */
+    default TupleType detuple(final TupleType t) { return t; }
+
 }

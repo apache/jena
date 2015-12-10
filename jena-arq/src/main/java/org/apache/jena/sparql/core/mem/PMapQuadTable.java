@@ -20,6 +20,8 @@ package org.apache.jena.sparql.core.mem;
 
 import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
+import static org.apache.jena.graph.Node.ANY;
+import static org.apache.jena.sparql.core.Quad.create;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.stream.Stream;
@@ -37,113 +39,119 @@ import org.slf4j.Logger;
  * use.
  *
  */
-public abstract class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad>implements QuadTable {
+public abstract class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad> implements QuadTable {
 
-	/**
-	 * @param tableName a name for this table
-	 */
-	public PMapQuadTable(final String tableName) {
-		super(tableName);
-	}
+    /**
+     * @param tableName a name for this table
+     */
+    public PMapQuadTable(final String tableName) {
+        super(tableName);
+    }
 
-	private static final Logger log = getLogger(PMapQuadTable.class);
+    private static final Logger log = getLogger(PMapQuadTable.class);
 
-	@Override
-	protected Logger log() {
-		return log;
-	}
+    @Override
+    protected Logger log() {
+        return log;
+    }
 
-	@Override
-	protected FourTupleMap initial() {
-		return new FourTupleMap();
-	}
+    @Override
+    protected FourTupleMap initial() {
+        return new FourTupleMap();
+    }
 
-	/**
-	 * Constructs a {@link Quad} from the nodes given, using the appropriate order for this table. E.g. a OPSG table
-	 * should return a {@code Quad} using ({@code fourth}, {@code third}, {@code second}, {@code first}).
-	 *
-	 * @param first
-	 * @param second
-	 * @param third
-	 * @param fourth
-	 * @return a {@code Quad}
-	 */
-	protected abstract Quad quad(final Node first, final Node second, final Node third, final Node fourth);
+    @Override
+    public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
+        return _find(tuple(g == null ? ANY : g, s == null ? ANY : s, p == null ? ANY : p, o == null ? ANY : o));
+    }
 
-	/**
-	 * We descend through the nested {@link PMap}s building up {@link Stream}s of partial tuples from which we develop a
-	 * {@link Stream} of full tuples which is our result. Use {@link Node#ANY} or <code>null</code> for a wildcard.
-	 *
-	 * @param first the value in the first slot of the tuple
-	 * @param second the value in the second slot of the tuple
-	 * @param third the value in the third slot of the tuple
-	 * @param fourth the value in the fourth slot of the tuple
-	 * @return a <code>Stream</code> of tuples matching the pattern
-	 */
-	@SuppressWarnings("unchecked") // Because of (Stream<Quad>) -- but why is that needed?
-    protected Stream<Quad> _find(final Node first, final Node second, final Node third, final Node fourth) {
-		debug("Querying on four-tuple pattern: {} {} {} {} .", first, second, third, fourth);
-		final FourTupleMap fourTuples = local().get();
-		if (isConcrete(first)) {
-			debug("Using a specific first slot value.");
-			return (Stream<Quad>) fourTuples.get(first).map(threeTuples -> {
-				if (isConcrete(second)) {
-					debug("Using a specific second slot value.");
-					return threeTuples.get(second).map(twoTuples -> {
-						if (isConcrete(third)) {
-							debug("Using a specific third slot value.");
-							return twoTuples.get(third).map(oneTuples -> {
-								if (isConcrete(fourth)) {
-									debug("Using a specific fourth slot value.");
-									return oneTuples
-											.contains(fourth) ? of(quad(first, second, third, fourth)) : empty();
-								}
-								debug("Using a wildcard fourth slot value.");
-								return oneTuples.stream().map(slot4 -> quad(first, second, third, slot4));
-							}).orElse(empty());
+    /**
+     * We descend through the nested {@link PMap}s building up {@link Stream}s of partial tuples from which we develop a
+     * {@link Stream} of full tuples which is our result. Use {@link Node#ANY} for a wildcard.
+     *
+     * @param q the quad pattern for which to search
+     * @return a <code>Stream</code> of tuples matching the pattern
+     */
+    @SuppressWarnings("unchecked") // Because of (Stream<Quad>) -- but why is that needed?
+    protected Stream<Quad> _find(final Quad q) {
+        final Node first = q.getGraph();
+        final Node second = q.getSubject();
+        final Node third = q.getPredicate();
+        final Node fourth = q.getObject();
+        debug("Querying on four-tuple pattern: {} {} {} {} .", first, second, third, fourth);
+        final FourTupleMap fourTuples = local().get();
+        if (first.isConcrete()) {
+            debug("Using a specific first slot value.");
+            return (Stream<Quad>) fourTuples.get(first).map(threeTuples -> {
+                if (second.isConcrete()) {
+                    debug("Using a specific second slot value.");
+                    return threeTuples.get(second).map(twoTuples -> {
+                        if (third.isConcrete()) {
+                            debug("Using a specific third slot value.");
+                            return twoTuples.get(third).map(oneTuples -> {
+                                if (fourth.isConcrete()) {
+                                    debug("Using a specific fourth slot value.");
+                                    return oneTuples.contains(fourth) ? of(
+                                            detuple(create(first, second, third, fourth))) : empty();
+                                }
+                                debug("Using a wildcard fourth slot value.");
+                                return oneTuples.stream().map(slot4 -> detuple(create(first, second, third, slot4)));
+                            }).orElse(empty());
 
-						}
-						debug("Using wildcard third and fourth slot values.");
-						return twoTuples.flatten((slot3, oneTuples) -> oneTuples.stream()
-								.map(slot4 -> quad(first, second, slot3, slot4)));
-					}).orElse(empty());
-				}
-				debug("Using wildcard second, third and fourth slot values.");
-				return threeTuples.flatten((slot2, twoTuples) -> twoTuples.flatten(
-						(slot3, oneTuples) -> oneTuples.stream().map(slot4 -> quad(first, slot2, slot3, slot4))));
-			}).orElse(empty());
-		}
-		debug("Using a wildcard for all slot values.");
-		return fourTuples.flatten((slot1, threeTuples) -> threeTuples.flatten((slot2, twoTuples) -> twoTuples
-				.flatten((slot3, oneTuples) -> oneTuples.stream().map(slot4 -> quad(slot1, slot2, slot3, slot4)))));
-	}
+                        }
+                        debug("Using wildcard third and fourth slot values.");
+                        return twoTuples.flatten((slot3, oneTuples) -> oneTuples.stream()
+                                .map(slot4 -> detuple(create(first, second, slot3, slot4))));
+                    }).orElse(empty());
+                }
+                debug("Using wildcard second, third and fourth slot values.");
+                return threeTuples.flatten((slot2, twoTuples) -> twoTuples.flatten((slot3, oneTuples) -> oneTuples
+                        .stream().map(slot4 -> detuple(create(first, slot2, slot3, slot4)))));
+            }).orElse(empty());
+        }
+        debug("Using a wildcard for all slot values.");
+        return fourTuples.flatten((slot1, threeTuples) -> threeTuples.flatten((slot2, twoTuples) -> twoTuples.flatten(
+                (slot3, oneTuples) -> oneTuples.stream().map(slot4 -> detuple(create(slot1, slot2, slot3, slot4))))));
+    }
 
-	protected void _add(final Node first, final Node second, final Node third, final Node fourth) {
-		debug("Adding four-tuple: {} {} {} {} .", first, second, third, fourth);
-		final FourTupleMap fourTuples = local().get();
-		ThreeTupleMap threeTuples = fourTuples.get(first).orElse(new ThreeTupleMap());
-		TwoTupleMap twoTuples = threeTuples.get(second).orElse(new TwoTupleMap());
-		PersistentSet<Node> oneTuples = twoTuples.get(third).orElse(PersistentSet.empty());
+    @Override
+    public void add(final Quad quad) {
+        final Quad q = tuple(quad);
+        _add(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject());
+    }
 
-		if (!oneTuples.contains(fourth)) oneTuples = oneTuples.plus(fourth);
-		twoTuples = twoTuples.minus(third).plus(third, oneTuples);
-		threeTuples = threeTuples.minus(second).plus(second, twoTuples);
-		debug("Setting transactional index to new value.");
-		local().set(fourTuples.minus(first).plus(first, threeTuples));
-	}
+    @Override
+    public void delete(final Quad quad) {
+        final Quad q = tuple(quad);
+        _delete(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject());
+    }
 
-	protected void _delete(final Node first, final Node second, final Node third, final Node fourth) {
-		debug("Removing four-tuple: {} {} {} {} .", first, second, third, fourth);
-		final FourTupleMap fourTuples = local().get();
-		fourTuples.get(first).ifPresent(threeTuples -> threeTuples.get(second)
-				.ifPresent(twoTuples -> twoTuples.get(third).ifPresent(oneTuples -> {
-					if (oneTuples.contains(fourth)) {
-						oneTuples = oneTuples.minus(fourth);
-						final TwoTupleMap newTwoTuples = twoTuples.minus(third).plus(third, oneTuples);
-						final ThreeTupleMap newThreeTuples = threeTuples.minus(second).plus(second, newTwoTuples);
-						debug("Setting transactional index to new value.");
-						local().set(fourTuples.minus(first).plus(first, newThreeTuples));
-					}
-				})));
-	}
+    protected void _add(final Node first, final Node second, final Node third, final Node fourth) {
+        debug("Adding four-tuple: {} {} {} {} .", first, second, third, fourth);
+        final FourTupleMap fourTuples = local().get();
+        ThreeTupleMap threeTuples = fourTuples.get(first).orElse(new ThreeTupleMap());
+        TwoTupleMap twoTuples = threeTuples.get(second).orElse(new TwoTupleMap());
+        PersistentSet<Node> oneTuples = twoTuples.get(third).orElse(PersistentSet.empty());
+
+        if (!oneTuples.contains(fourth)) oneTuples = oneTuples.plus(fourth);
+        twoTuples = twoTuples.minus(third).plus(third, oneTuples);
+        threeTuples = threeTuples.minus(second).plus(second, twoTuples);
+        debug("Setting transactional index to new value.");
+        local().set(fourTuples.minus(first).plus(first, threeTuples));
+    }
+
+    protected void _delete(final Node first, final Node second, final Node third, final Node fourth) {
+        debug("Removing four-tuple: {} {} {} {} .", first, second, third, fourth);
+        final FourTupleMap fourTuples = local().get();
+        fourTuples.get(first).ifPresent(threeTuples -> threeTuples.get(second)
+                .ifPresent(twoTuples -> twoTuples.get(third).ifPresent(oneTuples -> {
+                    if (oneTuples.contains(fourth)) {
+                        oneTuples = oneTuples.minus(fourth);
+                        final TwoTupleMap newTwoTuples = twoTuples.minus(third).plus(third, oneTuples);
+                        final ThreeTupleMap newThreeTuples = threeTuples.minus(second).plus(second, newTwoTuples);
+                        debug("Setting transactional index to new value.");
+                        local().set(fourTuples.minus(first).plus(first, newThreeTuples));
+                    }
+                })));
+    }
 }

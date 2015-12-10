@@ -22,6 +22,8 @@ import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.EnumSet.copyOf;
 import static org.apache.jena.graph.Node.ANY;
+import static org.apache.jena.sparql.core.Quad.create;
+import static org.apache.jena.sparql.core.Quad.unionGraph;
 import static org.apache.jena.sparql.core.mem.TupleSlot.*;
 
 import java.util.List;
@@ -56,26 +58,6 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
 			return new PMapQuadTable(name()) {
 
 				@Override
-				protected Quad quad(final Node g, final Node s, final Node p, final Node o) {
-					return Quad.create(g, s, p, o);
-				}
-
-				@Override
-				public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
-					return _find(g, s, p, o);
-				}
-
-				@Override
-				public void add(final Quad q) {
-					_add(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject());
-				}
-
-				@Override
-				public void delete(final Quad q) {
-					_delete(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject());
-				}
-
-				@Override
 				public Stream<Node> listGraphNodes() {
 					return local().get().entryStream().map(Entry::getKey);
 				}
@@ -91,25 +73,15 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
 		public PMapQuadTable get() {
 			return new PMapQuadTable(name()) {
 
-				@Override
-				protected Quad quad(final Node g, final Node o, final Node p, final Node s) {
-					return Quad.create(g, s, p, o);
-				}
+                @Override
+                public Quad tuple(final Quad q) {
+                    return create(q.getGraph(), q.getObject(), q.getPredicate(), q.getSubject());
+                }
 
-				@Override
-				public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
-					return _find(g, o, p, s);
-				}
-
-				@Override
-				public void add(final Quad q) {
-					_add(q.getGraph(), q.getObject(), q.getPredicate(), q.getSubject());
-				}
-
-				@Override
-				public void delete(final Quad q) {
-					_delete(q.getGraph(), q.getObject(), q.getPredicate(), q.getSubject());
-				}
+                @Override
+                public Quad detuple(final Quad q) {
+                    return create(q.getGraph(), q.getObject(), q.getPredicate(), q.getSubject());
+                }
 			};
 
 		}
@@ -124,31 +96,21 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
 			return new PMapQuadTable(name()) {
 
 				@Override
-				protected Quad quad(final Node s, final Node p, final Node o, final Node g) {
-					return Quad.create(g, s, p, o);
-				}
+                public Quad tuple(final Quad q) {
+                    return create(q.getSubject(), q.getPredicate(), q.getObject(), q.getGraph());
+                }
 
-				@Override
-				public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
-					return _find(s, p, o, g);
-				}
+                @Override
+                public Quad detuple(final Quad q) {
+                    return create(q.getObject(), q.getGraph(), q.getSubject(), q.getPredicate());
+                }
 
 				@Override
 				public Stream<Quad> findInUnionGraph(final Node s, final Node p, final Node o) {
 				    final AtomicReference<Triple> mostRecentlySeen = new AtomicReference<>();
-				    return find(ANY, s, p, o).map(Quad::asTriple).filter(t->{
-				        return !mostRecentlySeen.getAndSet(t).equals(t);
-				    }).map(t->Quad.create(Quad.unionGraph, t)) ;
-				}
-
-				@Override
-				public void add(final Quad q) {
-					_add(q.getSubject(), q.getPredicate(), q.getObject(), q.getGraph());
-				}
-
-				@Override
-				public void delete(final Quad q) {
-					_delete(q.getSubject(), q.getPredicate(), q.getObject(), q.getGraph());
+                    return find(ANY, s, p, o).map(Quad::asTriple).filter(t -> {
+                        return !mostRecentlySeen.getAndSet(t).equals(t);
+                    }).map(t -> create(unionGraph, t));
 				}
 			};
 		}
@@ -162,25 +124,15 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
 		public PMapQuadTable get() {
 			return new PMapQuadTable(name()) {
 
-				@Override
-				protected Quad quad(final Node o, final Node s, final Node g, final Node p) {
-					return Quad.create(g, s, p, o);
-				}
+                @Override
+                public Quad tuple(final Quad q) {
+                    return create(q.getObject(), q.getSubject(), q.getGraph(), q.getPredicate());
+                }
 
-				@Override
-				public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
-					return _find(o, s, g, p);
-				}
-
-				@Override
-				public void add(final Quad q) {
-					_add(q.getObject(), q.getSubject(), q.getGraph(), q.getPredicate());
-				}
-
-				@Override
-				public void delete(final Quad q) {
-					_delete(q.getObject(), q.getSubject(), q.getGraph(), q.getPredicate());
-				}
+                @Override
+                public Quad detuple(final Quad q) {
+                    return create(q.getPredicate(), q.getSubject(), q.getObject(), q.getGraph());
+                }
 			};
 		}
 	},
@@ -193,25 +145,15 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
 		public PMapQuadTable get() {
 			return new PMapQuadTable(name()) {
 
-				@Override
-				protected Quad quad(final Node p, final Node g, final Node s, final Node o) {
-					return Quad.create(g, s, p, o);
-				}
+			    @Override
+                public Quad tuple(final Quad q) {
+                    return create(q.getPredicate(), q.getGraph(), q.getSubject(), q.getObject());
+                }
 
-				@Override
-				public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
-					return _find(p, g, s, o);
-				}
-
-				@Override
-				public void add(final Quad q) {
-					_add(q.getPredicate(), q.getGraph(), q.getSubject(), q.getObject());
-				}
-
-				@Override
-				public void delete(final Quad q) {
-					_delete(q.getPredicate(), q.getGraph(), q.getSubject(), q.getObject());
-				}
+                @Override
+                public Quad detuple(final Quad q) {
+                    return create(q.getSubject(), q.getPredicate(), q.getGraph(), q.getObject());
+                }
 			};
 		}
 	},
@@ -224,33 +166,23 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
 		public PMapQuadTable get() {
 			return new PMapQuadTable(name()) {
 
-				@Override
-				protected Quad quad(final Node o, final Node p, final Node s, final Node g) {
-					return Quad.create(g, s, p, o);
-				}
+                @Override
+                public Quad tuple(final Quad q) {
+                    return create(q.getObject(), q.getPredicate(), q.getSubject(), q.getGraph());
+                }
+
+                @Override
+                public Quad detuple(final Quad q) {
+                    return create(q.getObject(), q.getPredicate(), q.getSubject(), q.getGraph());
+                }
 
 				@Override
-				public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
-					return _find(o, p, s, g);
-				}
-
-				@Override
-				public Stream<Quad> findInUnionGraph(final Node s, final Node p, final Node o) {
-					final AtomicReference<Triple> mostRecentlySeen = new AtomicReference<>();
-					return find(ANY, s, p, o).map(Quad::asTriple).filter(t->{
-						return !mostRecentlySeen.getAndSet(t).equals(t);
-					}).map(t->Quad.create(Quad.unionGraph, t)) ;
-				}
-
-				@Override
-				public void add(final Quad q) {
-					_add(q.getObject(), q.getPredicate(), q.getSubject(), q.getGraph());
-				}
-
-				@Override
-				public void delete(final Quad q) {
-					_delete(q.getObject(), q.getPredicate(), q.getSubject(), q.getGraph());
-				}
+                public Stream<Quad> findInUnionGraph(final Node s, final Node p, final Node o) {
+                    final AtomicReference<Triple> mostRecentlySeen = new AtomicReference<>();
+                    return find(ANY, s, p, o).map(Quad::asTriple).filter(t -> {
+                        return !mostRecentlySeen.getAndSet(t).equals(t);
+                    }).map(t -> create(unionGraph, t));
+                }
 			};
 		}
 	};
