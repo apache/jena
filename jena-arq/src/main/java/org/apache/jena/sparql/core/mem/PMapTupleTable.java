@@ -22,7 +22,6 @@ import static java.lang.ThreadLocal.withInitial;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.jena.graph.Node;
 import org.apache.jena.query.ReadWrite;
 import org.slf4j.Logger;
 
@@ -113,9 +112,5 @@ public abstract class PMapTupleTable<TupleMapType, TupleType> implements TupleTa
 	@Override
 	public void clear() {
 		local().set(initial());
-	}
-
-	protected boolean isConcrete(final Node n) {
-		return n != null && n.isConcrete();
 	}
 }

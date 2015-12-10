@@ -20,6 +20,7 @@ package org.apache.jena.sparql.core.mem;
 
 import static java.util.Arrays.stream;
 import static java.util.EnumSet.of;
+import static org.apache.jena.graph.Triple.create;
 import static org.apache.jena.sparql.core.mem.TupleSlot.*;
 
 import java.util.Set;
@@ -27,7 +28,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
 /**
@@ -42,31 +42,8 @@ public enum TripleTableForm implements Supplier<TripleTable>,Predicate<Set<Tuple
 	SPO(of(SUBJECT, PREDICATE), SUBJECT) {
 		@Override
 		public TripleTable get() {
-			return new PMapTripleTable(name()) {
-
-				@Override
-				protected Triple triple(final Node s, final Node p, final Node o) {
-					return Triple.create(s, p, o);
-				}
-
-				@Override
-				public Stream<Triple> find(final Node s, final Node p, final Node o) {
-					return _find(s, p, o);
-				}
-
-				@Override
-				public void add(final Triple t) {
-					_add(t.getSubject(), t.getPredicate(), t.getObject());
-				}
-
-				@Override
-				public void delete(final Triple t) {
-					_delete(t.getSubject(), t.getPredicate(), t.getObject());
-				}
-
-			};
+			return new PMapTripleTable(name()) {};
 		}
-
 	},
 	/**
 	 * Predicate-object-subject.
@@ -78,25 +55,14 @@ public enum TripleTableForm implements Supplier<TripleTable>,Predicate<Set<Tuple
 			return new PMapTripleTable(name()) {
 
 				@Override
-				protected Triple triple(final Node p, final Node o, final Node s) {
-					return Triple.create(s, p, o);
+                public Triple tuple(final Triple t) {
+					return create(t.getPredicate(), t.getObject(), t.getSubject());
 				}
 
 				@Override
-				public Stream<Triple> find(final Node s, final Node p, final Node o) {
-					return _find(p, o, s);
-				}
-
-				@Override
-				public void add(final Triple t) {
-					_add(t.getPredicate(), t.getObject(), t.getSubject());
-				}
-
-				@Override
-				public void delete(final Triple t) {
-					_delete(t.getPredicate(), t.getObject(), t.getSubject());
-				}
-
+                public Triple detuple(final Triple t) {
+                    return create(t.getObject(), t.getSubject(), t.getPredicate());
+                }
 			};
 		}
 	},
@@ -109,26 +75,15 @@ public enum TripleTableForm implements Supplier<TripleTable>,Predicate<Set<Tuple
 		public TripleTable get() {
 			return new PMapTripleTable(name()) {
 
-				@Override
-				protected Triple triple(final Node o, final Node s, final Node p) {
-					return Triple.create(s, p, o);
-				}
+                @Override
+                public Triple tuple(final Triple t) {
+                    return create(t.getObject(), t.getSubject(), t.getPredicate());
+                }
 
-				@Override
-				public Stream<Triple> find(final Node s, final Node p, final Node o) {
-					return _find(o, s, p);
-				}
-
-				@Override
-				public void add(final Triple t) {
-					_add(t.getObject(), t.getSubject(), t.getPredicate());
-				}
-
-				@Override
-				public void delete(final Triple t) {
-					_delete(t.getObject(), t.getSubject(), t.getPredicate());
-				}
-
+                @Override
+                public Triple detuple(final Triple t) {
+                    return create(t.getPredicate(), t.getObject(), t.getSubject());
+                }
 			};
 		}
 	};

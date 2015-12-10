@@ -19,6 +19,8 @@
 package org.apache.jena.sparql.core.mem;
 
 import static org.apache.jena.graph.Node.ANY;
+import static org.apache.jena.sparql.core.Quad.create;
+import static org.apache.jena.sparql.core.Quad.unionGraph;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,37 +37,56 @@ import org.apache.jena.sparql.core.Quad;
  */
 public interface QuadTable extends TupleTable<Quad> {
 
-	/**
-	 * Search the table using a pattern of slots. {@link Node#ANY} or <code>null</code> will work as a wildcard.
-	 *
-	 * @param g the graph node of the pattern
-	 * @param s the subject node of the pattern
-	 * @param p the predicate node of the pattern
-	 * @param o the object node of the pattern
-	 * @return an {@link Stream} of matched quads
-	 */
-	Stream<Quad> find(Node g, Node s, Node p, Node o);
+    /**
+     * Search the table using a pattern of slots. {@link Node#ANY} or <code>null</code> will work as a wildcard.
+     *
+     * @param g the graph node of the pattern
+     * @param s the subject node of the pattern
+     * @param p the predicate node of the pattern
+     * @param o the object node of the pattern
+     * @return an {@link Stream} of matched quads
+     */
+    Stream<Quad> find(Node g, Node s, Node p, Node o);
 
-	/**
-	 * Discover the graphs named in the table
-	 *
-	 * @return an {@link Stream} of graph names used in this table
-	 */
-	default Stream<Node> listGraphNodes() {
-		return find(ANY, ANY, ANY, ANY).map(Quad::getGraph).distinct();
-	}
+    /**
+     * Discover the graphs named in the table
+     *
+     * @return an {@link Stream} of graph names used in this table
+     */
+    default Stream<Node> listGraphNodes() {
+        return find(ANY, ANY, ANY, ANY).map(Quad::getGraph).distinct();
+    }
 
-	@Override
-	default void clear() {
-		find(ANY, ANY, ANY, ANY).forEach(this::delete);
-	}
+    @Override
+    default void clear() {
+        find(ANY, ANY, ANY, ANY).forEach(this::delete);
+    }
 
-	default Stream<Quad> findInUnionGraph(final Node s, final Node p, final Node o) {
-		final Set<Triple> seen = new HashSet<>();
-		return find(ANY, s, p, o).sequential()
-		    .filter(q -> !q.isDefaultGraph())
-		    .map(Quad::asTriple)
-		    .filter(seen::add)
-		    .map(t -> Quad.create(Quad.unionGraph, t)) ;
-	}
+    default Stream<Quad> findInUnionGraph(final Node s, final Node p, final Node o) {
+        final Set<Triple> seen = new HashSet<>();
+        return find(ANY, s, p, o).sequential().filter(q -> !q.isDefaultGraph()).map(Quad::asTriple).filter(seen::add)
+                .map(t -> create(unionGraph, t));
+    }
+
+    /**
+     * @param first
+     * @param second
+     * @param third
+     * @param fourth
+     * @return a Quad in gspo order
+     */
+    default Quad detuple(final Node first, final Node second, final Node third, final Node fourth) {
+        return detuple(create(first, second, third, fourth));
+    }
+
+    /**
+     * @param g
+     * @param s
+     * @param p
+     * @param o
+     * @return a Quad in internal order
+     */
+    default Quad tuple(final Node g, final Node s, final Node p, final Node o) {
+        return tuple(create(g, s, p, o));
+    }
 }
