@@ -21,6 +21,8 @@ package org.apache.jena.atlas.iterator;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
+import org.apache.jena.atlas.lib.Lib ;
+
 /** IteratorCons : the concatenation of two iterators.
  * See also {@link IteratorConcat}.
  * If there potentially many iterators to be joined, it is better to 
@@ -90,7 +92,7 @@ public class IteratorCons<T> implements Iterator<T>, Iterable<T>
     public T next()
     {
         if ( ! hasNext() )
-            throw new NoSuchElementException("Iterator2.next") ;
+            throw new NoSuchElementException(Lib.className(this)+".next") ;
         if ( iter1 != null )
         {
             removeFrom = iter1 ;
@@ -101,7 +103,7 @@ public class IteratorCons<T> implements Iterator<T>, Iterable<T>
             removeFrom = iter2 ;
             return iter2.next();
         }
-        throw new Error("Iterator2.next") ;
+        throw new Error(Lib.className(this)+".next (two null iterators)") ;
     }
 
     @Override
