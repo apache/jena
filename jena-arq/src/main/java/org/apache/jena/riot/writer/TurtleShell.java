@@ -88,7 +88,7 @@ public abstract class TurtleShell {
         x.writeGraph() ;
     }    
 
-    /** Write graph in Trutle syntax (or part of TriG). graphName is null for default graph. */
+    /** Write graph in Turtle syntax (or part of TriG). graphName is null for default graph. */
     protected void writeGraphTTL(DatasetGraph dsg, Node graphName) {
         Graph g = (graphName == null || Quad.isDefaultGraph(graphName)) 
             ? dsg.getDefaultGraph()
@@ -334,15 +334,10 @@ public abstract class TurtleShell {
 
             ExtendedIterator<Triple> iter = find(Node.ANY, Node.ANY, Node.ANY) ;
             try {
-                for ( ; iter.hasNext() ; )
-                {
+                for ( ; iter.hasNext() ; ) {
                     Triple t = iter.next() ;
                     Node subj = t.getSubject() ;
                     Node obj = t.getObject() ;
-                    if ( listElts.contains(subj) )  // In a list?
-                        continue ;
-                    if ( listElts.contains(obj) )  // In a list?
-                        continue ;
                     
                     if ( subj.isBlank() )
                     {
@@ -783,19 +778,70 @@ public abstract class TurtleShell {
                 out.print("()") ;
                 return ;
             }
+            
+            if ( false ) {
+                out.print("(") ;
+                for ( Node n : elts ) {
+                    out.print(" ") ;
+                    writeNodePretty(n) ;
+                }
+                out.print(" )") ;
+            } 
 
-            out.print("(") ;
-            for ( Node n : elts ) {
-                out.print(" ") ;
-                writeNodePretty(n) ;
+            if ( true ) {
+                // "fresh line mode" means printed one on new line 
+                // Multi line items are ones that can be multiple lines. Non-literals.
+                // Was the previous row a multiLine? 
+                boolean lastItemFreshLine = false ;
+                // Have there been any items that causes "fresh line" mode? 
+                boolean multiLineAny = false ;
+                boolean first = true ;
+
+                // Wheer we started.
+                int originalIndent = out.getAbsoluteIndent() ;
+                // Rebase indent here.
+                int x = out.getCol() ;
+                out.setAbsoluteIndent(x);
+
+                out.print("(") ;
+                out.incIndent(2); 
+                for ( Node n : elts ) {
+                    
+                    // Print this item on a fresh line? (still to check: first line)
+                    boolean thisItemFreshLine = /* multiLineAny | */ n.isBlank() ;
+                
+                    // Starting point.
+                    if ( ! first ) {
+                        if ( lastItemFreshLine | thisItemFreshLine )
+                            out.println() ;
+                        else 
+                            out.print(" ") ;
+                    }
+
+                    first = false ;
+                    //Literals with newlines: int x1 = out.getRow() ;
+                    // Adds INDENT_OBJECT even for a [ one triple ]
+                    // Special case [ one triple ]??
+                    writeNodePretty(n) ;
+                    //Literals with newlines:int x2 = out.getRow() ;
+                    //Literals with newlines: boolean multiLineAnyway = ( x1 != x2 ) ; 
+                    lastItemFreshLine = thisItemFreshLine ;
+                    multiLineAny  = multiLineAny | thisItemFreshLine ;
+                    
+                }
+                if ( multiLineAny )
+                    out.println() ;
+                else 
+                    out.print(" ") ;
+                out.decIndent(2);
+                out.setAbsoluteIndent(x);
+                out.print(")") ;
+                out.setAbsoluteIndent(originalIndent) ;
             }
-
-            out.print(" )") ;
         }
 
         private boolean isPrettyNode(Node n) {
             // Order matters? - one connected objects may include list elements.
-            
             if ( allowDeepPretty ) {
                 if ( lists.containsKey(n) )
                     return true ;
