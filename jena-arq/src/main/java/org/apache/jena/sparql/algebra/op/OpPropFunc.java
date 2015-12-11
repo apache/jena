@@ -70,22 +70,32 @@ public class OpPropFunc extends Op1
     public Node getProperty() { return uri ; }
     
     @Override
-    public Op1 copy(Op op)
-    {
+    public String getName() {
+        return Tags.tagPropFunc ;
+    }
+
+    @Override
+    public Op1 copy(Op op) {
         return new OpPropFunc(uri, subjectArgs, objectArgs, op) ;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return uri.hashCode() ^ getSubOp().hashCode() ;
     }
 
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        if ( ! ( other instanceof OpPropFunc ) ) return false ;
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
+        if ( ! ( other instanceof OpPropFunc ) ) 
+            return false ;
         OpPropFunc procFunc = (OpPropFunc)other ;
+        if ( ! this.getProperty().equals(procFunc.getProperty()) )
+            return false ;
+        
+        PropFuncArg s1 = getSubjectArgs() ;
+        PropFuncArg s2 = procFunc.getSubjectArgs() ;
+        s1.equals(s2) ;
+        
         if ( ! isomorphic(getSubjectArgs(), procFunc.getSubjectArgs(), labelMap) )
             return false ;
         if ( ! isomorphic(getObjectArgs(), procFunc.getObjectArgs(), labelMap) )
@@ -99,15 +109,13 @@ public class OpPropFunc extends Op1
         if ( pfa1 == null ) return false ;
         if ( pfa2 == null ) return false ;
         
-        List<Node> list1 = pfa1.getArgList() ;
-        List<Node> list2 = pfa2.getArgList() ;
-                
-        return Iso.isomorphicNodes(list1, list2, labelMap) ;
-    }
-    
-    @Override
-    public String getName()
-    {
-        return Tags.tagPropFunc ;
+        if ( pfa1.isList() && pfa2.isList() ) {
+            List<Node> list1 = pfa1.getArgList() ;
+            List<Node> list2 = pfa2.getArgList() ;
+            return Iso.isomorphicNodes(list1, list2, labelMap) ;
+        }
+        if ( pfa1.isNode() && pfa2.isNode() )
+            return Iso.nodeIso(pfa1.getArg(), pfa2.getArg(), labelMap) ;
+        return false ;
     }
 }
