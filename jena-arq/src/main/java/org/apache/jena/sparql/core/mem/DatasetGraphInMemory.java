@@ -55,6 +55,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 
     private final DatasetPrefixStorage prefixes = new DatasetPrefixStorageInMemory();
 
+    /** This lock imposes the multiple-reader and single-writer policy of transactions */
     private final Lock writeLock = new LockMRPlusSW();
 
     private Lock writeLock() {
@@ -141,23 +142,35 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     @Override
     public void commit() {
         if (!isInTransaction()) throw new JenaTransactionException("Tried to commit outside a transaction!");
+        if (transactionType().equals(WRITE))
+            _commit();
+        finishTransaction();
+    }
+
+    private void _commit() {
         commitLock().writeLock().lock();
         try {
             quadsIndex().commit();
             defaultGraph().commit();
-        } finally {
-            commitLock().writeLock().unlock();
-        }
-        isInTransaction.remove();
-        writeLock().leaveCriticalSection();
+        } finally { commitLock().writeLock().unlock(); }
     }
-
+    
     @Override
     public void abort() {
         if (!isInTransaction()) throw new JenaTransactionException("Tried to abort outside a transaction!");
-        end();
+        if (transactionType().equals(WRITE))
+            _abort();
+        finishTransaction();
     }
 
+    private void _abort() {
+        commitLock().writeLock().lock();
+        try {
+            quadsIndex().abort();
+            defaultGraph().abort();
+        } finally { commitLock().writeLock().unlock(); }
+    }
+    
     @Override
     public void close() {
         if (isInTransaction()) abort();
@@ -166,16 +179,31 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     @Override
     public void end() {
         if (isInTransaction()) {
-            if (transactionType().equals(WRITE))
-                log.warn("end() called for WRITE transaction without commit or abort having been called");
-            quadsIndex().end();
-            defaultGraph().end();
-            isInTransaction.remove();
-            transactionType.remove();
-            writeLock().leaveCriticalSection();
+            if (transactionType().equals(WRITE)) {
+                log.warn("end() called for WRITE transaction without commit or abort having been called causing a forced abort");
+                _abort() ;
+            }
+            finishTransaction();
+            return ;
         }
     }
-
+    
+    /** Called transaction ending code at most once per transaction. */ 
+    private void finishTransaction() {
+//        if ( ! isInTransaction() ) {
+//            log.error("finishTransaction() called multiple times.");
+//            return ;
+//        }
+        commitLock().writeLock().lock();
+        try {
+            quadsIndex().end();
+            defaultGraph().end();
+        } finally { commitLock().writeLock().unlock(); }
+        isInTransaction.remove();
+        transactionType.remove();
+        writeLock().leaveCriticalSection();
+    }
+     
     private <T> Iterator<T> access(final Supplier<Iterator<T>> source) {
         if (!isInTransaction()) {
             begin(READ);
