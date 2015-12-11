@@ -52,196 +52,196 @@ import org.apache.jena.sparql.core.journaling.QuadOperation.QuadDeletion;
  */
 public class DatasetGraphWithRecord extends DatasetGraphWithLock {
 
-	/**
-	 * A record of operations for use in rewinding transactions.
-	 */
-	private ReversibleOperationRecord<QuadOperation<?, ?>> record = new ListBackedOperationRecord<>(new ArrayList<>());
+    /**
+     * A record of operations for use in rewinding transactions.
+     */
+    private ReversibleOperationRecord<QuadOperation<?, ?>> record = new ListBackedOperationRecord<>(new ArrayList<>());
 
-	/**
-	 * Mutex permitting only one writer at a time to mutate the operation record.
-	 */
-	private final Lock recordLock = new ReentrantLock(true);
+    /**
+     * Mutex permitting only one writer at a time to mutate the operation record.
+     */
+    private final Lock recordLock = new ReentrantLock(true);
 
-	/**
-	 * Indicates whether we should be recording operations. True iff we are in a WRITE-transaction and not aborting.
-	 */
-	private boolean recording = false;
+    /**
+     * Indicates whether we should be recording operations. True iff we are in a WRITE-transaction and not aborting.
+     */
+    private boolean recording = false;
 
-	private boolean isRecording() {
-		return recording;
-	}
+    private boolean isRecording() {
+        return recording;
+    }
 
-	private void startRecording() {
-		// enforce the single-writer constraint
-		recordLock.lock();
-		recording = true;
-	}
+    private void startRecording() {
+        // enforce the single-writer constraint
+        recordLock.lock();
+        recording = true;
+    }
 
-	private void stopRecording() {
-		recording = false;
-	}
+    private void stopRecording() {
+        recording = false;
+    }
 
-	/**
-	 * @param dsg the DatasetGraph that will back this one
-	 */
-	public DatasetGraphWithRecord(final DatasetGraph dsg) {
-		super(dsg);
-	}
+    /**
+     * @param dsg the DatasetGraph that will back this one
+     */
+    public DatasetGraphWithRecord(final DatasetGraph dsg) {
+        super(dsg);
+    }
 
-	/**
-	 * @param dsg the DatasetGraph that will back this one
-	 * @param record the operation record to use with this DatasetGraph
-	 */
-	public DatasetGraphWithRecord(final DatasetGraph dsg, final ReversibleOperationRecord<QuadOperation<?, ?>> record) {
-		super(dsg);
-		this.record = record;
-	}
+    /**
+     * @param dsg the DatasetGraph that will back this one
+     * @param record the operation record to use with this DatasetGraph
+     */
+    public DatasetGraphWithRecord(final DatasetGraph dsg, final ReversibleOperationRecord<QuadOperation<?, ?>> record) {
+        super(dsg);
+        this.record = record;
+    }
 
-	/**
-	 * Guards a mutation to the state of this dataset.
-	 *
-	 * @param data the data with which to mutate this dataset
-	 * @param mutator the kind of change to make
-	 */
-	private <T> void mutate(final T data, final Consumer<T> mutator) {
-		if (allowedToWrite()) mutator.accept(data);
-		else throw new JenaTransactionException("Tried to write in a non-WRITE transaction!");
-	}
+    /**
+     * Guards a mutation to the state of this dataset.
+     *
+     * @param data the data with which to mutate this dataset
+     * @param mutator the kind of change to make
+     */
+    private <T> void mutate(final T data, final Consumer<T> mutator) {
+        if (allowedToWrite()) mutator.accept(data);
+        else throw new JenaTransactionException("Tried to write in a non-WRITE transaction!");
+    }
 
-	@Override
-	public void add(final Quad quad) {
-		mutate(quad, _add);
-	}
+    @Override
+    public void add(final Quad quad) {
+        mutate(quad, _add);
+    }
 
-	@Override
-	public void delete(final Quad quad) {
-		mutate(quad, _delete);
-	}
+    @Override
+    public void delete(final Quad quad) {
+        mutate(quad, _delete);
+    }
 
-	@Override
-	public void addGraph(final Node graphName, final Graph graph) {
-		mutate(graph, _addGraph(graphName));
-	}
+    @Override
+    public void addGraph(final Node graphName, final Graph graph) {
+        mutate(graph, _addGraph(graphName));
+    }
 
-	@Override
-	public void removeGraph(final Node graphName) {
-		mutate(graphName, _removeGraph);
-	}
+    @Override
+    public void removeGraph(final Node graphName) {
+        mutate(graphName, _removeGraph);
+    }
 
-	/**
-	 * A mutator that adds a graph to this dataset.
-	 */
-	private Consumer<Graph> _addGraph(final Node name) {
-		return g -> {
-			super.addGraph(name, createGraphMem());
-			g.find(ANY, ANY, ANY).forEachRemaining(t -> add(new Quad(name, t)));
-		};
-	}
+    /**
+     * A mutator that adds a graph to this dataset.
+     */
+    private Consumer<Graph> _addGraph(final Node name) {
+        return g -> {
+            super.addGraph(name, createGraphMem());
+            g.find(ANY, ANY, ANY).forEachRemaining(t -> add(new Quad(name, t)));
+        };
+    }
 
-	/**
-	 * A mutator that removes a graph from this dataset.
-	 */
-	private final Consumer<Node> _removeGraph = graphName -> {
-		// delete all triples in this graph in the backing store
-		deleteAny(graphName, ANY, ANY, ANY);
-		// remove the graph itself
-		super.removeGraph(graphName);
-	};
+    /**
+     * A mutator that removes a graph from this dataset.
+     */
+    private final Consumer<Node> _removeGraph = graphName -> {
+        // delete all triples in this graph in the backing store
+        deleteAny(graphName, ANY, ANY, ANY);
+        // remove the graph itself
+        super.removeGraph(graphName);
+    };
 
-	/**
-	 * A mutator that adds a quad to this dataset.
-	 */
-	private final Consumer<Quad> _add = quad -> {
-		if (!contains(quad)) {
-			super.add(quad);
-			if (isRecording()) record.accept(new QuadAddition(quad));
-		}
-	};
+    /**
+     * A mutator that adds a quad to this dataset.
+     */
+    private final Consumer<Quad> _add = quad -> {
+        if (!contains(quad)) {
+            super.add(quad);
+            if (isRecording()) record.accept(new QuadAddition(quad));
+        }
+    };
 
-	/**
-	 * A mutator that deletes a quad from this dataset.
-	 */
-	private final Consumer<Quad> _delete = quad -> {
-		if (contains(quad)) {
-			super.delete(quad);
-			if (isRecording()) record.accept(new QuadDeletion(quad));
-		}
-	};
+    /**
+     * A mutator that deletes a quad from this dataset.
+     */
+    private final Consumer<Quad> _delete = quad -> {
+        if (contains(quad)) {
+            super.delete(quad);
+            if (isRecording()) record.accept(new QuadDeletion(quad));
+        }
+    };
 
-	/**
-	 * @return true iff we are outside a transaction or inside a WRITE transaction
-	 */
-	private boolean allowedToWrite() {
-		return !isInTransaction() || isInTransaction() && isTransactionType(WRITE);
-	}
+    /**
+     * @return true iff we are outside a transaction or inside a WRITE transaction
+     */
+    private boolean allowedToWrite() {
+        return !isInTransaction() || isInTransaction() && isTransactionType(WRITE);
+    }
 
-	@Override
-	public void add(final Node g, final Node s, final Node p, final Node o) {
-		add(new Quad(g, s, p, o));
-	}
+    @Override
+    public void add(final Node g, final Node s, final Node p, final Node o) {
+        add(new Quad(g, s, p, o));
+    }
 
-	@Override
-	public void delete(final Node g, final Node s, final Node p, final Node o) {
-		delete(new Quad(g, s, p, o));
-	}
+    @Override
+    public void delete(final Node g, final Node s, final Node p, final Node o) {
+        delete(new Quad(g, s, p, o));
+    }
 
-	@Override
-	public void deleteAny(final Node g, final Node s, final Node p, final Node o) {
-		newArrayList(find(g, s, p, o)).forEach(this::delete);
-	}
+    @Override
+    public void deleteAny(final Node g, final Node s, final Node p, final Node o) {
+        newArrayList(find(g, s, p, o)).forEach(this::delete);
+    }
 
-	@Override
-	public void clear() {
-		deleteAny(ANY, ANY, ANY, ANY);
-		super.clear();
-	}
+    @Override
+    public void clear() {
+        deleteAny(ANY, ANY, ANY, ANY);
+        super.clear();
+    }
 
-	@Override
-	protected boolean abortImplemented() {
-		return true;
-	}
+    @Override
+    protected boolean abortImplemented() {
+        return true;
+    }
 
-	@Override
-	protected void _begin(final ReadWrite readWrite) {
-		super._begin(readWrite);
-		if (readWrite.equals(WRITE)) startRecording();
-	}
+    @Override
+    protected void _begin(final ReadWrite readWrite) {
+        super._begin(readWrite);
+        if (readWrite.equals(WRITE)) startRecording();
+    }
 
-	@Override
-	protected void _commit() {
-		stopRecording();
-		record.clear();
-		recordLock.unlock();
-		super._commit();
-	}
+    @Override
+    protected void _commit() {
+        stopRecording();
+        record.clear();
+        recordLock.unlock();
+        super._commit();
+    }
 
-	@Override
-	protected void _abort() {
-		_end();
-	}
+    @Override
+    protected void _abort() {
+        _end();
+    }
 
-	@Override
-	protected void _end() {
-		if (isRecording()) {
-			try {
-				// stop recording operations from this thread
-				stopRecording();
-				// and unwind the record
-				record.reverse().consume(op -> op.inverse().actOn(this));
-			} finally {
-				recordLock.unlock();
-			}
-		}
-		super._end();
-	}
+    @Override
+    protected void _end() {
+        if (isRecording()) {
+            try {
+                // stop recording operations from this thread
+                stopRecording();
+                // and unwind the record
+                record.reverse().consume(op -> op.inverse().actOn(this));
+            } finally {
+                recordLock.unlock();
+            }
+        }
+        super._end();
+    }
 
-	@Override
-	public void close() {
-		if (isRecording()) {
-			stopRecording();
-			record.clear();
-			recordLock.unlock();
-		}
-		super.close();
-	}
+    @Override
+    public void close() {
+        if (isRecording()) {
+            stopRecording();
+            record.clear();
+            recordLock.unlock();
+        }
+        super.close();
+    }
 }
