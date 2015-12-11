@@ -57,8 +57,7 @@ import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
 
 /**
- * Base class to support the pretty forms of Turtle-related languages (Turtle,
- * TriG)
+ * Base class to support the pretty forms of Turtle-related languages (Turtle, TriG)
  */
 public abstract class TurtleShell {
     protected final IndentedWriter out ;
@@ -83,7 +82,7 @@ public abstract class TurtleShell {
         RiotLib.writePrefixes(out, prefixMap) ;
     }
 
-    /** Write graph in Trutle syntax (or part of TriG) */
+    /** Write graph in Turtle syntax (or part of TriG) */
     protected void writeGraphTTL(Graph graph) {
         ShellGraph x = new ShellGraph(graph, null, null) ;
         x.writeGraph() ;
@@ -347,7 +346,6 @@ public abstract class TurtleShell {
                     
                     if ( subj.isBlank() )
                     {
-                        // Blank node, not a list ...
                         int sConn = inLinks(subj) ;
                         if ( sConn == 0 && containedInOneGraph(subj) )  
                             // Not used as an object in this graph.
