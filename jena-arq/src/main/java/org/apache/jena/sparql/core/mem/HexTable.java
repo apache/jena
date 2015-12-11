@@ -42,84 +42,84 @@ import org.apache.jena.sparql.core.Quad;
  */
 public class HexTable implements QuadTable {
 
-	private final ThreadLocal<Boolean> isInTransaction = withInitial(() -> false);
+    private final ThreadLocal<Boolean> isInTransaction = withInitial(() -> false);
 
-	@Override
-	public boolean isInTransaction() {
-		return isInTransaction.get();
-	}
+    @Override
+    public boolean isInTransaction() {
+        return isInTransaction.get();
+    }
 
-	protected void isInTransaction(final boolean b) {
-		isInTransaction.set(b);
-	}
+    protected void isInTransaction(final boolean b) {
+        isInTransaction.set(b);
+    }
 
-	private final Map<QuadTableForm, QuadTable> indexBlock = new EnumMap<QuadTableForm, QuadTable>(
-			tableForms().collect(toMap(x -> x, QuadTableForm::get)));
+    private final Map<QuadTableForm, QuadTable> indexBlock = new EnumMap<QuadTableForm, QuadTable>(
+        tableForms().collect(toMap(x -> x, QuadTableForm::get)));
 
-	/**
-	 * A block of six indexes to which we provide access as though they were one.
-	 */
-	protected Map<QuadTableForm, QuadTable> indexBlock() {
-		return indexBlock;
-	}
+    /**
+     * A block of six indexes to which we provide access as though they were one.
+     */
+    protected Map<QuadTableForm, QuadTable> indexBlock() {
+        return indexBlock;
+    }
 
-	@Override
-	public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
-		final Set<TupleSlot> pattern = noneOf(TupleSlot.class);
-		if (isConcrete(g)) pattern.add(GRAPH);
-		if (isConcrete(s)) pattern.add(SUBJECT);
-		if (isConcrete(p)) pattern.add(PREDICATE);
-		if (isConcrete(o)) pattern.add(OBJECT);
-		final QuadTableForm choice = chooseFrom(pattern);
-		return indexBlock().get(choice).find(g, s, p, o);
-	}
+    @Override
+    public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
+        final Set<TupleSlot> pattern = noneOf(TupleSlot.class);
+        if (isConcrete(g)) pattern.add(GRAPH);
+        if (isConcrete(s)) pattern.add(SUBJECT);
+        if (isConcrete(p)) pattern.add(PREDICATE);
+        if (isConcrete(o)) pattern.add(OBJECT);
+        final QuadTableForm choice = chooseFrom(pattern);
+        return indexBlock().get(choice).find(g, s, p, o);
+    }
 
-	private static boolean isConcrete(final Node n) {
-		return nonNull(n) && n.isConcrete();
-	}
+    private static boolean isConcrete(final Node n) {
+        return nonNull(n) && n.isConcrete();
+    }
 
-	@Override
-	public void add(final Quad q) {
-		indexBlock().values().forEach(index -> index.add(q));
-	}
+    @Override
+    public void add(final Quad q) {
+        indexBlock().values().forEach(index -> index.add(q));
+    }
 
-	@Override
-	public void delete(final Quad q) {
-		indexBlock().values().forEach(index -> index.delete(q));
-	}
+    @Override
+    public void delete(final Quad q) {
+        indexBlock().values().forEach(index -> index.delete(q));
+    }
 
-	@Override
-	public Stream<Node> listGraphNodes() {
-		// GSPO is specially equipped with an efficient listGraphNodes().
-		return indexBlock().get(GSPO).listGraphNodes();
-	}
+    @Override
+    public Stream<Node> listGraphNodes() {
+        // GSPO is specially equipped with an efficient listGraphNodes().
+        return indexBlock().get(GSPO).listGraphNodes();
+    }
 
-	@Override
-	public Stream<Quad> findInUnionGraph(final Node s, final Node p, final Node o) {
-		// we can use adjacency in SPOG to solve this problem without building up a set of already-seen triples.
-		return indexBlock().get(SPOG).findInUnionGraph(s, p, o);
-	}
+    @Override
+    public Stream<Quad> findInUnionGraph(final Node s, final Node p, final Node o) {
+        // we can use adjacency in SPOG to solve this problem without building up a set of already-seen triples.
+        return indexBlock().get(SPOG).findInUnionGraph(s, p, o);
+    }
 
-	@Override
-	public void begin(final ReadWrite rw) {
-		isInTransaction(true);
-		indexBlock().values().forEach(table -> table.begin(rw));
-	}
+    @Override
+    public void begin(final ReadWrite rw) {
+        isInTransaction(true);
+        indexBlock().values().forEach(table -> table.begin(rw));
+    }
 
-	@Override
-	public void end() {
-		indexBlock().values().forEach(QuadTable::end);
-		isInTransaction.remove();
-	}
+    @Override
+    public void end() {
+        indexBlock().values().forEach(QuadTable::end);
+        isInTransaction.remove();
+    }
 
-	@Override
-	public void commit() {
-		indexBlock().values().forEach(QuadTable::commit);
-		isInTransaction(false);
-	}
+    @Override
+    public void commit() {
+        indexBlock().values().forEach(QuadTable::commit);
+        isInTransaction(false);
+    }
 
-	@Override
-	public void clear() {
-		indexBlock().values().forEach(QuadTable::clear);
-	}
+    @Override
+    public void clear() {
+        indexBlock().values().forEach(QuadTable::clear);
+    }
 }

@@ -34,88 +34,88 @@ import org.slf4j.Logger;
  */
 public abstract class PMapTupleTable<TupleMapType, TupleType> implements TupleTable<TupleType> {
 
-	/**
-	 * This method should always return the same value, but note that the same value may not necessarily be the same
-	 * instance.
-	 *
-	 * @return a value to which to initialize the master table data.
-	 */
-	protected abstract TupleMapType initial();
+    /**
+     * This method should always return the same value, but note that the same value may not necessarily be the same
+     * instance.
+     *
+     * @return a value to which to initialize the master table data.
+     */
+    protected abstract TupleMapType initial();
 
-	private final AtomicReference<TupleMapType> master = new AtomicReference<>(initial());
+    private final AtomicReference<TupleMapType> master = new AtomicReference<>(initial());
 
-	/**
-	 * We use an {@link AtomicReference} to the internal structure that holds our table data to be able to swap
-	 * transactional versions of the data with the shared version atomically.
-	 */
-	protected AtomicReference<TupleMapType> master() {
-		return master;
-	}
+    /**
+     * We use an {@link AtomicReference} to the internal structure that holds our table data to be able to swap
+     * transactional versions of the data with the shared version atomically.
+     */
+    protected AtomicReference<TupleMapType> master() {
+        return master;
+    }
 
-	private final ThreadLocal<TupleMapType> local = withInitial(() -> master().get());
+    private final ThreadLocal<TupleMapType> local = withInitial(() -> master().get());
 
-	/**
-	 * @return a thread-local transactional reference to the internal table structure
-	 */
-	protected ThreadLocal<TupleMapType> local() {
-		return local;
-	}
+    /**
+     * @return a thread-local transactional reference to the internal table structure
+     */
+    protected ThreadLocal<TupleMapType> local() {
+        return local;
+    }
 
-	private final ThreadLocal<Boolean> isInTransaction = withInitial(() -> false);
+    private final ThreadLocal<Boolean> isInTransaction = withInitial(() -> false);
 
-	@Override
-	public boolean isInTransaction() {
-		return isInTransaction.get();
-	}
+    @Override
+    public boolean isInTransaction() {
+        return isInTransaction.get();
+    }
 
-	protected void isInTransaction(final boolean b) {
-		isInTransaction.set(b);
-	}
+    protected void isInTransaction(final boolean b) {
+        isInTransaction.set(b);
+    }
 
-	private final String tableName;
+    private final String tableName;
 
-	/**
-	 * @param n a name for this table
-	 */
-	public PMapTupleTable(final String n) {
-		this.tableName = n;
-	}
+    /**
+     * @param n a name for this table
+     */
+    public PMapTupleTable(final String n) {
+        this.tableName = n;
+    }
 
-	protected abstract Logger log();
+    protected abstract Logger log();
 
-	/**
-	 * Logs to DEBUG prepending the table name in order to distinguish amongst different indexes
-	 */
-	protected void debug(final String msg, final Object... values) {
-	    if ( log().isDebugEnabled() )
-	        log().debug(tableName + ": " + msg, values);
-	}
+    /**
+     * Logs to DEBUG prepending the table name in order to distinguish amongst different indexes
+     */
+    protected void debug(final String msg, final Object... values) {
+        if ( log().isDebugEnabled() )
+            log().debug(tableName + ": " + msg, values);
+    }
 
-	@Override
-	public void begin(final ReadWrite rw) {
-		isInTransaction(true);
-	}
+    @Override
+    public void begin(final ReadWrite rw) {
+        isInTransaction(true);
+    }
 
-	@Override
-	public void end() {
-		debug("Abandoning transactional reference.");
-		local.remove();
-		isInTransaction.remove();
-	}
+    @Override
+    public void end() {
+        debug("Abandoning transactional reference.");
+        local.remove();
+        isInTransaction.remove();
+    }
 
-	@Override
-	public void commit() {
-		debug("Swapping transactional reference in for shared reference");
-		master().set(local.get());
-		end();
-	}
+    @Override
+    public void commit() {
+        debug("Swapping transactional reference in for shared reference");
+        master().set(local.get());
+        end();
+    }
 
-	@Override
-	public void clear() {
-		local().set(initial());
-	}
+    @Override
+    public void clear() {
+        local().set(initial());
+    }
 
-	protected boolean isConcrete(final Node n) {
-		return n != null && n.isConcrete();
-	}
+    protected boolean isConcrete(final Node n) {
+        return n != null && n.isConcrete();
+    }
 }

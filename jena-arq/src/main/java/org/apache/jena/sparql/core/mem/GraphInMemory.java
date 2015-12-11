@@ -30,21 +30,21 @@ import org.apache.jena.sparql.core.GraphView;
  */
 public class GraphInMemory extends GraphView {
 
-	private final DatasetGraphInMemory datasetGraph;
+    private final DatasetGraphInMemory datasetGraph;
 
-	GraphInMemory(final DatasetGraphInMemory dsg, final Node gn) {
-		super(dsg, gn);
-		this.datasetGraph = dsg;
-	}
+    GraphInMemory(final DatasetGraphInMemory dsg, final Node gn) {
+        super(dsg, gn);
+        this.datasetGraph = dsg;
+    }
 
-	@Override
-	protected PrefixMapping createPrefixMapping() {
-		final DatasetPrefixStorage prefixes = datasetGraph().prefixes();
-		return isDefaultGraph() || isUnionGraph() ? prefixes.getPrefixMapping() : prefixes
-				.getPrefixMapping(getGraphName().getURI());
-	}
+    @Override
+    protected PrefixMapping createPrefixMapping() {
+        final DatasetPrefixStorage prefixes = datasetGraph().prefixes();
+        return isDefaultGraph() || isUnionGraph() ? prefixes.getPrefixMapping() : prefixes
+            .getPrefixMapping(getGraphName().getURI());
+    }
 
-	private DatasetGraphInMemory datasetGraph() {
-		return datasetGraph;
-	}
+    private DatasetGraphInMemory datasetGraph() {
+        return datasetGraph;
+    }
 }

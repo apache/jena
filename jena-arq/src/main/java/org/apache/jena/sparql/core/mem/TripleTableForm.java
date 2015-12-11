@@ -36,133 +36,133 @@ import org.apache.jena.graph.Triple;
  */
 public enum TripleTableForm implements Supplier<TripleTable>,Predicate<Set<TupleSlot>> {
 
-	/**
-	 * Subject-predicate-object.
-	 */
-	SPO(of(SUBJECT, PREDICATE), SUBJECT) {
-		@Override
-		public TripleTable get() {
-			return new PMapTripleTable(name()) {
+    /**
+     * Subject-predicate-object.
+     */
+    SPO(of(SUBJECT, PREDICATE), SUBJECT) {
+        @Override
+        public TripleTable get() {
+            return new PMapTripleTable(name()) {
 
-				@Override
-				protected Triple triple(final Node s, final Node p, final Node o) {
-					return Triple.create(s, p, o);
-				}
+                @Override
+                protected Triple triple(final Node s, final Node p, final Node o) {
+                    return Triple.create(s, p, o);
+                }
 
-				@Override
-				public Stream<Triple> find(final Node s, final Node p, final Node o) {
-					return _find(s, p, o);
-				}
+                @Override
+                public Stream<Triple> find(final Node s, final Node p, final Node o) {
+                    return _find(s, p, o);
+                }
 
-				@Override
-				public void add(final Triple t) {
-					_add(t.getSubject(), t.getPredicate(), t.getObject());
-				}
+                @Override
+                public void add(final Triple t) {
+                    _add(t.getSubject(), t.getPredicate(), t.getObject());
+                }
 
-				@Override
-				public void delete(final Triple t) {
-					_delete(t.getSubject(), t.getPredicate(), t.getObject());
-				}
+                @Override
+                public void delete(final Triple t) {
+                    _delete(t.getSubject(), t.getPredicate(), t.getObject());
+                }
 
-			};
-		}
+            };
+        }
 
-	},
-	/**
-	 * Predicate-object-subject.
-	 */
-	POS(of(PREDICATE, OBJECT), PREDICATE) {
+    },
+    /**
+     * Predicate-object-subject.
+     */
+    POS(of(PREDICATE, OBJECT), PREDICATE) {
 
-		@Override
-		public TripleTable get() {
-			return new PMapTripleTable(name()) {
+        @Override
+        public TripleTable get() {
+            return new PMapTripleTable(name()) {
 
-				@Override
-				protected Triple triple(final Node p, final Node o, final Node s) {
-					return Triple.create(s, p, o);
-				}
+                @Override
+                protected Triple triple(final Node p, final Node o, final Node s) {
+                    return Triple.create(s, p, o);
+                }
 
-				@Override
-				public Stream<Triple> find(final Node s, final Node p, final Node o) {
-					return _find(p, o, s);
-				}
+                @Override
+                public Stream<Triple> find(final Node s, final Node p, final Node o) {
+                    return _find(p, o, s);
+                }
 
-				@Override
-				public void add(final Triple t) {
-					_add(t.getPredicate(), t.getObject(), t.getSubject());
-				}
+                @Override
+                public void add(final Triple t) {
+                    _add(t.getPredicate(), t.getObject(), t.getSubject());
+                }
 
-				@Override
-				public void delete(final Triple t) {
-					_delete(t.getPredicate(), t.getObject(), t.getSubject());
-				}
+                @Override
+                public void delete(final Triple t) {
+                    _delete(t.getPredicate(), t.getObject(), t.getSubject());
+                }
 
-			};
-		}
-	},
-	/**
-	 * Object-subject-predicate.
-	 */
-	OSP(of(OBJECT, SUBJECT), OBJECT) {
+            };
+        }
+    },
+    /**
+     * Object-subject-predicate.
+     */
+    OSP(of(OBJECT, SUBJECT), OBJECT) {
 
-		@Override
-		public TripleTable get() {
-			return new PMapTripleTable(name()) {
+        @Override
+        public TripleTable get() {
+            return new PMapTripleTable(name()) {
 
-				@Override
-				protected Triple triple(final Node o, final Node s, final Node p) {
-					return Triple.create(s, p, o);
-				}
+                @Override
+                protected Triple triple(final Node o, final Node s, final Node p) {
+                    return Triple.create(s, p, o);
+                }
 
-				@Override
-				public Stream<Triple> find(final Node s, final Node p, final Node o) {
-					return _find(o, s, p);
-				}
+                @Override
+                public Stream<Triple> find(final Node s, final Node p, final Node o) {
+                    return _find(o, s, p);
+                }
 
-				@Override
-				public void add(final Triple t) {
-					_add(t.getObject(), t.getSubject(), t.getPredicate());
-				}
+                @Override
+                public void add(final Triple t) {
+                    _add(t.getObject(), t.getSubject(), t.getPredicate());
+                }
 
-				@Override
-				public void delete(final Triple t) {
-					_delete(t.getObject(), t.getSubject(), t.getPredicate());
-				}
+                @Override
+                public void delete(final Triple t) {
+                    _delete(t.getObject(), t.getSubject(), t.getPredicate());
+                }
 
-			};
-		}
-	};
-	private TripleTableForm(final Set<TupleSlot> tp, final TupleSlot op) {
-		this.twoPrefix = tp;
-		this.onePrefix = of(op);
-	}
+            };
+        }
+    };
+    private TripleTableForm(final Set<TupleSlot> tp, final TupleSlot op) {
+        this.twoPrefix = tp;
+        this.onePrefix = of(op);
+    }
 
-	/**
-	 * Prefixes of the pattern for this table form.
-	 */
-	public final Set<TupleSlot> twoPrefix, onePrefix;
+    /**
+     * Prefixes of the pattern for this table form.
+     */
+    public final Set<TupleSlot> twoPrefix, onePrefix;
 
-	/**
-	 * @param pattern
-	 * @return whether this index form avoids traversal for a query of this pattern
-	 */
-	@Override
-	public boolean test(final Set<TupleSlot> pattern) {
-		return twoPrefix.equals(pattern) || onePrefix.equals(pattern) || pattern.size() == 3;
-	}
+    /**
+     * @param pattern
+     * @return whether this index form avoids traversal for a query of this pattern
+     */
+    @Override
+    public boolean test(final Set<TupleSlot> pattern) {
+        return twoPrefix.equals(pattern) || onePrefix.equals(pattern) || pattern.size() == 3;
+    }
 
-	/**
-	 * @param pattern
-	 * @return the most appropriate choice of index form for that query
-	 */
-	public static TripleTableForm chooseFrom(final Set<TupleSlot> pattern) {
-		return tableForms().filter(f -> f.test(pattern)).findFirst().orElse(SPO);
-	}
+    /**
+     * @param pattern
+     * @return the most appropriate choice of index form for that query
+     */
+    public static TripleTableForm chooseFrom(final Set<TupleSlot> pattern) {
+        return tableForms().filter(f -> f.test(pattern)).findFirst().orElse(SPO);
+    }
 
-	/**
-	 * @return a stream of these table forms
-	 */
-	public static Stream<TripleTableForm> tableForms() {
-		return stream(values());
-	}
+    /**
+     * @return a stream of these table forms
+     */
+    public static Stream<TripleTableForm> tableForms() {
+        return stream(values());
+    }
 }
