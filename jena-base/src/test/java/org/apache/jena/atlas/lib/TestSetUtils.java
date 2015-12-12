@@ -126,6 +126,16 @@ public class TestSetUtils extends BaseTest
         test(x3,4,5,6) ;
     }
     
+    @Test public void set11() 
+    {
+        Set<Integer> x1 = set(1,2,3) ;
+        Set<Integer> x2 = set(5,6) ;
+        Set<Integer> x3 = set(1,6) ;
+        assertTrue(SetUtils.disjoint(x1, x2)) ;
+        assertFalse(SetUtils.disjoint(x1, x3)) ;
+        assertFalse(SetUtils.disjoint(x1, x1)) ;
+    }
+
     // --------
     
     private static Set<Integer> set(int... values)

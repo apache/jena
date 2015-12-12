@@ -56,5 +56,9 @@ public class SetUtils
         s3.removeAll(s2) ;
         return s3 ;
     }
+
+    public static <T> boolean disjoint(Set<T> set1, Set<T> set2) {
+        return CollectionUtils.disjoint(set1, set2) ;   
+    }
 }
 
