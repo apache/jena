@@ -26,7 +26,7 @@ import static org.apache.jena.sparql.core.Quad.isUnionGraph;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Iterator;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock ;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -37,11 +37,7 @@ import org.apache.jena.query.ReadWrite;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.shared.LockMRPlusSW;
 import org.apache.jena.sparql.JenaTransactionException;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphTriplesQuads;
-import org.apache.jena.sparql.core.DatasetPrefixStorage;
-import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.sparql.core.* ;
 import org.slf4j.Logger;
 
 /**
@@ -55,21 +51,15 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 
     private final DatasetPrefixStorage prefixes = new DatasetPrefixStorageInMemory();
 
+    /** This lock imposes the multiple-reader and single-writer policy of transactions */
     private final Lock writeLock = new LockMRPlusSW();
 
-    private Lock writeLock() {
-        return writeLock;
-    }
-
-    private final ReentrantReadWriteLock commitLock = new ReentrantReadWriteLock(true);
-
     /**
-     * Commits must be atomic, and because a thread that is committing alters the various indexes one after another, we
-     * lock out {@link #begin(ReadWrite)} while {@link #commit()} is executing.
+     * Transaction lifecycle operations must be atomi, especially begin and commit where
+     * the global state of the indexes is read or written one after another.
+     *  and because a thread that is committing alters the various indexes.
      */
-    private ReentrantReadWriteLock commitLock() {
-        return commitLock;
-    }
+    private final ReentrantLock systemLock = new ReentrantLock(true);
 
     private final ThreadLocal<Boolean> isInTransaction = withInitial(() -> false);
 
@@ -125,19 +115,33 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 
     @Override
     public void begin(final ReadWrite readWrite) {
-        if (isInTransaction()) throw new JenaTransactionException("Transactions cannot be nested!");
-        transactionType(readWrite);
-        isInTransaction(true);
-        writeLock().enterCriticalSection(readWrite.equals(READ)); // get the dataset write lock, if needed.
-        commitLock().readLock().lock(); // if a commit is proceeding, wait so that we see a coherent index state
-        try {
-            quadsIndex().begin(readWrite);
-            defaultGraph().begin(readWrite);
-        } finally {
-            commitLock().readLock().unlock();
-        }
+        if (isInTransaction()) 
+            throw new JenaTransactionException("Transactions cannot be nested!");
+        startTransaction(readWrite) ;
+        _begin(readWrite) ;
     }
 
+    private void _begin(ReadWrite readWrite) {
+        withLock(systemLock, () ->{
+            quadsIndex().begin(readWrite);
+            defaultGraph().begin(readWrite);
+        }) ;
+    }
+    
+    /** Called transaction start code at most once per transaction. */ 
+    private void startTransaction(ReadWrite mode) {
+        writeLock.enterCriticalSection(mode.equals(READ)); // get the dataset write lock, if needed.
+        transactionType(mode);
+        isInTransaction(true);
+    }
+
+    /** Called transaction ending code at most once per transaction. */ 
+    private void finishTransaction() {
+        isInTransaction.remove();
+        transactionType.remove();
+        writeLock.leaveCriticalSection();
+    }
+     
     @Override
     public void commit() {
         if (!isInTransaction())
@@ -155,7 +159,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
             defaultGraph().end();
         } ) ;
     }
-
+    
     @Override
     public void abort() {
         if (!isInTransaction()) 
@@ -176,7 +180,8 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     
     @Override
     public void close() {
-        if (isInTransaction()) abort();
+        if (isInTransaction())
+            abort();
     }
 
     @Override
