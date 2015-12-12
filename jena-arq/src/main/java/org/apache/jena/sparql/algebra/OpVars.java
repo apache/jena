@@ -260,17 +260,8 @@ public class OpVars
 
         @Override
         public void visit(OpPropFunc opPropFunc) {
-            addvars(opPropFunc.getSubjectArgs()) ;
-            addvars(opPropFunc.getObjectArgs()) ;
-        }
-
-        private void addvars(PropFuncArg pfArg) {
-            if (pfArg.isNode()) {
-                addVar(acc, pfArg.getArg()) ;
-                return ;
-            }
-            for (Node n : pfArg.getArgList())
-                addVar(acc, n) ;
+            PropFuncArg.addVars(acc, opPropFunc.getSubjectArgs()) ;
+            PropFuncArg.addVars(acc, opPropFunc.getObjectArgs()) ;
         }
 
         @Override

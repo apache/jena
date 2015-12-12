@@ -47,19 +47,16 @@ public class OpPropFunc extends Op1
         this.objectArgs = args2 ;
     }
     
-    public PropFuncArg getSubjectArgs()
-    {
+    public PropFuncArg getSubjectArgs() {
         return subjectArgs ;
     } 
     
-    public PropFuncArg getObjectArgs()
-    {
+    public PropFuncArg getObjectArgs() {
         return objectArgs ;
     } 
     
     @Override
-    public Op apply(Transform transform, Op subOp)
-    {
+    public Op apply(Transform transform, Op subOp) {
         return transform.transform(this, subOp) ;
     }
 

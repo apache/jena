@@ -18,10 +18,14 @@
 
 package org.apache.jena.sparql.pfunction;
 
+import static org.apache.jena.sparql.core.Vars.addVar ;
+
+import java.util.Collection ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.graph.NodeConst ;
@@ -130,5 +134,14 @@ public class PropFuncArg extends PrintSerializableBase
         }
         if ( arg != null )
             out.print(FmtUtils.stringForNode(arg)) ;
+    }
+
+    public static void addVars(Collection<Var> acc, PropFuncArg pfArg) {
+        if (pfArg.isNode()) {
+            addVar(acc, pfArg.getArg()) ;
+            return ;
+        }
+        for (Node n : pfArg.getArgList())
+            addVar(acc, n) ;
     }
 }

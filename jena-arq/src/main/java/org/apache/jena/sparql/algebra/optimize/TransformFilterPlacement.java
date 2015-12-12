@@ -1,5 +1,5 @@
 /*
-z * Licensed to the Apache Software Foundation (ASF) under one
+ * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -18,15 +18,12 @@ z * Licensed to the Apache Software Foundation (ASF) under one
 
 package org.apache.jena.sparql.algebra.optimize ;
 
-import java.util.Collection ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Objects;
-import java.util.Set ;
+import java.util.* ;
 
 import org.apache.jena.atlas.lib.CollectionUtils ;
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.lib.SetUtils ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.algebra.Op ;
@@ -38,6 +35,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprLib ;
 import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.pfunction.PropFuncArg ;
 import org.apache.jena.sparql.util.VarUtils ;
 
 /**
@@ -198,6 +196,10 @@ public class TransformFilterPlacement extends TransformCopy {
             placement = placeFilter(exprs, (OpFilter)input) ;
         else if ( input instanceof OpUnion )
             placement = placeUnion(exprs, (OpUnion)input) ;
+        else if ( input instanceof OpPropFunc )
+            placement = placePropertyFunction(exprs, (OpPropFunc)input) ;
+        else if ( input instanceof OpProcedure )
+            placement = placeProcedure(exprs, (OpProcedure)input) ;
         
         // These are operations where changing the order of operations
         // does not in itself make a difference but enables expressions
@@ -230,7 +232,6 @@ public class TransformFilterPlacement extends TransformCopy {
 
         return placement ;
     }
-    
     private Placement placeFilter(ExprList exprs, OpFilter input) {
         // If input.getSubOp is itself a filter, it has already been
         // processed because the Transform is applied bottom-up.
@@ -424,6 +425,39 @@ public class TransformFilterPlacement extends TransformCopy {
         return null ;
     }
 
+    private Placement placePropertyFunction(ExprList exprsIn, OpPropFunc input) {
+        Set<Var> argVars = DS.set() ;
+        PropFuncArg.addVars(argVars, input.getSubjectArgs()) ;
+        PropFuncArg.addVars(argVars, input.getObjectArgs()) ;
+        return placePropertyFunctionProcedure(exprsIn, argVars, input) ;
+    }
+
+    private Placement placeProcedure(ExprList exprsIn, OpProcedure input) {
+        Set<Var> argVars = DS.set() ;
+        input.getArgs().varsMentioned(argVars);
+        return placePropertyFunctionProcedure(exprsIn, argVars, input) ;
+    }
+    
+    private Placement placePropertyFunctionProcedure(ExprList exprsIn, Set<Var> varScope, Op1 op) {
+        ExprList exprListPlaceable = new ExprList() ;
+        ExprList exprListRetain = new ExprList() ;
+        for ( Expr expr : exprsIn ) {
+            Set<Var> mentioned = expr.getVarsMentioned() ;
+            if ( SetUtils.disjoint(varScope, mentioned) )
+                exprListPlaceable.add(expr);
+            else
+                exprListRetain.add(expr);
+        }
+        if ( ! exprListPlaceable.isEmpty() ) {
+            Placement p = transform(exprListPlaceable, op.getSubOp()) ;
+            Op newOp = op.copy(p.op) ;
+            p.unplaced.addAll(exprListRetain);
+            return result(newOp, p.unplaced) ;
+        }
+        return resultNoChange(op);
+    }
+
+    
     /*
      * A Sequence is a number of joins where scoping means the LHS can be
      * substituted into the right, i.e. there are no scoping issues. Assuming a
@@ -435,7 +469,6 @@ public class TransformFilterPlacement extends TransformCopy {
      * different scope, which is a different variable with the same name in the
      * orginal query).
      */
-
     private Placement placeSequence(ExprList exprsIn, OpSequence opSequence) {
         ExprList exprs = ExprList.copy(exprsIn) ;
         Set<Var> varScope = DS.set() ;

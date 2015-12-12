@@ -18,12 +18,24 @@
 
 package org.apache.jena.sparql.algebra.optimize ;
 
+import java.util.Objects ;
+
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.Transform ;
 import org.apache.jena.sparql.algebra.Transformer ;
-import org.apache.jena.sparql.algebra.optimize.TransformFilterPlacement ;
+import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.pfunction.PropFuncArg ;
+import org.apache.jena.sparql.pfunction.PropertyFunction ;
+import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
+import org.apache.jena.sparql.procedure.Procedure ;
+import org.apache.jena.sparql.procedure.ProcedureBase ;
+import org.apache.jena.sparql.procedure.ProcedureRegistry ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Assert ;
 import org.junit.Test ;
@@ -799,6 +811,213 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
         test( in, out ) ;
     }
     
+    private static String propertyFunctionURI = "http://example/PF" ;
+    // Dummy property 
+    private static PropertyFunction dummyPropertyFunction = new PropertyFunction() {
+        @Override
+        public QueryIterator exec(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
+            return null;
+        }
+
+        @Override
+        public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {}
+    };
+    
+    private static void test_property_function(Runnable action) {
+        PropertyFunctionRegistry.get().put(propertyFunctionURI, dummyPropertyFunction.getClass());
+        try {
+            action.run();
+        } finally {
+            PropertyFunctionRegistry.get().remove(propertyFunctionURI) ;
+        }
+    }
+    
+    @Test public void place_property_functions_01() {
+        // No filter.
+        test_property_function(()->{
+            String in = "(propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2) (bgp(?s ?p ?o)))" ;
+            String out = in ;
+            test( in, out ) ;
+        }) ;
+    }
+    
+    @Test public void place_property_functions_02() {
+        test_property_function(()->{
+            String in = StrUtils.strjoinNL
+                ("(filter ((= ?x 1)(= ?o 9))"
+                ,"    (propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
+                ,"       (bgp (?s ?p ?o))"
+                ,"    ))"
+                 ) ;
+            String out = StrUtils.strjoinNL
+                ("(filter (= ?x 1)"
+                ,"  (propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
+                ,"    (filter (= ?o 9)"
+                ,"      (bgp (triple ?s ?p ?o))"
+                ,"    )))"
+                ) ;
+            test( in, out ) ;
+        }) ;
+    }
+    
+    @Test public void place_property_functions_02a() {
+        test_property_function(()->{
+            String in = StrUtils.strjoinNL
+                ("(filter (= ?x 1)"
+                ,"    (propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
+                ,"       (bgp (?s ?p ?o))"
+                ,"    ))"
+                 ) ;
+            String out = in ;
+            test( in, out ) ;
+        }) ;
+    }
+
+    @Test public void place_property_functions_02b() {
+        test_property_function(()->{
+            String in = StrUtils.strjoinNL
+                ("(filter (= ?o 9)"
+                ,"    (propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
+                ,"       (bgp (?s ?p ?o))"
+                ,"    ))"
+                 ) ;
+            String out = StrUtils.strjoinNL
+                ("(propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
+                ,"  (filter (= ?o 9)"
+                ,"   (bgp (triple ?s ?p ?o))"
+                ,"  ))"
+                ) ;
+            test( in, out ) ;
+        }) ;
+    }
+    
+    @Test public void place_property_functions_03() {
+        test_property_function(()->{
+            String in = StrUtils.strjoinNL
+                ("(filter ((= ?pfSubjArg 1)(= ?o 9))"
+                ,"    (propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
+                ,"       (bgp (?s ?p ?o))"
+                ,"    ))"
+                 ) ;
+            String out = StrUtils.strjoinNL
+                ("(filter (= ?pfSubjArg 1)"
+                ,"  (propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
+                ,"    (filter (= ?o 9)"
+                ,"      (bgp (triple ?s ?p ?o))"
+                ,"    )))"
+                ) ;
+            test( in, out ) ;
+        }) ;
+    }
+
+    @Test public void place_property_functions_04() {
+        test_property_function(()->{
+            String in = StrUtils.strjoinNL
+                ("(filter ((= ?pfObjArg 1)(= ?o 9))"
+                ,"    (propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
+                ,"       (bgp (?s ?p ?o))"
+                ,"    ))"
+                 ) ;
+            String out = StrUtils.strjoinNL
+                ("(filter (= ?pfObjArg 1)"
+                ,"  (propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
+                ,"    (filter (= ?o 9)"
+                ,"      (bgp (triple ?s ?p ?o))"
+                ,"    )))"
+                ) ;
+            test( in, out ) ;
+        }) ;
+    }
+     
+    private static String procedureURI = "http://example/PROC" ;
+    // Dummy procedure 
+    private static Procedure dummyProcedure = new ProcedureBase() {
+        @Override
+        public QueryIterator exec(Binding binding, Node name, ExprList args, ExecutionContext execCxt) {
+            return null;
+        }
+    };
+
+    private static void test_procedure(Runnable action) {
+        ProcedureRegistry.get().put(procedureURI, dummyProcedure.getClass());
+        try {
+            action.run();
+        } finally {
+            ProcedureRegistry.get().remove(procedureURI) ;
+        }
+    }
+    
+    @Test public void place_procedure_01() {
+        test_procedure(()->{
+            String in = "(proc :PROC ((+ ?arg1 111) (?arg2)) (bgp (?s ?p ?o)))" ;
+            String out = in ;
+            test( in, out ) ;
+        }) ;
+    }
+    
+    @Test public void place_procedure_02() {
+        test_procedure(()->{
+            String in = StrUtils.strjoinNL
+                ("(filter (= ?o 9)"
+                ,"   (proc :PROC ((+ ?arg1 111) (?arg2))"
+                ,"      (bgp (?s ?p ?o))"
+                ,"   ))"
+                ) ;
+            String out = StrUtils.strjoinNL
+                ("(proc :PROC ((+ ?arg1 111) (?arg2))"
+                ,"  (filter (= ?o 9)"
+                ,"    (bgp (?s ?p ?o))"
+                ,"   ))"
+                ) ; 
+            test( in, out ) ;
+        }) ;
+    }
+    
+    @Test public void place_procedure_03() {
+        test_procedure(()->{
+            String in = StrUtils.strjoinNL
+                ("(filter (= ?x 9)"
+                ,"   (proc :PROC ((+ ?arg1 111) (?arg2))"
+                ,"      (bgp (?s ?p ?o))"
+                ,"   ))"
+                ) ;
+            String out = in ;
+            test( in, out ) ;
+        }) ;
+    }
+
+    @Test public void place_procedure_04() {
+        test_procedure(()->{
+            String in = StrUtils.strjoinNL
+                ("(filter (= ?arg1 9)"
+                ,"   (proc :PROC ((+ ?arg1 111) (?arg2))"
+                ,"      (bgp (?s ?p ?o))"
+                ,"   ))"
+                ) ;
+            String out = in ;
+            test( in, out ) ;
+        }) ;
+    }
+
+    @Test public void place_procedure_05() {
+        test_procedure(()->{
+            String in = StrUtils.strjoinNL
+                ("(filter ((= ?x 9) (= ?o 11) (= ?arg2 19))"
+                ,"   (proc :PROC ((+ ?arg1 111) (?arg2))"
+                ,"      (bgp (?s ?p ?o))"
+                ,"   ))"
+                ) ;
+            String out = StrUtils.strjoinNL
+                ("(filter ((= ?x 9) (= ?arg2 19))"
+                ,"   (proc :PROC ((+ ?arg1 111) (?arg2))"
+                ,"     (filter (= ?o 11)"
+                ,"       (bgp (?s ?p ?o))"
+                ,"     )))"
+                ) ;
+            test( in, out ) ;
+        }) ;
+    }
+
     @Test public void nondeterministic_functions_01() {
         testNoChange("(filter (= ?x (rand)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))") ;
     }
@@ -876,6 +1095,12 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
         }
 
         Op op3 = SSE.parseOp(output) ;
+        if ( ! Objects.equals(op2,  op3) ) {
+            System.out.println("Expected:") ;
+            System.out.println(op3);
+            System.out.println("Got:") ;
+            System.out.println(op2);
+        }
         Assert.assertEquals(op3, op2) ;
     }
 }
