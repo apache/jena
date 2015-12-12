@@ -78,7 +78,7 @@ public class SPARQL_QueryGeneral extends SPARQL_Query {
             if ( graphURLs.size() == 0 && namedGraphs.size() == 0 )
                 return null ;
 
-            Dataset dataset = DatasetFactory.createGeneral() ;
+            Dataset dataset = DatasetFactory.create() ;
             // Look in cache for loaded graphs!!
 
             // ---- Default graph

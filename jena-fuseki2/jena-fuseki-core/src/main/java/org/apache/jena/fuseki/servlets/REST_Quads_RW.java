@@ -112,7 +112,7 @@ public class REST_Quads_RW extends REST_Quads_R {
     }
     
     private void doPutPostNonTxn(HttpAction action, boolean clearFirst) {
-        DatasetGraph dsgTmp = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsgTmp = DatasetGraphFactory.create() ;
         StreamRDF dest = StreamRDFLib.dataset(dsgTmp) ;
 
         UploadDetails details ;

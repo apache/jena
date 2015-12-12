@@ -20,6 +20,10 @@ package org.apache.jena.fuseki.cmd ;
 
 import java.util.List ;
 
+import arq.cmdline.CmdARQ ;
+import arq.cmdline.ModDatasetAssembler ;
+import jena.cmd.ArgDecl ;
+import jena.cmd.CmdException ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLogging ;
@@ -31,19 +35,17 @@ import org.apache.jena.fuseki.server.FusekiServerListener ;
 import org.apache.jena.fuseki.server.ServerInitialConfig ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.sys.Names ;
 import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.slf4j.Logger ;
-import jena.cmd.ArgDecl ;
-import jena.cmd.CmdException ;
-import arq.cmdline.CmdARQ ;
-import arq.cmdline.ModDatasetAssembler ;
 
 /**
  * Handles the fuseki command, used to start a Fuseki server.
@@ -235,13 +237,19 @@ public class FusekiCmd {
 
                 // Directly populate the dataset.
                 cmdLineConfig.reset();
-                cmdLineConfig.dsg = DatasetGraphFactory.createGeneral() ;
-
+                cmdLineConfig.dsg = DatasetGraphFactory.createTxnMem() ;
+                Transactional t = (Transactional)(cmdLineConfig.dsg) ;
+                
                 // INITIAL DATA.
                 Lang language = RDFLanguages.filenameToLang(filename) ;
                 if ( language == null )
                     throw new CmdException("Can't guess language for file: " + filename) ;
-                RDFDataMgr.read(cmdLineConfig.dsg, filename) ;
+                // XXX Replace by Txn.
+                t.begin(ReadWrite.WRITE) ;
+                try {
+                    RDFDataMgr.read(cmdLineConfig.dsg, filename) ;
+                    t.commit() ;
+                } finally { t.end() ; }
             }
 
             if ( contains(argMemTDB) ) {

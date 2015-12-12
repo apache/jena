@@ -79,7 +79,7 @@ public class TestDatasetOps extends AbstractFusekiTest
     private void gsp_x(String outward, String inward) {
         HttpEntity e = datasetToHttpEntity(data) ;
         HttpOp.execHttpPut(outward, e);
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         RDFDataMgr.read(dsg, inward) ;
 //        String x = HttpOp.execHttpGetString(inward, "application/n-quads") ;
 //        RDFDataMgr.read(dsg, new StringReader(x), null, Lang.NQUADS) ;
@@ -123,7 +123,7 @@ public class TestDatasetOps extends AbstractFusekiTest
         HttpOp.execHttpPut(urlDataset, e);
         TypedInputStream in = HttpOp.execHttpGet(urlDataset, acceptheader) ;
         assertEqualsIgnoreCase(contentTypeResponse, in.getContentType()) ;
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         StreamRDF dest = StreamRDFLib.dataset(dsg) ;
         RDFDataMgr.parse(dest, in) ;
     }

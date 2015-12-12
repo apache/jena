@@ -184,7 +184,7 @@ public class SPARQL_Upload extends ActionSPARQL
     // ?? Combine with Upload.fileUploadWorker
     // Difference is the handling of names for graphs.  
     static private UploadDetails uploadWorker(HttpAction action, String base) {
-        DatasetGraph dsgTmp = DatasetGraphFactory.createGeneral() ;
+        DatasetGraph dsgTmp = DatasetGraphFactory.create() ;
         ServletFileUpload upload = new ServletFileUpload() ;
         String graphName = null ;
         boolean isQuads = false ;
