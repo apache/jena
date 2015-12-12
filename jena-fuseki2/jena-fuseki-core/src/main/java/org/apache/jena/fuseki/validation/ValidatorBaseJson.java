@@ -43,6 +43,9 @@ import org.slf4j.Logger ;
 /** ValidationBase for JSON out */ 
 public abstract class ValidatorBaseJson extends ServletBase
 {
+
+    private static final long serialVersionUID = 6539771233008186266L;
+
     private static Logger vLog = Fuseki.validationLog ;
     public static final String jErrors          = "errors" ;
     public static final String jWarnings        = "warning" ;

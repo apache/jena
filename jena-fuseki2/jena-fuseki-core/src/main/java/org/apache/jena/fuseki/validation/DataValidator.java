@@ -33,6 +33,8 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 
 public class DataValidator extends ValidatorBaseJson {
+    private static final long serialVersionUID = -7052864052858485344L;
+
     public DataValidator() { }
   
     static final String jInput           = "input" ;

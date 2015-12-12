@@ -48,6 +48,8 @@ import org.apache.jena.riot.web.HttpNames ;
  */
 public abstract class SPARQL_UberServlet extends ActionSPARQL
 {
+    private static final long serialVersionUID = -491895535163680509L;
+
     protected abstract boolean allowQuery(HttpAction action) ;
     protected abstract boolean allowUpdate(HttpAction action) ;
     protected abstract boolean allowREST_R(HttpAction action) ;
@@ -57,6 +59,8 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     
     public static class ReadOnly extends SPARQL_UberServlet
     {
+        private static final long serialVersionUID = -3486969173228213955L;
+
         public ReadOnly()    { super() ; }
         @Override protected boolean allowQuery(HttpAction action)    { return true ; }
         @Override protected boolean allowUpdate(HttpAction action)   { return false ; }
@@ -68,6 +72,8 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
 
     public static class ReadWrite extends SPARQL_UberServlet
     {
+        private static final long serialVersionUID = 1383389566691599382L;
+
         public ReadWrite()    { super() ; }
         @Override protected boolean allowQuery(HttpAction action)    { return true ; }
         @Override protected boolean allowUpdate(HttpAction action)   { return true ; }
@@ -79,6 +85,8 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
 
     public static class AccessByConfig extends SPARQL_UberServlet
     {
+        private static final long serialVersionUID = 5078964040391977778L;
+
         public AccessByConfig()    { super() ; }
         @Override protected boolean allowQuery(HttpAction action)    { return isEnabled(action, OperationName.Query) ; }
         @Override protected boolean allowUpdate(HttpAction action)   { return isEnabled(action, OperationName.Update) ; }

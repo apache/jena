@@ -51,6 +51,8 @@ import org.apache.jena.web.HttpSC ;
 
 public class SPARQL_Upload extends ActionSPARQL 
 {
+    private static final long serialVersionUID = -8762461819710807201L;
+
     public SPARQL_Upload() {
         super() ;
     }
@@ -182,7 +184,7 @@ public class SPARQL_Upload extends ActionSPARQL
     // ?? Combine with Upload.fileUploadWorker
     // Difference is the handling of names for graphs.  
     static private UploadDetails uploadWorker(HttpAction action, String base) {
-        DatasetGraph dsgTmp = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsgTmp = DatasetGraphFactory.createGeneral() ;
         ServletFileUpload upload = new ServletFileUpload() ;
         String graphName = null ;
         boolean isQuads = false ;

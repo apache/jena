@@ -26,6 +26,8 @@ package org.apache.jena.fuseki.servlets ;
 
 public abstract class REST_Quads extends SPARQL_GSP
 {
+    private static final long serialVersionUID = 5366276922758465169L;
+
     public REST_Quads() {
         super() ;
     }

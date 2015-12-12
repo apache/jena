@@ -45,6 +45,9 @@ import jena.cmd.CmdException ;
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModDatasetAssembler ;
 
+/**
+ * Handles the fuseki command, used to start a Fuseki server.
+ */
 public class FusekiCmd {
     // This allows us to set logging before calling FusekiCmdInner
     // FusekiCmdInner inherits from CmdMain which statically sets logging.
@@ -232,7 +235,7 @@ public class FusekiCmd {
 
                 // Directly populate the dataset.
                 cmdLineConfig.reset();
-                cmdLineConfig.dsg = DatasetGraphFactory.createMem() ;
+                cmdLineConfig.dsg = DatasetGraphFactory.createGeneral() ;
 
                 // INITIAL DATA.
                 Lang language = RDFLanguages.filenameToLang(filename) ;
