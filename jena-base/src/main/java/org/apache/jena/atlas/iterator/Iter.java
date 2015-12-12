@@ -644,6 +644,14 @@ public class Iter<T> implements Iterator<T> {
         return iter(iter1).append(iter(iter2)) ;
     }
 
+    /** Return the first element of an iterator or null if no such element.
+     * @param iter
+     * @return An item or null.
+     */
+    public static <T> T first(Iterator<T> iter) {
+        return first(iter, (x)-> true ) ;
+    }
+
     /** Skip to the first element meeting a condition and return that element. */   
     public static <T> T first(Iterator<T> iter, Predicate<T> filter) {
         while (iter.hasNext()) {
@@ -676,7 +684,12 @@ public class Iter<T> implements Iterator<T> {
         return firstIndex(collection.iterator(), filter) ;
     }
 
-    /** Return the last element satisfying a predicate. This operation destroys the whole iterator. */
+    /** Return the last element or null, if no elements. This operation consumes the iterator. */
+    public static <T> T last(Iterator<T> iter) {
+        return last(iter, (x)->true) ;
+    }
+
+    /** Return the last element satisfying a predicate. This operation consumes the whole iterator. */
     public static <T> T last(Iterator<T> iter, Predicate<T> filter) {
         T thing = null ;
         while (iter.hasNext()) {
@@ -733,6 +746,14 @@ public class Iter<T> implements Iterator<T> {
         sendToSink(iterator, sink) ;
     }
 
+    public T first() {
+        return first(iterator) ;
+    }
+
+    public T last() {
+        return last(iterator) ;
+    }
+    
     /** Skip to the first element meeting a condition and return that element. */   
     public T first(Predicate<T> filter) {
         return first(iterator, filter) ;

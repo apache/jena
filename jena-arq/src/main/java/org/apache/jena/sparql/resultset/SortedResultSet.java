@@ -39,9 +39,11 @@ import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 
 
-/** Sort a result set. */
-
-public class SortedResultSet implements ResultSet
+/** Sort a result set.
+ * @deprecated Unused - will be deleted.
+ */
+@Deprecated
+/*package*/ abstract class SortedResultSet implements ResultSet
 {
     // See also QueryIterSort
     // This class processes ResultSet's (which may not come from a query)
@@ -55,7 +57,7 @@ public class SortedResultSet implements ResultSet
     Model model ;
     
     // Caution: this does not have the ful context available so soem conditions 
-    public SortedResultSet(ResultSet rs, List<SortCondition> conditions)
+    private SortedResultSet(ResultSet rs, List<SortCondition> conditions)
     {
         // Caution: this does not have the ful context available so some conditions may get upset. 
         this(rs, new BindingComparator(conditions)) ;

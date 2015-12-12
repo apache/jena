@@ -18,40 +18,37 @@
 
 package org.apache.jena.sparql.resultset;
 
+import static org.apache.jena.sparql.resultset.JSONResultsKW.*;
 
-import static org.apache.jena.sparql.resultset.JSONResultsKW.* ;
+import java.io.OutputStream;
 
-import java.io.OutputStream ;
-
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.json.io.JSWriter ;
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.json.io.JSWriter;
 
 /** JSON Output (ASK format) */
 
-public class JSONOutputASK
-{
-    private OutputStream outStream ;
-    
+public class JSONOutputASK {
+    private OutputStream outStream;
+
     public JSONOutputASK(OutputStream outStream) {
         this.outStream = outStream;
-        
+
     }
 
-    public void exec(boolean result)
-    {
-        JSWriter out = new JSWriter(outStream) ;
-        
-        out.startOutput() ;
+    public void exec(boolean result) {
+        JSWriter out = new JSWriter(outStream);
 
-        out.startObject() ;
-        out.key(kHead) ;
-        out.startObject() ;
-        out.finishObject() ;
-        out.pair(kBoolean, result) ;
-        out.finishObject() ;
-        
-        out.finishOutput() ;
+        out.startOutput();
 
-        IO.flush(outStream) ;
+        out.startObject();
+        out.key(kHead);
+        out.startObject();
+        out.finishObject();
+        out.pair(kBoolean, result);
+        out.finishObject();
+
+        out.finishOutput();
+
+        IO.flush(outStream);
     }
 }

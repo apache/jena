@@ -23,5 +23,5 @@ package org.apache.jena.sparql.core.mem;
  *
  */
 public enum TupleSlot {
-	GRAPH, SUBJECT, PREDICATE, OBJECT;
+    GRAPH, SUBJECT, PREDICATE, OBJECT;
 }

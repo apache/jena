@@ -27,126 +27,137 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.BindingMap;
 
 /**
- * The class "ResultSet" is reserved for the SELECT result format.
- * This class can hold a ResultSet, a boolean or a Model.
+ * The class "ResultSet" is reserved for the SELECT result format. This class
+ * can hold a ResultSet, a boolean or a Model.
  */
 
-public class SPARQLResult
-{
-    private boolean hasBeenSet = false ;
-    
-    private ResultSet resultSet = null ;
-    private Boolean booleanResult = null ;
-    private Model model = null ;
-    private Dataset dataset = null ;
-    
+public class SPARQLResult {
+    private boolean   hasBeenSet    = false;
+
+    private ResultSet resultSet     = null;
+    private Boolean   booleanResult = null;
+    private Model     model         = null;
+    private Dataset   dataset       = null;
+
     // Delayed choice of result type.
     protected SPARQLResult() {}
-    
-    public SPARQLResult(Model model)            { set(model) ; }
-    public SPARQLResult(ResultSet resultSet)    { set(resultSet) ;}
-    public SPARQLResult(boolean booleanResult)  { set(booleanResult) ; }
-    public SPARQLResult(Dataset dataset)        { set(dataset) ; }
-    
-    public boolean isResultSet()
-    {
-        if ( ! hasBeenSet )
-            throw new ResultSetException("Not set") ;
-        return resultSet != null ;
+
+    public SPARQLResult(Model model) {
+        set(model);
     }
-    
+
+    public SPARQLResult(ResultSet resultSet) {
+        set(resultSet);
+    }
+
+    public SPARQLResult(boolean booleanResult) {
+        set(booleanResult);
+    }
+
+    public SPARQLResult(Dataset dataset) {
+        set(dataset);
+    }
+
+    public boolean isResultSet() {
+        if ( !hasBeenSet )
+            throw new ResultSetException("Not set");
+        return resultSet != null;
+    }
+
     /** Synonym for isGraph */
-    public boolean isModel() { return isGraph() ; }
-
-    public boolean isGraph()
-    {
-        if ( ! hasBeenSet )
-            throw new ResultSetException("Not set") ;
-        return model != null ;
-    }
-    
-    public boolean isDataset()
-    {
-        if ( ! hasBeenSet )
-            throw new ResultSetException("Not set") ;
-        return dataset != null ;
+    public boolean isModel() {
+        return isGraph();
     }
 
-    public boolean isBoolean()
-    {
-        if ( ! hasBeenSet )
-            throw new ResultSetException("Not set") ;
-        return booleanResult != null ;
+    public boolean isGraph() {
+        if ( !hasBeenSet )
+            throw new ResultSetException("Not set");
+        return model != null;
     }
 
-    
-    public ResultSet getResultSet()
-    {
-        if ( ! hasBeenSet )
-            throw new ResultSetException("Not set") ;
-        if ( ! isResultSet() )
-            throw new ResultSetException("Not a ResultSet result") ;
-        return resultSet ;
+    public boolean isDataset() {
+        if ( !hasBeenSet )
+            throw new ResultSetException("Not set");
+        return dataset != null;
     }
 
-    public boolean getBooleanResult()
-    {
-        if ( ! hasBeenSet )
-            throw new ResultSetException("Not set") ;
-        if ( ! isBoolean() )
-            throw new ResultSetException("Not a boolean result") ;
+    public boolean isBoolean() {
+        if ( !hasBeenSet )
+            throw new ResultSetException("Not set");
+        return booleanResult != null;
+    }
+
+    public ResultSet getResultSet() {
+        if ( !hasBeenSet )
+            throw new ResultSetException("Not set");
+        if ( !isResultSet() )
+            throw new ResultSetException("Not a ResultSet result");
+        return resultSet;
+    }
+
+    public boolean getBooleanResult() {
+        if ( !hasBeenSet )
+            throw new ResultSetException("Not set");
+        if ( !isBoolean() )
+            throw new ResultSetException("Not a boolean result");
         return booleanResult;
     }
 
-    public Model getModel() { 
-        if ( ! hasBeenSet )
-            throw new ResultSetException("Not set") ;
-        if ( ! isModel() )
-            throw new ResultSetException("Not a graph result") ;
-        return model ;
-    }
-    
-    public Dataset getDataset() { 
-        if ( ! hasBeenSet )
-            throw new ResultSetException("Not set") ;
-        if ( ! isDataset() )
-            throw new ResultSetException("Not a dataset result") ;
-        return dataset ;
-    }
-    
-    public boolean isHasBeenSet() { return hasBeenSet; }
-    
-    protected void set(ResultSet rs)
-    { 
-        resultSet = rs ;
-        hasBeenSet = true ;
+    public Model getModel() {
+        if ( !hasBeenSet )
+            throw new ResultSetException("Not set");
+        if ( !isModel() )
+            throw new ResultSetException("Not a graph result");
+        return model;
     }
 
-    protected void set(Model m)
-    { model = m ; hasBeenSet = true ; }
-    
-    protected void set(Dataset d)
-    { dataset = d ; hasBeenSet = true ; }
-    
-    protected void set(boolean r)
-    { set (new Boolean(r)) ; } 
-    
-    protected void set(Boolean r)
-    { booleanResult  = r ;  hasBeenSet = true ; }
-    
-    static protected void addBinding(BindingMap binding, Var var, Node value)
-    {
-        Node n = binding.get(var) ;
-        if ( n != null )
-        {
+    public Dataset getDataset() {
+        if ( !hasBeenSet )
+            throw new ResultSetException("Not set");
+        if ( !isDataset() )
+            throw new ResultSetException("Not a dataset result");
+        return dataset;
+    }
+
+    public boolean isHasBeenSet() {
+        return hasBeenSet;
+    }
+
+    protected void set(ResultSet rs) {
+        resultSet = rs;
+        hasBeenSet = true;
+    }
+
+    protected void set(Model m) {
+        model = m;
+        hasBeenSet = true;
+    }
+
+    protected void set(Dataset d) {
+        dataset = d;
+        hasBeenSet = true;
+    }
+
+    protected void set(boolean r) {
+        set(new Boolean(r));
+    }
+
+    protected void set(Boolean r) {
+        booleanResult = r;
+        hasBeenSet = true;
+    }
+
+    static protected void addBinding(BindingMap binding, Var var, Node value) {
+        Node n = binding.get(var);
+        if ( n != null ) {
             // Same - silently skip.
             if ( n.equals(value) )
-                return ;
-            Log.warn(SPARQLResult.class, 
-                     String.format("Multiple occurences of a binding for variable '%s' with different values - ignored", var.getName())) ;
-            return ;
+                return;
+            Log.warn(SPARQLResult.class,
+                     String.format("Multiple occurences of a binding for variable '%s' with different values - ignored", var.getName()));
+            return;
         }
-        binding.add(var, value) ;
+        binding.add(var, value);
     }
-    
+
 }

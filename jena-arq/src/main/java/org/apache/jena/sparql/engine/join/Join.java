@@ -77,10 +77,6 @@ public class Join {
         return hashLeftJoin(left, right, conditions, execCxt) ;
     }
 
-    /* Debug.
-     * Print inputs and outputs.
-     * This involves materializing the iterators.   
-     */
     interface JoinOp { 
         public QueryIterator exec(QueryIterator left, QueryIterator right) ;
     }
@@ -213,6 +209,10 @@ public class Join {
         return conditions.isSatisfied(row, execCxt) ;
     }
 
+    /* Debug.
+     * Print inputs and outputs.
+     * This involves materializing the iterators.   
+     */
     private static QueryIterator debug(QueryIterator left, QueryIterator right, ExecutionContext execCxt, JoinOp action) {
             Table t1 = TableFactory.create(left) ;
             Table t2 = TableFactory.create(right) ;

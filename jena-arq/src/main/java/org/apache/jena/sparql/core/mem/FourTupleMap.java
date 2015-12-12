@@ -30,62 +30,62 @@ import com.github.andrewoma.dexx.collection.Map;
  */
 public class FourTupleMap extends PMap<Node, ThreeTupleMap, FourTupleMap> {
 
-	private FourTupleMap(final com.github.andrewoma.dexx.collection.Map<Node, ThreeTupleMap> wrappedMap) {
-		super(wrappedMap);
-	}
+    private FourTupleMap(final com.github.andrewoma.dexx.collection.Map<Node, ThreeTupleMap> wrappedMap) {
+        super(wrappedMap);
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public FourTupleMap() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public FourTupleMap() {
+        super();
+    }
 
-	@Override
-	protected FourTupleMap wrap(final Map<Node, ThreeTupleMap> wrappedMap) {
-		return new FourTupleMap(wrappedMap);
-	}
+    @Override
+    protected FourTupleMap wrap(final Map<Node, ThreeTupleMap> wrappedMap) {
+        return new FourTupleMap(wrappedMap);
+    }
 
-	/**
-	 * A {@link PMap} of {@link Node}s: {@code Node->Node->PersistentSet<Node>}
-	 */
-	public static class ThreeTupleMap extends PMap<Node, TwoTupleMap, ThreeTupleMap> {
-		private ThreeTupleMap(final com.github.andrewoma.dexx.collection.Map<Node, TwoTupleMap> wrappedMap) {
-			super(wrappedMap);
-		}
+    /**
+     * A {@link PMap} of {@link Node}s: {@code Node->Node->PersistentSet<Node>}
+     */
+    public static class ThreeTupleMap extends PMap<Node, TwoTupleMap, ThreeTupleMap> {
+        private ThreeTupleMap(final com.github.andrewoma.dexx.collection.Map<Node, TwoTupleMap> wrappedMap) {
+            super(wrappedMap);
+        }
 
-		/**
-		 * Default constructor.
-		 */
-		public ThreeTupleMap() {
-			super();
-		}
+        /**
+         * Default constructor.
+         */
+        public ThreeTupleMap() {
+            super();
+        }
 
-		@Override
-		protected ThreeTupleMap wrap(final Map<Node, TwoTupleMap> wrappedMap) {
-			return new ThreeTupleMap(wrappedMap);
-		}
-	}
+        @Override
+        protected ThreeTupleMap wrap(final Map<Node, TwoTupleMap> wrappedMap) {
+            return new ThreeTupleMap(wrappedMap);
+        }
+    }
 
-	/**
-	 * A {@link PMap} of {@link Node}s: {@code Node->PersistentSet<Node>}
-	 */
-	public static class TwoTupleMap extends PMap<Node, PersistentSet<Node>, TwoTupleMap> {
+    /**
+     * A {@link PMap} of {@link Node}s: {@code Node->PersistentSet<Node>}
+     */
+    public static class TwoTupleMap extends PMap<Node, PersistentSet<Node>, TwoTupleMap> {
 
-		private TwoTupleMap(final com.github.andrewoma.dexx.collection.Map<Node, PersistentSet<Node>> wrappedMap) {
-			super(wrappedMap);
-		}
+        private TwoTupleMap(final com.github.andrewoma.dexx.collection.Map<Node, PersistentSet<Node>> wrappedMap) {
+            super(wrappedMap);
+        }
 
-		/**
-		 * Default constructor.
-		 */
-		public TwoTupleMap() {
-			super();
-		}
+        /**
+         * Default constructor.
+         */
+        public TwoTupleMap() {
+            super();
+        }
 
-		@Override
-		protected TwoTupleMap wrap(final Map<Node, PersistentSet<Node>> wrappedMap) {
-			return new TwoTupleMap(wrappedMap);
-		}
-	}
+        @Override
+        protected TwoTupleMap wrap(final Map<Node, PersistentSet<Node>> wrappedMap) {
+            return new TwoTupleMap(wrappedMap);
+        }
+    }
 }

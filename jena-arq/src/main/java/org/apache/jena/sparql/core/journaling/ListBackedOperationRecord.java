@@ -31,43 +31,43 @@ import org.apache.jena.sparql.core.journaling.Operation.InvertibleOperation;
  * @param <OpType> the type of {@link Operation} contained in this record
  */
 public class ListBackedOperationRecord<OpType extends InvertibleOperation<?, ?, ?, ?>>
-		implements ReversibleOperationRecord<OpType> {
+implements ReversibleOperationRecord<OpType> {
 
-	/**
-	 * A {@link List} into which we will record operations. The iterator of this list _must_ implement {@link Iterator#remove()}
-	 * for {@link #consume(Consumer)} to operate correctly!
-	 */
-	private final List<OpType> operations;
+    /**
+     * A {@link List} into which we will record operations. The iterator of this list _must_ implement {@link Iterator#remove()}
+     * for {@link #consume(Consumer)} to operate correctly!
+     */
+    private final List<OpType> operations;
 
-	/**
-	 * @param ops a list into which we will record operations. The iterator of this list _must_ implement
-	 *        {@link Iterator#remove()} for {@link #consume(Consumer)} to operate correctly!
-	 */
-	public ListBackedOperationRecord(final List<OpType> ops) {
-		operations = ops;
-	}
+    /**
+     * @param ops a list into which we will record operations. The iterator of this list _must_ implement
+     *        {@link Iterator#remove()} for {@link #consume(Consumer)} to operate correctly!
+     */
+    public ListBackedOperationRecord(final List<OpType> ops) {
+        operations = ops;
+    }
 
-	@Override
-	public void accept(final OpType op) {
-		operations.add(op);
-	}
+    @Override
+    public void accept(final OpType op) {
+        operations.add(op);
+    }
 
-	@Override
-	public ListBackedOperationRecord<OpType> reverse() {
-		return new ListBackedOperationRecord<>(Lists.reverse(operations));
-	}
+    @Override
+    public ListBackedOperationRecord<OpType> reverse() {
+        return new ListBackedOperationRecord<>(Lists.reverse(operations));
+    }
 
-	@Override
-	public void consume(final Consumer<OpType> consumer) {
-		final Iterator<OpType> i = operations.iterator();
-		while (i.hasNext()) {
-			consumer.accept(i.next());
-			i.remove();
-		}
-	}
+    @Override
+    public void consume(final Consumer<OpType> consumer) {
+        final Iterator<OpType> i = operations.iterator();
+        while (i.hasNext()) {
+            consumer.accept(i.next());
+            i.remove();
+        }
+    }
 
-	@Override
-	public void clear() {
-		operations.clear();
-	}
+    @Override
+    public void clear() {
+        operations.clear();
+    }
 }

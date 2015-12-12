@@ -29,27 +29,27 @@ public class XMLOutput extends OutputBase
     boolean includeXMLinst = true ;
     
     public XMLOutput() {}
-    public XMLOutput(String stylesheetURL)
-    { setStylesheetURL(stylesheetURL) ; }
 
-    public XMLOutput(boolean includeXMLinst)
-    { setIncludeXMLinst(includeXMLinst) ; }
-    
-    public XMLOutput(boolean includeXMLinst, String stylesheetURL)
-    { 
-        setStylesheetURL(stylesheetURL) ; 
-        setIncludeXMLinst(includeXMLinst) ;
+    public XMLOutput(String stylesheetURL) {
+        setStylesheetURL(stylesheetURL);
     }
 
+    public XMLOutput(boolean includeXMLinst) {
+        setIncludeXMLinst(includeXMLinst);
+    }
     
+    public XMLOutput(boolean includeXMLinst, String stylesheetURL) {
+        setStylesheetURL(stylesheetURL);
+        setIncludeXMLinst(includeXMLinst);
+    }
+
     @Override
-    public void format(OutputStream out, ResultSet resultSet)
-    {
-        XMLOutputResultSet xOut =  new XMLOutputResultSet(out) ;
-        xOut.setStylesheetURL(stylesheetURL) ;
-        xOut.setXmlInst(includeXMLinst) ;
-        ResultSetApply a = new ResultSetApply(resultSet, xOut) ;
-        a.apply() ;
+    public void format(OutputStream out, ResultSet resultSet) {
+        XMLOutputResultSet xOut = new XMLOutputResultSet(out);
+        xOut.setStylesheetURL(stylesheetURL);
+        xOut.setXmlInst(includeXMLinst);
+        ResultSetApply a = new ResultSetApply(resultSet, xOut);
+        a.apply();
     }
 
     /** @return Returns the includeXMLinst. */
@@ -69,9 +69,8 @@ public class XMLOutput extends OutputBase
     { this.stylesheetURL = stylesheetURL ; }
     
     @Override
-    public void format(OutputStream out, boolean booleanResult)
-    {
-        XMLOutputASK xOut = new XMLOutputASK(out) ;
-        xOut.exec(booleanResult) ;
+    public void format(OutputStream out, boolean booleanResult) {
+        XMLOutputASK xOut = new XMLOutputASK(out);
+        xOut.exec(booleanResult);
     }
 }

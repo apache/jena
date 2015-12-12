@@ -43,7 +43,7 @@ public class SpatialDatasetFactory
     {
         DatasetGraph dsg = base.asDatasetGraph() ;
         dsg = create(dsg, textIndex) ;
-        return DatasetFactory.create(dsg) ;
+        return DatasetFactory.wrap(dsg) ;
     }
 
 

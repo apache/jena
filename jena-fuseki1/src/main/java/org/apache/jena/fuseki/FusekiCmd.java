@@ -253,11 +253,11 @@ public class FusekiCmd extends CmdARQ
         if ( contains(argMem) )
         {
             log.info("Dataset: in-memory") ;
-            dsg = DatasetGraphFactory.createMem() ;
+            dsg = DatasetGraphFactory.create() ;
         }
         if ( contains(argFile) )
         {
-            dsg = DatasetGraphFactory.createMem() ;
+            dsg = DatasetGraphFactory.create() ;
             // replace by RiotLoader after ARQ refresh.
             String filename = getValue(argFile) ;
             log.info("Dataset: in-memory: load file: "+filename) ;

@@ -45,41 +45,38 @@ public class TSVInput {
 	 * Reads SPARQL Results from TSV format into a {@link ResultSet} instance
 	 * @param in Input Stream
 	 */
-    public static ResultSet fromTSV(InputStream in)
-    {
-    	BufferedReader reader = IO.asBufferedUTF8(in);
+    public static ResultSet fromTSV(InputStream in) {
+        BufferedReader reader = IO.asBufferedUTF8(in);
         List<Var> vars = new ArrayList<>();
         List<String> varNames = new ArrayList<>();
 
-    	String str = null;
-        try 
-        {
-        	//Here we try to parse only the Header Row
-        	str = reader.readLine();
-        	if (str == null ) 
-        	    throw new ARQException("TSV Results malformed, input is empty (no header row)") ;
-        	if ( ! str.isEmpty() )
-        	{
-        	    String[] tokens = pattern.split(str,-1);
-        	    for ( String token : tokens ) 
-        	    {
-        	        Node v ;
-        	        try {
-        	            v = NodeFactoryExtra.parseNode(token) ;
-        	            if ( v == null || ! v.isVariable())
-        	                throw new ResultSetException("TSV Results malformed, not a variable: "+token);
-        	        } catch (RiotException ex)
-        	        { throw new ResultSetException("TSV Results malformed, variable names must begin with a ? in the header: "+token); }
+        String str = null;
+        try {
+            // Here we try to parse only the Header Row
+            str = reader.readLine();
+            if ( str == null )
+                throw new ARQException("TSV Results malformed, input is empty (no header row)");
+            if ( !str.isEmpty() ) {
+                String[] tokens = pattern.split(str, -1);
+                for ( String token : tokens ) {
+                    Node v;
+                    try {
+                        v = NodeFactoryExtra.parseNode(token);
+                        if ( v == null || !v.isVariable() )
+                            throw new ResultSetException("TSV Results malformed, not a variable: " + token);
+                    }
+                    catch (RiotException ex) {
+                        throw new ResultSetException("TSV Results malformed, variable names must begin with a ? in the header: " + token);
+                    }
 
-        	        Var var = Var.alloc(v);
-        	        vars.add(var);
-        	        varNames.add(var.getName());
-            	}
-        	}
-        } 
-        catch ( IOException ex )
-        {
-        	throw new ARQException(ex) ;
+                    Var var = Var.alloc(v);
+                    vars.add(var);
+                    varNames.add(var.getName());
+                }
+            }
+        }
+        catch (IOException ex) {
+            throw new ARQException(ex);
         }
 
         //Generate an instance of ResultSetStream using TSVInputIterator
@@ -92,36 +89,36 @@ public class TSVInput {
      * @param in Input Stream
      * @return boolean
      */
-    public static boolean booleanFromTSV(InputStream in)
-    {
-    	BufferedReader reader = IO.asBufferedUTF8(in);
-    	String str = null;
-    	try
-    	{
-    		//First try to parse the header
-    		str = reader.readLine();
-    		if (str == null) throw new ARQException("TSV Boolean Results malformed, input is empty");
-    		str = str.trim(); //Remove extraneous white space
-    		
-    		//Expect a header row with single ?_askResult variable
-    		if (!str.equals("?_askResult")) throw new ARQException("TSV Boolean Results malformed, did not get expected ?_askResult header row");
-    		
-    		//Then try to parse the boolean result
-    		str = reader.readLine();
-    		if (str == null) throw new ARQException("TSV Boolean Results malformed, unexpected end of input after header row");
-    		str = str.trim();
-    		
-    		if (str.equalsIgnoreCase("true") || str.equalsIgnoreCase("yes")) {
-    			return true;
-    		} else if (str.equalsIgnoreCase("false") || str.equalsIgnoreCase("no")) {
-    			return false;
-    		} else {
-    			throw new ARQException("TSV Boolean Results malformed, expected one of - true yes false no - but got " + str);
-    		}
-    	}
-    	catch (IOException ex)
-    	{
-    		throw new ARQException(ex);
-    	}
+    public static boolean booleanFromTSV(InputStream in) {
+        BufferedReader reader = IO.asBufferedUTF8(in);
+        String str = null;
+        try {
+            // First try to parse the header
+            str = reader.readLine();
+            if ( str == null )
+                throw new ARQException("TSV Boolean Results malformed, input is empty");
+            str = str.trim(); // Remove extraneous white space
+
+            // Expect a header row with single ?_askResult variable
+            if ( !str.equals("?_askResult") )
+                throw new ARQException("TSV Boolean Results malformed, did not get expected ?_askResult header row");
+
+            // Then try to parse the boolean result
+            str = reader.readLine();
+            if ( str == null )
+                throw new ARQException("TSV Boolean Results malformed, unexpected end of input after header row");
+            str = str.trim();
+
+            if ( str.equalsIgnoreCase("true") || str.equalsIgnoreCase("yes") ) {
+                return true;
+            } else if ( str.equalsIgnoreCase("false") || str.equalsIgnoreCase("no") ) {
+                return false;
+            } else {
+                throw new ARQException("TSV Boolean Results malformed, expected one of - true yes false no - but got " + str);
+            }
+        }
+        catch (IOException ex) {
+            throw new ARQException(ex);
+        }
     }
  }

@@ -27,14 +27,21 @@ import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import static java.lang.ThreadLocal.withInitial ;
 
 /**
- * Transactional DatasetGraph that allows one active transaction. For multiple
- * read transactions, create multiple DatasetGraphTransaction objects. This is
- * analogous to a "connection" in JDBC.
+ * A transactional {@code DatasetGraph} that allows one active transaction per thread.
+ * 
+ * {@link DatasetGraphTxn} holds the {~link Trasnaction} object.
+ *
+ * This is analogous to a "connection" in JDBC. 
+ * It is a holder of a {@link StoreConnection} combined with the machinary from
+ * {@link DatasetGraphTrackActive}.  
+ * 
+ * Not considered to be in the public API.
  */
 
-public class DatasetGraphTransaction extends DatasetGraphTrackActive implements Sync {
+ public class DatasetGraphTransaction extends DatasetGraphTrackActive implements Sync {
     /*
      * Initially, the app can use this DatasetGraph non-transactionally. But as
      * soon as it starts a transaction, the dataset can only be used inside
@@ -46,28 +53,12 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive implements 
      * transactions.
      */
 
-    static class ThreadLocalTxn extends ThreadLocal<DatasetGraphTxn> {
-        // This is the default - but nice to give it a name and to set it
-        // clearly.
-        @Override
-        protected DatasetGraphTxn initialValue() {
-            return null ;
-        }
-    }
-
-    static class ThreadLocalBoolean extends ThreadLocal<Boolean> {
-        @Override
-        protected Boolean initialValue() {
-            return false ;
-        }
-    }
-
     // Transaction per thread per DatasetGraphTransaction object.
-    private ThreadLocalTxn        txn           = new ThreadLocalTxn() ;
-    private ThreadLocalBoolean    inTransaction = new ThreadLocalBoolean() ;
+    private ThreadLocal<DatasetGraphTxn> txn           = withInitial(() -> null);
+    private ThreadLocal<Boolean>         inTransaction = withInitial(() -> false);
 
-    private final StoreConnection sConn ;
-    private boolean               isClosed      = false ;
+    private final StoreConnection        sConn;
+    private boolean                      isClosed      = false;
 
     public DatasetGraphTransaction(Location location) {
         sConn = StoreConnection.make(location) ;

@@ -24,6 +24,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.syntax.ElementGroup;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -166,6 +167,8 @@ public class SelectHandlerTest extends AbstractHandlerTest {
 		sh.setDistinct(true);
 
 		handler.addAll(sh);
+		// make sure warning does not fire.
+		query.setQueryPattern( new ElementGroup() );
 		assertTrue(query.isDistinct());
 		assertFalse(query.isQueryResultStar());
 		assertEquals(1, query.getResultVars().size());

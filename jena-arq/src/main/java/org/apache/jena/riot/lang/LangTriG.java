@@ -78,7 +78,7 @@ public class LangTriG extends LangTurtleBase {
         // () :p :o .
         // (1 2) :p :o .
 
-        // XXX Find the Turtle code to do this for the Trutle case and refactor.
+        // XXX Find the Turtle code to do this for the Turtle case and refactor.
         
         if ( lookingAt(LBRACKET) ) {
             nextToken() ;

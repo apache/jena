@@ -19,7 +19,9 @@
 package org.apache.jena.sparql.core.assembler;
 
 import static java.nio.file.Files.createTempFile;
-import static org.apache.jena.assembler.JA.*;
+import static org.apache.jena.assembler.JA.MemoryDataset ;
+import static org.apache.jena.assembler.JA.MemoryModel ;
+import static org.apache.jena.assembler.JA.data ;
 import static org.apache.jena.assembler.Mode.DEFAULT;
 import static org.apache.jena.query.DatasetFactory.createTxnMem;
 import static org.apache.jena.rdf.model.ModelFactory.createDefaultModel;
@@ -36,6 +38,7 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Iterator;
 
+import org.apache.jena.assembler.JA ;
 import org.apache.jena.assembler.exceptions.CannotConstructException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
@@ -53,12 +56,22 @@ import org.junit.Test;
  */
 public class TestInMemDatasetAssembler extends Assert {
 
-	/**
-	 * @param example
-	 */
-	private Dataset assemble(final Resource example) {
-		final InMemDatasetAssembler testAssembler = new InMemDatasetAssembler();
+    private Dataset assemble(final Resource example) {
+	    Model model = example.getModel() ;
+	    model.setNsPrefix("ja", JA.getURI()) ;
+//	    System.out.println("-------------");
+//	    RDFDataMgr.write(System.out, model, Lang.TTL) ;
+	    final InMemDatasetAssembler testAssembler = new InMemDatasetAssembler();
 		return testAssembler.open(testAssembler, example, DEFAULT);
+	}
+	
+	@Test
+	public void emptyDataset() {
+	    final Model model = createDefaultModel();
+	    final Resource empty = model.createResource("test:empty");
+	    empty.addProperty(type, MemoryDataset);
+	    Dataset dataset = assemble(empty) ;
+	    assertFalse(dataset.asDatasetGraph().find().hasNext()) ;
 	}
 
 	@Test
@@ -129,12 +142,5 @@ public class TestInMemDatasetAssembler extends Assert {
 		final Model model = createDefaultModel();
 		final Resource badExample = model.createResource("test:badExample");
 		assemble(badExample);
-	}
-
-	public void emptyDataset() {
-		final Model model = createDefaultModel();
-		final Resource empty = model.createResource("test:empty");
-		empty.addProperty(type, MemoryDataset);
-		assertTrue(assemble(empty).asDatasetGraph().isEmpty());
 	}
 }

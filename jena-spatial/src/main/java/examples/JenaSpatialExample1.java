@@ -115,7 +115,7 @@ public class JenaSpatialExample1 {
 	
 	private static Dataset createDatasetByCode(File indexDir) throws IOException {
 		// Base data
-		Dataset ds1 = DatasetFactory.createMem();
+		Dataset ds1 = DatasetFactory.create();
 		return joinDataset(ds1, indexDir);
 	}
 	

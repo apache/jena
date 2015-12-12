@@ -17,6 +17,6 @@
  */
 
 /**
- * Types to support efficient in-memory dataset operations
+ * In-memory, transactional dataset
  */
 package org.apache.jena.sparql.core.mem;

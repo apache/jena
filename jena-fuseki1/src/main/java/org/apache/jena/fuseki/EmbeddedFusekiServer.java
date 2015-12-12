@@ -42,7 +42,7 @@ public class EmbeddedFusekiServer
 {
     
     public static EmbeddedFusekiServer mem(int port, String datasetPath) {
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         return EmbeddedFusekiServer.create(port, dsg, datasetPath) ;
     }
     

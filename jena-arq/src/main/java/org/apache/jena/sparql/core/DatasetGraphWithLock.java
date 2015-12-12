@@ -136,8 +136,8 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
         if ( isInTransaction() ) {
             if ( dsChanges != null )
                 dsChanges.finish();
-            get().getLock().leaveCriticalSection() ;
             clearState() ;
+            get().getLock().leaveCriticalSection() ;
         }
     }
 

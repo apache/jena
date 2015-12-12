@@ -33,7 +33,7 @@ public class TDBMaker
     // This hides details from the top level TDB Factory (e.g. for testing)
 
     /** Create a DatasetGraph that supports transactions */
-    public static DatasetGraphTransaction createDatasetGraphTransaction(String location) {
+    static DatasetGraphTransaction createDatasetGraphTransaction(String location) {
         return createDatasetGraphTransaction(Location.create(location)) ;
     }
 

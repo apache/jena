@@ -131,23 +131,23 @@ public class QueryEngineSDB extends QueryEngineBase
             QueryIterator qIter = QC.execute(op, input, execCxt) ;  // OpExecutor from main query engine.
             qIter = QueryIteratorCheck.check(qIter, execCxt) ;
             return qIter ;
-          }
-          // Direct.
-          OpSQL opSQL = (OpSQL)op ;
-          QueryIterator qIter ;
-          if ( opSQL.getSqlNode() == null )
-          {
-              // Empty BGP, nothing else.
-              // Just return the answer.
-              if ( binding != null && binding.size() != 0 )
-                  qIter = QueryIterSingleton.create(binding, execCxt) ;
-              else
-                  qIter = QueryIterRoot.create(execCxt) ;
-          }
-          else
-              qIter = opSQL.exec(binding, execCxt) ;
-          qIter = QueryIteratorCheck.check(qIter, execCxt) ;
-          return qIter ;
+        }
+        // Direct.
+        OpSQL opSQL = (OpSQL)op ;
+        QueryIterator qIter ;
+        if ( opSQL.getSqlNode() == null )
+        {
+            // Empty BGP, nothing else.
+            // Just return the answer.
+            if ( binding != null && binding.size() != 0 )
+                qIter = QueryIterSingleton.create(binding, execCxt) ;
+            else
+                qIter = QueryIterRoot.create(execCxt) ;
+        }
+        else
+            qIter = opSQL.exec(binding, execCxt) ;
+        qIter = QueryIteratorCheck.check(qIter, execCxt) ;
+        return qIter ;
     }
     
     // -------- Factory

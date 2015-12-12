@@ -59,7 +59,7 @@ public class TestLuceneWithMultipleThreads
     public void testReadInMiddleOfWrite() throws InterruptedException, ExecutionException
     {
         final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(new GraphStoreNullTransactional(), new RAMDirectory(), new TextIndexConfig(entDef));
-        final Dataset ds = DatasetFactory.create(dsg);
+        final Dataset ds = DatasetFactory.wrap(dsg);
         final ExecutorService execService = Executors.newSingleThreadExecutor();
         final Future<?> f = execService.submit(new Runnable()
         {
@@ -116,7 +116,7 @@ public class TestLuceneWithMultipleThreads
     {
         final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(new GraphStoreNullTransactional(), new RAMDirectory(), new TextIndexConfig(entDef));
         final int numReads = 10;
-        final Dataset ds = DatasetFactory.create(dsg);
+        final Dataset ds = DatasetFactory.wrap(dsg);
         final ExecutorService execService = Executors.newFixedThreadPool(10);
         final Future<?> f = execService.submit(new Runnable()
         {
@@ -182,12 +182,12 @@ public class TestLuceneWithMultipleThreads
     @Test
     public void testIsolation() throws InterruptedException, ExecutionException {
         
-        final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(DatasetGraphFactory.createMem(), new RAMDirectory(), new TextIndexConfig(entDef));
+        final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(DatasetGraphFactory.create(), new RAMDirectory(), new TextIndexConfig(entDef));
         
         final int numReaders = 2;
         final List<Future<?>> futures = new ArrayList<Future<?>>(numReaders);
         final ExecutorService execService = Executors.newFixedThreadPool(numReaders);
-        final Dataset ds = DatasetFactory.create(dsg);
+        final Dataset ds = DatasetFactory.wrap(dsg);
         
         
         for (int i=0; i<numReaders; i++) {

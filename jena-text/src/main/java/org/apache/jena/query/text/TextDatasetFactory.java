@@ -50,7 +50,7 @@ public class TextDatasetFactory
     {
         DatasetGraph dsg = base.asDatasetGraph() ;
         dsg = create(dsg, textIndex, closeIndexOnDSGClose) ;
-        return DatasetFactory.create(dsg) ;
+        return DatasetFactory.wrap(dsg) ;
     }
     
     /** Create a text-indexed dataset, optionally allowing the text index to be closed if the Dataset is */
@@ -58,7 +58,7 @@ public class TextDatasetFactory
     {
         DatasetGraph dsg = base.asDatasetGraph() ;
         dsg = create(dsg, textIndex, closeIndexOnDSGClose, producer) ;
-        return DatasetFactory.create(dsg) ;
+        return DatasetFactory.wrap(dsg) ;
     }
 
 

@@ -66,15 +66,13 @@ public class TextOutput extends OutputBase
     { write(outs, resultSet) ; }
 
     /** Writer should be UTF-8 encoded - better to an OutputStream */ 
-    public void format(Writer w, ResultSet resultSet)
-    { 
+    public void format(Writer w, ResultSet resultSet) { 
         PrintWriter pw = new PrintWriter(w) ;
         write(pw, resultSet) ;
         pw.flush() ;
     }
 
-    private int[] colWidths(ResultSetRewindable rs)
-    {
+    private int[] colWidths(ResultSetRewindable rs) {
         int numCols = rs.getResultVars().size() ;
         int numRows = 0 ;
         int[] colWidths = new int[numCols] ;
@@ -84,8 +82,7 @@ public class TextOutput extends OutputBase
             colWidths[i] = (rs.getResultVars().get(i)).length() ;
 
         // Preparation pass : find the maximum width for each column
-        for ( ; rs.hasNext() ; )
-        {
+        for ( ; rs.hasNext() ; ) {
             numRows++ ;
             QuerySolution rBind = rs.nextSolution() ;
             int col = -1 ;
@@ -139,28 +136,25 @@ public class TextOutput extends OutputBase
      *  @param pw         PrintWriter
      *  @param colSep      Column separator
      */
-    public void write(PrintWriter pw, ResultSet resultSet, String colStart, String colSep, String colEnd)
-    {
-        if ( resultSet.getResultVars().size() == 0 )
-        {
-            pw.println("==== No variables ====") ;
-            //return ;
+    public void write(PrintWriter pw, ResultSet resultSet, String colStart, String colSep, String colEnd) {
+        if ( resultSet.getResultVars().size() == 0 ) {
+            pw.println("==== No variables ====");
+            // return ;
         }
 
-        ResultSetRewindable resultSetRewindable = ResultSetFactory.makeRewindable(resultSet) ; 
-        
-        int numCols = resultSetRewindable.getResultVars().size() ;
-        int[] colWidths = colWidths(resultSetRewindable) ;
+        ResultSetRewindable resultSetRewindable = ResultSetFactory.makeRewindable(resultSet);
 
-        String row[] = new String[numCols] ;
-        int lineWidth = 0 ;
-        for ( int col = 0 ; col < numCols ; col++ )
-        {
-            String rVar = resultSet.getResultVars().get(col) ;
-            row[col] = rVar ;
-            lineWidth += colWidths[col] ;
+        int numCols = resultSetRewindable.getResultVars().size();
+        int[] colWidths = colWidths(resultSetRewindable);
+
+        String row[] = new String[numCols];
+        int lineWidth = 0;
+        for ( int col = 0 ; col < numCols ; col++ ) {
+            String rVar = resultSet.getResultVars().get(col);
+            row[col] = rVar;
+            lineWidth += colWidths[col];
             if ( col > 0 )
-                lineWidth += colSep.length() ;
+                lineWidth += colSep.length();
         }
         if ( colStart != null )
             lineWidth += colStart.length() ;
@@ -177,15 +171,13 @@ public class TextOutput extends OutputBase
             pw.print('=') ;
         pw.println() ;
 
-        for ( ; resultSetRewindable.hasNext() ; )
-        {
-            QuerySolution rBind = resultSetRewindable.nextSolution() ;
-            for ( int col = 0 ; col < numCols ; col++ )
-            {
-                String rVar = resultSet.getResultVars().get(col) ;
-                row[col] = this.getVarValueAsString(rBind, rVar );
+        for ( ; resultSetRewindable.hasNext() ; ) {
+            QuerySolution rBind = resultSetRewindable.nextSolution();
+            for ( int col = 0 ; col < numCols ; col++ ) {
+                String rVar = resultSet.getResultVars().get(col);
+                row[col] = this.getVarValueAsString(rBind, rVar);
             }
-            printRow(pw, row, colWidths, colStart, colSep, colEnd) ;
+            printRow(pw, row, colWidths, colStart, colSep, colEnd);
         }
         for ( int i = 0 ; i < lineWidth ; i++ )
             pw.print('-') ;
@@ -194,46 +186,42 @@ public class TextOutput extends OutputBase
     }
 
 
-    private void printRow(PrintWriter out, String[] row, int[] colWidths, String rowStart, String colSep, String rowEnd)
-    {
-        out.print(rowStart) ;
-        for ( int col = 0 ; col < colWidths.length ; col++ )
-        {
-            String s = row[col] ;
-            int pad = colWidths[col] ;
-            StringBuffer sbuff = new StringBuffer(120) ;
+    private void printRow(PrintWriter out, String[] row, int[] colWidths, String rowStart, String colSep, String rowEnd) {
+        out.print(rowStart);
+        for ( int col = 0 ; col < colWidths.length ; col++ ) {
+            String s = row[col];
+            int pad = colWidths[col];
+            StringBuffer sbuff = new StringBuffer(120);
 
             if ( col > 0 )
-                sbuff.append(colSep) ;
+                sbuff.append(colSep);
 
-            sbuff.append(s) ;
-            for ( int j = 0 ; j < pad-s.length() ; j++ )
-                sbuff.append(' ') ;
+            sbuff.append(s);
+            for ( int j = 0 ; j < pad - s.length() ; j++ )
+                sbuff.append(' ');
 
-            out.print(sbuff) ;
+            out.print(sbuff);
         }
-        out.print(rowEnd) ;
-        out.println() ;
+        out.print(rowEnd);
+        out.println();
     }
 
-    protected String getVarValueAsString(QuerySolution rBind, String varName)
-    {
-        RDFNode obj = rBind.get(varName) ;
-        
-        if ( obj == null )
-            return notThere ;
+    protected String getVarValueAsString(QuerySolution rBind, String varName) {
+        RDFNode obj = rBind.get(varName);
 
-        return FmtUtils.stringForRDFNode(obj, context) ;
+        if ( obj == null )
+            return notThere;
+
+        return FmtUtils.stringForRDFNode(obj, context);
     }
 
     @Override
-    public void format(OutputStream out, boolean answer)
-    {
-      PrintWriter pw = FileUtils.asPrintWriterUTF8(out) ;
-      if ( answer )
-          pw.write("yes") ;
-      else
-          pw.write("no") ;
-      pw.flush() ;
+    public void format(OutputStream out, boolean answer) {
+        PrintWriter pw = FileUtils.asPrintWriterUTF8(out);
+        if ( answer )
+            pw.write("yes");
+        else
+            pw.write("no");
+        pw.flush();
     }
 }
