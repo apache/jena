@@ -31,6 +31,9 @@ import org.apache.jena.iri.Violation ;
 import org.apache.jena.riot.system.IRIResolver ;
 
 public class IRIValidator extends ValidatorBaseJson {
+
+    private static final long serialVersionUID = -2137772518194890583L;
+
     public IRIValidator() { }
     
     static IRIFactory iriFactory = IRIResolver.iriFactory ;

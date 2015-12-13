@@ -27,6 +27,8 @@ import org.apache.jena.sparql.core.DynamicDatasets ;
 
 public class SPARQL_QueryDataset extends SPARQL_Query
 {
+    private static final long serialVersionUID = 7831017147865247480L;
+
     public SPARQL_QueryDataset(boolean verbose)     { super() ; }
 
     public SPARQL_QueryDataset()
@@ -40,7 +42,7 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     protected void validateQuery(HttpAction action, Query query) 
     { }
    
-    /** Decide the datset - this modifies the query 
+    /** Decide the dataset - this modifies the query 
      *  If the query has a dataset description.   
      */
     @Override
@@ -55,6 +57,6 @@ public class SPARQL_QueryDataset extends SPARQL_Query
             }
         }
         
-        return DatasetFactory.create(dsg) ;
+        return DatasetFactory.wrap(dsg) ;
     }
 }

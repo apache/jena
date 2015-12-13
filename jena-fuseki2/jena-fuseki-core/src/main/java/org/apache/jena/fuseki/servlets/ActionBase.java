@@ -39,6 +39,8 @@ import org.slf4j.Logger ;
 /** General request lifecycle */
 public abstract class ActionBase extends ServletBase
 {
+    private static final long serialVersionUID = -8235479824229554685L;
+
     protected final Logger log ;
 
     protected ActionBase(Logger log) {
@@ -157,9 +159,11 @@ public abstract class ActionBase extends ServletBase
      */
     protected abstract void execCommonWorker(HttpAction action) ;
     
-    /** Extract the name after the container name (serverlet name).
-     * Returns "/name" or null 
-     */  
+    /**
+     * Extract the name after the container name (servlet name).
+     * @param action an HTTP action
+     * @return item name as "/name" or {@code null}
+     */
     protected static String extractItemName(HttpAction action) {
 //      action.log.info("context path  = "+action.request.getContextPath()) ;
 //      action.log.info("pathinfo      = "+action.request.getPathInfo()) ;
@@ -246,7 +250,7 @@ public abstract class ActionBase extends ServletBase
      * <p>Given a time point, return the time as a milli second string if it is less than 1000,
      * otherwise return a seconds string.</p>
      * <p>It appends a 'ms' suffix when using milli seconds,
-     *  and <i>s</i> for seconds.</p>
+     *  and 's' for seconds.</p>
      * <p>For instance: </p>
      * <ul>
      * <li>10 emits 10 ms</li>

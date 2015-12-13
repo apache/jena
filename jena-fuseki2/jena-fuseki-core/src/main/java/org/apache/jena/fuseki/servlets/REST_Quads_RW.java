@@ -33,6 +33,8 @@ import org.apache.jena.sparql.core.DatasetGraphFactory ;
 
 public class REST_Quads_RW extends REST_Quads_R {
 
+    private static final long serialVersionUID = 4752486333862676195L;
+
     public REST_Quads_RW() {
         super() ;
     }
@@ -110,7 +112,7 @@ public class REST_Quads_RW extends REST_Quads_R {
     }
     
     private void doPutPostNonTxn(HttpAction action, boolean clearFirst) {
-        DatasetGraph dsgTmp = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsgTmp = DatasetGraphFactory.create() ;
         StreamRDF dest = StreamRDFLib.dataset(dsgTmp) ;
 
         UploadDetails details ;

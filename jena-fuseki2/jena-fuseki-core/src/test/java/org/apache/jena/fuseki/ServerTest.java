@@ -116,7 +116,7 @@ public class ServerTest {
         SystemState.init$() ;
         
         ServerInitialConfig params = new ServerInitialConfig() ;
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         params.dsg = dsg ;
         params.datasetPath = datasetPath ;
         params.allowUpdate = updateable ;

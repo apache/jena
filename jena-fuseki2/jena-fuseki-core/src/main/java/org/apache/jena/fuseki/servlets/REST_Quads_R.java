@@ -36,6 +36,9 @@ import org.apache.jena.sparql.core.DatasetGraph ;
  */
 
 public class REST_Quads_R extends REST_Quads {
+
+    private static final long serialVersionUID = 1309929984893333563L;
+
     public REST_Quads_R() {
         super() ;
     }

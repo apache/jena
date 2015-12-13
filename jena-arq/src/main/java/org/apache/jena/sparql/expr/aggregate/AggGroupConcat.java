@@ -68,10 +68,9 @@ public class AggGroupConcat extends AggregatorBase
     
     protected static String asSparqlExpr(boolean isDistinct, String separator, ExprList exprs, SerializationContext sCxt) {
         IndentedLineBuffer x = new IndentedLineBuffer() ;
-        x.append("GROUP_CONCAT") ;
+        x.append("GROUP_CONCAT(") ;
         if ( isDistinct )
-            x.append(" DISTINCT") ;
-        x.append(" (") ;
+            x.append("DISTINCT ") ;
         ExprUtils.fmtSPARQL(x, exprs, sCxt) ;
         if ( separator != null ) {
             x.append(" ; separator=") ;

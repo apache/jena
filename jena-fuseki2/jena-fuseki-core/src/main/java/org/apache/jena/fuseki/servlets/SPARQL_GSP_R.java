@@ -33,6 +33,8 @@ import org.apache.jena.riot.* ;
 /** Only the READ operations */
 public class SPARQL_GSP_R extends SPARQL_GSP
 {
+    private static final long serialVersionUID = 4247885351334928271L;
+
     public SPARQL_GSP_R()
     { super() ; }
     

@@ -32,6 +32,8 @@ import org.apache.jena.fuseki.servlets.ServletOps ;
 
 public class ActionLogs extends ActionCtl
 {
+    private static final long serialVersionUID = 7574964005106399076L;
+
     public ActionLogs() { super() ; } 
     
     @Override

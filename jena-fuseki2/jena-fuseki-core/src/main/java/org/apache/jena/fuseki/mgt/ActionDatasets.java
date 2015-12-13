@@ -66,6 +66,8 @@ import org.apache.jena.web.HttpSC ;
 
 public class ActionDatasets extends ActionContainerItem {
     
+    private static final long serialVersionUID = 5171975468398320835L;
+
     private static Dataset system = SystemState.getDataset() ;
     private static DatasetGraphTransaction systemDSG = SystemState.getDatasetGraph() ; 
     

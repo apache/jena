@@ -101,7 +101,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
             if (ap.nodeID != null) {
 
                 object = new ARPResource(arp, ap.nodeID);
-                checkXMLName(object, ap.nodeID);
+                checkNodeID_XMLName(object, ap.nodeID);
                 objectIsBlank = true;
             }
             if (ap.resource != null) {

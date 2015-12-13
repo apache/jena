@@ -34,6 +34,8 @@ import org.slf4j.Logger ;
 /** A task that kicks off a asynchornous operation that simply waits and exits.  For testing. */
 public class ActionSleep extends ActionCtl /* Not ActionAsyncTask - that is a container-item based.c */
 {
+    private static final long serialVersionUID = 1925107412069359647L;
+
     public ActionSleep() { super() ; }
     
     // And only POST
