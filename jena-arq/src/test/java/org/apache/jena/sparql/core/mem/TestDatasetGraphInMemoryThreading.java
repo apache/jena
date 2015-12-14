@@ -154,6 +154,7 @@ public class TestDatasetGraphInMemoryThreading extends Assert {
 		await().untilTrue(readLockCaptured);
 		if (writeLockCaptured.get()) fail("Write lock captured by two threads at once!");
 
+		dsg.abort();
 		dsg.end(); // release the write lock to competitor
 		await().untilTrue(writeLockCaptured);
 		assertTrue("Lock was not handed over to waiting thread!", writeLockCaptured.get());
