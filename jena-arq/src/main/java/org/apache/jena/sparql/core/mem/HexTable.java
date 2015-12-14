@@ -18,12 +18,17 @@
 
 package org.apache.jena.sparql.core.mem;
 
-import static java.lang.ThreadLocal.withInitial;
 import static java.util.EnumSet.noneOf;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toMap;
-import static org.apache.jena.sparql.core.mem.QuadTableForm.*;
-import static org.apache.jena.sparql.core.mem.TupleSlot.*;
+import static org.apache.jena.sparql.core.mem.QuadTableForm.GSPO ;
+import static org.apache.jena.sparql.core.mem.QuadTableForm.SPOG ;
+import static org.apache.jena.sparql.core.mem.QuadTableForm.chooseFrom ;
+import static org.apache.jena.sparql.core.mem.QuadTableForm.tableForms ;
+import static org.apache.jena.sparql.core.mem.TupleSlot.GRAPH ;
+import static org.apache.jena.sparql.core.mem.TupleSlot.OBJECT ;
+import static org.apache.jena.sparql.core.mem.TupleSlot.PREDICATE ;
+import static org.apache.jena.sparql.core.mem.TupleSlot.SUBJECT ;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -41,17 +46,6 @@ import org.apache.jena.sparql.core.Quad;
  *
  */
 public class HexTable implements QuadTable {
-
-    private final ThreadLocal<Boolean> isInTransaction = withInitial(() -> false);
-
-    @Override
-    public boolean isInTransaction() {
-        return isInTransaction.get();
-    }
-
-    protected void isInTransaction(final boolean b) {
-        isInTransaction.set(b);
-    }
 
     private final Map<QuadTableForm, QuadTable> indexBlock = new EnumMap<QuadTableForm, QuadTable>(
         tableForms().collect(toMap(x -> x, QuadTableForm::get)));
@@ -102,20 +96,17 @@ public class HexTable implements QuadTable {
 
     @Override
     public void begin(final ReadWrite rw) {
-        isInTransaction(true);
         indexBlock().values().forEach(table -> table.begin(rw));
     }
 
     @Override
     public void end() {
         indexBlock().values().forEach(QuadTable::end);
-        isInTransaction.remove();
     }
 
     @Override
     public void commit() {
         indexBlock().values().forEach(QuadTable::commit);
-        isInTransaction(false);
     }
 
     @Override

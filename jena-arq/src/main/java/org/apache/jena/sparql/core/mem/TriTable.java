@@ -18,13 +18,14 @@
 
 package org.apache.jena.sparql.core.mem;
 
-import static java.lang.ThreadLocal.withInitial;
 import static java.util.EnumSet.noneOf;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.jena.sparql.core.mem.TripleTableForm.chooseFrom;
 import static org.apache.jena.sparql.core.mem.TripleTableForm.tableForms;
-import static org.apache.jena.sparql.core.mem.TupleSlot.*;
+import static org.apache.jena.sparql.core.mem.TupleSlot.OBJECT ;
+import static org.apache.jena.sparql.core.mem.TupleSlot.PREDICATE ;
+import static org.apache.jena.sparql.core.mem.TupleSlot.SUBJECT ;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -51,17 +52,6 @@ public class TriTable implements TripleTable {
         return indexBlock;
     }
 
-    private final ThreadLocal<Boolean> isInTransaction = withInitial(() -> false);
-
-    @Override
-    public boolean isInTransaction() {
-        return isInTransaction.get();
-    }
-
-    protected void isInTransaction(final boolean b) {
-        isInTransaction.set(b);
-    }
-
     @Override
     public void commit() {
         indexBlock().values().forEach(TripleTable::commit);
@@ -77,7 +67,6 @@ public class TriTable implements TripleTable {
     @Override
     public void end() {
         indexBlock().values().forEach(TripleTable::end);
-        isInTransaction.remove();
     }
 
     @Override
@@ -106,7 +95,6 @@ public class TriTable implements TripleTable {
 
     @Override
     public void begin(final ReadWrite rw) {
-        isInTransaction(true);
         indexBlock().values().forEach(table -> table.begin(rw));
     }
 
