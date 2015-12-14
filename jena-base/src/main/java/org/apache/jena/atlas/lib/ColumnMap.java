@@ -22,7 +22,6 @@ import static java.lang.String.format ;
 
 import java.util.Arrays ;
 import java.util.List ;
-
 import org.apache.jena.atlas.AtlasException ;
 
 
@@ -49,7 +48,13 @@ public class ColumnMap
     /** Construct a column mapping that maps the input (one col, one char) to the output */  
     public ColumnMap(String input, String output)
     {
-        this(input+"->"+output, compileMapping(input, output)) ;
+        this(input+"->"+output, input, output) ;
+    }
+    
+    /** Construct a column mapping that maps the input (one col, one char) to the output, with a label */  
+    public ColumnMap(String label, String input, String output)
+    {
+        this(label, compileMapping(input, output)) ;
     }
     
     public <T> ColumnMap(String label, List<T> input, List<T> output)
@@ -142,9 +147,21 @@ public class ColumnMap
     {
         return map(src, insertOrder) ;
     }
+    
+    /** Apply to an <em>unmapped</em> tuple to get a tuple with the column mapping applied */
+    public <T> T[] map(T... src)
+    {
+        return map(src, insertOrder) ;
+    }
 
     /** Apply to a <em>mapped</em> tuple to get a tuple with the column mapping reverse-applied */
     public <T> Tuple<T> unmap(Tuple<T> src)
+    {
+        return map(src, fetchOrder) ;
+    }
+    
+    /** Apply to a <em>mapped</em> tuple to get a tuple with the column mapping reverse-applied */
+    public <T> T[] unmap(T... src)
     {
         return map(src, fetchOrder) ;
     }
@@ -160,6 +177,17 @@ public class ColumnMap
             elts[j] = src.get(i) ;
         }
         return Tuple.create(elts) ;
+    }
+    
+    private <T> T[] map(T[] src, int[] map) {
+        // We use copy to effect the creation of a properly-typed array for a type parameter. This is more expensive
+        // than simply casting an Object[src.length], but allows us to safely pass the array out of this method.
+        T[] elts = ArrayUtils.copy(src);
+        for (int i = 0; i < src.length; i++) {
+            int j = map[i];
+            elts[j] = src[i];
+        }
+        return elts;
     }
     
     /** Compile a mapping encoded as single charcaters e.g. "SPO", "POS" */

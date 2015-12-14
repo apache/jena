@@ -22,6 +22,7 @@ import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.apache.jena.atlas.lib.persistent.PMap;
@@ -37,13 +38,13 @@ import org.slf4j.Logger;
  * use.
  *
  */
-public abstract class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad>implements QuadTable {
+public class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad> implements QuadTable {
 
     /**
-     * @param tableName a name for this table
+     * @param order the internal ordering for this table
      */
-    public PMapQuadTable(final String tableName) {
-        super(tableName);
+    public PMapQuadTable(final QuadOrdering order) {
+        super(order);
     }
 
     private static final Logger log = getLogger(PMapQuadTable.class);
@@ -68,7 +69,17 @@ public abstract class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad>im
      * @param fourth
      * @return a {@code Quad}
      */
-    protected abstract Quad quad(final Node first, final Node second, final Node third, final Node fourth);
+    protected Quad quad(final Node first, final Node second, final Node third, final Node fourth) {
+        return ordering().unmapAndCreate(first, second, third, fourth);
+    }
+    
+
+    @Override
+    public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
+        final Node[] mapped = ordering().map(g, s, p, o);
+        return _find(mapped[0], mapped[1], mapped[2], mapped[3]);
+    }
+
 
     /**
      * We descend through the nested {@link PMap}s building up {@link Stream}s of partial tuples from which we develop a
@@ -96,7 +107,7 @@ public abstract class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad>im
                                 if (isConcrete(fourth)) {
                                     debug("Using a specific fourth slot value.");
                                     return oneTuples
-                                        .contains(fourth) ? of(quad(first, second, third, fourth)) : empty();
+                                            .contains(fourth) ? of(quad(first, second, third, fourth)) : empty();
                                 }
                                 debug("Using a wildcard fourth slot value.");
                                 return oneTuples.stream().map(slot4 -> quad(first, second, third, slot4));
@@ -105,45 +116,74 @@ public abstract class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad>im
                         }
                         debug("Using wildcard third and fourth slot values.");
                         return twoTuples.flatten((slot3, oneTuples) -> oneTuples.stream()
-                                                 .map(slot4 -> quad(first, second, slot3, slot4)));
+                                .map(slot4 -> quad(first, second, slot3, slot4)));
                     }).orElse(empty());
                 }
                 debug("Using wildcard second, third and fourth slot values.");
                 return threeTuples.flatten((slot2, twoTuples) -> twoTuples.flatten(
-                                                                                   (slot3, oneTuples) -> oneTuples.stream().map(slot4 -> quad(first, slot2, slot3, slot4))));
+                        (slot3, oneTuples) -> oneTuples.stream().map(slot4 -> quad(first, slot2, slot3, slot4))));
             }).orElse(empty());
         }
         debug("Using a wildcard for all slot values.");
         return fourTuples.flatten((slot1, threeTuples) -> threeTuples.flatten((slot2, twoTuples) -> twoTuples
-                                                                              .flatten((slot3, oneTuples) -> oneTuples.stream().map(slot4 -> quad(slot1, slot2, slot3, slot4)))));
+                .flatten((slot3, oneTuples) -> oneTuples.stream().map(slot4 -> quad(slot1, slot2, slot3, slot4)))));
     }
 
-    protected void _add(final Node first, final Node second, final Node third, final Node fourth) {
-        debug("Adding four-tuple: {} {} {} {} .", first, second, third, fourth);
-        final FourTupleMap fourTuples = local().get();
-        ThreeTupleMap threeTuples = fourTuples.get(first).orElse(new ThreeTupleMap());
-        TwoTupleMap twoTuples = threeTuples.get(second).orElse(new TwoTupleMap());
-        PersistentSet<Node> oneTuples = twoTuples.get(third).orElse(PersistentSet.empty());
+    @Override
+    public void add(Quad q) {
+        mutate(q, _add);
+    }
 
-        if (!oneTuples.contains(fourth)) oneTuples = oneTuples.plus(fourth);
-        twoTuples = twoTuples.minus(third).plus(third, oneTuples);
-        threeTuples = threeTuples.minus(second).plus(second, twoTuples);
+    @Override
+    public void delete(Quad q) {
+        mutate(q, _delete);
+    }
+
+    protected Consumer<Node[]> _add = nodes -> {
+        debug("Adding four-tuple: {} {} {} {} .", nodes[0], nodes[1], nodes[2], nodes[3]);
+        final FourTupleMap fourTuples = local().get();
+        ThreeTupleMap threeTuples = fourTuples.get(nodes[0]).orElse(new ThreeTupleMap());
+        TwoTupleMap twoTuples = threeTuples.get(nodes[1]).orElse(new TwoTupleMap());
+        PersistentSet<Node> oneTuples = twoTuples.get(nodes[2]).orElse(PersistentSet.empty());
+
+        if (!oneTuples.contains(nodes[3])) oneTuples = oneTuples.plus(nodes[3]);
+        twoTuples = twoTuples.minus(nodes[2]).plus(nodes[2], oneTuples);
+        threeTuples = threeTuples.minus(nodes[1]).plus(nodes[1], twoTuples);
         debug("Setting transactional index to new value.");
-        local().set(fourTuples.minus(first).plus(first, threeTuples));
-    }
+        local().set(fourTuples.minus(nodes[0]).plus(nodes[0], threeTuples));
+    };
 
-    protected void _delete(final Node first, final Node second, final Node third, final Node fourth) {
-        debug("Removing four-tuple: {} {} {} {} .", first, second, third, fourth);
+    protected Consumer<Node[]> _delete = nodes -> {
+        debug("Removing four-tuple: {} {} {} {} .", nodes[0], nodes[1], nodes[2], nodes[3]);
         final FourTupleMap fourTuples = local().get();
-        fourTuples.get(first).ifPresent(threeTuples -> threeTuples.get(second)
-                                        .ifPresent(twoTuples -> twoTuples.get(third).ifPresent(oneTuples -> {
-                                            if (oneTuples.contains(fourth)) {
-                                                oneTuples = oneTuples.minus(fourth);
-                                                final TwoTupleMap newTwoTuples = twoTuples.minus(third).plus(third, oneTuples);
-                                                final ThreeTupleMap newThreeTuples = threeTuples.minus(second).plus(second, newTwoTuples);
-                                                debug("Setting transactional index to new value.");
-                                                local().set(fourTuples.minus(first).plus(first, newThreeTuples));
-                                            }
-                                        })));
+        fourTuples.get(nodes[0]).ifPresent(threeTuples -> threeTuples.get(nodes[1])
+                .ifPresent(twoTuples -> twoTuples.get(nodes[2]).ifPresent(oneTuples -> {
+            if (oneTuples.contains(nodes[3])) {
+                oneTuples = oneTuples.minus(nodes[3]);
+                final TwoTupleMap newTwoTuples = twoTuples.minus(nodes[2]).plus(nodes[2], oneTuples);
+                final ThreeTupleMap newThreeTuples = threeTuples.minus(nodes[1]).plus(nodes[1], newTwoTuples);
+                debug("Setting transactional index to new value.");
+                local().set(fourTuples.minus(nodes[0]).plus(nodes[0], newThreeTuples));
+            }
+        })));
+    };
+
+    protected static class QuadOrdering extends TupleOrdering<Quad> {
+
+        public QuadOrdering(String order) {
+            super(order, "GSPO", order);
+        }
+
+        @Override
+        public Node[] map(Quad q) {
+            return map(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject());
+        }
+
+        @Override
+        public Quad unmapAndCreate(Node... nodes) {
+            if (nodes.length != 4) throw new IllegalArgumentException("Quads must have four nodes!");
+            final Node[] unmapped = unmap(nodes);
+            return Quad.create(unmapped[0], unmapped[1], unmapped[2], unmapped[3]);
+        }
     }
 }

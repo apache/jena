@@ -20,6 +20,7 @@ package org.apache.jena.graph;
 
 import java.util.function.Predicate;
 
+import org.apache.jena.atlas.lib.Tuple;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.NullIterator ;
@@ -29,18 +30,15 @@ import org.apache.jena.util.iterator.NullIterator ;
     object field (all nodes) and express the notion that the relationship named
     by the predicate holds between the subject and the object.
  */
-public class Triple 
+public class Triple extends Tuple<Node>
     {    
-	private final Node subj, pred, obj;
- 
+
 	public Triple( Node s, Node p, Node o ) 
         {
+        super(s, p, o);
         if (s == null) throw new UnsupportedOperationException( "subject cannot be null" );
         if (p == null) throw new UnsupportedOperationException( "predicate cannot be null" );
         if (o == null) throw new UnsupportedOperationException( "object cannot be null" );
-		subj = s;
-		pred = p;
-		obj = o;
         }
 	
 	/**
@@ -59,40 +57,40 @@ public class Triple
     
     public String toString( PrefixMapping pm )
        {
-	   return subj.toString( pm, true ) 
-            + " @" + pred.toString( pm, true ) 
-            + " " + obj.toString( pm, true );
+	   return tuple[0].toString( pm, true ) 
+            + " @" + tuple[1].toString( pm, true ) 
+            + " " + tuple[2].toString( pm, true );
 	   }
     
     /**
         @return the subject of the triple
     */
 	public final Node getSubject() 
-        { return subj; }
+        { return tuple[0]; }
     
     /**
         @return the predicate of the triple
     */
 	public final Node getPredicate() 
-        { return pred; }
+        { return tuple[1]; }
     
     /**
         @return the object of the triple
     */
 	public final Node getObject() 
-        { return obj; }
+        { return tuple[2]; }
 
 	/** Return subject or null, not Node.ANY */ 
     public Node getMatchSubject()
-        { return anyToNull( subj ); }
+        { return anyToNull( tuple[0] ); }
     
     /** Return predicate or null, not Node.ANY */ 
     public Node getMatchPredicate()
-        { return anyToNull( pred ); }
+        { return anyToNull( tuple[1] ); }
         
     /** Return object or null, not Node.ANY */ 
     public Node getMatchObject()
-        { return anyToNull( obj ); }
+        { return anyToNull( tuple[2] ); }
         
     private static Node anyToNull( Node n )
         { return Node.ANY.equals( n ) ? null : n; }
@@ -101,7 +99,7 @@ public class Triple
         { return n == null ? Node.ANY : n; }        
         
     public boolean isConcrete()
-        { return subj.isConcrete() && pred.isConcrete() && obj.isConcrete(); }
+        { return tuple[0].isConcrete() && tuple[1].isConcrete() && tuple[2].isConcrete(); }
         
     /** 
          Answer true if <code>o</code> is a Triple with the same subject, predicate,
@@ -109,32 +107,32 @@ public class Triple
     */
 	@Override
     public boolean equals(Object o) 
-        { return o instanceof Triple && ((Triple) o).sameAs( subj, pred, obj ); }
+        { return o instanceof Triple && ((Triple) o).sameAs( tuple[0], tuple[1], tuple[2] ); }
     
     /** 
         Answer true iff this triple has subject s, predicate p, and object o.
     */    
     public boolean sameAs( Node s, Node p, Node o )
-        { return subj.equals( s ) && pred.equals( p ) && obj.equals( o ); }
+        { return tuple[0].equals( s ) && tuple[1].equals( p ) && tuple[2].equals( o ); }
         
     /** Does this triple, used as a pattern match, the other triple (usually a ground triple) */ 
     public boolean matches( Triple other )
-        { return other.matchedBy( subj, pred, obj  ); }
+        { return other.matchedBy( tuple[0], tuple[1], tuple[2]  ); }
         
     public boolean matches( Node s, Node p, Node o )
-        { return subj.matches( s ) && pred.matches( p ) && obj.matches( o ); }
+        { return tuple[0].matches( s ) && tuple[1].matches( p ) && tuple[2].matches( o ); }
         
     private boolean matchedBy( Node s, Node p, Node o )
-        { return s.matches( subj ) && p.matches( pred ) && o.matches( obj ); }
+        { return s.matches( tuple[0] ) && p.matches( tuple[1] ) && o.matches( tuple[2] ); }
         
     public boolean subjectMatches( Node s )
-        { return subj.matches( s ); }
+        { return tuple[0].matches( s ); }
         
     public boolean predicateMatches( Node p )
-        { return pred.matches( p ); }
+        { return tuple[1].matches( p ); }
         
     public boolean objectMatches( Node o )
-        { return obj.matches( o ); }
+        { return tuple[2].matches( o ); }
         
     /**
         The hash-code of a triple is the hash-codes of its components munged
@@ -142,7 +140,7 @@ public class Triple
     */
     @Override
     public int hashCode() 
-        { return hashCode( subj, pred, obj ); }
+        { return hashCode( tuple[0], tuple[1], tuple[2] ); }
     
     /**
         Return the munged hashCodes of the specified nodes, an exclusive-or of 
@@ -184,12 +182,12 @@ public class Triple
         public static final Field fieldSubject = new Field() 
             { 
             @Override public Node getField( Triple t ) 
-                { return t.subj; }
+                { return t.tuple[0]; }
             
             @Override public Predicate<Triple> filterOn( final Node n )
                 { 
                 return n.isConcrete() 
-                    ? x -> n.equals( x.subj )
+                    ? x -> n.equals( x.tuple[0] )
                     : anyTriple
                     ;
                 }
@@ -198,11 +196,11 @@ public class Triple
         public static final Field fieldObject = new Field() 
             { 
             @Override public Node getField( Triple t ) 
-                { return t.obj; } 
+                { return t.tuple[2]; } 
             
             @Override public Predicate<Triple> filterOn( final Node n )
                 { return n.isConcrete() 
-                    ? x -> n.sameValueAs( x.obj )
+                    ? x -> n.sameValueAs( x.tuple[2] )
                     : anyTriple; 
                 }
             };
@@ -210,11 +208,11 @@ public class Triple
         public static final Field fieldPredicate = new Field() 
             { 
             @Override public Node getField( Triple t ) 
-                { return t.pred; } 
+                { return t.tuple[1]; } 
             
             @Override public Predicate<Triple> filterOn( final Node n )
                 { return n.isConcrete()
-                    ? x -> n.equals( x.pred )
+                    ? x -> n.equals( x.tuple[1] )
                     : anyTriple; 
                 }
             };

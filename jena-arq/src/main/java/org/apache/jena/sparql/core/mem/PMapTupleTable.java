@@ -21,7 +21,9 @@ package org.apache.jena.sparql.core.mem;
 import static java.lang.ThreadLocal.withInitial;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
+import org.apache.jena.atlas.lib.ColumnMap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.ReadWrite;
 import org.slf4j.Logger;
@@ -34,6 +36,41 @@ import org.slf4j.Logger;
  */
 public abstract class PMapTupleTable<TupleMapType, TupleType> implements TupleTable<TupleType> {
 
+    private final TupleOrdering<TupleType> ordering;
+    
+    protected TupleOrdering<TupleType> ordering() { return ordering; }
+    
+    /**
+     * A specialization of {@link ColumnMap} for work with tuples of {@link Node}s.
+     *
+     * @param <TupleType>
+     */
+    public static abstract class TupleOrdering<TupleType> extends ColumnMap {
+        
+        /**
+         * @param label A uninterpreted label for this ordering
+         * @param input the canonical (external) ordering of TupleType
+         * @param output this internal ordering of TupleType
+         */
+        public TupleOrdering(final String label, final String input, final String output) {
+            super(label, input, output);
+        }
+        
+        /**
+         * @param t a tuple
+         * @return the elements of the tuple, in internal order
+         */
+        public abstract Node[] map(TupleType t);
+        
+        /**
+         * Unmap and create a tuple in external order.
+         * 
+         * @param elements
+         * @return a TupleType
+         */
+        public abstract TupleType unmapAndCreate(Node... elements);
+    }
+    
     /**
      * This method should always return the same value, but note that the same value may not necessarily be the same
      * instance.
@@ -72,23 +109,24 @@ public abstract class PMapTupleTable<TupleMapType, TupleType> implements TupleTa
         isInTransaction.set(b);
     }
 
-    private final String tableName;
-
     /**
-     * @param n a name for this table
+     * @param order the internal ordering for this table
      */
-    public PMapTupleTable(final String n) {
-        this.tableName = n;
+    public PMapTupleTable(final TupleOrdering<TupleType> order) {
+        this.ordering = order;
     }
 
     protected abstract Logger log();
+    
+    protected void mutate(TupleType t, Consumer<Node[]> action) {
+        action.accept(ordering().map(t));
+    }
 
     /**
      * Logs to DEBUG prepending the table name in order to distinguish amongst different indexes
      */
     protected void debug(final String msg, final Object... values) {
-        if ( log().isDebugEnabled() )
-            log().debug(tableName + ": " + msg, values);
+        if (log().isDebugEnabled()) log().debug(ordering.getLabel() + ": " + msg, values);
     }
 
     @Override

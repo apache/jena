@@ -20,11 +20,12 @@ package org.apache.jena.sparql.core;
 
 import java.util.Objects;
 
+import org.apache.jena.atlas.lib.Tuple;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 
-public class Quad
+public class Quad extends Tuple<Node>
 {
     // Create QuadNames? GraphNames?
     
@@ -48,8 +49,6 @@ public class Quad
      */
     public static final Node tripleInQuad           =  null ;
     
-    private final Node graph, subject, predicate, object ;
-    
     public Quad(Node graph, Triple triple)
     {
         this(graph, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
@@ -57,34 +56,31 @@ public class Quad
     
     public Quad(Node g, Node s, Node p, Node o)
     {
+        super(g, s, p, o);
         // Null means it's a triple really.
         //if ( g == null ) throw new UnsupportedOperationException("Quad: graph cannot be null");
         if ( s == null ) throw new UnsupportedOperationException("Quad: subject cannot be null");
         if ( p == null ) throw new UnsupportedOperationException("Quad: predicate cannot be null");
         if ( o == null ) throw new UnsupportedOperationException("Quad: object cannot be null");
-        this.graph = g ;
-        this.subject = s ;
-        this.predicate = p ;
-        this.object = o ;
     }
     
     public static Quad create(Node g, Node s, Node p, Node o)   { return new Quad(g,s,p,o) ; }
     public static Quad create(Node g, Triple t)                 { return new Quad(g,t) ; }
 
-    public final Node getGraph()      { return graph ; }
-    public final Node getSubject()    { return subject ; }
-    public final Node getPredicate()  { return predicate ; }
-    public final Node getObject()     { return object ; }
+    public final Node getGraph()      { return tuple[0] ; }
+    public final Node getSubject()    { return tuple[1] ; }
+    public final Node getPredicate()  { return tuple[2] ; }
+    public final Node getObject()     { return tuple[3] ; }
 
     /** Get as a triple - useful because quads often come in blocks for the same graph */  
     public Triple asTriple()
     { 
-        return new Triple(subject, predicate, object) ;
+        return new Triple(tuple[1], tuple[2], tuple[3]) ;
     }
     
     public boolean isConcrete()
     {
-        return subject.isConcrete() && predicate.isConcrete() && object.isConcrete() && graph.isConcrete() ;
+        return tuple[1].isConcrete() && tuple[2].isConcrete() && tuple[3].isConcrete() && tuple[0].isConcrete() ;
     }
     
     /** Test whether this is a quad for the default graph (not the default graphs by explicit name) */
@@ -136,10 +132,10 @@ public class Quad
 //        return node.equals(unionGraph) ;
 //    }
 //    
-    public boolean isUnionGraph()           { return isUnionGraph(graph) ; }
+    public boolean isUnionGraph()           { return isUnionGraph(tuple[0]) ; }
 
     /** Is it really a triple? */  
-    public boolean isTriple()               { return Objects.equals(graph, tripleInQuad) ; } 
+    public boolean isTriple()               { return Objects.equals(tuple[0], tripleInQuad) ; } 
 
     /** Is this quad a legal data quad (legal data triple, IRI for graph) */   
     public boolean isLegalAsData()
@@ -170,11 +166,11 @@ public class Quad
     public int hashCode() 
     { 
         int x = 
-               (subject.hashCode() >> 1) ^ 
-               predicate.hashCode() ^ 
-               (object.hashCode() << 1);
-        if ( graph != null )
-            x ^= (graph.hashCode()>>2) ;
+               (tuple[1].hashCode() >> 1) ^ 
+               tuple[2].hashCode() ^ 
+               (tuple[3].hashCode() << 1);
+        if ( tuple[0] != null )
+            x ^= (tuple[0].hashCode()>>2) ;
         else
             x++ ;
         return x ;
@@ -191,10 +187,10 @@ public class Quad
             return false ;
         Quad quad = (Quad)other ;
         
-        if ( ! Objects.equals(graph, quad.graph) ) return false ;
-        if ( ! subject.equals(quad.subject) ) return false ;
-        if ( ! predicate.equals(quad.predicate) ) return false ;
-        if ( ! object.equals(quad.object) ) return false ;
+        if ( ! Objects.equals(tuple[0], quad.tuple[0]) ) return false ;
+        if ( ! tuple[1].equals(quad.tuple[1]) ) return false ;
+        if ( ! tuple[2].equals(quad.tuple[2]) ) return false ;
+        if ( ! tuple[3].equals(quad.tuple[3]) ) return false ;
         return true ;
     }
     
@@ -213,7 +209,7 @@ public class Quad
     @Override
     public String toString()
     {
-        String str = (graph==null)?"_":graph.toString() ;
-        return "["+str+" "+subject.toString()+" "+predicate.toString()+" "+object.toString()+"]" ;
+        String str = (tuple[0]==null)?"_":tuple[0].toString() ;
+        return "["+str+" "+tuple[1].toString()+" "+tuple[2].toString()+" "+tuple[3].toString()+"]" ;
     }
 }
