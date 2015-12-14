@@ -55,9 +55,11 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     private final Lock writeLock = new LockMRPlusSW();
 
     /**
-     * Transaction lifecycle operations must be atomi, especially begin and commit where
-     * the global state of the indexes is read or written one after another.
-     *  and because a thread that is committing alters the various indexes.
+     * Transaction lifecycle operations must be atomic, especially
+     * {@link Transactional#begin} and {@link Transactional#commit}.
+     * <p>
+     * There are changes to be made to several datastructures and this 
+     * insures that they are made consistently.
      */
     private final ReentrantLock systemLock = new ReentrantLock(true);
 
@@ -188,7 +190,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     public void end() {
         if (isInTransaction()) {
             if (transactionType().equals(WRITE)) {
-                log.warn("end() called for WRITE transaction without commit or abort having been called causing a forced abort");
+                log.warn("end() called for WRITE transaction without commit or abort having been called. This causes a forced abort.");
                 // _abort does _end actions inside the lock. 
                 _abort() ;
             } else {
