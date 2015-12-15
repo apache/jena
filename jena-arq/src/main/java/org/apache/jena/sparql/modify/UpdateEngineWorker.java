@@ -18,9 +18,11 @@
 
 package org.apache.jena.sparql.modify;
 
+import static org.apache.jena.sparql.modify.TemplateLib.remapDefaultGraph ;
 import static org.apache.jena.sparql.modify.TemplateLib.template ;
 
 import java.util.ArrayList ;
+import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.List ;
 
@@ -368,7 +370,7 @@ public class UpdateEngineWorker implements UpdateVisitor
             Iter.close(bindings) ;
             
             Iterator<Binding> it = db.iterator() ;
-            execDelete(quads, null, it) ;
+            execDelete(datasetGraph, quads, null, it) ;
             Iter.close(it) ;
         }
         finally
@@ -391,9 +393,11 @@ public class UpdateEngineWorker implements UpdateVisitor
         // WITH
         // USING overrides WITH
         if ( dsg == null && withGraph != null ) {
-            if ( false ) 
+            if ( false ) {
                 // Ye Olde way - create a special dataset
                 dsg = processWith(update) ;
+                withGraph = null ;
+            }
             else
                 // Better, 
                 // Wrap WHERE clause in GRAPH <with_uri>
@@ -420,24 +424,21 @@ public class UpdateEngineWorker implements UpdateVisitor
             
             if ( false )
             {   
-//                System.out.println("=======================================") ;
-//                System.out.println(datasetGraph) ;
                 List<Binding> x = Iter.toList(bindings) ;
                 System.out.printf("====>> Bindings (%d)\n", x.size()) ;
                 Iter.print(System.out, x.iterator()) ;
                 System.out.println("====<<") ;
                 bindings = Iter.iter(x) ;
             }
-            
             db.addAll(bindings) ;
             Iter.close(bindings) ;
             
             Iterator<Binding> it = db.iterator() ;
-            execDelete(update.getDeleteQuads(), withGraph, it) ;
+            execDelete(dsg, update.getDeleteQuads(), withGraph, it) ;
             Iter.close(it) ;
             
             Iterator<Binding> it2 = db.iterator() ;
-            execInsert(update.getInsertQuads(), withGraph, it2) ;
+            execInsert(dsg, update.getInsertQuads(), withGraph, it2) ;
             Iter.close(it2) ;
         }
         finally
@@ -512,8 +513,12 @@ public class UpdateEngineWorker implements UpdateVisitor
     // binding so any inserts, rather than repeatedly if they are going to be
     // done at all. Note bNodes (if legal at this point) change from template
     // instantiation to instantiation.
-
-    private static Pair<List<Quad>, List<Quad>> split(List<Quad> quads) {
+    /**
+     * Split quads into ground terms (no variables) and templated quads.
+     * @param quads
+     * @return Pair of (ground quads, templated quads) 
+     */
+    private static Pair<List<Quad>, List<Quad>> split(Collection<Quad> quads) {
         // Guess size.
         //    Pre-size in case large (i.e. 10K+). 
         List<Quad> constQuads = new ArrayList<>(quads.size()) ;
@@ -539,36 +544,40 @@ public class UpdateEngineWorker implements UpdateVisitor
         return n.isURI() || n.isLiteral() ;
     }
 
-    protected void execDelete(List<Quad> quads, Node dftGraph, Iterator<Binding> bindings) {
+    protected static void execDelete(DatasetGraph dsg, List<Quad> quads, Node dftGraph, Iterator<Binding> bindings) {
         Pair<List<Quad>, List<Quad>> p = split(quads) ;
-        execDelete(p.getLeft(), p.getRight(), dftGraph, bindings) ;
+        execDelete(dsg, p.getLeft(), p.getRight(), dftGraph, bindings) ;
     }
     
-    protected void execDelete(List<Quad> onceQuads, List<Quad> templateQuads, Node dftGraph, Iterator<Binding> bindings) {
-        if ( onceQuads != null && bindings.hasNext() )
-            // If at least once.
-            onceQuads.forEach(datasetGraph::delete);
+    protected static void execDelete(DatasetGraph dsg, List<Quad> onceQuads, List<Quad> templateQuads, Node dftGraph, Iterator<Binding> bindings) {
+        if ( onceQuads != null && bindings.hasNext() ) {
+            onceQuads = remapDefaultGraph(onceQuads, dftGraph) ;
+            onceQuads.forEach(q->deleteFromdatasetGraph(dsg, q)) ;
+        }
         Iterator<Quad> it = template(templateQuads, dftGraph, bindings) ;
-        if ( it == null ) return ;
-        it.forEachRemaining(datasetGraph::delete) ;
+        if ( it == null )
+            return ;
+        it.forEachRemaining(q->deleteFromdatasetGraph(dsg, q)) ;
     }
 
-    protected void execInsert(List<Quad> quads, Node dftGraph, Iterator<Binding> bindings) {
+    protected static void execInsert(DatasetGraph dsg, List<Quad> quads, Node dftGraph, Iterator<Binding> bindings) {
         Pair<List<Quad>, List<Quad>> p = split(quads) ;
-        execInsert(p.getLeft(), p.getRight(), dftGraph, bindings) ;
+        execInsert(dsg, p.getLeft(), p.getRight(), dftGraph, bindings) ;
     }
     
-    protected void execInsert(List<Quad> onceQuads, List<Quad> templateQuads, Node dftGraph, Iterator<Binding> bindings) {
-        if ( onceQuads != null && bindings.hasNext() )
-            // If at least once.
-            onceQuads.forEach((q)->addTodatasetGraph(datasetGraph, q)) ;
+    protected static void execInsert(DatasetGraph dsg, List<Quad> onceQuads, List<Quad> templateQuads, Node dftGraph, Iterator<Binding> bindings) {
+        if ( onceQuads != null && bindings.hasNext() ) {
+            onceQuads = remapDefaultGraph(onceQuads, dftGraph) ;
+            onceQuads.forEach((q)->addTodatasetGraph(dsg, q)) ;
+        }
         Iterator<Quad> it = template(templateQuads, dftGraph, bindings) ;
-        if ( it == null ) return ;
-        it.forEachRemaining((q)->addTodatasetGraph(datasetGraph, q)) ;
+        if ( it == null )
+            return ;
+        it.forEachRemaining((q)->addTodatasetGraph(dsg, q)) ;
     }
     
-    // Catch all individual adds of quads (and deletes - mainly for symmetry). 
-    private static void addTodatasetGraph(DatasetGraph datasetGraph, Quad quad) 
+    // Catch all individual adds of quads 
+    private static void addTodatasetGraph(DatasetGraph datasetGraph, Quad quad)
     {
         // Check legal triple.
         if ( quad.isLegalAsData() )
@@ -577,6 +586,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         //Log.warn(UpdateEngineWorker.class, "Bad quad as data: "+quad) ;
     }
 
+    // Catch all individual deletes of quads 
     private static void deleteFromdatasetGraph(DatasetGraph datasetGraph, Quad quad)
     {
         datasetGraph.delete(quad) ;
