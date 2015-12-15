@@ -77,7 +77,7 @@ define(
       validateSimpleForm: function() {
         this.clearValidation();
 
-        if (! $("input[name=dbName]").val()) {
+        if (! $("input[name=dbName]").val() || 0 === $("input[name=dbName]").val().trim().length) {
           $(".dbNameValidation").removeClass("hidden")
                                 .parents(".form-group" )
                                 .addClass( "has-error" );

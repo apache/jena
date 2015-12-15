@@ -29,6 +29,7 @@ import java.util.* ;
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
@@ -262,7 +263,7 @@ public class ActionDatasets extends ActionContainerItem {
     private void assemblerFromForm(HttpAction action, StreamRDF dest) {
         String dbType = action.getRequest().getParameter(paramDatasetType) ;
         String dbName = action.getRequest().getParameter(paramDatasetName) ;
-        if ( dbType == null || dbName == null )
+        if ( StringUtils.isBlank(dbType) || StringUtils.isBlank(dbName) )
             ServletOps.errorBadRequest("Required parameters: dbName and dbType");
         
         Map<String, String> params = new HashMap<>() ;
