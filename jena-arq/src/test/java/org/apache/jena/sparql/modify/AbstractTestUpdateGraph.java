@@ -20,10 +20,7 @@ package org.apache.jena.sparql.modify;
 
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.graph.Factory ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.* ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QueryException ;
 import org.apache.jena.query.QueryFactory ;
@@ -358,6 +355,22 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
         assertTrue(graphContains(gStore.getGraph(graphIRI),
                                  new Triple(s,p,o2))) ;
     }
+
+    @Test public void testUpdateScript8()
+    {
+        Node gn = NodeFactory.createURI("http://example/g") ;
+        Node testNode = NodeFactory.createURI("http://example/test") ;
+        Node result = NodeFactory.createURI("http://example/result") ;
+        
+        DatasetGraph gStore = getEmptyDatasetGraph() ;
+        script(gStore, "data-5-with.ru") ;
+        
+        assertTrue(gStore.containsGraph(gn)) ;
+        Graph g = gStore.getGraph(gn) ;
+        assertEquals(2, g.size()) ;
+        assertEquals(0, gStore.getDefaultGraph().size()) ;
+    }
+
     
     @Test(expected = QueryException.class) public void testUpdateBad1()      { testBad("bad-1.ru", 1) ; }
     @Test public void testUpdateBad2()      { testBad("bad-2.ru", 1) ; }
