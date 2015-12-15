@@ -24,7 +24,10 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.io.StringReader ;
-import java.util.* ;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Map ;
 
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
@@ -107,7 +110,6 @@ public class ActionDatasets extends ActionContainerItem {
     
     // ---- POST 
     
-    // DB less version
     @Override
     protected JsonValue execPostContainer(HttpAction action) {
         JenaUUID uuid = JenaUUID.generate() ;
@@ -165,10 +167,28 @@ public class ActionDatasets extends ActionContainerItem {
                 action.log.warn(format("[%d] Service name '%s' is not a string", action.id, FmtUtils.stringForRDFNode(object)));
             
             String datasetName = object.getLexicalForm() ;
+            
+            // ---- Check and canonicalize name.
+            if (  datasetName.isEmpty() ) {
+                action.log.error(format("[%d] Empty dataset name", action.id, datasetName)) ;
+                ServletOps.error(HttpSC.BAD_REQUEST_400, "Empty dataset name") ;
+            }
+            if (  StringUtils.isBlank(datasetName) ) {
+                action.log.error(format("[%d] Whitespace dataset name: '%s'", action.id, datasetName)) ;
+                ServletOps.error(HttpSC.BAD_REQUEST_400, format("Whitespace dataset name: '%s'", datasetName)) ;
+            }
+            
+            String datasetName2 = datasetName ;
+            datasetName = datasetName.trim() ;
+            if ( ! datasetName2.equals(datasetName) )
+                action.log.warn(format("[%d] Trimming white space: '%s'", action.id, datasetName2)) ;
+            if ( datasetName.contains(" ") )
+                ServletOps.error(HttpSC.BAD_REQUEST_400, format("Bad dataset name (contains spaces) '%s'",datasetName)) ;
+            
             String datasetPath = DataAccessPoint.canonical(datasetName) ;
             action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
             
-            // ---- Check whether ti already exists 
+            // ---- Check whether it already exists 
             if ( DataAccessPointRegistry.get().isRegistered(datasetPath) )
                 // And abort.
                 ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetPath) ;
