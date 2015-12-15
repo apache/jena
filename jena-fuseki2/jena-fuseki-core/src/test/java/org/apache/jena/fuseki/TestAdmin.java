@@ -55,6 +55,7 @@ public class TestAdmin extends AbstractFusekiTest {
     
     // Name of the dataset in the assembler file.
     static String dsTest = "test-ds2" ;
+    static String fileBase = "testing/" ;
     
     // --- Ping 
     
@@ -130,7 +131,7 @@ public class TestAdmin extends AbstractFusekiTest {
     @Test public void add_delete_dataset_2() {
         checkNotThere(dsTest) ;
 
-        File f = new File("testing/config-ds-1.ttl") ;
+        File f = new File(fileBase+"config-ds-1.ttl") ;
         { 
             org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8) ;
             HttpEntity e = new FileEntity(f, ct) ;
@@ -159,6 +160,26 @@ public class TestAdmin extends AbstractFusekiTest {
         addTestDataset() ;
         checkExists(dsTest) ;
         deleteDataset(dsTest) ;
+    }
+    
+    @Test public void add_error_1() {
+        FusekiTest.execWithHttpException(HttpSC.BAD_REQUEST_400, 
+                                         ()-> addTestDataset(fileBase+"config-ds-bad-name-1.ttl")) ;
+    }
+    
+    @Test public void add_error_2() {
+        FusekiTest.execWithHttpException(HttpSC.BAD_REQUEST_400, 
+                                         ()-> addTestDataset(fileBase+"config-ds-bad-name-2.ttl")) ;
+    }
+    
+    @Test public void add_error_3() {
+        FusekiTest.execWithHttpException(HttpSC.BAD_REQUEST_400, 
+                                         ()-> addTestDataset(fileBase+"config-ds-bad-name-3.ttl")) ;
+    }
+    
+    @Test public void add_error_4() {
+        FusekiTest.execWithHttpException(HttpSC.BAD_REQUEST_400, 
+                                         ()-> addTestDataset(fileBase+"config-ds-bad-name-4.ttl")) ;
     }
     
     @Test public void delete_dataset_1() {
@@ -294,26 +315,29 @@ public class TestAdmin extends AbstractFusekiTest {
     }
 
     private static JsonValue getDatasetDescription(String dsName) {
-    try ( TypedInputStream in = execHttpGet(urlRoot+"$/"+opDatasets+"/"+dsName) ) {
-        assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType()) ;
-        JsonValue v = JSON.parse(in) ;
-        return v ;
+        try (TypedInputStream in = execHttpGet(urlRoot + "$/" + opDatasets + "/" + dsName)) {
+            assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
+            JsonValue v = JSON.parse(in);
+            return v;
+        }
     }
-}
 
-// -- Add
+    // -- Add
 
-private static void addTestDataset() {
-    File f = new File("testing/config-ds-1.ttl") ;
-    org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8) ;
-    HttpEntity e = new FileEntity(f, ct) ;
-    execHttpPost(ServerTest.urlRoot+"$/"+opDatasets, e) ;
-}
+    private static void addTestDataset() {
+        addTestDataset(fileBase+"config-ds-1.ttl") ;
+    }
+    
+    private static void addTestDataset(String filename) {
+        File f = new File(filename) ;
+        org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8) ;
+        HttpEntity e = new FileEntity(f, ct) ;
+        execHttpPost(ServerTest.urlRoot+"$/"+opDatasets, e) ;
+    }
 
-private static void deleteDataset(String name) {
-    execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+name) ;
-}
-
+    private static void deleteDataset(String name) {
+        execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+name) ;
+    }
 
     static class JsonResponseHandler implements HttpResponseHandler {
 
@@ -331,8 +355,6 @@ private static void deleteDataset(String name) {
         }
         
     }
-    
-    
     
     private String execSleepTask(String name, int millis) {
         String url = urlRoot+"$/sleep" ;

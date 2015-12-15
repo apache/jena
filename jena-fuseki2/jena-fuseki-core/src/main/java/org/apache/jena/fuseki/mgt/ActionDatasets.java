@@ -166,28 +166,31 @@ public class ActionDatasets extends ActionContainerItem {
             if ( object.getDatatype() != null && ! object.getDatatype().equals(XSDDatatype.XSDstring) )
                 action.log.warn(format("[%d] Service name '%s' is not a string", action.id, FmtUtils.stringForRDFNode(object)));
             
-            String datasetName = object.getLexicalForm() ;
-            
-            // ---- Check and canonicalize name.
-            if (  datasetName.isEmpty() ) {
-                action.log.error(format("[%d] Empty dataset name", action.id, datasetName)) ;
-                ServletOps.error(HttpSC.BAD_REQUEST_400, "Empty dataset name") ;
+            String datasetPath ;
+            {
+                // As provided.
+                String datasetNameOrig = object.getLexicalForm() ;
+                
+                // ---- Check and canonicalize name.
+                if ( datasetNameOrig.isEmpty() )
+                    ServletOps.error(HttpSC.BAD_REQUEST_400, "Empty dataset name") ;
+                if (  StringUtils.isBlank(datasetNameOrig) )
+                    // Get logged
+                    ServletOps.error(HttpSC.BAD_REQUEST_400, format("Whitespace dataset name: '%s'", datasetNameOrig)) ;
+                
+                String datasetNameTrimmed = datasetNameOrig.trim() ;
+                if ( ! datasetNameTrimmed.equals(datasetNameOrig) )
+                    action.log.warn(format("[%d] Trimming white space: '%s' -> '%s'", action.id, datasetNameOrig, datasetNameTrimmed)) ;
+                if ( datasetNameTrimmed.contains(" ") )
+                    ServletOps.error(HttpSC.BAD_REQUEST_400, format("Bad dataset name (contains spaces) '%s'",datasetNameOrig)) ;
+                if ( datasetNameTrimmed.equals("/") )
+                    ServletOps.error(HttpSC.BAD_REQUEST_400, format("Bad dataset name '%s'",datasetNameOrig)) ;
+                
+                datasetPath = DataAccessPoint.canonical(datasetNameTrimmed) ;
             }
-            if (  StringUtils.isBlank(datasetName) ) {
-                action.log.error(format("[%d] Whitespace dataset name: '%s'", action.id, datasetName)) ;
-                ServletOps.error(HttpSC.BAD_REQUEST_400, format("Whitespace dataset name: '%s'", datasetName)) ;
-            }
-            
-            String datasetName2 = datasetName ;
-            datasetName = datasetName.trim() ;
-            if ( ! datasetName2.equals(datasetName) )
-                action.log.warn(format("[%d] Trimming white space: '%s'", action.id, datasetName2)) ;
-            if ( datasetName.contains(" ") )
-                ServletOps.error(HttpSC.BAD_REQUEST_400, format("Bad dataset name (contains spaces) '%s'",datasetName)) ;
-            
-            String datasetPath = DataAccessPoint.canonical(datasetName) ;
             action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
-            
+//            System.err.println("'"+datasetPath+"'") ;
+//            DataAccessPointRegistry.get().forEach((s,dap)->System.err.println("'"+s+"'")); 
             // ---- Check whether it already exists 
             if ( DataAccessPointRegistry.get().isRegistered(datasetPath) )
                 // And abort.
@@ -196,7 +199,7 @@ public class ActionDatasets extends ActionContainerItem {
             configFile = FusekiEnv.generateConfigurationFilename(datasetPath) ;
             List<String> existing = FusekiEnv.existingConfigurationFile(datasetPath) ;
             if ( ! existing.isEmpty() )
-                ServletOps.error(HttpSC.CONFLICT_409, "Configuration file for "+datasetPath+" already exists") ;
+                ServletOps.error(HttpSC.CONFLICT_409, "Configuration file for '"+datasetPath+"' already exists") ;
 
             // Write to configuration directory.
             try ( OutputStream outCopy = IO.openOutputFile(configFile) ) {
