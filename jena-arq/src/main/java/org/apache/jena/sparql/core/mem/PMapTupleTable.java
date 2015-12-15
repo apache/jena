@@ -61,17 +61,6 @@ public abstract class PMapTupleTable<TupleMapType, TupleType> implements TupleTa
         return local;
     }
 
-    private final ThreadLocal<Boolean> isInTransaction = withInitial(() -> false);
-
-    @Override
-    public boolean isInTransaction() {
-        return isInTransaction.get();
-    }
-
-    protected void isInTransaction(final boolean b) {
-        isInTransaction.set(b);
-    }
-
     private final String tableName;
 
     /**
@@ -93,14 +82,13 @@ public abstract class PMapTupleTable<TupleMapType, TupleType> implements TupleTa
 
     @Override
     public void begin(final ReadWrite rw) {
-        isInTransaction(true);
+        // local is never used.
     }
 
     @Override
     public void end() {
         debug("Abandoning transactional reference.");
         local.remove();
-        isInTransaction.remove();
     }
 
     @Override
