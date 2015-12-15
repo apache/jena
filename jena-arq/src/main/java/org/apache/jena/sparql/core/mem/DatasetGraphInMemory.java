@@ -52,7 +52,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     private final DatasetPrefixStorage prefixes = new DatasetPrefixStorageInMemory();
 
     /** This lock imposes the multiple-reader and single-writer policy of transactions */
-    private final Lock writeLock = new LockMRPlusSW();
+    private final Lock transactionLock = new LockMRPlusSW();
 
     /**
      * Transaction lifecycle operations must be atomic, especially
@@ -132,7 +132,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     
     /** Called transaction start code at most once per transaction. */ 
     private void startTransaction(ReadWrite mode) {
-        writeLock.enterCriticalSection(mode.equals(READ)); // get the dataset write lock, if needed.
+        transactionLock.enterCriticalSection(mode.equals(READ)); // get the dataset write lock, if needed.
         transactionType(mode);
         isInTransaction(true);
     }
@@ -141,7 +141,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     private void finishTransaction() {
         isInTransaction.remove();
         transactionType.remove();
-        writeLock.leaveCriticalSection();
+        transactionLock.leaveCriticalSection();
     }
      
     @Override
