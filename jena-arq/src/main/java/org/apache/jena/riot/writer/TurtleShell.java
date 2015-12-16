@@ -500,7 +500,7 @@ public abstract class TurtleShell {
                 writeNode(RDF_Rest) ;
                 print("  ") ;
                 x = x.subList(1, x.size()) ;
-                list(x) ;
+                writeList(x) ;
                 print(" .") ;
                 out.decIndent(INDENT_PREDICATE) ;
                 println() ;
@@ -529,7 +529,7 @@ public abstract class TurtleShell {
                 print(" ") ;
                 x = x.subList(1, x.size()) ;
                 // Print remainder.
-                list(x) ;
+                writeList(x) ;
                 out.println(" ] .") ;
             }
             return somethingWritten ;
@@ -773,7 +773,7 @@ public abstract class TurtleShell {
         }
 
         // Write a list
-        private void list(List<Node> elts) {
+        private void writeList(List<Node> elts) {
             if ( elts.size() == 0 ) {
                 out.print("()") ;
                 return ;
@@ -797,7 +797,7 @@ public abstract class TurtleShell {
                 boolean multiLineAny = false ;
                 boolean first = true ;
 
-                // Wheer we started.
+                // Where we started.
                 int originalIndent = out.getAbsoluteIndent() ;
                 // Rebase indent here.
                 int x = out.getCol() ;
@@ -809,6 +809,11 @@ public abstract class TurtleShell {
                     
                     // Print this item on a fresh line? (still to check: first line)
                     boolean thisItemFreshLine = /* multiLineAny | */ n.isBlank() ;
+
+                    // Special case List in List.
+                    // Start on this line if last item was on this line.
+                    if ( lists.containsKey(n) )
+                        thisItemFreshLine = lastItemFreshLine ;
                 
                     // Starting point.
                     if ( ! first ) {
@@ -858,7 +863,7 @@ public abstract class TurtleShell {
             // Assumes "isPrettyNode" is true.
             // Order matters? - one connected objects may include list elements.
             if ( lists.containsKey(obj) )
-                list(lists.get(obj)) ;
+                writeList(lists.get(obj)) ;
             else if ( nestedObjects.contains(obj) )
                 writeNestedObject(obj) ;
             else if ( RDF_Nil.equals(obj) )
