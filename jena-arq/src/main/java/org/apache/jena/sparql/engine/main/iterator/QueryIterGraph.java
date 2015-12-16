@@ -31,6 +31,7 @@ import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.op.OpGraph ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Substitute ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
@@ -43,6 +44,14 @@ import org.apache.jena.sparql.engine.main.QC ;
 
 public class QueryIterGraph extends QueryIterRepeatApply
 {
+    /*
+     * A note on the strange case of GRAPH ?g { ... ?g ... }
+     * 
+     * The inner pattern is solved, then the outer ?g=... is added. This happens
+     * because the outer ?g is added by QueryIterAssignVarValue which tests a
+     * variable is the same as the binding and drops the binding if not. (which
+     * is a specialised form of join.
+     */
     protected OpGraph opGraph ;
     
     public QueryIterGraph(QueryIterator input, OpGraph opGraph, ExecutionContext context)
@@ -52,8 +61,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
     }
     
     @Override
-    protected QueryIterator nextStage(Binding outerBinding)
-    {
+    protected QueryIterator nextStage(Binding outerBinding) {
         DatasetGraph ds = getExecContext().getDataset() ;
         // Is this closed?
         Iterator<Node> graphNameNodes = makeSources(ds, outerBinding, opGraph.getNode());
@@ -62,31 +70,23 @@ public class QueryIterGraph extends QueryIterRepeatApply
 //        graphNameNodes = x.iterator() ;
 //        System.out.println(x) ;
         
-        QueryIterator current = new QueryIterGraphInner(
-                                               outerBinding, graphNameNodes, 
-                                               opGraph, getExecContext()) ;
+        QueryIterator current = new QueryIterGraphInner(outerBinding, graphNameNodes, opGraph, getExecContext()) ;
         return current ;
     }
 
-    private static Node resolve(Binding b, Node n)
-    {
-        if ( ! n.isVariable() )
-            return n ;
-
+    /** Bound value or null */
+    private static Node resolve(Binding b, Node n) {
+        if ( ! n.isVariable() ) return n ;
         return b.get(Var.alloc(n)) ;
     }
 
-    protected static Iterator<Node> makeSources(DatasetGraph data, Binding b, Node graphVar)
-    {
-        // TODO This should done as part of substitution.
+    protected static Iterator<Node> makeSources(DatasetGraph data, Binding b, Node graphVar) {
         Node n2 = resolve(b, graphVar) ;
-        
         if ( n2 != null && ! n2.isURI() )
             // Blank node or literal possible after resolving
             return Iter.nullIterator() ;
         
         // n2 is a URI or null.
-        
         if ( n2 == null )
             // Do all submodels.
             return data.listGraphNodes() ;
@@ -96,46 +96,44 @@ public class QueryIterGraph extends QueryIterRepeatApply
 
     protected static class QueryIterGraphInner extends QueryIterSub
     {
-        protected Binding parentBinding ;
-        protected Iterator<Node> graphNames ;
-        protected OpGraph opGraph ;
+        protected final Binding parentBinding ;
+        protected final Iterator<Node> graphNames ;
+        protected final OpGraph opGraph ;
+        protected final Op opSubstituted ;
 
-        protected QueryIterGraphInner(Binding parent, Iterator<Node> graphNames, OpGraph opGraph, ExecutionContext execCxt)
-        {
+        protected QueryIterGraphInner(Binding parent, Iterator<Node> graphNames, OpGraph opGraph, ExecutionContext execCxt) {
             super(null, execCxt) ;
             this.parentBinding = parent ;
             this.graphNames = graphNames ;
             this.opGraph = opGraph ;
+            this.opSubstituted = Substitute.substitute(opGraph.getSubOp(), parent) ;
         }
 
         @Override
-        protected boolean hasNextBinding()
-        {
-            for(;;)
-            {
+        protected boolean hasNextBinding() {
+            for ( ;; ) {
                 if ( iter == null )
-                    iter = nextIterator() ;
-                
+                    iter = nextIterator();
+
                 if ( iter == null )
-                    return false ;
-                
+                    return false;
+
                 if ( iter.hasNext() )
-                    return true ;
-                
-                iter.close() ;
-                iter = nextIterator() ;
+                    return true;
+
+                iter.close();
+                iter = nextIterator();
                 if ( iter == null )
-                    return false ;
+                    return false;
             }
         }
 
         @Override
-        protected Binding moveToNextBinding()
-        {
+        protected Binding moveToNextBinding() {
             if ( iter == null )
-                throw new NoSuchElementException(Lib.className(this)+".moveToNextBinding") ;
-                
-            return iter.nextBinding() ;
+                throw new NoSuchElementException(Lib.className(this) + ".moveToNextBinding");
+
+            return iter.nextBinding();
         }
 
         // This code predates ARQ using Java 1.5.
@@ -145,43 +143,34 @@ public class QueryIterGraph extends QueryIterRepeatApply
         // There is a tradeoff of generalising QueryIteratorRepeatApply to Objects
         // and hence no type safety. Or duplicating code (generics?)
         
-        protected QueryIterator nextIterator()
-        {
+        protected QueryIterator nextIterator() {
             if ( ! graphNames.hasNext() )
                 return null ;
             Node gn = graphNames.next() ;
 
-            QueryIterator qIter = buildIterator(parentBinding, gn, opGraph, getExecContext()) ;
+            QueryIterator qIter = buildIterator(parentBinding, gn, opSubstituted, getExecContext()) ;
             if ( qIter == null )
                 // Know to be nothing (e.g. graph does not exist). 
                 return null ;
             
-            if ( Var.isVar(opGraph.getNode()) )
-            {
+            if ( Var.isVar(opGraph.getNode()) ) {
                 // This is the join of the graph node variable to the sub-pattern solution.
                 // Do after the subpattern so that the variable is not visible to the
                 // subpattern.
                 Var v = Var.alloc(opGraph.getNode()) ;
                 qIter = new QueryIterAssignVarValue(qIter, v, gn, getExecContext()) ;
             }
-            
             return qIter ;
         }
         
         // Create the iterator - or return null if there can't be any results.
-        protected static QueryIterator buildIterator(Binding binding, Node graphNode, OpGraph opGraph, ExecutionContext outerCxt)
-        {
+        protected static QueryIterator buildIterator(Binding binding, Node graphNode, Op opExec, ExecutionContext outerCxt) {
             if ( !graphNode.isURI() && !graphNode.isBlank() )
                 // e.g. variable bound to a literal or blank node.
                 throw new ARQInternalErrorException("QueryIterGraphInner.buildIterator: Not a URI or balnk node: "+graphNode) ;
             
-            // Think about avoiding substitution.
-            // If the subpattern does not involve the vars from the binding, avoid the substitute.  
-            Op op = QC.substitute(opGraph.getSubOp(), binding) ;
-            
-            // We can't just use DatasetGraph.getGraph because it may "auto-create" graphs.
-            // Use the containsGraph function.
-            
+            // We can't just use DatasetGraph.getGraph because it may 
+            // "auto-create" graphs. Use the containsGraph function.
             boolean syntheticGraph = ( Quad.isDefaultGraph(graphNode) || Quad.isUnionGraph(graphNode) ) ;
             if ( ! syntheticGraph && ! outerCxt.getDataset().containsGraph(graphNode) )
                 return null ;
@@ -194,7 +183,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
             
             ExecutionContext cxt2 = new ExecutionContext(outerCxt, g) ;
             QueryIterator subInput = QueryIterSingleton.create(binding, cxt2) ;
-            return QC.execute(op, subInput, cxt2) ;
+            return QC.execute(opExec, subInput, cxt2) ;
         }
 
         @Override
