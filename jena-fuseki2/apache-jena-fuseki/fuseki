@@ -309,8 +309,8 @@ fi
 RUN_CMD=("$JAVA" "${RUN_ARGS[@]}")
 
 # Export the variables to be seen by the java server process.
-export FUSEKI_HOME
-export FUSEKI_BASE
+## export FUSEKI_HOME
+## export FUSEKI_BASE
 
 #####################################################
 # Comment these out after you're happy with what
