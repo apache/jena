@@ -39,13 +39,11 @@ public class QueryIterAssign extends QueryIterProcessBinding
     private VarExprList exprs ;
     private final boolean mustBeNewVar ;
     
-    public QueryIterAssign(QueryIterator input, Var var, Expr expr, ExecutionContext qCxt)
-    {
+    public QueryIterAssign(QueryIterator input, Var var, Expr expr, ExecutionContext qCxt) {
         this(input, new VarExprList(var, expr) , qCxt, false) ;
     }
     
-    public QueryIterAssign(QueryIterator input, VarExprList exprs, ExecutionContext qCxt, boolean mustBeNewVar)
-    {
+    public QueryIterAssign(QueryIterator input, VarExprList exprs, ExecutionContext qCxt, boolean mustBeNewVar) {
         // mustBeNewVar : any variable introduced must not already exist.
         // true => BIND
         // false => LET 
@@ -56,29 +54,24 @@ public class QueryIterAssign extends QueryIterProcessBinding
     }
     
     @Override
-    public Binding accept(Binding binding)
-    {
-        BindingMap b = BindingFactory.create(binding) ;
-        for ( Var v : exprs.getVars() )
-        {
-            // Not this, where expressions do not see the new bindings.
-            // Node n = exprs.get(v, bind, funcEnv) ;
-            // which gives (Lisp) "let" semantics, not "let*" semantics 
-            Node n = exprs.get(v, b, getExecContext()) ;
-            
+    public Binding accept(Binding binding) {
+        BindingMap b = BindingFactory.create(binding);
+        for ( Var v : exprs.getVars() ) {
+            // if "binding", not "b" used, we get (Lisp) "let" 
+            // semantics, not the desired "let*" semantics
+            Node n = exprs.get(v, b, getExecContext());
+
             if ( n == null )
                 // Expression failed to evaluate - no assignment
-                continue ;
-                
+                continue;
+
             // Check is already has a value; if so, must be sameValueAs
-            if ( b.contains(v) )
-            {
-                // Optimization may linearize to push a stream through an (extend).  
+            if ( b.contains(v) ) {
+                // Optimization may linearize to push a stream through an (extend).
                 if ( false && mustBeNewVar )
-                    throw new QueryExecException("Already set: "+v) ;
-                
-                Node n2 = b.get(v) ;
-                if ( ! n2.sameValueAs(n) )
+                    throw new QueryExecException("Already set: " + v);
+                Node n2 = b.get(v);
+                if ( !n2.sameValueAs(n) )
                     //throw new QueryExecException("Already set: "+v) ;
                     // Error in single assignment.
                     return null ;
@@ -90,11 +83,9 @@ public class QueryIterAssign extends QueryIterProcessBinding
     }
     
     @Override
-    protected void details(IndentedWriter out, SerializationContext cxt)
-    { 
-        out.print(Lib.className(this)) ;
-        out.print(" ") ;
-        out.print(exprs.toString()) ;
+    protected void details(IndentedWriter out, SerializationContext cxt) {
+        out.print(Lib.className(this));
+        out.print(" ");
+        out.print(exprs.toString());
     }
-       
 }
