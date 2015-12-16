@@ -39,33 +39,28 @@ import org.apache.jena.sparql.util.FmtUtils ;
  *  @see QueryIterExtendByVar
  */ 
 
-public class QueryIterAssignVarValue extends QueryIterProcessBinding
-{
-    private final Var var ;
-    private final Node node ;
-    private final boolean mustBeNewVar ;
-    
-    public QueryIterAssignVarValue(QueryIterator input, Var var, Node node, ExecutionContext qCxt)
-    { 
-        this(input, var, node, qCxt, false) ;
+public class QueryIterAssignVarValue extends QueryIterProcessBinding {
+    private final Var     var;
+    private final Node    node;
+    private final boolean mustBeNewVar;
+
+    public QueryIterAssignVarValue(QueryIterator input, Var var, Node node, ExecutionContext qCxt) {
+        this(input, var, node, qCxt, false);
     }
-    
-    public QueryIterAssignVarValue(QueryIterator input, Var var, Node node, ExecutionContext qCxt, boolean mustBeNewVar)
-    {
-        super(input, qCxt) ;
-        this.var = var ;
-        this.node = node ;
-        this.mustBeNewVar = mustBeNewVar ;
+
+    public QueryIterAssignVarValue(QueryIterator input, Var var, Node node, ExecutionContext qCxt, boolean mustBeNewVar) {
+        super(input, qCxt);
+        this.var = var;
+        this.node = node;
+        this.mustBeNewVar = mustBeNewVar;
     }
-    
+
     @Override
-    public Binding accept(Binding binding)
-    {
-        if ( binding.contains(var) )
-        {
+    public Binding accept(Binding binding) {
+        if ( binding.contains(var) ) {
             if ( mustBeNewVar )
-                throw new QueryExecException("Already set: "+var) ;
-            
+                throw new QueryExecException("Already set: " + var);
+
             Node n2 = binding.get(var) ;
             if ( ! n2.equals(node) )
                 // And filter out.
@@ -74,13 +69,11 @@ public class QueryIterAssignVarValue extends QueryIterProcessBinding
                 // Already in the binding with the value -> nothing to do. 
                 return binding ;
         }
-        
         return BindingFactory.binding(binding, var, node) ;
     }
     
     @Override
-    protected void details(IndentedWriter out, SerializationContext cxt)
-    { 
+    protected void details(IndentedWriter out, SerializationContext cxt) { 
         out.print(Lib.className(this)) ;
         out.print(" ?"+var.toString()+" = "+FmtUtils.stringForNode(node, cxt)) ;
     }
