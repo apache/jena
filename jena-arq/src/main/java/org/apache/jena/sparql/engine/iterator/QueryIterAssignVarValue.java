@@ -36,6 +36,7 @@ import org.apache.jena.sparql.util.FmtUtils ;
  *  it must be the same (.equals) node and if it is not,
  *  the input row is rejected.
  *  @see QueryIterAssign
+ *  @see QueryIterExtendByVar
  */ 
 
 public class QueryIterAssignVarValue extends QueryIterProcessBinding
@@ -69,6 +70,9 @@ public class QueryIterAssignVarValue extends QueryIterProcessBinding
             if ( ! n2.equals(node) )
                 // And filter out.
                 return null ;
+            else
+                // Already in the binding with the value -> nothing to do. 
+                return binding ;
         }
         
         return BindingFactory.binding(binding, var, node) ;
