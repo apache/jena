@@ -315,6 +315,7 @@ RUN_CMD=("$JAVA" "${RUN_ARGS[@]}")
 if (( DEBUG ))
 then
   log_daemon_msg "FUSEKI_HOME    =  $FUSEKI_HOME"
+  log_daemon_msg "FUSEKI_BASE    =  $FUSEKI_BASE"
   log_daemon_msg "FUSEKI_CONF    =  $FUSEKI_CONF"
   log_daemon_msg "FUSEKI_RUN     =  $FUSEKI_RUN"
   log_daemon_msg "FUSEKI_PID     =  $FUSEKI_PID"
