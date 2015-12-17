@@ -167,26 +167,19 @@ public class ActionDatasets extends ActionContainerItem {
                 action.log.warn(format("[%d] Service name '%s' is not a string", action.id, FmtUtils.stringForRDFNode(object)));
             
             String datasetPath ;
-            {
-                // As provided.
-                String datasetNameOrig = object.getLexicalForm() ;
+            {   // Check the name provided.
+                String datasetName = object.getLexicalForm() ;
                 
                 // ---- Check and canonicalize name.
-                if ( datasetNameOrig.isEmpty() )
+                if ( datasetName.isEmpty() )
                     ServletOps.error(HttpSC.BAD_REQUEST_400, "Empty dataset name") ;
-                if (  StringUtils.isBlank(datasetNameOrig) )
-                    // Get logged
-                    ServletOps.error(HttpSC.BAD_REQUEST_400, format("Whitespace dataset name: '%s'", datasetNameOrig)) ;
-                
-                String datasetNameTrimmed = datasetNameOrig.trim() ;
-                if ( ! datasetNameTrimmed.equals(datasetNameOrig) )
-                    action.log.warn(format("[%d] Trimming white space: '%s' -> '%s'", action.id, datasetNameOrig, datasetNameTrimmed)) ;
-                if ( datasetNameTrimmed.contains(" ") )
-                    ServletOps.error(HttpSC.BAD_REQUEST_400, format("Bad dataset name (contains spaces) '%s'",datasetNameOrig)) ;
-                if ( datasetNameTrimmed.equals("/") )
-                    ServletOps.error(HttpSC.BAD_REQUEST_400, format("Bad dataset name '%s'",datasetNameOrig)) ;
-                
-                datasetPath = DataAccessPoint.canonical(datasetNameTrimmed) ;
+                if ( StringUtils.isBlank(datasetName) )
+                    ServletOps.error(HttpSC.BAD_REQUEST_400, format("Whitespace dataset name: '%s'", datasetName)) ;
+                if ( datasetName.contains(" ") )
+                    ServletOps.error(HttpSC.BAD_REQUEST_400, format("Bad dataset name (contains spaces) '%s'",datasetName)) ;
+                if ( datasetName.equals("/") )
+                    ServletOps.error(HttpSC.BAD_REQUEST_400, format("Bad dataset name '%s'",datasetName)) ;
+                datasetPath = DataAccessPoint.canonical(datasetName) ;
             }
             action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
 //            System.err.println("'"+datasetPath+"'") ;
