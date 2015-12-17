@@ -224,11 +224,9 @@ public class XSDFuncOp
 
         if ( nv.isBoolean() )
             return nv.getBoolean() ;
-        if ( nv.isString() )
+        if ( nv.isString() || nv.isLangString() )
+            // Plain literals.
             return ! nv.getString().isEmpty() ;
-        if ( nv.isLiteral() && Util.isLangString(nv.asNode()) ) 
-            // Plain literals : no lang tag done by the test above.
-            return ! nv.getNode().getLiteralLexicalForm().isEmpty() ;
         if ( nv.isInteger() )
             return !nv.getInteger().equals(NodeValue.IntegerZERO) ;
         if ( nv.isDecimal() )
