@@ -367,18 +367,17 @@ public class UpdateEngineWorker implements UpdateVisitor
                 // and an empty/unknown graph <uri>
                 //   rewrite with GRAPH -> no match.
                 //   redo as dataset with different default graph -> match
-                //     SPARQL is unclear abotu what happens when the graph does not exist. 
-                // The rewite means the raw query engine is used though.
+                //     SPARQL is unclear about what happens when the graph does not exist.
+                //     but the rewrite with ElementNamedGraph is closer to SPARQL.
                 
                 // Ye Olde way - create a special dataset
-                dsg = processWith(update) ;
+                dsg = processWithOld(update) ;
                 withGraph = null ;
             }
             else
-                // Better, 
-                // Wrap WHERE clause in GRAPH <with_uri>
-                // and can remove DatasetGraphAltDefaultGraph, 
-                // or at least comment its implications.
+                // Better, treat as
+                // WHERE { GRAPH <with> { ... } }
+                // This is the SPARQL wording (which is a bit loose).  
                 elt = new ElementNamedGraph(withGraph, elt) ;
         }
 
@@ -428,7 +427,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         return DynamicDatasets.dynamicDataset(update.getUsing(), update.getUsingNamed(), datasetGraph, false);
     }
 
-    protected DatasetGraph processWith(UpdateModify update) {
+    protected DatasetGraph processWithOld(UpdateModify update) {
         Node withGraph = update.getWithIRI();
         if ( withGraph == null )
             return null;
