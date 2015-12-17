@@ -27,6 +27,7 @@ import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
@@ -554,8 +555,6 @@ public class TestNodeValue extends BaseTest
     {
         NodeValue v = NodeValue.makeInteger(1) ;
         assertFalse("It's a boolean: "+v, v.isBoolean()) ;
-        //assertTrue("Not a node: "+v, v.hasNode()) ;
-        try { v.getBoolean() ; fail("getBoolean should fail") ; } catch (ExprEvalException e) {}
         assertTrue("Not EBV true: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
     }
     
@@ -563,7 +562,6 @@ public class TestNodeValue extends BaseTest
     {
         NodeValue v = NodeValue.makeInteger(0) ;
         assertFalse("It's a boolean: "+v, v.isBoolean()) ;
-        //assertTrue("Not a node: "+v, v.hasNode()) ;
         try { v.getBoolean() ; fail("getBoolean should fail") ; } catch (ExprEvalException e) {}
         assertFalse("Not EBV false: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
     }
@@ -581,10 +579,30 @@ public class TestNodeValue extends BaseTest
     {
         NodeValue v = NodeValue.makeString("") ;
         assertFalse("It's a boolean: "+v, v.isBoolean()) ;
-        //assertTrue("Not a node: "+v, v.hasNode()) ;
         try { v.getBoolean() ; fail("getBoolean should fail") ; } catch (ExprEvalException e) {}
         assertFalse("Not EBV false: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
     }
+    
+    // EBV includes plain literals which includes language tagged literals.
+    @Test public void testEBV7()
+    {
+        Node x = NodeFactory.createLiteral("", "en") ;
+        NodeValue v = NodeValue.makeNode(x) ;
+        assertFalse("Not EBV false: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
+    }
+
+    @Test public void testEBV8()
+    {
+        Node x = NodeFactory.createLiteral("not empty", "en") ;
+        NodeValue v = NodeValue.makeNode(x) ;
+        assertTrue("Not EBV true: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
+    }
+
+    private static boolean filterEBV(NodeValue nv) {
+        try { return XSDFuncOp.booleanEffectiveValue(nv) ; }
+        catch (ExprEvalException ex) { return false ; }
+    }
+    
     
     @Test public void testFloatDouble1()
     {

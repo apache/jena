@@ -218,14 +218,17 @@ public class XSDFuncOp
     public static boolean booleanEffectiveValue(NodeValue nv) {
         // Apply the "boolean effective value" rules
         // boolean: value of the boolean (strictly, if derived from xsd:boolean)
-        // string: length(string) > 0
+        // plain literal: lexical form length(string) > 0
         // numeric: number != Nan && number != 0
         // http://www.w3.org/TR/xquery/#dt-ebv
 
         if ( nv.isBoolean() )
             return nv.getBoolean() ;
         if ( nv.isString() )
-            return nv.getString().length() > 0 ;
+            return ! nv.getString().isEmpty() ;
+        if ( nv.isLiteral() && Util.isLangString(nv.asNode()) ) 
+            // Plain literals : no lang tag done by the test above.
+            return ! nv.getNode().getLiteralLexicalForm().isEmpty() ;
         if ( nv.isInteger() )
             return !nv.getInteger().equals(NodeValue.IntegerZERO) ;
         if ( nv.isDecimal() )
