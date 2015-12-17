@@ -220,7 +220,6 @@ public class Util extends Object {
             return false ;
         return !lang.equals("") ;
     }
-
     
     /** Return true if the literal is a simple string.
      *  <p>RDF 1.0 => it is a plain literal, with no language tag
