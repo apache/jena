@@ -194,7 +194,17 @@ fi
 if [ -z "$FUSEKI_BASE" ]
 then
   #FUSEKI_BASE="/etc/fuseki"
-  FUSEKI_BASE="$FUSEKI_HOME/run"  
+  FUSEKI_BASE="$FUSEKI_HOME/run"
+  # Autocreate FUSEKI_BASE if defaulting to FUSEKI_HOME/run (simple deployment)
+  if [ ! -e "$FUSEKI_BASE" ]
+  then
+      log_daemon_msg "Creating '$FUSEKI_BASE'"
+      if [ "$cygwin" == "true" ]
+      then
+	  FUSEKI_BASE=`cygpath -w "$FUSEKI_BASE"`
+      fi
+      mkdir "$FUSEKI_BASE"
+  fi
 fi
 
 if [ "$cygwin" == "true" ]
@@ -318,9 +328,10 @@ then
   log_daemon_msg "JAVA_OPTIONS   =  ${JAVA_OPTIONS[*]}"
   log_daemon_msg "RUN_ARGS       =  ${RUN_ARGS[@]}"
   log_daemon_msg "RUN_CMD        =  ${RUN_CMD[@]}"
+  log_daemon_msg "Stdout/stderr  =  $FUSEKI_LOGS_STDERROUT"
 fi
 
-NO_START=0
+NO_START=${NO_START:-0}
 
 # Life cycle functions
 start() {
