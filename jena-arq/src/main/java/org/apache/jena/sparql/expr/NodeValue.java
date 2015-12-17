@@ -550,8 +550,8 @@ public abstract class NodeValue extends ExprNode
             case VSPACE_UNKNOWN:
             {
                 // One or two unknown value spaces, or one has a lang tag (but not both).
-                Node node1 = nv1.getNode() ;
-                Node node2 = nv2.getNode() ;
+                Node node1 = nv1.asNode() ;
+                Node node2 = nv2.asNode() ;
                 
                 if ( ! SystemARQ.ValueExtensions )
                     // No value extensions => raw rdfTermEquals
