@@ -57,23 +57,23 @@ import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.resultset.SPARQLResult ;
 import org.apache.jena.web.HttpSC ;
 
-/** Handle SPARQL Query requests overt eh SPARQL Protocol. 
+/** Handle SPARQL Query requests over the SPARQL Protocol.
  * Subclasses provide this algorithm with the actual dataset to query, whether
- * a dataset hosted by this server ({@link SPARQL_QueryDataset}) or 
- * speciifed in the protocol request ({@link SPARQL_QueryGeneral}).   
- */ 
+ * a dataset hosted by this server ({@link SPARQL_QueryDataset}) or
+ * speciifed in the protocol request ({@link SPARQL_QueryGeneral}).
+ */
 public abstract class SPARQL_Query extends SPARQL_Protocol
 {
     private static final long serialVersionUID = 6670547318463759949L;
 
     private static final String QueryParseBase = Fuseki.BaseParserSPARQL ;
-    
+
     public SPARQL_Query() {
         super() ;
     }
 
     // Choose REST verbs to support.
-    
+
     // doMethod : Not used with UberServlet dispatch.
 
     @Override
@@ -92,7 +92,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         response.setHeader(HttpNames.hAllow, "GET,OPTIONS,POST") ;
         response.setHeader(HttpNames.hContentLengh, "0") ;
     }
-    
+
     protected void doOptions(HttpAction action) {
         doOptions(action.request, action.response) ;
     }
@@ -110,7 +110,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     @Override
     protected void validate(HttpAction action) {
         String method = action.request.getMethod().toUpperCase(Locale.ROOT) ;
-        
+
         if ( HttpNames.METHOD_OPTIONS.equals(method) )
             return ;
 
@@ -155,7 +155,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                 // Drop through.
             } else if ( matchContentType(ctHTMLForm, ct)) {
                 // Nothing specific to do
-            } 
+            }
             else
                 ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unsupported: " + incoming) ;
         }
@@ -197,7 +197,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             doOptions(action) ;
             return ;
         }
-        
+
         // GET
         if ( action.request.getMethod().equals(HttpNames.METHOD_GET) ) {
             executeWithParameter(action) ;
@@ -205,7 +205,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         }
 
         ContentType ct = FusekiLib.getContentType(action) ;
-    
+
         // POST application/x-www-form-url
         // POST ?query= and no Content-Type
         if ( ct == null || isHtmlForm(ct) ) {
@@ -213,13 +213,13 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             executeWithParameter(action) ;
             return ;
         }
-    
+
         // POST application/sparql-query
         if ( matchContentType(ct, ctSPARQLQuery) ) {
             executeBody(action) ;
             return ;
         }
-    
+
         ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + ct.getContentType()) ;
     }
 
@@ -271,9 +271,9 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                 // Deals with exceptions itself.
                 sendResults(action, result, query.getPrologue()) ;
             }
-        } 
+        }
         catch (QueryParseException ex) {
-            // Late stage static error (e.g. bad fixed Lucene query string). 
+            // Late stage static error (e.g. bad fixed Lucene query string).
             ServletOps.errorBadRequest("Query parse error: \n" + queryString + "\n\r" + messageForQueryException(ex)) ;
         }
         catch (QueryCancelledException ex) {
@@ -304,7 +304,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
      * @param action
      * @param queryExecution
      * @param query
-     * @param queryStringLog Informational string created from the initial query. 
+     * @param queryStringLog Informational string created from the initial query.
      * @return
      */
     protected SPARQLResult executeQuery(HttpAction action, QueryExecution queryExecution, Query query, String queryStringLog) {
@@ -378,10 +378,10 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             qexec.setTimeout(desiredTimeout) ;
     }
 
-    /** Choose the dataset for this SPARQL Query request. 
+    /** Choose the dataset for this SPARQL Query request.
      * @param action
      * @param query  Query - this may be modified to remove a DatasetDescription.
-     * @param queryStringLog 
+     * @param queryStringLog
      * @return {@link Dataset}
      */
     protected abstract Dataset decideDataset(HttpAction action, Query query, String queryStringLog) ;
@@ -395,7 +395,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         if ( result.isResultSet() )
             ResponseResultSet.doResponseResultSet(action, result.getResultSet(), qPrologue) ;
         else if ( result.isDataset() )
-            // CONSTRUCT is processed as a extended CONSTRUCT - result is a dataset. 
+            // CONSTRUCT is processed as a extended CONSTRUCT - result is a dataset.
             ResponseDataset.doResponseDataset(action, result.getDataset());
         else if ( result.isModel() )
             // DESCRIBE results are models

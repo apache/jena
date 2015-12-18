@@ -49,7 +49,7 @@ import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.web.HttpSC ;
 
-public class SPARQL_Upload extends ActionSPARQL 
+public class SPARQL_Upload extends ActionSPARQL
 {
     private static final long serialVersionUID = -8762461819710807201L;
 
@@ -69,14 +69,14 @@ public class SPARQL_Upload extends ActionSPARQL
         response.setHeader(HttpNames.hAllow, "OPTIONS,POST") ;
         response.setHeader(HttpNames.hContentLengh, "0") ;
     }
-    
+
     @Override
     protected void perform(HttpAction action) {
         // Only allows one file in the upload.
         boolean isMultipart = ServletFileUpload.isMultipartContent(action.request);
         if ( ! isMultipart )
             ServletOps.error(HttpSC.BAD_REQUEST_400 , "Not a file upload") ;
-        
+
         long count = upload(action, Fuseki.BaseUpload) ;
         ServletOps.success(action) ;
         try {
@@ -115,14 +115,14 @@ public class SPARQL_Upload extends ActionSPARQL
     }
 
     /** Non-transaction - buffer to a temporary graph so that parse errors
-     * are caught before inserting any data. 
+     * are caught before inserting any data.
      */
      private static long uploadNonTxn(HttpAction action, String base) {
          UploadDetails upload = uploadWorker(action, base) ;
          String graphName = upload.graphName ;
          DatasetGraph dataTmp = upload.data ;
          long count = upload.count ;
-         
+
          if ( graphName == null )
              action.log.info(format("[%d] Upload: %d Quads(s)",action.id, count)) ;
          else
@@ -131,7 +131,7 @@ public class SPARQL_Upload extends ActionSPARQL
          Node gn = null ;
          if ( graphName != null ) {
              gn = graphName.equals(HttpNames.valueDefault)
-                 ? Quad.defaultGraphNodeGenerated 
+                 ? Quad.defaultGraphNodeGenerated
                  : NodeFactory.createURI(graphName) ;
          }
 
@@ -150,7 +150,7 @@ public class SPARQL_Upload extends ActionSPARQL
             try { action.abort() ; } catch (Exception ex2) {}
             ServletOps.errorOccurred(ex.getMessage()) ;
             return -1 ;
-        } 
+        }
         finally { action.endWrite() ; }
     }
 
@@ -164,7 +164,7 @@ public class SPARQL_Upload extends ActionSPARQL
           // We can't do better than the non-transaction approach.
           return uploadNonTxn(action, base) ;
       }
-     
+
     static class UploadDetails {
         final String graphName  ;
         final DatasetGraph data ;
@@ -175,14 +175,14 @@ public class SPARQL_Upload extends ActionSPARQL
             this.count = parserCount ;
         }
     }
-      
+
     /** Process an HTTP file upload of RDF with additiona name field for the graph name.
-     *  We can't stream straight into a dataset because the graph name can be after the data. 
+     *  We can't stream straight into a dataset because the graph name can be after the data.
      *  @return graph name and count
      */
-    
+
     // ?? Combine with Upload.fileUploadWorker
-    // Difference is the handling of names for graphs.  
+    // Difference is the handling of names for graphs.
     static private UploadDetails uploadWorker(HttpAction action, String base) {
         DatasetGraph dsgTmp = DatasetGraphFactory.create() ;
         ServletFileUpload upload = new ServletFileUpload() ;
@@ -271,7 +271,7 @@ public class SPARQL_Upload extends ActionSPARQL
         }
         catch (ActionErrorException ex) { throw ex ; }
         catch (Exception ex)            { ServletOps.errorOccurred(ex) ; return null ; }
-    }            
+    }
 
     @Override
     protected void validate(HttpAction action)

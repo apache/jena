@@ -55,7 +55,7 @@ import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-/** This is the content negotiation for each kind of SPARQL query result */ 
+/** This is the content negotiation for each kind of SPARQL query result */
 public class ResponseResultSet
 {
     private static Logger xlog = LoggerFactory.getLogger(ResponseResultSet.class) ;
@@ -68,7 +68,7 @@ public class ResponseResultSet
     private static final String contentOutputCSV           = "csv" ;
     private static final String contentOutputTSV           = "tsv" ;
     private static final String contentOutputThrift        = "thrift" ;
-    
+
     public static Map<String,String> shortNamesResultSet = new HashMap<>() ;
     static {
         // Some short names.  keys are lowercase.
@@ -80,7 +80,7 @@ public class ResponseResultSet
         ResponseOps.put(shortNamesResultSet, contentOutputTSV,    contentTypeTextTSV) ;
         ResponseOps.put(shortNamesResultSet, contentOutputThrift, contentTypeResultsThrift) ;
     }
-    
+
     interface OutputContent { void output(ServletOutputStream out) ; }
 
     public static void doResponseResultSet(HttpAction action, Boolean booleanResult)
@@ -92,51 +92,51 @@ public class ResponseResultSet
     {
         doResponseResultSet$(action, resultSet, null, qPrologue, DEF.rsOfferTable) ;
     }
-    
-    // If we refactor the conneg into a single function, we can split boolean and result set handling. 
-    
+
+    // If we refactor the conneg into a single function, we can split boolean and result set handling.
+
     // One or the other argument must be null
     private static void doResponseResultSet$(HttpAction action,
-                                             ResultSet resultSet, Boolean booleanResult, 
-                                             Prologue qPrologue, 
-                                             AcceptList contentTypeOffer) 
+                                             ResultSet resultSet, Boolean booleanResult,
+                                             Prologue qPrologue,
+                                             AcceptList contentTypeOffer)
     {
         HttpServletRequest request = action.request ;
         HttpServletResponse response = action.response ;
         long id = action.id ;
-        
+
         if ( resultSet == null && booleanResult == null )
         {
-            xlog.warn("doResponseResult: Both result set and boolean result are null") ; 
+            xlog.warn("doResponseResult: Both result set and boolean result are null") ;
             throw new FusekiException("Both result set and boolean result are null") ;
         }
-        
+
         if ( resultSet != null && booleanResult != null )
         {
-            xlog.warn("doResponseResult: Both result set and boolean result are set") ; 
+            xlog.warn("doResponseResult: Both result set and boolean result are set") ;
             throw new FusekiException("Both result set and boolean result are set") ;
         }
 
-        String mimeType = null ; 
+        String mimeType = null ;
         MediaType i = ConNeg.chooseContentType(request, contentTypeOffer, DEF.acceptRSXML) ;
         if ( i != null )
             mimeType = i.getContentType() ;
-        
+
         // Override content type
         // Does &output= override?
         // Requested output type by the web form or &output= in the request.
         String outputField = ResponseOps.paramOutput(request, shortNamesResultSet) ;    // Expands short names
         if ( outputField != null )
             mimeType = outputField ;
-        
+
         String serializationType = mimeType ;           // Choose the serializer based on this.
         String contentType = mimeType ;                 // Set the HTTP respose header to this.
-             
+
         // Stylesheet - change to application/xml.
         final String stylesheetURL = ResponseOps.paramStylesheet(request) ;
         if ( stylesheetURL != null && Objects.equals(serializationType,contentTypeResultsXML) )
             contentType = contentTypeXML ;
-        
+
         // Force to text/plain?
         String forceAccept = ResponseOps.paramForceAccept(request) ;
         if ( forceAccept != null )
@@ -149,7 +149,7 @@ public class ResponseResultSet
             jsonOutput(action, contentType, resultSet, booleanResult) ;
         else if ( Objects.equals(serializationType, contentTypeTextPlain) )
             textOutput(action, contentType, resultSet, qPrologue, booleanResult) ;
-        else if ( Objects.equals(serializationType, contentTypeTextCSV) ) 
+        else if ( Objects.equals(serializationType, contentTypeTextCSV) )
             csvOutput(action, contentType, resultSet, booleanResult) ;
         else if (Objects.equals(serializationType, contentTypeTextTSV) )
             tsvOutput(action, contentType, resultSet, booleanResult) ;
@@ -158,12 +158,12 @@ public class ResponseResultSet
         else
             ServletOps.errorBadRequest("Can't determine output serialization: "+serializationType) ;
     }
-    
-    
-    public static void setHttpResponse(HttpAction action, 
+
+
+    public static void setHttpResponse(HttpAction action,
 //                                       HttpServletRequest httpRequest,
 //                                       HttpServletResponse httpResponse,
-                                       String contentType, String charset) 
+                                       String contentType, String charset)
     {
         // ---- Set up HTTP Response
         // Stop caching (not that ?queryString URLs are cached anyway)
@@ -183,12 +183,12 @@ public class ResponseResultSet
     {
         return contentType.equals(contentTypeRDFXML)
             || contentType.equals(contentTypeResultsXML)
-            || contentType.equals(contentTypeXML) ; 
+            || contentType.equals(contentTypeXML) ;
     }
 
     private static void sparqlXMLOutput(HttpAction action, String contentType, final ResultSet resultSet, final String stylesheetURL, final Boolean booleanResult)
     {
-        OutputContent proc = 
+        OutputContent proc =
             new OutputContent(){
             @Override
             public void output(ServletOutputStream out)
@@ -200,7 +200,7 @@ public class ResponseResultSet
             }} ;
             output(action, contentType, null, proc) ;
         }
-    
+
     private static void jsonOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult)
     {
         OutputContent proc = new OutputContent(){
@@ -213,7 +213,7 @@ public class ResponseResultSet
                     ResultSetFormatter.outputAsJSON(out, booleanResult.booleanValue()) ;
             }
         } ;
-        
+
         try {
             String callback = ResponseOps.paramCallback(action.request) ;
             ServletOutputStream out = action.response.getOutputStream() ;
@@ -232,7 +232,7 @@ public class ResponseResultSet
                 out.println(")") ;
         } catch (IOException ex) { IO.exception(ex) ; }
     }
-    
+
     private static void textOutput(HttpAction action, String contentType, final ResultSet resultSet, final Prologue qPrologue, final Boolean booleanResult)
     {
         // Text is not streaming.
@@ -261,7 +261,7 @@ public class ResponseResultSet
                     ResultSetFormatter.outputAsCSV(out, booleanResult.booleanValue()) ;
             }
         } ;
-        output(action, contentType, charsetUTF8, proc) ; 
+        output(action, contentType, charsetUTF8, proc) ;
     }
 
     private static void tsvOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult) {
@@ -275,9 +275,9 @@ public class ResponseResultSet
                     ResultSetFormatter.outputAsTSV(out, booleanResult.booleanValue()) ;
             }
         } ;
-        output(action, contentType, charsetUTF8, proc) ; 
+        output(action, contentType, charsetUTF8, proc) ;
     }
-    
+
     private static void thriftOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult) {
         OutputContent proc = new OutputContent(){
             @Override
@@ -289,13 +289,13 @@ public class ResponseResultSet
                     xlog.error("Can't write boolen result in thrift") ;
             }
         } ;
-        output(action, contentType, WebContent.charsetUTF8, proc) ; 
+        output(action, contentType, WebContent.charsetUTF8, proc) ;
     }
 
-    private static void output(HttpAction action, String contentType, String charset, OutputContent proc) 
+    private static void output(HttpAction action, String contentType, String charset, OutputContent proc)
     {
         try {
-            setHttpResponse(action, contentType, charset) ; 
+            setHttpResponse(action, contentType, charset) ;
             action.response.setStatus(HttpSC.OK_200) ;
             ServletOutputStream out = action.response.getOutputStream() ;
             try
@@ -309,13 +309,13 @@ public class ResponseResultSet
                 out.println("##  Query cancelled due to timeout during execution   ##") ;
                 out.println("##  ****          Incomplete results           ****   ##") ;
                 out.flush() ;
-                // No point raising an exception - 200 was sent already.  
+                // No point raising an exception - 200 was sent already.
                 //errorOccurred(ex) ;
             }
         // Includes client gone.
-        } catch (IOException ex) 
+        } catch (IOException ex)
         { ServletOps.errorOccurred(ex) ; }
         // Do not call httpResponse.flushBuffer(); here - Jetty closes the stream if it is a gzip stream
-        // then the JSON callback closing details can't be added. 
+        // then the JSON callback closing details can't be added.
     }
 }

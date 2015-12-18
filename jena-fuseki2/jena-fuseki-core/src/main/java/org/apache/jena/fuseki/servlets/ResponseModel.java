@@ -66,12 +66,12 @@ public class ResponseModel
         ResponseOps.put(shortNamesModel, contentOutputNT,       contentTypeNTriples) ;
     }
 
-    public static void doResponseModel(HttpAction action, Model model) 
+    public static void doResponseModel(HttpAction action, Model model)
     {
         HttpServletRequest request = action.request ;
         HttpServletResponse response = action.response ;
-        
-        String mimeType = null ;        // Header request type 
+
+        String mimeType = null ;        // Header request type
 
         // TODO Use MediaType throughout.
         MediaType i = ConNeg.chooseContentType(request, DEF.rdfOffer, DEF.acceptRDFXML) ;
@@ -109,7 +109,7 @@ public class ResponseModel
         Lang lang = RDFLanguages.contentTypeToLang(contentType) ;
         if ( lang == null )
             ServletOps.errorBadRequest("Can't determine output content type: "+contentType) ;
-        
+
 //        if ( rdfw instanceof RDFXMLWriterI )
 //            rdfw.setProperty("showXmlDeclaration", "true") ;
 
@@ -125,13 +125,13 @@ public class ResponseModel
     //        }
 
         try {
-            ResponseResultSet.setHttpResponse(action, contentType, charset) ; 
+            ResponseResultSet.setHttpResponse(action, contentType, charset) ;
             response.setStatus(HttpSC.OK_200) ;
             ServletOutputStream out = response.getOutputStream() ;
             RDFDataMgr.write(out, model, lang) ;
             out.flush() ;
         }
-        catch (Exception ex) { 
+        catch (Exception ex) {
             action.log.info("Exception while writing the response model: "+ex.getMessage(), ex) ;
             ServletOps.errorOccurred("Exception while writing the response model: "+ex.getMessage(), ex) ;
         }

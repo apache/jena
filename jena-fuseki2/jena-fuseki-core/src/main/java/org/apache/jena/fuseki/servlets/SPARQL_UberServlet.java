@@ -42,9 +42,9 @@ import org.apache.jena.riot.web.HttpNames ;
 
 /** This servlet can be attached to a dataset location
  *  and acts as a router for all SPARQL operations
- *  (query, update, graph store, both direct and 
+ *  (query, update, graph store, both direct and
  *  indirect naming, quads operations on a dataset and
- *  ?query and ?update directly on a dataset.) 
+ *  ?query and ?update directly on a dataset.)
  */
 public abstract class SPARQL_UberServlet extends ActionSPARQL
 {
@@ -56,7 +56,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     protected abstract boolean allowREST_W(HttpAction action) ;
     protected abstract boolean allowQuadsR(HttpAction action) ;
     protected abstract boolean allowQuadsW(HttpAction action) ;
-    
+
     public static class ReadOnly extends SPARQL_UberServlet
     {
         private static final long serialVersionUID = -3486969173228213955L;
@@ -97,7 +97,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
 
         // Test whether there is a configuration that allows this action as the operation given.
         // Ignores the operation in the action (set due to parsing - it might be "quads"
-        // which is the generic operation when just the dataset is specificed.  
+        // which is the generic operation when just the dataset is specificed.
         private boolean isEnabled(HttpAction action, OperationName opName) {
             // Disregard the operation name of the action
             DataService dSrv = action.getDataService() ;
@@ -106,13 +106,13 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
             return ! dSrv.getOperation(opName).isEmpty() ;
         }
     }
-    
+
     /* This can be used for a single servlet for everything (über-servlet)
-     *  
+     *
      * It can check for a request that looks like a service request and passes it on.
      * This takes precedence over direct naming.
      */
-    
+
     private final ActionSPARQL queryServlet    = new SPARQL_QueryDataset() ;
     private final ActionSPARQL updateServlet   = new SPARQL_Update() ;
     private final ActionSPARQL uploadServlet   = new SPARQL_Upload() ;
@@ -120,11 +120,11 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     private final ActionSPARQL gspServlet_RW   = new SPARQL_GSP_RW() ;
     private final ActionSPARQL restQuads_R     = new REST_Quads_R() ; // XXX
     private final ActionSPARQL restQuads_RW    = new REST_Quads_RW() ;
-    
+
     public SPARQL_UberServlet() { super(); }
 
     private String getEPName(String dsname, List<String> endpoints) {
-        if (endpoints == null || endpoints.size() == 0) 
+        if (endpoints == null || endpoints.size() == 0)
             return null ;
         String x = endpoints.get(0) ;
         if ( ! dsname.endsWith("/") )
@@ -133,22 +133,22 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
             x = dsname+x ;
         return x ;
     }
-    
+
     // These calls should not happen because we hook in at executeAction
     @Override protected void validate(HttpAction action) { throw new FusekiException("Call to SPARQL_UberServlet.validate") ; }
     @Override protected void perform(HttpAction action)  { throw new FusekiException("Call to SPARQL_UberServlet.perform") ; }
 
     /** Map request to uri in the registry.
-     *  null means no mapping done 
+     *  null means no mapping done
      */
     @Override
     protected String mapRequestToDataset(HttpAction action) {
         String uri = ActionLib.removeContextPath(action) ;
         return ActionLib.mapRequestToDatasetLongest$(uri) ;
     }
-    
+
     /** Intercept the processing cycle at the point where the action has been set up,
-     *  the dataset target decided but no validation or execution has been done, 
+     *  the dataset target decided but no validation or execution has been done,
      *  nor any stats have been done.
      */
     @Override
@@ -158,19 +158,19 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         HttpServletResponse response = action.response ;
         String actionURI = action.getActionURI() ;            // No context path
         String method = request.getMethod() ;
-        
+
         DataAccessPoint desc = action.getDataAccessPoint() ;
         DataService dSrv = action.getDataService() ;
 
 //        if ( ! dSrv.isActive() )
 //            ServletOps.error(HttpSC.SERVICE_UNAVAILABLE_503, "Dataset not currently active");
-        
+
         // Part after the DataAccessPoint (dataset) name.
         String trailing = findTrailing(actionURI, desc.getName()) ;
         String qs = request.getQueryString() ;
 
         boolean hasParams = request.getParameterMap().size() > 0 ;
-        
+
         // Test for parameters - includes HTML forms.
         boolean hasParamQuery           = request.getParameter(HttpNames.paramQuery) != null ;
         // Include old name "request="
@@ -180,32 +180,32 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
 
         String ct = request.getContentType() ;
         String charset = request.getCharacterEncoding() ;
-        
+
         MediaType mt = null ;
         if ( ct != null )
             mt = MediaType.create(ct, charset) ;
-        
+
         if (action.log.isInfoEnabled() ) {
             //String cxt = action.getContextPath() ;
             action.log.info(format("[%d] %s %s :: '%s' :: %s ? %s", id, method, desc.getName(), trailing, (mt==null?"<none>":mt), (qs==null?"":qs))) ;
         }
-                       
+
         boolean hasTrailing = ( trailing.length() != 0 ) ;
-        
+
         if ( !hasTrailing && !hasParams ) {
             // REST dataset.
             boolean isGET = method.equals(HttpNames.METHOD_GET) ;
             boolean isHEAD = method.equals(HttpNames.METHOD_HEAD) ;
-            
+
             // Check enabled.
             if ( isGET || isHEAD ) {
                 if ( allowREST_R(action) )
                     restQuads_R.executeLifecycle(action) ;
                 else
                     ServletOps.errorMethodNotAllowed("Read-only dataset : "+method) ;
-                return ; 
+                return ;
             }
-            // If the read-only server has the same name as the writable server, 
+            // If the read-only server has the same name as the writable server,
             // and the default fro a read-only server is "/data", like a writable dataset,
             // this test is insufficient.
             if ( allowREST_W(action) )
@@ -214,7 +214,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
                 ServletOps.errorMethodNotAllowed("Read-only dataset : "+method) ;
             return ;
         }
-        
+
         if ( !hasTrailing ) {
             boolean isPOST = action.getRequest().getMethod().equals(HttpNames.METHOD_POST) ;
             // Nothing after the DataAccessPoint i.e Dataset by name.
@@ -234,31 +234,31 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
             if ( isPOST && ( hasParamUpdate || contentTypeSPARQLUpdate.equalsIgnoreCase(ct) ) ) {
                 // SPARQL Update
                 if ( !allowUpdate(action) )
-                    ServletOps.errorMethodNotAllowed("SPARQL update : "+method) ; 
+                    ServletOps.errorMethodNotAllowed("SPARQL update : "+method) ;
                 executeRequest(action, updateServlet) ;
                 return ;
             }
-            
+
             // ?graph=, ?default
             if ( hasParamGraph || hasParamGraphDefault ) {
                 doGraphStoreProtocol(action) ;
                 return ;
             }
-            
+
             ServletOps.errorBadRequest("Malformed request") ;
             ServletOps.errorMethodNotAllowed("SPARQL Graph Store Protocol : "+method) ;
         }
-        
+
         final boolean checkForPossibleService = true ;
         if ( checkForPossibleService && action.getEndpoint() != null ) {
             // There is a trailing part.
             // Check it's not the same name as a registered service.
             // If so, dispatch to that service.
-            if ( serviceDispatch(action, OperationName.Query, queryServlet) ) return ; 
-            if ( serviceDispatch(action, OperationName.Update, updateServlet) ) return ; 
+            if ( serviceDispatch(action, OperationName.Query, queryServlet) ) return ;
+            if ( serviceDispatch(action, OperationName.Update, updateServlet) ) return ;
             if ( serviceDispatch(action, OperationName.Upload, uploadServlet) ) return ;
             if ( hasParams ) {
-                if ( serviceDispatch(action, OperationName.GSP_R, gspServlet_R) ) return ; 
+                if ( serviceDispatch(action, OperationName.GSP_R, gspServlet_R) ) return ;
                 if ( serviceDispatch(action, OperationName.GSP_RW, gspServlet_RW) ) return ;
             } else {
                 // No parameters - do as a quads operation on the dataset.
@@ -268,7 +268,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         }
         // There is a trailing part - params are illegal by this point.
         if ( hasParams )
-            // ?? Revisit to include query-on-one-graph 
+            // ?? Revisit to include query-on-one-graph
             //errorBadRequest("Can't invoke a query-string service on a direct named graph") ;
             ServletOps.errorNotFound("Not found: dataset='"+printName(desc.getName())+
                                      "' service='"+printName(trailing)+
@@ -277,18 +277,18 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         // There is a trailing part - not a service, no params ==> GSP direct naming.
         if ( ! Fuseki.GSP_DIRECT_NAMING )
             ServletOps.errorNotFound("Not found: dataset='"+printName(desc.getName())+"' service='"+printName(trailing)+"'");
-        
+
         doGraphStoreProtocol(action);
     }
-    
+
     /** See if the operation is enabled for this setup.
-     * Return true if dispatched 
+     * Return true if dispatched
      */
     private boolean serviceDispatch(HttpAction action, OperationName opName, ActionSPARQL servlet) {
         Endpoint operation = action.getEndpoint() ;
         if ( operation == null )
             return false ;
-        if ( ! operation.isType(opName) ) 
+        if ( ! operation.isType(opName) )
             return false ;
         // Handle OPTIONS specially.
 //        if ( action.getRequest().getMethod().equals(HttpNames.METHOD_OPTIONS) ) {
@@ -306,20 +306,20 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
             return x.substring(1) ;
         return x ;
     }
-    
+
     private void doGraphStoreProtocol(HttpAction action) {
-        // The GSP servlets handle direct and indirect naming. 
+        // The GSP servlets handle direct and indirect naming.
         Endpoint operation = action.getEndpoint() ;
         String method = action.request.getMethod() ;
 
         // Try to route to read service.
 
         if ( HttpNames.METHOD_GET.equalsIgnoreCase(method) ||
-            HttpNames.METHOD_HEAD.equalsIgnoreCase(method) ) 
+            HttpNames.METHOD_HEAD.equalsIgnoreCase(method) )
         {
             // Graphs Store Protocol, indirect naming, read operations
             // Try to send to the R service, else drop through to RW service dispatch.
-            if ( ! allowREST_R(action)) 
+            if ( ! allowREST_R(action))
                 ServletOps.errorForbidden("Forbidden: SPARQL Graph Store Protocol : Read operation : "+method) ;
             executeRequest(action, gspServlet_R) ;
             return ;
@@ -342,11 +342,11 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         }
         if ( false )  {
             // Execute by calling the whole servlet mechanism.
-            // This causes HttpServlet.service to call the appropriate doMethod. 
+            // This causes HttpServlet.service to call the appropriate doMethod.
             // but the action, and the id, are not passed on and a ne one is created.
             try { servlet.service(action.request, action.response) ; }
             catch (ServletException | IOException e) {
-                ServletOps.errorOccurred(e); 
+                ServletOps.errorOccurred(e);
             }
         }
     }
@@ -362,7 +362,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         return mt ;
     }
 
-    /** Find part after the dataset name: service name or the graph (direct naming) */ 
+    /** Find part after the dataset name: service name or the graph (direct naming) */
     protected String findTrailing(String uri, String dsname) {
         if ( dsname.length() >= uri.length() )
             return "" ;
@@ -373,7 +373,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     @Override
     protected void doHead(HttpServletRequest request, HttpServletResponse response)
     { doCommon(request, response) ; }
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     { doCommon(request, response) ; }
@@ -385,7 +385,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response)
     { doCommon(request, response) ; }
-    
+
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
     { doCommon(request, response) ; }
