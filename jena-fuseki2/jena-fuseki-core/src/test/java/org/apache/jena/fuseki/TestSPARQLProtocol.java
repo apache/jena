@@ -22,6 +22,7 @@ import static org.apache.jena.fuseki.ServerTest.*;
 import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.fuseki.cache.CacheEntry;
+import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.SPARQL_Query_Cache;
 import org.apache.jena.query.*;
 import org.apache.jena.riot.WebContent;
@@ -80,7 +81,7 @@ public class TestSPARQLProtocol extends BaseTest
         ResultSet rs = qexec.execSelect();
         int x = ResultSetFormatter.consume(rs);
         assertTrue(x != 0);
-        Cache cache = SPARQL_Query_Cache.getCache();
+        Cache cache = SPARQL_Query_Cache.getCache(datasetPath);
         assertTrue(cache.size() != 0);
         Iterator keysIter = cache.keys();
         String key = (String) keysIter.next();
@@ -102,7 +103,7 @@ public class TestSPARQLProtocol extends BaseTest
                 ResultSet rs = qexec.execSelect();
                 int x = ResultSetFormatter.consume(rs);
                 assertTrue(x != 0);
-                Cache cache = SPARQL_Query_Cache.getCache();
+                Cache cache = SPARQL_Query_Cache.getCache(datasetPath);
                 assertTrue(cache.size() != 0);
                 Iterator keysIter = cache.keys();
                 String key = (String) keysIter.next();
@@ -138,7 +139,7 @@ public class TestSPARQLProtocol extends BaseTest
         ResultSet rs = engine.execSelect();
         int x = ResultSetFormatter.consume(rs);
         assertTrue(x != 0);
-        Cache cache = SPARQL_Query_Cache.getCache();
+        Cache cache = SPARQL_Query_Cache.getCache(datasetPath);
         assertTrue(cache.size() != 0);
         Iterator keysIter = cache.keys();
         String key = (String) keysIter.next();
@@ -156,7 +157,7 @@ public class TestSPARQLProtocol extends BaseTest
         engine.setSelectContentType(WebContent.contentTypeResultsXML);
         ResultSet rs = engine.execSelect();
         String result = ResultSetFormatter.asXMLString(rs);
-        Cache cache = SPARQL_Query_Cache.getCache();
+        Cache cache = SPARQL_Query_Cache.getCache(datasetPath);
         assertTrue(cache.size() != 0);
         ResultSet rs2 = engine.execSelect();
         String result2 = ResultSetFormatter.asXMLString(rs2);
@@ -177,12 +178,12 @@ public class TestSPARQLProtocol extends BaseTest
         engine.setSelectContentType(WebContent.contentTypeResultsXML);
         ResultSet rs = engine.execSelect();
         String result = ResultSetFormatter.asXMLString(rs);
-        Cache cache = SPARQL_Query_Cache.getCache();
+        Cache cache = SPARQL_Query_Cache.getCache(datasetPath);
         assertTrue(cache.size() != 0);
         UpdateRequest update = UpdateFactory.create("INSERT DATA {}");
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, serviceUpdate);
         proc.execute();
-        cache = SPARQL_Query_Cache.getCache();
+        cache = SPARQL_Query_Cache.getCache(datasetPath);
         assertTrue(cache.size() == 0);
     }
 

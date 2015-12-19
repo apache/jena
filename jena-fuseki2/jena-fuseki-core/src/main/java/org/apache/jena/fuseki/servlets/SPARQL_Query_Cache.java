@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.String.format;
 import static org.apache.jena.fuseki.server.CounterName.QueryTimeouts;
@@ -45,100 +46,16 @@ import static org.apache.jena.riot.WebContent.*;
 import static org.apache.jena.riot.web.HttpNames.*;
 import static org.apache.jena.riot.web.HttpNames.paramTimeout;
 
-public class SPARQL_Query_Cache extends SPARQL_Protocol {
+public class SPARQL_Query_Cache extends SPARQL_QueryDataset {
 
     private static final String QueryParseBase = Fuseki.BaseParserSPARQL ;
 
     private static final int CACHE_SIZE = 10000;
 
-    private static Cache cache = CacheFactory.createCache(CACHE_SIZE);
-
-    // All the params we support
-    protected static List<String> allParams = Arrays.asList(paramQuery, paramDefaultGraphURI, paramNamedGraphURI,
-            paramQueryRef, paramStyleSheet, paramAccept, paramOutput1,
-            paramOutput2, paramCallback, paramForceAccept, paramTimeout) ;
-
-    // Choose REST verbs to support.
-
-    // doMethod : Not used with UberServlet dispatch.
+    private static ConcurrentHashMap<String, Cache> cacheDatasetMap = new ConcurrentHashMap<>();
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        doCommon(request, response) ;
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        doCommon(request, response) ;
-    }
-
-    @Override
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response) {
-        setCommonHeadersForOptions(response) ;
-        response.setHeader(HttpNames.hAllow, "GET,OPTIONS,POST") ;
-        response.setHeader(HttpNames.hContentLengh, "0") ;
-    }
-
-    protected void doOptions(HttpAction action) {
-        doOptions(action.request, action.response) ;
-    }
-
-    @Override
-    protected void validate(HttpAction action) {
-    }
-
-    @Override
-    protected void perform(HttpAction action) {
-
-        // OPTIONS
-        if ( action.request.getMethod().equals(HttpNames.METHOD_OPTIONS) ) {
-            // Share with update via SPARQL_Protocol.
-            doOptions(action) ;
-            return ;
-        }
-
-        // GET
-        if ( action.request.getMethod().equals(HttpNames.METHOD_GET) ) {
-            executeWithParameter(action) ;
-            return ;
-        }
-
-        ContentType ct = FusekiLib.getContentType(action) ;
-
-        // POST application/x-www-form-url
-        // POST ?query= and no Content-Type
-        if ( ct == null || isHtmlForm(ct) ) {
-            // validation checked that if no Content-type, then its a POST with ?query=
-            executeWithParameter(action) ;
-            return ;
-        }
-
-        // POST application/sparql-query
-        if ( matchContentType(ct, ctSPARQLQuery) ) {
-            executeBody(action) ;
-            return ;
-        }
-
-        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + ct.getContentType()) ;
-    }
-
-    private void executeWithParameter(HttpAction action) {
-        String queryString = action.request.getParameter(paramQuery) ;
-        execute(queryString, action) ;
-    }
-
-    private void executeBody(HttpAction action) {
-        String queryString = null ;
-        try {
-            InputStream input = action.request.getInputStream() ;
-            queryString = IO.readWholeFileAsUTF8(input) ;
-        } catch (IOException ex) {
-            ServletOps.errorOccurred(ex) ;
-        }
-        execute(queryString, action) ;
-    }
-
-    private void execute(String queryString, HttpAction action) {
+    protected void execute(String queryString, HttpAction action) {
         String queryStringLog = ServletOps.formatForLog(queryString) ;
         if ( action.verbose )
             action.log.info(format("[%d] Query = \n%s", action.id, queryString)) ;
@@ -162,13 +79,13 @@ public class SPARQL_Query_Cache extends SPARQL_Protocol {
 
         // Assumes finished whole thing by end of sendResult.
         try {
-                String key = generateKey(action, query, queryString);
+                Cache cache = getCache(SPARQL_Query_Cache.getDatasetUri(action));
+                String key = generateKey(action, query);
                 CacheEntry cacheEntry = (CacheEntry) cache.getIfPresent(key);
 
                 if(cacheEntry == null || !cacheEntry.isInitialized()) {
                     log.debug("Cache is null or cache data is not initialized");
-                    ActionSPARQL queryServlet = new SPARQL_QueryDataset() ;
-                    queryServlet.executeLifecycle(action) ;
+                    super.execute(queryString, action);
                 }else {
                     log.debug("Cache is not null so read from cache");
                     SPARQLResult result = cacheEntry.getResult();
@@ -207,7 +124,7 @@ public class SPARQL_Query_Cache extends SPARQL_Protocol {
             ServletOps.errorOccurred("Unknown or invalid result type") ;
     }
 
-    public static String generateKey(HttpAction action, Query query ,String queryString){
+    public static String generateKey(HttpAction action, Query query){
         ResponseType responseType = null;
         if(query.isAskType())
             responseType = ResponseResultSet.getResponseType(action.getRequest(), DEF.rsOfferBoolean);
@@ -218,7 +135,7 @@ public class SPARQL_Query_Cache extends SPARQL_Protocol {
         else if(query.isDescribeType())
             responseType = ResponseDataset.getResponseType(action.getRequest());
 
-        return getKey(action, queryString, responseType);
+        return getKey(query, responseType);
     }
 
     private String formatForLog(Query query) {
@@ -228,15 +145,24 @@ public class SPARQL_Query_Cache extends SPARQL_Protocol {
         return out.asString() ;
     }
 
-    private static String getKey(HttpAction action, String queryString, ResponseType responseType) {
-        HttpServletRequest req = action.getRequest();
-        String uri = ActionLib.actionURI(req);
-        String dataSetUri = ActionLib.mapActionRequestToDataset(uri);
-        return dataSetUri + " " + queryString + " " + responseType.getContentType();
+    private static String getKey(Query query, ResponseType responseType) {
+        return query + responseType.getContentType();
     }
 
-    public static Cache getCache() {
-        return cache;
+    public static Cache getCache(String uri) {
+        if(cacheDatasetMap.containsKey(uri)){
+            return cacheDatasetMap.get(uri);
+        }else{
+            Cache cache = CacheFactory.createCache(CACHE_SIZE);
+            cacheDatasetMap.putIfAbsent(uri,cache);
+            return cacheDatasetMap.get(uri);
+        }
+    }
+
+    public static String getDatasetUri(HttpAction action){
+        HttpServletRequest req = action.getRequest();
+        String uri = ActionLib.actionURI(req);
+        return ActionLib.mapActionRequestToDataset(uri);
     }
 
 }

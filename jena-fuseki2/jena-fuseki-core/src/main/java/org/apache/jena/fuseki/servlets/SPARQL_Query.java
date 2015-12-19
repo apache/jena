@@ -272,8 +272,8 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             action.beginRead() ;
                 Dataset dataset = decideDataset(action, query, queryStringLog) ;
             try ( QueryExecution qExec = createQueryExecution(query, dataset) ; ) {
-                Cache cache = SPARQL_Query_Cache.getCache();
-                String key = SPARQL_Query_Cache.generateKey(action, query, queryString);
+                Cache cache = SPARQL_Query_Cache.getCache(SPARQL_Query_Cache.getDatasetUri(action));
+                String key = SPARQL_Query_Cache.generateKey(action, query);
                 SPARQLResult result = executeQuery(action, qExec, query, queryStringLog);
                 CacheEntry cacheEntry = new CacheEntry();
                 cacheEntry.setResult(result);

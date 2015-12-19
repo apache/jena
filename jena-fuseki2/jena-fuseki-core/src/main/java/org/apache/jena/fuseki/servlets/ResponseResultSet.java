@@ -314,7 +314,7 @@ public class ResponseResultSet
             action.response.setStatus(HttpSC.OK_200) ;
 
             OutputStream outServlet = action.response.getOutputStream();
-            Cache cache = SPARQL_Query_Cache.getCache();
+            Cache cache = SPARQL_Query_Cache.getCache(SPARQL_Query_Cache.getDatasetUri(action));
             OutputStream out = null;
             try
             {

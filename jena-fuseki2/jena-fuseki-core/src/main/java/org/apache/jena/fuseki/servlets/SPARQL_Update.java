@@ -101,7 +101,7 @@ public class SPARQL_Update extends SPARQL_Protocol
 
     @Override
     protected void perform(HttpAction action) {
-        Cache cache = SPARQL_Query_Cache.getCache();
+        Cache cache = SPARQL_Query_Cache.getCache(SPARQL_Query_Cache.getDatasetUri(action));
         cache.clear();
         ContentType ct = FusekiLib.getContentType(action) ;
         if ( ct == null )
