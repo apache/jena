@@ -62,7 +62,7 @@ import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.resultset.SPARQLResult ;
 import org.apache.jena.web.HttpSC ;
 
-/** Handle SPARQL Query requests overt eh SPARQL Protocol.
+/** Handle SPARQL Query requests over the SPARQL Protocol.
  * Subclasses provide this algorithm with the actual dataset to query, whether
  * a dataset hosted by this server ({@link SPARQL_QueryDataset}) or
  * speciifed in the protocol request ({@link SPARQL_QueryGeneral}).
@@ -228,12 +228,12 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + ct.getContentType()) ;
     }
 
-    private void executeWithParameter(HttpAction action) {
+    protected void executeWithParameter(HttpAction action) {
         String queryString = action.request.getParameter(paramQuery) ;
         execute(queryString, action) ;
     }
 
-    private void executeBody(HttpAction action) {
+    protected void executeBody(HttpAction action) {
         String queryString = null ;
         try {
             InputStream input = action.request.getInputStream() ;
@@ -244,7 +244,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         execute(queryString, action) ;
     }
 
-    private void execute(String queryString, HttpAction action) {
+    protected void execute(String queryString, HttpAction action) {
         String queryStringLog = ServletOps.formatForLog(queryString) ;
         if ( action.verbose )
             action.log.info(format("[%d] Query = \n%s", action.id, queryString)) ;

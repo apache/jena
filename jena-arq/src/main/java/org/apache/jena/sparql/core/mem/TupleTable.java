@@ -18,14 +18,14 @@
 
 package org.apache.jena.sparql.core.mem;
 
-import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.sparql.core.TransactionalComponent ;
 
 /**
  * A mutable table of tuples. The expectation is that some kind of query functionality will be provided by subtypes.
  *
  * @param <TupleType> the type of tuple stored herein
  */
-public interface TupleTable<TupleType> extends Transactional {
+public interface TupleTable<TupleType> extends TransactionalComponent {
 
     /**
      * Add a tuple to the table

@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Quad;
 import org.junit.Test;
+import static org.junit.Assert.* ;
 
 public class TestHexTable extends AbstractTestQuadTable {
 

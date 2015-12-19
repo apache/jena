@@ -85,4 +85,10 @@ class NodeValueRewriter extends AbstractRewriter<NodeValue> implements
 		push(new NodeValueDuration(nodeValueDuration.getDuration(),
 				changeNode(nodeValueDuration.getNode())));
 	}
+
+	@Override
+	public void visit(NodeValueLang nv) {
+		
+		push( new NodeValueLang( changeNode(nv.getNode() )));
+	}
 }

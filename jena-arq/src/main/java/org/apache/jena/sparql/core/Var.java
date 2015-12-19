@@ -41,50 +41,47 @@ public class Var extends Node_Variable
     // object, not just the same name, to be anonymous.
     public static Var ANON = new Var("?_") ; 
     
-    public static Var alloc(String varName)
-    {
+    public static Var alloc(String varName) {
 //        if ( varName.equals("_") )
 //            return ANON ;
         return new Var(varName) ;
     }
     
-    public static Var alloc(Node_Variable v)    // asVar?
-    { 
-        if ( v instanceof Var )
-            return (Var)v ;
-        return new Var(v) ;
-    }
-    
-    public static Var alloc(Node v)
-    { 
-        if ( v instanceof Var )
-            return (Var)v ;
-        if ( v instanceof Node_Variable )
-            return new Var((Node_Variable)v) ;
-        throw new NotAVariableException("Node: "+v) ;
-    }
-    
-    public static Var alloc(Var v)
+    public static Var alloc(Node_Variable v) // asVar?
     {
-        return v ;
+        if ( v instanceof Var )
+            return (Var)v;
+        return new Var(v);
     }
     
+    public static Var alloc(Node v) {
+        if ( v instanceof Var )
+            return (Var)v;
+        if ( v instanceof Node_Variable )
+            return new Var((Node_Variable)v);
+        throw new NotAVariableException("Node: " + v);
+    }
+
+    public static Var alloc(Var v) {
+        return v;
+    }
+
     public static Var alloc(ExprVar nv)         { return new Var(nv) ; }
     
-    public static Node lookup(Binding binding, Node node)
-    {
-        if ( ! Var.isVar(node) )
-            return node ;
-        Var var = Var.alloc(node) ;
-        return lookup(binding, var) ;
+    /** Return the value in the binding (if node is a Var) or the node itself. */
+    public static Node lookup(Binding binding, Node node) {
+        if ( !Var.isVar(node) )
+            return node;
+        Var var = Var.alloc(node);
+        return lookup(binding, var);
     }
-    
-    public static Node lookup(Binding binding, Var var)
-    {
-        Node n = binding.get(var) ;
+
+    /** Return the value in the binding or the variable itself. */
+    public static Node lookup(Binding binding, Var var) {
+        Node n = binding.get(var);
         if ( n != null )
-            return n ;
-        return var ;
+            return n;
+        return var;
     }
     
     // Precalulated the hash code because hashCode() is used so heavily with Var's
@@ -92,7 +89,7 @@ public class Var extends Node_Variable
     
     private Var(String varName)      { super(varName) ; hashCodeValue = super.hashCode() ; }
     
-    private Var(Node_Variable v)     { this( v.getName() ) ; }
+    private Var(Node_Variable v)     { this(v.getName()) ; }
     
     private Var(ExprVar v)           { this(v.getVarName()) ; }
     
@@ -101,8 +98,7 @@ public class Var extends Node_Variable
     
     public String getVarName() { return getName() ; }
     
-    static class NotAVariableException extends ARQInternalErrorException
-    {
+    static class NotAVariableException extends ARQInternalErrorException {
         NotAVariableException(String msg) { super(msg) ; }
     }
     
@@ -110,8 +106,7 @@ public class Var extends Node_Variable
     public final int hashCode() { return hashCodeValue ; }
 
     @Override
-    public final boolean equals(Object other)
-    { 
+    public final boolean equals(Object other) { 
         if ( this == other ) return true ;
         if ( ! ( other instanceof Var ) ) return false ;
         return super.equals(other) ;
@@ -130,21 +125,20 @@ public class Var extends Node_Variable
     
     // -------
     
-    public static String canonical(String x)
-    {
+    public static String canonical(String x) {
         if ( x.startsWith("?") )
-            return x.substring(1) ;
+            return x.substring(1);
         if ( x.startsWith("$") )
-            return x.substring(1) ;
-        return x ;
+            return x.substring(1);
+        return x;
     }
 
-    public static boolean isVar(Node node)
-    {
-        if ( node instanceof Var ) return true ;
+    public static boolean isVar(Node node) {
+        if ( node instanceof Var )
+            return true;
         if ( node != null && node.isVariable() )
-            throw new NotAVariableException("Node_variable (not a Var) found") ;
-        return false ;
+            throw new NotAVariableException("Node_variable (not a Var) found");
+        return false;
     }
     
     public static boolean isRenamedVar(Node node)
@@ -172,25 +166,22 @@ public class Var extends Node_Variable
     { return x.startsWith(ARQConstants.allocVarMarker) ; }
     
     /** Convert a collection of variable names to variables */ 
-    public static List<Var> varList(Collection<String> varNames)
-    {
-        List<Var> x = new ArrayList<>() ;
-        for (String obj : varNames)
-            x.add(Var.alloc(obj)) ;
-        return x ;
+    public static List<Var> varList(Collection<String> varNames) {
+        List<Var> x = new ArrayList<>();
+        for ( String obj : varNames )
+            x.add(Var.alloc(obj));
+        return x;
     }
-    
-    public static boolean isAnonVar(Var var)
-    {
-        return var == ANON ;
+
+    public static boolean isAnonVar(Var var) {
+        return var == ANON;
     }
-    
-    /** Return a list of String names from a collection of variables */ 
-    public static List<String> varNames(Collection<Var> vars)
-    {
-        List<String> x = new ArrayList<>() ;
-        for (Var var : vars)
-            x.add(var.getVarName()) ;
-        return x ;
+
+    /** Return a list of String names from a collection of variables */
+    public static List<String> varNames(Collection<Var> vars) {
+        List<String> x = new ArrayList<>();
+        for ( Var var : vars )
+            x.add(var.getVarName());
+        return x;
     }
 }

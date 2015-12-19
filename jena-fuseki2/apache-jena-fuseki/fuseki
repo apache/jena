@@ -22,7 +22,12 @@
 #
 # Configuration
 # -------------
-# Default values are loaded from /etc/default/fuseki, if it exists.
+# Values are loaded from /etc/default/fuseki, if it exists.
+# The description below cover the default settings if /etc/default/fuseki
+# does not exist.
+#
+# Set DEBUG=1 (see below or set the environment variable) to print the
+# settings to be used.
 #
 # JAVA
 #   Command to invoke Java. If not set, java (from the PATH) will be used.
@@ -37,7 +42,7 @@
 # 
 # FUSEKI_BASE
 #   The root of the runtime area - logs files, system files, local configuration.
-#   Defaults to /etc/fuseki.
+#   Defaults to $FUSEKI_HOME/run.
 #
 # FUSEKI_RUN
 #   Where the fuseki.pid file should be stored.  It defaults
@@ -169,10 +174,8 @@ then
       *) SCRIPT=$( dirname "$0" )/$SCRIPT;; # fix
     esac
   fi
-
   # Work out root from script location
   FUSEKI_HOME="$( cd "$( dirname "$SCRIPT" )" && pwd )"
-
 fi
 
 # Deal with Cygwin path issues
@@ -187,16 +190,27 @@ then
   exit 1
 fi
 
+# Set FUSEKI_BASE
 if [ -z "$FUSEKI_BASE" ]
 then
-  FUSEKI_BASE="/etc/fuseki"
+  #FUSEKI_BASE="/etc/fuseki"
+  FUSEKI_BASE="$FUSEKI_HOME/run"
+  # Autocreate FUSEKI_BASE if defaulting to FUSEKI_HOME/run (simple deployment)
+  if [ ! -e "$FUSEKI_BASE" ]
+  then
+      log_daemon_msg "Creating '$FUSEKI_BASE'"
+      if [ "$cygwin" == "true" ]
+      then
+	  FUSEKI_BASE=`cygpath -w "$FUSEKI_BASE"`
+      fi
+      mkdir "$FUSEKI_BASE"
+  fi
 fi
 
 if [ "$cygwin" == "true" ]
 then
   FUSEKI_BASE=`cygpath -w "$FUSEKI_BASE"`
 fi
-
 
 if [ ! -e "$FUSEKI_BASE" -o ! -d "$FUSEKI_BASE" ]
 then
@@ -209,14 +223,6 @@ then
   log_daemon_msg "FUSEKI_BASE '$FUSEKI_BASE' is not writable." 1>&2
   exit 1
 fi
-
-
-# Deal with Cygwin path issues
-if [ "$cygwin" == "true" ]
-then
-  FUSEKI_HOME=`cygpath -w "$FUSEKI_HOME"`
-  FUSEKI_BASE=`cygpath -w "$FUSEKI_BASE"`
- fi
 
 # Find a location for the pid file
 if [ -z "$FUSEKI_RUN" ]
@@ -237,16 +243,10 @@ then
 fi
 FUSEKI_LOGS="$FUSEKI_BASE/logs"
 
-# Std Err and Out log
+# Stderr and stdout log
 if [ -z "$FUSEKI_LOGS_STDERROUT" ]
 then
   FUSEKI_LOGS_STDERROUT="$FUSEKI_LOGS/stderrout.log"
-fi
-
-# Data directory
-if [ -z "$FUSEKI_DATA_DIR" ]
-then
-  FUSEKI_DATA_DIR="$FUSEKI_HOME/DB"
 fi
 
 # Set up JAVA if not set
@@ -275,10 +275,7 @@ FUSEKI_START=${FUSEKI_START:-$FUSEKI_HOME/fuseki-server.jar}
 # Deal with Cygwin path issues
 if [ "$cygwin" == "true" ]
 then
-  DATA_DIR=`cygpath -w "$FUSEKI_DATA_DIR"`
   FUSEKI_START=`cygpath -w "$FUSEKI_START"`
-else
-  DATA_DIR="$FUSEKI_DATA_DIR"
 fi
 
 # Some JVM settings
@@ -308,6 +305,10 @@ else
 fi
 RUN_CMD=("$JAVA" "${RUN_ARGS[@]}")
 
+# Export the variables to be seen by the java server process.
+export FUSEKI_HOME
+export FUSEKI_BASE
+
 #####################################################
 # Comment these out after you're happy with what
 # the script is doing.
@@ -315,6 +316,7 @@ RUN_CMD=("$JAVA" "${RUN_ARGS[@]}")
 if (( DEBUG ))
 then
   log_daemon_msg "FUSEKI_HOME    =  $FUSEKI_HOME"
+  log_daemon_msg "FUSEKI_BASE    =  $FUSEKI_BASE"
   log_daemon_msg "FUSEKI_CONF    =  $FUSEKI_CONF"
   log_daemon_msg "FUSEKI_RUN     =  $FUSEKI_RUN"
   log_daemon_msg "FUSEKI_PID     =  $FUSEKI_PID"
@@ -326,9 +328,10 @@ then
   log_daemon_msg "JAVA_OPTIONS   =  ${JAVA_OPTIONS[*]}"
   log_daemon_msg "RUN_ARGS       =  ${RUN_ARGS[@]}"
   log_daemon_msg "RUN_CMD        =  ${RUN_CMD[@]}"
+  log_daemon_msg "Stdout/stderr  =  $FUSEKI_LOGS_STDERROUT"
 fi
 
-NO_START=0
+NO_START=${NO_START:-0}
 
 # Life cycle functions
 start() {
@@ -338,11 +341,10 @@ start() {
   fi
 
   # Make sure the data and log directories exist
-  mkdir -p "$FUSEKI_DATA_DIR"
   mkdir -p "$FUSEKI_LOGS"
   if [ ! -z "$FUSEKI_USER" ]
   then
-    chown "$FUSEKI_USER" "$FUSEKI_DATA_DIR" "$FUSEKI_LOGS"
+    chown "$FUSEKI_USER" "$FUSEKI_LOGS"
   fi
 
   # Make sure the .jar file exists
