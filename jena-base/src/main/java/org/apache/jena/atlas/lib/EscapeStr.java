@@ -145,7 +145,7 @@ public class EscapeStr
                 // i points to the \ so i+6 is next character
                 if ( i+4 >= s.length() )
                     throw new AtlasException("\\u escape too short") ;
-                int x = hex(s, i+1, 4) ;
+                int x = Hex.hexStringToInt(s, i+1, 4) ;
                 sb.append((char)x) ;
                 // Jump 1 2 3 4 -- already skipped \ and u
                 i = i+4 ;
@@ -156,7 +156,7 @@ public class EscapeStr
                 // i points to the \ so i+6 is next character
                 if ( i+8 >= s.length() )
                     throw new AtlasException("\\U escape too short") ;
-                int x = hex(s, i+1, 8) ;
+                int x = Hex.hexStringToInt(s, i+1, 8) ;
                 // Convert to UTF-16 codepoint pair.
                 sb.append((char)x) ;
                 // Jump 1 2 3 4 5 6 7 8 -- already skipped \ and u
@@ -194,42 +194,4 @@ public class EscapeStr
         }
         return sb.toString() ;
     }
-    
-    public static int hex(String s, int i, int len)
-    {
-//        if ( i+len >= s.length() )
-//        {
-//            
-//        }
-        int x = 0 ;
-        for ( int j = i ; j < i+len ; j++ )
-        {
-           char ch = s.charAt(j) ;
-           int k = 0  ;
-           switch (ch)
-           {
-               case '0': k = 0 ; break ; 
-               case '1': k = 1 ; break ;
-               case '2': k = 2 ; break ;
-               case '3': k = 3 ; break ;
-               case '4': k = 4 ; break ;
-               case '5': k = 5 ; break ;
-               case '6': k = 6 ; break ;
-               case '7': k = 7 ; break ;
-               case '8': k = 8 ; break ;
-               case '9': k = 9 ; break ;
-               case 'A': case 'a': k = 10 ; break ;
-               case 'B': case 'b': k = 11 ; break ;
-               case 'C': case 'c': k = 12 ; break ;
-               case 'D': case 'd': k = 13 ; break ;
-               case 'E': case 'e': k = 14 ; break ;
-               case 'F': case 'f': k = 15 ; break ;
-               default:
-                   throw new AtlasException("Illegal hex escape: "+ch) ;
-           }
-           x = (x<<4)+k ;
-        }
-        return x ;
-    }
-
 }
