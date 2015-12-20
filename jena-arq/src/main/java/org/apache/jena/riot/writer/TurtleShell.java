@@ -46,6 +46,7 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.other.GLib ;
 import org.apache.jena.riot.out.NodeFormatter ;
 import org.apache.jena.riot.out.NodeFormatterTTL ;
+import org.apache.jena.riot.out.NodeFormatterTTL_MultiLine ;
 import org.apache.jena.riot.out.NodeToLabel ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
@@ -60,6 +61,8 @@ import org.apache.jena.vocabulary.RDFS ;
  * Base class to support the pretty forms of Turtle-related languages (Turtle, TriG)
  */
 public abstract class TurtleShell {
+    public static boolean enableMultiLine = false ; 
+    
     protected final IndentedWriter out ;
     protected final NodeFormatter  nodeFmt ;
     protected final PrefixMap      prefixMap ;
@@ -69,7 +72,11 @@ public abstract class TurtleShell {
         this.out = out ;
         if ( pmap == null )
             pmap = PrefixMapFactory.emptyPrefixMap() ;
-        this.nodeFmt = new NodeFormatterTTL(baseURI, pmap, NodeToLabel.createScopeByDocument()) ;
+        if ( ! enableMultiLine )
+            this.nodeFmt = new NodeFormatterTTL(baseURI, pmap, NodeToLabel.createScopeByDocument()) ;
+        else
+            // JENA-1098 - Work-in-progress.
+            this.nodeFmt = new NodeFormatterTTL_MultiLine(baseURI, pmap, NodeToLabel.createScopeByDocument()) ;
         this.prefixMap = pmap ;
         this.baseURI = baseURI ;
     }
@@ -652,11 +659,11 @@ public abstract class TurtleShell {
                     rdfSimpleNodes.add(o) ;
                 }
 
-                if ( rdfLiterals.size() != 0 ) {
+                if ( ! rdfLiterals.isEmpty() ) {
                     writePredicateObjectList(p, rdfLiterals, predicateMaxWidth, first) ;
                     first = false ;
                 }
-                if ( rdfSimpleNodes.size() != 0 ) {
+                if ( ! rdfSimpleNodes.isEmpty() ) {
                     writePredicateObjectList(p, rdfSimpleNodes, predicateMaxWidth, first) ;
                     first = false ;
                 }
@@ -678,13 +685,24 @@ public abstract class TurtleShell {
         private void writePredicateObjectList(Node p, List<Node> objects, int predicateMaxWidth, boolean first) {
             writePredicate(p, predicateMaxWidth, first) ;
             out.incIndent(INDENT_OBJECT) ;
+            
+            boolean lastObjectMultiLine = false ;
             boolean firstObject = true ;
             for ( Node o : objects ) {
-                if ( !firstObject )
-                    out.print(" , ") ;
+                if ( !firstObject ) {
+                    if ( out.getCurrentOffset() > 0 )
+                        out.print(" , ") ;
+                    else
+                        // Before the current indent, due to a multiline literal being written raw.
+                        // We will pad spaces to indent on output spaces.  Don't add a first " " 
+                        out.print(", ") ;
+                }
                 else
                     firstObject = false ;
+                int row1 = out.getRow() ;
                 writeNode(o) ;
+                int row2 = out.getRow();
+                lastObjectMultiLine = (row2 > row1) ;
             }
             out.decIndent(INDENT_OBJECT) ;
         }
