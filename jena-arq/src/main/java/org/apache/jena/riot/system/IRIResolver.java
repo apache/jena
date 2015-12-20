@@ -72,6 +72,8 @@ public abstract class IRIResolver
         // See JENA-864
         //iriFactory.setIsError(ViolationCodes.NOT_NFC, false) ;
         //iriFactory.setIsError(ViolationCodes.NOT_NFKC, false) ;
+        //iriFactory.setIsWarning(ViolationCodes.NOT_NFC, false) ;
+        //iriFactory.setIsWarning(ViolationCodes.NOT_NFKC, false) ;
 
         // ** Applies to various unicode blocks. 
         // setErrorWarning(iriFactory, ViolationCodes.COMPATIBILITY_CHARACTER, false, false) ;
