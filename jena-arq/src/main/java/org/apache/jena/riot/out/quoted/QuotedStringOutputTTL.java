@@ -16,19 +16,26 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.out;
+package org.apache.jena.riot.out.quoted;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.jena.atlas.lib.CharSpace ;
+import org.apache.jena.atlas.lib.Chars ;
 
+/** Escape processor for Turtle. */
+public class QuotedStringOutputTTL extends QuotedStringOutputBase {
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestQuotedStringOutput.class
-    , TestNodeFmt.class
-    , TestNodeFmtLib.class
-})
+    public QuotedStringOutputTTL() {
+        this(Chars.CH_QUOTE2, CharSpace.UTF8) ;
+    }
 
-public class TS_Out
-{}
+    /** Always use the given quote character (0 means use " or ' as needed) */
+    public QuotedStringOutputTTL(char quoteChar) {
+        this(quoteChar, CharSpace.UTF8) ;
+    }
+    
+    /** Turtle is UTF-8 : ASCII is for non-standard needs */
+    protected QuotedStringOutputTTL(char quoteChar, CharSpace charSpace) {
+        super(quoteChar, charSpace) ;
+    }
+}
 

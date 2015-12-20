@@ -16,19 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.out;
+package org.apache.jena.riot.out.quoted;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.jena.atlas.io.AWriter ;
 
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestQuotedStringOutput.class
-    , TestNodeFmt.class
-    , TestNodeFmtLib.class
-})
-
-public class TS_Out
-{}
-
+/** Interface for writing quoted strings for Turtle, TriG, N-triples and N-Quads */ 
+public interface QuotedStringOutput {
+    public char getQuoteChar() ; 
+    
+    /** Write a string on one line */
+    public void writeStr(AWriter writer, String s) ;
+    
+    /** Write a string, possible on several lines */
+    public void writeStrMultiLine(AWriter writer, String s) ;
+}

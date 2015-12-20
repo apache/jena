@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.out;
+package org.apache.jena.riot.out.quoted;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.jena.atlas.lib.CharSpace ;
+import org.apache.jena.atlas.lib.Chars ;
 
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestQuotedStringOutput.class
-    , TestNodeFmt.class
-    , TestNodeFmtLib.class
-})
-
-public class TS_Out
-{}
-
+/** Escape processor for N-Triples/N-Quads */
+public class QuotedStringOutputNT extends QuotedStringOutputBase {
+    
+    public QuotedStringOutputNT() {
+        this(CharSpace.UTF8) ;
+    }
+    
+    public QuotedStringOutputNT(CharSpace charSpace) {
+        super(Chars.CH_QUOTE2, charSpace) ; 
+    } 
+}
