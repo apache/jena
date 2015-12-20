@@ -210,8 +210,8 @@ public class FusekiConfig {
         }
         // Files that are not hidden.
         DirectoryStream.Filter<Path> filter = (entry)-> {
-                File f = entry.toFile() ;
-                return ! f.isHidden() && f.isFile() ;
+            File f = entry.toFile() ;
+            return ! f.isHidden() && f.isFile() ;
         } ;
 
         List<DataAccessPoint> dataServiceRef = new ArrayList<>() ;
