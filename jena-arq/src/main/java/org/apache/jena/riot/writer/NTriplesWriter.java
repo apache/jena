@@ -18,18 +18,16 @@
 
 package org.apache.jena.riot.writer;
 
-import static org.apache.jena.riot.out.CharSpace.ASCII ;
-import static org.apache.jena.riot.out.CharSpace.UTF8 ;
-
 import java.io.OutputStream ;
 import java.io.Writer ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.CharSpace ;
+import static org.apache.jena.atlas.lib.CharSpace.* ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.StreamOps ;
 import org.apache.jena.riot.system.StreamRDF ;

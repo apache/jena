@@ -16,7 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.out;
+package org.apache.jena.atlas.lib;
 
 /** rather write 'true' or 'false', use this enum */ 
-public enum CharSpace{ ASCII, UTF8 }
+public enum CharSpace {
+    ASCII, UTF8;
+
+    public static boolean isAscii(CharSpace charSpace) {
+        return charSpace == ASCII;
+    }
+}

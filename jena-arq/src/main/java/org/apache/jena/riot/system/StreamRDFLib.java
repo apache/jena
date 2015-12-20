@@ -23,12 +23,12 @@ import java.io.Writer ;
 
 import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
-import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.writer.WriterStreamRDFPlain ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;

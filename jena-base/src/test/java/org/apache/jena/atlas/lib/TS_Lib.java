@@ -25,7 +25,6 @@ import org.junit.runners.Suite ;
 
 /**
  * Tests for the Atlas lib package
- *
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
@@ -33,6 +32,7 @@ import org.junit.runners.Suite ;
     , TestBitsLong.class
     , TestBitsInt.class
     , TestBytes.class
+    , TestEscapeStr.class
     , TestHex.class
     , TestListUtils.class
     , TestSetUtils.class

@@ -32,9 +32,12 @@ import java.io.Reader ;
 
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
+import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.riot.* ;
-import org.apache.jena.riot.out.CharSpace ;
-import org.apache.jena.riot.system.* ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
+import org.apache.jena.riot.system.ParserProfile ;
+import org.apache.jena.riot.system.RiotLib ;
+import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 

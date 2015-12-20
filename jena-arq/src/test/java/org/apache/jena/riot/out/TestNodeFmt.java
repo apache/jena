@@ -21,6 +21,7 @@ package org.apache.jena.riot.out;
 import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.io.StringWriterI ;
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
@@ -183,5 +184,17 @@ public class TestNodeFmt extends BaseTest
     // Illegal lexical form.
     @Test public void nodefmt_ttl_74()  { test(nodeFormatterTTL, "'False'^^<http://www.w3.org/2001/XMLSchema#boolean>", "\"False\"^^<http://www.w3.org/2001/XMLSchema#boolean>") ; }
     @Test public void nodefmt_ttl_75()  { test(nodeFormatterTTL, "'True'^^<http://www.w3.org/2001/XMLSchema#boolean>", "\"True\"^^<http://www.w3.org/2001/XMLSchema#boolean>") ; }
+    
+    private static String QuoteDouble3 = "\"\"\"" ;
+    private static String QuoteSingle3 = "'''" ;
+
+    // Multiline
+    
+    private static NodeFormatter nodeFormatterTTL_ML = new NodeFormatterTTL_MultiLine(base, prefixMap) ;
+    
+    @Test public void nodefmt_ttl_ML_01()  { test(nodeFormatterTTL_ML, "'A\\nB'", QuoteDouble3+"A\nB"+QuoteDouble3) ; }
+    @Test public void nodefmt_ttl_ML_02()  { test(nodeFormatterTTL_ML, "'A\\nB'@en", QuoteDouble3+"A\nB"+QuoteDouble3+"@en") ; }
+    @Test public void nodefmt_ttl_ML_03()  { test(nodeFormatterTTL_ML, "'A\\nB'^^:ex\\/datatype", QuoteDouble3+"A\nB"+QuoteDouble3+"^^ex:datatype") ; }
+
     
 }

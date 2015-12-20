@@ -26,10 +26,10 @@ import java.util.Map ;
 
 import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.* ;
-import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.thrift.BinRDF ;
 import org.apache.jena.riot.writer.StreamWriterTriX ;
 import org.apache.jena.riot.writer.WriterStreamRDFBlocks ;

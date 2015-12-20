@@ -16,34 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.out;
+package org.apache.jena.atlas.lib;
 
-import org.apache.jena.atlas.io.AWriter ;
-import org.apache.jena.atlas.lib.EscapeStr ;
+import org.junit.Assert ;
+import org.junit.Test ;
 
-public class EscapeProc {
-    private final boolean ascii ;
+// Testing is a bit light here but the RDF term output and 
+// the language level output covers the ground as well.
+// See TestQuotedString in ARQ.
 
-    public EscapeProc(CharSpace charSpace) {
-        this.ascii = ( charSpace == CharSpace.ASCII ) ; 
-    } 
+public class TestEscapeStr {
+    
+    @Test public void escape_str_01()   { test("", "") ; }
+    @Test public void escape_str_02()   { test("A", "A") ; }
+    @Test public void escape_str_03()   { test("\n", "\\n") ; }
+    @Test public void escape_str_04()   { test("A\tB", "A\\tB") ; }
+    @Test public void escape_str_05()   { test("\"", "\\\"") ; }
 
-    public void writeURI(AWriter w, String s) {
-        if ( ascii )
-            EscapeStr.stringEsc(w, s, true, ascii) ;
-        else
-            // It's a URI - assume legal.
-            w.print(s) ;
+    private void test(String input, String expected) {
+        String output = EscapeStr.stringEsc(input) ;
+        Assert.assertEquals(expected, output);
     }
-
-    public void writeStr(AWriter w, String s) {
-        EscapeStr.stringEsc(w, s, true, ascii) ;
-    }
-
-    public void writeStrMultiLine(AWriter w, String s) {
-        // N-Triples does not have """
-        EscapeStr.stringEsc(w, s, false, ascii) ;
-    }
-
 }
-
