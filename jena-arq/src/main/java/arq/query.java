@@ -187,7 +187,8 @@ public class query extends CmdARQ
     }
     
     protected Dataset dealWithNoDataset()  {
-        throw new CmdException("No dataset provided") ; 
+        return DatasetFactory.create() ;
+        //throw new CmdException("No dataset provided") ; 
     }
     
     protected long totalTime = 0 ;
