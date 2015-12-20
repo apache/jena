@@ -23,7 +23,7 @@ import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.sparql.lang.ParserBase ;
 import org.junit.Test ;
 
-public class TestEsc extends BaseTest
+public class TestUnescape extends BaseTest
 {
     @Test public void testEsc01() { execTest("x\\uabcd", "x\uabcd") ; }
     @Test public void testEsc02() { execTest("\\uabcdx", "\uabcdx") ; }
@@ -31,7 +31,6 @@ public class TestEsc extends BaseTest
     @Test public void testEsc04() { execTestFail("\\X") ; }
     @Test public void testEsc05() { execTestFail("\\Xz") ; }
     @Test public void testEsc06() { execTestFail("a\\X") ; }
-    
     
     @Test public void testEscUni01() { execTestFail("\\uabck") ; }
     @Test public void testEscUni02() { execTestFail("\\uab") ; }
@@ -52,23 +51,18 @@ public class TestEsc extends BaseTest
     @Test public void testEscUni17() { execTest("x\\tx\\nx\\r", "x\tx\nx\r") ; }
     @Test public void testEscUni18() { execTest("x\\t\\n\\r", "x\t\n\r") ; }
     
-    private void execTestFail(String input)
-    {
+    private void execTestFail(String input) {
         try {
-            String s = ParserBase.unescapeStr(input) ;
-            fail("Unescaping succeeded on "+input) ;
-        } catch (QueryParseException ex)
-        {
-            return ;
+            String s = ParserBase.unescapeStr(input);
+            fail("Unescaping succeeded on " + input + " producing <<"+s+">>");
         }
-        
-    }
-    
-    private void execTest(String input, String outcome)
-    {
-        String result = ParserBase.unescapeStr(input) ;
-        assertEquals("Unescaped string does not match ("+input+")", outcome, result) ;
+        catch (QueryParseException ex) {
+            return;
+        }
     }
 
-    
+    private void execTest(String input, String outcome) {
+        String result = ParserBase.unescapeStr(input);
+        assertEquals("Unescaped string does not match (" + input + ")", outcome, result);
+    }
 }
