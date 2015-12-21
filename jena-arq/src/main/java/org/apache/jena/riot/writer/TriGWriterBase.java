@@ -40,21 +40,21 @@ public abstract class TriGWriterBase extends WriterDatasetRIOTBase
     @Override
     public void write(Writer out, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
         IndentedWriter iOut = RiotLib.create(out) ;
-        output$(iOut, dsg, prefixMap, baseURI) ;
+        output$(iOut, dsg, prefixMap, baseURI, context) ;
     }
 
     @Override
     public void write(OutputStream out, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
         IndentedWriter iOut = new IndentedWriter(out) ;
-        output$(iOut, dsg, prefixMap, baseURI) ;
+        output$(iOut, dsg, prefixMap, baseURI, context) ;
     }
 
-    private void output$(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI) {
+    private void output$(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
         if ( baseURI != null )
             baseURI = IRIResolver.resolveString(baseURI) ;
-        output(iOut, dsg, prefixMap, baseURI) ;
+        output(iOut, dsg, prefixMap, baseURI, context) ;
         iOut.flush() ;
     }
 
-    protected abstract void output(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI) ;
+    protected abstract void output(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) ;
 }

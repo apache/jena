@@ -1209,22 +1209,22 @@ public class RDFDataMgr
 
     private static void write$(OutputStream out, Graph graph, RDFFormat serialization) {
         WriterGraphRIOT w = createGraphWriter$(serialization);
-        w.write(out, graph, RiotLib.prefixMap(graph), null, (Context)null);
+        w.write(out, graph, RiotLib.prefixMap(graph), null, RIOT.getContext());
     }
 
     private static void write$(Writer out, Graph graph, RDFFormat serialization) {
         WriterGraphRIOT w = createGraphWriter$(serialization);
-        w.write(out, graph, RiotLib.prefixMap(graph), null, (Context)null);
+        w.write(out, graph, RiotLib.prefixMap(graph), null, RIOT.getContext());
     }
 
     private static void write$(OutputStream out, DatasetGraph dataset, RDFFormat serialization) {
         WriterDatasetRIOT w = createDatasetWriter$(serialization);
-        w.write(out, dataset, RiotLib.prefixMap(dataset), null, (Context)null);
+        w.write(out, dataset, RiotLib.prefixMap(dataset), null, RIOT.getContext());
     }
 
     private static void write$(Writer out, DatasetGraph dataset, RDFFormat serialization) {
         WriterDatasetRIOT w = createDatasetWriter$(serialization);
-        w.write(out, dataset, RiotLib.prefixMap(dataset), null, (Context)null);
+        w.write(out, dataset, RiotLib.prefixMap(dataset), null, RIOT.getContext());
     }
 
     /**

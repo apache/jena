@@ -23,12 +23,13 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.StreamOps ;
 import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.sparql.util.Context ;
 
 /** Write Turtle with omne triple on one line with prefixed names, with short form literals (e.g. integers) */   
 public class TurtleWriterFlat extends TurtleWriterBase
 {
     @Override
-    protected void output(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI) {
+    protected void output(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
         StreamRDF dest = new WriterStreamRDFFlat(out) ;
         dest.start() ;
         dest.base(baseURI) ;

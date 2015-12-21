@@ -23,6 +23,7 @@ import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.StreamOps ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.util.Context ;
 
 /** TriG writer that streams - print in blocks of quads clustered
  *  by adjacent same graph and same subject
@@ -30,7 +31,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 public class TriGWriterBlocks extends TriGWriterBase
 {
     @Override
-    protected void output(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI) {
+    protected void output(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
         StreamRDF dest = new WriterStreamRDFBlocks(iOut) ;
         dest.start() ;
         dest.base(baseURI) ;

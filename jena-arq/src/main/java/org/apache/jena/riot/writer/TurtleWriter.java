@@ -21,17 +21,19 @@ package org.apache.jena.riot.writer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.sparql.util.Context ;
 
 public class TurtleWriter extends TurtleWriterBase {
+    
     @Override
-    protected void output(IndentedWriter iOut, Graph graph, PrefixMap prefixMap, String baseURI) {
-        TurtleWriter$ w = new TurtleWriter$(iOut, prefixMap, baseURI) ;
+    protected void output(IndentedWriter iOut, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
+        TurtleWriter$ w = new TurtleWriter$(iOut, prefixMap, baseURI, context) ;
         w.write(graph) ;
     }
 
     private static class TurtleWriter$ extends TurtleShell {
-        public TurtleWriter$(IndentedWriter out, PrefixMap prefixMap, String baseURI) {
-            super(out, prefixMap, baseURI) ;
+        public TurtleWriter$(IndentedWriter out, PrefixMap prefixMap, String baseURI, Context context) {
+            super(out, prefixMap, baseURI, context) ;
         }
 
         private void write(Graph graph) {

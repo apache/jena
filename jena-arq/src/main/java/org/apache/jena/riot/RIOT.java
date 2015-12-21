@@ -21,6 +21,8 @@ package org.apache.jena.riot ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.system.JenaSystem ;
 
 public class RIOT {
@@ -45,6 +47,14 @@ public class RIOT {
 
     /** The root package name for RIOT */
     public static final String PATH    = "org.apache.jena.riot" ;
+    
+    /** Control of multiline literals */ 
+    public static final Symbol multilineLiterals = Symbol.create("riot.multiline_literals") ;
+    
+    /** The system-wide context */
+    public static Context getContext() {
+        return ARQ.getContext();
+    }
 
     public static void init() {
         if ( initialized )

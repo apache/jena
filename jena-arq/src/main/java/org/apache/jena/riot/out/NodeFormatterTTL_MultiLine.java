@@ -104,6 +104,7 @@ public class NodeFormatterTTL_MultiLine extends NodeFormatterTTL {
         IndentedWriter iw = null ;
         if ( writer instanceof IndentedWriter ) {
             iw = (IndentedWriter)writer ;
+            iw.pad(); 
             indent = iw.getAbsoluteIndent() ;
             iw.setAbsoluteIndent(0);
         }

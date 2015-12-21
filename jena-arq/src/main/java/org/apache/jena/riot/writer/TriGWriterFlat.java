@@ -23,6 +23,7 @@ import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.StreamOps ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.util.Context ;
 
 /** TriG writer that writes quads one per line
  *  in TriG form with prefixes and short form literals (e.g. integers) 
@@ -31,7 +32,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 public class TriGWriterFlat extends TriGWriterBase
 {
     @Override
-    protected void output(IndentedWriter iOut, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI) {
+    protected void output(IndentedWriter iOut, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context) {
         StreamRDF dest = new WriterStreamRDFFlat(iOut) ;
         dest.start() ;
         dest.base(baseURI) ;

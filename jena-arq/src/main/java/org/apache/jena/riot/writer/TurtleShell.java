@@ -43,6 +43,7 @@ import org.apache.jena.atlas.lib.SetUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.other.GLib ;
 import org.apache.jena.riot.out.NodeFormatter ;
 import org.apache.jena.riot.out.NodeFormatterTTL ;
@@ -53,6 +54,7 @@ import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
@@ -61,24 +63,21 @@ import org.apache.jena.vocabulary.RDFS ;
  * Base class to support the pretty forms of Turtle-related languages (Turtle, TriG)
  */
 public abstract class TurtleShell {
-    public static boolean enableMultiLine = false ; 
-    
     protected final IndentedWriter out ;
     protected final NodeFormatter  nodeFmt ;
     protected final PrefixMap      prefixMap ;
     protected final String         baseURI ;
 
-    protected TurtleShell(IndentedWriter out, PrefixMap pmap, String baseURI) {
+    protected TurtleShell(IndentedWriter out, PrefixMap pmap, String baseURI, Context context) {
         this.out = out ;
         if ( pmap == null )
             pmap = PrefixMapFactory.emptyPrefixMap() ;
-        if ( ! enableMultiLine )
-            this.nodeFmt = new NodeFormatterTTL(baseURI, pmap, NodeToLabel.createScopeByDocument()) ;
-        else
-            // JENA-1098 - Work-in-progress.
-            this.nodeFmt = new NodeFormatterTTL_MultiLine(baseURI, pmap, NodeToLabel.createScopeByDocument()) ;
         this.prefixMap = pmap ;
         this.baseURI = baseURI ;
+        if ( context != null && context.isTrue(RIOT.multilineLiterals) )
+            this.nodeFmt = new NodeFormatterTTL_MultiLine(baseURI, pmap, NodeToLabel.createScopeByDocument()) ;    
+        else
+            this.nodeFmt = new NodeFormatterTTL(baseURI, pmap, NodeToLabel.createScopeByDocument()) ;
     }
 
     protected void writeBase(String base) {
