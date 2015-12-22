@@ -58,7 +58,7 @@ public class DevSplit {
     // streams
     
     public static void main(String ...argv) {
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.createTxnMem() ;
         String y = StrUtils.strjoinNL(
                                       "(prefix ((bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>)"
                                       ,"        (bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>)"

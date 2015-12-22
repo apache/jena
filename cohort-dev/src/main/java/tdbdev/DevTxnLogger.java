@@ -214,7 +214,7 @@ public class DevTxnLogger {
             dsgBase.add(q1);
         }) ;
         
-        DatasetGraph dsg2 = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg2 = DatasetGraphFactory.createTxnMem() ;
 
         // ---- Replay
 
