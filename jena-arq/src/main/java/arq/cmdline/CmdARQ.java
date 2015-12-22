@@ -31,7 +31,7 @@ public abstract class CmdARQ extends CmdGeneral
 {
 	static { JenaSystem.init() ; }
 
-    protected ModSymbol modSymbol = new ModSymbol() ;
+    protected ModContext modContext = new ModContext() ;
     ArgDecl  strictDecl = new ArgDecl(ArgDecl.NoValue, "strict") ;
     
     protected boolean cmdStrictMode = false ; 
@@ -39,11 +39,11 @@ public abstract class CmdARQ extends CmdGeneral
     protected CmdARQ(String[] argv)
     {
         super(argv) ;
-        addModule(modSymbol) ;
         modVersion.addClass(Jena.class) ;
         modVersion.addClass(ARQ.class) ;
         modVersion.addClass(RIOT.class) ;
         super.add(strictDecl, "--strict", "Operate in strict SPARQL mode (no extensions of any kind)") ; 
+        addModule(modContext) ;
     }
     
     @Override

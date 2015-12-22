@@ -19,7 +19,7 @@
 package riotcmd;
 
 import arq.cmdline.ModEngine ;
-import arq.cmdline.ModSymbol ;
+import arq.cmdline.ModContext ;
 import jena.cmd.ArgDecl ;
 import jena.cmd.CmdException ;
 import jena.cmd.CmdGeneral ;
@@ -61,7 +61,7 @@ import org.apache.jena.vocabulary.RDF ;
 public class rdflangtest extends CmdGeneral
 {
     static { JenaSystem.init() ; }
-    protected ModSymbol modSymbol       = new ModSymbol() ;
+    protected ModContext modContext     = new ModContext() ;
     protected ArgDecl  strictDecl       = new ArgDecl(ArgDecl.NoValue, "strict") ;
     protected boolean  cmdStrictMode    = false ; 
 
@@ -79,13 +79,13 @@ public class rdflangtest extends CmdGeneral
     public rdflangtest(String[] argv)
     {
         super(argv) ;
-        addModule(modSymbol) ;
         super.add(strictDecl, "--strict", "Operate in strict mode (no extensions of any kind)") ;
         super.modVersion.addClass(ARQ.class) ;
         //add(allDecl, "--all", "run all tests") ;
         getUsage().startCategory("Tests (execute test manifest)") ;
         getUsage().addUsage("<manifest>", "run the tests specified in the given manifest") ;
         add(earlDecl, "--earl", "create EARL report") ;
+        addModule(modContext) ;
     }
     
     protected ModEngine setModEngine()

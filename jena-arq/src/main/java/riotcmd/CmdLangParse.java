@@ -25,7 +25,7 @@ import java.util.zip.GZIPOutputStream ;
 
 import arq.cmdline.ModLangOutput ;
 import arq.cmdline.ModLangParse ;
-import arq.cmdline.ModSymbol ;
+import arq.cmdline.ModContext ;
 import arq.cmdline.ModTime ;
 import jena.cmd.ArgDecl ;
 import jena.cmd.CmdException;
@@ -58,7 +58,7 @@ public abstract class CmdLangParse extends CmdGeneral
     protected ModLangParse modLangParse         = new ModLangParse() ;
     protected ModLangOutput modLangOutput       = new ModLangOutput() ;
     protected InferenceSetupRDFS setup          = null ; 
-    protected ModSymbol modSymbol               = new ModSymbol() ;
+    protected ModContext modContext             = new ModContext() ;
     protected ArgDecl strictDecl                = new ArgDecl(ArgDecl.NoValue, "strict") ;
 
     protected boolean cmdStrictMode = false ; 
@@ -92,7 +92,7 @@ public abstract class CmdLangParse extends CmdGeneral
     protected CmdLangParse(String[] argv)
     {
         super(argv) ;
-        addModule(modSymbol) ;
+        addModule(modContext) ;
         addModule(modTime) ;
         addModule(modLangOutput) ;
         addModule(modLangParse) ;
