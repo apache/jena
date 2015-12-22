@@ -19,6 +19,7 @@
 package org.apache.jena.query.text ;
 
 import java.util.Iterator ;
+import java.util.LinkedList ;
 import java.util.List ;
 import java.util.function.Function ;
 
@@ -193,16 +194,17 @@ public class TextQueryPF extends PropertyFunctionBase {
         return qIter ;
     }
 
-    private QueryIterator variableSubject(Binding binding, Node s, Node score, Node literal, StrMatch match, ExecutionContext execCxt) {
-        Var sVar = Var.alloc(s) ;
+    private QueryIterator resultsToQueryIterator(Binding binding, Node s, Node score, Node literal, List<TextHit> results, ExecutionContext execCxt) {
+        Var sVar = Var.isVar(s) ? Var.alloc(s) : null ;
         Var scoreVar = (score==null) ? null : Var.alloc(score) ;
         Var literalVar = (literal==null) ? null : Var.alloc(literal) ;
-        List<TextHit> r = query(match.getProperty(), match.getQueryString(), match.getLimit(), execCxt) ;
+
         Function<TextHit,Binding> converter = (TextHit hit) -> {
             if (score == null && literal == null)
-                return BindingFactory.binding(binding, sVar, hit.getNode());
+                return sVar != null ? BindingFactory.binding(binding, sVar, hit.getNode()) : BindingFactory.binding(binding);
             BindingMap bmap = BindingFactory.create(binding);
-            bmap.add(sVar, hit.getNode());
+            if (sVar != null)
+                bmap.add(sVar, hit.getNode());
             if (scoreVar != null)
                 bmap.add(scoreVar, NodeFactoryExtra.floatToNode(hit.getScore()));
             if (literalVar != null)
@@ -210,9 +212,14 @@ public class TextQueryPF extends PropertyFunctionBase {
             return bmap;
         } ;
         
-        Iterator<Binding> bIter = Iter.map(r.iterator(), converter);
+        Iterator<Binding> bIter = Iter.map(results.iterator(), converter);
         QueryIterator qIter = new QueryIterPlainWrapper(bIter, execCxt);
         return qIter ;
+    }
+
+    private QueryIterator variableSubject(Binding binding, Node s, Node score, Node literal, StrMatch match, ExecutionContext execCxt) {
+        List<TextHit> r = query(match.getProperty(), match.getQueryString(), match.getLimit(), execCxt) ;
+        return resultsToQueryIterator(binding, s, score, literal, r, execCxt);
     }
 
     private QueryIterator concreteSubject(Binding binding, Node s, Node score, Node literal, StrMatch match, ExecutionContext execCxt) {
@@ -221,33 +228,20 @@ public class TextQueryPF extends PropertyFunctionBase {
             return IterLib.noResults(execCxt) ;
         }
 
-        Var scoreVar = (score==null) ? null : Var.alloc(score) ;
-        Var literalVar = (literal==null) ? null : Var.alloc(literal) ;
         String qs = match.getQueryString() ;
         List<TextHit> x = query(match.getProperty(), match.getQueryString(), -1, execCxt) ;
         
         if ( x == null ) // null return value - empty result
             return IterLib.noResults(execCxt) ;
         
+        List<TextHit> r = new LinkedList();
         for (TextHit hit : x ) {
             if (hit.getNode().equals(s)) {
-                // found the node among the hits
-                if (literalVar == null) {
-                    return (scoreVar == null) ?
-                        IterLib.result(binding, execCxt) :
-                        IterLib.oneResult(binding, scoreVar, NodeFactoryExtra.floatToNode(hit.getScore()), execCxt);
-                }
-                BindingMap bmap = BindingFactory.create(binding);
-                if (scoreVar != null) {
-                    bmap.add(scoreVar, NodeFactoryExtra.floatToNode(hit.getScore()));
-                }
-                bmap.add(literalVar, hit.getLiteral());
-                return IterLib.result(bmap, execCxt) ;
+                r.add(hit);
             }
         }
 
-        // node was not among the hits - empty result
-        return IterLib.noResults(execCxt) ;
+        return resultsToQueryIterator(binding, s, score, literal, r, execCxt);
     }
 
     private List<TextHit> query(Node property, String queryString, int limit, ExecutionContext execCxt) {

@@ -303,4 +303,31 @@ public class TestDatasetWithLuceneStoredLiterals extends AbstractTestDatasetWith
         assertTrue(literals.contains(NodeFactory.createLiteral("another nontext comment")));
     }
 
+    @Test
+    public void testLiteralValueMultipleBoundSubject() {
+        // test capturing of multiple matching literal values in a variable, when using bound subject
+        final String testName = "testLiteralValueMultipleBoundSubject";
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + testName + ">",
+                "  rdfs:comment 'a nontext comment', 'another nontext comment'",
+                "."
+                );
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s ?literal",
+                "WHERE {",
+                "    BIND(<" + RESOURCE_BASE + testName + "> AS ?s)",
+                "    (?s ?score ?literal) text:query (rdfs:comment 'nontext') .",
+                "}"
+                );
+
+        String expectedURI = RESOURCE_BASE + testName;
+        List<Node> literals = doTestSearchWithLiteralsMultiple(turtle, queryString, expectedURI);
+
+        assertEquals(2, literals.size());
+        assertTrue(literals.contains(NodeFactory.createLiteral("a nontext comment")));
+        assertTrue(literals.contains(NodeFactory.createLiteral("another nontext comment")));
+    }
+
 }
