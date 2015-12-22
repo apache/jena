@@ -198,8 +198,6 @@ public class TextQueryPF extends PropertyFunctionBase {
         Var scoreVar = (score==null) ? null : Var.alloc(score) ;
         Var literalVar = (literal==null) ? null : Var.alloc(literal) ;
         List<TextHit> r = query(match.getProperty(), match.getQueryString(), match.getLimit(), execCxt) ;
-        //Function<TextHit,Binding> converter = new TextHitConverter(binding, sVar, scoreVar, literalVar);
-        
         Function<TextHit,Binding> converter = (TextHit hit) -> {
             if (score == null && literal == null)
                 return BindingFactory.binding(binding, sVar, hit.getNode());
