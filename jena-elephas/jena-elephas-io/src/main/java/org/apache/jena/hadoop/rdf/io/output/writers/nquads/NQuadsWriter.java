@@ -20,8 +20,8 @@ package org.apache.jena.hadoop.rdf.io.output.writers.nquads;
 
 import java.io.Writer;
 
+import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.hadoop.rdf.io.output.writers.AbstractLineBasedQuadWriter;
-import org.apache.jena.riot.out.CharSpace;
 import org.apache.jena.riot.out.NodeFormatterNT;
 
 /**

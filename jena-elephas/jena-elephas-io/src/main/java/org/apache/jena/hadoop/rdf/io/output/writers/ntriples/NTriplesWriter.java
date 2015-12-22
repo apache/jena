@@ -20,8 +20,8 @@ package org.apache.jena.hadoop.rdf.io.output.writers.ntriples;
 
 import java.io.Writer;
 
+import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.hadoop.rdf.io.output.writers.AbstractLineBasedTripleWriter;
-import org.apache.jena.riot.out.CharSpace;
 import org.apache.jena.riot.out.NodeFormatterNT;
 
 /**
