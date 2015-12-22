@@ -19,7 +19,10 @@
 package org.apache.jena.query.text ;
 
 import java.util.Iterator ;
+import java.util.LinkedHashMap ;
+import java.util.LinkedList ;
 import java.util.List ;
+import java.util.Map ;
 import java.util.function.Function ;
 import java.util.stream.Collectors ;
 
@@ -62,11 +65,14 @@ public class TextQueryPF extends PropertyFunctionBase {
 
     private String langArg = null;
 
+    private Map<String,List<TextHit>> queryCache = null;
+
     @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
         super.build(argSubject, predicate, argObject, execCxt) ;
         DatasetGraph dsg = execCxt.getDataset() ;
         textIndex = chooseTextIndex(dsg) ;
+        queryCache = new LinkedHashMap();
 
         if (argSubject.isList()) {
             int size = argSubject.getArgListSize();
@@ -268,7 +274,13 @@ public class TextQueryPF extends PropertyFunctionBase {
         Explain.explain(execCxt.getContext(), "Text query: "+queryString) ;
         if ( log.isDebugEnabled())
             log.debug("Text query: {} ({})", queryString,limit) ;
-        return textIndex.query(property, queryString, limit) ;
+        String cacheKey = limit + " " + property + " " + queryString ;
+        List<TextHit> results = queryCache.get(cacheKey) ;
+        if (results == null) { /* cache miss */
+            results = textIndex.query(property, queryString, limit) ;
+            queryCache.put(cacheKey, results) ;
+        }
+        return results;
     }
     
     /** Deconstruct the node or list object argument and make a StrMatch 
