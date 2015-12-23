@@ -18,6 +18,9 @@
 
 package org.apache.jena.fuseki.build ;
 
+import static org.apache.jena.riot.RDFLanguages.filenameToLang;
+import static org.apache.jena.riot.RDFParserRegistry.getFactory;
+
 import java.io.File ;
 import java.io.FilenameFilter ;
 import java.io.IOException ;
@@ -46,6 +49,7 @@ import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.update.UpdateAction ;
@@ -211,7 +215,8 @@ public class FusekiConfig {
         // Files that are not hidden.
         DirectoryStream.Filter<Path> filter = (entry)-> {
             File f = entry.toFile() ;
-            return ! f.isHidden() && f.isFile() ;
+            final Lang lang = filenameToLang(f.getName());
+            return ! f.isHidden() && f.isFile() && lang != null && getFactory(lang) != null;
         } ;
 
         List<DataAccessPoint> dataServiceRef = new ArrayList<>() ;
