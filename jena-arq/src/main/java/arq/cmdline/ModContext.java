@@ -67,7 +67,6 @@ public class ModContext extends ModBase
             symbolName = MappingRegistry.mapPrefixName(symbolName);
             Symbol symbol = Symbol.create(symbolName);
             context.set(symbol, value);
-            System.err.println(symbol+"="+value);
         }
 
         ARQ.getContext().putAll(context);
