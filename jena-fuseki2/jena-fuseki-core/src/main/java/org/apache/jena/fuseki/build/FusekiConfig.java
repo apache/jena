@@ -19,7 +19,7 @@
 package org.apache.jena.fuseki.build ;
 
 import static org.apache.jena.riot.RDFLanguages.filenameToLang;
-import static org.apache.jena.riot.RDFParserRegistry.getFactory;
+import static org.apache.jena.riot.RDFParserRegistry.isRegistered;
 
 import java.io.File ;
 import java.io.FilenameFilter ;
@@ -216,7 +216,7 @@ public class FusekiConfig {
         DirectoryStream.Filter<Path> filter = (entry)-> {
             File f = entry.toFile() ;
             final Lang lang = filenameToLang(f.getName());
-            return ! f.isHidden() && f.isFile() && lang != null && getFactory(lang) != null;
+            return ! f.isHidden() && f.isFile() && lang != null && isRegistered(lang) ;
         } ;
 
         List<DataAccessPoint> dataServiceRef = new ArrayList<>() ;

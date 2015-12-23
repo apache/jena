@@ -138,6 +138,9 @@ public class RDFParserRegistry
         return langToParserFactory.get(language) ;
     }
 
+    /** return true if the language has a registered parser. */
+    public static boolean isRegistered(Lang lang) { return langToParserFactory.containsKey(lang) ; }
+
     /** return true if the language is registered with the triples parser factories */
     public static boolean isTriples(Lang lang) { return langTriples.contains(lang) ; }
     
