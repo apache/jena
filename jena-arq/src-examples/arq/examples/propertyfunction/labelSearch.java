@@ -52,7 +52,7 @@ import org.apache.jena.sparql.util.NodeUtils ;
 import org.apache.jena.vocabulary.RDFS ;
 
 /** Example extension or property function to show rewriting part of a query.
- *  A simpler, more driect way to implement property functions is to extends
+ *  A simpler, more direct way to implement property functions is to extend
  *  one of the helper classes and have the custom code called on each solution from the
  *  the previosu query stage.
  *  
