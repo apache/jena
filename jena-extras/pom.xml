@@ -101,7 +101,6 @@ limitations under the License.
       <!-- Sources Plugin -->
       <plugin>
         <artifactId>maven-source-plugin</artifactId>
-        <version>2.1.1</version>
         <executions>
           <execution>
             <id>bundle-sources</id>
