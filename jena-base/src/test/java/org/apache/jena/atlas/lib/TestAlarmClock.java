@@ -18,19 +18,21 @@
 
 package org.apache.jena.atlas.lib ;
 
+import static com.jayway.awaitility.Awaitility.await ;
 import static org.apache.jena.atlas.lib.Lib.sleep ;
 
+import java.util.concurrent.TimeUnit ;
+import static java.util.concurrent.TimeUnit.* ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.base.Sys ;
 import org.junit.Test ;
 
 public class TestAlarmClock extends BaseTest {
     /* Issues with MS Windows.
      * 
      * Running some of these tests on windows is unreliable; sometimes they pass,
-     * sometimes one fails.
+     * sometimes one or more fails.
      *  
      * This seems to be that when the CI server (ASF Jenkins, Windows VM)
      * is under load then the ScheduledThreadPoolExecutor used by AlarmClock 
@@ -39,24 +41,13 @@ public class TestAlarmClock extends BaseTest {
      * But setting the times so high for this slows the tests down a lot
      * and makes some of them fairly pointless.
      * 
-     * alarm_03 is very sensitive.  A sleep of 200 is still not stable
-     * the callback is not called (10ms callback).  It usually passses if there is
-     * no other job on the machines, otherwise it fails >50% of the time.
-     * 
-     * Failures are masking the success/failure of unrelated development changes.
-     * 
-     * So skip some tests on windows.  
+     * The use of awaitility helps this - the timeouts can be set quite long
+     * and the polling done means the full wait time does not happen normally.  
      */
 
     private AtomicInteger count    = new AtomicInteger(0) ;
     private Runnable      callback = ()->count.getAndIncrement() ;
     
-    // Loaded CI.
-    private static boolean mayBeErratic = Sys.isWindows ;
-    
-    private int timeout(int time1, int time2) {
-        return mayBeErratic ? time2 : time1 ;
-    }
     @Test
     public void alarm_01() {
         AlarmClock alarmClock = new AlarmClock() ;
@@ -67,13 +58,22 @@ public class TestAlarmClock extends BaseTest {
         alarmClock.release() ;
     }
 
+    private void awaitUntil(int value, long timePeriod, TimeUnit units) {
+        await()
+        .atMost(timePeriod, units)
+        .until(() -> {
+            return count.get() == value ;
+        }) ;
+    }
+    
     @Test
     public void alarm_02() {
         AlarmClock alarmClock = new AlarmClock() ;
         // Short - happens.
         Alarm a = alarmClock.add(callback, 10) ;
-        sleep(timeout(100, 250)) ;
-        assertEquals(1, count.get()) ;
+        
+        awaitUntil(1, 500, MILLISECONDS) ;
+        
         // try to cancel anyway.
         alarmClock.cancel(a) ;
         alarmClock.release() ;
@@ -84,9 +84,9 @@ public class TestAlarmClock extends BaseTest {
         AlarmClock alarmClock = new AlarmClock() ;
         Alarm a1 = alarmClock.add(callback, 10) ;
         Alarm a2 = alarmClock.add(callback, 1000000) ;
-        sleep(timeout(100, 300)) ;
-        // ping1 went off.
-        assertEquals(1, count.get()) ;
+        
+        awaitUntil(1, 500, MILLISECONDS) ;
+        
         alarmClock.cancel(a2) ;
         alarmClock.release() ;
     }
@@ -96,9 +96,9 @@ public class TestAlarmClock extends BaseTest {
         AlarmClock alarmClock = new AlarmClock() ;
         Alarm a1 = alarmClock.add(callback, 10) ;
         Alarm a2 = alarmClock.add(callback, 20) ;
-        sleep(timeout(150, 300)) ;
-        // ping1 went off. ping2 went off.
-        assertEquals(2, count.get()) ;
+        
+        awaitUntil(2, 500, MILLISECONDS) ;
+
         alarmClock.release() ;
     }
 
@@ -107,7 +107,11 @@ public class TestAlarmClock extends BaseTest {
         AlarmClock alarmClock = new AlarmClock() ;
         Alarm a = alarmClock.add(callback, 50) ;
         alarmClock.reset(a, 20000) ;
-        sleep(timeout(100, 250)) ;
+        
+        sleep(150) ;
+        
+        // Did not go off.
+        assertEquals(0, count.get()) ;
         alarmClock.cancel(a);
         alarmClock.release() ;
     }
