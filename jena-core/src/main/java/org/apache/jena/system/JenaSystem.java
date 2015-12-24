@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory ;
 /** Jena "system" - simple controls for ensuring components are loaded and initialized.
  * <p>
  * All initialization should be concurrent and thread-safe.  In particular,
- * some subsystems need initialization some sort of order (e.g. ARQ before TDB).
+ * some subsystems need initialization in some sort of order (e.g. ARQ before TDB).
  * <p>
  * This is achieved by "levels": levels less than 100 are considered "jena system levels" 
  * and are reserved. 
