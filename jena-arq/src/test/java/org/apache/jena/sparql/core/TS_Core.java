@@ -36,7 +36,10 @@ import org.junit.runners.Suite ;
     , TestDatasetGraphWithLock.class
     
     , TestDatasetGraphBaseFind_General.class
+    , TestDatasetGraphBaseFind_General.class
+    , TestDatasetGraphBaseFind_Mem.class
     , TestDatasetGraphBaseFindPattern_General.class
+    , TestDatasetGraphBaseFindPattern_Mem.class
 })
 
 public class TS_Core

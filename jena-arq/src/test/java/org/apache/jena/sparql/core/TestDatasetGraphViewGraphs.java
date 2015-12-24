@@ -31,7 +31,7 @@ import org.junit.Test ;
 public class TestDatasetGraphViewGraphs extends AbstractTestGraphOverDataset
 {
     @Override
-    protected DatasetGraph createBaseDSG() { return DatasetGraphFactory.createMem() ; }
+    protected DatasetGraph createBaseDSG() { return DatasetGraphFactory.create() ; }
     
     @Override
     protected Graph makeDefaultGraph(DatasetGraph dsg)

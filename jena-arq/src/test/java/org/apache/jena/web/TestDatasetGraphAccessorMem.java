@@ -28,7 +28,7 @@ public class TestDatasetGraphAccessorMem extends AbstractTestDatasetGraphAccesso
     @Override
     protected DatasetGraphAccessor getDatasetUpdater()
     {
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         return DatasetAccessorFactory.make(dsg) ;
     }
 }

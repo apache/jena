@@ -78,7 +78,7 @@ public class TestQuadOperation extends Assert {
 
 	@Test
 	public void testWithActualGraphStore() {
-		final DatasetGraph realDsg = DatasetGraphFactory.createMem();
+		final DatasetGraph realDsg = DatasetGraphFactory.create();
 		realDsg.addGraph(graphName, new GraphMem());
 		quadAddition.actOn(realDsg);
 		assertTrue(realDsg.contains(q));

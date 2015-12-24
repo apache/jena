@@ -22,7 +22,6 @@ import static org.apache.jena.graph.Node.ANY;
 import static org.apache.jena.graph.NodeFactory.createURI;
 import static org.apache.jena.query.ReadWrite.READ;
 import static org.apache.jena.query.ReadWrite.WRITE;
-import static org.apache.jena.sparql.core.DatasetGraphFactory.createMem;
 import static org.apache.jena.sparql.graph.GraphFactory.createGraphMem;
 import static org.apache.jena.sparql.sse.SSE.parseTriple;
 import static org.junit.Assert.assertEquals;
@@ -37,12 +36,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.sparql.JenaTransactionException;
-import org.apache.jena.sparql.core.AbstractDatasetGraphTests;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphMap;
-import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.core.TestDatasetGraphWithLock;
-import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.core.journaling.QuadOperation.QuadDeletion;
 import org.apache.jena.sparql.core.journaling.TestDatasetGraphWithRecord.TestDatasetGraphWithRecordAsDSG;
 import org.apache.jena.sparql.core.journaling.TestDatasetGraphWithRecord.TestDatasetGraphWithRecordConcurrency;
@@ -63,7 +57,7 @@ public class TestDatasetGraphWithRecord {
 
 		@Override
 		protected DatasetGraph emptyDataset() {
-			return new DatasetGraphWithRecord(createMem());
+			return new DatasetGraphWithRecord(DatasetGraphFactory.create());
 		}
 
 		/**
@@ -265,7 +259,7 @@ public class TestDatasetGraphWithRecord {
 	public static class TestDatasetGraphWithRecordConcurrency extends TestDatasetGraphWithLock {
 		@Override
 		protected Dataset createDataset() {
-			return DatasetFactory.wrap(new DatasetGraphWithRecord(createMem()));
+			return DatasetFactory.wrap(new DatasetGraphWithRecord(DatasetGraphFactory.create()));
 		}
 	}
 }

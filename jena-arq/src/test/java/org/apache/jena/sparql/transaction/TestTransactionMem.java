@@ -31,7 +31,7 @@ public class TestTransactionMem extends AbstractTestTransaction
     @Override
     protected Dataset create()
     { 
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         DatasetGraphWithLock dsgl = new  DatasetGraphWithLock(dsg) ;
         return DatasetFactory.wrap(dsgl) ;
     }

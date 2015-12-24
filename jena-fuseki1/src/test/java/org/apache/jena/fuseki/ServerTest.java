@@ -93,7 +93,7 @@ public class ServerTest
     
     protected static void setupServer()
     {
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         server = EmbeddedFusekiServer.create(port, dsg, datasetPath) ;
         server.start() ;
     }

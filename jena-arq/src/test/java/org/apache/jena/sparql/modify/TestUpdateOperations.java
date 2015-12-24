@@ -43,7 +43,7 @@ import org.junit.Test ;
 public class TestUpdateOperations extends BaseTest
 {
     private static final String DIR = "testing/Update" ;
-    private DatasetGraph graphStore() { return DatasetGraphFactory.createMem() ; }
+    private DatasetGraph graphStore() { return DatasetGraphFactory.create() ; }
     private Node gName = SSE.parseNode("<http://example/g>") ;
     
     @Test public void load1() {
@@ -102,7 +102,7 @@ public class TestUpdateOperations extends BaseTest
     
     // Check constant and template quads 
     @Test public void delete_insert_where_01() {
-        DatasetGraph dsg0 = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg0 = DatasetGraphFactory.create() ;
         UpdateRequest req = UpdateFactory.create("INSERT DATA { <x> <p> 2 . <z> <q> 2 . <z> <q> 3 . }") ;
         UpdateAction.execute(req, dsg0);
         assertEquals(3, dsg0.getDefaultGraph().size()) ;

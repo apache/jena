@@ -24,6 +24,6 @@ import org.apache.jena.sparql.core.DatasetGraphFactory ;
 public class TestUpdateGraphMgtMem extends AbstractTestUpdateGraphMgt {
     @Override
     protected DatasetGraph getEmptyDatasetGraph() {
-        return DatasetGraphFactory.createMem() ;
+        return DatasetGraphFactory.create() ;
     }
 }

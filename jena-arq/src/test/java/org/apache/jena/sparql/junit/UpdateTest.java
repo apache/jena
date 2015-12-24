@@ -167,7 +167,7 @@ public class UpdateTest extends EarlTestCase
     static Dataset getDataset(Resource r)
     {
         //DataSource ds = DatasetFactory.create() ;
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         // Growing. dataset.
         Dataset ds = DatasetFactory.wrap(dsg) ;
         
