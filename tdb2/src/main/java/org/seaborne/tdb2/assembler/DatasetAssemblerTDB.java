@@ -74,7 +74,7 @@ public class DatasetAssemblerTDB extends DatasetAssembler
             tdb:unionGraph true ; # or "true"
         */
         AssemblerUtils.setContext(root, dsg.getContext());
-        return DatasetFactory.create(dsg) ; 
+        return DatasetFactory.wrap(dsg) ; 
     }
     
 }

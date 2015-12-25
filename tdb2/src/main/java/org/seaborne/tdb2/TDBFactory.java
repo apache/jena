@@ -37,7 +37,7 @@ public class TDBFactory
 
     public static Dataset connectDataset(Location location) {
         DatasetGraph dsg = connectDatasetGraph(location) ;
-        return DatasetFactory.create(dsg) ;
+        return DatasetFactory.wrap(dsg) ;
     }
 
     public static DatasetGraph connectDatasetGraph(String location) {

@@ -258,7 +258,7 @@ public class TestDatasetTDB extends BaseTest
         Model m = ds.getNamedModel("http://example/graph2") ;
         
         // Use graph2 as default model.
-        Dataset ds2 = DatasetFactory.createMem() ;
+        Dataset ds2 = DatasetFactory.create() ;
         ds2.setDefaultModel(ds.getNamedModel("http://example/graph2")) ;
         
         String qs = "CONSTRUCT {?s ?p ?o } WHERE { ?s ?p ?o}" ;
@@ -277,7 +277,7 @@ public class TestDatasetTDB extends BaseTest
         Model m = ds.getNamedModel("http://example/graph2") ;
         
         // Use graph1 as a differently named model.
-        Dataset ds2 = DatasetFactory.createMem() ;
+        Dataset ds2 = DatasetFactory.create() ;
         ds2.addNamedModel("http://example/graphOther", m) ;
         
         String qs = "CONSTRUCT {?s ?p ?o } WHERE { {?s ?p ?o} UNION { GRAPH <http://example/graphOther> {?s ?p ?o} } }" ;
@@ -306,7 +306,7 @@ public class TestDatasetTDB extends BaseTest
         Model m = ds.getDefaultModel() ;
         
         // Use the default model in one dataset as a named model in another.
-        Dataset ds2 = DatasetFactory.createMem() ;
+        Dataset ds2 = DatasetFactory.create() ;
         ds2.addNamedModel("http://example/graphOther", m) ;
         
         String qs = "CONSTRUCT {?s ?p ?o } WHERE { {?s ?p ?o} UNION { GRAPH <http://example/graphOther> {?s ?p ?o} } }" ;
