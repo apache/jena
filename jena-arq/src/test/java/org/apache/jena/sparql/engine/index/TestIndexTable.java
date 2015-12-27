@@ -46,14 +46,13 @@ import org.junit.Test ;
 import org.junit.Before ;
 
 /**
- * Tests the {@link org.apache.jena.sparql.engine.index.HashIndexTable} and
- * {@link org.apache.jena.sparql.engine.index.LinearIndex} classes. Also tests
- * that the {@link org.apache.jena.sparql.engine.index.IndexFactory} instantiates
+ * Tests the {@link HashIndexTable} and
+ * {@link LinearIndex} classes. Also tests
+ * that the {@link IndexFactory} instantiates
  * the correct type of index depending on the data.
- * 
- * Contribution from Paul Gearon
  */
 public class TestIndexTable {
+    // Contribution from P Gearon (@quoll)
 
 	private Var[] vars ;
 

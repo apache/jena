@@ -33,10 +33,9 @@ import org.apache.jena.sparql.engine.binding.Binding ;
  * Indexes bindings so that they can be search for quickly when a binding to all the
  * variables is provided. If a binding to only some of the known variables is provided
  * then the index still works, but will search linearly.
- * Contribution from Paul Gearon (quoll)
  */
 public class HashIndexTable implements IndexTable {
-
+    // Contribution from P Gearon (@quoll)
 	final private Set<Key> table ;
 	private Map<Var,Integer> varColumns ;
 	private boolean missingValue ;

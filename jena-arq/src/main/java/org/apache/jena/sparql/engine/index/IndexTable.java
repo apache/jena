@@ -25,11 +25,8 @@ import org.apache.jena.sparql.engine.binding.Binding ;
  * {@link org.apache.jena.sparql.engine.binding.Binding}s when
  * {@link org.apache.jena.sparql.engine.iterator.QueryIterMinus} is trying to determine
  * which Bindings need to be removed.
- * <p>
- * Contribution from Paul Gearon
  */
 public interface IndexTable {
-
+    // Contribution from P Gearon
 	public abstract boolean containsCompatibleWithSharedDomain(Binding binding);
-
 }
