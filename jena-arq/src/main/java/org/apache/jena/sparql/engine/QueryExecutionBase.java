@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.jena.atlas.json.JsonArray;
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.lib.Alarm ;
 import org.apache.jena.atlas.lib.AlarmClock;
 import org.apache.jena.atlas.logging.Log;
@@ -36,6 +38,7 @@ import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.describe.DescribeHandler;
 import org.apache.jena.sparql.core.describe.DescribeHandlerRegistry;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -335,7 +338,46 @@ public class QueryExecutionBase implements QueryExecution
     }
 
     @Override
-    public void setTimeout(long timeout, TimeUnit timeUnit) {
+    public JsonArray execJson()
+    {
+        checkNotClosed() ;
+        if ( ! query.isJsonType() )
+            throw new QueryExecException("Attempt to get a JSON result from a " + labelForQuery(query)+" query") ;
+
+        startQueryIterator() ;
+
+        JsonArray jsonArray = new JsonArray() ;
+        List<String> resultVars = query.getResultVars() ;
+
+        while (queryIterator.hasNext())
+        {
+            Binding binding = queryIterator.next() ;
+            JsonObject jsonObject = new JsonObject() ; 
+            for (String resultVar : resultVars) {
+                Node n = binding.get(Var.alloc(resultVar)) ;
+                if (n.isLiteral()) {
+                    jsonObject.put(resultVar, n.getLiteral().toString()) ;
+                }
+            }
+            jsonArray.add(jsonObject) ;
+        }
+
+        return jsonArray ;
+    }
+
+    @Override
+    public Iterator<JsonObject> execJsonItems() 
+    {
+        checkNotClosed() ;
+        if ( ! query.isJsonType() )
+            throw new QueryExecException("Attempt to get a JSON result from a " + labelForQuery(query)+" query") ;
+        startQueryIterator() ;
+        return new JsonIterator(queryIterator, query.getResultVars()) ;
+    }
+
+    @Override
+    public void setTimeout(long timeout, TimeUnit timeUnit)
+    {
         // Overall timeout - recorded as (UNSET,N)
         long x = asMillis(timeout, timeUnit);
         this.timeout1 = TIMEOUT_UNSET;

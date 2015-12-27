@@ -21,6 +21,8 @@ package org.apache.jena.query;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.jena.atlas.json.JsonArray;
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.Quad;
@@ -153,7 +155,13 @@ public interface QueryExecution extends AutoCloseable
 
     /** Execute an ASK query */
     public boolean execAsk();
-    
+
+    /** Execute a JSON query and return a json array */
+    public JsonArray execJson() ;
+
+    /** Execute a JSON query and return an interator */
+    public Iterator<JsonObject> execJsonItems() ;
+
 	/** Stop in mid execution.
 	 *  This method can be called in parallel with other methods on the
      *  QueryExecution object.

@@ -18,9 +18,16 @@
 
 package org.apache.jena.sparql.resultset;
 
+import java.util.Iterator;
+
+import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.BindingMap;
 
 /**
  * The class "ResultSet" is reserved for the SELECT result format. This class
@@ -34,6 +41,7 @@ public class SPARQLResult {
     private Boolean   booleanResult = null;
     private Model     model         = null;
     private Dataset   dataset       = null;
+    private Iterator<JsonObject> jsonItems = null;
 
     // Delayed choice of result type.
     protected SPARQLResult() {}
@@ -52,6 +60,10 @@ public class SPARQLResult {
 
     public SPARQLResult(Dataset dataset) {
         set(dataset);
+    }
+
+    public SPARQLResult(Iterator<JsonObject> jsonItems) {
+        set(jsonItems); 
     }
 
     public boolean isResultSet() {
@@ -81,6 +93,13 @@ public class SPARQLResult {
         if ( !hasBeenSet )
             throw new ResultSetException("Not set");
         return booleanResult != null;
+    }
+
+    public boolean isJson()
+    {
+        if ( !hasBeenSet )
+            throw new ResultSetException("Not set");
+        return jsonItems != null;
     }
 
     public ResultSet getResultSet() {
@@ -115,6 +134,15 @@ public class SPARQLResult {
         return dataset;
     }
 
+    public Iterator<JsonObject> getJsonItems()
+    {
+        if ( !hasBeenSet )
+            throw new ResultSetException("Not set");
+        if ( !isJson() )
+            throw new ResultSetException("Not a JSON result");
+        return jsonItems;
+    }
+
     public boolean isHasBeenSet() {
         return hasBeenSet;
     }
@@ -142,4 +170,23 @@ public class SPARQLResult {
         booleanResult = r;
         hasBeenSet = true;
     }
+
+    protected void set(Iterator<JsonObject> jsonItems) {
+        this.jsonItems = jsonItems; 
+        hasBeenSet = true;
+    }
+
+    static protected void addBinding(BindingMap binding, Var var, Node value) {
+        Node n = binding.get(var);
+        if ( n != null ) {
+            // Same - silently skip.
+            if ( n.equals(value) )
+                return;
+            Log.warn(SPARQLResult.class,
+                     String.format("Multiple occurences of a binding for variable '%s' with different values - ignored", var.getName()));
+            return;
+        }
+        binding.add(var, value);
+    }
+
 }

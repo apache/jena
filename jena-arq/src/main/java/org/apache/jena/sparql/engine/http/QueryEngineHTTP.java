@@ -26,11 +26,14 @@ import java.util.List ;
 import java.util.Map ;
 import java.util.concurrent.TimeUnit ;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.http.client.HttpClient ;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.protocol.HttpContext ;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.json.JsonArray;
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
@@ -530,6 +533,18 @@ public class QueryEngineHTTP implements QueryExecution {
             log.warn("Failed to close connection", e);
             return false ;
         }
+    }
+
+    @Override
+    public JsonArray execJson()
+    {
+        throw new NotImplementedException("JSON queries not implemented for remote calls") ;
+    }
+
+    @Override
+    public Iterator<JsonObject> execJsonItems()
+    {
+        throw new NotImplementedException("JSON queries not implemented for remote calls") ;
     }
 
     private void checkNotClosed() {
