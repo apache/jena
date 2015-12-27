@@ -18,7 +18,6 @@
 
 package org.apache.jena.tdb.sys ;
 
-import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.file.FileFactory ;
@@ -30,6 +29,7 @@ import org.apache.jena.tdb.index.Index ;
 import org.apache.jena.tdb.index.RangeIndex ;
 import org.apache.jena.tdb.index.SetupIndex ;
 import org.apache.jena.tdb.index.bplustree.BPlusTree ;
+import org.apache.jena.tdb.lib.ColumnMap ;
 import org.apache.jena.tdb.setup.StoreParams ;
 import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.store.tupletable.TupleIndex ;

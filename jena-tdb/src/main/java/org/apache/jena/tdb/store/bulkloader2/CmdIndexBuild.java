@@ -23,7 +23,6 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.tdb.base.block.BlockMgr ;
 import org.apache.jena.tdb.base.block.BlockMgrFactory ;
@@ -34,6 +33,7 @@ import org.apache.jena.tdb.base.record.RecordFactory ;
 import org.apache.jena.tdb.index.bplustree.BPlusTree ;
 import org.apache.jena.tdb.index.bplustree.BPlusTreeParams ;
 import org.apache.jena.tdb.index.bplustree.BPlusTreeRewriter ;
+import org.apache.jena.tdb.lib.ColumnMap ;
 import org.apache.jena.tdb.sys.Names ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import tdb.cmdline.CmdTDB ;

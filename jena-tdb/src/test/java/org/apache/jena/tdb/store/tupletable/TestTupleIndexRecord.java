@@ -19,12 +19,12 @@
 package org.apache.jena.tdb.store.tupletable;
 
 
-import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.tdb.base.file.FileSet ;
 import org.apache.jena.tdb.base.record.RecordFactory ;
 import org.apache.jena.tdb.index.IndexFactory ;
 import org.apache.jena.tdb.index.IndexParams ;
 import org.apache.jena.tdb.index.RangeIndex ;
+import org.apache.jena.tdb.lib.ColumnMap ;
 import org.apache.jena.tdb.setup.StoreParams ;
 import org.apache.jena.tdb.store.tupletable.TupleIndexRecord ;
 import org.apache.jena.tdb.sys.SystemTDB ;

@@ -23,7 +23,6 @@ import static org.apache.jena.tdb.sys.SystemTDB.SizeOfLong ;
 import java.util.Iterator;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Bytes ;
-import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Tuple ;
 

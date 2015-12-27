@@ -16,11 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.lib;
+package org.apache.jena.tdb.lib;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.tdb.lib.ColumnMap ;
+
 import static org.apache.jena.atlas.lib.Tuple.* ;
 import org.junit.Test ;
 

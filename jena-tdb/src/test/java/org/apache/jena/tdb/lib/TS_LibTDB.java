@@ -26,6 +26,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( {
     TestNodeLib.class
     , TestStringAbbrev.class
+    , TestColumnMap.class
 })
 
 

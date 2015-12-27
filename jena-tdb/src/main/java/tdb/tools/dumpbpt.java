@@ -23,7 +23,6 @@ import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.atlas.logging.LogCtl ;
@@ -33,6 +32,7 @@ import org.apache.jena.tdb.base.record.RecordFactory ;
 import org.apache.jena.tdb.index.IndexFactory ;
 import org.apache.jena.tdb.index.RangeIndex ;
 import org.apache.jena.tdb.index.bplustree.BPlusTree ;
+import org.apache.jena.tdb.lib.ColumnMap ;
 import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.store.tupletable.TupleIndex ;
 import org.apache.jena.tdb.store.tupletable.TupleIndexRecord ;

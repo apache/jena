@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.lib;
+package org.apache.jena.tdb.lib;
 
 import static java.lang.String.format ;
 
@@ -24,6 +24,9 @@ import java.util.Arrays ;
 import java.util.List ;
 
 import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.lib.ListUtils ;
+import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.Tuple ;
 
 
 
