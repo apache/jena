@@ -39,6 +39,8 @@ define(
         e.preventDefault();
 
         if (this.validateSimpleForm()) {
+          var datasetName = $("input[name=dbName]").val().trim();
+          $("input[name=dbName]").val(datasetName);
           var options = $("#simple-edit form").serializeArray();
           fui.models.fusekiServer.updateOrCreateDataset( null, options )
                                  .done( this.showDataManagementPage )
