@@ -105,6 +105,11 @@ public class QueryCompare implements QueryVisitor
     }
 
     @Override
+    public void visitJsonResultForm(Query query) {
+        check("Not both JSON queries", query2.isJsonType()) ;
+    }
+
+    @Override
     public void visitDatasetDecl(Query query1)
     {
         boolean b1 = Lib.equalsListAsSet(query1.getGraphURIs(), query2.getGraphURIs()) ;

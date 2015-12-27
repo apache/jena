@@ -24,12 +24,18 @@ import static org.apache.jena.fuseki.ServerTest.* ;
 import static org.apache.jena.fuseki.ServerTest.model1 ;
 import static org.apache.jena.fuseki.ServerTest.model2 ;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException ;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection ;
 import java.net.URL ;
 import java.util.Iterator ;
 
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.jena.atlas.json.JsonArray;
+import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.graph.Node ;
@@ -262,6 +268,44 @@ public class TestQuery extends AbstractFusekiTest {
                 }
             }
         }
+    }
+
+    @Test(expected = NotImplemented.class)
+    public void query_json_01() throws IOException {
+        Query query = QueryFactory.create("JSON { \"s\": ?s , \"p\": ?p , \"o\" : ?o } "
+                + "WHERE { ?s ?p ?o }", Syntax.syntaxARQ);
+        query.toString();
+        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery(), query) ) {
+            JsonArray result = qExec.execJson();
+            assertEquals(1, result.size());
+        }
+    }
+
+    @Test
+    public void query_json_02() throws IOException {
+        String qs = Convert.encWWWForm("JSON { \"s\": ?s , \"p\": ?p , \"o\" : ?o } "
+                + "WHERE { ?s ?p ?o }") ;
+        URL u = new URL(serviceQuery() + "?query=" + qs) ;
+        HttpURLConnection conn = (HttpURLConnection)u.openConnection() ;
+        String result = null;
+        StringBuffer sb = new StringBuffer();
+        InputStream is = null;
+        try {
+            is = new BufferedInputStream(conn.getInputStream());
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String inputLine = "";
+            while ((inputLine = br.readLine()) != null) {
+                sb.append(inputLine);
+            }
+            result = sb.toString();
+        }
+        finally {
+            if (is != null) {
+                is.close(); 
+            }   
+        }
+        Assert.assertNotNull(result);
+        Assert.assertTrue(result.contains("http://example/x"));
     }
 
     private static void execQuery(String queryString, int exceptedRowCount) {

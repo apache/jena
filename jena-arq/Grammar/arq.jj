@@ -49,6 +49,7 @@ void Query() : { }
 {
   Prologue()
   ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery()
+    | JsonQuery()
   )
   ValuesClause()
 }
@@ -175,6 +176,34 @@ void AskQuery() : {}
   ( DatasetClause() )*
   WhereClause()
   SolutionModifier()
+}
+void JsonQuery() : {}
+{
+  JsonClause()
+  ( DatasetClause() )*
+  WhereClause()
+  SolutionModifier()
+}
+void JsonClause() : {}
+{
+  <JSON> { getQuery().setQueryJsonType() ; }
+  <LBRACE>
+  JsonObjectMember() ( <COMMA> JsonObjectMember() ) *
+  <RBRACE>
+}
+void JsonObjectMember() : { Node o ; String s ; Token t; }
+{
+  s = String()
+  t = < PNAME_NS > {
+    if ( ! t.image.equals(":") )
+      throwParseException("Prefix name expression not legal at this point : "+t.image, t.beginLine, t.beginColumn) ;
+  }
+  (
+    o = Var() { getQuery().addResultVar((Var)o) ; getQuery().addJsonMapping(s, o) ; }
+  | o = RDFLiteral() { getQuery().addResultVar(s, NodeValue.makeNode(o)) ; getQuery().addJsonMapping(s, o) ; }
+  | o = NumericLiteral() { getQuery().addResultVar(s, NodeValue.makeNode(o)) ; getQuery().addJsonMapping(s, o) ; }
+  | o = BooleanLiteral() { getQuery().addResultVar(s, NodeValue.makeNode(o)) ; getQuery().addJsonMapping(s, o) ; }
+  )
 }
 void DatasetClause() : {}
 {
@@ -1563,6 +1592,17 @@ String String() : { Token t ; String lex ; }
       return lex ;
     }
 }
+Number Number() : { Token t ; Number number ; }
+{
+  (
+    t = < INTEGER > { number = integerValue(t.image) ; }
+  | t = < DECIMAL > { number = doubleValue(t.image) ; }
+  | t = < DOUBLE > { number = doubleValue(t.image) ; }
+  )
+  {
+    return number ;
+  }
+}
 String iri() : { String iri ; }
 {
   iri = IRIREF() { return iri ; }
@@ -1621,6 +1661,7 @@ TOKEN [IGNORE_CASE] :
 | < SELECT: "select" >
 | < DISTINCT: "distinct" >
 | < REDUCED: "reduced" >
+| < JSON: "json" >
 | < DESCRIBE: "describe" >
 | < CONSTRUCT: "construct" >
 | < ASK: "ask" >

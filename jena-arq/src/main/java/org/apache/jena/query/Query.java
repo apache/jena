@@ -62,6 +62,7 @@ public class Query extends Prologue implements Cloneable, Printable
     public static final int QueryTypeConstruct  = 222 ;
     public static final int QueryTypeDescribe   = 333 ;
     public static final int QueryTypeAsk        = 444 ;
+    public static final int QueryTypeJson       = 555 ;
     int queryType = QueryTypeUnknown ; 
     
     // If no model is provided explicitly, the query engine will load
@@ -135,6 +136,7 @@ public class Query extends Prologue implements Cloneable, Printable
     public void setQueryConstructType()         { queryType = QueryTypeConstruct ; queryResultStar = true ; }
     public void setQueryDescribeType()          { queryType = QueryTypeDescribe ; }
     public void setQueryAskType()               { queryType = QueryTypeAsk ; }
+    public void setQueryJsonType()              { queryType = QueryTypeJson ; }
     
     public int getQueryType()                   { return queryType ; }
     
@@ -145,6 +147,8 @@ public class Query extends Prologue implements Cloneable, Printable
     public boolean isDescribeType()             { return queryType == QueryTypeDescribe ; }
 
     public boolean isAskType()                  { return queryType == QueryTypeAsk ; }
+
+    public boolean isJsonType()                 { return queryType == QueryTypeJson ; }
 
     public boolean isUnknownType()              { return queryType == QueryTypeUnknown ; }
     
@@ -515,6 +519,18 @@ public class Query extends Prologue implements Cloneable, Printable
         havingExprs.add(expr) ;
     }
 
+    // SELECT JSON
+
+    private Map<String, Node> jsonMapping = new LinkedHashMap<>();
+
+    public void addJsonMapping(String key, Node value) {
+        jsonMapping.put(key, value);
+    }
+
+    public Map<String, Node> getJsonMapping() {
+        return Collections.unmodifiableMap(jsonMapping);
+    }
+
     // ---- Aggregates
 
     // Record allocated aggregations.
@@ -707,6 +723,8 @@ public class Query extends Prologue implements Cloneable, Printable
             visitor.visitDescribeResultForm(this) ;
         if ( this.isAskType() )
             visitor.visitAskResultForm(this) ;
+        if ( this.isJsonType() )
+            visitor.visitJsonResultForm(this) ;
         visitor.visitDatasetDecl(this) ;
         visitor.visitQueryPattern(this) ;
         visitor.visitGroupBy(this) ;

@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,26 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.engine;
+package org.apache.jena.query;
 
-import org.apache.jena.sparql.engine.binding.TestBindingStreams ;
-import org.apache.jena.sparql.engine.http.TestQueryEngineHTTP ;
-import org.apache.jena.sparql.engine.http.TestService ;
-import org.apache.jena.sparql.engine.iterator.TS_QueryIterators ;
-import org.apache.jena.sparql.engine.ref.TestTableJoin ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-        TestBindingStreams.class
-      , TestTableJoin.class
-      , TS_QueryIterators.class
-      , TestService.class
-      , TestQueryEngineHTTP.class
-      , TestQueryEngineMultiThreaded.class
-      , TestJsonIterator.class
-      , TestJsonEval.class
+    TestResultSetFormatter.class
 })
+public class TS_ResultSetFormatter {
 
-public class TS_Engine {}
+}

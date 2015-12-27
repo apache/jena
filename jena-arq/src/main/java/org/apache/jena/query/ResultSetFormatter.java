@@ -31,6 +31,8 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.riot.Lang;
@@ -322,18 +324,43 @@ public class ResultSetFormatter {
     public static void output(boolean result, Lang resultFormat) {
         output(System.out, result, resultFormat);
     }
-    // ---- General Output
     
     public static void output(OutputStream outStream, boolean result, Lang resultFormat) {
         ResultsWriter.create().lang(resultFormat).build().write(outStream, result);
     }
+
+    /** Output an iterator of JSON values.
+     *
+     * @param outStream output stream
+     * @param jsonItems The JSON values
+     */
+    public static void output(OutputStream outStream, Iterator<JsonObject> jsonItems)
+    {
+        IndentedWriter out = new IndentedWriter(outStream) ;
+        out.println("[") ;
+        out.incIndent() ;
+        while (jsonItems.hasNext())
+        {
+            JsonObject jsonItem = jsonItems.next() ;
+            jsonItem.output(out) ;
+            if ( jsonItems.hasNext() )
+                out.println(" ,");
+            else
+                out.println();
+        }
+        out.decIndent();
+        out.println("]");
+        out.flush();
+    }
+
+    // ---- General Output
+
+    // ---- XML Output
+
     /** Output a result set in the XML format
      * 
      * @param qresults      result set
      */
-    
-    // ---- XML Output
-
     static public void outputAsXML(ResultSet qresults)
     { outputAsXML(System.out, qresults) ; }
 
@@ -517,7 +544,7 @@ public class ResultSetFormatter {
     
     static public void outputAsJSON(OutputStream outStream, boolean booleanResult)
     { output(outStream, booleanResult, SPARQLResultSetJSON) ; }
-    
+
     // ---- SSE
     
     /** Output a boolean result in the SSE format

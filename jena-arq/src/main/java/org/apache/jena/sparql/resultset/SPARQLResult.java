@@ -18,6 +18,9 @@
 
 package org.apache.jena.sparql.resultset;
 
+import java.util.Iterator;
+
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
@@ -34,6 +37,7 @@ public class SPARQLResult {
     private Boolean   booleanResult = null;
     private Model     model         = null;
     private Dataset   dataset       = null;
+    private Iterator<JsonObject> jsonItems = null;
 
     // Delayed choice of result type.
     protected SPARQLResult() {}
@@ -52,6 +56,10 @@ public class SPARQLResult {
 
     public SPARQLResult(Dataset dataset) {
         set(dataset);
+    }
+
+    public SPARQLResult(Iterator<JsonObject> jsonItems) {
+        set(jsonItems); 
     }
 
     public boolean isResultSet() {
@@ -81,6 +89,13 @@ public class SPARQLResult {
         if ( !hasBeenSet )
             throw new ResultSetException("Not set");
         return booleanResult != null;
+    }
+
+    public boolean isJson()
+    {
+        if ( !hasBeenSet )
+            throw new ResultSetException("Not set");
+        return jsonItems != null;
     }
 
     public ResultSet getResultSet() {
@@ -115,6 +130,15 @@ public class SPARQLResult {
         return dataset;
     }
 
+    public Iterator<JsonObject> getJsonItems()
+    {
+        if ( !hasBeenSet )
+            throw new ResultSetException("Not set");
+        if ( !isJson() )
+            throw new ResultSetException("Not a JSON result");
+        return jsonItems;
+    }
+
     public boolean isHasBeenSet() {
         return hasBeenSet;
     }
@@ -142,4 +166,10 @@ public class SPARQLResult {
         booleanResult = r;
         hasBeenSet = true;
     }
+
+    protected void set(Iterator<JsonObject> jsonItems) {
+        this.jsonItems = jsonItems; 
+        hasBeenSet = true;
+    }
+
 }

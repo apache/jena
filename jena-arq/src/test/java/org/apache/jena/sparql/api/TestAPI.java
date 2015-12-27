@@ -22,12 +22,35 @@ import java.util.Iterator;
 import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.json.JsonArray;
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.junit.BaseTest;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.QueryParseException;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.QuerySolutionMap;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetCloseable;
+import org.apache.jena.query.ResultSetFactory;
+import org.apache.jena.query.ResultSetFormatter;
+import org.apache.jena.query.Syntax;
+import org.apache.jena.rdf.model.AnonId;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
@@ -553,9 +576,9 @@ public class TestAPI extends BaseTest
     @Test public void testARQConstructQuad_ShortForm_bad() {
         String queryString = "CONSTRUCT WHERE { GRAPH ?g {?s ?p ?o. FILTER isIRI(?o)}  }";
         try {
-        	QueryFactory.create(queryString, Syntax.syntaxARQ);
+            QueryFactory.create(queryString, Syntax.syntaxARQ);
         }catch (QueryParseException e){
-        	return;
+            return;
         }
         fail("Short form of construct quad MUST be simple graph patterns!");
     }
@@ -599,6 +622,62 @@ public class TestAPI extends BaseTest
         }
         finally {
             qExec.close();
+        }
+    }
+
+    /**
+     * Test that a JSON query returns an array with the correct size, given a pre-populated model.
+     */
+    @Test public void testExecJson() {
+        // JENA-632
+        Query query = QueryFactory.create("JSON { \"s\": ?s , \"p\": ?p , \"o\" : ?o } "
+                + "WHERE { ?s ?p ?o }", Syntax.syntaxARQ);
+        
+        try ( QueryExecution qexec = QueryExecutionFactory.create(query, m) ) {
+            JsonArray jsonArray = qexec.execJson();
+            assertNotNull( jsonArray );
+            assertEquals(3, jsonArray.size());
+        }
+    }
+
+    /**
+     * Test that a JSON query returns an array with the correct data values, given a pre-populated
+     * model.
+     */
+    @Test public void testExecJsonItems() {
+        // JENA-632
+        Model model = ModelFactory.createDefaultModel();
+        {
+            Resource r = model.createResource(AnonId.create("first"));
+            Property p = model.getProperty("");
+            RDFNode node = ResourceFactory.createTypedLiteral("123", XSDDatatype.XSDdecimal);
+            model.add(r, p, node);
+            r = model.createResource(AnonId.create("second"));
+            p = model.getProperty("");
+            node = ResourceFactory.createTypedLiteral("abc", XSDDatatype.XSDstring);
+            model.add(r, p, node);
+            r = model.createResource(AnonId.create("third"));
+            p = model.getProperty("");
+            node = ResourceFactory.createLangLiteral("def", "en");
+            model.add(r, p, node);
+        }
+        Query query = QueryFactory.create("JSON { \"s\": ?s , \"p\": ?p , \"o\" : ?o } "
+                + "WHERE { ?s ?p ?o }", Syntax.syntaxARQ);
+        try ( QueryExecution qexec = QueryExecutionFactory.create(query, model) ) {
+            Iterator<JsonObject> execJsonItems = qexec.execJsonItems();
+            int size = 0;
+            while(execJsonItems.hasNext()) {
+                JsonObject next = execJsonItems.next();
+                if (next.get("s").toString().contains("first")) {
+                    assertEquals(123, next.get("o").getAsNumber().value().intValue());
+                } else if (next.get("s").toString().contains("second")) {
+                    assertEquals("abc", next.get("o").getAsString().value());
+                } else if (next.get("s").toString().contains("third")) {
+                    assertEquals("def", next.get("o").getAsString().value());
+                }
+                size++;
+            }
+            assertEquals(3, size);
         }
     }
 }

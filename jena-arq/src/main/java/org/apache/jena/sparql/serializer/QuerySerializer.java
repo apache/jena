@@ -20,6 +20,7 @@ package org.apache.jena.sparql.serializer;
 
 import java.io.OutputStream ;
 import java.util.List ;
+import java.util.Map;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
@@ -45,6 +46,7 @@ public class QuerySerializer implements QueryVisitor
     protected FormatterElement fmtElement ;
     protected FmtExprSPARQL fmtExpr ;
     protected IndentedWriter out = null ;
+    protected Prologue prologue = null ;
 
     QuerySerializer(OutputStream        _out,
                     FormatterElement    formatterElement, 
@@ -75,6 +77,7 @@ public class QuerySerializer implements QueryVisitor
     @Override
     public void visitPrologue(Prologue prologue)
     { 
+        this.prologue = prologue ;
         int row1 = out.getRow() ;
         PrologueSerializer.output(out, prologue) ;
         int row2 = out.getRow() ;
@@ -142,7 +145,30 @@ public class QuerySerializer implements QueryVisitor
         out.print("ASK") ;
         out.newline() ;
     }
-    
+
+    @Override
+    public void visitJsonResultForm(Query query) {
+        out.println("JSON {");
+        out.incIndent(BLOCK_INDENT);
+        out.incIndent(BLOCK_INDENT);
+        boolean first = true;
+        for (Map.Entry<String, Node> entry : query.getJsonMapping().entrySet()) {
+            String field = entry.getKey();
+            Node value = entry.getValue();
+            if ( ! first )
+                out.println(" ,");
+            first = false;
+            out.print('"'); out.print(field); out.print('"');
+            out.print(" : ");
+            out.pad(15);
+            out.print(FmtUtils.stringForNode(value, prologue));
+        }
+        out.decIndent(BLOCK_INDENT);
+        out.decIndent(BLOCK_INDENT);
+        out.print(" }");
+        out.newline();
+    }
+
     @Override
     public void visitDatasetDecl(Query query)
     {

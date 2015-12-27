@@ -32,7 +32,8 @@ public interface QueryVisitor
     public void visitConstructResultForm(Query query) ;
     public void visitDescribeResultForm(Query query) ;
     public void visitAskResultForm(Query query) ;
-    
+    public void visitJsonResultForm(Query query);
+
     public void visitDatasetDecl(Query query) ;
     public void visitQueryPattern(Query query) ;
     
