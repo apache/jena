@@ -18,6 +18,7 @@
 
 package org.apache.jena.atlas.lib.tuple;
 
+import static org.junit.Assert.assertArrayEquals ;
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertNotEquals ;
 import static org.junit.Assert.fail ;
@@ -171,6 +172,29 @@ public class TestTuple {
         Tuple<Integer> tuple2 = TupleFactory.tuple(9,8) ;
         assertNotEquals(tuple1.hashCode(), tuple2.hashCode()) ;
         assertNotEquals(tuple1, tuple2) ;
+    }
+
+    @Test public void tuple_array_1() {
+        Tuple<Integer> tuple1 = TupleFactory.tuple(9,8,7) ;
+        Integer[] array = tuple1.asArray(Integer.class) ;
+        Tuple<Integer> tuple2 = TupleFactory.create(array) ;
+        assertEquals(tuple1, tuple2) ;
+    }
+
+    @Test public void tuple_array_2() {
+        Tuple<Integer> tuple1 = TupleFactory.tuple(9,8,7) ;
+        Integer[] array = new Integer[2] ;
+        tuple1.copyInto(array, 0, 2) ;
+        Integer[] array1 = { 9, 8 } ;
+        assertArrayEquals(array1, array) ;
+    }
+
+    @Test public void tuple_array_3() {
+        Tuple<Integer> tuple1 = TupleFactory.tuple(9,8,7) ;
+        Integer[] array = new Integer[3] ;
+        tuple1.copyInto(array) ;
+        Integer[] array1 = { 9, 8, 7 } ;
+        assertArrayEquals(array1, array) ;
     }
 
     private void check(Tuple<Integer> tuple) {

@@ -22,6 +22,8 @@ import java.util.List ;
 import java.util.function.Consumer ;
 import java.util.stream.Stream ;
 
+import org.apache.jena.atlas.lib.ArrayUtils ;
+
 /** A Tuple is the same class of item */
 public interface Tuple<X> extends Iterable<X> {
     /** Get the i'th element, for i in the range 0 to len()-1 
@@ -60,4 +62,12 @@ public interface Tuple<X> extends Iterable<X> {
     
     /** Copy the Tuple into the array */ 
     public void copyInto(X[] array, int start, int length) ;
+    
+    /** Copy the Tuple into the array */ 
+    public default X[] asArray(Class<X> cls) {
+        X[] elts = ArrayUtils.alloc(cls, len()) ;
+        for ( int i = 0 ; i < len() ; i++ )
+            elts[i] = get(i) ;
+        return elts ;
+    }
 }
