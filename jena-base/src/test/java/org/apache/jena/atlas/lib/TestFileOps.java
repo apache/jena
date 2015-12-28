@@ -20,7 +20,7 @@ package org.apache.jena.atlas.lib;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.junit.Test ;
 
 public class TestFileOps extends BaseTest

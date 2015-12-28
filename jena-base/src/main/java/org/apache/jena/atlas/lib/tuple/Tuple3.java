@@ -16,30 +16,34 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas;
+package org.apache.jena.atlas.lib.tuple;
 
-import org.apache.jena.atlas.io.TS_IO ;
-import org.apache.jena.atlas.iterator.TS_Iterator ;
-import org.apache.jena.atlas.lib.TS_Lib ;
-import org.apache.jena.atlas.lib.persistent.TS_Persistent;
-import org.apache.jena.atlas.lib.tuple.TS_Tuple ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    // Library
-      TS_Lib.class
-    , TS_Tuple.class
-    , TS_Iterator.class
-    , TS_IO.class
-    , TS_Persistent.class
-//    , TS_Event.class
-//    , TS_JSON.class
-//    , TS_Data.class
-//    , TS_Web.class
-//    , TestCSVParser.class
-})
-
-public class TC_Atlas
-{}
+/**
+ * A tuple of 3 items.
+ */
+public class Tuple3<X> extends TupleBase<X> {
+    protected final X x1 ; 
+    protected final X x2 ;
+    protected final X x3 ;
+    
+    protected Tuple3(X x1, X x2, X x3) {
+        this.x1 = x1 ;
+        this.x2 = x2 ;
+        this.x3 = x3 ;
+    }
+    
+    @Override
+    public final X get(int i) {
+        switch (i) {
+            case 0: return x1 ;
+            case 1: return x2 ;
+            case 2: return x3 ;
+        }
+        throw new IndexOutOfBoundsException() ;
+    }
+    
+    @Override
+    public final int len() {
+        return 3 ;
+    }
+}
