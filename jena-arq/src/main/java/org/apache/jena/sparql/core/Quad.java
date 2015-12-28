@@ -181,17 +181,7 @@ public class Quad extends Tuple<Node>
     @Override
     public boolean equals(Object other) 
     { 
-        if ( this == other ) return true ;
-
-        if ( ! ( other instanceof Quad) )
-            return false ;
-        Quad quad = (Quad)other ;
-        
-        if ( ! Objects.equals(tuple[0], quad.tuple[0]) ) return false ;
-        if ( ! tuple[1].equals(quad.tuple[1]) ) return false ;
-        if ( ! tuple[2].equals(quad.tuple[2]) ) return false ;
-        if ( ! tuple[3].equals(quad.tuple[3]) ) return false ;
-        return true ;
+        { return other instanceof Quad && super.equals(other); }
     }
     
     public boolean matches(Node g, Node s, Node p, Node o)

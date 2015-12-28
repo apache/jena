@@ -107,7 +107,7 @@ public class Triple extends Tuple<Node>
     */
 	@Override
     public boolean equals(Object o) 
-        { return o instanceof Triple && ((Triple) o).sameAs( tuple[0], tuple[1], tuple[2] ); }
+        { return o instanceof Triple && super.equals(o); }
     
     /** 
         Answer true iff this triple has subject s, predicate p, and object o.
