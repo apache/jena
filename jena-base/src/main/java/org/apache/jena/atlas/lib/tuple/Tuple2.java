@@ -24,12 +24,12 @@ package org.apache.jena.atlas.lib.tuple;
 public class Tuple2<X> extends TupleBase<X> {
     protected final X x1 ; 
     protected final X x2 ;
-    
+
     protected Tuple2(X x1, X x2) {
         this.x1 = x1 ;
         this.x2 = x2 ;
     }
-    
+
     @Override
     public final X get(int i) {
         switch (i) {
@@ -38,7 +38,7 @@ public class Tuple2<X> extends TupleBase<X> {
         }
         throw new IndexOutOfBoundsException() ;
     }
-    
+
     @Override
     public final int len() {
         return 2 ;

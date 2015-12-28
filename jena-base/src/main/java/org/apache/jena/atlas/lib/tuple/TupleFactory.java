@@ -22,9 +22,9 @@ import java.util.List ;
 
 /** Tuple creation */
 public class TupleFactory {
-    
+
     private TupleFactory() {}
-    
+
     /** Create a Tuple */ 
     @SafeVarargs
     public static <X> Tuple<X> tuple(X...xs) {
@@ -43,7 +43,7 @@ public class TupleFactory {
                 return asTuple(xs) ;
         }
     }
-    
+
     /** Create a Tuple from an array */ 
     public static <X> Tuple<X> create(X[] xs) {
         switch(xs.length) {
@@ -65,7 +65,7 @@ public class TupleFactory {
     public static <X> Tuple<X> asTuple(X[] xs) {
         return TupleN.wrap(xs) ;
     }
-    
+
     /** Create a Tuple from a list */ 
     public static <X> Tuple<X> create(List<X> xs) {
         @SuppressWarnings("unchecked")
@@ -77,7 +77,7 @@ public class TupleFactory {
     public static <X> Tuple0<X> create0() {
         return new Tuple0<>() ;
     }
-    
+
     /** Create a Tuple of length 1 */
     public static <X> Tuple1<X> create1(X x1) {
         return new Tuple1<>(x1) ;
@@ -97,7 +97,7 @@ public class TupleFactory {
     public static <X> Tuple4<X> create4(X x1, X x2, X x3, X x4) {
         return new Tuple4<>(x1, x2, x3, x4) ;
     }
-    
+
     /** Create a Tuple of length 5 */
     public static <X> Tuple5<X> create5(X x1, X x2, X x3, X x4, X x5) {
         return new Tuple5<>(x1, x2, x3, x4, x5) ;

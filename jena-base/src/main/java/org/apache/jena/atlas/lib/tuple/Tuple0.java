@@ -22,14 +22,14 @@ package org.apache.jena.atlas.lib.tuple;
  * A tuple of 0 items.
  */
 public class Tuple0<X> extends TupleBase<X> {
-    
+
     protected Tuple0() { }
-    
+
     @Override
     public final X get(int i) {
         throw new IndexOutOfBoundsException() ;
     }
-    
+
     @Override
     public final int len() {
         return 0 ;

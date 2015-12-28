@@ -30,12 +30,12 @@ public class TupleN<X> extends TupleBase<X> {
         X[] xs2 = Arrays.copyOf(xs, xs.length) ;
         return new TupleN<>(xs2) ;
     }
-    
+
     // When the array will not be modified.
     /*package*/ static <X> TupleN<X> wrap(X[] xs) {
         return new TupleN<>(xs) ;
     }
-    
+
     /** Put a TupleN wrapper around a X[].
      * The statics {@link #create} and {@link wrap} determine whether to copy or not.
      */

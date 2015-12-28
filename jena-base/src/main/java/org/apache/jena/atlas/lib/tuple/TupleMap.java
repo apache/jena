@@ -67,15 +67,15 @@ public class TupleMap {
      * Warning : map and unmap here do not correspond to fetch and map in
      * ColumnMap. That has confusing/inconsistent usage.
      */
-    
+
     // SPO->POS: get:{0<-1, 1<-2, 2<-0} put:{0->2, 1->0, 2->1}
-    
+
     // Map by where to fetch from source.
     // For SPO -> POS, get from 1 to go into 0 so (0->, 1->0 2->   
     // POS->SPO, is (0->1, 1->2, 2->0)
     // i.e. the location to fetch the mapped element from.
     private final int[]  getTransform ;
-    
+
     // Map by insertion into destination.
     // So SPO->POS is (0->2, 1->0, 2->1)
     // i.e. the location of the element after mapping.
@@ -111,7 +111,7 @@ public class TupleMap {
     public static <T> TupleMap create(String label, T[] input, T[] output) {
         return new TupleMap(label, compileMapping(input, output));
     }
-    
+
     /**
      * Construct a mapping - the elements are the mappings of a tuple
      * originally in the order 0,1,2,... so SPO->POS is 2,0,1 (SPO->POS so S->2,
@@ -162,7 +162,7 @@ public class TupleMap {
     public int putSlotIdx(int idx) {
         return putTransform[idx]; 
     }
-    
+
     /** 
      * Get the index of the i'th slot as it appears from a mapping : for
      * SPO->POS : 0'th slot is P so 0 returns 1 (the location in the tuple before mapping)
@@ -182,7 +182,7 @@ public class TupleMap {
     public int unmapIdx(int idx) {
         return putSlotIdx(idx) ; 
     }
-    
+
     /** Apply to an <em>unmapped</em> tuple to get a tuple with the tuple mapping applied.
      */
     public <T> Tuple<T> map(Tuple<T> src) {
@@ -195,13 +195,13 @@ public class TupleMap {
     }
 
     // Does not work (java8) - assigning the return causes a runtime case exception 
-//    /** Apply to an <em>unmapped</em> tuple to get a tuple with the tuple mapping applied */
-//    public <T> T[] map(T[] src) {
-//        @SuppressWarnings("unchecked")
-//        T[]dst = (T[])new Object[src.length] ;
-//        applyArray(src, dst, getTransform) ;
-//        return dst ;
-//    }
+    //    /** Apply to an <em>unmapped</em> tuple to get a tuple with the tuple mapping applied */
+    //    public <T> T[] map(T[] src) {
+    //        @SuppressWarnings("unchecked")
+    //        T[]dst = (T[])new Object[src.length] ;
+    //        applyArray(src, dst, getTransform) ;
+    //        return dst ;
+    //    }
 
     /** Apply to an <em>unmapped</em> tuple to get a tuple with the tuple mapping applied.
      * Returns the destination array.
@@ -214,13 +214,13 @@ public class TupleMap {
     }
 
     // Does not work (java8) - assigning the return causes a runtime case exception 
-//    /** Apply to a <em>mapped</em> tuple to get a tuple with the tuple mapping reverse-applied */
-//    public <T> T[] unmap(T[] src) {
-//        @SuppressWarnings("unchecked")
-//        T[]dst = (T[])new Object[src.length] ;
-//        applyArray(src, dst, putTransform) ;
-//        return dst ;
-//    }
+    //    /** Apply to a <em>mapped</em> tuple to get a tuple with the tuple mapping reverse-applied */
+    //    public <T> T[] unmap(T[] src) {
+    //        @SuppressWarnings("unchecked")
+    //        T[]dst = (T[])new Object[src.length] ;
+    //        applyArray(src, dst, putTransform) ;
+    //        return dst ;
+    //    }
 
     /** Apply to a <em>mapped</em> tuple to get a tuple with the tuple mapping reverse-applied.
      * Returns the destination array.
@@ -238,40 +238,40 @@ public class TupleMap {
         if ( src.len() != getTransform.length )
             throw new IllegalArgumentException("Lengths do not match: Tuple:"+src.len()+"; transform:"+getTransform.length) ;
         // Fast-track 1,2,3,4 ?
-//        // All this to avoid the temp array.
-//        switch(src.len()) {
-//            case 0: return src ;
-//            case 1: return src ;
-//            case 2: {
-//                T x1 = src.get(getTransform[0]);
-//                T x2 = src.get(getTransform[1]);
-//                return TupleFactory.create2(x1, x2) ;
-//            }
-//            case 3: {
-//                T x1 = src.get(getTransform[0]);
-//                T x2 = src.get(getTransform[1]);
-//                T x3 = src.get(getTransform[2]);
-//                return TupleFactory.create3(x1, x2, x3) ;
-//            }
-//            case 4: {
-//                T x1 = src.get(getTransform[0]);
-//                T x2 = src.get(getTransform[1]);
-//                T x3 = src.get(getTransform[2]);
-//                T x4 = src.get(getTransform[3]);
-//                return TupleFactory.create4(x1, x2, x3, x4) ;
-//            }
-//        }
-        
+        //        // All this to avoid the temp array.
+        //        switch(src.len()) {
+        //            case 0: return src ;
+        //            case 1: return src ;
+        //            case 2: {
+        //                T x1 = src.get(getTransform[0]);
+        //                T x2 = src.get(getTransform[1]);
+        //                return TupleFactory.create2(x1, x2) ;
+        //            }
+        //            case 3: {
+        //                T x1 = src.get(getTransform[0]);
+        //                T x2 = src.get(getTransform[1]);
+        //                T x3 = src.get(getTransform[2]);
+        //                return TupleFactory.create3(x1, x2, x3) ;
+        //            }
+        //            case 4: {
+        //                T x1 = src.get(getTransform[0]);
+        //                T x2 = src.get(getTransform[1]);
+        //                T x3 = src.get(getTransform[2]);
+        //                T x4 = src.get(getTransform[3]);
+        //                return TupleFactory.create4(x1, x2, x3, x4) ;
+        //            }
+        //        }
+
         @SuppressWarnings("unchecked")
         T[] elts = (T[])new Object[src.len()] ;
-        
+
         for ( int i = 0 ; i < src.len() ; i++ ) {
             int j = getTransform[i] ;
             elts[i] = src.get(j) ;
         }
         return TupleFactory.tuple(elts) ;
     }
-    
+
     /** Apply an index transformation */
     private <T> void applyArray(T[] src, T[] dst, int[] transform) {
         for ( int i = 0 ; i < src.length ; i++ ) {
@@ -279,7 +279,7 @@ public class TupleMap {
             dst[i] = src[j] ;
         }
     }
-    
+
     /**
      * Apply to an <em>unmapped</em> tuple to get the i'th slot after mapping :
      * SPO->POS : 0'th slot is P from SPO

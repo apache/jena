@@ -29,7 +29,6 @@ abstract class TupleBase<X> implements Tuple<X> {
     public Iterator<X> iterator() {
         return asList().iterator() ;
     }
-    
 
     @Override
     public void copyInto(X[] array, int start, int length) {
@@ -64,7 +63,7 @@ abstract class TupleBase<X> implements Tuple<X> {
                 return false ;
         return true;
     }
-    
+
     @Override
     public final String toString() {
         return asList().toString() ;

@@ -27,7 +27,7 @@ public class Tuple5<X> extends TupleBase<X> {
     protected final X x3 ;
     protected final X x4 ;
     protected final X x5 ;
-    
+
     protected Tuple5(X x1, X x2, X x3, X x4, X x5) {
         this.x1 = x1 ;
         this.x2 = x2 ;
@@ -35,7 +35,7 @@ public class Tuple5<X> extends TupleBase<X> {
         this.x4 = x4 ;
         this.x5 = x5 ;
     }
-    
+
     @Override
     public final X get(int i) {
         switch (i) {

@@ -30,7 +30,7 @@ public interface Tuple<X> extends Iterable<X> {
      * @throws IndexOutOfBoundsException for i out of range 
      */
     public X get(int i) ;
-    
+
     /** length : elements are 0 to len()-1 */ 
     public int len() ;
 
@@ -38,18 +38,18 @@ public interface Tuple<X> extends Iterable<X> {
     public default List<X> asList() {
         return new TupleList<>(this) ;
     }
-    
+
     /** stream */
     public default Stream<X> stream() { 
         return asList().stream() ;
     }
-    
+
     /** forEach */
     @Override
     public default void forEach(Consumer<? super X> action) { 
         asList().forEach(action) ;
     }
-    
+
     /** Copy the Tuple into the array */ 
     public default void copyInto(X[] array) {
         copyInto(array, 0, len());
@@ -59,10 +59,10 @@ public interface Tuple<X> extends Iterable<X> {
     public default void copyInto(X[] array, int start) {
         copyInto(array, start, len());
     }
-    
+
     /** Copy the Tuple into the array */ 
     public void copyInto(X[] array, int start, int length) ;
-    
+
     /** Copy the Tuple into the array */ 
     public default X[] asArray(Class<X> cls) {
         X[] elts = ArrayUtils.alloc(cls, len()) ;

@@ -30,7 +30,7 @@ public class TupleList<X> extends AbstractList<X> implements RandomAccess {
     public TupleList(Tuple<X> tuple) {
         this.tuple = tuple ;
     }
-    
+
     @Override
     public X get(int index) {
         return tuple.get(index) ;

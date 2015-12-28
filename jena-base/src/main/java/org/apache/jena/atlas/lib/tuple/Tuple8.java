@@ -30,7 +30,7 @@ public class Tuple8<X> extends TupleBase<X> {
     protected final X x6 ;
     protected final X x7 ;
     protected final X x8 ;
-    
+
     protected Tuple8(X x1, X x2, X x3, X x4, X x5, X x6, X x7, X x8) {
         this.x1 = x1 ;
         this.x2 = x2 ;
@@ -41,7 +41,7 @@ public class Tuple8<X> extends TupleBase<X> {
         this.x7 = x7 ;
         this.x8 = x8 ;
     }
-    
+
     @Override
     public final X get(int i) {
         switch (i) {
@@ -56,8 +56,8 @@ public class Tuple8<X> extends TupleBase<X> {
         }
         throw new IndexOutOfBoundsException() ;
     }
-    
-   @Override
+
+    @Override
     public final int len() {
         return 8 ;
     }

@@ -26,14 +26,14 @@ public class Tuple4<X> extends TupleBase<X> {
     protected final X x2 ;
     protected final X x3 ;
     protected final X x4 ;
-    
+
     protected Tuple4(X x1, X x2, X x3, X x4) {
         this.x1 = x1 ;
         this.x2 = x2 ;
         this.x3 = x3 ;
         this.x4 = x4 ;
     }
-    
+
     @Override
     public final X get(int i) {
         switch (i) {

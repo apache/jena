@@ -25,13 +25,13 @@ public class Tuple3<X> extends TupleBase<X> {
     protected final X x1 ; 
     protected final X x2 ;
     protected final X x3 ;
-    
+
     protected Tuple3(X x1, X x2, X x3) {
         this.x1 = x1 ;
         this.x2 = x2 ;
         this.x3 = x3 ;
     }
-    
+
     @Override
     public final X get(int i) {
         switch (i) {
@@ -41,7 +41,7 @@ public class Tuple3<X> extends TupleBase<X> {
         }
         throw new IndexOutOfBoundsException() ;
     }
-    
+
     @Override
     public final int len() {
         return 3 ;
