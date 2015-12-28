@@ -18,11 +18,11 @@
 
 package org.apache.jena.tdb.lib;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.Tuple ;
-import org.apache.jena.tdb.lib.ColumnMap ;
+import static org.apache.jena.atlas.lib.tuple.TupleFactory.* ;
 
-import static org.apache.jena.atlas.lib.Tuple.* ;
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.tdb.lib.ColumnMap ;
 import org.junit.Test ;
 
 public class TestColumnMap extends BaseTest
@@ -49,16 +49,16 @@ public class TestColumnMap extends BaseTest
     @Test public void remap3() 
     {
         ColumnMap x = new ColumnMap("POS", 2,0,1) ;
-        Tuple<String> tuple = createTuple("S", "P", "O") ;
+        Tuple<String> tuple = tuple("S", "P", "O") ;
         Tuple<String> mapped = x.map(tuple) ;
-        Tuple<String> expected = createTuple("P", "O", "S") ;
+        Tuple<String> expected = tuple("P", "O", "S") ;
         assertEquals(expected, mapped) ;
     }
     
     @Test public void remap4() 
     {
         ColumnMap x = new ColumnMap("POS", 2,0,1) ;
-        Tuple<String> tuple = createTuple("S", "P", "O") ;
+        Tuple<String> tuple = tuple("S", "P", "O") ;
         Tuple<String> tuple2 = x.map(tuple) ;
         tuple2 = x.unmap(tuple2) ;
         assertEquals(tuple, tuple2) ;
@@ -82,12 +82,12 @@ public class TestColumnMap extends BaseTest
     @Test public void map1()
     {
         ColumnMap cmap = new ColumnMap("GSPO", "OSPG") ;
-        Tuple<String> tuple = createTuple("G", "S", "P", "O") ;
+        Tuple<String> tuple = tuple("G", "S", "P", "O") ;
         Tuple<String> mapped = cmap.map(tuple) ;
-        Tuple<String> expected = createTuple("O", "S", "P", "G") ;
+        Tuple<String> expected = tuple("O", "S", "P", "G") ;
         assertEquals(expected, mapped) ;
         Tuple<String> unmapped = cmap.unmap(mapped) ;
-        assertEquals(createTuple("G", "S", "P", "O"), unmapped) ;
+        assertEquals(tuple("G", "S", "P", "O"), unmapped) ;
     }
 
     @Test public void map2()
@@ -96,13 +96,13 @@ public class TestColumnMap extends BaseTest
         String[] y = { "O", "S", "P", "G" } ;
         
         ColumnMap cmap = new ColumnMap("Test", x, y) ;
-        Tuple<String> tuple = Tuple.create(x) ;
+        Tuple<String> tuple = tuple(x) ;
         Tuple<String> mapped = cmap.map(tuple) ;
         
-        Tuple<String> expected = Tuple.create(y) ;
+        Tuple<String> expected = tuple(y) ;
         assertEquals(expected, mapped) ;
         Tuple<String> unmapped = cmap.unmap(mapped) ;
-        assertEquals(Tuple.create(x), unmapped) ;
+        assertEquals(tuple(x), unmapped) ;
     }
     
 }

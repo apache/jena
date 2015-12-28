@@ -22,7 +22,8 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -191,12 +192,11 @@ public class TestIsoMatcher extends BaseTest
         {
             Item item = SSE.parse(s) ;
             List<Node> list = BuilderNode.buildNodeList(item) ;
-            Tuple<Node> tuple = Tuple.create(list.toArray(T)) ;
+            Tuple<Node> tuple = TupleFactory.tuple(list.toArray(T)) ;
             tuples.add(tuple) ;
         }
         return tuples ;
     }
-
 
     private void testGraph(String s1, String s2, boolean iso) {
         testGraph$(s1, s2, iso) ;

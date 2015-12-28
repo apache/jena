@@ -18,16 +18,11 @@
 
 package org.apache.jena.hadoop.rdf.io.types;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInput;
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.* ;
 
 import org.apache.hadoop.io.WritableComparable;
-import org.apache.jena.atlas.lib.Tuple;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import static org.apache.jena.atlas.lib.tuple.TupleFactory.tuple ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -397,8 +392,9 @@ public class RdfTypesTest {
      */
     @Test
     public void tuple_writable_01() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        Tuple<Node> t = Tuple.createTuple(NodeFactory.createURI("http://one"), NodeFactory.createURI("http://two"), NodeFactory.createLiteral("value"),
-                NodeFactory.createLiteral("foo"), NodeFactory.createURI("http://three"));
+        Tuple<Node> t = tuple(NodeFactory.createURI("http://one"), NodeFactory.createURI("http://two"),
+                              NodeFactory.createLiteral("value"),
+                              NodeFactory.createLiteral("foo"), NodeFactory.createURI("http://three"));
         NodeTupleWritable tw = new NodeTupleWritable(t);
         testWriteRead(tw, tw);
     }

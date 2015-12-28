@@ -21,7 +21,7 @@ package org.apache.jena.tdb.store.bulkloader2;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.DateTimeUtils ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.atlas.logging.ProgressLogger ;
 import org.apache.jena.tdb.base.file.Location ;

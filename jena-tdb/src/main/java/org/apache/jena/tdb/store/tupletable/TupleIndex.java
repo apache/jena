@@ -24,7 +24,7 @@ import java.util.function.Predicate ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.tdb.lib.ColumnMap ;
 import org.apache.jena.tdb.store.NodeId ;
 
@@ -70,7 +70,7 @@ public interface TupleIndex extends Sync, Closeable
     public void clear() ;
     
     public static Iterator<Tuple<NodeId>> scan(Iterator<Tuple<NodeId>> iter, Tuple<NodeId> pattern) {
-        int tupleLength = pattern.size() ; 
+        int tupleLength = pattern.len() ; 
         Predicate<Tuple<NodeId>> filter = new Predicate<Tuple<NodeId>>()
         {
             @Override

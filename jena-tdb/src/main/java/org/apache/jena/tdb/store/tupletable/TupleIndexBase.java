@@ -20,7 +20,7 @@ package org.apache.jena.tdb.store.tupletable;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.lib.ColumnMap ;
 import org.apache.jena.tdb.store.NodeId ;
@@ -56,8 +56,8 @@ public abstract class TupleIndexBase implements TupleIndex
     { 
         if ( Check )
         {
-            if ( tupleLength != tuple.size() )
-            throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", tuple.size(), tupleLength)) ;
+            if ( tupleLength != tuple.len() )
+            throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", tuple.len(), tupleLength)) ;
         }
         return performAdd(tuple) ;
     }
@@ -67,8 +67,8 @@ public abstract class TupleIndexBase implements TupleIndex
     { 
         if ( Check )
         {
-            if ( tupleLength != tuple.size() )
-            throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", tuple.size(), tupleLength)) ;
+            if ( tupleLength != tuple.len() )
+            throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", tuple.len(), tupleLength)) ;
         }
 
         return performDelete(tuple) ;
@@ -82,8 +82,8 @@ public abstract class TupleIndexBase implements TupleIndex
     {
         if ( Check )
         {
-            if ( tupleLength != pattern.size() )
-            throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", pattern.size(), tupleLength)) ;
+            if ( tupleLength != pattern.len() )
+            throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", pattern.len(), tupleLength)) ;
         } 
         // null to NodeId.NodIdAny ??
         return performFind(pattern) ;

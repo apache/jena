@@ -26,7 +26,8 @@ import java.util.List ;
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.lib.ListUtils ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 
 
 
@@ -155,17 +156,17 @@ public class ColumnMap
     private <T> Tuple<T> map(Tuple<T> src, int[] map)
     {
         @SuppressWarnings("unchecked")
-        T[] elts = (T[])new Object[src.size()] ;
+        T[] elts = (T[])new Object[src.len()] ;
         
-        for ( int i = 0 ; i < src.size() ; i++ )
+        for ( int i = 0 ; i < src.len() ; i++ )
         {
             int j = map[i] ;
             elts[j] = src.get(i) ;
         }
-        return Tuple.create(elts) ;
+        return TupleFactory.asTuple(elts) ;
     }
     
-    /** Compile a mapping encoded as single charcaters e.g. "SPO", "POS" */
+    /** Compile a mapping encoded as single characters e.g. "SPO", "POS" */
     static int[] compileMapping(String domain, String range)
     {
         List<Character> input = StrUtils.toCharList(domain) ;

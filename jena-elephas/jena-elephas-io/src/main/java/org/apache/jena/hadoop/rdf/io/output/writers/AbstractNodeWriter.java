@@ -25,7 +25,7 @@ import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.io.Writer2;
-import org.apache.jena.atlas.lib.Tuple;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.types.NodeTupleWritable;
@@ -157,7 +157,9 @@ public abstract class AbstractNodeWriter<TValue> extends RecordWriter<NodeWritab
             this.writeNodes(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject());
         } else if (value instanceof NodeTupleWritable) {
             Tuple<Node> tuple = ((NodeTupleWritable) value).get();
-            this.writeNodes(tuple.tuple());
+            Node[] n = new Node[tuple.len()] ;
+            tuple.copyInto(n);
+            this.writeNodes(n);
         } else {
             // For arbitrary values just toString() them
             this.writer.write(value.toString());
