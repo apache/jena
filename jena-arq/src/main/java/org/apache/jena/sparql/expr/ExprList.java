@@ -93,7 +93,7 @@ public class ExprList implements Iterable<Expr>
 
     public void addAll(ExprList exprs)      { expressions.addAll(exprs.getList()) ; }
     public void add(Expr expr)              { expressions.add(expr) ; }
-    public List<Expr> getList()             { return expressions ; }
+    public List<Expr> getList()             { return Collections.unmodifiableList(expressions) ; }
     @Override
     public Iterator<Expr> iterator()        { return expressions.iterator() ; }
     

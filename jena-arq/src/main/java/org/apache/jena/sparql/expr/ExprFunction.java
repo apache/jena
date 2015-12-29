@@ -33,7 +33,6 @@ public abstract class ExprFunction extends ExprNode
 {
     protected FunctionLabel funcSymbol ;
     protected String opSign ;
-    private List<Expr> argList = null ;
     
     protected ExprFunction(String fName) {
         funcSymbol = new FunctionLabel(fName) ;
@@ -51,9 +50,7 @@ public abstract class ExprFunction extends ExprNode
 
     // ExprFunctionN overrides this.
     public List<Expr> getArgs() {
-        if ( argList != null )
-            return argList ; 
-        argList = new ArrayList<>() ;
+        List<Expr> argList = new ArrayList<>(numArgs()) ;
         for ( int i = 1 ; i <= numArgs() ; i++ )
             argList.add(this.getArg(i)) ;
         return argList ;        
