@@ -21,7 +21,7 @@ package org.apache.jena.tdb.store.nodetupletable;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.ArrayUtils ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.store.tupletable.TupleTable ;
@@ -71,6 +71,15 @@ public class NodeTupleTableView extends NodeTupleTableWrapper
         return array2 ;
     }
 
+    private static <T> T[] push(Class<T> cls, T x,  Tuple<T> tuple)
+    {
+        T[] array2 = ArrayUtils.alloc(cls, tuple.len()+1) ;
+        tuple.copyInto(array2, 1);
+        array2[0] = x ;
+        return array2 ;
+    }
+
+
     @Override
     public Iterator<Tuple<NodeId>> find(NodeId... ids)
     {
@@ -81,7 +90,7 @@ public class NodeTupleTableView extends NodeTupleTableWrapper
     @Override
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> ids)
     {
-        NodeId[] ids2 = push(NodeId.class, prefixId, ids.tuple()) ;
+        NodeId[] ids2 = push(NodeId.class, prefixId, ids) ;
         return nodeTupleTable.find(ids2) ;
     }
 

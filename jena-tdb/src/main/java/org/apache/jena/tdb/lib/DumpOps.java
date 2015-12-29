@@ -29,7 +29,8 @@ import jena.cmd.CmdException;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.ByteBufferLib ;
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.out.NodeFmtLib ;
@@ -172,7 +173,7 @@ public class DumpOps
         NodeId[] nodeIds = new NodeId[N] ;
         Arrays.fill(nodeIds, NodeId.NodeIdAny) ;
         
-        Tuple<NodeId> t = Tuple.create(nodeIds) ;
+        Tuple<NodeId> t = TupleFactory.asTuple(nodeIds) ;
 
         Iterator<Tuple<NodeId>> iter = tupleTable.find(t) ;
         for ( ; iter.hasNext() ; )

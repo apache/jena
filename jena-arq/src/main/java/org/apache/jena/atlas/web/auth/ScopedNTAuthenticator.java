@@ -26,7 +26,8 @@ import java.util.Map.Entry;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.NTCredentials;
 import org.apache.jena.atlas.lib.Pair;
-import org.apache.jena.atlas.lib.Tuple;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 
 /**
  * <p>
@@ -62,7 +63,7 @@ public class ScopedNTAuthenticator extends AbstractScopedAuthenticator<Pair<Tupl
     public ScopedNTAuthenticator(URI target, String username, char[] password, String workstation, String domain) {
         if (target == null)
             throw new IllegalArgumentException("Target URI cannot be null");
-        this.credentials.put(target, Pair.create(Tuple.createTuple(username, workstation, domain), password));
+        this.credentials.put(target, Pair.create(TupleFactory.tuple(username, workstation, domain), password));
     }
 
     /**
@@ -80,7 +81,7 @@ public class ScopedNTAuthenticator extends AbstractScopedAuthenticator<Pair<Tupl
                 continue;
             if (entry.getValue().getLeft() == null)
                 throw new IllegalArgumentException("Credentials tuple should be non-null");
-            if (entry.getValue().getLeft().size() < 3)
+            if (entry.getValue().getLeft().len() < 3)
                 throw new IllegalArgumentException(
                         "Credentials tuple should contain at least three fields, 0 = user name, 1 = workstation, 2 = domain");
             this.credentials.put(entry.getKey(), entry.getValue());
@@ -105,7 +106,7 @@ public class ScopedNTAuthenticator extends AbstractScopedAuthenticator<Pair<Tupl
     public void addCredentials(URI target, String username, char[] password, String workstation, String domain) {
         if (target == null)
             throw new IllegalArgumentException("Target URI cannot be null");
-        this.credentials.put(target, Pair.create(Tuple.createTuple(username, workstation, domain), password));
+        this.credentials.put(target, Pair.create(TupleFactory.tuple(username, workstation, domain), password));
     }
 
     @Override

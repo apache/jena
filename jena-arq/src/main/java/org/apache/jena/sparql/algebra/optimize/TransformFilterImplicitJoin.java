@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.jena.atlas.lib.Pair;
-import org.apache.jena.atlas.lib.Tuple;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVars ;
 import org.apache.jena.sparql.algebra.TransformCopy ;
@@ -217,7 +217,7 @@ public class TransformFilterImplicitJoin extends TransformCopy {
         // substitution will be safe
 
         // Should get 5 sets
-        if (varsByPosition.size() != 5)
+        if (varsByPosition.len() != 5)
             return false;
 
         // If anything is used in the object/unknown position then we

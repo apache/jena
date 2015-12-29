@@ -20,7 +20,7 @@ package org.apache.jena.tdb.store.tupletable;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.tdb.lib.ColumnMap ;
 import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.store.tupletable.TupleIndex ;

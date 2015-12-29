@@ -25,9 +25,7 @@ import java.util.Iterator;
 
 import org.apache.jena.atlas.iterator.* ;
 import org.apache.jena.atlas.lib.Bytes ;
-import org.apache.jena.atlas.lib.Tuple ;
-
-
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.record.Record ;
 import org.apache.jena.tdb.base.record.RecordFactory ;
@@ -96,8 +94,8 @@ public class TupleIndexRecord extends TupleIndexBase
 
     private Iterator<Tuple<NodeId>> findWorker(Tuple<NodeId> patternNaturalOrder, boolean partialScanAllowed, boolean fullScanAllowed) {
         if ( Check ) {
-            if ( tupleLength != patternNaturalOrder.size() )
-                throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", patternNaturalOrder.size(),
+            if ( tupleLength != patternNaturalOrder.len() )
+                throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", patternNaturalOrder.len(),
                                                      tupleLength));
         }
 
@@ -115,7 +113,7 @@ public class TupleIndexRecord extends TupleIndexBase
         Record maxRec = factory.createKeyOnly();
 
         // Set the prefixes.
-        for ( int i = 0 ; i < pattern.size() ; i++ ) {
+        for ( int i = 0 ; i < pattern.len() ; i++ ) {
             NodeId X = pattern.get(i);
             if ( NodeId.isAny(X) ) {
                 X = null;
@@ -133,7 +131,7 @@ public class TupleIndexRecord extends TupleIndexBase
         }
 
         // Is it a simple existence test?
-        if ( numSlots == pattern.size() ) {
+        if ( numSlots == pattern.len() ) {
             if ( index.contains(minRec) )
                 return new SingletonIterator<>(pattern);
             else

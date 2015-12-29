@@ -23,7 +23,8 @@ import static org.apache.jena.sparql.core.Vars.addVar ;
 import java.util.* ;
 
 import org.apache.jena.atlas.lib.SetUtils ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.algebra.OpWalker.WalkerVisitor ;
@@ -67,7 +68,6 @@ public class OpVars
         OpWalker.walk(new WalkerVisitorFixed(visitor, acc), op) ;
     }
     
-    @SuppressWarnings("unchecked")
     public static Tuple<Set<Var>> mentionedVarsByPosition(Op op) {
         Set<Var> graphAcc = collector() ;
         Set<Var> subjAcc = collector() ;
@@ -76,10 +76,9 @@ public class OpVars
         Set<Var> unknownAcc = collector() ;
         OpVarsPatternWithPositions visitor = new OpVarsPatternWithPositions(graphAcc, subjAcc, predAcc, objAcc, unknownAcc, false);
         OpWalker.walk(op, visitor);
-        return Tuple.createTuple(graphAcc, subjAcc, predAcc, objAcc, unknownAcc);
+        return TupleFactory.tuple(graphAcc, subjAcc, predAcc, objAcc, unknownAcc);
     }
     
-    @SuppressWarnings("unchecked")
     public static Tuple<Set<Var>> mentionedVarsByPosition(Op... ops) {
         Set<Var> graphAcc = collector() ;
         Set<Var> subjAcc = collector() ;
@@ -89,7 +88,7 @@ public class OpVars
         OpVarsPatternWithPositions visitor = new OpVarsPatternWithPositions(graphAcc, subjAcc, predAcc, objAcc, unknownAcc, false);
         for (Op op : ops)
             OpWalker.walk(op, visitor);
-        return Tuple.createTuple(graphAcc, subjAcc, predAcc, objAcc, unknownAcc);
+        return TupleFactory.tuple(graphAcc, subjAcc, predAcc, objAcc, unknownAcc);
     }
 
     // All mentioned variables regardless of scope/visibility.

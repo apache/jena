@@ -34,7 +34,7 @@ public class TestTupleIndexRecord extends AbstractTestTupleIndex
     static RecordFactory factory = new RecordFactory(3*SystemTDB.SizeOfNodeId, 0) ;
     
     @Override
-    protected TupleIndexRecord create(String description)
+    protected TupleIndexRecord createIndex(String description)
     {
         IndexParams indexParams = StoreParams.getDftStoreParams() ; 
         RangeIndex rIdx = IndexFactory.buildRangeIndex(FileSet.mem(), factory, indexParams) ;
