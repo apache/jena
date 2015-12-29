@@ -189,7 +189,6 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         return nodeTable.getNodeIdForNode(node) ;
     }
     
-    // -- Mutating "transform in place"
     private static Function<Tuple<NodeId>, Tuple<NodeId>> quadsToAnyTriples = item -> {
         return TupleFactory.create4(NodeId.NodeIdAny, item.get(1), item.get(2), item.get(3) ) ;
     } ;
