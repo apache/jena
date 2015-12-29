@@ -21,9 +21,8 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.NotImplemented ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.seaborne.dboe.engine.* ;
-
 import org.seaborne.tdb2.store.NodeId ;
 
 public class PlannerPredObjList implements Planner {
@@ -47,7 +46,7 @@ public class PlannerPredObjList implements Planner {
         }
         // ---- Share with PlannerTDB
 
-        int N = tuples.get(0).size() ;
+        int N = tuples.get(0).len() ;
         if ( N !=3 && N != 4 )
             throw new NotImplemented("Tuple size not 3 or 4") ;
         

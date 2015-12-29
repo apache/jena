@@ -20,11 +20,6 @@ package org.seaborne.dboe.engine.join2;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.NotImplemented ;
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.seaborne.dboe.engine.JoinKey ;
 import org.seaborne.dboe.engine.Row ;

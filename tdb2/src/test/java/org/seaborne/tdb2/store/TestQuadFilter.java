@@ -21,7 +21,7 @@ package org.seaborne.tdb2.store;
 import java.util.function.Predicate ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.Quad ;
@@ -31,8 +31,6 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.seaborne.tdb2.TDB ;
 import org.seaborne.tdb2.TDBFactory ;
-import org.seaborne.tdb2.store.DatasetGraphTDB ;
-import org.seaborne.tdb2.store.NodeId ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 
@@ -67,7 +65,7 @@ public class TestQuadFilter extends BaseTest
         DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
         final NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
         final NodeId target = nodeTable.getNodeIdForNode(NodeFactory.createURI(graphToHide)) ;
-        return item -> !( item.size() == 4 && item.get(0).equals(target) );
+        return item -> !( item.len() == 4 && item.get(0).equals(target) );
     }            
 
     @Test public void quad_filter_1()   { test("SELECT * { GRAPH ?g { ?s ?p ?o } }", 1, 2) ; }

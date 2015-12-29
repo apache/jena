@@ -17,19 +17,21 @@
 
 package org.seaborne.dboe.engine.tdb;
 
+import static org.seaborne.dboe.engine.EngLib.accVars ;
+import static org.seaborne.dboe.engine.EngLib.object ;
+import static org.seaborne.dboe.engine.EngLib.subject ;
+
 import java.util.List ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.lib.DS ;
-import org.apache.jena.atlas.lib.Tuple ;
-import static org.seaborne.dboe.engine.EngLib.* ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.sparql.core.Var ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.row.RowBuilderBase ;
+import org.seaborne.tdb2.store.NodeId ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import org.apache.jena.sparql.core.Var ;
-import org.seaborne.tdb2.store.NodeId ;
 
 /** Given a {@code List<Tuple<Slot<NodeId>>>} (a basic graph pattern or quad pattern),
  *  generate a physical plan.  Assumes input is in the "best" order.

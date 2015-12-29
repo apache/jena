@@ -21,7 +21,7 @@ package org.seaborne.tdb2.store ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.NullIterator ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.Quad ;

@@ -17,7 +17,7 @@
 
 package org.seaborne.dboe.engine;
 
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.seaborne.dboe.engine.access.AccessRows ;
 import org.seaborne.dboe.engine.join.SubstitutionJoin ;
 

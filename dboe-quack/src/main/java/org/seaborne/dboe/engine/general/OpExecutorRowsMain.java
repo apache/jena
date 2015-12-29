@@ -22,14 +22,7 @@ import java.util.List ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.lib.NotImplemented ;
-import org.apache.jena.atlas.lib.Tuple ;
-import org.seaborne.dboe.engine.* ;
-import org.seaborne.dboe.engine.access.AccessRows ;
-import org.seaborne.dboe.engine.access.AccessorGraph ;
-import org.seaborne.dboe.engine.row.RowBuilderBase ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
-
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.BasicPattern ;
@@ -45,6 +38,12 @@ import org.apache.jena.sparql.engine.main.OpExecutor ;
 import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.expr.ExprList ;
+import org.seaborne.dboe.engine.* ;
+import org.seaborne.dboe.engine.access.AccessRows ;
+import org.seaborne.dboe.engine.access.AccessorGraph ;
+import org.seaborne.dboe.engine.row.RowBuilderBase ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 /** OpExecutor in Node space using Quack and Rows.*/
 public class OpExecutorRowsMain extends OpExecutorBlockFilter {

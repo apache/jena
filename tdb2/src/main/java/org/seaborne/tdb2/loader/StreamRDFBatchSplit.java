@@ -20,7 +20,8 @@ package org.seaborne.tdb2.loader;
 import java.util.* ;
 import java.util.stream.Collectors ;
 
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.other.BatchedStreamRDF ;
@@ -165,12 +166,10 @@ public class StreamRDFBatchSplit implements StreamRDF {
 
     // check for duplicate code
     private static List<Tuple<NodeId>> convert(List<Triple> triples, NodeTable nodeTable) {
-        return triples.stream().map(t->
-                Tuple.createTuple
-                (nodeTable.getAllocateNodeId(t.getSubject()),
-                 nodeTable.getAllocateNodeId(t.getPredicate()),
-                 nodeTable.getAllocateNodeId(t.getObject())))
-         .collect(Collectors.toList()) ;
+        return triples.stream().map(t -> TupleFactory.tuple(nodeTable.getAllocateNodeId(t.getSubject()),
+                                                            nodeTable.getAllocateNodeId(t.getPredicate()),
+                                                            nodeTable.getAllocateNodeId(t.getObject())))
+            .collect(Collectors.toList());
     }
     
     private static void convert(List<Triple> triples, List<Tuple<NodeId>> tuples, NodeTable nodeTable) {
@@ -179,12 +178,12 @@ public class StreamRDFBatchSplit implements StreamRDF {
             NodeId nid_s = nodeTable.getAllocateNodeId(t.getSubject()) ;
             NodeId nid_p = nodeTable.getAllocateNodeId(t.getPredicate()) ;
             NodeId nid_o = nodeTable.getAllocateNodeId(t.getObject()) ;
-            Tuple<NodeId> x = Tuple.createTuple(nid_s, nid_p, nid_o) ;
+            Tuple<NodeId> x = TupleFactory.tuple(nid_s, nid_p, nid_o) ;
             tuples.add(x) ;
         }
         
 //        triples.stream().map(t->
-//                  Tuple.createTuple
+//                  TupleFactory.tuple
 //                  (nodeTable.getAllocateNodeId(t.getSubject()),
 //                   nodeTable.getAllocateNodeId(t.getPredicate()),
 //                   nodeTable.getAllocateNodeId(t.getObject())))

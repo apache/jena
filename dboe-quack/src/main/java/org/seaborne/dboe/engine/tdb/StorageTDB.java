@@ -18,10 +18,9 @@
 package org.seaborne.dboe.engine.tdb;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.lib.Tuple ;
-import org.seaborne.dboe.engine.general.OpExecLib ;
-
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Node ;
+import org.seaborne.dboe.engine.general.OpExecLib ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
@@ -50,7 +49,7 @@ public final class StorageTDB {
     public NodeTable getNodeTable()         { return nodeTable ; }
     
     public TupleTable getTupleTable(Tuple<?> tuple) {
-        switch (tuple.size()) {
+        switch (tuple.len()) {
             case 3: return tripleTuples ;
             case 4: return quadTuples ;
         default: 

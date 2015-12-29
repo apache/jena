@@ -20,9 +20,9 @@ package org.seaborne.tdb2.store.tupletable;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.lib.ColumnMap ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.seaborne.tdb2.TDBException ;
+import org.seaborne.tdb2.migrate.ColumnMap ;
 import org.seaborne.tdb2.store.NodeId ;
 
 public abstract class TupleIndexBase implements TupleIndex
@@ -59,10 +59,9 @@ public abstract class TupleIndexBase implements TupleIndex
     @Override
     public final void add(Tuple<NodeId> tuple) 
     { 
-        if ( Check )
-        {
-            if ( tupleLength != tuple.size() )
-            throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", tuple.size(), tupleLength)) ;
+        if ( Check ) {
+            if ( tupleLength != tuple.len() )
+                throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", tuple.len(), tupleLength));
         }
         performAdd(tuple) ;
     }
@@ -70,10 +69,9 @@ public abstract class TupleIndexBase implements TupleIndex
     @Override
     public final void delete(Tuple<NodeId> tuple) 
     { 
-        if ( Check )
-        {
-            if ( tupleLength != tuple.size() )
-            throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", tuple.size(), tupleLength)) ;
+        if ( Check ) {
+            if ( tupleLength != tuple.len() )
+                throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", tuple.len(), tupleLength));
         }
 
         performDelete(tuple) ;
@@ -85,11 +83,10 @@ public abstract class TupleIndexBase implements TupleIndex
     @Override
     public final Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern)
     {
-        if ( Check )
-        {
-            if ( tupleLength != pattern.size() )
-            throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", pattern.size(), tupleLength)) ;
-        } 
+        if ( Check ) {
+            if ( tupleLength != pattern.len() )
+                throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", pattern.len(), tupleLength));
+        }
         // null to NodeId.NodIdAny ??
         return performFind(pattern) ;
     }

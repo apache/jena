@@ -24,7 +24,8 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.NullIterator ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.Node ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.lib.TupleLib ;
@@ -82,7 +83,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
             for (int i = 0; i < nodes.length; i++)
                 n[i] = nodeTable.getAllocateNodeId(nodes[i]) ;
 
-            Tuple<NodeId> t = Tuple.create(n) ;
+            Tuple<NodeId> t = TupleFactory.create(n) ;
             tupleTable.add(t) ;
         } finally 
         {
@@ -104,7 +105,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
                 n[i] = id ;
             }
 
-            Tuple<NodeId> t = Tuple.create(n) ;
+            Tuple<NodeId> t = TupleFactory.create(n) ;
             tupleTable.delete(t) ;
         } finally
         {
@@ -150,7 +151,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     @Override
     public Iterator<Tuple<NodeId>> find(NodeId... ids)
     {
-        Tuple<NodeId> tuple = Tuple.create(ids) ;
+        Tuple<NodeId> tuple = TupleFactory.create(ids) ;
         return find(tuple) ;
     }
 

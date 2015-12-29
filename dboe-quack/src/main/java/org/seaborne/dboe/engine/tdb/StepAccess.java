@@ -20,11 +20,10 @@ package org.seaborne.dboe.engine.tdb;
 import java.util.Iterator ;
 import java.util.Set ;
 
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.sparql.core.Var ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.access.AccessRows ;
-
-import org.apache.jena.sparql.core.Var ;
 import org.seaborne.tdb2.store.NodeId ;
 
 class StepAccess implements Step<NodeId> {

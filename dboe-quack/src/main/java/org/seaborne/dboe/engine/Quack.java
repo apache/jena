@@ -173,7 +173,7 @@ public class Quack {
     }
     
     public static Dataset createDataset(Location location, OpExecutorFactory executorFactory) {
-        return DatasetFactory.create(createDatasetGraph(location, executorFactory)) ;
+        return DatasetFactory.wrap(createDatasetGraph(location, executorFactory)) ;
     }
     
     public static DatasetGraph createDatasetGraph(Location location, OpExecutorFactory executorFactory) {

@@ -21,14 +21,15 @@ import java.util.Iterator ;
 import java.util.function.Function ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.sparql.core.Var ;
-import org.seaborne.tdb2.store.NodeId ;
-import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.access.Accessor ;
 import org.seaborne.dboe.engine.row.RowBuilderBase ;
+import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.nodetable.NodeTable ;
 
 public class AccessorTDB implements Accessor<NodeId> {
     private final StorageTDB db ;
@@ -61,7 +62,7 @@ public class AccessorTDB implements Accessor<NodeId> {
     //---- AccessRows
     @Override
     public Iterator<Row<NodeId>> accessRows(Tuple<Slot<NodeId>> tuple) {
-        int N = tuple.size() ;
+        int N = tuple.len() ;
 
         boolean unionMode = false ;
         if ( N == 4 ) {
@@ -106,7 +107,7 @@ public class AccessorTDB implements Accessor<NodeId> {
 
     // -- Mutating "transform in place"
     private static Function<Tuple<NodeId>, Tuple<NodeId>> quadsToAnyTriples = 
-        (item)->Tuple.createTuple(NodeId.NodeIdAny, item.get(1), item.get(2), item.get(3)) ;
+        (item)->TupleFactory.tuple(NodeId.NodeIdAny, item.get(1), item.get(2), item.get(3)) ;
 
     // ---- AccessRowList
     // See AccessOps and calls from StepPredicateObjectList

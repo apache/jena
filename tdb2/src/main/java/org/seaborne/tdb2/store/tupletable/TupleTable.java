@@ -25,7 +25,7 @@ import java.util.List ;
 
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.logging.Log ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.NodeId ;
@@ -87,8 +87,8 @@ public class TupleTable implements Sync, Closeable
     public void add(Tuple<NodeId> t) {
         // A "contains test" could be used to avoid needing to hit all
         // the indexes when the triple is already present.
-        if ( tupleLen != t.size() )
-            throw new TDBException(format("Mismatch: inserting tuple of length %d into a table of tuples of length %d", t.size(), tupleLen)) ;
+        if ( tupleLen != t.len() )
+            throw new TDBException(format("Mismatch: inserting tuple of length %d into a table of tuples of length %d", t.len(), tupleLen)) ;
         for ( int i = 0 ; i < indexes.length ; i++ ) {
             if ( indexes[i] == null ) continue ;
             indexes[i].add(t) ;
@@ -108,8 +108,8 @@ public class TupleTable implements Sync, Closeable
 
     /** Delete a tuple */
     public void delete( Tuple<NodeId> t ) { 
-        if ( tupleLen != t.size() )
-            throw new TDBException(format("Mismatch: deleting tuple of length %d from a table of tuples of length %d", t.size(), tupleLen)) ;
+        if ( tupleLen != t.len() )
+            throw new TDBException(format("Mismatch: deleting tuple of length %d from a table of tuples of length %d", t.len(), tupleLen)) ;
 
         for ( TupleIndex index : indexes ) {
             if ( index == null )
@@ -130,8 +130,8 @@ public class TupleTable implements Sync, Closeable
 
     /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any */
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern) {
-        if ( tupleLen != pattern.size() )
-            throw new TDBException(format("Mismatch: finding tuple of length %d in a table of tuples of length %d", pattern.size(), tupleLen)) ;
+        if ( tupleLen != pattern.len() )
+            throw new TDBException(format("Mismatch: finding tuple of length %d in a table of tuples of length %d", pattern.len(), tupleLen)) ;
         
         int numSlots = 0 ;
         // Canonical form. 

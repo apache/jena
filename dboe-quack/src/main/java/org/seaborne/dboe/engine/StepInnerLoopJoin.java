@@ -19,12 +19,11 @@ package org.seaborne.dboe.engine;
 
 import java.util.Set ;
 
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.sparql.core.Var ;
 import org.seaborne.dboe.engine.access.AccessRows ;
 import org.seaborne.dboe.engine.join.NestedLoopJoin ;
 import org.seaborne.dboe.engine.row.RowListBase ;
-
-import org.apache.jena.sparql.core.Var ;
 
 public class StepInnerLoopJoin<X> implements Step<X> {
 

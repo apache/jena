@@ -20,7 +20,7 @@ package org.seaborne.tdb2.solver;
 
 import java.util.function.Predicate;
 
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.sparql.util.Context ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.NodeId ;

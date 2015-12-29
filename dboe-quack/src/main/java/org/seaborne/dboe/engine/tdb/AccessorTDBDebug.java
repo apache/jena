@@ -19,10 +19,12 @@ package org.seaborne.dboe.engine.tdb;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.lib.Tuple ;
-import org.seaborne.dboe.engine.* ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.seaborne.dboe.engine.PredicateObjectList ;
+import org.seaborne.dboe.engine.Quack ;
+import org.seaborne.dboe.engine.Row ;
+import org.seaborne.dboe.engine.Slot ;
 import org.seaborne.dboe.engine.explain.Explain2 ;
-
 import org.seaborne.tdb2.store.NodeId ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 

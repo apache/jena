@@ -23,8 +23,8 @@ import java.util.List ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.lib.Tuple ;
-
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.sparql.core.Var ;
 
 /** A predicate-object list of 'X' */
@@ -132,16 +132,15 @@ public final class PredicateObjectList<X>
         return objects ;
     }
 
-    @SuppressWarnings("unchecked")   // Awaiting Java7 update to Jena (Tuple.createTuple)
     public Tuple<Slot<X>> createTupleSlot(int idx) {
         Slot<X> g = getGraph() ;
         Slot<X> s = getSubject() ;
         X p = getPredicate(idx) ;
         Slot<X> o = getObject(idx) ;
         if ( g != null )
-            return Tuple.createTuple(g, s, Slot.createTermSlot(p), o) ;
+            return TupleFactory.tuple(g, s, Slot.createTermSlot(p), o) ;
         else
-            return Tuple.createTuple(s, Slot.createTermSlot(p), o) ;
+            return TupleFactory.tuple(s, Slot.createTermSlot(p), o) ;
     }
     
     public boolean isMultipleSamePredicate() {

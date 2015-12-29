@@ -24,15 +24,16 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Bytes ;
-import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.Quad ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.tdb2.TDBException ;
+import org.seaborne.tdb2.migrate.ColumnMap ;
 import org.seaborne.tdb2.store.NodeId ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 
@@ -61,25 +62,25 @@ public class TupleLib
     
     public static Tuple<Node> tupleNodes(NodeTable nodeTable, Tuple<NodeId> ids) 
     {
-        int N = ids.size() ;
+        int N = ids.len() ;
         Node[] n = new Node[N] ;
         for ( int i = 0 ; i < N ; i++ )
             n[i] = nodeTable.getNodeForNodeId(ids.get(i)) ;
-        return Tuple.create(n) ;
+        return TupleFactory.create(n) ;
     }
     
     public static Tuple<NodeId> tupleNodeIds(NodeTable nodeTable, Tuple<Node> nodes) 
     {
-        int N = nodes.size() ;
+        int N = nodes.len() ;
         NodeId[] n = new NodeId[N] ;
         for ( int i = 0 ; i < N ; i++ )
             n[i] = nodeTable.getNodeIdForNode(nodes.get(i)) ;
-        return Tuple.create(n) ;
+        return TupleFactory.create(n) ;
     }
     
     private static Triple triple(NodeTable nodeTable, Tuple<NodeId> tuple) 
     {
-        if ( tuple.size() != 3 )
+        if ( tuple.len() != 3 )
             throw new TDBException("Tuple is not of length 3: "+tuple) ;
         return triple(nodeTable, tuple.get(0), tuple.get(1), tuple.get(2)) ;
     }
@@ -118,7 +119,7 @@ public class TupleLib
     
     private static Quad quad(NodeTable nodeTable, Tuple<NodeId> tuple) 
     {
-        if ( tuple.size() != 4 )
+        if ( tuple.len() != 4 )
             throw new TDBException("Tuple is not of length 4: "+tuple) ;
         return quad(nodeTable, tuple.get(0), tuple.get(1), tuple.get(2), tuple.get(3)) ;
     }
@@ -145,14 +146,14 @@ public class TupleLib
                 j = cMap.fetchSlotIdx(i) ;
             nodeIds[j] = id ;
         }
-        return Tuple.create(nodeIds) ;
+        return TupleFactory.create(nodeIds) ;
     }
 
 
     public static Record record(RecordFactory factory, Tuple<NodeId> tuple, ColumnMap cMap) 
     {
-        byte[] b = new byte[tuple.size()*NodeId.SIZE] ;
-        for ( int i = 0 ; i < tuple.size() ; i++ )
+        byte[] b = new byte[tuple.len()*NodeId.SIZE] ;
+        for ( int i = 0 ; i < tuple.len() ; i++ )
         {
             int j = cMap.mapSlotIdx(i) ;
             // i'th Nodeid goes to j'th bytes slot.
@@ -161,7 +162,4 @@ public class TupleLib
             
         return factory.create(b) ;
     }
-
-
-
 }

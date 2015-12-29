@@ -22,9 +22,9 @@ import java.util.Collection ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.Sync ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.seaborne.tdb2.migrate.ColumnMap ;
 import org.seaborne.tdb2.store.NodeId ;
 
 public interface TupleIndex extends Sync, Closeable

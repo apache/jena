@@ -20,9 +20,11 @@ package org.seaborne.dboe.engine.general;
 import java.util.Iterator ;
 import java.util.List ;
 import java.util.function.Function ;
+import java.util.stream.Collectors ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -181,7 +183,7 @@ public class OpExecLib {
     
     /** Triples to tuples */ 
     public static List<Tuple<Node>> convertTriplesToTuples(List<Triple> iter)  {
-        return Iter.map(iter, tripleToTuple) ;
+        return iter.stream().map(tripleToTuple).collect(Collectors.toList()) ;
     }
     
     public static Iterator<Tuple<Node>> convertTriplesToTuples(Iterator<Triple> iter)  {
@@ -190,7 +192,7 @@ public class OpExecLib {
     
     /** Quads to tuples */ 
     public static List<Tuple<Node>> convertQuadsToTuples(List<Quad> iter)  {
-        return Iter.map(iter, quadToTuple) ;
+        return iter.stream().map(quadToTuple).collect(Collectors.toList()) ;
     }
     
     /** Quads to tuples */
@@ -200,7 +202,7 @@ public class OpExecLib {
 
     /** Triples to tuples of slots */
     public static List<Tuple<Slot<Node>>> convertTriplesToSlots(List<Triple> iter)  {
-        return Iter.map(iter, tripleToTupleSlot) ;
+        return iter.stream().map(tripleToTupleSlot).collect(Collectors.toList()) ;
     }
 
     /** Triples to tuples of slots */
@@ -210,7 +212,7 @@ public class OpExecLib {
     
     /** Quads to tuples of slots */
     public static List<Tuple<Slot<Node>>> convertQuadsToSlots(List<Quad> iter)  {
-        return Iter.map(iter, quadToTupleSlot) ;
+        return iter.stream().map(quadToTupleSlot).collect(Collectors.toList()) ;
     }
 
     /** Quads to tuples of slots */
@@ -225,59 +227,30 @@ public class OpExecLib {
             return Slot.createTermSlot(n) ;
     }
 
-    private static Function<Quad, Tuple<Node>> quadToTuple = new Function<Quad, Tuple<Node>>(){
-        @Override
-        public Tuple<Node> apply(Quad quad) {
-            Node[] n = new Node[3] ;
-            n[0] = quad.getGraph() ;
-            n[1] = quad.getSubject() ;
-            n[2] = quad.getPredicate() ;
-            n[3] = quad.getObject();
-            return Tuple.create(n) ;
-        }
-    } ;
+    private static Function<Quad, Tuple<Node>> quadToTuple = (quad) -> TupleFactory.tuple(quad.getGraph(),
+                                                                                          quad.getSubject() ,
+                                                                                          quad.getPredicate(),
+                                                                                          quad.getObject()) ;
 
-    private static Function<Triple, Tuple<Slot<Node>>> tripleToTupleSlot = new Function<Triple, Tuple<Slot<Node>>>(){
-        @Override
-        public Tuple<Slot<Node>> apply(Triple triple) {
-            @SuppressWarnings("unchecked")
-            Slot<Node>[] n = (Slot<Node>[])new Slot<?>[3] ;
-            n[0] = nodeToSlot(triple.getSubject()) ;
-            n[1] = nodeToSlot(triple.getPredicate()) ;
-            n[2] = nodeToSlot(triple.getObject());
-            return Tuple.create(n) ;
-        }
-    } ;
 
-    private static Function<Triple, Tuple<Node>> tripleToTuple = new Function<Triple, Tuple<Node>>(){
-        @Override
-        public Tuple<Node> apply(Triple triple) {
-            Node[] n = new Node[3] ;
-            n[0] = triple.getSubject() ;
-            n[1] = triple.getPredicate() ;
-            n[2] = triple.getObject();
-            return Tuple.create(n) ;
-        }
-    } ;
+    private static Function<Triple, Tuple<Node>> tripleToTuple = (triple) -> TupleFactory.tuple(triple.getSubject(),
+                                                                                                triple.getPredicate(),
+                                                                                                triple.getObject());
 
-    private static Function<Quad, Tuple<Slot<Node>>> quadToTupleSlot = new Function<Quad, Tuple<Slot<Node>>>(){
-        @Override
-        public Tuple<Slot<Node>> apply(Quad Quad) {
-            @SuppressWarnings("unchecked")
-            Slot<Node>[] n = (Slot<Node>[])new Slot<?>[4] ;
-            n[0] = nodeToSlot(Quad.getGraph()) ;
-            n[1] = nodeToSlot(Quad.getSubject()) ;
-            n[2] = nodeToSlot(Quad.getPredicate()) ;
-            n[3] = nodeToSlot(Quad.getObject());
-            return Tuple.create(n) ;
-        }
-    } ;
+    private static Function<Triple, Tuple<Slot<Node>>> tripleToTupleSlot = (triple) -> TupleFactory.tuple(nodeToSlot(triple.getSubject()),
+                                                                                                          nodeToSlot(triple.getPredicate()),
+                                                                                                          nodeToSlot(triple.getObject()));
+
+    private static Function<Quad, Tuple<Slot<Node>>> quadToTupleSlot = (quad) -> TupleFactory.tuple(nodeToSlot(quad.getGraph()),
+                                                                                                    nodeToSlot(quad.getSubject()),
+                                                                                                    nodeToSlot(quad.getPredicate()),
+                                                                                                    nodeToSlot(quad.getObject()));
 
     private static Function<Tuple<Node>, Triple> tupleToTriple = new Function<Tuple<Node>, Triple>(){
         @Override
         public Triple apply(Tuple<Node> tuple) {
-            if ( tuple.size() != 3 )
-                throw new ARQInternalErrorException("Attmpt to convert a tuple of length "+tuple.size()+" to a triple") ;
+            if ( tuple.len() != 3 )
+                throw new ARQInternalErrorException("Attmpt to convert a tuple of length "+tuple.len()+" to a triple") ;
             return Triple.create(tuple.get(0), tuple.get(1), tuple.get(2)) ; 
         }
     } ;
@@ -285,8 +258,8 @@ public class OpExecLib {
     private static Function<Tuple<Node>, Quad> tupleToQuad = new Function<Tuple<Node>, Quad>(){
         @Override
         public Quad apply(Tuple<Node> tuple) {
-            if ( tuple.size() != 4 )
-                throw new ARQInternalErrorException("Attmpt to convert a tuple of length "+tuple.size()+" to a quad") ;
+            if ( tuple.len() != 4 )
+                throw new ARQInternalErrorException("Attmpt to convert a tuple of length "+tuple.len()+" to a quad") ;
             return Quad.create(tuple.get(0), tuple.get(1), tuple.get(2), tuple.get(3)) ; 
         }
     } ;

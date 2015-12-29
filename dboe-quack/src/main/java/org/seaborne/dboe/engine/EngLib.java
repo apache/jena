@@ -25,7 +25,8 @@ import java.util.function.Function ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.sparql.core.Var ;
 
 /** Library of functions for the generic join engine */
@@ -35,12 +36,12 @@ public class EngLib {
     public static <X> Tuple<Slot<X>> substitute(Tuple<Slot<X>> ts, Row<X> row) {
         if ( row.isIdentity() )
             return ts ;
-        final int N = ts.size() ; 
+        final int N = ts.len() ; 
         @SuppressWarnings("unchecked")
         Slot<X>[] slots = (Slot<X>[])new Slot<?>[N] ;
         for ( int i = 0 ; i < N ; i++ )
             slots[i] = substitute(ts.get(i), row) ;
-        return Tuple.create(slots) ;
+        return TupleFactory.create(slots) ;
     }
     
     public static <X> Slot<X> substitute(Slot<X> slot, Row<X> row) {
@@ -96,7 +97,7 @@ public class EngLib {
     
     /** Extract a Tuple of X or the default value */ 
     public static <X> Tuple<X> convertTupleToAny(Tuple<Slot<X>> slots, X anyMark) {
-        int N = slots.size() ;
+        int N = slots.len() ;
         @SuppressWarnings("unchecked")
         X n[] = (X[])new Object[N] ;
         for ( int i = 0 ;  i < N ; i++ )
@@ -104,7 +105,7 @@ public class EngLib {
                 n[i] = anyMark ;
             else
                 n[i] = slots.get(i).term ;
-        return Tuple.create(n) ;
+        return TupleFactory.create(n) ;
     }
     
     /** Convert Iterator<Tuple<X>> to Iterator<Row<X>>, given a pattern.
@@ -115,7 +116,7 @@ public class EngLib {
                                                         final RowBuilder<X> builder) {
        Function<Tuple<X>, Row<X>> transform = (item->{
            builder.reset() ;
-           for ( int i = 0 ; i < pattern.size() ; i++ ) {
+           for ( int i = 0 ; i < pattern.len() ; i++ ) {
                Slot<X> s = pattern.get(i) ;
                if ( s.isVar() ) {
                    Var var = s.var ;
@@ -136,7 +137,7 @@ public class EngLib {
    }
 
     public static final <X> X subject(Tuple<X> tuple) {
-        switch(tuple.size()) {
+        switch(tuple.len()) {
             case 3: return tuple.get(0) ;
             case 4: return tuple.get(1) ;
             default: throw new InternalErrorException("Tuple size not 3 or 4") ;
@@ -144,7 +145,7 @@ public class EngLib {
     }
 
     public static final <X> X predicate(Tuple<X> tuple) {
-        switch(tuple.size()) {
+        switch(tuple.len()) {
             case 3: return tuple.get(1) ;
             case 4: return tuple.get(2) ;
             default: throw new InternalErrorException("Tuple size not 3 or 4") ;
@@ -152,7 +153,7 @@ public class EngLib {
     }
 
     public static final <X> X object(Tuple<X> tuple) {
-        switch(tuple.size()) {
+        switch(tuple.len()) {
             case 3: return tuple.get(2) ;
             case 4: return tuple.get(3) ;
             default: throw new InternalErrorException("Tuple size not 3 or 4") ;
@@ -160,7 +161,7 @@ public class EngLib {
     }
 
     public static final <X> X graph(Tuple<X> tuple) {
-        switch(tuple.size()) {
+        switch(tuple.len()) {
             case 3: return null ;
             case 4: return tuple.get(0) ;
             default: throw new InternalErrorException("Tuple size not 3 or 4") ;

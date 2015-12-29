@@ -19,14 +19,13 @@ package org.seaborne.dboe.engine.access;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.lib.Tuple ;
-import org.seaborne.dboe.engine.general.OpExecLib ;
-
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.seaborne.dboe.engine.general.OpExecLib ;
 
 /** Combine all three access forms */
 public final class AccessorGraph extends AccessorBase<Node> implements Accessor<Node> {
@@ -38,7 +37,7 @@ public final class AccessorGraph extends AccessorBase<Node> implements Accessor<
     // ---- AccessData
     @Override
     public Iterator<Tuple<Node>> accessTuples(Tuple<Node> pattern) {
-        if ( pattern.size() != 3 )
+        if ( pattern.len() != 3 )
             throw new ARQInternalErrorException("AccessorGraph.accessTuples : not a 3-tuple: "+pattern) ;
         ExtendedIterator<Triple> iter = graph.find(pattern.get(0), pattern.get(1), pattern.get(2)) ;
         return OpExecLib.convertTriplesToTuples(iter) ;

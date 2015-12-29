@@ -26,7 +26,7 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.PeekIterator ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -49,16 +49,16 @@ import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderProc ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.sparql.expr.ExprList ;
-import org.seaborne.tdb2.solver.OpExecutorTDB1 ;
-import org.seaborne.tdb2.store.DatasetGraphTDB ;
-import org.seaborne.tdb2.store.GraphTDB ;
-import org.seaborne.tdb2.store.NodeId ;
-import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.explain.Explain2 ;
 import org.seaborne.dboe.engine.extra_tdb.OpExecutorTDBBase ;
 import org.seaborne.dboe.engine.general.OpExecLib ;
 import org.seaborne.dboe.engine.row.RowBuilderBase ;
+import org.seaborne.tdb2.solver.OpExecutorTDB1 ;
+import org.seaborne.tdb2.store.DatasetGraphTDB ;
+import org.seaborne.tdb2.store.GraphTDB ;
+import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.nodetable.NodeTable ;
 
 /** Query execution for TDB */ 
 public class OpExecutorQuackTDB extends OpExecutorTDBBase
@@ -296,7 +296,7 @@ public class OpExecutorQuackTDB extends OpExecutorTDBBase
 //            if ( slot.isVar() && row.contains(slot.var) )
 //                nid = row.get(slot.var) ;
 //        }
-//        return Tuple.createTuple(x) ;
+//        return TupleFactory.tuple(x) ;
 //    }
 
     // Process the outcome of TransformFilterPlacement

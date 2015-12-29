@@ -24,13 +24,12 @@ import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.RepeatApplyIterator ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.util.FmtUtils ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.access.AccessorBase ;
 import org.seaborne.dboe.engine.row.RowBuilderBase ;
-
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.util.FmtUtils ;
 import org.seaborne.tdb2.store.NodeId ;
 
 /** Get a number of predicate-objects, all with the same subject (the same variable or the same term) . */

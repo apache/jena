@@ -107,7 +107,7 @@ public class MainQuack {
             System.out.println("**** OpExecutorMain2 ??????") ;
     
             Query query = QueryFactory.read(queryFile) ;
-            Dataset dsMem = DatasetFactory.createMem() ;
+            Dataset dsMem = DatasetFactory.create() ;
             RDFDataMgr.read(dsMem, datafile) ;
     
     //        RDFDataMgr.write(System.out, dsMem, Lang.TRIG) ;
@@ -182,7 +182,7 @@ public class MainQuack {
         
         //AccessOps.DEBUG = true ;
         Query query = QueryFactory.read(queryFile) ;
-        Dataset ds = DatasetFactory.createMem() ; // TDBFactory.createDataset() ;
+        Dataset ds = DatasetFactory.create() ; // TDBFactory.createDataset() ;
         RDFDataMgr.read(ds, datafile) ;
         // Default. Generated expected results.
         QueryExecution qExec1 = QueryExecutionFactory.create(query, ds) ;

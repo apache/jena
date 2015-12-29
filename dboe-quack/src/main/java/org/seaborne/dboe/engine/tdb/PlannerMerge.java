@@ -24,12 +24,11 @@ import java.util.List ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.sparql.core.Var ;
 import org.seaborne.dboe.engine.PhysicalPlan ;
 import org.seaborne.dboe.engine.Slot ;
 import org.seaborne.dboe.engine.Step ;
-
-import org.apache.jena.sparql.core.Var ;
 import org.seaborne.tdb2.store.NodeId ;
 import org.seaborne.tdb2.store.tupletable.TupleIndex ;
 
@@ -137,7 +136,7 @@ public class PlannerMerge {
     private static IndexAccess access(Tuple<Slot<NodeId>> tuple, TupleIndex idx) {
         // @@ Walk down using fetchSlotIdx rather than map triple? Minor? 
         Tuple<Slot<NodeId>> t = idx.getColumnMap().map(tuple) ;
-        for ( int i = 0 ; i < tuple.size() ; i++ ) {
+        for ( int i = 0 ; i < tuple.len() ; i++ ) {
             Slot<NodeId>n = t.get(i) ;
             if ( n.isVar() )
                 return new IndexAccess(tuple, idx, i, n.var) ;

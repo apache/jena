@@ -19,10 +19,9 @@ package org.seaborne.dboe.engine.tdb;
 
 import java.util.List ;
 
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.seaborne.dboe.engine.PhysicalPlan ;
 import org.seaborne.dboe.engine.Slot ;
-
 import org.seaborne.tdb2.store.NodeId ;
 
 public interface Planner

@@ -21,14 +21,14 @@ package org.seaborne.tdb2.solver;
 
 import java.util.Iterator ;
 import java.util.List ;
-import java.util.function.Consumer ;
 import java.util.function.Function ;
 import java.util.function.Predicate ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.NullIterator ;
 import org.apache.jena.atlas.iterator.RepeatApplyIterator ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
@@ -66,7 +66,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
     {
         // Process the Node to NodeId conversion ourselves because
         // we wish to abort if an unknown node is seen.
-        for ( int i = 0 ; i < patternTuple.size() ; i++ )
+        for ( int i = 0 ; i < patternTuple.len() ; i++ )
         {
             Node n = patternTuple.get(i) ;
             // Substitution and turning into NodeIds
@@ -84,13 +84,13 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
     protected Iterator<BindingNodeId> makeNextStage(final BindingNodeId input)
     {
         // ---- Convert to NodeIds 
-        NodeId ids[] = new NodeId[patternTuple.size()] ;
+        NodeId ids[] = new NodeId[patternTuple.len()] ;
         // Variables for this tuple after subsitution
-        final Var[] var = new Var[patternTuple.size()] ;
+        final Var[] var = new Var[patternTuple.len()] ;
 
         prepare(nodeTupleTable.getNodeTable(), patternTuple, input, ids, var) ;
         
-        Iterator<Tuple<NodeId>> iterMatches = nodeTupleTable.find(Tuple.create(ids)) ;  
+        Iterator<Tuple<NodeId>> iterMatches = nodeTupleTable.find(TupleFactory.create(ids)) ;  
         
         // ** Allow a triple or quad filter here.
         if ( filter != null )
@@ -104,7 +104,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         // Assumes that tuples are not shared.
         if ( anyGraphs )
         {
-            iterMatches = Iter.operate(iterMatches, quadsToAnyTriples) ;
+            iterMatches = Iter.map(iterMatches, quadsToAnyTriples) ;
             //Guaranteed 
             //iterMatches = Iter.distinct(iterMatches) ;
             
@@ -187,6 +187,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         return nodeTable.getNodeIdForNode(node) ;
     }
     
-    // -- Mutating "transform in place"
-    private static Consumer<Tuple<NodeId>> quadsToAnyTriples = item -> item.tuple()[0] = NodeId.NodeIdAny ;
+    private static Function<Tuple<NodeId>, Tuple<NodeId>> quadsToAnyTriples = item -> {
+        return TupleFactory.create4(NodeId.NodeIdAny, item.get(1), item.get(2), item.get(3) ) ;
+    } ;
 }

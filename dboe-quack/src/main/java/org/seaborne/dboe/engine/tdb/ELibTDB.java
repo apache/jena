@@ -23,17 +23,18 @@ import java.util.List ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.seaborne.tdb2.store.NodeId ;
-import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.dboe.engine.Row ;
 import org.seaborne.dboe.engine.RowBuilder ;
 import org.seaborne.dboe.engine.Slot ;
+import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.nodetable.NodeTable ;
 
 public class ELibTDB {
     public static List<Tuple<Slot<NodeId>>> convertTriples(List<Triple> triples, NodeTable nodeTable) {
@@ -95,7 +96,7 @@ public class ELibTDB {
         slots[2] = apply(triple.getObject(), nodeTable, allocate) ;
         if (slots[2].term == NodeId.NodeDoesNotExist)
             return null ;
-        return Tuple.create(slots) ;
+        return TupleFactory.create(slots) ;
     }
 
     public static Tuple<Slot<NodeId>> apply(Node gn, Triple triple, NodeTable nodeTable, boolean allocate) {
@@ -113,7 +114,7 @@ public class ELibTDB {
         slots[3] = apply(triple.getObject(), nodeTable, allocate) ;
         if (slots[3].term == NodeId.NodeDoesNotExist)
             return null ;
-        return Tuple.create(slots) ;
+        return TupleFactory.create(slots) ;
     }
 
     /** Convert a quad to tuples, return null if a slot is known not to exist */ 
@@ -132,7 +133,7 @@ public class ELibTDB {
         slots[3] = apply(quad.getObject(), nodeTable, allocate) ;
         if (slots[3].term == NodeId.NodeDoesNotExist)
             return null ;
-        return Tuple.create(slots) ;
+        return TupleFactory.create(slots) ;
     }
     
     public static Slot<NodeId> apply(Node node, NodeTable nodeTable, boolean allocate) {
@@ -150,7 +151,7 @@ public class ELibTDB {
         slots[0] =  apply(t.getSubject(), nodeTable) ;
         slots[1] =  apply(t.getPredicate(), nodeTable) ;
         slots[2] =  apply(t.getObject(), nodeTable) ;
-        return Tuple.create(slots) ;
+        return TupleFactory.create(slots) ;
     }
 
     public static Slot<NodeId> apply(Node n, NodeTable nodeTable) {
@@ -199,9 +200,9 @@ public class ELibTDB {
         if ( p == null ) p = NodeId.NodeIdAny ;
         if ( o == null ) o = NodeId.NodeIdAny ;
         if ( g != null )
-            return Tuple.createTuple(g, s, p, o) ;
+            return TupleFactory.tuple(g, s, p, o) ;
         else
-            return Tuple.createTuple(s, p, o) ;
+            return TupleFactory.tuple(s, p, o) ;
     }
 
     public static NodeId slotToNodeId(Slot<NodeId> slot) {

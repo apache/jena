@@ -19,7 +19,7 @@ package org.seaborne.dboe.engine.access;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 
 /** Low access to data where the pattern constrains the results 
  * by constants (fixed terms) or wildcard.  The wildcard may be {@code null} or

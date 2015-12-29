@@ -24,7 +24,7 @@ import java.util.function.Function ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.RepeatApplyIterator ;
 import org.apache.jena.atlas.lib.DS ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.logging.FmtLog ;
 import org.apache.jena.sparql.core.Var ;
 import org.seaborne.dboe.engine.* ;

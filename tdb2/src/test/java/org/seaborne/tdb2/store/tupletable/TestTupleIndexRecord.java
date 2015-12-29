@@ -19,12 +19,12 @@
 package org.seaborne.tdb2.store.tupletable;
 
 
-import org.apache.jena.atlas.lib.ColumnMap ;
 import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.IndexParams ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.tdb2.junit.BuildTestLib ;
+import org.seaborne.tdb2.migrate.ColumnMap ;
 import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 

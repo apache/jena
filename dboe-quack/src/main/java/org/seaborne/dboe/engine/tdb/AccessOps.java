@@ -27,8 +27,10 @@ import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.RepeatApplyIterator ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.atlas.logging.FmtLog ;
+import org.apache.jena.sparql.core.Var ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.access.AccessData ;
 import org.seaborne.dboe.engine.access.AccessRows ;
@@ -37,8 +39,6 @@ import org.seaborne.dboe.engine.row.RowListBuilderBase ;
 import org.seaborne.dboe.engine.row.RowVarBinding ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import org.apache.jena.sparql.core.Var ;
 
 /** Support for AccessorTDB */
 public class AccessOps
@@ -162,8 +162,7 @@ public class AccessOps
                 RowListBuilder<X> builder = new RowListBuilderBase<>() ;
                 // XXX Repeat cache possibilities here!
                 // XXX Graph?
-                @SuppressWarnings("unchecked")
-                Tuple<X> accessTupleSub = tuple.size() == 3 ? Tuple.createTuple(s, null, null) : Tuple.createTuple(null, s, null, null) ;
+                Tuple<X> accessTupleSub = tuple.len() == 3 ? TupleFactory.tuple(s, null, null) : TupleFactory.tuple(null, s, null, null) ;
                 // XXX DataAccess?
                 Iterator<Row<X>> results = executeTermSubject$(accessTupleSub, dataAccessor, predObjList3) ;
                 

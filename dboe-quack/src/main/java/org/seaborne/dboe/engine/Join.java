@@ -17,11 +17,10 @@
 
 package org.seaborne.dboe.engine;
 
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.sparql.core.Var ;
 import org.seaborne.dboe.engine.access.AccessRows ;
 import org.seaborne.dboe.engine.join.* ;
-
-import org.apache.jena.sparql.core.Var ;
 
 /** Join library */ 
 public class Join

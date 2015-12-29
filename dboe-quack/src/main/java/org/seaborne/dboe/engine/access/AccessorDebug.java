@@ -19,7 +19,7 @@ package org.seaborne.dboe.engine.access;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.seaborne.dboe.engine.PredicateObjectList ;
 import org.seaborne.dboe.engine.Row ;
 import org.seaborne.dboe.engine.Slot ;

@@ -20,12 +20,11 @@ package org.seaborne.dboe.engine.access;
 import java.util.Iterator ;
 import java.util.Set ;
 
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.sparql.core.Var ;
 import org.seaborne.dboe.engine.* ;
 import org.seaborne.dboe.engine.join.SubstitutionJoin ;
 import org.seaborne.dboe.engine.row.RowBuilderBase ;
-
-import org.apache.jena.sparql.core.Var ;
 
 /** Build a simple Accessor on top of the "accessRows" operation.
  * Also provies, as statiuc, functions to build the operations on topof simpler ones
