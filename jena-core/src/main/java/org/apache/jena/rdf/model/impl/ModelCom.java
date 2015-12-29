@@ -538,6 +538,10 @@ implements Model, PrefixMapping, Lock
     { return listStatements( S, P, createTypedLiteral( O ) ); }
 
     @Override
+    public StmtIterator listLiteralStatements( Resource S, Property P, int O )
+    { return listStatements( S, P, createTypedLiteral( O ) ); }
+
+    @Override
     public StmtIterator listLiteralStatements( Resource S, Property P, char  O )
     { return listStatements( S, P, createTypedLiteral( O ) ); }
 
