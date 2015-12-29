@@ -18,23 +18,10 @@
 
 package org.apache.jena.atlas.lib.tuple;
 
-import java.util.Iterator ;
 import java.util.Objects ;
 
 abstract class TupleBase<X> implements Tuple<X> {
     protected TupleBase() {}
-
-    /** Iterable */
-    @Override
-    public Iterator<X> iterator() {
-        return asList().iterator() ;
-    }
-
-    @Override
-    public void copyInto(X[] array, int start, int length) {
-        for ( int i = 0 ; i < Math.min(length, len()) ; i++ )
-            array[i+start] = get(i) ;
-    }
 
     @Override
     public final

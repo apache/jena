@@ -18,13 +18,17 @@
 
 package org.apache.jena.atlas.lib.tuple;
 
+import java.util.Iterator ;
 import java.util.List ;
 import java.util.function.Consumer ;
 import java.util.stream.Stream ;
+import java.util.stream.StreamSupport ;
 
 import org.apache.jena.atlas.lib.ArrayUtils ;
 
-/** A Tuple is the same class of item */
+/** A Tuple is a sequence of items of the same class of item.
+ *  Tuples are immutable.  .equals is "by value".
+ */
 public interface Tuple<X> extends Iterable<X> {
     /** Get the i'th element, for i in the range 0 to len()-1 
      * @throws IndexOutOfBoundsException for i out of range 
@@ -41,7 +45,7 @@ public interface Tuple<X> extends Iterable<X> {
 
     /** stream */
     public default Stream<X> stream() { 
-        return asList().stream() ;
+        return StreamSupport.stream(spliterator(), false) ;
     }
 
     /** forEach */
@@ -50,20 +54,29 @@ public interface Tuple<X> extends Iterable<X> {
         asList().forEach(action) ;
     }
 
-    /** Copy the Tuple into the array */ 
+    /** Iterable */
+    @Override
+    public default Iterator<X> iterator() {
+        return asList().iterator() ;
+    }
+
+    /** Copy the elements of this Tuple into the array */ 
     public default void copyInto(X[] array) {
         copyInto(array, 0, len());
     }
 
-    /** Copy the Tuple into the array */ 
+    /** Copy the elements of this Tuple into the array */ 
     public default void copyInto(X[] array, int start) {
         copyInto(array, start, len());
     }
 
-    /** Copy the Tuple into the array */ 
-    public void copyInto(X[] array, int start, int length) ;
+    /** Copy the elements of this Tuple into the array */ 
+    public default void copyInto(X[] array, int start, int length) {
+        for ( int i = 0 ; i < Math.min(length, len()) ; i++ )
+            array[i+start] = get(i) ;
+    }
 
-    /** Copy the Tuple into the array */ 
+    /** Copy the elements of this Tuple into a newly created array */ 
     public default X[] asArray(Class<X> cls) {
         X[] elts = ArrayUtils.alloc(cls, len()) ;
         for ( int i = 0 ; i < len() ; i++ )
