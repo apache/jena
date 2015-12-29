@@ -37,9 +37,10 @@ public class TupleN<X> extends TupleBase<X> {
     }
 
     /** Put a TupleN wrapper around a X[].
-     * The statics {@link #create} and {@link wrap} determine whether to copy or not.
+     *  The array must not be subsequently modified. 
+     *  The statics {@link #create} and {@link wrap} determine whether to copy or not.
      */
-    private TupleN(X[] xs) {
+    protected TupleN(X[] xs) {
         tuple = xs ;
     }
 
