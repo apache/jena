@@ -1529,6 +1529,16 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 				.listLiteralStatements(subject, predicate, object));
 	}
 
+    @Override
+    public SecuredStatementIterator listLiteralStatements(
+            final Resource subject, final Property predicate, final int object)
+            throws ReadDeniedException, AuthenticationRequiredException {
+        checkRead();
+        return new SecuredStatementIterator(holder.getSecuredItem(), holder
+                .getBaseItem()
+                .listLiteralStatements(subject, predicate, object));
+    }
+
 	@Override
 	public NsIterator listNameSpaces() throws ReadDeniedException,
 			AuthenticationRequiredException {
