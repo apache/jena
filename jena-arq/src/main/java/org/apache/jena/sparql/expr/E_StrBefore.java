@@ -34,5 +34,5 @@ public class E_StrBefore extends ExprFunction2
     public NodeValue eval(NodeValue v1, NodeValue v2) { return XSDFuncOp.strBefore(v1, v2) ; } 
     
     @Override
-    public Expr copy(Expr expr1, Expr expr2) { return new E_StrBefore(expr1, expr2) ; } 
+    public Expr copy(Expr e1, Expr e2) { return new E_StrBefore(e1, e2) ; } 
 }

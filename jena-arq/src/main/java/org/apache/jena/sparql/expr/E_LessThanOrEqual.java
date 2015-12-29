@@ -38,5 +38,5 @@ public class E_LessThanOrEqual extends ExprFunction2
     }
     
     @Override
-    public Expr copy(Expr e1, Expr e2) {  return new E_LessThanOrEqual(e1 , e2 ) ; }
+    public Expr copy(Expr e1, Expr e2) {  return new E_LessThanOrEqual(e1 , e2) ; }
 }

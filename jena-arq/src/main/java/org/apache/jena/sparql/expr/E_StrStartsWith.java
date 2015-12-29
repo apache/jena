@@ -34,5 +34,5 @@ public class E_StrStartsWith extends ExprFunction2
     public NodeValue eval(NodeValue v1, NodeValue v2) { return XSDFuncOp.strStartsWith(v1, v2) ; }
     
     @Override
-    public Expr copy(Expr expr1, Expr expr2) { return new E_StrStartsWith(expr1, expr2) ; } 
+    public Expr copy(Expr e1, Expr e2) { return new E_StrStartsWith(e1, e2) ; } 
 }

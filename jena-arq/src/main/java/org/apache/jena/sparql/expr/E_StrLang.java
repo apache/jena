@@ -39,5 +39,5 @@ public class E_StrLang extends ExprFunction2
     
     
     @Override
-    public Expr copy(Expr expr1, Expr expr2) { return new E_StrLang(expr1, expr2) ; } 
+    public Expr copy(Expr e1, Expr e2) { return new E_StrLang(e1, e2) ; } 
 }
