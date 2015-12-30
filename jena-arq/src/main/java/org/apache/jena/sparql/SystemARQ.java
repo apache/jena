@@ -32,6 +32,7 @@ import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.GraphView ;
 import org.apache.jena.sparql.graph.GraphWrapper ;
 import org.apache.jena.sparql.mgt.ARQMgt ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
@@ -123,14 +124,17 @@ public class SystemARQ
         }
         else
         {
-            sync(dataset.getDefaultGraph()) ;
-            // Go through each graph.
-            Iterator<Node> iter = Iter.iterator(dataset.listGraphNodes()) ;
-            for ( ; iter.hasNext() ; )
-            {
-                Node n = iter.next();
-                Graph g = dataset.getGraph(n) ;
-                sync(g) ;
+            Graph gDft = dataset.getDefaultGraph() ;
+            if ( ! ( gDft instanceof GraphView ) ) {
+                // GraphView sync the DatasetGraph leading to possible recursion. 
+                sync(gDft) ;
+                // Go through each graph.
+                Iterator<Node> iter = Iter.iterator(dataset.listGraphNodes()) ;
+                for ( ; iter.hasNext() ; ) {
+                    Node n = iter.next();
+                    Graph g = dataset.getGraph(n) ;
+                    sync(g) ;
+                }
             }
         }
     }

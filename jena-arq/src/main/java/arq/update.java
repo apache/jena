@@ -103,7 +103,9 @@ public class update extends CmdUpdate
             }
             finally { transactional.end() ; }
         }
-        SystemARQ.sync(graphStore) ;
+        
+        if ( ! (graphStore instanceof Transactional) )
+            SystemARQ.sync(graphStore) ;
 
         if ( dump )
             RDFDataMgr.write(System.out, graphStore, Lang.NQUADS) ;
