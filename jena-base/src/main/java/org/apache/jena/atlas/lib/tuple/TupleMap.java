@@ -140,6 +140,23 @@ public class TupleMap {
             getTransform[x] = i;
         }
     }
+    
+    private TupleMap(String label, int[] getTransform, int[] putTransform) {
+        this.label = label ;
+        this.len = getTransform.length ;
+        this.getTransform = getTransform ;
+        this.putTransform = putTransform ;
+    }
+    
+    /** Return a {@code TupleMap} that maps in the opposite direction
+     *  <pre>
+     *  this.reverseMap().map is the same as this.unmap
+     *  this.reverseMap().unmap is the same as this.map
+     *  <pre>
+     */
+    public TupleMap reverse() {
+       return new TupleMap("Reverse:"+label, putTransform, getTransform) ; 
+    }
 
     /** Length of mapping */
     public int length() {
@@ -194,15 +211,6 @@ public class TupleMap {
         return apply(src, putTransform) ;
     }
 
-    // Does not work (java8) - assigning the return causes a runtime case exception 
-    //    /** Apply to an <em>unmapped</em> tuple to get a tuple with the tuple mapping applied */
-    //    public <T> T[] map(T[] src) {
-    //        @SuppressWarnings("unchecked")
-    //        T[]dst = (T[])new Object[src.length] ;
-    //        applyArray(src, dst, getTransform) ;
-    //        return dst ;
-    //    }
-
     /** Apply to an <em>unmapped</em> tuple to get a tuple with the tuple mapping applied.
      * Returns the destination array.
      */
@@ -212,15 +220,6 @@ public class TupleMap {
         applyArray(src, dst, getTransform) ;
         return dst ;
     }
-
-    // Does not work (java8) - assigning the return causes a runtime case exception 
-    //    /** Apply to a <em>mapped</em> tuple to get a tuple with the tuple mapping reverse-applied */
-    //    public <T> T[] unmap(T[] src) {
-    //        @SuppressWarnings("unchecked")
-    //        T[]dst = (T[])new Object[src.length] ;
-    //        applyArray(src, dst, putTransform) ;
-    //        return dst ;
-    //    }
 
     /** Apply to a <em>mapped</em> tuple to get a tuple with the tuple mapping reverse-applied.
      * Returns the destination array.
@@ -232,8 +231,7 @@ public class TupleMap {
         return dst ;
     }
 
-    /** Apply an index transformation
-     */
+    /** Apply an index transformation */
     private static <T> Tuple<T> apply(Tuple<T> src, int[] getTransform) {
         if ( src.len() != getTransform.length )
             throw new IllegalArgumentException("Lengths do not match: Tuple:"+src.len()+"; transform:"+getTransform.length) ;
@@ -368,6 +366,12 @@ public class TupleMap {
         for ( int x : array ) 
             list.add(x) ;
         return  Collections.unmodifiableList(list) ;
+    }
+
+    /** Is this mapping the same (has the same effect) as {@code other}? */
+    public boolean sameMapping(TupleMap other) {
+        // Only need to check one array 
+        return Arrays.equals(getTransform, other.getTransform) ;
     }
 
     @Override
