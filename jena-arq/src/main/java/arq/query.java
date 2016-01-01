@@ -18,15 +18,16 @@
 
 package arq;
 
+import arq.cmdline.* ;
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
 import jena.cmd.TerminationException;
-
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.* ;
 import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.RiotNotFoundException ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -34,14 +35,6 @@ import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.sparql.resultset.ResultSetException ;
 import org.apache.jena.sparql.resultset.ResultsFormat ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
-
-import arq.cmdline.CmdARQ ;
-import arq.cmdline.ModDataset ;
-import arq.cmdline.ModDatasetGeneralAssembler ;
-import arq.cmdline.ModEngine ;
-import arq.cmdline.ModQueryIn ;
-import arq.cmdline.ModResultsOut ;
-import arq.cmdline.ModTime ;
 
 public class query extends CmdARQ
 {
@@ -174,15 +167,19 @@ public class query extends CmdARQ
     protected String getSummary() { return getCommandName()+" --data=<file> --query=<query>" ; }
     
     protected Dataset getDataset()  { 
-        try { 
-            Dataset ds = modDataset.getDataset() ;
+        try {
+            Dataset ds = modDataset.getDataset();
             if ( ds == null )
-                ds = dealWithNoDataset() ;
-            return ds ;
-        } 
-        catch ( RiotException ex ) { 
-            System.err.println("Failed to load data") ;
-            throw new TerminationException(1) ;
+                ds = dealWithNoDataset();
+            return ds;
+        }
+        catch (RiotNotFoundException ex) {
+            System.err.println("Failed to load data: " + ex.getMessage());
+            throw new TerminationException(1);
+        }
+        catch (RiotException ex) {
+            System.err.println("Failed to load data");
+            throw new TerminationException(1);
         }
     }
     
