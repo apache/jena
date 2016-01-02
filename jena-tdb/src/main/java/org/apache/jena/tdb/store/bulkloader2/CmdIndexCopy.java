@@ -31,7 +31,6 @@ import org.apache.jena.tdb.store.tupletable.TupleIndex ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-import tdb.cmdline.CmdTDB ;
 
 /** Copy one index to another, probably with a different key order */
 public class CmdIndexCopy
@@ -44,8 +43,6 @@ public class CmdIndexCopy
     
     public static void main(String...argv)
     {
-        CmdTDB.init() ;
-        
         // Ideas:
         // Copy to buffer, sort, write in sequential clumps.
         // Profile code for hotspots
@@ -54,11 +51,10 @@ public class CmdIndexCopy
         // non-memory mapped file as we read it through once, in natural order,
         // and it may be laid out in increasing block order on-disk, e.g. repacked
         // and in increasing order with occassional oddities if SPO from the bulk loader.
-        
-        if ( argv.length != 4 )
-        {
-            System.err.println("Usage: Location1 Index1 Location2 Index2") ;
-            System.exit(1) ;
+
+        if ( argv.length != 4 ) {
+            System.err.println("Usage: Location1 Index1 Location2 Index2");
+            System.exit(1);
         }
         
         String locationStr1 = argv[0] ;
@@ -87,37 +83,33 @@ public class CmdIndexCopy
         index2.close() ;
     }
 
-    private static void tupleIndexCopy(TupleIndex index1, TupleIndex index2, String label)
-    {
-        ProgressLogger monitor = new ProgressLogger(log, label, tickQuantum, superTick) ;
-        monitor.start() ;
-        
-        Iterator<Tuple<NodeId>> iter1 = index1.all() ;
-        
-        long counter = 0 ;
-        for ( ; iter1.hasNext(); )
-        {
-            counter++ ;
-            Tuple<NodeId> tuple = iter1.next() ;
-            index2.add(tuple) ;
-            monitor.tick() ;
+    private static void tupleIndexCopy(TupleIndex index1, TupleIndex index2, String label) {
+        ProgressLogger monitor = new ProgressLogger(log, label, tickQuantum, superTick);
+        monitor.start();
+
+        Iterator<Tuple<NodeId>> iter1 = index1.all();
+
+        long counter = 0;
+        for ( ; iter1.hasNext() ; ) {
+            counter++;
+            Tuple<NodeId> tuple = iter1.next();
+            index2.add(tuple);
+            monitor.tick();
         }
-        
-        index2.sync() ;
-        long time = monitor.finish() ;
-        float elapsedSecs = time/1000F ;
-        
-        float rate = (elapsedSecs!=0) ? counter/elapsedSecs : 0 ;
-        
-        print("Total: %,d records : %,.2f seconds : %,.2f records/sec [%s]", counter, elapsedSecs, rate, DateTimeUtils.nowAsString()) ;
+
+        index2.sync();
+        long time = monitor.finish();
+        float elapsedSecs = time / 1000F;
+
+        float rate = (elapsedSecs != 0) ? counter / elapsedSecs : 0;
+
+        print("Total: %,d records : %,.2f seconds : %,.2f records/sec [%s]", counter, elapsedSecs, rate, DateTimeUtils.nowAsString());
     }
-    
-    static private void print(String fmt, Object...args)
-    {
-        if ( log != null && log.isInfoEnabled() )
-        {
-            String str = String.format(fmt, args) ;
-            log.info(str) ;
+
+    static private void print(String fmt, Object... args) {
+        if ( log != null && log.isInfoEnabled() ) {
+            String str = String.format(fmt, args);
+            log.info(str);
         }
     }
 }

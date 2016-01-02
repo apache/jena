@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,14 +16,21 @@
  * limitations under the License.
  */
 
-package jena;
+package jena.cmd;
 
+import org.apache.jena.atlas.logging.LogCtl ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+import org.junit.runners.Suite.SuiteClasses ;
 
-public class qtest
+@RunWith(Suite.class)
+@SuiteClasses( {
+    TestCmdLine.class
+    , Test_schemagen.class
+    , Test_rdfcat.class
+})
+
+public class TS_Cmd
 {
-    // Call-through to arq command line application
-    public static void main(String[] args)
-    {
-        InvokingUtil.invokeCmd("arq.qtest",args) ;
-    }
+    static { LogCtl.setLog4j(); }
 }

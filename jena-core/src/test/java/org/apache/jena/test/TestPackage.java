@@ -57,7 +57,6 @@ public class TestPackage extends TestCase {
         addTest(ts,  "Reasoners", org.apache.jena.reasoner.test.TestPackage.suite());
         addTest(ts,  "Composed graphs", org.apache.jena.graph.compose.test.TestPackage.suite() );
         addTest(ts,  "Ontology", org.apache.jena.ontology.impl.TestPackage.suite() );
-        addTest(ts,  "cmd line utils", jena.test.TestPackage.suite() );
         return ts ;
     }
 

@@ -18,6 +18,7 @@
 
 package tdb.cmdline;
 
+import arq.cmdline.CmdARQ ;
 import org.apache.jena.Jena ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
@@ -30,7 +31,6 @@ import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.setup.DatasetBuilderStd ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.sys.TDBInternal ;
-import arq.cmdline.CmdARQ ;
 
 public abstract class CmdTDB extends CmdARQ
 {

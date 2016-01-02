@@ -18,16 +18,8 @@
 
 package jena;
 
-
-
-public class query
-{
-    // Call-through to arq command line application
-    public static void main(String... args)
-    {
-        // Do this by reflection so it is not assumed that ARQ is available
-        // at compile time.
-        
-        InvokingUtil.invokeCmd("arq.query", args) ;
+public class sparql {
+    public static void main(String[] args) {
+        arq.sparql.main(args);
     }
 }

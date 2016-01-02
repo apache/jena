@@ -16,30 +16,39 @@
  * limitations under the License.
  */
 
-package jena.test;
+package jena.cmd;
 
-import java.io.*;
-import java.util.*;
+import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertTrue ;
+
+import java.io.ByteArrayOutputStream ;
+import java.io.OutputStream ;
+import java.io.StringReader ;
+import java.util.ArrayList ;
+import java.util.List ;
 
 import jena.rdfcat;
-import junit.framework.TestCase;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
 
 @SuppressWarnings("deprecation")
-public class Test_rdfcat extends TestCase
+public class Test_rdfcat
 {
     // Switch off the banner during testing.
-    @Override
-    public void setUp() {
+    @BeforeClass
+    public static void setUp() {
         jena.rdfcat.suppressDeprecationBanner = true ;
     }
     
-    @Override
-    public void tearDown() {
+    @AfterClass
+    public static void tearDown() {
         jena.rdfcat.suppressDeprecationBanner = false ;
     }
     
+    @Test
     public void testAbbreviationTable()
         {
         assertEquals( "RDF/XML", jena.rdfcat.unabbreviate.get( "x" ) );
@@ -56,6 +65,7 @@ public class Test_rdfcat extends TestCase
         assertEquals( "RDF/XML-ABBREV", jena.rdfcat.unabbreviate.get( "abbrev" ) );
         }
 
+    @Test
     public void testExistingLanguage()
         {
         assertEquals( "RDF/XML", jena.rdfcat.getCheckedLanguage( "x" ) );
@@ -65,20 +75,10 @@ public class Test_rdfcat extends TestCase
         assertEquals( "N-TRIPLE", jena.rdfcat.getCheckedLanguage( "N-TRIPLE" ) );
         }
 
-    public void testNonexistantLanguage()
-        {
-        try
-            { jena.rdfcat.getCheckedLanguage( "noSuchLanguageAsThisOneFruitcake" );
-            fail( "should trap non-existant language" ); }
-        catch (IllegalArgumentException e)
-            {
-            assertTrue( "message should mention bad language", e.getMessage().indexOf( "Fruitcake" ) > 0 );
-            }
-        }
-
     /**
      * Test the identity transform - RDF/XML to RDF/XML
      */
+    @Test
     public void testRdfcatIdentity() {
         Model source = ModelFactory.createDefaultModel();
         source.read( "file:testing/cmd/rdfcat.xml", "RDF/XML" );
@@ -95,6 +95,7 @@ public class Test_rdfcat extends TestCase
     /**
      * Test the basic concatenation
      */
+    @Test
     public void testRdfcatConcat() {
         Model source = ModelFactory.createDefaultModel();
         source.read( "file:testing/cmd/rdfcat.xml", "RDF/XML" );
@@ -111,6 +112,7 @@ public class Test_rdfcat extends TestCase
     /**
      * Change the default input language
      */
+    @Test
     public void testRdfcatConcat1() {
         Model source = ModelFactory.createDefaultModel();
         source.read( "file:testing/cmd/rdfcat.xml", "RDF/XML" );
@@ -124,88 +126,108 @@ public class Test_rdfcat extends TestCase
         assertTrue( output.isIsomorphicWith( source ));
     }
 
+    @Test
     public void testRdfcatN3ToRDFXML_0() {
         doTestRdfcatOutput( "-n", "file:testing/cmd/rdfcat.n3", "RDF/XML", "RDF/XML" );
     }
 
+    @Test
     public void testRdfcatN3ToRDFXML_1() {
         doTestRdfcatOutput( "-n3", "file:testing/cmd/rdfcat.n3", "RDF/XML", "RDF/XML" );
     }
 
+    @Test
     public void testRdfcatN3ToRDFXML_2() {
         doTestRdfcatOutput( "-ttl", "file:testing/cmd/rdfcat.n3", "RDF/XML", "RDF/XML" );
     }
 
+    @Test
     public void testRdfcatN3ToRDFXML_3() {
         doTestRdfcatOutput( "-N3", "file:testing/cmd/rdfcat.n3", "RDF/XML", "RDF/XML" );
     }
 
+    @Test
     public void testRdfcatN3ToNtriple() {
         doTestRdfcatOutput( "-n", "file:testing/cmd/rdfcat.n3", "N-TRIPLE", "N-TRIPLE" );
     }
 
+    @Test
     public void testRdfcatN3ToN3() {
         doTestRdfcatOutput( "-n", "file:testing/cmd/rdfcat.n3", "N3", "N3" );
     }
 
+    @Test
     public void testRdfcatN3ToRDFXMLDefault() {
         doTestRdfcatOutput( null, "file:testing/cmd/rdfcat.n3", "RDF/XML", "RDF/XML" );
     }
 
 
+    @Test
     public void testRdfcatRDFXMLToRDFXML_0() {
         doTestRdfcatOutput( "-x", "file:testing/cmd/rdfcat.xml", "RDF/XML", "RDF/XML" );
     }
 
+    @Test
     public void testRdfcatRDFXMLToRDFXML_1() {
         doTestRdfcatOutput( "-xml", "file:testing/cmd/rdfcat.xml", "RDF/XML", "RDF/XML" );
     }
 
+    @Test
     public void testRdfcatRDFXMLToRDFXML_2() {
         doTestRdfcatOutput( "-rdfxml", "file:testing/cmd/rdfcat.xml", "RDF/XML", "RDF/XML" );
     }
 
+    @Test
     public void testRdfcatRDFXMLToRDFXML_3() {
         doTestRdfcatOutput( "-rdf", "file:testing/cmd/rdfcat.xml", "RDF/XML", "RDF/XML" );
     }
 
+    @Test
     public void testRdfcatRDFXMLToNtriple() {
         doTestRdfcatOutput( "-x", "file:testing/cmd/rdfcat.xml", "N-TRIPLE", "N-TRIPLE" );
     }
 
+    @Test
     public void testRdfcatRDFXMLToN3() {
         doTestRdfcatOutput( "-x", "file:testing/cmd/rdfcat.xml", "N3", "N3" );
     }
 
+    @Test
     public void testRdfcatRDFXMLToRDFXMLDefault() {
         doTestRdfcatOutput( null, "file:testing/cmd/rdfcat.xml", "RDF/XML", "RDF/XML" );
     }
 
-
+    @Test
     public void testRdfcatNtripleToRDFXML_0() {
         doTestRdfcatOutput( "-t", "file:testing/cmd/rdfcat.nt", "RDF/XML", "RDF/XML" );
     }
 
+    @Test
     public void testRdfcatNtripleToRDFXML_1() {
         doTestRdfcatOutput( "-ntriple", "file:testing/cmd/rdfcat.nt", "RDF/XML", "RDF/XML" );
     }
 
+    @Test
     public void testRdfcatNtripleToRDFXML_2() {
         doTestRdfcatOutput( "-ntriples", "file:testing/cmd/rdfcat.nt", "RDF/XML", "RDF/XML" );
     }
 
+    @Test
     public void testRdfcatNtripleToRDFXML_3() {
         doTestRdfcatOutput( "-n-triple", "file:testing/cmd/rdfcat.nt", "RDF/XML", "RDF/XML" );
     }
 
+    @Test
     public void testRdfcatNtripleToNtriple() {
         doTestRdfcatOutput( "-t", "file:testing/cmd/rdfcat.nt", "N-TRIPLE", "N-TRIPLE" );
     }
 
+    @Test
     public void testRdfcatNtripleToN3() {
         doTestRdfcatOutput( "-t", "file:testing/cmd/rdfcat.nt", "N3", "N3" );
     }
 
+    @Test
     public void testRdfcatNtripleToRDFXMLDefault() {
         doTestRdfcatOutput( null, "file:testing/cmd/rdfcat.nt", "RDF/XML", "RDF/XML" );
     }
@@ -213,7 +235,7 @@ public class Test_rdfcat extends TestCase
     /**
      * Utility to do a basic cat operation
      */
-    public void doTestRdfcatOutput( String inFormArg, String inputArg, String outFormArg, String parseAs ) {
+    public static void doTestRdfcatOutput( String inFormArg, String inputArg, String outFormArg, String parseAs ) {
         Model source = ModelFactory.createDefaultModel();
         source.read( "file:testing/cmd/rdfcat.xml" );
 
@@ -241,7 +263,7 @@ public class Test_rdfcat extends TestCase
     }
 
     /** Convert an output stream holding a model content to a model */
-    protected Model asModel( OutputStream so, String syntax ) {
+    protected static Model asModel( OutputStream so, String syntax ) {
         String out = so.toString();
         Model output = ModelFactory.createDefaultModel();
         output.read( new StringReader( out ), "http://example.com/foo", syntax );
@@ -251,7 +273,7 @@ public class Test_rdfcat extends TestCase
     /**
      * A minimal extension to rdfcat to provide a test fixture
      */
-    protected class rdfcatFixture
+    protected static class rdfcatFixture
         extends rdfcat
     {
         private OutputStream m_so;

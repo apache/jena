@@ -18,7 +18,7 @@
 
 // Package
 ///////////////
-package jena.test;
+package jena.cmd;
 
 
 // Imports
@@ -33,6 +33,7 @@ import jena.schemagen.SchemagenOptionsImpl;
 import junit.framework.TestCase;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.util.FileUtils ;
+import org.junit.Test ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +69,7 @@ public class Test_schemagen
     //////////////////////////////////
 
     /** This test used to fail with an abort, but we now guess the NS based on prevalence */
+    @Test
     public void testNoBaseURI0() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         testSchemagenOutput( SOURCE, null,
@@ -76,6 +78,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testClass0() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         testSchemagenOutput( SOURCE, null,
@@ -84,6 +87,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testClass1() throws Exception {
         String SOURCE = PREFIX + "ex:A a rdfs:Class .";
         testSchemagenOutput( SOURCE, null,
@@ -92,6 +96,7 @@ public class Test_schemagen
                              new String[] {".*public static final Resource A.*"} );
     }
 
+    @Test
     public void testClass2() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         testSchemagenOutput( SOURCE, null,
@@ -100,6 +105,7 @@ public class Test_schemagen
                              new String[] {".*public static final Resource A.*"} );
     }
 
+    @Test
     public void testClass3() throws Exception {
         String SOURCE = PREFIX + "ex:A a rdfs:Class .";
         testSchemagenOutput( SOURCE, null,
@@ -108,6 +114,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testProperty0() throws Exception {
         String SOURCE = PREFIX + "ex:p a owl:ObjectProperty .";
         testSchemagenOutput( SOURCE, null,
@@ -116,6 +123,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testProperty1() throws Exception {
         String SOURCE = PREFIX + "ex:p a rdf:Property .";
         testSchemagenOutput( SOURCE, null,
@@ -125,6 +133,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testProperty2() throws Exception {
         String SOURCE = PREFIX + "ex:p a owl:ObjectProperty .";
         testSchemagenOutput( SOURCE, null,
@@ -133,6 +142,7 @@ public class Test_schemagen
                              new String[] {".*public static final Property p.*"} );
     }
 
+    @Test
     public void testProperty3() throws Exception {
         String SOURCE = PREFIX + "ex:p a rdf:Property .";
         testSchemagenOutput( SOURCE, null,
@@ -141,6 +151,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testInstance0() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A .";
         testSchemagenOutput( SOURCE, null,
@@ -149,6 +160,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testInstance1() throws Exception {
         String SOURCE = PREFIX + "ex:A a rdfs:Class . ex:i a ex:A .";
         testSchemagenOutput( SOURCE, null,
@@ -168,6 +180,7 @@ public class Test_schemagen
     }
     */
 
+    @Test
     public void testInstance3() throws Exception {
         String SOURCE = PREFIX + "ex:A a rdfs:Class . ex:i a ex:A .";
         testSchemagenOutput( SOURCE, null,
@@ -176,7 +189,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
-    /** Bug report by Brian: instance is in the namespace, but the class itself is not */
+    @Test
     public void testInstance4() throws Exception {
         String SOURCE = PREFIX + "@prefix ex2: <http://example.org/otherNS#>. ex2:A a rdfs:Class . ex:i a ex2:A .";
         testSchemagenOutput( SOURCE, null,
@@ -185,7 +198,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
-    /** Bug report by Brian: instances not being recognised */
+    @Test
     public void testInstance5() throws Exception {
         String SOURCE = "@prefix :        <http://ontology.earthster.org/eco/impact#> .\n" +
                 "@prefix core:    <http://ontology.earthster.org/eco/core#> .\n" +
@@ -211,6 +224,7 @@ public class Test_schemagen
                              new String[] {".*valtype.*"} );
     }
 
+    @Test
     public void testDatatype0() throws Exception {
         String SOURCE = PREFIX + "ex:d a rdfs:Datatype . ex:d rdfs:comment \"custom datatype\" .";
         testSchemagenOutput( SOURCE, null,
@@ -219,6 +233,7 @@ public class Test_schemagen
                              new String[] {} );
     }
     
+    @Test
     public void testDatatype1() throws Exception {
         String SOURCE = PREFIX + "ex:d a rdfs:Datatype . ex:d rdfs:comment \"custom datatype\" .";
         testSchemagenOutput( SOURCE, null,
@@ -227,7 +242,7 @@ public class Test_schemagen
                              new String[] {".*public static final Resource d.*"} );
     }
     
-    /** Bug report by Richard Cyganiak */
+    @Test
     public void testRC0() throws Exception {
         String SOURCE = PREFIX + "ex:class a owl:Class .";
         testSchemagenOutput( SOURCE, null,
@@ -237,6 +252,7 @@ public class Test_schemagen
     }
 
 
+    @Test
     public void testComment0() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class ; rdfs:comment \"commentcomment\" .";
         testSchemagenOutput( SOURCE, null,
@@ -245,6 +261,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testComment1() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class ; rdfs:comment \"commentcomment\" .";
         testSchemagenOutput( SOURCE, null,
@@ -253,6 +270,7 @@ public class Test_schemagen
                              new String[] {" */\\*\\* <p>commentcomment</p> \\*/ *"} );
     }
 
+    @Test
     public void testComment2() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class ; rdfs:comment \"commentcomment\" .";
 
@@ -269,6 +287,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testComment3() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class ; rdfs:comment \"commentcomment\" .";
 
@@ -285,6 +304,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testOntClass0() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         testSchemagenOutput( SOURCE, null,
@@ -293,6 +313,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testOntClass1() throws Exception {
         String SOURCE = PREFIX + "ex:A a rdfs:Class .";
         testSchemagenOutput( SOURCE, null,
@@ -301,6 +322,7 @@ public class Test_schemagen
                              new String[] {".*public static final OntClass A.*"} );
     }
 
+    @Test
     public void testOntClass2() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         testSchemagenOutput( SOURCE, null,
@@ -309,6 +331,7 @@ public class Test_schemagen
                              new String[] {".*public static final OntClass A.*"} );
     }
 
+    @Test
     public void testOntClass3() throws Exception {
         String SOURCE = PREFIX + "ex:A a rdfs:Class .";
         testSchemagenOutput( SOURCE, null,
@@ -317,6 +340,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testOntProperty0() throws Exception {
         String SOURCE = PREFIX + "ex:p a owl:ObjectProperty .";
         testSchemagenOutput( SOURCE, null,
@@ -325,6 +349,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testOntProperty1() throws Exception {
         String SOURCE = PREFIX + "ex:p a rdf:Property .";
         testSchemagenOutput( SOURCE, null,
@@ -334,6 +359,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testOntProperty2() throws Exception {
         String SOURCE = PREFIX + "ex:p a owl:ObjectProperty .";
         testSchemagenOutput( SOURCE, null,
@@ -342,6 +368,7 @@ public class Test_schemagen
                              new String[] {".*public static final ObjectProperty p.*"} );
     }
 
+    @Test
     public void testOntProperty3() throws Exception {
         String SOURCE = PREFIX + "ex:p a rdf:Property .";
         testSchemagenOutput( SOURCE, null,
@@ -350,6 +377,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testHeader() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         testSchemagenOutput( SOURCE, null,
@@ -358,6 +386,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testFooter() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         testSchemagenOutput( SOURCE, null,
@@ -366,6 +395,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testPackage() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         testSchemagenOutput( SOURCE, null,
@@ -374,6 +404,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testClassname() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         SchemaGenAux fixture = new SchemaGenAux() {
@@ -395,6 +426,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testClassdec() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         testSchemagenOutput( SOURCE, null,
@@ -403,6 +435,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testDeclarations() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         testSchemagenOutput( SOURCE, null,
@@ -411,6 +444,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testNoClasses() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         testSchemagenOutput( SOURCE, null,
@@ -419,6 +453,7 @@ public class Test_schemagen
                              new String[] {".*OntClass A.*"} );
     }
 
+    @Test
     public void testNoProperties() throws Exception {
         String SOURCE = PREFIX + "ex:p a owl:ObjectProperty .";
         testSchemagenOutput( SOURCE, null,
@@ -427,6 +462,7 @@ public class Test_schemagen
                              new String[] {".*Property p.*"} );
     }
 
+    @Test
     public void testNoIndividuals() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A .";
         testSchemagenOutput( SOURCE, null,
@@ -435,6 +471,7 @@ public class Test_schemagen
                              new String[] {".*Resource i.*"} );
     }
 
+    @Test
     public void testNoHeader() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A .";
         testSchemagenOutput( SOURCE, null,
@@ -443,6 +480,7 @@ public class Test_schemagen
                              new String[] {"/\\*\\*.*"} );
     }
 
+    @Test
     public void testUCNames() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A .";
         testSchemagenOutput( SOURCE, null,
@@ -451,6 +489,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testInference0() throws Exception {
         String SOURCE = PREFIX + "ex:p rdfs:domain ex:A .";
         testSchemagenOutput( SOURCE, null,
@@ -459,6 +498,7 @@ public class Test_schemagen
                              new String[] {".*Resource A.*",".*Property p.*"} );
     }
 
+    @Test
     public void testInference1() throws Exception {
         String SOURCE = PREFIX + "ex:p rdfs:domain ex:A .";
         testSchemagenOutput( SOURCE, null,
@@ -467,6 +507,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testInference2() throws Exception {
         String SOURCE = PREFIX + "ex:p rdfs:domain ex:A .";
         testSchemagenOutput( SOURCE, null,
@@ -475,6 +516,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testStrictIndividuals0() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A . <http://example.com/different#j> a ex:A .";
         testSchemagenOutput( SOURCE, null,
@@ -483,6 +525,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    @Test
     public void testStrictIndividuals1() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A . <http://example.com/different#j> a ex:A .";
         testSchemagenOutput( SOURCE, null,
@@ -491,6 +534,7 @@ public class Test_schemagen
                              new String[] {".*Resource j.*"} );
     }
 
+    @Test
     public void testLineEnd0() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A . ex:p a rdf:Property .";
         testSchemagenOutput( SOURCE, null,
@@ -499,6 +543,7 @@ public class Test_schemagen
                              new String[] {".*\r.*"} );
     }
 
+    @Test
     public void testLineEnd1() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A . ex:p a rdf:Property .";
         testSchemagenOutput( SOURCE, null,
@@ -507,15 +552,17 @@ public class Test_schemagen
                              new String[] {".*[^\r]"} );
     }
 
+    @Test
     public void testIncludeSource0() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A . ex:p a owl:ObjectProperty .";
         testSchemagenOutput( SOURCE, null,
                              new String[] {"-a", "http://example.com/sg#", "--owl", "--includeSource"},
                              new String[] {".*private static final String SOURCE.*",
-                                            ".*ex:A *(a|rdf:type) *owl:Class.*"} ,
+        ".*ex:A *(a|rdf:type) *owl:Class.*"} ,
                              new String[] {} );
     }
 
+    @Test
     public void testIncludeSource1() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class ; rdfs:comment \"comment\".";
         testSchemagenOutput( SOURCE, null,
@@ -525,30 +572,33 @@ public class Test_schemagen
     }
 
 
+    @Test
     public void testIncludeSource2() throws Exception {
         // had a report of the following not compiling ....
         String SOURCE = PREFIX + "@prefix skos: <http://www.w3.org/2004/02/skos/core#>.\n" +
-                       " <http://purl.org/dc/elements/1.1/relation> skos:note \"\"\"A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document \"DCMI Metadata Terms\" (http://dublincore.org/documents/dcmi-terms/) for an explanation.\"\"\".";
+            " <http://purl.org/dc/elements/1.1/relation> skos:note \"\"\"A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document \"DCMI Metadata Terms\" (http://dublincore.org/documents/dcmi-terms/) for an explanation.\"\"\".";
 
         testSchemagenOutput( SOURCE, null,
-                new String[] {"-a", "http://example.com/sg#", "--owl", "--includeSource"},
-                new String[] {},
-                new String[] {} );
+                             new String[] {"-a", "http://example.com/sg#", "--owl", "--includeSource"},
+                             new String[] {},
+                             new String[] {} );
 
     }
 
+    @Test
     public void testIncludeSource3() throws Exception {
         // multiple literals on one line can cause double-quote issues
         String SOURCE = PREFIX +
-                       " ex:foo a ex:Foo; rdfs:label \"thing called foo\"@en, \"le foo\"@fr, \"das foo\"@de. ";
+            " ex:foo a ex:Foo; rdfs:label \"thing called foo\"@en, \"le foo\"@fr, \"das foo\"@de. ";
 
         testSchemagenOutput( SOURCE, null,
-                new String[] {"-a", "http://example.com/sg#", "--rdfs", "--includeSource"},
-                new String[] {},
-                new String[] {} );
+                             new String[] {"-a", "http://example.com/sg#", "--rdfs", "--includeSource"},
+                             new String[] {},
+                             new String[] {} );
 
     }
 
+    @Test
     public void testConfigFile() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         testSchemagenOutput( SOURCE, null,

@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql;
 
-import arq.TS_Cmd ;
 import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestSuite ;
 import org.apache.jena.atlas.legacy.BaseTest2 ;
@@ -60,7 +59,6 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(new JUnit4TestAdapter(TC_Common.class)) ;
         ts.addTest(new JUnit4TestAdapter(TC_Riot.class)) ;
 
-        ts.addTest(new JUnit4TestAdapter(TS_Cmd.class)) ;
         ts.addTest(new JUnit4TestAdapter(TS_Web.class)) ;
         
         // Main ARQ internal test suite.

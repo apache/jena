@@ -18,12 +18,8 @@
 
 package jena;
 
-
-
-public class turtle
-{
-    public static void main(String... args)
-    {
-        InvokingUtil.invokeCmd("riotcmd.turtle",args) ;
+public class turtle {
+    public static void main(String... args) {
+        riotcmd.turtle.main(args);
     }
 }

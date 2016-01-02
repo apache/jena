@@ -36,7 +36,6 @@ import org.apache.jena.tdb.index.bplustree.BPlusTreeRewriter ;
 import org.apache.jena.tdb.lib.ColumnMap ;
 import org.apache.jena.tdb.sys.Names ;
 import org.apache.jena.tdb.sys.SystemTDB ;
-import tdb.cmdline.CmdTDB ;
 
 /** From a file of records, build a (packed) index */ 
 public class CmdIndexBuild
@@ -45,17 +44,15 @@ public class CmdIndexBuild
     
     public static void main(String...argv)
     {
-        CmdTDB.init() ;
         // DATA IN S/P/O columns but sorted by index order.
-        
-        if ( argv.length != 3 )
-        {
-            System.err.println("Usage: Location Index dataFile") ;
-            System.exit(1) ;
+
+        if ( argv.length != 3 ) {
+            System.err.println("Usage: Location Index dataFile");
+            System.exit(1);
         }
-        
-        String locationStr = argv[0] ;
-        String indexName = argv[1] ;
+
+        String locationStr = argv[0];
+        String indexName = argv[1];
         
 //        if ( ! Arrays.asList(Names.tripleIndexes).contains(indexName) &&
 //            ! Arrays.asList(Names.quadIndexes).contains(indexName) )
@@ -83,53 +80,47 @@ public class CmdIndexBuild
         // Null column map => no churn.
         // Do record -> record copy, not Tuple, Tuple copy.
 
-        String primaryOrder ;
-        int dftKeyLength ;
-        int dftValueLength ;
-        int tupleLength = indexName.length() ;
+        String primaryOrder;
+        int dftKeyLength;
+        int dftValueLength;
+        int tupleLength = indexName.length();
 
-        if ( tupleLength == 3 )
-        {
-            primaryOrder = Names.primaryIndexTriples ;
-            dftKeyLength = SystemTDB.LenIndexTripleRecord ;
-            dftValueLength = 0 ;
+        if ( tupleLength == 3 ) {
+            primaryOrder = Names.primaryIndexTriples;
+            dftKeyLength = SystemTDB.LenIndexTripleRecord;
+            dftValueLength = 0;
+        } else if ( tupleLength == 4 ) {
+            primaryOrder = Names.primaryIndexQuads;
+            dftKeyLength = SystemTDB.LenIndexQuadRecord;
+            dftValueLength = 0;
+        } else {
+            throw new AtlasException("Index name: " + indexName);
         }
-        else if ( tupleLength == 4 )
-        {
-            primaryOrder = Names.primaryIndexQuads ;
-            dftKeyLength = SystemTDB.LenIndexQuadRecord ;
-            dftValueLength = 0 ;
-        }
-        else
-        {
-            throw new AtlasException("Index name: "+indexName) ;
-        }
-        
+
         ColumnMap colMap = new ColumnMap(primaryOrder, indexName) ;
-
 
         // -1? Write only.
         // Also flush cache every so often => block writes (but not sequential so boring).
-        int readCacheSize = 10 ;
-        int writeCacheSize = 100 ;
+        int readCacheSize = 10;
+        int writeCacheSize = 100;
 
-        int blockSize = SystemTDB.BlockSize ;
-        RecordFactory recordFactory = new RecordFactory(dftKeyLength, dftValueLength) ;
-        
-        int order = BPlusTreeParams.calcOrder(blockSize, recordFactory) ;
-        BPlusTreeParams bptParams = new BPlusTreeParams(order, recordFactory) ;
+        int blockSize = SystemTDB.BlockSize;
+        RecordFactory recordFactory = new RecordFactory(dftKeyLength, dftValueLength);
 
-        int blockSizeNodes = blockSize ;
-        int blockSizeRecords = blockSize ;
+        int order = BPlusTreeParams.calcOrder(blockSize, recordFactory);
+        BPlusTreeParams bptParams = new BPlusTreeParams(order, recordFactory);
 
-        FileSet destination = new FileSet(location, indexName) ;
+        int blockSizeNodes = blockSize;
+        int blockSizeRecords = blockSize;
 
-        BlockMgr blkMgrNodes = BlockMgrFactory.create(destination, Names.bptExtTree, blockSizeNodes, readCacheSize, writeCacheSize) ;
-        BlockMgr blkMgrRecords = BlockMgrFactory.create(destination, Names.bptExtRecords, blockSizeRecords, readCacheSize, writeCacheSize) ;
-        
-        int rowBlock = 1000 ;
-        Iterator<Record> iter = new RecordsFromInput(input, tupleLength, colMap, rowBlock) ;
-        BPlusTree bpt2 = BPlusTreeRewriter.packIntoBPlusTree(iter, bptParams, recordFactory, blkMgrNodes, blkMgrRecords) ;
-        bpt2.close() ;
+        FileSet destination = new FileSet(location, indexName);
+
+        BlockMgr blkMgrNodes = BlockMgrFactory.create(destination, Names.bptExtTree, blockSizeNodes, readCacheSize, writeCacheSize);
+        BlockMgr blkMgrRecords = BlockMgrFactory.create(destination, Names.bptExtRecords, blockSizeRecords, readCacheSize, writeCacheSize);
+
+        int rowBlock = 1000;
+        Iterator<Record> iter = new RecordsFromInput(input, tupleLength, colMap, rowBlock);
+        BPlusTree bpt2 = BPlusTreeRewriter.packIntoBPlusTree(iter, bptParams, recordFactory, blkMgrNodes, blkMgrRecords);
+        bpt2.close();
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,16 +16,11 @@
  * limitations under the License.
  */
 
-package arq;
+package jena;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
-
-@RunWith(Suite.class)
-@SuiteClasses( {
-    TestCmdLine.class
-})
-
-public class TS_Cmd
-{}
+public class query {
+    // Call-through to arq command line application
+    public static void main(String... args) {
+        arq.query.main(args);
+    }
+}

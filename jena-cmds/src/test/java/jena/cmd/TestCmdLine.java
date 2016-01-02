@@ -16,16 +16,16 @@
  * limitations under the License.
  */
 
-package arq;
+package jena.cmd;
 import java.util.Iterator ;
 
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdLineArgs;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
+import static org.junit.Assert.* ;
 
-public class TestCmdLine extends BaseTest
+public class TestCmdLine
 {
     @Test public void test_Simple1()
     {

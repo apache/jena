@@ -18,12 +18,8 @@
 
 package jena;
 
-
-public class rset
-{
-    // Call-through to arq command line application
-    public static void main(String... args)
-    {
-        InvokingUtil.invokeCmd("arq.rset", args) ;
+public class rset {
+    public static void main(String... args) {
+        arq.rset.main(args);
     }
 }
