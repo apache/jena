@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package tdb;
+package tdb.bulkloader2;
 
 import java.util.Arrays ;
 import java.util.List ;
@@ -38,42 +38,39 @@ import tdb.cmdline.CmdTDB ;
 /** Build node table - write triples/quads as text file */
 public class CmdNodeTableBuilder extends CmdGeneral
 {
-    static { LogCtl.setLog4j() ; }
-    static { JenaSystem.init(); }
-    
-
-    private static ArgDecl argLocation      = new ArgDecl(ArgDecl.HasValue, "loc", "location") ;
-    private static ArgDecl argTriplesOut    = new ArgDecl(ArgDecl.HasValue, "triples") ;
-    private static ArgDecl argQuadsOut      = new ArgDecl(ArgDecl.HasValue, "quads") ;
-    private static ArgDecl argNoStats       = new ArgDecl(ArgDecl.NoValue, "nostats") ;
-    
-    private String locationString ;
-    private String dataFileTriples ;
-    private String dataFileQuads ;
-    private List<String> datafiles ;
-    private Location location ;
-    private boolean collectStats = true ;
-    
-    public static void main(String...argv)
-    {
-        System.err.println("CmdNodeTableBuilder");
-        CmdTDB.init() ;
-        DatasetBuilderStd.setOptimizerWarningFlag(false) ;
-        new CmdNodeTableBuilder(argv).mainRun() ;
+    static {
+        LogCtl.setLog4j();
+        JenaSystem.init();
     }
-    
-    public CmdNodeTableBuilder(String...argv)
-    {
-        super(argv) ;
-        super.add(argLocation,      "--loc",        "Location") ;
-        super.add(argTriplesOut,    "--triples",    "Output file for triples") ;
-        super.add(argQuadsOut,      "--quads",      "Output file for quads") ;
-        super.add(argNoStats,       "--nostats",    "Don't collect stats") ;
+
+    private static ArgDecl argLocation   = new ArgDecl(ArgDecl.HasValue, "loc", "location");
+    private static ArgDecl argTriplesOut = new ArgDecl(ArgDecl.HasValue, "triples");
+    private static ArgDecl argQuadsOut   = new ArgDecl(ArgDecl.HasValue, "quads");
+    private static ArgDecl argNoStats    = new ArgDecl(ArgDecl.NoValue, "nostats");
+
+    private String         locationString;
+    private String         dataFileTriples;
+    private String         dataFileQuads;
+    private List<String>   datafiles;
+    private Location       location;
+    private boolean        collectStats  = true;
+
+    public static void main(String... argv) {
+        CmdTDB.init();
+        DatasetBuilderStd.setOptimizerWarningFlag(false);
+        new CmdNodeTableBuilder(argv).mainRun();
+    }
+
+    public CmdNodeTableBuilder(String... argv) {
+        super(argv);
+        super.add(argLocation, "--loc", "Location");
+        super.add(argTriplesOut, "--triples", "Output file for triples");
+        super.add(argQuadsOut, "--quads", "Output file for quads");
+        super.add(argNoStats, "--nostats", "Don't collect stats");
     }
         
     @Override
-    protected void processModulesAndArgs()
-    {
+    protected void processModulesAndArgs() {
         if ( !super.contains(argLocation) ) throw new CmdException("Required: --loc DIR") ;
 //        if ( !super.contains(argTriplesOut) ) throw new CmdException("Required: --triples FILE") ;
 //        if ( !super.contains(argQuadsOut) ) throw new CmdException("Required: --quads FILE") ;
@@ -101,32 +98,28 @@ public class CmdNodeTableBuilder extends CmdGeneral
             datafiles = Arrays.asList("-") ;
         
         // ---- Checking.
-        for( String filename : datafiles)
-        {
-            Lang lang = RDFLanguages.filenameToLang(filename, RDFLanguages.NQUADS) ;
+        for ( String filename : datafiles ) {
+            Lang lang = RDFLanguages.filenameToLang(filename, RDFLanguages.NQUADS);
             if ( lang == null )
-                // Does not happen due to default above.
-                cmdError("File suffix not recognized: " +filename) ;
-            if ( ! filename.equals("-") && ! FileOps.exists(filename) )
-                cmdError("File does not exist: "+filename) ;
+                               // Does not happen due to default above.
+                               cmdError("File suffix not recognized: " + filename);
+            if ( !filename.equals("-") && !FileOps.exists(filename) )
+                cmdError("File does not exist: " + filename);
         }
-    }
-    
-    @Override
-    protected void exec()
-    {
-        ProcNodeTableBuilder.execInner(location, dataFileTriples, dataFileQuads, datafiles, collectStats); 
-    }
-    
- @Override
-    protected String getSummary()
-    {
-        return getCommandName()+" --loc=DIR [--triples=tmpFile1] [--quads=tmpFile2] FILE ..." ;
     }
 
     @Override
-    protected String getCommandName()
-    {
-        return this.getClass().getName() ;
+    protected void exec() {
+        ProcNodeTableBuilder.exec(location, dataFileTriples, dataFileQuads, datafiles, collectStats);
+    }
+
+    @Override
+    protected String getSummary() {
+        return getCommandName() + " --loc=DIR [--triples=tmpFile1] [--quads=tmpFile2] FILE ...";
+    }
+
+    @Override
+    protected String getCommandName() {
+        return this.getClass().getName();
     }
 }

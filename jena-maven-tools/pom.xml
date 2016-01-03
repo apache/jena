@@ -187,7 +187,7 @@ limitations under the License.
     </dependency>
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-core</artifactId>
+      <artifactId>jena-cmds</artifactId>
       <version>3.1.0-SNAPSHOT</version>
     </dependency>
     <dependency>

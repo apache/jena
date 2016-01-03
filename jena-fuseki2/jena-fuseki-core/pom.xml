@@ -48,7 +48,14 @@
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
+      <artifactId>apache-jena-libs</artifactId>
+      <version>3.1.0-SNAPSHOT</version>
+      <type>pom</type>
+    </dependency>
+
+      <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-cmds</artifactId>
       <version>3.1.0-SNAPSHOT</version>
     </dependency>
 
@@ -66,12 +73,6 @@
       <version>3.1.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-tdb</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -218,7 +219,7 @@
       </plugin>
 
       <plugin>
-	<!-- Include the test jar for mebedded usein testing (eg. jena-jdbc-driver-remote) -->
+	    <!-- Include the test jar for mebedded usein testing (eg. jena-jdbc-driver-remote) -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>

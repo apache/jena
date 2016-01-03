@@ -16,12 +16,10 @@
  * limitations under the License.
  */
 
-package tdb;
+package org.apache.jena.tdb.store.bulkloader2;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.tdb.base.block.BlockMgr ;
 import org.apache.jena.tdb.base.block.BlockMgrFactory ;
 import org.apache.jena.tdb.base.file.FileSet ;
@@ -36,70 +34,27 @@ import org.apache.jena.tdb.index.bplustree.BPlusTreeRewriter ;
 import org.apache.jena.tdb.sys.Names ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 
-/** Rewrite one index */
-public class CmdRewriteIndex
-{
-    public static void main(String...argv)
+public class ProcRewriteIndex {
+    public static void exec(Location srcLoc, Location dstLoc, String indexName) 
     {
-        // Usage: srcLocation dstLocation indexName
-        if ( argv.length != 3 )
-        {
-            System.err.println("Usage: "+Lib.classShortName(CmdRewriteIndex.class)+" SrcLocation DstLocation IndexName") ;
-            System.exit(1) ;
-        }
-        
-        Location srcLoc = Location.create(argv[0]) ;
-        Location dstLoc = Location.create(argv[1]) ;
-        String indexName = argv[2] ;
-        
-        if ( ! FileOps.exists(argv[1]) )
-        {
-            System.err.println("Destination directory does not exist") ;
-            System.exit(1) ;
-        }
-        
-        if ( FileOps.exists(dstLoc.getPath(indexName, Names.bptExtTree)) )
-        {
-            System.err.println("Destination contains an index of that name") ;
-            System.exit(1) ;
-        }
-        
-        // To current directory ....
         FileSet destination = new FileSet(dstLoc, indexName) ;
-        // Check existance
-        
-//        FileOps.deleteSilent(destination.filename(Names.bptExt1)) ;
-//        FileOps.deleteSilent(destination.filename(Names.bptExt2)) ;
-        //FileSet destination = new FileSet(Location.mem(), destIndex) ;
-        
         int readCacheSize = 0 ;
         int writeCacheSize = -1 ;
         
         int dftKeyLength ;
         int dftValueLength ;
         
-        if ( indexName.length() == 3 )
-        {
-            dftKeyLength = SystemTDB.LenIndexTripleRecord ;
-            dftValueLength = 0 ;
+        if ( indexName.length() == 3 ) {
+            dftKeyLength = SystemTDB.LenIndexTripleRecord;
+            dftValueLength = 0;
+        } else if ( indexName.length() == 4 ) {
+            dftKeyLength = SystemTDB.LenIndexQuadRecord;
+            dftValueLength = 0;
+        } else {
+            System.err.printf("Can't determine record size for %s\n", indexName);
+            return;
         }
-        else if ( indexName.length() == 4 )
-        {
-            dftKeyLength = SystemTDB.LenIndexQuadRecord ;
-            dftValueLength = 0 ;
-        }
-//        else if ( srcIndex.equals("node2id") )
-//        { }
-//      java -cp "$CP" -server -Xmx1000M bpt.CmdRewriteIndex "$@"  else if ( srcIndex.equals("prefixIdx") )
-//        {}
-//        else if ( srcIndex.equals("prefix2id") )
-//        {}
-        else
-        {
-            System.err.printf("Can't determine record size for %s\n",indexName) ;
-            return ;
-        }
-        
+
         RecordFactory recordFactory = null ;
         BPlusTreeParams bptParams = null ;
         BlockMgr blkMgrNodes ;

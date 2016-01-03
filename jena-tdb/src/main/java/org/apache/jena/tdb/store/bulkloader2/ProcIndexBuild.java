@@ -23,7 +23,6 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.tdb.base.block.BlockMgr ;
 import org.apache.jena.tdb.base.block.BlockMgrFactory ;
 import org.apache.jena.tdb.base.file.FileSet ;
@@ -38,30 +37,9 @@ import org.apache.jena.tdb.sys.Names ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 
 /** From a file of records, build a (packed) index */ 
-public class CmdIndexBuild
+public class ProcIndexBuild
 {
-    static { LogCtl.setLog4j() ; }
-    
-    public static void main(String...argv)
-    {
-        // DATA IN S/P/O columns but sorted by index order.
-
-        if ( argv.length != 3 ) {
-            System.err.println("Usage: Location Index dataFile");
-            System.exit(1);
-        }
-
-        String locationStr = argv[0];
-        String indexName = argv[1];
-        
-//        if ( ! Arrays.asList(Names.tripleIndexes).contains(indexName) &&
-//            ! Arrays.asList(Names.quadIndexes).contains(indexName) )
-//        {
-//            System.err.println("Index name not recognized: "+indexName) ;
-//            System.exit(1) ;
-//        }
-            
-        String dataFile = argv[2] ;
+    public static void exec(String locationStr, String indexName, String dataFile) {
         
         // Argument processing
         

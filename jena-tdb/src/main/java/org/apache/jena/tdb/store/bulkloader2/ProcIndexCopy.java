@@ -22,7 +22,6 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.atlas.logging.ProgressLogger ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.setup.Build ;
@@ -33,35 +32,23 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /** Copy one index to another, probably with a different key order */
-public class CmdIndexCopy
+public class ProcIndexCopy
 {
-    static { LogCtl.setLog4j() ; }
-    private static Logger log = LoggerFactory.getLogger(CmdIndexCopy.class) ;
+    private static Logger log = LoggerFactory.getLogger(ProcIndexCopy.class) ;
     
     static long tickQuantum = 100*1000 ;
     static int superTick = 10 ;
     
-    public static void main(String...argv)
-    {
-        // Ideas:
-        // Copy to buffer, sort, write in sequential clumps.
-        // Profile code for hotspots
-        
-        // Maybe be worth opening the data file (the leaves) as a regular, 
-        // non-memory mapped file as we read it through once, in natural order,
-        // and it may be laid out in increasing block order on-disk, e.g. repacked
-        // and in increasing order with occassional oddities if SPO from the bulk loader.
+    // Ideas:
+    // Copy to buffer, sort, write in sequential clumps.
+    // Profile code for hotspots
 
-        if ( argv.length != 4 ) {
-            System.err.println("Usage: Location1 Index1 Location2 Index2");
-            System.exit(1);
-        }
-        
-        String locationStr1 = argv[0] ;
-        String indexName1 = argv[1] ;
-        String locationStr2 = argv[2] ;
-        String indexName2 = argv[3] ;
-        
+    // Maybe be worth opening the data file (the leaves) as a regular, 
+    // non-memory mapped file as we read it through once, in natural order,
+    // and it may be laid out in increasing block order on-disk, e.g. repacked
+    // and in increasing order with occassional oddities if SPO from the bulk loader.
+
+    public static void exec(String locationStr1, String indexName1, String locationStr2, String indexName2) {
         // Argument processing
         
         Location location1 = Location.create(locationStr1) ;

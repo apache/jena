@@ -48,11 +48,9 @@ import org.slf4j.Logger ;
 public class ProcNodeTableBuilder {
     private static Logger cmdLog = TDB.logLoader ;
     
-    public static void execInner(Location location,
-                                    String dataFileTriples,
-                                    String dataFileQuads,
-                                    List<String> datafiles,
-                                    boolean collectStats) {
+    public static void exec(Location location,
+                            String dataFileTriples, String dataFileQuads,
+                            List<String> datafiles, boolean collectStats) {
         // This formats the location correctly.
         // But we're not really interested in it all.
         DatasetGraphTDB dsg = DatasetBuilderStd.create(location) ;

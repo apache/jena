@@ -211,4 +211,5 @@ function makeAbsolute() {
 #DATE="+%Y-%m-%dT%H:%M:%S%:z"
 DATE="+%H:%M:%S"
 
-PKG=org.apache.jena.tdb.store.bulkloader2
+# Package for the command wrappers.
+PKG=tdb.bulkloader2
