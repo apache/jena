@@ -22,7 +22,7 @@ import java.util.Collection ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.seaborne.tdb2.migrate.ColumnMap ;
+import org.apache.jena.atlas.lib.tuple.TupleMap ;
 import org.seaborne.tdb2.store.NodeId ;
 
 public class TupleIndexWrapper implements TupleIndex
@@ -72,13 +72,13 @@ public class TupleIndexWrapper implements TupleIndex
     }
 
     @Override
-    public String getMapping() {
-        return index.getMapping() ;
+    public String getMappingStr() {
+        return index.getMappingStr() ;
     }
 
     @Override
-    public ColumnMap getColumnMap() {
-        return index.getColumnMap() ;
+    public TupleMap getMapping() {
+        return index.getMapping() ;
     }
 
     @Override

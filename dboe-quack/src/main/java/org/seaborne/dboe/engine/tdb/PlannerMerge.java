@@ -135,7 +135,7 @@ public class PlannerMerge {
 
     private static IndexAccess access(Tuple<Slot<NodeId>> tuple, TupleIndex idx) {
         // @@ Walk down using fetchSlotIdx rather than map triple? Minor? 
-        Tuple<Slot<NodeId>> t = idx.getColumnMap().map(tuple) ;
+        Tuple<Slot<NodeId>> t = idx.getMapping().map(tuple) ;
         for ( int i = 0 ; i < tuple.len() ; i++ ) {
             Slot<NodeId>n = t.get(i) ;
             if ( n.isVar() )

@@ -21,23 +21,23 @@ package org.seaborne.tdb2.store.tupletable;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleMap ;
 import org.seaborne.tdb2.TDBException ;
-import org.seaborne.tdb2.migrate.ColumnMap ;
 import org.seaborne.tdb2.store.NodeId ;
 
 public abstract class TupleIndexBase implements TupleIndex
 {
     private static final boolean Check = false ;
 
-    protected final ColumnMap colMap ;
+    protected final TupleMap tupleMap ;
     protected final int tupleLength ;
 
     private final String name ;
     
-    protected TupleIndexBase(int N, ColumnMap colMapping, String name)
+    protected TupleIndexBase(int N, TupleMap indexMapping, String name)
     {
         this.tupleLength = N ;
-        this.colMap = colMapping ;
+        this.tupleMap = indexMapping ;
         this.name = name ;
     }
     
@@ -96,7 +96,7 @@ public abstract class TupleIndexBase implements TupleIndex
     {
         for ( int i = 0 ; i < tupleLength ; i++ )
         {
-            NodeId X = colMap.fetchSlot(i, pattern) ;
+            NodeId X = tupleMap.mapSlot(i, pattern) ;
             if ( undef(X) )
                 // End of fixed terms
                 return i ;
@@ -105,7 +105,7 @@ public abstract class TupleIndexBase implements TupleIndex
     }
     
     @Override
-    public final String getMapping()        { return colMap.getLabel() ; }
+    public final String getMappingStr()     { return tupleMap.getLabel() ; }
 
     @Override
     public final String getName()           { return name ; }
@@ -114,7 +114,7 @@ public abstract class TupleIndexBase implements TupleIndex
     public final int getTupleLength()       { return tupleLength ; }
 
     @Override
-    public final ColumnMap getColumnMap()   { return colMap ;  }
+    public final TupleMap getMapping()      { return tupleMap ;  }
     
     protected final boolean undef(NodeId x)
     { return NodeId.isAny(x) ; }

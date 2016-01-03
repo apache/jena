@@ -30,6 +30,7 @@ import org.apache.jena.atlas.iterator.NullIterator ;
 import org.apache.jena.atlas.iterator.SingletonIterator ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleMap ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.RangeIndex ;
@@ -37,19 +38,18 @@ import org.seaborne.dboe.transaction.txn.Transaction ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.lib.Async ;
 import org.seaborne.tdb2.lib.TupleLib ;
-import org.seaborne.tdb2.migrate.ColumnMap ;
 import org.seaborne.tdb2.store.NodeId ;
 
-
+// Async addAll 
 public class TupleIndexRecordAsyncBulkAdd extends TupleIndexBase
 {
     private static final boolean Check = false ;
     private RangeIndex index ; 
     private RecordFactory factory ;
     
-    public TupleIndexRecordAsyncBulkAdd(int N,  ColumnMap colMapping, String name, RecordFactory factory, RangeIndex index)
+    public TupleIndexRecordAsyncBulkAdd(int N,  TupleMap tupleMapping, String name, RecordFactory factory, RangeIndex index)
     {
-        super(N, colMapping, name) ;
+        super(N, tupleMapping, name) ;
         this.factory = factory ;
         this.index = index ;
         
@@ -61,7 +61,7 @@ public class TupleIndexRecordAsyncBulkAdd extends TupleIndexBase
     @Override
     protected void performAdd(Tuple<NodeId> tuple) {
         switchToSync() ;
-        Record r = TupleLib.record(factory, tuple, colMap) ;
+        Record r = TupleLib.record(factory, tuple, tupleMap) ;
         index.insert(r) ;
     }
     
@@ -69,7 +69,7 @@ public class TupleIndexRecordAsyncBulkAdd extends TupleIndexBase
     @Override
     protected void performDelete(Tuple<NodeId> tuple) { 
         switchToSync() ;
-        Record r = TupleLib.record(factory, tuple, colMap) ;
+        Record r = TupleLib.record(factory, tuple, tupleMap) ;
         index.delete(r) ;
     }
     
@@ -91,7 +91,7 @@ public class TupleIndexRecordAsyncBulkAdd extends TupleIndexBase
             
             System.out.println(">>Async") ;
             for ( Tuple<NodeId> t : tuples ) {
-                Record r = TupleLib.record(factory, t, colMap) ;
+                Record r = TupleLib.record(factory, t, tupleMap) ;
                 index.insert(r) ;
             }
             System.out.println("<<Async") ;
@@ -133,7 +133,7 @@ public class TupleIndexRecordAsyncBulkAdd extends TupleIndexBase
             throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", patternNaturalOrder.len(), tupleLength));
 
         // Convert to index order.
-        Tuple<NodeId> pattern = colMap.map(patternNaturalOrder) ;
+        Tuple<NodeId> pattern = tupleMap.map(patternNaturalOrder) ;
         
         // Canonical form.
         int numSlots = 0 ;
@@ -187,7 +187,7 @@ public class TupleIndexRecordAsyncBulkAdd extends TupleIndexBase
             iter = index.iterator(minRec, maxRec) ;
         }
         
-        Iterator<Tuple<NodeId>> tuples = Iter.map(iter, item -> TupleLib.tuple(item, colMap)) ;
+        Iterator<Tuple<NodeId>> tuples = Iter.map(iter, item -> TupleLib.tuple(item, tupleMap)) ;
         
         if ( leadingIdx < numSlots-1 ) {
             if ( ! partialScanAllowed )
@@ -206,7 +206,7 @@ public class TupleIndexRecordAsyncBulkAdd extends TupleIndexBase
     {
         switchToSync() ;
         Iterator<Record> iter = index.iterator() ;
-        return Iter.map(iter, item -> TupleLib.tuple(item, colMap)) ;
+        return Iter.map(iter, item -> TupleLib.tuple(item, tupleMap)) ;
     }
     
     private Iterator<Tuple<NodeId>> scan(Iterator<Tuple<NodeId>> iter, Tuple<NodeId> pattern) {

@@ -22,6 +22,7 @@ import java.io.FileFilter ;
 import java.util.UUID ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.tuple.TupleMap ;
 import org.apache.jena.sparql.engine.main.QC ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.seaborne.dboe.DBOpEnvException ;
@@ -39,7 +40,6 @@ import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.TransactionalSystem ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.tdb2.TDBException ;
-import org.seaborne.tdb2.migrate.ColumnMap ;
 import org.seaborne.tdb2.solver.OpExecutorTDB1 ;
 import org.seaborne.tdb2.store.* ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
@@ -241,7 +241,7 @@ public class TDBBuilder {
     }
 
     public TupleIndex buildTupleIndex(String primary, String index, String name) {
-        ColumnMap cmap = new ColumnMap(primary, index) ;
+        TupleMap cmap = TupleMap.create(primary, index) ;
         RecordFactory rf = new RecordFactory(SystemTDB.SizeOfNodeId * cmap.length(), 0) ;
         RangeIndex rIdx = buildRangeIndex(rf, index) ;
         TupleIndex tIdx = new TupleIndexRecord(primary.length(), cmap, index, rf, rIdx) ;

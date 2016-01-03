@@ -52,7 +52,7 @@ public class TupleTable implements Sync, Closeable
         for ( TupleIndex index : indexes )
         {
             if ( index != null && index.getTupleLength() != tupleLen )
-                throw new TDBException("Incompatible index: "+index.getMapping()) ;
+                throw new TDBException("Incompatible index: "+index.getMappingStr()) ;
         }
         scanAllIndex = chooseScanAllIndex(tupleLen, indexes) ;
     }
@@ -207,7 +207,7 @@ public class TupleTable implements Sync, Closeable
     /** Set index - for code that manipulates internal structures directly - use with care */ 
     public void setTupleIndex(int i, TupleIndex index) {
         if ( index != null && index.getTupleLength() != tupleLen )
-            throw new TDBException("Incompatible index: " + index.getMapping()) ;
+            throw new TDBException("Incompatible index: " + index.getMappingStr()) ;
         indexes[i] = index ;
     }
 

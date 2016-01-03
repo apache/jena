@@ -24,7 +24,7 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.seaborne.tdb2.migrate.ColumnMap ;
+import org.apache.jena.atlas.lib.tuple.TupleMap ;
 import org.seaborne.tdb2.store.NodeId ;
 
 public interface TupleIndex extends Sync, Closeable
@@ -45,14 +45,14 @@ public interface TupleIndex extends Sync, Closeable
     public String getName() ;
     
     /** Get a convenient display string based on the details of the column map - do not rely on the format */ 
-    public String getMapping() ;
+    public String getMappingStr() ;
     
-    public ColumnMap getColumnMap() ;
+    /** Get the mapping of tuples used by this index */  
+    public TupleMap getMapping() ;
     
     /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any.
      *  Input pattern in natural order, not index order.
      */
-
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern) ;
     
     /** return an iterator of everything */

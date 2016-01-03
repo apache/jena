@@ -23,8 +23,6 @@ import org.seaborne.tdb2.store.QuadTable ;
 import org.seaborne.tdb2.store.TripleTable ;
 
 public class NOTES_TDB {
-    // ColumnMap ==> TupleMap.
-    
     // ** Reaper.
     // ** Or time-based, commit keeping.  benefit!
     // Autocommit (if we must!)

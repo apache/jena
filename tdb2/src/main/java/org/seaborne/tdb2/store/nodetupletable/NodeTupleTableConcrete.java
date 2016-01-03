@@ -54,7 +54,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         {
             if (N != index.getTupleLength())
                 throw new TDBException(format("Inconsistent: TupleTable width is %d but index %s is %d",
-                                              N, index.getMapping(), index.getTupleLength())) ;
+                                              N, index.getMappingStr(), index.getTupleLength())) ;
         }
 
         this.dsPolicy = dsControl ;

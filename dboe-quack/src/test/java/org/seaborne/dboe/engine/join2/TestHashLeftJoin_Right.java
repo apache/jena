@@ -25,6 +25,7 @@ import org.seaborne.dboe.engine.row.RowBuilderBase ;
 
 /** Left outer join where the right hand side used to create the hash probe table */
 public class TestHashLeftJoin_Right extends AbstractTestLeftJoin {
+    @Override
     public RowList<Integer> join(JoinKey joinKey, RowList<Integer> left, RowList<Integer> right, ExprList conditions) {
         return QueryIterHashLeftJoin_Right.create(joinKey, left, right, conditions, new RowBuilderBase<>()) ;
     }

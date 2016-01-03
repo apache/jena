@@ -30,12 +30,12 @@ import org.apache.jena.atlas.iterator.NullIterator ;
 import org.apache.jena.atlas.iterator.SingletonIterator ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleMap ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.lib.TupleLib ;
-import org.seaborne.tdb2.migrate.ColumnMap ;
 import org.seaborne.tdb2.store.NodeId ;
 
 public class TupleIndexRecord extends TupleIndexBase
@@ -44,9 +44,9 @@ public class TupleIndexRecord extends TupleIndexBase
     private RangeIndex index ; 
     private RecordFactory factory ;
     
-    public TupleIndexRecord(int N,  ColumnMap colMapping, String name, RecordFactory factory, RangeIndex index)
+    public TupleIndexRecord(int N,  TupleMap tupleMapping, String name, RecordFactory factory, RangeIndex index)
     {
-        super(N, colMapping, name) ;
+        super(N, tupleMapping, name) ;
         this.factory = factory ;
         this.index = index ;
         
@@ -57,14 +57,14 @@ public class TupleIndexRecord extends TupleIndexBase
     /** Insert a tuple */
     @Override
     protected void performAdd(Tuple<NodeId> tuple) { 
-        Record r = TupleLib.record(factory, tuple, colMap) ;
+        Record r = TupleLib.record(factory, tuple, tupleMap) ;
         index.insert(r) ;
     }
     
     /** Delete a tuple */
     @Override
     protected void performDelete(Tuple<NodeId> tuple) { 
-        Record r = TupleLib.record(factory, tuple, colMap) ;
+        Record r = TupleLib.record(factory, tuple, tupleMap) ;
         index.delete(r) ;
     }
     
@@ -112,7 +112,7 @@ public class TupleIndexRecord extends TupleIndexBase
         } 
         
         // Convert to index order.
-        Tuple<NodeId> pattern = colMap.map(patternNaturalOrder) ;
+        Tuple<NodeId> pattern = tupleMap.map(patternNaturalOrder) ;
         
         // Canonical form.
         int numSlots = 0 ;
@@ -166,7 +166,7 @@ public class TupleIndexRecord extends TupleIndexBase
             iter = index.iterator(minRec, maxRec) ;
         }
         
-        Iterator<Tuple<NodeId>> tuples = Iter.map(iter, item -> TupleLib.tuple(item, colMap)) ;
+        Iterator<Tuple<NodeId>> tuples = Iter.map(iter, item -> TupleLib.tuple(item, tupleMap)) ;
         
         if ( leadingIdx < numSlots-1 ) {
             if ( ! partialScanAllowed )
@@ -184,7 +184,7 @@ public class TupleIndexRecord extends TupleIndexBase
     public Iterator<Tuple<NodeId>> all()
     {
         Iterator<Record> iter = index.iterator() ;
-        return Iter.map(iter, item -> TupleLib.tuple(item, colMap)) ;
+        return Iter.map(iter, item -> TupleLib.tuple(item, tupleMap)) ;
     }
     
     private Iterator<Tuple<NodeId>> scan(Iterator<Tuple<NodeId>> iter, Tuple<NodeId> pattern) {

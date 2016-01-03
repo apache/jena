@@ -18,13 +18,12 @@
 
 package org.seaborne.tdb2.store.tupletable;
 
-
+import org.apache.jena.atlas.lib.tuple.TupleMap ;
 import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.IndexParams ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.tdb2.junit.BuildTestLib ;
-import org.seaborne.tdb2.migrate.ColumnMap ;
 import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 
@@ -37,8 +36,8 @@ public class TestTupleIndexRecord extends AbstractTestTupleIndex
     {
         IndexParams indexParams = StoreParams.getDftStoreParams() ; 
         RangeIndex rIdx = BuildTestLib.buildRangeIndex(FileSet.mem(), factory, indexParams) ;
-        ColumnMap cmap = new ColumnMap("SPO", description) ;
-        TupleIndexRecord index = new TupleIndexRecord(3, cmap, description, factory, rIdx) ;
+        TupleMap tmap = TupleMap.create("SPO", description) ;
+        TupleIndexRecord index = new TupleIndexRecord(3, tmap, description, factory, rIdx) ;
         return index ;
     }
 }

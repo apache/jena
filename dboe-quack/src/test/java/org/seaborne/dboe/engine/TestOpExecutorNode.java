@@ -57,6 +57,6 @@ public class TestOpExecutorNode extends AbstractTestOpExecutor
 
     @Override
     protected Dataset createDataset() {
-        return DatasetFactory.createMem() ;
+        return DatasetFactory.create() ;
     }
 }

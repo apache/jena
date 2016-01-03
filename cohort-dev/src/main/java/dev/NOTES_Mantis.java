@@ -18,6 +18,8 @@
 package dev;
 
 public class NOTES_Mantis {
+    // Logging to JUL by default.
+    
     // See also NOTES_TDB
     // Log<X> over BinaryDataFile
     //   TransLog<X>

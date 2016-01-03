@@ -112,7 +112,7 @@ public class IndexLib {
 //
 //            // Index named by column mapping "SPO->POS"
 //            // This is silly.
-//            int i = idx.getColumnMap().getLabel().indexOf('>') ;
+//            int i = idx.getMapping().getLabel().indexOf('>') ;
 //            String name = idx.getMapping().substring(i + 1) ;
 //            if (name.equals(srcIndex))
 //                return idx ;

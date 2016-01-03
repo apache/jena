@@ -91,7 +91,7 @@ public final class StorageTDB {
 //    public TupleTable getTriples() ;
 //    public TupleTable getQuads() ;
 //    public TupleIndex getIndex(String name) ;
-//    public TupleIndex getIndex(ColumnMap colMap) ;
+//    public TupleIndex getIndex(TupleMap tupleMap) ;
 //    /** Get the index that woudl be choosen for the pattern */
 //    public TupleIndex getIndex(Tuple<NodeId> pattern) ;
 //    // Prefix stuff?
