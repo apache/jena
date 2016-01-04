@@ -311,6 +311,9 @@ public class TestDatasetWithLuceneStoredLiterals extends AbstractTestDatasetWith
                 TURTLE_PROLOG,
                 "<" + RESOURCE_BASE + testName + ">",
                 "  rdfs:comment 'a nontext comment', 'another nontext comment'",
+                ".",
+                "<" + RESOURCE_BASE + "irrelevant>",
+                "  rdfs:comment 'an irrelevant nontext comment'",
                 "."
                 );
         String queryString = StrUtils.strjoinNL(
