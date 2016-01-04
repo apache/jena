@@ -58,7 +58,7 @@ public class TupleMap {
      * int j = getTransform[i] ; elts[i] = src.get(j) ;
      * int j = putTransform[i] ; elts[j] = src.get(i) ;
      * 
-     * The code tends to use this style (getTransform)
+     * The code tends to use this style (getTransform - getSlotIdx, mapIdx)
      *     int j = getTransform[i] ;
      *     dst[i] = src[j] ;
      * 
@@ -71,13 +71,12 @@ public class TupleMap {
     // SPO->POS: get:{0<-1, 1<-2, 2<-0} put:{0->2, 1->0, 2->1}
 
     // Map by where to fetch from source.
-    // For SPO -> POS, get from 1 to go into 0 so (0->, 1->0 2->   
-    // POS->SPO, is (0->1, 1->2, 2->0)
+    // For SPO -> POS, get from 1 to go into f(0)=1, f(1)=2, f(2)=0    
     // i.e. the location to fetch the mapped element from.
     private final int[]  getTransform ;
 
     // Map by insertion into destination.
-    // So SPO->POS is (0->2, 1->0, 2->1)
+    // So SPO->POS is f(0)=2, f(1)=0, f(2)=1
     // i.e. the location of the element after mapping.
     private final int[]  putTransform ; // putTransform, insertOrder
 
@@ -183,8 +182,9 @@ public class TupleMap {
     /** 
      * Get the index of the i'th slot as it appears from a mapping : for
      * SPO->POS : 0'th slot is P so 0 returns 1 (the location in the tuple before mapping)
-     * Equivalent to {@link #getSlotIdx}.
-     * The 0'th mapped slot is {@code tuple.get(tupleMap.mapIdx(0))}.
+     * Equivalent to {@link #getSlotIdx}.<br/>
+     * The 0'th mapped slot is {@code tuple.get(tupleMap.mapIdx(0))}.<br/>
+     * Mapping a tuple is {@code map(tuple) == create(tuple.mapIdx(0) , tuple.mapIdx(1), ... tuple.mapIdx(n-1))}<br/>   
      */
     public int mapIdx(int idx) {
         return getSlotIdx(idx) ;
@@ -193,8 +193,9 @@ public class TupleMap {
     /**
      * Get the index of the i'th slot as it appears after unmapping : SPO->POS :
      * 0'th slot is S from POS so 0 returns 2
-     * Equivalent to {@link #putSlotIdx}.
-     * The 0'th unmapped slot is {@code tuple.get(tupleMap.unmapIdx(0))}.
+     * Equivalent to {@link #putSlotIdx}.<br/>
+     * The 0'th unmapped slot is {@code tuple.get(tupleMap.unmapIdx(0))}.<br/>
+     * Unmapping a tuple is {@code unmap(tuple) == create(tuple.unmapIdx(0) , tuple.unmapIdx(1), ... tuple.unmapIdx(n-1))}<br/>   
      */
     public int unmapIdx(int idx) {
         return putSlotIdx(idx) ; 
