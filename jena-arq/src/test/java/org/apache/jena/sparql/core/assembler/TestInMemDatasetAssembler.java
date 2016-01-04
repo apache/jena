@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.core.assembler;
 
 import static java.nio.file.Files.createTempFile;
-import static org.apache.jena.assembler.JA.MemoryDataset ;
 import static org.apache.jena.assembler.JA.MemoryModel ;
 import static org.apache.jena.assembler.JA.data ;
 import static org.apache.jena.assembler.Mode.DEFAULT;
@@ -69,7 +68,7 @@ public class TestInMemDatasetAssembler extends Assert {
 	public void emptyDataset() {
 	    final Model model = createDefaultModel();
 	    final Resource empty = model.createResource("test:empty");
-	    empty.addProperty(type, MemoryDataset);
+	    empty.addProperty(type, DatasetAssemblerVocab.tDatasetTxnMem) ;
 	    Dataset dataset = assemble(empty) ;
 	    assertFalse(dataset.asDatasetGraph().find().hasNext()) ;
 	}
@@ -81,7 +80,7 @@ public class TestInMemDatasetAssembler extends Assert {
 		final Path triples = createTempFile("simpleExample", ".nt");
 		final Resource triplesURI = model.createResource(triples.toFile().toURI().toString());
 		final Resource simpleExample = model.createResource("test:simpleExample");
-		simpleExample.addProperty(type, MemoryDataset);
+		simpleExample.addProperty(type, DatasetAssemblerVocab.tDatasetTxnMem);
 		// add a default graph
 		simpleExample.addProperty(data, triplesURI);
 		// add a named graph
@@ -120,7 +119,7 @@ public class TestInMemDatasetAssembler extends Assert {
 		final Path quads = createTempFile("quadExample", ".nq");
 		final Resource quadsURI = model.createResource(quads.toFile().toURI().toString());
 		final Resource simpleExample = model.createResource("test:simpleExample");
-		simpleExample.addProperty(type, MemoryDataset);
+		simpleExample.addProperty(type, DatasetAssemblerVocab.tDatasetTxnMem);
 		simpleExample.addProperty(data, quadsURI);
 
 		final DatasetGraph dsg = createTxnMem().asDatasetGraph();

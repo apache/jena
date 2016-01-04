@@ -19,11 +19,11 @@
 package org.apache.jena.tdb.assembler;
 
 
-import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.ConstAssembler ;
-import org.apache.jena.assembler.assemblers.AssemblerGroup ;
+import org.apache.jena.assembler.JA ;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.tdb.TDB ;
 
 public class VocabTDB
@@ -66,32 +66,11 @@ public class VocabTDB
     
     static { init() ; }
     
-    static synchronized public void init()
-    {
+    static synchronized public void init() {
         if ( initialized )
-            return ;
-        initialized = true ;
-        // Do NOT use Assembler.gemneral here (may not be initialized).  
-        registerWith(ConstAssembler.general()) ;
-    }
-    
-    static void registerWith(AssemblerGroup g)
-    {
-        // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
-        // Domain and range for properties.
-        // Separated and use ja:imports
-        assemblerClass(g, tDatasetTDB,            new DatasetAssemblerTDB()) ;
-        
-        assemblerClass(g, tGraphTDB,          new TDBGraphAssembler()) ;
-        //assemblerClass(g, typeGraphBDB,          ?????) ;
-        assemblerClass(g, tNodeTable,         new NodeTableAssembler()) ;
-    }
-    
-    public static void assemblerClass(AssemblerGroup group, Resource r, Assembler a)
-    {
-        if ( group == null )
-            group = ConstAssembler.general() ;
-        group.implementWith(r, a) ;
-        //assemblerAssertions.add(r, RDFS.subClassOf, JA.Object) ;
+            return;
+        initialized = true;
+        AssemblerUtils.registerDataset(tDatasetTDB, new DatasetAssemblerTDB());
+        AssemblerUtils.register(ConstAssembler.general(), tGraphTDB, new TDBGraphAssembler(), JA.Model);
     }
 }

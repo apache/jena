@@ -23,7 +23,5 @@ public class AssemblerTDB
     public static void init()
     {
         VocabTDB.init();
-        //tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
-        //tdb:GraphTDB    rdfs:subClassOf  ja:Model .
     }
 }
