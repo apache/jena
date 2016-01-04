@@ -19,9 +19,9 @@
 package org.apache.jena.query.text ;
 
 import java.util.Iterator ;
-import java.util.LinkedList ;
 import java.util.List ;
 import java.util.function.Function ;
+import java.util.stream.Collectors ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.logging.Log ;
@@ -234,12 +234,7 @@ public class TextQueryPF extends PropertyFunctionBase {
         if ( x == null ) // null return value - empty result
             return IterLib.noResults(execCxt) ;
         
-        List<TextHit> r = new LinkedList();
-        for (TextHit hit : x ) {
-            if (hit.getNode().equals(s)) {
-                r.add(hit);
-            }
-        }
+        List<TextHit> r = x.stream().filter(hit -> hit.getNode().equals(s)).collect(Collectors.toList());
 
         return resultsToQueryIterator(binding, s, score, literal, r, execCxt);
     }
