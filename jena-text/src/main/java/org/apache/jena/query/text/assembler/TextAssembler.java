@@ -26,7 +26,8 @@ public class TextAssembler
     public static void init()
     {
         AssemblerUtils.init() ;
-        Assembler.general.implementWith(TextVocab.textDataset,      new TextDatasetAssembler()) ;
+        AssemblerUtils.registerDataset(TextVocab.textDataset,      new TextDatasetAssembler()) ;
+        
         Assembler.general.implementWith(TextVocab.entityMap,        new EntityDefinitionAssembler()) ;
         Assembler.general.implementWith(TextVocab.textIndexSolr,    new TextIndexSolrAssembler()) ; 
         Assembler.general.implementWith(TextVocab.textIndexLucene,  new TextIndexLuceneAssembler()) ;
