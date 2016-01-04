@@ -41,8 +41,6 @@ public class JA
 
     public static final Resource MemoryModel = resource( "MemoryModel" );
 
-    public static final Resource MemoryDataset = resource( "MemoryDataset" );
-
     public static final Resource DefaultModel = resource( "DefaultModel" );
 
     public static final Resource InfModel = resource( "InfModel" );
