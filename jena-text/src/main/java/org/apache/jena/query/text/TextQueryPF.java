@@ -47,6 +47,7 @@ import org.apache.jena.sparql.pfunction.PropertyFunctionBase ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.IterLib ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
+import org.apache.jena.sparql.util.Symbol ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -65,14 +66,13 @@ public class TextQueryPF extends PropertyFunctionBase {
 
     private String langArg = null;
 
-    private Map<String,List<TextHit>> queryCache = null;
+    private static final Symbol cacheSymbol = Symbol.create("TextQueryPF.cache");
 
     @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
         super.build(argSubject, predicate, argObject, execCxt) ;
         DatasetGraph dsg = execCxt.getDataset() ;
         textIndex = chooseTextIndex(dsg) ;
-        queryCache = new LinkedHashMap();
 
         if (argSubject.isList()) {
             int size = argSubject.getArgListSize();
@@ -274,7 +274,15 @@ public class TextQueryPF extends PropertyFunctionBase {
         Explain.explain(execCxt.getContext(), "Text query: "+queryString) ;
         if ( log.isDebugEnabled())
             log.debug("Text query: {} ({})", queryString,limit) ;
+
         String cacheKey = limit + " " + property + " " + queryString ;
+        Map<String,List<TextHit>> queryCache = 
+            (Map<String,List<TextHit>>) execCxt.getContext().get(cacheSymbol);
+        if (queryCache == null) { /* doesn't yet exist, need to create it */
+            queryCache = new LinkedHashMap();
+            execCxt.getContext().put(cacheSymbol, queryCache);
+        }
+
         List<TextHit> results = queryCache.get(cacheKey) ;
         if (results == null) { /* cache miss */
             results = textIndex.query(property, queryString, limit) ;
