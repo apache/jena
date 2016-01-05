@@ -8,7 +8,7 @@
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
 ## ---------------------------------------------------------------
-## Updatable TDB dataset with all services enabled.
+## Updatable TDB dataset im-memory with all services enabled.
 
 <#service_tdb_all> rdf:type fuseki:Service ;
     rdfs:label                      "TDB {NAME}" ;
@@ -26,6 +26,5 @@
 
 <#tdb_dataset_readwrite> rdf:type      tdb:DatasetTDB ;
     tdb:location "--mem--" ;
-    ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "1000" ] ;
-    # tdb:unionDefaultGraph true ;
+    ## tdb:unionDefaultGraph true ;
     .

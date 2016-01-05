@@ -68,6 +68,7 @@
       <artifactId>jena-arq</artifactId>
       <version>3.1.0-SNAPSHOT</version>
       <classifier>sources</classifier>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -75,6 +76,7 @@
       <artifactId>jena-arq</artifactId>
       <version>3.1.0-SNAPSHOT</version>
       <classifier>javadoc</classifier>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -88,6 +90,7 @@
       <artifactId>jena-core</artifactId>
       <version>3.1.0-SNAPSHOT</version>
       <classifier>sources</classifier>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -95,6 +98,7 @@
       <artifactId>jena-core</artifactId>
       <version>3.1.0-SNAPSHOT</version>
       <classifier>javadoc</classifier>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -108,6 +112,7 @@
       <artifactId>jena-tdb</artifactId>
       <version>3.1.0-SNAPSHOT</version>
       <classifier>sources</classifier>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -115,6 +120,7 @@
       <artifactId>jena-tdb</artifactId>
       <version>3.1.0-SNAPSHOT</version>
       <classifier>javadoc</classifier>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -128,6 +134,7 @@
       <artifactId>jena-cmds</artifactId>
       <version>3.1.0-SNAPSHOT</version>
       <classifier>sources</classifier>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -135,6 +142,7 @@
       <artifactId>jena-cmds</artifactId>
       <version>3.1.0-SNAPSHOT</version>
       <classifier>javadoc</classifier>
+      <optional>true</optional>
     </dependency>
 
   </dependencies>

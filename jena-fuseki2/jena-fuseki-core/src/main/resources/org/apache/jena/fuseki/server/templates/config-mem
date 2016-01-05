@@ -12,7 +12,7 @@
 ## Updatable in-memory dataset.
 
 <#service1> rdf:type fuseki:Service ;
-    # URI of the dataset -- http://host:port/ds
+    # URI of the dataset -- http://host:port/{NAME}
     fuseki:name                        "{NAME}" ;
     fuseki:serviceQuery                "sparql" ;
     fuseki:serviceQuery                "query" ;
