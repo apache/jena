@@ -18,18 +18,20 @@
 
 package org.apache.jena.query.text ;
 
+import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.LinkedHashMap ;
 import java.util.List ;
 import java.util.Map ;
 import java.util.function.Function ;
-import java.util.stream.Collectors ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.ext.com.google.common.collect.LinkedListMultimap;
+import org.apache.jena.ext.com.google.common.collect.ListMultimap;
 import org.apache.jena.query.QueryBuildException ;
 import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.sparql.core.* ;
@@ -199,7 +201,7 @@ public class TextQueryPF extends PropertyFunctionBase {
         return qIter ;
     }
 
-    private QueryIterator resultsToQueryIterator(Binding binding, Node s, Node score, Node literal, List<TextHit> results, ExecutionContext execCxt) {
+    private QueryIterator resultsToQueryIterator(Binding binding, Node s, Node score, Node literal, Collection<TextHit> results, ExecutionContext execCxt) {
         Var sVar = Var.isVar(s) ? Var.alloc(s) : null ;
         Var scoreVar = (score==null) ? null : Var.alloc(score) ;
         Var literalVar = (literal==null) ? null : Var.alloc(literal) ;
@@ -223,7 +225,8 @@ public class TextQueryPF extends PropertyFunctionBase {
     }
 
     private QueryIterator variableSubject(Binding binding, Node s, Node score, Node literal, StrMatch match, ExecutionContext execCxt) {
-        List<TextHit> r = query(match.getProperty(), match.getQueryString(), match.getLimit(), execCxt) ;
+        ListMultimap<String,TextHit> results = query(match.getProperty(), match.getQueryString(), match.getLimit(), execCxt) ;
+        Collection<TextHit> r = results.values();
         return resultsToQueryIterator(binding, s, score, literal, r, execCxt);
     }
 
@@ -234,17 +237,17 @@ public class TextQueryPF extends PropertyFunctionBase {
         }
 
         String qs = match.getQueryString() ;
-        List<TextHit> x = query(match.getProperty(), match.getQueryString(), -1, execCxt) ;
+        ListMultimap<String,TextHit> x = query(match.getProperty(), match.getQueryString(), -1, execCxt) ;
         
         if ( x == null ) // null return value - empty result
             return IterLib.noResults(execCxt) ;
         
-        List<TextHit> r = x.stream().filter(hit -> hit.getNode().equals(s)).collect(Collectors.toList());
+        List<TextHit> r = x.get(s.getURI());
 
         return resultsToQueryIterator(binding, s, score, literal, r, execCxt);
     }
 
-    private List<TextHit> query(Node property, String queryString, int limit, ExecutionContext execCxt) {
+    private ListMultimap<String,TextHit> query(Node property, String queryString, int limit, ExecutionContext execCxt) {
         // use the graph information in the text index if possible
         if (textIndex.getDocDef().getGraphField() != null
             && execCxt.getActiveGraph() instanceof GraphView) {
@@ -275,16 +278,20 @@ public class TextQueryPF extends PropertyFunctionBase {
             log.debug("Text query: {} ({})", queryString,limit) ;
 
         String cacheKey = limit + " " + property + " " + queryString ;
-        Map<String,List<TextHit>> queryCache = 
-            (Map<String,List<TextHit>>) execCxt.getContext().get(cacheSymbol);
+        Map<String,ListMultimap<String,TextHit>> queryCache = 
+            (Map<String,ListMultimap<String,TextHit>>) execCxt.getContext().get(cacheSymbol);
         if (queryCache == null) { /* doesn't yet exist, need to create it */
             queryCache = new LinkedHashMap();
             execCxt.getContext().put(cacheSymbol, queryCache);
         }
 
-        List<TextHit> results = queryCache.get(cacheKey) ;
+        ListMultimap<String,TextHit> results = queryCache.get(cacheKey) ;
         if (results == null) { /* cache miss */
-            results = textIndex.query(property, queryString, limit) ;
+            List<TextHit> resultList = textIndex.query(property, queryString, limit) ;
+            results = LinkedListMultimap.create();
+            for (TextHit result : resultList) {
+                results.put(result.getNode().getURI(), result);
+            }
             queryCache.put(cacheKey, results) ;
         }
         return results;
