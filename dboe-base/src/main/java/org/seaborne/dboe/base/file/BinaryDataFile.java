@@ -37,7 +37,7 @@ public interface BinaryDataFile extends Closeable, Sync {
     // What about java.nio.channels.FileChannel?
     // On OpenJDK,  RandomAccessFile and FileChannelImpl both dive into native code.
     //  
-    // The choice seems to com down to ByteBuffers vs byte[]
+    // The choice seems to come down to ByteBuffers vs byte[]
     // which in turn is a small/large data (scattered data)
     // issue.  We are currently expecting small I/O so byte[]
     // and being like Thrift is better.

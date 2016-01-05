@@ -29,7 +29,7 @@ import org.seaborne.dboe.base.objectfile.ObjectFile ;
 import org.seaborne.dboe.transaction.txn.* ;
 
 /** Transactional {@link ObjectFile}.
- *  An object file is append-only and allows only one writer at a time.
+ *  An binary file that is append-only and allows only one writer at a time.
  *  All readers see the file up to the last commit point at the time 
  *  they started.  The sole writer sees more of the file.
  */

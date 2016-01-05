@@ -37,58 +37,63 @@
     <dependencies>
 
       <dependency>
-	<groupId>org.apache.jena</groupId>
-	<artifactId>jena-arq</artifactId>
-	<version>${ver.jena}</version>
+	    <groupId>org.apache.jena</groupId>
+	    <artifactId>jena-arq</artifactId>
+	    <version>${ver.jena}</version>
       </dependency>
 
       <dependency>
-	<groupId>org.apache.jena</groupId>
-	<artifactId>jena-base</artifactId>
-	<version>${ver.jena}</version>
-	<classifier>tests</classifier>
-	<scope>test</scope>
+	    <groupId>org.apache.jena</groupId>
+	    <artifactId>jena-base</artifactId>
+	    <version>${ver.jena}</version>
+	    <classifier>tests</classifier>
+	    <scope>test</scope>
       </dependency>
 
       <dependency>
-	<groupId>org.apache.jena</groupId>
-	<artifactId>jena-core</artifactId>
-	<version>${ver.jena}</version>
-	<classifier>tests</classifier>
-	<scope>test</scope>
+	    <groupId>org.apache.jena</groupId>
+	    <artifactId>jena-core</artifactId>
+	    <version>${ver.jena}</version>
+	    <classifier>tests</classifier>
+	    <scope>test</scope>
       </dependency>
 
       <dependency>
-	<groupId>org.apache.jena</groupId>
-	<artifactId>jena-arq</artifactId>
-	<version>${ver.jena}</version>
-	<classifier>tests</classifier>
-	<scope>test</scope>
+	    <groupId>org.apache.jena</groupId>
+	    <artifactId>jena-arq</artifactId>
+	    <version>${ver.jena}</version>
+	    <classifier>tests</classifier>
+	    <scope>test</scope>
       </dependency>
 
+      <dependency>
+	    <groupId>org.apache.jena</groupId>
+	    <artifactId>jena-cmds</artifactId>
+	    <version>${ver.jena}</version>
+      </dependency>
       <!--
-      <dependency>
-	<groupId>org.apache.jena</groupId>
-	<artifactId>jena-tdb</artifactId>
-	<version>${ver.tdb}</version>
-      </dependency>
+          <dependency>
+	        <groupId>org.apache.jena</groupId>
+	        <artifactId>jena-tdb</artifactId>
+	        <version>${ver.tdb}</version>
+          </dependency>
 
-      <dependency>
-	<groupId>org.apache.jena</groupId>
-	<artifactId>jena-tdb</artifactId>
-	<version>${ver.tdb}</version>
-	<classifier>tests</classifier>
-	<scope>test</scope>
-      </dependency>
+          <dependency>
+	        <groupId>org.apache.jena</groupId>
+	        <artifactId>jena-tdb</artifactId>
+	        <version>${ver.tdb}</version>
+	        <classifier>tests</classifier>
+	        <scope>test</scope>
+          </dependency>
       -->
-      
+          
       <dependency>
-	<groupId>junit</groupId>
-	<artifactId>junit</artifactId>
-	<version>${ver.junit}</version>
-	<scope>test</scope>
+	    <groupId>junit</groupId>
+	    <artifactId>junit</artifactId>
+	    <version>${ver.junit}</version>
+	    <scope>test</scope>
       </dependency>
-      
+          
     </dependencies>
 
   </dependencyManagement>
@@ -104,57 +109,57 @@
     <pluginManagement>
       <plugins>
 
-	<plugin>
-	  <groupId>org.apache.maven.plugins</groupId>
-	  <artifactId>maven-compiler-plugin</artifactId>
-	  <version>3.2</version>
-	  <configuration>
-	    <encoding>UTF-8</encoding>
-	    <debug>true</debug>
-	    <debuglevel>source,lines,vars</debuglevel>
-	    <optimize>true</optimize>
-	    <source>1.8</source>
-	    <target>1.8</target>
-	  </configuration>
-	</plugin>
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-compiler-plugin</artifactId>
+	      <version>3.2</version>
+	      <configuration>
+	        <encoding>UTF-8</encoding>
+	        <debug>true</debug>
+	        <debuglevel>source,lines,vars</debuglevel>
+	        <optimize>true</optimize>
+	        <source>1.8</source>
+	        <target>1.8</target>
+	      </configuration>
+	    </plugin>
 
-	<plugin>
-	  <groupId>org.apache.maven.plugins</groupId>
-	  <artifactId>maven-surefire-plugin</artifactId>
-	  <version>2.12</version>
-	</plugin>
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-surefire-plugin</artifactId>
+	      <version>2.12</version>
+	    </plugin>
 
-	<plugin>
-	  <groupId>org.apache.maven.plugins</groupId>
-	  <artifactId>maven-resources-plugin</artifactId>
-	  <version>2.5</version>
-	  <configuration>
-	    <encoding>UTF-8</encoding>
-	  </configuration>
-	</plugin>
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-resources-plugin</artifactId>
+	      <version>2.5</version>
+	      <configuration>
+	        <encoding>UTF-8</encoding>
+	      </configuration>
+	    </plugin>
 
-	<plugin>
-	  <groupId>org.apache.maven.plugins</groupId>
-	  <artifactId>maven-dependency-plugin</artifactId>
-	  <version>2.9</version>
-	  <configuration>
-	    <overWriteReleases>false</overWriteReleases>
-	    <overWriteIfNewer>true</overWriteIfNewer>
-	  </configuration>
-	</plugin>
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-dependency-plugin</artifactId>
+	      <version>2.9</version>
+	      <configuration>
+	        <overWriteReleases>false</overWriteReleases>
+	        <overWriteIfNewer>true</overWriteIfNewer>
+	      </configuration>
+	    </plugin>
 
-	<plugin>
-	  <groupId>org.apache.maven.plugins</groupId>
-	  <artifactId>maven-jar-plugin</artifactId>
-	  <version>2.5</version>
-	  
-	</plugin>
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-jar-plugin</artifactId>
+	      <version>2.5</version>
+	      
+	    </plugin>
 
-	<plugin>
-	  <groupId>org.apache.maven.plugins</groupId>
-	  <artifactId>maven-source-plugin</artifactId>
-	  <version>2.4</version>
-	</plugin>
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-source-plugin</artifactId>
+	      <version>2.4</version>
+	    </plugin>
 
       </plugins> 
 
@@ -163,63 +168,63 @@
     <plugins>
       
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-dependency-plugin</artifactId>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-compiler-plugin</artifactId>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-surefire-plugin</artifactId>
-	<configuration>
-	  <includes>
-	    <include>**/TS_*.java</include>
-	  </includes>
-	</configuration>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-surefire-plugin</artifactId>
+	    <configuration>
+	      <includes>
+	        <include>**/TS_*.java</include>
+	      </includes>
+	    </configuration>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-source-plugin</artifactId>
-	<executions> 
-	  <execution>
-	    <id>attach-sources</id>
-	    <!-- <phase>package</phase> package is the default -->
-	    <goals>
-	      <goal>jar-no-fork</goal> 
-	    </goals>
-	  </execution>
-	  <execution>
-	    <id>attach-sources-test</id>
-	    <goals>
-	      <goal>test-jar-no-fork</goal>
-	    </goals>
-	  </execution>
-	</executions>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-source-plugin</artifactId>
+	    <executions> 
+	      <execution>
+	        <id>attach-sources</id>
+	        <!-- <phase>package</phase> package is the default -->
+	        <goals>
+	          <goal>jar-no-fork</goal> 
+	        </goals>
+	      </execution>
+	      <execution>
+	        <id>attach-sources-test</id>
+	        <goals>
+	          <goal>test-jar-no-fork</goal>
+	        </goals>
+	      </execution>
+	    </executions>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-resources-plugin</artifactId>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-resources-plugin</artifactId>
       </plugin>
 
       <!--
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-jar-plugin</artifactId>
-	<executions>
-	  <execution>
-	    <goals>
-	      <goal>test-jar</goal>
-	    </goals>
-	  </execution>
-	</executions>
-      </plugin>
-      -->
+          <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-jar-plugin</artifactId>
+	        <executions>
+	          <execution>
+	            <goals>
+	              <goal>test-jar</goal>
+	            </goals>
+	          </execution>
+	        </executions>
+          </plugin>
+          -->
     </plugins>
   </build>
 
@@ -230,12 +235,12 @@
       <!-- <name>Mantis (${project.artifactId})</name> -->
       <url>https://repository.apache.org/snapshots</url>
       <releases>
-	<enabled>false</enabled>
+	    <enabled>false</enabled>
       </releases>
       <snapshots>
-	<enabled>true</enabled>
-	<updatePolicy>daily</updatePolicy>
-	<checksumPolicy>fail</checksumPolicy>
+	    <enabled>true</enabled>
+	    <updatePolicy>daily</updatePolicy>
+	    <checksumPolicy>fail</checksumPolicy>
       </snapshots>
     </repository>
   </repositories>
