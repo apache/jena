@@ -22,6 +22,7 @@ import static java.lang.ThreadLocal.withInitial;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.jena.atlas.lib.tuple.TupleMap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.ReadWrite;
 import org.slf4j.Logger;
@@ -31,8 +32,10 @@ import org.slf4j.Logger;
  *
  * @param <TupleMapType> the type of the internal structure holding table data
  * @param <TupleType> the type of tuple in which a subclass of this class transacts
+ * @param <ConsumerType> a type of consumer that can accept as many elements as exist in {@code TupleType}
  */
-public abstract class PMapTupleTable<TupleMapType, TupleType> implements TupleTable<TupleType> {
+public abstract class PMapTupleTable<TupleMapType, TupleType, ConsumerType>
+        extends OrderedTupleTable<TupleType, ConsumerType> implements TupleTable<TupleType> {
 
     /**
      * This method should always return the same value, but note that the same value may not necessarily be the same
@@ -41,7 +44,7 @@ public abstract class PMapTupleTable<TupleMapType, TupleType> implements TupleTa
      * @return a value to which to initialize the master table data.
      */
     protected abstract TupleMapType initial();
-
+    
     private final AtomicReference<TupleMapType> master = new AtomicReference<>(initial());
 
     /**
@@ -66,7 +69,8 @@ public abstract class PMapTupleTable<TupleMapType, TupleType> implements TupleTa
     /**
      * @param n a name for this table
      */
-    public PMapTupleTable(final String n) {
+    public PMapTupleTable(final String n, final TupleMap order) {
+        super(order);
         this.tableName = n;
     }
 
@@ -80,10 +84,11 @@ public abstract class PMapTupleTable<TupleMapType, TupleType> implements TupleTa
             log().debug(tableName + ": " + msg, values);
     }
 
+    /**
+     * {@link #local} is initialized via {@link #initial()}
+     */
     @Override
-    public void begin(final ReadWrite rw) {
-        // local is never used.
-    }
+    public void begin(final ReadWrite rw) {}
 
     @Override
     public void end() {

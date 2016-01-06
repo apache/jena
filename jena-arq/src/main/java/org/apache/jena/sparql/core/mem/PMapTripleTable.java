@@ -25,6 +25,9 @@ import java.util.stream.Stream;
 
 import org.apache.jena.atlas.lib.persistent.PMap;
 import org.apache.jena.atlas.lib.persistent.PersistentSet;
+import org.apache.jena.atlas.lib.tuple.TriConsumer.Consumer3;
+import org.apache.jena.atlas.lib.tuple.TriFunction.TriOperator;
+import org.apache.jena.atlas.lib.tuple.TupleMap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.mem.FourTupleMap.ThreeTupleMap;
@@ -35,8 +38,30 @@ import org.slf4j.Logger;
  * A {@link TripleTable} employing persistent maps to index triples in one particular slot order (e.g. SPO, OSP or POS).
  *
  */
-public abstract class PMapTripleTable extends PMapTupleTable<ThreeTupleMap, Triple>implements TripleTable {
+public class PMapTripleTable extends PMapTupleTable<ThreeTupleMap, Triple, Consumer3<Node>>implements TripleTable {
 
+    private static class TripleTupleMap extends TupleMap {
+
+        private TripleTupleMap(final String mappedOrder) {
+            super(mappedOrder, compileMapping("SPO", mappedOrder));
+        }
+    }
+    
+    /**
+     * @param order a name and order for this table
+     */
+    public PMapTripleTable(final String order) {
+        this(order, new TripleTupleMap(order));
+    }
+    
+    /**
+     * @param tableName a name for this table
+     * @param order the order of elements in this table
+     */
+    public PMapTripleTable(final String tableName, final TupleMap order) {
+        super(tableName, order);
+    }
+    
     private final static Logger log = getLogger(PMapTripleTable.class);
 
     @Override
@@ -48,14 +73,23 @@ public abstract class PMapTripleTable extends PMapTupleTable<ThreeTupleMap, Trip
     protected ThreeTupleMap initial() {
         return new ThreeTupleMap();
     }
-
-    /**
-     * @param tableName a name for this table
-     */
-    public PMapTripleTable(final String tableName) {
-        super(tableName);
+    
+    
+    @Override
+    public void add(final Triple t) {
+        map(add()).accept(t);
     }
 
+    @Override
+    public void delete(final Triple t) {
+        map(delete()).accept(t);
+    }
+    
+    @Override
+    public Stream<Triple> find(final Node s, final Node p, final Node o) {
+        return map(find).apply(s, p, o);
+    }
+    
     /**
      * We descend through the nested {@link PMap}s building up {@link Stream}s of partial tuples from which we develop a
      * {@link Stream} of full tuples which is our result. Use {@link Node#ANY} or <code>null</code> for a wildcard.
@@ -66,7 +100,7 @@ public abstract class PMapTripleTable extends PMapTupleTable<ThreeTupleMap, Trip
      * @return a <code>Stream</code> of tuples matching the pattern
      */
     @SuppressWarnings("unchecked") // Because of (Stream<Triple>) -- but why is that needed?
-    public Stream<Triple> _find(final Node first, final Node second, final Node third) {
+    private TriOperator<Node, Stream<Triple>> find = (first, second, third) -> {
         debug("Querying on three-tuple pattern: {} {} {} .", first, second, third);
         final ThreeTupleMap threeTuples = local().get();
         if (isConcrete(first)) {
@@ -77,53 +111,48 @@ public abstract class PMapTripleTable extends PMapTupleTable<ThreeTupleMap, Trip
                     return twoTuples.get(second).map(oneTuples -> {
                         if (isConcrete(third)) {
                             debug("Using a specific third slot value.");
-                            return oneTuples.contains(third) ? Stream.of(triple(first, second, third)) : empty();
+                            return oneTuples.contains(third) ? Stream.of(unmap(first, second, third)) : empty();
                         }
                         debug("Using a wildcard third slot value.");
-                        return oneTuples.stream().map(slot3 -> triple(first, second, slot3));
+                        return oneTuples.stream().map(slot3 -> unmap(first, second, slot3));
                     }).orElse(empty());
                 }
                 debug("Using wildcard second and third slot values.");
                 return twoTuples
-                    .flatten((slot2, oneTuples) -> oneTuples.stream().map(slot3 -> triple(first, slot2, slot3)));
+                    .flatten((slot2, oneTuples) -> oneTuples.stream().map(slot3 -> unmap(first, slot2, slot3)));
             }).orElse(empty());
         }
         debug("Using a wildcard for all slot values.");
         return threeTuples.flatten((slot1, twoTuples) -> twoTuples
-                                   .flatten((slot2, oneTuples) -> oneTuples.stream().map(slot3 -> triple(slot1, slot2, slot3))));
+                                   .flatten((slot2, oneTuples) -> oneTuples.stream().map(slot3 -> unmap(slot1, slot2, slot3))));
+    };
+    
+    @Override
+    protected Consumer3<Node> add() {
+        return (first, second, third) -> {
+            debug("Adding three-tuple {} {} {}", first, second, third);
+            final ThreeTupleMap threeTuples = local().get();
+            TwoTupleMap twoTuples = threeTuples.get(first).orElse(new TwoTupleMap());
+            PersistentSet<Node> oneTuples = twoTuples.get(second).orElse(PersistentSet.empty());
+
+            oneTuples = oneTuples.plus(third);
+            twoTuples = twoTuples.minus(second).plus(second, oneTuples);
+            local().set(threeTuples.minus(first).plus(first, twoTuples));
+        };
     }
-
-    /**
-     * Constructs a {@link Triple} from the nodes given, using the appropriate order for this table. E.g. a POS table
-     * should return a {@code Triple} using ({@code second}, {@code third}, {@code first}).
-     *
-     * @param first
-     * @param second
-     * @param third
-     * @return a {@code Triple}
-     */
-    protected abstract Triple triple(final Node first, final Node second, final Node third);
-
-    protected void _add(final Node first, final Node second, final Node third) {
-        debug("Adding three-tuple {} {} {}", first, second, third);
-        final ThreeTupleMap threeTuples = local().get();
-        TwoTupleMap twoTuples = threeTuples.get(first).orElse(new TwoTupleMap());
-        PersistentSet<Node> oneTuples = twoTuples.get(second).orElse(PersistentSet.empty());
-
-        oneTuples = oneTuples.plus(third);
-        twoTuples = twoTuples.minus(second).plus(second, oneTuples);
-        local().set(threeTuples.minus(first).plus(first, twoTuples));
-    }
-
-    protected void _delete(final Node first, final Node second, final Node third) {
-        debug("Deleting three-tuple {} {} {}", first, second, third);
-        final ThreeTupleMap threeTuples = local().get();
-        threeTuples.get(first).ifPresent(twoTuples -> twoTuples.get(second).ifPresent(oneTuples -> {
-            if (oneTuples.contains(third)) {
-                final TwoTupleMap newTwoTuples = twoTuples.minus(second).plus(second, oneTuples.minus(third));
-                debug("Setting transactional index to new value.");
-                local().set(threeTuples.minus(first).plus(first, newTwoTuples));
-            }
-        }));
+    
+    @Override
+    protected Consumer3<Node> delete() {
+        return (first, second, third) -> {
+            debug("Deleting three-tuple {} {} {}", first, second, third);
+            final ThreeTupleMap threeTuples = local().get();
+            threeTuples.get(first).ifPresent(twoTuples -> twoTuples.get(second).ifPresent(oneTuples -> {
+                if (oneTuples.contains(third)) {
+                    final TwoTupleMap newTwoTuples = twoTuples.minus(second).plus(second, oneTuples.minus(third));
+                    debug("Setting transactional index to new value.");
+                    local().set(threeTuples.minus(first).plus(first, newTwoTuples));
+                }
+            }));
+        };
     }
 }

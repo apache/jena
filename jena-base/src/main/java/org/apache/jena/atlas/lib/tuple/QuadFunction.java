@@ -1,0 +1,45 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE
+ * file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
+package org.apache.jena.atlas.lib.tuple;
+
+import java.util.function.Function;
+
+/**
+ * Represents a function that accepts four arguments and produces a result. This is a four-arity specialization of
+ * {@link Function}.
+ * <p>
+ * This is a functional interface whose functional method is {@link #apply}.
+ *
+ * @param <W> the type of the first argument to the function
+ * @param <X> the type of the second argument to the function
+ * @param <Y> the type of the third argument to the function
+ * @param <Z> the type of the fourth argument to the function
+ * @param <R> the type of the result of the function
+ * @see Function
+ */
+@FunctionalInterface
+public interface QuadFunction<W, X, Y, Z, R> {
+
+    R apply(final W w, final X x, final Y y, final Z z);
+
+    /**
+     * A specialization of {@link QuadFunction} in which all arguments are of the same type.
+     *
+     * @param <X> the type of all arguments
+     * @param <Z> the type of the result of the operation
+     */
+    @FunctionalInterface
+    static interface QuadOperator<X, Z> extends QuadFunction<X, X, X, X, Z> {}
+
+}
