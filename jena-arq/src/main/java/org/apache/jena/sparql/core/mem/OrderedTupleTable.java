@@ -13,11 +13,6 @@
 
 package org.apache.jena.sparql.core.mem;
 
-import static org.apache.jena.sparql.core.mem.QuadTable.accept;
-import static org.apache.jena.sparql.core.mem.QuadTable.apply;
-import static org.apache.jena.sparql.core.mem.TripleTable.accept;
-import static org.apache.jena.sparql.core.mem.TripleTable.apply;
-
 import java.util.function.Consumer;
 
 import org.apache.jena.atlas.lib.tuple.TupleMap;
@@ -72,7 +67,11 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
             final Node s = q.getSubject();
             final Node p = q.getPredicate();
             final Node o = q.getObject();
-            accept(order, g, s, p, o, consumer);
+            final Node first = get(order.mapIdx(0), g, s, p, o);
+            final Node second = get(order.mapIdx(1), g, s, p, o);
+            final Node third = get(order.mapIdx(2), g, s, p, o);
+            final Node fourth = get(order.mapIdx(3), g, s, p, o);
+            consumer.accept(first, second, third, fourth);
         };
     }
 
@@ -89,15 +88,53 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
             final Node s = t.getSubject();
             final Node p = t.getPredicate();
             final Node o = t.getObject();
-            accept(order, s, p, o, consumer);
+            final Node first = get(order.mapIdx(0), s, p, o);
+            final Node x2a = get(order.mapIdx(1), s, p, o);
+            final Node x3a = get(order.mapIdx(2), s, p, o);
+            consumer.accept(first, x2a, x3a);
         };
     }
 
     protected <T, X> TriOperator<T, X> map(final TriOperator<T, X> f) {
-        return (s, p, o) -> apply(order, s, p, o, f);
+        return (s, p, o) -> OrderedTupleTable.apply(order, s, p, o, f);
     }
 
     protected Triple unmap(final Node first, final Node second, final Node third) {
         return apply(reverse, first, second, third, Triple::new);
+    }
+
+    private static <X> X get(final int i, final X x1, final X x2, final X x3) {
+        switch (i) {
+        case 0: return x1;
+        case 1: return x2;
+        case 2: return x3;
+        default: throw new IndexOutOfBoundsException("Triples have components 0, 1, 2 but index = " + i + "!");
+        }
+    }
+
+    private static <X> X get(final int i, final X x1, final X x2, final X x3, final X x4) {
+        switch (i) {
+        case 0: return x1;
+        case 1: return x2;
+        case 2: return x3;
+        case 3: return x4;
+        default: throw new IndexOutOfBoundsException("Quads have components 0, 1, 2, 3 but index = " + i + "!");
+        }
+    }
+
+    private static <X, Z> Z apply(final TupleMap tupleMap, final X x1, final X x2, final X x3, final X x4,
+            final QuadOperator<X, Z> f) {
+        final X x1a = get(tupleMap.mapIdx(0), x1, x2, x3, x4);
+        final X x2a = get(tupleMap.mapIdx(1), x1, x2, x3, x4);
+        final X x3a = get(tupleMap.mapIdx(2), x1, x2, x3, x4);
+        final X x4a = get(tupleMap.mapIdx(3), x1, x2, x3, x4);
+        return f.apply(x1a, x2a, x3a, x4a);
+    }
+
+    private static <X, Z> Z apply(final TupleMap ordering, final X x1, final X x2, final X x3, final TriOperator<X, Z> f) {
+        final X x1a = get(ordering.mapIdx(0), x1, x2, x3);
+        final X x2a = get(ordering.mapIdx(1), x1, x2, x3);
+        final X x3a = get(ordering.mapIdx(2), x1, x2, x3);
+        return f.apply(x1a, x2a, x3a);
     }
 }

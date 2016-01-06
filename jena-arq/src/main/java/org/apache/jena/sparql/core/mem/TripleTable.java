@@ -14,9 +14,7 @@
 package org.apache.jena.sparql.core.mem;
 
 import java.util.stream.Stream;
-import org.apache.jena.atlas.lib.tuple.TriFunction.TriOperator;
-import org.apache.jena.atlas.lib.tuple.TriConsumer.Consumer3;
-import org.apache.jena.atlas.lib.tuple.TupleMap;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
@@ -38,32 +36,5 @@ public interface TripleTable extends TupleTable<Triple> {
     @Override
     default void clear() {
         find(null, null, null).forEach(this::delete);
-    }
-
-    static <X> void accept(final TupleMap ordering, final X x1, final X x2, final X x3, final Consumer3<X> c) {
-        final X x1a = get(ordering.mapIdx(0), x1, x2, x3);
-        final X x2a = get(ordering.mapIdx(1), x1, x2, x3);
-        final X x3a = get(ordering.mapIdx(2), x1, x2, x3);
-        c.accept(x1a, x2a, x3a);
-    }
-
-    static <X, Z> Z apply(final TupleMap ordering, final X x1, final X x2, final X x3, final TriOperator<X, Z> f) {
-        final X x1a = get(ordering.mapIdx(0), x1, x2, x3);
-        final X x2a = get(ordering.mapIdx(1), x1, x2, x3);
-        final X x3a = get(ordering.mapIdx(2), x1, x2, x3);
-        return f.apply(x1a, x2a, x3a);
-    }
-
-    default Triple unmap(final TupleMap order, final Node first, final Node second, final Node third) {
-        return apply(order, first, second, third, Triple::new);
-    }
-
-    static <X> X get(final int i, final X x1, final X x2, final X x3) {
-        switch (i) {
-        case 0: return x1;
-        case 1: return x2;
-        case 2: return x3;
-        default: throw new IndexOutOfBoundsException("Triples have components 0, 1, 2 but index = " + i + "!");
-        }
     }
 }

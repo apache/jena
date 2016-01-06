@@ -18,9 +18,7 @@ import static org.apache.jena.graph.Node.ANY;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
-import org.apache.jena.atlas.lib.tuple.QuadConsumer.Consumer4;
-import org.apache.jena.atlas.lib.tuple.QuadFunction.QuadOperator;
-import org.apache.jena.atlas.lib.tuple.TupleMap;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.Quad;
@@ -63,37 +61,5 @@ public interface QuadTable extends TupleTable<Quad> {
                 .map(Quad::asTriple)
                 .filter(seen::add)
                 .map(t -> Quad.create(Quad.unionGraph, t));
-    }
-
-    default Quad unmap(final TupleMap order, final Node first, final Node second, final Node third, final Node fourth) {
-        return apply(order, first, second, third, fourth, Quad::new);
-    }
-
-    static <X, Z> Z apply(final TupleMap tupleMap, final X x1, final X x2, final X x3, final X x4,
-            final QuadOperator<X, Z> f) {
-        final X x1a = get(tupleMap.mapIdx(0), x1, x2, x3, x4);
-        final X x2a = get(tupleMap.mapIdx(1), x1, x2, x3, x4);
-        final X x3a = get(tupleMap.mapIdx(2), x1, x2, x3, x4);
-        final X x4a = get(tupleMap.mapIdx(3), x1, x2, x3, x4);
-        return f.apply(x1a, x2a, x3a, x4a);
-    }
-
-    static <X> void accept(final TupleMap tupleMap, final X x1, final X x2, final X x3, final X x4,
-            final Consumer4<X> f) {
-        final X x1a = get(tupleMap.mapIdx(0), x1, x2, x3, x4);
-        final X x2a = get(tupleMap.mapIdx(1), x1, x2, x3, x4);
-        final X x3a = get(tupleMap.mapIdx(2), x1, x2, x3, x4);
-        final X x4a = get(tupleMap.mapIdx(3), x1, x2, x3, x4);
-        f.accept(x1a, x2a, x3a, x4a);
-    }
-
-    static <X> X get(final int i, final X x1, final X x2, final X x3, final X x4) {
-        switch (i) {
-        case 0: return x1;
-        case 1: return x2;
-        case 2: return x3;
-        case 3: return x4;
-        default: throw new IndexOutOfBoundsException("Quads have components 0, 1, 2, 3 but index = " + i + "!");
-        }
     }
 }
