@@ -31,10 +31,16 @@ public class SysRIOT
     private static Logger riotLogger = LoggerFactory.getLogger(riotLoggerName) ;
     
     public static boolean StrictXSDLexicialForms      = false ;
-    public static boolean StrictAbsURINoNormalization = false ;
     public static boolean strictMode                  = false ;
     
-    public static final String BNodeGenIdPrefix     = "genid" ;
+    /** Some people argue that absolute URIs should not be normalized.
+     * This flag puts IRI resolution in that mode.
+     * Bewared: inconisstencies arise - relative URIs are still normalized so
+     * where the unnormalized part is in a prefix name changes the outcome.
+     * Jena has always normalized abolute URIs.  
+     */
+    public static boolean AbsURINoNormalization       = false ;
+    public static final String BNodeGenIdPrefix       = "genid" ;
     
     /**
      * @deprecated Use Sys.isWindows
@@ -45,7 +51,7 @@ public class SysRIOT
     public static void setStrictMode(boolean state) {
         SysRIOT.strictMode = state ;
         SysRIOT.StrictXSDLexicialForms = state ;
-        SysRIOT.StrictAbsURINoNormalization = state ;
+        //SysRIOT.AbsURINoNormalization = state ;
     }
 
     public static boolean isStrictMode() {
