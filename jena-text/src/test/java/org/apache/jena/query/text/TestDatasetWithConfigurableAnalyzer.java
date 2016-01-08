@@ -45,14 +45,17 @@ public class TestDatasetWithConfigurableAnalyzer extends TestDatasetWithLowerCas
         final String turtle = StrUtils.strjoinNL(
                 TURTLE_PROLOG,
                 "<" + RESOURCE_BASE + testName + ">",
-                "  rdfs:label 'Feeling a déjà vu'",
+                "  rdfs:label 'déjà vu'",
+                ".",
+                "<" + RESOURCE_BASE + "irrelevant>",
+                "  rdfs:label 'not déjà vu'",
                 "."
                 );
         String queryString = StrUtils.strjoinNL(
                 QUERY_PROLOG,
                 "SELECT ?s",
                 "WHERE {",
-                "    ?s text:query ( rdfs:label '\"feeling ä déja\"*' 10 ) .",
+                "    ?s text:query ( rdfs:label '\"Déja Vü\"' 10 ) .",
                 "}"
                 );
         Set<String> expectedURIs = Sets.newHashSet(RESOURCE_BASE + testName);
