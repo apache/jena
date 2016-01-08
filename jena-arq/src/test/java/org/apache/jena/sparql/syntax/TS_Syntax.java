@@ -20,7 +20,7 @@ package org.apache.jena.sparql.syntax;
 
 import org.apache.jena.sparql.syntax.syntaxtransform.TestFlattenSyntax ;
 import org.apache.jena.sparql.syntax.syntaxtransform.TestQueryOps ;
-import org.apache.jena.sparql.syntax.syntaxtransform.TestSubstitution ;
+import org.apache.jena.sparql.syntax.syntaxtransform.TestSyntaxTransform ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
@@ -29,9 +29,8 @@ import org.junit.runners.Suite.SuiteClasses ;
 @SuiteClasses( {
     TestSerialization.class
     , TestQueryOps.class
-    , TestSubstitution.class
+    , TestSyntaxTransform.class
     , TestFlattenSyntax.class
 })
-public class TS_Syntax {
 
-}
+public class TS_Syntax {}

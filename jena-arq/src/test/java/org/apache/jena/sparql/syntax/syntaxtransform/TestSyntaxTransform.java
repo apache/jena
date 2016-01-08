@@ -34,28 +34,76 @@ import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;
 
 /** Test of variable replaced by value */
-public class TestSubstitution extends BaseTest
+public class TestSyntaxTransform extends BaseTest
 {
-    @Test public void subst_01() { testQuery("SELECT * { }", "SELECT * {}", "o", "1") ; }
+    @Test public void subst_query_01() {
+        testQuery("SELECT * { }", 
+                  "SELECT * {}", 
+                  "o", "1");
+    }
+
+    @Test public void subst_query_02() { 
+        testQuery("SELECT ?x { }", 
+                  "SELECT ?x {}",
+                  "o", "1") ;
+    }
+
+    @Test public void subst_query_03() {
+        testQuery("SELECT ?o { }", 
+                  "SELECT (1 as ?o) {}", 
+                  "o", "1") ; }
+
+    @Test public void subst_query_04() {
+        testQuery("SELECT (?o AS ?z) { }",
+                  "SELECT (1 AS ?z) {}",
+                  "o", "1") ; }
+
+    @Test public void subst_query_05() {
+        testQuery("SELECT (?o+2 AS ?z) { }", 
+                  "SELECT (1+2 AS ?z) {}",
+                  "o", "1");
+    }
+
+    @Test public void subst_query_09() {
+        testQuery("SELECT * {?s ?p ?o}", 
+                  "SELECT * {?s ?p 1}",
+                  "o", "1");
+    }
+
+    @Test public void subst_query_10() {
+        testQuery("SELECT * { SELECT ?o {} }", 
+                  "SELECT * {{SELECT (1 as ?o) {}}}",
+                  "o", "1");
+    }
+
+    @Test public void subst_query_11() { testQuery
+        ("SELECT * { ?s ?p ?o { SELECT ?x { ?x ?p ?o } } }",
+         "SELECT * { ?s ?p 1  { SELECT ?x { ?x ?p 1 } } }",
+         "o", "1") ; }
+
+    @Test public void subst_update_01() { 
+        testUpdate("DELETE { ?s <urn:p> ?x } WHERE {}", 
+                   "DELETE { ?s <urn:p> <urn:x> } WHERE {}",
+                   "x", "<urn:x>") ;
+    }
+
+    @Test public void subst_update_02() { 
+        testUpdate("DELETE { ?s <urn:p> ?x } WHERE { ?s <urn:p> ?x }", 
+                   "DELETE { ?s <urn:p> <urn:x> } WHERE { ?s <urn:p> <urn:x> }",
+                   "x", "<urn:x>") ;
+    }
+
+    @Test public void subst_update_03() { 
+        testUpdate("DELETE { ?s <urn:p> ?x } INSERT { ?s <urn:p> ?x } WHERE { ?s <urn:p> ?x }", 
+                   "DELETE { ?s <urn:p> <urn:x> } INSERT { ?s <urn:p> <urn:x> } WHERE { ?s <urn:p> <urn:x> }",
+                   "x", "<urn:x>") ;
+    }
     
-    @Test public void subst_02() { testQuery("SELECT ?x { }", "SELECT ?x {}", "o", "1") ; }
-
-    @Test public void subst_03() { testQuery("SELECT ?o { }", "SELECT (1 as ?o) {}", "o", "1") ; }
-
-    @Test public void subst_04() { testQuery("SELECT (?o AS ?z) { }", "SELECT (1 AS ?z) {}", "o", "1") ; }
-
-    @Test public void subst_05() { testQuery("SELECT (?o+2 AS ?z) { }", "SELECT (1+2 AS ?z) {}", "o", "1") ; }
-
-    @Test public void subst_09() { testQuery("SELECT * {?s ?p ?o}", "SELECT * {?s ?p 1}", "o", "1") ; }  
-    
-    @Test public void subst_10() { testQuery("SELECT * { SELECT ?o {} }", "SELECT * {{SELECT (1 as ?o) {}}}", "o", "1") ; }
-    
-    @Test public void subst_11() { testQuery("SELECT * { ?s ?p ?o { SELECT ?x { ?x ?p ?o } } }",
-                                             "SELECT * { ?s ?p 1  { SELECT ?x { ?x ?p 1 } } }",
-                                             "o", "1") ; }
-
-    @Test public void subst_50() { testUpdate("DELETE { ?s <urn:p> ?x } WHERE {}",
-                                              "DELETE { ?s <urn:p> <urn:x> } WHERE {}", "x", "<urn:x>") ; }
+    @Test public void subst_update_09() { 
+        testUpdate("DELETE WHERE { ?s <urn:p> ?x }", 
+                   "DELETE WHERE { ?s <urn:p> <urn:x> }",
+                   "x", "<urn:x>") ;
+    }
 
     //static final String PREFIX = "PREFIX : <http://example/>\n" ;
     static final String PREFIX = "" ;

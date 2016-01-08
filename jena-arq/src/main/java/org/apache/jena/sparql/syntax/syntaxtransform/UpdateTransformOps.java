@@ -152,6 +152,7 @@ public class UpdateTransformOps {
 
             addAll(mod.getDeleteAcc(), del1) ;
             addAll(mod.getInsertAcc(), ins1) ;
+            mod.setElement(el2); 
             result = mod ;
         }
 
