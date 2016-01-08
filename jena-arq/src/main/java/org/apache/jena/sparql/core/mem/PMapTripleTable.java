@@ -39,21 +39,22 @@ import org.slf4j.Logger;
  *
  */
 public class PMapTripleTable extends PMapTupleTable<ThreeTupleMap, Triple, Consumer3<Node>>implements TripleTable {
-
-    private static class TripleTupleMap extends TupleMap {
-
-        private TripleTupleMap(final String mappedOrder) {
-            super(mappedOrder, compileMapping("SPO", mappedOrder));
-        }
-    }
     
     /**
-     * @param order a name and order for this table
+     * @param order an internal order for this table
      */
     public PMapTripleTable(final String order) {
-        this(order, new TripleTupleMap(order));
+        this("SPO", order);
     }
-    
+
+    /**
+     * @param canonical the canonical order outside this table
+     * @param order the internal order for this table
+     */
+    public PMapTripleTable(final String canonical, final String order) {
+        this(canonical + "->" + order, TupleMap.create(canonical, order));
+    }
+
     /**
      * @param tableName a name for this table
      * @param order the order of elements in this table

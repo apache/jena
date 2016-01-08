@@ -46,6 +46,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
  * {@code 0<-1, 1<-2, 2<-0} 
  * and the "putTransform" is where to place the items: {@code 0->2, 1->0, 2->1}.
  */
+final
 public class TupleMap {
     /*
      * Naming.  getTransform (from src), putTransform(into dst)
@@ -116,7 +117,7 @@ public class TupleMap {
      * P->0, O->1) and not 1,2,0 (which is the extraction mapping). The label is
      * just a label and is not interpretted here.
      */
-    protected TupleMap(String label, int... elements) {
+    private TupleMap(String label, int... elements) {
         this.len = elements.length ; 
         this.label = label;
 
@@ -315,7 +316,7 @@ public class TupleMap {
     }
 
     /** Compile a mapping encoded as single charcaters e.g. "SPO", "POS" */
-    protected static int[] compileMapping(String domain, String range) {
+    private static int[] compileMapping(String domain, String range) {
         List<Character> input = StrUtils.toCharList(domain);
         List<Character> output = StrUtils.toCharList(range);
         return compileMapping(input, output);

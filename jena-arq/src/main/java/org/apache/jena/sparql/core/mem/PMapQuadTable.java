@@ -41,19 +41,19 @@ import org.slf4j.Logger;
  */
 public class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad, Consumer4<Node>>implements QuadTable {
 
-
-    private static class QuadTupleMap extends TupleMap {
-
-        private QuadTupleMap(final String mappedOrder) {
-            super(mappedOrder, compileMapping("GSPO", mappedOrder));
-        }
+    /**
+     * @param order an internal order for this table
+     */
+    public PMapQuadTable(final String order) {
+        this("GSPO", order);
     }
 
     /**
-     * @param order a name and order for this table
+     * @param canonical the canonical order outside this table
+     * @param order the internal order for this table
      */
-    public PMapQuadTable(final String order) {
-        this(order, new QuadTupleMap(order));
+    public PMapQuadTable(final String canonical, final String order) {
+        this(canonical + "->" + order, TupleMap.create(canonical, order));
     }
 
     /**
