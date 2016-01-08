@@ -486,6 +486,30 @@ public class TestTransformFilters extends AbstractTestTransform
                t_expandOneOf,
                "(filter true (distinct (filter (exprlist (!= ?x 1) (!= ?x 2)) (bgp (triple ?s ?p ?x)) )))") ;
     }
+    
+    @Test
+    public void oneOf6() {
+        // JENA-1113
+        int x = TransformExpandOneOf.REWRITE_LIMIT ;
+        try {
+            TransformExpandOneOf.REWRITE_LIMIT = 3 ;
+            testOp("(filter true (distinct (filter (notin ?x 1 2) (bgp (?s ?p ?x)) )))",
+                   t_expandOneOf,
+                "(filter true (distinct (filter (exprlist (!= ?x 1) (!= ?x 2)) (bgp (triple ?s ?p ?x)) )))") ;
+            testOp("(filter true (distinct (filter (notin ?x 1 2 3) (bgp (?s ?p ?x)) )))",
+                   t_expandOneOf,
+                   // No change.
+                   "(filter true (distinct (filter (notin ?x 1 2 3) (bgp (?s ?p ?x)) )))") ;
+            
+        } finally {
+            TransformExpandOneOf.REWRITE_LIMIT = x ;
+        }
+        // Check reset.
+        testOp("(filter true (distinct (filter (notin ?x 1 2 3) (bgp (?s ?p ?x)) )))",
+               t_expandOneOf,
+               "(filter true (distinct (filter (exprlist (!= ?x 1) (!= ?x 2)) (bgp (triple ?s ?p ?x)) )))") ;
+    }
+
 
     @Test public void implicitJoin01() {
         testOp(

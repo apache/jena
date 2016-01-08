@@ -71,7 +71,7 @@ public class TransformExpandOneOf extends TransformCopy
         return (e instanceof E_OneOfBase) && ((E_OneOfBase)e).getRHS().size() < REWRITE_LIMIT;
     }
 
-    private static int REWRITE_LIMIT = 250;
+    /*package*/ static int REWRITE_LIMIT = 250;
 
     private static ExprList expand(ExprList exprList) {
         ExprList exprList2 = new ExprList() ;
