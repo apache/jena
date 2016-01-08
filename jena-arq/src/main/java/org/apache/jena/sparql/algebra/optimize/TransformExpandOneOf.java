@@ -20,6 +20,8 @@ package org.apache.jena.sparql.algebra.optimize;
 
 import static org.apache.jena.sparql.expr.NodeValue.FALSE ;
 import static org.apache.jena.sparql.expr.NodeValue.TRUE ;
+
+import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.TransformCopy ;
 import org.apache.jena.sparql.algebra.op.OpFilter ;
@@ -62,28 +64,39 @@ public class TransformExpandOneOf extends TransformCopy
         return expand(exprList) ; 
     }
     
+    /** Prescan to see if anything to consider */ 
     private static boolean interesting(ExprList exprList)
     {
-        for ( Expr e : exprList )
-        {
-            if ( e instanceof E_OneOf ) return true ;
-            if ( e instanceof E_NotOneOf ) return true ;
-        }
-        return false ;
+        return exprList.getList().stream().anyMatch((e)->processable(e)) ;
     }
-
+    
+    private static boolean processable(Expr e) {
+        return ( e instanceof E_OneOfBase ) && ((E_OneOfBase)e).getRHS().size() < REWRITE_LIMIT ;
+    }
+    
+    private static int REWRITE_LIMIT = 250 ;
+    
     private static ExprList expand(ExprList exprList)
     {
         ExprList exprList2 = new ExprList() ;
         
         for (  Expr e : exprList)
         {
+            
+            if ( ! processable(e) ) {
+                exprList2.add(e) ;
+                continue ;
+            }
+            
             if ( e instanceof E_OneOf )
             {
                 // ?x IN (a,b) ===> (?x == a) || (?x == b)
                 // ?x IN ()    ===> false
-                
+
                 E_OneOf exprOneOf = (E_OneOf)e ;
+                if ( exprOneOf.getRHS().size() > REWRITE_LIMIT )
+                    // Too large - leave it alone.
+                    continue ;
                 Expr x = exprOneOf.getLHS() ;
                 Expr disjunction = null ;
                 // if ?x IN () then it's false regardless.  
@@ -95,7 +108,7 @@ public class TransformExpandOneOf extends TransformCopy
                     else
                         disjunction = new E_LogicalOr(disjunction, e2) ;
                 }
-                
+
                 if ( disjunction == null )
                     exprList2.add(FALSE) ;
                 else
@@ -107,6 +120,9 @@ public class TransformExpandOneOf extends TransformCopy
                 // ?x NOT IN (a,b) ===> (?x != a) && (?x != b)
                 // ?x NOT IN () ===> TRUE (or nothing)
                 E_NotOneOf exprNotOneOf = (E_NotOneOf)e ;
+                if ( exprNotOneOf.getRHS().size() > REWRITE_LIMIT )
+                    // Too large - leave it alone.
+                    continue ;
                 Expr x = exprNotOneOf.getLHS() ;
                 if ( exprNotOneOf.getRHS().size() == 0 )
                     exprList2.add(TRUE) ;
@@ -117,10 +133,9 @@ public class TransformExpandOneOf extends TransformCopy
                 }
                 continue ;
             }
-            
-            exprList2.add(e) ;
+            throw new ARQInternalErrorException() ;
         }
-        
+
         return exprList2 ;
     }
 }
