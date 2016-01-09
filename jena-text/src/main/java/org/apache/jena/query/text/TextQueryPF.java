@@ -20,12 +20,12 @@ package org.apache.jena.query.text ;
 
 import java.util.Collection ;
 import java.util.Iterator ;
-import java.util.LinkedHashMap ;
 import java.util.List ;
-import java.util.Map ;
 import java.util.function.Function ;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Cache ;
+import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
@@ -68,6 +68,7 @@ public class TextQueryPF extends PropertyFunctionBase {
     private String langArg = null;
 
     private static final Symbol cacheSymbol = Symbol.create("TextQueryPF.cache");
+    private static final int CACHE_SIZE = 10;
 
     @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
@@ -278,14 +279,14 @@ public class TextQueryPF extends PropertyFunctionBase {
             log.debug("Text query: {} ({})", queryString,limit) ;
 
         String cacheKey = limit + " " + property + " " + queryString ;
-        Map<String,ListMultimap<String,TextHit>> queryCache = 
-            (Map<String,ListMultimap<String,TextHit>>) execCxt.getContext().get(cacheSymbol);
+        Cache<String,ListMultimap<String,TextHit>> queryCache = 
+            (Cache<String,ListMultimap<String,TextHit>>) execCxt.getContext().get(cacheSymbol);
         if (queryCache == null) { /* doesn't yet exist, need to create it */
-            queryCache = new LinkedHashMap();
+            queryCache = CacheFactory.createCache(CACHE_SIZE);
             execCxt.getContext().put(cacheSymbol, queryCache);
         }
 
-        ListMultimap<String,TextHit> results = queryCache.get(cacheKey) ;
+        ListMultimap<String,TextHit> results = queryCache.getIfPresent(cacheKey) ;
         if (results == null) { /* cache miss */
             List<TextHit> resultList = textIndex.query(property, queryString, limit) ;
             results = LinkedListMultimap.create();
