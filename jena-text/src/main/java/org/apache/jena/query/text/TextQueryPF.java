@@ -286,15 +286,15 @@ public class TextQueryPF extends PropertyFunctionBase {
             execCxt.getContext().put(cacheSymbol, queryCache);
         }
 
-        ListMultimap<String,TextHit> results = queryCache.getIfPresent(cacheKey) ;
-        if (results == null) { /* cache miss */
-            List<TextHit> resultList = textIndex.query(property, queryString, limit) ;
-            results = LinkedListMultimap.create();
+        final String queryStr = queryString; // final needed for the lambda function
+        ListMultimap<String,TextHit> results = queryCache.getOrFill(cacheKey, () -> {
+            List<TextHit> resultList = textIndex.query(property, queryStr, limit) ;
+            ListMultimap<String,TextHit> resultMultimap = LinkedListMultimap.create();
             for (TextHit result : resultList) {
-                results.put(result.getNode().getURI(), result);
+                resultMultimap.put(result.getNode().getURI(), result);
             }
-            queryCache.put(cacheKey, results) ;
-        }
+            return resultMultimap;
+        });
         return results;
     }
     
