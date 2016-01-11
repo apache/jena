@@ -79,7 +79,7 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
      * @return an order flag - one of LESS_THAN, EQUAL, GREATER_THEN, INDETERMINATE
      */
     public int compare(AbstractDateTime other) {
-        return compareDates(data, other.data, true);
+        return compareValues(data, other.data, true);
     }
     
     /**
@@ -155,7 +155,7 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
      * @param strict
      * @return less, greater, less_equal, greater_equal, equal
      */
-    protected short compareDates(int[] date1, int[] date2, boolean strict) {
+    protected short compareValues(int[] date1, int[] date2, boolean strict) {
         if ( date1[utc]==date2[utc] ) {
             return compareOrder(date1, date2);
         }

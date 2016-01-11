@@ -19,6 +19,7 @@
 package org.apache.jena.datatypes.xsd;
 
 import java.math.BigDecimal;
+import java.util.Arrays ;
 
 import org.apache.jena.datatypes.xsd.impl.XSDAbstractDateTimeType ;
 
@@ -193,8 +194,11 @@ public class XSDDuration extends AbstractDateTime {
      * return GREATER_THAN if date1 is greater than OR equal to date2 
      */
     @Override
-    protected short compareDates(int[] date1, int[] date2, boolean strict) {
+    protected short compareValues(int[] date1, int[] date2, boolean strict) {
 
+        date1 = canonical(date1) ;
+        date2 = canonical(date2) ;
+        
         //REVISIT: this is unoptimazed vs of comparing 2 durations
         //         Algorithm is described in 3.2.6.2 W3C Schema Datatype specs
         //
@@ -266,6 +270,37 @@ public class XSDDuration extends AbstractDateTime {
         }
         return resultA;
     }
+    
+    /**
+     * Equality function (value based).
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true ;
+        if ( obj == null )
+            return false ;
+        if (obj instanceof XSDDuration) {
+            XSDDuration dur = (XSDDuration) obj;
+            int[] data1 = canonical(this.data) ;
+            int[] data2 = canonical(dur.data) ;
+            for (int i = 0; i < data1.length; i++) {
+                if (data1[i] != data2[i])
+                    return false;
+            }
+            return true;
+        }
+        return super.equals(obj) ;
+    }
+    
+    @Override
+    public int hashCode() {
+        int[] data1 = canonical(this.data) ;
+        int hash = 1816 ; 
+        for ( int aData : data1 )
+            hash = ( hash << 1 ) ^ aData;
+        return hash;
+    }
 
     private int[] addDuration(int[] date, int index, int[] duration) {
 
@@ -323,4 +358,58 @@ public class XSDDuration extends AbstractDateTime {
         return duration;
     }
     
+    
+    // XXX Signedness?
+    // Day-time, year-month canonicalization. 
+    private static int[] canonical(int[] val) {
+        val = Arrays.copyOf(val, val.length) ;
+        
+        while ( val[ms] >= 1000 ) {
+            val[s] += 1 ; 
+            val[ms] -= 1000 ;
+        }
+        while ( val[ms] <= -1000 ) {
+            val[s] -= 1 ; 
+            val[ms] += 1000 ;
+        }
+        
+        while ( val[s] >= 60 ) {
+            val[m] += 1 ;
+            val[s] -= 60 ;
+        }
+        while ( val[s] <= -60 ) {
+            val[m] -= 1 ;
+            val[s] += 60 ;
+        }
+
+        
+        while ( val[m] >= 60 ) {
+            val[h] += 1 ;
+            val[m] -= 60 ;
+        }
+        while ( val[m] <= -60 ) {
+            val[h] -= 1 ;
+            val[m] += 60 ;
+        }
+
+        while ( val[h] >= 24 ) {
+            val[D] += 1 ;
+            val[h] -= 24 ;
+        }
+        while ( val[h] <= -24 ) {
+            val[D] -= 1 ;
+            val[h] += 24 ;
+        }
+        
+        while ( val[M] >= 12 ) {
+            val[CY] += 1 ;
+            val[M] -= 12 ;
+        }
+        while ( val[M] <= -12 ) {
+            val[CY] -= 1 ;
+            val[M] += 12 ;
+        }
+
+        return val ;
+    }
 }
