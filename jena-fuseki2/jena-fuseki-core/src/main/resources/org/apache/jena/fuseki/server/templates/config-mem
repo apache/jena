@@ -23,5 +23,5 @@
     fuseki:dataset                     <#dataset> ;
     .
 
-## In-memory, initially empty.
-<#dataset> rdf:type ja:RDFDataset .
+# Transactional, in-memory dataset. Initially empty.
+<#dataset> rdf:type ja:DatasetTxnMem .
