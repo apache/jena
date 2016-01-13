@@ -20,10 +20,12 @@ package jena;
 
 import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
 
-import java.net.URL;
-import java.io.FileInputStream;
-
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.system.JenaSystem ;
 
 /** A program which read two RDF models and determines if they are the same.
  *
@@ -41,12 +43,17 @@ import org.apache.jena.rdf.model.* ;
  *       lang1 and lang2 specify the language of the input and can be:
  *           RDF/XML
  *           N-TRIPLE
- *           N3
+ *           TURTLE
+ *           JSON-LD
+ *       The language defaults to what can be inferred from the file name or URL.  
  *  </pre>
  */
 public class rdfcompare extends java.lang.Object {
 
-    static { setCmdLogging(); }
+    static {
+        JenaSystem.init();
+        setCmdLogging();
+    }
 
     /**
     * @param args the command line arguments
@@ -59,28 +66,27 @@ public class rdfcompare extends java.lang.Object {
         
         String in1 = args[0];
         String in2 = args[1];
-        String lang1 = "RDF/XML";
-        if (args.length >= 3) {
+        String lang1 = null ;
+        if (args.length >= 3)
             lang1 = args[2];
-        } 
-        String lang2 = "N-TRIPLE";
-        if (args.length >= 4) {
-            lang2 = args[3];
-        }
-        String base1 = null;
-        if (args.length >= 5) {
-            base1 = args[4];
-        }
-        String base2 = base1;
-        if (args.length >= 6) {
-            base2 = args[5];
-        }
         
-        System.out.println(in1 + " " + in2 + " " + lang1 + " " + lang2 + " " + base1 + " " + base2);
+        String lang2 = null ;
+        if (args.length >= 4)
+            lang2 = args[3];
+
+        String base1 = null;
+        if (args.length >= 5)
+            base1 = args[4];
+
+        String base2 = base1;
+        if (args.length >= 6)
+            base2 = args[5];
+        
+        //System.out.println(in1 + " " + in2 + " " + lang1 + " " + lang2 + " " + base1 + " " + base2);
         try {
             Model m1 = ModelFactory.createDefaultModel();
             Model m2 = ModelFactory.createDefaultModel();
-        
+
             read(m1, in1, lang1, base1);
             read(m2, in2, lang2, base2);
         
@@ -107,25 +113,20 @@ public class rdfcompare extends java.lang.Object {
         System.err.println();
         System.err.println("    source1 and source2 can be URL's or filenames");
         System.err.println("    lang1 and lang2 can take values:");
-        System.err.println("      RDF/XML");
-        System.err.println("      N-TRIPLE");
-        System.err.println("      N3");
-        System.err.println("    lang1 defaults to RDF/XML, lang2 to N-TRIPLE");
+        System.err.println("      RDF/XML, N-TRIPLE, TURTLE, JSON-LD");
         System.err.println("    base1 and base2 are URIs");
         System.err.println("    base1 defaults to null");
         System.err.println("    base2 defaults to base1");
-        System.err.println("    If no base URIs are specified Jena determines the base URI based on the input source");
+        System.err.println("If no base URIs are specified Jena determines the base URI based on the input source");
         
         System.err.println();
     }
     
-    protected static void read(Model model, String in, String lang, String base) 
-      throws java.io.FileNotFoundException {
-        try {
-            URL url = new URL(in);
-            model.read(in, base, lang);
-        } catch (java.net.MalformedURLException e) {
-            model.read(new FileInputStream(in), base, lang);
-        }
+    protected static void read(Model model, String in, String langStr, String base)
+    { 
+        Lang lang = null ;
+        if ( langStr != null )
+            lang = RDFLanguages.nameToLang(langStr) ;
+        RDFDataMgr.read(model, in, base, lang) ;
     }
 }
