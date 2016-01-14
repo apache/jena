@@ -105,11 +105,21 @@
   </dependencies>
 
   <build>
+
     <resources>
       <resource>
-        <targetPath>org/apache/jena/sdb/</targetPath>
+        <filtering>false</filtering>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>org/apache/jena/sdb/sdb-properties.xml</exclude>
+        </excludes>
+      </resource>
+      <resource>
         <filtering>true</filtering>
         <directory>src/main/resources</directory>
+        <includes>
+          <include>org/apache/jena/sdb/sdb-properties.xml</include>
+        </includes>
       </resource>
     </resources>
 

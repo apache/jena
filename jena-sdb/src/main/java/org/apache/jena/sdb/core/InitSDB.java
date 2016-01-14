@@ -34,6 +34,6 @@ public class InitSDB implements JenaSubsystemLifecycle {
     
     @Override
     public int level() {
-        return 9 ;
+        return 50 ;
     }
 }
