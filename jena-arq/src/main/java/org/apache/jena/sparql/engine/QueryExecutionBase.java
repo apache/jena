@@ -271,6 +271,7 @@ public class QueryExecutionBase implements QueryExecution
         DatasetGraph dsg = dataset.asDatasetGraph() ; 
         try {
             execConstructQuads().forEachRemaining(dsg::add);
+            insertPrefixesInto(dataset);
         } finally {
             this.close();
         }
@@ -603,6 +604,10 @@ public class QueryExecutionBase implements QueryExecution
         }
     }
 
+    private void insertPrefixesInto(Dataset ds) {
+        insertPrefixesInto(ds.getDefaultModel()) ;
+    }
+    
     static private String labelForQuery(Query q)
     {
         if ( q.isSelectType() )     return "SELECT" ; 
