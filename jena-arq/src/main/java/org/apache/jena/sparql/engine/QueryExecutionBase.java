@@ -263,7 +263,7 @@ public class QueryExecutionBase implements QueryExecution
     
     @Override
     public Dataset execConstructDataset(){
-        return execConstructDataset(DatasetFactory.createTxnMem()) ;
+        return execConstructDataset(DatasetFactory.create()) ;
     }
 
     @Override
