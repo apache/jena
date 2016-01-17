@@ -20,9 +20,9 @@ package org.apache.jena.sparql.core.mem;
 
 import java.util.function.Consumer;
 
+import org.apache.jena.atlas.lib.tuple.Consumer4;
+import org.apache.jena.atlas.lib.tuple.TetraOperator;
 import org.apache.jena.atlas.lib.tuple.TupleMap;
-import org.apache.jena.atlas.lib.tuple.QuadConsumer.Consumer4;
-import org.apache.jena.atlas.lib.tuple.QuadFunction.QuadOperator;
 import org.apache.jena.atlas.lib.tuple.TriConsumer.Consumer3;
 import org.apache.jena.atlas.lib.tuple.TriFunction.TriOperator;
 import org.apache.jena.graph.Node;
@@ -80,7 +80,7 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
         };
     }
 
-    protected <X> QuadOperator<Node, X> map(final QuadOperator<Node, X> f) {
+    protected <X> TetraOperator<Node, X> map(final TetraOperator<Node, X> f) {
         return (g, s, p, o) -> apply(order, g, s, p, o, f);
     }
 
@@ -128,7 +128,7 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
     }
 
     private static <X, Z> Z apply(final TupleMap tupleMap, final X x1, final X x2, final X x3, final X x4,
-            final QuadOperator<X, Z> f) {
+            final TetraOperator<X, Z> f) {
         final X x1a = get(tupleMap.mapIdx(0), x1, x2, x3, x4);
         final X x2a = get(tupleMap.mapIdx(1), x1, x2, x3, x4);
         final X x3a = get(tupleMap.mapIdx(2), x1, x2, x3, x4);

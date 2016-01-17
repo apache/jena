@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.atlas.lib.tuple;
+package org.apache.jena.atlas.function;
 
 import java.util.function.Consumer;
 
@@ -33,15 +33,7 @@ import java.util.function.Consumer;
  * @see Consumer
  */
 @FunctionalInterface
-public interface QuadConsumer<W, X, Y, Z> {
+public interface TetraConsumer<W, X, Y, Z> {
 
     void accept(final W w, final X x, final Y y, final Z z);
-
-    /**
-     * A specialization of {@link QuadConsumer} in which all arguments are of the same type.
-     *
-     * @param <X> the type of all arguments
-     */
-    @FunctionalInterface
-    static interface Consumer4<X> extends QuadConsumer<X, X, X, X> {}
 }

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.lib.tuple;
+package org.apache.jena.atlas.function;
 
 import java.util.function.Function;
 
@@ -34,17 +34,8 @@ import java.util.function.Function;
  * @see Function
  */
 @FunctionalInterface
-public interface QuadFunction<W, X, Y, Z, R> {
+public interface TetraFunction<W, X, Y, Z, R> {
 
     R apply(final W w, final X x, final Y y, final Z z);
-
-    /**
-     * A specialization of {@link QuadFunction} in which all arguments are of the same type.
-     *
-     * @param <X> the type of all arguments
-     * @param <Z> the type of the result of the operation
-     */
-    @FunctionalInterface
-    static interface QuadOperator<X, Z> extends QuadFunction<X, X, X, X, Z> {}
 
 }

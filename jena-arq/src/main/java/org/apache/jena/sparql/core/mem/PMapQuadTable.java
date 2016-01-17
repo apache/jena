@@ -25,8 +25,8 @@ import java.util.stream.Stream;
 
 import org.apache.jena.atlas.lib.persistent.PMap;
 import org.apache.jena.atlas.lib.persistent.PersistentSet;
-import org.apache.jena.atlas.lib.tuple.QuadConsumer.Consumer4;
-import org.apache.jena.atlas.lib.tuple.QuadFunction.QuadOperator;
+import org.apache.jena.atlas.lib.tuple.Consumer4;
+import org.apache.jena.atlas.lib.tuple.TetraOperator;
 import org.apache.jena.atlas.lib.tuple.TupleMap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Quad;
@@ -103,7 +103,7 @@ public class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad, Consumer4<
      * @return a <code>Stream</code> of tuples matching the pattern
      */
     @SuppressWarnings("unchecked") // Because of (Stream<Quad>) -- but why is that needed?
-    private QuadOperator<Node, Stream<Quad>> find = (first, second, third, fourth) -> {
+    private TetraOperator<Node, Stream<Quad>> find = (first, second, third, fourth) -> {
         debug("Querying on four-tuple pattern: {} {} {} {} .", first, second, third, fourth);
         final FourTupleMap fourTuples = local().get();
         if (isConcrete(first)) {
