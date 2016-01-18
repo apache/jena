@@ -156,7 +156,7 @@ public class SDB
 
     // ----------------------------------
     
-    static private String metadataLocation = "org/apacge/jena/sdb/sdb-properties.xml" ;
+    static private String metadataLocation = "org/apache/jena/sdb/sdb-properties.xml" ;
     static private Metadata metadata = new Metadata(metadataLocation) ;
     
     /** The root package name for SDB */   
