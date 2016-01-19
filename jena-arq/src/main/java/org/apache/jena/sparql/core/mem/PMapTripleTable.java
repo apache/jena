@@ -25,8 +25,8 @@ import java.util.stream.Stream;
 
 import org.apache.jena.atlas.lib.persistent.PMap;
 import org.apache.jena.atlas.lib.persistent.PersistentSet;
-import org.apache.jena.atlas.lib.tuple.TriConsumer.Consumer3;
-import org.apache.jena.atlas.lib.tuple.TriFunction.TriOperator;
+import org.apache.jena.atlas.lib.tuple.TConsumer3;
+import org.apache.jena.atlas.lib.tuple.TFunction3;
 import org.apache.jena.atlas.lib.tuple.TupleMap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -38,7 +38,7 @@ import org.slf4j.Logger;
  * A {@link TripleTable} employing persistent maps to index triples in one particular slot order (e.g. SPO, OSP or POS).
  *
  */
-public class PMapTripleTable extends PMapTupleTable<ThreeTupleMap, Triple, Consumer3<Node>>implements TripleTable {
+public class PMapTripleTable extends PMapTupleTable<ThreeTupleMap, Triple, TConsumer3<Node>>implements TripleTable {
     
     /**
      * @param order an internal order for this table
@@ -101,7 +101,7 @@ public class PMapTripleTable extends PMapTupleTable<ThreeTupleMap, Triple, Consu
      * @return a <code>Stream</code> of tuples matching the pattern
      */
     @SuppressWarnings("unchecked") // Because of (Stream<Triple>) -- but why is that needed?
-    private TriOperator<Node, Stream<Triple>> find = (first, second, third) -> {
+    private TFunction3<Node, Stream<Triple>> find = (first, second, third) -> {
         debug("Querying on three-tuple pattern: {} {} {} .", first, second, third);
         final ThreeTupleMap threeTuples = local().get();
         if (isConcrete(first)) {
@@ -129,7 +129,7 @@ public class PMapTripleTable extends PMapTupleTable<ThreeTupleMap, Triple, Consu
     };
     
     @Override
-    protected Consumer3<Node> add() {
+    protected TConsumer3<Node> add() {
         return (first, second, third) -> {
             debug("Adding three-tuple {} {} {}", first, second, third);
             final ThreeTupleMap threeTuples = local().get();
@@ -143,7 +143,7 @@ public class PMapTripleTable extends PMapTupleTable<ThreeTupleMap, Triple, Consu
     }
     
     @Override
-    protected Consumer3<Node> delete() {
+    protected TConsumer3<Node> delete() {
         return (first, second, third) -> {
             debug("Deleting three-tuple {} {} {}", first, second, third);
             final ThreeTupleMap threeTuples = local().get();

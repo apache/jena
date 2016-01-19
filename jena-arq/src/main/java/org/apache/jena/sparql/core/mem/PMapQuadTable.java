@@ -25,8 +25,8 @@ import java.util.stream.Stream;
 
 import org.apache.jena.atlas.lib.persistent.PMap;
 import org.apache.jena.atlas.lib.persistent.PersistentSet;
-import org.apache.jena.atlas.lib.tuple.Consumer4;
-import org.apache.jena.atlas.lib.tuple.TetraOperator;
+import org.apache.jena.atlas.lib.tuple.TConsumer4;
+import org.apache.jena.atlas.lib.tuple.TFunction4;
 import org.apache.jena.atlas.lib.tuple.TupleMap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Quad;
@@ -39,7 +39,7 @@ import org.slf4j.Logger;
  * use.
  *
  */
-public class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad, Consumer4<Node>>implements QuadTable {
+public class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad, TConsumer4<Node>>implements QuadTable {
 
     /**
      * @param order an internal order for this table
@@ -103,7 +103,7 @@ public class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad, Consumer4<
      * @return a <code>Stream</code> of tuples matching the pattern
      */
     @SuppressWarnings("unchecked") // Because of (Stream<Quad>) -- but why is that needed?
-    private TetraOperator<Node, Stream<Quad>> find = (first, second, third, fourth) -> {
+    private TFunction4<Node, Stream<Quad>> find = (first, second, third, fourth) -> {
         debug("Querying on four-tuple pattern: {} {} {} {} .", first, second, third, fourth);
         final FourTupleMap fourTuples = local().get();
         if (isConcrete(first)) {
@@ -141,7 +141,7 @@ public class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad, Consumer4<
     };
     
     @Override
-    protected Consumer4<Node> add() {
+    protected TConsumer4<Node> add() {
         return (first, second, third, fourth) -> {
             debug("Adding four-tuple: {} {} {} {} .", first, second, third, fourth);
             final FourTupleMap fourTuples = local().get();
@@ -157,7 +157,7 @@ public class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad, Consumer4<
         };
     }
 
-    protected Consumer4<Node> delete() {
+    protected TConsumer4<Node> delete() {
         return (first, second, third, fourth) -> {
             debug("Removing four-tuple: {} {} {} {} .", first, second, third, fourth);
             final FourTupleMap fourTuples = local().get();

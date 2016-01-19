@@ -20,11 +20,11 @@ package org.apache.jena.sparql.core.mem;
 
 import java.util.function.Consumer;
 
-import org.apache.jena.atlas.lib.tuple.Consumer4;
-import org.apache.jena.atlas.lib.tuple.TetraOperator;
+import org.apache.jena.atlas.lib.tuple.TConsumer3;
+import org.apache.jena.atlas.lib.tuple.TConsumer4;
+import org.apache.jena.atlas.lib.tuple.TFunction3;
+import org.apache.jena.atlas.lib.tuple.TFunction4;
 import org.apache.jena.atlas.lib.tuple.TupleMap;
-import org.apache.jena.atlas.lib.tuple.TriConsumer.Consumer3;
-import org.apache.jena.atlas.lib.tuple.TriFunction.TriOperator;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.Quad;
@@ -34,7 +34,7 @@ import org.apache.jena.sparql.core.Quad;
  * 
  * @param <TupleType> the tuple type in which an instance of this class works, typically {@link Triple} or {@link Quad}
  * @param <ConsumerType> a consumer type that can accept the elements of a {@link TupleType}, typically
- *            {@link Consumer3} or {@link Consumer4}
+ *            {@link TConsumer3} or {@link TConsumer4}
  */
 public abstract class OrderedTupleTable<TupleType, ConsumerType> implements TupleTable<TupleType> {
 
@@ -66,7 +66,7 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
      */
     protected abstract ConsumerType delete();
 
-    protected Consumer<Quad> map(final Consumer4<Node> consumer) {
+    protected Consumer<Quad> map(final TConsumer4<Node> consumer) {
         return q -> {
             final Node g = q.getGraph();
             final Node s = q.getSubject();
@@ -80,7 +80,7 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
         };
     }
 
-    protected <X> TetraOperator<Node, X> map(final TetraOperator<Node, X> f) {
+    protected <X> TFunction4<Node, X> map(final TFunction4<Node, X> f) {
         return (g, s, p, o) -> apply(order, g, s, p, o, f);
     }
 
@@ -88,7 +88,7 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
         return apply(reverse, first, second, third, fourth, Quad::new);
     }
 
-    protected Consumer<Triple> map(final Consumer3<Node> consumer) {
+    protected Consumer<Triple> map(final TConsumer3<Node> consumer) {
         return t -> {
             final Node s = t.getSubject();
             final Node p = t.getPredicate();
@@ -100,7 +100,7 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
         };
     }
 
-    protected <T, X> TriOperator<T, X> map(final TriOperator<T, X> f) {
+    protected <T, X> TFunction3<T, X> map(final TFunction3<T, X> f) {
         return (s, p, o) -> OrderedTupleTable.apply(order, s, p, o, f);
     }
 
@@ -128,7 +128,7 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
     }
 
     private static <X, Z> Z apply(final TupleMap tupleMap, final X x1, final X x2, final X x3, final X x4,
-            final TetraOperator<X, Z> f) {
+            final TFunction4<X, Z> f) {
         final X x1a = get(tupleMap.mapIdx(0), x1, x2, x3, x4);
         final X x2a = get(tupleMap.mapIdx(1), x1, x2, x3, x4);
         final X x3a = get(tupleMap.mapIdx(2), x1, x2, x3, x4);
@@ -136,7 +136,7 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
         return f.apply(x1a, x2a, x3a, x4a);
     }
 
-    private static <X, Z> Z apply(final TupleMap ordering, final X x1, final X x2, final X x3, final TriOperator<X, Z> f) {
+    private static <X, Z> Z apply(final TupleMap ordering, final X x1, final X x2, final X x3, final TFunction3<X, Z> f) {
         final X x1a = get(ordering.mapIdx(0), x1, x2, x3);
         final X x2a = get(ordering.mapIdx(1), x1, x2, x3);
         final X x3a = get(ordering.mapIdx(2), x1, x2, x3);
