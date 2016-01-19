@@ -1,19 +1,14 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE
+ * file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package org.apache.jena.sparql.core.mem;
@@ -30,7 +25,9 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.Quad;
 
 /**
- * A table of {@code TupleType} tuples that uses an internal order recorded via {@link TupleMap}.
+ * A table of {@code TupleType} tuples that uses an internal order recorded via {@link TupleMap}. In this code, names
+ * {@code g}, {@code s}, {@code p} and {@code o} are used for the components of a tuple in canonical order, and
+ * {@code x1} through {@code x4} are used for the components of a tuple in internal order.
  * 
  * @param <TupleType> the tuple type in which an instance of this class works, typically {@link Triple} or {@link Quad}
  * @param <ConsumerType> a consumer type that can accept the elements of a {@link TupleType}, typically
@@ -72,11 +69,11 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
             final Node s = q.getSubject();
             final Node p = q.getPredicate();
             final Node o = q.getObject();
-            final Node first = get(order.mapIdx(0), g, s, p, o);
-            final Node second = get(order.mapIdx(1), g, s, p, o);
-            final Node third = get(order.mapIdx(2), g, s, p, o);
-            final Node fourth = get(order.mapIdx(3), g, s, p, o);
-            consumer.accept(first, second, third, fourth);
+            final Node x1 = get(order.mapIdx(0), g, s, p, o);
+            final Node x2 = get(order.mapIdx(1), g, s, p, o);
+            final Node x3 = get(order.mapIdx(2), g, s, p, o);
+            final Node x4 = get(order.mapIdx(3), g, s, p, o);
+            consumer.accept(x1, x2, x3, x4);
         };
     }
 
@@ -84,8 +81,8 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
         return (g, s, p, o) -> apply(order, g, s, p, o, f);
     }
 
-    protected Quad unmap(final Node first, final Node second, final Node third, final Node fourth) {
-        return apply(reverse, first, second, third, fourth, Quad::new);
+    protected Quad unmap(final Node x1, final Node x2, final Node x3, final Node x4) {
+        return apply(reverse, x1, x2, x3, x4, Quad::new);
     }
 
     protected Consumer<Triple> map(final TConsumer3<Node> consumer) {
@@ -93,10 +90,10 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
             final Node s = t.getSubject();
             final Node p = t.getPredicate();
             final Node o = t.getObject();
-            final Node first = get(order.mapIdx(0), s, p, o);
-            final Node x2a = get(order.mapIdx(1), s, p, o);
-            final Node x3a = get(order.mapIdx(2), s, p, o);
-            consumer.accept(first, x2a, x3a);
+            final Node x1 = get(order.mapIdx(0), s, p, o);
+            final Node x2 = get(order.mapIdx(1), s, p, o);
+            final Node x3 = get(order.mapIdx(2), s, p, o);
+            consumer.accept(x1, x2, x3);
         };
     }
 
@@ -104,26 +101,35 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
         return (s, p, o) -> OrderedTupleTable.apply(order, s, p, o, f);
     }
 
-    protected Triple unmap(final Node first, final Node second, final Node third) {
-        return apply(reverse, first, second, third, Triple::new);
+    protected Triple unmap(final Node x1, final Node x2, final Node x3) {
+        return apply(reverse, x1, x2, x3, Triple::new);
     }
 
     private static <X> X get(final int i, final X x1, final X x2, final X x3) {
         switch (i) {
-        case 0: return x1;
-        case 1: return x2;
-        case 2: return x3;
-        default: throw new IndexOutOfBoundsException("Triples have components 0, 1, 2 but index = " + i + "!");
+        case 0:
+            return x1;
+        case 1:
+            return x2;
+        case 2:
+            return x3;
+        default:
+            throw new IndexOutOfBoundsException("Triples have components 0, 1, 2 but index = " + i + "!");
         }
     }
 
     private static <X> X get(final int i, final X x1, final X x2, final X x3, final X x4) {
         switch (i) {
-        case 0: return x1;
-        case 1: return x2;
-        case 2: return x3;
-        case 3: return x4;
-        default: throw new IndexOutOfBoundsException("Quads have components 0, 1, 2, 3 but index = " + i + "!");
+        case 0:
+            return x1;
+        case 1:
+            return x2;
+        case 2:
+            return x3;
+        case 3:
+            return x4;
+        default:
+            throw new IndexOutOfBoundsException("Quads have components 0, 1, 2, 3 but index = " + i + "!");
         }
     }
 
@@ -136,7 +142,8 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
         return f.apply(x1a, x2a, x3a, x4a);
     }
 
-    private static <X, Z> Z apply(final TupleMap ordering, final X x1, final X x2, final X x3, final TFunction3<X, Z> f) {
+    private static <X, Z> Z apply(final TupleMap ordering, final X x1, final X x2, final X x3,
+            final TFunction3<X, Z> f) {
         final X x1a = get(ordering.mapIdx(0), x1, x2, x3);
         final X x2a = get(ordering.mapIdx(1), x1, x2, x3);
         final X x3a = get(ordering.mapIdx(2), x1, x2, x3);
