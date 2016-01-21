@@ -36,7 +36,8 @@ public class TestBuildTextDataset extends BaseTest
 
     @Test
     public void buildText_01() {
-        createAssembler("text-config.ttl") ;
+        Dataset ds = createAssembler("text-config.ttl") ;
+        ds.close();
     }
 
     @Test
@@ -44,11 +45,13 @@ public class TestBuildTextDataset extends BaseTest
         Dataset ds = createAssembler("text-config-union.ttl") ;
         assertTrue(ds.getContext().isDefined(TextQuery.textIndex)) ;
         assertTrue(ds.getContext().isDefined(TDB.symUnionDefaultGraph)) ;
+        ds.close();
     }
 
     @Test
     public void buildText_03() {
-        createCode() ;
+        Dataset ds = createCode() ;
+        ds.close();
     }
 
     @Test
@@ -56,6 +59,7 @@ public class TestBuildTextDataset extends BaseTest
         Dataset ds = createAssembler("text-config.ttl") ;
         loadData(ds) ;
         queryData(ds) ;
+        ds.close();
     }
 
     @Test
@@ -63,6 +67,7 @@ public class TestBuildTextDataset extends BaseTest
         Dataset ds = createCode() ;
         loadData(ds) ;
         queryData(ds) ;
+        ds.close();
     }
 
     private void loadData(Dataset dataset) {

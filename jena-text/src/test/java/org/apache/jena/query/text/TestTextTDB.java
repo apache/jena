@@ -56,6 +56,7 @@ public class TestTextTDB extends BaseTest
         ResultSet rs = qexec.execSelect() ;
         List<QuerySolution> x = Iter.toList(rs) ;
         assertEquals(1,x.size());
+        ds.close();
     }
     
     @Test public void textDB_2() {
@@ -77,6 +78,7 @@ public class TestTextTDB extends BaseTest
         ResultSet rs = qexec.execSelect() ;
         List<QuerySolution> x = Iter.toList(rs) ;
         assertEquals(1,x.size());
+        ds.close();
     }
     
     @Test public void textDB_3() {
@@ -102,6 +104,7 @@ public class TestTextTDB extends BaseTest
         List<QuerySolution> x = Iter.toList(rs) ;
         ds.end() ;
         assertEquals(1,x.size());
+        ds.close();
     }
     
     @Test public void textDB_4() {
@@ -125,6 +128,7 @@ public class TestTextTDB extends BaseTest
         List<QuerySolution> x = Iter.toList(rs) ;
         ds.end() ;
         assertEquals(1,x.size());
+        ds.close();
     }
 
     @Test public void textDB_5() {
@@ -148,6 +152,7 @@ public class TestTextTDB extends BaseTest
         List<QuerySolution> x = Iter.toList(rs) ;
         ds.end() ;
         assertEquals(2,x.size());
+        ds.close();
     }
 
     @Test public void textDB_6() {
@@ -172,6 +177,7 @@ public class TestTextTDB extends BaseTest
         List<QuerySolution> x = Iter.toList(rs) ;
         ds.end() ;
         assertEquals(2,x.size());
+        ds.close();
     }
     
     @Test public void textDB_7_subject_bound_first() {
@@ -198,6 +204,7 @@ public class TestTextTDB extends BaseTest
         List<QuerySolution> x = Iter.toList(rs) ;
         ds.end() ;
         assertEquals(1,x.size());
+        ds.close();
     }
 
     private static void data(Dataset ds, String... quadStrs) {

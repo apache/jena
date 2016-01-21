@@ -18,25 +18,37 @@
 
 package org.apache.jena.query.text.assembler ;
 
-import java.io.File ;
-import java.io.IOException ;
+import static org.apache.jena.query.text.assembler.TextVocab.pAnalyzer;
+import static org.apache.jena.query.text.assembler.TextVocab.pDirectory;
+import static org.apache.jena.query.text.assembler.TextVocab.pEntityMap;
+import static org.apache.jena.query.text.assembler.TextVocab.pMultilingualSupport;
+import static org.apache.jena.query.text.assembler.TextVocab.pQueryAnalyzer;
+import static org.apache.jena.query.text.assembler.TextVocab.pStoreValues;
 
-import org.apache.jena.assembler.Assembler ;
-import org.apache.jena.assembler.Mode ;
-import org.apache.jena.assembler.assemblers.AssemblerBase ;
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.IRILib ;
-import org.apache.jena.query.text.*;
-import org.apache.jena.rdf.model.RDFNode ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.rdf.model.Statement ;
-import org.apache.jena.sparql.util.graph.GraphUtils ;
-import org.apache.lucene.analysis.Analyzer ;
-import org.apache.lucene.store.Directory ;
-import org.apache.lucene.store.FSDirectory ;
-import org.apache.lucene.store.RAMDirectory ;
+import java.io.File;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.WeakHashMap;
 
-import static org.apache.jena.query.text.assembler.TextVocab.*;
+import org.apache.jena.assembler.Assembler;
+import org.apache.jena.assembler.Mode;
+import org.apache.jena.assembler.assemblers.AssemblerBase;
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.query.text.EntityDefinition;
+import org.apache.jena.query.text.TextDatasetFactory;
+import org.apache.jena.query.text.TextIndex;
+import org.apache.jena.query.text.TextIndexConfig;
+import org.apache.jena.query.text.TextIndexException;
+import org.apache.jena.query.text.TextIndexLucene;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.sparql.util.graph.GraphUtils;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.RAMDirectory;
 
 public class TextIndexLuceneAssembler extends AssemblerBase {
     /*
@@ -47,8 +59,9 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
         text:entityMap <#endMap> ;
         .
     */
+	
+	private static RAMDirectoryMap ramDirectories = new RAMDirectoryMap();;
     
-    @SuppressWarnings("resource")
     @Override
     public TextIndex open(Assembler a, Resource root, Mode mode) {
         try {
@@ -61,7 +74,12 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             if ( n.isLiteral() ) {
                 String literalValue = n.asLiteral().getLexicalForm() ; 
                 if (literalValue.equals("mem")) {
-                    directory = new RAMDirectory() ;
+                	// on RAMDirectory per node, not one per invocation
+                	directory = ramDirectories.get(root);
+                	if (directory == null) {
+                        directory = new RAMDirectory() ;
+                        ramDirectories.put(root, (RAMDirectory) directory);
+                	}
                 } else {
                     File dir = new File(literalValue) ;
                     directory = FSDirectory.open(dir) ;
@@ -123,10 +141,35 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             config.setMultilingualSupport(isMultilingualSupport);
             config.setValueStored(storeValues);
 
-            return TextDatasetFactory.createLuceneIndex(directory, config) ;
+            TextIndexLucene index = TextDatasetFactory.createLuceneIndex(directory, config) ;
+            index.addEventHandler(TextIndexLucene.Event.CLOSED, 
+            		( i ) -> ramDirectories.remove(root));
+            return index;
         } catch (IOException e) {
             IO.exception(e) ;
             return null ;
         }
+    }
+protected static class RAMDirectoryMap {
+    	
+    	private static WeakHashMap<RDFNode, WeakReference<RAMDirectory>> map = new WeakHashMap<RDFNode, WeakReference<RAMDirectory>>();
+
+    	protected synchronized RAMDirectory get(RDFNode node) {
+    		WeakReference<RAMDirectory> ref = map.get(node);
+    		if (ref == null)
+    			return null;
+    		RAMDirectory result = ref.get();
+    		if (result == null)
+    			map.put(node, null);
+    		return result;
+    	}
+    	
+    	protected synchronized void put(RDFNode node, RAMDirectory directory) {
+    		map.put(node, new WeakReference<RAMDirectory>(directory));
+    	}
+    	
+    	protected synchronized void remove(RDFNode node) {
+    		map.put(node, null);
+    	}
     }
 }

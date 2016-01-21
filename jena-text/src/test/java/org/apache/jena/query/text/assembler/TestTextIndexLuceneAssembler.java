@@ -97,6 +97,14 @@ public class TestTextIndexLuceneAssembler extends AbstractTestTextAssembler {
             index.close();
         }
     }
+    
+    @Test public void testOneIndexPerDirectoryMem() {
+        TextIndexLucene index1 = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC_MEM_DIR);
+        TextIndexLucene index2 = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC_MEM_DIR);
+        assertEquals(index1, index2);  
+        index1.close();
+        index2.close();
+    }
 
     static {
         TextAssembler.init();
