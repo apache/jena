@@ -20,8 +20,6 @@ package org.apache.jena.query.text;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
 
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
@@ -216,35 +214,28 @@ public class TextDatasetFactory
  
     protected static class LuceneIndexMap {
     	
-    	private static HashMap<Object, WeakReference<TextIndex>> map = new HashMap<Object, WeakReference<TextIndex>>();
-
-    	protected synchronized TextIndex get(Directory directory) {
-    		Object key = key(directory);
-    		WeakReference<TextIndex> ref = map.get(key);
-    		if (ref == null)
-    			return null;
-    		TextIndex result = ref.get();
-    		if (result == null)
-    			map.put(key, null);
-    		return result;
+        WeakValueMap<Object,TextIndex> map = new WeakValueMap<Object,TextIndex>();
+        
+     	public TextIndex get(Directory directory) {
+    		return map.get(key(directory));
     	}
     	
-    	protected synchronized void put(Directory directory, TextIndex index) {
-    		map.put(key(directory), new WeakReference<TextIndex>(index));
+    	void put(Directory directory, TextIndex index) {
+    		map.put(key(directory), index);
     	}
     	
-    	protected synchronized void remove(Directory directory) {
-    		map.put(key(directory), null);
+    	void remove(Directory directory) {
+    		map.remove(key(directory));
     	}
     	
     	private Object key(Directory directory) {
     		// uglyness alert
     		if (directory instanceof FSDirectory) {
     			return getFilePath( ( (FSDirectory) directory).getDirectory() );
-    		} else if (directory instanceof CompoundFileDirectory) {
-    			return getFilePath( ( (FSDirectory) directory).getDirectory() );
     		} else if (directory instanceof FileSwitchDirectory) {
     			return key( ( (FileSwitchDirectory) directory).getPrimaryDir() );
+    		} else if (directory instanceof CompoundFileDirectory) {
+    			throw new TextIndexException("CompoundFileDirectory not supported");
     		} else {
     			return directory;
     		}
@@ -259,4 +250,3 @@ public class TextDatasetFactory
     	}    	
     }
 }
-

@@ -45,6 +45,7 @@ public abstract class AbstractTestTextAssembler {
     protected static final Resource SIMPLE_ENTITY_MAP_SPEC;
     protected static final Resource SIMPLE_INDEX_SPEC_LITERAL_DIR;
     protected static final Resource SIMPLE_INDEX_SPEC_MEM_DIR;
+    protected static final Resource SIMPLE_INDEX_SPEC_MEM_DIR2;
     
     static {
         SIMPLE_ENTITY_MAP_SPEC = 
@@ -112,6 +113,12 @@ public abstract class AbstractTestTextAssembler {
 
         SIMPLE_INDEX_SPEC_MEM_DIR =
                 model.createResource(TESTBASE + "simpleIndexMemDirSpec")
+                     .addProperty(RDF.type, TextVocab.textIndexLucene)
+                     .addProperty(TextVocab.pDirectory, model.createLiteral("mem"))
+                     .addProperty(TextVocab.pEntityMap, SIMPLE_ENTITY_MAP_SPEC);
+
+        SIMPLE_INDEX_SPEC_MEM_DIR2 =
+                model.createResource(TESTBASE + "simpleIndexMemDirSpec2")
                      .addProperty(RDF.type, TextVocab.textIndexLucene)
                      .addProperty(TextVocab.pDirectory, model.createLiteral("mem"))
                      .addProperty(TextVocab.pEntityMap, SIMPLE_ENTITY_MAP_SPEC);

@@ -414,14 +414,12 @@ public class TextIndexLucene implements TextIndex {
     	void handle(TextIndexLucene index);
     }
     
-    private Map<Event, List<EventHandler>> eventHandlers = new HashMap<Event, List<EventHandler>>();
+    private Map<Event, List<EventHandler>> eventHandlers = new HashMap<>();
     
     public void addEventHandler(Event event, EventHandler handler) {
-    	List<EventHandler> handlers = eventHandlers.get(event);
-    	if (handlers == null) {
-    		handlers = new ArrayList<EventHandler>();
-    		eventHandlers.put(event, handlers);
-    	}
-    	handlers.add(handler);
+    	eventHandlers.computeIfAbsent(
+    			event, 
+    			e -> new ArrayList<>()
+    		).add(handler);
     }
 }

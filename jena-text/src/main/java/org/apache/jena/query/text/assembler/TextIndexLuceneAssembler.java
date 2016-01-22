@@ -27,8 +27,6 @@ import static org.apache.jena.query.text.assembler.TextVocab.pStoreValues;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.WeakHashMap;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.Mode;
@@ -41,6 +39,7 @@ import org.apache.jena.query.text.TextIndex;
 import org.apache.jena.query.text.TextIndexConfig;
 import org.apache.jena.query.text.TextIndexException;
 import org.apache.jena.query.text.TextIndexLucene;
+import org.apache.jena.query.text.WeakWeakValueMap;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
@@ -60,7 +59,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
         .
     */
 	
-	private static RAMDirectoryMap ramDirectories = new RAMDirectoryMap();;
+	private static WeakWeakValueMap<RDFNode, RAMDirectory> ramDirectories = new WeakWeakValueMap<RDFNode, RAMDirectory>();
     
     @Override
     public TextIndex open(Assembler a, Resource root, Mode mode) {
@@ -74,12 +73,13 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             if ( n.isLiteral() ) {
                 String literalValue = n.asLiteral().getLexicalForm() ; 
                 if (literalValue.equals("mem")) {
-                	// on RAMDirectory per node, not one per invocation
-                	directory = ramDirectories.get(root);
-                	if (directory == null) {
-                        directory = new RAMDirectory() ;
-                        ramDirectories.put(root, (RAMDirectory) directory);
+                	// one RAMDirectory per node, not one per invocation
+                	RAMDirectory ramDirectory = ramDirectories.get(root);
+                	if (ramDirectory == null) {
+                        ramDirectory = new RAMDirectory() ;
+                        ramDirectories.put(root, ramDirectory);
                 	}
+                	directory = ramDirectory;
                 } else {
                     File dir = new File(literalValue) ;
                     directory = FSDirectory.open(dir) ;
@@ -149,27 +149,5 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             IO.exception(e) ;
             return null ;
         }
-    }
-protected static class RAMDirectoryMap {
-    	
-    	private static WeakHashMap<RDFNode, WeakReference<RAMDirectory>> map = new WeakHashMap<RDFNode, WeakReference<RAMDirectory>>();
-
-    	protected synchronized RAMDirectory get(RDFNode node) {
-    		WeakReference<RAMDirectory> ref = map.get(node);
-    		if (ref == null)
-    			return null;
-    		RAMDirectory result = ref.get();
-    		if (result == null)
-    			map.put(node, null);
-    		return result;
-    	}
-    	
-    	protected synchronized void put(RDFNode node, RAMDirectory directory) {
-    		map.put(node, new WeakReference<RAMDirectory>(directory));
-    	}
-    	
-    	protected synchronized void remove(RDFNode node) {
-    		map.put(node, null);
-    	}
     }
 }
