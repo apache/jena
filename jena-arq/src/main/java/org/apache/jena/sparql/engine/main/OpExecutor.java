@@ -263,7 +263,7 @@ public class OpExecutor
         Set<Var> commonVars = OpVars.visibleVars(lhsOp) ;
         commonVars.retainAll(OpVars.visibleVars(rhsOp)) ;
 
-        return new QueryIterMinus(left, right, commonVars, execCxt) ;
+        return QueryIterMinus.create(left, right, commonVars, execCxt) ;
     }
 
     protected QueryIterator execute(OpDisjunction opDisjunction, QueryIterator input) {
