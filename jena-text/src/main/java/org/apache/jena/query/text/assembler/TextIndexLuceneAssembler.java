@@ -59,7 +59,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
         .
     */
 	
-	private static WeakWeakValueMap<RDFNode, RAMDirectory> ramDirectories = new WeakWeakValueMap<RDFNode, RAMDirectory>();
+	private static WeakWeakValueMap<RDFNode, RAMDirectory> ramDirectories = new WeakWeakValueMap<>();
     
     @Override
     public TextIndex open(Assembler a, Resource root, Mode mode) {

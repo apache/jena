@@ -116,8 +116,8 @@ public class TextDatasetFactory
     {
         /*
          * There should only be one TextIndexLucene object for each directory.
-         * Without that policy assemblers may create two objects on a single directory
-         * both of which will try to lock the directory.
+         * Without that policy assemblers or other code may create two objects
+         * on a single directory both of which will try to lock the directory.
          */
     	TextIndexLucene index = (TextIndexLucene) luceneIndexMap.get(directory);
     	if (index != null)
@@ -214,7 +214,7 @@ public class TextDatasetFactory
  
     protected static class LuceneIndexMap {
     	
-        WeakValueMap<Object,TextIndex> map = new WeakValueMap<Object,TextIndex>();
+        WeakValueMap<Object,TextIndex> map = new WeakValueMap<>();
         
      	public TextIndex get(Directory directory) {
     		return map.get(key(directory));
