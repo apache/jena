@@ -19,6 +19,7 @@
 package org.apache.jena.query.text;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,29 +32,76 @@ import org.junit.Test;
 
 public class TestTextDatasetFactory {
 	
+	static private final EntityDefinition entityDefinition = new EntityDefinition("text", "rdfs:label");
+
+	static private final TextIndexConfig config = new TextIndexConfig(entityDefinition);
+	
 	@Test
 	public void testOneLuceneTextIndexObjectPerLuceneDirectory_fs() throws IOException {
-		Path fsDir = Files.createTempDirectory("DB-lucene");
-		fsDir.toFile().deleteOnExit();		
-		Directory directory = FSDirectory.open(fsDir.toFile());
-		EntityDefinition entityDefinition = new EntityDefinition("text", "rdfs:label");
-		TextIndexConfig config = new TextIndexConfig(entityDefinition);
-		TextIndex index1 = TextDatasetFactory.createLuceneIndex(directory, config);
-		TextIndex index2 = TextDatasetFactory.createLuceneIndex(directory, config);
-		assertEquals(index1, index2);
-		index1.close();
-		index2.close();
+		TextIndex index1 = null;
+		TextIndex index2 = null;
+		try {
+		    Directory directory = createTempFSDirectory();
+		    index1 = TextDatasetFactory.createLuceneIndex(directory, config);
+		    index2 = TextDatasetFactory.createLuceneIndex(directory, config);
+		    assertEquals(index1, index2);
+		} finally {
+		    if (index1 != null) index1.close();
+		    if (index2 != null) index2.close();
+		}
 	}
 	
 	@Test 
 	public void testOneLuceneTextIndexObjectPerLuceneDirectory_mem() throws IOException {
-		Directory directory = new RAMDirectory();
-		EntityDefinition entityDefinition = new EntityDefinition("text", "rdfs:label");
-		TextIndexConfig config = new TextIndexConfig(entityDefinition);
-		TextIndex index1 = TextDatasetFactory.createLuceneIndex(directory, config);
-		TextIndex index2 = TextDatasetFactory.createLuceneIndex(directory, config);
-		assertEquals(index1, index2);
-		index1.close();
-		index2.close();
+		TextIndex index1 = null;
+		TextIndex index2 = null;
+		try {
+		    Directory directory = new RAMDirectory();
+		    index1 = TextDatasetFactory.createLuceneIndex(directory, config);
+		    index2 = TextDatasetFactory.createLuceneIndex(directory, config);
+		    assertEquals(index1, index2);
+		} finally {
+		    if (index1 != null) index1.close();
+		    if (index2 != null) index2.close();
+		}
+	}	
+	
+	@Test
+	public void testnewLuceneIndexObjectAfterClose_fs() throws IOException {
+		TextIndex index1 = null;
+		TextIndex index2 = null;
+		try {
+		    Directory directory = createTempFSDirectory();
+		    index1 = TextDatasetFactory.createLuceneIndex(directory, config);
+		    index1.close();
+		    index2 = TextDatasetFactory.createLuceneIndex(directory, config);
+		    assertNotEquals(index1, index2);
+		} finally {
+		    if (index1 != null) index1.close();
+		    if (index2 != null) index2.close();
+		}
+	}
+
+	
+	@Test 
+	public void testNewLuceneIndexObjectAfterClose_mem() throws IOException {
+		TextIndex index1 = null;
+		TextIndex index2 = null;
+		try {
+		    Directory directory = new RAMDirectory();
+		    index1 = TextDatasetFactory.createLuceneIndex(directory, config);
+		    index1.close();
+		    index2 = TextDatasetFactory.createLuceneIndex(directory, config);
+		    assertNotEquals(index1, index2);
+		} finally {
+		    if (index1 != null) index1.close();
+		    if (index2 != null) index2.close();
+		}
+	}
+	
+	private Directory createTempFSDirectory() throws IOException {
+		Path fsDir = Files.createTempDirectory("DB-lucene");
+		fsDir.toFile().deleteOnExit();		
+		return FSDirectory.open(fsDir.toFile());		
 	}
 }
