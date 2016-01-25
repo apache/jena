@@ -49,7 +49,7 @@ public class TestResourceFactory extends TestCase
 		}
 
 		@Override
-		public Literal createPlainLiteral( final String string )
+		public Literal createStringLiteral( final String string )
 		{
 			return null;
 		}

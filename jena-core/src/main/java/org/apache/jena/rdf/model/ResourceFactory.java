@@ -93,31 +93,55 @@ public class ResourceFactory {
     }
     
     /**
-    Answer a plain (untyped) literal with no language and the given content.
-    @param string the string which forms the value of the literal
-    @return a Literal node with that string as value
+     * Answer a string (xsd:string) literal.
+     * This is the equivalent of a plain liteal with no language from RDF 1.0
+     * (also called a simple literal in SPARQL)
+     * 
+     * Using {@link #createStringLiteral} is preferred; "plain literal" is RDF 1.0 terminology.  
+     * 
+     * @param string
+     *            the string which forms the value of the literal
+     * @return a Literal node with that string as value
      */
     public static Literal createPlainLiteral( String string ) {
-        return instance.createPlainLiteral( string );
+        return instance.createStringLiteral( string );
     }
     
     /**
-    Answer a plain (untyped) literal with no language and the given content.
-    @param string the string which forms the value of the literal
-    @param lang The language tag to be used
-    @return a Literal node with that string as value
+     * Answer a string (xsd:string) literal.
+     * This is the equivalent of a plain liteal with no language from RDF 1.0
+     * (also called a simple literal in SPARQL)
+     * 
+     * @param string
+     *            the string which forms the value of the literal
+     * @return a Literal node with that string as value
      */
-
+    public static Literal createStringLiteral( String string ) {
+        return instance.createStringLiteral( string );
+    }
+    /**
+     * Answer a literal with language and the given content. The literal will
+     * have datatype rdf:langString.
+     * 
+     * @param string
+     *            the string which forms the value of the literal
+     * @param lang
+     *            The language tag to be used
+     * @return a Literal node with that string as value
+     */
     public static Literal createLangLiteral( String string , String lang ) {
         return instance.createLangLiteral( string , lang );
     }
 
     /**
-    Answer a typed literal.
-    @param string the string which forms the value of the literal
-    @param dType RDFDatatype of the type literal
-    @return a Literal node with that string as value
-    */
+     * Answer a typed literal.
+     * 
+     * @param string
+     *            the string which forms the value of the literal
+     * @param dType
+     *            RDFDatatype of the type literal
+     * @return a Literal node with that string as value
+     */
 
     public static Literal createTypedLiteral( String string , RDFDatatype dType)
     {
@@ -189,11 +213,21 @@ public class ResourceFactory {
         public Resource createResource(String uriref);
         
         /**
-            Answer a plain (untyped) literal with no language and the given content.
-            @param string the string which forms the value of the literal
-            @return a Literal node with that string as value
-        */
-        public Literal createPlainLiteral( String string );
+         * Answer a string (xsd:string) literal.
+         * This is the equivalent of a plain liteal with no language from RDF 1.0
+         * (also called a simple literal in SPARQL)
+         * 
+         * @param string
+         *            the string which forms the value of the literal
+         * @return a Literal node with that string as value
+         */
+        public Literal createStringLiteral( String string );
+        
+        /** Use createStringLiteral */
+        @Deprecated 
+        default public Literal createPlainLiteral( String string ) {
+            return createStringLiteral( string );
+        }
 
         /**
         Answer a plain (untyped) literal with no language and the given content.
@@ -264,7 +298,7 @@ public class ResourceFactory {
         }
         
         @Override
-        public Literal createPlainLiteral( String string ) {
+        public Literal createStringLiteral( String string ) {
             return new LiteralImpl(  NodeFactory.createLiteral( string, "" ), null );
         }
 
