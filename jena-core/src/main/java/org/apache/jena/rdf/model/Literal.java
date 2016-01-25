@@ -64,14 +64,12 @@ public interface Literal extends RDFNode {
     public Object getValue();
     
     /**
-     * Return the datatype of the literal. This will be null in the
-     * case of plain literals.
+     * Return the datatype of the literal.
      */
     public RDFDatatype getDatatype();
      
     /**
-     * Return the uri of the datatype of the literal. This will be null in the
-     * case of plain literals.
+     * Return the uri of the datatype of the literal.
      */
     public String getDatatypeURI();
     
