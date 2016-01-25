@@ -25,6 +25,11 @@ import org.apache.jena.rdf.model.* ;
     An Assembler creates objects from their RDF descriptions. The root motivation
     is to create Models, but other objects are required as sub-components of
     those Models, so a general mechanism is available.
+    
+    @apiNote Methods accepting {@link Model} as a parameter treat appropriate values of {@code Model} as passing down
+    to sub-assemblers a requirement to share for certain setups that work as tightly coordinated groups. It's a hint,
+    not an instruction.
+   
 */
 public interface Assembler
     {
