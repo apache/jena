@@ -119,39 +119,31 @@ class NormalizeValue2
     
     // --- Working versions 
     
-    static DatatypeHandler dtInteger = new DatatypeHandler() {
-        @Override
-        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
-        {
-            char[] chars = lexicalForm.toCharArray() ;
-            if ( chars.length == 0 )
-                // Illegal lexical form.
-                return node ;
-            stripLeadingPlus(chars) ;
-            stripLeadingZeros(chars) ;
-            String lex2 = rebuild(chars) ;
-            if ( lex2 == null )
-                return node ;
-            return NodeFactory.createLiteral(lex2, datatype) ;
-        }
+    static DatatypeHandler dtInteger = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+        char[] chars = lexicalForm.toCharArray() ;
+        if ( chars.length == 0 )
+            // Illegal lexical form.
+            return node ;
+        stripLeadingPlus(chars) ;
+        stripLeadingZeros(chars) ;
+        String lex2 = rebuild(chars) ;
+        if ( lex2 == null )
+            return node ;
+        return NodeFactory.createLiteral(lex2, datatype) ;
     } ;
 
-    static DatatypeHandler dtDecimal = new DatatypeHandler() {
-        @Override
-        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
-        {
-            // Need to force "0."
-            char[] chars = lexicalForm.toCharArray() ;
-            if ( chars.length == 0 )
-                // Illegal lexical form.
-                return node ;
-            stripLeadingPlus(chars) ;
-            stripLeadingZeros(chars) ;
-            stripTrailingZeros(chars) ;
-            String lex2 = rebuild(chars) ;
-            if ( lex2 == null )
-                return node ;
-            return NodeFactory.createLiteral(lex2, datatype) ;
-        }
+    static DatatypeHandler dtDecimal = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+        // Need to force "0."
+        char[] chars = lexicalForm.toCharArray() ;
+        if ( chars.length == 0 )
+            // Illegal lexical form.
+            return node ;
+        stripLeadingPlus(chars) ;
+        stripLeadingZeros(chars) ;
+        stripTrailingZeros(chars) ;
+        String lex2 = rebuild(chars) ;
+        if ( lex2 == null )
+            return node ;
+        return NodeFactory.createLiteral(lex2, datatype) ;
     } ;
 }
