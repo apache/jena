@@ -18,6 +18,8 @@
 
 package org.apache.jena.datatypes;
 
+import java.util.Objects ;
+
 import org.apache.jena.graph.impl.LiteralLabel ;
 
 /**
@@ -150,6 +152,24 @@ public class BaseDatatype implements RDFDatatype {
         return litLabel1.getDatatype() == litLabel2.getDatatype()
         && litLabel1.getValue().equals(litLabel2.getValue());
     }   
+    
+    
+    /** 
+     * Equality for datatypes based solely on lexcial form, 
+     * i.e. there value space is equivalent to their lexical space. 
+     */  
+    protected static boolean isEqualByTerm(LiteralLabel value1, LiteralLabel value2) {
+        if ( value2 == null && value1 == null )
+            return true ;
+        if ( value2 == null )
+            return false ;
+        if ( value1 == null )
+            return false ;
+        return
+            Objects.equals(value1.getLexicalForm(), value2.getLexicalForm()) &&
+            Objects.equals(value1.getDatatype(), value2.getDatatype()) &&
+            Objects.equals(value1.language(), value2.language()) ;  
+    }
     
     /**
          Default implementation of getHashCode() delegates to the default from
