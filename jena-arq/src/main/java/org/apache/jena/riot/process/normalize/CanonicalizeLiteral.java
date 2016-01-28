@@ -68,14 +68,13 @@ public class CanonicalizeLiteral implements Function<Node, Node>
         return n2 ;
     }
     
-    private static Node canonicalLangtag(String lexicalForm, String langTag)
-    {
-        String langTag2 = LangTag.canonical(langTag) ;
+    private static Node canonicalLangtag(String lexicalForm, String langTag) {
+        String langTag2 = LangTag.canonical(langTag);
         if ( langTag2.equals(langTag) )
-            return null ;
-        return NodeFactory.createLiteral(lexicalForm, langTag2) ;
+            return null;
+        return NodeFactory.createLiteral(lexicalForm, langTag2);
     }
-    
+
     private static final RDFDatatype dtPlainLiteral = NodeFactory.getType(RDF.getURI()+"PlainLiteral") ;
     
     private final static Map<RDFDatatype, DatatypeHandler> dispatch = new HashMap<>() ;
@@ -120,10 +119,9 @@ public class CanonicalizeLiteral implements Function<Node, Node>
         dispatch.put(XSDDatatype.XSDduration,   null) ;
         dispatch.put(XSDDatatype.XSDboolean,    NormalizeValue.dtBoolean) ;
         
+        // Convert to RDF 1.1 form - no explicit datatype. 
         dispatch.put(XSDDatatype.XSDstring,     NormalizeValue.dtXSDString) ;
-
-        
+        // Convert (illegal) rdf:PlainLiteral to a legal RDF term.
         dispatch.put(dtPlainLiteral,            NormalizeValue.dtPlainLiteral) ;
-        
     }
 }
