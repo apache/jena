@@ -109,15 +109,24 @@ public class Fuseki {
      */
     static public final boolean       GSP_DIRECT_NAMING = false ;
 
+    /** Are we in development mode?  That means a SNAPSHOT, or no VERSION
+     * because maven has not filtered the fuseki-properties.xml file.
+     */
+    public static final boolean developmentMode ;
+    static {
+        // See ServletBase.setCommonheaders
+        // If it look like a SNAPSHOT, or it's not set, we are in development mode.
+        developmentMode = ( VERSION == null || VERSION.equals("development") || VERSION.contains("SNAPSHOT") ) ;
+    }
+
     /** An identifier for the HTTP Fuseki server instance */
     static public final String        serverHttpName    = NAME + " (" + VERSION + ")" ;
-
+    
     /** An additional identifier for the HTTP Fuseki server instance in a development build */
     static public final String        serverHttpNameDev   ;
     static {
         // See ServletBase.setCommonheaders
-        // If it look like a SNAPSHOT, print build date. Not perfect, but better.
-        if ( VERSION.contains("SNAPSHOT") && ! BUILD_DATE.startsWith("\\${") )
+        if ( developmentMode )
             serverHttpNameDev = NAME + " (" + VERSION + " / " + BUILD_DATE +")" ;
         else
             serverHttpNameDev = null ;
