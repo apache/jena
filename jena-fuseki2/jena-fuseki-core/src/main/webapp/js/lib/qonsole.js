@@ -6,6 +6,13 @@ var qonsole = function() {
         YASR = require('yasr');
     
     /**
+     * Escape html function, inspired by http://stackoverflow.com/questions/5499078/fastest-method-to-escape-html-tags-as-html-entities
+     */
+    var escapeString = function(unescaped) {
+      if (!unescaped) return '';
+      return unescaped.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    /**
      * Some custom requirements for Jena, on how to present the bindings. I.e., bnodes prefixed with _:, literals with surrounding quotes, and URIs with brackets
      */
     YASR.plugins.table.defaults.getCellContent = function (yasr, plugin, bindings, variable, context) {
@@ -14,7 +21,7 @@ var qonsole = function() {
         if (binding.type == "uri") {
             var title = null;
             var href = binding.value;
-            var visibleString = href;
+            var visibleString = escapeString(href);
             var prefixed = false;
             if (context.usedPrefixes) {
                 for (var prefix in context.usedPrefixes) {
@@ -28,11 +35,11 @@ var qonsole = function() {
             if (!prefixed) visibleString = "&lt;" + visibleString + "&gt;";
             value = "<a " + (title? "title='" + href + "' ": "") + "class='uri' target='_blank' href='" + href + "'>" + visibleString + "</a>";
         } else if (binding.type == "bnode"){
-            value = "<span class='nonUri'>_:" + binding.value + "</span>";
+            value = "<span class='nonUri'>_:" + escapeString(binding.value) + "</span>";
         } else if (binding.type == "literal") {
-            var stringRepresentation = binding.value;
+            var stringRepresentation = escapeString(binding.value);
             if (binding["xml:lang"]) {
-                stringRepresentation = '"' + binding.value + '"@' + binding["xml:lang"];
+                stringRepresentation = '"' + stringRepresentation + '"@' + binding["xml:lang"];
             } else if (binding.datatype) {
                 var xmlSchemaNs = "http://www.w3.org/2001/XMLSchema#";
                 var dataType = binding.datatype;
@@ -50,7 +57,7 @@ var qonsole = function() {
             value = "<span class='nonUri'>" + stringRepresentation + "</span>";
         } else {
             //this is a catch-all: when using e.g. a csv content type, the bindings are not typed
-            value = binding.value;
+            value = escapeString(binding.value);
         }
         return "<div>" + value + "</div>";
     };
