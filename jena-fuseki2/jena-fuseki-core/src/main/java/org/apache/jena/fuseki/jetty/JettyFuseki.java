@@ -276,10 +276,15 @@ public class JettyFuseki {
         // Some people do try very large operations ... really, should use POST.
         f1.getHttpConfiguration().setRequestHeaderSize(512 * 1024);
         f1.getHttpConfiguration().setOutputBufferSize(5 * 1024 * 1024) ;
-        
-        //SslConnectionFactory f2 = new SslConnectionFactory() ;
-        
-        ServerConnector connector = new ServerConnector(server, f1) ; //, f2) ;
+        // Do not add "Server: Jetty(....) when not a development system.
+        if ( ! Fuseki.developmentMode )
+            f1.getHttpConfiguration().setSendServerVersion(false) ;
+
+        // https is better done with a Jetty configuration file
+        // because there are several things to configure. 
+        // See "examples/fuseki-jetty-https.xml"
+
+        ServerConnector connector = new ServerConnector(server, f1) ;
         connector.setPort(port) ;
         server.addConnector(connector);
         if ( loopback )
