@@ -29,7 +29,8 @@ import org.apache.jena.graph.impl.LiteralLabelFactory ;
 public class NodeFactory {
 
     public static RDFDatatype getType(String s) {
-        Objects.requireNonNull(s, "Argument to NodeFactory.getFactory is null") ;
+        if ( s == null )
+            return null ;
         return TypeMapper.getInstance().getSafeTypeByName(s) ;
     }
 
