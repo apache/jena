@@ -279,6 +279,7 @@ public class TextQueryPF extends PropertyFunctionBase {
             log.debug("Text query: {} ({})", queryString,limit) ;
 
         String cacheKey = limit + " " + property + " " + queryString ;
+        @SuppressWarnings("unchecked")
         Cache<String,ListMultimap<String,TextHit>> queryCache = 
             (Cache<String,ListMultimap<String,TextHit>>) execCxt.getContext().get(cacheSymbol);
         if (queryCache == null) { /* doesn't yet exist, need to create it */
