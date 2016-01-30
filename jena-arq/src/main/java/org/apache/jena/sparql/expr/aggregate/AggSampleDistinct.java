@@ -57,7 +57,6 @@ public class AggSampleDistinct extends AggregatorBase
     private static class AccSampleDistict extends AccumulatorExpr
     {
         // NOT AccumulatorDistinctExpr - avoid "distinct" overheads. 
-        // Sample: first evaluation of the expression that is not an error.
         // For sample, DISTINCT is a no-op - this code is picks the last element. 
         private NodeValue sampleSoFar = null ;
 
@@ -66,8 +65,9 @@ public class AggSampleDistinct extends AggregatorBase
         @Override
         public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         {
-            // Last value seen.
-            sampleSoFar = nv ;
+            if ( nv != null )
+                // Last value seen.
+                sampleSoFar = nv ;
         }
 
         @Override
@@ -77,5 +77,10 @@ public class AggSampleDistinct extends AggregatorBase
         @Override
         public NodeValue getAccValue()
         { return sampleSoFar ; }
+        
+        @Override
+        public NodeValue getValue()
+        { return getAccValue() ; }
+
     }
 }

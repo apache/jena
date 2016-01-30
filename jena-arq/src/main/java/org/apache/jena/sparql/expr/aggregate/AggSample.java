@@ -65,7 +65,7 @@ public class AggSample extends AggregatorBase
         @Override
         public void accumulate(NodeValue nv , Binding binding, FunctionEnv functionEnv)
         { 
-            if ( sampleSoFar == null )
+            if ( sampleSoFar == null && nv != null )
             {
                 sampleSoFar = nv ;
                 return ;
@@ -79,5 +79,9 @@ public class AggSample extends AggregatorBase
         @Override
         public NodeValue getAccValue()
         { return sampleSoFar ; }
+        
+        @Override
+        public NodeValue getValue()
+        { return getAccValue() ; }
     }
 }

@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprEvalException ;
@@ -39,19 +41,67 @@ abstract class AccumulatorExpr implements Accumulator
     @Override
     final public void accumulate(Binding binding, FunctionEnv functionEnv)
     {
-        try { 
-            NodeValue nv = expr.eval(binding, functionEnv) ;
+        NodeValue nv = evalOrNull(expr, binding, functionEnv) ;
+        if ( nv != null ) {
             accumulate(nv, binding, functionEnv) ;
             count++ ;
-        } catch (ExprEvalException ex)
-        {
-            errorCount++ ;
+        } else {
             accumulateError(binding, functionEnv) ;
+            errorCount++ ;
         }
     }
     
     
-    // Count(?v) is different
+    private static NodeValue evalOrException(Expr expr, Binding binding, FunctionEnv functionEnv) {
+        return expr.eval(binding, functionEnv) ;
+    }
+    
+    // ==> ExprLib
+    /** This is better (faster) than the simple implementation which captures {@link ExprEvalException}
+     * and returns null.
+     */
+    
+    /*ExprLib*/ private static NodeValue evalOrNull(Expr expr, Binding binding, FunctionEnv functionEnv) {
+        return evalOrElse(expr, binding, functionEnv, null) ;
+    }
+    
+    private static NodeValue evalOrElse(Expr expr, Binding binding, FunctionEnv functionEnv, NodeValue exceptionValue) {
+        // Exceptions in java are expensive if the stack information is
+        // collected which is the default behaviour.  The expensive step is
+        // Throwable.fillInStackTrace.
+        // 
+        // Otherwise, they are reasonable cheap. It needs special exceptions
+        // which overrides fillInStackTrace to be cheap but they loose the 
+        // general information for development.
+        // 
+        // Instead, pick out specal cases, the expression being a single variable
+        // being the important one.
+        // 
+        // BOUND(?x) is a important case where the expression is often an exception
+        // in general evaluation.
+
+        if ( expr.isConstant() )
+            // Easy case.
+            return expr.getConstant() ;
+        if ( expr.isVariable() ) {
+            // The case of the expr being a single variable.
+            Var v = expr.asVar() ;
+            Node n = binding.get(v) ;
+            if ( n == null )
+                return exceptionValue ; 
+            NodeValue nv = NodeValue.makeNode(n) ;
+            return nv ;
+        }
+
+        try { 
+            return expr.eval(binding, functionEnv) ;
+        } catch (ExprEvalException ex) {
+            return exceptionValue ;
+        }
+    }
+    
+    // COUNT(?v) is different : errors of the expression/variable do not cause an aggregate eval error. 
+    // SAMPLE is different : it treats errors as "just another value" and tries to 
     @Override
     public NodeValue getValue()
     {
