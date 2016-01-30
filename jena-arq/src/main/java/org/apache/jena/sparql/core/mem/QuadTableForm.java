@@ -56,26 +56,6 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
             return new PMapQuadTable(name()) {
 
                 @Override
-                protected Quad quad(final Node g, final Node s, final Node p, final Node o) {
-                    return Quad.create(g, s, p, o);
-                }
-
-                @Override
-                public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
-                    return _find(g, s, p, o);
-                }
-
-                @Override
-                public void add(final Quad q) {
-                    _add(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject());
-                }
-
-                @Override
-                public void delete(final Quad q) {
-                    _delete(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject());
-                }
-
-                @Override
                 public Stream<Node> listGraphNodes() {
                     return local().get().entryStream().map(Entry::getKey);
                 }
@@ -86,34 +66,7 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
     /**
      * Graph-object-predicate-subject.
      */
-    GOPS(asList(GRAPH, OBJECT, PREDICATE, SUBJECT)) {
-        @Override
-        public PMapQuadTable get() {
-            return new PMapQuadTable(name()) {
-
-                @Override
-                protected Quad quad(final Node g, final Node o, final Node p, final Node s) {
-                    return Quad.create(g, s, p, o);
-                }
-
-                @Override
-                public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
-                    return _find(g, o, p, s);
-                }
-
-                @Override
-                public void add(final Quad q) {
-                    _add(q.getGraph(), q.getObject(), q.getPredicate(), q.getSubject());
-                }
-
-                @Override
-                public void delete(final Quad q) {
-                    _delete(q.getGraph(), q.getObject(), q.getPredicate(), q.getSubject());
-                }
-            };
-
-        }
-    },
+    GOPS(asList(GRAPH, OBJECT, PREDICATE, SUBJECT)),
 
     /**
      * Subject-predicate-object-graph.
@@ -124,31 +77,11 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
             return new PMapQuadTable(name()) {
 
                 @Override
-                protected Quad quad(final Node s, final Node p, final Node o, final Node g) {
-                    return Quad.create(g, s, p, o);
-                }
-
-                @Override
-                public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
-                    return _find(s, p, o, g);
-                }
-
-                @Override
                 public Stream<Quad> findInUnionGraph(final Node s, final Node p, final Node o) {
                     final AtomicReference<Triple> mostRecentlySeen = new AtomicReference<>();
                     return find(ANY, s, p, o).map(Quad::asTriple).filter(t->{
                         return !mostRecentlySeen.getAndSet(t).equals(t);
                     }).map(t->Quad.create(Quad.unionGraph, t)) ;
-                }
-
-                @Override
-                public void add(final Quad q) {
-                    _add(q.getSubject(), q.getPredicate(), q.getObject(), q.getGraph());
-                }
-
-                @Override
-                public void delete(final Quad q) {
-                    _delete(q.getSubject(), q.getPredicate(), q.getObject(), q.getGraph());
                 }
             };
         }
@@ -157,64 +90,12 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
     /**
      * Object-subject-graph-predicate.
      */
-    OSGP(asList(OBJECT, SUBJECT, GRAPH, PREDICATE)) {
-        @Override
-        public PMapQuadTable get() {
-            return new PMapQuadTable(name()) {
-
-                @Override
-                protected Quad quad(final Node o, final Node s, final Node g, final Node p) {
-                    return Quad.create(g, s, p, o);
-                }
-
-                @Override
-                public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
-                    return _find(o, s, g, p);
-                }
-
-                @Override
-                public void add(final Quad q) {
-                    _add(q.getObject(), q.getSubject(), q.getGraph(), q.getPredicate());
-                }
-
-                @Override
-                public void delete(final Quad q) {
-                    _delete(q.getObject(), q.getSubject(), q.getGraph(), q.getPredicate());
-                }
-            };
-        }
-    },
+    OSGP(asList(OBJECT, SUBJECT, GRAPH, PREDICATE)),
 
     /**
      * Predicate-graph-subject-object.
      */
-    PGSO(asList(PREDICATE, GRAPH, SUBJECT, OBJECT)) {
-        @Override
-        public PMapQuadTable get() {
-            return new PMapQuadTable(name()) {
-
-                @Override
-                protected Quad quad(final Node p, final Node g, final Node s, final Node o) {
-                    return Quad.create(g, s, p, o);
-                }
-
-                @Override
-                public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
-                    return _find(p, g, s, o);
-                }
-
-                @Override
-                public void add(final Quad q) {
-                    _add(q.getPredicate(), q.getGraph(), q.getSubject(), q.getObject());
-                }
-
-                @Override
-                public void delete(final Quad q) {
-                    _delete(q.getPredicate(), q.getGraph(), q.getSubject(), q.getObject());
-                }
-            };
-        }
-    },
+    PGSO(asList(PREDICATE, GRAPH, SUBJECT, OBJECT)),
 
     /**
      * Object-predicate-subject-graph.
@@ -223,17 +104,7 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
         @Override
         public PMapQuadTable get() {
             return new PMapQuadTable(name()) {
-
-                @Override
-                protected Quad quad(final Node o, final Node p, final Node s, final Node g) {
-                    return Quad.create(g, s, p, o);
-                }
-
-                @Override
-                public Stream<Quad> find(final Node g, final Node s, final Node p, final Node o) {
-                    return _find(o, p, s, g);
-                }
-
+                
                 @Override
                 public Stream<Quad> findInUnionGraph(final Node s, final Node p, final Node o) {
                     final AtomicReference<Triple> mostRecentlySeen = new AtomicReference<>();
@@ -241,19 +112,14 @@ public enum QuadTableForm implements Supplier<QuadTable>,Predicate<Set<TupleSlot
                         return !mostRecentlySeen.getAndSet(t).equals(t);
                     }).map(t->Quad.create(Quad.unionGraph, t)) ;
                 }
-
-                @Override
-                public void add(final Quad q) {
-                    _add(q.getObject(), q.getPredicate(), q.getSubject(), q.getGraph());
-                }
-
-                @Override
-                public void delete(final Quad q) {
-                    _delete(q.getObject(), q.getPredicate(), q.getSubject(), q.getGraph());
-                }
             };
         }
     };
+    
+    @Override
+    public PMapQuadTable get() {
+        return new PMapQuadTable(name());
+    }
 
     private QuadTableForm(final List<TupleSlot> fp) {
         this.fullpattern = fp;
