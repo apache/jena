@@ -33,9 +33,8 @@ public class AggSampleDistinct extends AggregatorBase
     public Aggregator copy(ExprList exprs) { return new AggSampleDistinct(exprs.get(0)) ; }
 
     @Override
-    public Accumulator createAccumulator()
-    { 
-        return new AccSampleDistict(getExpr()) ;
+    public Accumulator createAccumulator() {
+        return new AccSampleDistict(getExpr());
     }
 
     @Override
@@ -63,11 +62,10 @@ public class AggSampleDistinct extends AggregatorBase
         public AccSampleDistict(Expr expr) { super(expr)  ; }
 
         @Override
-        public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
-        {
+        public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) {
             if ( nv != null )
                 // Last value seen.
-                sampleSoFar = nv ;
+                sampleSoFar = nv;
         }
 
         @Override
@@ -79,8 +77,9 @@ public class AggSampleDistinct extends AggregatorBase
         { return sampleSoFar ; }
         
         @Override
-        public NodeValue getValue()
-        { return getAccValue() ; }
-
+        public NodeValue getValue() { 
+            // Return any seen value and null only if none.
+            return getAccValue();
+        }
     }
 }

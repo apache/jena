@@ -44,6 +44,7 @@ public class AggSample extends AggregatorBase
 
     @Override
     public int hashCode()   { return HC_AggSample ^ getExpr().hashCode() ; }
+    
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
         if ( other == null ) return false ;
@@ -63,12 +64,10 @@ public class AggSample extends AggregatorBase
         public AccSample(Expr expr) { super(expr) ; }
 
         @Override
-        public void accumulate(NodeValue nv , Binding binding, FunctionEnv functionEnv)
-        { 
-            if ( sampleSoFar == null && nv != null )
-            {
-                sampleSoFar = nv ;
-                return ;
+        public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) {
+            if ( sampleSoFar == null && nv != null ) {
+                sampleSoFar = nv;
+                return;
             }
         }
 
@@ -81,7 +80,9 @@ public class AggSample extends AggregatorBase
         { return sampleSoFar ; }
         
         @Override
-        public NodeValue getValue()
-        { return getAccValue() ; }
+        public NodeValue getValue() {
+            // Return any seen value and null only if none.
+            return getAccValue();
+        }
     }
 }
