@@ -46,7 +46,6 @@ public class Builder
     
     /** Build a DataAccessPoint, including DataService at Resource svc */ 
     public static DataAccessPoint buildDataAccessPoint(Resource svc) {
-        // XXX
         RDFNode n = FusekiLib.getOne(svc, "fu:name") ;
         if ( ! n.isLiteral() )
             throw new FusekiConfigException("Not a literal for access point name: "+FmtUtils.stringForRDFNode(n));
