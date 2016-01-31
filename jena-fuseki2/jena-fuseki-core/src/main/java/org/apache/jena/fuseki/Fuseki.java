@@ -112,18 +112,21 @@ public class Fuseki {
     /** Are we in development mode?  That means a SNAPSHOT, or no VERSION
      * because maven has not filtered the fuseki-properties.xml file.
      */
-    public static final boolean developmentMode ;
+    public static boolean   developmentMode ;
     static {
         // See ServletBase.setCommonheaders
         // If it look like a SNAPSHOT, or it's not set, we are in development mode.
         developmentMode = ( VERSION == null || VERSION.equals("development") || VERSION.contains("SNAPSHOT") ) ;
     }
 
+    public static boolean   outputJettyServerHeaders    = developmentMode ;
+    public static boolean   outputFusekiServerHeaders   = developmentMode ;
+    
     /** An identifier for the HTTP Fuseki server instance */
-    static public final String        serverHttpName    = NAME + " (" + VERSION + ")" ;
+    static public final String  serverHttpName          = NAME + " (" + VERSION + ")" ;
     
     /** An additional identifier for the HTTP Fuseki server instance in a development build */
-    static public final String        serverHttpNameDev   ;
+    static public final String  serverHttpNameDev   ;
     static {
         // See ServletBase.setCommonheaders
         if ( developmentMode )

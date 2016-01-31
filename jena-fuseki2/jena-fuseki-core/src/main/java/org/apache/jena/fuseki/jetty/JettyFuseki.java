@@ -71,7 +71,6 @@ public class JettyFuseki {
     public static final String resourceBase1   = "webapp" ;
     // Development
     public static final String resourceBase2   = "src/main/webapp" ;
-    
 
     /**
      * Default setup which requires a {@link org.apache.jena.fuseki.jetty.JettyServerConfig}
@@ -277,7 +276,7 @@ public class JettyFuseki {
         f1.getHttpConfiguration().setRequestHeaderSize(512 * 1024);
         f1.getHttpConfiguration().setOutputBufferSize(5 * 1024 * 1024) ;
         // Do not add "Server: Jetty(....) when not a development system.
-        if ( ! Fuseki.developmentMode )
+        if ( ! Fuseki.outputJettyServerHeaders )
             f1.getHttpConfiguration().setSendServerVersion(false) ;
 
         // https is better done with a Jetty configuration file
