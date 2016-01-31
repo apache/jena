@@ -259,12 +259,12 @@ public class QuerySerializer implements QueryVisitor
     {
         if ( query.hasValues() )
         {
-            outputDataBlock(out, query.getValuesVariables(), query.getValuesData(), query) ;
+            outputDataBlock(out, query.getValuesVariables(), query.getValuesData(), fmtElement.context) ;
             out.newline() ;
         }
     }
 
-    public static void outputDataBlock(IndentedWriter out, List<Var> variables, List<Binding> values, Prologue prologue)
+    public static void outputDataBlock(IndentedWriter out, List<Var> variables, List<Binding> values, SerializationContext cxt)
     {
         out.print("VALUES ") ;
         if ( variables.size() == 1 )
@@ -275,18 +275,7 @@ public class QuerySerializer implements QueryVisitor
             out.print(" {") ;
             out.incIndent() ;
             for ( Binding valueRow : values )
-            {
-                // A value may be null for UNDEF
-                for ( Var var : variables )
-                {
-                    out.print(" ") ;
-                    Node value = valueRow.get(var) ; 
-                    if ( value == null )
-                        out.print("UNDEF") ;
-                    else
-                        out.print(FmtUtils.stringForNode(value, prologue)) ;
-                }
-            }
+                outputValuesOneRow(out, variables, valueRow, cxt);
             out.decIndent() ;
             out.print(" }") ;
             return ;
@@ -304,17 +293,8 @@ public class QuerySerializer implements QueryVisitor
         for ( Binding valueRow : values )
         {
             out.println() ;
-            // A value may be null for UNDEF
             out.print("(") ;
-            for ( Var var : variables )
-            {
-                out.print(" ") ;
-                Node value = valueRow.get(var) ; 
-                if ( value == null )
-                    out.print("UNDEF") ;
-                else
-                    out.print(FmtUtils.stringForNode(value, prologue)) ;
-            }
+            outputValuesOneRow(out, variables, valueRow, cxt);
             out.print(" )") ;
         }
         out.decIndent() ;
@@ -322,6 +302,23 @@ public class QuerySerializer implements QueryVisitor
         out.print("}") ;
     }
     
+    private static void outputValuesOneRow(IndentedWriter out, List<Var> variables, Binding row, SerializationContext cxt) {
+        // A value may be null for UNDEF
+        for ( Var var : variables )
+        {
+            out.print(" ") ;
+            Node value = row.get(var) ; 
+            if ( value == null )
+                out.print("UNDEF") ;
+            else {
+                // Context for bnodes.
+                // Bnodes don't occur in legal syntax but a rewritten query may
+                // have them.  The output will not be legal SPARQL.
+                // ARQ (SPARQL with extensions) does parse blankd nodes in VALUES. 
+                out.print(FmtUtils.stringForNode(value, cxt)) ;
+            }
+        }
+    }
 
     @Override
     public void finishVisit(Query query)

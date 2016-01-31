@@ -972,6 +972,9 @@ Node DataBlockValue() : { Node n ; String iri ; }
 | n = RDFLiteral()      { return n ; }
 | n = NumericLiteral()  { return n ; }
 | n = BooleanLiteral()  { return n ; }
+#ifdef ARQ
+| n = BlankNode()       { return n ; }
+#endif
 | <UNDEF>               { return null ; }
 }
 

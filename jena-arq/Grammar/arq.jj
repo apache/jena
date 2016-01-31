@@ -696,6 +696,7 @@ Node DataBlockValue() : { Node n ; String iri ; }
 | n = RDFLiteral() { return n ; }
 | n = NumericLiteral() { return n ; }
 | n = BooleanLiteral() { return n ; }
+| n = BlankNode() { return n ; }
 | <UNDEF> { return null ; }
 }
 Element Assignment() : { Var v ; Expr expr ; }
