@@ -24,10 +24,14 @@ package org.apache.jena.sparql.expr;
 
 public class ExprEvalException extends ExprException
 {
+    // Filling in the stack trace is the expensive part of a java
+    // exception. But if we are using exception for flow control, we don't
+    // need the stack trace.
+
+    @Override public Throwable fillInStackTrace() { return this ; }
+    
     public ExprEvalException() { super() ; }
     public ExprEvalException(Throwable cause) { super(cause) ; }
     public ExprEvalException(String msg) { super(msg) ; }
     public ExprEvalException(String msg, Throwable cause) { super(msg, cause) ; }
-
-    private static final long serialVersionUID = 1L; // Unused
 }
