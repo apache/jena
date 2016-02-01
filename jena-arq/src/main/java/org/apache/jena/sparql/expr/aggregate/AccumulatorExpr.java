@@ -20,6 +20,7 @@ package org.apache.jena.sparql.expr.aggregate;
 
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprLib ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.function.FunctionEnv ;
@@ -41,12 +42,15 @@ abstract class AccumulatorExpr implements Accumulator
     {
         NodeValue nv = ExprLib.evalOrNull(expr, binding, functionEnv) ;
         if ( nv != null ) {
-            accumulate(nv, binding, functionEnv) ;
-            count++ ;
-        } else {
-            accumulateError(binding, functionEnv) ;
-            errorCount++ ;
+            try {
+                accumulate(nv, binding, functionEnv) ;
+                count++ ;
+                return ;
+            } catch (ExprEvalException ex) {}
+            // Drop to error case.
         }
+        accumulateError(binding, functionEnv) ;
+        errorCount++ ;
     }
     
     // COUNT(?v) is different : errors of the expression/variable do not cause an aggregate eval error. 
