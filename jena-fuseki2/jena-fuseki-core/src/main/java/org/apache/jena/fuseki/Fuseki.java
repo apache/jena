@@ -119,21 +119,12 @@ public class Fuseki {
         developmentMode = ( VERSION == null || VERSION.equals("development") || VERSION.contains("SNAPSHOT") ) ;
     }
 
-    public static boolean   outputJettyServerHeaders    = developmentMode ;
-    public static boolean   outputFusekiServerHeaders   = developmentMode ;
+    public static boolean   outputJettyServerHeader     = developmentMode ;
+    public static boolean   outputFusekiServerHeader    = developmentMode ;
     
     /** An identifier for the HTTP Fuseki server instance */
     static public final String  serverHttpName          = NAME + " (" + VERSION + ")" ;
     
-    /** An additional identifier for the HTTP Fuseki server instance in a development build */
-    static public final String  serverHttpNameDev   ;
-    static {
-        // See ServletBase.setCommonheaders
-        if ( developmentMode )
-            serverHttpNameDev = NAME + " (" + VERSION + " / " + BUILD_DATE +")" ;
-        else
-            serverHttpNameDev = null ;
-    }
     /** Logger name for operations */
     public static final String        actionLogName     = PATH + ".Fuseki" ;
 

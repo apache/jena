@@ -280,7 +280,7 @@ public class JettyFuseki {
         f1.getHttpConfiguration().setRequestHeaderSize(512 * 1024);
         f1.getHttpConfiguration().setOutputBufferSize(5 * 1024 * 1024) ;
         // Do not add "Server: Jetty(....) when not a development system.
-        if ( ! Fuseki.outputJettyServerHeaders )
+        if ( ! Fuseki.outputJettyServerHeader )
             f1.getHttpConfiguration().setSendServerVersion(false) ;
 
         // https is better done with a Jetty configuration file
