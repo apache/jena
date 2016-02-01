@@ -61,13 +61,13 @@ public class ARQ
     // 2/ stageGenerator constant must be set before the call to ARQ.init.
 
     /** Name of the execution logger */
-    public static final String logExecName = "com.hp.hpl.jena.arq.exec" ;
+    public static final String logExecName = "org.apache.jena.arq.exec" ;
     
     /** Name of the information logger */
-    public static final String logInfoName = "com.hp.hpl.jena.arq.info" ;
+    public static final String logInfoName = "org.apache.jena.arq.info" ;
     
     /** Name of the logger for remote HTTP requests */
-    public static final String logHttpRequestName = "com.hp.hpl.jena.arq.service" ;
+    public static final String logHttpRequestName = "org.apache.jena.arq.service" ;
     
     private static final Logger logExec = LoggerFactory.getLogger(logExecName) ;
     private static final Logger logInfo = LoggerFactory.getLogger(logInfoName) ;
@@ -93,7 +93,7 @@ public class ARQ
     /** Get the currently global execution logging setting */  
     public static Explain.InfoLevel getExecutionLogging() { return (Explain.InfoLevel)ARQ.getContext().get(ARQ.symLogExec) ; }
     
-    /** Set execution logging - logging is to logger "com.hp.hpl.jena.arq.exec" at level INFO.
+    /** Set execution logging - logging is to logger "org.apache.jena.arq.exec" at level INFO.
      *  An appropriate logging configuration is also required.
      */
     public static void setExecutionLogging(Explain.InfoLevel infoLevel)
