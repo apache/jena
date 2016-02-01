@@ -27,6 +27,7 @@ import java.util.function.Predicate;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.op.OpBGP ;
@@ -165,8 +166,7 @@ public class PathLib
         // Now count the number of matches.
         
         int count = 0 ;
-        for ( ; iter.hasNext() ; )
-        {
+        for ( ; iter.hasNext() ; ) {
             Node n = iter.next() ;
             if ( n.sameValueAs(object) )
                 count++ ;
@@ -177,7 +177,8 @@ public class PathLib
 
     // Brute force evaluation of a TriplePath where neither subject nor object are bound 
     private static QueryIterator execUngroundedPath(Binding binding, Graph graph, Var sVar, Path path, Var oVar, ExecutionContext execCxt) {
-        Iterator<Node> iter = GraphUtils.allNodes(graph) ;
+        // Starting points.
+        Iterator<Node> iter = determineUngroundedStartingSet(graph, path, execCxt) ;
         QueryIterConcat qIterCat = new QueryIterConcat(execCxt) ;
         
         for ( ; iter.hasNext() ; )
@@ -192,9 +193,9 @@ public class PathLib
     }
     
     private static QueryIterator execUngroundedPathSameVar(Binding binding, Graph graph, Var var, Path path, ExecutionContext execCxt) {
-        // Try each end, grounded  
+        // Try each end, ungrounded.
         // Slightly more efficient would be to add a per-engine to do this.
-        Iterator<Node> iter = GraphUtils.allNodes(graph) ;
+        Iterator<Node> iter = determineUngroundedStartingSet(graph, path, execCxt) ;
         QueryIterConcat qIterCat = new QueryIterConcat(execCxt) ;
         
         for ( ; iter.hasNext() ; )
@@ -209,6 +210,33 @@ public class PathLib
             }
         }
         return qIterCat ; 
+    }
+    
+    private static Iterator<Node> determineUngroundedStartingSet(Graph graph, Path path, ExecutionContext execCxt) {
+        // Find a better set of seed values than "everything"
+        //    (:p+) and (^:p)+
+        //  :p* need everything because it is always the case that "<x> :p* <x>" 
+        if ( path instanceof P_OneOrMore1 || path instanceof P_OneOrMoreN ) {
+            Path subPath = ((P_Path1)path).getSubPath() ;
+            if ( subPath instanceof P_Link ) {
+                // :predicate+
+                P_Link link = (P_Link)subPath ;
+                Iterator<Triple> sIter = graph.find(null, link.getNode(), null) ;
+                return Iter.iter(sIter).distinctAdjacent().map(Triple::getSubject).distinct() ;
+            } else {
+                if ( subPath instanceof P_Inverse ) {
+                    P_Inverse pInv = (P_Inverse)subPath ;
+                    if ( pInv.getSubPath() instanceof P_Link ) {
+                        //  (^:predicate)+
+                        P_Link link = (P_Link)(pInv.getSubPath()) ;
+                        Iterator<Triple> sIter = graph.find(null, link.getNode(), null) ;
+                        return Iter.iter(sIter).distinctAdjacent().map(Triple::getObject).distinct() ;
+                    }
+                }
+            }
+        }
+        // No idea - everything.
+        return GraphUtils.allNodes(graph) ;
     }
     
     private static int existsPath(Graph graph, Node subject, Path path, final Node object, ExecutionContext execCxt) {

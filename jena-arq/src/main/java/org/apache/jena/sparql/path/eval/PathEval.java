@@ -65,13 +65,13 @@ public class PathEval
     }
 
     /** Evaluate a path */
-    static void eval$(Graph graph, Node node, Path path, PathEngine engine, Collection<Node> acc) {
+    /*package*/ static void eval$(Graph graph, Node node, Path path, PathEngine engine, Collection<Node> acc) {
         PathEvaluator evaluator = new PathEvaluator(graph, node, acc, engine) ;
         path.visit(evaluator) ;
     }
 
     /** Evaluate a path */
-    static Iter<Node> eval$(Graph graph, Node node, Path path, PathEngine engine) {
+    /*package*/ static Iter<Node> eval$(Graph graph, Node node, Path path, PathEngine engine) {
         Collection<Node> acc = new ArrayList<>() ;
         eval$(graph, node, path, engine, acc); 
         return Iter.iter(acc) ;
