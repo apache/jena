@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package jena.cmd;
+package arq;
 
 import java.io.File ;
 
