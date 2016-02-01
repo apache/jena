@@ -45,80 +45,62 @@ import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.engine.iterator.QueryIterYieldN ;
 import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.sparql.path.eval.PathEval ;
-import org.apache.jena.sparql.pfunction.PropertyFunction ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionFactory ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 
 public class PathLib
 {
-    /** Convert any paths of exactly one predicate to a triple pattern */ 
-    public static Op pathToTriples(PathBlock pattern)
-    {
-        BasicPattern bp = null ;
-        Op op = null ;
+    /** Convert any paths of exactly one predicate to a triple pattern */
+    public static Op pathToTriples(PathBlock pattern) {
+        BasicPattern bp = null;
+        Op op = null;
 
-        for ( TriplePath tp : pattern )
-        {
-            if ( tp.isTriple() )
-            {
+        for ( TriplePath tp : pattern ) {
+            if ( tp.isTriple() ) {
                 if ( bp == null )
-                    bp = new BasicPattern() ;
-                bp.add(tp.asTriple()) ;
-                continue ;
+                    bp = new BasicPattern();
+                bp.add(tp.asTriple());
+                continue;
             }
             // Path form.
-            op = flush(bp, op) ;
-            bp = null ;
+            op = flush(bp, op);
+            bp = null;
 
-            OpPath opPath2 = new OpPath(tp) ;
-            op = OpSequence.create(op, opPath2) ;
-            continue ;
+            OpPath opPath2 = new OpPath(tp);
+            op = OpSequence.create(op, opPath2);
+            continue;
         }
 
-        // End.  Finish off any outstanding BGP.
-        op = flush(bp, op) ;
-        return op ;
+        // End. Finish off any outstanding BGP.
+        op = flush(bp, op);
+        return op;
     }
     
-    static private Op flush(BasicPattern bp, Op op)
-    {
+    static private Op flush(BasicPattern bp, Op op) {
         if ( bp == null || bp.isEmpty() )
-            return op ;
-        
-        OpBGP opBGP = new OpBGP(bp) ;
-        op = OpSequence.create(op, opBGP) ;
-        return op ;
+            return op;
+
+        OpBGP opBGP = new OpBGP(bp);
+        op = OpSequence.create(op, opBGP);
+        return op;
     }
-    
+
     /** Install a path as a property function in the global property function registry */
     public static void install(String uri, Path path)
     { install(uri, path, PropertyFunctionRegistry.get()) ; }
 
     /** Install a path as a property function in a given registry */
-    public static void install(String uri, final Path path, PropertyFunctionRegistry registry)
-    {
-        PropertyFunctionFactory pathPropFuncFactory = new PropertyFunctionFactory()
-        {
-            @Override
-            public PropertyFunction create(String uri)
-            {
-                return new PathPropertyFunction(path) ;
-            }
-        }; 
-        
+    public static void install(String uri, final Path path, PropertyFunctionRegistry registry) {
+        PropertyFunctionFactory pathPropFuncFactory = (u) -> new PathPropertyFunction(path) ;
         registry.put(uri, pathPropFuncFactory) ;
     }
 
-    public static QueryIterator execTriplePath(Binding binding, TriplePath triplePath, ExecutionContext execCxt)
-    {
-        if ( triplePath.isTriple() )
-        {
-            // Fake it.  This happens only for API constructed situations. 
-            Path path = new P_Link(triplePath.getPredicate()) ;
-            triplePath = new TriplePath(triplePath.getSubject(),
-                                        path,
-                                        triplePath.getObject()) ;
+    public static QueryIterator execTriplePath(Binding binding, TriplePath triplePath, ExecutionContext execCxt) {
+        if ( triplePath.isTriple() ) {
+            // Fake it. This happens only for API constructed situations.
+            Path path = new P_Link(triplePath.getPredicate());
+            triplePath = new TriplePath(triplePath.getSubject(), path, triplePath.getObject());
         }
         
         return execTriplePath(binding, 
@@ -128,48 +110,39 @@ public class PathLib
                               execCxt) ;
     }
     
-    public static QueryIterator execTriplePath(Binding binding, 
-                                               Node s, Path path, Node o,
-                                               ExecutionContext execCxt)
-    {
+    public static QueryIterator execTriplePath(Binding binding, Node s, Path path, Node o, ExecutionContext execCxt) {
         Explain.explain(s, path, o, execCxt.getContext()) ;
-        
         s = Var.lookup(binding, s) ;
         o = Var.lookup(binding, o) ;
         Iterator<Node> iter = null ;
         Node endNode = null ;
         Graph graph = execCxt.getActiveGraph() ;
-        
-        if ( Var.isVar(s) && Var.isVar(o) )
-        {
+
+        // Both variables.
+        if ( Var.isVar(s) && Var.isVar(o) ) {
             if ( s.equals(o) )
-                return ungroundedPathSameVar(binding, graph, Var.alloc(s), path, execCxt) ;
+                return execUngroundedPathSameVar(binding, graph, Var.alloc(s), path, execCxt);
             else
-                return ungroundedPath(binding, graph, Var.alloc(s), path, Var.alloc(o), execCxt) ;
+                return execUngroundedPath(binding, graph, Var.alloc(s), path, Var.alloc(o), execCxt);
         }
 
-        if ( ! Var.isVar(s) && ! Var.isVar(o) )
-            return groundedPath(binding, graph, s, path, o, execCxt) ;
-        
-        if ( Var.isVar(s) )
-        {
+        // Both constants.
+        if ( !Var.isVar(s) && !Var.isVar(o) )
+            return evalGroundedPath(binding, graph, s, path, o, execCxt);
+
+        // One variable, one constant
+        if ( Var.isVar(s) ) {
             // Var subject, concrete object - do backwards.
-            iter = PathEval.evalReverse(graph, o, path, execCxt.getContext()) ;
-            endNode = s ;
-        } 
-        else
-        {
-            iter = PathEval.eval(graph, s, path, execCxt.getContext()) ;
-            endNode = o ;
+            iter = PathEval.evalReverse(graph, o, path, execCxt.getContext());
+            endNode = s;
+        } else {
+            iter = PathEval.eval(graph, s, path, execCxt.getContext());
+            endNode = o;
         }
-        return _execTriplePath(binding, iter, endNode, execCxt) ;
+        return evalGroundedOneEnd(binding, iter, endNode, execCxt);
     }
     
-    private static QueryIterator _execTriplePath(Binding binding, 
-                                                 Iterator<Node> iter,
-                                                 Node endNode,
-                                                 ExecutionContext execCxt)
-    {
+    private static QueryIterator evalGroundedOneEnd(Binding binding, Iterator<Node> iter, Node endNode, ExecutionContext execCxt) {
         List<Binding> results = new ArrayList<>() ;
         
         if (! Var.isVar(endNode))
@@ -177,8 +150,7 @@ public class PathLib
         
         Var var = Var.alloc(endNode) ;
         // Assign.
-        for (; iter.hasNext();)
-        {
+        for (; iter.hasNext();) {
             Node n = iter.next() ;
             results.add(BindingFactory.binding(binding, var, n)) ;
         }
@@ -186,9 +158,9 @@ public class PathLib
     }
 
     // Subject and object are nodes.
-    private static QueryIterator groundedPath(Binding binding, Graph graph, Node subject, Path path, Node object,
-                                              ExecutionContext execCxt)
-    {
+    private static QueryIterator evalGroundedPath(Binding binding, 
+                                                  Graph graph, Node subject, Path path, Node object,
+                                                  ExecutionContext execCxt) {
         Iterator<Node> iter = PathEval.eval(graph, subject, path, execCxt.getContext()) ;
         // Now count the number of matches.
         
@@ -204,9 +176,7 @@ public class PathLib
     }
 
     // Brute force evaluation of a TriplePath where neither subject nor object are bound 
-    private static QueryIterator ungroundedPath(Binding binding, Graph graph, Var sVar, Path path, Var oVar,
-                                                ExecutionContext execCxt)
-    {
+    private static QueryIterator execUngroundedPath(Binding binding, Graph graph, Var sVar, Path path, Var oVar, ExecutionContext execCxt) {
         Iterator<Node> iter = GraphUtils.allNodes(graph) ;
         QueryIterConcat qIterCat = new QueryIterConcat(execCxt) ;
         
@@ -215,14 +185,13 @@ public class PathLib
             Node n = iter.next() ;
             Binding b2 = BindingFactory.binding(binding, sVar, n) ;
             Iterator<Node> pathIter = PathEval.eval(graph, n, path, execCxt.getContext()) ;
-            QueryIterator qIter = _execTriplePath(b2, pathIter, oVar, execCxt) ;
+            QueryIterator qIter = evalGroundedOneEnd(b2, pathIter, oVar, execCxt) ;
             qIterCat.add(qIter) ;
         }
         return qIterCat ;
     }
     
-    private static QueryIterator ungroundedPathSameVar(Binding binding, Graph graph, Var var, Path path, ExecutionContext execCxt)
-    {
+    private static QueryIterator execUngroundedPathSameVar(Binding binding, Graph graph, Var var, Path path, ExecutionContext execCxt) {
         // Try each end, grounded  
         // Slightly more efficient would be to add a per-engine to do this.
         Iterator<Node> iter = GraphUtils.allNodes(graph) ;
@@ -242,8 +211,7 @@ public class PathLib
         return qIterCat ; 
     }
     
-    private static int existsPath(Graph graph, Node subject, Path path, final Node object, ExecutionContext execCxt)
-    {
+    private static int existsPath(Graph graph, Node subject, Path path, final Node object, ExecutionContext execCxt) {
         if ( ! subject.isConcrete() || !object.isConcrete() )
             throw new ARQInternalErrorException("Non concrete node for existsPath evaluation") ;
         Iterator<Node> iter = PathEval.eval(graph, subject, path, execCxt.getContext()) ;
