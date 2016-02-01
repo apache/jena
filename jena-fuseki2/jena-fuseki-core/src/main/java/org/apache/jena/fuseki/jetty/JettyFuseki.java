@@ -105,8 +105,12 @@ public class JettyFuseki {
         if ( buildDate != null && buildDate.equals("${build.time.xsd}") )
             buildDate = DateTimeUtils.nowAsXSDDateTimeString() ;
         
-        if ( version != null && buildDate != null )
-            serverLog.info(format("%s %s %s", Fuseki.NAME, version, buildDate)) ;
+        if ( version != null ) {
+            if ( Fuseki.developmentMode && buildDate != null )
+                serverLog.info(format("%s %s %s", Fuseki.NAME, version, buildDate)) ;
+            else
+                serverLog.info(format("%s %s", Fuseki.NAME, version)) ;
+        }
         // This does not get set usefully for Jetty as we use it.
         // String jettyVersion = org.eclipse.jetty.server.Server.getVersion() ;
         // serverLog.info(format("Jetty %s",jettyVersion)) ;
