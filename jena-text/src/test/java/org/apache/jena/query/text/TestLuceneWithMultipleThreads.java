@@ -32,7 +32,7 @@ import org.apache.jena.query.text.assembler.TextVocab ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ResourceFactory ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.sparql.modify.GraphStoreNullTransactional ;
+import org.apache.jena.sparql.modify.GraphStoreNull ;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
 import org.apache.lucene.store.RAMDirectory ;
@@ -58,7 +58,7 @@ public class TestLuceneWithMultipleThreads
     @Test
     public void testReadInMiddleOfWrite() throws InterruptedException, ExecutionException
     {
-        final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(new GraphStoreNullTransactional(), new RAMDirectory(), new TextIndexConfig(entDef));
+        final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(new GraphStoreNull(), new RAMDirectory(), new TextIndexConfig(entDef));
         final Dataset ds = DatasetFactory.wrap(dsg);
         final ExecutorService execService = Executors.newSingleThreadExecutor();
         final Future<?> f = execService.submit(new Runnable()
@@ -114,7 +114,7 @@ public class TestLuceneWithMultipleThreads
     @Test
     public void testWriteInMiddleOfRead() throws InterruptedException, ExecutionException
     {
-        final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(new GraphStoreNullTransactional(), new RAMDirectory(), new TextIndexConfig(entDef));
+        final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(new GraphStoreNull(), new RAMDirectory(), new TextIndexConfig(entDef));
         final int numReads = 10;
         final Dataset ds = DatasetFactory.wrap(dsg);
         final ExecutorService execService = Executors.newFixedThreadPool(10);

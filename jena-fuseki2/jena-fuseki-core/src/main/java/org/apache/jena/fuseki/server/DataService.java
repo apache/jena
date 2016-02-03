@@ -43,7 +43,7 @@ public class DataService { //implements DatasetMXBean {
     
     public static DataService dummy = new DataService(null) ;
     static {
-        dummy.dataset = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
+        dummy.dataset = new DatasetGraphReadOnly(DatasetGraphFactory.create()) ;
         dummy.addEndpoint(OperationName.Query, DEF.ServiceQuery) ;
         dummy.addEndpoint(OperationName.Query, DEF.ServiceQueryAlt) ;
     }

@@ -33,10 +33,7 @@ import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphWithLock ;
-import org.apache.jena.sparql.core.DatasetGraphWrapper ;
-import org.apache.jena.sparql.core.Transactional ;
+import org.apache.jena.sparql.core.* ;
 import org.slf4j.Logger ;
 
 /**
@@ -159,11 +156,12 @@ public class HttpAction
             // Use transactional if it looks safe - abort is necessary.
             // It is the responsibility of dsg to manage the basedsg
             // if the basedsg is not transactional.
-            transactional = (Transactional)dsg ;
+            transactional = dsg ;
             isTransactional = true ;
         } else if ( isTransactional(basedsg) ) {
-            transactional = (Transactional)basedsg ;
-            // Intermediates may be stateful so there is no real abort. 
+            // Use the underlying dataset graph for coordination.  
+            transactional = basedsg ;
+            // but intermediates may be stateful so there is no real abort. 
             isTransactional = false ;
         } else {
             transactional = new DatasetGraphWithLock(dsg) ;
@@ -196,15 +194,16 @@ public class HttpAction
     }
 
     /**
-     * Returns <code>true</code> iff the given {@link DatasetGraph} is an instance of {@link Transactional},
-     * <code>false otherwise</code>.
+     * Returns <code>true</code> iff the given {@link DatasetGraph} supports transactions properly.
+     * Abort is required.  Otherwise Fuseki will buffer to a temporary dataset on file upload
+     * so syntax errors don't break the database.  
+
      *
      * @param dsg a {@link DatasetGraph}
-     * @return <code>true</code> iff the given {@link DatasetGraph} is an instance of {@link Transactional},
-     * <code>false otherwise</code>
+     * @return <code>true</code> iff the given {@link DatasetGraph} does not have the "no transactions" marker.
      */
     private static boolean isTransactional(DatasetGraph dsg) {
-        return (dsg instanceof Transactional) ;
+        return ! (dsg instanceof TransactionalNotSupported) ;
     }
 
     /**

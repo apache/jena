@@ -33,10 +33,11 @@ import org.apache.jena.shared.LockMRSW ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphTriplesQuads ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.TransactionalNotSupported ;
 import org.apache.jena.sparql.util.Context ;
 
-public class DatasetGraphSDB extends DatasetGraphTriplesQuads
-    implements DatasetGraph, Closeable 
+public class DatasetGraphSDB extends DatasetGraphTriplesQuads 
+    implements DatasetGraph, TransactionalNotSupported/** SDB uses JDBC transactions*/, Closeable
 {
     private final Store store ;
     private Lock lock = new LockMRSW() ;
