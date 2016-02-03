@@ -95,12 +95,6 @@ public class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad, TConsumer4
     /**
      * We descend through the nested {@link PMap}s building up {@link Stream}s of partial tuples from which we develop a
      * {@link Stream} of full tuples which is our result. Use {@link Node#ANY} or <code>null</code> for a wildcard.
-     *
-     * @param first the value in the first slot of the tuple
-     * @param second the value in the second slot of the tuple
-     * @param third the value in the third slot of the tuple
-     * @param fourth the value in the fourth slot of the tuple
-     * @return a <code>Stream</code> of tuples matching the pattern
      */
     @SuppressWarnings("unchecked") // Because of (Stream<Quad>) -- but why is that needed?
     private TFunction4<Node, Stream<Quad>> find = (first, second, third, fourth) -> {
@@ -157,6 +151,7 @@ public class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad, TConsumer4
         };
     }
 
+    @Override
     protected TConsumer4<Node> delete() {
         return (first, second, third, fourth) -> {
             debug("Removing four-tuple: {} {} {} {} .", first, second, third, fourth);

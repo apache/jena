@@ -94,11 +94,6 @@ public class PMapTripleTable extends PMapTupleTable<ThreeTupleMap, Triple, TCons
     /**
      * We descend through the nested {@link PMap}s building up {@link Stream}s of partial tuples from which we develop a
      * {@link Stream} of full tuples which is our result. Use {@link Node#ANY} or <code>null</code> for a wildcard.
-     *
-     * @param first the value in the first slot of the tuple
-     * @param second the value in the second slot of the tuple
-     * @param third the value in the third slot of the tuple
-     * @return a <code>Stream</code> of tuples matching the pattern
      */
     @SuppressWarnings("unchecked") // Because of (Stream<Triple>) -- but why is that needed?
     private TFunction3<Node, Stream<Triple>> find = (first, second, third) -> {
