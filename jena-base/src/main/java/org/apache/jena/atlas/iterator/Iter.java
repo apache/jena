@@ -53,11 +53,6 @@ import org.apache.jena.atlas.lib.Sink ;
  * @param <T> the type of element over which an instance of Iter iterates,
  */
 public class Iter<T> implements Iterator<T> {
-    // Remove any remianign Collection/Stream operations left for migration. 
-    
-    // Add:
-    //   .takeWhile, takeUntil, dropWhile, dropUntil
-    //   IteratorTruncate to use IteratorSlotted.
     // IteratorSlotted needed? IteratorPeek
     //   IteratorSlotted.inspect
     
