@@ -18,50 +18,55 @@
 
 package org.apache.jena.tdb.transaction;
 
-import org.apache.jena.sparql.core.DatasetGraphWrapper ;
-import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.sparql.core.DatasetGraphWrapper;
+import org.apache.jena.tdb.store.DatasetGraphTDB;
 
-/** A DatasetGraph that is a single transaction.
- * It does not support transactions, it is a transaction (single use).
+/**
+ * A DatasetGraph that is a single transaction. It does not support
+ * transactions, it is a transaction (single use).
  */
-public class DatasetGraphTxn extends DatasetGraphWrapper
-{
-    private Transaction transaction ;
+public class DatasetGraphTxn extends DatasetGraphWrapper {
+    
+    private Transaction transaction;
 
-    public DatasetGraphTxn(DatasetGraphTDB dsg, Transaction txn)
-    {
-        super(dsg) ;
-        this.transaction = txn ;
+    public DatasetGraphTxn(DatasetGraphTDB dsg, Transaction txn) {
+        super(dsg);
+        this.transaction = txn;
     }
 
-    public Transaction getTransaction() { return transaction ; }
-    
-    /** Return the view (storage) for this transaction */ 
-    public DatasetGraphTDB getView() { return (DatasetGraphTDB)getWrapped() ; }
-    
-    public void commit()
-    {
-        transaction.commit() ;
+    public Transaction getTransaction() {
+        return transaction;
     }
 
-    public void abort()
-    {
-        transaction.abort() ;
+    /** Return the view (storage) for this transaction */
+    public DatasetGraphTDB getView() {
+        return (DatasetGraphTDB)getWrapped();
     }
-    
-    // Context copied in DatasetBuilderTxn.build.
-//    @Override
-//    public Context getContext() { ... }
-    
+
     @Override
-    public String toString()
-    { return "Txn:"+super.toString() ; }
-    
-    public void end()
-    {
+    public void commit() {
+        transaction.commit();
+    }
+
+    @Override
+    public void abort() {
+        transaction.abort();
+    }
+
+    // Context copied in DatasetBuilderTxn.build.
+    // @Override
+    // public Context getContext() { ... }
+
+    @Override
+    public String toString() {
+        return "Txn:" + super.toString();
+    }
+
+    @Override
+    public void end() {
         if ( transaction != null )
-            transaction.close() ;
-        transaction = null ;
+            transaction.close();
+        transaction = null;
     }
 
 }

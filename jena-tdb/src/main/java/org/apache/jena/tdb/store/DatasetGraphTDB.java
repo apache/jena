@@ -30,6 +30,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.DatasetGraphTriplesQuads ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.TransactionalNotSupported ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.lib.NodeLib ;
@@ -38,9 +39,10 @@ import org.apache.jena.tdb.sys.Session ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
 
-/** This is the class that creates a dataset over the storage via
- *  TripleTable, QuadTable and prefixes. These may be transactional.
- *  
+/** This is the class that creates a dataset over the storage. 
+ *  The name is historical. "{@code TDBStorage}" might be ebtter nowadays. 
+ * <p> This class is not {@code Transactional}. It is used within the TDB transaction system. 
+ * <p> 
  *  See also:
  *  <ul>
  *  <li>{@link DatasetGraphTxn} &ndash; the sublcass that provides a single tranasaction</li>
@@ -49,7 +51,7 @@ import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
  */
 final
 public class DatasetGraphTDB extends DatasetGraphTriplesQuads
-                             implements /*DatasetGraph,*/ Sync, Closeable, Session
+                             implements /*DatasetGraph,*/ Sync, Closeable, Session, TransactionalNotSupported
 {
     private TripleTable tripleTable ;
     private QuadTable quadTable ;
