@@ -18,36 +18,25 @@
 
 package org.apache.jena.query.text.assembler ;
 
-import static org.apache.jena.query.text.assembler.TextVocab.pAnalyzer;
-import static org.apache.jena.query.text.assembler.TextVocab.pDirectory;
-import static org.apache.jena.query.text.assembler.TextVocab.pEntityMap;
-import static org.apache.jena.query.text.assembler.TextVocab.pMultilingualSupport;
-import static org.apache.jena.query.text.assembler.TextVocab.pQueryAnalyzer;
-import static org.apache.jena.query.text.assembler.TextVocab.pStoreValues;
+import java.io.File ;
+import java.io.IOException ;
 
-import java.io.File;
-import java.io.IOException;
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.Mode ;
+import org.apache.jena.assembler.assemblers.AssemblerBase ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.query.text.*;
+import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.Statement ;
+import org.apache.jena.sparql.util.graph.GraphUtils ;
+import org.apache.lucene.analysis.Analyzer ;
+import org.apache.lucene.store.Directory ;
+import org.apache.lucene.store.FSDirectory ;
+import org.apache.lucene.store.RAMDirectory ;
 
-import org.apache.jena.assembler.Assembler;
-import org.apache.jena.assembler.Mode;
-import org.apache.jena.assembler.assemblers.AssemblerBase;
-import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.lib.IRILib;
-import org.apache.jena.query.text.EntityDefinition;
-import org.apache.jena.query.text.TextDatasetFactory;
-import org.apache.jena.query.text.TextIndex;
-import org.apache.jena.query.text.TextIndexConfig;
-import org.apache.jena.query.text.TextIndexException;
-import org.apache.jena.query.text.TextIndexLucene;
-import org.apache.jena.query.text.WeakWeakValueMap;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.sparql.util.graph.GraphUtils;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.store.RAMDirectory;
+import static org.apache.jena.query.text.assembler.TextVocab.*;
 
 public class TextIndexLuceneAssembler extends AssemblerBase {
     /*
@@ -58,9 +47,8 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
         text:entityMap <#endMap> ;
         .
     */
-	
-	private static WeakWeakValueMap<RDFNode, RAMDirectory> ramDirectories = new WeakWeakValueMap<>();
     
+    @SuppressWarnings("resource")
     @Override
     public TextIndex open(Assembler a, Resource root, Mode mode) {
         try {
@@ -73,13 +61,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             if ( n.isLiteral() ) {
                 String literalValue = n.asLiteral().getLexicalForm() ; 
                 if (literalValue.equals("mem")) {
-                	// one RAMDirectory per node, not one per invocation
-                	RAMDirectory ramDirectory = ramDirectories.get(root);
-                	if (ramDirectory == null) {
-                        ramDirectory = new RAMDirectory() ;
-                        ramDirectories.put(root, ramDirectory);
-                	}
-                	directory = ramDirectory;
+                    directory = new RAMDirectory() ;
                 } else {
                     File dir = new File(literalValue) ;
                     directory = FSDirectory.open(dir) ;
@@ -141,10 +123,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             config.setMultilingualSupport(isMultilingualSupport);
             config.setValueStored(storeValues);
 
-            TextIndexLucene index = TextDatasetFactory.createLuceneIndex(directory, config) ;
-            index.addEventHandler(TextIndexLucene.Event.CLOSED, 
-            		( i ) -> ramDirectories.remove(root));
-            return index;
+            return TextDatasetFactory.createLuceneIndex(directory, config) ;
         } catch (IOException e) {
             IO.exception(e) ;
             return null ;

@@ -97,61 +97,9 @@ public class TestTextIndexLuceneAssembler extends AbstractTestTextAssembler {
             index.close();
         }
     }
-    
-    @Test public void testIndexHasMemDirectory() {
-    	TextIndexLucene index = null;
-    	try {
-            index = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC_MEM_DIR);
-            assertTrue(index.getDirectory() instanceof RAMDirectory);
-    	} finally {
-            if (index != null) index.close(); 
-    	}
-    }
-    
-    @Test public void testOneIndexPerDirectoryMem() {
-        TextIndexLucene index1 = null;
-        TextIndexLucene index2 = null;
-        try {
-            index1 = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC_MEM_DIR);
-            index2 = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC_MEM_DIR);  
-            assertEquals(index1, index2); 
-        } finally {
-            if (index1 != null) index1.close();
-            if (index2 != null) index2.close();
-        }
-    }
-    
-    @Test public void testTwoIndexesForTwoNodesMem() {
-
-        TextIndexLucene index1 = null;
-        TextIndexLucene index2 = null;
-        try {
-            index1 = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC_MEM_DIR);
-            index2 = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC_MEM_DIR2); 
-            assertNotEquals(index1, index2); 
-        } finally {
-            if (index1 != null) index1.close();
-            if (index2 != null) index2.close();
-        }    	
-    }
-    
-    @Test public void testNewIndexAfterIndexClosedMem() {
-        TextIndexLucene index1 = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC_MEM_DIR);
-        index1.close();
-        TextIndexLucene index2 = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC_MEM_DIR); 
-        index2.close();
-        assertNotEquals(index1, index2);     	
-    }
-    
-    @Test public void testNewIndexAfterIndexClosedFS() {
-        TextIndexLucene index1 = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC);
-        index1.close();
-        TextIndexLucene index2 = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC); 
-        index2.close();
-        assertNotEquals(index1, index2);     	
-    }
 
     static {
         TextAssembler.init();
     }
+
 }

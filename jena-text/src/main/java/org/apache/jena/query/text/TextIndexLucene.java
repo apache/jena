@@ -178,11 +178,6 @@ public class TextIndexLucene implements TextIndex {
     public void close() {
         try {
             indexWriter.close() ;
-            // notify listeners that this index is closed
-            List<EventHandler> handlers = eventHandlers.get(Event.CLOSED);
-            for (EventHandler handler : handlers) {
-            	handler.handle(this);
-            }
         }
         catch (IOException ex) {
             throw new TextIndexException(ex) ;
@@ -403,23 +398,5 @@ public class TextIndexLucene implements TextIndex {
     private Node entryToNode(String v) {
         // TEMP
         return NodeFactoryExtra.createLiteralNode(v, null, null) ;
-    }
-    
-    
-    // set up event handlers
-    
-    public enum Event { CLOSED };
-    
-    public static interface EventHandler {
-    	void handle(TextIndexLucene index);
-    }
-    
-    private Map<Event, List<EventHandler>> eventHandlers = new HashMap<>();
-    
-    public void addEventHandler(Event event, EventHandler handler) {
-    	eventHandlers.computeIfAbsent(
-    			event, 
-    			e -> new ArrayList<>()
-    		).add(handler);
     }
 }

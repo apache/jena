@@ -55,14 +55,13 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
     public void testSimpleDatasetAssembler() {
         Dataset dataset = (Dataset) Assembler.general.open(spec1);
         assertTrue(dataset.getContext().get(TextQuery.textIndex) instanceof TextIndexLucene);
-        dataset.close();
     }
-    
+
     @Test(expected = AssemblerException.class)
     public void testErrorOnNoDataset() {
         Assembler.general.open(noDatasetPropertySpec);
     }
-    
+
     @Test(expected = AssemblerException.class)
     public void testErrorOnNoIndex() {
         Assembler.general.open(noIndexPropertySpec);

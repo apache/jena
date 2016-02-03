@@ -18,26 +18,19 @@
 
 package org.apache.jena.query.text;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.text.assembler.TextVocab;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.assembler.AssemblerUtils;
-import org.apache.jena.sparql.util.Context;
-import org.apache.jena.system.JenaSystem;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.query.text.assembler.TextVocab ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.store.CompoundFileDirectory;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.store.FileSwitchDirectory;
-import org.apache.solr.client.solrj.SolrServer;
+import org.apache.lucene.store.Directory ;
+import org.apache.solr.client.solrj.SolrServer ;
 
 public class TextDatasetFactory
 {
-	protected static LuceneIndexMap luceneIndexMap = new LuceneIndexMap();
     static { JenaSystem.init(); }
     
     /** Use an assembler file to build a dataset with text search capabilities */ 
@@ -99,7 +92,7 @@ public class TextDatasetFactory
      * @param def The EntityDefinition that defines how entities are stored in the index
      * @param queryAnalyzer The analyzer to be used to find terms in the query text.  If null, then the analyzer defined by the EntityDefinition will be used.
      */
-    public static TextIndexLucene createLuceneIndex(Directory directory, EntityDefinition def, Analyzer queryAnalyzer)
+    public static TextIndex createLuceneIndex(Directory directory, EntityDefinition def, Analyzer queryAnalyzer)
     {
         TextIndexConfig config = new TextIndexConfig(def);
         config.setQueryAnalyzer(queryAnalyzer);
@@ -112,26 +105,13 @@ public class TextDatasetFactory
      * @param directory The Lucene Directory for the index
      * @param config The config definition for the index instantiation.
      */
-    public static TextIndexLucene createLuceneIndex(Directory directory, TextIndexConfig config)
+    public static TextIndex createLuceneIndex(Directory directory, TextIndexConfig config)
     {
-        /*
-         * There should only be one TextIndexLucene object for each directory.
-         * Without that policy assemblers or other code may create two objects
-         * on a single directory both of which will try to lock the directory.
-         */
-    	TextIndexLucene index = (TextIndexLucene) luceneIndexMap.get(directory);
-    	if (index != null)
-    		return index;
-    	    	
+        TextIndex index;
         if (config.isMultilingualSupport())
             index = new TextIndexLuceneMultilingual(directory, config) ;
         else
             index = new TextIndexLucene(directory, config) ;
-                
-        luceneIndexMap.put(directory, index);
-        // remove the index from the map when it is closed
-        index.addEventHandler(TextIndexLucene.Event.CLOSED, 
-        		( i ) -> luceneIndexMap.remove(i.getDirectory()) );
         return index ;
     }
 
@@ -211,42 +191,5 @@ public class TextDatasetFactory
         TextIndex index = createSolrIndex(server, entMap) ;
         return create(base, index, true) ; 
     }
- 
-    protected static class LuceneIndexMap {
-    	
-        WeakValueMap<Object,TextIndex> map = new WeakValueMap<>();
-        
-     	public TextIndex get(Directory directory) {
-    		return map.get(key(directory));
-    	}
-    	
-    	void put(Directory directory, TextIndex index) {
-    		map.put(key(directory), index);
-    	}
-    	
-    	void remove(Directory directory) {
-    		map.remove(key(directory));
-    	}
-    	
-    	private Object key(Directory directory) {
-    		// uglyness alert
-    		if (directory instanceof FSDirectory) {
-    			return getFilePath( ( (FSDirectory) directory).getDirectory() );
-    		} else if (directory instanceof FileSwitchDirectory) {
-    			return key( ( (FileSwitchDirectory) directory).getPrimaryDir() );
-    		} else if (directory instanceof CompoundFileDirectory) {
-    			throw new TextIndexException("CompoundFileDirectory not supported");
-    		} else {
-    			return directory;
-    		}
-    	}
-    	
-    	private String getFilePath(File file) {
-    		try {
-				return file.getCanonicalPath();
-			} catch (IOException e) {
-				throw new TextIndexException("problem with path '" + file + "': " + e.getMessage(), e);
-			}
-    	}    	
-    }
 }
+
