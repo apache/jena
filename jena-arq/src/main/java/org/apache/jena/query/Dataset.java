@@ -35,7 +35,7 @@ public interface Dataset extends Transactional
     /** Get the default graph as a Jena Model */
     public Model getDefaultModel() ;
     
-    /** Set the background graph.  Can be set to null for none.  */
+    /** Set the default graph.  Can be set to null for none. */ 
     public void  setDefaultModel(Model model) ;
 
     /** Get a graph by name as a Jena Model */

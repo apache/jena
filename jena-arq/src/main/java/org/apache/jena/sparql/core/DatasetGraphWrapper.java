@@ -23,6 +23,7 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.util.Context ;
@@ -165,5 +166,25 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
         // Pass down sync.
         SystemARQ.sync(get()) ; 
     }
+
+    @Override
+    public void begin(ReadWrite readWrite) 
+    { get().begin(readWrite) ; }
+
+    @Override
+    public void commit() 
+    { get().commit() ; }
+
+    @Override
+    public void abort() 
+    { get().abort() ; }
+
+    @Override
+    public boolean isInTransaction() 
+    { return get().isInTransaction() ; }    
+
+    @Override
+    public void end()
+    { get().end() ; }
     
 }

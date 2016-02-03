@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,49 +16,31 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.modify ;
+package org.apache.jena.sparql.core;
 
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.core.Transactional ;
-import org.apache.jena.sparql.core.TransactionalNull ;
 
-/**
- * A transactional black hole for Quads, add as many as you want and it will forget them all.  Useful for testing.
- */
-public class GraphStoreNullTransactional extends GraphStoreNull implements Transactional
+/** The "un-Transactional" interface */ 
+public interface TransactionalNotSupported extends Transactional
 {
-    private final Transactional transaction = new TransactionalNull() ;
-
-    public GraphStoreNullTransactional() {}
-    
     @Override
-    public void begin(ReadWrite readWrite)
-    {
-        transaction.begin(readWrite) ;
-    }
+    public default void begin(ReadWrite readWrite)
+    { throw new UnsupportedOperationException("Transactional.begin") ; }
 
     @Override
-    public void commit()
-    {
-        transaction.commit() ;
-    }
+    public default void commit()
+    { throw new UnsupportedOperationException("Transactional.commit") ; }
 
     @Override
-    public void abort()
-    {
-        transaction.abort() ;
-    }
+    public default void abort()
+    { throw new UnsupportedOperationException("Transactional.abort") ; }
 
     @Override
-    public boolean isInTransaction()
-    {
-        return transaction.isInTransaction() ;
-    }
+    public default boolean isInTransaction()
+    { return false ; }
 
     @Override
-    public void end()
-    {
-        transaction.end() ;
-    }
-
+    public default void end()
+    { throw new UnsupportedOperationException("Transactional.end") ; }
 }
+

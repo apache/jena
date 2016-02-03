@@ -24,35 +24,71 @@ import java.util.Map ;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.ARQException ;
+import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
 
 /** Implementation of a DatasetGraph as an extensible set of graphs.
  *  Subclasses need to manage any implicit graph creation.
  */
 public class DatasetGraphMap extends DatasetGraphCollection
 {
-    private Map<Node, Graph> graphs = new HashMap<>() ;
+    private final Transactional txn = new TransactionalMRSW() ;
+    @Override public void begin(ReadWrite mode) { txn.begin(mode) ; }
+    @Override public void commit()              { txn.commit() ; }
+    @Override public void abort()               { txn.abort() ; }
+    @Override public boolean isInTransaction()  { return txn.isInTransaction() ; }
+    @Override public void end()                 { txn.end(); }
+    
+    private final GraphMaker graphMaker ;
+    private final Map<Node, Graph> graphs = new HashMap<>() ;
 
     private Graph defaultGraph ;
 
-    public DatasetGraphMap(Graph defaultGraph)
-    { this.defaultGraph = defaultGraph ; }
-    
     /** Create a new DatasetGraph that initially shares the graphs of the
-     * givem DatasetGraph.  Adding/removing graphs will only affect this
-     * object, not the argument DatasetGraph but changed to shared
-     * graphs are seenby both objects.
+     * given DatasetGraph.  Adding/removing graphs will only affect this
+     * object, not the argument DatasetGraph but changes to shared
+     * graphs are seen by both objects.
      */
-     
-    public DatasetGraphMap(DatasetGraph dsg)
-    {
-        this(dsg.getDefaultGraph()) ;
-        for ( Iterator<Node> names = dsg.listGraphNodes() ; names.hasNext() ; )
-        {
+    /*package*/ DatasetGraphMap(DatasetGraph dsg, GraphMaker graphMaker) {
+        this.graphMaker = graphMaker ; 
+        this.defaultGraph = dsg.getDefaultGraph() ;
+        for ( Iterator<Node> names = dsg.listGraphNodes() ; names.hasNext() ; ) {
             Node gn = names.next() ;
             addGraph(gn, dsg.getGraph(gn)) ;
         }
     }
 
+    /** 
+     *  A {@code DatasetGraph} with graphs for default and named graphs as given
+     *  but new graphs are created in memory.
+     */
+    /*package*/ DatasetGraphMap(DatasetGraph dsg) {
+        this(dsg, DatasetGraphFactory.memGraphMaker) ;
+    }
+
+    private DatasetGraphMap(Graph dftGraph, GraphMaker graphMaker) {
+        this.graphMaker = graphMaker;
+        this.defaultGraph = dftGraph ;
+    }
+    
+    /** A {@code DatasetGraph} with in-memory graphs for default and named graphs as needed */ 
+    public DatasetGraphMap() {
+        this(DatasetGraphFactory.memGraphMaker) ; 
+    }
+    
+    /*package*/ DatasetGraphMap(GraphMaker graphMaker) {
+        this(graphMaker.create(), graphMaker) ;
+    }
+
+    /** A {@code DatasetGraph} that uses the given graph for the default graph
+     *  and create in-memory graphs for named graphs as needed
+     */
+    public DatasetGraphMap(Graph dftGraph) {
+        this.defaultGraph = dftGraph ;
+        this.graphMaker = DatasetGraphFactory.graphMakerNull ;
+    }
+    
     @Override
     public boolean containsGraph(Node graphNode)
     {
@@ -81,7 +117,12 @@ public class DatasetGraphMap extends DatasetGraphCollection
     /** Called from getGraph when a nonexistent graph is asked for.
      * Return null for "nothing created as a graph"
      */
-    protected Graph getGraphCreate() { return null ; }
+    protected Graph getGraphCreate() { 
+        Graph g = graphMaker.create() ;
+        if ( g == null )
+            throw new ARQException("Can't make new graphs") ;
+        return g ;
+    }
     
 
     @Override

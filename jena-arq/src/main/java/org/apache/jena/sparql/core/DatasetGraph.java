@@ -35,7 +35,7 @@ import org.apache.jena.sparql.util.Context ;
  * is not defined; see the specific implementation.
  */
 
-public interface DatasetGraph extends Closeable
+public interface DatasetGraph extends Transactional, Closeable
 {
     // ---- Graph container view
 

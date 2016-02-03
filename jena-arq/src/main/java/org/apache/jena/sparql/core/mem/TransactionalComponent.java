@@ -16,17 +16,32 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core;
+package org.apache.jena.sparql.core.mem;
+
+import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.core.Transactional ;
 
 /** Interface that encapsulates the transaction lifecycle for a component in a transaction.
  *  This is the system interface. {@link Transactional} is the application view of a set of 
  *  collection of components that together provide transactions.
  */
+
 public interface TransactionalComponent 
 {
-   // Moved to org.apache.jena.sparql.core.mem.TransactionalComponent
+    // This interface may evolve in the future.
+    // Having it isolates such changes from the applications usage of Transactional.
+    // One example is the introduction of an explicit Transaction object.
     
-   // May return in the future but until we have multiple places using the same
-   // fraemwork, moved to its only place of use.  
+    /** Start either a READ or WRITE transaction */ 
+    public void begin(ReadWrite readWrite) ;
+    
+    /** Commit a transaction - finish the transaction and make any changes permanent (if a "write" transaction) */  
+    public void commit() ;
+    
+    /** Abort a transaction - finish the transaction and undo any changes (if a "write" transaction) */  
+    public void abort() ;
+    
+    /** Finish the transaction - if a write transaction and commit() has not been called, then abort */  
+    public void end() ;
 
 }

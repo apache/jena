@@ -30,7 +30,7 @@ import org.apache.jena.graph.Triple ;
  * DatasetGraph of a single graph as default graph. 
  * Fixed as one graph (the default) - can not add named graphs.
  */
-public class DatasetGraphOne extends DatasetGraphBaseFind
+public class DatasetGraphOne extends DatasetGraphBaseFind implements TransactionalNotSupported 
 {
     private final Graph graph ;
     

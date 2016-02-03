@@ -31,7 +31,7 @@ import org.apache.jena.graph.Node ;
  *  not, for example, TDB quad execution.     
  */
 
-public class DatasetGraphAltDefaultGraph extends DatasetGraphCollection {
+public class DatasetGraphAltDefaultGraph extends DatasetGraphCollection implements TransactionalNotSupported {
     private Graph defaultGraph ;
     private final DatasetGraph dsg ;
 

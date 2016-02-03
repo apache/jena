@@ -28,20 +28,36 @@ import org.apache.jena.sparql.util.Context ;
 /**
  * A DatasetGraph that uses the dataset lock to give weak transactional
  * behaviour, that is the application see transaction but they are not durable.
- * Only provides multiple-reader OR single-writer, and no write-transaction
+ * Only provides multiple-reader OR single-writer, and no write-transction
  * abort.
  */
-public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Sync {
-    private final ThreadLocal<Boolean> writeTxn = ThreadLocal.withInitial(()->false) ;
+public class DatasetGraphWithLock_OLD extends DatasetGraphTrackActive implements Sync {
+    // Pre TransactionalMRSW
+    
+    
+    static class ThreadLocalBoolean extends ThreadLocal<Boolean> {
+        @Override
+        protected Boolean initialValue() {
+            return false ;
+        }
+    }
+
+    static class ThreadLocalReadWrite extends ThreadLocal<ReadWrite> {
+        @Override
+        protected ReadWrite initialValue() {
+            return null ;
+        }
+    }
+
+    private final ThreadLocalReadWrite readWrite     = new ThreadLocalReadWrite() ;
+    private final ThreadLocalBoolean   inTransaction = new ThreadLocalBoolean() ;
     private final DatasetGraph dsg ;
-    private final TransactionalMRSW transactional ;  
     // Associated DatasetChanges (if any, may be null)
     private final DatasetChanges dsChanges ;
 
-    public DatasetGraphWithLock(DatasetGraph dsg) {
+    public DatasetGraphWithLock_OLD(DatasetGraph dsg) {
         this.dsg = dsg ;
         this.dsChanges = findDatasetChanges(dsg) ;
-        this.transactional = new TransactionalMRSW(dsg.getLock()) ;
     }
     
     /** Find a DatasetChanges handler.
@@ -78,39 +94,37 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
 
     @Override
     public boolean isInTransaction() {
-        return transactional.isInTransaction() ;
+        return inTransaction.get() ;
     }
 
     protected boolean isTransactionType(ReadWrite readWriteType) {
-        return transactional.isTransactionType(readWriteType) ;
+        return readWrite.get() == readWriteType ;
     }
 
     @Override
     protected void _begin(ReadWrite readWrite) {
-        transactional.begin(readWrite);
-        writeTxn.set(readWrite.equals(ReadWrite.WRITE));
+        this.readWrite.set(readWrite) ;
+        boolean b = isTransactionType(ReadWrite.READ) ;
+        get().getLock().enterCriticalSection(b) ;
+        inTransaction.set(true) ;
         if ( dsChanges != null )
-            // Replace by transactional state.
             dsChanges.start() ;
     }
 
     @Override
     protected void _commit() {
-        if ( writeTxn.get() ) {
+        if ( isTransactionType(ReadWrite.WRITE) )
             sync() ;
-        }
-        transactional.commit();
         _end() ;
     }
 
     @Override
     protected void _abort() {
-        if ( writeTxn.get() && ! abortImplemented() ) {
+        if ( isTransactionType(ReadWrite.WRITE) && ! abortImplemented() ) {
             // Still clean up.
             _end() ; // This clears the transaction type.  
             throw new JenaTransactionException("Can't abort a write lock-transaction") ;
         }
-        transactional.abort(); 
         _end() ;
     }
 
@@ -122,10 +136,12 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
 
     @Override
     protected void _end() {
-        if ( dsChanges != null )
-            dsChanges.finish();
-        transactional.end(); 
-        writeTxn.remove();
+        if ( isInTransaction() ) {
+            if ( dsChanges != null )
+                dsChanges.finish();
+            clearState() ;
+            get().getLock().leaveCriticalSection() ;
+        }
     }
 
     @Override
@@ -134,6 +150,11 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
             get().close() ;
     }
     
+    private void clearState() {
+        inTransaction.set(false) ;
+        readWrite.set(null) ;
+    }
+
     @Override
     public Context getContext() {
         return get().getContext() ;

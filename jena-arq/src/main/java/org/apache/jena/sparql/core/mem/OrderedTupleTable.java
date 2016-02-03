@@ -30,7 +30,7 @@ import org.apache.jena.sparql.core.Quad;
  * {@code x1} through {@code x4} are used for the components of a tuple in internal order.
  * 
  * @param <TupleType> the tuple type in which an instance of this class works, typically {@link Triple} or {@link Quad}
- * @param <ConsumerType> a consumer type that can accept the elements of a {@link TupleType}, typically
+ * @param <ConsumerType> a consumer type that can accept the elements of a {@code TupleType}, typically
  *            {@link TConsumer3} or {@link TConsumer4}
  */
 public abstract class OrderedTupleTable<TupleType, ConsumerType> implements TupleTable<TupleType> {

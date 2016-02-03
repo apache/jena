@@ -45,9 +45,6 @@ public class DatasetAssembler extends AssemblerBase implements Assembler {
     }
 
     public Dataset createDataset(Assembler a, Resource root, Mode mode) {
-        Dataset ds = DatasetFactory.createGeneral() ;
-        AssemblerUtils.setContext(root, ds.getContext()) ;
-
         // -------- Default graph
         // Can use ja:graph or ja:defaultGraph
         Resource dftGraph = GraphUtils.getResourceValue(root, DatasetAssemblerVocab.pDefaultGraph) ;
@@ -60,39 +57,28 @@ public class DatasetAssembler extends AssemblerBase implements Assembler {
         else
             // Assembler description did not define one.
             dftModel = GraphFactory.makeDefaultModel() ;
-
-        ds.setDefaultModel(dftModel) ;
-
+        Dataset ds = DatasetFactory.create(dftModel) ;
         // -------- Named graphs
         List<RDFNode> nodes = GraphUtils.multiValue(root, DatasetAssemblerVocab.pNamedGraph) ;
+        for ( RDFNode n : nodes ) {
+            if ( !(n instanceof Resource) )
+                throw new DatasetAssemblerException(root, "Not a resource: " + FmtUtils.stringForRDFNode(n));
+            Resource r = (Resource)n;
 
-        for ( RDFNode n : nodes )
-        {
-            if ( !( n instanceof Resource ) )
-            {
-                throw new DatasetAssemblerException( root, "Not a resource: " + FmtUtils.stringForRDFNode( n ) );
-            }
-            Resource r = (Resource) n;
-
-            String gName = GraphUtils.getAsStringValue( r, DatasetAssemblerVocab.pGraphName );
-            Resource g = GraphUtils.getResourceValue( r, DatasetAssemblerVocab.pGraph );
-            if ( g == null )
-            {
-                g = GraphUtils.getResourceValue( r, DatasetAssemblerVocab.pGraphAlt );
-                if ( g != null )
-                {
-                    Log.warn( this, "Use of old vocabulary: use :graph not :graphData" );
-                }
-                else
-                {
-                    throw new DatasetAssemblerException( root, "no graph for: " + gName );
+            String gName = GraphUtils.getAsStringValue(r, DatasetAssemblerVocab.pGraphName);
+            Resource g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraph);
+            if ( g == null ) {
+                g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraphAlt);
+                if ( g != null ) {
+                    Log.warn(this, "Use of old vocabulary: use :graph not :graphData");
+                } else {
+                    throw new DatasetAssemblerException(root, "no graph for: " + gName);
                 }
             }
 
-            Model m = a.openModel( g );
-            ds.addNamedModel( gName, m );
+            Model m = a.openModel(g);
+            ds.addNamedModel(gName, m);
         }
-
         AssemblerUtils.setContext(root, ds.getContext()) ;
         return ds ;
     }

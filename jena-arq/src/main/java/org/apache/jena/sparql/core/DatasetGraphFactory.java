@@ -74,8 +74,11 @@ public class DatasetGraphFactory
         return cloneStructure(dsg) ;
     }
     
+    /** Clone the structure of a DatasetGraph
+     */
+    @Deprecated
     public static DatasetGraph cloneStructure(DatasetGraph dsg) {
-        return new DatasetGraphMaker(dsg, memGraphMaker) ;
+        return new DatasetGraphMap(dsg, memGraphMaker) ;
     }
 
     private static void copyOver(DatasetGraph dsgDest, DatasetGraph dsgSrc)
@@ -112,7 +115,7 @@ public class DatasetGraphFactory
     /** A graph maker that doesn't make graphs */
     public static GraphMaker graphMakerNull = () -> null ;
 
-    private static GraphMaker memGraphMaker = () -> GraphFactory.createDefaultGraph() ;
+    public static GraphMaker memGraphMaker = () -> GraphFactory.createDefaultGraph() ;
 
     /**
      * Create a general-purpose, non-transactional Dataset.<br/>
@@ -127,9 +130,8 @@ public class DatasetGraphFactory
      * 
      * @return a general-purpose DatasetGraph
      */
-    public static DatasetGraph createGeneral() { return new DatasetGraphMaker(memGraphMaker) ; }
-
+    public static DatasetGraph createGeneral() { return new DatasetGraphMap(memGraphMaker) ; }
     
-    //@Deprecated
+    @Deprecated
     public static DatasetGraph createMemFixed() { return new DatasetGraphMap(GraphFactory.createDefaultGraph()) ; }
 }

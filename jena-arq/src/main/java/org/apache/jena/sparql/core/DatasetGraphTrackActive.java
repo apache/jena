@@ -26,7 +26,7 @@ import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.shared.Lock ;
 
 /** Track the transactional state of a DatasetGraph */ 
-public abstract class DatasetGraphTrackActive implements DatasetGraph, Transactional
+public abstract class DatasetGraphTrackActive implements DatasetGraph //,Transactional
 {
     protected abstract DatasetGraph get() ;
 

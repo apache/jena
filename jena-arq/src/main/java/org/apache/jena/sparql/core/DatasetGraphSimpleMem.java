@@ -31,7 +31,7 @@ import org.apache.jena.util.iterator.WrappedIterator ;
  * of a triples+quads style for testing the {@link DatasetGraphTriplesQuads}
  * style implementation framework. 
  */
-public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads
+public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements TransactionalNotSupported
 {
     private MiniSet<Triple> triples = new MiniSet<>() ;
     private MiniSet<Quad> quads = new MiniSet<>() ;

@@ -24,8 +24,11 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Factory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraphQuad ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Transactional ;
+import org.apache.jena.sparql.core.TransactionalNull ;
 import org.apache.jena.update.GraphStore ;
 
 /**
@@ -34,40 +37,61 @@ import org.apache.jena.update.GraphStore ;
 @SuppressWarnings("deprecation")
 public class GraphStoreNull extends DatasetGraphQuad implements GraphStore
 {
+    private final Transactional transaction = new TransactionalNull() ;
+
     public GraphStoreNull() {}
-    
+
     @Override
-    public Iterator<Quad> find(Node g, Node s, Node p, Node o)
-    {
+    public Iterator<Quad> find(Node g, Node s, Node p, Node o) {
         return Iter.nullIterator();
     }
 
     @Override
-    public Iterator<Quad> findNG(Node g, Node s, Node p, Node o)
-    {
+    public Iterator<Quad> findNG(Node g, Node s, Node p, Node o) {
         return Iter.nullIterator();
     }
 
     @Override
-    public void add(Quad quad)
-    { }
+    public void add(Quad quad) {}
 
     @Override
-    public void delete(Quad quad)
-    { }
+    public void delete(Quad quad) {}
 
     @Override
     public void addGraph(Node graphName, Graph graph) {}
 
     @Override
-    public Graph getDefaultGraph()
-    {
-        return Factory.empty() ;
+    public Graph getDefaultGraph() {
+        return Factory.empty();
     }
 
     @Override
-    public Graph getGraph(Node graphNode)
-    {
-        return Factory.empty() ;
+    public Graph getGraph(Node graphNode) {
+        return Factory.empty();
+    }
+
+    @Override
+    public void begin(ReadWrite readWrite) {
+        transaction.begin(readWrite);
+    }
+
+    @Override
+    public void commit() {
+        transaction.commit();
+    }
+
+    @Override
+    public void abort() {
+        transaction.abort();
+    }
+
+    @Override
+    public boolean isInTransaction() {
+        return transaction.isInTransaction();
+    }
+
+    @Override
+    public void end() {
+        transaction.end();
     }
 }

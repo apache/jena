@@ -109,25 +109,27 @@ public class DatasetFactory {
 	 * @param model The model for the default graph
 	 * @return a dataset with the given model as the default graph
 	 */
-	public static Dataset create(final Model model) {
+	public static Dataset create(Model model) {
 		return new DatasetImpl(model);
 	}
 
 	/**
 	 * @param dataset Dataset to clone structure from.
 	 * @return a dataset: clone the dataset structure of named graohs, and share the graphs themselves.
+	 * @deprecated This operation may be removed.
 	 */
-	public static Dataset create(final Dataset dataset) {
+	@Deprecated
+	public static Dataset create(Dataset dataset) {
 		return new DatasetImpl(dataset);
 	}
 
-	/**
+    /**
 	 * Wrap a {@link DatasetGraph} to make a dataset
 	 *
 	 * @param dataset DatasetGraph
 	 * @return Dataset
 	 */
-	public static Dataset wrap(final DatasetGraph dataset) {
+	public static Dataset wrap(DatasetGraph dataset) {
 		return DatasetImpl.wrap(dataset);
 	}
 
@@ -139,7 +141,7 @@ public class DatasetFactory {
 	 * @deprecated Use {@link #wrap} 
 	 */
 	@Deprecated
-	public static Dataset create(final DatasetGraph dataset) {
+	public static Dataset create(DatasetGraph dataset) {
 	    return DatasetImpl.wrap(dataset);
 	}
 
@@ -147,7 +149,7 @@ public class DatasetFactory {
 	 * @param uriList URIs merged to form the default dataset
 	 * @return a dataset based on a list of URIs : these are merged into the default graph of the dataset.
 	 */
-	public static Dataset create(final List<String> uriList) {
+	public static Dataset create(List<String> uriList) {
 		return create(uriList, null, null);
 	}
 
@@ -156,7 +158,7 @@ public class DatasetFactory {
 	 * @return a dataset with a default graph and no named graphs
 	 */
 
-	public static Dataset create(final String uri) {
+	public static Dataset create(String uri) {
 		return create(uri, null, null);
 	}
 
@@ -165,7 +167,7 @@ public class DatasetFactory {
 	 * @return a named graph container of graphs based on a list of URIs.
 	 */
 
-	public static Dataset createNamed(final List<String> namedSourceList) {
+	public static Dataset createNamed(List<String> namedSourceList) {
 		return create((List<String>) null, namedSourceList, null);
 	}
 
@@ -180,7 +182,7 @@ public class DatasetFactory {
 	 * @return Dataset
 	 */
 
-	public static Dataset create(final List<String> uriList, final List<String> namedSourceList) {
+	public static Dataset create(List<String> uriList, List<String> namedSourceList) {
 		return create(uriList, namedSourceList, null);
 	}
 
@@ -195,7 +197,7 @@ public class DatasetFactory {
 	 * @return Dataset
 	 */
 
-	public static Dataset create(final String uri, final List<String> namedSourceList) {
+	public static Dataset create(String uri, List<String> namedSourceList) {
 		return create(uri, namedSourceList, null);
 	}
 
@@ -211,7 +213,7 @@ public class DatasetFactory {
 	 * @return Dataset
 	 */
 
-	public static Dataset create(final String uri, final List<String> namedSourceList, final String baseURI) {
+	public static Dataset create(String uri, List<String> namedSourceList, String baseURI) {
 		return DatasetUtils.createDataset(uri, namedSourceList, baseURI);
 	}
 
@@ -227,15 +229,15 @@ public class DatasetFactory {
 	 * @return Dataset
 	 */
 
-	public static Dataset create(final List<String> uriList, final List<String> namedSourceList, final String baseURI) {
+	public static Dataset create(List<String> uriList, List<String> namedSourceList, String baseURI) {
 		return DatasetUtils.createDataset(uriList, namedSourceList, baseURI);
 	}
-
-	public static Dataset make(final Dataset ds, final Model defaultModel) {
-		final Dataset ds2 = new DatasetImpl(ds);
-		ds2.setDefaultModel(defaultModel);
-		return ds2;
-	}
+//
+//	public static Dataset make(Dataset ds, Model defaultModel) {
+//		Dataset ds2 = new DatasetImpl(ds);
+//		ds2.setDefaultModel(defaultModel);
+//		return ds2;
+//	}
 
 	// Assembler-based Dataset creation.
 
@@ -245,8 +247,8 @@ public class DatasetFactory {
 	 * @param filename The filename
 	 * @return Dataset
 	 */
-	public static Dataset assemble(final String filename) {
-		final Model model = FileManager.get().loadModel(filename);
+	public static Dataset assemble(String filename) {
+		Model model = FileManager.get().loadModel(filename);
 		return assemble(model);
 	}
 
@@ -257,9 +259,9 @@ public class DatasetFactory {
 	 * @param resourceURI URI for the dataset to assembler
 	 * @return Dataset
 	 */
-	public static Dataset assemble(final String filename, final String resourceURI) {
-		final Model model = FileManager.get().loadModel(filename);
-		final Resource r = model.createResource(resourceURI);
+	public static Dataset assemble(String filename, String resourceURI) {
+		Model model = FileManager.get().loadModel(filename);
+		Resource r = model.createResource(resourceURI);
 		return assemble(r);
 	}
 
@@ -269,8 +271,8 @@ public class DatasetFactory {
 	 * @param model
 	 * @return Dataset
 	 */
-	public static Dataset assemble(final Model model) {
-		final Resource r = GraphUtils.findRootByType(model, DatasetAssembler.getType());
+	public static Dataset assemble(Model model) {
+		Resource r = GraphUtils.findRootByType(model, DatasetAssembler.getType());
 		if (r == null) throw new ARQException("No root found for type <" + DatasetAssembler.getType() + ">");
 
 		return assemble(r);
@@ -283,8 +285,8 @@ public class DatasetFactory {
 	 * @return Dataset
 	 */
 
-	public static Dataset assemble(final Resource resource) {
-		final Dataset ds = (Dataset) Assembler.general.open(resource);
+	public static Dataset assemble(Resource resource) {
+		Dataset ds = (Dataset) Assembler.general.open(resource);
 		return ds;
 	}
 }
