@@ -86,8 +86,7 @@ public class ElementTransformer {
     /** The primitive operation to apply a transformation to an Op */
     protected Element applyTransformation(ApplyTransformVisitor transformApply, Element element,
                                           ElementVisitor beforeVisitor, ElementVisitor afterVisitor) {
-        ElementWalker.walk(element, transformApply) ; // , beforeVisitor,
-                                                      // afterVisitor) ;
+        ElementWalker.walk(element, transformApply, beforeVisitor, afterVisitor) ;
         Element r = transformApply.result() ;
         return r ;
     }

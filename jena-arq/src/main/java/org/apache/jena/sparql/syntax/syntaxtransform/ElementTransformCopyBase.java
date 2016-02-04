@@ -61,7 +61,7 @@ public class ElementTransformCopyBase implements ElementTransform {
     public Element transform(ElementBind el, Var v, Expr expr2) {
         if ( el.getVar() == v && el.getExpr() == expr2 )
             return el ;
-        return new ElementAssign(v, expr2) ;
+        return new ElementBind(v, expr2) ;
     }
 
     @Override
