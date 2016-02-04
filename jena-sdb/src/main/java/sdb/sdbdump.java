@@ -21,11 +21,13 @@ package sdb;
 import java.util.List;
 
 import jena.cmd.ArgDecl;
-
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.sdb.SDB ;
 import org.apache.jena.atlas.lib.Lib ;
-
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.sdb.SDB ;
 import sdb.cmd.CmdArgsDB;
 import sdb.cmd.ModGraph;
 
@@ -79,19 +81,24 @@ public class sdbdump extends CmdArgsDB
     protected void execCmd(List<String> args)
     {
         // This is a streamable syntax.
-        String syntax = "N-TRIPLES" ;
+        String syntax = "N-QUADS";
         if ( contains(argDeclSyntax) )
-            syntax = getArg(argDeclSyntax).getValue() ;
-        if ( isDebug() )
-            System.out.println("Debug: syntax is "+syntax) ;
-        
+            syntax = getArg(argDeclSyntax).getValue();
+        Lang lang = RDFLanguages.nameToLang(syntax);
+
         try {
-            Model model = modGraph.getModel(getStore()) ;
-            model.write(System.out, syntax) ;
-        } catch (Exception ex)
-        {
-            System.err.println("Exception: "+ex+" :: "+ex.getMessage()) ;
-            ex.printStackTrace(System.err) ;
+            if ( modGraph.getGraphName() == null ) {
+                System.err.println("DATASET:"+lang) ;
+                Dataset dataset = getModStore().getDataset();
+                RDFDataMgr.write(System.out, dataset, lang);
+            } else {
+                Model model = modGraph.getModel(getStore());
+                RDFDataMgr.write(System.out, model, lang);
+            }
+        }
+        catch (Exception ex) {
+            System.err.println("Exception: " + ex + " :: " + ex.getMessage());
+            ex.printStackTrace(System.err);
         }
     }
 
