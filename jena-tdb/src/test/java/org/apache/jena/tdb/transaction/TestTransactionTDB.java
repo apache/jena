@@ -25,7 +25,7 @@ import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.transaction.AbstractTestTransaction ;
+import org.apache.jena.sparql.transaction.AbstractTestTransactionLifecycle ;
 import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDBFactory ;
@@ -33,7 +33,7 @@ import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import org.junit.* ;
 
-public class TestTransactionTDB extends AbstractTestTransaction
+public class TestTransactionTDB extends AbstractTestTransactionLifecycle
 {
     private String DIR = null ; 
     

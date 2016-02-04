@@ -59,7 +59,6 @@ public class AssemblerUtils
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
         registerDataset(DatasetAssembler.getType(),         new DatasetAssembler()) ;
         registerDataset(InMemDatasetAssembler.getType(),    new InMemDatasetAssembler()) ;
-        registerDataset(DatasetNullAssembler.getType(),     new DatasetNullAssembler()) ;
     }
     
     private static Model modelExtras = ModelFactory.createDefaultModel() ;

@@ -66,8 +66,8 @@ public class TransactionalMRSW implements Transactional {
 
     @Override
     public void abort() {
-        if ( isTransactionType(ReadWrite.WRITE) )
-            error("Transactional.abort()") ;
+//        if ( isTransactionType(ReadWrite.WRITE) )
+//            error("Transactional.abort()") ;
         endOnce() ;
     }
 
@@ -87,7 +87,7 @@ public class TransactionalMRSW implements Transactional {
     @Override
     public void end() {
         if ( isTransactionType(ReadWrite.WRITE) )
-            error("Write tranasction - no commit or abort before end()") ;
+            error("Write transaction - no commit or abort before end()") ;
         endOnce() ;
     }
 

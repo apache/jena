@@ -23,26 +23,19 @@ import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.core.DatasetGraphWithLock ;
-import org.junit.Ignore ;
-import org.junit.Test ;
 
-public class TestTransactionMem extends AbstractTestTransaction
+/** Version with abortImplemented == true */
+public class TestTransactionDSGWithLockWithAbort extends AbstractTestTransactionLifecycle
 {
     @Override
-    protected Dataset create()
-    { 
+    protected Dataset create() { 
+        // The tests don't actuall add/delete data.
         DatasetGraph dsg = DatasetGraphFactory.create() ;
-        DatasetGraphWithLock dsgl = new  DatasetGraphWithLock(dsg) ;
+        DatasetGraphWithLock dsgl = new  DatasetGraphWithLock(dsg) {
+            @Override
+            protected boolean abortImplemented() { return true ; }
+        } ;
         return DatasetFactory.wrap(dsgl) ;
     }
-    
-    // Tests that don't make sense because they abort a write transaction.
-    // (Using org.junit.Assume would be better?)
-    @Test @Override @Ignore public void transaction_err_10() {} 
-    @Test @Override @Ignore public void transaction_err_12() {} 
-    @Test @Override @Ignore public void transaction_03() {} 
-    @Test @Override @Ignore public void transaction_05() {} 
-    @Test @Override @Ignore public void transaction_06() {} 
-    
  }
 

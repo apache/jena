@@ -20,13 +20,21 @@ package org.apache.jena.sparql.transaction;
 
 import static org.apache.jena.query.ReadWrite.READ ;
 import static org.apache.jena.query.ReadWrite.WRITE ;
+
+import java.util.ArrayList ;
+import java.util.List ;
+import java.util.concurrent.* ;
+import java.util.concurrent.atomic.AtomicLong ;
+
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.JenaTransactionException ;
+import org.junit.Assert ;
 import org.junit.Test ;
 
-public abstract class AbstractTestTransaction extends BaseTest
+public abstract class AbstractTestTransactionLifecycle extends BaseTest
 {
     protected abstract Dataset create() ;
     
@@ -37,7 +45,7 @@ public abstract class AbstractTestTransaction extends BaseTest
     }
 
     @Test
-    public void transaction_01() {
+    public void transaction_r01() {
         Dataset ds = create() ;
         ds.begin(ReadWrite.READ) ;
         assertTrue(ds.isInTransaction()) ;
@@ -46,7 +54,29 @@ public abstract class AbstractTestTransaction extends BaseTest
     }
 
     @Test
-    public void transaction_02() {
+    public void transaction_r02() {
+        Dataset ds = create() ;
+        ds.begin(ReadWrite.READ) ;
+        assertTrue(ds.isInTransaction()) ;
+        ds.commit() ;
+        assertFalse(ds.isInTransaction()) ;
+        ds.end() ;
+        assertFalse(ds.isInTransaction()) ;
+    }
+
+    @Test
+    public void transaction_r03() {
+        Dataset ds = create() ;
+        ds.begin(ReadWrite.READ) ;
+        assertTrue(ds.isInTransaction()) ;
+        ds.abort() ;
+        assertFalse(ds.isInTransaction()) ;
+        ds.end() ;
+        assertFalse(ds.isInTransaction()) ;
+    }
+
+    @Test
+    public void transaction_w01() {
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
         assertTrue(ds.isInTransaction()) ;
@@ -55,7 +85,7 @@ public abstract class AbstractTestTransaction extends BaseTest
     }
 
     @Test
-    public void transaction_03() {
+    public void transaction_w02() {
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
         assertTrue(ds.isInTransaction()) ;
@@ -64,7 +94,7 @@ public abstract class AbstractTestTransaction extends BaseTest
     }
 
     @Test
-    public void transaction_04() {
+    public void transaction_w03() {
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
         assertTrue(ds.isInTransaction()) ;
@@ -75,7 +105,7 @@ public abstract class AbstractTestTransaction extends BaseTest
     }
 
     @Test
-    public void transaction_05() {
+    public void transaction_w04() {
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
         assertTrue(ds.isInTransaction()) ;
@@ -86,7 +116,7 @@ public abstract class AbstractTestTransaction extends BaseTest
     }
 
     @Test
-    public void transaction_06() {
+    public void transaction_w05() {
         // .end is not necessary
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
@@ -102,28 +132,28 @@ public abstract class AbstractTestTransaction extends BaseTest
 
     // Patterns.
     @Test
-    public void transaction_07() {
+    public void transaction_pattern_01() {
         Dataset ds = create() ;
         read1(ds) ;
         read1(ds) ;
     }
 
     @Test
-    public void transaction_08() {
+    public void transaction_pattern_02() {
         Dataset ds = create() ;
         read2(ds) ;
         read2(ds) ;
     }
 
     @Test
-    public void transaction_09() {
+    public void transaction_pattern_03() {
         Dataset ds = create() ;
         write(ds) ;
         write(ds) ;
     }
 
     @Test
-    public void transaction_10() {
+    public void transaction_pattern_04() {
         Dataset ds = create() ;
         write(ds) ;
         read2(ds) ;
@@ -218,6 +248,8 @@ public abstract class AbstractTestTransaction extends BaseTest
     @Test 
     public void transaction_err_12()    { testAbortCommit(WRITE) ; }
 
+    
+    
     private void read1(Dataset ds) {
         ds.begin(ReadWrite.READ) ;
         assertTrue(ds.isInTransaction()) ;
@@ -309,6 +341,78 @@ public abstract class AbstractTestTransaction extends BaseTest
         catch (JenaTransactionException ex) {
             safeEnd(ds) ;
         }
-    }    
+    }
+
+    // ---- Concurrency tests.
+    @Test
+    public synchronized void transaction_concurrency_writer() throws InterruptedException, ExecutionException, TimeoutException {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        AtomicLong counter = new AtomicLong(0) ;
+        try {
+            final Dataset ds = create() ;
+
+            Callable<Boolean> callable = new Callable<Boolean>() {
+
+                @Override
+                public Boolean call() {
+                    ds.begin(ReadWrite.WRITE);
+                    long x = counter.incrementAndGet() ;
+                    // Hold the lock for a short while.
+                    // The W threads will take the sleep serially.
+                    Lib.sleep(500) ;
+                    long x1 = counter.get() ;
+                    Assert.assertEquals("Two writers in the transaction", x, x1);
+                    ds.commit();
+                    return true;
+                }
+            };
+
+            // Fire off two threads
+            Future<Boolean> f1 = executor.submit(callable);
+            Future<Boolean> f2 = executor.submit(callable);
+            // Wait longer than the cumulative threads sleep
+            Assert.assertTrue(f1.get(4, TimeUnit.SECONDS));
+            Assert.assertTrue(f2.get(1, TimeUnit.SECONDS));
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
+    @Test
+    public synchronized void transaction_concurrency_reader() throws InterruptedException, ExecutionException, TimeoutException {
+        ExecutorService executor = Executors.newCachedThreadPool();
+        AtomicLong counter = new AtomicLong(0) ;
+        
+        try {
+            final Dataset ds = create() ;
+
+            Callable<Boolean> callable = new Callable<Boolean>() {
+                @Override
+                public Boolean call() {
+                    ds.begin(ReadWrite.READ);
+                    long x = counter.incrementAndGet() ;
+                    // Hold the lock for a few seconds - these should be in parallel.
+                    Lib.sleep(1000) ;
+                    ds.commit();
+                    return true;
+                }
+            };
+
+            // Run the callable a bunch of times
+            List<Future<Boolean>> futures = new ArrayList<>();
+            for (int i = 0; i < 25; i++) {
+                futures.add(executor.submit(callable));
+            }
+
+            // Check all the futures come back OK
+            // Wait shorter than sum total of all sleep by thread
+            // which proves concurrent access.
+            for (Future<Boolean> f : futures) {
+                Assert.assertTrue(f.get(4, TimeUnit.SECONDS));
+            }
+        } finally {
+            executor.shutdownNow();
+        }
+    }
 }
 
