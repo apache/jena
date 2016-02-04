@@ -88,7 +88,6 @@ public class sdbdump extends CmdArgsDB
 
         try {
             if ( modGraph.getGraphName() == null ) {
-                System.err.println("DATASET:"+lang) ;
                 Dataset dataset = getModStore().getDataset();
                 RDFDataMgr.write(System.out, dataset, lang);
             } else {
