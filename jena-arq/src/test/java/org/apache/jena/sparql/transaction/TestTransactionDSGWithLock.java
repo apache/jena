@@ -33,7 +33,7 @@ public class TestTransactionDSGWithLock extends AbstractTestTransactionLifecycle
     protected Dataset create()
     { 
         DatasetGraph dsg = DatasetGraphFactory.create() ;
-        DatasetGraphWithLock dsgl = new  DatasetGraphWithLock(dsg) ;
+        DatasetGraphWithLock dsgl = new  DatasetGraphWithLock(dsg, false) ;
         return DatasetFactory.wrap(dsgl) ;
     }
     
