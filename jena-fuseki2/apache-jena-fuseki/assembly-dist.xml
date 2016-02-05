@@ -22,8 +22,8 @@
 -->
 
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
 
   <id>distribution</id>
 
@@ -39,7 +39,7 @@
     <dependencySet>
       <useProjectArtifact>false</useProjectArtifact>
       <includes>
-	<include>org.apache.jena:jena-fuseki-server:jar</include>
+	    <include>org.apache.jena:jena-fuseki-server:jar</include>
       </includes>
       <outputFileNameMapping>fuseki-server.jar</outputFileNameMapping>
 
@@ -48,7 +48,7 @@
     <dependencySet>
       <useProjectArtifact>false</useProjectArtifact>
       <includes>
-	<include>org.apache.jena:jena-fuseki-war:war</include>
+	    <include>org.apache.jena:jena-fuseki-war:war</include>
       </includes>
       <outputFileNameMapping>fuseki.war</outputFileNameMapping>
 
@@ -71,7 +71,7 @@
     <fileSet>
       <outputDirectory></outputDirectory>
       <includes>
-	<include>templates/*</include>
+	    <include>templates/*</include>
         <include>README*</include>
         <include>DEPENDENCIES*</include>
       </includes>
@@ -84,13 +84,13 @@
         <include>fuseki</include>
         <include>fuseki-server</include>
         <include>fuseki-server.bat</include>
-	<include>bin/*</include>
+	    <include>bin/*</include>
       </includes>
     </fileSet>
 
-     <fileSet>
-       <directory>../jena-fuseki-core/src/main/webapp</directory>
-       <outputDirectory>webapp</outputDirectory>
+    <fileSet>
+      <directory>../jena-fuseki-core/src/main/webapp</directory>
+      <outputDirectory>webapp</outputDirectory>
     </fileSet>
 
   </fileSets>

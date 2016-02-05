@@ -40,7 +40,7 @@
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
     </license>
   </licenses>
- 
+  
   <organization>
     <name>The Apache Software Foundation</name>
     <url>http://www.apache.org/</url>
@@ -254,7 +254,7 @@
 
       <!-- Solr client -->
       <!-- Exclusion of slf4j: Necessary so as to pick the version we want. 
-        solrj->zookeeper has a dependency on slf4j -->
+           solrj->zookeeper has a dependency on slf4j -->
 
       <dependency>
         <artifactId>solr-solrj</artifactId>
@@ -299,7 +299,7 @@
       </dependency>
 
       <!-- And intercept any uses of Jakarta Commons Logging e.g. Apache Common 
-        HTTP client. -->
+           HTTP client. -->
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>jcl-over-slf4j</artifactId>
@@ -348,7 +348,7 @@
           </exclusion>
         </exclusions>
       </dependency>
-   
+      
       <dependency>
         <groupId>org.xenei</groupId>
         <artifactId>contract-test-maven-plugin</artifactId>
@@ -362,8 +362,8 @@
         <version>${ver.mockito}</version>
         <scope>test</scope>
       </dependency>
- 
-     <dependency>
+      
+      <dependency>
         <groupId>com.jayway.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${ver.awaitility}</version>
@@ -446,96 +446,96 @@
           </execution>
         </executions>
         <configuration>
-           <excludeSubProjects>true</excludeSubProjects>
-         <excludes>
-           <exclude>**/META-INF/services/*</exclude>
-               <!--
-               jena-core exclusions
-               -->
-               <exclude>**/src-examples/data/*</exclude>
-               
-               <!--
-               jena-fuseki exclusions
-               -->
-               <exclude>**/dist/ABOUT</exclude>
-               <exclude>**/SEE_FUSEKI2</exclude>
-               <!-- 
-               Need to exclude JS and CSS since much of it comes from other Apache licensed projects 
-               e.g. Bootstrap, Qonsole
-               
-               -->
-               <exclude>**/src/main/webapp/css/*</exclude>
-               <exclude>**/src/main/webapp/fonts/*</exclude>
-               <exclude>**/src/main/webapp/js/**/*</exclude>
-               
-               <!-- General exclusions -->
-               <!-- 
-               Vocabularies are often just local copies of vocabularies
-               published by others
-               -->
-               <exclude>**/vocabularies/*</exclude>
-               <exclude>**/Vocabularies/*</exclude>
+          <excludeSubProjects>true</excludeSubProjects>
+          <excludes>
+            <exclude>**/META-INF/services/*</exclude>
+            <!--
+                jena-core exclusions
+            -->
+            <exclude>**/src-examples/data/*</exclude>
+            
+            <!--
+                jena-fuseki exclusions
+            -->
+            <exclude>**/dist/ABOUT</exclude>
+            <exclude>**/SEE_FUSEKI2</exclude>
+            <!-- 
+                 Need to exclude JS and CSS since much of it comes from other Apache licensed projects 
+                 e.g. Bootstrap, Qonsole
+                 
+            -->
+            <exclude>**/src/main/webapp/css/*</exclude>
+            <exclude>**/src/main/webapp/fonts/*</exclude>
+            <exclude>**/src/main/webapp/js/**/*</exclude>
+            
+            <!-- General exclusions -->
+            <!-- 
+                 Vocabularies are often just local copies of vocabularies
+                 published by others
+            -->
+            <exclude>**/vocabularies/*</exclude>
+            <exclude>**/Vocabularies/*</exclude>
 
-               <!--
-               Javadoc add-ons files are required to be simple and our javadoc configuration
-               will ensure appropriate license and copyright statements are inserted
-               into generated documentation anyway so no need to put license statements in these
-               files
-               -->
-               <exclude>**/src/main/**/*.html</exclude>
-               <exclude>**/src/**/package-info.java</exclude>
-               
-               <exclude>**/DEPENDENCIES</exclude>
-               
-               <!--
-               Text and Markdown files are typically used only for documentation purposes
-               and license declarations are usually spurious in these files since often they
-               will refer to the LICENSE/NOTICE for users to find the actual licenses
-               -->
-               <exclude>**/*.txt</exclude>
-               <exclude>**/*.md</exclude>
-               
-               <!--
-               META-INF services files can include comments but a license header would be
-               unecessarily clutter so we exclude these
-               -->
-               <exclude>**/META-INF/services/*</exclude>
-               
-               <!--
-               Jena historically has large numbers of small test file
-               with no license headers.  Such small files are not required 
-               to have headers. 
+            <!--
+                Javadoc add-ons files are required to be simple and our javadoc configuration
+                will ensure appropriate license and copyright statements are inserted
+                into generated documentation anyway so no need to put license statements in these
+                files
+            -->
+            <exclude>**/src/main/**/*.html</exclude>
+            <exclude>**/src/**/package-info.java</exclude>
+            
+            <exclude>**/DEPENDENCIES</exclude>
+            
+            <!--
+                Text and Markdown files are typically used only for documentation purposes
+                and license declarations are usually spurious in these files since often they
+                will refer to the LICENSE/NOTICE for users to find the actual licenses
+            -->
+            <exclude>**/*.txt</exclude>
+            <exclude>**/*.md</exclude>
+            
+            <!--
+                META-INF services files can include comments but a license header would be
+                unecessarily clutter so we exclude these
+            -->
+            <exclude>**/META-INF/services/*</exclude>
+            
+            <!--
+                Jena historically has large numbers of small test file
+                with no license headers.  Such small files are not required 
+                to have headers. 
 
-               In addition, there are files with different Licenses
-               (e.g. W3C Software Licence, W3C Test Suite License) as
-               noted in the code tree.
-               -->
-               <exclude>**/src/test/resources/**/*</exclude>
-               <exclude>**/testing/**/*</exclude>
+                In addition, there are files with different Licenses
+                (e.g. W3C Software Licence, W3C Test Suite License) as
+                noted in the code tree.
+            -->
+            <exclude>**/src/test/resources/**/*</exclude>
+            <exclude>**/testing/**/*</exclude>
 
-               <exclude>**/log4j.properties</exclude>
-               <exclude>**/log4j-testing.properties</exclude>
-               <exclude>**/derby.log</exclude>
-               <exclude>**/DB/**/*</exclude>
-           <!-- TDB config files JSON - no comments allowed -->
-               <exclude>**/tdb*.cfg</exclude>
-           <!-- Fuseki2 server "run" area -->
-           <exclude>**/run/**/*</exclude>
-           <!-- Cached classpath for commands - autogenerated -->
-           <exclude>**/*.classpath</exclude>
+            <exclude>**/log4j.properties</exclude>
+            <exclude>**/log4j-testing.properties</exclude>
+            <exclude>**/derby.log</exclude>
+            <exclude>**/DB/**/*</exclude>
+            <!-- TDB config files JSON - no comments allowed -->
+            <exclude>**/tdb*.cfg</exclude>
+            <!-- Fuseki2 server "run" area -->
+            <exclude>**/run/**/*</exclude>
+            <!-- Cached classpath for commands - autogenerated -->
+            <exclude>**/*.classpath</exclude>
 
-           <!-- Exclude anything created during the build (plugin generated files) ->-->
-           <exclude>**/target/**/*</exclude>
-           <!-- MSHADE-124 -->
-           <exclude>**/dependency-reduced-pom.xml</exclude>
-            </excludes>
+            <!-- Exclude anything created during the build (plugin generated files) ->-->
+            <exclude>**/target/**/*</exclude>
+            <!-- MSHADE-124 -->
+            <exclude>**/dependency-reduced-pom.xml</exclude>
+          </excludes>
         </configuration>
       </plugin>
-        <plugin>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-          <extensions>true</extensions>
-        </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
     </plugins>
 
     <!-- Plugin version list: http://maven.apache.org/plugins/index.html -->
@@ -564,8 +564,8 @@
               <pluginExecutions>
                 <pluginExecution>
                   <!-- 
-            Warning:
-            "maven-remote-resources-plugin (goal "process") is ignored by m2e." 
+                       Warning:
+                       "maven-remote-resources-plugin (goal "process") is ignored by m2e." 
                   -->
                   <pluginExecutionFilter>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -581,8 +581,8 @@
                 </pluginExecution>
                 <pluginExecution>
                   <!-- 
-            Warning:
-            "maven-enforcer-plugin (goal "enforce") is ignored by m2e." 
+                       Warning:
+                       "maven-enforcer-plugin (goal "enforce") is ignored by m2e." 
                   -->
                   <pluginExecutionFilter>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -599,8 +599,8 @@
                 
                 <pluginExecution>
                   <!--
-            Error:
-            Plugin execution not covered by lifecycle configuration
+                      Error:
+                      Plugin execution not covered by lifecycle configuration
                   -->
                   <pluginExecutionFilter>
                     <groupId>org.apache.rat</groupId>
@@ -655,7 +655,7 @@
               </goals>
             </execution>
             <!-- Only needed in some jars <execution> <id>attach-sources-test</id> 
-              <goals> <goal>test-jar-no-fork</goal> </goals> </execution> -->
+                 <goals> <goal>test-jar-no-fork</goal> </goals> </execution> -->
           </executions>
         </plugin>
 
@@ -771,11 +771,11 @@
           <version>2.5.3</version>
           <extensions>true</extensions>
         </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>2.3</version>
-      </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>2.3</version>
+        </plugin>
 
 
       </plugins>

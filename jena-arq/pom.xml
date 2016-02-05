@@ -101,8 +101,8 @@
     </dependency>
 
     <!-- 
-      Intercept any uses of Jakarta Commons Logging 
-      e.g. Apache Common HTTP client. 
+         Intercept any uses of Jakarta Commons Logging 
+         e.g. Apache Common HTTP client. 
     -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -125,16 +125,16 @@
       <scope>test</scope>
     </dependency>
 
- </dependencies>
+  </dependencies>
 
   <build>
     <resources>
       <resource>
-	<filtering>true</filtering>
+        <filtering>true</filtering>
         <directory>src/main/resources</directory>
-	<includes>
-	  <include>org/apache/jena/arq/arq-properties.xml</include>
-	</includes>
+        <includes>
+          <include>org/apache/jena/arq/arq-properties.xml</include>
+        </includes>
       </resource>
       <resource>
         <filtering>false</filtering>
@@ -158,10 +158,10 @@
         <configuration>
           <includes>
             <!-- 
-	      The test collections TC_General, TC_Riot, TC_Atlas 
-	      are development support that collect the relevant 
-	      tests for partial testing during development. 
-	    -->
+          The test collections TC_General, TC_Riot, TC_Atlas 
+          are development support that collect the relevant 
+          tests for partial testing during development. 
+        -->
             <include>**/TS_*.java</include>
             <include>**/TC_Scripted.java</include>
             <include>**/TC_DAWG.java</include>

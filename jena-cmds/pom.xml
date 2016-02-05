@@ -114,11 +114,11 @@
   <build>
     <resources>
       <resource>
-	    <filtering>true</filtering>
+        <filtering>true</filtering>
         <directory>src/main/resources</directory>
-	    <includes>
-	      <include>org/apache/jena/arq/arq-properties.xml</include>
-	    </includes>
+        <includes>
+          <include>org/apache/jena/arq/arq-properties.xml</include>
+        </includes>
       </resource>
       <resource>
         <filtering>false</filtering>

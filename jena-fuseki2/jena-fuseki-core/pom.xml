@@ -219,7 +219,7 @@
       </plugin>
 
       <plugin>
-	    <!-- Include the test jar for mebedded usein testing (eg. jena-jdbc-driver-remote) -->
+        <!-- Include the test jar for mebedded usein testing (eg. jena-jdbc-driver-remote) -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>

@@ -274,25 +274,6 @@
           </execution>
         </executions>
       </plugin>
-      
-      <!--
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-resources-plugin</artifactId>
-      </plugin>
-      <!- - see: http://maven.apache.org/guides/mini/guide-attached-tests.html - ->
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-jar-plugin</artifactId>
-	<executions>
-	  <execution>
-	    <goals>
-	      <goal>test-jar</goal>
-	    </goals>
-	  </execution>
-	</executions>
-      </plugin>
-      -->
     </plugins>
   </build>
 
