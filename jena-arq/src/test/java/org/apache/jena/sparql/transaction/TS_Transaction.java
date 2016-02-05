@@ -24,7 +24,7 @@ import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
 @SuiteClasses( {
-    TestTransactionDSGWithLock.class,
+    TestTransactionDSGWithLockNoAbort.class,
     TestTransactionDSGWithLockWithAbort.class,
 })
 

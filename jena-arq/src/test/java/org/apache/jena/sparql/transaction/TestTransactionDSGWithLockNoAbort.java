@@ -27,7 +27,7 @@ import org.junit.Ignore ;
 import org.junit.Test ;
 
 /** Version with abortImplemented == false (the default). */
-public class TestTransactionDSGWithLock extends AbstractTestTransactionLifecycle
+public class TestTransactionDSGWithLockNoAbort extends AbstractTestTransactionLifecycle
 {
     @Override
     protected Dataset create()
