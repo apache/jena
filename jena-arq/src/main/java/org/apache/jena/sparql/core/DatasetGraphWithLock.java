@@ -37,11 +37,17 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
     private final TransactionalMRSW transactional ;  
     // Associated DatasetChanges (if any, may be null)
     private final DatasetChanges dsChanges ;
+    private final boolean abortSupported ;
 
     public DatasetGraphWithLock(DatasetGraph dsg) {
+        this(dsg, false) ;
+    }
+    
+    public DatasetGraphWithLock(DatasetGraph dsg, boolean abortSupported) {
         this.dsg = dsg ;
         this.dsChanges = findDatasetChanges(dsg) ;
         this.transactional = new TransactionalMRSW(dsg.getLock()) ;
+        this.abortSupported = abortSupported ;
     }
     
     /** Find a DatasetChanges handler.
@@ -105,7 +111,7 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
 
     @Override
     protected void _abort() {
-        if ( writeTxn.get() && ! abortImplemented() ) {
+        if ( writeTxn.get() && ! supportsTransactionAbort() ) {
             // Still clean up.
             _end() ; // This clears the transaction type.  
             throw new JenaTransactionException("Can't abort a write lock-transaction") ;
@@ -118,8 +124,17 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
      *  Just by locking, a transaction can not write-abort (the changes have been made and not recorded).
      *  Subclasses may do better and still rely on this locking class.  
      */
-    protected boolean abortImplemented() { return false ; }
+    
+    @Override
+    public boolean supportsTransactions() {
+        return true;
+    }
 
+    @Override
+    public boolean supportsTransactionAbort() {
+        return abortSupported;
+    }
+    
     @Override
     protected void _end() {
         if ( dsChanges != null )

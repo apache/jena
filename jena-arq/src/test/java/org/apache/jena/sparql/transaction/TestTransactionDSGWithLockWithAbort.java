@@ -29,12 +29,9 @@ public class TestTransactionDSGWithLockWithAbort extends AbstractTestTransaction
 {
     @Override
     protected Dataset create() { 
-        // The tests don't actuall add/delete data.
-        DatasetGraph dsg = DatasetGraphFactory.create() ;
-        DatasetGraphWithLock dsgl = new  DatasetGraphWithLock(dsg) {
-            @Override
-            protected boolean abortImplemented() { return true ; }
-        } ;
+        // The tests don't actually add/delete data.
+        DatasetGraph dsg = DatasetGraphFactory.createTxnMem() ;
+        DatasetGraphWithLock dsgl = new  DatasetGraphWithLock(dsg, true) ;
         return DatasetFactory.wrap(dsgl) ;
     }
  }
