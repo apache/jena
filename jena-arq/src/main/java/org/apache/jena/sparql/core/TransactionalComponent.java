@@ -27,6 +27,6 @@ public interface TransactionalComponent
    // Moved to org.apache.jena.sparql.core.mem.TransactionalComponent
     
    // May return in the future but until we have multiple places using the same
-   // fraemwork, moved to its only place of use.  
+   // framework, moved to its only place of use.  
 
 }
