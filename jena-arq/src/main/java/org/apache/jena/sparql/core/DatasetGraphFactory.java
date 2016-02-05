@@ -28,7 +28,7 @@ import org.apache.jena.sparql.graph.GraphFactory ;
 
 public class DatasetGraphFactory
 {
-    /** Create an in-memory, non-transactional {@link DatasetGraph}.
+    /** Create an in-memory {@link DatasetGraph}.
      * This implementation copies the triples of an added graph into the dataset. 
      * <p>
      * See also {@link #createTxnMem()}
@@ -40,8 +40,23 @@ public class DatasetGraphFactory
      */
     
     public static DatasetGraph create() {
-        return new DatasetGraphCopyAdd(createGeneral()) ;
+        return new DatasetGraphMap() ;
     }
+
+    /**
+     * Create a general-purpose, non-transactional Dataset.<br/>
+     * 
+     * This dataset can contain graphs from any source when added via {@link Dataset#addNamedModel}.
+     * Any graphs needed are in-memory unless explicitly added with {@link DatasetGraph#addGraph}.
+     * </p>
+     * These are held as links to the supplied graph and not copied.
+     * <p> 
+     * This dataset does not support transactions. 
+     * <p>
+     * 
+     * @return a general-purpose DatasetGraph
+     */
+    public static DatasetGraph createGeneral() { return new DatasetGraphMapLink(memGraphMaker) ; }
 
     /**
      * @return a DatasetGraph which features transactional in-memory operation
@@ -76,9 +91,13 @@ public class DatasetGraphFactory
     
     /** Clone the structure of a DatasetGraph
      */
-    @Deprecated
     public static DatasetGraph cloneStructure(DatasetGraph dsg) {
-        return new DatasetGraphMap(dsg, memGraphMaker) ;
+        DatasetGraphMapLink dsg2 = new DatasetGraphMapLink(dsg.getDefaultGraph()) ;
+        for ( Iterator<Node> names = dsg.listGraphNodes() ; names.hasNext() ; ) {
+            Node gn = names.next() ;
+            dsg2.addGraph(gn, dsg.getGraph(gn)) ;
+        }
+        return dsg2 ;
     }
 
     private static void copyOver(DatasetGraph dsgDest, DatasetGraph dsgSrc)
@@ -95,11 +114,8 @@ public class DatasetGraphFactory
      * Create a DatasetGraph starting with a single graph.
      * New graphs must be explicitly added.
      */
-    public static DatasetGraph create(Graph graph)
-    {
-        final DatasetGraph dsg2 = createMemFixed() ;
-        dsg2.setDefaultGraph(graph) ;
-        return dsg2 ;
+    public static DatasetGraph create(Graph graph) {
+        return new DatasetGraphMapLink(graph) ;
     }
 
     /**
@@ -116,22 +132,4 @@ public class DatasetGraphFactory
     public static GraphMaker graphMakerNull = () -> null ;
 
     public static GraphMaker memGraphMaker = () -> GraphFactory.createDefaultGraph() ;
-
-    /**
-     * Create a general-purpose, non-transactional Dataset.<br/>
-     * 
-     * This dataset can contain graphs from any source when added via {@link Dataset#addNamedModel}.
-     * Any graphs needed are in-memory unless explicitly added with {@link DatasetGraph#addGraph}.
-     * </p>
-     * These are held as links to the supplied graph and not copied.
-     * <p> 
-     * This dataset does not support transactions. 
-     * <p>
-     * 
-     * @return a general-purpose DatasetGraph
-     */
-    public static DatasetGraph createGeneral() { return new DatasetGraphMap(memGraphMaker) ; }
-    
-    @Deprecated
-    public static DatasetGraph createMemFixed() { return new DatasetGraphMap(GraphFactory.createDefaultGraph()) ; }
 }

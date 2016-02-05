@@ -52,14 +52,6 @@ public class DatasetImpl implements Dataset
         return ds ;
     }
     
-    /** Clone the structure of a DatasetGraph.
-     * The current graph themselves are shared but new naming and new graphs are
-     * only in the cloned    
-     */
-    public static Dataset cloneStructure(DatasetGraph datasetGraph) {
-        return new DatasetImpl(new DatasetGraphMap(datasetGraph));
-    }
-
     protected DatasetImpl(DatasetGraph dsg) {
         this(dsg, dsg);
     }

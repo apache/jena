@@ -23,7 +23,6 @@ import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.shared.LockMRSW ;
 import org.apache.jena.sparql.sse.writers.WriterGraph ;
@@ -176,21 +175,5 @@ abstract public class DatasetGraphBase implements DatasetGraph
         return out.asString() ;
     }
 
-    // Helpers
-    
-    /** Convert an iterator of triples into quads for the default graph.
-     * This is {@link Quad#defaultGraphIRI}, not {@link Quad#defaultGraphNodeGenerated},
-     * which is for quads outside a dataset, usually the output of parsers. 
-     */
-    protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter) {
-        return triples2quads(Quad.defaultGraphIRI, iter) ;
-    }
-
-    /** Convert an iterator of triples into quads for the specificed graph name. */
-    protected static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter) {
-        return Iter.iter(iter).map(t -> new Quad(graphNode, t)) ;
-    }
-
-    
-
+    // Helpers: See GraphUtils.
 }

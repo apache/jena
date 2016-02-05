@@ -27,7 +27,6 @@ import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.DatasetGraphTriplesQuads ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.TransactionalNotSupported ;
@@ -38,6 +37,7 @@ import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.tdb.sys.Session ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
+import static org.apache.jena.sparql.util.graph.GraphUtils.* ;
 
 /** This is the class that creates a dataset over the storage. 
  *  The name is historical. "{@code TDBStorage}" might be ebtter nowadays. 
@@ -87,9 +87,6 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o)
     { return getQuadTable().find(Node.ANY, s, p, o) ; }
 
-    protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
-    { return triples2quads(Quad.defaultGraphIRI, iter) ; }
- 
     @Override
     protected void addToDftGraph(Node s, Node p, Node o)
     { getTripleTable().add(s,p,o) ; }

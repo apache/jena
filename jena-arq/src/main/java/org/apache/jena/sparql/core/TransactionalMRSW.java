@@ -27,18 +27,20 @@ import org.apache.jena.sparql.JenaTransactionException ;
 
 /** An implementation of Tranactional that provides MRSW locking but no abort.
  *  This is often the best you can do for a system that does not itself provide transactions.
+ *  @apiNote
+ *  To use with implementation inheritance, for when you don't inherit:
+ *  <pre>
+ *      private final Transactional txn                     = new TransactionalMRSW() ;
+ *      {@literal @}Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
+ *      {@literal @}Override public void commit()                      { txn.commit() ; }
+ *      {@literal @}Override public void abort()                       { txn.abort() ; }
+ *      {@literal @}Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+ *      {@literal @}Override public void end()                         { txn.end(); }
+ *      {@literal @}Override public boolean supportsTransactions()     { return true ; }
+ *      {@literal @}Override public boolean supportsTransactionAbort() { return false ; }
+ *   </pre>
  */ 
 public class TransactionalMRSW implements Transactional {
-        
-    /* To use with implementation inheritance, for when you can't inherit:
-        private final Transactional txn = new TransactionalMRSW() ;
-        @Override public void begin(ReadWrite mode) { txn.begin(mode) ; }
-        @Override public void commit()              { txn.commit() ; }
-        @Override public void abort()               { txn.abort() ; }
-        @Override public boolean isInTransaction()  { return txn.isInTransaction() ; }
-        @Override public void end()                 { txn.end(); }
-     */
-    
     private final ThreadLocal<ReadWrite> txnMode  = ThreadLocal.withInitial( ()->null ) ;
     private final Lock lock ;
 

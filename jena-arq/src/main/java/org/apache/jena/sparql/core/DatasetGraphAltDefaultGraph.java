@@ -35,7 +35,7 @@ public class DatasetGraphAltDefaultGraph extends DatasetGraphCollection implemen
     private Graph defaultGraph ;
     private final DatasetGraph dsg ;
 
-    public DatasetGraphAltDefaultGraph(DatasetGraph dsg, Graph defaultGraph) {  
+    public DatasetGraphAltDefaultGraph(boolean x, DatasetGraph dsg, Graph defaultGraph) {  
         this.defaultGraph = defaultGraph ;
         this.dsg = dsg ;
     }
@@ -60,6 +60,8 @@ public class DatasetGraphAltDefaultGraph extends DatasetGraphCollection implemen
 
     @Override
     public void removeGraph(Node graphName)           { dsg.removeGraph(graphName); }
+    
+    
 }    
 
 

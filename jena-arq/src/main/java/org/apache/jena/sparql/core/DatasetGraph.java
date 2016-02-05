@@ -140,4 +140,12 @@ public interface DatasetGraph extends Transactional, Closeable
     /** Close the dataset */
     @Override
     public void close() ;
+    
+//    public boolean supportsTransactions() ;
+//    public boolean supportsTransactionAbort() ;
+    
+    public default boolean supportsTransactions()  { return ! (this instanceof TransactionalNotSupported) ; }  
+    //public default boolean supportsTransactions() { return ! (this instanceof TransactionalNotSupported) ; }
+    
+    public default boolean supportsTransactionAbort() { return ! (this instanceof TransactionalNotSupported) ; }
 }

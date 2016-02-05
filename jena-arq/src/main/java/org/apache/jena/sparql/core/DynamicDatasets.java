@@ -68,7 +68,7 @@ public class DynamicDatasets
     public static DatasetGraph dynamicDataset(Collection<Node> defaultGraphs, Collection<Node> namedGraphs, DatasetGraph dsg, boolean defaultUnionGraph)
     {
         Graph dft = new GraphUnionRead(dsg, defaultGraphs) ;
-        DatasetGraph dsg2 = new DatasetGraphMap(dft) ;
+        DatasetGraph dsg2 = new DatasetGraphMapLink(dft) ;
         
         // The named graphs.
         for ( Node gn : namedGraphs )

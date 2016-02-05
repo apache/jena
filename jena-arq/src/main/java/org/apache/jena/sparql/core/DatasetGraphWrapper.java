@@ -186,5 +186,15 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     @Override
     public void end()
     { get().end() ; }
+
+    @Override
+    public boolean supportsTransactions() {
+        return get().supportsTransactions() ;
+    }
+
+    @Override
+    public boolean supportsTransactionAbort() {
+        return get().supportsTransactionAbort() ;
+    }
     
 }

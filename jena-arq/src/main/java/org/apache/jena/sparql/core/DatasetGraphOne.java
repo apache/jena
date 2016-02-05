@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.core;
 
+import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quadsDftGraph ;
+
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;

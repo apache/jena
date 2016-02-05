@@ -63,7 +63,13 @@ public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
     protected abstract void deleteFromDftGraph(Node s, Node p, Node o) ;
     protected abstract void deleteFromNamedGraph(Node g, Node s, Node p, Node o) ;
     
-    // Default implementations.
+    // Default implementations - copy based.
+    
+    @Override
+    public void setDefaultGraph(Graph graph) { 
+        GraphUtil.addInto(getDefaultGraph(), graph) ;
+    }
+    
     @Override
     public void addGraph(Node graphName, Graph graph) {
         GraphUtil.addInto(getGraph(graphName), graph) ;

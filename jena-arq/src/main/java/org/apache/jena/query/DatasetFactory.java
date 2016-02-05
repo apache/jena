@@ -97,14 +97,6 @@ public class DatasetFactory {
 		return wrap(DatasetGraphFactory.createGeneral()); 
 	}
 
-	/**
-	 * @deprecated This operation may be removed.
-	 */
-	@Deprecated
-	public static Dataset createMemFixed() {
-		return wrap(DatasetGraphFactory.createMemFixed());
-	}
-
     /**
 	 * @param model The model for the default graph
 	 * @return a dataset with the given model as the default graph

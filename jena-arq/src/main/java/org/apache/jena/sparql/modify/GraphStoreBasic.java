@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.modify;
 
-import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphWrapper ;
 import org.apache.jena.update.GraphStore ;
@@ -26,11 +25,6 @@ import org.apache.jena.update.GraphStore ;
 @SuppressWarnings("deprecation")
 public class GraphStoreBasic extends DatasetGraphWrapper implements GraphStore
 {
-    public GraphStoreBasic(Dataset ds)
-    { 
-        super(ds.asDatasetGraph()) ;
-    }
-
     public GraphStoreBasic(DatasetGraph dsg)
     { 
         super(dsg) ;

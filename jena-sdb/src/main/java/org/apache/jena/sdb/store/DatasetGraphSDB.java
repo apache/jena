@@ -35,6 +35,7 @@ import org.apache.jena.sparql.core.DatasetGraphTriplesQuads ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.TransactionalNotSupported ;
 import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.graph.GraphUtils ;
 
 public class DatasetGraphSDB extends DatasetGraphTriplesQuads 
     implements DatasetGraph, TransactionalNotSupported/** SDB uses JDBC transactions*/, Closeable
@@ -147,11 +148,11 @@ public class DatasetGraphSDB extends DatasetGraphTriplesQuads
         }
 
         public static Iterator<Quad> findInDftGraph(DatasetGraph dsg, Node s, Node p, Node o) {
-            return triples2quadsDftGraph(dsg.getDefaultGraph().find(s, p, o)) ;
+            return GraphUtils.triples2quadsDftGraph(dsg.getDefaultGraph().find(s, p, o)) ;
         }
 
         public static Iterator<Quad> findInSpecificNamedGraph(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
-            return triples2quadsDftGraph(dsg.getGraph(g).find(s, p, o)) ;
+            return GraphUtils.triples2quadsDftGraph(dsg.getGraph(g).find(s, p, o)) ;
         }
     }
 }

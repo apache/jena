@@ -27,7 +27,7 @@ import org.apache.jena.graph.Node ;
 
 /*package*/ class DatasetGraphCopyAdd extends DatasetGraphWrapper 
 {
-    public DatasetGraphCopyAdd(DatasetGraph dsg) {
+    public DatasetGraphCopyAdd(boolean x , DatasetGraph dsg) {
         super(dsg);
     }
     
