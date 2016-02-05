@@ -29,6 +29,7 @@ import org.apache.jena.atlas.iterator.IteratorConcat ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
 
@@ -36,11 +37,10 @@ import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
  *  Subclasses need to manage any implicit graph creation.
  *  This implementation provides copy-in, copy-out for {@link #addGraph}  
  */
-public class DatasetGraphMap extends DatasetGraphTriplesQuads implements TransactionalNotSupported
+public class DatasetGraphMap extends DatasetGraphTriplesQuads
 {
     private final GraphMaker graphMaker ;
     private final Map<Node, Graph> graphs = new HashMap<>() ;
-
     private Graph defaultGraph ;
     
     public DatasetGraphMap() {
@@ -55,6 +55,17 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads implements Transac
         this.defaultGraph = defaultGraph ;
         this.graphMaker = graphMaker ;
     }
+    
+    // ----
+    private final Transactional txn                     = new TransactionalMRSW() ;
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
+    @Override public void commit()                      { txn.commit() ; }
+    @Override public void abort()                       { txn.abort() ; }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+    @Override public void end()                         { txn.end(); }
+    @Override public boolean supportsTransactions()     { return true ; }
+    @Override public boolean supportsTransactionAbort() { return false ; }
+    // ----
     
     @Override
     public Iterator<Node> listGraphNodes() {
