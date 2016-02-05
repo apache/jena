@@ -56,7 +56,9 @@ public interface OpVisitor
     public void visit(OpSequence opSequence) ;
     public void visit(OpDisjunction opDisjunction) ;
 
-    public void visit(OpExt opExt) ;
+    public default void visit(OpExt opExt) {
+        opExt.effectiveOp().visit(this);
+    }
     
     // OpModifier
     public void visit(OpList opList) ;
