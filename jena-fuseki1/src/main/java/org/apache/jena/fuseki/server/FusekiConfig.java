@@ -149,7 +149,7 @@ public class FusekiConfig
     // DatasetRef used where there isn't a real Dataset e.g. the SPARQL processor.  
     
     private static DatasetRef noDataset      = new DatasetRef() ;
-    private static DatasetGraph dummyDSG        = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
+    private static DatasetGraph dummyDSG        = new DatasetGraphReadOnly(DatasetGraphFactory.create()) ;
     static {
         noDataset.name = "" ;
         noDataset.dataset = dummyDSG ;
