@@ -35,7 +35,7 @@ public class TestDatasetConnection extends AbstractJenaConnectionTests {
 
     @Override
     protected JenaConnection getConnection() throws SQLException {
-        return new MemConnection(DatasetFactory.createMem(), JenaConnection.DEFAULT_HOLDABILITY,
+        return new MemConnection(DatasetFactory.createTxnMem(), JenaConnection.DEFAULT_HOLDABILITY,
                 JenaConnection.DEFAULT_AUTO_COMMIT, JenaConnection.DEFAULT_ISOLATION_LEVEL, JdbcCompatibility.DEFAULT);
     }
 
