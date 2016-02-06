@@ -82,86 +82,82 @@ abstract public class DatasetGraphBase implements DatasetGraph
     private static final int DeleteBufferSize = 1000 ;
     @Override
     /** Simple implementation but done without assuming iterator.remove() */
-    public void deleteAny(Node g, Node s, Node p, Node o)
-    {
-        // Delete in slices rather than assume .remove() on the iterator is implemented. 
+    public void deleteAny(Node g, Node s, Node p, Node o) {
+        // Delete in slices rather than assume .remove() on the iterator is
+        // implemented.
         // We keep executing find(g, s, p, o) until we don't get a full slice.
-        Quad[] buffer = new Quad[DeleteBufferSize] ;
-        while(true) {
-            Iterator<Quad> iter = find(g, s, p, o) ;
+        Quad[] buffer = new Quad[DeleteBufferSize];
+        while (true) {
+            Iterator<Quad> iter = find(g, s, p, o);
             // Get a slice
-            int len = 0 ;
-            for (; len < DeleteBufferSize; len++) {
+            int len = 0;
+            for ( ; len < DeleteBufferSize ; len++ ) {
                 if ( !iter.hasNext() )
-                    break ;
-                buffer[len] = iter.next() ;
+                    break;
+                buffer[len] = iter.next();
             }
             // Delete them.
-            for (int i = 0; i < len; i++) {
-                delete(buffer[i]) ;
-                buffer[i] = null ;
+            for ( int i = 0 ; i < len ; i++ ) {
+                delete(buffer[i]);
+                buffer[i] = null;
             }
             // Finished?
             if ( len < DeleteBufferSize )
-                break ;
+                break;
         }
     }
-    
+
     @Override
     public Iterator<Quad> find()
     { return find(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ; }
-    
+
     @Override
-    public Iterator<Quad> find(Quad quad)
-    { 
+    public Iterator<Quad> find(Quad quad) {
         if ( quad == null )
-            return find() ;
-        return find(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
-    
+            return find();
+        return find(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject());
+    }
+
     @Override
     public boolean contains(Quad quad) { return contains(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
 
     @Override
-    public boolean contains(Node g, Node s, Node p , Node o)
-    {
-        Iterator<Quad> iter = find(g, s, p, o) ;
-        boolean b = iter.hasNext() ;
-        Iter.close(iter) ;
-        return b ;
+    public boolean contains(Node g, Node s, Node p, Node o) {
+        Iterator<Quad> iter = find(g, s, p, o);
+        boolean b = iter.hasNext();
+        Iter.close(iter);
+        return b;
     }
     
-    protected static boolean isWildcard(Node g)
-    {
-        return g == null || g == Node.ANY ;
-    }
-    
-    @Override
-    public void clear()
-    {
-        deleteAny(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
+    protected static boolean isWildcard(Node g) {
+        return g == null || g == Node.ANY;
     }
 
     @Override
-    public boolean isEmpty()
-    {
-        return ! contains(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
+    public void clear() {
+        deleteAny(Node.ANY, Node.ANY, Node.ANY, Node.ANY);
     }
 
     @Override
-    public long size() { return -1 ; } 
-    
-    @Override
-    public Lock getLock()
-    {
-        return lock ;
+    public boolean isEmpty() {
+        return !contains(Node.ANY, Node.ANY, Node.ANY, Node.ANY);
     }
-    
+
     @Override
-    public Context getContext()
-    {
-        return context ;
+    public long size() {
+        return -1;
     }
-    
+
+    @Override
+    public Lock getLock() {
+        return lock;
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
+    }
+
     @Override
     public void close()
     { }

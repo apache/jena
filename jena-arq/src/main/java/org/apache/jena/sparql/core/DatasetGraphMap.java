@@ -57,7 +57,7 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     }
     
     // ----
-    private final Transactional txn                     = new TransactionalMRSW() ;
+    private final Transactional txn                     = TransactionalLock.createMRSW() ;
     @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
     @Override public void commit()                      { txn.commit() ; }
     @Override public void abort()                       { txn.abort() ; }

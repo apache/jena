@@ -34,7 +34,7 @@ import org.apache.jena.sparql.util.Context ;
 public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Sync {
     private final ThreadLocal<Boolean> writeTxn = ThreadLocal.withInitial(()->false) ;
     private final DatasetGraph dsg ;
-    private final TransactionalMRSW transactional ;  
+    private final TransactionalLock transactional ;  
     // Associated DatasetChanges (if any, may be null)
     private final DatasetChanges dsChanges ;
     private final boolean abortSupported ;
@@ -46,7 +46,7 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
     public DatasetGraphWithLock(DatasetGraph dsg, boolean abortSupported) {
         this.dsg = dsg ;
         this.dsChanges = findDatasetChanges(dsg) ;
-        this.transactional = new TransactionalMRSW(dsg.getLock()) ;
+        this.transactional = TransactionalLock.create(dsg.getLock()) ;
         this.abortSupported = abortSupported ;
     }
     

@@ -19,12 +19,15 @@
 package org.apache.jena.sparql.core;
 
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.shared.LockMutex ;
 
-/** The "un-Transactional" interface */ 
+/** The "un-Transactional" interface.
+ * Use with {@link LockMutex}.
+ */ 
 public interface TransactionalNotSupported extends Transactional
 {
-    // And sometimes implements wil have to include this code directly
-    // to override super class versions.  
+    // And sometimes implementations will have to include this code
+    // directly to override super class versions.
     
     @Override
     public default void begin(ReadWrite readWrite)

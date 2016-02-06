@@ -23,6 +23,7 @@ import java.util.Objects ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.shared.LockMRSW ;
+import org.apache.jena.shared.LockMutex ;
 import org.apache.jena.sparql.JenaTransactionException ;
 
 /** An implementation of Tranactional that provides MRSW locking but no abort.
@@ -30,7 +31,7 @@ import org.apache.jena.sparql.JenaTransactionException ;
  *  @apiNote
  *  To use with implementation inheritance, for when you don't inherit:
  *  <pre>
- *      private final Transactional txn                     = new TransactionalMRSW() ;
+ *      private final Transactional txn                     = TransactionalLock.createMRSW() ;
  *      {@literal @}Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
  *      {@literal @}Override public void commit()                      { txn.commit() ; }
  *      {@literal @}Override public void abort()                       { txn.abort() ; }
@@ -40,9 +41,9 @@ import org.apache.jena.sparql.JenaTransactionException ;
  *      {@literal @}Override public boolean supportsTransactionAbort() { return false ; }
  *   </pre>
  */ 
-public class TransactionalMRSW implements Transactional {
+public class TransactionalLock implements Transactional {
 /*
-       private final Transactional txn                     = new TransactionalMRSW() ;
+       private final Transactional txn                     = TransactionalLock.createMRSW() ;
        @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
        @Override public void commit()                      { txn.commit() ; }
        @Override public void abort()                       { txn.abort() ; }
@@ -55,11 +56,24 @@ public class TransactionalMRSW implements Transactional {
     private final ThreadLocal<ReadWrite> txnMode  = ThreadLocal.withInitial( ()->null ) ;
     private final Lock lock ;
 
-    public TransactionalMRSW(Lock lock) {
+    public static TransactionalLock create(Lock lock) {
+        return new TransactionalLock(lock) ;
+    }
+
+    public static TransactionalLock createMRSW() {
+        return create(new LockMRSW()) ;
+    }
+    
+    public static TransactionalLock createMutex() {
+        return create(new LockMutex()) ;
+    }
+    
+    private TransactionalLock(Lock lock) {
         this.lock = lock ;
     }
 
-    public TransactionalMRSW() {
+    /** Transactional MRSW */
+    private TransactionalLock() {
         this(new LockMRSW()) ;
     }
 

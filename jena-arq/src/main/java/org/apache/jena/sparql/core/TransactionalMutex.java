@@ -33,7 +33,7 @@ public class TransactionalMutex implements Transactional
     
     @Override
     public void begin(ReadWrite readWrite) {
-        lock.enterCriticalSection(false);       // Mutex
+        lock.enterCriticalSection(false);       // Always take a write lock - i.e. exclusive.
         isInTransaction.set(true); 
     }
 
