@@ -18,7 +18,14 @@
 package dev;
 
 public class NOTES_Mantis {
+    // Multi-threaded transactions with per-thread over the top.
+    
     // Logging to JUL by default.
+    // Update to jena.sparql.core DSG changes.
+    //   TransctionLock
+    //   DatasetGraphWithLock.
+    
+    // TransactionComponentWholeFile 
     
     // See also NOTES_TDB
     // Log<X> over BinaryDataFile

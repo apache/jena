@@ -45,8 +45,6 @@
       <artifactId>jena-cmds</artifactId>
     </dependency>
 
-    
-
     <dependency>
       <!--  Bring junit into scope-compile -->
       <groupId>junit</groupId>

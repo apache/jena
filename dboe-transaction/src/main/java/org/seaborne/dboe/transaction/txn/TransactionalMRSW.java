@@ -32,6 +32,7 @@ import org.apache.jena.query.ReadWrite ;
  */
 public class TransactionalMRSW extends TransactionalComponentLifecycle<Object> {
     // MRSW implementation of TransactionMVCC
+    // XXX Update to Jena style TransactionalLock
     private ReadWriteLock lock = new ReentrantReadWriteLock() ;
     
     public TransactionalMRSW(ComponentId componentId) {

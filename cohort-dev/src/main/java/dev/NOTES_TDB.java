@@ -27,16 +27,14 @@ public class NOTES_TDB {
     // ** Or time-based, commit keeping.  benefit!
     // Autocommit (if we must!)
     
-    // Replace Tuple with Tuple 
-    
-    // GraphTDB - attach to version or attach to latest (latest) 
+    // ** Recorder.
+    // cf. DatasetGraphWithRecord
     
     // Also per index reaping.
     // Long term: break into parts: separate processes? At least threads.
     
     // see package txnlog
 
-    // GraphTDB from 
     // Needs to work with the switching DatasetGraphTDB.
     //   Abstract DatasetGraphTDB as an interface!
     //     Storage unit to have indexes and node table.
@@ -54,7 +52,6 @@ public class NOTES_TDB {
     // Bulk loader from zero:
     //  load SPO, then parallel load POS, OSP, PSO etc.
     
-    
     // ** NodeTableCache and aborts.
     // NodeTableCache + abort -> clean out?
     // Abort notification.
@@ -71,9 +68,6 @@ public class NOTES_TDB {
     
     // ++ DatasetGraphTriplesQuads
 
-
     // really simple - quads/triples only - no 3 or 4 way forms.
     // Or vice versa - 
-
-
 }
