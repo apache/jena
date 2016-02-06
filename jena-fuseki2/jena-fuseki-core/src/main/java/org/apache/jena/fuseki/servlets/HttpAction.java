@@ -39,7 +39,7 @@ import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphWrapper ;
 import org.apache.jena.sparql.core.Transactional ;
-import org.apache.jena.sparql.core.TransactionalMutex ;
+import org.apache.jena.sparql.core.TransactionalLock ;
 import org.slf4j.Logger ;
 
 /**
@@ -169,8 +169,8 @@ public class HttpAction
             transactional = dsg ;
             isTransactional = false ;
         } else {
-            // Nothing to build on.  Be safe.
-            transactional = new TransactionalMutex(dsg.getLock()) ;
+            // Nothing to build on.  Be safe. 
+            transactional = TransactionalLock.createMutex() ;
             isTransactional = false ;
         }
     }

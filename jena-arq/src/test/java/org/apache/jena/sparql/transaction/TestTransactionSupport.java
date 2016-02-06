@@ -32,9 +32,6 @@ import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
 
 /** "supports" for various DatasetGraph implementations */
-
-//Paramterize?
-
 @RunWith(Parameterized.class)
 public class TestTransactionSupport {
     
