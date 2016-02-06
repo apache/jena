@@ -98,7 +98,12 @@ public class DatasetImpl implements Dataset
     
     @Override
     public boolean supportsTransactions() {
-        return transactional != null ;
+        return dsg.supportsTransactions() ;
+    }
+
+    @Override
+    public boolean supportsTransactionAbort() {
+        return dsg.supportsTransactionAbort() ;
     }
 
     @Override
