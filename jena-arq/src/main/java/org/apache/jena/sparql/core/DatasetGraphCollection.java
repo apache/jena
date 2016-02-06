@@ -35,7 +35,7 @@ import static org.apache.jena.sparql.util.graph.GraphUtils.* ;
  * This can be a fixed collection or a changeable collection depending
  * on the implementation of getDefaultGraph()/getGraph(Node)  
  */
-public abstract class DatasetGraphCollection extends DatasetGraphBaseFind implements TransactionalNotSupported
+public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
 {
     @Override
     public void add(Quad quad)
