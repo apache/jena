@@ -115,7 +115,7 @@ public class DatasetUtils
      * @return Dataset, as passed in.
      */
     public static Dataset addInGraphs(Dataset ds, List<String> uriList, List<String> namedSourceList, String baseURI) {
-        boolean transactionWrapper = ds.supportsTransactions() && !ds.isInTransaction();
+        boolean transactionWrapper = ds.supportsTransactionAbort() && !ds.isInTransaction();
         if ( !transactionWrapper ) {
             addInGraphsWorker(ds, uriList, namedSourceList, baseURI);
             return ds ;
