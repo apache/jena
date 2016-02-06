@@ -116,7 +116,7 @@ public class DatasetImpl implements Dataset
     @Override
     public boolean isInTransaction() {
         checkTransactional();
-        return transactional.isInTransaction();
+        return transactional != null && transactional.isInTransaction();
     }
 
     @Override
