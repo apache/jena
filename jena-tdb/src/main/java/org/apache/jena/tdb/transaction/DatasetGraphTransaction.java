@@ -18,6 +18,8 @@
 
 package org.apache.jena.tdb.transaction ;
 
+import static java.lang.ThreadLocal.withInitial ;
+
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.JenaTransactionException ;
@@ -27,7 +29,6 @@ import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import static java.lang.ThreadLocal.withInitial ;
 
 /**
  * A transactional {@code DatasetGraph} that allows one active transaction per thread.
@@ -168,6 +169,12 @@ import static java.lang.ThreadLocal.withInitial ;
         txn.set(null) ;
     }
 
+    @Override
+    public boolean supportsTransactions()       { return true ; }
+    
+    @Override
+    public boolean supportsTransactionAbort()   { return true ; }
+    
     @Override
     public String toString() {
         try {

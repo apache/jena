@@ -39,6 +39,7 @@ import org.junit.runners.Suite ;
     , TestTransRestart.class
     , TestTransactionTDB.class
     , TestTransactionUnionGraph.class
+    , TestMiscTDB.class
 })
 public class TS_TransactionTDB
 {

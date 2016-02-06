@@ -40,7 +40,6 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.sys.Names ;
@@ -238,18 +237,17 @@ public class FusekiCmd {
                 // Directly populate the dataset.
                 cmdLineConfig.reset();
                 cmdLineConfig.dsg = DatasetGraphFactory.createTxnMem() ;
-                Transactional t = (Transactional)(cmdLineConfig.dsg) ;
                 
                 // INITIAL DATA.
                 Lang language = RDFLanguages.filenameToLang(filename) ;
                 if ( language == null )
                     throw new CmdException("Can't guess language for file: " + filename) ;
                 // XXX Replace by Txn.
-                t.begin(ReadWrite.WRITE) ;
+                cmdLineConfig.dsg.begin(ReadWrite.WRITE) ;
                 try {
                     RDFDataMgr.read(cmdLineConfig.dsg, filename) ;
-                    t.commit() ;
-                } finally { t.end() ; }
+                    cmdLineConfig.dsg.commit() ;
+                } finally { cmdLineConfig.dsg.end() ; }
             }
 
             if ( contains(argMemTDB) ) {

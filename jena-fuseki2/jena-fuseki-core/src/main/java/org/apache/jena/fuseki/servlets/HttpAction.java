@@ -203,7 +203,7 @@ public class HttpAction
      * @return <code>true</code> iff the given {@link DatasetGraph} does not have the "no transactions" marker.
      */
     private static boolean isTransactional(DatasetGraph dsg) {
-        return ! (dsg instanceof TransactionalNotSupported) ;
+        return dsg.supportsTransactionAbort() ; 
     }
 
     /**

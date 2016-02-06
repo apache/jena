@@ -35,10 +35,7 @@ import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.ServiceRef ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphWithLock ;
-import org.apache.jena.sparql.core.DatasetGraphWrapper ;
-import org.apache.jena.sparql.core.Transactional ;
+import org.apache.jena.sparql.core.* ;
 
 /**
  * HTTP action that represents the user request lifecycle. Its state is handled in the
@@ -116,10 +113,10 @@ public class HttpAction
             // Use transactional if it looks safe - abort is necessary.
             // It is the responsibility of dsg to manage the basedsg
             // if the basedsg is not transactional.
-            transactional = (Transactional)dsg ;
+            transactional = dsg ;
             isTransactional = true ;
         } else if ( isTransactional(basedsg) ) {
-            transactional = (Transactional)basedsg ;
+            transactional = basedsg ;
             // Intermediates may be stateful so there is no real abort. 
             isTransactional = false ;
         } else {
@@ -138,7 +135,7 @@ public class HttpAction
      * <code>false otherwise</code>
      */
     private static boolean isTransactional(DatasetGraph dsg) {
-        return (dsg instanceof Transactional) ;
+        return ! (dsg instanceof TransactionalNotSupported) ;
     }
 
     /**

@@ -18,18 +18,20 @@
 
 package org.apache.jena.tdb.transaction;
 
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraphWrapper;
 import org.apache.jena.tdb.store.DatasetGraphTDB;
 
 /**
- * A DatasetGraph that is a single transaction. It does not support
- * transactions, it is a transaction (single use).
+ * A DatasetGraph that is a single transaction.
+ * It does not support transactions.
+ * It is the DatasetGraph apsect of a Transaction (single use).
  */
 public class DatasetGraphTxn extends DatasetGraphWrapper {
     
     private Transaction transaction;
 
-    public DatasetGraphTxn(DatasetGraphTDB dsg, Transaction txn) {
+    /*package*/ DatasetGraphTxn(DatasetGraphTDB dsg, Transaction txn) {
         super(dsg);
         this.transaction = txn;
     }
@@ -43,6 +45,10 @@ public class DatasetGraphTxn extends DatasetGraphWrapper {
         return (DatasetGraphTDB)getWrapped();
     }
 
+    @Override public void begin(ReadWrite mode) { 
+        throw new IllegalStateException() ;
+    }
+    
     @Override
     public void commit() {
         transaction.commit();
@@ -52,10 +58,6 @@ public class DatasetGraphTxn extends DatasetGraphWrapper {
     public void abort() {
         transaction.abort();
     }
-
-    // Context copied in DatasetBuilderTxn.build.
-    // @Override
-    // public Context getContext() { ... }
 
     @Override
     public String toString() {
@@ -68,5 +70,4 @@ public class DatasetGraphTxn extends DatasetGraphWrapper {
             transaction.close();
         transaction = null;
     }
-
 }
