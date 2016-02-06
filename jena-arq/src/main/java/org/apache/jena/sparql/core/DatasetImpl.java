@@ -48,18 +48,16 @@ public class DatasetImpl implements Dataset
 
     /** Wrap an existing DatasetGraph */
     public static Dataset wrap(DatasetGraph datasetGraph) {
-        DatasetImpl ds = new DatasetImpl(datasetGraph) ;
-        return ds ;
+        return new DatasetImpl(datasetGraph) ;
     }
     
     protected DatasetImpl(DatasetGraph dsg) {
-        this(dsg, dsg);
+        this(dsg,  (dsg.supportsTransactions() ? dsg : null)) ; 
     }
 
     protected DatasetImpl(DatasetGraph dsg, Transactional transactional) {
         this.dsg = dsg;
-        this.transactional = 
-            ( transactional instanceof TransactionalNotSupported ) ? null : transactional ; 
+        this.transactional = transactional ; 
     }
     
     /** Create a Dataset with the model as default model.
