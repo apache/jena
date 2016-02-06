@@ -115,6 +115,11 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         this.quadsIndex = i;
         this.defaultGraph = t;
     }
+    
+    @Override
+    public boolean supportsTransactionAbort() {
+        return true;
+    }
 
     @Override
     public void begin(final ReadWrite readWrite) {

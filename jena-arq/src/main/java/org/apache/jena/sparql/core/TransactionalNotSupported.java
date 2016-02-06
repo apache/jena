@@ -23,6 +23,9 @@ import org.apache.jena.query.ReadWrite ;
 /** The "un-Transactional" interface */ 
 public interface TransactionalNotSupported extends Transactional
 {
+    // And sometimes implements wil have to include this code directly
+    // to override super class versions.  
+    
     @Override
     public default void begin(ReadWrite readWrite)
     { throw new UnsupportedOperationException("Transactional.begin") ; }

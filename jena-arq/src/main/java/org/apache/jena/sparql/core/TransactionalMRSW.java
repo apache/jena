@@ -41,6 +41,17 @@ import org.apache.jena.sparql.JenaTransactionException ;
  *   </pre>
  */ 
 public class TransactionalMRSW implements Transactional {
+/*
+       private final Transactional txn                     = new TransactionalMRSW() ;
+       @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
+       @Override public void commit()                      { txn.commit() ; }
+       @Override public void abort()                       { txn.abort() ; }
+       @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+       @Override public void end()                         { txn.end(); }
+       @Override public boolean supportsTransactions()     { return true ; }
+       @Override public boolean supportsTransactionAbort() { return false ; }
+ */
+    
     private final ThreadLocal<ReadWrite> txnMode  = ThreadLocal.withInitial( ()->null ) ;
     private final Lock lock ;
 

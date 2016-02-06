@@ -140,12 +140,26 @@ public interface DatasetGraph extends Transactional, Closeable
     /** Close the dataset */
     @Override
     public void close() ;
+
+    /**
+     * A {@code DatasetGraph} supports tranactions if it provides {@link #begin}/
+     * {@link #commit}/{@link #end}. There core storage {@code DatasetGraph} that
+     * provide fully serialized transactions.  {@code DatasetGraph} that provide
+     * fucntionality acorss independent systems can not provide such strong guarantees.
+     * For example, they may use MRSW locking and some isolation control.
+     * Specifically, they do not necessarily provide {@link #abort}.
+     * <p>
+     * See {@link #supportsTransactionAbort()} for {@link #abort}.
+     * In addition, check details of a specific implementation.
+     */
+    public default boolean supportsTransactions() {
+        return !(this instanceof TransactionalNotSupported);
+    }
     
-//    public boolean supportsTransactions() ;
-//    public boolean supportsTransactionAbort() ;
-    
-    public default boolean supportsTransactions()  { return ! (this instanceof TransactionalNotSupported) ; }  
-    //public default boolean supportsTransactions() { return ! (this instanceof TransactionalNotSupported) ; }
-    
-    public default boolean supportsTransactionAbort() { return ! (this instanceof TransactionalNotSupported) ; }
+    /** Declare whether {@link #abort} is supported.
+     *  This goes along with clearing up after exceptions inside application transaction code.
+     */
+    public default boolean supportsTransactionAbort() {
+        return false;
+    }
 }
