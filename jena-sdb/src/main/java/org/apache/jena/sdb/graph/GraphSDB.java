@@ -18,34 +18,22 @@
 
 package org.apache.jena.sdb.graph;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.Iterator ;
 
 import org.apache.jena.graph.* ;
 import org.apache.jena.graph.impl.AllCapabilities ;
 import org.apache.jena.graph.impl.GraphBase ;
-import org.apache.jena.query.Query ;
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.Store ;
-import org.apache.jena.sdb.core.SDBRequest ;
-import org.apache.jena.sdb.engine.QueryEngineSDB ;
 import org.apache.jena.sdb.sql.SDBConnection ;
 import org.apache.jena.sdb.store.DatasetGraphSDB ;
+import org.apache.jena.sdb.store.LibSDB ;
 import org.apache.jena.sdb.store.StoreLoader ;
 import org.apache.jena.sdb.store.StoreLoaderPlus ;
 import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.op.OpQuadPattern ;
-import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.Plan ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingRoot ;
-import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.NiceIterator ;
+import org.apache.jena.util.iterator.WrappedIterator ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -61,34 +49,30 @@ public class GraphSDB extends GraphBase implements Graph
     protected Node graphNode = Quad.defaultGraphNodeGenerated ;
     protected DatasetGraphSDB datasetStore = null ;
     
-    public GraphSDB(Store store, String uri)
-    { 
-        this(store, NodeFactory.createURI(uri)) ;
-    }
-    
-    public GraphSDB(Store store)
-    { 
-        this(store, (Node)null) ;
+    public GraphSDB(Store store, String uri) {
+        this(store, NodeFactory.createURI(uri));
     }
 
-    public GraphSDB(Store store, Node graphNode)
-    {
+    public GraphSDB(Store store) {
+        this(store, (Node)null);
+    }
+
+    public GraphSDB(Store store, Node graphNode) {
         if ( graphNode == null )
-            graphNode = Quad.defaultGraphNodeGenerated ;
+            graphNode = Quad.defaultGraphNodeGenerated;
 
-        this.store = store ;
-        this.graphNode = graphNode ;
-        
+        this.store = store;
+        this.graphNode = graphNode;
+
         // Avoid looping here : DatasetStoreGraph can make GraphSDB's
-        datasetStore = new DatasetGraphSDB(store, this, SDB.getContext().copy()) ;
-        
-        //readPrefixMapping() ;
+        datasetStore = new DatasetGraphSDB(store, this, SDB.getContext().copy());
+
+        // readPrefixMapping() ;
     }
     
     /* We don't support value tests, hence handlesLiteralTyping is false */
     @Override
-    public Capabilities getCapabilities()
-    { 
+    public Capabilities getCapabilities() { 
     	if (capabilities == null)
             capabilities = new AllCapabilities()
         	  { @Override public boolean handlesLiteralTyping() { return false; } };
@@ -100,192 +84,70 @@ public class GraphSDB extends GraphBase implements Graph
     public SDBConnection getConnection() { return store.getConnection() ; }
     
     @Override
-    public PrefixMapping createPrefixMapping()
-    { 
+    public PrefixMapping createPrefixMapping() {
         try {
-            String graphURI = null ;
+            String graphURI = null;
             if ( Quad.isDefaultGraphGenerated(graphNode) )
-                graphURI = "" ;
+                graphURI = "";
             else if ( graphNode.isURI() )
-                graphURI = graphNode.getURI() ; 
-            else
-            {
-                log.warn("Not a URI for graph name") ;
-                graphURI = graphNode.toString() ;
+                graphURI = graphNode.getURI();
+            else {
+                log.warn("Not a URI for graph name");
+                graphURI = graphNode.toString();
             }
 
-            return new PrefixMappingSDB(graphURI, store.getConnection()) ;
-        } catch (Exception ex)
-        { log.warn("Failed to get prefixes: "+ex.getMessage()) ; return null ; }
-    }
-
-    private Quad quad(Triple m)
-    {
-        Node s = m.getMatchSubject() ;
-        Var sVar = null ;
-        if ( s == null )
-        {
-            sVar = Var.alloc("s") ;
-            s = sVar ;
+            return new PrefixMappingSDB(graphURI, store.getConnection());
         }
-        
-        Node p = m.getMatchPredicate() ;
-        Var pVar = null ;
-        if ( p == null )
-        {
-            pVar = Var.alloc("p") ;
-            p = pVar ;
+        catch (Exception ex) {
+            log.warn("Failed to get prefixes: " + ex.getMessage());
+            return null;
         }
-        
-        Node o = m.getMatchObject() ;
-        Var oVar = null ;
-        if ( o == null )
-        {
-            oVar = Var.alloc("o") ;
-            o = oVar ;
-        }
-        
-        return new Quad(graphNode, s, p ,o) ;
     }
 
     @Override
-    protected ExtendedIterator<Triple> graphBaseFind(Triple m)
-    {
-        // Fake a query.
-        SDBRequest cxt = new SDBRequest(getStore(), new Query()) ;
-        
-        // If null, create and remember a variable, else use the node.
-        final Node s = (m.getMatchSubject()==null)   ? Var.alloc("s")   :  m.getMatchSubject() ;
-        final Node p = (m.getMatchPredicate()==null) ? Var.alloc("p")   :  m.getMatchPredicate() ;
-        final Node o = (m.getMatchObject()==null)    ? Var.alloc("o")   :  m.getMatchObject() ;
-
-        Triple triple = new Triple(s, p ,o) ;
-        
-        // Evaluate as an algebra expression
-        BasicPattern pattern = new BasicPattern() ;
-        pattern.add(triple) ;
-        Op op = new OpQuadPattern(graphNode, pattern) ;
-        Plan plan = QueryEngineSDB.getFactory().create(op, datasetStore, BindingRoot.create(), null) ;
-        
-        QueryIterator qIter = plan.iterator() ;
-        
-        if ( SDB.getContext().isTrue(SDB.streamGraphAPI) )
-        {
-            // Dangerous version -- application must close iterator.
-            return new GraphIterator(triple, qIter) ;
-        }
-        else
-        {
-            // ---- Safe version: 
-            List<Binding> bindings = new ArrayList<Binding>() ;
-            while ( qIter.hasNext() ) 
-                bindings.add(qIter.nextBinding()) ;
-            qIter.close();
-            
-            // QueryIterPlainWrapper is just to make it ia QuyerIterator again.
-            return new GraphIterator(triple, new QueryIterPlainWrapper(bindings.iterator())) ;
-        }
+    protected ExtendedIterator<Triple> graphBaseFind(Triple m) {
+        Iterator<Triple> iter = LibSDB.findTriples(datasetStore, graphNode, m.getSubject(), m.getPredicate(), m.getObject());
+        return WrappedIterator.create(iter);
     }
 
-    // Collect ugliness together.
-    private static Triple bindingToTriple(Triple pattern,  
-                                          Binding binding)
-    {
-        Node s = pattern.getSubject() ;
-        Node p = pattern.getPredicate() ;
-        Node o = pattern.getObject() ;
-        
-        Node sResult = s ;
-        Node pResult = p ;
-        Node oResult = o ;
-        
-        if ( Var.isVar(s) )
-            sResult = binding.get(Var.alloc(s)) ;
-        if ( Var.isVar(p) )
-            pResult = binding.get(Var.alloc(p)) ;
-        if ( Var.isVar(o) )
-            oResult = binding.get(Var.alloc(o)) ;
-        
-        Triple resultTriple = new Triple(sResult, pResult, oResult) ;
-        return resultTriple ;
-    }
-
-    class GraphIterator extends NiceIterator<Triple>
-    {
-        QueryIterator qIter ; 
-        Triple current = null ;
-        Triple pattern ;
-        
-        GraphIterator(Triple pattern, QueryIterator qIter)
-        { 
-            this.qIter = qIter ;
-            this.pattern = pattern ;
-        }
-        
-        @Override
-        public void close()
-        {
-            qIter.close() ;
-        }
-        
-        @Override
-        public boolean hasNext()
-        {
-            return qIter.hasNext() ;
-        }
-        
-        @Override
-        public Triple next()
-        {
-            return ( current = bindingToTriple(pattern, qIter.nextBinding() ) ) ;
-        }
-
-        @Override
-        public void remove()
-        { 
-            if ( current != null )
-                delete(current) ;
-        }
-    }
-    
     public StoreLoader getBulkLoader() { return store.getLoader() ; }
     
     @Override
-    public GraphEventManager getEventManager()
-    {
-    	if (gem == null) gem = new EventManagerSDB( );
+    public GraphEventManager getEventManager() {
+        if ( gem == null )
+            gem = new EventManagerSDB();
         return gem;
     }
-    
+
     @Override
-    public void performAdd( Triple triple )
-    {
-    	if (inBulkUpdate == 0) store.getLoader().startBulkUpdate();
-        
+    public void performAdd(Triple triple) {
+        if ( inBulkUpdate == 0 )
+            store.getLoader().startBulkUpdate();
+
         if ( Quad.isDefaultGraphGenerated(graphNode) )
-            store.getLoader().addTriple(triple) ;
-        else
-        {
+            store.getLoader().addTriple(triple);
+        else {
             // XXX
-            StoreLoaderPlus x = (StoreLoaderPlus)store.getLoader() ;
-            x.addQuad(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+            StoreLoaderPlus x = (StoreLoaderPlus)store.getLoader();
+            x.addQuad(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject());
         }
-        if (inBulkUpdate == 0) store.getLoader().finishBulkUpdate();
+        if ( inBulkUpdate == 0 )
+            store.getLoader().finishBulkUpdate();
     }
     
     @Override
-    public void performDelete( Triple triple ) 
-    {
-    	if (inBulkUpdate == 0) store.getLoader().startBulkUpdate();
+    public void performDelete(Triple triple) {
+        if ( inBulkUpdate == 0 )
+            store.getLoader().startBulkUpdate();
         if ( Quad.isDefaultGraphGenerated(graphNode) )
-            store.getLoader().deleteTriple(triple) ;
-        else
-        {
+            store.getLoader().deleteTriple(triple);
+        else {
             // XXX
-            StoreLoaderPlus x = (StoreLoaderPlus)store.getLoader() ;
-            x.deleteQuad(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+            StoreLoaderPlus x = (StoreLoaderPlus)store.getLoader();
+            x.deleteQuad(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject());
         }
-        if (inBulkUpdate == 0) store.getLoader().finishBulkUpdate();
+        if ( inBulkUpdate == 0 )
+            store.getLoader().finishBulkUpdate();
     }
     
     public void startBulkUpdate()  { inBulkUpdate += 1 ; if (inBulkUpdate == 1) store.getLoader().startBulkUpdate();}
