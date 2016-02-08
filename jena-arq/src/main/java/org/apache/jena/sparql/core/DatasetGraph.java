@@ -152,9 +152,7 @@ public interface DatasetGraph extends Transactional, Closeable
      * See {@link #supportsTransactionAbort()} for {@link #abort}.
      * In addition, check details of a specific implementation.
      */
-    public default boolean supportsTransactions() {
-        return !(this instanceof TransactionalNotSupported);
-    }
+    public boolean supportsTransactions() ;
     
     /** Declare whether {@link #abort} is supported.
      *  This goes along with clearing up after exceptions inside application transaction code.
