@@ -25,6 +25,7 @@ public class LockMutex implements Lock {
 
     @Override
     public void enterCriticalSection(boolean readLockRequested) {
+        // Regardless of read or write, claim the lock. 
         mutex.lock();
     }
 
