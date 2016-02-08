@@ -24,6 +24,7 @@ import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.graph.GraphSDB ;
 import org.apache.jena.sdb.util.StoreUtils ;
@@ -34,7 +35,8 @@ import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 
 public class DatasetGraphSDB extends DatasetGraphTriplesQuads 
-    implements DatasetGraph, TransactionalNotSupported/** SDB uses JDBC transactions*/, Closeable
+    implements DatasetGraph, Closeable
+    /** SDB uses JDBC transactions, not Dataset transactions*/
 {
     private final Store store ;
     private Lock lock = new LockMRSW() ;
@@ -108,6 +110,15 @@ public class DatasetGraphSDB extends DatasetGraphTriplesQuads
     @Override
     public void close()
     { store.close() ; }
+    
+    private final Transactional txn                     = new TransactionalNotSupported() ;
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
+    @Override public void commit()                      { txn.commit() ; }
+    @Override public void abort()                       { txn.abort() ; }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+    @Override public void end()                         { txn.end(); }
+    @Override public boolean supportsTransactions()     { return false ; }
+    @Override public boolean supportsTransactionAbort() { return false ; }
 
     // Helper implementations of operations.
     // Not necessarily efficient.
