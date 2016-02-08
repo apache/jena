@@ -117,9 +117,9 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     }
     
     @Override
-    public boolean supportsTransactionAbort() {
-        return true;
-    }
+    public boolean supportsTransactions()       { return true; }
+    @Override
+    public boolean supportsTransactionAbort()   { return true; }
 
     @Override
     public void begin(final ReadWrite readWrite) {
