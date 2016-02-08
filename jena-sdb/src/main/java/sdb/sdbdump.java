@@ -85,6 +85,8 @@ public class sdbdump extends CmdArgsDB
         if ( contains(argDeclSyntax) )
             syntax = getArg(argDeclSyntax).getValue();
         Lang lang = RDFLanguages.nameToLang(syntax);
+        if ( ! RDFLanguages.isQuads(lang) )
+            cmdError("Not a 'quads' language (try 'N-Quads' or 'TriG')", true) ;
 
         try {
             if ( modGraph.getGraphName() == null ) {
