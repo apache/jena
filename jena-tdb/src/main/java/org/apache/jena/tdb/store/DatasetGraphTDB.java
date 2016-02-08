@@ -19,6 +19,8 @@
 package org.apache.jena.tdb.store;
 
 
+import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quadsDftGraph ;
+
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
@@ -27,20 +29,20 @@ import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraphTriplesQuads ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.sparql.core.TransactionalNotSupported ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.lib.NodeLib ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
-import org.apache.jena.tdb.sys.Session ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
-import static org.apache.jena.sparql.util.graph.GraphUtils.* ;
 
 /** This is the class that creates a dataset over the storage. 
- *  The name is historical. "{@code TDBStorage}" might be ebtter nowadays. 
+ *  The name is historical. "{@code TDBStorage}" might be better nowadays. 
  * <p> This class is not {@code Transactional}. It is used within the TDB transaction system. 
  * <p> 
  *  See also:
@@ -51,7 +53,7 @@ import static org.apache.jena.sparql.util.graph.GraphUtils.* ;
  */
 final
 public class DatasetGraphTDB extends DatasetGraphTriplesQuads
-                             implements /*DatasetGraph,*/ Sync, Closeable, Session, TransactionalNotSupported
+                             implements /*DatasetGraph,*/ Sync, Closeable
 {
     private TripleTable tripleTable ;
     private QuadTable quadTable ;
@@ -201,7 +203,6 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         // from the indexes happens.
 
         NodeTupleTable t = chooseNodeTupleTable(g) ;
-        startUpdate() ;
         @SuppressWarnings("unchecked")
         Tuple<NodeId>[] array = (Tuple<NodeId>[])new Tuple<?>[sliceSize] ;
 
@@ -234,8 +235,6 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
             if ( len < sliceSize )
                 break ;
         }
-
-        finishUpdate() ;
     }
     
     public Location getLocation()       { return config.location ; }
@@ -253,19 +252,12 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
     }
 
-    @Override
-    public void startUpdate()
-    {}
-
-    @Override
-    public void finishUpdate()
-    {}
-
-    @Override
-    public void startRead()
-    {}
-
-    @Override
-    public void finishRead()
-    {}
+    private final Transactional txn                     = new TransactionalNotSupported() ;
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
+    @Override public void commit()                      { txn.commit() ; }
+    @Override public void abort()                       { txn.abort() ; }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+    @Override public void end()                         { txn.end(); }
+    @Override public boolean supportsTransactions()     { return true ; }
+    @Override public boolean supportsTransactionAbort() { return false ; }
 }
