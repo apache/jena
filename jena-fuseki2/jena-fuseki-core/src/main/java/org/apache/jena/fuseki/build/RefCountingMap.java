@@ -86,6 +86,7 @@ public class RefCountingMap<K, T> {
 	 * @param value
 	 */
     public void add(K key, T value) { 
+    	// map.compute is atomic
     	map.compute(key,
     			(k, v) -> {
     				int refCount ;
@@ -108,6 +109,7 @@ public class RefCountingMap<K, T> {
      * @param key
      */
     public void remove(K key) {
+    	// map.compute is atomic
     	map.compute(key, 
     			(k, v) -> {
     				if (v == null) {
