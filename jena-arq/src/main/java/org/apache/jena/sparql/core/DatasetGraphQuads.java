@@ -25,7 +25,7 @@ import org.apache.jena.graph.Node ;
 
 /** A DatasetGraph base class for pure quad-centric storage.     
  */
-public abstract class DatasetGraphQuad extends DatasetGraphBase
+public abstract class DatasetGraphQuads extends DatasetGraphBase
 {   
     @Override
     public Iterator<Node> listGraphNodes()
