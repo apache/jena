@@ -30,8 +30,7 @@ import org.apache.jena.sparql.util.Context ;
 
 public class DatasetGraphWrapper implements DatasetGraph, Sync 
 {
-    // Associated query engine factory - QueryEngineFactoryWrapper
-    // which executes on the unwraped DSG. 
+    // The wrapped DatasetGraph but all calls go via get() so this can be null.
     private final DatasetGraph dsg ;
     
     /** Return the DatasetGraph being wrapped. */

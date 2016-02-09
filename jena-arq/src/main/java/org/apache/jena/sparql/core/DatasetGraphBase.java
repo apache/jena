@@ -25,6 +25,7 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.shared.LockMRSW ;
+import org.apache.jena.sparql.core.mem.DatasetGraphInMemory ;
 import org.apache.jena.sparql.sse.writers.WriterGraph ;
 import org.apache.jena.sparql.util.Context ;
 
@@ -32,11 +33,14 @@ import org.apache.jena.sparql.util.Context ;
  * <p>DatasetGraph framework : readonly dataset need only provide find(g,s,p,o), getGraph() and getDefaultGraph()
  * although it may wish to override other operations and do better.</p>
  * 
- * <p>Other implementations include:</p>
+ * <p>Implementations include:</p>
  * <ul>
  * <li>{@link DatasetGraphBase} that adds an implementation of find based on default / named graphs.</li>
- * <li>{@link DatasetGraphCollection} that adds mutating quad operations mapped to a collection of graphs.</li>
- * <li>{@link DatasetGraphQuad} that maps graph operations to a quad view.
+ * <li>{@link DatasetGraphInMemory} provides full transactions for an in-memory {@code DatasetGraph}.</li>
+ * <li>{@link DatasetGraphTriplesQuads} that adds mutating quad operations.</li>
+ * <li>{@link DatasetGraphMap} provides for operations working over a collection of in-memory graphs.</li>
+ * <li>{@link DatasetGraphMapLink} provides for operations working over a collection of graphs provived by the application.</li>
+ * <li>{@link DatasetGraphCollection} that provides for operations working over a collection of graphs.</li>
  * </ul> 
  */
 abstract public class DatasetGraphBase implements DatasetGraph
