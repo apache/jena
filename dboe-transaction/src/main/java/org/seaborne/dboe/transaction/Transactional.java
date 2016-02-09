@@ -90,4 +90,8 @@ public interface Transactional extends org.apache.jena.sparql.core.Transactional
    /** Finish the transaction - if a write transaction and commit() has not been called, then abort. */
    @Override
    public void end() ;
+   
+   /** Say whether inside a transaction. */ 
+   @Override
+   public boolean isInTransaction() ;
 }

@@ -18,9 +18,9 @@
 package repack;
 
 import org.apache.jena.sparql.core.DatasetGraph ;
-import txnlog.notused.DatasetGraphWrapperTxn ;
+import org.apache.jena.sparql.core.DatasetGraphWrapper ;
 
-public class DatasetGraphSwitchable extends DatasetGraphWrapperTxn
+public class DatasetGraphSwitchable extends DatasetGraphWrapper
 {
     private DatasetGraph dsgx ;
     

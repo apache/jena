@@ -25,10 +25,7 @@ import java.util.List ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.DatasetChanges ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.core.QuadAction ;
+import org.apache.jena.sparql.core.* ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /** Connect a DatasetGraph to a DatasetChanges monitor.
@@ -37,7 +34,7 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  *  the change made.   
  */
 
-public class DatasetGraphMonitorTxn extends DatasetGraphWrapperTxn
+public class DatasetGraphMonitorTxn extends DatasetGraphWrapper
 {
     // Derived from Apache jena DatasetGraphMonitor
     

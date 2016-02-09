@@ -41,7 +41,6 @@ import org.seaborne.tdb2.lib.NodeLib ;
 import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
 import org.seaborne.tdb2.sys.StoreConnection ;
-//import static 
 /** This is the class that provides creates a dataset over the storage via
  *  TripleTable, QuadTable and prefixes.
  *  This is the coordination of the storage.
