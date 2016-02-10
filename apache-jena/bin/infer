@@ -64,7 +64,7 @@ if [ -L "${JENA_HOME}" ]; then
 fi
 
 # ---- Setup
-JVM_ARGS=${JVM_ARGS:--Xmx1024M}
+# JVM_ARGS : don't set here but it can be set in the environment.
 # Expand JENA_HOME but literal *
 JENA_CP="$JENA_HOME"'/lib/*'
 SOCKS=
