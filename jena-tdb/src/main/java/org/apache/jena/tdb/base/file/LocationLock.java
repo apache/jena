@@ -18,16 +18,15 @@
 
 package org.apache.jena.tdb.base.file;
 
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.tdb.TDBException ;
-import org.apache.jena.tdb.sys.ProcessUtils ;
-import org.apache.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.tdb.TDBException;
+import org.apache.jena.tdb.sys.ProcessUtils;
+import org.apache.jena.tdb.sys.SystemTDB;
 
 /**
  * Represents a lock on a TDB location
@@ -164,7 +163,8 @@ public class LocationLock {
             if (pid == NO_OWNER) {
                 // In the case where we cannot obtain our PID then we cannot
                 // obtain a lock
-                SystemTDB.errlog.warn("Location " + location.getDirectoryPath() + " cannot be locked as unable to obtain PID of current process, if another JVM accessed this location while this process is accessing it then data corruption may occur");
+                SystemTDB.errlog.warn("Location " + location.getDirectoryPath()
+                        + " cannot be locked as unable to obtain PID of current process, if another JVM accessed this location while this process is accessing it then data corruption may occur");
                 return;
             }
 
@@ -175,12 +175,9 @@ public class LocationLock {
             // Someone other process potentially owns the lock on this location
             // Check if the owner is alive
             if (ProcessUtils.isAlive(owner))
-                throw new TDBException(
-                        "Location "
-                                + location.getDirectoryPath()
-                                + " is currently locked by PID "
-                                + owner
-                                + ".  TDB databases do not permit concurrent usage across JVMs so in order to prevent possible data corruption you cannot open this location from the JVM that does not own the lock for the dataset");
+                throw new TDBException("Location " + location.getDirectoryPath() + " is currently locked by PID "
+                        + owner
+                        + ".  TDB databases do not permit concurrent usage across JVMs so in order to prevent possible data corruption you cannot open this location from the JVM that does not own the lock for the dataset");
 
             // Otherwise the previous owner is dead so we can take the lock
             takeLock(ProcessUtils.getPid(NO_OWNER));
@@ -197,6 +194,12 @@ public class LocationLock {
         } catch (IOException e) {
             throw new TDBException("Failed to obtain a lock on the location " + location.getDirectoryPath(), e);
         }
+
+        // Mark lock for deletion on JVM exit
+        // This does not guarantee that the lock file gets cleaned up because
+        // such deletions only succeed for normal JVM termination but it should
+        // clean up the lock for normal JVM terminations
+        lockFile.deleteOnExit();
     }
 
     /**
