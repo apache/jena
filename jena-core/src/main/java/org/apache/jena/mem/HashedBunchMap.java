@@ -18,7 +18,9 @@
 
 package org.apache.jena.mem;
 
-import org.apache.jena.shared.* ;
+import java.util.function.Function ;
+
+import org.apache.jena.shared.BrokenException ;
 
 /**
     An implementation of BunchMap that does open-addressed hashing.
@@ -65,14 +67,29 @@ public class HashedBunchMap extends HashCommon<Object> implements BunchMap
         if (slot < 0)
             values[~slot] = value;
         else
-            {
-            keys[slot] = key;
-            values[slot] = value; 
-            size += 1;
-            if (size == threshold) grow();
-            }
+            put$(slot, key, value) ;
         }
 
+    @Override
+    public TripleBunch getOrSet( Object key, Function<Object, TripleBunch> setter) {
+        int slot = findSlot( key );
+        if (slot < 0)
+            // Get.
+            return values[~slot] ;
+        // Or set value.
+        TripleBunch value = setter.apply(key) ;
+        put$(slot, key, value) ;
+        return value ;
+        }
+    
+    private void put$(int slot, Object key, TripleBunch value) {
+        keys[slot] = key;
+        values[slot] = value;
+        size += 1;
+        if ( size == threshold )
+            grow();
+    }
+    
     protected void grow()
         {
         Object [] oldContents = keys;

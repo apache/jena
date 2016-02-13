@@ -18,6 +18,8 @@
 
 package org.apache.jena.mem;
 
+import java.util.function.Function ;
+
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /**
@@ -49,6 +51,12 @@ public interface BunchMap
         will now deliver this value.
     */
     public void put( Object key, TripleBunch value );
+    
+    /**
+      Get the <code>key</code> and return the value found there; if nothing,
+      cacluate the <code>value</code> and insert. Return the value now the slot.  
+     */
+    public TripleBunch getOrSet( Object key, Function<Object, TripleBunch> setter );
 
     /**
         Remove any association for <code>key</code>; <code>get</code> on this
