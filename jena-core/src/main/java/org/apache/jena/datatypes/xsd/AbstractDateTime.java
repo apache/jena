@@ -102,8 +102,6 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
         }
         return 0;
     }
-   
-    
     
     /**
      * Convert fractional second representation to a simple double..
