@@ -18,6 +18,8 @@
 
 package org.apache.jena.datatypes.xsd;
 
+import java.util.Arrays ;
+
 /**
  * Base class for representation of XSD duration, time, date/time
  * and related datatype instances. We are using the Xerces internal
@@ -104,9 +106,10 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
     
     
     /**
-     * Convert fractional second representation to a simple float.
+     * Convert fractional second representation to a simple double..
      */
     protected void extractFractionalSeconds() {
+        fractionalSeconds = 0.0 ;
         if (data[ms] != 0) {
             int fs = data[ms];
             fractionalSeconds = (fs) / Math.pow(10.0, data[msscale]);
@@ -123,24 +126,22 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
             for (int i = 0; i < data.length; i++) {
                 if (data[i] != adt.data[i]) return false;
             }
+            // fractionalSeconds is generated from data[ms]
             return true;
         }
         return false;
     }
     
-    /**
-     * hash function
-     */
     @Override
     public int hashCode() {
-        int hash = 0;
-        for ( int aData : data )
-        {
-            hash = ( hash << 1 ) ^ aData;
-        }
-        return hash;
+        // See JENA-1140.
+        // Eclipse generated - without fractionalSeconds which is generated from data[ms]
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(data);
+        return result;
     }
-    
+        
 //  --------------------------------------------------------------------
 //  This code is adapated from Xerces 2.6.0 AbstractDateTimeDV.    
 //  Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
