@@ -13,7 +13,7 @@ import org.apache.jena.sparql.core.Quad ;
 
 @SuppressWarnings("all")
 public class ARQParser extends ARQParserBase implements ARQParserConstants {
-    protected boolean allowAggregatesInExpressions = false ;
+    boolean allowAggregatesInExpressions = false ;
 
   final public void QueryUnit() throws ParseException {
     ByteOrderMark();
