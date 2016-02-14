@@ -217,8 +217,8 @@ public abstract class HashCommon<Key>
             if ( prime > atLeast )
                 return prime;
         }
-        // If not found, complain.
-        // Theer are some very large numbers in the primes table. 
+        //return atLeast ;        // Input is 2*current capacity.
+        // There are some very large numbers in the primes table. 
         throw new JenaException("Failed to find a 'next size': atleast = "+atLeast) ; 
     }
     
