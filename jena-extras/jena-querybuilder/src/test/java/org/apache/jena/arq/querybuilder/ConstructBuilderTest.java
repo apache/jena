@@ -22,54 +22,50 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.arq.AbstractRegexpBasedTest;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.vocabulary.RDF ;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SelectBuilderTest extends AbstractRegexpBasedTest {
+public class ConstructBuilderTest extends AbstractRegexpBasedTest {
 
-	private SelectBuilder builder;
+	private ConstructBuilder builder;
 	
     @Before
 	public void setup() {
-		builder = new SelectBuilder();
+		builder = new ConstructBuilder();
 	}
 
-	@Test
-	public void testSelectAsterisk() {
-		builder.addVar("*").addWhere("?s", "?p", "?o");
-
-		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY
-				+ var("s") + SPACE + var("p") + SPACE + var("o") + OPT_SPACE
-				+ CLOSE_CURLY, builder.buildString());
-
-		builder.setVar(Var.alloc("p"), RDF.type);
-
-		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY
-				+ var("s") + SPACE
-				+ regexRDFtype
-				+ SPACE + var("o") + OPT_SPACE + CLOSE_CURLY,
-				builder.buildString());
-	}
+//	@Test
+//	public void testSelectAsterisk() {
+//		builder.addWhere("?s", "?p", "?o");
+//
+//		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY
+//				+ var("s") + SPACE + var("p") + SPACE + var("o") + OPT_SPACE
+//				+ CLOSE_CURLY, builder.buildString());
+//
+//		builder.setVar(Var.alloc("p"), RDF.type);
+//
+//		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY
+//				+ var("s") + SPACE
+//				+ regexRDFtype
+//				+ SPACE + var("o") + OPT_SPACE + CLOSE_CURLY,
+//				builder.buildString());
+//	}
 
 	@Test
 	public void testAll() {
-		builder.addVar("s").addPrefix("foaf", "http://xmlns.com/foaf/0.1/")
+		builder.addPrefix("foaf", "http://xmlns.com/foaf/0.1/")
+		.addConstruct( Triple.ANY )
 				.addWhere("?s", RDF.type, "foaf:Person")
 				.addOptional("?s", "foaf:name", "?name").addOrderBy("?s");
 
 		String query = builder.buildString();
-		/*
-		 * PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-		 * 
-		 * SELECT ?s WHERE { ?s
-		 * <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> foaf:Person .
-		 * OPTIONAL { ?s foaf:name ?name .} } ORDER BY ?s
-		 */
+		
 		assertContainsRegex(PREFIX + "foaf:" + SPACE
 				+ uri("http://xmlns.com/foaf/0.1/"), query);
-		assertContainsRegex(SELECT + var("s"), query);
+		assertContainsRegex(CONSTRUCT + OPEN_CURLY+ "ANY"+SPACE+"ANY"+SPACE+"ANY"+DOT+CLOSE_CURLY, query);
 		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE
 				+ regexRDFtype
 				+ SPACE + "foaf:Person" + SPACE + OPTIONAL
@@ -83,7 +79,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 		query = builder.buildString();
 		assertContainsRegex(PREFIX + "foaf:" + SPACE
 				+ uri("http://xmlns.com/foaf/0.1/"), query);
-		assertContainsRegex(SELECT + var("s"), query);
+		assertContainsRegex(CONSTRUCT + OPEN_CURLY+ "ANY"+SPACE+"ANY"+SPACE+"ANY"+DOT+CLOSE_CURLY, query);
 		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE
                 + regexRDFtype
 				+ SPACE + "foaf:Person" + SPACE + OPTIONAL
@@ -95,7 +91,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
 	@Test
 	public void testPredicateVar() {
-		builder.addVar("*").addPrefix("", "http://example/")
+		builder.addPrefix("", "http://example/")
 				.addWhere(":S", "?p", ":O");
 		String query = builder.buildString();
 
@@ -105,7 +101,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
 	@Test
 	public void testSubjectVar() {
-		builder.addVar("*").addPrefix("", "http://example/")
+		builder.addPrefix("", "http://example/")
 				.addWhere("?s", ":P", ":O");
 		String query = builder.buildString();
 
@@ -115,7 +111,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
 	@Test
 	public void testObjectVar() {
-		builder.addVar("*").addPrefix("", "http://example/")
+		builder.addPrefix("", "http://example/")
 				.addWhere(":S", ":P", "?o");
 		String query = builder.buildString();
 
@@ -125,15 +121,15 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
 	@Test
 	public void testNoVars() {
-		builder.addWhere("?s", "?p", "?o");
+		builder.addConstruct("?s", "?p", "?o");
 		String query = builder.buildString();
-
-		assertContainsRegex(SELECT + "\\*" + SPACE, query);
+		assertContainsRegex(CONSTRUCT + OPEN_CURLY+ var("s")+SPACE+var("p")+SPACE+var("o")
+				+DOT+CLOSE_CURLY, query);
 	}
 	
 	@Test
 	public void testList() {
-		builder.addVar( "*" )
+		builder
 		 .addWhere( builder.list( "<one>", "?two", "'three'"), "<foo>", "<bar>");
 		String query = builder.buildString();
 		
@@ -152,9 +148,9 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 	
 	@Test
 	public void testClone() {
-		builder.addVar( "*" )
+		builder
 		 .addWhere( "?two", "<foo>", "<bar>");
-		SelectBuilder builder2 = builder.clone();
+		ConstructBuilder builder2 = builder.clone();
 		builder2.addOrderBy( "?two");
 		
 		String q1 = builder.buildString();

@@ -364,6 +364,20 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 */
 	public static Query clone(Query q2) {
 		Query retval = new Query();
+		
+	    if (q2.isSelectType())
+	    {
+	    	retval.setQuerySelectType();
+	    } else if (q2.isAskType()) {
+	    	retval.setQueryAskType();
+	    } else if (q2.isDescribeType())
+	    {
+	    	retval.setQueryDescribeType();
+	    } else if (q2.isConstructType()) 
+	    {
+	    	retval.setQueryConstructType();
+	    }
+	    
 		new PrologHandler(retval).addAll(new PrologHandler(q2));
 		new ConstructHandler(retval).addAll(new ConstructHandler(q2));
 		new DatasetHandler(retval).addAll(new DatasetHandler(q2));

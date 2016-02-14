@@ -41,6 +41,8 @@ public abstract class AbstractRegexpBasedTest {
 	protected static final String GROUP_BY = "GROUP" + SPACE + "BY" + SPACE;
 	protected static final String HAVING = "HAVING" + SPACE;
 	protected static final String PREFIX = "PREFIX" + SPACE;
+	protected static final String CONSTRUCT = "CONSTRUCT" + SPACE;
+	protected static final String ASK = "ASK" + SPACE;
 	protected static final String SELECT = "SELECT" + SPACE;
 	protected static final String UNION = "UNION" + SPACE;
 	protected static final String LIMIT = "LIMIT" + SPACE;

@@ -27,35 +27,18 @@ import org.apache.jena.vocabulary.RDF ;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SelectBuilderTest extends AbstractRegexpBasedTest {
+public class AskBuilderTest extends AbstractRegexpBasedTest {
 
-	private SelectBuilder builder;
+	private AskBuilder builder;
 	
     @Before
 	public void setup() {
-		builder = new SelectBuilder();
-	}
-
-	@Test
-	public void testSelectAsterisk() {
-		builder.addVar("*").addWhere("?s", "?p", "?o");
-
-		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY
-				+ var("s") + SPACE + var("p") + SPACE + var("o") + OPT_SPACE
-				+ CLOSE_CURLY, builder.buildString());
-
-		builder.setVar(Var.alloc("p"), RDF.type);
-
-		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY
-				+ var("s") + SPACE
-				+ regexRDFtype
-				+ SPACE + var("o") + OPT_SPACE + CLOSE_CURLY,
-				builder.buildString());
+		builder = new AskBuilder();
 	}
 
 	@Test
 	public void testAll() {
-		builder.addVar("s").addPrefix("foaf", "http://xmlns.com/foaf/0.1/")
+		builder.addPrefix("foaf", "http://xmlns.com/foaf/0.1/")
 				.addWhere("?s", RDF.type, "foaf:Person")
 				.addOptional("?s", "foaf:name", "?name").addOrderBy("?s");
 
@@ -63,13 +46,13 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 		/*
 		 * PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 		 * 
-		 * SELECT ?s WHERE { ?s
+		 * ASK WHERE { ?s
 		 * <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> foaf:Person .
 		 * OPTIONAL { ?s foaf:name ?name .} } ORDER BY ?s
 		 */
 		assertContainsRegex(PREFIX + "foaf:" + SPACE
 				+ uri("http://xmlns.com/foaf/0.1/"), query);
-		assertContainsRegex(SELECT + var("s"), query);
+		assertContainsRegex(ASK, query);
 		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE
 				+ regexRDFtype
 				+ SPACE + "foaf:Person" + SPACE + OPTIONAL
@@ -83,8 +66,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 		query = builder.buildString();
 		assertContainsRegex(PREFIX + "foaf:" + SPACE
 				+ uri("http://xmlns.com/foaf/0.1/"), query);
-		assertContainsRegex(SELECT + var("s"), query);
-		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE
+		assertContainsRegex(ASK + WHERE + OPEN_CURLY + var("s") + SPACE
                 + regexRDFtype
 				+ SPACE + "foaf:Person" + SPACE + OPTIONAL
 				+ OPEN_CURLY + var("s") + SPACE + "foaf:name" + SPACE
@@ -95,7 +77,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
 	@Test
 	public void testPredicateVar() {
-		builder.addVar("*").addPrefix("", "http://example/")
+		builder.addPrefix("", "http://example/")
 				.addWhere(":S", "?p", ":O");
 		String query = builder.buildString();
 
@@ -105,7 +87,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
 	@Test
 	public void testSubjectVar() {
-		builder.addVar("*").addPrefix("", "http://example/")
+		builder.addPrefix("", "http://example/")
 				.addWhere("?s", ":P", ":O");
 		String query = builder.buildString();
 
@@ -115,7 +97,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
 	@Test
 	public void testObjectVar() {
-		builder.addVar("*").addPrefix("", "http://example/")
+		builder.addPrefix("", "http://example/")
 				.addWhere(":S", ":P", "?o");
 		String query = builder.buildString();
 
@@ -123,17 +105,10 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 				+ var("o") + OPT_SPACE +  CLOSE_CURLY, query);
 	}
 
-	@Test
-	public void testNoVars() {
-		builder.addWhere("?s", "?p", "?o");
-		String query = builder.buildString();
-
-		assertContainsRegex(SELECT + "\\*" + SPACE, query);
-	}
 	
 	@Test
 	public void testList() {
-		builder.addVar( "*" )
+		builder
 		 .addWhere( builder.list( "<one>", "?two", "'three'"), "<foo>", "<bar>");
 		String query = builder.buildString();
 		
@@ -152,9 +127,9 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 	
 	@Test
 	public void testClone() {
-		builder.addVar( "*" )
+		builder
 		 .addWhere( "?two", "<foo>", "<bar>");
-		SelectBuilder builder2 = builder.clone();
+		AskBuilder builder2 = builder.clone();
 		builder2.addOrderBy( "?two");
 		
 		String q1 = builder.buildString();
