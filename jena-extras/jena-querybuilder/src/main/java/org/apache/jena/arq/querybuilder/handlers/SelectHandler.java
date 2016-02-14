@@ -22,6 +22,7 @@ import java.util.Map ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Query ;
+import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.Expr ;
@@ -134,7 +135,11 @@ public class SelectHandler implements Handler {
 		VarExprList qProjectVars = query.getProject();
 		for (Var var : shProjectVars.getVars())
 		{
-			qProjectVars.add( var, shProjectVars.getExpr(var));
+			// make sure there are no duplicates
+			 if ( ! qProjectVars.contains(var) )
+			 {
+			     qProjectVars.add( var, shProjectVars.getExpr(var));
+			 }
 		}
 	}
 
