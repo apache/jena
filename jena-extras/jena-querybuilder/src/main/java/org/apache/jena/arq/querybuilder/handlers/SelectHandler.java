@@ -17,15 +17,24 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
+import java.io.Reader;
+import java.io.StringReader;
+import java.lang.reflect.Field;
 import java.util.List ;
 import java.util.Map ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryBuildException;
+import org.apache.jena.query.QueryParseException;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.lang.arq.ARQParser;
+import org.apache.jena.sparql.lang.arq.ARQParserTokenManager;
+import org.apache.jena.sparql.lang.arq.ParseException;
+import org.apache.jena.sparql.lang.arq.Token;
+import org.apache.jena.sparql.lang.arq.TokenMgrError;
 import org.apache.jena.sparql.util.ExprUtils ;
 
 /**
@@ -93,8 +102,49 @@ public class SelectHandler implements Handler {
 	 * @param var The variable to add.
 	 */
 	public void addVar(String expression, Var var)  {
-		addVar( ExprUtils.parse( query, expression, true ), var );
+		addVar( parseExpr( expression ), var );
 	}
+	
+	
+	 private Expr parseExpr(String s)
+	    {
+	        try {
+	            ExprParser parser = new ExprParser(query,s);
+	            Expr expr = parser.Expression() ;
+	            
+	           
+	                Token t = parser.getNextToken() ;
+	                if ( t.kind != ARQParserTokenManager.EOF )
+	                    throw new QueryParseException("Extra tokens beginning \""+t.image+"\" starting line "+t.beginLine+", column "+t.beginColumn,
+	                                                  t.beginLine, t.beginColumn) ;
+	            
+	            return expr ;
+	        } catch (ParseException ex)
+	        { throw new QueryParseException(ex.getMessage(),
+	                                        ex.currentToken.beginLine,
+	                                        ex.currentToken.beginLine) ;
+	        }
+	        catch (TokenMgrError tErr)
+	        {
+	            throw new QueryParseException(tErr.getMessage(), -1, -1) ;
+	        }
+	        catch (Error err)
+	        {
+	            // The token stream can throw java.lang.Error's 
+	            String tmp = err.getMessage() ;
+	            if ( tmp == null )
+	                throw new QueryParseException(err,-1, -1) ;
+	            throw new QueryParseException(tmp,-1, -1) ;
+	        } catch (NoSuchFieldException e) {
+	        	 throw new QueryParseException(e, -1, -1) ;
+			} catch (SecurityException e) {
+	        	 throw new QueryParseException(e, -1, -1) ;
+			} catch (IllegalArgumentException e) {
+	        	 throw new QueryParseException(e, -1, -1) ;
+			} catch (IllegalAccessException e) {
+	        	 throw new QueryParseException(e, -1, -1) ;
+			}
+	    }
 	
 	/**
 	 * Add an Expression as variable to the select.
@@ -155,5 +205,15 @@ public class SelectHandler implements Handler {
 		}
 		// handle the SELECT * case
 		query.getProjectVars();
+	}
+	
+	private class ExprParser extends ARQParser {
+		
+		private ExprParser(Query query, String s) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+		{
+			super( new StringReader(s));
+			allowAggregatesInExpressions = true;
+			setQuery( query );
+		}
 	}
 }
