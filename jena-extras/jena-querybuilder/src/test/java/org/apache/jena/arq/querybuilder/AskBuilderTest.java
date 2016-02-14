@@ -22,7 +22,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.arq.AbstractRegexpBasedTest;
-import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.vocabulary.RDF ;
 import org.junit.Before;
 import org.junit.Test;

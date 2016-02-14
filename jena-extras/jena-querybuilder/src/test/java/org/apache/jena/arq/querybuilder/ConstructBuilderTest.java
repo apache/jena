@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.arq.AbstractRegexpBasedTest;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.vocabulary.RDF ;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,23 +35,6 @@ public class ConstructBuilderTest extends AbstractRegexpBasedTest {
 	public void setup() {
 		builder = new ConstructBuilder();
 	}
-
-//	@Test
-//	public void testSelectAsterisk() {
-//		builder.addWhere("?s", "?p", "?o");
-//
-//		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY
-//				+ var("s") + SPACE + var("p") + SPACE + var("o") + OPT_SPACE
-//				+ CLOSE_CURLY, builder.buildString());
-//
-//		builder.setVar(Var.alloc("p"), RDF.type);
-//
-//		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY
-//				+ var("s") + SPACE
-//				+ regexRDFtype
-//				+ SPACE + var("o") + OPT_SPACE + CLOSE_CURLY,
-//				builder.buildString());
-//	}
 
 	@Test
 	public void testAll() {

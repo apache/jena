@@ -17,25 +17,21 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import java.io.Reader;
 import java.io.StringReader;
-import java.lang.reflect.Field;
 import java.util.List ;
 import java.util.Map ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.lang.arq.ARQParser;
-import org.apache.jena.sparql.lang.arq.ARQParserTokenManager;
+import org.apache.jena.sparql.lang.arq.ARQParserConstants;
 import org.apache.jena.sparql.lang.arq.ParseException;
 import org.apache.jena.sparql.lang.arq.Token;
 import org.apache.jena.sparql.lang.arq.TokenMgrError;
-import org.apache.jena.sparql.util.ExprUtils ;
 
 /**
  * A Select clause handler.
@@ -114,7 +110,7 @@ public class SelectHandler implements Handler {
 	            
 	           
 	                Token t = parser.getNextToken() ;
-	                if ( t.kind != ARQParserTokenManager.EOF )
+	                if ( t.kind != ARQParserConstants.EOF )
 	                    throw new QueryParseException("Extra tokens beginning \""+t.image+"\" starting line "+t.beginLine+", column "+t.beginColumn,
 	                                                  t.beginLine, t.beginColumn) ;
 	            

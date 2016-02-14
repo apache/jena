@@ -34,8 +34,6 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
-import org.apache.jena.sparql.sse.Item;
-import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Assert;
 import org.junit.Before;
