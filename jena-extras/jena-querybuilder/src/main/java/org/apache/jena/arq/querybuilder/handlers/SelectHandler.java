@@ -28,9 +28,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.lang.arq.ARQParser;
-import org.apache.jena.sparql.lang.arq.ARQParserConstants;
 import org.apache.jena.sparql.lang.arq.ParseException;
-import org.apache.jena.sparql.lang.arq.Token;
 import org.apache.jena.sparql.lang.arq.TokenMgrError;
 
 /**
@@ -105,16 +103,12 @@ public class SelectHandler implements Handler {
 	 private Expr parseExpr(String s)
 	    {
 	        try {
-	            ExprParser parser = new ExprParser(query,s);
-	            Expr expr = parser.Expression() ;
-	            
-	           
-	                Token t = parser.getNextToken() ;
-	                if ( t.kind != ARQParserConstants.EOF )
-	                    throw new QueryParseException("Extra tokens beginning \""+t.image+"\" starting line "+t.beginLine+", column "+t.beginColumn,
-	                                                  t.beginLine, t.beginColumn) ;
-	            
-	            return expr ;
+	        	ARQParser parser = new ARQParser(  new StringReader("SELECT "+s));
+	        	parser.setQuery( new Query() );
+	        	parser.SelectClause();
+	        	Query q = parser.getQuery();
+	        	VarExprList vel = q.getProject();
+	        	return vel.getExprs().values().iterator().next();
 	        } catch (ParseException ex)
 	        { throw new QueryParseException(ex.getMessage(),
 	                                        ex.currentToken.beginLine,
@@ -131,14 +125,6 @@ public class SelectHandler implements Handler {
 	            if ( tmp == null )
 	                throw new QueryParseException(err,-1, -1) ;
 	            throw new QueryParseException(tmp,-1, -1) ;
-	        } catch (NoSuchFieldException e) {
-	        	 throw new QueryParseException(e, -1, -1) ;
-			} catch (SecurityException e) {
-	        	 throw new QueryParseException(e, -1, -1) ;
-			} catch (IllegalArgumentException e) {
-	        	 throw new QueryParseException(e, -1, -1) ;
-			} catch (IllegalAccessException e) {
-	        	 throw new QueryParseException(e, -1, -1) ;
 			}
 	    }
 	
@@ -201,15 +187,5 @@ public class SelectHandler implements Handler {
 		}
 		// handle the SELECT * case
 		query.getProjectVars();
-	}
-	
-	private class ExprParser extends ARQParser {
-		
-		private ExprParser(Query query, String s) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
-		{
-			super( new StringReader(s));
-			allowAggregatesInExpressions = true;
-			setQuery( query );
-		}
 	}
 }
