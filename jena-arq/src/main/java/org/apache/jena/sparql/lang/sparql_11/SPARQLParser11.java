@@ -12,7 +12,6 @@ import org.apache.jena.sparql.modify.request.* ;
 
 @SuppressWarnings("all")
 public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11Constants {
-    boolean allowAggregatesInExpressions = false ;
 
   final public void QueryUnit() throws ParseException {
     ByteOrderMark();
@@ -158,7 +157,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       jj_la1[6] = jj_gen;
       ;
     }
-    allowAggregatesInExpressions = true ;
+    setAllowAggregatesInExpressions(true) ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case VAR1:
     case VAR2:
@@ -207,7 +206,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       jj_consume_token(-1);
       throw new ParseException();
     }
-    allowAggregatesInExpressions = false ;
+    setAllowAggregatesInExpressions(false) ;
   }
 
   final public void ConstructQuery() throws ParseException {
@@ -653,7 +652,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public void HavingClause() throws ParseException {
-      allowAggregatesInExpressions = true ;
+      setAllowAggregatesInExpressions(true) ;
     jj_consume_token(HAVING);
     label_10:
     while (true) {
@@ -731,7 +730,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
         break label_10;
       }
     }
-      allowAggregatesInExpressions = false ;
+      setAllowAggregatesInExpressions(false) ;
   }
 
   final public void HavingCondition() throws ParseException {
@@ -741,7 +740,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public void OrderClause() throws ParseException {
-    allowAggregatesInExpressions = true ;
+    setAllowAggregatesInExpressions(true) ;
     jj_consume_token(ORDER);
     jj_consume_token(BY);
     label_11:
@@ -824,7 +823,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
         break label_11;
       }
     }
-    allowAggregatesInExpressions = false ;
+    setAllowAggregatesInExpressions(false) ;
   }
 
   final public void OrderCondition() throws ParseException {
@@ -2258,7 +2257,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     fname = iri();
     a = ArgList();
      if ( AggregateRegistry.isRegistered(fname) ) {
-         if ( ! allowAggregatesInExpressions )
+         if ( ! getAllowAggregatesInExpressions() )
             throwParseException("Aggregate expression not legal at this point : "+fname, -1, -1) ;
          Aggregator agg = AggregatorFactory.createCustom(true, false, fname, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
@@ -2282,7 +2281,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
         t = jj_consume_token(DISTINCT);
                         distinct = true ;
         int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
-          if ( ! allowAggregatesInExpressions )
+          if ( ! getAllowAggregatesInExpressions() )
               throwParseException("Aggregate expression not legal at this point",
                                  beginLine, beginColumn) ;
         break;
@@ -4626,7 +4625,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       jj_consume_token(-1);
       throw new ParseException();
     }
-     if ( ! allowAggregatesInExpressions )
+     if ( ! getAllowAggregatesInExpressions() )
             throwParseException("Aggregate expression not legal at this point",
                                  t.beginLine, t.beginColumn) ;
      Expr exprAgg = getQuery().allocAggregate(agg) ;
@@ -4651,7 +4650,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     if ( a == null )
        {if (true) return asExpr(createNode(iri)) ;}
     if ( AggregateRegistry.isRegistered(iri) ) {
-         if ( ! allowAggregatesInExpressions )
+         if ( ! getAllowAggregatesInExpressions() )
             throwParseException("Aggregate expression not legal at this point : "+iri, -1, -1) ;
          Aggregator agg = AggregatorFactory.createCustom(true, false, iri, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
@@ -5115,4 +5114,4 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   final public void disable_tracing() {
   }
 
-}
+ }

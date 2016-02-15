@@ -35,9 +35,7 @@ import org.apache.jena.update.* ;
 import org.apache.jena.sparql.modify.request.* ;
 import org.apache.jena.sparql.core.Quad ;
 public class ARQParser extends ARQParserBase
-{
-    boolean allowAggregatesInExpressions = false ;
-}
+{}
 PARSER_END(ARQParser)
 void QueryUnit(): { }
 {
@@ -101,7 +99,7 @@ void SelectClause() : { Var v ; Expr expr ; Node n ; }
   ( <DISTINCT> { getQuery().setDistinct(true);}
   | <REDUCED> { getQuery().setReduced(true); }
   )?
-  { allowAggregatesInExpressions = true ; }
+  { setAllowAggregatesInExpressions(true) ; }
   (
     (
       v = Var() { getQuery().addResultVar(v) ; }
@@ -127,7 +125,7 @@ void SelectClause() : { Var v ; Expr expr ; Node n ; }
   |
     <STAR> { getQuery().setQueryResultStar(true) ; }
   )
-  { allowAggregatesInExpressions = false ; }
+  { setAllowAggregatesInExpressions(false) ; }
 }
 void ConstructQuery() : { Template t ;
                           QuadAcc acc = new QuadAcc() ; }
@@ -235,9 +233,9 @@ void GroupCondition() : { Var v = null ; Expr expr = null ; }
 }
 void HavingClause() : { }
 {
-    { allowAggregatesInExpressions = true ; }
+    { setAllowAggregatesInExpressions(true) ; }
     <HAVING> (HavingCondition())+
-    { allowAggregatesInExpressions = false ; }
+    { setAllowAggregatesInExpressions(false) ; }
 }
 void HavingCondition() : { Expr c ; }
 {
@@ -246,9 +244,9 @@ void HavingCondition() : { Expr c ; }
 }
 void OrderClause() : { }
 {
-  { allowAggregatesInExpressions = true ; }
+  { setAllowAggregatesInExpressions(true) ; }
   <ORDER> <BY> ( OrderCondition() )+
-  { allowAggregatesInExpressions = false ; }
+  { setAllowAggregatesInExpressions(false) ; }
 }
 void OrderCondition() :
 { int direction = 0 ; Expr expr = null ; Node v = null ; }
@@ -762,7 +760,7 @@ Expr FunctionCall() : { String fname ; ExprList a ; }
   a = ArgList()
   {
      if ( AggregateRegistry.isRegistered(fname) ) {
-         if ( ! allowAggregatesInExpressions )
+         if ( ! getAllowAggregatesInExpressions() )
             throwParseException("Aggregate expression not legal at this point : "+fname, -1, -1) ;
          Aggregator agg = AggregatorFactory.createCustom(true, false, fname, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
@@ -781,7 +779,7 @@ ExprList ArgList() : { Expr expr ; boolean distinct = false ;
       (t = <DISTINCT> { distinct = true ; }
       { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
         {
-          if ( ! allowAggregatesInExpressions )
+          if ( ! getAllowAggregatesInExpressions() )
               throwParseException("Aggregate expression not legal at this point",
                                  beginLine, beginColumn) ;
         }
@@ -1480,7 +1478,7 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
       { agg = AggregatorFactory.createCustom(false, distinct, iri, a) ; }
    )
    {
-     if ( ! allowAggregatesInExpressions )
+     if ( ! getAllowAggregatesInExpressions() )
             throwParseException("Aggregate expression not legal at this point",
                                  t.beginLine, t.beginColumn) ;
    }
@@ -1496,7 +1494,7 @@ Expr iriOrFunction() : { String iri ; ExprList a = null ;
   { if ( a == null )
        return asExpr(createNode(iri)) ;
     if ( AggregateRegistry.isRegistered(iri) ) {
-         if ( ! allowAggregatesInExpressions )
+         if ( ! getAllowAggregatesInExpressions() )
             throwParseException("Aggregate expression not legal at this point : "+iri, -1, -1) ;
          Aggregator agg = AggregatorFactory.createCustom(true, false, iri, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;

@@ -13,7 +13,6 @@ import org.apache.jena.sparql.core.Quad ;
 
 @SuppressWarnings("all")
 public class ARQParser extends ARQParserBase implements ARQParserConstants {
-    boolean allowAggregatesInExpressions = false ;
 
   final public void QueryUnit() throws ParseException {
     ByteOrderMark();
@@ -159,7 +158,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_la1[6] = jj_gen;
       ;
     }
-    allowAggregatesInExpressions = true ;
+    setAllowAggregatesInExpressions(true) ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -503,7 +502,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
-    allowAggregatesInExpressions = false ;
+    setAllowAggregatesInExpressions(false) ;
   }
 
   final public void ConstructQuery() throws ParseException {
@@ -922,7 +921,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void HavingClause() throws ParseException {
-      allowAggregatesInExpressions = true ;
+      setAllowAggregatesInExpressions(true) ;
     jj_consume_token(HAVING);
     label_10:
     while (true) {
@@ -1003,7 +1002,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         break label_10;
       }
     }
-      allowAggregatesInExpressions = false ;
+      setAllowAggregatesInExpressions(false) ;
   }
 
   final public void HavingCondition() throws ParseException {
@@ -1013,7 +1012,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void OrderClause() throws ParseException {
-    allowAggregatesInExpressions = true ;
+    setAllowAggregatesInExpressions(true) ;
     jj_consume_token(ORDER);
     jj_consume_token(BY);
     label_11:
@@ -1099,7 +1098,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         break label_11;
       }
     }
-    allowAggregatesInExpressions = false ;
+    setAllowAggregatesInExpressions(false) ;
   }
 
   final public void OrderCondition() throws ParseException {
@@ -2719,7 +2718,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     fname = iri();
     a = ArgList();
      if ( AggregateRegistry.isRegistered(fname) ) {
-         if ( ! allowAggregatesInExpressions )
+         if ( ! getAllowAggregatesInExpressions() )
             throwParseException("Aggregate expression not legal at this point : "+fname, -1, -1) ;
          Aggregator agg = AggregatorFactory.createCustom(true, false, fname, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
@@ -2743,7 +2742,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         t = jj_consume_token(DISTINCT);
                         distinct = true ;
         int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
-          if ( ! allowAggregatesInExpressions )
+          if ( ! getAllowAggregatesInExpressions() )
               throwParseException("Aggregate expression not legal at this point",
                                  beginLine, beginColumn) ;
         break;
@@ -5343,7 +5342,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
-     if ( ! allowAggregatesInExpressions )
+     if ( ! getAllowAggregatesInExpressions() )
             throwParseException("Aggregate expression not legal at this point",
                                  t.beginLine, t.beginColumn) ;
      Expr exprAgg = getQuery().allocAggregate(agg) ;
@@ -5368,7 +5367,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     if ( a == null )
        {if (true) return asExpr(createNode(iri)) ;}
     if ( AggregateRegistry.isRegistered(iri) ) {
-         if ( ! allowAggregatesInExpressions )
+         if ( ! getAllowAggregatesInExpressions() )
             throwParseException("Aggregate expression not legal at this point : "+iri, -1, -1) ;
          Aggregator agg = AggregatorFactory.createCustom(true, false, iri, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
@@ -5649,6 +5648,22 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     try { return !jj_3_5(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(4, xla); }
+  }
+
+  private boolean jj_3R_158() {
+    if (jj_3R_169()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_157() {
+    if (jj_3R_168()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_70() {
+    if (jj_scan_token(STRAFTER)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
   }
 
   private boolean jj_3R_156() {
@@ -6770,22 +6785,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_158() {
-    if (jj_3R_169()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_157() {
-    if (jj_3R_168()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_70() {
-    if (jj_scan_token(STRAFTER)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
   /** Generated Token Manager. */
   public ARQParserTokenManager token_source;
   JavaCharStream jj_input_stream;
@@ -7115,4 +7114,4 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     JJCalls next;
   }
 
-}
+ }
