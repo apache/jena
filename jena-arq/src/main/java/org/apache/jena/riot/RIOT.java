@@ -61,13 +61,11 @@ public class RIOT {
             return ;
         synchronized (initLock) {
             if ( initialized ) {
-                if ( JenaSystem.DEBUG_INIT )
-                    System.err.println("RIOT.init - skip") ;
+                JenaSystem.logLifecycle("RIOT.init - skip") ;
                 return ;
             }
             initialized = true ;
-            if ( JenaSystem.DEBUG_INIT )
-                System.err.println("RIOT.init - start") ;
+            JenaSystem.logLifecycle("RIOT.init - start") ;
             // Be careful with what this touches - don't touch ARQ.*
             // because that depends on Jena core and we may be
             // initializing because IO_Ctl (ie. Jena core)
@@ -81,8 +79,7 @@ public class RIOT {
             // Don't register JMX info with ARQ as it may not be initialized
             // itself and we can get into a circularity.
             // This is done in ARQ.init at the proper moment.
-            if ( JenaSystem.DEBUG_INIT )
-                System.err.println("RIOT.init - finish") ;
+            JenaSystem.logLifecycle("RIOT.init - finish") ;
         }
     }
 

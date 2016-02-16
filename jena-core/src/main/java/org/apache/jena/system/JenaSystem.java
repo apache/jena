@@ -87,14 +87,12 @@ public class JenaSystem {
             return ;
         synchronized(initLock) {
             if ( initialized )  {
-                if ( DEBUG_INIT )
-                    System.err.println("JenaSystem.init - return");
+                logLifecycle("JenaSystem.init - return");
                 return ;
             } 
             // Catches recursive calls, same thread.
             initialized = true ;
-            if ( DEBUG_INIT )
-                System.err.println("JenaSystem.init - start");
+            logLifecycle("JenaSystem.init - start");
             
             if ( get() == null )
                 setSubsystemRegistry(new JenaSubsystemRegistryBasic()) ;
@@ -104,27 +102,36 @@ public class JenaSystem {
             // Debug : what did we find?
             if ( JenaSystem.DEBUG_INIT ) {
                 get().snapshot().forEach(mod->
-                    System.err.println("  "+mod.getClass().getSimpleName())) ;
+                    logLifecycle("  %s", mod.getClass().getSimpleName())) ;
             }
             get().add(new JenaInitLevel0()) ;
 
             JenaSystem.forEach( module -> {
-                if ( DEBUG_INIT )
-                    System.err.println("Init: "+module.getClass().getSimpleName());
+                logLifecycle("Init: %s", module.getClass().getSimpleName());
                 module.start() ;
             }) ;
-            if ( DEBUG_INIT )
-                System.err.println("JenaSystem.init - finish");
+            logLifecycle("JenaSystem.init - finish");
         }
     }
 
     /** Shutdown subsystems */
     public static void shutdown() {
-        if ( ! initialized ) 
+        if ( ! initialized ) {
+            logLifecycle("JenaSystem.shutdown - not initialized");
             return ;
+        }
         synchronized(initLock) {
-            JenaSystem.forEachReverse(JenaSubsystemLifecycle::stop) ;
+            if ( ! initialized ) { 
+                logLifecycle("JenaSystem.shutdown - return");
+                return ;
+            }
+            logLifecycle("JenaSystem.shutdown - start");
+            JenaSystem.forEachReverse(module -> {
+                logLifecycle("Stop: %s", module.getClass().getSimpleName());
+                module.stop() ;
+            }) ;
             initialized = false ;
+            logLifecycle("JenaSystem.shutdown - finish");
         }
     }
     
@@ -177,6 +184,14 @@ public class JenaSystem {
         List<JenaSubsystemLifecycle> x = get().snapshot() ;
         Collections.sort(x, ordering);
         x.forEach(action);
+    }
+    
+    /** Output a debugging message if DEBUG_INIT is set */
+    public static void logLifecycle(String fmt, Object ...args) {
+        if ( ! DEBUG_INIT )
+            return ;
+        System.err.printf(fmt, args) ;
+        System.err.println() ;
     }
 
     /** The level 0 subsystem - inserted without using the Registry load function. 

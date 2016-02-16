@@ -550,13 +550,11 @@ public class ARQ
         synchronized(initLock)
         {
             if ( initialized ) {
-                if ( JenaSystem.DEBUG_INIT )
-                    System.err.println("ARQ.init - skip") ;
+                JenaSystem.logLifecycle("ARQ.init - skip") ;
                 return ;
             }
             initialized = true ;
-            if ( JenaSystem.DEBUG_INIT )
-                System.err.println("ARQ.init - start") ;
+            JenaSystem.logLifecycle("ARQ.init - start") ;
             globalContext = defaultSettings() ;
             ARQMgt.init() ;         // After context and after PATH/NAME/VERSION/BUILD_DATE are set
             MappingRegistry.addPrefixMapping(ARQ.arqSymbolPrefix, ARQ.arqParamNS) ;
@@ -568,8 +566,7 @@ public class ARQ
             // Register RIOT details here, not earlier, to avoid
             // initialization loops with RIOT.init() called directly.
             RIOT.register() ;
-            if ( JenaSystem.DEBUG_INIT )
-                System.err.println("ARQ.init - finish") ;
+            JenaSystem.logLifecycle("ARQ.init - finish") ;
         }
     }
     

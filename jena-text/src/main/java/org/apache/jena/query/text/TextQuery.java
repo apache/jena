@@ -52,13 +52,11 @@ public class TextQuery
             return ;
         synchronized(lock) {
             if ( initialized ) {
-                if ( JenaSystem.DEBUG_INIT )
-                    System.err.println("TextQuery.init - skip") ;
+                JenaSystem.logLifecycle("TextQuery.init - skip") ;
                 return ; 
             }
             initialized = true ;
-            if ( JenaSystem.DEBUG_INIT )
-                System.err.println("TextQuery.init - start") ;
+            JenaSystem.logLifecycle("TextQuery.init - start") ;
             TextAssembler.init() ;
             
             SystemInfo sysInfo = new SystemInfo(IRI, PATH, VERSION, BUILD_DATE) ;
@@ -70,8 +68,7 @@ public class TextQuery
                     return new TextQueryPF() ;
                 }
             });
-            if ( JenaSystem.DEBUG_INIT )
-                System.err.println("TextQuery.init - finish") ;
+            JenaSystem.logLifecycle("TextQuery.init - finish") ;
         }
     }
 }

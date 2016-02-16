@@ -83,6 +83,8 @@ public class JenaSubsystemRegistryBasic implements JenaSubsystemRegistry {
     
     @Override
     public List<JenaSubsystemLifecycle> snapshot() {
-        return new ArrayList<>(registry) ;
+        synchronized (registryLock) {
+            return new ArrayList<>(registry) ;
+        }
     }
 }

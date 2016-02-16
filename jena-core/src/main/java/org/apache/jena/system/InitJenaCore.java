@@ -44,23 +44,20 @@ public class InitJenaCore  implements JenaSubsystemLifecycle {
             return ;
         synchronized (initLock) {
             if ( initialized ) {
-                if ( JenaSystem.DEBUG_INIT )
-                    System.err.println("JenaCore.init - skip") ;
+                JenaSystem.logLifecycle("JenaCore.init - skip") ;
                 return ;
             }
             initialized = true ;
-            if ( JenaSystem.DEBUG_INIT )
-                System.err.println("JenaCore.init - start") ;
+            JenaSystem.logLifecycle("JenaCore.init - start") ;
 
             // Initialization
             // Touch classes with constants.  
             // This isn't necessary but it makes it more deterministic.
-            // These constants are resused in various places.  
+            // These constants are reused in various places.  
             RDF.getURI() ;
             RDFS.getURI() ;
             OWL.getURI() ;
-            if ( JenaSystem.DEBUG_INIT )
-                System.err.println("JenaCore.init - finish") ;
+            JenaSystem.logLifecycle("JenaCore.init - finish") ;
         }
     }
 }

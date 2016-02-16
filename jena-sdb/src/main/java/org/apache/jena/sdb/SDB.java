@@ -89,13 +89,11 @@ public class SDB
             return ;
         synchronized(initLock) {
             if ( initialized ) {
-                if ( JenaSystem.DEBUG_INIT )
-                    System.err.println("SDB.init - skip") ;
+                JenaSystem.logLifecycle("SDB.init - skip") ;
                 return ;
             }
             initialized = true ;
-            if ( JenaSystem.DEBUG_INIT )
-                System.err.println("SDB.init - start") ;
+            JenaSystem.logLifecycle("SDB.init - start") ;
 
             // Better not to break up BGPs too much.
             ARQ.getContext().set(ARQ.optFilterPlacement, false) ;
@@ -116,8 +114,7 @@ public class SDB
             SDB.getContext().setIfUndef(annotateGeneratedSQL,  true) ;
             //SDB.getContext().setIfUndef(unionDefaultGraph,     false) ;
             AssemblerVocab.init(); 
-            if ( JenaSystem.DEBUG_INIT )
-                System.err.println("SDB.init - finish") ;
+            JenaSystem.logLifecycle("SDB.init - finish") ;
         }
     }
     
