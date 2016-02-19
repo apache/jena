@@ -47,7 +47,7 @@ public class DatasetDescriptionRegistry  {
         Dataset dsCurrent = map.get(node) ;
         if ( dsCurrent != null ) {
             if ( ! dsCurrent.equals(ds) )
-                Log.warn(this.getClass(), "Replacing dataset for "+node);
+                Log.warn(this.getClass(), "Replacing registered dataset for "+node);
         }
         map.add(node, ds);
     }
@@ -63,5 +63,9 @@ public class DatasetDescriptionRegistry  {
 
     public Dataset get(Resource node) {
         return map.get(node);
+    }
+    
+    public void clear() {
+        map.clear();
     }
 }

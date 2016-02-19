@@ -55,11 +55,14 @@ public class RefCountingMap<K, T> {
 	   
     public RefCountingMap() {}   
 
-    public boolean contains(K key)         { return map.containsKey(key) ; } 
+    public boolean contains(K key)         { return map.containsKey(key) ; }
     public Collection<K> keys()            { return map.keySet() ; }
     public int size()                      { return map.size() ; }
     public boolean isEmpty()               { return map.isEmpty() ; }
+
+    /** Clear the map of all keys regardless of reference counts. */
     public void clear()                    { map.clear() ; }
+    
 	public Set<K> keySet()                 { return map.keySet(); }
 	public boolean containsKey(Object key) { return map.containsKey(key); }
     

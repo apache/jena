@@ -102,6 +102,8 @@ public class Builder
                 throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
             ds = (Dataset)Assembler.general.open(datasetDesc) ;
     	}
+    	// Some kind of check that it is "the same" dataset.  
+    	// It can be different if two descriptions in different files have the same URI.
     	datasetMap.register(datasetDesc, ds);
     	return ds;
     }
