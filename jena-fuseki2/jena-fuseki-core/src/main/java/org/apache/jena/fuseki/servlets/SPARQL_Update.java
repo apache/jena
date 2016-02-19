@@ -223,7 +223,6 @@ public class SPARQL_Update extends SPARQL_Protocol
         UpdateRequest req = null ;
         if (!action.isTransactional()) {
             try {
-                // TODO implement a spill-to-disk version of this
                 req = UpdateFactory.read(usingList, input, UpdateParseBase, Syntax.syntaxARQ);
             }
             catch (UpdateException ex) { ServletOps.errorBadRequest(ex.getMessage()) ; return ; }
