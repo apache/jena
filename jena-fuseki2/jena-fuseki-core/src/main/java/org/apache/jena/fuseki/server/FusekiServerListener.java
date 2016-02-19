@@ -69,11 +69,8 @@ public class FusekiServerListener implements ServletContextListener {
             
             // The command line code sets initialSetup.
             // In a non-commandline startup, initialSetup is null. 
-            if ( initialSetup == null )
+            if ( initialSetup == null ) {
                 initialSetup = new ServerInitialConfig() ;
-            
-            if ( initialSetup.fusekiCmdLineConfigFile == null ) {
-                // If not command line configuration file, use the run area one.
                 String cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiServer.DFT_CONFIG).toAbsolutePath().toString() ;
                 initialSetup.fusekiServerConfigFile = cfg ;
             }

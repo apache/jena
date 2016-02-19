@@ -18,6 +18,8 @@
 
 package org.apache.jena.fuseki.cmd ;
 
+import java.nio.file.Files ;
+import java.nio.file.Path ;
 import java.util.List ;
 
 import arq.cmdline.CmdARQ ;
@@ -31,6 +33,7 @@ import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.jetty.JettyFuseki ;
 import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.server.FusekiEnv ;
+import org.apache.jena.fuseki.server.FusekiServer ;
 import org.apache.jena.fuseki.server.FusekiServerListener ;
 import org.apache.jena.fuseki.server.ServerInitialConfig ;
 import org.apache.jena.query.ARQ ;
@@ -215,6 +218,14 @@ public class FusekiCmd {
             
             if ( cmdlineConfigPresent && getPositional().size() > 1 )
                 throw new CmdException("Multiple dataset path names given") ;
+            
+            if ( ! cmdlineConfigPresent ) {
+                // In place config file. 
+                Path cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiServer.DFT_CONFIG).toAbsolutePath() ;
+                if ( Files.exists(cfg) )
+                    cmdLineConfig.fusekiServerConfigFile = cfg.toString() ;
+            }
+                
             
             cmdLineConfig.allowUpdate = contains(argUpdate) ; 
 
