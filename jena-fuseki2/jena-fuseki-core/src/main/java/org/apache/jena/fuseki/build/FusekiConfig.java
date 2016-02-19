@@ -128,11 +128,6 @@ public class FusekiConfig {
         // Old style configuration file : server to services.
         // ---- Services
         ResultSet rs = FusekiLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model) ;
-        // If the old config.ttl file becomes just the server configuration file,
-        // then don't warn here.
-//        if ( !rs.hasNext() )
-//            log.warn("No services found") ;
-
         List<DataAccessPoint> accessPoints = new ArrayList<>() ;
 
         if ( ! rs.hasNext() )
@@ -171,27 +166,6 @@ public class FusekiConfig {
         return m ;
     }
     
-//    // REMOVE THIS - now done by TDB itself. 
-//    private static Model additionalRDF(Model m) {
-//        SystemState.init$();        // Why? mvn jetty:run-war
-////        // This should not be needed any more (jena system init)
-////        String x1 = StrUtils.strjoinNL
-////            ( SystemState.PREFIXES, 
-////              "INSERT                    { [] ja:loadClass 'org.apache.jena.tdb.TDB' }",
-////              "WHERE { FILTER NOT EXISTS { [] ja:loadClass 'org.apache.jena.tdb.TDB' } }"
-////             ) ;
-////        String x2 = StrUtils.strjoinNL
-////            (SystemState.PREFIXES,
-////             "INSERT DATA {",
-////             "   tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .",
-////             "   tdb:GraphTDB    rdfs:subClassOf  ja:Model .",
-////             "}" 
-////             ) ;
-////        execute(m, x1) ;
-////        execute(m, x2) ;
-//        return m ;
-//    }
-
     private static void execute(Model m, String x) {
         UpdateRequest req = UpdateFactory.create(x) ;
         UpdateAction.execute(req, m);
