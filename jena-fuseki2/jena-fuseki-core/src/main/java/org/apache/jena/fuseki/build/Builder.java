@@ -57,21 +57,16 @@ public class Builder
         name = DataAccessPoint.canonical(name) ;
 
         DataService dataService = Builder.buildDataService(svc) ;
-        DataAccessPoint dataAccess = new DataAccessPoint(name) ;
-        dataAccess.setDataService(dataService) ;
+        DataAccessPoint dataAccess = new DataAccessPoint(name, dataService) ;
         return dataAccess ;
     }
 
     /** Build a DatasetRef starting at Resource svc */
     private static DataService buildDataService(Resource svc) {
-        //log.debug("Service: " + nodeLabel(svc)) ;
-        // DO REAL WORK
+        if ( log.isDebugEnabled() ) log.debug("Service: " + nodeLabel(svc)) ;
         Resource datasetDesc = ((Resource)getOne(svc, "fu:dataset")) ;
-        
-        // Check if it is in the model.
-        if ( !datasetDesc.hasProperty(RDF.type) )
-            throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
-        Dataset ds = (Dataset)Assembler.general.open(datasetDesc) ;
+        Dataset ds = getDataset(datasetDesc);
+ 
         // In case the assembler included ja:contents
         DataService dataService = new DataService(ds.asDatasetGraph()) ;
         addServiceEP(dataService, OperationName.Query,  svc,    "fu:serviceQuery") ;
@@ -95,6 +90,20 @@ public class Builder
 //        }
 
         return dataService ;
+    }
+    
+    static Dataset getDataset(Resource datasetDesc) {
+    	DatasetDescriptionRegistry datasetMap = DatasetDescriptionRegistry.getSingleton();
+    	// check if this one already built
+    	Dataset ds = datasetMap.get(datasetDesc);
+    	if (ds == null) {
+    	    // Check if the description is in the model.
+            if ( !datasetDesc.hasProperty(RDF.type) )
+                throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
+            ds = (Dataset)Assembler.general.open(datasetDesc) ;
+    	}
+    	datasetMap.register(datasetDesc, ds);
+    	return ds;
     }
     
     /** Build a DataService starting at Resource svc */
