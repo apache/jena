@@ -26,13 +26,12 @@ import org.apache.jena.fuseki.servlets.HttpAction ;
 /** A name in the URL space of the server */
 public class DataAccessPoint {
     private final String name ;
-    private DataService dataService ;
-    private DataAccessPoint link ;             // Symbolic link.
+    private final DataService dataService ;
     private AtomicLong requests = new AtomicLong(0) ;
     
-    public DataAccessPoint(String name) {
+    public DataAccessPoint(String name, DataService dataService) {
         this.name = canonical(name) ;
-        this.dataService = null ;
+        this.dataService = dataService ;
     }
     
     public String getName()     { return name ; }
@@ -52,18 +51,6 @@ public class DataAccessPoint {
 
     public DataService getDataService() {
         return dataService;
-    }
-
-    public void setDataService(DataService dataService) {
-        this.dataService = dataService;
-    }
-
-    public DataAccessPoint getLink() {
-        return link;
-    }
-
-    public void setLink(DataAccessPoint link) {
-        this.link = link;
     }
 
     public long requestCount()                          { return requests.get() ; }

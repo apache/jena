@@ -354,9 +354,8 @@ public class FusekiServer
     
     private static DataAccessPoint datasetDefaultConfiguration( String name, DatasetGraph dsg, boolean allowUpdate) {
         name = DataAccessPoint.canonical(name) ;
-        DataAccessPoint dap = new DataAccessPoint(name) ;
         DataService ds = Builder.buildDataService(dsg, allowUpdate) ;
-        dap.setDataService(ds) ;
+        DataAccessPoint dap = new DataAccessPoint(name, ds) ;
         return dap ;
     }
     
