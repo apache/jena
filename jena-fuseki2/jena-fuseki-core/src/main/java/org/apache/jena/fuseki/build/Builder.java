@@ -67,11 +67,8 @@ public class Builder
         //log.debug("Service: " + nodeLabel(svc)) ;
         // DO REAL WORK
         Resource datasetDesc = ((Resource)getOne(svc, "fu:dataset")) ;
-        
-        // Check if it is in the model.
-        if ( !datasetDesc.hasProperty(RDF.type) )
-            throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
-        Dataset ds = (Dataset)Assembler.general.open(datasetDesc) ;
+        Dataset ds = getDataset(datasetDesc);
+ 
         // In case the assembler included ja:contents
         DataService dataService = new DataService(ds.asDatasetGraph()) ;
         addServiceEP(dataService, OperationName.Query,  svc,    "fu:serviceQuery") ;
@@ -95,6 +92,21 @@ public class Builder
 //        }
 
         return dataService ;
+    }
+    
+    static Dataset getDataset(Resource datasetDesc) {
+    	DescriptionToDatasetMap datasetMap = DescriptionToDatasetMap.getSingleton();
+    	// check if this one already built
+    	Dataset ds = datasetMap.get(datasetDesc);
+    	if (ds == null) {
+    	    // Check if the description is in the model.
+            if ( !datasetDesc.hasProperty(RDF.type) )
+                throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
+            ds = (Dataset)Assembler.general.open(datasetDesc) ;
+            // @@ TODO there is no mechanism to remove old descriptions and their datasets from the map
+            datasetMap.add(datasetDesc, ds);
+    	}
+    	return ds;
     }
     
     /** Build a DataService starting at Resource svc */
