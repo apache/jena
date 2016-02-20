@@ -45,7 +45,7 @@ public class Builder
     private static Logger log = Fuseki.builderLog ;
     
     /** Build a DataAccessPoint, including DataService at Resource svc */ 
-    public static DataAccessPoint buildDataAccessPoint(Resource svc) {
+    public static DataAccessPoint buildDataAccessPoint(Resource svc, DatasetDescriptionRegistry dsDescMap) {
         RDFNode n = FusekiLib.getOne(svc, "fu:name") ;
         if ( ! n.isLiteral() )
             throw new FusekiConfigException("Not a literal for access point name: "+FmtUtils.stringForRDFNode(n));
@@ -56,16 +56,16 @@ public class Builder
         String name = object.getLexicalForm() ;
         name = DataAccessPoint.canonical(name) ;
 
-        DataService dataService = Builder.buildDataService(svc) ;
+        DataService dataService = Builder.buildDataService(svc, dsDescMap) ;
         DataAccessPoint dataAccess = new DataAccessPoint(name, dataService) ;
         return dataAccess ;
     }
 
     /** Build a DatasetRef starting at Resource svc */
-    private static DataService buildDataService(Resource svc) {
+    private static DataService buildDataService(Resource svc, DatasetDescriptionRegistry dsDescMap) {
         if ( log.isDebugEnabled() ) log.debug("Service: " + nodeLabel(svc)) ;
         Resource datasetDesc = ((Resource)getOne(svc, "fu:dataset")) ;
-        Dataset ds = getDataset(datasetDesc);
+        Dataset ds = getDataset(datasetDesc, dsDescMap);
  
         // In case the assembler included ja:contents
         DataService dataService = new DataService(ds.asDatasetGraph()) ;
@@ -92,10 +92,9 @@ public class Builder
         return dataService ;
     }
     
-    static Dataset getDataset(Resource datasetDesc) {
-    	DatasetDescriptionRegistry datasetMap = DatasetDescriptionRegistry.getSingleton();
+    static Dataset getDataset(Resource datasetDesc, DatasetDescriptionRegistry dsDescMap) {
     	// check if this one already built
-    	Dataset ds = datasetMap.get(datasetDesc);
+    	Dataset ds = dsDescMap.get(datasetDesc);
     	if (ds == null) {
     	    // Check if the description is in the model.
             if ( !datasetDesc.hasProperty(RDF.type) )
@@ -104,7 +103,7 @@ public class Builder
     	}
     	// Some kind of check that it is "the same" dataset.  
     	// It can be different if two descriptions in different files have the same URI.
-    	datasetMap.register(datasetDesc, ds);
+    	dsDescMap.register(datasetDesc, ds);
     	return ds;
     }
     

@@ -34,20 +34,21 @@ public class TestBuilder {
 	private static final Model dsModel;
 	private static final Resource dsDesc1;
 	private static final Resource dsDesc2;
+	private DatasetDescriptionRegistry registry = new DatasetDescriptionRegistry() ; 
 	
 	@Test
 	public void testVerifySameDatasetObjectForSameDescription() {
 		
-		Dataset ds1 = Builder.getDataset(dsDesc1);
-		Dataset ds2 = Builder.getDataset(dsDesc1);
+		Dataset ds1 = Builder.getDataset(dsDesc1, registry);
+		Dataset ds2 = Builder.getDataset(dsDesc1, registry);
 		assertEquals(ds1, ds2);
 	}
 	
 	@Test
 	public void testVerifyDifferentDatasetObjectsForDifferentDescriptions() {
 		
-		Dataset ds1 = Builder.getDataset(dsDesc1);
-		Dataset ds2 = Builder.getDataset(dsDesc2);
+		Dataset ds1 = Builder.getDataset(dsDesc1, registry);
+		Dataset ds2 = Builder.getDataset(dsDesc2, registry);
 		assertNotEquals(ds1, ds2);		
 	}
 	

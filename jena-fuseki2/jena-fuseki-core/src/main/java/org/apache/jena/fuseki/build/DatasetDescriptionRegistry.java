@@ -26,7 +26,7 @@ import org.apache.jena.rdf.model.Resource;
  * Registry of Datasets created from descriptions.
  * 
  * <p>
- *   Provides a singleton for use in building the Fuseki configuration to
+ *   Provides a registry for use in building the Fuseki configuration to
  *   ensure that each dataset description resource in configuration graphs
  *   corresponds to one dataset object when multiple services refer to the
  *   same dataset.
@@ -36,11 +36,9 @@ import org.apache.jena.rdf.model.Resource;
  */
 public class DatasetDescriptionRegistry  {
 	
-	private final static DatasetDescriptionRegistry singleton = new DatasetDescriptionRegistry();
-	
-	public static DatasetDescriptionRegistry getSingleton() { return singleton ; }
-	
 	private RefCountingMap<Resource, Dataset> map = new RefCountingMap<>() ;
+	
+	public DatasetDescriptionRegistry() {}
 	
     /** Use a mapping. This will add a mapping or increment any reference counting. */
     public void register(Resource node, Dataset ds) {
