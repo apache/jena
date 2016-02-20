@@ -40,10 +40,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.server.DataAccessPoint ;
-import org.apache.jena.fuseki.server.DatasetStatus ;
-import org.apache.jena.fuseki.server.FusekiVocab ;
-import org.apache.jena.fuseki.server.SystemState ;
+import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ReadWrite ;
@@ -126,6 +123,7 @@ public class FusekiConfig {
     
     private static List<DataAccessPoint> servicesAndDatasets(Model model) {
         // Old style configuration file : server to services.
+        DatasetDescriptionRegistry dsDescMap = FusekiServer.registryForBuild() ;
         // ---- Services
         ResultSet rs = FusekiLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model) ;
         List<DataAccessPoint> accessPoints = new ArrayList<>() ;
@@ -138,7 +136,7 @@ public class FusekiConfig {
         for ( ; rs.hasNext() ; ) {
             QuerySolution soln = rs.next() ;
             Resource svc = soln.getResource("service") ;
-            DataAccessPoint acc = Builder.buildDataAccessPoint(svc) ;
+            DataAccessPoint acc = Builder.buildDataAccessPoint(svc, dsDescMap) ;
             accessPoints.add(acc) ;
         }
         
@@ -201,11 +199,11 @@ public class FusekiConfig {
         List<DataAccessPoint> dataServiceRef = new ArrayList<>() ;
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(pDir, filter)) {
             for ( Path p : stream ) {
+                DatasetDescriptionRegistry dsDescMap = FusekiServer.registryForBuild() ;
                 String fn = IRILib.filenameToIRI(p.toString()) ;
                 log.info("Load configuration: "+fn);
                 Model m = readAssemblerFile(fn) ;
-                DataAccessPoint acc = readConfiguration(m) ; 
-                dataServiceRef.add(acc) ;
+                readConfiguration(m, dsDescMap, dataServiceRef) ; 
             }
         } catch (IOException ex) {
             log.warn("IOException:"+ex.getMessage(), ex);
@@ -213,7 +211,7 @@ public class FusekiConfig {
         return dataServiceRef ;
     }
 
-    private static DataAccessPoint readConfiguration(Model m) {
+    private static void readConfiguration(Model m, DatasetDescriptionRegistry dsDescMap, List<DataAccessPoint> dataServiceRef) {
         List<Resource> services = getByType(FusekiVocab.fusekiService, m) ; 
 
         if ( services.size() == 0 ) {
@@ -221,21 +219,16 @@ public class FusekiConfig {
             throw new FusekiConfigException() ;
         }
 
-        // Remove?
-        if ( services.size() > 1 ) {
-            log.error("Multiple services found") ;
-            throw new FusekiConfigException() ;
+        for ( Resource service : services ) {
+            DataAccessPoint acc = Builder.buildDataAccessPoint(service, dsDescMap) ; 
+            dataServiceRef.add(acc) ;
         }
-
-        Resource service = services.get(0) ;
-        // Configuration file determines read-only status.
-        DataAccessPoint acc = Builder.buildDataAccessPoint(service) ; 
-        return acc ;
     }
 
     // ---- System database
     /** Read the system database */
     public static List<DataAccessPoint> readSystemDatabase(Dataset ds) {
+        DatasetDescriptionRegistry dsDescMap = FusekiServer.registryForBuild() ;
         String qs = StrUtils.strjoinNL
             (SystemState.PREFIXES ,
              "SELECT * {" ,
@@ -264,9 +257,9 @@ public class FusekiConfig {
                 DatasetStatus status = DatasetStatus.status(rStatus) ;
 
                 Model m = ds.getNamedModel(g.getURI()) ;
-                // Rebase the resoure of the service description to the containing graph.
+                // Rebase the resource of the service description to the containing graph.
                 Resource svc = m.wrapAsResource(s.asNode()) ;
-                DataAccessPoint ref = Builder.buildDataAccessPoint(svc) ;
+                DataAccessPoint ref = Builder.buildDataAccessPoint(svc, dsDescMap) ;
                 refs.add(ref) ;
             }
             ds.commit(); 
