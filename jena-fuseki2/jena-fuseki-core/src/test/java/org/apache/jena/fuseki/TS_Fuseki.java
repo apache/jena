@@ -20,7 +20,7 @@ package org.apache.jena.fuseki;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.fuseki.build.TS_Build ;
+import org.apache.jena.fuseki.build.TestBuilder ;
 import org.apache.jena.fuseki.http.TestDatasetAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestDatasetGraphAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestHttpOp ;
@@ -43,7 +43,7 @@ import org.junit.runners.Suite ;
     , TestFileUpload.class
     , TestAdmin.class
     , TestServerReadOnly.class
-    , TS_Build.class
+    , TestBuilder.class
 })
 
 public class TS_Fuseki extends ServerTest
