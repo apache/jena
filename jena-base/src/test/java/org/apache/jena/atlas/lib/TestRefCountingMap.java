@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.build;
+package org.apache.jena.atlas.lib;
 
 import static org.junit.Assert.assertEquals;
 

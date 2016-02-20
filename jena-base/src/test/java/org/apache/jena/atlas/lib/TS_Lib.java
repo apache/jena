@@ -49,6 +49,7 @@ import org.junit.runners.Suite ;
     , TestNumberUtils.class
     , TestDateTimeUtils.class
     , TestCacheSimple.class
+    , TestRefCountingMap.class
 } )
 
 public class TS_Lib

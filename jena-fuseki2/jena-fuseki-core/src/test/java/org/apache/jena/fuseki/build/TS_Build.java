@@ -23,9 +23,7 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestRefCountingMap.class
-    , TestBuilder.class
-    
+    TestBuilder.class
 })
 
 public class TS_Build {}
