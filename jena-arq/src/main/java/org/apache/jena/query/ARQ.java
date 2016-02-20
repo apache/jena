@@ -380,33 +380,30 @@ public class ARQ
      */
     public static final Symbol optImplicitLeftJoin = SystemARQ.allocSymbol("optImplicitLeftJoin");
 
-    /** 
-     *  Context key for a declaration that xsd:strings and simple literals are
-     *  different in the storage.  They are the same value in a memory store.
-     *  When in doubt, xsd:strings are assumed to be the same value as simple literals   
-     */  
-    public static final Symbol optTermStrings = SystemARQ.allocSymbol("optTermStrings") ;
-    
     /**
-     * Context key controlling whether the standard optimizer applies constant folding to expressions
+     *  Context key controlling whether the standard optimizer applies constant folding to expressions
+     *  <p>By default, this transformation is applied.
      */
     public static final Symbol optExprConstantFolding = SystemARQ.allocSymbol("optExprConstantFolding");
 
     /** 
      *  Context key controlling whether the standard optimizer applies
      *  optimizations to conjunctions (&&) in filters.
+     *  <p>By default, this transformation is applied.
      */  
     public static final Symbol optFilterConjunction = SystemARQ.allocSymbol("optFilterConjunction") ;
 
     /** 
      *  Context key controlling whether the standard optimizer applies
      *  optimizations to IN and NOT IN.
+     *  <p>By default, this transformation is applied.
      */  
     public static final Symbol optFilterExpandOneOf = SystemARQ.allocSymbol("optFilterExpandOneOf") ;
 
     /** 
      *  Context key controlling whether the standard optimizer applies
      *  optimizations to disjunctions (||) in filters.
+     * <p>By default, this transformation is applied.
      */  
     public static final Symbol optFilterDisjunction = SystemARQ.allocSymbol("optFilterDisjunction") ;
     
@@ -424,31 +421,43 @@ public class ARQ
     /**
      * Context key controlling whether the standard optimizer applies optimizations where by some
      * assignments may be eliminated/inlined into the operators where their values are used only once
+     * <p>By default, this transformation is not applied.
      */
     public static final Symbol optInlineAssignments = SystemARQ.allocSymbol("optInlineAssignments");
     
     /**
      * Context key controlling whether the standard optimizer aggressively inlines assignments whose
      * values are used only once into operators where those expressions may be evaluated multiple times e.g. order
+     * <p>This is modifier to {@link #optInlineAssignments}.
      */
     public static final Symbol optInlineAssignmentsAggressive = SystemARQ.allocSymbol("optInlineAssignmentsAggressive");
     
     /**
      * Context key controlling whether the standard optimizater applies optimizations to joined BGPs to
      * merge them into single BGPs.
-     * By default, this transformation is applied.
+     * <p>By default, this transformation is applied.
      */
     public static final Symbol optMergeBGPs = SystemARQ.allocSymbol("optMergeBGPs");
     
     /**
      * Context key controlling whether the standard optimizater applies the optimization
      * to combine stacks of (extend) into one compound operation.  Ditto (assign). 
-     * By default, this transformation is applied.
+     * <p>By default, this transformation is applied.
      */
     public static final Symbol optMergeExtends = SystemARQ.allocSymbol("optMergeExtends");
 
+    /**
+     * Context key controlling whether the standard optimizater applies the optimization
+     * to reorder basic graph patterns. 
+     * <p>By default, this transformation is NOT applied. 
+     * It is left to the specific engines to decide.
+     */
+    // However, StageGeneratorGeneric does reorder based on partial results. 
+    public static final Symbol optReorderBGP = SystemARQ.allocSymbol("optReorderBGP");
+
     /** 
      *  Context key controlling whether the main query engine processes property functions.
+     *  <p>By default, this is applied.
      */  
     public static final Symbol propertyFunctions = SystemARQ.allocSymbol("propertyFunctions") ;
     
