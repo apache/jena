@@ -63,17 +63,17 @@ public interface Dataset extends Transactional
     public Context getContext() ;
 
     /**
-     * Does this dataset support transactions? Supporting transactions mean that
+     * Does this dataset support transactions? Supporting transactions means that
      * the dataset implementation provides {@link #begin}, {@link #commit},
      * {@link #end} which otherwise may throw
      * {@link UnsupportedOperationException}.
      * <p>
-     * A {@code Dataset} that provide functionality acorss independent systems
-     * can not provide such strong guarantees. For example, they may use MRSW
+     * See {@link #supportsTransactionAbort()} for {@link #abort}.
+     * A {@code Dataset} that provides functionality across independent systems
+     * can not provide all features strong guarantees. For example, they may use MRSW
      * locking and some isolation control. Specifically, they do not necessarily
      * provide {@link #abort}.
      * <p>
-     * See {@link #supportsTransactionAbort()} for {@link #abort}.
      * In addition, check details of a specific implementation.
      */
     public boolean supportsTransactions() ;
