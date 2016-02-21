@@ -27,10 +27,6 @@
 
   <name>Apache Jena - Fuseki Server Engine</name>
   <artifactId>jena-fuseki-core</artifactId>
-
-  <!-- We make the JAR file so that the shade plugin includes it.
-       The war:war goal is added to the package phase.
-  -->
   <packaging>jar</packaging>
 
   <repositories>
@@ -51,67 +47,6 @@
       <artifactId>apache-jena-libs</artifactId>
       <version>3.1.0-SNAPSHOT</version>
       <type>pom</type>
-    </dependency>
-
-      <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-cmds</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-base</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-text</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
-      <exclusions>
-        <!--
-          Get this via commons-fileupload and also via jena-text/sol4j
-        -->
-        <exclusion>
-          <groupId>commons-io</groupId>
-          <artifactId>commons-io</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-spatial</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.shiro</groupId>
-      <artifactId>shiro-core</artifactId>
-      <version>${ver.shiro}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.shiro</groupId>
-      <artifactId>shiro-web</artifactId>
-      <version>${ver.shiro}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -145,7 +80,6 @@
     </dependency>
     -->
 
-    <!-- Development and standalone jar (if built) -->
     <!-- Jetty's useful servlets, inc compression -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -153,12 +87,47 @@
       <version>${ver.jetty}</version>
     </dependency>
 
+    <!-- Text and spatial -->
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-text</artifactId>
+      <version>3.1.0-SNAPSHOT</version>
+      <exclusions>
+        <!--
+          Get this via commons-fileupload and also via jena-text/sol4j
+        -->
+        <exclusion>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-spatial</artifactId>
+      <version>3.1.0-SNAPSHOT</version>
+    </dependency>
+
+    <!-- Apache Shiro -->
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-core</artifactId>
+      <version>${ver.shiro}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-web</artifactId>
+      <version>${ver.shiro}</version>
+    </dependency>
+
+    <!-- Logging :  Needed because the Fuseki command line manages logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
 
-    <!-- Needed because the Fuseki command line manages logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
@@ -168,6 +137,30 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
     </dependency>
+
+    <!-- Testing -->
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <version>3.1.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-base</artifactId>
+      <version>3.1.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>

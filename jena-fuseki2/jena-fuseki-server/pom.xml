@@ -51,6 +51,16 @@
       <version>${project.version}</version>
     </dependency>
 
+    <!-- Include commands in the server jar so 
+         "java -cp server-jar jena...." works
+         Convencie in deployments.
+    -->
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-cmds</artifactId>
+      <version>3.1.0-SNAPSHOT</version>
+    </dependency>
+
   </dependencies>
 
   <build>
