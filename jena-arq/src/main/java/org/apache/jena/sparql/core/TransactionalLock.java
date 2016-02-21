@@ -22,6 +22,7 @@ import java.util.Objects ;
 
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.shared.Lock ;
+import org.apache.jena.shared.LockMRPlusSW ;
 import org.apache.jena.shared.LockMRSW ;
 import org.apache.jena.shared.LockMutex ;
 import org.apache.jena.sparql.JenaTransactionException ;
@@ -56,14 +57,22 @@ public class TransactionalLock implements Transactional {
     private final ThreadLocal<ReadWrite> txnMode  = ThreadLocal.withInitial( ()->null ) ;
     private final Lock lock ;
 
+    /** Create a Transactional using the given lock */
     public static TransactionalLock create(Lock lock) {
         return new TransactionalLock(lock) ;
     }
 
+    /** Create a Transactional using a MR+SW (Multiple Reader AND a Single Writer) lock */
+    public static TransactionalLock createMRPlusSW() {
+        return create(new LockMRPlusSW()) ;
+    }
+
+    /** Create a Transactional using a MRSW (Multiple Reader OR a Single Writer) lock */
     public static TransactionalLock createMRSW() {
         return create(new LockMRSW()) ;
     }
     
+    /** Create a Transactional using a mutex (exclusive - one at a time) lock */
     public static TransactionalLock createMutex() {
         return create(new LockMutex()) ;
     }
