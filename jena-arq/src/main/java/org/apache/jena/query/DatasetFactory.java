@@ -19,6 +19,7 @@
 package org.apache.jena.query;
 
 import java.util.List;
+import java.util.Objects ;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.rdf.model.Model;
@@ -102,6 +103,7 @@ public class DatasetFactory {
 	 * @return a dataset with the given model as the default graph
 	 */
 	public static Dataset create(Model model) {
+	    Objects.requireNonNull(model, "Default model must be provided") ;
 		return new DatasetImpl(model);
 	}
 
@@ -112,6 +114,7 @@ public class DatasetFactory {
 	 */
 	@Deprecated
 	public static Dataset create(Dataset dataset) {
+	    Objects.requireNonNull(dataset, "Clone dataset is null") ;
 		return new DatasetImpl(dataset);
 	}
 
@@ -122,6 +125,7 @@ public class DatasetFactory {
 	 * @return Dataset
 	 */
 	public static Dataset wrap(DatasetGraph dataset) {
+	    Objects.requireNonNull(dataset, "Can't wrap a null reference") ;
 		return DatasetImpl.wrap(dataset);
 	}
 
@@ -134,7 +138,7 @@ public class DatasetFactory {
 	 */
 	@Deprecated
 	public static Dataset create(DatasetGraph dataset) {
-	    return DatasetImpl.wrap(dataset);
+	    return wrap(dataset);
 	}
 
     /**
@@ -240,6 +244,7 @@ public class DatasetFactory {
 	 * @return Dataset
 	 */
 	public static Dataset assemble(String filename) {
+	    Objects.requireNonNull(filename, "file name can not be null") ;
 		Model model = FileManager.get().loadModel(filename);
 		return assemble(model);
 	}
@@ -252,6 +257,8 @@ public class DatasetFactory {
 	 * @return Dataset
 	 */
 	public static Dataset assemble(String filename, String resourceURI) {
+        Objects.requireNonNull(filename, "file name can not be null") ;
+        Objects.requireNonNull(resourceURI, "resourceURI can not be null") ;
 		Model model = FileManager.get().loadModel(filename);
 		Resource r = model.createResource(resourceURI);
 		return assemble(r);
@@ -264,6 +271,7 @@ public class DatasetFactory {
 	 * @return Dataset
 	 */
 	public static Dataset assemble(Model model) {
+        Objects.requireNonNull(model, "model can not be null") ;
 		Resource r = GraphUtils.findRootByType(model, DatasetAssembler.getType());
 		if (r == null) throw new ARQException("No root found for type <" + DatasetAssembler.getType() + ">");
 
@@ -278,6 +286,7 @@ public class DatasetFactory {
 	 */
 
 	public static Dataset assemble(Resource resource) {
+        Objects.requireNonNull(resource, "resource can not be null") ;
 		Dataset ds = (Dataset) Assembler.general.open(resource);
 		return ds;
 	}
