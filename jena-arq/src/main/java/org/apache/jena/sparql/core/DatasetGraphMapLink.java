@@ -29,31 +29,50 @@ import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
 
 /** Implementation of a DatasetGraph as an extensible set of graphs.
- * Graphs are held by reference. Care is needed when manipulating their contents
- * especially if they are also in another {@code DatasetGraph}. 
+ *  <p>
+ *  Graphs are held by reference. Care is needed when manipulating their contents
+ *  especially if they are also in another {@code DatasetGraph}.
+ *  <p> 
+ *  See {@link DatasetGraphMap} for an implementation that copies graphs
+ *  and so providing better isolation.
+ *  <p>
+ *  This class is best used for creating views  
+ *  
+ *  @see DatasetGraphMap
  */
 public class DatasetGraphMapLink extends DatasetGraphCollection
 {
-    private final Transactional txn                     = TransactionalLock.createMRSW() ;
-    @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
-    @Override public void commit()                      { txn.commit() ; }
-    @Override public void abort()                       { txn.abort() ; }
-    @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
-    @Override public void end()                         { txn.end(); }
-    @Override public boolean supportsTransactions()     { return true ; }
-    @Override public boolean supportsTransactionAbort() { return false ; }
     
     private final GraphMaker graphMaker ;
     private final Map<Node, Graph> graphs = new HashMap<>() ;
 
     private Graph defaultGraph ;
 
+    /**
+     * Create a new {@code DatasetGraph} that copies the dataset structure of default
+     * graph and named graph and links to the graphs of the original {@code DatasetGraph}.
+     * Any new graphs needed are separate from the original dataset and created in-memory. 
+     */
+    public static DatasetGraph cloneStructure(DatasetGraph dsg) {
+        return new DatasetGraphMapLink(dsg);
+    }
+    
+    /**
+     * Create a new {@code DatasetGraph} that copies the dataset structure of default
+     * graph and named graph and links to the graphs of the original {@code DatasetGraph}
+     * Any new graphs needed are separate from the original dataset and created according
+     * to the {@link GraphMaker}.
+     */
+    public static DatasetGraph cloneStructure(DatasetGraph dsg, GraphMaker graphMaker) {
+        return new DatasetGraphMapLink(dsg, graphMaker);
+    }
+
     /** Create a new DatasetGraph that initially shares the graphs of the
      * given DatasetGraph.  Adding/removing graphs will only affect this
      * object, not the argument DatasetGraph but changes to shared
      * graphs are seen by both objects.
      */
-    DatasetGraphMapLink(DatasetGraph dsg, GraphMaker graphMaker) {
+    private DatasetGraphMapLink(DatasetGraph dsg, GraphMaker graphMaker) {
         this.graphMaker = graphMaker ; 
         this.defaultGraph = dsg.getDefaultGraph() ;
         for ( Iterator<Node> names = dsg.listGraphNodes() ; names.hasNext() ; ) {
@@ -66,7 +85,7 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
      *  A {@code DatasetGraph} with graphs for default and named graphs as given
      *  but new graphs are created in memory.
      */
-    DatasetGraphMapLink(DatasetGraph dsg) {
+    private DatasetGraphMapLink(DatasetGraph dsg) {
         this(dsg, DatasetGraphFactory.memGraphMaker) ;
     }
 
@@ -75,11 +94,16 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
         this.defaultGraph = dftGraph ;
     }
     
-    /** A {@code DatasetGraph} with in-memory graphs for default and named graphs as needed */ 
-    public DatasetGraphMapLink() {
-        this(DatasetGraphFactory.memGraphMaker) ; 
-    }
+//    /** A {@code DatasetGraph} with in-memory graphs for default and named graphs as needed */ 
+//    private DatasetGraphMapLink() {
+//        this(DatasetGraphFactory.memGraphMaker) ; 
+//    }
     
+    /**
+     * A {@code DatasetGraph} with graph from the gve {@link GraphMaker} for default and
+     * named graphs as needed. This is the constructor used for
+     * DatasetFactory.createGeneral.
+     */
     /*package*/ DatasetGraphMapLink(GraphMaker graphMaker) {
         this(graphMaker.create(), graphMaker) ;
     }
@@ -91,7 +115,18 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
         this.defaultGraph = dftGraph ;
         this.graphMaker = DatasetGraphFactory.graphMakerNull ;
     }
-    
+
+    // ----
+    private final Transactional txn                     = TransactionalLock.createMRSW() ;
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
+    @Override public void commit()                      { txn.commit() ; }
+    @Override public void abort()                       { txn.abort() ; }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+    @Override public void end()                         { txn.end(); }
+    @Override public boolean supportsTransactions()     { return true ; }
+    @Override public boolean supportsTransactionAbort() { return false ; }
+    // ----
+
     @Override
     public boolean containsGraph(Node graphNode) {
         return graphs.containsKey(graphNode);

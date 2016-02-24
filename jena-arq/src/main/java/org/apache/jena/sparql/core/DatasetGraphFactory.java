@@ -131,5 +131,6 @@ public class DatasetGraphFactory
     /** A graph maker that doesn't make graphs */
     public static GraphMaker graphMakerNull = () -> null ;
 
+    /** A graph maker that create Jena default graphs */ 
     public static GraphMaker memGraphMaker = () -> GraphFactory.createDefaultGraph() ;
 }

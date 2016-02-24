@@ -33,9 +33,14 @@ import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
 
-/** Implementation of a DatasetGraph as an extensible set of graphs.
+/** Implementation of a {@code DatasetGraph} as an extensible set of graphs.
  *  Subclasses need to manage any implicit graph creation.
- *  This implementation provides copy-in, copy-out for {@link #addGraph}  
+ *  <p>
+ *  This implementation provides copy-in, copy-out for {@link #addGraph}.
+ *  <p>See {@link DatasetGraphMapLink} for a {@code DatasetGraph}
+ *  that holds graphs as provided.
+ *  
+ *  @see DatasetGraphMapLink  
  */
 public class DatasetGraphMap extends DatasetGraphTriplesQuads
 {
@@ -43,10 +48,15 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     private final Map<Node, Graph> graphs = new HashMap<>() ;
     private Graph defaultGraph ;
     
+    /**  DatasetGraphMap defaulting to storage in memory.
+     */
     public DatasetGraphMap() {
         this(DatasetGraphFactory.memGraphMaker) ; 
     }
     
+    /**  DatasetGraphMap with a specific policy for graph creation.
+     *   This allows control over the storage. 
+     */
     public DatasetGraphMap(GraphMaker graphMaker) {
         this(graphMaker.create(), graphMaker) ;
     }
@@ -138,7 +148,8 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     }
 
     /** Called from getGraph when a nonexistent graph is asked for.
-     * Return null for "nothing created as a graph"
+     * Return null for "nothing created as a graph".
+     * Sub classes reimplement this or pr  
      */
     protected Graph getGraphCreate() { 
         Graph g = graphMaker.create() ;
