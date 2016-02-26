@@ -24,6 +24,7 @@ import org.apache.jena.sparql.core.Transactional ;
 
 /** Application utilities for transactions. */
 public class Txn {
+    // To be subsumed by the same code in Apache Jena
     
     /** Execute the Runnable in a read transaction.
      *  Nested transactions are not supported.
