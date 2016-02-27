@@ -75,7 +75,7 @@ public class TestTransformFilters extends AbstractTestTransform
     }
 
     @Test public void equality04() {
-        // Unused
+        // Eliminate unused
         testOp("(filter (= ?UNUSED <x>) (bgp ( ?s ?p ?x)) )",
                t_equality,
                "(table empty)") ;
