@@ -76,13 +76,12 @@ import org.apache.jena.sparql.expr.* ;
  * </p>
  */
 public class TransformFilterEquality extends TransformCopy {
-    // The approach taken for { OPTIONAL{} OPTIONAL{} } is more general ... and
-    // better?
-    // Still need to be careful of double-nested OPTIONALS as intermediates of a
-    // different
-    // value can block overall results so don't mask immediately.
-    public TransformFilterEquality() {
-    }
+    // The approach taken for { OPTIONAL{} OPTIONAL{} } is more general ...
+    // and better? Still need to be careful of double-nested OPTIONALS as
+    // intermediates of a different value can block overall results so
+    // don't mask immediately.
+    
+    public TransformFilterEquality() { }
 
     @Override
     public Op transform(OpFilter opFilter, Op subOp) {
@@ -115,14 +114,14 @@ public class TransformFilterEquality extends TransformCopy {
         // ---- Check if the subOp is the right shape to transform.
         Op op = subOp;
 
+        //*********************************
         // Special case : deduce that the filter will always "eval unbound"
         // hence eliminate all rows. Return the empty table.
         if (testSpecialCaseUnused(subOp, equalities, remaining))
             return OpTable.empty();
 
-        // Special case: the deep left op of a OpConditional/OpLeftJoin is unit
-        // table.
-        // This is
+        // Special case: the deep left op of a OpConditional/OpLeftJoin is the unit table.
+        // This is the case of:
         // { OPTIONAL{P1} OPTIONAL{P2} ... FILTER(?x = :x) }
         if (testSpecialCase1(subOp, equalities, remaining)) {
             // Find backbone of ops
