@@ -34,6 +34,7 @@ import org.junit.runners.Suite ;
 @Suite.SuiteClasses( {
     TestHttpOp.class
     , TestSPARQLProtocol.class
+    , TestHttpOperations.class
     , TestHttpOptions.class
     , TestDatasetGraphAccessorHTTP.class
     , TestDatasetAccessorHTTP.class
