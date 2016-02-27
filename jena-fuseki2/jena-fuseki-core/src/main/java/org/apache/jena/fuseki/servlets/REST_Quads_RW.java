@@ -101,6 +101,9 @@ public class REST_Quads_RW extends REST_Quads_R {
             // Parse error
             action.abort() ;
             ServletOps.errorBadRequest(ex.getMessage()) ;
+        } catch (ActionErrorException ex) {
+            action.abort() ;
+            throw ex ;
         } catch (Exception ex) {
             // Something else went wrong. Backout.
             action.abort() ;

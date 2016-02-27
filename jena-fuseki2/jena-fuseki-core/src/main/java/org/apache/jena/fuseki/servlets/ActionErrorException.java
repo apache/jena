@@ -20,15 +20,15 @@ package org.apache.jena.fuseki.servlets;
 
 public class ActionErrorException extends RuntimeException
 {
-    private static final long serialVersionUID = -5606469595255433671L;
-
-    public final Throwable exception ;
-    public final String message ;
-    public final int rc ;
+    private final int rc ;
+    
     public ActionErrorException(Throwable ex, String message, int rc)
     {
-        this.exception = ex ;
-        this.message = message ;
+        super(message, ex) ;
         this.rc = rc ;
+    }
+    
+    public int getRC() {
+        return rc;
     }
 }
