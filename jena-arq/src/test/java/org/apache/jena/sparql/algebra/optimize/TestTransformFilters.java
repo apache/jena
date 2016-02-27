@@ -299,7 +299,7 @@ public class TestTransformFilters extends AbstractTestTransform
                 ) ;
         //JENA-671
         // Note that "assign" is a filter as well
-        // so it filters the ?x fro the RHS of the conditional.
+        // so it filters the ?x from the RHS of the conditional.
         String ops2 = StrUtils.strjoinNL
             ("(sequence"
              ,"  (conditional"
