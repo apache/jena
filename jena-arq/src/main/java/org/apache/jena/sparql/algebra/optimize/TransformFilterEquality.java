@@ -114,7 +114,6 @@ public class TransformFilterEquality extends TransformCopy {
         // ---- Check if the subOp is the right shape to transform.
         Op op = subOp;
 
-        //*********************************
         // Special case : deduce that the filter will always "eval unbound"
         // hence eliminate all rows. Return the empty table.
         if (testSpecialCaseUnused(subOp, equalities, remaining))
