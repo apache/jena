@@ -30,6 +30,7 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.core.VarExprList;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.sparql.syntax.*;
@@ -267,8 +268,9 @@ public class WhereHandler implements Handler {
 		PrologHandler ph = new PrologHandler(query);
 		ph.addAll(subQuery.getPrologHandler());
 
-		for (Var v : subQuery.getVars()) {
-			q.addResultVar(v);
+		VarExprList vars = subQuery.getSelectHandler().getProject();
+		for (Var v : vars.getVars()) {
+			q.addResultVar(v, vars.getExpr(v));
 			q.setQuerySelectType();
 		}
 
@@ -284,7 +286,6 @@ public class WhereHandler implements Handler {
 		WhereHandler wh = new WhereHandler(q);
 		wh.addAll(subQuery.getWhereHandler());
 		return new ElementSubQuery(q);
-
 	}
 
 	/**

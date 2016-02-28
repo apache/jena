@@ -190,9 +190,20 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		SelectBuilder sb = new SelectBuilder();
 		sb.addPrefix("pfx", "uri").addVar("?x").addWhere("<one>", "<two>", "three");
 		handler.addSubQuery(sb);
-		assertContainsRegex("SELECT" + SPACE + var("x") + SPACE + WHERE + OPEN_CURLY + uri("one") + ".+" + uri("two")
-				+ ".+" + quote("three") + ".+" + CLOSE_CURLY, query.toString());
+		assertContainsRegex(SELECT + var("x") + SPACE + WHERE + OPEN_CURLY + uri("one") + SPACE + uri("two")
+				+ SPACE + quote("three") + CLOSE_CURLY, query.toString());
 	}
+
+	@Test
+	public void testAddSubQueryWithVarExpressions() throws ParseException {
+		SelectBuilder sb = new SelectBuilder();
+		sb.addPrefix("pfx", "uri").addVar("count(*)", "?x").addWhere("<one>", "<two>", "three");
+		handler.addSubQuery(sb);
+		assertContainsRegex( SELECT + OPEN_PAREN+"count"+OPEN_PAREN+"\\*"+CLOSE_PAREN+SPACE+"AS" +SPACE+var("x")+CLOSE_PAREN+ SPACE + WHERE + OPEN_CURLY + uri("one") + 
+				SPACE + uri("two")
+				+ SPACE + quote("three") + CLOSE_CURLY, query.toString());
+	}
+
 
 	@Test
 	public void testAddSubQueryWithoutVars() {
@@ -200,7 +211,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		sb.addPrefix("pfx", "uri").addWhere("<one>", "<two>", "three");
 		handler.addSubQuery(sb);
 		assertContainsRegex(
-				WHERE + OPEN_CURLY + uri("one") + ".+" + uri("two") + ".+" + quote("three") + ".+" + CLOSE_CURLY,
+				WHERE + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + quote("three") + CLOSE_CURLY,
 				query.toString());
 	}
 

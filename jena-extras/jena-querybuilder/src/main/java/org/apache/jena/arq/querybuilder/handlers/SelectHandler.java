@@ -153,6 +153,15 @@ public class SelectHandler implements Handler {
 	public List<Var> getVars() {
 		return query.getProjectVars();
 	}
+	
+	/**
+	 * Return the projected var expression list.
+	 * @return The proejct var expression list.
+	 */
+	public VarExprList getProject()
+	{
+		return query.getProject();
+	}
 
 	/**
 	 * Add all the variables from the select handler variable.
