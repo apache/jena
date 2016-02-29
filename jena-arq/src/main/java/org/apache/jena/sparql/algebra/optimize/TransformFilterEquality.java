@@ -112,7 +112,6 @@ public class TransformFilterEquality extends TransformCopy {
             return null;
 
         // ---- Check if the subOp is the right shape to transform.
-        Op op = subOp;
 
         // Special case : deduce that the filter will always "eval unbound"
         // hence eliminate all rows. Return the empty table.
@@ -127,7 +126,7 @@ public class TransformFilterEquality extends TransformCopy {
             List<Op> ops = extractOptionals(subOp);
             ops = processSpecialCase1(ops, equalities);
             // Put back together
-            op = rebuild((Op2) subOp, ops);
+            Op op = rebuild((Op2) subOp, ops);
             // Put all filters - either we optimized, or we left alone.
             // Either way, the complete set of filter expressions.
             op = OpFilter.filter(exprs, op);
@@ -135,6 +134,7 @@ public class TransformFilterEquality extends TransformCopy {
         }
 
         // ---- Transform
+        Op op = subOp;
 
         if (!safeToTransform(varsMentioned, op))
             return null;
