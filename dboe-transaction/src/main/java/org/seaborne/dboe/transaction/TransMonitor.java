@@ -19,13 +19,15 @@ package org.seaborne.dboe.transaction;
 
 import java.io.PrintStream ;
 import java.nio.ByteBuffer ;
-import java.util.ArrayList ;
-import java.util.List ;
-import java.util.concurrent.atomic.AtomicLong ;
+import java.util.LinkedHashMap ;
+import java.util.Map ;
+import java.util.concurrent.atomic.LongAdder ;
 import java.util.stream.Collectors ;
 
-import org.apache.jena.atlas.lib.Pair ;
-import org.seaborne.dboe.transaction.txn.* ;
+import org.seaborne.dboe.transaction.txn.ComponentId ;
+import org.seaborne.dboe.transaction.txn.SysTransState ;
+import org.seaborne.dboe.transaction.txn.Transaction ;
+import org.seaborne.dboe.transaction.txn.TransactionalComponent ;
 
 /** This class is stateless in the transaction but it records counts of
  * every {@link TransactionalComponent} operations.
@@ -33,13 +35,15 @@ import org.seaborne.dboe.transaction.txn.* ;
  */
 public class TransMonitor implements TransactionalComponent {
     
+    // LongAdder for stats (better from mostly write, not consistent read)
+    
     /** Counters, in initialization order */
-    private List<Pair<String, AtomicLong>> counters = new ArrayList<>() ;
+    private Map<String, LongAdder> counters = new LinkedHashMap<>() ;
     private final ComponentId componentId ;
     
-    private AtomicLong allocCounter(String string) {
-        AtomicLong counter = new AtomicLong(0) ;
-        counters.add(Pair.create(string, counter)) ;
+    private LongAdder allocCounter(String string) {
+        LongAdder counter = new LongAdder() ;
+        counters.put(string, counter) ;
         return counter ;
     }
     public TransMonitor(ComponentId cid) { 
@@ -48,15 +52,19 @@ public class TransMonitor implements TransactionalComponent {
     
     /** Reset all counters to zero */
     public void reset() {
-        counters.forEach( p -> p.getRight().set(0)) ; 
+        counters.forEach( (s,c) -> c.reset()) ; 
     }
 
     /** Get a copy of the counters with current values.
      * The values are as of the point of this being called and are not changed
      * by any later calls to monitored operations.  
      */
-    public List<Pair<String, Long>> getAll() {
-        return counters.stream().map( p -> Pair.create(p.getLeft(), p.getRight().longValue())).collect(Collectors.toList()) ;
+    public Map<String, Long> getAll() {
+        return counters.entrySet().stream()
+            .collect(Collectors.toMap(
+                                      e -> e.getKey(),
+                                      e -> e.getValue().sum()
+                ));
     }
     
     /** Print the counters state. */
@@ -67,117 +75,117 @@ public class TransMonitor implements TransactionalComponent {
     /** Print the counters state. */
     public void print(PrintStream ps) {
         ps.println("Transaction Counters:") ;
-        counters.forEach( p -> {
-            ps.printf("   %-15s %4d\n", p.getLeft(), p.getRight().longValue()) ;
+        counters.forEach( (s,c) -> {
+            ps.printf("   %-15s %4d\n", s, c.longValue()) ;
         }) ;
     }
 
-    public AtomicLong counterGetComponentId = allocCounter("getComponentId") ;
+    public LongAdder counterGetComponentId = allocCounter("getComponentId") ;
 
     @Override
     public ComponentId getComponentId() {
-        counterGetComponentId.incrementAndGet() ;
+        counterGetComponentId.increment() ;
         return componentId ;
     }
 
-    public AtomicLong counterStartRecovery = allocCounter("startRecovery") ;
+    public LongAdder counterStartRecovery = allocCounter("startRecovery") ;
 
     @Override
     public void startRecovery() {
-        counterStartRecovery.incrementAndGet() ;
+        counterStartRecovery.increment() ;
     }
 
-    public AtomicLong counterRecover = allocCounter("recover") ;
+    public LongAdder counterRecover = allocCounter("recover") ;
 
     @Override
     public void recover(ByteBuffer ref) {
-        counterRecover.incrementAndGet() ;
+        counterRecover.increment() ;
     }
 
-    public AtomicLong counterFinishRecovery = allocCounter("finishRecovery") ;
+    public LongAdder counterFinishRecovery = allocCounter("finishRecovery") ;
 
     @Override
     public void finishRecovery() {
-        counterFinishRecovery.incrementAndGet() ;
+        counterFinishRecovery.increment() ;
     }
     
-    public AtomicLong counterCleanStart = allocCounter("finishRecovery") ;
+    public LongAdder counterCleanStart = allocCounter("finishRecovery") ;
     
     @Override
     public void cleanStart() {
-        counterCleanStart.incrementAndGet() ;
+        counterCleanStart.increment() ;
     }
     
-    public AtomicLong counterBegin = allocCounter("begin") ;
+    public LongAdder counterBegin = allocCounter("begin") ;
 
     @Override
     public void begin(Transaction transaction) {
-        counterBegin.incrementAndGet() ;
+        counterBegin.increment() ;
     }
     
-    public AtomicLong counterPromote = allocCounter("promote") ;
+    public LongAdder counterPromote = allocCounter("promote") ;
     
     @Override
     public boolean promote(Transaction transaction) {
-        counterPromote.incrementAndGet() ;
+        counterPromote.increment() ;
         return true ;
     }
 
-    public AtomicLong counterCommitPrepare = allocCounter("commitPrepare") ;
+    public LongAdder counterCommitPrepare = allocCounter("commitPrepare") ;
 
     @Override
     public ByteBuffer commitPrepare(Transaction transaction) {
-        counterCommitPrepare.incrementAndGet() ;
+        counterCommitPrepare.increment() ;
         return null ;
     }
 
-    public AtomicLong counterCommit = allocCounter("commit") ;
+    public LongAdder counterCommit = allocCounter("commit") ;
 
     @Override
     public void commit(Transaction transaction) {
-        counterCommit.incrementAndGet() ;
+        counterCommit.increment() ;
     }
 
-    public AtomicLong counterCommitEnd = allocCounter("commitEnd") ;
+    public LongAdder counterCommitEnd = allocCounter("commitEnd") ;
 
     @Override
     public void commitEnd(Transaction transaction) {
-        counterCommitEnd.incrementAndGet() ;
+        counterCommitEnd.increment() ;
     }
 
-    public AtomicLong counterAbort = allocCounter("abort") ;
+    public LongAdder counterAbort = allocCounter("abort") ;
 
     @Override
     public void abort(Transaction transaction) {
-        counterAbort.incrementAndGet() ;
+        counterAbort.increment() ;
     }
 
-    public AtomicLong counterComplete = allocCounter("complete") ;
+    public LongAdder counterComplete = allocCounter("complete") ;
 
     @Override
     public void complete(Transaction transaction) {
-        counterComplete.incrementAndGet() ;
+        counterComplete.increment() ;
     }
 
-    public AtomicLong counterDetach = allocCounter("detach") ;
+    public LongAdder counterDetach = allocCounter("detach") ;
     
     @Override
     public SysTransState detach() {
-        counterDetach.incrementAndGet() ;
+        counterDetach.increment() ;
         return null ;
     }
 
-    public AtomicLong counterAttach = allocCounter("attach") ;
+    public LongAdder counterAttach = allocCounter("attach") ;
 
     @Override
     public void attach(SysTransState systemState) {
-        counterAttach.incrementAndGet() ;
+        counterAttach.increment() ;
     }
     
-    public AtomicLong counterShutdown = allocCounter("shutdown") ;
+    public LongAdder counterShutdown = allocCounter("shutdown") ;
 
     @Override
     public void shutdown() {
-        counterShutdown.incrementAndGet() ;
+        counterShutdown.increment() ;
     }
 }
