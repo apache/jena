@@ -69,19 +69,19 @@
     </dependency>
     
     <!--
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-tdb</artifactId>
-      <version>${ver.jena}</version>
-    </dependency>
+        <dependency>
+          <groupId>org.apache.jena</groupId>
+          <artifactId>jena-tdb</artifactId>
+          <version>${ver.jena}</version>
+        </dependency>
 
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-tdb</artifactId>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-      <version>${ver.jena}</version>
-    </dependency>
+       <dependency>
+         <groupId>org.apache.jena</groupId>
+         <artifactId>jena-tdb</artifactId>
+         <classifier>tests</classifier>
+         <scope>test</scope>
+         <version>${ver.jena}</version>
+       </dependency>
     -->
     
   </dependencies>
@@ -93,12 +93,12 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
-	    <include>**/engine/TC_*.java</include>
+            <include>**/engine/TC_*.java</include>
           </includes>
-	  <excludes>
-	    <!-- We need to use TC_ to initialize first --> 
-	    <exclude>**/TS_*.java</exclude>
-	  </excludes>
+          <excludes>
+            <!-- We need to use TC_ to initialize first --> 
+            <exclude>**/TS_*.java</exclude>
+          </excludes>
         </configuration>
       </plugin>
 
