@@ -45,7 +45,7 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
     
     private final FileState stateMgr ;
 
-    // The current committed position and he limit as seen by readers.
+    // The current committed position and the limit as seen by readers.
     // This is also the abort point.
     private final AtomicLong committedLength ;
     
