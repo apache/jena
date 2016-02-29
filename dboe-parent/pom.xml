@@ -71,6 +71,35 @@ information regarding copyright ownership.
         <artifactId>jena-cmds</artifactId>
         <version>${ver.jena}</version>
       </dependency>
+
+      <!-- Logging -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${ver.slf4j}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${ver.slf4j}</version>
+      </dependency>
+
+      <!-- And intercept any uses of Jakarta Commons Logging 
+           e.g. Apache Common HTTP client. 
+      -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${ver.slf4j}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${ver.log4j}</version>
+      </dependency>
+
       <!--
           <dependency>
             <groupId>org.apache.jena</groupId>
@@ -103,6 +132,19 @@ information regarding copyright ownership.
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
