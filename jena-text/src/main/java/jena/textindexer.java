@@ -134,6 +134,8 @@ public class textindexer extends CmdARQ {
         }
         
         textIndex.commit();
+        textIndex.close();
+        dataset.close();
         progressMonitor.close() ;
     }
 
