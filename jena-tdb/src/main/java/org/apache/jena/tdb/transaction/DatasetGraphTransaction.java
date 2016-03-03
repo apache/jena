@@ -193,25 +193,27 @@ import org.apache.jena.tdb.store.DatasetGraphTDB ;
     protected void _close() {
         if ( isClosed )
             return ;
-        isClosed = true ;
-
-        if ( !sConn.haveUsedInTransaction() && get() != null ) {
-            // Non-transactional behaviour.
-            DatasetGraphTDB dsg = get() ;
-            dsg.sync() ;
-            dsg.close() ;
-            StoreConnection.release(dsg.getLocation()) ;
-            isClosed = true ;
-            return ;
+        
+        if ( !sConn.haveUsedInTransaction() ) {
+            synchronized(this) {
+                if ( isClosed ) return ;
+                isClosed = true ;
+                // Non-transactional behaviour.
+                DatasetGraphTDB dsg = sConn.getBaseDataset() ;
+                dsg.sync() ;
+                dsg.close() ;
+                StoreConnection.release(dsg.getLocation()) ;
+                return ;
+            }
         }
 
         if ( isInTransaction() ) {
-            TDB.logInfo.warn("Attempt to close a DatasetGraphTransaction while a transaction is active - ignored close (" + getLocation()
-                             + ")") ;
+            TDB.logInfo.warn("Attempt to close a DatasetGraphTransaction while a transaction is active - ignored close (" + getLocation() + ")") ;
             return ;
         }
         txn.remove() ;
         inTransaction.remove() ;
+        isClosed = true ;
     }
 
     @Override
