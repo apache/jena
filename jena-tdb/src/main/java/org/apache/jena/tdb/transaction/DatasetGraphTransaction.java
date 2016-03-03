@@ -193,6 +193,7 @@ import org.apache.jena.tdb.store.DatasetGraphTDB ;
     protected void _close() {
         if ( isClosed )
             return ;
+        isClosed = true ;
 
         if ( !sConn.haveUsedInTransaction() && get() != null ) {
             // Non-transactional behaviour.
@@ -209,7 +210,6 @@ import org.apache.jena.tdb.store.DatasetGraphTDB ;
                              + ")") ;
             return ;
         }
-        isClosed = true ;
         txn.remove() ;
         inTransaction.remove() ;
     }
