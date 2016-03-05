@@ -18,20 +18,29 @@
 
 package org.apache.jena.arq.querybuilder;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.arq.AbstractRegexpBasedTest;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.lang.sparql_11.ParseException;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.Before;
 import org.junit.Test;
 
 public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
 	private SelectBuilder builder;
-	
-    @Before
+
+	@Before
 	public void setup() {
 		builder = new SelectBuilder();
 	}
@@ -40,23 +49,18 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 	public void testSelectAsterisk() {
 		builder.addVar("*").addWhere("?s", "?p", "?o");
 
-		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY
-				+ var("s") + SPACE + var("p") + SPACE + var("o") + OPT_SPACE
-				+ CLOSE_CURLY, builder.buildString());
+		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY + var("s") + SPACE + var("p") + SPACE + var("o")
+				+ OPT_SPACE + CLOSE_CURLY, builder.buildString());
 
 		builder.setVar(Var.alloc("p"), RDF.type);
 
-		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY
-				+ var("s") + SPACE
-				+ regexRDFtype
-				+ SPACE + var("o") + OPT_SPACE + CLOSE_CURLY,
-				builder.buildString());
+		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY + var("s") + SPACE + regexRDFtype + SPACE
+				+ var("o") + OPT_SPACE + CLOSE_CURLY, builder.buildString());
 	}
 
 	@Test
 	public void testAll() {
-		builder.addVar("s").addPrefix("foaf", "http://xmlns.com/foaf/0.1/")
-				.addWhere("?s", RDF.type, "foaf:Person")
+		builder.addVar("s").addPrefix("foaf", "http://xmlns.com/foaf/0.1/").addWhere("?s", RDF.type, "foaf:Person")
 				.addOptional("?s", "foaf:name", "?name").addOrderBy("?s");
 
 		String query = builder.buildString();
@@ -67,60 +71,49 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 		 * <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> foaf:Person .
 		 * OPTIONAL { ?s foaf:name ?name .} } ORDER BY ?s
 		 */
-		assertContainsRegex(PREFIX + "foaf:" + SPACE
-				+ uri("http://xmlns.com/foaf/0.1/"), query);
+		assertContainsRegex(PREFIX + "foaf:" + SPACE + uri("http://xmlns.com/foaf/0.1/"), query);
 		assertContainsRegex(SELECT + var("s"), query);
-		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE
-				+ regexRDFtype
-				+ SPACE + "foaf:Person" + SPACE + OPTIONAL
-				+ OPEN_CURLY + var("s") + SPACE + "foaf:name" + SPACE
-				+ var("name") + OPT_SPACE + CLOSE_CURLY
+		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE + regexRDFtype + SPACE + "foaf:Person" + SPACE
+				+ OPTIONAL + OPEN_CURLY + var("s") + SPACE + "foaf:name" + SPACE + var("name") + OPT_SPACE + CLOSE_CURLY
 				+ CLOSE_CURLY, query);
 		assertContainsRegex(ORDER_BY + var("s"), query);
 
 		builder.setVar("name", "Smith");
 
 		query = builder.buildString();
-		assertContainsRegex(PREFIX + "foaf:" + SPACE
-				+ uri("http://xmlns.com/foaf/0.1/"), query);
+		assertContainsRegex(PREFIX + "foaf:" + SPACE + uri("http://xmlns.com/foaf/0.1/"), query);
 		assertContainsRegex(SELECT + var("s"), query);
-		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE
-                + regexRDFtype
-				+ SPACE + "foaf:Person" + SPACE + OPTIONAL
-				+ OPEN_CURLY + var("s") + SPACE + "foaf:name" + SPACE
-				+ quote("Smith") + presentStringType()
+		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE + regexRDFtype + SPACE + "foaf:Person" + SPACE
+				+ OPTIONAL + OPEN_CURLY + var("s") + SPACE + "foaf:name" + SPACE + quote("Smith") + presentStringType()
 				+ OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY, query);
 		assertContainsRegex(ORDER_BY + var("s"), query);
 	}
 
 	@Test
 	public void testPredicateVar() {
-		builder.addVar("*").addPrefix("", "http://example/")
-				.addWhere(":S", "?p", ":O");
+		builder.addVar("*").addPrefix("", "http://example/").addWhere(":S", "?p", ":O");
 		String query = builder.buildString();
 
-		assertContainsRegex(WHERE + OPEN_CURLY + ":S" + SPACE + var("p")
-				+ SPACE + ":O" + OPT_SPACE + CLOSE_CURLY, query);
+		assertContainsRegex(WHERE + OPEN_CURLY + ":S" + SPACE + var("p") + SPACE + ":O" + OPT_SPACE + CLOSE_CURLY,
+				query);
 	}
 
 	@Test
 	public void testSubjectVar() {
-		builder.addVar("*").addPrefix("", "http://example/")
-				.addWhere("?s", ":P", ":O");
+		builder.addVar("*").addPrefix("", "http://example/").addWhere("?s", ":P", ":O");
 		String query = builder.buildString();
 
-		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE + ":P"
-				+ SPACE + ":O" + OPT_SPACE + CLOSE_CURLY, query);
+		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE + ":P" + SPACE + ":O" + OPT_SPACE + CLOSE_CURLY,
+				query);
 	}
 
 	@Test
 	public void testObjectVar() {
-		builder.addVar("*").addPrefix("", "http://example/")
-				.addWhere(":S", ":P", "?o");
+		builder.addVar("*").addPrefix("", "http://example/").addWhere(":S", ":P", "?o");
 		String query = builder.buildString();
 
-		assertContainsRegex(WHERE + OPEN_CURLY + ":S" + SPACE + ":P" + SPACE
-				+ var("o") + OPT_SPACE +  CLOSE_CURLY, query);
+		assertContainsRegex(WHERE + OPEN_CURLY + ":S" + SPACE + ":P" + SPACE + var("o") + OPT_SPACE + CLOSE_CURLY,
+				query);
 	}
 
 	@Test
@@ -130,37 +123,74 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
 		assertContainsRegex(SELECT + "\\*" + SPACE, query);
 	}
-	
+
 	@Test
 	public void testList() {
-		builder.addVar( "*" )
-		 .addWhere( builder.list( "<one>", "?two", "'three'"), "<foo>", "<bar>");
+		builder.addVar("*").addWhere(builder.list("<one>", "?two", "'three'"), "<foo>", "<bar>");
 		String query = builder.buildString();
-		
-		assertContainsRegex(
-				"_:b0"+SPACE+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE	+ uri("one") + SEMI 
-				+ SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE+"_:b1"+ DOT
-				+ SPACE + "_:b1"+SPACE+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE + var("two") + SEMI
-				+ SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE+"_:b2"+ DOT
-				+ SPACE + "_:b2"+SPACE+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE + quote("three") + SEMI
-				+ SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE +uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil") 
-				, query);
-		
-		assertContainsRegex(
-				 "_:b0"+SPACE+ uri("foo") + SPACE	+ uri("bar"), query);
+
+		assertContainsRegex("_:b0" + SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE
+				+ uri("one") + SEMI + SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE + "_:b1"
+				+ DOT + SPACE + "_:b1" + SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE
+				+ var("two") + SEMI + SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE + "_:b2"
+				+ DOT + SPACE + "_:b2" + SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE
+				+ quote("three") + SEMI + SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE
+				+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"), query);
+
+		assertContainsRegex("_:b0" + SPACE + uri("foo") + SPACE + uri("bar"), query);
 	}
-	
+
 	@Test
 	public void testClone() {
-		builder.addVar( "*" )
-		 .addWhere( "?two", "<foo>", "<bar>");
+		builder.addVar("*").addWhere("?two", "<foo>", "<bar>");
 		SelectBuilder builder2 = builder.clone();
-		builder2.addOrderBy( "?two");
-		
+		builder2.addOrderBy("?two");
+
 		String q1 = builder.buildString();
 		String q2 = builder2.buildString();
-		
-		assertTrue( q2.contains("ORDER BY"));
-		assertFalse( q1.contains("ORDER BY"));
+
+		assertTrue(q2.contains("ORDER BY"));
+		assertFalse(q1.contains("ORDER BY"));
+	}
+
+	@Test
+	public void testAggregatorsInSelect() throws ParseException {
+		builder.addVar("?x").addVar("count(*)", "?c").addWhere("?x", "?p", "?o").addGroupBy("?x");
+
+		Model m = ModelFactory.createDefaultModel();
+		Resource r = m.createResource("urn:one");
+		m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(1));
+		m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(3));
+		m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(5));
+		r = m.createResource("urn:two");
+		m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(1));
+		m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(3));
+		m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(5));
+
+		QueryExecution qexec = QueryExecutionFactory.create(builder.build(), m);
+
+		ResultSet results = qexec.execSelect();
+		for (; results.hasNext();) {
+			QuerySolution soln = results.nextSolution();
+			assertTrue(soln.contains("c"));
+			assertTrue(soln.contains("x"));
+			assertEquals(3, soln.get("c").asLiteral().getInt());
+		}
+
+		builder.addVar("min(?o)", "?min").addVar("max(?o)", "?max");
+
+		qexec = QueryExecutionFactory.create(builder.build(), m);
+
+		results = qexec.execSelect();
+		for (; results.hasNext();) {
+			QuerySolution soln = results.nextSolution();
+			assertTrue(soln.contains("c"));
+			assertTrue(soln.contains("x"));
+			assertTrue(soln.contains("?min"));
+			assertEquals(3, soln.get("c").asLiteral().getInt());
+			assertEquals(1, soln.get("min").asLiteral().getInt());
+			assertEquals(5, soln.get("max").asLiteral().getInt());
+		}
+
 	}
 }
