@@ -18,12 +18,10 @@
 
 package org.apache.jena.riot.system;
 
-
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.iri.IRI ;
-import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.sparql.core.Quad ;
 
@@ -55,20 +53,22 @@ public interface ParserProfile
     /** Create a fresh blank node */ 
     public Node createBlankNode(Node scope, long line, long col) ;
     
-    /** Make a node from a token - called after all else has been tried - return null for no such node */
+    /** Make a node from a token - called after all else has been tried to handle special cases 
+     *  Return null for "no special node recoginzed"
+     */
     public Node createNodeFromToken(Node scope, Token token, long line, long col) ;
     
     /** Make any node from a token as appropriate */
     public Node create(Node currentGraph, Token token) ;
-    
-    public LabelToNode getLabelToNode() ;
-    public void setLabelToNode(LabelToNode labelToNode) ;
-    
+
     public ErrorHandler getHandler() ;
     public void setHandler(ErrorHandler handler) ;
     
     public Prologue getPrologue() ;
     public void setPrologue(Prologue prologue) ;
+    
+    public FactoryRDF getFactoryRDF() ;
+    public void setFactoryRDF(FactoryRDF factory) ;
     
     public boolean isStrictMode() ;
     public void setStrictMode(boolean mode) ;

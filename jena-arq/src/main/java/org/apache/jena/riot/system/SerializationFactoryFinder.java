@@ -81,9 +81,11 @@ public class SerializationFactoryFinder
             @Override
             public Iterator<Triple> createDeserializer(InputStream in)
             {
-                Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
-                ParserProfileBase profile = new ParserProfileBase(new Prologue(null, IRIResolver.createNoResolve()), null, LabelToNode.createUseLabelEncoded()) ;
-                LangNTriples parser = new LangNTriples(tokenizer, profile, null) ;
+                Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in);
+                ParserProfileBase profile = new ParserProfileBase(new Prologue(null, IRIResolver.createNoResolve()), 
+                                                                  ErrorHandlerFactory.errorHandlerNoWarnings,
+                                                                  RiotLib.factoryRDF(LabelToNode.createUseLabelEncoded()));
+                LangNTriples parser = new LangNTriples(tokenizer, profile, null);
                 return parser ;
             }
             
@@ -110,7 +112,9 @@ public class SerializationFactoryFinder
             public Iterator<Quad> createDeserializer(InputStream in)
             {
                 Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
-                ParserProfileBase profile = new ParserProfileBase(new Prologue(null, IRIResolver.createNoResolve()), null, LabelToNode.createUseLabelEncoded()) ;
+                ParserProfileBase profile = new ParserProfileBase(new Prologue(null, IRIResolver.createNoResolve()), 
+                                                                  ErrorHandlerFactory.errorHandlerNoWarnings,
+                                                                  RiotLib.factoryRDF(LabelToNode.createUseLabelEncoded())) ;
                 LangNQuads parser = new LangNQuads(tokenizer, profile, null) ;
                 return parser ;
             }

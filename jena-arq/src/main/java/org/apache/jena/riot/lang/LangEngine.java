@@ -20,9 +20,9 @@ package org.apache.jena.riot.lang;
 
 import static org.apache.jena.riot.tokens.TokenType.EOF ;
 import static org.apache.jena.riot.tokens.TokenType.NODE ;
+
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.iterator.PeekIterator ;
-import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.RiotParseException ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ParserProfile ;
@@ -117,11 +117,11 @@ public class LangEngine
         }
     }
 
-    protected final Node scopedBNode(Node scopeNode, String label)
-    {
-        return profile.getLabelToNode().get(scopeNode, label) ;
-    }
-    
+//    protected final Node scopedBNode(Node scopeNode, String label)
+//    {
+//        return profile.getLabelToNode().get(scopeNode, label) ;
+//    }
+//    
     protected final void expectOrEOF(String msg, TokenType tokenType)
     {
         // DOT or EOF
