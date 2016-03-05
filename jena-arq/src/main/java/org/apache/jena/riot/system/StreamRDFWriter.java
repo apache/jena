@@ -254,7 +254,7 @@ public class StreamRDFWriter {
         }
         
         @Override public void triple(Triple triple) 
-        { sink.triple(triple) ; }
+        { other.triple(triple) ; }
     }
     
     /** Writer registry */

@@ -27,35 +27,31 @@ import org.apache.jena.sparql.core.Quad ;
  */
 public class StreamRDFWrapper implements StreamRDF
 {
-    protected final StreamRDF sink ;
+    protected final StreamRDF other ;
 
-    /**
-     * Create a new wrapper
-     * @param sink Stream to wrap
-     */
-    public StreamRDFWrapper(StreamRDF sink) { this.sink = sink ; }
+    public StreamRDFWrapper(StreamRDF other) { this.other = other ; }
     
     @Override
     public void start()
-    { sink.start() ; }
+    { other.start() ; }
 
     @Override
     public void triple(Triple triple)
-    { sink.triple(triple) ; }
+    { other.triple(triple) ; }
 
     @Override
     public void quad(Quad quad)
-    { sink.quad(quad) ; }
+    { other.quad(quad) ; }
 
     @Override
     public void base(String base)
-    { sink.base(base) ; }
+    { other.base(base) ; }
 
     @Override
     public void prefix(String prefix, String iri)
-    { sink.prefix(prefix, iri) ; }
+    { other.prefix(prefix, iri) ; }
 
     @Override
     public void finish()
-    { sink.finish() ; }
+    { other.finish() ; }
 }
