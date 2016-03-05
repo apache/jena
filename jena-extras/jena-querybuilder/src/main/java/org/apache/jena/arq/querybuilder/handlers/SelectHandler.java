@@ -20,6 +20,7 @@ package org.apache.jena.arq.querybuilder.handlers;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
@@ -27,6 +28,7 @@ import org.apache.jena.query.QueryParseException;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarExprList;
 import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprAggregator;
 import org.apache.jena.sparql.lang.arq.ARQParser;
 import org.apache.jena.sparql.lang.arq.ParseException;
 import org.apache.jena.sparql.lang.arq.TokenMgrError;
@@ -39,6 +41,8 @@ public class SelectHandler implements Handler {
 
 	// the query to handle
 	private final Query query;
+
+	private final Map<Var, ExprAggregator> aggregators = new HashMap<Var, ExprAggregator>();
 
 	/**
 	 * Constructor.
@@ -113,9 +117,12 @@ public class SelectHandler implements Handler {
 	 * Parse an expression string into an expression.
 	 * 
 	 * This must be able to be parsed as though it were written "SELECT "+s
-	 * @param s the select string to parse.
+	 * 
+	 * @param s
+	 *            the select string to parse.
 	 * @return the epxression
-	 * @throws QueryParseException on error
+	 * @throws QueryParseException
+	 *             on error
 	 */
 	private Expr parseExpr(String s) throws QueryParseException {
 		try {
@@ -155,6 +162,9 @@ public class SelectHandler implements Handler {
 		}
 		query.setQueryResultStar(false);
 		query.addResultVar(var, expr);
+		if (expr instanceof ExprAggregator) {
+			aggregators.put(var, (ExprAggregator) expr);
+		}
 	}
 
 	/**
@@ -194,6 +204,9 @@ public class SelectHandler implements Handler {
 				qProjectVars.add(var, shProjectVars.getExpr(var));
 			}
 		}
+		for (Var v : selectHandler.aggregators.keySet()) {
+			aggregators.put(v, selectHandler.aggregators.get(v));
+		}
 	}
 
 	@Override
@@ -205,6 +218,16 @@ public class SelectHandler implements Handler {
 	public void build() {
 		if (query.getProject().getVars().isEmpty()) {
 			query.setQueryResultStar(true);
+		}
+
+		VarExprList vel = query.getProject();
+		Map<Var, Expr> exprMap = vel.getExprs();
+
+		for (Map.Entry<Var, ExprAggregator> entry : aggregators.entrySet()) {
+			Expr expr = query.allocAggregate(entry.getValue().getAggregator());
+			if (exprMap.containsKey(entry.getKey())) {
+				exprMap.put(entry.getKey(), expr);
+			}
 		}
 		// handle the SELECT * case
 		query.getProjectVars();
