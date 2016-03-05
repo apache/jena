@@ -26,7 +26,7 @@ import java.util.List ;
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.DateTimeUtils ;
-import org.apache.jena.atlas.logging.ProgressLogger ;
+import org.apache.jena.atlas.lib.ProgressMonitor ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.RDFDataMgr ;
@@ -59,7 +59,7 @@ public class ProcNodeTableBuilder {
         dsg.getTripleTable().getNodeTupleTable().getTupleTable().close();
         dsg.getQuadTable().getNodeTupleTable().getTupleTable().close();
         
-        ProgressLogger monitor = new ProgressLogger(cmdLog, "Data", BulkLoader.DataTickPoint, BulkLoader.superTick) ;
+        ProgressMonitor monitor = ProgressMonitor.create(cmdLog, "Data", BulkLoader.DataTickPoint, BulkLoader.superTick) ;
         OutputStream outputTriples = null ;
         OutputStream outputQuads = null ;
         
@@ -103,10 +103,10 @@ public class ProcNodeTableBuilder {
         private NodeTable nodeTable ;
         private WriteRows writerTriples ;
         private WriteRows writerQuads ;
-        private ProgressLogger monitor ;
+        private ProgressMonitor monitor ;
         private StatsCollectorNodeId stats ;
 
-        NodeTableBuilder(DatasetGraphTDB dsg, ProgressLogger monitor, OutputStream outputTriples, OutputStream outputQuads, boolean collectStats)
+        NodeTableBuilder(DatasetGraphTDB dsg, ProgressMonitor monitor, OutputStream outputTriples, OutputStream outputQuads, boolean collectStats)
         {
             this.dsg = dsg ;
             this.monitor = monitor ;

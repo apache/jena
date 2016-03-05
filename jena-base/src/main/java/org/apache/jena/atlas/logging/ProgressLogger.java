@@ -22,7 +22,7 @@ import org.apache.jena.atlas.lib.ProgressMonitor ;
 import org.slf4j.Logger ;
 
 /** 
- * @deprecated Use ProgressMonitor.
+ * @deprecated Use {@link ProgressMonitor#create}. This class will be removed.
  */
 @Deprecated
 public class ProgressLogger extends ProgressMonitor

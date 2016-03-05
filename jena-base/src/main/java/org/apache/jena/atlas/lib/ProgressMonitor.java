@@ -21,6 +21,7 @@ package org.apache.jena.atlas.lib;
 import static org.apache.jena.atlas.lib.DateTimeUtils.nowAsString ;
 
 import org.apache.jena.atlas.lib.Timer;
+import org.slf4j.Logger ;
 
 /** Progress monitor - output lines to show the progress of some long running operation.
  * This is based on "ticks", not time.
@@ -43,6 +44,17 @@ public class ProgressMonitor {
 
     private long  lastTime     = 0;
 
+    /** ProgressMonitor that outputs to a {@link Logger} */ 
+    public static ProgressMonitor create(Logger log, String label, long tickPoint, int superTick) {
+        Output outputToLog = (fmt, args)-> {
+            if ( log != null && log.isInfoEnabled() ) {
+                String str = String.format(fmt, args);
+                log.info(str);
+            }
+        } ;
+        return new ProgressMonitor(label, tickPoint, superTick, outputToLog) ;
+    }
+    
     /**
      * @param label      
      *      Label added to output strings. 
