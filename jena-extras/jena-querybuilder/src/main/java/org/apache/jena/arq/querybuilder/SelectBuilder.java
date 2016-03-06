@@ -26,7 +26,6 @@ import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
 import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
-import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
 import org.apache.jena.arq.querybuilder.handlers.SelectHandler;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
@@ -46,8 +45,8 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder>
 		implements DatasetClause<SelectBuilder>, WhereClause<SelectBuilder>,
 		SolutionModifierClause<SelectBuilder>, SelectClause<SelectBuilder> {
 
-	// the handlers.
 	private final HandlerBlock handlerBlock;
+	
 	/**
 	 * Constructor.
 	 */

@@ -164,8 +164,11 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		values = new HashMap<Var, Node>();
 	}
 	
+	/**
+	 * Get the HandlerBlock for this query builder.
+	 * @return The associated handler block.
+	 */
 	public abstract HandlerBlock getHandlerBlock();
-	
 	
 	@Override
 	public final PrologHandler getPrologHandler() {
@@ -274,6 +277,8 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 */
 	public final Query build() {
 		Query q = new Query();
+		
+		// set the query type
 		switch (query.getQueryType())
 		{
 		case Query.QueryTypeAsk:
@@ -292,8 +297,11 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 			throw new IllegalStateException( "Internal query is not a known type: "+q.getQueryType());			
 		}
 		
+		// use the HandlerBlock implementation to copy the data.
 		HandlerBlock handlerBlock = new HandlerBlock(q);
 		handlerBlock.addAll( getHandlerBlock() );
+		
+		// set the vars
 		handlerBlock.setVars(values);
 		
 		//  make sure we have a query pattern before we start building.
@@ -320,6 +328,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	public static Query clone(Query q2) {
 		Query retval = new Query();
 		
+		// set the query type
 	    if (q2.isSelectType())
 	    {
 	    	retval.setQuerySelectType();
@@ -333,6 +342,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	    	retval.setQueryConstructType();
 	    }
 	    
+	    // use the handler block to clone the data
 	    HandlerBlock hb = new HandlerBlock( retval );
 	    HandlerBlock hb2 = new HandlerBlock( q2 );
 	    hb.addAll(hb2);
