@@ -24,12 +24,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.jena.hadoop.rdf.io.RdfIOConstants;
 import org.apache.jena.riot.lang.LabelToNode;
-import org.apache.jena.riot.system.ErrorHandlerFactory;
-import org.apache.jena.riot.system.IRIResolver;
-import org.apache.jena.riot.system.ParserProfile;
-import org.apache.jena.riot.system.ParserProfileBase;
-import org.apache.jena.riot.system.PrefixMapFactory;
-import org.apache.jena.riot.system.Prologue;
+import org.apache.jena.riot.system.* ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +56,7 @@ public class RdfIOUtils {
         Prologue prologue = new Prologue(PrefixMapFactory.createForInput(), IRIResolver.createNoResolve());
         UUID seed = RdfIOUtils.getSeed(context, path);
         LabelToNode labelMapping = LabelToNode.createScopeByDocumentHash(seed);
-        return new ParserProfileBase(prologue, ErrorHandlerFactory.errorHandlerStd, labelMapping);
+        return new ParserProfileBase(prologue, ErrorHandlerFactory.errorHandlerStd, RiotLib.factoryRDF(labelMapping));
     }
 
     /**
