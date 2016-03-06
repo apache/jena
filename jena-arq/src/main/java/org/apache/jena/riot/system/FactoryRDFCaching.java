@@ -18,47 +18,60 @@
 
 package org.apache.jena.riot.system;
 
-import org.apache.jena.atlas.lib.Cache ;
-import org.apache.jena.atlas.lib.CacheFactory ;
-import org.apache.jena.atlas.lib.cache.CacheGuava ;
+import java.util.concurrent.ExecutionException ;
+
+import org.apache.jena.ext.com.google.common.cache.Cache ;
 import org.apache.jena.atlas.lib.cache.CacheInfo ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.ext.com.google.common.cache.CacheBuilder ;
+import org.apache.jena.ext.com.google.common.cache.CacheStats ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.sparql.graph.NodeConst ;
 
 /** Adds some caching of created nodes - the caching is tuned to RIOT parser usage */ 
 public class FactoryRDFCaching extends FactoryRDFStd {
+    public static final int DftNodeCacheSize = 5000 ; 
 
-    // Double caching
-    public final int NodeCacheSize = 10000 ; 
-    public final int PredicateCacheSize = 1000 ;
-    
+    // Control the setup - for one thread; start size = 50% of full size, no stats
+    private final Cache<String, Node> cache ;
+
     public FactoryRDFCaching() {
-        super() ;
+        this(DftNodeCacheSize) ;
     }
     
-    public FactoryRDFCaching(LabelToNode labelMapping) {
-        super(labelMapping) ; 
+    public FactoryRDFCaching(int cacheSize) {
+        super() ;
+        cache = setCache(cacheSize) ;
     }
 
-    // Better by S,P,O?
-    // Better by Node->Node in triple?
-    
-    // By role?
-    // By policy key?
-    
-    Cache<String, Node> cache = CacheFactory.createCache(NodeCacheSize) ;
-    
+    private Cache<String, Node> setCache(int cacheSize) {
+        return CacheBuilder.newBuilder()
+            .maximumSize(cacheSize)
+            .initialCapacity(cacheSize/2)
+            //.recordStats()
+            .concurrencyLevel(1)
+            .build() ;
+    }
+
+    public FactoryRDFCaching(int cacheSize, LabelToNode labelMapping) {
+        super(labelMapping) ;
+        cache = setCache(cacheSize) ;
+    }
+
     @Override
     public Node createURI(String uriStr) {
-        Node n = cache.getOrFill(uriStr, ()->RiotLib.createIRIorBNode(uriStr)) ;
-        return n ;
+        try {
+            return cache.get(uriStr, ()->RiotLib.createIRIorBNode(uriStr)) ;
+        }
+        catch (ExecutionException e) {
+            throw new RiotException("Execution exception filling cache <"+uriStr+">", e) ;
+        }
     }
 
-    // Constants
+    // A few constants
     
     @Override
     public Node createTypedLiteral(String lexical, RDFDatatype datatype) {
@@ -77,55 +90,21 @@ public class FactoryRDFCaching extends FactoryRDFStd {
             }
             // fallthrough.
         }
-        return NodeFactory.createLiteral(lexical, datatype) ;
+        return super.createTypedLiteral(lexical, datatype) ;
     }
 
     @Override
     public Node createStringLiteral(String lexical) {
         if ( lexical.isEmpty() )
             return NodeConst.emptyString ;
-        return NodeFactory.createLiteral(lexical) ;
+        return super.createStringLiteral(lexical) ;
     }
-    
-//    // A predicate cache.  No significant addional effect.
-//    Cache<Node, Node> cachePredicate = CacheFactory.createCache(PredicateCacheSize) ;
-//    
-//    @Override
-//    public Triple createTriple(Node subject, Node predicate, Node object) {
-//        Node p = cachePredicate.getOrFill(predicate, ()->predicate) ; 
-//        return super.createTriple(subject, p, object) ;
-//    }
-//
-//    // A graph name cache.
-//    Cache<Node, Node> cacheGraphName = CacheFactory.createCache(100) ;
-//
-//    @Override
-//    public Quad createQuad(Node graph, Node subject, Node predicate, Node object) {
-//        Node g = 
-//            graph != null ? cacheGraphName.getOrFill(graph, ()->graph) : null ;
-//        Node p = cachePredicate.getOrFill(predicate, ()->predicate) ;
-//        return super.createQuad(g, subject, p, object) ;
-//    }
-    
+
     public CacheInfo stats() {
-        return new CacheInfo(NodeCacheSize, ((CacheGuava<?, ?>)cache).stats()) ;
+        CacheStats stats = cache.stats() ;
+        if ( stats.missCount() == 0 && stats.hitCount() == 0 )
+            // Stats not enabled - all counts zero.
+            return null ;
+        return new CacheInfo(DftNodeCacheSize, stats) ;
     }
-    
-//    public void details() {
-//        details("Node cache", (CacheGuava<?, ?>)cache, NodeCacheSize) ;
-////        details("Predicate Cache", (CacheGuava<?, ?>)cachePredicate, PredicateCacheSize) ;
-//    }
-//        
-//    private void details(String label, CacheGuava<?, ?> cache, int cacheSize) {
-//        System.out.printf("%s [%,d]\n", label, cacheSize) ;
-//        CacheStats stats = ((CacheGuava<?, ?>)cache).stats() ;
-////        System.out.printf("  Cache usage:      %,d\n", cache.size()) ;
-//        System.out.printf("  Requests:         %,d\n", stats.requestCount()) ;
-//        System.out.printf("  Hit rate:         %.1f%%\n", 100*stats.hitRate()) ; 
-////        System.out.printf("  Hits:             %,d\n", stats.hitCount()) ;
-////        System.out.printf("  Misses:           %,d\n", stats.missCount()) ;
-////        if ( stats.loadSuccessCount() != stats.missCount() ) {
-////            System.out.printf("  Load success:     %,d\n", stats.loadSuccessCount()) ;
-////            System.out.printf("  Load ex:          %,d\n", stats.loadExceptionCount()) ;
-////        }
 }

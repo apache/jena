@@ -27,7 +27,7 @@ import org.junit.Test ;
 public class TestFactoryRDFCaching extends TestFactoryRDF {
  
     public TestFactoryRDFCaching() {
-        super.factory = new FactoryRDFCaching(LabelToNode.createUseLabelAsGiven()) ;
+        super.factory = new FactoryRDFCaching(100, LabelToNode.createUseLabelAsGiven()) ;
     }
     
     @Test public void factory_cache_01() {
