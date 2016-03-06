@@ -19,11 +19,15 @@
 package org.apache.jena.arq.querybuilder;
 
 import static org.junit.Assert.*;
+
+import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
+import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
 import org.apache.jena.graph.FrontsNode ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.graph.impl.LiteralLabelFactory ;
+import org.apache.jena.query.Query;
 import org.apache.jena.reasoner.rulesys.Node_RuleVariable ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.ExprVar ;
@@ -41,9 +45,22 @@ public class AbstractQueryBuilderTest {
 	}
 
 	private class TestBuilder extends AbstractQueryBuilder<TestBuilder> {
+		private HandlerBlock handlerBlock;
+		
+		public TestBuilder()
+		{
+			super();
+			handlerBlock = new HandlerBlock( query );
+			
+		}
 		@Override
 		public String toString() {
 			return "TestBuilder";
+		}
+
+		@Override
+		public HandlerBlock getHandlerBlock() {
+			return handlerBlock;
 		}
 	}
 

@@ -23,6 +23,8 @@ import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
 import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
 import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
+import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
+import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsTriple ;
@@ -38,12 +40,8 @@ import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 public class AskBuilder extends AbstractQueryBuilder<AskBuilder> implements
 		DatasetClause<AskBuilder>, WhereClause<AskBuilder>,
 		SolutionModifierClause<AskBuilder> {
-	// the dataset handler
-	private final DatasetHandler datasetHandler;
-	// the where handler.
-	private final WhereHandler whereHandler;
-	// the solution modifier handler.
-	private final SolutionModifierHandler solutionModifier;
+	
+	private final HandlerBlock handlerBlock;
 
 	/**
 	 * The constructor
@@ -51,63 +49,65 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder> implements
 	public AskBuilder() {
 		super();
 		query.setQueryAskType();
-		datasetHandler = new DatasetHandler(query);
-		whereHandler = new WhereHandler(query);
-		solutionModifier = new SolutionModifierHandler(query);
+		handlerBlock = new HandlerBlock( query );
 	}
-
+	
+	@Override
+	public HandlerBlock getHandlerBlock()
+	{
+		return handlerBlock;
+	}
+	
 	@Override
 	public DatasetHandler getDatasetHandler() {
-		return datasetHandler;
+		return handlerBlock.getDatasetHandler();
 	}
 
 	@Override
 	public WhereHandler getWhereHandler() {
-		return whereHandler;
+		return handlerBlock.getWhereHandler();
 	}
 
 	@Override
 	public AskBuilder clone() {
 		AskBuilder qb = new AskBuilder();
-		qb.prologHandler.addAll(prologHandler);
-		qb.datasetHandler.addAll(datasetHandler);
-		qb.solutionModifier.addAll(solutionModifier);
+		qb.handlerBlock.addAll( handlerBlock );
 		return qb;
 	}
 
 	@Override
 	public AskBuilder fromNamed(String graphName) {
-		datasetHandler.fromNamed(graphName);
+		getDatasetHandler().fromNamed(graphName);
 		return this;
 	}
 
 	@Override
 	public AskBuilder fromNamed(Collection<String> graphNames) {
-		datasetHandler.fromNamed(graphNames);
+		getDatasetHandler().fromNamed(graphNames);
 		return this;
 	}
 
 	@Override
 	public AskBuilder from(String graphName) {
-		datasetHandler.from(graphName);
+		getDatasetHandler().from(graphName);
 		return this;
 	}
 
 	@Override
 	public AskBuilder from(Collection<String> graphName) {
-		datasetHandler.from(graphName);
+		getDatasetHandler().from(graphName);
 		return this;
 	}
 
 	@Override
 	public AskBuilder addWhere(Triple t) {
-		whereHandler.addWhere(t);
+		getWhereHandler().addWhere(t);
 		return this;
 	}
 
 	@Override
 	public AskBuilder addWhere(FrontsTriple t) {
-		whereHandler.addWhere(t.asTriple());
+		getWhereHandler().addWhere(t.asTriple());
 		return this;
 	}
 
@@ -119,20 +119,20 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder> implements
 
 	@Override
 	public AskBuilder addOptional(Triple t) {
-		whereHandler.addOptional(t);
+		getWhereHandler().addOptional(t);
 		return this;
 	}
 	
 	@Override
 	public AskBuilder addOptional(SelectBuilder t)
 	{
-		whereHandler.addOptional(t.getWhereHandler());
+		getWhereHandler().addOptional(t.getWhereHandler());
 		return this;
 	}
 
 	@Override
 	public AskBuilder addOptional(FrontsTriple t) {
-		whereHandler.addOptional(t.asTriple());
+		getWhereHandler().addOptional(t.asTriple());
 		return this;
 	}
 
@@ -144,78 +144,77 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder> implements
 
 	@Override
 	public AskBuilder addFilter(String s) throws ParseException {
-		whereHandler.addFilter(s);
+		getWhereHandler().addFilter(s);
 		return this;
 	}
 
 	@Override
 	public AskBuilder addSubQuery(SelectBuilder subQuery) {
-		prologHandler.addAll(subQuery.getPrologHandler());
-		whereHandler.addSubQuery(subQuery);
+		getWhereHandler().addSubQuery(subQuery);
 		return this;
 	}
 
 	@Override
 	public AskBuilder addUnion(SelectBuilder subQuery) {
-		whereHandler.addUnion(subQuery);
+		getWhereHandler().addUnion(subQuery);
 		return this;
 	}
 
 	@Override
 	public AskBuilder addGraph(Object graph, SelectBuilder subQuery) {
-		prologHandler.addAll(subQuery.getPrologHandler());
-		whereHandler.addGraph(makeNode(graph), subQuery.getWhereHandler());
+		getPrologHandler().addAll(subQuery.getPrologHandler());
+		getWhereHandler().addGraph(makeNode(graph), subQuery.getWhereHandler());
 		return this;
 	}
 	
 	@Override
 	public AskBuilder addBind(Expr expression, Object var) {
-		whereHandler.addBind( expression, makeVar(var) );
+		getWhereHandler().addBind( expression, makeVar(var) );
 		return this;
 	}
 
 	@Override
 	public AskBuilder addBind(String expression, Object var) throws ParseException {
-		whereHandler.addBind( expression, makeVar(var) );
+		getWhereHandler().addBind( expression, makeVar(var) );
 		return this;
 	}
 	@Override
 	public AskBuilder addOrderBy(String orderBy) {
-		solutionModifier.addOrderBy(orderBy);
+		getSolutionModifierHandler().addOrderBy(orderBy);
 		return this;
 	}
 
 	@Override
 	public AskBuilder addGroupBy(String groupBy) {
-		solutionModifier.addGroupBy(groupBy);
+		getSolutionModifierHandler().addGroupBy(groupBy);
 		return this;
 	}
 
 	@Override
 	public AskBuilder addHaving(String having) throws ParseException {
-		solutionModifier.addHaving(having);
+		getSolutionModifierHandler().addHaving(having);
 		return this;
 	}
 
 	@Override
 	public AskBuilder setLimit(int limit) {
-		solutionModifier.setLimit(limit);
+		getSolutionModifierHandler().setLimit(limit);
 		return this;
 	}
 
 	@Override
 	public AskBuilder setOffset(int offset) {
-		solutionModifier.setOffset(offset);
+		getSolutionModifierHandler().setOffset(offset);
 		return this;
 	}
 
 	@Override
 	public SolutionModifierHandler getSolutionModifierHandler() {
-		return solutionModifier;
+		return handlerBlock.getModifierHandler();
 	}
 
 	@Override
 	public Node list(Object... objs) {
-		return whereHandler.list(objs);
+		return getWhereHandler().list(objs);
 	}
 }

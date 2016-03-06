@@ -144,7 +144,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	}
 
 	@ContractTest
-	public void addSubQuery() {
+	public void testAddSubQuery() {
 		SelectBuilder sb = new SelectBuilder();
 		sb.addPrefix("pfx", "urn:uri").addVar("?x")
 				.addWhere("pfx:one", "pfx:two", "pfx:three");

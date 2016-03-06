@@ -27,9 +27,11 @@ import org.apache.jena.arq.querybuilder.clauses.PrologClause;
 import org.apache.jena.arq.querybuilder.clauses.SelectClause;
 import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
 import org.apache.jena.arq.querybuilder.clauses.WhereClause;
+import org.apache.jena.arq.querybuilder.handlers.AggregationHandler;
 import org.apache.jena.arq.querybuilder.handlers.ConstructHandler;
 import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
 import org.apache.jena.arq.querybuilder.handlers.Handler;
+import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
 import org.apache.jena.arq.querybuilder.handlers.SelectHandler;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
@@ -58,8 +60,6 @@ import org.apache.jena.sparql.util.NodeFactoryExtra ;
 public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		implements Cloneable, PrologClause<T> {
 
-	// all queries have prologs
-	protected PrologHandler prologHandler;
 	// the query this builder is building
 	protected Query query;
 	// a map of vars to nodes for replacement during build.
@@ -175,9 +175,16 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 */
 	protected AbstractQueryBuilder() {
 		query = new Query();
-		prologHandler = new PrologHandler(query);
 		values = new HashMap<Var, Node>();
 	}
+	
+	public abstract HandlerBlock getHandlerBlock();
+	
+	
+	public final PrologHandler getPrologHandler() {
+		return getHandlerBlock().getPrologHandler();
+	}
+
 
 	/**
 	 * Set a variable replacement. During build all instances of var in the
@@ -221,11 +228,6 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	}
 
 	@Override
-	public PrologHandler getPrologHandler() {
-		return prologHandler;
-	}
-
-	@Override
 	public T addPrefix(String pfx, Resource uri) {
 		return addPrefix(pfx, uri.getURI());
 	}
@@ -238,21 +240,21 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	@SuppressWarnings("unchecked")
 	@Override
 	public T addPrefix(String pfx, String uri) {
-		prologHandler.addPrefix(pfx, uri);
+		getPrologHandler().addPrefix(pfx, uri);
 		return (T) this;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public T addPrefixes(Map<String, String> prefixes) {
-		prologHandler.addPrefixes(prefixes);
+		getPrologHandler().addPrefixes(prefixes);
 		return (T) this;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public T setBase(String base) {
-		prologHandler.setBase(base);
+		getPrologHandler().setBase(base);
 		return (T) this;
 	}
 
@@ -303,51 +305,17 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 			throw new IllegalStateException( "Internal query is not a known type: "+q.getQueryType());			
 		}
 		
-		Stack<Handler> handlerStack = new Stack<Handler>();
-		PrologHandler ph = new PrologHandler(q);
-		handlerStack.push(ph);
-		ph.addAll(prologHandler);
-		ph.setVars(values);
-		if (this instanceof SelectClause) {
-			SelectHandler sh = new SelectHandler(q);
-			sh.addAll(((SelectClause<?>) this).getSelectHandler());
-			sh.setVars(values);
-			handlerStack.push(sh);
-		}
-		if (this instanceof ConstructClause) {
-			ConstructHandler ch = new ConstructHandler(q);
-			ch.addAll(((ConstructClause<?>) this).getConstructHandler());
-			ch.setVars(values);
-			handlerStack.push(ch);
-		}
-		if (this instanceof DatasetClause) {
-			DatasetHandler dh = new DatasetHandler(q);
-			dh.addAll(((DatasetClause<?>) this).getDatasetHandler());
-			dh.setVars(values);
-			handlerStack.push(dh);
-		}
-		if (this instanceof SolutionModifierClause) {
-			SolutionModifierHandler smh = new SolutionModifierHandler(q);
-			smh.addAll(((SolutionModifierClause<?>) this)
-					.getSolutionModifierHandler());
-			smh.setVars(values);
-			handlerStack.push(smh);
-		}
-		if (this instanceof WhereClause) {
-			WhereHandler wh = new WhereHandler(q);
-			wh.addAll(((WhereClause<?>) this).getWhereHandler());
-			wh.setVars(values);
-			handlerStack.push(wh);
-		}
-
+		HandlerBlock handlerBlock = new HandlerBlock(q);
+		handlerBlock.addAll( getHandlerBlock() );
+		handlerBlock.setVars(values);
+		
 		//  make sure we have a query pattern before we start building.
 		if (q.getQueryPattern() == null)
 		{
 			q.setQueryPattern( new ElementGroup() );
 		}
-		while (!handlerStack.isEmpty()) {
-			handlerStack.pop().build();
-		}
+		
+		handlerBlock.build();
 
 		return q;
 	}
@@ -378,13 +346,10 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	    	retval.setQueryConstructType();
 	    }
 	    
-		new PrologHandler(retval).addAll(new PrologHandler(q2));
-		new ConstructHandler(retval).addAll(new ConstructHandler(q2));
-		new DatasetHandler(retval).addAll(new DatasetHandler(q2));
-		new SolutionModifierHandler(retval).addAll(new SolutionModifierHandler(
-				q2));
-		new WhereHandler(retval).addAll(new WhereHandler(q2));
-		new SelectHandler(retval).addAll(new SelectHandler(q2));
+	    HandlerBlock hb = new HandlerBlock( retval );
+	    HandlerBlock hb2 = new HandlerBlock( q2 );
+	    hb.addAll(hb2);
+		
 		return retval;
 	}
 
@@ -398,12 +363,8 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 * @return The new query with the specified vars replaced.
 	 */
 	public static Query rewrite(Query q2, Map<Var, Node> values) {
-		new PrologHandler(q2).setVars(values);
-		new ConstructHandler(q2).setVars(values);
-		new DatasetHandler(q2).setVars(values);
-		new SolutionModifierHandler(q2).setVars(values);
-		new WhereHandler(q2).setVars(values);
-		new SelectHandler(q2).setVars(values);
+		HandlerBlock hb = new HandlerBlock(q2);
+		hb.setVars(values);
 		return q2;
 	}
 }

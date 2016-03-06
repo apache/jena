@@ -38,7 +38,8 @@ public class SelectHandlerTest extends AbstractHandlerTest {
 	@Before
 	public void setup() {
 		query = new Query();
-		handler = new SelectHandler(query);
+		AggregationHandler aggHandler = new AggregationHandler(query);
+		handler = new SelectHandler(aggHandler);
 	}
 
 	@Test
@@ -166,7 +167,8 @@ public class SelectHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddAllResultStartReduced() {
-		SelectHandler sh = new SelectHandler(new Query());
+		AggregationHandler aggHandler = new AggregationHandler(new Query());
+		SelectHandler sh = new SelectHandler(aggHandler);
 		sh.addVar(null);
 		sh.setReduced(true);
 
@@ -177,7 +179,8 @@ public class SelectHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddAllVarsDistinct() {
-		SelectHandler sh = new SelectHandler(new Query());
+		AggregationHandler aggHandler = new AggregationHandler(new Query());
+		SelectHandler sh = new SelectHandler(aggHandler);
 		sh.addVar(Var.alloc("foo"));
 		sh.setDistinct(true);
 

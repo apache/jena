@@ -20,15 +20,22 @@ package org.apache.jena.arq.querybuilder.handlers;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.clauses.ConstructClause;
+import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
+import org.apache.jena.arq.querybuilder.clauses.SelectClause;
+import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
+import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarExprList;
 import org.apache.jena.sparql.expr.Expr;
@@ -263,28 +270,29 @@ public class WhereHandler implements Handler {
 	 *            The sub query to convert
 	 * @return THe converted element.
 	 */
-	private ElementSubQuery makeSubQuery(SelectBuilder subQuery) {
+	private ElementSubQuery makeSubQuery(AbstractQueryBuilder<?> subQuery) {
 		Query q = new Query();
+		SelectHandler sh = subQuery.getHandlerBlock().getSelectHandler();
+		if (sh != null)
+		{
+			if (! sh.getProject().isEmpty()) {
+				q.setQuerySelectType();
+			}
+		}
 		PrologHandler ph = new PrologHandler(query);
-		ph.addAll(subQuery.getPrologHandler());
+		ph.addPrefixes( subQuery.getPrologHandler().getPrefixes() );
+		HandlerBlock handlerBlock = new HandlerBlock(q);
+		handlerBlock.addAll( subQuery.getHandlerBlock() );
+		// remove the prefix mappings from the sub query.
+		handlerBlock.getPrologHandler().clearPrefixes();
 
-		VarExprList vars = subQuery.getSelectHandler().getProject();
-		for (Var v : vars.getVars()) {
-			q.addResultVar(v, vars.getExpr(v));
-			q.setQuerySelectType();
+		
+		//  make sure we have a query pattern before we start building.
+		if (q.getQueryPattern() == null)
+		{
+			q.setQueryPattern( new ElementGroup() );
 		}
-
-		if (subQuery instanceof ConstructClause) {
-			ConstructHandler ch = new ConstructHandler(q);
-			ch.addAll(((ConstructClause<?>) subQuery).getConstructHandler());
-
-		}
-		DatasetHandler dh = new DatasetHandler(q);
-		dh.addAll(subQuery.getDatasetHandler());
-		SolutionModifierHandler smh = new SolutionModifierHandler(q);
-		smh.addAll(subQuery.getSolutionModifierHandler());
-		WhereHandler wh = new WhereHandler(q);
-		wh.addAll(subQuery.getWhereHandler());
+		handlerBlock.build();
 		return new ElementSubQuery(q);
 	}
 
@@ -320,7 +328,7 @@ public class WhereHandler implements Handler {
 			union.addElement(makeSubQuery(subQuery));
 		} else {
 			PrologHandler ph = new PrologHandler(query);
-			ph.addAll(subQuery.getPrologHandler());
+			ph.addPrefixes(subQuery.getPrologHandler().getPrefixes());
 			union.addElement(subQuery.getWhereHandler().getClause());
 		}
 

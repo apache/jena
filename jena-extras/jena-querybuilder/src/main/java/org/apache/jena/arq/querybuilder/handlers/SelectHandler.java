@@ -41,8 +41,7 @@ public class SelectHandler implements Handler {
 
 	// the query to handle
 	private final Query query;
-
-	private final Map<Var, ExprAggregator> aggregators = new HashMap<Var, ExprAggregator>();
+	private final AggregationHandler aggHandler;
 
 	/**
 	 * Constructor.
@@ -50,8 +49,9 @@ public class SelectHandler implements Handler {
 	 * @param query
 	 *            The query to manage.
 	 */
-	public SelectHandler(Query query) {
-		this.query = query;
+	public SelectHandler(AggregationHandler aggHandler) {
+		this.query = aggHandler.getQuery();
+		this.aggHandler = aggHandler;
 		setDistinct(query.isDistinct());
 		setReduced(query.isReduced());
 	}
@@ -162,9 +162,7 @@ public class SelectHandler implements Handler {
 		}
 		query.setQueryResultStar(false);
 		query.addResultVar(var, expr);
-		if (expr instanceof ExprAggregator) {
-			aggregators.put(var, (ExprAggregator) expr);
-		}
+		aggHandler.add( expr, var );
 	}
 
 	/**
@@ -204,9 +202,7 @@ public class SelectHandler implements Handler {
 				qProjectVars.add(var, shProjectVars.getExpr(var));
 			}
 		}
-		for (Var v : selectHandler.aggregators.keySet()) {
-			aggregators.put(v, selectHandler.aggregators.get(v));
-		}
+		aggHandler.addAll( selectHandler.aggHandler );
 	}
 
 	@Override
@@ -219,14 +215,13 @@ public class SelectHandler implements Handler {
 		if (query.getProject().getVars().isEmpty()) {
 			query.setQueryResultStar(true);
 		}
-
+		
 		VarExprList vel = query.getProject();
 		Map<Var, Expr> exprMap = vel.getExprs();
 
-		for (Map.Entry<Var, ExprAggregator> entry : aggregators.entrySet()) {
-			Expr expr = query.allocAggregate(entry.getValue().getAggregator());
+		for (Map.Entry<Var, ExprAggregator> entry : aggHandler.getVarMap().entrySet()) {
 			if (exprMap.containsKey(entry.getKey())) {
-				exprMap.put(entry.getKey(), expr);
+				exprMap.put(entry.getKey(), entry.getValue());
 			}
 		}
 		// handle the SELECT * case
