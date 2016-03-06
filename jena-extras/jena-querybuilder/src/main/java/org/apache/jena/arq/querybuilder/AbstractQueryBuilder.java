@@ -19,23 +19,9 @@ package org.apache.jena.arq.querybuilder;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
-
-import org.apache.jena.arq.querybuilder.clauses.ConstructClause;
-import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
 import org.apache.jena.arq.querybuilder.clauses.PrologClause;
-import org.apache.jena.arq.querybuilder.clauses.SelectClause;
-import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
-import org.apache.jena.arq.querybuilder.clauses.WhereClause;
-import org.apache.jena.arq.querybuilder.handlers.AggregationHandler;
-import org.apache.jena.arq.querybuilder.handlers.ConstructHandler;
-import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
-import org.apache.jena.arq.querybuilder.handlers.Handler;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
-import org.apache.jena.arq.querybuilder.handlers.SelectHandler;
-import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
-import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsNode ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -181,6 +167,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	public abstract HandlerBlock getHandlerBlock();
 	
 	
+	@Override
 	public final PrologHandler getPrologHandler() {
 		return getHandlerBlock().getPrologHandler();
 	}
