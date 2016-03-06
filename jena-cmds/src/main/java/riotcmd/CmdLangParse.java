@@ -276,8 +276,11 @@ public abstract class CmdLangParse extends CmdGeneral
             } else
                 reader.setParserProfile(RiotLib.profile(baseURI, false, false, errHandler)) ;
 
-            if ( labelsAsGiven )
-                reader.getParserProfile().setLabelToNode(LabelToNode.createUseLabelAsGiven()) ;
+            if ( labelsAsGiven ) {
+                FactoryRDF f = RiotLib.factoryRDF(LabelToNode.createUseLabelAsGiven()) ;
+                reader.getParserProfile().setFactoryRDF(f);
+            }
+
             modTime.startTimer() ;
             sink.start() ;
             reader.read(in, baseURI, ct, sink, null) ;

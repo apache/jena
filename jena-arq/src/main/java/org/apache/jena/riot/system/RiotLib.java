@@ -38,10 +38,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.SysRIOT ;
-import org.apache.jena.riot.WriterDatasetRIOT ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -82,7 +79,7 @@ public class RiotLib
         return skolomizedBNodes && iri.startsWith(bNodeLabelStart) ;
     }
     
-    private static ParserProfile profile = profile(RDFLanguages.TURTLE, null, null) ;
+    private static ParserProfile profile = profile(RDFLanguages.TURTLE, null, ErrorHandlerFactory.errorHandlerStd) ;
     static {
         PrefixMap pmap = profile.getPrologue().getPrefixMap() ;
         pmap.add("rdf",  ARQConstants.rdfPrefix) ;
@@ -147,9 +144,23 @@ public class RiotLib
             prologue = new Prologue(PrefixMapFactory.createForInput(), IRIResolver.createNoResolve()) ;
     
         if ( checking )
-            return new ParserProfileChecker(prologue, handler, labelToNode) ;
+            return new ParserProfileChecker(prologue, handler, factoryRDF(labelToNode)) ;
         else
-            return new ParserProfileBase(prologue, handler, labelToNode) ;
+            return new ParserProfileBase(prologue, handler, factoryRDF(labelToNode)) ;
+    }
+
+    /** Create a new (notinfluenced by anything else) FactoryRDF
+     * using the label to blank node scheme provided. 
+     */
+    public static FactoryRDF factoryRDF(LabelToNode labelMapping) {
+        return new FactoryRDFStd(labelMapping);
+    }
+
+    /** Create a new (not influenced by anything else) FactoryRDF
+     * using the label to blank node scheme scope by this FactoryRDF. 
+     */  
+    public static FactoryRDF factoryRDF() {
+        return factoryRDF(SyntaxLabels.createLabelToNode());
     }
 
     /** Get triples with the same subject */
