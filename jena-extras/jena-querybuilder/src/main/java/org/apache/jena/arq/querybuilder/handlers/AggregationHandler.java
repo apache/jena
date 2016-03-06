@@ -17,27 +17,40 @@ package org.apache.jena.arq.querybuilder.handlers;
  * limitations under the License.
  */
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.core.VarExprList;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprAggregator;
-import org.apache.jena.sparql.expr.aggregate.Aggregator;
 
+/**
+ * Class to handle manipulation the aggregation variables in the query.
+ *
+ */
 public class AggregationHandler implements Handler {
+	// the query
 	private final Query query;
+	
+	// a map of variables to aggregators
 	private final Map<Var,ExprAggregator> aggMap;
 
+	/**
+	 * Constructor.
+	 * @param query the query to handle.
+	 */
 	public AggregationHandler( Query query )
 	{
 		this.query = query;
 		aggMap = new HashMap<Var,ExprAggregator>();
 	}
 	
+	/**
+	 * Add all the aggregations from the other handler.
+	 * @param handler The other handler.
+	 * @return This handler for chaining.
+	 */
 	public AggregationHandler addAll(AggregationHandler handler)
 	{
 		for (ExprAggregator agg : handler.query.getAggregators())
@@ -51,18 +64,13 @@ public class AggregationHandler implements Handler {
 		return this;
 	}
 		
+	/**
+	 * Get the query we are executing against.
+	 * @return the query.
+	 */
 	public Query getQuery()
 	{
 		return query;
-	}
-	
-	public Map<Var, ExprAggregator> getVarMap() {
-		Map<Var,ExprAggregator> retval = new HashMap<Var,ExprAggregator>();
-		for (ExprAggregator agg : query.getAggregators())
-		{
-			retval.put( agg.getVar(), agg);
-		}
-		return retval;
 	}
 	
 	@Override
@@ -82,6 +90,14 @@ public class AggregationHandler implements Handler {
 		}
 	}
 	
+	/**
+	 * Add and expression aggregator and variable to the mapping.
+	 * 
+	 * if the expr parameter is not an instance of ExprAggregator then no action is taken.
+	 * 
+	 * @param expr The expression to add.
+	 * @param var The variable that it is bound to.
+	 */
 	public void add(Expr expr, Var var) {
 		if (expr instanceof ExprAggregator)
 		{

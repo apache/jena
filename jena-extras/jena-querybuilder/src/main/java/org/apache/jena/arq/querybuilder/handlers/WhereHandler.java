@@ -20,24 +20,14 @@ package org.apache.jena.arq.querybuilder.handlers;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
-
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
-import org.apache.jena.arq.querybuilder.clauses.ConstructClause;
-import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
-import org.apache.jena.arq.querybuilder.clauses.SelectClause;
-import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
-import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
-import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.core.VarExprList;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.sparql.syntax.*;
@@ -227,6 +217,10 @@ public class WhereHandler implements Handler {
 		getClause().addElement(opt);
 	}
 
+	/**
+	 * Add the contents of a where handler as an optional statement.
+	 * @param whereHandler The where handler to use as the optional statement.
+	 */
 	public void addOptional(WhereHandler whereHandler) {
 		getClause().addElement(new ElementOptional(whereHandler.getClause()));
 	}

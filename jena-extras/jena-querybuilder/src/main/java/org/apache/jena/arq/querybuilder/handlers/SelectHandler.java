@@ -20,15 +20,12 @@ package org.apache.jena.arq.querybuilder.handlers;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarExprList;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.expr.ExprAggregator;
 import org.apache.jena.sparql.lang.arq.ARQParser;
 import org.apache.jena.sparql.lang.arq.ParseException;
 import org.apache.jena.sparql.lang.arq.TokenMgrError;
@@ -46,8 +43,7 @@ public class SelectHandler implements Handler {
 	/**
 	 * Constructor.
 	 * 
-	 * @param query
-	 *            The query to manage.
+	 * @param aggHandler The aggregate handler that wraps the query we want to handle.
 	 */
 	public SelectHandler(AggregationHandler aggHandler) {
 		this.query = aggHandler.getQuery();
@@ -149,7 +145,7 @@ public class SelectHandler implements Handler {
 	 * Add an Expression as variable to the select.
 	 * 
 	 * @param expr
-	 *            The expresson to add.
+	 *            The expression to add.
 	 * @param var
 	 *            The variable to add.
 	 */
@@ -177,7 +173,7 @@ public class SelectHandler implements Handler {
 	/**
 	 * Return the projected var expression list.
 	 * 
-	 * @return The proejct var expression list.
+	 * @return The projected var expression list.
 	 */
 	public VarExprList getProject() {
 		return query.getProject();
@@ -190,7 +186,6 @@ public class SelectHandler implements Handler {
 	 *            The select handler to copy the variables from.
 	 */
 	public void addAll(SelectHandler selectHandler) {
-
 		setReduced(selectHandler.query.isReduced());
 		setDistinct(selectHandler.query.isDistinct());
 		query.setQueryResultStar(selectHandler.query.isQueryResultStar());
@@ -216,14 +211,8 @@ public class SelectHandler implements Handler {
 			query.setQueryResultStar(true);
 		}
 		
-		VarExprList vel = query.getProject();
-		Map<Var, Expr> exprMap = vel.getExprs();
-
-		for (Map.Entry<Var, ExprAggregator> entry : aggHandler.getVarMap().entrySet()) {
-			if (exprMap.containsKey(entry.getKey())) {
-				exprMap.put(entry.getKey(), entry.getValue());
-			}
-		}
+		aggHandler.build();
+		
 		// handle the SELECT * case
 		query.getProjectVars();
 	}
