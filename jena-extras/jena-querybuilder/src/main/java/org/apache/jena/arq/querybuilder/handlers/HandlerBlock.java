@@ -1,4 +1,5 @@
 package org.apache.jena.arq.querybuilder.handlers;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,7 +23,8 @@ import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.Var;
 
 /**
- * A class to handle all the handlers of a query builder and keep them in sync as needed.
+ * A class to handle all the handlers of a query builder and keep them in sync
+ * as needed.
  *
  */
 public class HandlerBlock {
@@ -36,7 +38,9 @@ public class HandlerBlock {
 
 	/**
 	 * Constructor.
-	 * @param query The query we are working with.
+	 * 
+	 * @param query
+	 *            The query we are working with.
 	 */
 	public HandlerBlock(Query query) {
 		prologHandler = new PrologHandler(query);
@@ -44,7 +48,10 @@ public class HandlerBlock {
 		whereHandler = new WhereHandler(query);
 		datasetHandler = new DatasetHandler(query);
 		modifierHandler = new SolutionModifierHandler(query);
-		/* selecthandler and constructhandler may be null so processthem accordingly */
+		/*
+		 * selecthandler and constructhandler may be null so processthem
+		 * accordingly
+		 */
 		SelectHandler sTemp = null;
 		ConstructHandler cTemp = null;
 		if (query.isSelectType()) {
@@ -62,6 +69,7 @@ public class HandlerBlock {
 
 	/**
 	 * Get the aggregation handler.
+	 * 
 	 * @return the aggregation handler.
 	 */
 	public AggregationHandler getAggregationHandler() {
@@ -70,6 +78,7 @@ public class HandlerBlock {
 
 	/**
 	 * Get the construct handler.
+	 * 
 	 * @return the construct handler or null.
 	 */
 	public ConstructHandler getConstructHandler() {
@@ -78,6 +87,7 @@ public class HandlerBlock {
 
 	/**
 	 * Get the dataset handler.
+	 * 
 	 * @return the dataset handler.
 	 */
 	public DatasetHandler getDatasetHandler() {
@@ -86,6 +96,7 @@ public class HandlerBlock {
 
 	/**
 	 * Get the prolog handler.
+	 * 
 	 * @return the prolog handler.
 	 */
 	public PrologHandler getPrologHandler() {
@@ -94,6 +105,7 @@ public class HandlerBlock {
 
 	/**
 	 * Get the select handler.
+	 * 
 	 * @return the select handler or null.
 	 */
 	public SelectHandler getSelectHandler() {
@@ -102,6 +114,7 @@ public class HandlerBlock {
 
 	/**
 	 * Get the solution modifier handler.
+	 * 
 	 * @return the solution modifier handler.
 	 */
 	public SolutionModifierHandler getModifierHandler() {
@@ -110,6 +123,7 @@ public class HandlerBlock {
 
 	/**
 	 * Get the where handler.
+	 * 
 	 * @return the where handler.
 	 */
 	public WhereHandler getWhereHandler() {
@@ -118,7 +132,9 @@ public class HandlerBlock {
 
 	/**
 	 * Add the prolog handler contents to this prolog handler.
-	 * @param handler The prolog handler to add to this one.
+	 * 
+	 * @param handler
+	 *            The prolog handler to add to this one.
 	 */
 	public void addAll(PrologHandler handler) {
 		prologHandler.addAll(handler);
@@ -126,26 +142,33 @@ public class HandlerBlock {
 
 	/**
 	 * Add the aggregation handler contents to this prolog handler.
-	 * @param handler The aggregation handler to add to this one.
+	 * 
+	 * @param handler
+	 *            The aggregation handler to add to this one.
 	 */
 	public void addAll(AggregationHandler handler) {
 		aggHandler.addAll(handler);
 	}
 
 	/**
-	 * Add the construct handler contents to this prolog handler.
-	 * If this construct handler is null or the handler argument is null this method does nothing.
-	 * @param handler The construct handler to add to this one.
+	 * Add the construct handler contents to this prolog handler. If this
+	 * construct handler is null or the handler argument is null this method
+	 * does nothing.
+	 * 
+	 * @param handler
+	 *            The construct handler to add to this one.
 	 */
 	public void addAll(ConstructHandler handler) {
-		if (constructHandler != null && handler!=null) {
+		if (constructHandler != null && handler != null) {
 			constructHandler.addAll(handler);
 		}
 	}
 
 	/**
 	 * Add the dataset handler contents to this prolog handler.
-	 * @param handler The dataset handler to add to this one.
+	 * 
+	 * @param handler
+	 *            The dataset handler to add to this one.
 	 */
 	public void addAll(DatasetHandler handler) {
 		datasetHandler.addAll(handler);
@@ -153,50 +176,59 @@ public class HandlerBlock {
 
 	/**
 	 * Add the solution modifier handler contents to this prolog handler.
-	 * @param handler The solution modifier handler to add to this one.
+	 * 
+	 * @param handler
+	 *            The solution modifier handler to add to this one.
 	 */
 	public void addAll(SolutionModifierHandler handler) {
 		modifierHandler.addAll(handler);
 	}
 
 	/**
-	 * Add the select handler contents to this prolog handler.
-	 * If this select handler is null or the handler argument is null this method does nothing.
-	 * @param handler The construct handler to add to this one.
+	 * Add the select handler contents to this prolog handler. If this select
+	 * handler is null or the handler argument is null this method does nothing.
+	 * 
+	 * @param handler
+	 *            The construct handler to add to this one.
 	 */
 	public void addAll(SelectHandler handler) {
-		if (selectHandler != null && handler!=null) {
+		if (selectHandler != null && handler != null) {
 			selectHandler.addAll(handler);
 		}
 	}
 
 	/**
 	 * Add the where handler contents to this prolog handler.
-	 * @param handler The where handler to add to this one.
+	 * 
+	 * @param handler
+	 *            The where handler to add to this one.
 	 */
 	public void addAll(WhereHandler handler) {
 		whereHandler.addAll(handler);
 	}
-	
+
 	/**
-	 * Add all of the handlers in the handler block to this one.
-	 * Any handler that is null or is null in the handler argument are properly skipped. 
-	 * @param handler The handler block to add to this one.
+	 * Add all of the handlers in the handler block to this one. Any handler
+	 * that is null or is null in the handler argument are properly skipped.
+	 * 
+	 * @param handler
+	 *            The handler block to add to this one.
 	 */
-	public void addAll(HandlerBlock handler)
-	{
+	public void addAll(HandlerBlock handler) {
 		addAll(handler.aggHandler);
 		addAll(handler.constructHandler);
 		addAll(handler.selectHandler);
-		addAll( handler.datasetHandler);
-		addAll( handler.modifierHandler);
-		addAll( handler.prologHandler);
-		addAll( handler.whereHandler);
+		addAll(handler.datasetHandler);
+		addAll(handler.modifierHandler);
+		addAll(handler.prologHandler);
+		addAll(handler.whereHandler);
 	}
 
 	/**
 	 * Set the variables in all the enclosed handlers in the proper order.
-	 * @param values The map of values to set.
+	 * 
+	 * @param values
+	 *            The map of values to set.
 	 */
 	public void setVars(Map<Var, Node> values) {
 		aggHandler.setVars(values);
@@ -204,7 +236,7 @@ public class HandlerBlock {
 		if (constructHandler != null) {
 			constructHandler.setVars(values);
 		}
-		
+
 		datasetHandler.setVars(values);
 		prologHandler.setVars(values);
 
@@ -215,13 +247,13 @@ public class HandlerBlock {
 		modifierHandler.setVars(values);
 		whereHandler.setVars(values);
 	}
-	
+
 	/**
 	 * Build all the the enclosed handlers in the proper order.
 	 */
 	public void build() {
 		prologHandler.build();
-		
+
 		if (selectHandler != null) {
 			selectHandler.build();
 		}
