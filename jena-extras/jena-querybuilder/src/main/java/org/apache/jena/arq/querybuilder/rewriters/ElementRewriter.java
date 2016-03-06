@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.TriplePath ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -190,8 +191,9 @@ public class ElementRewriter extends AbstractRewriter<Element> implements
 
 	@Override
 	public void visit(ElementSubQuery el) {
+		Query q = AbstractQueryBuilder.clone(el.getQuery());
 		push(new ElementSubQuery(AbstractQueryBuilder.rewrite(
-				AbstractQueryBuilder.clone(el.getQuery()), values)));
+				q, values)));
 	}
 
 }

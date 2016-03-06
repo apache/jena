@@ -23,8 +23,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.arq.AbstractRegexpBasedTest;
+import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
@@ -33,6 +35,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.XSD;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -170,6 +173,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 		QueryExecution qexec = QueryExecutionFactory.create(builder.build(), m);
 
 		ResultSet results = qexec.execSelect();
+		assertTrue(results.hasNext());
 		for (; results.hasNext();) {
 			QuerySolution soln = results.nextSolution();
 			assertTrue(soln.contains("c"));
@@ -182,6 +186,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 		qexec = QueryExecutionFactory.create(builder.build(), m);
 
 		results = qexec.execSelect();
+		assertTrue(results.hasNext());
 		for (; results.hasNext();) {
 			QuerySolution soln = results.nextSolution();
 			assertTrue(soln.contains("c"));
@@ -192,5 +197,78 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 			assertEquals(5, soln.get("max").asLiteral().getInt());
 		}
 
+	}
+
+	@Test
+	public void testAggregatorsInSubQuery() throws ParseException {
+
+		Model m = ModelFactory.createDefaultModel();
+		Resource r = m.createResource("urn:one");
+		m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(1));
+		m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(3));
+		m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(5));
+		r = m.createResource("urn:two");
+		m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(2));
+		m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(4));
+		m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(6));
+
+		SelectBuilder sb = new SelectBuilder().addVar("?x").addVar("max(?o)", "?max").addWhere("?x", "?p", "?o")
+				.addGroupBy("?x");
+
+		builder.addPrefix("xsd", XSD.getURI()).addVar("?x").addVar("min(?o2)", "?min").addWhere("?x", "?p2", "?o2")
+				.addSubQuery(sb).addFilter("?max = '6'^^xsd:int").addGroupBy("?x");
+
+		QueryExecution qexec = QueryExecutionFactory.create(builder.build(), m);
+
+		ResultSet results = qexec.execSelect();
+		assertTrue(results.hasNext());
+		for (; results.hasNext();) {
+			QuerySolution soln = results.nextSolution();
+			assertTrue(soln.contains("x"));
+			assertTrue(soln.contains("min"));
+			assertEquals("urn:two", soln.get("?x").asResource().getURI());
+			assertEquals(2, soln.get("?min").asLiteral().getInt());
+		}
+	}
+	
+	@Test
+	public void testVarReplacementInSubQuery() throws ParseException {
+
+		Model m = ModelFactory.createDefaultModel();
+		Resource r = m.createResource("urn:one");
+		m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(1));
+		m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(3));
+		m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(5));
+		r = m.createResource("urn:two");
+		m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(2));
+		m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(4));
+		m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(6));
+
+		SelectBuilder sb = new SelectBuilder().addVar("?x").addVar("?p").addWhere("?x", "?p", "?o")
+				.addFilter( "?o < ?limit");
+
+		builder.addPrefix("xsd", XSD.getURI()).addVar("?x").addVar("count(?p)", "?c").addWhere("?x", "?p", "?o2")
+				.addSubQuery(sb).addGroupBy("?x");
+
+		
+		builder.setVar( "?limit",  4 );
+		
+		QueryExecution qexec = QueryExecutionFactory.create(builder.build(), m);
+
+		ResultSet results = qexec.execSelect();
+		assertTrue(results.hasNext());
+		for (; results.hasNext();) {
+			QuerySolution soln = results.nextSolution();
+			assertTrue(soln.contains("x"));
+			assertTrue(soln.contains("c"));
+			if ("urn:one".equals( soln.get("?x").asResource().getURI()))
+			{
+				assertEquals( 2, soln.get("?c").asLiteral().getInt());
+			}
+			else 
+			{
+				assertEquals( 1, soln.get("?c").asLiteral().getInt());
+			}
+		}
 	}
 }
