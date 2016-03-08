@@ -111,7 +111,12 @@ public class AggCustom extends AggregatorBase
     public Node getValueEmpty()     { return AggregateRegistry.getNoGroupValue(iri) ; } 
 
     @Override
-    public Expr getExpr()           { return null ; }
+    public Expr getExpr() {
+        if ( exprList.size() == 0 )
+            return null;
+        else
+            return exprList.get(0);
+    }
     
     public String getIRI()                  { return iri ; }
 

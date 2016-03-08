@@ -26,7 +26,7 @@ import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 
 /** Accumulator that passes down every value of an expression */
-abstract class AccumulatorExpr implements Accumulator
+public abstract class AccumulatorExpr implements Accumulator
 {
     private long count = 0 ;
     protected long errorCount = 0 ; 
