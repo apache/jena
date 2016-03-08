@@ -244,8 +244,8 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 	}
 
 	@Override
-	public AskBuilder addHaving(Var var) throws ParseException {
-		getSolutionModifierHandler().addHaving(var);
+	public AskBuilder addHaving(Object var) throws ParseException {
+		getSolutionModifierHandler().addHaving(makeVar(var));
 		return this;
 	}
 

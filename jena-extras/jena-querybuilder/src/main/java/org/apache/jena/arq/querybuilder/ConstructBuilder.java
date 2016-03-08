@@ -177,8 +177,8 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 	}
 
 	@Override
-	public ConstructBuilder addHaving(Var var) throws ParseException {
-		getSolutionModifierHandler().addHaving(var);
+	public ConstructBuilder addHaving(Object var) throws ParseException {
+		getSolutionModifierHandler().addHaving(makeVar(var));
 		return this;
 	}
 

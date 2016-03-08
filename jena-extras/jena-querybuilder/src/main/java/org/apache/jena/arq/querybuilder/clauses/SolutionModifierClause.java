@@ -146,7 +146,7 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 *            the variable to have.
 	 * @return The builder for chaining.
 	 */
-	public T addHaving(Var var) throws ParseException;
+	public T addHaving(Object var) throws ParseException;
 
 	/**
 	 * Set the limit.

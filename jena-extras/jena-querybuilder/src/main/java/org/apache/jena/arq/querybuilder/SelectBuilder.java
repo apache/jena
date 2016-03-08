@@ -217,8 +217,8 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	}
 
 	@Override
-	public SelectBuilder addHaving(Var var) throws ParseException {
-		getSolutionModifierHandler().addHaving(var);
+	public SelectBuilder addHaving(Object var) throws ParseException {
+		getSolutionModifierHandler().addHaving(makeVar(var));
 		return this;
 	}
 

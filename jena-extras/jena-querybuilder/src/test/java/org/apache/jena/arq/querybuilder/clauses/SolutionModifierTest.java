@@ -178,7 +178,7 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
 	}
 
 	@ContractTest
-	public void testAddHavingVar() throws ParseException {
+	public void testAddHavingObject() throws ParseException {
 		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = solutionModifier.addHaving(Var.alloc("foo"));
 		assertContainsRegex(HAVING + var("foo"), builder.buildString());
