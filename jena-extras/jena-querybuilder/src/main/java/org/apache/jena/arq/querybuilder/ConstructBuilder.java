@@ -28,9 +28,11 @@ import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
+import org.apache.jena.graph.FrontsNode;
 import org.apache.jena.graph.FrontsTriple ;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 
@@ -111,10 +113,34 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder>
 		getDatasetHandler().from(graphName);
 		return this;
 	}
+	
+	@Override
+	public ConstructBuilder addOrderBy(Expr orderBy) {
+		getSolutionModifierHandler().addOrderBy(orderBy);
+		return this;
+	}
 
 	@Override
-	public ConstructBuilder addOrderBy(String orderBy) {
+	public ConstructBuilder addOrderBy(Object orderBy) {
+		getSolutionModifierHandler().addOrderBy(makeVar(orderBy));
+		return this;
+	}
+
+	@Override
+	public ConstructBuilder addOrderBy(SortCondition orderBy) {
 		getSolutionModifierHandler().addOrderBy(orderBy);
+		return this;
+	}
+
+	@Override
+	public ConstructBuilder addOrderBy(Expr orderBy, Order order) {
+		getSolutionModifierHandler().addOrderBy(orderBy, order);
+		return this;
+	}
+
+	@Override
+	public ConstructBuilder addOrderBy(Object orderBy, Order order) {
+		getSolutionModifierHandler().addOrderBy(makeVar(orderBy), order);
 		return this;
 	}
 
@@ -242,4 +268,5 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder>
 	public Node list(Object... objs) {
 		return getWhereHandler().list(objs);
 	}
+
 }

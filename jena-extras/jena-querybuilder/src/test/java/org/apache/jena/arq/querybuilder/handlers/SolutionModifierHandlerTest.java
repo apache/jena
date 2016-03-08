@@ -47,7 +47,7 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 	public void testAddAll() throws ParseException {
 		SolutionModifierHandler solutionModifier2 = new SolutionModifierHandler(
 				new Query());
-		solutionModifier2.addOrderBy("orderBy");
+		solutionModifier2.addOrderBy( Var.alloc("orderBy"));
 		solutionModifier2.addGroupBy("groupBy");
 		solutionModifier2.addHaving("?having<10");
 		solutionModifier2.setLimit(500);
@@ -66,7 +66,7 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAll() throws ParseException {
-		solutionModifier.addOrderBy("orderBy");
+		solutionModifier.addOrderBy(Var.alloc("orderBy"));
 		solutionModifier.addGroupBy("groupBy");
 		solutionModifier.addHaving("SUM(?lprice) > 10");
 		solutionModifier.setLimit(500);
@@ -83,13 +83,13 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddOrderBy() {
-		solutionModifier.addOrderBy("orderBy");
+		solutionModifier.addOrderBy(Var.alloc("orderBy"));
 		List<SortCondition> sc = query.getOrderBy();
 		assertEquals("Wrong number of conditions", 1, sc.size());
 		assertEquals("Wrong value", sc.get(0).expression.asVar(),
 				Var.alloc("orderBy"));
 
-		solutionModifier.addOrderBy("orderBy2");
+		solutionModifier.addOrderBy(Var.alloc("orderBy2"));
 		sc = query.getOrderBy();
 		assertEquals("Wrong number of conditions", 2, sc.size());
 		assertEquals("Wrong value", sc.get(0).expression.asVar(),

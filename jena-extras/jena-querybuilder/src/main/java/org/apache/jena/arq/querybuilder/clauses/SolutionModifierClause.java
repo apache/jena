@@ -18,7 +18,11 @@
 package org.apache.jena.arq.querybuilder.clauses;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
+import org.apache.jena.arq.querybuilder.Order;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
+import org.apache.jena.graph.FrontsNode;
+import org.apache.jena.query.SortCondition;
+import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 
 /**
@@ -29,15 +33,53 @@ import org.apache.jena.sparql.lang.sparql_11.ParseException ;
  *            The Builder type that the clause is part of.
  */
 public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
-
+	
 	/**
-	 * Add an order by
+	 * Add an ascending order by.
 	 * 
 	 * @param orderBy
-	 *            The variable name to order by.
+	 *            The expression to order by.
 	 * @return The builder for chaining.
 	 */
-	public T addOrderBy(String orderBy);
+	public T addOrderBy(Expr orderBy);
+	
+	/**
+	 * Add an ascending order by.
+	 * 
+	 * @param orderBy
+	 *            The object to order by.
+	 * @return The builder for chaining.
+	 */
+	public T addOrderBy(Object orderBy);
+	
+	/**
+	 * Add an ascending order by.
+	 * 
+	 * @param orderBy
+	 *            The SortCondition to order by.
+	 * @return The builder for chaining.
+	 */
+	public T addOrderBy(SortCondition orderBy);
+	
+	/**
+	 * Add an order by with direction specified.
+	 * 
+	 * @param orderBy
+	 *            The expression to order by.
+	 * @param order The direction to order.  
+	 * @return The builder for chaining.
+	 */
+	public T addOrderBy(Expr orderBy, Order order);
+	
+	/**
+	 * Add an order by with direction specified.
+	 * 
+	 * @param orderBy
+	 *            The object to order by.
+	 * @param order The direction to order.  
+	 * @return The builder for chaining.
+	 */
+	public T addOrderBy(Object orderBy, Order order);
 
 	/**
 	 * Add a group by

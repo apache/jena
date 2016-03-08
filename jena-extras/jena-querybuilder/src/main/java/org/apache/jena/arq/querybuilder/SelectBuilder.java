@@ -33,6 +33,7 @@ import org.apache.jena.graph.FrontsNode ;
 import org.apache.jena.graph.FrontsTriple ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
@@ -144,8 +145,32 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder>
 	}
 
 	@Override
-	public SelectBuilder addOrderBy(String orderBy) {
+	public SelectBuilder addOrderBy(Expr orderBy) {
 		getSolutionModifierHandler().addOrderBy(orderBy);
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addOrderBy(Object orderBy) {
+		getSolutionModifierHandler().addOrderBy( makeVar(orderBy));
+		return this;
+	}
+	
+	@Override
+	public SelectBuilder addOrderBy(SortCondition orderBy) {
+		getSolutionModifierHandler().addOrderBy(orderBy);
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addOrderBy(Expr orderBy, Order order) {
+		getSolutionModifierHandler().addOrderBy(orderBy, order);
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addOrderBy(Object orderBy, Order order) {
+		getSolutionModifierHandler().addOrderBy(makeVar(orderBy), order);
 		return this;
 	}
 
@@ -313,4 +338,5 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder>
 	public Node list(Object... objs) {
 		return getWhereHandler().list(objs);
 	}
+
 }

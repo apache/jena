@@ -27,14 +27,17 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.impl.LiteralLabelFactory ;
 import org.apache.jena.query.Query ;
+import org.apache.jena.query.QueryParseException;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprVar ;
 import org.apache.jena.sparql.syntax.ElementGroup;
+import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
 /**
@@ -71,6 +74,41 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 */
 	public Node makeNode(Object o) {
 		return makeNode( o, query.getPrefixMapping() );
+	}
+	
+	/**
+	 * A convenience method to make an expression from a string.  Evaluates the 
+	 * expression with respect to the current query.
+	 * 
+	 * @param expression The expression to parse.
+	 * @return the Expr object.
+	 * @throws QueryParseExcpetion on error.
+	 */
+	public Expr makeExpr(String expression) throws QueryParseException
+	{
+		return ExprUtils.parse(query, expression, true);
+	}
+	
+	/**
+	 * A convenience method to quote a string.
+	 * @param q the string to quote.
+	 * 
+	 * Will use single quotes if there are no single quotes in the string or if the 
+	 * double quote is before the single quote in the string.
+	 * 
+	 * Will use double quote otherwise.
+	 * 
+	 * @return the quoted string. 
+	 */
+	public String quote(String q) {
+		int qt = q.indexOf('"');
+		int sqt = q.indexOf("'");
+		
+		if (sqt == -1 || qt<sqt)
+		{
+			return String.format( "'%s'", q);
+		}
+		return String.format( "\"%s\"", q);
 	}
 	
 	/**

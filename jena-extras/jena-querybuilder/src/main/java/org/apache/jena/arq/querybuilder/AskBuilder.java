@@ -29,6 +29,7 @@ import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsTriple ;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 
@@ -177,9 +178,34 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder> implements
 		getWhereHandler().addBind( expression, makeVar(var) );
 		return this;
 	}
+	
 	@Override
-	public AskBuilder addOrderBy(String orderBy) {
+	public AskBuilder addOrderBy(Expr orderBy) {
 		getSolutionModifierHandler().addOrderBy(orderBy);
+		return this;
+	}
+
+	@Override
+	public AskBuilder addOrderBy(Object orderBy) {
+		getSolutionModifierHandler().addOrderBy(makeVar(orderBy));
+		return this;
+	}
+
+	@Override
+	public AskBuilder addOrderBy(SortCondition orderBy) {
+		getSolutionModifierHandler().addOrderBy(orderBy);
+		return this;
+	}
+
+	@Override
+	public AskBuilder addOrderBy(Expr orderBy, Order order) {
+		getSolutionModifierHandler().addOrderBy(orderBy, order);
+		return this;
+	}
+
+	@Override
+	public AskBuilder addOrderBy(Object orderBy, Order order) {
+		getSolutionModifierHandler().addOrderBy(makeVar(orderBy), order);
 		return this;
 	}
 
@@ -216,4 +242,5 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder> implements
 	public Node list(Object... objs) {
 		return getWhereHandler().list(objs);
 	}
+
 }
