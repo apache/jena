@@ -18,24 +18,14 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.function.FunctionBase1 ;
 
-/** Example function - checks for even integers. */
+// Returns the value of 10^x.
+public class Math_log10 extends FunctionBase1 {
 
-public class evenInteger extends FunctionBase1
-{
     @Override
-    public NodeValue exec(NodeValue x)
-    {
-        if ( ! x.isInteger() )
-            throw new ExprEvalException("evenInteger: Not an intger: "+x) ;
-        int i = x.getInteger().getLowestSetBit() ;
-        
-        boolean b = (i == -1) || ( i != 0 ) ;  
-        
-        return NodeValue.makeNodeBoolean( b ) ;
+    public NodeValue exec(NodeValue v) {
+        return NodeValue.makeDouble(Math.log10(v.getDouble())) ;
     }
-
 }
