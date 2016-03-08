@@ -131,16 +131,16 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
 		builder = solutionModifier.addGroupBy("bar");
 		assertContainsRegex(GROUP_BY + var("foo") + SPACE + var("bar"), builder.buildString());
 	}
-	
+
 	@ContractTest
 	public void testAddGroupByExpr() {
 		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
-		AbstractQueryBuilder<?> builder = solutionModifier.addGroupBy( new E_Random());
-		assertContainsRegex(GROUP_BY+"rand"+OPEN_PAREN+CLOSE_PAREN, builder.buildString());
+		AbstractQueryBuilder<?> builder = solutionModifier.addGroupBy(new E_Random());
+		assertContainsRegex(GROUP_BY + "rand" + OPEN_PAREN + CLOSE_PAREN, builder.buildString());
 		builder = solutionModifier.addGroupBy("bar");
-		assertContainsRegex(GROUP_BY+"rand"+OPEN_PAREN+CLOSE_PAREN + SPACE + var("bar"), builder.buildString());
+		assertContainsRegex(GROUP_BY + "rand" + OPEN_PAREN + CLOSE_PAREN + SPACE + var("bar"), builder.buildString());
 	}
-	
+
 	@ContractTest
 	public void testAddGroupByVar() {
 		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
@@ -150,19 +150,21 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
 		builder = solutionModifier.addGroupBy("bar");
 		assertContainsRegex(GROUP_BY + var("foo") + SPACE + var("bar"), builder.buildString());
 	}
-	
+
 	@ContractTest
 	public void testAddGroupByVarAndExpr() {
 		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = solutionModifier.addGroupBy(Var.alloc("foo"), new E_Random());
-		assertContainsRegex(GROUP_BY+OPEN_PAREN+"rand"+OPEN_PAREN+CLOSE_PAREN+SPACE+"AS"+SPACE+var("foo")+CLOSE_PAREN, builder.buildString());
+		assertContainsRegex(GROUP_BY + OPEN_PAREN + "rand" + OPEN_PAREN + CLOSE_PAREN + SPACE + "AS" + SPACE
+				+ var("foo") + CLOSE_PAREN, builder.buildString());
 
 		builder = solutionModifier.addGroupBy("bar");
-		assertContainsRegex(GROUP_BY+OPEN_PAREN+"rand"+OPEN_PAREN+CLOSE_PAREN+SPACE+"AS"+SPACE+var("foo")+CLOSE_PAREN+ SPACE + var("bar"), builder.buildString());
+		assertContainsRegex(GROUP_BY + OPEN_PAREN + "rand" + OPEN_PAREN + CLOSE_PAREN + SPACE + "AS" + SPACE
+				+ var("foo") + CLOSE_PAREN + SPACE + var("bar"), builder.buildString());
 	}
 
 	@ContractTest
-	public void testAddHaving() throws ParseException {
+	public void testAddHavingString() throws ParseException {
 		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = solutionModifier.addHaving("?foo<10");
 		assertContainsRegex(HAVING + OPEN_PAREN + var("foo") + OPT_SPACE + LT + OPT_SPACE + "10" + CLOSE_PAREN,
@@ -173,6 +175,26 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
 				HAVING + OPEN_PAREN + var("foo") + OPT_SPACE + LT + OPT_SPACE + "10" + CLOSE_PAREN + OPT_SPACE
 						+ OPEN_PAREN + var("bar") + OPT_SPACE + LT + OPT_SPACE + "10" + CLOSE_PAREN,
 				builder.buildString());
+	}
+
+	@ContractTest
+	public void testAddHavingVar() throws ParseException {
+		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = solutionModifier.addHaving(Var.alloc("foo"));
+		assertContainsRegex(HAVING + var("foo"), builder.buildString());
+
+		builder = solutionModifier.addHaving("?having2");
+		assertContainsRegex(HAVING + var("foo") + SPACE + var("having2"), builder.buildString());
+	}
+
+	@ContractTest
+	public void testAddHavingExpr() throws ParseException {
+		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = solutionModifier.addHaving(new E_Random());
+		assertContainsRegex(HAVING + "rand" + OPEN_PAREN + CLOSE_PAREN, builder.buildString());
+
+		solutionModifier.addHaving("?having2");
+		assertContainsRegex(HAVING + "rand" + OPEN_PAREN + CLOSE_PAREN + SPACE + var("having2"), builder.buildString());
 	}
 
 	@ContractTest

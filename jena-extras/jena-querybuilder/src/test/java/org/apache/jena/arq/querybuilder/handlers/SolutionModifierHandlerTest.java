@@ -131,15 +131,36 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 		s = byLine(query.toString());
 		assertContainsRegex(GROUP_BY+OPEN_PAREN+"rand"+OPEN_PAREN+CLOSE_PAREN+SPACE+"AS"+SPACE+var("groupBy")+CLOSE_PAREN+SPACE+var("groupBy2"), s);
 	}
+
 	@Test
-	public void testAddHaving() throws ParseException {
+	public void testAddHavingString() throws ParseException {
 		solutionModifier.addHaving("?having<10");
 		assertContainsRegex(HAVING + OPEN_PAREN + var("having") + OPT_SPACE
-				+ LT + OPT_SPACE + 10 + CLOSE_PAREN, query.toString());
+				+ LT + 10 + CLOSE_PAREN, query.toString());
 
 		solutionModifier.addHaving("?having2");
 		assertContainsRegex(HAVING + OPEN_PAREN + var("having") + OPT_SPACE
-				+ LT + OPT_SPACE + 10 + CLOSE_PAREN + OPT_SPACE
+				+ LT + 10 + CLOSE_PAREN + OPT_SPACE
+				+ var("having2"), query.toString());
+	}
+
+	@Test
+	public void testAddHavingVar() throws ParseException {
+		solutionModifier.addHaving(Var.alloc("foo"));
+		assertContainsRegex(HAVING + var("foo") , query.toString());
+
+		solutionModifier.addHaving("?having2");
+		assertContainsRegex(HAVING + var("foo") + SPACE
+				+ var("having2"), query.toString());
+	}
+
+	@Test
+	public void testAddHavingExpr() throws ParseException {
+		solutionModifier.addHaving( new E_Random());
+		assertContainsRegex(HAVING +  "rand"+OPEN_PAREN+CLOSE_PAREN , query.toString());
+
+		solutionModifier.addHaving("?having2");
+		assertContainsRegex(HAVING + "rand"+OPEN_PAREN+CLOSE_PAREN + SPACE
 				+ var("having2"), query.toString());
 	}
 

@@ -28,26 +28,23 @@ import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
-import org.apache.jena.graph.FrontsNode;
-import org.apache.jena.graph.FrontsTriple ;
+import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.SortCondition;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException ;
+import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
  * Build an Construct query.
  * 
  */
-public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder>
-		implements DatasetClause<ConstructBuilder>,
-		WhereClause<ConstructBuilder>,
-		SolutionModifierClause<ConstructBuilder>,
-		ConstructClause<ConstructBuilder> {
+public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> implements DatasetClause<ConstructBuilder>,
+		WhereClause<ConstructBuilder>, SolutionModifierClause<ConstructBuilder>, ConstructClause<ConstructBuilder> {
 
 	private final HandlerBlock handlerBlock;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -78,15 +75,14 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder>
 	}
 
 	@Override
-	public HandlerBlock getHandlerBlock()
-	{
+	public HandlerBlock getHandlerBlock() {
 		return handlerBlock;
 	}
-	
+
 	@Override
 	public ConstructBuilder clone() {
 		ConstructBuilder qb = new ConstructBuilder();
-		qb.handlerBlock.addAll( handlerBlock );
+		qb.handlerBlock.addAll(handlerBlock);
 		return qb;
 	}
 
@@ -113,7 +109,7 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder>
 		getDatasetHandler().from(graphName);
 		return this;
 	}
-	
+
 	@Override
 	public ConstructBuilder addOrderBy(Expr orderBy) {
 		getSolutionModifierHandler().addOrderBy(orderBy);
@@ -165,12 +161,24 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder>
 	@Override
 	public ConstructBuilder addGroupBy(Object var, String expr) {
 		getSolutionModifierHandler().addGroupBy(makeVar(var), makeExpr(expr));
-		return this;	}
-
+		return this;
+	}
 
 	@Override
 	public ConstructBuilder addHaving(String having) throws ParseException {
 		getSolutionModifierHandler().addHaving(having);
+		return this;
+	}
+
+	@Override
+	public ConstructBuilder addHaving(Expr expression) throws ParseException {
+		getSolutionModifierHandler().addHaving(expression);
+		return this;
+	}
+
+	@Override
+	public ConstructBuilder addHaving(Var var) throws ParseException {
+		getSolutionModifierHandler().addHaving(var);
 		return this;
 	}
 
@@ -209,10 +217,9 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder>
 		getWhereHandler().addOptional(t);
 		return this;
 	}
-	
+
 	@Override
-	public ConstructBuilder addOptional(SelectBuilder t)
-	{
+	public ConstructBuilder addOptional(SelectBuilder t) {
 		getWhereHandler().addOptional(t.getWhereHandler());
 		return this;
 	}
@@ -256,16 +263,16 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder>
 
 	@Override
 	public ConstructBuilder addBind(Expr expression, Object var) {
-		getWhereHandler().addBind( expression, makeVar(var) );
+		getWhereHandler().addBind(expression, makeVar(var));
 		return this;
 	}
 
 	@Override
 	public ConstructBuilder addBind(String expression, Object var) throws ParseException {
-		getWhereHandler().addBind( expression, makeVar(var) );
+		getWhereHandler().addBind(expression, makeVar(var));
 		return this;
 	}
-	
+
 	@Override
 	public ConstructBuilder addConstruct(Triple t) {
 		getConstructHandler().addConstruct(t);
@@ -281,11 +288,9 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder>
 	public ConstructBuilder addConstruct(Object s, Object p, Object o) {
 		return addConstruct(new Triple(makeNode(s), makeNode(p), makeNode(o)));
 	}
-	
+
 	@Override
 	public Node list(Object... objs) {
 		return getWhereHandler().list(objs);
 	}
-
-	
 }

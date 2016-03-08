@@ -20,11 +20,10 @@ package org.apache.jena.arq.querybuilder.clauses;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.Order;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
-import org.apache.jena.graph.FrontsNode;
 import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException ;
+import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
  * Interface that defines the SolutionClause as per
@@ -34,7 +33,7 @@ import org.apache.jena.sparql.lang.sparql_11.ParseException ;
  *            The Builder type that the clause is part of.
  */
 public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
-	
+
 	/**
 	 * Add an ascending order by.
 	 * 
@@ -43,7 +42,7 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 * @return The builder for chaining.
 	 */
 	public T addOrderBy(Expr orderBy);
-	
+
 	/**
 	 * Add an ascending order by.
 	 * 
@@ -52,7 +51,7 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 * @return The builder for chaining.
 	 */
 	public T addOrderBy(Object orderBy);
-	
+
 	/**
 	 * Add an ascending order by.
 	 * 
@@ -61,23 +60,25 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 * @return The builder for chaining.
 	 */
 	public T addOrderBy(SortCondition orderBy);
-	
+
 	/**
 	 * Add an order by with direction specified.
 	 * 
 	 * @param orderBy
 	 *            The expression to order by.
-	 * @param order The direction to order.  
+	 * @param order
+	 *            The direction to order.
 	 * @return The builder for chaining.
 	 */
 	public T addOrderBy(Expr orderBy, Order order);
-	
+
 	/**
 	 * Add an order by with direction specified.
 	 * 
 	 * @param orderBy
 	 *            The object to order by.
-	 * @param order The direction to order.  
+	 * @param order
+	 *            The direction to order.
 	 * @return The builder for chaining.
 	 */
 	public T addOrderBy(Object orderBy, Order order);
@@ -90,26 +91,33 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 * @return The builder for chaining.
 	 */
 	public T addGroupBy(Object groupBy);
-	
+
 	/**
-	 * Add an expression to the group by clause. 
-	 * The expression may be created from a string using the makeExpr() method.
-	 * @param groupBy The expression to add.
+	 * Add an expression to the group by clause. The expression may be created
+	 * from a string using the makeExpr() method.
+	 * 
+	 * @param groupBy
+	 *            The expression to add.
 	 */
 	public T addGroupBy(Expr groupBy);
 
 	/**
 	 * Add var and expression to the group by clause.
-	 * @param var The variable to add.
-	 * @param expr The expression to add.
+	 * 
+	 * @param var
+	 *            The variable to add.
+	 * @param expr
+	 *            The expression to add.
 	 */
 	public T addGroupBy(Object var, Expr expr);
 
-
 	/**
 	 * Add var and expression to the group by clause.
-	 * @param var The variable to add.
-	 * @param expr The expression to add.
+	 * 
+	 * @param var
+	 *            The variable to add.
+	 * @param expr
+	 *            The expression to add.
 	 */
 	public T addGroupBy(Object var, String expr);
 
@@ -121,7 +129,25 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 * @return The builder for chaining.
 	 */
 	public T addHaving(String expression) throws ParseException;
-	
+
+	/**
+	 * Add a having expression.
+	 * 
+	 * @param expression
+	 *            Expression to evaluate for the having.
+	 * @return The builder for chaining.
+	 */
+	public T addHaving(Expr expression) throws ParseException;
+
+	/**
+	 * Add a having expression.
+	 * 
+	 * @param var
+	 *            the variable to have.
+	 * @return The builder for chaining.
+	 */
+	public T addHaving(Var var) throws ParseException;
+
 	/**
 	 * Set the limit.
 	 * 
@@ -146,6 +172,7 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 
 	/**
 	 * Get the Solution modifier for this clause.
+	 * 
 	 * @return The SolutionModifierHandler the clause is using.
 	 */
 	public SolutionModifierHandler getSolutionModifierHandler();

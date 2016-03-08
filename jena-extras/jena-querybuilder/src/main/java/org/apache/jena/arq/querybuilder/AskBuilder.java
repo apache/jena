@@ -26,21 +26,21 @@ import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
-import org.apache.jena.graph.FrontsTriple ;
+import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.SortCondition;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException ;
+import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
  * Build an ASK query.
  * 
  */
-public class AskBuilder extends AbstractQueryBuilder<AskBuilder> implements
-		DatasetClause<AskBuilder>, WhereClause<AskBuilder>,
-		SolutionModifierClause<AskBuilder> {
-	
+public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
+		implements DatasetClause<AskBuilder>, WhereClause<AskBuilder>, SolutionModifierClause<AskBuilder> {
+
 	private final HandlerBlock handlerBlock;
 
 	/**
@@ -49,15 +49,14 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder> implements
 	public AskBuilder() {
 		super();
 		query.setQueryAskType();
-		handlerBlock = new HandlerBlock( query );
+		handlerBlock = new HandlerBlock(query);
 	}
-	
+
 	@Override
-	public HandlerBlock getHandlerBlock()
-	{
+	public HandlerBlock getHandlerBlock() {
 		return handlerBlock;
 	}
-	
+
 	@Override
 	public DatasetHandler getDatasetHandler() {
 		return handlerBlock.getDatasetHandler();
@@ -71,7 +70,7 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder> implements
 	@Override
 	public AskBuilder clone() {
 		AskBuilder qb = new AskBuilder();
-		qb.handlerBlock.addAll( handlerBlock );
+		qb.handlerBlock.addAll(handlerBlock);
 		return qb;
 	}
 
@@ -122,10 +121,9 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder> implements
 		getWhereHandler().addOptional(t);
 		return this;
 	}
-	
+
 	@Override
-	public AskBuilder addOptional(SelectBuilder t)
-	{
+	public AskBuilder addOptional(SelectBuilder t) {
 		getWhereHandler().addOptional(t.getWhereHandler());
 		return this;
 	}
@@ -166,19 +164,19 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder> implements
 		getWhereHandler().addGraph(makeNode(graph), subQuery.getWhereHandler());
 		return this;
 	}
-	
+
 	@Override
 	public AskBuilder addBind(Expr expression, Object var) {
-		getWhereHandler().addBind( expression, makeVar(var) );
+		getWhereHandler().addBind(expression, makeVar(var));
 		return this;
 	}
 
 	@Override
 	public AskBuilder addBind(String expression, Object var) throws ParseException {
-		getWhereHandler().addBind( expression, makeVar(var) );
+		getWhereHandler().addBind(expression, makeVar(var));
 		return this;
 	}
-	
+
 	@Override
 	public AskBuilder addOrderBy(Expr orderBy) {
 		getSolutionModifierHandler().addOrderBy(orderBy);
@@ -223,19 +221,31 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder> implements
 
 	@Override
 	public AskBuilder addGroupBy(Object var, Expr expr) {
-		getSolutionModifierHandler().addGroupBy(makeVar( var ), expr);
+		getSolutionModifierHandler().addGroupBy(makeVar(var), expr);
 		return this;
 	}
 
 	@Override
 	public AskBuilder addGroupBy(Object var, String expr) {
-		getSolutionModifierHandler().addGroupBy(makeVar( var ), makeExpr(expr));
+		getSolutionModifierHandler().addGroupBy(makeVar(var), makeExpr(expr));
 		return this;
 	}
 
 	@Override
 	public AskBuilder addHaving(String having) throws ParseException {
 		getSolutionModifierHandler().addHaving(having);
+		return this;
+	}
+
+	@Override
+	public AskBuilder addHaving(Expr expression) throws ParseException {
+		getSolutionModifierHandler().addHaving(expression);
+		return this;
+	}
+
+	@Override
+	public AskBuilder addHaving(Var var) throws ParseException {
+		getSolutionModifierHandler().addHaving(var);
 		return this;
 	}
 
