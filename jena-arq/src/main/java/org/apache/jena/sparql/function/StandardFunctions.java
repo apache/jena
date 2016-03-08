@@ -20,7 +20,6 @@ package org.apache.jena.sparql.function;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.expr.E_StrReplace ;
 import org.apache.jena.sparql.function.library.* ;
 import org.apache.jena.sparql.function.library.sqrt ;
 import org.apache.jena.sparql.function.library.leviathan.* ;
@@ -112,7 +111,8 @@ public class StandardFunctions
 //      5.6.3 fn:replace c.f. SPARQL REPLACE.
 //      Not 5.6.4 fn:tokenize - returns a sequence.
         add(registry, xfn+"matches",        FN_Matches.class) ;
-        add(registry, xfn+"replace",        E_StrReplace.class) ;   // Good enough match?
+        // Needs adapter to E_StrReplace (is it a good enough match?)
+//        add(registry, xfn+"replace",        FN_StrReplace.class) ;
         // fn:replace
         // fn:tokenize
         
