@@ -33,6 +33,7 @@ public class JSONResultsKW
     public static String kUri           = "uri"  ;
     public static String kValue         = "value" ;
     public static String kLiteral       = "literal" ;
+    // Legacy.
     public static String kTypedLiteral  = "typed-literal" ;
     public static String kXmlLang       = "xml:lang" ;
     public static String kDatatype      = "datatype" ;
