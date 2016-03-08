@@ -28,43 +28,42 @@ import org.apache.jena.sparql.function.FunctionEnv ;
 /** Accumulator that passes down every value of an expression */
 public abstract class AccumulatorExpr implements Accumulator
 {
-    private long count = 0 ;
+    private long accCount = 0 ;
     protected long errorCount = 0 ; 
     private final Expr expr ;
     
-    protected AccumulatorExpr(Expr expr)
-    {
-        this.expr = expr ;
+    protected AccumulatorExpr(Expr expr) {
+        this.expr = expr;
     }
     
     @Override
-    final public void accumulate(Binding binding, FunctionEnv functionEnv)
-    {
-        NodeValue nv = ExprLib.evalOrNull(expr, binding, functionEnv) ;
+    final public void accumulate(Binding binding, FunctionEnv functionEnv) {
+        NodeValue nv = ExprLib.evalOrNull(expr, binding, functionEnv);
         if ( nv != null ) {
             try {
-                accumulate(nv, binding, functionEnv) ;
-                count++ ;
-                return ;
-            } catch (ExprEvalException ex) {}
+                accumulate(nv, binding, functionEnv);
+                accCount++;
+                return;
+            }
+            catch (ExprEvalException ex) {}
             // Drop to error case.
         }
-        accumulateError(binding, functionEnv) ;
-        errorCount++ ;
+        accumulateError(binding, functionEnv);
+        errorCount++;
     }
     
     // COUNT(?v) is different : errors of the expression/variable do not cause an aggregate eval error. 
     // SAMPLE is different : it treats errors as "just another value" and tries to return a defined value if any have been seen. 
-    
+
     @Override
-    public NodeValue getValue()
-    {
+    public NodeValue getValue() {
         if ( errorCount == 0 )
-            return getAccValue() ;  
-        return null ;
+            return getAccValue();
+        return null;
     }
 
-    protected long getErrorCount() { return errorCount ; }
+    /** Get the count of accumulated values */ 
+    protected long getAccCount() { return accCount ; }
     
     /** Called if no errors to get the accumulated result */
     protected abstract NodeValue getAccValue() ; 
@@ -72,6 +71,7 @@ public abstract class AccumulatorExpr implements Accumulator
     /** Called when the expression beeing aggregated evaluates OK.
      * Can throw ExprEvalException - in which case the accumulateError is called */
     protected abstract void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) ;
+    
     /** Called when an evaluation of the expression causes an error
      * or when the accumulation step throws ExprEvalException  
      */
