@@ -107,14 +107,6 @@ public class SolutionModifierHandler implements Handler {
 	}
 
 	/**
-	 * Add a variable to the group by clause. 
-	 * @param varName The variable name to add.
-	 */
-	public void addGroupBy(String varName) {
-		query.addGroupBy(varName);
-	}
-
-	/**
 	 * Add an expression to the group by clause. 
 	 * @param expr The expression to add.
 	 */

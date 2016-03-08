@@ -33,9 +33,9 @@ public abstract class AbstractRegexpBasedTest {
 	protected static final String OPEN_PAREN = "\\(" + OPT_SPACE;
 	protected static final String CLOSE_PAREN = OPT_SPACE + "\\)";
 	protected static final String QUOTE = "\\\"";
-	protected static final String LT = "\\<";
-	protected static final String GT = "\\>";
-	protected static final String EQ = "=";
+	protected static final String LT = "\\<"+OPT_SPACE;
+	protected static final String GT = "\\>"+OPT_SPACE;
+	protected static final String EQ = "="+OPT_SPACE;
 	protected static final String DOT = OPT_SPACE+"\\.";
 	protected static final String ORDER_BY = "ORDER" + SPACE + "BY" + SPACE;
 	protected static final String GROUP_BY = "GROUP" + SPACE + "BY" + SPACE;

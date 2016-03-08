@@ -210,8 +210,26 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder> implements
 	}
 
 	@Override
-	public AskBuilder addGroupBy(String groupBy) {
+	public AskBuilder addGroupBy(Object groupBy) {
+		getSolutionModifierHandler().addGroupBy(makeVar(groupBy));
+		return this;
+	}
+
+	@Override
+	public AskBuilder addGroupBy(Expr groupBy) {
 		getSolutionModifierHandler().addGroupBy(groupBy);
+		return this;
+	}
+
+	@Override
+	public AskBuilder addGroupBy(Object var, Expr expr) {
+		getSolutionModifierHandler().addGroupBy(makeVar( var ), expr);
+		return this;
+	}
+
+	@Override
+	public AskBuilder addGroupBy(Object var, String expr) {
+		getSolutionModifierHandler().addGroupBy(makeVar( var ), makeExpr(expr));
 		return this;
 	}
 

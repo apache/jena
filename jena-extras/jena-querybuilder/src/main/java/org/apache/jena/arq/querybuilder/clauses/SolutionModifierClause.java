@@ -22,6 +22,7 @@ import org.apache.jena.arq.querybuilder.Order;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.graph.FrontsNode;
 import org.apache.jena.query.SortCondition;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 
@@ -82,13 +83,35 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	public T addOrderBy(Object orderBy, Order order);
 
 	/**
-	 * Add a group by
+	 * Add a variable to the group by clause.
 	 * 
 	 * @param groupBy
-	 *            The variable name to group by.
+	 *            The object to group by.
 	 * @return The builder for chaining.
 	 */
-	public T addGroupBy(String groupBy);
+	public T addGroupBy(Object groupBy);
+	
+	/**
+	 * Add an expression to the group by clause. 
+	 * The expression may be created from a string using the makeExpr() method.
+	 * @param groupBy The expression to add.
+	 */
+	public T addGroupBy(Expr groupBy);
+
+	/**
+	 * Add var and expression to the group by clause.
+	 * @param var The variable to add.
+	 * @param expr The expression to add.
+	 */
+	public T addGroupBy(Object var, Expr expr);
+
+
+	/**
+	 * Add var and expression to the group by clause.
+	 * @param var The variable to add.
+	 * @param expr The expression to add.
+	 */
+	public T addGroupBy(Object var, String expr);
 
 	/**
 	 * Add a having expression.
@@ -98,7 +121,7 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 * @return The builder for chaining.
 	 */
 	public T addHaving(String expression) throws ParseException;
-
+	
 	/**
 	 * Set the limit.
 	 * 

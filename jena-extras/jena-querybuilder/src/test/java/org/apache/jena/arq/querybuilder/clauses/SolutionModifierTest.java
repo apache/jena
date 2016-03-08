@@ -123,13 +123,42 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
 	}
 
 	@ContractTest
-	public void testAddGroupBy() {
+	public void testAddGroupByString() {
 		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = solutionModifier.addGroupBy("foo");
 		assertContainsRegex(GROUP_BY + var("foo"), builder.buildString());
 
 		builder = solutionModifier.addGroupBy("bar");
 		assertContainsRegex(GROUP_BY + var("foo") + SPACE + var("bar"), builder.buildString());
+	}
+	
+	@ContractTest
+	public void testAddGroupByExpr() {
+		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = solutionModifier.addGroupBy( new E_Random());
+		assertContainsRegex(GROUP_BY+"rand"+OPEN_PAREN+CLOSE_PAREN, builder.buildString());
+		builder = solutionModifier.addGroupBy("bar");
+		assertContainsRegex(GROUP_BY+"rand"+OPEN_PAREN+CLOSE_PAREN + SPACE + var("bar"), builder.buildString());
+	}
+	
+	@ContractTest
+	public void testAddGroupByVar() {
+		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = solutionModifier.addGroupBy(Var.alloc("foo"));
+		assertContainsRegex(GROUP_BY + var("foo"), builder.buildString());
+
+		builder = solutionModifier.addGroupBy("bar");
+		assertContainsRegex(GROUP_BY + var("foo") + SPACE + var("bar"), builder.buildString());
+	}
+	
+	@ContractTest
+	public void testAddGroupByVarAndExpr() {
+		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = solutionModifier.addGroupBy(Var.alloc("foo"), new E_Random());
+		assertContainsRegex(GROUP_BY+OPEN_PAREN+"rand"+OPEN_PAREN+CLOSE_PAREN+SPACE+"AS"+SPACE+var("foo")+CLOSE_PAREN, builder.buildString());
+
+		builder = solutionModifier.addGroupBy("bar");
+		assertContainsRegex(GROUP_BY+OPEN_PAREN+"rand"+OPEN_PAREN+CLOSE_PAREN+SPACE+"AS"+SPACE+var("foo")+CLOSE_PAREN+ SPACE + var("bar"), builder.buildString());
 	}
 
 	@ContractTest

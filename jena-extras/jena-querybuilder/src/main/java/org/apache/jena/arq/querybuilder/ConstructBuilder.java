@@ -145,10 +145,28 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder>
 	}
 
 	@Override
-	public ConstructBuilder addGroupBy(String groupBy) {
+	public ConstructBuilder addGroupBy(Object groupBy) {
+		getSolutionModifierHandler().addGroupBy(makeVar(groupBy));
+		return this;
+	}
+
+	@Override
+	public ConstructBuilder addGroupBy(Expr groupBy) {
 		getSolutionModifierHandler().addGroupBy(groupBy);
 		return this;
 	}
+
+	@Override
+	public ConstructBuilder addGroupBy(Object var, Expr expr) {
+		getSolutionModifierHandler().addGroupBy(makeVar(var), expr);
+		return this;
+	}
+
+	@Override
+	public ConstructBuilder addGroupBy(Object var, String expr) {
+		getSolutionModifierHandler().addGroupBy(makeVar(var), makeExpr(expr));
+		return this;	}
+
 
 	@Override
 	public ConstructBuilder addHaving(String having) throws ParseException {
@@ -269,4 +287,5 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder>
 		return getWhereHandler().list(objs);
 	}
 
+	
 }

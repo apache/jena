@@ -173,10 +173,28 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder>
 		getSolutionModifierHandler().addOrderBy(makeVar(orderBy), order);
 		return this;
 	}
+	
+	@Override
+	public SelectBuilder addGroupBy(Object groupBy) {
+		getSolutionModifierHandler().addGroupBy(makeVar(groupBy));
+		return this;
+	}
 
 	@Override
-	public SelectBuilder addGroupBy(String groupBy) {
+	public SelectBuilder addGroupBy(Expr groupBy) {
 		getSolutionModifierHandler().addGroupBy(groupBy);
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addGroupBy(Object var, Expr expr) {
+		getSolutionModifierHandler().addGroupBy(makeVar(var), expr);
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addGroupBy(Object var, String expr) {
+		getSolutionModifierHandler().addGroupBy(makeVar(var), makeExpr(expr));
 		return this;
 	}
 

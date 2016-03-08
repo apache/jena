@@ -28,6 +28,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +49,7 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 		SolutionModifierHandler solutionModifier2 = new SolutionModifierHandler(
 				new Query());
 		solutionModifier2.addOrderBy( Var.alloc("orderBy"));
-		solutionModifier2.addGroupBy("groupBy");
+		solutionModifier2.addGroupBy( Var.alloc("groupBy"));
 		solutionModifier2.addHaving("?having<10");
 		solutionModifier2.setLimit(500);
 		solutionModifier2.setOffset(200);
@@ -67,17 +68,17 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testAll() throws ParseException {
 		solutionModifier.addOrderBy(Var.alloc("orderBy"));
-		solutionModifier.addGroupBy("groupBy");
+		solutionModifier.addGroupBy(Var.alloc("groupBy"));
 		solutionModifier.addHaving("SUM(?lprice) > 10");
 		solutionModifier.setLimit(500);
 		solutionModifier.setOffset(200);
 
 		String[] s = byLine(query.toString());
-		assertContainsRegex("GROUP BY\\s+\\?groupBy", s);
-		assertContainsRegex("HAVING\\s+\\( SUM\\(\\?lprice\\) > 10 \\)", s);
-		assertContainsRegex("ORDER BY\\s+\\?orderBy", s);
-		assertContainsRegex("LIMIT\\s+500", s);
-		assertContainsRegex("OFFSET\\s+200", s);
+		assertContainsRegex(GROUP_BY+var("groupBy"), s);
+		assertContainsRegex(HAVING + OPEN_PAREN+ "SUM" + OPEN_PAREN + var("lprice") + CLOSE_PAREN+ OPT_SPACE+GT+"10"+CLOSE_PAREN, s);
+		assertContainsRegex(ORDER_BY + var("orderBy"), s);
+		assertContainsRegex(LIMIT+"500", s);
+		assertContainsRegex(OFFSET+"200", s);
 
 	}
 
@@ -99,16 +100,37 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 	}
 
 	@Test
-	public void testAddGroupBy() {
-		solutionModifier.addGroupBy("groupBy");
+	public void testAddGroupByVar() {
+		solutionModifier.addGroupBy( Var.alloc("groupBy"));
 		String[] s = byLine(query.toString());
-		assertContainsRegex("GROUP BY\\s+\\?groupBy", s);
+		assertContainsRegex(GROUP_BY+var("groupBy"), s);
 
-		solutionModifier.addGroupBy("groupBy2");
+		solutionModifier.addGroupBy( Var.alloc("groupBy2") );
 		s = byLine(query.toString());
-		assertContainsRegex("GROUP BY\\s+\\?groupBy\\s+\\?groupBy2", s);
+		assertContainsRegex(GROUP_BY+var("groupBy")+SPACE+var("groupBy2"), s);
 	}
 
+	@Test
+	public void testAddGroupByExpr() {
+		solutionModifier.addGroupBy( new E_Random());
+		String[] s = byLine(query.toString());
+		assertContainsRegex(GROUP_BY+"rand"+OPEN_PAREN+CLOSE_PAREN, s);
+
+		solutionModifier.addGroupBy( Var.alloc("groupBy2") );
+		s = byLine(query.toString());
+		assertContainsRegex(GROUP_BY+"rand"+OPEN_PAREN+CLOSE_PAREN+SPACE+var("groupBy2"), s);
+	}
+	
+	@Test
+	public void testAddGroupByVarAndExpr() {
+		solutionModifier.addGroupBy( Var.alloc( "groupBy"), new E_Random());
+		String[] s = byLine(query.toString());
+		assertContainsRegex(GROUP_BY+OPEN_PAREN+"rand"+OPEN_PAREN+CLOSE_PAREN+SPACE+"AS"+SPACE+var("groupBy")+CLOSE_PAREN, s);
+
+		solutionModifier.addGroupBy( Var.alloc("groupBy2") );
+		s = byLine(query.toString());
+		assertContainsRegex(GROUP_BY+OPEN_PAREN+"rand"+OPEN_PAREN+CLOSE_PAREN+SPACE+"AS"+SPACE+var("groupBy")+CLOSE_PAREN+SPACE+var("groupBy2"), s);
+	}
 	@Test
 	public void testAddHaving() throws ParseException {
 		solutionModifier.addHaving("?having<10");
