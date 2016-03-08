@@ -41,6 +41,7 @@ public class NodeConst
     public static final Node nodeZero       = literal("0",     XSDDatatype.XSDinteger) ;
     public static final Node nodeOne        = literal("1",     XSDDatatype.XSDinteger) ;
     public static final Node nodeTwo        = literal("2",     XSDDatatype.XSDinteger) ;
+    public static final Node nodeTen        = literal("10",    XSDDatatype.XSDinteger) ;
     public static final Node nodeMinusOne   = literal("-1",    XSDDatatype.XSDinteger) ;
     public static final Node emptyString    = NodeFactory.createLiteral("") ;
     

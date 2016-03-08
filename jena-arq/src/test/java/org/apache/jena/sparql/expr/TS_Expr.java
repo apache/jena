@@ -34,7 +34,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestExpressions3.class
     , TestCastXSD.class
     , TestNodeFunctions.class
-    , TestExpressions2.class
+    , TestExpressionsMath.class
     , TestFunctions.class
     , TestFunctions2.class
     , TestLeviathanFunctions.class

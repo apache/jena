@@ -128,6 +128,7 @@ public abstract class NodeValue extends ExprNode
     
     public static final NodeValue nvZERO = NodeValue.makeNode(NodeConst.nodeZero) ;
     public static final NodeValue nvONE  = NodeValue.makeNode(NodeConst.nodeOne) ;
+    public static final NodeValue nvTEN  = NodeValue.makeNode(NodeConst.nodeTen) ;
     
     public static final NodeValue nvNaN     = NodeValue.makeNode("NaN", XSDdouble) ;
     public static final NodeValue nvINF     = NodeValue.makeNode("INF", XSDdouble) ;

@@ -328,19 +328,7 @@ public class XSDFuncOp
     }
 
     public static NodeValue sqrt(NodeValue v) {
-        switch (classifyNumeric("sqrt", v)) {
-            case OP_INTEGER :
-            case OP_DECIMAL :
-                double dec = v.getDecimal().doubleValue() ;
-                return NodeValue.makeDecimal(Math.sqrt(dec)) ;
-            case OP_FLOAT :
-                // NB - returns a double
-                return NodeValue.makeDouble(Math.sqrt(v.getDouble())) ;
-            case OP_DOUBLE :
-                return NodeValue.makeDouble(Math.sqrt(v.getDouble())) ;
-            default :
-                throw new ARQInternalErrorException("Unrecognized numeric operation : " + v) ;
-        }
+        return NodeValue.makeDouble(Math.sqrt(v.getDouble())) ;
     }
    
     // NB Java string start from zero and uses start/end
