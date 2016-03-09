@@ -79,14 +79,6 @@ public class PropertyFunctionRegistry
     }
     
     
-    /** Insert an PropertyFunction factory. Re-inserting with the same URI 
-     * overwrites the old entry. 
-     * 
-     * @param uri        String URI for the PropertyFunction
-     * @param factory    Factory to make PropertyFunction instances
-     */
-    public void put(String uri, PropertyFunctionFactory factory) { registry.put(uri,factory) ; }
-
     /** Insert an PropertyFunction class.
      *  Re-inserting with the same URI overwrites the old entry.
      *  New instance created on retrieval (auto-factory)  
@@ -102,8 +94,16 @@ public class PropertyFunctionRegistry
             return ; 
         }
         
-        registry.put(uri,new PropertyFunctionFactoryAuto(extClass)) ;
+        put(uri,new PropertyFunctionFactoryAuto(extClass)) ;
     }
+
+    /** Insert an PropertyFunction factory. Re-inserting with the same URI 
+     * overwrites the old entry. 
+     * 
+     * @param uri        String URI for the PropertyFunction
+     * @param factory    Factory to make PropertyFunction instances
+     */
+    public void put(String uri, PropertyFunctionFactory factory) { registry.put(uri,factory) ; }
 
     public boolean manages(String uri)
     {

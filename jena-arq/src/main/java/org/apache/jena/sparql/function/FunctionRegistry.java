@@ -69,13 +69,7 @@ public class FunctionRegistry //extends HashMap<String, Function>
 
     public FunctionRegistry()
     {}
-    /** Insert a function. Re-inserting with the same URI overwrites the old entry. 
-     * 
-     * @param uri
-     * @param f
-     */
-    public void put(String uri, FunctionFactory f) { registry.put(uri,f) ; }
-
+    
     /** Insert a class that is the function implementation 
      * 
      * @param uri           String URI
@@ -89,9 +83,16 @@ public class FunctionRegistry //extends HashMap<String, Function>
             return ; 
         }
         
-        registry.put(uri, new FunctionFactoryAuto(funcClass)) ;
+        put(uri, new FunctionFactoryAuto(funcClass)) ;
     }
-    
+
+    /** Insert a function. Re-inserting with the same URI overwrites the old entry. 
+     * 
+     * @param uri
+     * @param f
+     */
+    public void put(String uri, FunctionFactory f) { registry.put(uri,f) ; }
+
     /** Lookup by URI */
     public FunctionFactory get(String uri)
     {
