@@ -75,6 +75,12 @@ public class ProgressMonitor {
         this.timer = new Timer();
     }
 
+    /** Print a start message using the label */
+    public void startMessage() {
+        startMessage(null) ;
+    }
+    
+    /** Print a start message using a different string. */
     public void startMessage(String msg) {
         if ( msg != null )
             output.print(msg) ;
