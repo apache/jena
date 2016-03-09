@@ -33,8 +33,8 @@ import org.junit.runners.model.InitializationError ;
  * <li><tt>@Label("Some name")</tt></li>
  * <li><tt>@Manifests({"manifest1","manifest2",...})</tt></li>
  * </ul>
- *  This class sorts out the annotations, including provifing before/after class,
- *  then create a hierarchy of tests to run.
+ *  This class sorts out the annotations, including providing before/after class,
+ *  then creates a hierarchy of tests to run.
  *  @see RunnerOneManifest
  *  @see RunnerOneSPARQLTest
  */
