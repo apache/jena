@@ -17,10 +17,11 @@
  
 package org.seaborne.tdb2.loader;
 
+import org.apache.jena.atlas.lib.ProgressMonitor ;
 import org.apache.jena.atlas.logging.FmtLog ;
-import org.apache.jena.atlas.logging.ProgressLogger ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.system.ProgressStreamRDF ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.seaborne.tdb2.lib.TDBTxn ;
@@ -38,11 +39,11 @@ public class Loader {
     public static void bulkLoad(Dataset ds, String ... files) {
         DatasetGraphTDB dsg = (DatasetGraphTDB)ds.asDatasetGraph() ;
         StreamRDF s1 = StreamRDFLib.dataset(dsg) ;
-        ProgressLogger plog = new ProgressLogger(LOG, "Triples", 100000, 10) ;
-        StreamRDFMonitor sMonitor = new StreamRDFMonitor(s1, plog) ;
+        ProgressMonitor plog = ProgressMonitor.create(LOG, "Triples", 100000, 10) ;
+        ProgressStreamRDF sMonitor = new ProgressStreamRDF(s1, plog) ;
         StreamRDF s3 = sMonitor ;
 
-        sMonitor.startMonitor(); 
+        plog.start(); 
         TDBTxn.executeWrite(ds, () -> {
             for ( String fn : files ) {
                 if ( files.length > 1 )
@@ -50,19 +51,19 @@ public class Loader {
                 RDFDataMgr.parse(s3, fn) ;
             }
         }) ;
-        sMonitor.finishMonitor();  
+        plog.finish();
+        plog.finishMessage();
     }
     
     public static void bulkLoadBatching(Dataset ds, String ... files) {
         DatasetGraphTDB dsg = (DatasetGraphTDB)ds.asDatasetGraph() ;
 
         StreamRDFBatchSplit s1 = new StreamRDFBatchSplit(dsg, 10) ;
-        ProgressLogger plog = new ProgressLogger(LOG, "Triples", 100000, BATCH_SIZE) ;
+        ProgressMonitor plog = ProgressMonitor.create(LOG, "Triples", 100000, BATCH_SIZE) ;
         // Want the monitor on the outside to capture transaction wrapper costs.
-        StreamRDFMonitor sMonitor = new StreamRDFMonitor(s1, plog) ;
-        StreamRDF s3 = sMonitor ;
+        StreamRDF s3 = new ProgressStreamRDF(s1, plog) ;
 
-        sMonitor.startMonitor(); 
+        plog.start(); 
         TDBTxn.executeWrite(ds, () -> {
             for ( String fn : files ) {
                 if ( files.length > 1 )
@@ -70,7 +71,8 @@ public class Loader {
                 RDFDataMgr.parse(s3, fn) ;
             }
         }) ;
-        sMonitor.finishMonitor();  
+        plog.finish();  
+        plog.finishMessage();
     }
 }
 
