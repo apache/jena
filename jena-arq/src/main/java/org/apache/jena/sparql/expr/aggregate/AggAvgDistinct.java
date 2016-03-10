@@ -61,7 +61,7 @@ public class AggAvgDistinct extends AggregatorBase
 
     
     // ---- Accumulator
-    class AccAvgDistinct extends AccumulatorDistinctExpr
+    class AccAvgDistinct extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue total = noValuesToAvg ;
@@ -69,10 +69,10 @@ public class AggAvgDistinct extends AggregatorBase
         
         static final boolean DEBUG = false ;
         
-        public AccAvgDistinct(Expr expr) { super(expr) ; }
+        public AccAvgDistinct(Expr expr) { super(expr, true) ; }
 
         @Override
-        protected void accumulateDistinct(NodeValue nv, Binding binding, FunctionEnv functionEnv)
+        protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { 
             if ( nv.isNumber() )
             {

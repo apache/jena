@@ -59,7 +59,7 @@ public class AggCountVar extends AggregatorBase
     private static class AccCountVar extends AccumulatorExpr
     {
         private long count = 0 ;
-        public AccCountVar(Expr expr)   { super(expr) ; }
+        public AccCountVar(Expr expr)   { super(expr, false) ; }
 
         @Override
         public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)

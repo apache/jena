@@ -61,7 +61,8 @@ public class AggSample extends AggregatorBase
         // Sample: first evaluation of the expression that is not an error.
         private NodeValue sampleSoFar = null ;
 
-        public AccSample(Expr expr) { super(expr) ; }
+        // SAMPLE is different : it treats errors as "just another value" and tries to return a defined value if any have been seen.
+        public AccSample(Expr expr) { super(expr, false) ; }
 
         @Override
         public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) {

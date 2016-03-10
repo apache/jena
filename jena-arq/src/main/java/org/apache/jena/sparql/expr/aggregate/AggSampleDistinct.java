@@ -55,11 +55,11 @@ public class AggSampleDistinct extends AggregatorBase
     // ---- Accumulator
     private static class AccSampleDistict extends AccumulatorExpr
     {
-        // NOT AccumulatorDistinctExpr - avoid "distinct" overheads. 
-        // For sample, DISTINCT is a no-op - this code is picks the last element. 
+        // For sample, DISTINCT is a no-op - this code is picks the last element.
+        // it does not need the group to made made distinct.
         private NodeValue sampleSoFar = null ;
 
-        public AccSampleDistict(Expr expr) { super(expr)  ; }
+        public AccSampleDistict(Expr expr) { super(expr, false)  ; }
 
         @Override
         public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) {

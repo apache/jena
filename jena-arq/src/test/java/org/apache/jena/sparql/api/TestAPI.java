@@ -252,14 +252,12 @@ public class TestAPI extends BaseTest
         assertEquals(3, count) ;
     }
     
-    
     @Test public void testReuseQueryObject2()
     {
-        String queryString = "SELECT (count(?s) AS ?c) {?s ?p ?o} GROUP BY ?s";
+        String queryString = "SELECT (count(?o) AS ?c) {?s ?p ?o} GROUP BY ?s";
         Query q = QueryFactory.create(queryString) ;
         
         try(QueryExecution qExec = QueryExecutionFactory.create(q, m)) {
-            
             ResultSet rs = qExec.execSelect() ;
             QuerySolution qs = rs.nextSolution() ;
             assertEquals(3, qs.getLiteral("c").getInt()) ;

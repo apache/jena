@@ -18,6 +18,9 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
+import java.util.HashSet ;
+import java.util.Set ;
+
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprEvalException ;
@@ -28,18 +31,29 @@ import org.apache.jena.sparql.function.FunctionEnv ;
 /** Accumulator that passes down every value of an expression */
 public abstract class AccumulatorExpr implements Accumulator
 {
+    private final Set<NodeValue> values ;
     private long accCount = 0 ;
     protected long errorCount = 0 ; 
     private final Expr expr ;
+    private final boolean makeDistinct;
     
-    protected AccumulatorExpr(Expr expr) {
+    protected AccumulatorExpr(Expr expr, boolean makeDistinct) {
         this.expr = expr;
+        // Not all subclsses  use th wmachinary here to handled  DISTINCT.
+        // SAMPLE(DISTINCT) and COUNT(DISTINCT *) are different.
+        this.makeDistinct = makeDistinct ;
+        this.values  = makeDistinct ? new HashSet<>() : null ;
     }
     
     @Override
     final public void accumulate(Binding binding, FunctionEnv functionEnv) {
         NodeValue nv = ExprLib.evalOrNull(expr, binding, functionEnv);
         if ( nv != null ) {
+            if ( makeDistinct ) {
+                if ( values.contains(nv) )
+                    return ;
+                values.add(nv) ;
+            }
             try {
                 accumulate(nv, binding, functionEnv);
                 accCount++;
@@ -52,8 +66,10 @@ public abstract class AccumulatorExpr implements Accumulator
         errorCount++;
     }
     
-    // COUNT(?v) is different : errors of the expression/variable do not cause an aggregate eval error. 
-    // SAMPLE is different : it treats errors as "just another value" and tries to return a defined value if any have been seen. 
+    // COUNT(?v) and COUNT(DISTINCT ?v) are different
+    //     errors of the expression/variable do not cause an aggregate eval error. 
+    // SAMPLE, SAMPLE(DISTINCT) are different
+    //     treat errors as "just another value" and tries to return a defined value if any have been seen. 
 
     @Override
     public NodeValue getValue() {
