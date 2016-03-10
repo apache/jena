@@ -53,13 +53,7 @@ import org.apache.jena.sparql.util.Closure;
  * </p>
  *
  * <pre>
- * java jena.rdfcompare model1 model2 [lang1 [lang2]]
- *
- *       model1 and model2 can be file names or URL's
- *       lang1 and lang2 specify the language of the input and can be:
- *           RDF/XML
- *           N-TRIPLE
- *           N3
+ * java jena.rdfdiff model1 model2 lang1? lang2? base1? base2? 
  * </pre>
  */
 public class rdfdiff extends java.lang.Object {
