@@ -20,6 +20,7 @@ package org.apache.jena.sparql.function;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.sparql.ARQConstants ;
+import org.apache.jena.sparql.expr.aggregate.lib.StandardCustomAggregates ;
 import org.apache.jena.sparql.function.library.* ;
 import org.apache.jena.sparql.function.library.sqrt ;
 import org.apache.jena.sparql.function.library.leviathan.* ;
@@ -33,6 +34,8 @@ public class StandardFunctions
         String xfn = ARQConstants.fnPrefix ;
         String math = ARQConstants.mathPrefix ;
         String sparqlfn = ARQConstants.fnSparql ;
+        
+        StandardCustomAggregates.register();
         
         // See http://www.w3.org/TR/xpath-datamodel/#types-hierarchy
         // No durations here

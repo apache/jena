@@ -34,7 +34,7 @@ public interface Aggregator
     /** Create an accumulator for this aggregator */ 
     public Accumulator createAccumulator() ;
     
-    /** Value if there are no elements in any group : return null for no result */
+    /** Value if there are no groups : return null for no result */
     public Node getValueEmpty() ;
     
     public String toPrefixString()  ;

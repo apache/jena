@@ -2253,13 +2253,13 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public Expr FunctionCall() throws ParseException {
-                        String fname ; ExprList a ;
+                        String fname ; Args a ;
     fname = iri();
     a = ArgList();
      if ( AggregateRegistry.isRegistered(fname) ) {
          if ( ! getAllowAggregatesInExpressions() )
             throwParseException("Aggregate expression not legal at this point : "+fname, -1, -1) ;
-         Aggregator agg = AggregatorFactory.createCustom(true, false, fname, a) ;
+         Aggregator agg = AggregatorFactory.createCustom(fname, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
          {if (true) return exprAgg ;}
      }
@@ -2267,9 +2267,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public ExprList ArgList() throws ParseException {
-                       Expr expr ; boolean distinct = false ;
-                      ExprList args = new ExprList() ; Token t ;
+  final public Args ArgList() throws ParseException {
+                   Expr expr ; Args args = new Args() ; Token t ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NIL:
       jj_consume_token(NIL);
@@ -2279,7 +2278,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case DISTINCT:
         t = jj_consume_token(DISTINCT);
-                        distinct = true ;
+                        args.distinct = true ;
         int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
           if ( ! getAllowAggregatesInExpressions() )
               throwParseException("Aggregate expression not legal at this point",
@@ -2317,7 +2316,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public ExprList ExpressionList() throws ParseException {
-                              Expr expr = null ; ExprList args = new ExprList() ;
+                              Expr expr = null ; ExprList exprList = new ExprList() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NIL:
       jj_consume_token(NIL);
@@ -2325,7 +2324,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case LPAREN:
       jj_consume_token(LPAREN);
       expr = Expression();
-                          args.add(expr) ;
+                          exprList.add(expr) ;
       label_21:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2338,7 +2337,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
         }
         jj_consume_token(COMMA);
         expr = Expression();
-                                     args.add(expr) ;
+                                     exprList.add(expr) ;
       }
       jj_consume_token(RPAREN);
       break;
@@ -2347,7 +2346,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       jj_consume_token(-1);
       throw new ParseException();
     }
-    {if (true) return args ;}
+    {if (true) return exprList ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -4394,9 +4393,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
   final public Expr Aggregate() throws ParseException {
                      Aggregator agg = null ; String sep = null ;
-                     boolean distinct = false ;
                      Expr expr = null ; Expr expr2 = null ;
-                     ExprList a = new ExprList() ;
+                     boolean distinct = false ;
                      ExprList ordered = new ExprList() ;
                      Token t ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -4605,7 +4603,6 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
         ;
       }
       expr = Expression();
-                          a.add(expr) ;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SEMICOLON:
         jj_consume_token(SEMICOLON);
@@ -4625,18 +4622,16 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       jj_consume_token(-1);
       throw new ParseException();
     }
-     if ( ! getAllowAggregatesInExpressions() )
-            throwParseException("Aggregate expression not legal at this point",
-                                 t.beginLine, t.beginColumn) ;
-     Expr exprAgg = getQuery().allocAggregate(agg) ;
-     {if (true) return exprAgg ;}
+    if ( ! getAllowAggregatesInExpressions() )
+           throwParseException("Aggregate expression not legal at this point",
+                                t.beginLine, t.beginColumn) ;
+    Expr exprAgg = getQuery().allocAggregate(agg) ;
+    {if (true) return exprAgg ;}
     throw new Error("Missing return statement in function");
   }
 
   final public Expr iriOrFunction() throws ParseException {
-                         String iri ; ExprList a = null ;
-                         ExprList params = null ;
-                         boolean distinct = false ;
+                         String iri ; Args a = null ;
     iri = iri();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAREN:
@@ -4652,7 +4647,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     if ( AggregateRegistry.isRegistered(iri) ) {
          if ( ! getAllowAggregatesInExpressions() )
             throwParseException("Aggregate expression not legal at this point : "+iri, -1, -1) ;
-         Aggregator agg = AggregatorFactory.createCustom(true, false, iri, a) ;
+         Aggregator agg = AggregatorFactory.createCustom(iri, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
          {if (true) return exprAgg ;}
       }

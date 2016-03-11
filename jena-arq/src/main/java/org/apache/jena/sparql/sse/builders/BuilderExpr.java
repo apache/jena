@@ -1402,7 +1402,7 @@ public class BuilderExpr
             if ( distinct )
                 x = x.cdr();
             ExprList e = buildExprListUntagged(x, 0) ;
-            Aggregator agg = AggregatorFactory.createCustom(false, distinct, z.getNode().getURI(), e) ;
+            Aggregator agg = AggregatorFactory.createCustom(z.getNode().getURI(), distinct, e) ;
             return new ExprAggregator(null, agg) ; 
         }
     } ;

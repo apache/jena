@@ -42,13 +42,13 @@ public class AggCustom extends AggregatorBase
     
     private final String iri ;
 
-    public AggCustom(String iri, ExprList exprs) { 
-        super("AGG", false, exprs) ;
+    public AggCustom(String iri, boolean distinct, ExprList exprs) { 
+        super("AGG", distinct, exprs) ;
         this.iri = iri ; 
     } 
     
     @Override
-    public Aggregator copy(ExprList exprs) { return new AggCustom(iri, exprs) ; }
+    public Aggregator copy(ExprList exprs) { return new AggCustom(iri, isDistinct, exprs) ; }
     
     @Override
     public String asSparqlExpr(SerializationContext sCxt) {
@@ -104,7 +104,7 @@ public class AggCustom extends AggregatorBase
         AccumulatorFactory f = AggregateRegistry.getAccumulatorFactory(iri) ;
         if ( f == null )
             throw new QueryExecException("Unregistered aggregate: "+iri) ;
-        return f.createAccumulator(this) ;
+        return f.createAccumulator(this, isDistinct) ;
     }
 
     @Override

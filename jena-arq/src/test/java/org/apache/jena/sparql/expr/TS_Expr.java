@@ -45,6 +45,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestExprLib.class
     , TestExprTransform.class
     , TestCustomAggregates.class
+    , TestStatisticsAggregates.class
 })
 
 public class TS_Expr

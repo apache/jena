@@ -679,7 +679,7 @@ Expr Constraint() : { Expr c ; }
   )
   { return c ; }
 }
-Expr FunctionCall() : { String fname ; ExprList a ; }
+Expr FunctionCall() : { String fname ; Args a ; }
 {
   fname = iri()
   a = ArgList()
@@ -687,21 +687,20 @@ Expr FunctionCall() : { String fname ; ExprList a ; }
      if ( AggregateRegistry.isRegistered(fname) ) {
          if ( ! getAllowAggregatesInExpressions() )
             throwParseException("Aggregate expression not legal at this point : "+fname, -1, -1) ;
-         Aggregator agg = AggregatorFactory.createCustom(true, false, fname, a) ;
+         Aggregator agg = AggregatorFactory.createCustom(fname, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
          return exprAgg ;
      }
      return new E_Function(fname, a) ;
   }
 }
-ExprList ArgList() : { Expr expr ; boolean distinct = false ;
-                      ExprList args = new ExprList() ; Token t ; }
+Args ArgList() : { Expr expr ; Args args = new Args() ; Token t ; }
 {
   (
     <NIL>
   |
     <LPAREN>
-      (t = <DISTINCT> { distinct = true ; }
+      (t = <DISTINCT> { args.distinct = true ; }
       { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
         {
           if ( ! getAllowAggregatesInExpressions() )
@@ -715,17 +714,17 @@ ExprList ArgList() : { Expr expr ; boolean distinct = false ;
    )
     { return args ; }
 }
-ExprList ExpressionList() : { Expr expr = null ; ExprList args = new ExprList() ;}
+ExprList ExpressionList() : { Expr expr = null ; ExprList exprList = new ExprList() ;}
 {
   (
     <NIL>
   |
     <LPAREN>
-    expr = Expression() { args.add(expr) ; }
-      (<COMMA> expr = Expression() { args.add(expr) ; } )*
+    expr = Expression() { exprList.add(expr) ; }
+      (<COMMA> expr = Expression() { exprList.add(expr) ; } )*
     <RPAREN>
   )
-  { return args ; }
+  { return exprList ; }
 }
 Template ConstructTemplate() : { TripleCollectorBGP acc = new TripleCollectorBGP();
                                  Template t = new Template(acc.getBGP()) ; }
@@ -1298,9 +1297,8 @@ Expr NotExistsFunc() : { Element el ; }
    { return createExprNotExists(el) ; }
 }
 Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
-                     boolean distinct = false ;
                      Expr expr = null ; Expr expr2 = null ;
-                     ExprList a = new ExprList() ;
+                     boolean distinct = false ;
                      ExprList ordered = new ExprList() ;
                      Token t ; }
 {
@@ -1324,22 +1322,20 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
   | t = <GROUP_CONCAT>
     <LPAREN>
     (t = <DISTINCT> { distinct = true ; })?
-    expr = Expression() { a.add(expr) ; }
+    expr = Expression()
     (<SEMICOLON> <SEPARATOR> <EQ> sep=String())?
     <RPAREN>
     { agg = AggregatorFactory.createGroupConcat(distinct, expr, sep, ordered) ; }
-   )
-   {
-     if ( ! getAllowAggregatesInExpressions() )
-            throwParseException("Aggregate expression not legal at this point",
-                                 t.beginLine, t.beginColumn) ;
-   }
-   { Expr exprAgg = getQuery().allocAggregate(agg) ;
-     return exprAgg ; }
+  )
+  {
+    if ( ! getAllowAggregatesInExpressions() )
+           throwParseException("Aggregate expression not legal at this point",
+                                t.beginLine, t.beginColumn) ;
+  }
+  { Expr exprAgg = getQuery().allocAggregate(agg) ;
+    return exprAgg ; }
 }
-Expr iriOrFunction() : { String iri ; ExprList a = null ;
-                         ExprList params = null ;
-                         boolean distinct = false ; }
+Expr iriOrFunction() : { String iri ; Args a = null ; }
 {
   iri = iri()
   (a = ArgList())?
@@ -1348,7 +1344,7 @@ Expr iriOrFunction() : { String iri ; ExprList a = null ;
     if ( AggregateRegistry.isRegistered(iri) ) {
          if ( ! getAllowAggregatesInExpressions() )
             throwParseException("Aggregate expression not legal at this point : "+iri, -1, -1) ;
-         Aggregator agg = AggregatorFactory.createCustom(true, false, iri, a) ;
+         Aggregator agg = AggregatorFactory.createCustom(iri, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
          return exprAgg ;
       }

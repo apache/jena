@@ -16,18 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.expr.aggregate;
+package org.apache.jena.sparql.expr.aggregate.lib;
 
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.sparql.expr.Expr ;
 
-/** An Accumulator is the processor for each section of a group, so
- *  there is one Accumulator for each group key.
- */
+/** Aggregate - statistical standard deviation - population (i.e. N) */ 
+public class AccStatStdDevPopulation extends AccStatVarPopulation {
 
-public interface Accumulator
-{
-    public void accumulate(Binding binding, FunctionEnv functionEnv) ;
-    public NodeValue getValue() ;
+    public AccStatStdDevPopulation(Expr expr, boolean distinct) {
+        super(expr, distinct);
+    }
+    
+    @Override
+    protected double calc() {
+        return Math.sqrt(super.calc());
+    }
 }
