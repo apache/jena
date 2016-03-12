@@ -34,8 +34,11 @@ public class StandardFunctions
         String math = ARQConstants.mathPrefix ;
         String sparqlfn = ARQConstants.fnSparql ;
         
-        // See http://www.w3.org/TR/xpath-datamodel/#types-hierarchy
-        // No durations here
+        // Update documentation in xsd-support.md
+        
+        // See also:
+        // http://www.w3.org/TR/xpath-datamodel/#types-hierarchy
+        // https://www.w3.org/TR/xpath-datamodel-3/
         
         addCastNumeric(registry, XSDDatatype.XSDdecimal) ;
         addCastNumeric(registry, XSDDatatype.XSDinteger) ;
