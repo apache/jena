@@ -90,6 +90,7 @@ import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.path.* ;
 import org.apache.jena.sparql.expr.aggregate.* ;
 #ifdef  UPDATE
+import org.apache.jena.sparql.expr.aggregate.lib.* ;
 import org.apache.jena.update.* ;
 import org.apache.jena.sparql.modify.request.* ;
 #endif
@@ -2034,6 +2035,24 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
     { agg = AggregatorFactory.createGroupConcat(distinct, expr, sep, ordered) ; }
 
 #ifdef ARQ
+  | t = <STDEV> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createCustom(AggURI.stdev, distinct, expr) ; }
+
+  | t = <STDEV_SAMP> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createCustom(AggURI.stdev_samp, distinct, expr) ; }
+
+  | t = <STDEV_POP> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createCustom(AggURI.stdev_pop, distinct, expr) ; }
+
+  | t = <VARIANCE> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createCustom(AggURI.variance, distinct, expr) ; }
+
+  | t = <VAR_SAMP> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createCustom(AggURI.var_samp, distinct, expr) ; }
+
+  | t = <VAR_POP> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createCustom(AggURI.var_pop, distinct, expr) ; }
+
     /* Explicit syntax (aggregate even if not registered) */
   | t = <AGG>
     { String iri ; }
@@ -2301,7 +2320,13 @@ TOKEN [IGNORE_CASE] :
 |  < MAX:         "max" >
 |  < SUM:         "sum" >
 |  < AVG:         "avg" >
-|  < STDDEV:      "stdev" >
+|  < STDEV:       "stdev" >
+|  < STDEV_SAMP:  "stdev_samp" >
+|  < STDEV_POP:   "stdev_pop" >
+|  < VARIANCE:    "variance" >
+|  < VAR_SAMP:    "var_samp" >
+|  < VAR_POP:     "var_pop" >
+
 |  < SAMPLE:      "sample" >
 |  < GROUP_CONCAT: "group_concat" >
 

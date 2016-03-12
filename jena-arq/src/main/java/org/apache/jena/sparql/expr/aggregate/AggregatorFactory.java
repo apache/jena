@@ -67,6 +67,10 @@ public class AggregatorFactory {
         return createCustom(iri, a.distinct, ExprList.copy(a)) ;
     }
     
+    public static Aggregator createCustom(String iri, boolean distinct, Expr expr) {
+        return createCustom(iri, distinct, new ExprList(expr)) ;
+    }
+    
     public static Aggregator createCustom(String iri, boolean distinct, ExprList exprs) {
         if ( ! AggregateRegistry.isRegistered(iri) )
             Log.warn(AggregatorFactory.class, "Not registered: custom aggregate <"+iri+">") ;

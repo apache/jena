@@ -79,6 +79,13 @@
 [<SAMPLE>]     ::= 'SAMPLE'
 [<GROUP_CONCAT>]     ::= 'GROUP_CONCAT'
 
+[<STDEV>]      ::= 'STDEV'
+[<STDEV_SAMP>] ::= 'STDEVP_SAMP'
+[<STDEV_POP>]  ::= 'STDEV_POP'
+[<VARIANCE>]   ::= 'VARIANCE'
+[<VAR_SAMP>]   ::= 'VAR_SAMP'
+[<VAR_POP>]    ::= 'VAR_POP'
+
 [<SERVICE>]    ::=    'SERVICE'
 [<MINUS_P>]    ::=    'MINUS'
 [<DIFF>]       ::=    'DIFF'

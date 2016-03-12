@@ -31,6 +31,7 @@ import org.apache.jena.sparql.syntax.* ;
 import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.path.* ;
 import org.apache.jena.sparql.expr.aggregate.* ;
+import org.apache.jena.sparql.expr.aggregate.lib.* ;
 import org.apache.jena.update.* ;
 import org.apache.jena.sparql.modify.request.* ;
 public class SPARQLParser11 extends SPARQLParser11Base
@@ -1498,7 +1499,12 @@ TOKEN [IGNORE_CASE] :
 | < MAX: "max" >
 | < SUM: "sum" >
 | < AVG: "avg" >
-| < STDDEV: "stdev" >
+| < STDEV: "stdev" >
+| < STDEV_SAMP: "stdev_samp" >
+| < STDEV_POP: "stdev_pop" >
+| < VARIANCE: "variance" >
+| < VAR_SAMP: "var_samp" >
+| < VAR_POP: "var_pop" >
 | < SAMPLE: "sample" >
 | < GROUP_CONCAT: "group_concat" >
 | < FILTER: "filter" >
