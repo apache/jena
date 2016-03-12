@@ -69,6 +69,9 @@ public class ARQConstants
     /** The ARQ function library URI space */
     public static final String ARQFunctionLibraryURI = "http://jena.apache.org/ARQ/function#" ;
     
+    /** The ARQ aggregate function library URI space */
+    public static final String ARQAggregateLibraryURI = "http://jena.apache.org/ARQ/function/aggregate#" ;
+
     /** The ARQ function library URI space - old Jena2 name
      * @deprecated Use #ARQFunctionLibraryURI 
      */

@@ -22,6 +22,7 @@ import java.util.HashMap ;
 import java.util.Map ;
 
 import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.expr.aggregate.lib.StandardCustomAggregates ;
 
 /** Registry of custom aggregates
  * There is only a single global registry of aggregates - it affects parsing
@@ -31,6 +32,10 @@ public class AggregateRegistry {
     
     private static Map<String, AccumulatorFactory> registry         = new HashMap<>() ;
     private static Map<String, Node>               noGroupValues    = new HashMap<>() ;
+    
+    public static void init() {
+        StandardCustomAggregates.register();
+    }
     
     /**
      * Register a custom aggregate, with its associated factory for accumulators.

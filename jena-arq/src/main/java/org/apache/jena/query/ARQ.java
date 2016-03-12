@@ -23,6 +23,7 @@ import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.optimize.TransformOrderByDistinctApplication ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.engine.http.Service ;
+import org.apache.jena.sparql.expr.aggregate.AggregateRegistry ;
 import org.apache.jena.sparql.function.FunctionRegistry ;
 import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.ARQMgt ;
@@ -578,8 +579,9 @@ public class ARQ
             // initialization loops with RIOT.init() called directly.
             RIOT.register() ;
             
-            // Initialise
+            // Initialise the standard library.
             FunctionRegistry.init() ;
+            AggregateRegistry.init() ;
             PropertyFunctionRegistry.init() ;
             
             JenaSystem.logLifecycle("ARQ.init - finish") ;

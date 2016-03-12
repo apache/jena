@@ -29,36 +29,37 @@ import org.apache.jena.sparql.expr.aggregate.AggregateRegistry ;
  */ 
 public class StandardCustomAggregates {
 
-    public static String BASE = ARQConstants.ARQFunctionLibraryURI ;
+    public static String BASE = ARQConstants.ARQAggregateLibraryURI ;
+    public static String BASE2 = ARQConstants.ARQFunctionLibraryURI ;   
 
     public static void register() {
-        // Non-DISTINCT
+        // The statistics aggregates
         AccumulatorFactory f_VarP =     (agg, distinct) -> new AccStatVarPopulation(agg.getExpr(), distinct) ;
         AccumulatorFactory f_Var =      (agg, distinct) -> new AccStatVarSample(agg.getExpr(), distinct) ;
         AccumulatorFactory f_StdevP =   (agg, distinct) -> new AccStatStdDevPopulation(agg.getExpr(), distinct) ;
         AccumulatorFactory f_Stdev =    (agg, distinct) -> new AccStatStdDevSample(agg.getExpr(), distinct) ;
         
-//        AggregateRegistry.register(BASE+"stddevp", f_StdevP, null) ;     // Common? typo
-//        AggregateRegistry.register(BASE+"stddev", f_Stdev, null) ;       // Common? typo
-        AggregateRegistry.register(BASE+"stdevp", f_StdevP, null) ;      // SQL spelling
-        AggregateRegistry.register(BASE+"stdev", f_Stdev, null) ;        // SQL spelling
+        AggregateRegistry.register(BASE+"stdevp",   f_StdevP, null) ;
+        AggregateRegistry.register(BASE+"stdev",    f_Stdev, null) ;
+        AggregateRegistry.register(BASE+"varp",     f_VarP, null) ;
+        AggregateRegistry.register(BASE+"var",      f_Var, null) ;
         
-//        AggregateRegistry.register(BASE+"variancep", f_VarP, null) ;     // Longer
-//        AggregateRegistry.register(BASE+"variance", f_Var, null) ;       // Longer
-        AggregateRegistry.register(BASE+"varp", f_VarP, null) ;          // SQL spelling
-        AggregateRegistry.register(BASE+"var", f_Var, null) ;            // SQL spelling
-        
-        // DISTINCT versions for 
-        // 
+        // Again in the afn@ (not encouraged but easy to do)
+        AggregateRegistry.register(BASE2+"stdevp",  f_StdevP, null) ;
+        AggregateRegistry.register(BASE2+"stdev",   f_Stdev, null) ;
+        AggregateRegistry.register(BASE2+"varp",    f_VarP, null) ;
+        AggregateRegistry.register(BASE2+"var",     f_Var, null) ;
+
+        // DISTINCT versions as URIs.
         AccumulatorFactory f_VarP_d =     (agg, distinct) -> new AccStatVarPopulation(agg.getExpr(), true) ;
         AccumulatorFactory f_Var_d =      (agg, distinct) -> new AccStatVarSample(agg.getExpr(), true) ;
         AccumulatorFactory f_StdevP_d =   (agg, distinct) -> new AccStatStdDevPopulation(agg.getExpr(), true) ;
         AccumulatorFactory f_Stdev_d =    (agg, distinct) -> new AccStatStdDevSample(agg.getExpr(), true) ;
 
-        AggregateRegistry.register(BASE+"varpd", f_VarP_d, null) ;
-        AggregateRegistry.register(BASE+"vard", f_Var_d, null) ;
-        AggregateRegistry.register(BASE+"stdevpd", f_StdevP_d, null) ;
-        AggregateRegistry.register(BASE+"stdevd", f_Stdev_d, null) ;
+        AggregateRegistry.register(BASE+"varpd",    f_VarP_d, null) ;
+        AggregateRegistry.register(BASE+"vard",     f_Var_d, null) ;
+        AggregateRegistry.register(BASE+"stdevpd",  f_StdevP_d, null) ;
+        AggregateRegistry.register(BASE+"stdevd",   f_Stdev_d, null) ;
 
     }
 }
