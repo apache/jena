@@ -153,7 +153,7 @@ public class RiotLib
      * using the label to blank node scheme provided. 
      */
     public static FactoryRDF factoryRDF(LabelToNode labelMapping) {
-        return new FactoryRDFStd(labelMapping);
+        return new FactoryRDFCaching(FactoryRDFCaching.DftNodeCacheSize, labelMapping);
     }
 
     /** Create a new (not influenced by anything else) FactoryRDF

@@ -47,6 +47,15 @@ public class FactoryRDFCaching extends FactoryRDFStd {
         cache = setCache(cacheSize) ;
     }
 
+    public FactoryRDFCaching(LabelToNode labelMapping) {
+        this(DftNodeCacheSize, labelMapping) ;
+    }
+
+    public FactoryRDFCaching(int cacheSize, LabelToNode labelMapping) {
+        super(labelMapping) ;
+        cache = setCache(cacheSize) ;
+    }
+
     private Cache<String, Node> setCache(int cacheSize) {
         return CacheBuilder.newBuilder()
             .maximumSize(cacheSize)
@@ -54,11 +63,6 @@ public class FactoryRDFCaching extends FactoryRDFStd {
             //.recordStats()
             .concurrencyLevel(1)
             .build() ;
-    }
-
-    public FactoryRDFCaching(int cacheSize, LabelToNode labelMapping) {
-        super(labelMapping) ;
-        cache = setCache(cacheSize) ;
     }
 
     @Override
