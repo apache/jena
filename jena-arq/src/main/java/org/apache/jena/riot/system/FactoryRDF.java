@@ -19,38 +19,39 @@
 package org.apache.jena.riot.system;
 
 import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 
 /**
  * Create core RDF objects: {@link Node}s, {@link Triple}s, {@link Quad}s,
- * {@link Graph}, {@link DatasetGraph}s.
- * <p>
+ * which are system-wide.
  */
 public interface FactoryRDF {
-    // ?? Are these too varied?
-    public Graph createGraph() ;
-    // ?? Are these too varied?
-    public DatasetGraph createDatasetGraph() ;
-    public Triple createTriple(Node subject, Node predicate, Node object) ;
-    public Quad createQuad(Node graph, Node subject, Node predicate, Node object) ;
-    public Node createURI(String uriStr) ;
-    public Node createTypedLiteral(String lexical, RDFDatatype datatype) ;
-    public Node createLangLiteral(String lexical, String langTag) ;
-    public Node createStringLiteral(String lexical) ;
-    /** Create a blank node */
+    public Triple createTriple(Node subject, Node predicate, Node object);
+
+    public Quad createQuad(Node graph, Node subject, Node predicate, Node object);
+
+    public Node createURI(String uriStr);
+
+    public Node createTypedLiteral(String lexical, RDFDatatype datatype);
+
+    public Node createLangLiteral(String lexical, String langTag);
+
+    public Node createStringLiteral(String lexical);
+
+    /** Create a blank node which is completely new and used nowhere else. */
     public Node createBlankNode() ;
+
     /** Create a blank node with the given string as internal system id */ 
     public Node createBlankNode(String label) ;
+    
     /** Create a blank with the internal system id taken from 128 bit number provided.
+     * This must be compatible with {@link java.util.UUID} so the variant and version
+     * bits must agree with <a href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.   
+     * 
+     *  @See java.util.UUID
+     *  @See <a href="http://www.ietf.org/rfc/rfc4122.txt" ><i>RFC&nbsp;4122: A Universally Unique IDentifier (UUID) URN Namespace</i></a>
      */
     public Node createBlankNode(long mostSigBits, long leastSigBits) ;
-
-//    // Object for scope better?
-//    public Node createBlankNode(Node scope, String label) ;
-//    // Object for scope better?
-//    public Node createBlankNode(Node scope) ;
 }

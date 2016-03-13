@@ -19,15 +19,11 @@
 package org.apache.jena.riot.system;
 
 import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.lang.LabelToNode ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.graph.GraphFactory ;
 
 public class FactoryRDFStd implements FactoryRDF {
     // Needs reset?
@@ -41,16 +37,6 @@ public class FactoryRDFStd implements FactoryRDF {
         this.labelMapping = labelMapping ; 
     }
     
-    @Override
-    public Graph createGraph() {
-        return GraphFactory.createDefaultGraph() ;
-    }
-
-    @Override
-    public DatasetGraph createDatasetGraph() {
-        return DatasetGraphFactory.create(); // createTxnMem() ;
-    }
-
     @Override
     public Triple createTriple(Node subject, Node predicate, Node object) {
         return Triple.create(subject, predicate, object);

@@ -20,17 +20,12 @@ package org.apache.jena.riot.system;
 
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertNotEquals ;
-import static org.junit.Assert.assertNotNull ;
 import static org.junit.Assert.assertTrue ;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.lang.LabelToNode ;
-import org.apache.jena.riot.system.FactoryRDF ;
-import org.apache.jena.riot.system.FactoryRDFStd ;
-import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.vocabulary.RDF ;
 import org.junit.Test ;
@@ -117,16 +112,6 @@ public class TestFactoryRDF {
         assertEquals(s, quad.getSubject()) ;
         assertEquals(p, quad.getPredicate()) ;
         assertEquals(o, quad.getObject()) ;
-    }
-    
-    @Test public void factoryRDF_graph_01() {
-        Graph graph = factory.createGraph() ;
-        assertNotNull(graph) ;
-    }
-
-    @Test public void factoryRDF_dataset_01() {
-        DatasetGraph dsg = factory.createDatasetGraph() ;
-        assertNotNull(dsg) ;
     }
 }
 
