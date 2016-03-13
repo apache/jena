@@ -53,7 +53,7 @@ public class CustomAggregate {
      */
     static AccumulatorFactory myAccumulatorFactory = new AccumulatorFactory() {
         @Override
-        public Accumulator createAccumulator(AggCustom agg) { return new MyAccumulator(agg) ; }
+        public Accumulator createAccumulator(AggCustom agg, boolean distinct) { return new MyAccumulator(agg) ; }
     } ;
     
     /**
