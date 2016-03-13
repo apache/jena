@@ -18,6 +18,8 @@
 
 package org.apache.jena.riot.system;
 
+import org.apache.jena.atlas.lib.BitsLong ;
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -70,24 +72,28 @@ public class FactoryRDFStd implements FactoryRDF {
 
     @Override
     public Node createBlankNode(long mostSigBits, long leastSigBits) {
+        if ( false ) {
+            //int version = (int)BitsLong.unpack(mostSigBits, 12,16) ;
+            int variant = (int)BitsLong.unpack(leastSigBits, 62, 64) ;
+            if ( variant != 2 ) 
+                Log.warn(this, "Bad variant "+variant+" for blank node") ;
+        }
+        
         // XXX Style: Do this fast.  Guava? Apache commons? Special case for char[32]
         // (Eventually, blank node Nodes will have two longs normally.)  
         return createBlankNode(String.format("%08X%08X", mostSigBits, leastSigBits)) ;
     }
 
     // Fixed scope.
-    private static Node scope = NodeFactory.createURI("urn:jena:global_scope") ;
-    // Scope
+    private static Node scope = null ;
+
     @Override
     public Node createBlankNode(String label) {
-        //return NodeFactory.createBlankNode(label) ;
         return labelMapping.get(scope, label) ;
     }
 
-    // Scope
     @Override
     public Node createBlankNode() {
-        //return NodeFactory.createBlankNode() ;
         return labelMapping.create() ;
     }
     
