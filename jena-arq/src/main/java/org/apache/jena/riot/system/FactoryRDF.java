@@ -50,8 +50,8 @@ public interface FactoryRDF {
      * This must be compatible with {@link java.util.UUID} so the variant and version
      * bits must agree with <a href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.   
      * 
-     *  @See java.util.UUID
-     *  @See <a href="http://www.ietf.org/rfc/rfc4122.txt" ><i>RFC&nbsp;4122: A Universally Unique IDentifier (UUID) URN Namespace</i></a>
+     *  @see java.util.UUID
+     *  @see <a href="http://www.ietf.org/rfc/rfc4122.txt" ><i>RFC&nbsp;4122: A Universally Unique IDentifier (UUID) URN Namespace</i></a>
      */
     public Node createBlankNode(long mostSigBits, long leastSigBits) ;
 }
