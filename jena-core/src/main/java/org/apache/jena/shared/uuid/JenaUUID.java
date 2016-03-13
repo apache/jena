@@ -25,6 +25,7 @@ package org.apache.jena.shared.uuid ;
 import java.util.Locale ;
 import java.util.UUID ;
 
+import org.apache.jena.atlas.lib.BitsLong ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -56,12 +57,12 @@ public abstract class JenaUUID
     protected int _getVersion(long mostSigBits, long leastSigBits) {
         // int variant = (int)((UUID_V1_Gen.maskVariant & leastSigBits)>>>62) ;
         // int version = (int)((UUID_V1_Gen.maskVersion & mostSigBits)>>>12) ;
-        int version = (int)Bits.unpack(mostSigBits, 12, 16) ;
+        int version = (int)BitsLong.unpack(mostSigBits, 12, 16) ;
         return version ;
     }
 
     protected int _getVariant(long mostSigBits, long leastSigBits) {
-        int variant = (int)Bits.unpack(leastSigBits, 62, 64) ;
+        int variant = (int)BitsLong.unpack(leastSigBits, 62, 64) ;
         return variant ;
     }
 
@@ -94,7 +95,7 @@ public abstract class JenaUUID
     
     // Time low - which includes the incremental count. 
     @Override
-    public int hashCode() { return (int) Bits.unpack(getMostSignificantBits(), 32, 64) ; }
+    public int hashCode() { return (int) BitsLong.unpack(getMostSignificantBits(), 32, 64) ; }
     
     @Override
     public boolean equals(Object other)
@@ -170,9 +171,9 @@ public abstract class JenaUUID
         //       ^        ^    ^    ^    ^           
         // Byte: 0        4    6    8    10
         // Char: 0        9    14   19   24  including hyphens
-        int x = (int)Bits.unpack(s, 19, 23) ;
+        int x = (int)BitsLong.unpack(s, 19, 23) ;
         int variant = (x >>> 14) ;
-        int version = (int)Bits.unpack(s, 14, 15) ;
+        int version = (int)BitsLong.unpack(s, 14, 15) ;
 
         if ( variant == Var_Std ) {
             switch (version) {
@@ -214,15 +215,15 @@ public abstract class JenaUUID
     /** Format using two longs - assumed valid for an UUID of some kind */
     public static String toString(long mostSignificantBits, long leastSignificantBits) {
         StringBuffer sb = new StringBuffer(36) ;
-        JenaUUID.toHex(sb, Bits.unpack(mostSignificantBits, 32, 64), 4) ;
+        JenaUUID.toHex(sb, BitsLong.unpack(mostSignificantBits, 32, 64), 4) ;
         sb.append('-') ;
-        JenaUUID.toHex(sb, Bits.unpack(mostSignificantBits, 16, 32), 2) ;
+        JenaUUID.toHex(sb, BitsLong.unpack(mostSignificantBits, 16, 32), 2) ;
         sb.append('-') ;
-        JenaUUID.toHex(sb, Bits.unpack(mostSignificantBits, 0, 16), 2) ;
+        JenaUUID.toHex(sb, BitsLong.unpack(mostSignificantBits, 0, 16), 2) ;
         sb.append('-') ;
-        JenaUUID.toHex(sb, Bits.unpack(leastSignificantBits, 48, 64), 2) ;
+        JenaUUID.toHex(sb, BitsLong.unpack(leastSignificantBits, 48, 64), 2) ;
         sb.append('-') ;
-        JenaUUID.toHex(sb, Bits.unpack(leastSignificantBits, 0, 48), 6) ;
+        JenaUUID.toHex(sb, BitsLong.unpack(leastSignificantBits, 0, 48), 6) ;
         return sb.toString() ;
     }
 

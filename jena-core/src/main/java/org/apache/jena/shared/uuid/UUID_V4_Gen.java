@@ -18,8 +18,10 @@
 
 package org.apache.jena.shared.uuid;
 
-import java.util.* ;
+import java.util.Locale ;
+import java.util.Random ;
 
+import org.apache.jena.atlas.lib.BitsLong ;
 import org.apache.jena.shared.uuid.JenaUUID.UUIDFormatException ;
 
 
@@ -45,8 +47,8 @@ public class UUID_V4_Gen implements UUIDFactory
         init() ;
         long mostSigBits = random.nextLong() ;
         long leastSigBits = random.nextLong() ;
-        mostSigBits = Bits.pack(mostSigBits, versionHere, 12, 16) ;
-        leastSigBits = Bits.pack(leastSigBits, variantHere, 62, 64) ;
+        mostSigBits = BitsLong.pack(mostSigBits, versionHere, 12, 16) ;
+        leastSigBits = BitsLong.pack(leastSigBits, variantHere, 62, 64) ;
         return new UUID_V4(mostSigBits, leastSigBits) ;
     }
     
@@ -80,14 +82,14 @@ public class UUID_V4_Gen implements UUIDFactory
         //       ^        ^    ^    ^    ^           
         // Byte: 0        4    6    8    10
         // Char: 0        9    14   19   24  including hyphens
-        long mostSigBits = Bits.unpack(s, 0, 8) ;
+        long mostSigBits = BitsLong.unpack(s, 0, 8) ;
         // Skip -
-        mostSigBits = mostSigBits << 16 | Bits.unpack(s, 9, 13) ;
+        mostSigBits = mostSigBits << 16 | BitsLong.unpack(s, 9, 13) ;
         // Skip -
-        mostSigBits = mostSigBits << 16 | Bits.unpack(s, 14, 18) ;
+        mostSigBits = mostSigBits << 16 | BitsLong.unpack(s, 14, 18) ;
         
-        long leastSigBits = Bits.unpack(s, 19, 23) ;
-        leastSigBits = leastSigBits<<48 | Bits.unpack(s, 24, 36) ;
+        long leastSigBits = BitsLong.unpack(s, 19, 23) ;
+        leastSigBits = leastSigBits<<48 | BitsLong.unpack(s, 24, 36) ;
         return new UUID_V4(mostSigBits, leastSigBits) ;
     }
     
