@@ -132,14 +132,14 @@ public class SyntaxVarScope
     private static void checkExprListAssignment(Collection<Var> vars, VarExprList exprList)
     {
         Set<Var> vars2 = new LinkedHashSet<>(vars) ;
-
-        for ( Var v : exprList.getVars() )
-        {
-            // In scope?
-            Expr e = exprList.getExpr( v );
+        exprList.forEach((v,e) -> {
+            Set<Var> varInExpr = e.getVarsMentioned() ;
+            // Include mentioned variables
+            // These may be unused in the query (in vars) but stil contribute.
+            vars2.addAll(varInExpr) ;
             checkAssignment( vars2, e, v );
             vars2.add( v );
-        }
+        }) ;
     }
     
     private static void checkExprVarUse(Query query)

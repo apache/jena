@@ -1,5 +1,17 @@
 #!/bin/bash
 
+## ---- Additional tests
+
+N=0
+
+N=$((N+1)) ; testBad $ARQ $(fname "syntax-scope-bad-" $N arq) <<EOF
+SELECT ( (?x+1) AS ?x ) {}
+EOF
+
+N=$((N+1)) ; testBad $ARQ $(fname "syntax-scope-bad-" $N arq) <<EOF
+SELECT ( (?x+1) AS ?y)  (2 AS ?x) {}
+EOF
+
 ## ---- Expressions in SELECT
 
 N=0

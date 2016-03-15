@@ -56,10 +56,11 @@ public class TestVarScope extends BaseTest
     @Test(expected=QueryException.class)
     public void scope_15() { scope("SELECT (?o+1 AS ?x) { { SELECT (123 AS ?x) {?s ?p ?o } } } ") ; }
     
-    @Test public void scope_16() { scope("SELECT (?o+1 AS ?o) { { SELECT (123 AS ?x) {?s ?p ?o } } } ") ; }
+    @Test(expected=QueryException.class)
+    public void scope_16() { scope("SELECT (?o+1 AS ?o) { { SELECT (123 AS ?x) {?s ?p ?o } } } ") ; }
 
-    @Test public void scope_17() { scope("SELECT (?o+1 AS ?o) { { SELECT (123 AS ?x) {?s ?p ?o FILTER(?x > 57)} } } ") ; }
-    
+    @Test(expected=QueryException.class)
+    public void scope_17() { scope("SELECT (?o+1 AS ?o) { { SELECT (123 AS ?x) {?s ?p ?o FILTER(?x > 57)} } } ") ; }
 
     @Test public void scope_20() { scope("SELECT ?x { ?x ?p ?o } GROUP BY ?x") ; }
     
@@ -131,5 +132,16 @@ public class TestVarScope extends BaseTest
         scope("SELECT * { { { ?s ?p ?o1 BIND(5 AS ?o1) } } }") ;
     }
         
+    @Test(expected=QueryException.class)
+    public void scope_65()
+    {
+        scope("SELECT ( (?x+1) AS ?x ) {}") ;
+    }
 
+
+    @Test(expected=QueryException.class)
+    public void scope_66()
+    {
+        scope("SELECT ( (?x+1) AS ?y)  (2 AS ?x) {}") ;
+    }
 }

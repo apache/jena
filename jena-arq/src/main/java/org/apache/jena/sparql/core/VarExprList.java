@@ -20,7 +20,6 @@ package org.apache.jena.sparql.core;
 
 import java.util.* ;
 import java.util.function.BiConsumer ;
-import java.util.function.Consumer ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -33,24 +32,24 @@ import org.apache.jena.sparql.function.FunctionEnv ;
 public class VarExprList
 {
     private List<Var> vars  ;
-    private Map<Var, Expr> exprs  ;
+    private LinkedHashMap<Var, Expr> exprs  ;   // Preserve order.
     
     public VarExprList(List<Var> vars)
     {
         this.vars = new ArrayList<>(vars) ;
-        this.exprs = new HashMap<>() ;
+        this.exprs = new LinkedHashMap<>() ;
     }
     
     public VarExprList(VarExprList other)
     {
         this.vars = new ArrayList<>(other.vars) ;
-        this.exprs = new HashMap<>(other.exprs) ;
+        this.exprs = new LinkedHashMap<>(other.exprs) ;
     }
 
     public VarExprList()
     {
         this.vars = new ArrayList<>() ;
-        this.exprs = new HashMap<>() ;
+        this.exprs = new LinkedHashMap<>() ;
     }
     
     public VarExprList(Var var, Expr expr)
@@ -61,10 +60,6 @@ public class VarExprList
 
     public List<Var> getVars()          { return vars ; }
     public Map<Var, Expr> getExprs()    { return exprs ; }
-    
-    public void forEachExpr(Consumer<Expr> action) {
-        exprs.values().forEach(action); 
-    }
     
     public void forEach(BiConsumer<Var, Expr> action) {
         exprs.forEach(action); 
