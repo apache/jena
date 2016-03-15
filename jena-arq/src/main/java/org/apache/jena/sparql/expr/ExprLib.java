@@ -213,5 +213,10 @@ public class ExprLib
         }
     } ;
     
-    private static class ExprUnstable extends ExprException {}
+    private static class ExprUnstable extends ExprException {
+        // Filling in the stack trace is the expensive part of
+        // an exception but we don't need it. 
+        @Override
+        public Throwable fillInStackTrace() { return this ; }
+    }
 }
