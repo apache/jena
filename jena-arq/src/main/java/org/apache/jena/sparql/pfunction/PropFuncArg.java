@@ -94,18 +94,18 @@ public class PropFuncArg extends PrintSerializableBase
     public boolean isList()             { return argList != null  ; }
     public boolean isNode()             { return arg != null  ; }
     
-    public ExprList asExprList(PropFuncArg pfArg)
+    public ExprList asExprList()
     {
         ExprList exprList = new ExprList() ;
-        if ( pfArg.isNode() )
+        if ( isNode() )
         {
-            Node n = pfArg.getArg() ;
+            Node n = getArg() ;
             Expr expr = ExprUtils.nodeToExpr(n) ;
             exprList.add(expr) ;
             return exprList ;
         }
 
-        for ( Node n : pfArg.getArgList() )
+        for ( Node n : getArgList() )
         {
             Expr expr = ExprUtils.nodeToExpr( n );
             exprList.add( expr );
