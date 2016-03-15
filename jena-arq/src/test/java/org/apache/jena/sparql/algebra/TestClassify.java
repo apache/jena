@@ -118,6 +118,9 @@ public class TestClassify extends BaseTest
     { classifyJ("{ ?x ?y ?z { LET(?A := ?z+2) } UNION { }}", false) ; }
     
     @Test public void testClassify_Join_44() 
+    { classifyJ("{ BIND(<x> AS ?typeX) { BIND(?typeX AS ?type) } }", false) ; }
+
+    @Test public void testClassify_Join_45() 
     { classifyJ("{ BIND(<x> AS ?typeX) { BIND(?typeX AS ?type) ?s ?p ?o FILTER(?o=?type) } }", false) ; }
     
     // Unsafe - deep MINUS
@@ -125,7 +128,7 @@ public class TestClassify extends BaseTest
     @Test public void testClassify_Join_50() 
     { classifyJ("{ ?x ?y ?z { ?x1 ?y1 ?z1 MINUS { ?a ?b ?c } } UNION {} }", false) ; }
     
-    private void classifyJ(String pattern, boolean expected)
+    public static void classifyJ(String pattern, boolean expected)
     {
         String qs1 = "PREFIX : <http://example/>\n" ;
         String qs = qs1+"SELECT * "+pattern;

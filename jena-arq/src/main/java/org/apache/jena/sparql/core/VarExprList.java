@@ -18,11 +18,9 @@
 
 package org.apache.jena.sparql.core;
 
-import java.util.ArrayList ;
-import java.util.HashMap ;
-import java.util.List ;
-import java.util.Map ;
-import java.util.Objects;
+import java.util.* ;
+import java.util.function.BiConsumer ;
+import java.util.function.Consumer ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -61,9 +59,17 @@ public class VarExprList
         add(var, expr) ;
     }
 
-    public List<Var> getVars() { return vars ; }
-    public Map<Var, Expr> getExprs() { return exprs ; }
+    public List<Var> getVars()          { return vars ; }
+    public Map<Var, Expr> getExprs()    { return exprs ; }
     
+    public void forEachExpr(Consumer<Expr> action) {
+        exprs.values().forEach(action); 
+    }
+    
+    public void forEach(BiConsumer<Var, Expr> action) {
+        exprs.forEach(action); 
+    }
+
     public boolean contains(Var var) { return vars.contains(var) ; }
     public boolean hasExpr(Var var) { return exprs.containsKey(var) ; }
     

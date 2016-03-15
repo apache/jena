@@ -26,8 +26,6 @@ import static org.apache.jena.sparql.util.VarUtils.addVarsFromTriplePath ;
 
 import java.util.HashSet ;
 import java.util.List ;
-import java.util.Map ;
-import java.util.Map.Entry ;
 import java.util.Set ;
 
 import org.apache.jena.sparql.algebra.Op ;
@@ -243,13 +241,12 @@ public class VarFinder
             opExtend.getSubOp().visit(this);
             processVarExprList(opExtend.getVarExprList());
         }
-
+        
         private void processVarExprList(VarExprList varExprList) {
-            Map<Var, Expr> map = varExprList.getExprs();
-            for ( Entry<Var, Expr> e : map.entrySet() ) {
-                defines.add(e.getKey());
-                e.getValue().varsMentioned(assignMentions);
-            }
+            varExprList.forEach((v,e)-> {
+                defines.add(v) ;
+                e.varsMentioned(assignMentions);
+            }) ;
         }
 
         @Override
@@ -317,7 +314,7 @@ public class VarFinder
         public void visit(OpGroup opGroup) {
             // Not subOp.
             VarExprList varExprs = opGroup.getGroupVars() ;
-            varExprs.getExprs().forEach((v,expr)->{
+            varExprs.forEach((v,expr)->{
                 addVar(defines, v) ;
                 // Not the expressions.
             }) ;
