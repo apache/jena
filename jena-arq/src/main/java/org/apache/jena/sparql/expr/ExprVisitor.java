@@ -21,8 +21,6 @@ package org.apache.jena.sparql.expr;
 
 public interface ExprVisitor
 {
-    void startVisit() ;
-    
     //void visit(ExprFunction func) ;
     void visit(ExprFunction0 func) ;
     void visit(ExprFunction1 func) ;
@@ -34,5 +32,10 @@ public interface ExprVisitor
     void visit(ExprVar nv) ;
     void visit(ExprAggregator eAgg) ;
 
-    void finishVisit() ;
+    /** @deprecated To be removed */
+    @Deprecated
+    default void startVisit() {}
+    /** @deprecated To be removed */
+    @Deprecated
+    default void finishVisit() {}
 }

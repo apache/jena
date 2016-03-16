@@ -83,12 +83,6 @@ public class ExprTransformer
         { this.transform = transform ; }
 
         @Override
-        public void startVisit()    {}
-        @Override
-        public void finishVisit()   {}
-
-        
-        @Override
         public void visit(ExprFunction0 func)
         {
             Expr e = func.apply(transform) ;

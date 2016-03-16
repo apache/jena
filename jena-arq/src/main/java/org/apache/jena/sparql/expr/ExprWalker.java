@@ -51,9 +51,6 @@ public class ExprWalker
         }
         
         @Override
-        public void startVisit() {}
-        
-        @Override
         protected void visitExprFunction(ExprFunction func)
         {
             if ( topDown )
@@ -98,8 +95,6 @@ public class ExprWalker
         @Override
         public void visit(ExprAggregator eAgg)    { eAgg.visit(visitor) ; }
         
-        @Override
-        public void finishVisit() { }
     }
     
     // Visit current element then visit subelements
