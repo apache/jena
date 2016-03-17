@@ -198,11 +198,16 @@ import org.apache.jena.tdb.store.DatasetGraphTDB ;
             synchronized(this) {
                 if ( isClosed ) return ;
                 isClosed = true ;
-                // Non-transactional behaviour.
+                if ( ! sConn.isValid() ) {
+                    // There may be another DatasetGraphTransaction using this location
+                    // and that DatasetGraphTransaction has been closed, invalidating
+                    // the StoreConnection.
+                    return ;
+                }
                 DatasetGraphTDB dsg = sConn.getBaseDataset() ;
                 dsg.sync() ;
                 dsg.close() ;
-                StoreConnection.release(dsg.getLocation()) ;
+                StoreConnection.release(getLocation()) ;
                 return ;
             }
         }

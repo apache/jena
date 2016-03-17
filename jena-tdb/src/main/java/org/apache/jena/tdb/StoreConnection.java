@@ -50,6 +50,8 @@ public class StoreConnection
         transactionManager = new TransactionManager(baseDSG);
     }
 
+    public boolean isValid() { return isValid ; } 
+    
     private void checkValid() {
         if (!isValid) 
             throw new TDBTransactionException("StoreConnection inValid (issued before a StoreConnection.release?)") ;
