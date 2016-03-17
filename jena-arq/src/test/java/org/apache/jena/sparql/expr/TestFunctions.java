@@ -71,7 +71,23 @@ public class TestFunctions
     @Test public void exprJavaSubstring4() { test("<"+ARQConstants.ARQFunctionLibrary+"substr>('abc',0,1)", NodeValue.makeString("a")) ; }
     // Test from JENA-785
     @Test public void exprJavaSubstring5() { test("afn:substr('𐐈𐑌𐐻𐐪𐑉𐐿𐐻𐐮𐐿𐐲', 0, 1)", NodeValue.makeString("𐐈")) ; }
-    
+
+    // SPRINTF
+    @Test public void exprSprintf_01()      { test("afn:sprintf('%06d', 11)",NodeValue.makeString("000011")) ; }
+    @Test public void exprSprintf_02()      { test("afn:sprintf('%s', 'abcdefghi')",NodeValue.makeString("abcdefghi")) ; }
+    @Test public void exprSprintf_03()      { test("afn:sprintf('sometext %s', 'abcdefghi')",NodeValue.makeString("sometext abcdefghi")) ; }
+    @Test public void exprSprintf_04()      { test("afn:sprintf('%1$tm %1$te,%1$tY', '2016-03-17'^^xsd:date)",NodeValue.makeString("03 17,2016")) ; }
+    @Test public void exprSprintf_05()      {
+            String nodeStr = NodeValue.makeDateTime("2005-10-14T13:09:43Z").toString();
+            test("afn:sprintf('%1$tm %1$te,%1$tY', "+nodeStr+")",NodeValue.makeString("10 14,2005")) ;
+    }
+    @Test public void exprSprintf_06()      { test("afn:sprintf('this is %s', 'false'^^xsd:boolean)",NodeValue.makeString("this is false")) ; }
+    @Test public void exprSprintf_07()      { test("afn:sprintf('this number is equal to %.2f', '11.22'^^xsd:decimal)",NodeValue.makeString("this number is equal to 11.22")) ; }
+    @Test public void exprSprintf_08()      { test("afn:sprintf('%.3f', '1.23456789'^^xsd:float)",NodeValue.makeString("1.235")) ; }
+    @Test public void exprSprintf_09()      { test("afn:sprintf('this number is equal to %o in the octal system', '11'^^xsd:integer)",NodeValue.makeString("this number is equal to 13 in the octal system")) ; }
+    @Test public void exprSprintf_10()      { test("afn:sprintf('this number is equal to %.5f', '1.23456789'^^xsd:double)",NodeValue.makeString("this number is equal to 1.23457")) ; }
+
+
     @Test public void exprStrStart0() { test("fn:starts-with('abc', '')", TRUE) ; }
     @Test public void exprStrStart1() { test("fn:starts-with('abc', 'a')", TRUE) ; }
     @Test public void exprStrStart2() { test("fn:starts-with('abc', 'ab')", TRUE) ; }
