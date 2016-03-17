@@ -61,26 +61,24 @@ public abstract class AbstractStoreConnections extends BaseTest
 
     @After public void after() {} 
 
-    protected StoreConnection getStoreConnection()
-    {
+    protected StoreConnection getStoreConnection() {
         return StoreConnection.make(DIR) ;
     }
-    
-    @Test 
-    public void store_0()
-    {
+
+    @Test
+    public void store_0() {
         // Expel.
         StoreConnection sConn = getStoreConnection() ;
+        assertTrue(sConn.isValid());
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         dsgW1.commit() ;
         dsgW1.end() ;
         StoreConnection.release(sConn.getLocation()) ;
         StoreConnection sConn2 = getStoreConnection() ;
     }
-    
+
     @Test
-    public void store_1()
-    {
+    public void store_1() {
         // Expel.
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
@@ -88,80 +86,77 @@ public abstract class AbstractStoreConnections extends BaseTest
         dsgW1.add(q1) ;
         dsgW1.commit() ;
         dsgW1.end() ;
-        dsgR1.end();
-        
+        dsgR1.end() ;
+
+        assertTrue(sConn.isValid());
         StoreConnection.release(sConn.getLocation()) ;
+        assertFalse(sConn.isValid());
         sConn = null ;
-        
+
         StoreConnection sConn2 = getStoreConnection() ;
+        assertTrue(sConn2.isValid());
     }
-    
-    @Test(expected=TDBTransactionException.class)
-    public void store_2()
-    {
+
+    @Test(expected = TDBTransactionException.class)
+    public void store_2() {
         // Expel.
-        // Only applies to non-memory.
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
         StoreConnection.release(sConn.getLocation()) ;
     }
 
-    @Test(expected=TDBTransactionException.class)
-    public void store_3()
-    {
+    @Test(expected = TDBTransactionException.class)
+    public void store_3() {
         // Expel.
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.WRITE) ;
         StoreConnection.release(sConn.getLocation()) ;
     }
-    
+
     @Test
-    public void store_4()
-    {
+    public void store_4() {
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         dsgW1.add(q1) ;
         dsgW1.commit() ;
         dsgW1.end() ;
-        dsgR1.end();
-        
+        dsgR1.end() ;
+
         StoreConnection.release(sConn.getLocation()) ;
         sConn = null ;
-        
+
         StoreConnection sConn2 = getStoreConnection() ;
         DatasetGraphTxn dsgW2 = sConn2.begin(ReadWrite.WRITE) ;
         dsgW2.add(q2) ;
         dsgW2.commit() ;
         dsgW2.end() ;
-        
+
         DatasetGraphTxn dsgR2 = sConn2.begin(ReadWrite.READ) ;
         long x = Iter.count(dsgR2.find()) ;
         assertEquals(2, x) ;
     }
 
-    @Test 
-    public void store_5()
-    {
-        // No transaction.  Make sure StoreConnection.release cleans up OK.  
+    @Test
+    public void store_5() {
+        // No transaction. Make sure StoreConnection.release cleans up OK.
         StoreConnection sConn = getStoreConnection() ;
         Location loc = sConn.getLocation() ;
         DatasetGraph dsg = sConn.getBaseDataset() ;
         dsg.add(q) ;
         assertTrue(dsg.contains(q)) ;
-        
+
         StoreConnection.release(loc) ;
         sConn = StoreConnection.make(loc) ;
         dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q)) ;
     }
 
-    @Test 
-    public void store_6()
-    {
-        // Transaction - release - reattach 
-        // This tests that the dataset is sync'ed when going into transactional mode. 
-        
+    @Test
+    public void store_6() {
+        // Transaction - release - reattach
+        // This tests that the dataset is sync'ed when going into transactional mode.
+
         StoreConnection sConn = getStoreConnection() ;
         Location loc = sConn.getLocation() ;
 
@@ -174,78 +169,74 @@ public abstract class AbstractStoreConnections extends BaseTest
 
         sConn.forceRecoverFromJournal() ;
         assertTrue(sConn.getBaseDataset().contains(q1)) ;
-        
+
         StoreConnection.release(loc) ;
         sConn = StoreConnection.make(loc) ;
         DatasetGraph dsg2 = sConn.getBaseDataset() ;
         assertTrue(dsg2.contains(q1)) ;
-        
+
         DatasetGraphTxn dsgTxn2 = sConn.begin(ReadWrite.READ) ;
         assertTrue(dsgTxn2.contains(q1)) ;
         dsgTxn2.end() ;
     }
 
     @Test
-    public void store_7()
-    {
+    public void store_7() {
         // No transaction, plain update, then transaction.
-        // This tests that the dataset is sync'ed when going into transactional mode. 
-        
+        // This tests that the dataset is sync'ed when going into transactional mode.
+
         boolean nonTxnData = true ;
-        
+
         StoreConnection sConn = getStoreConnection() ;
         Location loc = sConn.getLocation() ;
         DatasetGraph dsg = sConn.getBaseDataset() ;
-        if ( nonTxnData ) 
-        {
+        if ( nonTxnData ) {
             dsg.add(q) ;
             TDB.sync(dsg) ;
             assertTrue(dsg.contains(q)) ;
         }
 
         DatasetGraphTxn dsgTxn = sConn.begin(ReadWrite.WRITE) ;
-        if ( nonTxnData ) 
+        if ( nonTxnData )
             assertTrue(dsgTxn.contains(q)) ;
         dsgTxn.add(q1) ;
         assertTrue(dsgTxn.contains(q1)) ;
-        if ( nonTxnData ) 
+        if ( nonTxnData )
             assertTrue(dsgTxn.contains(q)) ;
         dsgTxn.commit() ;
         dsgTxn.end() ;
 
         // Should have flushed to disk.
-        if ( nonTxnData ) 
-        {
+        if ( nonTxnData ) {
             sConn.forceRecoverFromJournal() ;
             assertTrue(dsg.contains(q)) ;
         }
         assertTrue(dsg.contains(q1)) ;
-        
-        // release via the transactional machinery 
+
+        // release via the transactional machinery
         StoreConnection.release(loc) ;
         sConn = null ;
-        
+
         StoreConnection sConn2 = StoreConnection.make(loc) ;
         DatasetGraph dsg2 = sConn2.getBaseDataset() ;
-        
-        if ( nonTxnData ) 
+
+        if ( nonTxnData )
             assertTrue(dsg2.contains(q)) ;
         assertTrue(dsg2.contains(q1)) ;
-        
+
         DatasetGraphTxn dsgTxn2 = sConn2.begin(ReadWrite.READ) ;
-        if ( nonTxnData ) 
+        if ( nonTxnData )
             assertTrue(dsgTxn2.contains(q)) ;
         assertTrue(dsgTxn2.contains(q1)) ;
         dsgTxn2.end() ;
 
-        // Check API methods work. 
+        // Check API methods work.
         Dataset ds = TDBFactory.createDataset(loc) ;
         ds.begin(ReadWrite.READ) ;
-        Model m = (q.isDefaultGraph() ? ds.getDefaultModel() : ds.getNamedModel("g")) ; 
-        assertEquals( nonTxnData ? 2 : 1 , m.size()) ;
+        Model m = (q.isDefaultGraph() ? ds.getDefaultModel() : ds.getNamedModel("g")) ;
+        assertEquals(nonTxnData ? 2 : 1, m.size()) ;
         ds.end() ;
     }
-
     
 }
 
