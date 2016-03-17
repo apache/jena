@@ -82,8 +82,8 @@ public class TestFunctions2 extends BaseTest
     | 'STRDT' '(' Expression ',' Expression ')'
     */
     
-    // Note in these tests, the rsult is written exactly as expected
-    // Any same value would do - we test for the exact lexcial form
+    // Note in these tests, the result is written exactly as expected
+    // Any same value would do - we test for the exact lexical form
     // of the implementation.
     
     @Test public void round_01()    { test("round(123)",    "123") ; }
@@ -289,7 +289,7 @@ public class TestFunctions2 extends BaseTest
     public void strends_20()            { test("strends(1816, '6'^^xsd:string)", "true") ; }
     @Test(expected=ExprEvalException.class)
     public void strends_21()            { test("strends('abc', 1066)", "true") ; }
-    
+
     // YEAR
     @Test public void year_01()         { test("year('2010-12-24T16:24:01.123'^^xsd:dateTime)", "2010") ; }
     @Test public void year_02()         { test("year('2010-12-24'^^xsd:date)", "2010") ; }
