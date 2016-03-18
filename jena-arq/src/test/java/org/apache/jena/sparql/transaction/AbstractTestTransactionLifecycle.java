@@ -31,13 +31,15 @@ import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.JenaTransactionException ;
-import org.junit.Assert ;
+import static org.junit.Assume.* ;
 import org.junit.Test ;
 
 public abstract class AbstractTestTransactionLifecycle extends BaseTest
 {
     protected abstract Dataset create() ;
     
+    protected boolean supportsAbort() { return true ; } 
+
     @Test
     public void transaction_00() {
         Dataset ds = create() ;
@@ -86,6 +88,7 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
 
     @Test
     public void transaction_w02() {
+        assumeTrue(supportsAbort()) ;
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
         assertTrue(ds.isInTransaction()) ;
@@ -106,6 +109,7 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
 
     @Test
     public void transaction_w04() {
+        assumeTrue(supportsAbort()) ;
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
         assertTrue(ds.isInTransaction()) ;
@@ -117,6 +121,7 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
 
     @Test
     public void transaction_w05() {
+        assumeTrue(supportsAbort()) ;
         // .end is not necessary
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
@@ -305,6 +310,7 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
     }
 
     private void testCommitAbort(ReadWrite mode) {
+        assumeTrue(supportsAbort()) ;
         Dataset ds = create() ;
         ds.begin(mode) ;
         ds.commit() ;
@@ -318,6 +324,7 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
     }
 
     private void testAbortAbort(ReadWrite mode) {
+        assumeTrue(supportsAbort()) ;
         Dataset ds = create() ;
         ds.begin(mode) ;
         ds.abort() ;
@@ -331,6 +338,7 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
     }
 
     private void testAbortCommit(ReadWrite mode) {
+        assumeTrue(supportsAbort()) ;
         Dataset ds = create() ;
         ds.begin(mode) ;
         ds.abort() ;
@@ -361,7 +369,7 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
                     // The W threads will take the sleep serially.
                     Lib.sleep(500) ;
                     long x1 = counter.get() ;
-                    Assert.assertEquals("Two writers in the transaction", x, x1);
+                    assertEquals("Two writers in the transaction", x, x1);
                     ds.commit();
                     return true;
                 }
@@ -371,8 +379,8 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
             Future<Boolean> f1 = executor.submit(callable);
             Future<Boolean> f2 = executor.submit(callable);
             // Wait longer than the cumulative threads sleep
-            Assert.assertTrue(f1.get(4, TimeUnit.SECONDS));
-            Assert.assertTrue(f2.get(1, TimeUnit.SECONDS));
+            assertTrue(f1.get(4, TimeUnit.SECONDS));
+            assertTrue(f2.get(1, TimeUnit.SECONDS));
         } finally {
             executor.shutdownNow();
         }
@@ -408,7 +416,7 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
             // Wait shorter than sum total of all sleep by thread
             // which proves concurrent access.
             for (Future<Boolean> f : futures) {
-                Assert.assertTrue(f.get(4, TimeUnit.SECONDS));
+                assertTrue(f.get(4, TimeUnit.SECONDS));
             }
         } finally {
             executor.shutdownNow();
