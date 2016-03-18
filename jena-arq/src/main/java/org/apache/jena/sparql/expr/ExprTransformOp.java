@@ -20,6 +20,7 @@ package org.apache.jena.sparql.expr;
 
 import org.apache.jena.sparql.algebra.Transform ;
 
+@Deprecated
 public interface ExprTransformOp extends ExprTransform
 {
     public Transform getTransform() ;
